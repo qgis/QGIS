@@ -221,7 +221,7 @@ class Grass7Utils:
                 if "GISBASE" in os.environ:
                     folder = os.environ["GISBASE"]
                 else:
-                    testfolder = os.path.join(str(QgsApplication.prefixPath()), 'grass')
+                    testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'grass')
                     if os.path.isdir(testfolder):
                         grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
                         if grassfolders:
@@ -229,7 +229,7 @@ class Grass7Utils:
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle
-                for version in ['', '7', '70', '71', '72', '74']:
+                for version in ['', '7', '76', '74', '72', '71', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
@@ -237,7 +237,7 @@ class Grass7Utils:
                         break
                     # If nothing found, try standalone GRASS installation
                     if folder is None:
-                        for version in ['0', '1', '2', '4']:
+                        for version in ['6', '4', '2', '1', '0']:
                             testfolder = '/Applications/GRASS-7.{}.app/Contents/MacOS'.format(version)
                             if os.path.isdir(testfolder):
                                 folder = testfolder

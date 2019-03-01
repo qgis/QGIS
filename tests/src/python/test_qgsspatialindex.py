@@ -18,7 +18,7 @@ from qgis.core import (QgsSpatialIndex,
                        QgsFeature,
                        QgsGeometry,
                        QgsRectangle,
-                       QgsPoint)
+                       QgsPointXY)
 
 from qgis.testing import start_app, unittest
 
@@ -60,3 +60,37 @@ class TestQgsSpatialIndex(unittest.TestCase):
         myMessage = ('Expected: %s\nGot: %s\n' %
                      ([0, 1, 5], fids))
         assert fids == [0, 1, 5], myMessage
+
+    def testGetGeometry(self):
+        idx = QgsSpatialIndex()
+        idx2 = QgsSpatialIndex(QgsSpatialIndex.FlagStoreFeatureGeometries)
+        fid = 0
+        for y in range(5):
+            for x in range(10, 15):
+                ft = QgsFeature()
+                ft.setId(fid)
+                ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(x, y)))
+                idx.insertFeature(ft)
+                idx2.insertFeature(ft)
+                fid += 1
+
+        # not storing geometries, a keyerror should be raised
+        with self.assertRaises(KeyError):
+            idx.geometry(-100)
+        with self.assertRaises(KeyError):
+            idx.geometry(1)
+        with self.assertRaises(KeyError):
+            idx.geometry(2)
+        with self.assertRaises(KeyError):
+            idx.geometry(1000)
+
+        self.assertEqual(idx2.geometry(1).asWkt(1), 'Point (11 0)')
+        self.assertEqual(idx2.geometry(2).asWkt(1), 'Point (12 0)')
+        with self.assertRaises(KeyError):
+            idx2.geometry(-100)
+        with self.assertRaises(KeyError):
+            idx2.geometry(1000)
+
+
+if __name__ == '__main__':
+    unittest.main()

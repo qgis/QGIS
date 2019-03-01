@@ -62,7 +62,7 @@ class ANALYSIS_EXPORT Triangulation
 
     /**
      * Calculates the normal at a point on the surface and assigns it to 'result'.
-     * \returns true in case of success and false in case of failure
+     * \returns TRUE in case of success and FALSE in case of failure
      */
     virtual bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) = 0;
 
@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT Triangulation
 
     /**
      * Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
-     * Returns true in case of success and flase in case of failure
+     * Returns TRUE in case of success and FALSE in case of failure
      */
     virtual bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) = 0;
 
@@ -150,7 +150,7 @@ class ANALYSIS_EXPORT Triangulation
     //! Adds points to make the triangles better shaped (algorithm of ruppert)
     virtual void ruppertRefinement() = 0;
 
-    //! Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise
+    //! Returns TRUE, if the point with coordinates x and y is inside the convex hull and FALSE otherwise
     virtual bool pointInside( double x, double y ) = 0;
 
     //! Reads the content of a taff-file
@@ -177,7 +177,7 @@ class ANALYSIS_EXPORT Triangulation
      * The sink must be setup to accept LineString features, with fields matching
      * those returned by triangulationFields().
      *
-     * \returns true in case of success
+     * \returns TRUE in case of success
      *
      * \see triangulationFields()
      *  \since QGIS 3.0

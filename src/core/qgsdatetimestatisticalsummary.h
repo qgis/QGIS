@@ -55,7 +55,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
       Min = 8, //!< Minimum (earliest) datetime value
       Max = 16, //!< Maximum (latest) datetime value
       Range = 32, //!< Interval between earliest and latest datetime value
-      All = Count | CountDistinct | CountMissing | Min | Max | Range, //! All statistics
+      All = Count | CountDistinct | CountMissing | Min | Max | Range, //!< All statistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 

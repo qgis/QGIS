@@ -79,14 +79,17 @@ from qgis.core import (Qgis,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
-                       QgsProcessingParameterType
+                       QgsProcessingParameterType,
+                       QgsExpressionContextScope,
+                       QgsExpressionContext
                        )
 from qgis.gui import (QgsMessageBar,
                       QgsDockWidget,
                       QgsScrollArea,
                       QgsFilterLineEdit,
                       QgsProcessingToolboxTreeView,
-                      QgsProcessingToolboxProxyModel)
+                      QgsProcessingToolboxProxyModel,
+                      QgsVariableEditorWidget)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -140,6 +143,8 @@ class ModelerDialog(BASE, WIDGET):
 
         self.setupUi(self)
 
+        self._variables_scope = None
+
         # LOTS of bug reports when we include the dock creation in the UI file
         # see e.g. #16428, #19068
         # So just roll it all by hand......!
@@ -181,8 +186,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scrollArea_1.setWidget(self.scrollAreaWidgetContents_1)
         self.verticalDockLayout_1.addWidget(self.scrollArea_1)
         self.propertiesDock.setWidget(propertiesDockContents)
-        self.addDockWidget(Qt.DockWidgetArea(1), self.propertiesDock)
-        self.propertiesDock.setWindowTitle(self.tr("Model properties"))
+        self.propertiesDock.setWindowTitle(self.tr("Model Properties"))
 
         self.inputsDock = QgsDockWidget(self)
         self.inputsDock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
@@ -242,6 +246,22 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmsDock.setWindowTitle(self.tr("Algorithms"))
         self.searchBox.setToolTip(self.tr("Enter algorithm name to filter list"))
         self.searchBox.setShowSearchIcon(True)
+
+        self.variables_dock = QgsDockWidget(self)
+        self.variables_dock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
+        self.variables_dock.setObjectName("variablesDock")
+        self.variables_dock_contents = QWidget()
+        vl_v = QVBoxLayout(self.algorithmsDockContents)
+        vl_v.setContentsMargins(0, 0, 0, 0)
+        self.variables_editor = QgsVariableEditorWidget()
+        vl_v.addWidget(self.variables_editor)
+        self.variables_dock_contents.setLayout(vl_v)
+        self.variables_dock.setWidget(self.variables_dock_contents)
+        self.addDockWidget(Qt.DockWidgetArea(1), self.variables_dock)
+        self.variables_dock.setWindowTitle(self.tr("Variables"))
+        self.addDockWidget(Qt.DockWidgetArea(1), self.propertiesDock)
+        self.tabifyDockWidget(self.propertiesDock, self.variables_dock)
+        self.variables_editor.scopeChanged.connect(self.variables_changed)
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -455,6 +475,7 @@ class ModelerDialog(BASE, WIDGET):
         else:
             self.model = QgsProcessingModelAlgorithm()
             self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
+        self.update_variables_gui()
 
         self.fillInputsTree()
 
@@ -491,6 +512,18 @@ class ModelerDialog(BASE, WIDGET):
         if dlg.descriptions:
             self.model.setHelpContent(dlg.descriptions)
             self.hasChanged = True
+
+    def update_variables_gui(self):
+        variables_scope = QgsExpressionContextScope(self.tr('Model Variables'))
+        for k, v in self.model.variables().items():
+            variables_scope.setVariable(k, v)
+        variables_context = QgsExpressionContext()
+        variables_context.appendScope(variables_scope)
+        self.variables_editor.setContext(variables_context)
+        self.variables_editor.setEditableScopeIndex(0)
+
+    def variables_changed(self):
+        self.model.setVariables(self.variables_editor.variablesInActiveScope())
 
     def runModel(self):
         if len(self.model.childAlgorithms()) == 0:
@@ -721,6 +754,8 @@ class ModelerDialog(BASE, WIDGET):
             self.textGroup.setText(alg.group())
             self.textName.setText(alg.name())
             self.repaintModel()
+
+            self.update_variables_gui()
 
             self.view.centerOn(0, 0)
             self.hasChanged = False

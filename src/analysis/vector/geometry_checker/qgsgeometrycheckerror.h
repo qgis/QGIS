@@ -164,7 +164,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
 
     /**
      * Check if this error is almost equal to \a other.
-     * If this returns true, it can be used to update existing errors after re-checking.
+     * If this returns TRUE, it can be used to update existing errors after re-checking.
      */
     virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
 

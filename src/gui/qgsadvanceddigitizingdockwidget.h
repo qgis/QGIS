@@ -122,7 +122,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         bool isLocked() const { return mLockMode != NoLock; }
 
         /**
-         * Returns true if a repeating lock is set for the constraint. Repeating locks are not
+         * Returns TRUE if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * \see setRepeatingLock()
          * \since QGIS 2.16
@@ -152,7 +152,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         /**
          * Sets whether a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
-         * \param repeating set to true to set the lock to repeat automatically
+         * \param repeating set to TRUE to set the lock to repeat automatically
          * \see isRepeatingLock()
          * \since QGIS 2.16
          */
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         /**
          * Set the value of the constraint
          * \param value new value for constraint
-         * \param updateWidget set to false to prevent automatically updating the associated widget's value
+         * \param updateWidget set to FALSE to prevent automatically updating the associated widget's value
          */
         void setValue( double value, bool updateWidget = true );
 
@@ -213,7 +213,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
-     * \returns false if no solution was found (invalid constraints)
+     * \returns FALSE if no solution was found (invalid constraints)
      */
     bool applyConstraints( QgsMapMouseEvent *e );
 
@@ -226,7 +226,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * unlock all constraints
-     * \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+     * \param releaseRepeatingLocks set to FALSE to preserve the lock for any constraints set to repeating lock mode
      * \since QGIS 3.0
      */
     void releaseLocks( bool releaseRepeatingLocks = true );
@@ -257,7 +257,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     const CadConstraint *constraintX() const { return mXConstraint.get(); }
     //! Returns the \a CadConstraint on the Y coordinate
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
-    //! Returns true if a constraint on a common angle is active
+    //! Returns TRUE if a constraint on a common angle is active
     bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }
 
     /**
@@ -410,7 +410,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * \brief updateCapacity updates the cad capacities depending on the point list and update the UI according to the capabilities.
-     * \param updateUIwithoutChange if true, it will update the UI even if new capacities are not different from previous ones.
+     * \param updateUIwithoutChange if TRUE, it will update the UI even if new capacities are not different from previous ones.
      */
     void updateCapacity( bool updateUIwithoutChange = false );
 
@@ -454,7 +454,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Updates a constraint value based on a text input.
      * \param constraint constraint to update
      * \param textValue user entered text value, may be an expression
-     * \param convertExpression set to true to update widget contents to calculated expression value
+     * \param convertExpression set to TRUE to update widget contents to calculated expression value
      */
     void updateConstraintValue( CadConstraint *constraint, const QString &textValue, bool convertExpression = false );
 

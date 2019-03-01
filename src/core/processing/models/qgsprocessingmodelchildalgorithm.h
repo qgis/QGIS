@@ -83,7 +83,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * Sets the underlying child algorithm's ID. This
      * should be set to an existing QgsProcessingAlgorithm algorithm ID.
      *
-     * Returns true if the algorithm was successfully set.
+     * Returns TRUE if the algorithm was successfully set.
      *
      * \see reattach()
      * \see algorithm()
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * This can be run to relink the child to algorithms from providers which were not
      * originally available for the model to link to.
      *
-     * Returns true if the algorithm was successfully reattached.
+     * Returns TRUE if the algorithm was successfully reattached.
      *
      * \see algorithm()
      * \see setAlgorithmId()
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     void setConfiguration( const QVariantMap &configuration );
 
     /**
-     * Returns the underlying child algorithm, or a nullptr
+     * Returns the underlying child algorithm, or NULLPTR
      * if a matching algorithm is not available.
      * \see reattach()
      * \see algorithmId()
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     void addParameterSources( const QString &name, const QList< QgsProcessingModelChildParameterSource > &source ) { mParams.insert( name, source ); }
 
     /**
-     * Returns true if the child algorithm is active.
+     * Returns TRUE if the child algorithm is active.
      * \see setActive()
      */
     bool isActive() const { return mActive; }
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     void setDependencies( const QStringList &dependencies ) { mDependencies = dependencies; }
 
     /**
-     * Returns true if the list of parameters for this algorithm should be collapsed
+     * Returns TRUE if the list of parameters for this algorithm should be collapsed
      * in the graphical modeler.
      * \see setParametersCollapsed()
      * \see outputsCollapsed()
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     void setParametersCollapsed( bool collapsed ) { mParametersCollapsed = collapsed; }
 
     /**
-     * Returns true if the list of outputs for this algorithm should be collapsed
+     * Returns TRUE if the list of outputs for this algorithm should be collapsed
      * in the graphical modeler.
      * \see setParametersCollapsed()
      * \see parametersCollapsed()
@@ -285,8 +285,11 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * Additional parameters to be passed to the child algorithm are specified in the \a extraParameters argument.
      *
      * The \a currentIndent and \a indentSize are used to set the base line indent and size of further indented lines respectively.
+     *
+     * The \a friendlyChildNames argument gives a map of child id to a friendly algorithm name, to be used in the code to identify that algorithm instead of the raw child id.
      */
-    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize ) const;
+    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize,
+                              const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const;
 
   private:
 

@@ -182,6 +182,11 @@ double QgsMultiPoint::segmentLength( QgsVertexId ) const
   return 0.0;
 }
 
+bool QgsMultiPoint::isValid( QString &, int ) const
+{
+  return true;
+}
+
 void QgsMultiPoint::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
 {
   mGeometries.erase( std::remove_if( mGeometries.begin(), mGeometries.end(), // clazy:exclude=detaching-member

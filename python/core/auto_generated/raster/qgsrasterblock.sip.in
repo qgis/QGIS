@@ -41,13 +41,13 @@ Reset block
 :param width: width of data matrix
 :param height: height of data matrix
 
-:return: true on success
+:return: ``True`` on success
 %End
 
 
     bool isValid() const;
 %Docstring
-Returns true if the block is valid (correctly filled with data).
+Returns ``True`` if the block is valid (correctly filled with data).
 An empty block may still be valid (if zero size block was requested).
 If the block is not valid, error may be retrieved by error() method.
 %End
@@ -59,8 +59,8 @@ Mark block as valid or invalid
 
     bool isEmpty() const;
 %Docstring
-Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
-This method does not return true if size is not zero and all values are
+Returns ``True`` if block is empty, i.e. its size is 0 (zero rows or cols).
+This method does not return ``True`` if size is not zero and all values are
 'no data' (null).
 %End
 
@@ -70,12 +70,12 @@ This method does not return true if size is not zero and all values are
 
     static bool typeIsNumeric( Qgis::DataType type );
 %Docstring
-Returns true if data type is numeric
+Returns ``True`` if data type is numeric
 %End
 
     static bool typeIsColor( Qgis::DataType type );
 %Docstring
-Returns true if data type is color
+Returns ``True`` if data type is color
 %End
 
     Qgis::DataType dataType() const;
@@ -90,20 +90,20 @@ For given data type returns wider type and sets no data value
 
     bool hasNoDataValue() const;
 %Docstring
-True if the block has no data value.
+``True`` if the block has no data value.
 
-:return: true if the block has no data value
+:return: ``True`` if the block has no data value
 
 .. seealso:: :py:func:`noDataValue`
 %End
 
     bool hasNoData() const;
 %Docstring
-Returns true if the block may contain no data. It does not guarantee
+Returns ``True`` if the block may contain no data. It does not guarantee
 that it really contains any no data. It can be used to speed up processing.
 Not the difference between this method and hasNoDataValue().
 
-:return: true if the block may contain no data *
+:return: ``True`` if the block may contain no data
 %End
 
     void setNoDataValue( double noDataValue );
@@ -142,7 +142,7 @@ Gets byte array representing a value.
 :param dataType: data type
 :param value: value
 
-:return: byte array representing the value *
+:return: byte array representing the value
 %End
 
     double value( int row, int column ) const;
@@ -180,7 +180,7 @@ Read a single color
 :param row: row index
 :param column: column index
 
-:return: color *
+:return: color
 %End
 
     QRgb color( qgssize index ) const;
@@ -189,7 +189,7 @@ Read a single value
 
 :param index: data matrix index (long type in Python)
 
-:return: color *
+:return: color
 %End
 
     bool isNoData( int row, int column ) const;
@@ -199,7 +199,7 @@ Checks if value at position is no data
 :param row: row index
 :param column: column index
 
-:return: true if value is no data
+:return: ``True`` if value is no data
 
 .. seealso:: :py:func:`valueAndNoData`
 %End
@@ -211,7 +211,7 @@ Check if value at position is no data
 :param row: row index
 :param column: column index
 
-:return: true if value is no data
+:return: ``True`` if value is no data
 
 .. seealso:: :py:func:`valueAndNoData`
 %End
@@ -222,7 +222,7 @@ Check if value at position is no data
 
 :param index: data matrix index (long type in Python)
 
-:return: true if value is no data
+:return: ``True`` if value is no data
 
 .. seealso:: :py:func:`valueAndNoData`
 %End
@@ -235,7 +235,7 @@ Set value on position
 :param column: column index
 :param value: the value to be set
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
     bool setValue( qgssize index, double value );
@@ -245,7 +245,7 @@ Set value on index (indexed line by line)
 :param index: data matrix index (long type in Python)
 :param value: the value to be set
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
     bool setColor( int row, int column, QRgb color );
@@ -256,7 +256,7 @@ Set color on position
 :param column: column index
 :param color: the color to be set, QRgb value
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
     bool setColor( qgssize index, QRgb color );
@@ -266,7 +266,7 @@ Set color on index (indexed line by line)
 :param index: data matrix index (long type in Python)
 :param color: the color to be set, QRgb value
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
 
@@ -277,7 +277,7 @@ Set no data on pixel
 :param row: row index
 :param column: column index
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
     bool setIsNoData( qgssize index );
@@ -286,21 +286,21 @@ Set no data on pixel
 
 :param index: data matrix index (long type in Python)
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
     bool setIsNoData();
 %Docstring
 Set the whole block to no data
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
     bool setIsNoDataExcept( QRect exceptRect );
 %Docstring
 Set the whole block to no data except specified rectangle
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
     void setIsData( int row, int column );
@@ -375,7 +375,7 @@ Convert data to different type.
 
 :param destDataType: dest data type
 
-:return: true on success *
+:return: ``True`` on success
 %End
 
     QImage image() const;
@@ -387,7 +387,7 @@ Returns an image containing the block data, if the block's data type is color.
 %Docstring
 Sets the block data via an ``image``.
 
-:return: true on success
+:return: ``True`` on success
 %End
 
 

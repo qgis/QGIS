@@ -48,7 +48,7 @@ Constructor for QgsFilterLineEdit.
 
     bool showClearButton() const;
 %Docstring
-Returns true if the widget's clear button is visible.
+Returns ``True`` if the widget's clear button is visible.
 
 .. seealso:: :py:func:`setShowClearButton`
 
@@ -59,7 +59,7 @@ Returns true if the widget's clear button is visible.
 %Docstring
 Sets whether the widget's clear button is visible.
 
-:param visible: set to false to hide the clear button
+:param visible: set to ``False`` to hide the clear button
 
 .. seealso:: :py:func:`showClearButton`
 
@@ -111,7 +111,7 @@ Returns the string used for representating null values in the widget.
 Define if a search icon shall be shown on the left of the image
 when no text is entered
 
-:param visible: set to false to hide the search icon
+:param visible: set to ``False`` to hide the search icon
 
 .. versionadded:: 3.0
 %End
@@ -177,7 +177,7 @@ a null string.
 %Docstring
 Determine if the current text represents null.
 
-:return: True if the widget's value is null.
+:return: ``True`` if the widget's value is null.
 
 .. seealso:: :py:func:`nullValue`
 %End

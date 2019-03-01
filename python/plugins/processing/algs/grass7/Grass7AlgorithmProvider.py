@@ -44,6 +44,10 @@ pluginPath = os.path.normpath(os.path.join(
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
 
+    # Subclasses of `Grass7AlgorithmProvider` should override `descriptionFolder`
+    # and set its value to their own description folder.
+    descriptionFolder = Grass7Utils.grassDescriptionPath()
+
     def __init__(self):
         super().__init__()
         self.algs = []
@@ -99,7 +103,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
 
     def createAlgsList(self):
         algs = []
-        folder = Grass7Utils.grassDescriptionPath()
+        folder = self.descriptionFolder
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 try:

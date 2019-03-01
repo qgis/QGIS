@@ -50,7 +50,7 @@ class GUI_EXPORT QgsLayerTreeViewIndicator : public QObject
     void setToolTip( const QString &tip ) { mToolTip = tip; }
 
   signals:
-    //! Signal that is emitted when user clicks on the indicator
+    //! Emitted when user clicks on the indicator
     void clicked( const QModelIndex &index );
 
   private:

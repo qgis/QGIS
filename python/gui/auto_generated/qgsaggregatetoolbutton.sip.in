@@ -41,12 +41,12 @@ Based on the ``type`` of underlying data, some aggregates will be available or n
 
     void setActive( bool active );
 %Docstring
-When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+When this flag is ``False``, the aggregate will be deactivated. I.e. no aggregate is chosen.
 %End
 
     bool active() const;
 %Docstring
-When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+When this flag is ``False``, the aggregate will be deactivated. I.e. no aggregate is chosen.
 %End
 
     QString aggregate() const;

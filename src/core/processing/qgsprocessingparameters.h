@@ -74,7 +74,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
     QgsProperty source;
 
     /**
-     * True if only selected features in the source should be used by algorithms.
+     * TRUE if only selected features in the source should be used by algorithms.
      */
     bool selectedFeaturesOnly;
 
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     /**
      * Destination project. Can be set to a QgsProject instance in which
      * to automatically load the resulting sink/layer after completing processing.
-     * The default behavior is not to load the result into any project (nullptr).
+     * The default behavior is not to load the result into any project (NULLPTR).
      */
     QgsProject *destinationProject = nullptr;
 
@@ -294,9 +294,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QString type() const = 0;
 
     /**
-     * Returns true if this parameter represents a file or layer destination, e.g. parameters
+     * Returns TRUE if this parameter represents a file or layer destination, e.g. parameters
      * which are used for the destination for layers output by an algorithm will return
-     * true.
+     * TRUE.
      */
     virtual bool isDestination() const { return false; }
 
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     /**
      * Checks whether the specified \a input value is acceptable for the
-     * parameter. Returns true if the value can be accepted.
+     * parameter. Returns TRUE if the value can be accepted.
      * The optional \a context parameter can be specified to allow a more stringent
      * check to be performed, capable of checking for the presence of required
      * layers and other factors within the context.
@@ -428,14 +428,14 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QStringList dependsOnOtherParameters() const { return QStringList(); }
 
     /**
-     * Returns a pointer to the algorithm which owns this parameter. May be nullptr
+     * Returns a pointer to the algorithm which owns this parameter. May be NULLPTR
      * for non-owned parameters.
      * \see provider()
      */
     QgsProcessingAlgorithm *algorithm() const;
 
     /**
-     * Returns a pointer to the provider for the algorithm which owns this parameter. May be nullptr
+     * Returns a pointer to the provider for the algorithm which owns this parameter. May be NULLPTR
      * for non-owned parameters or algorithms.
      * \see algorithm()
      */
@@ -448,7 +448,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QString toolTip() const;
 
     /**
-     * Returns true if the parameter supports is dynamic, and can support data-defined values
+     * Returns TRUE if the parameter supports is dynamic, and can support data-defined values
      * (i.e. QgsProperty based values).
      * \see setIsDynamic()
      * \see dynamicPropertyDefinition()
@@ -570,7 +570,7 @@ class CORE_EXPORT QgsProcessingParameters
   public:
 
     /**
-     * Returns true if the parameter with matching \a name is a dynamic parameter, and must
+     * Returns TRUE if the parameter with matching \a name is a dynamic parameter, and must
      * be evaluated once for every input feature processed.
      */
     static bool isDynamic( const QVariantMap &parameters, const QString &name );
@@ -1284,7 +1284,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
 
     /**
      * Returns the fixed number of rows in the table. This parameter only has an
-     * effect if hasFixedNumberRows() is true.
+     * effect if hasFixedNumberRows() is TRUE.
      * \see setNumberRows()
      * \see setHasFixedNumberRows()
      */
@@ -1292,7 +1292,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
 
     /**
      * Sets the fixed number of \a rows in the table. This parameter only has an
-     * effect if hasFixedNumberRows() is true.
+     * effect if hasFixedNumberRows() is TRUE.
      * \see numberRows()
      * \see setHasFixedNumberRows()
      */
@@ -1708,7 +1708,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
     void setOptions( const QStringList &options );
 
     /**
-     * Returns true if the parameter allows multiple selected values.
+     * Returns TRUE if the parameter allows multiple selected values.
      * \see setAllowMultiple()
      */
     bool allowMultiple() const;
@@ -1762,7 +1762,7 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
 
     /**
-     * Returns true if the parameter allows multiline strings.
+     * Returns TRUE if the parameter allows multiline strings.
      * \see setMultiLine()
      */
     bool multiLine() const;
@@ -2131,7 +2131,7 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     /**
      * Constructor for QgsProcessingDestinationParameter.
      *
-     * If \a createByDefault is false and the parameter is \a optional, then the destination
+     * If \a createByDefault is FALSE and the parameter is \a optional, then the destination
      * output will not be created by default.
      */
     QgsProcessingDestinationParameter( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
@@ -2149,7 +2149,7 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 SIP_FACTORY;
 
     /**
-     * Returns true if the destination parameter supports non filed-based outputs,
+     * Returns TRUE if the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
      * \see setSupportsNonFileBasedOutput()
      */
@@ -2176,15 +2176,15 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     virtual QString generateTemporaryDestination() const;
 
     /**
-     * Returns true if the destination should be created by default. For optional parameters,
-     * a return value of false indicates that the destination should not be created by default.
+     * Returns TRUE if the destination should be created by default. For optional parameters,
+     * a return value of FALSE indicates that the destination should not be created by default.
      * \see setCreateByDefault()
      */
     bool createByDefault() const;
 
     /**
      * Sets whether the destination should be created by default. For optional parameters,
-     * a value of false indicates that the destination should not be created by default.
+     * a value of FALSE indicates that the destination should not be created by default.
      * \see createByDefault()
      */
     void setCreateByDefault( bool createByDefault );
@@ -2235,7 +2235,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     /**
      * Constructor for QgsProcessingParameterFeatureSink.
      *
-     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
      */
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
@@ -2268,8 +2268,8 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     QgsProcessing::SourceType dataType() const;
 
     /**
-     * Returns true if sink is likely to include geometries. In cases were presence of geometry
-     * cannot be reliably determined in advance, this method will default to returning true.
+     * Returns TRUE if sink is likely to include geometries. In cases were presence of geometry
+     * cannot be reliably determined in advance, this method will default to returning TRUE.
      */
     bool hasGeometry() const;
 
@@ -2311,7 +2311,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
     /**
      * Constructor for QgsProcessingParameterVectorDestination.
      *
-     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
      */
     QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
@@ -2344,8 +2344,8 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
     QgsProcessing::SourceType dataType() const;
 
     /**
-     * Returns true if the created layer is likely to include geometries. In cases were presence of geometry
-     * cannot be reliably determined in advance, this method will default to returning true.
+     * Returns TRUE if the created layer is likely to include geometries. In cases were presence of geometry
+     * cannot be reliably determined in advance, this method will default to returning TRUE.
      */
     bool hasGeometry() const;
 
@@ -2383,7 +2383,7 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     /**
      * Constructor for QgsProcessingParameterRasterDestination.
      *
-     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
      */
     QgsProcessingParameterRasterDestination( const QString &name, const QString &description = QString(),
@@ -2429,7 +2429,7 @@ class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDe
     /**
      * Constructor for QgsProcessingParameterFileDestination.
      *
-     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
      */
     QgsProcessingParameterFileDestination( const QString &name, const QString &description = QString(),

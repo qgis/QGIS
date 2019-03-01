@@ -139,7 +139,7 @@ this ID a new algorithm will be added to the model and returned.
     bool removeChildAlgorithm( const QString &id );
 %Docstring
 Attempts to remove the child algorithm with matching ``id``.
-Returns true if the algorithm could be removed, or false
+Returns ``True`` if the algorithm could be removed, or ``False``
 if the algorithm could not be removed (e.g. due to other
 child algorithms depending on it).
 
@@ -161,7 +161,7 @@ algorithm will also be deactivated.
 %Docstring
 Attempts to activate the child algorithm with matching ``id``.
 If any child algorithms on which the child depends are not active,
-then the child will not be activated and false will be returned.
+then the child will not be activated and ``False`` will be returned.
 
 .. seealso:: :py:func:`deactivateChildAlgorithm`
 %End
@@ -214,7 +214,7 @@ is deleted.
 
     bool childAlgorithmsDependOnParameter( const QString &name ) const;
 %Docstring
-Returns true if any child algorithms depend on the model parameter
+Returns ``True`` if any child algorithms depend on the model parameter
 with the specified ``name``.
 
 .. seealso:: :py:func:`otherParametersDependOnParameter`
@@ -222,7 +222,7 @@ with the specified ``name``.
 
     bool otherParametersDependOnParameter( const QString &name ) const;
 %Docstring
-Returns true if any other model parameters depend on the parameter
+Returns ``True`` if any other model parameters depend on the parameter
 with the specified ``name`` (e.g. field parameters where ``name``
 is the parent layer parameter).
 
@@ -417,6 +417,30 @@ algorithm ``results`` must be passed.
 Creates a new expression context scope for a child algorithm within the model.
 
 .. seealso:: :py:func:`variablesForChildAlgorithm`
+%End
+
+    QVariantMap variables() const;
+%Docstring
+Returns the map of custom expression context variables defined for this model.
+
+These variables are added to the model's expression context scope, allowing for preset
+"constant" expression variables to be utilized within the model.
+
+.. seealso:: :py:func:`setVariables`
+
+.. versionadded:: 3.8
+%End
+
+    void setVariables( const QVariantMap &variables );
+%Docstring
+Sets the map of custom expression context ``variables`` for this model.
+
+These variables are added to the model's expression context scope, allowing for preset
+"constant" expression variables to be utilized within the model.
+
+.. seealso:: :py:func:`variables`
+
+.. versionadded:: 3.8
 %End
 
   protected:

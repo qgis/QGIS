@@ -167,7 +167,7 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
     /**
      * Triggered after remote content (i.e. HTTP linked content at the given \a url) has been fetched.
      *
-     * The \a success argument will be true if the content was successfully fetched, or false if
+     * The \a success argument will be TRUE if the content was successfully fetched, or FALSE if
      * it was not fetched successfully.
      */
     virtual void onRemoteContentFetched( const QString &url, bool success );

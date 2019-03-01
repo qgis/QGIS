@@ -339,7 +339,7 @@ struct QgsWmtsTileMatrix
 
   /**
    * Returns range of tiles that intersects with the view extent
-   * (tml may be null)
+   * (\a tml may be NULLPTR)
    */
   void viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits *tml, int &col0, int &row0, int &col1, int &row1 ) const;
 
@@ -423,6 +423,7 @@ struct QgsWmtsTileLayer
   QStringList formats;
   QStringList infoFormats;
   QString defaultStyle;
+  int dpi = -1;   //!< DPI of the tile layer (-1 for unknown DPI)
   //! available dimensions (optional, for multi-dimensional data)
   QHash<QString, QgsWmtsDimension> dimensions;
   QHash<QString, QgsWmtsStyle> styles;
@@ -639,7 +640,7 @@ class QgsWmsCapabilities
     /**
      * \brief   Returns a list of the supported layers of the WMS server
      *
-     * \retval The list of layers will be placed here.
+     * \returns The list of layers will be placed here.
      *
      * \todo Document this better
      */
@@ -656,7 +657,7 @@ class QgsWmsCapabilities
     /**
      * \brief   Returns a list of the supported tile layers of the WMS server
      *
-     * \retval The list of tile sets will be placed here.
+     * \returns The list of tile sets will be placed here.
      */
     QList<QgsWmtsTileLayer> supportedTileLayers() const { return mTileLayersSupported; }
 

@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLabelSearchTree
 
     /**
      * Inserts label position. Does not take ownership of labelPos
-     * \returns true in case of success
+     * \returns TRUE in case of success
      * \note not available in Python bindings
      */
     bool insertLabel( pal::LabelPosition *labelPos, int featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString() ) SIP_SKIP;

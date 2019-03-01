@@ -156,7 +156,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     QStringList joinFieldNamesBlackList() const { return mBlackList; }
 
     /**
-     * Returns true if blacklisted fields is not empty or if a subset of names
+     * Returns TRUE if blacklisted fields is not empty or if a subset of names
      * has been set.
      *
      * \since QGIS 3.0
@@ -182,13 +182,24 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     }
 
     /**
-     * Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
-      \since QGIS 2.6 */
+     * Sets the subset of fields to be used from joined layer.
+     *
+     * Ownership of \a fileNamesSubset is transferred. A \a fieldNameSubset of NULLPTR indicates that all fields should be used.
+     *
+     * \see joinFieldNamesSubset()
+     * \since QGIS 2.6
+    */
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset SIP_TRANSFER ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
 
     /**
-     * Gets subset of fields to be used from joined layer. All fields will be used if null is returned.
-      \since QGIS 2.6 */
+     * Returns the subset of fields to be used from joined layer.
+     *
+     * All fields will be used if NULLPTR is returned.
+     *
+     * \see setJoinFieldNamesSubset()
+     *
+     * \since QGIS 2.6
+    */
     QStringList *joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
 
   protected:

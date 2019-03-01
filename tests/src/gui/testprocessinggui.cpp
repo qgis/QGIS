@@ -254,9 +254,9 @@ void TestProcessingGui::testSetGetConfig()
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
     std::unique_ptr<QgsProcessingAlgorithmConfigurationWidget> configWidget( QgsGui::instance()->processingGuiRegistry()->algorithmConfigurationWidget( algorithm ) );
-
     if ( configWidget )
     {
+      QCOMPARE( configWidget->algorithm(), algorithm );
       const QVariantMap defaultConfig = configWidget->configuration();
       configWidget->setConfiguration( defaultConfig );
       const QVariantMap defaultControlConfig = configWidget->configuration();

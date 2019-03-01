@@ -127,7 +127,7 @@ Number of features in the layer
 
     virtual bool empty() const;
 %Docstring
-Returns true if the layer contains at least one feature.
+Returns ``True`` if the layer contains at least one feature.
 
 .. versionadded:: 3.4
 %End
@@ -216,7 +216,7 @@ but subclasses can override this method to handoff calculation of aggregates to 
 :param index: the index of the attribute to calculate aggregate over
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for filter
-:param ok: will be set to true if calculation was successfully performed by the data provider
+:param ok: will be set to ``True`` if calculation was successfully performed by the data provider
 :param fids: List of feature Id to perform the aggregation on a subset
 
 :return: calculated aggregate value
@@ -241,7 +241,7 @@ Deletes one or more features from the provider. This requires the DeleteFeatures
 
 :param id: list containing feature ids to delete
 
-:return: true in case of success and false in case of failure
+:return: ``True`` in case of success and ``False`` in case of failure
 
 .. seealso:: :py:func:`truncate`
 %End
@@ -251,7 +251,7 @@ Deletes one or more features from the provider. This requires the DeleteFeatures
 Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
 Providers with the FastTruncate capability will use an optimised method to truncate the layer.
 
-:return: true in case of success and false in case of failure.
+:return: ``True`` in case of success and ``False`` in case of failure.
 
 .. seealso:: :py:func:`deleteFeatures`
 
@@ -262,7 +262,7 @@ Providers with the FastTruncate capability will use an optimised method to trunc
 %Docstring
 Cancels the current reloading of data.
 
-:return: true if the reloading has been correctly interrupted, false otherwise
+:return: ``True`` if the reloading has been correctly interrupted, ``False`` otherwise
 
 .. seealso:: :py:func:`reloadData`
 
@@ -271,7 +271,7 @@ Cancels the current reloading of data.
 
     virtual bool addAttributes( const QList<QgsField> &attributes );
 %Docstring
-Adds new ``attributes`` to the provider. Returns true in case of success and false in case of failure.
+Adds new ``attributes`` to the provider. Returns ``True`` in case of success and ``False`` in case of failure.
 If attributes are added using this method then QgsVectorLayer.updateFields() must be called
 manually to ensure that the layer's field are correctly reported.
 %End
@@ -284,7 +284,7 @@ manually to ensure that the layer's field are correctly reported.
 
 :param attributes: a set containing indices of attributes
 
-:return: true in case of success and false in case of failure
+:return: ``True`` in case of success and ``False`` in case of failure
 %End
 
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
@@ -295,7 +295,7 @@ manually to ensure that the layer's field are correctly reported.
 
 :param renamedAttributes: map of attribute index to new attribute name
 
-:return: true in case of success and false in case of failure
+:return: ``True`` in case of success and ``False`` in case of failure
 
 .. versionadded:: 2.16
 %End
@@ -307,7 +307,7 @@ succeed if the provider reports the ChangeAttributeValues capability.
 
 :param attr_map: a map containing changed attributes
 
-:return: true in case of success and false in case of failure
+:return: ``True`` in case of success and ``False`` in case of failure
 %End
 
     virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
@@ -323,7 +323,7 @@ capability implement an optimised version of this method.
                      that will have their geometries changed.
                      The second map parameter being the new geometries themselves
 
-:return: true in case of success and false in case of failure
+:return: ``True`` in case of success and ``False`` in case of failure
 %End
 
     virtual QVariant defaultValue( int fieldIndex ) const;
@@ -363,7 +363,7 @@ field index.
 
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
 %Docstring
-Returns true if a constraint check should be skipped for a specified field (e.g., if
+Returns ``True`` if a constraint check should be skipped for a specified field (e.g., if
 the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
 passed which can help refine the skip constraint check.
 
@@ -380,14 +380,14 @@ Changes geometries of existing features
                      that will have their geometries changed.
                      The second map parameter being the new geometries themselves
 
-:return: True in case of success and false in case of failure
+:return: ``True`` in case of success and ``False`` in case of failure
 %End
 
     virtual bool createSpatialIndex();
 %Docstring
 Creates a spatial index on the datasource (if supported by the provider type).
 
-:return: true in case of success
+:return: ``True`` in case of success
 %End
 
     virtual bool createAttributeIndex( int field );
@@ -469,7 +469,7 @@ Returns the names of the supported types
 
     virtual bool doesStrictFeatureTypeCheck() const;
 %Docstring
-Returns true if the provider is strict about the type of inserted features
+Returns ``True`` if the provider is strict about the type of inserted features
 (e.g. no multipolygon in a polygon layer)
 %End
 
@@ -495,14 +495,14 @@ Gets recorded errors
 
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
 %Docstring
-It returns false by default.
-Must be implemented by providers that support saving and loading styles to db returning true
+It returns ``False`` by default.
+Must be implemented by providers that support saving and loading styles to db returning ``True``
 %End
 
     virtual bool isDeleteStyleFromDatabaseSupported() const;
 %Docstring
-It returns false by default.
-Must be implemented by providers that support delete styles from db returning true
+It returns ``False`` by default.
+Must be implemented by providers that support delete styles from db returning ``True``
 %End
 
     virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
@@ -517,7 +517,7 @@ When called with an empty ``configuration`` map the provider's default renderer 
 This method returns a new renderer and the caller takes ownership of the returned object.
 
 Only providers which report the CreateRenderer capability will return a feature renderer. Other
-providers will return None.
+providers will return ``None``.
 
 .. versionadded:: 3.2
 %End
@@ -534,7 +534,7 @@ When called with an empty ``configuration`` map the provider's default labeling 
 This method returns a new labeling settings and the caller takes ownership of the returned object.
 
 Only providers which report the CreateLabeling capability will return labeling settings. Other
-providers will return None.
+providers will return ``None``.
 
 .. versionadded:: 3.6
 %End
@@ -600,9 +600,9 @@ Gets the translated metadata value.
 
     virtual bool hasMetadata() const;
 %Docstring
-Returns true if the data source has metadata, false otherwise.
+Returns ``True`` if the data source has metadata, ``False`` otherwise.
 
-:return: true if data source has metadata, false otherwise.
+:return: ``True`` if data source has metadata, ``False`` otherwise.
 
 .. versionadded:: 3.0
 %End
@@ -644,7 +644,7 @@ For general debug information use QgsMessageLog.logMessage() instead.
 %Docstring
 Converts the geometry to the provider type if possible / necessary
 
-:return: the converted geometry or None if no conversion was necessary or possible
+:return: the converted geometry or ``None`` if no conversion was necessary or possible
 %End
 
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );

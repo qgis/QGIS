@@ -105,7 +105,7 @@ Returns the friendly display name for the item.
 
     void setEnabled( bool enabled );
 %Docstring
-Controls whether the item will be drawn. Set ``enabled`` to true to enable drawing of the item.
+Controls whether the item will be drawn. Set ``enabled`` to ``True`` to enable drawing of the item.
 
 .. seealso:: :py:func:`enabled`
 %End
@@ -119,7 +119,7 @@ Returns whether the item will be drawn.
 
     virtual bool usesAdvancedEffects() const;
 %Docstring
-Returns true if the item is drawn using advanced effects, such as blend modes.
+Returns ``True`` if the item is drawn using advanced effects, such as blend modes.
 %End
 
     StackingPosition stackingPosition() const;
@@ -219,7 +219,7 @@ Returns the number of items in the stack.
     virtual bool writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores the state of the item stack in a DOM node, where ``element`` is the DOM element corresponding to a 'LayoutMap' tag.
-Returns true if write was successful.
+Returns ``True`` if write was successful.
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -227,7 +227,7 @@ Returns true if write was successful.
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring
 Sets the item stack's state from a DOM document, where ``element`` is a DOM node corresponding to a 'LayoutMap' tag.
-Returns true if read was successful.
+Returns ``True`` if read was successful.
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -247,8 +247,8 @@ map item after restoration from XML.
 %Docstring
 Draws the items from the stack on a specified ``painter``.
 
-If ``ignoreStacking`` is true, then all items will be drawn, regardless
-of their actual stacking position settings. If it is false, only items
+If ``ignoreStacking`` is ``True``, then all items will be drawn, regardless
+of their actual stacking position settings. If it is ``False``, only items
 which are set to stack above the map item will be drawn.
 %End
 

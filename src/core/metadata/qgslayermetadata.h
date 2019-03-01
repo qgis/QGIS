@@ -106,7 +106,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
         /**
          * Temporal extents of the resource. Use QgsDateTimeRange::isInstant() to determine
          * whether the temporal extent is a range or a single point in time.
-         * If QgsDateTimeRange::isInfinite() returns true then the temporal extent
+         * If QgsDateTimeRange::isInfinite() returns TRUE then the temporal extent
          * is considered to be indeterminate and continuous.
          * \see setTemporalExtents()
          */

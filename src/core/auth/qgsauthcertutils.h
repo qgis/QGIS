@@ -168,7 +168,7 @@ class CORE_EXPORT QgsAuthCertUtils
     /**
      * Determine if the PEM-encoded text of a key is PKCS#8 format
      * \param keyPemTxt PEM-encoded text
-     * \returns True if PKCS#8, otherwise false
+     * \returns TRUE if PKCS#8, otherwise FALSE
      */
     static bool pemIsPkcs8( const QString &keyPemTxt );
 
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsAuthCertUtils
     /**
      * \brief certIsViable checks for viability errors of \a cert and whether it is NULL
      * \param cert certificate to be checked
-     * \return false if cert is NULL or has viability errors
+     * \return FALSE if cert is NULL or has viability errors
      */
     static bool certIsViable( const QSslCertificate &cert );
 
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \brief validateCertChain validates the given \a certificateChain
      * \param certificateChain list of certificates to be checked, with leaf first and with optional root CA last
      * \param hostName (optional) name of the host to be verified
-     * \param trustRootCa if true the CA will be added to the trusted CAs for this validation check
+     * \param trustRootCa if TRUE the CA will be added to the trusted CAs for this validation check
      * \return list of QSslError, if the list is empty then the cert chain is valid
      */
     static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
@@ -364,9 +364,9 @@ class CORE_EXPORT QgsAuthCertUtils
      * \brief validatePKIBundle validate the PKI bundle by checking the certificate chain, the
      * expiration and effective dates, optionally trusts the root CA
      * \param bundle
-     * \param useIntermediates if true the intermediate certs are also checked
-     * \param trustRootCa if true the CA will be added to the trusted CAs for this validation check (if useIntermediates is false)
-     * this option is ignored and set to false
+     * \param useIntermediates if TRUE the intermediate certs are also checked
+     * \param trustRootCa if TRUE the CA will be added to the trusted CAs for this validation check (if useIntermediates is FALSE)
+     * this option is ignored and set to FALSE
      * \return a list of error strings, if the list is empty then the PKI bundle is valid
      */
     static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool trustRootCa = false );

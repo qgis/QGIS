@@ -45,15 +45,15 @@ size, and then the result cached for subsequent lookups.
 
 The ``size`` parameter dictates the target size of the image. An invalid size indicates the
 original raster image size (with no resampling). A size in which the width or height is
-set to zero will have the zeroed value automatically computed when keepAspectRatio is true.
+set to zero will have the zeroed value automatically computed when keepAspectRatio is ``True``.
 
-If ``keepAspectRatio`` is true, then the original raster aspect ratio will be maintained during
+If ``keepAspectRatio`` is ``True``, then the original raster aspect ratio will be maintained during
 any resampling operations.
 
 An ``opacity`` parameter dictates the opacity of the image.
 
 If the resultant raster was of a sufficiently small size to store in the cache, then ``fitsInCache``
-will be set to true.
+will be set to ``True``.
 %End
 
     QSize originalSize( const QString &path ) const;

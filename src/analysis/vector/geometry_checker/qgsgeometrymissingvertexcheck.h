@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
     enum ResolutionMethod
     {
       NoChange, //!< Do nothing
-      AddMissingVertex //! Add the missing vertex
+      AddMissingVertex //!< Add the missing vertex
     };
     Q_ENUM( ResolutionMethod )
 

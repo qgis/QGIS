@@ -90,7 +90,7 @@ The relation for which this wrapper is created.
 %Docstring
 Sets the visibility of the wrapper's widget.
 
-:param visible: set to true to show widget, false to hide widget
+:param visible: set to ``True`` to show widget, ``False`` to hide widget
 
 .. versionadded:: 2.16
 %End

@@ -407,12 +407,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
         , readExtentFromXml( readExtentFromXml )
       {}
 
-      //! Sets to true if the default layer style should be loaded
+      //! Set to TRUE if the default layer style should be loaded
       bool loadDefaultStyle = true;
 
       /**
-       * If true, the layer extent will be read from XML (i.e. stored in the
-       * project file). If false, the extent will be determined by the provider on layer load.
+       * If TRUE, the layer extent will be read from XML (i.e. stored in the
+       * project file). If FALSE, the extent will be determined by the provider on layer load.
        */
       bool readExtentFromXml = false;
 
@@ -506,12 +506,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Joins another vector layer to this layer
       \param joinInfo join object containing join layer id, target and source field
-      \note since 2.6 returns bool indicating whether the join can be added */
+      \note since 2.6 returns bool indicating whether the join can be added
+    */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /**
      * Removes a vector layer join
-      \returns true if join was found and successfully removed */
+     * \returns TRUE if join was found and successfully removed
+    */
     bool removeJoin( const QString &joinLayerId );
 
     /**
@@ -526,7 +528,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see dependencies()
      *
      * \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
-     * \returns false if a dependency cycle has been detected
+     * \returns FALSE if a dependency cycle has been detected
      * \since QGIS 3.0
      */
     bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) FINAL;
@@ -712,7 +714,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns whether the layer contains labels which are enabled and should be drawn.
-     * \returns true if layer contains enabled labels
+     * \returns TRUE if layer contains enabled labels
      *
      * \see setLabelsEnabled()
      * \since QGIS 2.9
@@ -722,7 +724,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Sets whether labels should be \a enabled for the layer.
      *
-     * \note Labels will only be rendered if labelsEnabled() is true and a labeling
+     * \note Labels will only be rendered if labelsEnabled() is TRUE and a labeling
      * object is returned by labeling().
      *
      * \see labelsEnabled()
@@ -732,7 +734,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns whether the layer contains diagrams which are enabled and should be drawn.
-     * \returns true if layer contains enabled diagrams
+     * \returns TRUE if layer contains enabled diagrams
      * \since QGIS 2.9
      */
     bool diagramsEnabled() const;
@@ -822,7 +824,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Delete a style from the database
      * \param styleId the provider's layer_styles table id of the style to delete
      * \param msgError reference to string that will be updated with any error messages
-     * \returns true in case of success
+     * \returns TRUE in case of success
      * \since QGIS 3.0
      */
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
@@ -830,15 +832,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Load a named style from file/local db/datasource db
      * \param theURI the URI of the style or the URI of the layer
-     * \param resultFlag will be set to true if a named style is correctly loaded
-     * \param loadFromLocalDb if true forces to load from local db instead of datasource one
+     * \param resultFlag will be set to TRUE if a named style is correctly loaded
+     * \param loadFromLocalDb if TRUE forces to load from local db instead of datasource one
      * \param categories the style categories to be loaded.
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
                                     QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     /**
-     * Calls loadNamedStyle( theURI, resultFlag, false );
+     * Calls loadNamedStyle( theURI, resultFlag, FALSE );
      * Retained for backward compatibility
      */
     QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT,
@@ -846,14 +848,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Loads the auxiliary layer for this vector layer. If there's no
-     * corresponding table in the database, then nothing happens and false is
+     * corresponding table in the database, then nothing happens and FALSE is
      * returned. The key is optional because if this layer has been read from
      * a XML document, then the key read in this document is used by default.
      *
      * \param storage The auxiliary storage where to look for the table
      * \param key The key to use for joining.
      *
-     * \returns true if the auxiliary layer is well loaded, false otherwise
+     * \returns TRUE if the auxiliary layer is well loaded, FALSE otherwise
      *
      * \since QGIS 3.0
      */
@@ -890,7 +892,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
      * \param categories the style categories to be read
-     * \returns true in case of success.
+     * \returns TRUE in case of success.
      */
     bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) FINAL;
@@ -901,7 +903,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
      * \param categories the style categories to be read
-     * \returns true in case of success.
+     * \returns TRUE in case of success.
      */
     bool readStyle( const QDomNode &node, QString &errorMessage,
                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) FINAL;
@@ -913,7 +915,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \param categories the style categories to be written
-     *  \returns true in case of success.
+     *  \returns TRUE in case of success.
      */
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                          const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const FINAL;
@@ -925,7 +927,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \param categories the style categories to be written
-     *  \returns true in case of success.
+     *  \returns TRUE in case of success.
      */
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const FINAL;
@@ -936,7 +938,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param doc the document that will have the QDomNode added.
      * \param errorMessage reference to string that will be updated with any error messages
      * \param props a open ended set of properties that can drive/inform the SLD encoding
-     * \returns true in case of success
+     * \returns TRUE in case of success
      */
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 
@@ -967,7 +969,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param dataSource new layer data source
      * \param baseName base name of the layer
      * \param provider provider string
-     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
      * data source
      * \since QGIS 2.10
      * \deprecated Use version with ProviderOptions argument instead
@@ -981,7 +983,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param baseName base name of the layer
      * \param provider provider string
      * \param options provider options
-     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
      * data source
      * \see dataSourceChanged()
      * \since QGIS 3.2
@@ -997,7 +999,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * notified when the freshly updated feature counts are ready.
      * \param wait wait for the features to be counter or put the action on the stack
      * \note If the count features for symbols has been already done a
-     *       nullptr is returned. If you need to wait for the results,
+     *       NULLPTR is returned. If you need to wait for the results,
      *       you can call waitForFinished() on the feature counter.
      *
      * \since This is asynchronous since QGIS 3.0
@@ -1009,7 +1011,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param subset The subset string. This may be the where clause of a sql statement
      *               or other definition string specific to the underlying dataprovider
      *               and data store.
-     * \returns true, when setting the subset string was successful, false otherwise
+     * \returns TRUE, when setting the subset string was successful, FALSE otherwise
      */
     virtual bool setSubsetString( const QString &subset );
 
@@ -1074,10 +1076,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * with matching QgsFeature::id() with the attributes and geometry from \a feature.
      * Changes are not immediately committed to the layer.
      *
-     * If \a skipDefaultValue is set to true, default field values will not
+     * If \a skipDefaultValue is set to TRUE, default field values will not
      * be updated. This can be used to override default field value expressions.
      *
-     * Returns true if the feature's attribute was successfully changed.
+     * Returns TRUE if the feature's attribute was successfully changed.
      *
      * \note Calls to updateFeature() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1158,7 +1160,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Deletes the selected features
-     *  \returns true in case of success and false otherwise
+     *  \returns TRUE in case of success and FALSE otherwise
      */
     bool deleteSelectedFeatures( int *deletedCount = nullptr );
 
@@ -1265,7 +1267,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Splits parts cut by the given line
      *  \param splitLine line that splits the layer features
-     *  \param topologicalEditing true if topological editing is enabled
+     *  \param topologicalEditing TRUE if topological editing is enabled
      *  \returns QgsGeometry::OperationResult
      * - Success
      * - NothingHappened
@@ -1284,7 +1286,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Splits features cut by the given line
      *  \param splitLine line that splits the layer features
-     *  \param topologicalEditing true if topological editing is enabled
+     *  \param topologicalEditing TRUE if topological editing is enabled
      *  \returns QgsGeometry::OperationResult
      * - Success
      * - NothingHappened
@@ -1328,7 +1330,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Access to const labeling configuration. May be null if labeling is not used.
-     * \note Labels will only be rendered if labelsEnabled() returns true.
+     * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
      * \since QGIS 3.0
      */
@@ -1336,7 +1338,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Access to labeling configuration. May be null if labeling is not used.
-     * \note Labels will only be rendered if labelsEnabled() returns true.
+     * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
      * \since QGIS 3.0
      */
@@ -1348,18 +1350,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling SIP_TRANSFER );
 
-    //! Returns true if the provider is in editing mode
+    //! Returns TRUE if the provider is in editing mode
     bool isEditable() const FINAL;
 
-    //! Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
+    //! Returns TRUE if this is a geometry layer and FALSE in case of NoGeometry (table only) or UnknownGeometry
     bool isSpatial() const FINAL;
 
-    //! Returns true if the provider has been modified since the last commit
+    //! Returns TRUE if the provider has been modified since the last commit
     virtual bool isModified() const;
 
     /**
-     * Returns true if the field comes from the auxiliary layer,
-     * false otherwise.
+     * Returns TRUE if the field comes from the auxiliary layer,
+     * FALSE otherwise.
      *
      * \since QGIS 3.0
      */
@@ -1398,12 +1400,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns feature count including changes which have not yet been committed
      * If you need only the count of committed features call this method on this layer's provider.
+     * \returns the number of features on this layer or -1 if unknown.
      */
     long featureCount() const FINAL;
 
     /**
      * Make layer read-only (editing disabled) or not
-     * \returns false if the layer is in editing yet
+     * \returns FALSE if the layer is in editing yet
      */
     bool setReadOnly( bool readonly = true );
 
@@ -1412,10 +1415,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * (but does not immediately commit the changes). The \a fid argument
      * specifies the ID of the feature to be changed.
      *
-     * If \a skipDefaultValue is set to true, default field values will not
+     * If \a skipDefaultValue is set to TRUE, default field values will not
      * be updated. This can be used to override default field value expressions.
      *
-     * Returns true if the feature's geometry was successfully changed.
+     * Returns TRUE if the feature's geometry was successfully changed.
      *
      * \note Calls to changeGeometry() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1444,10 +1447,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * retrieved and used. Note that this involves a feature request to the underlying data provider,
      * so it is more efficient to explicitly pass an \a oldValue if it is already available.
      *
-     * If \a skipDefaultValues is set to true, default field values will not
+     * If \a skipDefaultValues is set to TRUE, default field values will not
      * be updated. This can be used to override default field value expressions.
      *
-     * Returns true if the feature's attribute was successfully changed.
+     * Returns TRUE if the feature's attribute was successfully changed.
      *
      * \note Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1476,11 +1479,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * request to the underlying data provider, so it is more efficient to
      * explicitly pass an oldValue if it is already available.
      *
-     * If \a skipDefaultValues is set to true, default field values will not
+     * If \a skipDefaultValues is set to TRUE, default field values will not
      * be updated. This can be used to override default field value
      * expressions.
      *
-     * Returns true if feature's attributes was successfully changed.
+     * Returns TRUE if feature's attributes was successfully changed.
      *
      * \note Calls to changeAttributeValues() are only valid for layers in
      * which edits have been enabled by a call to startEditing(). Changes made
@@ -1500,7 +1503,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Add an attribute field (but does not commit it)
-     * returns true if the field was added
+     * returns TRUE if the field was added
      *
      * \note Calls to addAttribute() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1583,7 +1586,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Deletes a list of attribute fields (but does not commit it)
      *
      * \param  attrs the indices of the attributes to delete
-     * \returns true if at least one attribute has been deleted
+     * \returns TRUE if at least one attribute has been deleted
      *
      */
     bool deleteAttributes( const QList<int> &attrs );
@@ -1604,7 +1607,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Deletes a set of features from the layer (but does not commit it)
      * \param fids The feature ids to delete
      *
-     * \returns false if the layer is not in edit mode or does not support deleting
+     * \returns FALSE if the layer is not in edit mode or does not support deleting
      *         in case of an active transaction depends on the provider implementation
      *
      * \note Calls to deleteFeatures() are only valid for layers in which edits have been enabled
@@ -1618,7 +1621,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Attempts to commit to the underlying data provider any buffered changes made since the
      * last to call to startEditing().
      *
-     * Returns the result of the attempt. If a commit fails (i.e. false is returned), the
+     * Returns the result of the attempt. If a commit fails (i.e. FALSE is returned), the
      * in-memory changes are left untouched and are not discarded. This allows editing to
      * continue if the commit failed on e.g. a disallowed value in a Postgres
      * database - the user can re-edit and try again.
@@ -1646,7 +1649,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Stops a current editing operation and discards any uncommitted edits.
      *
-     * If \a deleteBuffer is true the editing buffer will be completely deleted (the default
+     * If \a deleteBuffer is TRUE the editing buffer will be completely deleted (the default
      * behavior).
      *
      * \see startEditing()
@@ -1880,7 +1883,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * \param parameters parameters controlling aggregate calculation
      * \param context expression context for expressions and filters
-     * \param ok if specified, will be set to true if aggregate calculation was successful
+     * \param ok if specified, will be set to TRUE if aggregate calculation was successful
      * \param fids List of feature Id to perform the aggregation on a subset
      * \returns calculated aggregate value
      * \since QGIS 2.16
@@ -2012,8 +2015,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setReadExtentFromXml( bool readExtentFromXml );
 
     /**
-     * Returns true if the extent is read from the XML document when data
-     * source has no metadata, false if it's the data provider which determines
+     * Returns TRUE if the extent is read from the XML document when data
+     * source has no metadata, FALSE if it's the data provider which determines
      * it.
      *
      * \since QGIS 3.0
@@ -2035,7 +2038,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsGeometryOptions *geometryOptions() const;
 
     /**
-     * Controls, if the layer is allowed to commit changes. If this is set to false
+     * Controls, if the layer is allowed to commit changes. If this is set to FALSE
      * it will not be possible to commit changes on this layer. This can be used to
      * define checks on a layer that need to be pass before the layer can be saved.
      * If you use this API, make sure that:
@@ -2043,7 +2046,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  - the user is visibly informed that his changes were not saved and what he needs
      *    to do in order to be able to save the changes.
      *
-     *  - to set the property back to true, once the user has fixed his data.
+     *  - to set the property back to TRUE, once the user has fixed his data.
      *
      * When calling \see commitChanges(), this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
@@ -2055,7 +2058,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool allowCommit() const SIP_SKIP;
 
     /**
-     * Controls, if the layer is allowed to commit changes. If this is set to false
+     * Controls, if the layer is allowed to commit changes. If this is set to FALSE
      * it will not be possible to commit changes on this layer. This can be used to
      * define checks on a layer that need to be pass before the layer can be saved.
      * If you use this API, make sure that:
@@ -2063,7 +2066,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  - the user is visibly informed that his changes were not saved and what he needs
      *    to do in order to be able to save the changes.
      *
-     *  - to set the property back to true, once the user has fixed his data.
+     *  - to set the property back to TRUE, once the user has fixed his data.
      *
      * When calling \see commitChanges(), this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
@@ -2123,7 +2126,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Update the extents for the layer. This is necessary if features are
      *  added/deleted or the layer has been subsetted.
      *
-     * \param force true to update layer extent even if it's read from xml by default, false otherwise
+     * \param force TRUE to update layer extent even if it's read from xml by default, FALSE otherwise
      */
     virtual void updateExtents( bool force = false );
 
@@ -2134,7 +2137,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * be made persistent until commitChanges() is called, and can be reverted by calling
      * rollBack().
      *
-     * Returns true if the layer was successfully made editable, or false if the operation
+     * Returns TRUE if the layer was successfully made editable, or FALSE if the operation
      * failed (e.g. due to an underlying read-only data source, or lack of edit support
      * by the backend data provider).
      *
@@ -2146,15 +2149,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
   signals:
 
     /**
-     * This signal is emitted when selection was changed
+     * Emitted when selection was changed
      *
      * \param selected        Newly selected feature ids
      * \param deselected      Ids of all features which have previously been selected but are not any more
-     * \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+     * \param clearAndSelect  In case this is set to TRUE, the old selection was dismissed and the new selection corresponds to selected
      */
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
-    //! This signal is emitted when modifications has been done on layer
+    //! Emitted when modifications has been done on layer
     void layerModified();
 
     /**
@@ -2164,26 +2167,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void allowCommitChanged();
 
-    //! Is emitted, when layer is checked for modifications. Use for last-minute additions
+    //! Emitted when the layer is checked for modifications. Use for last-minute additions.
     void beforeModifiedCheck() const;
 
-    //! Is emitted, before editing on this layer is started
+    //! Emitted before editing on this layer is started.
     void beforeEditingStarted();
 
-    //! Is emitted, when editing on this layer has started
+    //! Emitted when editing on this layer has started.
     void editingStarted();
 
-    //! Is emitted, when edited changes successfully have been written to the data provider
+    //! Emitted when edited changes have been successfully written to the data provider.
     void editingStopped();
 
-    //! Is emitted, before changes are committed to the data provider
+    //! Emitted before changes are committed to the data provider.
     void beforeCommitChanges();
 
-    //! Is emitted, before changes are rolled back
+    //! Emitted before changes are rolled back.
     void beforeRollBack();
 
     /**
-     * Is emitted, after changes are rolled back
+     * Emitted after changes are rolled back.
      * \since QGIS 3.4
      */
     void afterRollBack();
@@ -2253,7 +2256,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void featuresDeleted( const QgsFeatureIds &fids );
 
     /**
-     * Is emitted, whenever the fields available from this layer have been changed.
+     * Emitted whenever the fields available from this layer have been changed.
      * This can be due to manually adding attributes or due to a join.
      */
     void updatedFields();
@@ -2265,7 +2268,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void subsetStringChanged();
 
     /**
-     * Is emitted whenever an attribute value change is done in the edit buffer.
+     * Emitted whenever an attribute value change is done in the edit buffer.
      * Note that at this point the attribute change is not yet saved to the provider.
      *
      * \param fid The id of the changed feature
@@ -2275,7 +2278,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
     /**
-     * Is emitted whenever a geometry change is done in the edit buffer.
+     * Emitted whenever a geometry change is done in the edit buffer.
      * Note that at this point the geometry change is not yet saved to the provider.
      *
      * \param fid The id of the changed feature
@@ -2283,17 +2286,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geometry );
 
-    //! This signal is emitted, when attributes are deleted from the provider
+    //! Emitted when attributes are deleted from the provider
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
-    //! This signal is emitted, when attributes are added to the provider
+    //! Emitted when attributes are added to the provider
     void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
-    //! This signal is emitted, when features are added to the provider
+    //! Emitted when features are added to the provider
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
-    //! This signal is emitted, when features are deleted from the provider
+    //! Emitted when features are deleted from the provider
     void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );
-    //! This signal is emitted, when attribute value changes are saved to the provider
+    //! Emitted when attribute value changes are saved to the provider
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
-    //! This signal is emitted, when geometry changes are saved to the provider
+    //! Emitted when geometry changes are saved to the provider
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
 
     //! Emitted when the font family defined for labeling layer is not found on system
@@ -2413,7 +2416,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
 
     /**
-     * Returns true if the provider is in read-only mode
+     * Returns TRUE if the provider is in read-only mode
      */
     bool isReadOnly() const FINAL;
 
@@ -2514,7 +2517,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Layer opacity
     double mLayerOpacity = 1.0;
 
-    //! Flag if the vertex markers should be drawn only for selection (true) or for all features (false)
+    //! Flag if the vertex markers should be drawn only for selection (TRUE) or for all features (FALSE)
     bool mVertexMarkerOnlyForSelection = false;
 
     QStringList mCommitErrors;

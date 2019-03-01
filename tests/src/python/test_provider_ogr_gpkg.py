@@ -489,7 +489,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(errmsg, "")
         self.assertEqual(idlist, ['1', '3', '4', '2'])
         self.assertEqual(namelist, ['name', 'name2', 'name3', 'name_test2'])
-        self.assertEqual(desclist, ['description_bis', 'description2', 'description3', 'name_test2'])
+        self.assertEqual(desclist, ['description_bis', 'description2', 'description3', 'description_test2'])
 
         # Check that layers_style table is not list in subLayers()
         vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
@@ -1296,12 +1296,53 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def test_quote_identifier(self):
         """Regression #21100"""
 
-        tmpfile = os.path.join(self.basetestpath, 'bug21100-wierd_field_names.gpkg')  # spellok
-        shutil.copy(os.path.join(unitTestDataPath(''), 'bug21100-wierd_field_names.gpkg'), tmpfile) # spellok
+        tmpfile = os.path.join(self.basetestpath, 'bug_21100-wierd_field_names.gpkg')  # spellok
+        shutil.copy(os.path.join(unitTestDataPath(''), 'bug_21100-wierd_field_names.gpkg'), tmpfile) # spellok
         vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'foo', 'ogr')
         self.assertTrue(vl.isValid())
         for i in range(1, len(vl.fields())):
             self.assertEqual(vl.uniqueValues(i), {'a', 'b', 'c'})
+
+    def testGeopackageLayerMetadata(self):
+        """
+        Geopackage layer description and identifier should be read into layer metadata automatically
+        """
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageLayerMetadata.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('layer1', geom_type=ogr.wkbPoint)
+        lyr.SetMetadataItem('DESCRIPTION', "my desc")
+        lyr.SetMetadataItem('IDENTIFIER', "my title")  # see geopackage specs -- "'identifier' is analogous to 'title'"
+        lyr.CreateField(ogr.FieldDefn('attr', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "layer1", 'test', u'ogr')
+        self.assertTrue(vl1.isValid())
+        self.assertEqual(vl1.metadata().title(), 'my title')
+        self.assertEqual(vl1.metadata().abstract(), 'my desc')
+
+    def testUniqueValuesOnFidColumn(self):
+        """Test regression #21311 OGR provider returns an empty set for GPKG uniqueValues"""
+
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageUniqueValuesOnFidColumn.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 2,2 2,2 0,0 0))'))
+        f.SetField('str_field', 'two')
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+        vl1 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
+        self.assertTrue(vl1.isValid())
+        self.assertEqual(vl1.uniqueValues(0), {1, 2})
+        self.assertEqual(vl1.uniqueValues(1), {'one', 'two'})
 
 
 if __name__ == '__main__':

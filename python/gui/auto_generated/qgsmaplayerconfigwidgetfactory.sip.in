@@ -74,38 +74,38 @@ Set the title for the interface
     virtual bool supportsStyleDock() const;
 %Docstring
 Flag if widget is supported for use in style dock.
-The default implementation returns false.
+The default implementation returns ``False``.
 
-:return: True if supported
+:return: ``True`` if supported
 %End
 
     void setSupportsStyleDock( bool supports );
 %Docstring
 Set support flag for style dock
 
-:param supports: True if this widget is supported in the style dock.
+:param supports: ``True`` if this widget is supported in the style dock.
 %End
 
     virtual bool supportLayerPropertiesDialog() const;
 %Docstring
 Flag if widget is supported for use in layer properties dialog.
-The default implementation returns false.
+The default implementation returns ``False``.
 
-:return: True if supported
+:return: ``True`` if supported
 %End
 
     void setSupportLayerPropertiesDialog( bool supports );
 %Docstring
 Set support flag for style dock
 
-:param supports: True if this widget is supported in the style dock.
+:param supports: ``True`` if this widget is supported in the style dock.
 %End
 
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
 %Docstring
 Check if the layer is supported for this widget.
 
-:return: True if this layer is supported for this widget
+:return: ``True`` if this layer is supported for this widget
 %End
 
     virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent /TransferThis/ = 0 ) const = 0 /Factory/;
@@ -114,7 +114,7 @@ Factory function to create the widget on demand as needed by the dock.
 
 :param layer: The active layer in the dock.
 :param canvas: The map canvas.
-:param dockWidget: True of the widget will be shown a dock style widget.
+:param dockWidget: ``True`` of the widget will be shown a dock style widget.
 :param parent: The parent of the widget.
 
 :return: A new QgsMapStylePanel which is shown in the map style dock.

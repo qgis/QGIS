@@ -71,11 +71,42 @@ class CORE_EXPORT QgsVectorLayerUtils
     };
 
     /**
+     * \ingroup core
+     * \class QgsFeatureData
+     * \brief Encapsulate geometry and attributes for new features, to be passed to createFeatures
+     * \see createFeatures()
+     * \since QGIS 3.6
+     */
+    class CORE_EXPORT QgsFeatureData
+    {
+      public:
+
+        /**
+         * Constructs a new QgsFeatureData with given \a geometry and \a attributes
+         */
+        QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
+
+        //! Returns geometry
+        QgsGeometry geometry() const;
+
+        //! Returns attributes
+        QgsAttributeMap attributes() const;
+
+      private:
+        QgsGeometry mGeometry;
+        QgsAttributeMap mAttributes;
+    };
+
+    // SIP does not like "using", use legacy typedef
+    //! Alias for list of QgsFeatureData
+    typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
+
+    /**
      * Create a feature iterator for a specified field name or expression.
      * \param layer vector layer to retrieve values from
      * \param fieldOrExpression field name or an expression string
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
      * \returns feature iterator
      * \since QGIS 3.0
      */
@@ -85,9 +116,9 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Fetches all values from a specified field name or expression.
      * \param layer vector layer to retrieve values from
      * \param fieldOrExpression field name or an expression string
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
-     * \param feedback optional feedback object to allow cancelation
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
+     * \param feedback optional feedback object to allow cancellation
      * \returns list of fetched values
      * \see getDoubleValues
      * \since QGIS 3.0
@@ -99,10 +130,10 @@ class CORE_EXPORT QgsVectorLayerUtils
      * invalid expression results are skipped.
      * \param layer vector layer to retrieve values from
      * \param fieldOrExpression field name or an expression string evaluating to a double value
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
      * \param nullCount optional pointer to integer to store number of null values encountered in
-     * \param feedback optional feedback object to allow cancelation
+     * \param feedback optional feedback object to allow cancellation
      * \returns list of fetched values
      * \see getValues
      * \since QGIS 3.0
@@ -110,7 +141,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr );
 
     /**
-     * Returns true if the specified value already exists within a field. This method can be used to test for uniqueness
+     * Returns TRUE if the specified value already exists within a field. This method can be used to test for uniqueness
      * of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
      * with IDs within this list are ignored when testing for existence of the value.
      * \see createUniqueValue()
@@ -125,8 +156,16 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QVariant createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed = QVariant() );
 
     /**
+     * Returns a new attribute value for the specified field index which is guaranteed to
+     * be unique within regard to \a existingValues.
+     * The optional seed value can be used as a basis for generated values.
+     * \since QGIS 3.6
+     */
+    static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
+
+    /**
      * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
-     * Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
+     * Returns TRUE if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
     static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors SIP_OUT,
@@ -139,11 +178,23 @@ class CORE_EXPORT QgsVectorLayerUtils
      * passed for the new feature to copy as many attribute values as possible from the map,
      * assuming that they respect the layer's constraints. Note that the created feature is not
      * automatically inserted into the layer.
+     * \see createFeatures()
      */
     static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = nullptr );
+
+    /**
+     * Creates a set of new features ready for insertion into a layer. Default values and constraints
+     * (e.g., unique constraints) will automatically be handled. Note that the created features are not
+     * automatically inserted into the layer.
+     * \see createFeature()
+     * \since QGIS 3.6
+     */
+    static QgsFeatureList createFeatures( const QgsVectorLayer *layer,
+                                          const QgsFeaturesDataList &featuresData,
+                                          QgsExpressionContext *context = nullptr );
 
     /**
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
@@ -161,9 +212,9 @@ class CORE_EXPORT QgsVectorLayerUtils
      * thread is safe too.
      * This should be used in scenarios, where a ``QWeakPointer<QgsVectorLayer>`` is kept in a thread
      * and features should be fetched from this layer. Using the layer directly is not safe to do.
-     * The result will be ``nullptr`` if the layer has been deleted.
+     * The result will be ``NULLPTR`` if the layer has been deleted.
      * If \a feedback is specified, the call will return if the feedback is canceled.
-     * Returns a new feature source for the \a layer. The source may be a nullptr if the layer no longer
+     * Returns a new feature source for the \a layer. The source may be NULLPTR if the layer no longer
      * exists or if the feedback is canceled.
      *
      * \note Requires Qt >= 5.10 to make use of the thread-safe implementation

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.11
+import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.4 as Controls1
 import QgsQuick 0.1 as QgsQuick
@@ -25,101 +25,171 @@ import QgsQuick 0.1 as QgsQuick
  * Do not use directly from Application QML
  */
 Item {
-  signal valueChanged(var value, bool isNull)
+    signal valueChanged(var value, bool isNull)
 
-  height: childrenRect.height
-  anchors { right: parent.right; left: parent.left }
-
-  ColumnLayout {
-    id: main
-    property var currentValue: value
-
-    anchors { right: parent.right; left: parent.left }
-
-    Item {
-      anchors { right: parent.right; left: parent.left }
-      Layout.minimumHeight: 48 * QgsQuick.Utils.dp
-
-      Rectangle {
-        anchors.fill: parent
-        id: backgroundRect
-        border.color: "#17a81a"
-        border.width: 2
-        color: "#dddddd"
-        radius: 2
-      }
-
-      Label {
-        id: label
-
-        anchors.fill: parent
-        verticalAlignment: Text.AlignVCenter
-
-        MouseArea {
-          anchors.fill: parent
-          onClicked: {
-            popup.open()
-          }
-        }
-
-        Image {
-          source: QgsQuick.Utils.getThemeIcon("ic_clear_black")
-          anchors.left: parent.right
-          visible: main.currentValue !== undefined && config['allow_null']
-
-          MouseArea {
-            anchors.fill: parent
-            onClicked: {
-              main.currentValue = undefined
-            }
-          }
-        }
-      }
+    id: fieldItem
+    height: childrenRect.height
+    anchors {
+      left: parent.left
+      right: parent.right
+      rightMargin: 10 * QgsQuick.Utils.dp
     }
 
-    Popup {
-      id: popup
-      modal: true
-      focus: true
-      closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
-      parent: ApplicationWindow.overlay
 
-      ColumnLayout {
+    ColumnLayout {
+        id: main
+        property var isDateTimeType: field.type === Qt.DateTime || field.type === Qt.Date || field.type === Qt.Time
+        property var currentValue: isDateTimeType? value : Qt.formatDateTime(value, config['field_format'])
 
-        Controls1.Calendar {
-          id: calendar
-          selectedDate: main.currentValue
-          weekNumbersVisible: true
-          focus: false
+        anchors { right: parent.right; left: parent.left }
 
-          onSelectedDateChanged: {
-            main.currentValue = selectedDate
-          }
-        }
-
-        RowLayout {
-          Button {
-            text: qsTr( "Ok" )
+        Item {
             Layout.fillWidth: true
+            Layout.minimumHeight: customStyle.height
 
-            onClicked: popup.close()
-          }
+            TextField {
+                id: label
+
+                anchors.fill: parent
+                verticalAlignment: Text.AlignVCenter
+                font.pixelSize: customStyle.fontPixelSize
+                padding: 0
+                background: Rectangle {
+                    radius: customStyle.cornerRadius
+
+                    border.color: label.activeFocus ? customStyle.activeColor : customStyle.normalColor
+                    border.width: label.activeFocus ? 2 : 1
+                    color: customStyle.backgroundColor
+                }
+
+                inputMethodHints: Qt.ImhDigitsOnly
+
+                // this is a bit difficult to auto generate input mask out of date/time format using regex
+                // mainly because number of characters is a variable (e.g. "d": the day as number without a leading zero)
+                inputMask:      if (config['display_format'] === "yyyy-MM-dd" ) { "9999-99-99;_" }
+                                else if (config['display_format'] === "yyyy.MM.dd" ) { "9999.99.09;_" }
+                                else if (config['display_format'] === "yyyy-MM-dd HH:mm:ss" ) { "9999-99-09 99:99:99;_" }
+                                else if (config['display_format'] === "HH:mm:ss" ) { "99:99:99;_" }
+                                else if (config['display_format'] === "HH:mm" ) { "99:99;_" }
+                                else { "" }
+
+                text: {
+                    if ( main.currentValue === undefined )
+                      {
+                          qsTr('(no date)')
+                      }
+                      else
+                      {
+                          if ( main.isDateTimeType )
+                          {
+                              Qt.formatDateTime(main.currentValue, config['display_format'])
+                          }
+                          else
+                          {
+                              var date = Date.fromLocaleString(Qt.locale(), main.currentValue, config['field_format'])
+                              Qt.formatDateTime(date, config['display_format'])
+                          }
+                      }
+            }
+
+                color: main.currentValue === undefined ? 'transparent' : customStyle.fontColor
+
+                MouseArea {
+                    enabled: config['calendar_popup']
+                    anchors.fill: parent
+                    onClicked: {
+                        popup.open()
+                    }
+                }
+
+                onTextEdited: {
+                    var date = Date.fromLocaleString(Qt.locale(), label.text, config['display_format'])
+                    if ( date.toLocaleString() !== "" )
+                    {
+                        if ( main.isDateTimeType )
+                        {
+                            main.currentValue = date
+                        }
+                        else
+                        {
+                            main.currentValue = Qt.formatDateTime(date, config['field_format'])
+                        }
+                        valueChanged(main.currentValue, main.currentValue === undefined)
+                    }
+                    else
+                    {
+                        valueChanged(undefined, true)
+                    }
+                }
+
+                onActiveFocusChanged: {
+                    if (activeFocus) {
+                        var mytext = label.text
+                        var cur = label.cursorPosition
+                        while ( cur > 0 )
+                        {
+                            if (!mytext.charAt(cur-1).match("[0-9]") )
+                                break
+                            cur--
+                        }
+                        label.cursorPosition = cur
+                    }
+                }
+            }
         }
-      }
-    }
 
-    onCurrentValueChanged: {
-      valueChanged(currentValue, main.currentValue === undefined)
-      if (main.currentValue === undefined)
-      {
-        label.text = qsTr('(no date)')
-        label.color = 'gray'
-      }
-      else
-      {
-        label.color = 'black'
-        label.text = new Date(value).toLocaleString(Qt.locale(), config['display_format'] )
-      }
+        Popup {
+            id: popup
+            modal: true
+            focus: true
+            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+            parent: ApplicationWindow.overlay
+            x: (window.width - width) / 2
+            y: (window.height - height) / 2
+
+            ColumnLayout {
+
+                Controls1.Calendar {
+                    id: calendar
+                    selectedDate: main.currentValue || new Date()
+                    weekNumbersVisible: true
+                    focus: false
+
+                    onSelectedDateChanged: {
+                        if ( main.isDateTimeType )
+                        {
+                            main.currentValue = selectedDate
+                        }
+                        else
+                        {
+                            main.currentValue = Qt.formatDateTime(selectedDate, config['field_format'])
+                        }
+                    }
+                }
+
+                RowLayout {
+                    Button {
+                        text: qsTr( "Ok" )
+                        Layout.fillWidth: true
+
+                        onClicked: popup.close()
+                    }
+                }
+            }
+        }
+
+        onCurrentValueChanged: {
+            valueChanged(main.currentValue, main.currentValue === undefined)
+            if (main.currentValue === undefined)
+            {
+                label.text = qsTr('(no date)')
+                label.color = customStyle.fontColor
+            }
+            else
+            {
+                label.color = customStyle.fontColor
+                label.text = new Date(value).toLocaleString(Qt.locale(), config['display_format'] )
+            }
+        }
     }
-  }
 }

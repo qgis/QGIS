@@ -40,16 +40,16 @@ class CORE_EXPORT QgsPluginLayerType
 
     QString name();
 
-    //! Returns new layer of this type. Return NULL on error
+    //! Returns new layer of this type. Return NULLPTR on error
     virtual QgsPluginLayer *createLayer() SIP_FACTORY;
 
     /**
-     * Returns new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
+     * Returns new layer of this type, using layer URI (specific to this plugin layer type). Return NULLPTR on error.
      * \since QGIS 2.10
      */
     virtual QgsPluginLayer *createLayer( const QString &uri ) SIP_FACTORY;
 
-    //! Show plugin layer properties dialog. Return false if the dialog cannot be shown.
+    //! Show plugin layer properties dialog. Return FALSE if the dialog cannot be shown.
     virtual bool showLayerProperties( QgsPluginLayer *layer );
 
   protected:
@@ -82,20 +82,20 @@ class CORE_EXPORT QgsPluginLayerRegistry
 
     /**
      * List all known layer types
-     *  \since QGIS */
+     */
     QStringList pluginLayerTypes();
 
-    //! Add plugin layer type (take ownership) and return true on success
+    //! Add plugin layer type (take ownership) and return TRUE on success
     bool addPluginLayerType( QgsPluginLayerType *pluginLayerType SIP_TRANSFER );
 
-    //! Remove plugin layer type and return true on success
+    //! Remove plugin layer type and return TRUE on success
     bool removePluginLayerType( const QString &typeName );
 
-    //! Returns plugin layer type metadata or NULL if doesn't exist
+    //! Returns plugin layer type metadata or NULLPTR if doesn't exist
     QgsPluginLayerType *pluginLayerType( const QString &typeName );
 
     /**
-     * Returns new layer if corresponding plugin has been found else returns a nullptr.
+     * Returns new layer if corresponding plugin has been found else returns NULLPTR.
      * \note parameter uri has been added in QGIS 2.10
      */
     QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) SIP_FACTORY;

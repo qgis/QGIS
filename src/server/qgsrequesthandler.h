@@ -138,7 +138,7 @@ class SERVER_EXPORT QgsRequestHandler
     //! Returns the requested format string
     QString format() const { return mFormat; }
 
-    //! Returns true if the HTTP headers were already sent to the client
+    //! Returns TRUE if the HTTP headers were already sent to the client
     bool headersSent() const;
 
   private:

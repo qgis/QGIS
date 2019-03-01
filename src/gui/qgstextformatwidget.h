@@ -78,7 +78,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 
     /**
      * Sets whether the widget should be shown in a compact dock mode.
-     * \param enabled set to true to show in dock mode.
+     * \param enabled set to TRUE to show in dock mode.
      */
     void setDockMode( bool enabled );
 
@@ -118,7 +118,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 
     /**
      * Controls whether data defined alignment buttons are enabled.
-     * \param enable set to true to enable alignment controls
+     * \param enable set to TRUE to enable alignment controls
      */
     void enableDataDefinedAlignment( bool enable );
 

@@ -91,7 +91,7 @@ Sets the legend's item bounds to fit the whole legend content.
 %Docstring
 Sets whether the legend should automatically resize to fit its contents.
 
-:param enabled: set to false to disable automatic resizing. The legend frame will not
+:param enabled: set to ``False`` to disable automatic resizing. The legend frame will not
                 be expanded to fit legend items, and items may be cropped from display.
 
 .. seealso:: :py:func:`resizeToContents`
@@ -141,7 +141,7 @@ Find out whether legend items are filtered to show just the ones visible in the 
 
     void setLegendFilterOutAtlas( bool doFilter );
 %Docstring
-When set to true, during an atlas rendering, it will filter out legend elements
+When set to ``True``, during an atlas rendering, it will filter out legend elements
 where features are outside the current atlas feature.
 
 .. seealso:: :py:func:`legendFilterOutAtlas`
@@ -406,7 +406,7 @@ Returns whether a stroke will be drawn around raster symbol items.
 %Docstring
 Sets whether a stroke will be drawn around raster symbol items.
 
-:param enabled: set to true to draw borders
+:param enabled: set to ``True`` to draw borders
 
 .. seealso:: :py:func:`drawRasterStroke`
 
@@ -418,7 +418,7 @@ Sets whether a stroke will be drawn around raster symbol items.
     QColor rasterStrokeColor() const;
 %Docstring
 Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeColor`
 
@@ -430,7 +430,7 @@ only drawn if drawRasterStroke() is true.
     void setRasterStrokeColor( const QColor &color );
 %Docstring
 Sets the stroke ``color`` for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`rasterStrokeColor`
 
@@ -442,7 +442,7 @@ only drawn if drawRasterStroke() is true.
     double rasterStrokeWidth() const;
 %Docstring
 Returns the stroke width (in layout units) for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
 
@@ -454,7 +454,7 @@ only drawn if drawRasterStroke() is true.
     void setRasterStrokeWidth( double width );
 %Docstring
 Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`rasterStrokeWidth`
 

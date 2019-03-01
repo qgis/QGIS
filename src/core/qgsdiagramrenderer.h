@@ -89,15 +89,15 @@ class CORE_EXPORT QgsDiagramLayerSettings
       BackgroundColor, //!< Diagram background color
       StrokeColor, //!< Stroke color
       StrokeWidth, //!< Stroke width
-      PositionX, //! x-coordinate data defined diagram position
-      PositionY, //! y-coordinate data defined diagram position
-      Distance, //! Distance to diagram from feature
-      Priority, //! Diagram priority (between 0 and 10)
-      ZIndex, //! Z-index for diagram ordering
-      IsObstacle, //! Whether diagram features act as obstacles for other diagrams/labels
-      Show, //! Whether to show the diagram
-      AlwaysShow, //! Whether the diagram should always be shown, even if it overlaps other diagrams/labels
-      StartAngle, //! Angle offset for pie diagram
+      PositionX, //!< X-coordinate data defined diagram position
+      PositionY, //!< Y-coordinate data defined diagram position
+      Distance, //!< Distance to diagram from feature
+      Priority, //!< Diagram priority (between 0 and 10)
+      ZIndex, //!< Z-index for diagram ordering
+      IsObstacle, //!< Whether diagram features act as obstacles for other diagrams/labels
+      Show, //!< Whether to show the diagram
+      AlwaysShow, //!< Whether the diagram should always be shown, even if it overlaps other diagrams/labels
+      StartAngle, //!< Angle offset for pie diagram
     };
 
     /**
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /**
      * Sets whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
-     * \param isObstacle set to true for feature to act as obstacle
+     * \param isObstacle set to TRUE for feature to act as obstacle
      * \see isObstacle()
      * \since QGIS 2.16
      */
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /**
      * Sets whether the layer should show all diagrams, including overlapping diagrams
-     * \param showAllDiagrams set to true to show all diagrams
+     * \param showAllDiagrams set to TRUE to show all diagrams
      * \see showAllDiagrams()
      * \since QGIS 2.16
      */
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /**
      * Prepares the diagrams for a specified expression context. Calling prepare before rendering
      * multiple diagrams allows precalculation of expensive setup tasks such as parsing expressions.
-     * Returns true if preparation was successful.
+     * Returns TRUE if preparation was successful.
      * \since QGIS 3.0
      */
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
@@ -583,7 +583,7 @@ class CORE_EXPORT QgsDiagramRenderer
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
 
     /**
-     * Returns true if renderer will show legend items for diagram attributes.
+     * Returns TRUE if renderer will show legend items for diagram attributes.
      * \see setAttributeLegend()
      * \since QGIS 2.16
      */
@@ -591,7 +591,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /**
      * Sets whether the renderer will show legend items for diagram attributes.
-     * \param enabled set to true to show diagram attribute legend
+     * \param enabled set to TRUE to show diagram attribute legend
      * \see attributeLegend()
      * \since QGIS 2.16
      */
@@ -602,7 +602,7 @@ class CORE_EXPORT QgsDiagramRenderer
     QgsDiagramRenderer &operator=( const QgsDiagramRenderer &other );
 
     /**
-     * Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
+     * Returns diagram settings for a feature (or FALSE if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
      * \param feature the feature
      * \param c render context
      * \param s out: diagram settings for the feature
@@ -741,7 +741,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
 
     /**
-     * Returns configuration of appearance of legend. Will return null if no configuration has been set.
+     * Returns configuration of appearance of legend. Will return NULLPTR if no configuration has been set.
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;

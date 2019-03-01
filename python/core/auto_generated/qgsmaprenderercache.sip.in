@@ -61,7 +61,7 @@ repaint then the cache image will be cleared.
 
     bool hasCacheImage( const QString &cacheKey ) const;
 %Docstring
-Returns true if the cache contains an image with the specified ``cacheKey``.
+Returns ``True`` if the cache contains an image with the specified ``cacheKey``.
 
 .. seealso:: :py:func:`cacheImage`
 

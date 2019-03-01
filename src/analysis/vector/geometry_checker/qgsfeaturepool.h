@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     /**
      * Retrieves the feature with the specified \a id into \a feature.
      * It will be retrieved from the cache or from the underlying layer if unavailable.
-     * If the feature is neither available from the cache nor from the layer it will return false.
+     * If the feature is neither available from the cache nor from the layer it will return FALSE.
      * If \a feedback is specified, the call may return if the feedback is canceled.
      */
     bool getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback = nullptr );
@@ -94,7 +94,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 
     /**
      * Gets a pointer to the underlying layer.
-     * May return a ``nullptr`` if the layer has been deleted.
+     * May return a ``NULLPTR`` if the layer has been deleted.
      * This must only be called from the main thread.
      */
     QgsVectorLayer *layer() const;

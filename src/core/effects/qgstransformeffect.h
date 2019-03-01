@@ -212,7 +212,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
     /**
      * Sets whether to reflect along the x-axis
-     * \param reflectX true to reflect horizontally
+     * \param reflectX TRUE to reflect horizontally
      * \see reflectX
      * \see setReflectY
      */
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
     /**
      * Returns whether transform will be reflected along the x-axis
-     * \returns true if transform will reflect horizontally
+     * \returns TRUE if transform will reflect horizontally
      * \see setReflectX
      * \see reflectY
      */
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
     /**
      * Sets whether to reflect along the y-axis
-     * \param reflectY true to reflect horizontally
+     * \param reflectY TRUE to reflect horizontally
      * \see reflectY
      * \see setReflectX
      */
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
     /**
      * Returns whether transform will be reflected along the y-axis
-     * \returns true if transform will reflect horizontally
+     * \returns TRUE if transform will reflect horizontally
      * \see setReflectY
      * \see reflectX
      */

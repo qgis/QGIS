@@ -444,6 +444,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     int nCoordinates() const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
 
     //low-level editing
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;

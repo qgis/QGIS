@@ -4867,7 +4867,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   if ( ! zipItem )
     return false;
 
-  zipItem->populate();
+  zipItem->populate( true );
   QgsDebugMsg( QStringLiteral( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
 
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
@@ -8996,11 +8996,12 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   QgsExpressionContext context = pasteVectorLayer->createExpressionContext();
 
   QgsFeatureList compatibleFeatures( QgsVectorLayerUtils::makeFeaturesCompatible( features, pasteVectorLayer ) );
-  QgsFeatureList newFeatures;
+  QgsVectorLayerUtils::QgsFeaturesDataList newFeaturesDataList;
+  newFeaturesDataList.reserve( compatibleFeatures.size() );
+
   // Count collapsed geometries
   int invalidGeometriesCount = 0;
 
-  newFeatures.reserve( compatibleFeatures.size() );
   for ( const auto &feature : qgis::as_const( compatibleFeatures ) )
   {
 
@@ -9020,10 +9021,12 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     {
       attrMap[i] = feature.attribute( i );
     }
-    // now create new feature using pasted feature as a template. This automatically handles default
-    // values and field constraints
-    newFeatures << QgsVectorLayerUtils::createFeature( pasteVectorLayer, geom, attrMap, &context );
+    newFeaturesDataList << QgsVectorLayerUtils::QgsFeatureData( geom, attrMap );
   }
+
+  // now create new feature using pasted feature as a template. This automatically handles default
+  // values and field constraints
+  QgsFeatureList newFeatures {QgsVectorLayerUtils::createFeatures( pasteVectorLayer, newFeaturesDataList, &context )};
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
   newIds.reserve( newFeatures.size() );
@@ -9031,7 +9034,6 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   {
     newIds << f.id();
   }
-
 
   pasteVectorLayer->selectByIds( newIds );
   pasteVectorLayer->endEditCommand();
@@ -10471,7 +10473,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 void QgisApp::loadPythonSupport()
 {
   QString pythonlibName( QStringLiteral( "qgispython" ) );
-#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_UNIX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
@@ -10509,7 +10511,7 @@ void QgisApp::loadPythonSupport()
   mPythonUtils = pythonlib_inst();
   if ( mPythonUtils )
   {
-    mPythonUtils->initPython( mQgisInterface );
+    mPythonUtils->initPython( mQgisInterface, true );
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )

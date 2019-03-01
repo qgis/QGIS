@@ -107,7 +107,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onBackgroundColorChanged();
     void onLayerEntityPickEvent( Qt3DRender::QPickEvent *event );
     void updateLights();
-
+    void updateCameraLens();
   private:
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );

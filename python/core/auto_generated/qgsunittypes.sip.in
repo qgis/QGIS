@@ -154,7 +154,7 @@ Decodes a distance unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to true if string was converted successfully
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -186,7 +186,7 @@ Converts a translated string to a distance unit.
 :param string: string representing a distance unit
 
 :return: - the distance unit
-         - ok: boolean, will be set to true if string was converted successfully
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 %End
@@ -225,7 +225,7 @@ Decodes an areal unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to true if string was converted successfully
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -257,7 +257,7 @@ Converts a translated string to an areal unit.
 :param string: string representing an areal unit
 
 :return: - the area unit
-         - ok: boolean, will be set to true if string was converted successfully
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 %End
@@ -300,7 +300,7 @@ Decodes an angular unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to true if string was converted successfully
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -363,7 +363,7 @@ Returns an distance formatted as a friendly string.
 :param distance: distance to format
 :param decimals: number of decimal places to show
 :param unit: unit of distance
-:param keepBaseUnit: set to false to allow conversion of large distances to more suitable units, e.g., meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large distances to more suitable units, e.g., meters to
                      kilometers
 
 :return: formatted distance string
@@ -380,7 +380,7 @@ Returns an area formatted as a friendly string.
 :param area: area to format
 :param decimals: number of decimal places to show
 :param unit: unit of area
-:param keepBaseUnit: set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large areas to more suitable units, e.g., square meters to
                      square kilometers
 
 :return: formatted area string
@@ -409,7 +409,7 @@ Decodes a render unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to true if string was converted successfully
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -443,7 +443,7 @@ Decodes a layout unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to true if string was converted successfully
+         - ok: boolean, will be set to ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 

@@ -50,9 +50,9 @@ Returns the current color for the dialog
     void setAllowOpacity( bool allowOpacity );
 %Docstring
 Sets whether opacity modification (transparency) is permitted
-for the color dialog. Defaults to true.
+for the color dialog. Defaults to ``True``.
 
-:param allowOpacity: set to false to disable opacity modification
+:param allowOpacity: set to ``False`` to disable opacity modification
 
 .. versionadded:: 3.0
 %End
@@ -62,7 +62,7 @@ for the color dialog. Defaults to true.
 Sets whether the widget's color has been "discarded" and the selected color should not
 be stored in the recent color list.
 
-:param discarded: set to true to avoid adding color to recent color list on widget destruction.
+:param discarded: set to ``True`` to avoid adding color to recent color list on widget destruction.
 
 .. versionadded:: 3.0
 %End

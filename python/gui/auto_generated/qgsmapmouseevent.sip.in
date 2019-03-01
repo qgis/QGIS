@@ -62,10 +62,10 @@ snapPoint will snap the points using the map canvas snapping utils configuration
 
     bool isSnapped() const;
 %Docstring
-Returns true if there is a snapped point cached.
+Returns ``True`` if there is a snapped point cached.
 Will only be useful after snapPoint has previously been called.
 
-:return: True if there is a snapped point cached.
+:return: ``True`` if there is a snapped point cached.
 %End
 
     QgsPointXY mapPoint() const;

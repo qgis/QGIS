@@ -41,8 +41,8 @@ class CORE_EXPORT QgsStringReplacement
      * Constructor for QgsStringReplacement.
      * \param match string to match
      * \param replacement string to replace match with
-     * \param caseSensitive set to true for a case sensitive match
-     * \param wholeWordOnly set to true to match complete words only, or false to allow partial word matches
+     * \param caseSensitive set to TRUE for a case sensitive match
+     * \param wholeWordOnly set to TRUE to match complete words only, or FALSE to allow partial word matches
      */
     QgsStringReplacement( const QString &match,
                           const QString &replacement,
@@ -55,10 +55,10 @@ class CORE_EXPORT QgsStringReplacement
     //! Returns the string to replace matches with
     QString replacement() const { return mReplacement; }
 
-    //! Returns true if match is case sensitive
+    //! Returns TRUE if match is case sensitive
     bool caseSensitive() const { return mCaseSensitive; }
 
-    //! Returns true if match only applies to whole words, or false if partial word matches are permitted
+    //! Returns TRUE if match only applies to whole words, or FALSE if partial word matches are permitted
     bool wholeWordOnly() const { return mWholeWordOnly; }
 
     /**
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsStringUtils
      * one string to another.
      * \param string1 first string
      * \param string2 second string
-     * \param caseSensitive set to true for case sensitive comparison
+     * \param caseSensitive set to TRUE for case sensitive comparison
      * \returns edit distance. Lower distances indicate more similar strings.
      */
     static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsStringUtils
      * of "ABABC" and "BABCA" is "ABC".
      * \param string1 first string
      * \param string2 second string
-     * \param caseSensitive set to true for case sensitive comparison
+     * \param caseSensitive set to TRUE for case sensitive comparison
      * \returns longest common substring
      */
     static QString longestCommonSubstring( const QString &string1, const QString &string2, bool caseSensitive = false );
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsStringUtils
      * strings must be the same length.
      * \param string1 first string
      * \param string2 second string
-     * \param caseSensitive set to true for case sensitive comparison
+     * \param caseSensitive set to TRUE for case sensitive comparison
      * \returns Hamming distance between strings, or -1 if strings are different lengths.
      */
     static int hammingDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsStringUtils
      * Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to valid HTML <a ...>
      * links.
      * \param string string to insert links into
-     * \param foundLinks if specified, will be set to true if any links were inserted into the string
+     * \param foundLinks if specified, will be set to TRUE if any links were inserted into the string
      * \returns string with inserted links
      * \since QGIS 3.0
      */
@@ -266,8 +266,8 @@ class CORE_EXPORT QgsStringUtils
      * Automatically wraps a \a string by inserting new line characters at appropriate locations in the string.
      *
      * The \a length argument specifies either the minimum or maximum length of lines desired, depending
-     * on whether \a useMaxLineLength is true. If \a useMaxLineLength is true, then the string will be wrapped
-     * so that each line ideally will not exceed \a length of characters. If \a useMaxLineLength is false, then
+     * on whether \a useMaxLineLength is true. If \a useMaxLineLength is TRUE, then the string will be wrapped
+     * so that each line ideally will not exceed \a length of characters. If \a useMaxLineLength is FALSE, then
      * the string will be wrapped so that each line will ideally exceed \a length of characters.
      *
      * A custom delimiter can be specified to use instead of space characters.

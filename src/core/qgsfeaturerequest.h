@@ -142,7 +142,7 @@ class CORE_EXPORT QgsFeatureRequest
          *
          * \param expression The expression to use for ordering
          * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         * \param nullsfirst If TRUE, NULLS are at the beginning, if FALSE, NULLS are at the end
          */
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
 
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsFeatureRequest
          *
          * \param expression The expression to use for ordering
          * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         * \param nullsfirst If TRUE, NULLS are at the beginning, if FALSE, NULLS are at the end
          */
         OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
 
@@ -453,7 +453,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \param expression The expression to use for ordering
      * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-     * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+     * \param nullsfirst If TRUE, NULLS are at the beginning, if FALSE, NULLS are at the end
      *
      * \since QGIS 2.14
      */
@@ -621,7 +621,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \param feature  The feature which will be tested
      *
-     * \returns true, if the filter accepts the feature
+     * \returns TRUE, if the filter accepts the feature
      *
      * \since QGIS 2.1
      */
@@ -671,9 +671,9 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * In case this request may be run nested within another already running
-     * iteration on the same connection, set this to true.
+     * iteration on the same connection, set this to TRUE.
      *
-     * If this flag is true, this request will be able to make use of "spare"
+     * If this flag is TRUE, this request will be able to make use of "spare"
      * connections to avoid deadlocks.
      *
      * For example, this should be set on requests that are issued from an
@@ -685,9 +685,9 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * In case this request may be run nested within another already running
-     * iteration on the same connection, set this to true.
+     * iteration on the same connection, set this to TRUE.
      *
-     * If this flag is true, this request will be able to make use of "spare"
+     * If this flag is TRUE, this request will be able to make use of "spare"
      * connections to avoid deadlocks.
      *
      * For example, this should be set on requests that are issued from an

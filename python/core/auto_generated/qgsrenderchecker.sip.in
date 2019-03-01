@@ -161,7 +161,7 @@ dash messages will be sent immediately.
     QVector<QgsDartMeasurement> dartMeasurements() const;
 %Docstring
 Gets access to buffered dash messages.
-Only will return something if you call enableDashBuffering( true ); before.
+Only will return something if you call enableDashBuffering( ``True`` ); before.
 
 :return: buffered dash messages
 %End

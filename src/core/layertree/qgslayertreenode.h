@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
     NodeType nodeType() const { return mNodeType; }
-    //! Gets pointer to the parent. If parent is a null pointer, the node is a root node
+    //! Gets pointer to the parent. If parent is NULLPTR, the node is a root node
     QgsLayerTreeNode *parent() { return mParent; }
     //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() { return mChildren; }
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     /**
      * Turn textual references to layers into map layer object from project.
      * This method should be called after readXml()
-     * If \a looseMatching is true then a looser match will be used, where a layer
+     * If \a looseMatching is TRUE then a looser match will be used, where a layer
      * will match if the name, public source, and data provider match. This can be
      * used to match legend customization from different projects where layers
      * will have different layer IDs.

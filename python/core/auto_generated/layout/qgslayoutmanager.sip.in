@@ -42,7 +42,7 @@ manager.
     bool addLayout( QgsMasterLayoutInterface *layout /Transfer/ );
 %Docstring
 Adds a ``layout`` to the manager. Ownership of the layout is transferred to the manager.
-Returns true if the addition was successful, or false if the layout could not be added (eg
+Returns ``True`` if the addition was successful, or ``False`` if the layout could not be added (eg
 as a result of a duplicate layout name).
 
 .. seealso:: :py:func:`removeLayout`
@@ -53,7 +53,7 @@ as a result of a duplicate layout name).
     bool removeLayout( QgsMasterLayoutInterface *layout );
 %Docstring
 Removes a ``layout`` from the manager. The layout is deleted.
-Returns true if the removal was successful, or false if the removal failed (eg as a result
+Returns ``True`` if the removal was successful, or ``False`` if the removal failed (eg as a result
 of removing a layout which is not contained in the manager).
 
 .. seealso:: :py:func:`addLayout`
@@ -84,7 +84,7 @@ Returns a list of all print layouts contained in the manager.
 
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 %Docstring
-Returns the layout with a matching name, or None if no matching layouts
+Returns the layout with a matching name, or ``None`` if no matching layouts
 were found.
 %End
 

@@ -273,10 +273,10 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     /**
      * Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
-     * \returns true if mime data could be intrepreted as a color
+     * \returns TRUE if mime data could be intrepreted as a color
      * \param mimeData mime data
      * \param resultColor QColor to store evaluated color
-     * \param hasAlpha will be set to true if mime data also included an alpha component
+     * \param hasAlpha will be set to TRUE if mime data also included an alpha component
      * \see formatFromMimeData
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor, bool &hasAlpha );

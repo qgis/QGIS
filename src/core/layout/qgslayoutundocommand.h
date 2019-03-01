@@ -75,7 +75,7 @@ class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
     QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
 
     /**
-     * Returns true if both the before and after states are valid and different.
+     * Returns TRUE if both the before and after states are valid and different.
      */
     virtual bool containsChange() const;
 

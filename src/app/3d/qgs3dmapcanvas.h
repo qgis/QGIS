@@ -48,7 +48,7 @@ class Qgs3DMapCanvas : public QWidget
     //! Returns access to the 3D scene (root 3D entity)
     Qgs3DMapScene *scene() { return mScene; }
 
-    //! Returns access to the view's camera controller. Returns null pointer if the scene has not been initialized yet with setMap()
+    //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMap()
     QgsCameraController *cameraController();
 
     //! Resets camera position to the default: looking down at the origin of world coordinates

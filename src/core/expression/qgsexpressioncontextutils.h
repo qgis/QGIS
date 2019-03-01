@@ -219,7 +219,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayoutAtlas.
      * For instance, current page name and number.
-     * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
+     * \param atlas source atlas. If NULLPTR, a set of default atlas variables will be added to the scope.
      */
     static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) SIP_FACTORY;
 

@@ -197,7 +197,8 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Returns source data type for the band specified by number,
-     *  source data type may be shorter than dataType */
+     *  source data type may be shorter than dataType
+    */
     virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
 
     /**
@@ -233,13 +234,14 @@ class CORE_EXPORT QgsRasterInterface
      * \param extent extent of block
      * \param width pixel width of block
      * \param height pixel height of block
-     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 SIP_FACTORY;
 
     /**
      * Set input.
-      * Returns true if set correctly, false if cannot use that input */
+      * Returns TRUE if set correctly, FALSE if cannot use that input
+    */
     virtual bool setInput( QgsRasterInterface *input ) { mInput = input; return true; }
 
     //! Current input
@@ -288,8 +290,8 @@ class CORE_EXPORT QgsRasterInterface
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
-     * \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
-     * \returns true if statistics are available (ready to use)
+     * \brief Returns TRUE if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
+     * \returns TRUE if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,
@@ -364,7 +366,7 @@ class CORE_EXPORT QgsRasterInterface
 
 
     /**
-     * \brief Returns true if histogram is available (cached, already calculated)
+     * \brief Returns TRUE if histogram is available (cached, already calculated)
      * \note the parameters are the same as in \see histogram()
      */
 #ifndef SIP_RUN

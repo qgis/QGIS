@@ -71,33 +71,33 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Flag if widget is supported for use in style dock.
-     * The default implementation returns false.
-     * \returns True if supported
+     * The default implementation returns FALSE.
+     * \returns TRUE if supported
      */
     virtual bool supportsStyleDock() const { return false; }
 
     /**
      * Set support flag for style dock
-     * \param supports True if this widget is supported in the style dock.
+     * \param supports TRUE if this widget is supported in the style dock.
      */
     void setSupportsStyleDock( bool supports ) { mSupportsDock = supports; }
 
     /**
      * Flag if widget is supported for use in layer properties dialog.
-     * The default implementation returns false.
-     * \returns True if supported
+     * The default implementation returns FALSE.
+     * \returns TRUE if supported
      */
     virtual bool supportLayerPropertiesDialog() const { return false; }
 
     /**
      * Set support flag for style dock
-     * \param supports True if this widget is supported in the style dock.
+     * \param supports TRUE if this widget is supported in the style dock.
      */
     void setSupportLayerPropertiesDialog( bool supports ) { mSupportsProperties = supports; }
 
     /**
      * \brief Check if the layer is supported for this widget.
-     * \returns True if this layer is supported for this widget
+     * \returns TRUE if this layer is supported for this widget
      */
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
 
@@ -105,7 +105,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * \brief Factory function to create the widget on demand as needed by the dock.
      * \param layer The active layer in the dock.
      * \param canvas The map canvas.
-     * \param dockWidget True of the widget will be shown a dock style widget.
+     * \param dockWidget TRUE of the widget will be shown a dock style widget.
      * \param parent The parent of the widget.
      * \returns A new QgsMapStylePanel which is shown in the map style dock.
      * \note This function is called each time the panel is selected. Keep it light for better UX.

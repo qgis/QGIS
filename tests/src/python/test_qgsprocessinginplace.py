@@ -204,8 +204,11 @@ class TestQgsProcessingInPlace(unittest.TestCase):
     def test_QgsVectorLayerUtilsmakeFeaturesCompatible(self):
         """Test fixer function"""
         # Test failure
-        with self.assertRaises(AssertionError):
-            self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Point')
+        self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Point')
+        self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Polygon')
+        self._make_compatible_tester('Polygon((1 1, 2 2, 1 2, 1 1))', 'Point')
+        self._make_compatible_tester('Polygon((1 1, 2 2, 1 2, 1 1))', 'LineString')
+
         self._make_compatible_tester('Point(1 1)', 'Point')
         self._make_compatible_tester('Point(1 1)', 'Point', [1, 'nope'])
         self._make_compatible_tester('Point z (1 1 3)', 'Point')
@@ -276,6 +279,96 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(f), 2)
         self.assertEqual(f[0].geometry().asWkt(), 'LineString (1 1, 2 2, 3 3, 1 1)')
         self.assertEqual(f[1].geometry().asWkt(), 'LineString (10 1, 20 2, 30 3, 10 1)')
+
+        # line -> points
+        l, f = self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Point')
+        self.assertEqual(len(f), 3)
+        self.assertEqual(f[0].geometry().asWkt(), 'Point (1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'Point (2 2)')
+        self.assertEqual(f[2].geometry().asWkt(), 'Point (3 3)')
+
+        l, f = self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'MultiPoint')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(2 2),(3 3))')
+
+        l, f = self._make_compatible_tester('MultiLineString ((1 1, 2 2),(4 4, 3 3))', 'Point')
+        self.assertEqual(len(f), 4)
+        self.assertEqual(f[0].geometry().asWkt(), 'Point (1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'Point (2 2)')
+        self.assertEqual(f[2].geometry().asWkt(), 'Point (4 4)')
+        self.assertEqual(f[3].geometry().asWkt(), 'Point (3 3)')
+
+        l, f = self._make_compatible_tester('MultiLineString ((1 1, 2 2),(4 4, 3 3))', 'MultiPoint')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(2 2),(4 4),(3 3))')
+
+        # line -> polygon
+        l, f = self._make_compatible_tester('LineString (1 1, 1 2, 2 2)', 'Polygon')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'Polygon ((1 1, 1 2, 2 2, 1 1))')
+
+        l, f = self._make_compatible_tester('LineString (1 1, 1 2, 2 2)', 'MultiPolygon')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPolygon (((1 1, 1 2, 2 2, 1 1)))')
+
+        l, f = self._make_compatible_tester('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))', 'Polygon')
+        self.assertEqual(len(f), 2)
+        self.assertEqual(f[0].geometry().asWkt(), 'Polygon ((1 1, 1 2, 2 2, 1 1))')
+        self.assertEqual(f[1].geometry().asWkt(), 'Polygon ((3 3, 4 3, 4 4, 3 3))')
+
+        l, f = self._make_compatible_tester('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))', 'MultiPolygon')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))')
+
+        l, f = self._make_compatible_tester('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', 'CurvePolygon')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'CurvePolygon (CircularString (1 1, 1 2, 2 2, 2 0, 1 1))')
+
+        l, f = self._make_compatible_tester('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', 'Polygon')
+        self.assertEqual(len(f), 1)
+        self.assertTrue(f[0].geometry().asWkt(2).startswith('Polygon ((1 1, 0.99 1.01, 0.98 1.02'))
+
+        # polygon -> points
+        l, f = self._make_compatible_tester('Polygon ((1 1, 1 2, 2 2, 1 1))', 'Point')
+        self.assertEqual(len(f), 3)
+        self.assertEqual(f[0].geometry().asWkt(), 'Point (1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'Point (1 2)')
+        self.assertEqual(f[2].geometry().asWkt(), 'Point (2 2)')
+
+        l, f = self._make_compatible_tester('Polygon ((1 1, 1 2, 2 2, 1 1))', 'MultiPoint')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(1 2),(2 2))')
+
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'Point')
+        self.assertEqual(len(f), 6)
+        self.assertEqual(f[0].geometry().asWkt(), 'Point (1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'Point (1 2)')
+        self.assertEqual(f[2].geometry().asWkt(), 'Point (2 2)')
+        self.assertEqual(f[3].geometry().asWkt(), 'Point (3 3)')
+        self.assertEqual(f[4].geometry().asWkt(), 'Point (4 3)')
+        self.assertEqual(f[5].geometry().asWkt(), 'Point (4 4)')
+
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'MultiPoint')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiPoint ((1 1),(1 2),(2 2),(3 3),(4 3),(4 4))')
+
+        # polygon -> lines
+        l, f = self._make_compatible_tester('Polygon ((1 1, 1 2, 2 2, 1 1))', 'LineString')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'LineString (1 1, 1 2, 2 2, 1 1)')
+
+        l, f = self._make_compatible_tester('Polygon ((1 1, 1 2, 2 2, 1 1))', 'MultiLineString')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiLineString ((1 1, 1 2, 2 2, 1 1))')
+
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'LineString')
+        self.assertEqual(len(f), 2)
+        self.assertEqual(f[0].geometry().asWkt(), 'LineString (1 1, 1 2, 2 2, 1 1)')
+        self.assertEqual(f[1].geometry().asWkt(), 'LineString (3 3, 4 3, 4 4, 3 3)')
+
+        l, f = self._make_compatible_tester('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', 'MultiLineString')
+        self.assertEqual(len(f), 1)
+        self.assertEqual(f[0].geometry().asWkt(), 'MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))')
 
     def test_make_features_compatible_attributes(self):
         """Test corner cases for attributes"""

@@ -105,7 +105,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     /**
      * Check if the root location has been set for the manager.
-     * \return True if the root location has been set.
+     * \return TRUE if the root location has been set.
      */
     bool rootLocationIsSet() const;
 
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     /**
      * Check if a profile exists.
-     * \return False if the profile can't be found.
+     * \return FALSE if the profile can't be found.
      */
     bool profileExists( const QString &name ) const;
 
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     /**
      * Emitted when the list of profiles is changed.
      *
-     * This signal will only be emitted when isNewProfileNotificationEnabled() is true.
+     * This signal will only be emitted when isNewProfileNotificationEnabled() is TRUE.
      * By default new profile notification is disabled.
      *
      * \see isNewProfileNotificationEnabled()

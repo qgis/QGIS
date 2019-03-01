@@ -52,7 +52,7 @@ Initialize a newly constructed property button (useful if button was included in
 :param property: initial value of associated property to show in widget
 :param definitions: properties definitions for corresponding collection
 :param layer: associated vector layer
-:param auxiliaryStorageEnabled: If true, activate the button to store data defined in auxiliary storage
+:param auxiliaryStorageEnabled: If ``True``, activate the button to store data defined in auxiliary storage
 %End
 
     void init( int propertyKey,
@@ -67,7 +67,7 @@ Initialize a newly constructed property button (useful if button was included in
 :param property: initial value of associated property to show in widget
 :param definition: properties definition for button
 :param layer: associated vector layer
-:param auxiliaryStorageEnabled: If true, activate the button to store data defined in auxiliary storage
+:param auxiliaryStorageEnabled: If ``True``, activate the button to store data defined in auxiliary storage
 %End
 
     void init( int propertyKey,
@@ -82,7 +82,7 @@ Initialize a newly constructed property button (useful if button was included in
 :param collection: associated property collection
 :param definitions: properties definitions for collection
 :param layer: associated vector layer
-:param auxiliaryStorageEnabled: If true, activate the button to store data defined in auxiliary storage
+:param auxiliaryStorageEnabled: If ``True``, activate the button to store data defined in auxiliary storage
 %End
 
     QgsProperty toProperty() const;
@@ -105,7 +105,7 @@ Returns the property key linked to the button.
 
     bool isActive() const;
 %Docstring
-Returns true if the button has an active property.
+Returns ``True`` if the button has an active property.
 %End
 
     QgsPropertyDefinition::DataType validDataType() const;
@@ -154,7 +154,7 @@ displayed within the widget's pop up menu.
     void registerCheckedWidget( QWidget *widget, bool natural = true );
 %Docstring
 Register a sibling ``widget`` that gets checked when the property is active.
-if ``natural`` is false, widget gets unchecked when the property is active.
+if ``natural`` is ``False``, widget gets unchecked when the property is active.
 
 .. note::
 
@@ -164,7 +164,7 @@ if ``natural`` is false, widget gets unchecked when the property is active.
     void registerEnabledWidget( QWidget *widget, bool natural = true );
 %Docstring
 Register a sibling ``widget`` that gets enabled when the property is active, and disabled when the property is inactive.
-if ``natural`` is false, widget gets disabled when the property is active, and enabled when the property is inactive.
+if ``natural`` is ``False``, widget gets disabled when the property is active, and enabled when the property is inactive.
 
 .. note::
 
@@ -174,7 +174,7 @@ if ``natural`` is false, widget gets disabled when the property is active, and e
     void registerVisibleWidget( QWidget *widget, bool natural = true );
 %Docstring
 Register a sibling ``widget`` that gets visible when the property is active, and hidden when the property is inactive.
-if ``natural`` is false, widget gets hidden when the property is active, and visible when the property is inactive.
+if ``natural`` is ``False``, widget gets hidden when the property is active, and visible when the property is inactive.
 
 .. note::
 

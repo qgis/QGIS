@@ -90,7 +90,7 @@ class QgsConnectionPoolGroup
      * If \a timeout is a negative value the calling thread will be blocked
      * until a connection becomes available. This is the default behavior.
      *
-     * \returns initialized connection or nullptr if unsuccessful
+     * \returns initialized connection or NULLPTR if unsuccessful
      */
     T acquire( int timeout, bool requestMayBeNested )
     {
@@ -287,7 +287,7 @@ class QgsConnectionPool
      *
      *
      *
-     * \returns initialized connection or nullptr if unsuccessful
+     * \returns initialized connection or NULLPTR if unsuccessful
      */
     T acquireConnection( const QString &connInfo, int timeout = -1, bool requestMayBeNested = false )
     {

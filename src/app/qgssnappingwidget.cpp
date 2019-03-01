@@ -350,14 +350,14 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mTypeButton->setDefaultAction( mSegmentAction );
   }
 
-  if ( mToleranceSpinBox->value() != config.tolerance() )
-  {
-    mToleranceSpinBox->setValue( config.tolerance() );
-  }
-
   if ( static_cast<QgsTolerance::UnitType>( mUnitsComboBox->currentData().toInt() ) != config.units() )
   {
     mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( config.units() ) );
+  }
+
+  if ( mToleranceSpinBox->value() != config.tolerance() )
+  {
+    mToleranceSpinBox->setValue( config.tolerance() );
   }
 
   if ( config.intersectionSnapping() != mIntersectionSnappingAction->isChecked() )

@@ -127,7 +127,7 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
 :param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-:param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
+:param nullsfirst: If ``True``, NULLS are at the beginning, if ``False``, NULLS are at the end
 %End
 
         OrderByClause( const QgsExpression &expression, bool ascending = true );
@@ -146,7 +146,7 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
 :param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-:param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
+:param nullsfirst: If ``True``, NULLS are at the beginning, if ``False``, NULLS are at the end
 %End
 
         QgsExpression expression() const;
@@ -461,7 +461,7 @@ Adds a new OrderByClause, appending it as the least important one.
 
 :param expression: The expression to use for ordering
 :param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
-:param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
+:param nullsfirst: If ``True``, NULLS are at the beginning, if ``False``, NULLS are at the end
 
 .. versionadded:: 2.14
 %End
@@ -641,7 +641,7 @@ Check if a feature is accepted by this requests filter
 
 :param feature: The feature which will be tested
 
-:return: true, if the filter accepts the feature
+:return: ``True``, if the filter accepts the feature
 
 
 .. versionadded:: 2.1
@@ -702,9 +702,9 @@ feature is returned. A negative value (which is set by default) will wait foreve
     bool requestMayBeNested() const;
 %Docstring
 In case this request may be run nested within another already running
-iteration on the same connection, set this to true.
+iteration on the same connection, set this to ``True``.
 
-If this flag is true, this request will be able to make use of "spare"
+If this flag is ``True``, this request will be able to make use of "spare"
 connections to avoid deadlocks.
 
 For example, this should be set on requests that are issued from an
@@ -716,9 +716,9 @@ expression function.
     QgsFeatureRequest &setRequestMayBeNested( bool requestMayBeNested );
 %Docstring
 In case this request may be run nested within another already running
-iteration on the same connection, set this to true.
+iteration on the same connection, set this to ``True``.
 
-If this flag is true, this request will be able to make use of "spare"
+If this flag is ``True``, this request will be able to make use of "spare"
 connections to avoid deadlocks.
 
 For example, this should be set on requests that are issued from an

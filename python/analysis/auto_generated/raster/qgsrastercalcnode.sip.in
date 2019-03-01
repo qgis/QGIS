@@ -78,7 +78,7 @@ QgsRasterCalcNode cannot be copied
 %Docstring
 Returns a string representation of the expression
 
-:param cStyle: if true operators will follow C syntax
+:param cStyle: if ``True`` operators will follow C syntax
 
 .. versionadded:: 3.6
 %End

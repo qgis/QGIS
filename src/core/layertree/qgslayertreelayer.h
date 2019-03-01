@@ -64,9 +64,9 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     /**
      * Returns the map layer associated with this node.
      *
-     * \warning This can be (and often is!) a nullptr, e.g. in the case of a layer node representing a layer
+     * \warning This can be (and often is!) NULLPTR, e.g. in the case of a layer node representing a layer
      * which has not yet been fully loaded into a project, or a layer node representing a layer
-     * with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing a nullptr.
+     * with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing NULLPTR.
      *
      * \see layerId()
      */

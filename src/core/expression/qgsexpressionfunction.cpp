@@ -1356,12 +1356,27 @@ static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *co
 
   return context->feature();
 }
-static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsFeature feat = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
-  QString attr = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+  QgsFeature feature;
+  QString attr;
+  if ( values.size() == 1 )
+  {
+    attr = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+    feature = context->feature();
+  }
+  else if ( values.size() == 2 )
+  {
+    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+    attr = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `attribute` requires one or two parameters. %1 given." ).arg( values.length() ) );
+    return QVariant();
+  }
 
-  return feat.attribute( attr );
+  return feature.attribute( attr );
 }
 
 static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -3712,6 +3727,21 @@ static QVariant fcnColorRgb( const QVariantList &values, const QgsExpressionCont
   return QStringLiteral( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
+static QVariant fcnTry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
+  QVariant value = node->eval( parent, context );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QString() );
+    node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    value = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR;
+  }
+  return value;
+}
+
 static QVariant fcnIf( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
@@ -4239,21 +4269,34 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
   if ( !layer )
     return QVariant();
 
+  // here, we always prefer the layer metadata values over the older server-specific published values
   QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   if ( QString::compare( layerProperty, QStringLiteral( "name" ), Qt::CaseInsensitive ) == 0 )
     return layer->name();
   else if ( QString::compare( layerProperty, QStringLiteral( "id" ), Qt::CaseInsensitive ) == 0 )
     return layer->id();
   else if ( QString::compare( layerProperty, QStringLiteral( "title" ), Qt::CaseInsensitive ) == 0 )
-    return layer->title();
+    return !layer->metadata().title().isEmpty() ? layer->metadata().title() : layer->title();
   else if ( QString::compare( layerProperty, QStringLiteral( "abstract" ), Qt::CaseInsensitive ) == 0 )
-    return layer->abstract();
+    return !layer->metadata().abstract().isEmpty() ? layer->metadata().abstract() : layer->abstract();
   else if ( QString::compare( layerProperty, QStringLiteral( "keywords" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QStringList keywords;
+    const QgsAbstractMetadataBase::KeywordMap keywordMap = layer->metadata().keywords();
+    for ( auto it = keywordMap.constBegin(); it != keywordMap.constEnd(); ++it )
+    {
+      keywords.append( it.value() );
+    }
+    if ( !keywords.isEmpty() )
+      return keywords;
     return layer->keywordList();
+  }
   else if ( QString::compare( layerProperty, QStringLiteral( "data_url" ), Qt::CaseInsensitive ) == 0 )
     return layer->dataUrl();
   else if ( QString::compare( layerProperty, QStringLiteral( "attribution" ), Qt::CaseInsensitive ) == 0 )
-    return layer->attribution();
+  {
+    return !layer->metadata().rights().isEmpty() ? QVariant( layer->metadata().rights() ) : QVariant( layer->attribution() );
+  }
   else if ( QString::compare( layerProperty, QStringLiteral( "attribution_url" ), Qt::CaseInsensitive ) == 0 )
     return layer->attributionUrl();
   else if ( QString::compare( layerProperty, QStringLiteral( "source" ), Qt::CaseInsensitive ) == 0 )
@@ -4774,6 +4817,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "nullif" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value2" ) ), fcnNullIf, QStringLiteral( "Conditionals" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "if" ), 3, fcnIf, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "try" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "alternative" ), true, QVariant() ), fcnTry, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
 
         << new QgsStaticExpressionFunction( QStringLiteral( "aggregate" ),
                                             QgsExpressionFunction::ParameterList()
@@ -5314,10 +5358,30 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     sFunctions << evalFunc;
 
+    QgsStaticExpressionFunction *attributeFunc = new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), -1, fcnAttribute, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    attributeFunc->setIsStaticFunction(
+      []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
+    {
+      const QList< QgsExpressionNode *> argList = node->args()->list();
+      for ( QgsExpressionNode *argNode : argList )
+      {
+        if ( !argNode->isStatic( parent, context ) )
+          return false;
+      }
+
+      if ( node->args()->count() == 1 )
+      {
+        // not static -- this is the variant which uses the current feature taken direct from the expression context
+        return false;
+      }
+
+      return true;
+    } );
+    sFunctions << attributeFunc;
+
     sFunctions
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), 1, fcnEnvVar, QStringLiteral( "General" ), QString() )
         << new QgsWithVariableExpressionFunction()
-        << new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterValue, QStringLiteral( "Rasters" ) )
 
         // functions for arrays

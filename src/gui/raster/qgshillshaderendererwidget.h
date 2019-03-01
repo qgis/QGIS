@@ -79,7 +79,7 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
     double zFactor()  const;
 
     /**
-     * Returns true if the renderer should use the multi-directional hillshade algorithm.
+     * Returns TRUE if the renderer should use the multi-directional hillshade algorithm.
      * \see setMultiDirectional()
      */
     bool multiDirectional() const;
@@ -109,7 +109,7 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
 
     /**
      * Sets whether to render using a multi-directional hillshade algorithm.
-     * \param isMultiDirectional set to true to use multi directional rendering
+     * \param isMultiDirectional set to TRUE to use multi directional rendering
      * \see multiDirectional()
      */
     void setMultiDirectional( bool isMultiDirectional );

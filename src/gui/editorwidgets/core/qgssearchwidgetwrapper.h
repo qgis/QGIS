@@ -167,7 +167,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     virtual QString expression() const = 0;
 
     /**
-     * If this is true, then this search widget should take effect directly
+     * If this is TRUE, then this search widget should take effect directly
      * when its expression changes
      */
     virtual bool applyDirectly() = 0;
@@ -217,7 +217,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Toggles whether the search widget is enabled or disabled.
-     * \param enabled set to true to enable widget
+     * \param enabled set to TRUE to enable widget
      */
     void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
 

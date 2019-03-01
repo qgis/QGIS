@@ -51,8 +51,8 @@ Constructor for QgsBlockingNetworkRequest
 %Docstring
 Performs a "get" operation on the specified ``request``.
 
-If ``forceRefresh`` is false then previously cached replies may be used for the request. If
-it is set to true then a new query is always performed.
+If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
+it is set to ``True`` then a new query is always performed.
 
 If an authCfg() has been set, then any authentication configuration required will automatically be applied to
 ``request``. There is no need to manually apply the authentication to the request prior to calling
@@ -73,8 +73,8 @@ can be retrieved by calling errorMessage().
 %Docstring
 Performs a "post" operation on the specified ``request``, using the given ``data``.
 
-If ``forceRefresh`` is false then previously cached replies may be used for the request. If
-it is set to true then a new query is always performed.
+If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
+it is set to ``True`` then a new query is always performed.
 
 If an authCfg() has been set, then any authentication configuration required will automatically be applied to
 ``request``. There is no need to manually apply the authentication to the request prior to calling

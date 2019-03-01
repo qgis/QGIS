@@ -69,7 +69,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * \param property initial value of associated property to show in widget
      * \param definitions properties definitions for corresponding collection
      * \param layer associated vector layer
-     * \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
+     * \param auxiliaryStorageEnabled If TRUE, activate the button to store data defined in auxiliary storage
      */
     void init( int propertyKey,
                const QgsProperty &property,
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * \param property initial value of associated property to show in widget
      * \param definition properties definition for button
      * \param layer associated vector layer
-     * \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
+     * \param auxiliaryStorageEnabled If TRUE, activate the button to store data defined in auxiliary storage
      */
     void init( int propertyKey,
                const QgsProperty &property,
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * \param collection associated property collection
      * \param definitions properties definitions for collection
      * \param layer associated vector layer
-     * \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
+     * \param auxiliaryStorageEnabled If TRUE, activate the button to store data defined in auxiliary storage
      */
     void init( int propertyKey,
                const QgsAbstractPropertyCollection &collection,
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     int propertyKey() const { return mPropertyKey; }
 
     /**
-     * Returns true if the button has an active property.
+     * Returns TRUE if the button has an active property.
      */
     bool isActive() const { return mProperty && mProperty.isActive(); }
 
@@ -168,21 +168,21 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     /**
      * Register a sibling \a widget that gets checked when the property is active.
-     * if \a natural is false, widget gets unchecked when the property is active.
+     * if \a natural is FALSE, widget gets unchecked when the property is active.
      * \note this should be called after calling init() to be correctly initialized.
      */
     void registerCheckedWidget( QWidget *widget, bool natural = true );
 
     /**
      * Register a sibling \a widget that gets enabled when the property is active, and disabled when the property is inactive.
-     * if \a natural is false, widget gets disabled when the property is active, and enabled when the property is inactive.
+     * if \a natural is FALSE, widget gets disabled when the property is active, and enabled when the property is inactive.
      * \note this should be called after calling init() to be correctly initialized.
      */
     void registerEnabledWidget( QWidget *widget, bool natural = true );
 
     /**
      * Register a sibling \a widget that gets visible when the property is active, and hidden when the property is inactive.
-     * if \a natural is false, widget gets hidden when the property is active, and visible when the property is inactive.
+     * if \a natural is FALSE, widget gets hidden when the property is active, and visible when the property is inactive.
      * \note this should be called after calling init() to be correctly initialized.
      */
     void registerVisibleWidget( QWidget *widget, bool natural = true );

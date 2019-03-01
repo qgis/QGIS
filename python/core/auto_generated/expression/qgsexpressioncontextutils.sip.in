@@ -245,7 +245,7 @@ with the variables specified.
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutAtlas`.
 For instance, current page name and number.
 
-:param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.
+:param atlas: source atlas. If ``None``, a set of default atlas variables will be added to the scope.
 %End
 
     static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) /Factory/;

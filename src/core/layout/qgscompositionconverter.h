@@ -135,7 +135,7 @@ class CORE_EXPORT QgsCompositionConverter
      * \param layout where the items will be added
      * \param parentElement parent DOM element
      * \param position for pasting
-     * \param pasteInPlace if true element position is translated to \a position
+     * \param pasteInPlace if TRUE element position is translated to \a position
      * \return list of layout object items that have been added to the layout
      */
     static QList<QgsLayoutObject *> addItemsFromCompositionXml( QgsPrintLayout *layout,
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsCompositionConverter
 
     /**
      * Check if the given \a document is a composition template
-     * \return true if the document is a composition template
+     * \return TRUE if the document is a composition template
      * \since QGIS 3.0.1
      */
     static bool isCompositionTemplate( const QDomDocument &document );

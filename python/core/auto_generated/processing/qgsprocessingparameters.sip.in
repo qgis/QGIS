@@ -218,9 +218,9 @@ Unique parameter type name.
 
     virtual bool isDestination() const;
 %Docstring
-Returns true if this parameter represents a file or layer destination, e.g. parameters
+Returns ``True`` if this parameter represents a file or layer destination, e.g. parameters
 which are used for the destination for layers output by an algorithm will return
-true.
+``True``.
 %End
 
     QString name() const;
@@ -287,7 +287,7 @@ Sets the ``flags`` associated with the parameter.
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 %Docstring
 Checks whether the specified ``input`` value is acceptable for the
-parameter. Returns true if the value can be accepted.
+parameter. Returns ``True`` if the value can be accepted.
 The optional ``context`` parameter can be specified to allow a more stringent
 check to be performed, capable of checking for the presence of required
 layers and other factors within the context.
@@ -357,7 +357,7 @@ field parameters which depend on a parent layer parameter).
 
     QgsProcessingAlgorithm *algorithm() const;
 %Docstring
-Returns a pointer to the algorithm which owns this parameter. May be None
+Returns a pointer to the algorithm which owns this parameter. May be ``None``
 for non-owned parameters.
 
 .. seealso:: :py:func:`provider`
@@ -365,7 +365,7 @@ for non-owned parameters.
 
     QgsProcessingProvider *provider() const;
 %Docstring
-Returns a pointer to the provider for the algorithm which owns this parameter. May be None
+Returns a pointer to the provider for the algorithm which owns this parameter. May be ``None``
 for non-owned parameters or algorithms.
 
 .. seealso:: :py:func:`algorithm`
@@ -379,7 +379,7 @@ like parameter description, ID, and extra content like default values (depending
 
     bool isDynamic() const;
 %Docstring
-Returns true if the parameter supports is dynamic, and can support data-defined values
+Returns ``True`` if the parameter supports is dynamic, and can support data-defined values
 (i.e. QgsProperty based values).
 
 .. seealso:: :py:func:`setIsDynamic`
@@ -498,7 +498,7 @@ the evaluation to understand available map layers and expression contexts
 
     static bool isDynamic( const QVariantMap &parameters, const QString &name );
 %Docstring
-Returns true if the parameter with matching ``name`` is a dynamic parameter, and must
+Returns ``True`` if the parameter with matching ``name`` is a dynamic parameter, and must
 be evaluated once for every input feature processed.
 %End
 
@@ -1277,7 +1277,7 @@ Sets the list of column ``headers``.
     int numberRows() const;
 %Docstring
 Returns the fixed number of rows in the table. This parameter only has an
-effect if hasFixedNumberRows() is true.
+effect if hasFixedNumberRows() is ``True``.
 
 .. seealso:: :py:func:`setNumberRows`
 
@@ -1287,7 +1287,7 @@ effect if hasFixedNumberRows() is true.
     void setNumberRows( int rows );
 %Docstring
 Sets the fixed number of ``rows`` in the table. This parameter only has an
-effect if hasFixedNumberRows() is true.
+effect if hasFixedNumberRows() is ``True``.
 
 .. seealso:: :py:func:`numberRows`
 
@@ -1754,7 +1754,7 @@ Sets the list of acceptable ``options`` for the parameter.
 
     bool allowMultiple() const;
 %Docstring
-Returns true if the parameter allows multiple selected values.
+Returns ``True`` if the parameter allows multiple selected values.
 
 .. seealso:: :py:func:`setAllowMultiple`
 %End
@@ -1814,7 +1814,7 @@ Returns the type name for the parameter class.
 
     bool multiLine() const;
 %Docstring
-Returns true if the parameter allows multiline strings.
+Returns ``True`` if the parameter allows multiline strings.
 
 .. seealso:: :py:func:`setMultiLine`
 %End
@@ -2237,7 +2237,7 @@ which are used for the destination for layers output by an algorithm.
 %Docstring
 Constructor for QgsProcessingDestinationParameter.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then the destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then the destination
 output will not be created by default.
 %End
 
@@ -2257,7 +2257,7 @@ parameter.
 
     bool supportsNonFileBasedOutput() const;
 %Docstring
-Returns true if the destination parameter supports non filed-based outputs,
+Returns ``True`` if the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
 
 .. seealso:: :py:func:`setSupportsNonFileBasedOutput`
@@ -2286,8 +2286,8 @@ temporary storage of created layers and files.
 
     bool createByDefault() const;
 %Docstring
-Returns true if the destination should be created by default. For optional parameters,
-a return value of false indicates that the destination should not be created by default.
+Returns ``True`` if the destination should be created by default. For optional parameters,
+a return value of ``False`` indicates that the destination should not be created by default.
 
 .. seealso:: :py:func:`setCreateByDefault`
 %End
@@ -2295,7 +2295,7 @@ a return value of false indicates that the destination should not be created by 
     void setCreateByDefault( bool createByDefault );
 %Docstring
 Sets whether the destination should be created by default. For optional parameters,
-a value of false indicates that the destination should not be created by default.
+a value of ``False`` indicates that the destination should not be created by default.
 
 .. seealso:: :py:func:`createByDefault`
 %End
@@ -2336,7 +2336,7 @@ A parameter which represents the destination feature sink for features created b
 %Docstring
 Constructor for QgsProcessingParameterFeatureSink.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
 output will not be created by default.
 %End
 
@@ -2378,8 +2378,8 @@ Returns the layer type for sinks associated with the parameter.
 
     bool hasGeometry() const;
 %Docstring
-Returns true if sink is likely to include geometries. In cases were presence of geometry
-cannot be reliably determined in advance, this method will default to returning true.
+Returns ``True`` if sink is likely to include geometries. In cases were presence of geometry
+cannot be reliably determined in advance, this method will default to returning ``True``.
 %End
 
     void setDataType( QgsProcessing::SourceType type );
@@ -2428,7 +2428,7 @@ created by the algorithm.
 %Docstring
 Constructor for QgsProcessingParameterVectorDestination.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
 output will not be created by default.
 %End
 
@@ -2470,8 +2470,8 @@ Returns the layer type for this created vector layer.
 
     bool hasGeometry() const;
 %Docstring
-Returns true if the created layer is likely to include geometries. In cases were presence of geometry
-cannot be reliably determined in advance, this method will default to returning true.
+Returns ``True`` if the created layer is likely to include geometries. In cases were presence of geometry
+cannot be reliably determined in advance, this method will default to returning ``True``.
 %End
 
     void setDataType( QgsProcessing::SourceType type );
@@ -2515,7 +2515,7 @@ created by the algorithm.
 %Docstring
 Constructor for QgsProcessingParameterRasterDestination.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
 output will not be created by default.
 %End
 
@@ -2572,7 +2572,7 @@ created by the algorithm.
 %Docstring
 Constructor for QgsProcessingParameterFileDestination.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
 output will not be created by default.
 %End
 

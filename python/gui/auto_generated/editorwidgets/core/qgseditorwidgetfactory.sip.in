@@ -43,7 +43,7 @@ instead of calling this method directly.
 
 :param vl: The vector layer on which this widget will act
 :param fieldIdx: The field index on which this widget will act
-:param editor: An editor widget if already existent. If NULL is provided, a new widget will be created.
+:param editor: An editor widget if already existent. If ``None`` is provided, a new widget will be created.
 :param parent: The parent for the wrapper class and any created widget.
 
 :return: A new widget wrapper
@@ -77,7 +77,7 @@ Check if this editor widget type supports a certain field.
 :param vl: The layer
 :param fieldIdx: The field index
 
-:return: True if the type is supported for this field
+:return: ``True`` if the type is supported for this field
 
 .. seealso:: :py:func:`fieldScore`
 %End

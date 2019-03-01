@@ -78,7 +78,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /**
      * Returns whether the button accepts live updates from QgsColorRampDialog.
-     * \returns true if the button will be accepted immediately when the dialog's color ramp changes
+     * \returns TRUE if the button will be accepted immediately when the dialog's color ramp changes
      * \see setAcceptLiveUpdates
      */
     bool acceptLiveUpdates() const { return mAcceptLiveUpdates; }
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /**
      * Sets whether the button accepts live updates from QgsColorRampDialog. Live updates may cause changes
      * that are not undoable on QColorRampDialog cancel.
-     * \param accept set to true to enable live updates
+     * \param accept set to TRUE to enable live updates
      * \see acceptLiveUpdates
      */
     void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
@@ -94,14 +94,14 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /**
      * Sets whether the drop-down menu should be shown for the button. The default behavior is to
      * show the menu.
-     * \param showMenu set to false to hide the drop-down menu
+     * \param showMenu set to FALSE to hide the drop-down menu
      * \see showMenu
      */
     void setShowMenu( bool showMenu );
 
     /**
      * Returns whether the drop-down menu is shown for the button.
-     * \returns true if drop-down menu is shown
+     * \returns TRUE if drop-down menu is shown
      * \see setShowMenu
      */
     bool showMenu() const { return menu() ? true : false; }
@@ -109,7 +109,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /**
      * Sets the default color ramp for the button, which is shown in the button's drop-down menu for the
      * "default color ramp" option.
-     * \param colorramp default color ramp for the button. Set to a null pointer to disable the default color
+     * \param colorramp default color ramp for the button. Set to NULLPTR to disable the default color
      * ramp option. The ramp will be cloned and ownership is not transferred.
      * \see defaultColorRamp
      */
@@ -118,7 +118,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /**
      * Returns a copy of the default color ramp for the button, which is shown in the button's drop-down menu for the
      * "default color ramp" option.
-     * \returns default color ramp for the button. Returns a null pointer if the default color ramp
+     * \returns default color ramp for the button. Returns NULLPTR if the default color ramp
      * option is disabled.
      * \see setDefaultColorRamp
      */
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /**
      * Sets whether a random colors option is shown in the button's drop-down menu.
-     * \param showRandom set to true to show a random colors option
+     * \param showRandom set to TRUE to show a random colors option
      * \see showRandomColorRamp()
      */
     void setShowRandomColorRamp( bool showRandom ) { mShowRandomColorRamp = showRandom; }
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     bool showRandomColorRamp() const { return mShowRandomColorRamp; }
 
     /**
-     * Returns true if the current color is null.
+     * Returns TRUE if the current color is null.
      * \see setShowNull()
      * \see showNull()
      */
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /**
      * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
-     * \param showNull set to true to show a null option
+     * \param showNull set to TRUE to show a null option
      * \see showNull()
      * \see isNull()
      */
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     bool showNull() const;
 
     /**
-     * Returns true if the current color is null.
+     * Returns TRUE if the current color is null.
      * \see setShowNull()
      * \see showNull()
      */
@@ -186,13 +186,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /**
      * Sets whether the color ramp button only shows gradient type ramps
-     * \param gradientonly set to true to show only gradient type ramps
+     * \param gradientonly set to TRUE to show only gradient type ramps
      * \see showGradientOnly
      */
     void setShowGradientOnly( bool gradientonly ) { mShowGradientOnly = gradientonly; }
 
     /**
-     * Returns true if the color ramp button only shows gradient type ramps
+     * Returns TRUE if the color ramp button only shows gradient type ramps
      * \see setShowGradientOnly
      */
     bool showGradientOnly() const { return mShowGradientOnly; }

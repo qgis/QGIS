@@ -162,7 +162,7 @@ not have been requested from the provider at rendering time.
 
     virtual bool filterNeedsGeometry() const;
 %Docstring
-Returns true if this renderer requires the geometry to apply the filter.
+Returns ``True`` if this renderer requires the geometry to apply the filter.
 %End
 
     virtual ~QgsFeatureRenderer();
@@ -180,7 +180,7 @@ and generate a proper subclass.
 Render a feature using this renderer in the given context.
 Must be called between startRender() and stopRender() calls.
 Default implementation renders a symbol as determined by symbolForFeature() call.
-Returns true if the feature has been returned (this is used for example
+Returns ``True`` if the feature has been returned (this is used for example
 to determine whether the feature may be labelled).
 
 If layer is not -1, the renderer should draw only a particula layer from symbols
@@ -392,7 +392,7 @@ Returns whether the renderer must render as a raster.
 %Docstring
 Sets whether the renderer should be rendered to a raster destination.
 
-:param forceRaster: set to true if renderer must be drawn on a raster surface.
+:param forceRaster: set to ``True`` if renderer must be drawn on a raster surface.
                     This may be desirable for highly detailed layers where rendering as a vector
                     would result in a large, complex vector output.
 
@@ -407,7 +407,7 @@ Gets the order in which features shall be processed by this renderer.
 
 .. note::
 
-   this property has no effect if orderByEnabled() is false
+   this property has no effect if orderByEnabled() is ``False``
 
 .. seealso:: :py:func:`orderByEnabled`
 
@@ -420,7 +420,7 @@ Define the order in which features shall be processed by this renderer.
 
 .. note::
 
-   this property has no effect if orderByEnabled() is false
+   this property has no effect if orderByEnabled() is ``False``
 
 .. seealso:: :py:func:`setOrderByEnabled`
 
@@ -442,7 +442,7 @@ Returns whether custom ordering will be applied before features are processed by
 %Docstring
 Sets whether custom ordering should be applied before features are processed by this renderer.
 
-:param enabled: set to true to enable custom feature ordering
+:param enabled: set to ``True`` to enable custom feature ordering
 
 .. seealso:: :py:func:`setOrderBy`
 
@@ -466,7 +466,7 @@ does nothing with subrenderers, but individual derived classes can use these to 
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
 %Docstring
 Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
-implementation does not use subrenderers and will always return null.
+implementation does not use subrenderers and will always return ``None``.
 
 .. seealso:: :py:func:`setEmbeddedRenderer`
 

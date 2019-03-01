@@ -38,7 +38,7 @@ namespace QgsTestUtils
    * Runs a thready safety test on iterators from a vector data \a provider, by concurrently
    * requesting features from the provider.
    *
-   * This method returns true... or it segfaults.
+   * This method returns TRUE... or it segfaults.
    */
   CORE_EXPORT bool testProviderIteratorThreadSafety( QgsVectorDataProvider *provider, const QgsFeatureRequest &request = QgsFeatureRequest() );
 

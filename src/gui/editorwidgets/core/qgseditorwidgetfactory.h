@@ -59,7 +59,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \param vl       The vector layer on which this widget will act
      * \param fieldIdx The field index on which this widget will act
-     * \param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
+     * \param editor   An editor widget if already existent. If NULLPTR is provided, a new widget will be created.
      * \param parent   The parent for the wrapper class and any created widget.
      *
      * \returns         A new widget wrapper
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \param vl        The layer
      * \param fieldIdx  The field index
-     * \returns          True if the type is supported for this field
+     * \returns          TRUE if the type is supported for this field
      *
      * \see fieldScore()
      */

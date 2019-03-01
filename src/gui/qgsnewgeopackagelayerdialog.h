@@ -25,7 +25,8 @@
 
 /**
  * \ingroup gui
- * Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers */
+ * Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers
+*/
 class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
 {
     Q_OBJECT
@@ -78,7 +79,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
 
     /**
      * Sets whether a newly created layer should automatically be added to the current project.
-     * Defaults to true.
+     * Defaults to TRUE.
      *
      * \since QGIS 3.6
      */

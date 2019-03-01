@@ -68,6 +68,7 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.endPoints = []
         self.setFlag(QGraphicsItem.ItemIsSelectable, False)
         self.myColor = QApplication.palette().color(QPalette.WindowText)
+        self.myColor.setAlpha(150)
         self.setPen(QPen(self.myColor, 1, Qt.SolidLine,
                          Qt.RoundCap, Qt.RoundJoin))
         self.setZValue(0)
@@ -125,10 +126,19 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.setPath(path)
 
     def paint(self, painter, option, widget=None):
+        color = self.myColor
+
+        if self.startItem.isSelected() or self.endItem.isSelected():
+            color.setAlpha(220)
+        elif self.startItem.hover_over_item or self.endItem.hover_over_item:
+            color.setAlpha(150)
+        else:
+            color.setAlpha(80)
+
         myPen = self.pen()
-        myPen.setColor(self.myColor)
+        myPen.setColor(color)
         painter.setPen(myPen)
-        painter.setBrush(self.myColor)
+        painter.setBrush(color)
         painter.setRenderHint(QPainter.Antialiasing)
 
         for point in self.endPoints:

@@ -102,9 +102,9 @@ class GUI_EXPORT QgsValidityCheckResultsWidget : public QWidget, private Ui::Qgs
      * The \a parent argument can be used to give a parent widget for the created dialogs.
      *
      * If any critical errors are encountered by the checks, then users will not be allowed to click OK
-     * on the dialog and proceed with the operation. The function will return false.
+     * on the dialog and proceed with the operation. The function will return FALSE.
      *
-     * Returns true if no warnings were encountered (and no dialog was shown to users), or if only
+     * Returns TRUE if no warnings were encountered (and no dialog was shown to users), or if only
      * warnings were shown and the user clicked OK after being shown these warnings.
      *
      * This method is a blocking method, and runs all checks in the main thread.

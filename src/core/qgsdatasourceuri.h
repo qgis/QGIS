@@ -166,10 +166,10 @@ class CORE_EXPORT QgsDataSourceUri
     //! Sets use Estimated Metadata
     void setUseEstimatedMetadata( bool flag );
 
-    //! Returns true if estimated metadata are used
+    //! Returns TRUE if estimated metadata are used
     bool useEstimatedMetadata() const;
 
-    //! Sets to true to disable selection by id
+    //! Sets to TRUE to disable selection by id
     void disableSelectAtId( bool flag );
     //! Returns whether the selection by id is disabled
     bool selectAtIdDisabled() const;

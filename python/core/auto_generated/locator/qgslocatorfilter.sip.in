@@ -221,7 +221,7 @@ when a previous search result was triggered.
 
     bool useWithoutPrefix() const;
 %Docstring
-Returns true if the filter should be used when no prefix
+Returns ``True`` if the filter should be used when no prefix
 is entered.
 
 .. seealso:: :py:func:`setUseWithoutPrefix`
@@ -256,7 +256,7 @@ of directly using QString.contains() or Python 'in' checks.
 
     bool enabled() const;
 %Docstring
-Returns true if the filter is enabled.
+Returns ``True`` if the filter is enabled.
 
 .. seealso:: :py:func:`setEnabled`
 %End
@@ -270,7 +270,7 @@ Sets whether the filter is ``enabled``.
 
     virtual bool hasConfigWidget() const;
 %Docstring
-Should return true if the filter has a configuration widget.
+Should return ``True`` if the filter has a configuration widget.
 
 .. seealso:: :py:func:`openConfigWidget`
 %End
@@ -283,7 +283,7 @@ custom configuration widget.
 
 .. note::
 
-   hasConfigWidget() must return true to indicate that the filter supports configuration.
+   hasConfigWidget() must return ``True`` to indicate that the filter supports configuration.
 %End
 
     void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );

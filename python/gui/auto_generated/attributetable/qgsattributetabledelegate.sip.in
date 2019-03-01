@@ -67,7 +67,7 @@ Sets data from model into the editor. Overloads default method
 
     void actionColumnItemPainted( const QModelIndex &index ) const;
 %Docstring
-Is emitted when an action column item is painted.
+Emitted when an action column item is painted.
 The consumer of this signal can initialize the index widget.
 
 .. note::

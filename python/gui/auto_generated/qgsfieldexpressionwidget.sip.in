@@ -57,6 +57,24 @@ Returns the title used for the expression dialog
 setFilters allows fitering according to the type of field
 %End
 
+    void setAllowEmptyFieldName( bool allowEmpty );
+%Docstring
+Sets whether an optional empty field ("not set") option is shown in the combo box.
+
+.. seealso:: :py:func:`allowEmptyFieldName`
+
+.. versionadded:: 3.6
+%End
+
+    bool allowEmptyFieldName() const;
+%Docstring
+Returns ``True`` if the combo box allows the empty field ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyFieldName`
+
+.. versionadded:: 3.6
+%End
+
     void setLeftHandButtonStyle( bool isLeft );
 
     QgsFieldProxyModel::Filters filters() const;
@@ -79,12 +97,12 @@ currentField returns the currently selected field or expression if allowed
 
     bool isValidExpression( QString *expressionError = 0 ) const;
 %Docstring
-Returns true if the current expression is valid
+Returns ``True`` if the current expression is valid
 %End
 
     bool isExpression() const;
 %Docstring
-If the content is not just a simple field this method will return true.
+If the content is not just a simple field this method will return ``True``.
 %End
 
     QString currentText() const;
@@ -149,7 +167,7 @@ provide an expression context of which we are sure it's completely populated.
   signals:
     void fieldChanged( const QString &fieldName );
 %Docstring
-the signal is emitted when the currently selected field changes
+Emitted when the currently selected field changes.
 %End
 
     void fieldChanged( const QString &fieldName, bool isValid );

@@ -17,6 +17,7 @@
 
 #include "qgs3dutils.h"
 
+#include <QSize>
 
 /**
  * \ingroup UnitTests
@@ -33,7 +34,6 @@ class TestQgs3DUtils : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testTransforms();
-
   private:
 };
 

@@ -56,7 +56,7 @@ class CORE_EXPORT QgsLayerMetadataFormatter
     /**
      * Formats the "Extents" section according to a \a metadata object (extent and temporal).
      * This will return a HTML table.
-     * \param showSpatialExtent flag if the spatial extent needs to be displayed. Default to true.
+     * \param showSpatialExtent flag if the spatial extent needs to be displayed. Default to TRUE.
      */
     QString extentSectionHtml( const bool showSpatialExtent = true ) const;
 

@@ -109,7 +109,6 @@ BuildRequires:  qt5-qtlocation-devel
 BuildRequires:  qt5-qtsvg-devel
 BuildRequires:  qt5-qttools-static
 BuildRequires:  qt5-qtwebkit-devel
-BuildRequires:  qt5-qtxmlpatterns-devel
 BuildRequires:  qtkeychain-qt5-devel
 BuildRequires:  qt5-qtserialport-devel
 BuildRequires:  qt5-qt3d-devel

@@ -79,7 +79,7 @@ Sets whether an optional empty layer ("not set") option is shown in the combo bo
 
     bool allowEmptyLayer() const;
 %Docstring
-Returns true if the combo box allows the empty layer ("not set") choice.
+Returns ``True`` if the combo box allows the empty layer ("not set") choice.
 
 .. seealso:: :py:func:`setAllowEmptyLayer`
 
@@ -97,7 +97,7 @@ Sets whether the CRS of layers is also included in the combo box text.
 
     bool showCrs() const;
 %Docstring
-Returns true if the combo box shows the layer's CRS.
+Returns ``True`` if the combo box shows the layer's CRS.
 
 .. seealso:: :py:func:`setShowCrs`
 
@@ -151,7 +151,7 @@ setLayer set the current layer selected in the combo
   signals:
     void layerChanged( QgsMapLayer *layer );
 %Docstring
-layerChanged this signal is emitted whenever the currently selected layer changes
+Emitted whenever the currently selected layer changes.
 %End
 
   protected slots:

@@ -144,7 +144,7 @@ Default constructor
 
         QgsProcessingLayerPostProcessorInterface *postProcessor() const;
 %Docstring
-Layer post-processor. May be None if no post-processing is required.
+Layer post-processor. May be ``None`` if no post-processing is required.
 
 .. seealso:: :py:func:`setPostProcessor`
 
@@ -153,7 +153,7 @@ Layer post-processor. May be None if no post-processing is required.
 
         void setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor /Transfer/ );
 %Docstring
-Sets the layer post-processor. May be None if no post-processing is required.
+Sets the layer post-processor. May be ``None`` if no post-processing is required.
 
 Ownership of ``processor`` is transferred.
 
@@ -181,7 +181,7 @@ Returns a map of layers (by ID or datasource) to LayerDetails, to load into the 
 
     bool willLoadLayerOnCompletion( const QString &layer ) const;
 %Docstring
-Returns true if the given ``layer`` (by ID or datasource) will be loaded into the current project
+Returns ``True`` if the given ``layer`` (by ID or datasource) will be loaded into the current project
 upon completion of the algorithm or model.
 
 .. seealso:: :py:func:`layersToLoadOnCompletion`

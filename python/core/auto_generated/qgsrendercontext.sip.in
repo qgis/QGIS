@@ -203,7 +203,7 @@ per millimeter.
 
     bool useAdvancedEffects() const;
 %Docstring
-Returns true if advanced effects such as blend modes such be used
+Returns ``True`` if advanced effects such as blend modes such be used
 %End
 
     void setUseAdvancedEffects( bool enabled );
@@ -226,9 +226,9 @@ for the rendered map, eg 1000.0 for a 1:1000 map render.
 
     bool showSelection() const;
 %Docstring
-Returns true if vector selections should be shown in the rendered map
+Returns ``True`` if vector selections should be shown in the rendered map
 
-:return: true if selections should be shown
+:return: ``True`` if selections should be shown
 
 .. seealso:: :py:func:`setShowSelection`
 
@@ -311,7 +311,7 @@ of any rendering operations.
 %Docstring
 Sets whether vector selections should be shown in the rendered map
 
-:param showSelection: set to true if selections should be shown
+:param showSelection: set to ``True`` if selections should be shown
 
 .. seealso:: :py:func:`showSelection`
 
@@ -322,7 +322,7 @@ Sets whether vector selections should be shown in the rendered map
 
     bool useRenderingOptimization() const;
 %Docstring
-Returns true if the rendering optimization (geometry simplification) can be executed
+Returns ``True`` if the rendering optimization (geometry simplification) can be executed
 %End
 
     void setUseRenderingOptimization( bool enabled );

@@ -77,7 +77,7 @@ representation of auxiliary data.
 Deletes all features from the layer. Changes are automatically committed
 and the layer remains editable.
 
-:return: true if changes are committed without error, false otherwise.
+:return: ``True`` if changes are committed without error, ``False`` otherwise.
 %End
 
     QgsVectorLayerJoinInfo joinInfo() const;
@@ -87,12 +87,12 @@ Returns information to use for joining with primary key and so on.
 
     bool exists( const QgsPropertyDefinition &definition ) const;
 %Docstring
-Returns true if the property is stored in the layer already, false
+Returns ``True`` if the property is stored in the layer already, ``False``
 otherwise.
 
 :param definition: The property definition to check
 
-:return: true if the property is stored, false otherwise
+:return: ``True`` if the property is stored, ``False`` otherwise
 %End
 
     bool addAuxiliaryField( const QgsPropertyDefinition &definition );
@@ -103,7 +103,7 @@ table config to hide auxiliary fields by default.
 
 :param definition: The definition of the property to add
 
-:return: true if the auxiliary field is well added, false otherwise
+:return: ``True`` if the auxiliary field is well added, ``False`` otherwise
 %End
 
     QgsFields auxiliaryFields() const;
@@ -115,7 +115,7 @@ Returns a list of all auxiliary fields currently managed by the layer.
 %Docstring
 Commits changes and starts editing then.
 
-:return: true if commit step passed, false otherwise
+:return: ``True`` if commit step passed, ``False`` otherwise
 %End
 
     virtual bool deleteAttribute( int attr );
@@ -126,13 +126,13 @@ editable.
 
 :param attr: The index of the attribute to remove
 
-:return: true if the attribute is well deleted, false otherwise
+:return: ``True`` if the attribute is well deleted, ``False`` otherwise
 %End
 
     bool isHiddenProperty( int index ) const;
 %Docstring
-Returns true if the underlying field has to be hidden from editing
-tools like attribute table, false otherwise.
+Returns ``True`` if the underlying field has to be hidden from editing
+tools like attribute table, ``False`` otherwise.
 
 :param index: The index of the field for which visibility is checked
 %End
@@ -205,7 +205,7 @@ Creates a new auxiliary field from a field.
 Returns the name of the auxiliary field for a property definition.
 
 :param def: The property definition
-:param joined: The join prefix is taken into account if true
+:param joined: The join prefix is taken into account if ``True``
 %End
 
     static QgsPropertyDefinition propertyDefinitionFromField( const QgsField &field );
@@ -274,7 +274,7 @@ the original location given in parameter.
 %Docstring
 Returns the status of the auxiliary storage currently defined.
 
-:return: true if the auxiliary storage is valid, false otherwise
+:return: ``True`` if the auxiliary storage is valid, ``False`` otherwise
 %End
 
     QString fileName() const;
@@ -300,7 +300,7 @@ happening in saveAs(). Empty by default.
 %Docstring
 Saves the current database to a new path.
 
-:return: true if everything is saved, false otherwise
+:return: ``True`` if everything is saved, ``False`` otherwise
 %End
 
     bool saveAs( const QgsProject &project );
@@ -309,14 +309,14 @@ Saves the current database to a new path for a specific project.
 Actually, the current filename of the project is used to deduce the
 path of the database to save.
 
-:return: true if everything is saved, false otherwise
+:return: ``True`` if everything is saved, ``False`` otherwise
 %End
 
     bool save() const;
 %Docstring
 Saves the current database.
 
-:return: true if everything is saved, false otherwise
+:return: ``True`` if everything is saved, ``False`` otherwise
 %End
 
     QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const /Factory/;
@@ -328,7 +328,7 @@ given in parameter.
 :param field: The primary key to join
 :param layer: The vector layer for which the auxiliary layer has to be created
 
-:return: A new auxiliary layer or a None if an error happened.
+:return: A new auxiliary layer or ``None`` if an error happened.
 %End
 
     static bool deleteTable( const QgsDataSourceUri &uri );
@@ -337,7 +337,7 @@ Removes a table from the auxiliary storage.
 
 :param uri: The uri of the table to remove
 
-:return: true if the table is well deleted, false otherwise
+:return: ``True`` if the table is well deleted, ``False`` otherwise
 %End
 
     static bool duplicateTable( const QgsDataSourceUri &uri, const QString &newTable );
@@ -347,7 +347,7 @@ Duplicates a table and its content.
 :param uri: The uri of the table to duplicate
 :param newTable: The name of the new table
 
-:return: true if the table is well duplicated, false otherwise
+:return: ``True`` if the table is well duplicated, ``False`` otherwise
 %End
 
     static QString extension();
@@ -357,7 +357,7 @@ Returns the extension used for auxiliary databases.
 
     static bool exists( const QgsProject &project );
 %Docstring
-Returns true if the auxiliary database yet exists for a project, false otherwise.
+Returns ``True`` if the auxiliary database yet exists for a project, ``False`` otherwise.
 
 :param project: The project for which the database is checked
 

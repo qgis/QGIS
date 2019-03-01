@@ -34,7 +34,7 @@ typedef bool handlesDirectoryPath_t( const QString &path ) SIP_SKIP;
  *
  * The method createDataItem() is ever called only if capabilities() return non-zero value.
  * There are two occasions when createDataItem() is called:
- * 1. to create root items (passed path is empty, parent item is null).
+ * 1. to create root items (passed path is empty, parent item is NULLPTR).
  * 2. to create items in directory structure. For this capabilities have to return at least
  *    of the following: QgsDataProvider::Dir or QgsDataProvider::File. Passed path is the file
  *    or directory being inspected, parent item is a valid QgsDirectoryItem
@@ -53,25 +53,25 @@ class CORE_EXPORT QgsDataItemProvider
     virtual int capabilities() = 0;
 
     /**
-     * Create a new instance of QgsDataItem (or null) for given path and parent item.
+     * Create a new instance of QgsDataItem (or NULLPTR) for given path and parent item.
      * Caller takes responsibility of deleting created items.
      */
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 SIP_FACTORY;
 
     /**
-     * Create a vector of instances of QgsDataItem (or null) for given path and parent item.
+     * Create a vector of instances of QgsDataItem (or NULLPTR) for given path and parent item.
      * Caller takes responsibility of deleting created items.
      */
     virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) { Q_UNUSED( path ); Q_UNUSED( parentItem ); return QVector<QgsDataItem *>(); }
 
     /**
-     * Returns true if the provider will handle the directory at the specified \a path.
+     * Returns TRUE if the provider will handle the directory at the specified \a path.
      *
      * If the provider indicates that it will handle the directory, the default creation and
      * population of directory items for the path will be avoided and it is left to the
      * provider to correctly populate relevant entries for the path.
      *
-     * The default implementation returns false for all paths.
+     * The default implementation returns FALSE for all paths.
      *
      * \since QGIS 3.0
      */

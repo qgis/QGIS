@@ -43,6 +43,7 @@ class TestQgsQuickUtils: public QObject
     void loadIcon();
     void fileExists();
     void loadQmlComponent();
+    void getRelativePath();
 
   private:
     QgsQuickUtils utils;
@@ -144,7 +145,8 @@ void TestQgsQuickUtils::loadIcon()
   QUrl url = utils.getThemeIcon( "ic_save_white" );
   Q_ASSERT( url.toString() == QStringLiteral( "qrc:/ic_save_white.svg" ) );
 
-  QString fileName = utils.getFileName( url.toString() );
+  QFileInfo fileInfo( url.toString() );
+  QString fileName( fileInfo.fileName() );
   Q_ASSERT( fileName == QStringLiteral( "ic_save_white.svg" ) );
 }
 
@@ -163,6 +165,28 @@ void TestQgsQuickUtils::loadQmlComponent()
   QUrl valuemap = utils.getEditorComponentSource( "valuemap" );
   Q_ASSERT( valuemap.path() == QString( "qgsquickvaluemap.qml" ) );
 }
+
+void TestQgsQuickUtils::getRelativePath()
+{
+  QString prefixPath = QStringLiteral( "%1/" ).arg( TEST_DATA_DIR );
+  QString fileName = QStringLiteral( "quickapp_project.qgs" );
+  QString path =  prefixPath + fileName;
+  QString relativePath = utils.getRelativePath( path, prefixPath );
+  QCOMPARE( fileName, relativePath );
+
+  QString fileName2 = QStringLiteral( "zip/test.zip" );
+  QString path2 = prefixPath + fileName2;
+  QString relativePath2 = utils.getRelativePath( path2, prefixPath );
+  QCOMPARE( fileName2, relativePath2 );
+
+  QString path3 = QStringLiteral( "file://" ) + path2;
+  QString relativePath3 = utils.getRelativePath( path3, prefixPath );
+  QCOMPARE( fileName2, relativePath3 );
+
+  QString relativePath4 = utils.getRelativePath( path2, QStringLiteral( "/dummy/path/" ) );
+  QCOMPARE( QString(), relativePath4 );
+}
+
 
 QGSTEST_MAIN( TestQgsQuickUtils )
 #include "testqgsquickutils.moc"

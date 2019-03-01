@@ -119,7 +119,7 @@ Ownership of ``layer`` is transferred to the symbol.
 :param index: The index at which the layer should be added
 :param layer: The symbol layer to add
 
-:return: True if the layer is added, False if the index or the layer is bad
+:return: ``True`` if the layer is added, ``False`` if the index or the layer is bad
 %End
 
     bool appendSymbolLayer( QgsSymbolLayer *layer /Transfer/ );
@@ -127,7 +127,7 @@ Ownership of ``layer`` is transferred to the symbol.
 Appends a symbol ``layer`` at the end of the current symbol layer list.
 Ownership of ``layer`` is transferred to the symbol.
 
-:return: true if the layer was successfully added, false if the layer is not compatible with the
+:return: ``True`` if the layer was successfully added, ``False`` if the layer is not compatible with the
          symbol's type().
 %End
 
@@ -151,8 +151,8 @@ Ownership of the layer is handed to the caller.
 Deletes the current layer at the specified ``index`` and replaces it with ``layer``.
 Ownership of ``layer`` is transferred to the symbol.
 
-Returns false if ``layer`` is not compatible with the symbol's type(), or
-true if the layer was successfully replaced.
+Returns ``False`` if ``layer`` is not compatible with the symbol's type(), or
+``True`` if the layer was successfully replaced.
 %End
 
     void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
@@ -351,7 +351,7 @@ extent. If this option is enabled then features which are partially outside the 
 will be clipped. This speeds up rendering of the feature, but may have undesirable
 side effects for certain symbol types.
 
-:param clipFeaturesToExtent: set to true to enable clipping (defaults to true)
+:param clipFeaturesToExtent: set to true to enable clipping (defaults to ``True``)
 
 .. seealso:: :py:func:`clipFeaturesToExtent`
 
@@ -365,7 +365,7 @@ extent. If this option is enabled then features which are partially outside the 
 will be clipped. This speeds up rendering of the feature, but may have undesirable
 side effects for certain symbol types.
 
-:return: true if features will be clipped
+:return: ``True`` if features will be clipped
 
 .. seealso:: :py:func:`setClipFeaturesToExtent`
 
@@ -387,7 +387,7 @@ direction.
 
     bool forceRHR() const;
 %Docstring
-Returns true if polygon features drawn by the symbol will be reoriented to follow the
+Returns ``True`` if polygon features drawn by the symbol will be reoriented to follow the
 standard right-hand-rule orientation, in which the area that is
 bounded by the polygon is to the right of the boundary. In particular, the exterior
 ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
@@ -417,7 +417,7 @@ Returns whether the symbol utilizes any data defined properties.
 
 .. note::
 
-   the layer will be NULL after stopRender
+   the layer will be ``None`` after stopRender
 
 .. deprecated:: Will be removed in QGIS 4.0
 %End
@@ -458,7 +458,7 @@ Creates a line string in screen coordinates from a QgsCurve in map coordinates
 %Docstring
 Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates.
 
-If ``correctRingOrientation`` is true then the ring will be oriented to match standard ring orientation, e.g.
+If ``correctRingOrientation`` is ``True`` then the ring will be oriented to match standard ring orientation, e.g.
 clockwise for exterior rings and counter-clockwise for interior rings.
 %End
 
@@ -466,7 +466,7 @@ clockwise for exterior rings and counter-clockwise for interior rings.
 %Docstring
 Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
 
-If ``correctRingOrientation`` is true then the ring will be oriented to match standard ring orientation, e.g.
+If ``correctRingOrientation`` is ``True`` then the ring will be oriented to match standard ring orientation, e.g.
 clockwise for exterior rings and counter-clockwise for interior rings.
 %End
 
@@ -521,7 +521,7 @@ Constructor for QgsSymbolRenderContext
 :param c:
 :param u:
 :param opacity: value between 0 (fully transparent) and 1 (fully opaque)
-:param selected: set to true if symbol should be drawn in a "selected" state
+:param selected: set to ``True`` if symbol should be drawn in a "selected" state
 :param renderHints: flags controlling rendering behavior
 :param f:
 :param fields:
@@ -624,7 +624,7 @@ simple line style will look different if the simple line is rendering a polygon 
 %Docstring
 Fields of the layer. Currently only available in startRender() calls
 to allow symbols with data-defined properties prepare the expressions
-(other times fields() returns null)
+(other times fields() returns an empty QgsFields object).
 
 .. versionadded:: 2.4
 %End

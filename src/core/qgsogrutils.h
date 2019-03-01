@@ -136,7 +136,7 @@ namespace gdal
   /**
    * Performs a fast close of an unwanted GDAL dataset handle by deleting the underlying
    * data store. Use when the resultant dataset is no longer required, e.g. as a result
-   * of user cancelation of an operation.
+   * of user cancellation of an operation.
    *
    * Requires a gdal \a dataset pointer, the corresponding gdal \a driver and underlying
    * dataset file \a path.
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param fields fields collection corresponding to feature
      * \param feature QgsFeature to store attributes in
      * \param encoding text encoding
-     * \returns true if attribute read was successful
+     * \returns TRUE if attribute read was successful
      * \see getOgrFeatureAttribute()
      */
     static bool readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, QTextCodec *encoding );
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsOgrUtils
      * Reads the geometry from an OGR feature into a QgsFeature.
      * \param ogrFet OGR feature handle
      * \param feature QgsFeature to store geometry in
-     * \returns true if geometry read was successful
+     * \returns TRUE if geometry read was successful
      * \see readOgrFeatureAttributes()
      * \see ogrGeometryToQgsGeometry()
      */

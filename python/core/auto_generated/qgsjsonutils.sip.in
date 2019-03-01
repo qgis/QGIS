@@ -57,7 +57,7 @@ Returns the maximum number of decimal places to use in geometry coordinates.
 %Docstring
 Sets whether to include geometry in the JSON exports.
 
-:param includeGeometry: set to false to prevent geometry inclusion
+:param includeGeometry: set to ``False`` to prevent geometry inclusion
 
 .. seealso:: :py:func:`includeGeometry`
 %End
@@ -73,7 +73,7 @@ Returns whether geometry will be included in the JSON exports.
 %Docstring
 Sets whether to include attributes in the JSON exports.
 
-:param includeAttributes: set to false to prevent attribute inclusion
+:param includeAttributes: set to ``False`` to prevent attribute inclusion
 
 .. seealso:: :py:func:`includeAttributes`
 %End
@@ -89,7 +89,7 @@ Returns whether attributes will be included in the JSON exports.
 %Docstring
 Sets whether to include attributes of features linked via references in the JSON exports.
 
-:param includeRelated: set to true to include attributes for any related child features
+:param includeRelated: set to ``True`` to include attributes for any related child features
                        within the exported properties element.
 
 .. note::

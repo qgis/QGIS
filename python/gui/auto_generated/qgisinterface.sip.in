@@ -45,7 +45,7 @@ Constructor
         QgsMapLayer::LayerType type, bool allLayers ) = 0;
 %Docstring
 Add action to context menu for layers in the layer tree.
-If allLayers is true, then the action will be available for all layers of given type,
+If allLayers is ``True``, then the action will be available for all layers of given type,
 otherwise the action will be available only for specific layers added with addCustomActionForLayer()
 after this call.
 
@@ -100,7 +100,7 @@ Closes the additional map canvas with matching ``name``.
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
 %Docstring
-Returns the toolbar icon size. If ``dockedToolbar`` is true, the icon size
+Returns the toolbar icon size. If ``dockedToolbar`` is ``True``, the icon size
 for toolbars contained within docks is returned.
 %End
 
@@ -110,7 +110,7 @@ Returns vector layers in edit mode
 
 :param modified: whether to return only layers that have been modified
 
-:return: list of layers in legend order, or empty list *
+:return: list of layers in legend order, or empty list
 %End
 
     virtual QgsMapLayer *activeLayer() = 0;
@@ -686,7 +686,7 @@ select dialogs and the browser widgets)
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 %Docstring
 Set the active layer (layer gets selected in the legend)
-returns true if the layer exists, false otherwise
+returns ``True`` if the layer exists, ``False`` otherwise
 %End
 
     virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
@@ -953,13 +953,13 @@ Open attribute table dialog
     virtual void addWindow( QAction *action ) = 0;
 %Docstring
 Add window to Window menu. The action title is the window title
-and the action should raise, unminimize and activate the window. *
+and the action should raise, unminimize and activate the window.
 %End
 
     virtual void removeWindow( QAction *action ) = 0;
 %Docstring
 Remove window from Window menu. Calling this is necessary only for
-windows which are hidden rather than deleted when closed. *
+windows which are hidden rather than deleted when closed.
 %End
 
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
@@ -1086,10 +1086,10 @@ Unregister a previously registered custom drop ``handler`` for layout windows.
 %Docstring
 Open a url in the users browser. By default the QGIS doc directory is used
 as the base for the URL. To open a URL that is not relative to the installed
-QGIS documentation, set useQgisDocDirectory to false.
+QGIS documentation, set useQgisDocDirectory to ``False``.
 
 :param url: URL to open
-:param useQgisDocDirectory: If true, the URL will be formed by concatenating
+:param useQgisDocDirectory: If ``True``, the URL will be formed by concatenating
                             url to the QGIS documentation directory path (prefix/share/doc)
 
 .. deprecated:: Use QDesktopServices instead
@@ -1098,12 +1098,12 @@ QGIS documentation, set useQgisDocDirectory to false.
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 %Docstring
 Opens a new feature form.
-Returns true if dialog was accepted (if shown modal, true otherwise).
+Returns true if dialog was accepted (if shown modal, ``True`` otherwise).
 
 :param l: vector layer
 :param f: feature to show/modify
 :param updateFeatureOnly: only update the feature update (don't change any attributes of the layer) [UNUSED]
-:param showModal: if true, will wait for the dialog to be executed (only shown otherwise)
+:param showModal: if ``True``, will wait for the dialog to be executed (only shown otherwise)
 %End
 
     virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
@@ -1172,7 +1172,7 @@ This might be useful if the configuration of the filter changed without going th
 Checks available datum transforms and ask user if several are available and none
 is chosen. Dialog is shown only if global option is set accordingly.
 
-:return: true if a datum transform has been specifically chosen by user or only one is available.
+:return: ``True`` if a datum transform has been specifically chosen by user or only one is available.
 
 .. versionadded:: 3.0
 %End
@@ -1190,12 +1190,12 @@ creating a new browser model for every use.
     void currentLayerChanged( QgsMapLayer *layer );
 %Docstring
 Emitted whenever current (selected) layer changes.
-The pointer to layer can be null if no layer is selected.
+The pointer to layer can be ``None`` if no layer is selected.
 %End
 
     void currentThemeChanged( const QString &theme );
 %Docstring
-Signal emitted when the current ``theme`` is changed so plugins
+Emitted when the current ``theme`` is changed so plugins
 can change their tool button icons.
 
 .. versionadded:: 3.0
@@ -1203,7 +1203,7 @@ can change their tool button icons.
 
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 %Docstring
-This signal is emitted when a new layout ``designer`` has been opened.
+Emitted when a new layout ``designer`` has been opened.
 
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
@@ -1212,7 +1212,7 @@ This signal is emitted when a new layout ``designer`` has been opened.
 
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 %Docstring
-This signal is emitted before a layout ``designer`` is going to be closed
+Emitted before a layout ``designer`` is going to be closed
 and deleted.
 
 .. seealso:: :py:func:`layoutDesignerClosed`
@@ -1224,7 +1224,7 @@ and deleted.
 
     void layoutDesignerClosed();
 %Docstring
-This signal is emitted after a layout designer window is closed.
+Emitted after a layout designer window is closed.
 
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
@@ -1235,7 +1235,7 @@ This signal is emitted after a layout designer window is closed.
 
     void initializationCompleted();
 %Docstring
-This signal is emitted when the initialization is complete.
+Emitted when the initialization is complete.
 %End
 
     void projectRead();
@@ -1264,7 +1264,7 @@ Emitted when starting an entirely new project.
 
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 %Docstring
-This signal is emitted when a layer has been saved using save as.
+Emitted when a layer has been saved using save as.
 
 .. versionadded:: 2.7
 %End

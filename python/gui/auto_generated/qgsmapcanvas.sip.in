@@ -88,7 +88,7 @@ Resets the ``flags`` for the canvas' map settings.
 
     const QgsLabelingResults *labelingResults() const;
 %Docstring
-Gets access to the labeling results (may be null)
+Gets access to the labeling results (may be ``None``)
 
 .. versionadded:: 2.4
 %End
@@ -350,8 +350,8 @@ Returns the list of layers shown within the map canvas.
 Freeze/thaw the map canvas. This is used to prevent the canvas from
 responding to events while layers are being added/removed etc.
 
-:param frozen: Boolean specifying if the canvas should be frozen (true) or
-               thawed (false). Default is true.
+:param frozen: Boolean specifying if the canvas should be frozen (``True``) or
+               thawed (``False``). Default is ``True``.
 
 .. seealso:: :py:func:`isFrozen`
 
@@ -361,7 +361,7 @@ responding to events while layers are being added/removed etc.
 
     bool isFrozen() const;
 %Docstring
-Returns true if canvas is frozen.
+Returns ``True`` if canvas is frozen.
 
 .. seealso:: :py:func:`renderFlag`
 have been halted programmatically, while renderFlag() should be used to
@@ -372,7 +372,7 @@ determine whether a user has disabled rendering via GUI.
 
     bool renderFlag() const;
 %Docstring
-Returns true if canvas render is disabled as a result of user disabling
+Returns ``True`` if canvas render is disabled as a result of user disabling
 renders via the GUI.
 
 .. seealso:: :py:func:`setRenderFlag`
@@ -501,7 +501,7 @@ used to determine if anti-aliasing is enabled or not
 
     bool antiAliasingEnabled() const;
 %Docstring
-true if antialising is enabled
+``True`` if antialising is enabled
 %End
 
     void enableMapTileRendering( bool flag );
@@ -528,7 +528,7 @@ returns last position of mouse cursor
 %Docstring
 Enables a preview mode for the map canvas
 
-:param previewEnabled: set to true to enable a preview mode
+:param previewEnabled: set to ``True`` to enable a preview mode
 
 .. seealso:: :py:func:`setPreviewMode`
 
@@ -539,7 +539,7 @@ Enables a preview mode for the map canvas
 %Docstring
 Returns whether a preview mode is enabled for the map canvas
 
-:return: true if a preview mode is currently enabled
+:return: ``True`` if a preview mode is currently enabled
 
 .. seealso:: :py:func:`setPreviewModeEnabled`
 
@@ -551,7 +551,7 @@ Returns whether a preview mode is enabled for the map canvas
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 %Docstring
 Sets a preview mode for the map canvas. This setting only has an effect if
-previewModeEnabled is true.
+previewModeEnabled is ``True``.
 
 :param mode: preview mode for the canvas
 
@@ -567,7 +567,7 @@ previewModeEnabled is true.
     QgsPreviewEffect::PreviewMode previewMode() const;
 %Docstring
 Returns the current preview mode for the map canvas. This setting only has an effect if
-previewModeEnabled is true.
+previewModeEnabled is ``True``.
 
 :return: preview mode for map canvas
 
@@ -664,7 +664,7 @@ Returns a list of all annotation items in the canvas.
 
     bool annotationsVisible() const;
 %Docstring
-Returns true if annotations are visible within the map canvas.
+Returns ``True`` if annotations are visible within the map canvas.
 
 .. seealso:: :py:func:`setAnnotationsVisible`
 
@@ -696,7 +696,7 @@ Returns global labeling engine settings from the internal map settings
 
     bool previewJobsEnabled() const;
 %Docstring
-Returns true if canvas map preview jobs (low priority render jobs which render portions
+Returns ``True`` if canvas map preview jobs (low priority render jobs which render portions
 of the view just outside of the canvas extent, to allow preview of these
 out-of-canvas areas when panning or zooming out the map) are enabled
 for the canvas.
@@ -739,7 +739,7 @@ Receives signal about selection change, and pass it on with layer info
 
     void saveAsImage( const QString &fileName, QPixmap *QPixmap = 0, const QString & = "PNG" );
 %Docstring
-Save the convtents of the map canvas to disk as an image
+Save the contents of the map canvas to disk as an image
 %End
 
     void layerStateChange();
@@ -751,7 +751,7 @@ This slot is connected to the visibility change of one or more layers
 %Docstring
 Sets whether a user has disabled canvas renders via the GUI.
 
-:param flag: set to false to indicate that user has disabled renders
+:param flag: set to ``False`` to indicate that user has disabled renders
 
 .. seealso:: :py:func:`renderFlag`
 

@@ -77,7 +77,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Returns ID of associated layer, or empty string if no layer is associated with the provider.
     QString layerId() const { return mLayerId; }
 
-    //! Returns the associated layer, or nullptr if no layer is associated with the provider.
+    //! Returns the associated layer, or NULLPTR if no layer is associated with the provider.
     QgsMapLayer *layer() const { return mLayer.data(); }
 
     /**

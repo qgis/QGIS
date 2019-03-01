@@ -56,7 +56,7 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     void scrollOccurred();
 
     /**
-     * Returns true if a scroll recently occurred within
+     * Returns TRUE if a scroll recently occurred within
      * the QScrollArea or its child viewport()
      */
     bool hasScrolled() const;

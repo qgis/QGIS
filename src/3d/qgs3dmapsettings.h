@@ -248,7 +248,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     /**
      * Returns terrain shading material. Diffuse color component is ignored since the diffuse component
-     * is provided by 2D rendered map texture. Only used when isTerrainShadingEnabled() is true.
+     * is provided by 2D rendered map texture. Only used when isTerrainShadingEnabled() is TRUE.
      * \since QGIS 3.6
      */
     QgsPhongMaterialSettings terrainShadingMaterial() const { return mTerrainShadingMaterial; }
@@ -328,6 +328,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      */
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
 
+    /**
+     * Returns the camera lens' field of view
+     * \since QGIS 3.8
+     */
+    float fieldOfView() const { return mFieldOfView; }
+
+    /**
+     * Sets the camera lens' field of view
+     * \since QGIS 3.8
+     */
+    void setFieldOfView( const float fieldOfView );
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -376,6 +388,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      */
     void pointLightsChanged();
 
+    /**
+     * Emitted when the camer lens field of view changes
+     * \since QGIS 3.8
+     */
+    void fieldOfViewChanged();
+
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
@@ -395,6 +413,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of lights defined for the scene
+    float mFieldOfView = 45.0f; //<! Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
     bool mSkyboxEnabled = false;  //!< Whether to render skybox

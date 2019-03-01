@@ -94,7 +94,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct ProviderOptions
     {
-      int unused; //! @todo remove me once there are actual members here (breaks SIP <4.19)
+      int unused; //!< @todo remove me once there are actual members here (breaks SIP <4.19)
     };
 
     /**
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Returns true if this is a valid layer. It is up to individual providers
+     * Returns TRUE if this is a valid layer. It is up to individual providers
      * to determine what constitutes a valid layer.
      */
     virtual bool isValid() const = 0;
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Returns true if the provider supports setting of subset strings.
+     * Returns TRUE if the provider supports setting of subset strings.
     */
     virtual bool supportsSubsetString() const { return false; }
 
@@ -390,7 +390,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * This is aimed at providers that can open differently the connection to
      * the datasource, according it to be in update mode or in read-only mode.
      * A call to this method shall be balanced with a call to leaveUpdateMode(),
-     * if this method returns true.
+     * if this method returns TRUE.
      *
      * Most providers will have an empty implementation for that method.
      *
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * a concept of stack of calls that must be handled by the provider. Only the first
      * call to enterUpdateMode() will really turn update mode on.
      *
-     * \returns true in case of success (or no-op implementation), false in case of failure.
+     * \returns TRUE in case of success (or no-op implementation), FALSE in case of failure.
      *
      * \since QGIS 2.16
      */
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * a concept of stack of calls that must be handled by the provider. Only the last
      * call to leaveUpdateMode() will really turn update mode off.
      *
-     * \returns true in case of success (or no-op implementation), false in case of failure.
+     * \returns TRUE in case of success (or no-op implementation), FALSE in case of failure.
      *
      * \since QGIS 2.16
      */
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * The \a context argument gives useful information which can be used
      * to determine whether the layer should be rendered or not.
      *
-     * The base implementation returns true if lastRenderingTimeMs <= maxRenderingTimeMs.
+     * The base implementation returns TRUE if lastRenderingTimeMs <= maxRenderingTimeMs.
      *
      *
      * \note not available in Python bindings
@@ -516,7 +516,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Writes layer \a metadata to the underlying provider source. Support depends
      * on individual provider capabilities.
      *
-     * Returns true if metadata was successfully written to the data provider.
+     * Returns TRUE if metadata was successfully written to the data provider.
      * \see layerMetadata()
      * \since QGIS 3.0
     */

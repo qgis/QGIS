@@ -171,7 +171,7 @@ Returns data type for the band specified by number
     virtual Qgis::DataType sourceDataType( int bandNo ) const;
 %Docstring
 Returns source data type for the band specified by number,
-source data type may be shorter than dataType *
+source data type may be shorter than dataType
 %End
 
     virtual QgsRectangle extent() const;
@@ -215,13 +215,13 @@ Caller is responsible to free the memory returned.
 :param extent: extent of block
 :param width: pixel width of block
 :param height: pixel height of block
-:param feedback: optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+:param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
 %End
 
     virtual bool setInput( QgsRasterInterface *input );
 %Docstring
 Set input.
-Returns true if set correctly, false if cannot use that input *
+Returns ``True`` if set correctly, ``False`` if cannot use that input
 %End
 
     virtual QgsRasterInterface *input() const;
@@ -266,9 +266,9 @@ Returns the band statistics.
                                 const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
 %Docstring
-Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
+Returns ``True`` if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
 
-:return: true if statistics are available (ready to use)
+:return: ``True`` if statistics are available (ready to use)
 %End
 
 
@@ -347,7 +347,7 @@ Returns a band histogram. Histograms are cached in providers.
            int sampleSize = 0,
            bool includeOutOfRange = false )];
 %Docstring
-Returns true if histogram is available (cached, already calculated)
+Returns ``True`` if histogram is available (cached, already calculated)
 
 .. note::
 

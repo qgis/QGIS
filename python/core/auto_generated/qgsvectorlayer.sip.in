@@ -433,14 +433,14 @@ Joins another vector layer to this layer
 
 .. note::
 
-   since 2.6 returns bool indicating whether the join can be added *
+   since 2.6 returns bool indicating whether the join can be added
 %End
 
     bool removeJoin( const QString &joinLayerId );
 %Docstring
 Removes a vector layer join
 
-:return: true if join was found and successfully removed *
+:return: ``True`` if join was found and successfully removed
 %End
 
     QgsVectorLayerJoinBuffer *joinBuffer();
@@ -460,7 +460,7 @@ Sets the list of dependencies.
 
 :param layers: set of :py:class:`QgsMapLayerDependency`. Only user-defined dependencies will be added
 
-:return: false if a dependency cycle has been detected
+:return: ``False`` if a dependency cycle has been detected
 
 .. versionadded:: 3.0
 %End
@@ -678,7 +678,7 @@ Returns the bounding box of the selected features. If there is no selection, Qgs
 %Docstring
 Returns whether the layer contains labels which are enabled and should be drawn.
 
-:return: true if layer contains enabled labels
+:return: ``True`` if layer contains enabled labels
 
 .. seealso:: :py:func:`setLabelsEnabled`
 
@@ -691,7 +691,7 @@ Sets whether labels should be ``enabled`` for the layer.
 
 .. note::
 
-   Labels will only be rendered if labelsEnabled() is true and a labeling
+   Labels will only be rendered if labelsEnabled() is ``True`` and a labeling
    object is returned by labeling().
 
 .. seealso:: :py:func:`labelsEnabled`
@@ -703,7 +703,7 @@ Sets whether labels should be ``enabled`` for the layer.
 %Docstring
 Returns whether the layer contains diagrams which are enabled and should be drawn.
 
-:return: true if layer contains enabled diagrams
+:return: ``True`` if layer contains enabled diagrams
 
 .. versionadded:: 2.9
 %End
@@ -818,7 +818,7 @@ Delete a style from the database
 
 :param styleId: the provider's layer_styles table id of the style to delete
 
-:return: - true in case of success
+:return: - ``True`` in case of success
          - msgError: reference to string that will be updated with any error messages
 
 .. versionadded:: 3.0
@@ -830,29 +830,29 @@ Delete a style from the database
 Load a named style from file/local db/datasource db
 
 :param theURI: the URI of the style or the URI of the layer
-:param resultFlag: will be set to true if a named style is correctly loaded
-:param loadFromLocalDb: if true forces to load from local db instead of datasource one
+:param resultFlag: will be set to ``True`` if a named style is correctly loaded
+:param loadFromLocalDb: if ``True`` forces to load from local db instead of datasource one
 :param categories: the style categories to be loaded.
 %End
 
      virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/,
                             QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) ${SIP_FINAL};
 %Docstring
-Calls loadNamedStyle( theURI, resultFlag, false );
+Calls loadNamedStyle( theURI, resultFlag, ``False`` );
 Retained for backward compatibility
 %End
 
     bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
 %Docstring
 Loads the auxiliary layer for this vector layer. If there's no
-corresponding table in the database, then nothing happens and false is
+corresponding table in the database, then nothing happens and ``False`` is
 returned. The key is optional because if this layer has been read from
 a XML document, then the key read in this document is used by default.
 
 :param storage: The auxiliary storage where to look for the table
 :param key: The key to use for joining.
 
-:return: true if the auxiliary layer is well loaded, false otherwise
+:return: ``True`` if the auxiliary layer is well loaded, ``False`` otherwise
 
 
 .. versionadded:: 3.0
@@ -886,7 +886,7 @@ Read the symbology for the current layer from the Dom node supplied.
 :param context: reading context (used for transform from relative to absolute paths)
 :param categories: the style categories to be read
 
-:return: true in case of success.
+:return: ``True`` in case of success.
 %End
 
      virtual bool readStyle( const QDomNode &node, QString &errorMessage,
@@ -899,7 +899,7 @@ Read the style for the current layer from the Dom node supplied.
 :param context: reading context (used for transform from relative to absolute paths)
 :param categories: the style categories to be read
 
-:return: true in case of success.
+:return: ``True`` in case of success.
 %End
 
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
@@ -913,7 +913,7 @@ Write the symbology for the layer into the docment provided.
 :param context: writing context (used for transform from absolute to relative paths)
 :param categories: the style categories to be written
 
-:return: true in case of success.
+:return: ``True`` in case of success.
 %End
 
      virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
@@ -927,7 +927,7 @@ Write just the style information for the layer into the document
 :param context: writing context (used for transform from absolute to relative paths)
 :param categories: the style categories to be written
 
-:return: true in case of success.
+:return: ``True`` in case of success.
 %End
 
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
@@ -939,7 +939,7 @@ Writes the symbology of the layer into the document provided in SLD 1.1 format
 :param errorMessage: reference to string that will be updated with any error messages
 :param props: a open ended set of properties that can drive/inform the SLD encoding
 
-:return: true in case of success
+:return: ``True`` in case of success
 %End
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage ) ${SIP_FINAL};
@@ -976,7 +976,7 @@ if the geometry type of the new data source matches the current geometry type of
 :param dataSource: new layer data source
 :param baseName: base name of the layer
 :param provider: provider string
-:param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
+:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
                              data source
 
 .. versionadded:: 2.10
@@ -994,7 +994,7 @@ if the geometry type of the new data source matches the current geometry type of
 :param baseName: base name of the layer
 :param provider: provider string
 :param options: provider options
-:param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
+:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
                              data source
 
 .. seealso:: :py:func:`dataSourceChanged`
@@ -1017,7 +1017,7 @@ notified when the freshly updated feature counts are ready.
 .. note::
 
    If the count features for symbols has been already done a
-   None is returned. If you need to wait for the results,
+   ``None`` is returned. If you need to wait for the results,
    you can call waitForFinished() on the feature counter.
 
 .. versionadded:: 3.0
@@ -1031,7 +1031,7 @@ Set the string (typically sql) used to define a subset of the layer
                or other definition string specific to the underlying dataprovider
                and data store.
 
-:return: true, when setting the subset string was successful, false otherwise
+:return: ``True``, when setting the subset string was successful, ``False`` otherwise
 %End
 
     virtual QString subsetString() const;
@@ -1087,10 +1087,10 @@ Updates an existing ``feature`` in the layer, replacing the attributes and geome
 with matching QgsFeature.id() with the attributes and geometry from ``feature``.
 Changes are not immediately committed to the layer.
 
-If ``skipDefaultValue`` is set to true, default field values will not
+If ``skipDefaultValue`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value expressions.
 
-Returns true if the feature's attribute was successfully changed.
+Returns ``True`` if the feature's attribute was successfully changed.
 
 .. note::
 
@@ -1197,7 +1197,7 @@ Deletes a vertex from a feature.
 %Docstring
 Deletes the selected features
 
-:return: true in case of success and false otherwise
+:return: ``True`` in case of success and ``False`` otherwise
 %End
 
     QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = 0 );
@@ -1338,7 +1338,7 @@ Translates feature by dx, dy
 Splits parts cut by the given line
 
 :param splitLine: line that splits the layer features
-:param topologicalEditing: true if topological editing is enabled
+:param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: QgsGeometry.OperationResult
          - Success
@@ -1362,7 +1362,7 @@ Splits parts cut by the given line
 Splits features cut by the given line
 
 :param splitLine: line that splits the layer features
-:param topologicalEditing: true if topological editing is enabled
+:param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: QgsGeometry.OperationResult
          - Success
@@ -1427,7 +1427,7 @@ Access to labeling configuration. May be null if labeling is not used.
 
 .. note::
 
-   Labels will only be rendered if labelsEnabled() returns true.
+   Labels will only be rendered if labelsEnabled() returns ``True``.
 
 .. seealso:: :py:func:`labelsEnabled`
 
@@ -1444,24 +1444,24 @@ Set labeling configuration. Takes ownership of the object.
     virtual bool isEditable() const ${SIP_FINAL};
 
 %Docstring
-Returns true if the provider is in editing mode
+Returns ``True`` if the provider is in editing mode
 %End
 
     virtual bool isSpatial() const ${SIP_FINAL};
 
 %Docstring
-Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
+Returns ``True`` if this is a geometry layer and ``False`` in case of NoGeometry (table only) or UnknownGeometry
 %End
 
     virtual bool isModified() const;
 %Docstring
-Returns true if the provider has been modified since the last commit
+Returns ``True`` if the provider has been modified since the last commit
 %End
 
     bool isAuxiliaryField( int index, int &srcIndex ) const;
 %Docstring
-Returns true if the field comes from the auxiliary layer,
-false otherwise.
+Returns ``True`` if the field comes from the auxiliary layer,
+``False`` otherwise.
 
 .. versionadded:: 3.0
 %End
@@ -1509,13 +1509,15 @@ Returns the list of attributes which make up the layer's primary keys.
 %Docstring
 Returns feature count including changes which have not yet been committed
 If you need only the count of committed features call this method on this layer's provider.
+
+:return: the number of features on this layer or -1 if unknown.
 %End
 
     bool setReadOnly( bool readonly = true );
 %Docstring
 Make layer read-only (editing disabled) or not
 
-:return: false if the layer is in editing yet
+:return: ``False`` if the layer is in editing yet
 %End
 
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
@@ -1524,10 +1526,10 @@ Changes a feature's ``geometry`` within the layer's edit buffer
 (but does not immediately commit the changes). The ``fid`` argument
 specifies the ID of the feature to be changed.
 
-If ``skipDefaultValue`` is set to true, default field values will not
+If ``skipDefaultValue`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value expressions.
 
-Returns true if the feature's geometry was successfully changed.
+Returns ``True`` if the feature's geometry was successfully changed.
 
 .. note::
 
@@ -1561,10 +1563,10 @@ QVariant is used (the default behavior), then the feature's current value will b
 retrieved and used. Note that this involves a feature request to the underlying data provider,
 so it is more efficient to explicitly pass an ``oldValue`` if it is already available.
 
-If ``skipDefaultValues`` is set to true, default field values will not
+If ``skipDefaultValues`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value expressions.
 
-Returns true if the feature's attribute was successfully changed.
+Returns ``True`` if the feature's attribute was successfully changed.
 
 .. note::
 
@@ -1598,11 +1600,11 @@ automatically retrieved and used. Note that this involves a feature
 request to the underlying data provider, so it is more efficient to
 explicitly pass an oldValue if it is already available.
 
-If ``skipDefaultValues`` is set to true, default field values will not
+If ``skipDefaultValues`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value
 expressions.
 
-Returns true if feature's attributes was successfully changed.
+Returns ``True`` if feature's attributes was successfully changed.
 
 .. note::
 
@@ -1629,7 +1631,7 @@ Returns true if feature's attributes was successfully changed.
     bool addAttribute( const QgsField &field );
 %Docstring
 Add an attribute field (but does not commit it)
-returns true if the field was added
+returns ``True`` if the field was added
 
 .. note::
 
@@ -1726,7 +1728,7 @@ Deletes a list of attribute fields (but does not commit it)
 
 :param attrs: the indices of the attributes to delete
 
-:return: true if at least one attribute has been deleted
+:return: ``True`` if at least one attribute has been deleted
 %End
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) ${SIP_FINAL};
@@ -1750,7 +1752,7 @@ Deletes a set of features from the layer (but does not commit it)
 
 :param fids: The feature ids to delete
 
-:return: false if the layer is not in edit mode or does not support deleting
+:return: ``False`` if the layer is not in edit mode or does not support deleting
          in case of an active transaction depends on the provider implementation
 
 .. note::
@@ -1766,7 +1768,7 @@ Deletes a set of features from the layer (but does not commit it)
 Attempts to commit to the underlying data provider any buffered changes made since the
 last to call to startEditing().
 
-Returns the result of the attempt. If a commit fails (i.e. false is returned), the
+Returns the result of the attempt. If a commit fails (i.e. ``False`` is returned), the
 in-memory changes are left untouched and are not discarded. This allows editing to
 continue if the commit failed on e.g. a disallowed value in a Postgres
 database - the user can re-edit and try again.
@@ -1797,7 +1799,7 @@ to commit changes to the layer.
 %Docstring
 Stops a current editing operation and discards any uncommitted edits.
 
-If ``deleteBuffer`` is true the editing buffer will be completely deleted (the default
+If ``deleteBuffer`` is ``True`` the editing buffer will be completely deleted (the default
 behavior).
 
 .. seealso:: :py:func:`startEditing`
@@ -2089,8 +2091,7 @@ Calculates an aggregated value from the layer's features.
 :param fieldOrExpression: source field or expression to use as basis for aggregated values.
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for expressions and filters
-:param ok: if specified, will be set to true if aggregate calculation was successful
-:param fids: List of feature Id to perform the aggregation on a subset
+:param ok: if specified, will be set to ``True`` if aggregate calculation was successful
 
 :return: calculated aggregate value
 
@@ -2241,8 +2242,8 @@ to determine it.
 
     bool readExtentFromXml() const;
 %Docstring
-Returns true if the extent is read from the XML document when data
-source has no metadata, false if it's the data provider which determines
+Returns ``True`` if the extent is read from the XML document when data
+source has no metadata, ``False`` if it's the data provider which determines
 it.
 
 .. versionadded:: 3.0
@@ -2314,7 +2315,7 @@ Clear selection
 Update the extents for the layer. This is necessary if features are
 added/deleted or the layer has been subsetted.
 
-:param force: true to update layer extent even if it's read from xml by default, false otherwise
+:param force: ``True`` to update layer extent even if it's read from xml by default, ``False`` otherwise
 %End
 
     bool startEditing();
@@ -2325,7 +2326,7 @@ This starts an edit session on this layer. Changes made in this edit session wil
 be made persistent until commitChanges() is called, and can be reverted by calling
 rollBack().
 
-Returns true if the layer was successfully made editable, or false if the operation
+Returns ``True`` if the layer was successfully made editable, or ``False`` if the operation
 failed (e.g. due to an underlying read-only data source, or lack of edit support
 by the backend data provider).
 
@@ -2338,16 +2339,16 @@ by the backend data provider).
 
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 %Docstring
-This signal is emitted when selection was changed
+Emitted when selection was changed
 
 :param selected: Newly selected feature ids
 :param deselected: Ids of all features which have previously been selected but are not any more
-:param clearAndSelect: In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+:param clearAndSelect: In case this is set to ``True``, the old selection was dismissed and the new selection corresponds to selected
 %End
 
     void layerModified();
 %Docstring
-This signal is emitted when modifications has been done on layer
+Emitted when modifications has been done on layer
 %End
 
     void allowCommitChanged();
@@ -2359,37 +2360,37 @@ Emitted whenever the allowCommitChanged() property of this layer changes.
 
     void beforeModifiedCheck() const;
 %Docstring
-Is emitted, when layer is checked for modifications. Use for last-minute additions
+Emitted when the layer is checked for modifications. Use for last-minute additions.
 %End
 
     void beforeEditingStarted();
 %Docstring
-Is emitted, before editing on this layer is started
+Emitted before editing on this layer is started.
 %End
 
     void editingStarted();
 %Docstring
-Is emitted, when editing on this layer has started
+Emitted when editing on this layer has started.
 %End
 
     void editingStopped();
 %Docstring
-Is emitted, when edited changes successfully have been written to the data provider
+Emitted when edited changes have been successfully written to the data provider.
 %End
 
     void beforeCommitChanges();
 %Docstring
-Is emitted, before changes are committed to the data provider
+Emitted before changes are committed to the data provider.
 %End
 
     void beforeRollBack();
 %Docstring
-Is emitted, before changes are rolled back
+Emitted before changes are rolled back.
 %End
 
     void afterRollBack();
 %Docstring
-Is emitted, after changes are rolled back
+Emitted after changes are rolled back.
 
 .. versionadded:: 3.4
 %End
@@ -2460,7 +2461,7 @@ If features are deleted outside of an edit command, this signal will be emitted 
 
     void updatedFields();
 %Docstring
-Is emitted, whenever the fields available from this layer have been changed.
+Emitted whenever the fields available from this layer have been changed.
 This can be due to manually adding attributes or due to a join.
 %End
 
@@ -2473,7 +2474,7 @@ Emitted when the layer's subset string has changed.
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 %Docstring
-Is emitted whenever an attribute value change is done in the edit buffer.
+Emitted whenever an attribute value change is done in the edit buffer.
 Note that at this point the attribute change is not yet saved to the provider.
 
 :param fid: The id of the changed feature
@@ -2483,7 +2484,7 @@ Note that at this point the attribute change is not yet saved to the provider.
 
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geometry );
 %Docstring
-Is emitted whenever a geometry change is done in the edit buffer.
+Emitted whenever a geometry change is done in the edit buffer.
 Note that at this point the geometry change is not yet saved to the provider.
 
 :param fid: The id of the changed feature
@@ -2492,27 +2493,27 @@ Note that at this point the geometry change is not yet saved to the provider.
 
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
 %Docstring
-This signal is emitted, when attributes are deleted from the provider
+Emitted when attributes are deleted from the provider
 %End
     void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
 %Docstring
-This signal is emitted, when attributes are added to the provider
+Emitted when attributes are added to the provider
 %End
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
 %Docstring
-This signal is emitted, when features are added to the provider
+Emitted when features are added to the provider
 %End
     void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );
 %Docstring
-This signal is emitted, when features are deleted from the provider
+Emitted when features are deleted from the provider
 %End
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
 %Docstring
-This signal is emitted, when attribute value changes are saved to the provider
+Emitted when attribute value changes are saved to the provider
 %End
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
 %Docstring
-This signal is emitted, when geometry changes are saved to the provider
+Emitted when geometry changes are saved to the provider
 %End
 
     void labelingFontNotFound( QgsVectorLayer *layer, const QString &fontfamily );

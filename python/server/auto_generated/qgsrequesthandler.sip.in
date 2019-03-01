@@ -161,7 +161,7 @@ Returns the requested format string
 
     bool headersSent() const;
 %Docstring
-Returns true if the HTTP headers were already sent to the client
+Returns ``True`` if the HTTP headers were already sent to the client
 %End
 
 };

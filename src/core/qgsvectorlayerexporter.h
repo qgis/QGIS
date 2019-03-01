@@ -72,10 +72,10 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * \param providerKey string key for destination data provider
      * \param destCRS destination CRS, or an invalid (default constructed) CRS if
      * not available
-     * \param onlySelected set to true to export only selected features
+     * \param onlySelected set to TRUE to export only selected features
      * \param errorMessage if non-null, will be set to any error messages
      * \param options optional provider dataset options
-     * \param feedback optional feedback object to show progress and cancelation of export
+     * \param feedback optional feedback object to show progress and cancellation of export
      * \returns NoError for a successful export, or encountered error
      */
     static ExportError exportLayer( QgsVectorLayer *layer,
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * \param geometryType destination geometry type
      * \param crs desired CRS, or an invalid (default constructed) CRS if
      * not available
-     * \param overwrite set to true to overwrite any existing data source
+     * \param overwrite set to TRUE to overwrite any existing data source
      * \param options optional provider dataset options
      * \param sinkFlags for how to add features
      */
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
     QgsVectorLayerExporter &operator=( const QgsVectorLayerExporter &rh ) = delete;
 
     /**
-     * Returns any encountered error code, or false if no error was encountered.
+     * Returns any encountered error code, or FALSE if no error was encountered.
      * \see errorMessage()
      * \see errorCount()
      */
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
     /**
      * Constructor for QgsVectorLayerExporterTask. Takes a source \a layer, destination \a uri
      * and \a providerKey, and various export related parameters such as destination CRS
-     * and export \a options. \a ownsLayer has to be set to true if the task should take ownership
+     * and export \a options. \a ownsLayer has to be set to TRUE if the task should take ownership
      * of the layer and delete it after export.
     */
     QgsVectorLayerExporterTask( QgsVectorLayer *layer,

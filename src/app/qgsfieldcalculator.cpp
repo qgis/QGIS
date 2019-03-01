@@ -351,7 +351,8 @@ void QgsFieldCalculator::populateOutputFieldTypes()
   mOutputFieldTypeComboBox->blockSignals( true );
 
   // Standard subset of fields in case of virtual
-  const QList< QgsVectorDataProvider::NativeType > &typelist { mCreateVirtualFieldCheckbox->isChecked() ? ( QList< QgsVectorDataProvider::NativeType >()
+  const QList< QgsVectorDataProvider::NativeType > &typelist = mCreateVirtualFieldCheckbox->isChecked() ?
+      ( QList< QgsVectorDataProvider::NativeType >()
         << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
         << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
         << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String )
@@ -365,7 +366,7 @@ void QgsFieldCalculator::populateOutputFieldTypes()
         << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool )
         // blob
         << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray ) ) :
-    provider->nativeTypes() };
+      provider->nativeTypes();
 
   mOutputFieldTypeComboBox->clear();
   for ( int i = 0; i < typelist.size(); i++ )

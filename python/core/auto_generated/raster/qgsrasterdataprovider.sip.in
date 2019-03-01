@@ -37,7 +37,7 @@ Starts the image download
 
 .. note::
 
-   Make sure to connect to "finish" and "error" before starting *
+   Make sure to connect to "finish" and "error" before starting
 %End
 
   signals:
@@ -46,7 +46,7 @@ Starts the image download
 %Docstring
 Emitted when the download completes
 
-:param legend: The downloaded legend image *
+:param legend: The downloaded legend image
 %End
     void progress( qint64 received, qint64 total );
 %Docstring
@@ -159,7 +159,7 @@ Read block of data using given extent and size.
 
     virtual bool sourceHasNoDataValue( int bandNo ) const;
 %Docstring
-Returns true if source band has no data value
+Returns ``True`` if source band has no data value
 %End
 
     virtual bool useSourceNoDataValue( int bandNo ) const;
@@ -189,7 +189,7 @@ Returns a list of user no data value ranges.
     virtual QStringList subLayers() const;
 %Docstring
 Returns the sublayers of this layer - useful for providers that manage
-their own layers, such as WMS *
+their own layers, such as WMS
 %End
 
     virtual bool supportsLegendGraphic() const;
@@ -205,7 +205,7 @@ Returns a new image downloader for the raster legend.
 :param mapSettings: map settings for legend providers supporting
                     contextual legends.
 
-:return: a download handler or null if the provider does not support
+:return: a download handler or ``None`` if the provider does not support
          legend at all. Ownership of the returned object is transferred
          to caller.
 
@@ -236,7 +236,7 @@ Returns the raster layers pyramid list.
 
     bool hasPyramids();
 %Docstring
-Returns true if raster has at least one populated histogram.
+Returns ``True`` if raster has at least one populated histogram.
 %End
 
     virtual QString htmlMetadata() = 0;
@@ -288,7 +288,7 @@ caching (WCS). If context params are not specified the highest
 resolution is used.
 
 If ``ok`` is specified and the point is outside data source extent, or an invalid
-band number was specified, then ``ok`` will be set to false. In this case the function will return
+band number was specified, then ``ok`` will be set to ``False``. In this case the function will return
 a NaN value.
 
 .. seealso:: :py:func:`identify`
@@ -356,7 +356,7 @@ By default providers are not editable. Use setEditable() method to enable/disabl
 Turns on/off editing mode of the provider. When in editing mode, it is possible
 to overwrite data of the provider using writeBlock() calls.
 
-:return: true if the switch to/from editing mode was successful
+:return: ``True`` if the switch to/from editing mode was successful
 
 .. note::
 
@@ -387,7 +387,7 @@ in order to allow write operations.
 
 .. seealso:: :py:func:`isEditable`
 
-:return: true on success
+:return: ``True`` on success
 
 .. versionadded:: 3.0
 %End
@@ -483,7 +483,7 @@ Emit a message to be displayed on status bar, usually used by network providers 
 
     bool userNoDataValuesContains( int bandNo, double value ) const;
 %Docstring
-Returns true if user no data contains value
+Returns ``True`` if user no data contains value
 %End
 
     void copyBaseSettings( const QgsRasterDataProvider &other );

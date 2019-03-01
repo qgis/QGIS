@@ -18,10 +18,17 @@
 #include "qgs3danimationsettings.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgs3danimationexportdialog.h"
+#include "qgs3dmapsettings.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgs3dmapscene.h"
+#include "qgs3dutils.h"
+#include "qgsfeedback.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTimer>
+#include <QProgressDialog>
 
 Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   : QWidget( parent )
@@ -34,7 +41,7 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   btnPlayPause->setIcon( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ) );
   btnDuplicateKeyframe->setIcon( QIcon( QgsApplication::iconPath( "mActionEditCopy.svg" ) ) );
   btnRepeat->setIcon( QIcon( QgsApplication::iconPath( "mActionRefresh.svg" ) ) );
-
+  btnExportAnimation->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   cboKeyframe->addItem( tr( "<none>" ) );
 
   mAnimationTimer = new QTimer( this );
@@ -45,6 +52,7 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   connect( btnRemoveKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onRemoveKeyframe );
   connect( btnEditKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onEditKeyframe );
   connect( btnDuplicateKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onDuplicateKeyframe );
+  connect( btnExportAnimation, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onExportAnimation );
   connect( cboInterpolation, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onInterpolationChanged );
 
   btnPlayPause->setCheckable( true );
@@ -136,6 +144,11 @@ void Qgs3DAnimationWidget::setEditControlsEnabled( bool enabled )
   cboInterpolation->setEnabled( enabled );
 }
 
+void Qgs3DAnimationWidget::setMap( Qgs3DMapSettings *map )
+{
+  mMap = map;
+}
+
 void Qgs3DAnimationWidget::onPlayPause()
 {
   if ( mAnimationTimer->isActive() )
@@ -172,6 +185,48 @@ void Qgs3DAnimationWidget::onAnimationTimer()
   else
   {
     sliderTime->setValue( sliderTime->value() + 1 );
+  }
+}
+
+void Qgs3DAnimationWidget::onExportAnimation()
+{
+  if ( !mMap || !mAnimationSettings )
+    QMessageBox::warning( this, tr( "Export Animation" ), tr( "Unable to export 3D animation" ) );
+
+  Qgs3DAnimationExportDialog dialog;
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QgsFeedback progressFeedback;
+
+    QProgressDialog progressDialog( tr( "Exporting frames..." ), tr( "Abort" ), 0, 100, this );
+    progressDialog.setWindowModality( Qt::WindowModal );
+    QString error;
+
+    connect( &progressFeedback, &QgsFeedback::progressChanged, this,
+             [&progressDialog, &progressFeedback]
+    {
+      progressDialog.setValue( static_cast<int>( progressFeedback.progress() ) );
+      QCoreApplication::processEvents();
+    } );
+
+    connect( &progressDialog, &QProgressDialog::canceled, &progressFeedback, &QgsFeedback::cancel );
+
+    bool success = Qgs3DUtils::exportAnimation(
+                     animation(),
+                     *mMap,
+                     dialog.fps(),
+                     dialog.outputDirectory(),
+                     dialog.fileNameExpression(),
+                     dialog.frameSize(),
+                     error,
+                     &progressFeedback );
+
+    progressDialog.hide();
+    if ( !success )
+    {
+      QMessageBox::warning( this, tr( "Export Animation" ), error );
+      return;
+    }
   }
 }
 

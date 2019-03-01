@@ -97,16 +97,16 @@ class CORE_EXPORT  QgsFields
     //! Removes all fields
     void clear();
 
-    //! Appends a field. The field must have unique name, otherwise it is rejected (returns false)
+    //! Appends a field. The field must have unique name, otherwise it is rejected (returns FALSE)
     bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
 
     /**
-     * Renames a name of field. The field must have unique name, otherwise change is rejected (returns false)
+     * Renames a name of field. The field must have unique name, otherwise change is rejected (returns FALSE)
      * \since QGIS 3.6
      */
     bool rename( int fieldIdx, const QString &name );
 
-    //! Appends an expression field. The field must have unique name, otherwise it is rejected (returns false)
+    //! Appends an expression field. The field must have unique name, otherwise it is rejected (returns FALSE)
     bool appendExpressionField( const QgsField &field, int originIndex );
 
     //! Removes a field with the given index
@@ -140,7 +140,7 @@ class CORE_EXPORT  QgsFields
     sipRes = sipCpp->count();
     % End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
     int __bool__() const;
     % MethodCode
     sipRes = true;
@@ -159,7 +159,7 @@ class CORE_EXPORT  QgsFields
     /**
      * Returns if a field index is valid
      * \param i  Index of the field which needs to be checked
-     * \returns   True if the field exists
+     * \returns   TRUE if the field exists
      */
     bool exists( int i ) const;
 

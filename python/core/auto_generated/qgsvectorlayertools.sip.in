@@ -36,7 +36,7 @@ This method should/will be called, whenever a new feature will be added to the l
 :param defaultValues: Default values for the feature to add
 :param defaultGeometry: A default geometry to add to the feature
 
-:return: - True in case of success, False if the operation failed/was aborted
+:return: - ``True`` in case of success, ``False`` if the operation failed/was aborted
          - feature: Updated feature after adding will be written back to this
 %End
 
@@ -45,11 +45,11 @@ This method should/will be called, whenever a new feature will be added to the l
 %Docstring
 This will be called, whenever a vector layer should be switched to edit mode. Check the providers
 capability to edit in here.
-If successful layer->startEditing() will be called and true returned.
+If successful layer->startEditing() will be called and ``True`` returned.
 
 :param layer: The layer on which to start an edit session
 
-:return: True, if the editing session was started
+:return: ``True``, if the editing session was started
 %End
 
 
@@ -59,9 +59,9 @@ Will be called, when an editing session is ended and the features should be comm
 Appropriate dialogs should be shown like
 
 :param layer: The layer to commit
-:param allowCancel: True if a cancel button should be offered
+:param allowCancel: ``True`` if a cancel button should be offered
 
-:return: True if successful
+:return: ``True`` if successful
 %End
 
 
@@ -71,7 +71,7 @@ Should be called, when the features should be committed but the editing session 
 
 :param layer: The layer to commit
 
-:return: True if successful
+:return: ``True`` if successful
 %End
 
 
@@ -84,7 +84,7 @@ Copy and move features with defined translation.
 :param dx: The translation on x
 :param dy: The translation on y
 
-:return: - True if all features could be copied.
+:return: - ``True`` if all features could be copied.
          - errorMsg: If given, it will contain the error message
 %End
 

@@ -89,7 +89,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     void setCursorPosition( QPointF position );
 
   signals:
-    //! Is emitted when mouse cursor coordinates change
+    //! Emitted when mouse cursor coordinates change
     void cursorPosChanged( QPointF );
 
   protected:
@@ -164,7 +164,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     QPoint convertLayoutPointToLocal( QPointF layoutPoint ) const;
 
     /**
-     * Returns the closest guide to a local ruler point, or nullptr if no guides
+     * Returns the closest guide to a local ruler point, or NULLPTR if no guides
      * are within the acceptable tolerance of the point.
      */
     QgsLayoutGuide *guideAtPoint( QPoint localPoint ) const;

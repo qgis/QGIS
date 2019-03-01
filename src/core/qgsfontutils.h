@@ -70,7 +70,7 @@ class CORE_EXPORT QgsFontUtils
      * \param f The font to update
      * \param fontstyle The style to try and switch the font to
      * \param fallback If no matching fontstyle found for font, assign most similar or first style found to font
-     * \returns Whether the font was updated (also returns true if the requested style matches font's current style)
+     * \returns Whether the font was updated (also returns TRUE if the requested style matches font's current style)
      * \note This is a more featured replacement for a Qt 4.8+ function: void QFont::setStyleName ( const QString & styleName )
      */
     static bool updateFontViaStyle( QFont &f, const QString &fontstyle, bool fallback = false );
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsFontUtils
      * this will overwrite the current properties of the font.
      * \param font font to update
      * \param element DOM element
-     * \returns true if properties were successfully read from element
+     * \returns TRUE if properties were successfully read from element
      * \see toXmlElement
      * \see setFromXmlChildNode
      * \since QGIS 2.10
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsFontUtils
      * \param font font to update
      * \param element DOM element
      * \param childNode name of child node
-     * \returns true if child node exists and properties were successfully read from node
+     * \returns TRUE if child node exists and properties were successfully read from node
      * \see setFromXmlElement
      * \see toXmlElement
      * \since QGIS 2.10
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsFontUtils
 
     /**
      * Attempts to parse the provided mime \a data as a QFont.
-     * If data can be parsed as a QFont, \a ok will be set to true.
+     * If data can be parsed as a QFont, \a ok will be set to TRUE.
      * \see toMimeData()
      * \since QGIS 3.0
      */

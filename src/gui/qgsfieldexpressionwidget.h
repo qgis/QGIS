@@ -48,6 +48,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_OBJECT
     Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( bool allowEmptyFieldName READ allowEmptyFieldName WRITE setAllowEmptyFieldName )
     Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
 
   public:
@@ -75,6 +76,20 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! setFilters allows fitering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
 
+    /**
+     * Sets whether an optional empty field ("not set") option is shown in the combo box.
+     * \see allowEmptyFieldName()
+     * \since QGIS 3.6
+     */
+    void setAllowEmptyFieldName( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the combo box allows the empty field ("not set") choice.
+     * \see setAllowEmptyFieldName()
+     * \since QGIS 3.6
+     */
+    bool allowEmptyFieldName() const;
+
     void setLeftHandButtonStyle( bool isLeft );
 
     //! currently used filter on list of fields
@@ -91,12 +106,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
 
     /**
-      * Returns true if the current expression is valid
+      * Returns TRUE if the current expression is valid
       */
     bool isValidExpression( QString *expressionError = nullptr ) const;
 
     /**
-     * If the content is not just a simple field this method will return true.
+     * If the content is not just a simple field this method will return TRUE.
      */
     bool isExpression() const;
 
@@ -156,7 +171,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setAllowEvalErrors( bool allowEvalErrors );
 
   signals:
-    //! the signal is emitted when the currently selected field changes
+    //! Emitted when the currently selected field changes.
     void fieldChanged( const QString &fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression

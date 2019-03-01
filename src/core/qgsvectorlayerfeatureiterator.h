@@ -153,7 +153,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     bool isValid() const override;
 
   protected:
-    //! fetch next feature, return true on success
+    //! fetch next feature, return TRUE on success
     bool fetchFeature( QgsFeature &feature ) override;
 
     /**
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QList< FetchJoinInfo > mOrderedJoinInfoList;
 
     /**
-     * Will always return true. We assume that ordering has been done on provider level already.
+     * Will always return TRUE. We assume that ordering has been done on provider level already.
      *
      */
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;

@@ -57,14 +57,48 @@ Returns the duplicated features in the given layer
 
     };
 
+    class QgsFeatureData
+{
+%Docstring
+Encapsulate geometry and attributes for new features, to be passed to createFeatures
+
+.. seealso:: :py:func:`createFeatures`
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerutils.h"
+%End
+      public:
+
+        QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
+%Docstring
+Constructs a new QgsFeatureData with given ``geometry`` and ``attributes``
+%End
+
+        QgsGeometry geometry() const;
+%Docstring
+Returns geometry
+%End
+
+        QgsAttributeMap attributes() const;
+%Docstring
+Returns attributes
+%End
+
+    };
+
+    typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
+
     static QgsFeatureIterator getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly );
 %Docstring
 Create a feature iterator for a specified field name or expression.
 
 :param layer: vector layer to retrieve values from
 :param fieldOrExpression: field name or an expression string
-:param ok: will be set to false if field or expression is invalid, otherwise true
-:param selectedOnly: set to true to get values from selected features only
+:param ok: will be set to ``False`` if field or expression is invalid, otherwise ``True``
+:param selectedOnly: set to ``True`` to get values from selected features only
 
 :return: feature iterator
 
@@ -77,9 +111,9 @@ Fetches all values from a specified field name or expression.
 
 :param layer: vector layer to retrieve values from
 :param fieldOrExpression: field name or an expression string
-:param ok: will be set to false if field or expression is invalid, otherwise true
-:param selectedOnly: set to true to get values from selected features only
-:param feedback: optional feedback object to allow cancelation
+:param ok: will be set to ``False`` if field or expression is invalid, otherwise ``True``
+:param selectedOnly: set to ``True`` to get values from selected features only
+:param feedback: optional feedback object to allow cancellation
 
 :return: list of fetched values
 
@@ -95,10 +129,10 @@ invalid expression results are skipped.
 
 :param layer: vector layer to retrieve values from
 :param fieldOrExpression: field name or an expression string evaluating to a double value
-:param ok: will be set to false if field or expression is invalid, otherwise true
-:param selectedOnly: set to true to get values from selected features only
+:param ok: will be set to ``False`` if field or expression is invalid, otherwise ``True``
+:param selectedOnly: set to ``True`` to get values from selected features only
 :param nullCount: optional pointer to integer to store number of null values encountered in
-:param feedback: optional feedback object to allow cancelation
+:param feedback: optional feedback object to allow cancellation
 
 :return: list of fetched values
 
@@ -109,7 +143,7 @@ invalid expression results are skipped.
 
     static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );
 %Docstring
-Returns true if the specified value already exists within a field. This method can be used to test for uniqueness
+Returns ``True`` if the specified value already exists within a field. This method can be used to test for uniqueness
 of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
 with IDs within this list are ignored when testing for existence of the value.
 
@@ -124,12 +158,21 @@ value can be used as a basis for generated values.
 .. seealso:: :py:func:`valueExists`
 %End
 
+    static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
+%Docstring
+Returns a new attribute value for the specified field index which is guaranteed to
+be unique within regard to ``existingValues``.
+The optional seed value can be used as a basis for generated values.
+
+.. versionadded:: 3.6
+%End
+
     static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors /Out/,
                                    QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 %Docstring
 Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
-Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
+Returns ``True`` if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
 If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
 %End
 
@@ -143,6 +186,21 @@ Creates a new feature ready for insertion into a layer. Default values and const
 passed for the new feature to copy as many attribute values as possible from the map,
 assuming that they respect the layer's constraints. Note that the created feature is not
 automatically inserted into the layer.
+
+.. seealso:: :py:func:`createFeatures`
+%End
+
+    static QgsFeatureList createFeatures( const QgsVectorLayer *layer,
+                                          const QgsFeaturesDataList &featuresData,
+                                          QgsExpressionContext *context = 0 );
+%Docstring
+Creates a set of new features ready for insertion into a layer. Default values and constraints
+(e.g., unique constraints) will automatically be handled. Note that the created features are not
+automatically inserted into the layer.
+
+.. seealso:: :py:func:`createFeature`
+
+.. versionadded:: 3.6
 %End
 
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext /Out/ );

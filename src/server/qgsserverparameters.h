@@ -54,14 +54,15 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QString typeName() const;
 
     /**
-     * Returns true if the parameter is valid, false otherwise.
+     * Returns TRUE if the parameter is valid, FALSE otherwise.
      */
     virtual bool isValid() const;
 
     /**
-     * Converts the parameter into a string.
+     * Converts the parameter into a string. If \a defaultValue is true
+     * and current value is empty, then the default value is returned.
      */
-    QString toString() const;
+    QString toString( bool defaultValue = false ) const;
 
     /**
      * Converts the parameter into a list of strings.
@@ -72,7 +73,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
 
     /**
      * Converts the parameter into a list of integers.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
      * \returns A list of integers
      */
@@ -80,7 +81,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
 
     /**
      * Converts the parameter into a list of doubles.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
      * \returns A list of doubles
      */
@@ -88,7 +89,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
 
     /**
      * Converts the parameter into a list of colors.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
      * \returns A list of colors
      */
@@ -96,7 +97,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
 
     /**
      * Converts the parameter into a list of geometries.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
      * \returns A list of geometries
      */
@@ -104,21 +105,21 @@ class SERVER_EXPORT QgsServerParameterDefinition
 
     /**
      * Converts the parameter into a rectangle.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \returns A rectangle
      */
     QgsRectangle toRectangle( bool &ok ) const;
 
     /**
      * Converts the parameter into an integer.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \returns An integer
      */
     int toInt( bool &ok ) const;
 
     /**
      * Converts the parameter into a double.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \returns A double
      */
     double toDouble( bool &ok ) const;
@@ -131,14 +132,14 @@ class SERVER_EXPORT QgsServerParameterDefinition
 
     /**
      * Converts the parameter into a color.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \returns A color
      */
     QColor toColor( bool &ok ) const;
 
     /**
      * Converts the parameter into an url.
-     * \param ok True if there's no error during the conversion, false otherwise
+     * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \returns An url
      * \since QGIS 3.4
      */
@@ -146,7 +147,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
 
     /**
      * Loads the data associated to the parameter converted into an url.
-     * \param ok True if there's no error during the load, false otherwise
+     * \param ok TRUE if there's no error during the load, FALSE otherwise
      * \returns The content loaded
      * \since QGIS 3.4
      */

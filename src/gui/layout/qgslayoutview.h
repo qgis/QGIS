@@ -132,20 +132,20 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     /**
      * Sets whether a preview effect should be used to alter the view's appearance.
-     * \param enabled Set to true to enable the preview effect on the view.
+     * \param enabled Set to TRUE to enable the preview effect on the view.
      * \see setPreviewMode()
      */
     void setPreviewModeEnabled( bool enabled );
 
     /**
-     * Returns true if a preview effect is being used to alter the view's appearance.
+     * Returns TRUE if a preview effect is being used to alter the view's appearance.
      * \see setPreviewModeEnabled()
      */
     bool previewModeEnabled() const;
 
     /**
      * Sets the preview \a mode which should be used to modify the view's appearance. Preview modes are only used
-     * if previewModeEnabled() is true.
+     * if previewModeEnabled() is TRUE.
      * \see setPreviewModeEnabled()
      * \see previewMode()
      */
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     /**
      * Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
-     * if previewModeEnabled() is true.
+     * if previewModeEnabled() is TRUE.
      * \see setPreviewMode()
      * \see previewModeEnabled()
      */
@@ -189,7 +189,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void setMenuProvider( QgsLayoutViewMenuProvider *provider SIP_TRANSFER );
 
     /**
-    * Returns the provider for context menus. Returned value may be nullptr if no provider is set.
+    * Returns the provider for context menus. Returned value may be NULLPTR if no provider is set.
     * \see setMenuProvider()
     */
     QgsLayoutViewMenuProvider *menuProvider() const;
@@ -271,7 +271,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QList< QgsLayoutItem * > pasteItems( QPointF layoutPoint );
 
     /**
-     * Returns true if the current clipboard contains layout items.
+     * Returns TRUE if the current clipboard contains layout items.
      * \see pasteItems()
      */
     bool hasItemsInClipboard() const;
@@ -494,12 +494,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void toolSet( QgsLayoutViewTool *tool );
 
     /**
-     * Is emitted whenever the zoom level of the view is changed.
+     * Emitted whenever the zoom level of the view is changed.
      */
     void zoomLevelChanged();
 
     /**
-     * Is emitted when the mouse cursor coordinates change within the view.
+     * Emitted when the mouse cursor coordinates change within the view.
      * The \a layoutPoint argument indicates the cursor position within
      * the layout coordinate system.
      */
@@ -601,7 +601,7 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
   public:
     virtual ~QgsLayoutViewMenuProvider() = default;
 
-    //! Returns a newly created menu instance (or null pointer on error)
+    //! Returns a newly created menu instance (or NULLPTR on error)
     virtual QMenu *createContextMenu( QWidget *parent SIP_TRANSFER, QgsLayout *layout, QPointF layoutPoint ) const = 0 SIP_FACTORY;
 };
 

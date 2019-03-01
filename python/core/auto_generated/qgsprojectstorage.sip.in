@@ -72,20 +72,20 @@ can read all data from it until it reaches its end.
 
     virtual bool removeProject( const QString &uri ) = 0;
 %Docstring
-Removes an existing project at the given URI. Returns true if the removal
+Removes an existing project at the given URI. Returns ``True`` if the removal
 was successful.
 %End
 
     virtual bool renameProject( const QString &uri, const QString &uriNew );
 %Docstring
-Rename an existing project at the given URI to a different URI. Returns true if renaming
+Rename an existing project at the given URI to a different URI. Returns ``True`` if renaming
 was successful.
 %End
 
     virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata /Out/ );
 %Docstring
 Reads project metadata (e.g. last modified time) if this is supported by the storage implementation.
-Returns true if the metadata were read with success.
+Returns ``True`` if the metadata were read with success.
 %End
 
     virtual QString visibleName();

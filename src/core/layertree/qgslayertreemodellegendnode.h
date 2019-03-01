@@ -71,7 +71,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     //! Returns data associated with the item. Must be implemented in derived class.
     virtual QVariant data( int role ) const = 0;
 
-    //! Sets some data associated with the item. Default implementation does nothing and returns false.
+    //! Sets some data associated with the item. Default implementation does nothing and returns FALSE.
     virtual bool setData( const QVariant &value, int role );
 
     virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }
@@ -109,14 +109,14 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * Entry point called from QgsLegendRenderer to do the rendering.
      *  Default implementation calls drawSymbol() and drawSymbolText() methods.
      *
-     *  If ctx is null, this is just first stage when preparing layout - without actual rendering.
+     *  If ctx is NULLPTR, this is just first stage when preparing layout - without actual rendering.
      */
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 
     /**
      * Draws symbol on the left side of the item
      * \param settings Legend layout configuration
-     * \param ctx Context for rendering - may be null if only doing layout without actual rendering
+     * \param ctx Context for rendering - may be NULLPTR if only doing layout without actual rendering
      * \param itemHeight Minimal height of the legend item - used for correct positioning when rendering
      * \returns Real size of the symbol (may be bigger than "normal" symbol size from settings)
      */
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     /**
      * Draws label on the right side of the item
      * \param settings Legend layout configuration
-     * \param ctx Context for rendering - may be null if only doing layout without actual rendering
+     * \param ctx Context for rendering - may be NULLPTR if only doing layout without actual rendering
      * \param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
      * \returns Size of the label (may span multiple lines)
      */

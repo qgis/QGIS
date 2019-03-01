@@ -50,7 +50,7 @@ Returns the number of geometries within the collection.
     sipRes = sipCpp->numGeometries();
 %End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
     int __bool__() const;
 %MethodCode
     sipRes = true;
@@ -99,12 +99,12 @@ Returns a geometry from within the collection.
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring
-Adds a geometry and takes ownership. Returns true in case of success.
+Adds a geometry and takes ownership. Returns ``True`` in case of success.
 %End
 
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 %Docstring
-Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+Inserts a geometry before a specified index and takes ownership. Returns ``True`` in case of success.
 
 :param g: geometry to insert. Ownership is transferred to the collection.
 :param index: position to insert geometry before
@@ -117,7 +117,7 @@ Removes a geometry from the collection by index.
 
 An IndexError will be raised if no geometry with the specified index exists.
 
-:return: true if removal was successful.
+:return: ``True`` if removal was successful.
 %End
 %MethodCode
     const int count = sipCpp->numGeometries();
@@ -205,6 +205,8 @@ Returns a geometry without curves. Caller takes ownership
     virtual int partCount() const;
 
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
+
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
 
 
     virtual bool addZValue( double zValue = 0 );

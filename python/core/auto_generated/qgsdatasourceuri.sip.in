@@ -199,12 +199,12 @@ Sets use Estimated Metadata
 
     bool useEstimatedMetadata() const;
 %Docstring
-Returns true if estimated metadata are used
+Returns ``True`` if estimated metadata are used
 %End
 
     void disableSelectAtId( bool flag );
 %Docstring
-Sets to true to disable selection by id
+Sets to ``True`` to disable selection by id
 %End
     bool selectAtIdDisabled() const;
 %Docstring

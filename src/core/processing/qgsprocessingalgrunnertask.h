@@ -53,7 +53,7 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
 
     /**
      * Emitted when the algorithm has finished execution. If the algorithm completed
-     * execution without errors then \a successful will be true. The \a results argument
+     * execution without errors then \a successful will be TRUE. The \a results argument
      * contains the results reported by the algorithm.
      */
     void executed( bool successful, const QVariantMap &results );

@@ -13,10 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.11
+import QtQuick.Controls 2.4
 import QtQuick 2.5
 import QgsQuick 0.1 as QgsQuick
+import QtQuick.Layouts 1.3
 
 /**
  * Text Edit for QGIS Attribute Form
@@ -26,20 +27,28 @@ import QgsQuick 0.1 as QgsQuick
 Item {
   signal valueChanged(var value, bool isNull)
 
+  id: fieldItem
+
+  anchors {
+    left: parent.left
+    right: parent.right
+    rightMargin: 10 * QgsQuick.Utils.dp
+  }
+
   height: childrenRect.height
 
   TextField {
     id: textField
-    height: textArea.height == 0 ? fontMetrics.height + 20 * QgsQuick.Utils.dp : 0
+    height: textArea.height == 0 ? customStyle.height : 0
     topPadding: 10 * QgsQuick.Utils.dp
     bottomPadding: 10 * QgsQuick.Utils.dp
     visible: height !== 0
     anchors.left: parent.left
     anchors.right: parent.right
-    font.pointSize: 28
+    font.pixelSize: customStyle.fontPixelSize
+    color: customStyle.fontColor
 
     text: value || ''
-
     inputMethodHints: field.isNumeric || widget == 'Range' ? field.precision === 0 ? Qt.ImhDigitsOnly : Qt.ImhFormattedNumbersOnly : Qt.ImhNone
 
     // Make sure we do not input more characters than allowed for strings
@@ -55,10 +64,11 @@ Item {
     ]
 
     background: Rectangle {
-      y: textField.height - height - textField.bottomPadding / 2
-      implicitWidth: 120 * QgsQuick.Utils.dp
-      height: textField.activeFocus ? 2 * QgsQuick.Utils.dp : 1 * QgsQuick.Utils.dp
-      color: textField.activeFocus ? "#4CAF50" : "#C8E6C9"
+        anchors.fill: parent
+        border.color: textField.activeFocus ? customStyle.activeColor : customStyle.normalColor
+        border.width: textField.activeFocus ? 2 : 1
+        color: customStyle.backgroundColor
+        radius: customStyle.cornerRadius
     }
 
     onTextChanged: {
@@ -69,22 +79,24 @@ Item {
   TextArea {
     id: textArea
     height: config['IsMultiline'] === true ? undefined : 0
+    topPadding: customStyle.height * 0.25
+    bottomPadding: customStyle.height * 0.25
     visible: height !== 0
     anchors.left: parent.left
     anchors.right: parent.right
-    font.pointSize: 28
-    wrapMode: "WordWrap"
-
+    font.pixelSize: customStyle.fontPixelSize
+    wrapMode: Text.Wrap
+    color: customStyle.fontColor
     text: value || ''
     textFormat: config['UseHtml'] ? TextEdit.RichText : TextEdit.PlainText
+
+    background: Rectangle {
+        color: customStyle.backgroundColor
+    }
 
     onEditingFinished: {
       valueChanged( text, text == '' )
     }
   }
 
-  FontMetrics {
-    id: fontMetrics
-    font: textField.font
-  }
 }

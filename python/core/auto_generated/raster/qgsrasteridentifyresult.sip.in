@@ -44,7 +44,7 @@ Constructor. Creates invalid result with error.
 
     bool isValid() const;
 %Docstring
-Returns true if valid
+Returns ``True`` if valid
 %End
 
     QgsRaster::IdentifyFormat format() const;

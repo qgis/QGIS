@@ -215,8 +215,10 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
 
     /**
      * Attempts to convert the source to executable Python code.
+     *
+     * The \a friendlyChildNames argument gives a map of child id to a friendly algorithm name, to be used in the code to identify that algorithm instead of the raw child id.
      */
-    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition ) const;
+    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlydChildNames ) const;
 
   private:
 

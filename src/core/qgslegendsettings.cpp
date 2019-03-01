@@ -37,6 +37,16 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
 
+double QgsLegendSettings::mapUnitsPerPixel() const
+{
+  return 1 / ( mMmPerMapUnit * ( mDpi / 25.4 ) );
+}
+
+void QgsLegendSettings::setMapUnitsPerPixel( double mapUnitsPerPixel )
+{
+  mMmPerMapUnit = 1 / mapUnitsPerPixel / ( mDpi / 25.4 );
+}
+
 QStringList QgsLegendSettings::evaluateItemText( const QString &text, const QgsExpressionContext &context ) const
 {
   const QString textToRender = QgsExpression::replaceExpressionText( text, &context );

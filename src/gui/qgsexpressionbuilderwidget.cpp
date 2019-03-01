@@ -195,8 +195,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
  : param handlesnull: Set this to True if your function has custom handling for NULL values.\n\
                      If False, the result will always be NULL as soon as any parameter is NULL.\n\
                      Defaults to False.\n\
- : param usesgeometry : Set this to False if your function does not access\n\
-                        feature.geometry(). Defaults to True.\n\
+ : param usesgeometry : Set this to True if your function requires access to\n\
+                        feature.geometry(). Defaults to False.\n\
  : param referenced_columns: An array of attribute names that are required to run\n\
                              this function. Defaults to [QgsFeatureRequest.ALL_ATTRIBUTES].\n\
      \"\"\"" ) );

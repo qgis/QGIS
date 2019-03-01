@@ -26,13 +26,13 @@ Constructor for QgsRasterIterator, iterating over the specified ``input`` raster
 
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
-Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
+Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns ``False``.
 
 :param bandNumber: number of raster band to read
 :param nCols: number of columns
 :param nRows: number of rows
 :param extent: area to read
-:param feedback: optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+:param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
 %End
 
     bool next( int bandNumber, int &columns /Out/, int &rows /Out/, int &topLeftColumn /Out/, int &topLeftRow /Out/, QgsRectangle &blockExtent /Out/ );
@@ -51,7 +51,7 @@ Note that calling this method also advances the iterator, just like calling read
 :param topLeftRow: top left row
 :param blockExtent: exact extent of returned raster block
 
-:return: - false if the last part was already returned
+:return: - ``False`` if the last part was already returned
          - columns: number of columns on output device
 
 .. versionadded:: 3.6
@@ -72,7 +72,7 @@ caller should delete the block.
 :param topLeftCol: top left column
 :param topLeftRow: top left row
 
-:return: false if the last part was already returned
+:return: ``False`` if the last part was already returned
 %End
 
 

@@ -48,15 +48,15 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) = 0 SIP_FACTORY;
-    //! Create widget for symbol layer of this type. Can return NULL if there's no GUI
+    //! Create widget for symbol layer of this type. Can return NULLPTR if there's no GUI
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer * ) SIP_FACTORY { return nullptr; }
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) SIP_FACTORY { return nullptr; }
 
     /**
      * Resolve paths in symbol layer's properties (if there are any paths).
-     * When saving is true, paths are converted from absolute to relative,
-     * when saving is false, paths are converted from relative to absolute.
+     * When saving is TRUE, paths are converted from absolute to relative,
+     * when saving is FALSE, paths are converted from relative to absolute.
      * This ensures that paths in project files can be relative, but in symbol layer
      * instances the paths are always absolute
      * \since QGIS 3.0
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     //! QgsSymbolLayerRegistry cannot be copied.
     QgsSymbolLayerRegistry &operator=( const QgsSymbolLayerRegistry &rh ) = delete;
 
-    //! Returns metadata for specified symbol layer. Returns NULL if not found
+    //! Returns metadata for specified symbol layer. Returns NULLPTR if not found
     QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 
     //! register a new symbol layer type. Takes ownership of the metadata instance.

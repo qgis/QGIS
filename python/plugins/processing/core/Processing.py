@@ -58,6 +58,7 @@ from processing.tools import dataobjects
 from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 #from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
@@ -91,6 +92,7 @@ class Processing(object):
             QgisAlgorithmProvider,
             Grass7AlgorithmProvider,
             GdalAlgorithmProvider,
+            OtbAlgorithmProvider,
             SagaAlgorithmProvider,
             ScriptAlgorithmProvider,
             ModelerAlgorithmProvider,

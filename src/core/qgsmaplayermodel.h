@@ -82,7 +82,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setAllowEmptyLayer( bool allowEmpty );
 
     /**
-     * Returns true if the model allows the empty layer ("not set") choice.
+     * Returns TRUE if the model allows the empty layer ("not set") choice.
      * \see setAllowEmptyLayer()
      * \since QGIS 3.0
      */
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setShowCrs( bool showCrs );
 
     /**
-     * Returns true if the model includes layer's CRS in the display role.
+     * Returns TRUE if the model includes layer's CRS in the display role.
      * \see setShowCrs()
      * \since QGIS 3.0
      */

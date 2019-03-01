@@ -266,11 +266,11 @@ Write contents of vector layer to an (OGR supported) vector format
 :param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
 :param symbologyExport: symbology to export
 :param symbologyScale: scale of symbology
-:param filterExtent: if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+:param filterExtent: if not ``None``, only features intersecting the extent will be saved (added in QGIS 2.4)
 :param overrideGeometryType: set to a valid geometry type to override the default geometry type for the layer. This parameter
                              allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
-:param forceMulti: set to true to force creation of multi* geometries (added in QGIS 2.14)
-:param includeZ: set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+:param forceMulti: set to ``True`` to force creation of multi* geometries (added in QGIS 2.14)
+:param includeZ: set to ``True`` to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 %End
@@ -313,11 +313,11 @@ Writes a layer out to a vector file.
 :param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
 :param symbologyExport: symbology to export
 :param symbologyScale: scale of symbology
-:param filterExtent: if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+:param filterExtent: if not ``None``, only features intersecting the extent will be saved (added in QGIS 2.4)
 :param overrideGeometryType: set to a valid geometry type to override the default geometry type for the layer. This parameter
                              allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
-:param forceMulti: set to true to force creation of multi* geometries (added in QGIS 2.14)
-:param includeZ: set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+:param forceMulti: set to ``True`` to force creation of multi* geometries (added in QGIS 2.14)
+:param includeZ: set to ``True`` to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
@@ -447,7 +447,7 @@ returned formats.
 
     static bool supportsFeatureStyles( const QString &driverName );
 %Docstring
-Returns true if the specified ``driverName`` supports feature styles.
+Returns ``True`` if the specified ``driverName`` supports feature styles.
 
 The ``driverName`` argument must be a valid GDAL driver name.
 
@@ -532,7 +532,7 @@ Delete a shapefile (and its accompanying shx / dbf / prf)
 
 :param fileName: /path/to/file.shp
 
-:return: bool true if the file was deleted successfully
+:return: bool ``True`` if the file was deleted successfully
 %End
 
     QgsVectorFileWriter::SymbologyExport symbologyExport() const;

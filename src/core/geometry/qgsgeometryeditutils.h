@@ -57,13 +57,13 @@ class QgsGeometryEditUtils
 
     /**
      * Deletes a ring from a geometry.
-     * \returns true if delete was successful
+     * \returns TRUE if delete was successful
      */
     static bool deleteRing( QgsAbstractGeometry *geom, int ringNum, int partNum = 0 );
 
     /**
      * Deletes a part from a geometry.
-     * \returns true if delete was successful
+     * \returns TRUE if delete was successful
      */
     static bool deletePart( QgsAbstractGeometry *geom, int partNum );
 

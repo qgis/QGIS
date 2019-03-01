@@ -45,7 +45,7 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * \param dockMode True to enable dock mode.
+     * \param dockMode TRUE to enable dock mode.
      */
     void setDockMode( bool dockMode ) override;
 

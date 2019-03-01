@@ -59,7 +59,7 @@ Generates a new RGBA value based on one input ``value``.
 :param returnGreenValue: The green component of the new RGBA value
 :param returnBlueValue: The blue component of the new RGBA value
 
-:return: - True if the return values are valid otherwise false
+:return: - ``True`` if the return values are valid otherwise ``False``
          - returnAlpha: The alpha component of the new RGBA value
 %End
 
@@ -82,7 +82,7 @@ Generates a new RGBA value based on an original RGBA value.
 :param returnGreenValue: The green component of the new RGBA value
 :param returnBlueValue: The blue component of the new RGBA value
 
-:return: - True if the return values are valid otherwise false
+:return: - ``True`` if the return values are valid otherwise ``False``
          - returnAlpha: The alpha component of the new RGBA value
 %End
 

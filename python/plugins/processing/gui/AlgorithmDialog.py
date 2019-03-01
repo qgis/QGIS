@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 from pprint import pformat
 import time
 
@@ -44,6 +45,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingAlgorithm,
+                       QgsProcessingParameters,
                        QgsProxyProgressTask,
                        QgsTaskManager)
 from qgis.gui import (QgsGui,
@@ -154,11 +156,18 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     if self.mainWidget().checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
-                value = self.mainWidget().outputWidgets[param.name()].getValue()
+                widget = self.mainWidget().outputWidgets[param.name()]
+                value = widget.getValue()
+
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project
                 if value:
                     parameters[param.name()] = value
+                    if param.isDestination():
+                        context = dataobjects.createContext()
+                        ok, error = self.algorithm().provider().isSupportedOutputValue(value, param, context)
+                        if not ok:
+                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
 
         return self.algorithm().preprocessParameters(parameters)
 
@@ -263,8 +272,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     self.showLog()
 
                     task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, self.context, self.feedback)
-                    task.executed.connect(on_complete)
-                    self.setCurrentTask(task)
+                    if task.isCanceled():
+                        on_complete(False, {})
+                    else:
+                        task.executed.connect(on_complete)
+                        self.setCurrentTask(task)
                 else:
                     self.proxy_progress = QgsProxyProgressTask(QCoreApplication.translate("AlgorithmDialog", "Executing “{}”").format(self.algorithm().displayName()))
                     QgsApplication.taskManager().addTask(self.proxy_progress)
@@ -290,6 +302,18 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 pass
             self.messageBar().clearWidgets()
             self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
+                                          level=Qgis.Warning, duration=5)
+        except AlgorithmDialogBase.InvalidOutputExtension as e:
+            try:
+                self.buttonBox().accepted.connect(lambda e=e:
+                                                  e.widget.setPalette(QPalette()))
+                palette = e.widget.palette()
+                palette.setColor(QPalette.Base, QColor(255, 255, 0))
+                e.widget.setPalette(palette)
+            except:
+                pass
+            self.messageBar().clearWidgets()
+            self.messageBar().pushMessage("", e.message,
                                           level=Qgis.Warning, duration=5)
 
     def finish(self, successful, result, context, feedback):

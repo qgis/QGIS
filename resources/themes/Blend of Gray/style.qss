@@ -133,7 +133,7 @@ QLineEdit, QTextEdit, QPlainTextEdit
 
 QPushButton 
 {
-    padding: 0.12em;
+    padding: 0.21em;
     border-width: 1px;
     border-color: @itemdarkbackground;
     border-style: solid;
@@ -848,4 +848,8 @@ QListWidget#mOptionsListWidget::item {
 QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,
 QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab QTabBar::tab {
     width: 1.2em;
+}
+
+QWidget#QgsRasterCalcDialogBase QWidget#mOperatorsGroupBox QPushButton {
+    min-width:2.3em;
 }

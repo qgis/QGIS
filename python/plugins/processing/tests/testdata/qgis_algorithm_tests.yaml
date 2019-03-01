@@ -16,6 +16,20 @@ tests:
           geometry:
             precision: 7
 
+  - name: Centroid with non-ascii input
+    algorithm: native:centroids
+    params:
+      INPUT:
+        type: vector
+        name: polys_non_ascii_ñññ.gml
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/polys_centroid.gml
+        compare:
+          geometry:
+            precision: 7
+
   - name: Aggregate all
     algorithm: qgis:aggregate
     params:
@@ -1558,6 +1572,18 @@ tests:
     results:
       OUTPUT:
         name: expected/export_multiline_info.gml
+        type: vector
+
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export multipoint info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: multipoints.gml|layername=multipoints
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_geometry_info_multipoint.gml
         type: vector
 
   - algorithm: qgis:texttofloat
@@ -3718,6 +3744,43 @@ tests:
     results:
       OUTPUT:
         name: expected/valid.gml
+        type: vector
+
+  - algorithm: qgis:checkvalidity
+    name: Check validity polygon ring self intersection
+    params:
+      INPUT_LAYER:
+        name: custom/poly_ring_self_intersection.gml|layername=poly_ring_self_intersection
+        type: vector
+      METHOD: 2
+    results:
+      ERROR_OUTPUT:
+        name: expected/poly_ring_self_intersection_error.gml
+        type: vector
+      INVALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_invalid.gml
+        type: vector
+      VALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_valid.gml
+        type: vector
+
+  - algorithm: qgis:checkvalidity
+    name: Check validity polygon ring self intersection, ignoring self intersections
+    params:
+      IGNORE_RING_SELF_INTERSECTION: true
+      INPUT_LAYER:
+        name: custom/poly_ring_self_intersection.gml|layername=poly_ring_self_intersection
+        type: vector
+      METHOD: 2
+    results:
+      ERROR_OUTPUT:
+        name: expected/poly_ring_self_intersection_error_ignore_self.gml
+        type: vector
+      INVALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_invalid_ignore_self.gml
+        type: vector
+      VALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_valid_ignore_self.gml
         type: vector
 
   - algorithm: qgis:polygonize
@@ -6982,5 +7045,17 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_gaps.gml
         type: vector
+
+  - algorithm: native:dissolve
+    name: Test dissolve with consecutive lines
+    params:
+      INPUT:
+        name: custom/consecutivelines.gml|layername=consecutivelines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolved_consecutive_lines.gml
+        type: vector
+
 
 # See ../README.md for a description of the file format

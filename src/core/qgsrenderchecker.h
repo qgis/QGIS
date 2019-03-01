@@ -166,7 +166,7 @@ class CORE_EXPORT QgsRenderChecker
 
     /**
      * Gets access to buffered dash messages.
-     * Only will return something if you call enableDashBuffering( true ); before.
+     * Only will return something if you call enableDashBuffering( TRUE ); before.
      *
      * \returns buffered dash messages
      */
