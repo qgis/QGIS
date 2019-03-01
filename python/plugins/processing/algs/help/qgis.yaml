@@ -299,7 +299,7 @@ qgis:pointsalonglines: >
 
   An optional start and end offset can be specified, which controls how far from the start and end of the geometry the points should be created.
 
-qgis:pointsdisplacement:
+qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 
 qgis:pointslayerfromtable: >
@@ -309,7 +309,7 @@ qgis:pointslayerfromtable: >
 
   The attributes table of the resulting layer will be the input table.
 
-qgis:pointstopath:
+qgis:pointstopath: >
   Converts a point layer to a line layer, by joining points in a defined order.
 
   Points can be grouped by a field to output individual line features per group.

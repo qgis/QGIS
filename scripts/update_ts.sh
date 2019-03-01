@@ -178,7 +178,7 @@ echo "TR_EXCLUDE = $(qmake -query QT_INSTALL_HEADERS)/*" >>qgis_ts.pro
 echo Updating translations
 $LUPDATE -no-obsolete -locations absolute -verbose qgis_ts.pro
 
-perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\.cpp.*$/;' i18n/qgis_*.ts
+perl -i.bak -ne 'print unless /^\s+<location.*(qgs(expression|contexthelp)_texts|.*-i18n)\.cpp.*$/;' i18n/qgis_*.ts
 
 if [ $action = push ]; then
 	cp i18n/qgis_en.ts /tmp/qgis_en.ts-uploading

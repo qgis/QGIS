@@ -15,6 +15,7 @@
 ###########################################################################
 
 use XML::Simple;
+use YAML::XS qw/LoadFile/;
 use Data::Dumper;
 
 die "usage: $0 dest.cpp\n" unless @ARGV==1;
@@ -79,7 +80,16 @@ for my $f (<python/plugins/processing/algs/saga/description/*/*.txt>) {
 	$strings{"SAGAAlgorithm"}{$desc} = 1;
 }
 
-for my $f ( ("python/plugins/processing/gui/algclasssification.txt", "python/plugins/processing/gui/algnames.txt") ) {
+for my $f (<python/plugins/processing/algs/help/*.yaml>) {
+	my ($base) = $f =~ /.*\/(.*)\.yaml$/;
+	$base = uc $base;
+	my $yaml = LoadFile($f);
+	for my $k (keys %$yaml) {
+		$strings{"${base}Algorithm"}{$yaml->{$k}} = 1;
+	}
+}
+
+for my $f ( ("python/plugins/processing/gui/algnames.txt") ) {
 	open I, $f;
 	while(<I>) {
 		chop;
