@@ -100,7 +100,7 @@ void QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings,
   QBuffer buffer( &byteArray );
   image.save( &buffer, "PNG" );
   QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
-  json[ "symbol" ] = base64;
+  json[ "icon" ] = base64;
 }
 
 QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const
@@ -651,8 +651,13 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCo
   return settings.wmsLegendSize();
 }
 
-void QgsImageLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject & ) const
+void QgsImageLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject &json ) const
 {
+  QByteArray byteArray;
+  QBuffer buffer( &byteArray );
+  mImage.save( &buffer, "PNG" );
+  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  json[ "icon" ] = base64;
 }
 
 // -------------------------------------------------------------------------
@@ -817,8 +822,13 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
   return settings.wmsLegendSize();
 }
 
-void QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject & ) const
+void QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject &json ) const
 {
+  QByteArray byteArray;
+  QBuffer buffer( &byteArray );
+  mImage.save( &buffer, "PNG" );
+  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  json[ "icon" ] = base64;
 }
 
 /* private */
