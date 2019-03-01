@@ -534,12 +534,6 @@ void QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonOb
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
   context.setExpressionContext( expContext );
 
-  QImage tempImage = QImage( minimumIconSize(), QImage::Format_ARGB32 );
-  tempImage.fill( Qt::transparent );
-  QPainter imagePainter( &tempImage );
-  imagePainter.setRenderHint( QPainter::Antialiasing );
-  context.setPainter( &imagePainter );
-
   QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), minimumIconSize(), 0, &context );
 
   QByteArray byteArray;
@@ -717,8 +711,42 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings,
   return settings.symbolSize();
 }
 
-void QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject & ) const
+void QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const
 {
+  QImage img = QImage( settings.symbolSize().toSize(), QImage::Format_ARGB32 );
+  img.fill( Qt::transparent );
+
+  QPainter painter( &img );
+  painter.setRenderHint( QPainter::Antialiasing );
+
+  QColor itemColor = mColor;
+  if ( QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( layerNode()->layer() ) )
+  {
+    if ( QgsRasterRenderer *rasterRenderer = rasterLayer->renderer() )
+      itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
+  }
+  painter.setBrush( itemColor );
+
+  if ( settings.drawRasterStroke() )
+  {
+    QPen pen;
+    pen.setColor( settings.rasterStrokeColor() );
+    pen.setWidthF( settings.rasterStrokeWidth() );
+    pen.setJoinStyle( Qt::MiterJoin );
+    painter.setPen( pen );
+  }
+  else
+  {
+    painter.setPen( Qt::NoPen );
+  }
+
+  painter.drawRect( QRectF( 0, 0, settings.symbolSize().width(), settings.symbolSize().height() ) );
+
+  QByteArray byteArray;
+  QBuffer buffer( &byteArray );
+  img.save( &buffer, "PNG" );
+  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  json[ "icon" ] = base64;
 }
 
 // -------------------------------------------------------------------------
