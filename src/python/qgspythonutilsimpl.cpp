@@ -140,9 +140,9 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   }
 
   // tell the utils script where to look for the plugins
-  runString( "qgis.utils.plugin_paths = [" + pluginpaths.join( QStringLiteral( "," ) ) + ']' );
-  runString( "qgis.utils.sys_plugin_path = \"" + pluginsPath() + '\"' );
-  runString( "qgis.utils.home_plugin_path = " + homePluginsPath() );
+  runString( QStringLiteral( "qgis.utils.plugin_paths = [%1]" ).arg( pluginpaths.join( ',' ) ) );
+  runString( QStringLiteral( "qgis.utils.sys_plugin_path = \"%1\"" ).arg( pluginsPath() ) );
+  runString( QStringLiteral( "qgis.utils.home_plugin_path = %1" ).arg( homePluginsPath() ) ); // note - homePluginsPath() returns a python expression, not a string literal
 
 #ifdef Q_OS_WIN
   runString( "if oldhome: os.environ['HOME']=oldhome\n" );
@@ -260,7 +260,7 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface *interface )
 bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
 {
   QString output;
-  evalString( "qgis.utils.startServerPlugin('" + packageName + "')", output );
+  evalString( QStringLiteral( "qgis.utils.startServerPlugin('%1')" ).arg( packageName ), output );
   return ( output == QLatin1String( "True" ) );
 }
 
@@ -545,14 +545,14 @@ bool QgsPythonUtilsImpl::evalString( const QString &command, QString &result )
 QString QgsPythonUtilsImpl::pythonPath() const
 {
   if ( QgsApplication::isRunningFromBuildDir() )
-    return QgsApplication::buildOutputPath() + "/python";
+    return QgsApplication::buildOutputPath() + QStringLiteral( "/python" );
   else
-    return QgsApplication::pkgDataPath() + "/python";
+    return QgsApplication::pkgDataPath() + QStringLiteral( "/python" );
 }
 
 QString QgsPythonUtilsImpl::pluginsPath() const
 {
-  return pythonPath() + "/plugins";
+  return pythonPath() + QStringLiteral( "/plugins" );
 }
 
 QString QgsPythonUtilsImpl::homePythonPath() const
@@ -564,13 +564,13 @@ QString QgsPythonUtilsImpl::homePythonPath() const
   }
   else
   {
-    return "\"" + settingsDir.replace( '\\', QLatin1String( "\\\\" ) ) + "python\"";
+    return QStringLiteral( "\"" ) + settingsDir.replace( '\\', QLatin1String( "\\\\" ) ) + QStringLiteral( "python\"" );
   }
 }
 
 QString QgsPythonUtilsImpl::homePluginsPath() const
 {
-  return homePythonPath() + " + \"/plugins\"";
+  return homePythonPath() + QStringLiteral( " + \"/plugins\"" );
 }
 
 QStringList QgsPythonUtilsImpl::extraPluginsPaths() const
@@ -603,7 +603,7 @@ QStringList QgsPythonUtilsImpl::pluginList()
 QString QgsPythonUtilsImpl::getPluginMetadata( const QString &pluginName, const QString &function )
 {
   QString res;
-  QString str = "qgis.utils.pluginMetadata('" + pluginName + "', '" + function + "')";
+  QString str = QStringLiteral( "qgis.utils.pluginMetadata('%1', '%2')" ).arg( pluginName, function );
   evalString( str, res );
   //QgsDebugMsg("metadata "+pluginName+" - '"+function+"' = "+res);
   return res;
@@ -617,47 +617,47 @@ bool QgsPythonUtilsImpl::pluginHasProcessingProvider( const QString &pluginName 
 bool QgsPythonUtilsImpl::loadPlugin( const QString &packageName )
 {
   QString output;
-  evalString( "qgis.utils.loadPlugin('" + packageName + "')", output );
+  evalString( QStringLiteral( "qgis.utils.loadPlugin('%1')" ).arg( packageName ), output );
   return ( output == QLatin1String( "True" ) );
 }
 
 bool QgsPythonUtilsImpl::startPlugin( const QString &packageName )
 {
   QString output;
-  evalString( "qgis.utils.startPlugin('" + packageName + "')", output );
+  evalString( QStringLiteral( "qgis.utils.startPlugin('%1')" ).arg( packageName ), output );
   return ( output == QLatin1String( "True" ) );
 }
 
 bool QgsPythonUtilsImpl::startProcessingPlugin( const QString &packageName )
 {
   QString output;
-  evalString( "qgis.utils.startProcessingPlugin('" + packageName + "')", output );
+  evalString( QStringLiteral( "qgis.utils.startProcessingPlugin('%1')" ).arg( packageName ), output );
   return ( output == QLatin1String( "True" ) );
 }
 
 bool QgsPythonUtilsImpl::canUninstallPlugin( const QString &packageName )
 {
   QString output;
-  evalString( "qgis.utils.canUninstallPlugin('" + packageName + "')", output );
+  evalString( QStringLiteral( "qgis.utils.canUninstallPlugin('%1')" ).arg( packageName ), output );
   return ( output == QLatin1String( "True" ) );
 }
 
 bool QgsPythonUtilsImpl::unloadPlugin( const QString &packageName )
 {
   QString output;
-  evalString( "qgis.utils.unloadPlugin('" + packageName + "')", output );
+  evalString( QStringLiteral( "qgis.utils.unloadPlugin('%1')" ).arg( packageName ), output );
   return ( output == QLatin1String( "True" ) );
 }
 
 bool QgsPythonUtilsImpl::isPluginEnabled( const QString &packageName ) const
 {
-  return QgsSettings().value( "/PythonPlugins/" + packageName, QVariant( false ) ).toBool();
+  return QgsSettings().value( QStringLiteral( "/PythonPlugins/" ) + packageName, QVariant( false ) ).toBool();
 }
 
 bool QgsPythonUtilsImpl::isPluginLoaded( const QString &packageName )
 {
   QString output;
-  evalString( "qgis.utils.isPluginLoaded('" + packageName + "')", output );
+  evalString( QStringLiteral( "qgis.utils.isPluginLoaded('%1')" ).arg( packageName ), output );
   return ( output == QLatin1String( "True" ) );
 }
 
