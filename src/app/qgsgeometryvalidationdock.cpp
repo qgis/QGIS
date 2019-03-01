@@ -335,7 +335,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
 
     QPropertyAnimation *errorAnimation = new QPropertyAnimation( mErrorRubberband, "fillColor" );
     errorAnimation->setEasingCurve( QEasingCurve::OutQuad );
-    connect( errorAnimation, &QPropertyAnimation::finished, featureAnimation, &QPropertyAnimation::deleteLater );
+    connect( errorAnimation, &QPropertyAnimation::finished, errorAnimation, &QPropertyAnimation::deleteLater );
     connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this]
     {
       mErrorRubberband->update();
