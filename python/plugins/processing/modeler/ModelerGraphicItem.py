@@ -188,6 +188,7 @@ class ModelerGraphicItem(QGraphicsItem):
         if self.hover_over_item:
             self.hover_over_item = False
             self.update()
+            self.repaintArrows()
 
     def updateToolTip(self, event):
         prev_status = self.hover_over_item
@@ -199,6 +200,7 @@ class ModelerGraphicItem(QGraphicsItem):
             self.hover_over_item = False
         if self.hover_over_item != prev_status:
             self.update()
+            self.repaintArrows()
 
     def contextMenuEvent(self, event):
         if isinstance(self.element, QgsProcessingModelOutput):
@@ -427,6 +429,10 @@ class ModelerGraphicItem(QGraphicsItem):
         else:
             return QPointF(0, 0)
 
+    def repaintArrows(self):
+        for arrow in self.arrows:
+            arrow.update()
+
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionHasChanged:
             for arrow in self.arrows:
@@ -440,8 +446,10 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.model.parameterComponent(self.element.parameterName()).setPosition(self.pos())
             elif isinstance(self.element, QgsProcessingModelOutput):
                 self.model.childAlgorithm(self.element.childId()).modelOutput(self.element.name()).setPosition(self.pos())
+        elif change == QGraphicsItem.ItemSelectedChange:
+            self.repaintArrows()
 
-        return value
+        return super().itemChange(change, value)
 
     def polygon(self):
         font = QFont('Verdana', 8)
