@@ -48,7 +48,8 @@ void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeatur
       break;
     }
 
-    const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
+    const QgsGeometry geometry = layerFeature.geometry();
+    const QgsAbstractGeometry *geom = geometry.constGet();
 
     if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( geom ) )
     {
@@ -129,7 +130,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
   const QgsFeature &currentFeature = layerFeature.feature();
   std::unique_ptr<QgsMultiPolygon> boundaries = qgis::make_unique<QgsMultiPolygon>();
 
-  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( polygon->exteriorRing(), mContext->tolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( polygon->exteriorRing()->clone(), mContext->tolerance );
   boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
 
   const int numRings = polygon->numInteriorRings();
@@ -155,7 +156,8 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
       if ( feedback && feedback->isCanceled() )
         break;
 
-      QgsVertexIterator vertexIterator = compareFeature.geometry().vertices();
+      const QgsGeometry compareGeometry = compareFeature.geometry();
+      QgsVertexIterator vertexIterator = compareGeometry.vertices();
       while ( vertexIterator.hasNext() )
       {
         const QgsPoint &pt = vertexIterator.next();

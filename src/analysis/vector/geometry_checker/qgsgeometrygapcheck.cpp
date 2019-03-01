@@ -115,10 +115,11 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds.keys(), gapAreaBBox, compatibleGeometryTypes(), mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
-      if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom.get(), layerFeature.geometry().constGet(), mContext->reducedTolerance ) > 0 )
+      const QgsGeometry geom = layerFeature.geometry();
+      if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom.get(), geom.constGet(), mContext->reducedTolerance ) > 0 )
       {
         neighboringIds[layerFeature.layer()->id()].insert( layerFeature.feature().id() );
-        gapAreaBBox.combineExtentWith( layerFeature.geometry().constGet()->boundingBox() );
+        gapAreaBBox.combineExtentWith( layerFeature.geometry().boundingBox() );
       }
     }
 
@@ -193,7 +194,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
       {
         continue;
       }
-      QgsGeometry featureGeom = testFeature.geometry();
+      const QgsGeometry featureGeom = testFeature.geometry();
       const QgsAbstractGeometry *testGeom = featureGeom.constGet();
       for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
       {
@@ -219,7 +220,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
   QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
   errLayerGeom->transform( ct, QgsCoordinateTransform::ReverseTransform );
-  QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
+  const QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   const QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.constGet();
   std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom.get(), mContext->reducedTolerance );
   std::unique_ptr<QgsAbstractGeometry> combinedGeom( geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg ) );
