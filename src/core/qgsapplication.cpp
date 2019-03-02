@@ -1177,6 +1177,8 @@ QgsAuthManager *QgsApplication::authManager()
 
 void QgsApplication::exitQgis()
 {
+  delete QgsApplication::authManager();
+  
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
   //LeakSanitiser noise which hides real issues
@@ -1188,8 +1190,6 @@ void QgsApplication::exitQgis()
   delete QgsProject::instance();
 
   delete QgsProviderRegistry::instance();
-
-  delete QgsApplication::authManager();
 
   // invalidate coordinate cache while the PROJ context held by the thread-locale
   // QgsProjContextStore object is still alive. Otherwise if this later object
