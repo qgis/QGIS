@@ -60,6 +60,7 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
       {
         continue;
       }
+
       QString errMsg;
       if ( geomEngineA->overlaps( layerFeatureB.geometry().constGet(), &errMsg ) )
       {
@@ -261,7 +262,45 @@ QgsGeometryOverlapCheckError::QgsGeometryOverlapCheckError( const QgsGeometryChe
 
 }
 
+bool QgsGeometryOverlapCheckError::isEqual( QgsGeometryCheckError *other ) const
+{
+  QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
+  return err &&
+         other->layerId() == layerId() &&
+         other->featureId() == featureId() &&
+         err->overlappedFeature() == overlappedFeature() &&
+         QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->context()->reducedTolerance ) &&
+         std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->context()->reducedTolerance;
+}
+
+bool QgsGeometryOverlapCheckError::closeMatch( QgsGeometryCheckError *other ) const
+{
+  QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
+  return err && other->layerId() == layerId() && other->featureId() == featureId() && err->overlappedFeature() == overlappedFeature();
+}
+
+bool QgsGeometryOverlapCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )
+{
+  if ( !QgsGeometryCheckError::handleChanges( changes ) )
+  {
+    return false;
+  }
+  if ( changes.value( mOverlappedFeature.layerId() ).keys().contains( mOverlappedFeature.featureId() ) )
+  {
+    return false;
+  }
+  return true;
+}
+
 QString QgsGeometryOverlapCheckError::description() const
 {
   return QCoreApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1 at feature %2" ).arg( mOverlappedFeature.layerName(), QString::number( mOverlappedFeature.featureId() ) );
+}
+
+QMap<QString, QgsFeatureIds> QgsGeometryOverlapCheckError::involvedFeatures() const
+{
+  QMap<QString, QgsFeatureIds> features;
+  features[layerId()].insert( featureId() );
+  features[mOverlappedFeature.layerId()].insert( mOverlappedFeature.featureId() );
+  return features;
 }

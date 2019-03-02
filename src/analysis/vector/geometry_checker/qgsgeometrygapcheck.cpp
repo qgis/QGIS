@@ -287,3 +287,39 @@ QgsGeometryCheck::CheckType QgsGeometryGapCheck::factoryCheckType()
   return QgsGeometryCheck::LayerCheck;
 }
 ///@endcond private
+
+bool QgsGeometryGapCheckError::isEqual( QgsGeometryCheckError *other ) const
+{
+  QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
+  return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), mCheck->context()->reducedTolerance ) && err->neighbors() == neighbors();
+}
+
+bool QgsGeometryGapCheckError::closeMatch( QgsGeometryCheckError *other ) const
+{
+  QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
+  return err && err->layerId() == layerId() && err->neighbors() == neighbors();
+}
+
+void QgsGeometryGapCheckError::update( const QgsGeometryCheckError *other )
+{
+  QgsGeometryCheckError::update( other );
+  // Static cast since this should only get called if isEqual == true
+  const QgsGeometryGapCheckError *err = static_cast<const QgsGeometryGapCheckError *>( other );
+  mNeighbors = err->mNeighbors;
+  mGapAreaBBox = err->mGapAreaBBox;
+}
+
+bool QgsGeometryGapCheckError::handleChanges( const QgsGeometryCheck::Changes & )
+{
+  return true;
+}
+
+QgsRectangle QgsGeometryGapCheckError::affectedAreaBBox() const
+{
+  return mGapAreaBBox;
+}
+
+QMap<QString, QgsFeatureIds> QgsGeometryGapCheckError::involvedFeatures() const
+{
+  return mNeighbors;
+}

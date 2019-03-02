@@ -162,6 +162,7 @@ Will be used to update existing errors whenever they are re-checked.
 %End
 
 
+
   protected:
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
