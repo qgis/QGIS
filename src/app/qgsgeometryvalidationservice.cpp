@@ -250,6 +250,12 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     singleGeometryChecks.append( dynamic_cast<QgsSingleGeometryCheck *>( check ) );
   }
 
+  if ( singleGeometryChecks.empty() )
+  {
+    mLayerChecks[layer].singleFeatureCheckErrors.clear();
+    emit singleGeometryCheckCleared( layer );
+  }
+
   checkInformation.singleFeatureChecks = singleGeometryChecks;
 
   // Topology checks

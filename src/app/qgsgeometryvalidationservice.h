@@ -71,6 +71,13 @@ class QgsGeometryValidationService : public QObject
     void setMessageBar( QgsMessageBar *messageBar );
 
   signals:
+
+    /**
+     * Emitted when geometry checks for this layer have been disabled and
+     * any existing cached result should be cleared.
+     */
+    void singleGeometryCheckCleared( QgsVectorLayer *layer );
+
     void geometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
     void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors );
     void topologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors );

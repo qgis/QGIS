@@ -27,6 +27,7 @@ QgsGeometryValidationModel::QgsGeometryValidationModel( QgsGeometryValidationSer
   : QAbstractItemModel( parent )
   , mGeometryValidationService( geometryValidationService )
 {
+  connect( mGeometryValidationService, &QgsGeometryValidationService::singleGeometryCheckCleared, this, &QgsGeometryValidationModel::onSingleGeometryCheckCleared );
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckCompleted, this, &QgsGeometryValidationModel::onGeometryCheckCompleted );
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckStarted, this, &QgsGeometryValidationModel::onGeometryCheckStarted );
   connect( mGeometryValidationService, &QgsGeometryValidationService::topologyChecksUpdated, this, &QgsGeometryValidationModel::onTopologyChecksUpdated );
@@ -248,6 +249,24 @@ void QgsGeometryValidationModel::setCurrentLayer( QgsVectorLayer *currentLayer )
     mExpressionContext = QgsExpressionContext();
   }
   endResetModel();
+}
+
+void QgsGeometryValidationModel::onSingleGeometryCheckCleared( QgsVectorLayer *layer )
+{
+  auto &layerErrors = mErrorStorage[layer];
+
+  if ( mCurrentLayer == layer && !layerErrors.empty() )
+  {
+    beginRemoveRows( QModelIndex(), 0, layerErrors.size() - 1 );
+  }
+
+  layerErrors.clear();
+
+  if ( mCurrentLayer == layer && !layerErrors.empty() )
+  {
+    endRemoveRows();
+  }
+
 }
 
 void QgsGeometryValidationModel::onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors )
