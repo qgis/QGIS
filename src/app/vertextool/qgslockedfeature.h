@@ -29,11 +29,6 @@ class QgsVertexMarker;
 class QgsVertexEntry;
 
 /**
- * Constant representing zero value for distance. It's 0 because of error in double counting.
- */
-static const double ZERO_TOLERANCE = 0.000000001;
-
-/**
  * Class that keeps the selected feature
  */
 class QgsLockedFeature: public QObject
