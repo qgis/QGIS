@@ -25,8 +25,7 @@
 #include "qgsfeature.h"
 #include "qgsspatialindex.h"
 #include "qgsfeaturesink.h"
-
-class QgsVectorLayer;
+#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup analysis
@@ -121,6 +120,8 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      */
     QgsCoordinateReferenceSystem crs() const;
 
+    QString layerName() const;
+
   protected:
 
     /**
@@ -170,9 +171,9 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     mutable QReadWriteLock mCacheLock;
     QgsFeatureIds mFeatureIds;
     QgsSpatialIndex mIndex;
-    QString mLayerId;
     QgsWkbTypes::GeometryType mGeometryType;
-    QgsCoordinateReferenceSystem mCrs;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mFeatureSource;
+    QString mLayerName;
 };
 
 #endif // QGS_FEATUREPOOL_H
