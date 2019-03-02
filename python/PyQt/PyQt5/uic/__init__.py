@@ -23,7 +23,19 @@ __copyright__ = '(C) 2016, Jürgen E. Fischer'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import warnings
 from PyQt5.uic.Compiler import indenter, compiler
 from PyQt5.uic.objcreator import widgetPluginPath
 from PyQt5.uic import properties, uiparser, Compiler
 from PyQt5.uic import *
+
+__PyQtLoadUiType = loadUiType
+
+
+def __loadUiType(*args, **kwargs):
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        return __PyQtLoadUiType(*args, **kwargs)
+
+
+loadUiType = __loadUiType
