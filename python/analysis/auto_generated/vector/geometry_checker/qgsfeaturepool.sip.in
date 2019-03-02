@@ -10,7 +10,6 @@
 
 
 
-
 class QgsFeaturePool : QgsFeatureSink /Abstract/
 {
 %Docstring
@@ -79,6 +78,8 @@ The geometry type of this layer.
 %Docstring
 The coordinate reference system of this layer.
 %End
+
+    QString layerName() const;
 
   protected:
 

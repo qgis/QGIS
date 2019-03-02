@@ -29,9 +29,9 @@
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
   : mFeatureCache( CACHE_SIZE )
   , mLayer( layer )
-  , mLayerId( layer->id() )
   , mGeometryType( layer->geometryType() )
-  , mCrs( layer->crs() )
+  , mFeatureSource( qgis::make_unique<QgsVectorLayerFeatureSource>( layer ) )
+  , mLayerName( layer->name() )
 {
 
 }
@@ -55,11 +55,9 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedba
   }
   else
   {
-    std::unique_ptr<QgsVectorLayerFeatureSource> source = QgsVectorLayerUtils::getFeatureSource( mLayer, feedback );
-
     // Feature not in cache, retrieve from layer
     // TODO: avoid always querying all attributes (attribute values are needed when merging by attribute)
-    if ( !source || !source->getFeatures( QgsFeatureRequest( id ) ).nextFeature( feature ) )
+    if ( !mFeatureSource->getFeatures( QgsFeatureRequest( id ) ).nextFeature( feature ) )
     {
       return false;
     }
@@ -150,12 +148,18 @@ void QgsFeaturePool::setFeatureIds( const QgsFeatureIds &ids )
 
 bool QgsFeaturePool::isFeatureCached( QgsFeatureId fid )
 {
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   return mFeatureCache.contains( fid );
+}
+
+QString QgsFeaturePool::layerName() const
+{
+  return mLayerName;
 }
 
 QgsCoordinateReferenceSystem QgsFeaturePool::crs() const
 {
-  return mCrs;
+  return mFeatureSource->crs();
 }
 
 QgsWkbTypes::GeometryType QgsFeaturePool::geometryType() const
@@ -165,5 +169,5 @@ QgsWkbTypes::GeometryType QgsFeaturePool::geometryType() const
 
 QString QgsFeaturePool::layerId() const
 {
-  return mLayerId;
+  return mFeatureSource->id();
 }
