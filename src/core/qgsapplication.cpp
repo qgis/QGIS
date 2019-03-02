@@ -1170,7 +1170,7 @@ QgsAuthManager *QgsApplication::authManager()
 void QgsApplication::exitQgis()
 {
   delete QgsApplication::authManager();
-  
+
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
   //LeakSanitiser noise which hides real issues
