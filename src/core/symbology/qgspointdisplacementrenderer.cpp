@@ -61,7 +61,7 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
 
   //calculate max diagonal size from all symbols in group
   double diagonal = 0;
-  QVector<double> diagonals(group.size());
+  QVector<double> diagonals( group.size() );
   double currentDiagonal;
 
   int groupPosition = 0;
