@@ -128,7 +128,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Inserts a feature into the cache and the spatial index.
      * To be used by implementations of ``addFeature``.
      */
-    void insertFeature( const QgsFeature &feature );
+    void insertFeature( const QgsFeature &feature, bool skipLock = false );
 
     /**
      * Changes a feature in the cache and the spatial index.
