@@ -729,6 +729,8 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
     if ( ! QgsOpenClUtils::available() )
       return ;
     QgsOpenClUtils::setEnabled( useOpenCL );
+#else
+    Q_UNUSED( useOpenCL )
 #endif
 
     QTemporaryFile tmpFile;
