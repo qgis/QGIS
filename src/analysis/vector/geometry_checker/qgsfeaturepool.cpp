@@ -70,15 +70,22 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedba
 
 QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request, QgsFeedback *feedback )
 {
+  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Write );
+  Q_UNUSED( feedback )
+  Q_ASSERT( QThread::currentThread() == qApp->thread() );
+
+  mFeatureCache.clear();
+  mIndex = QgsSpatialIndex();
+
   QgsFeatureIds fids;
 
-  std::unique_ptr<QgsVectorLayerFeatureSource> source = QgsVectorLayerUtils::getFeatureSource( mLayer, feedback );
+  mFeatureSource = qgis::make_unique<QgsVectorLayerFeatureSource>( mLayer );
 
-  QgsFeatureIterator it = source->getFeatures( request );
+  QgsFeatureIterator it = mFeatureSource->getFeatures( request );
   QgsFeature feature;
   while ( it.nextFeature( feature ) )
   {
-    insertFeature( feature );
+    insertFeature( feature, true );
     fids << feature.id();
   }
 
@@ -109,9 +116,11 @@ QPointer<QgsVectorLayer> QgsFeaturePool::layerPtr() const
   return mLayer;
 }
 
-void QgsFeaturePool::insertFeature( const QgsFeature &feature )
+void QgsFeaturePool::insertFeature( const QgsFeature &feature, bool skipLock )
 {
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Unlocked );
+  if ( !skipLock )
+    locker.changeMode( QgsReadWriteLocker::Write );
   mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
   QgsFeature indexFeature( feature );
   mIndex.addFeature( indexFeature );
@@ -159,6 +168,7 @@ QString QgsFeaturePool::layerName() const
 
 QgsCoordinateReferenceSystem QgsFeaturePool::crs() const
 {
+  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Read );
   return mFeatureSource->crs();
 }
 
@@ -169,5 +179,6 @@ QgsWkbTypes::GeometryType QgsFeaturePool::geometryType() const
 
 QString QgsFeaturePool::layerId() const
 {
+  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Read );
   return mFeatureSource->id();
 }

@@ -83,7 +83,7 @@ The coordinate reference system of this layer.
 
   protected:
 
-    void insertFeature( const QgsFeature &feature );
+    void insertFeature( const QgsFeature &feature, bool skipLock = false );
 %Docstring
 Inserts a feature into the cache and the spatial index.
 To be used by implementations of ``addFeature``.
