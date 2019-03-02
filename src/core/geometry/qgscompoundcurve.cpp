@@ -245,7 +245,7 @@ QByteArray QgsCompoundCurve::asWkb() const
 
 QString QgsCompoundCurve::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
+  QString wkt = wktTypeStr() + QLatin1String( " (" );
   for ( const QgsCurve *curve : mCurves )
   {
     QString childWkt = curve->asWkt( precision );

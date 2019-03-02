@@ -119,7 +119,7 @@ QString QgsMultiCurve::asJson( int precision ) const
       std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
       QgsPointSequence pts;
       lineString->points( pts );
-      json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
+      json += QgsGeometryUtils::pointsToJSON( pts, precision ) + QLatin1String( ", " );
     }
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )

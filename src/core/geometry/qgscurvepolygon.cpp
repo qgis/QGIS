@@ -311,7 +311,7 @@ QByteArray QgsCurvePolygon::asWkb() const
 
 QString QgsCurvePolygon::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
+  QString wkt = wktTypeStr() + QLatin1String( " (" );
   if ( mExteriorRing )
   {
     QString childWkt = mExteriorRing->asWkt( precision );
@@ -405,7 +405,7 @@ QString QgsCurvePolygon::asJson( int precision ) const
   std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
   QgsPointSequence exteriorPts;
   exteriorLineString->points( exteriorPts );
-  json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
+  json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + QLatin1String( ", " );
 
   std::unique_ptr< QgsLineString > interiorLineString;
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
@@ -413,7 +413,7 @@ QString QgsCurvePolygon::asJson( int precision ) const
     interiorLineString.reset( interiorRing( i )->curveToLine() );
     QgsPointSequence interiorPts;
     interiorLineString->points( interiorPts );
-    json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
+    json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + QLatin1String( ", " );
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
   {

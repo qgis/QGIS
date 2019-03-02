@@ -104,7 +104,7 @@ QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + ", " +
+    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
     qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax );
 
   return rep;
@@ -113,11 +113,11 @@ QString QgsRectangle::asWktCoordinates() const
 QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
-    QStringLiteral( "POLYGON((" ) +
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + ", " +
-    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmin ) + ", " +
-    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax ) + ", " +
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmax ) + ", " +
+    QLatin1String( "POLYGON((" ) +
+    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
+    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
+    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax ) + QLatin1String( ", " ) +
+    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmax ) + QLatin1String( ", " ) +
     qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) +
     QStringLiteral( "))" );
 
