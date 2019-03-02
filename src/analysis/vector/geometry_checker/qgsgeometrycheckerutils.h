@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          * Returns the feature.
          * The geometry will not be reprojected regardless of useMapCrs.
          */
-        const QgsFeature &feature() const;
+        QgsFeature feature() const;
 
         /**
          * The layer.
@@ -81,7 +81,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          * If useMapCrs was specified, it will already be reprojected into the
          * CRS specified in the context specified in the constructor.
          */
-        const QgsGeometry &geometry() const;
+        QgsGeometry geometry() const;
 
         /**
          * Returns a combination of the layerId and the feature id.

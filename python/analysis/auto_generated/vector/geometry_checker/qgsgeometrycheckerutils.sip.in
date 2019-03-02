@@ -51,7 +51,7 @@ If ``useMapCrs`` is ``True``, geometries will be reprojected to the mapCrs defin
 in ``context``.
 %End
 
-        const QgsFeature &feature() const;
+        QgsFeature feature() const;
 %Docstring
 Returns the feature.
 The geometry will not be reprojected regardless of useMapCrs.
@@ -63,7 +63,7 @@ The geometry will not be reprojected regardless of useMapCrs.
 The layer id.
 %End
 
-        const QgsGeometry &geometry() const;
+        QgsGeometry geometry() const;
 %Docstring
 Returns the geometry of this feature.
 If useMapCrs was specified, it will already be reprojected into the
