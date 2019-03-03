@@ -282,12 +282,19 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
 {
   // TODO: add valueChanged signal
   // Do not store if it hasn't changed from default value
-  QVariant v = QgsSettings::value( prefixedKey( key, section ) );
+  // Fist check if the values are different and if at least one of them is valid.
+  // The valid check is required because different invalid QVariant flavours
+  // like QVariant(QVariant::String) and QVariant(QVariant::Int ))
+  // may be considered different and we don't want to store the value in that case.
   QVariant currentValue { QgsSettings::value( prefixedKey( key, section ) ) };
   if ( ( currentValue.isValid() || value.isValid() ) && ( currentValue != value ) )
   {
     mUserSettings->setValue( prefixedKey( key, section ), value );
   }
+  // Deliberately an "else if" because we want to remove a value from the user settings
+  // only if the value is different than the one stored in the global settings (because
+  // it would be the default anyway). The first check is necessary because the global settings
+  // might be a nullptr (for example in case of standalone scripts or apps).
   else if ( mGlobalSettings && mGlobalSettings->value( prefixedKey( key, section ) ) == currentValue )
   {
     mUserSettings->remove( prefixedKey( key, section ) );
