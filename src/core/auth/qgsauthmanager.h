@@ -900,6 +900,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! password helper folder in the wallets
     static const QLatin1String AUTH_PASSWORD_HELPER_FOLDER_NAME;
 
+    mutable QMap<QThread *, QMetaObject::Connection> mConnectedThreads;
+
     friend class QgsApplication;
 
 };
