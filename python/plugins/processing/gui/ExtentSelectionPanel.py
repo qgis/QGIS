@@ -69,7 +69,7 @@ class LayerSelectionDialog(QDialog):
         vl.addWidget(QLabel(self.tr('Use extent from')))
         self.combo = QgsMapLayerComboBox()
         self.combo.setFilters(
-            QgsMapLayerProxyModel.HasGeometry | QgsMapLayerProxyModel.RasterLayer | QgsMapLayerProxyModel.MeshLayer)
+            QgsMapLayerProxyModel.HasGeometry | QgsMapLayerProxyModel.RasterLayer)
         self.combo.setShowCrs(ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF))
         vl.addWidget(self.combo)
 
