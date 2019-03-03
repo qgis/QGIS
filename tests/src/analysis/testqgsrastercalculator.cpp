@@ -763,8 +763,8 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
   _chk( QStringLiteral( "\"landsat@1\" + \"landsat_4326@2\"" ), {264.0, 263.0, 264.0, 264.0, 266.0, 261.0}, true );
   _chk( QStringLiteral( "\"landsat@1\"^2 + 3 + \"landsat_4326@2\"" ), {15767, 15766, 15519, 15767, 15769, 15516}, false );
   _chk( QStringLiteral( "\"landsat@1\"^2 + 3 + \"landsat_4326@2\"" ), {15767, 15766, 15519, 15767, 15769, 15516}, true );
-  _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504, -0.103543, -0.128448, -0.111504, -0.127425, -0.104374}, false );
-  _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504, -0.103543, -0.128448, -0.111504, -0.127425, -0.104374}, true );
+  _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504f, -0.103543f, -0.128448f, -0.111504f, -0.127425f, -0.104374f}, false );
+  _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504f, -0.103543f, -0.128448f, -0.111504f, -0.127425f, -0.104374f}, true );
 
 }
 
