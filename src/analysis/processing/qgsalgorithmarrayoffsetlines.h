@@ -50,6 +50,7 @@ class QgsCreateArrayOffsetLinesAlgorithm : public QgsProcessingFeatureBasedAlgor
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsFeatureSink::SinkFlags sinkFlags() const override;
 
   private:
 

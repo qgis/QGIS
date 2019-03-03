@@ -97,7 +97,7 @@ class ExtractSpecificVertices(QgisAlgorithm):
             wkb_type = QgsWkbTypes.addZ(wkb_type)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, wkb_type, source.sourceCrs())
+                                               fields, wkb_type, source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
