@@ -383,10 +383,12 @@ QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString &layerurl, const QSt
 
 QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QString &authcfg, const QString &objectIdFieldName, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, const QgsRectangle &bbox )
 {
-  // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=objectid%3Dobjectid&returnIdsOnly=true&f=json
+  Q_UNUSED( objectIdFieldName );
+
+  // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "%1=%1" ).arg( objectIdFieldName ) );
+  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
   queryUrl.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   if ( !bbox.isNull() )
   {
@@ -442,9 +444,11 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QStri
 
 QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
 {
+  Q_UNUSED( objectIdField );
+
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "%1=%1" ).arg( objectIdField ) );
+  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
   queryUrl.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   queryUrl.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
                          .arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 )
