@@ -3203,9 +3203,8 @@ bool QgsAuthManager::masterPasswordInput()
 
   if ( ! ok )
   {
-    QgsCredentials *creds = QgsCredentials::instance();
     pass.clear();
-    ok = creds->getMasterPassword( pass, masterPasswordHashInDatabase() );
+    ok = QgsCredentials::instance()->getMasterPassword( pass, masterPasswordHashInDatabase() );
   }
 
   if ( ok && !pass.isEmpty() && mMasterPass != pass )

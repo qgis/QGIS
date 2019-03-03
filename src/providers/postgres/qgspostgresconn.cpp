@@ -272,6 +272,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     QString username = uri.username();
     QString password = uri.password();
 
+    QgsCredentials::instance()->lock();
+
     int i = 0;
     while ( PQstatus() != CONNECTION_OK && i < 5 )
     {
@@ -296,6 +298,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
     if ( PQstatus() == CONNECTION_OK )
       QgsCredentials::instance()->put( conninfo, username, password );
+
+    QgsCredentials::instance()->unlock();
   }
 
   if ( PQstatus() != CONNECTION_OK )

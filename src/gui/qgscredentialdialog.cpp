@@ -59,7 +59,7 @@ bool QgsCredentialDialog::request( const QString &realm, QString &username, QStr
   {
     QgsDebugMsg( QStringLiteral( "emitting signal" ) );
     emit credentialsRequested( realm, &username, &password, message, &ok );
-    QgsDebugMsg( QStringLiteral( "signal returned %1 (username=%2, password=%3)" ).arg( ok ? "true" : "false", username, password ) );
+    QgsDebugMsg( QStringLiteral( "signal returned %1 (username=%2)" ).arg( ok ? "true" : "false", username ) );
   }
   else
   {
@@ -81,7 +81,9 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
   labelMessage->setText( message );
   labelMessage->setHidden( message.isEmpty() );
 
-  if ( !leUsername->text().isEmpty() )
+  if ( leUsername->text().isEmpty() )
+    leUsername->setFocus();
+  else
     lePassword->setFocus();
 
   QWidget *activeWindow = qApp->activeWindow();
