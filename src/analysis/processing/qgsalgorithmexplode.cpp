@@ -105,6 +105,11 @@ QgsFeatureList QgsExplodeAlgorithm::processFeature( const QgsFeature &f, QgsProc
   }
 }
 
+QgsFeatureSink::SinkFlags QgsExplodeAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
+}
+
 std::vector<QgsGeometry> QgsExplodeAlgorithm::extractAsParts( const QgsGeometry &geometry ) const
 {
   if ( geometry.isMultipart() )

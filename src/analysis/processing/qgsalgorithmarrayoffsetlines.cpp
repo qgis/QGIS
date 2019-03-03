@@ -177,6 +177,11 @@ QgsFields QgsCreateArrayOffsetLinesAlgorithm::outputFields( const QgsFields &inp
   return output;
 }
 
+QgsFeatureSink::SinkFlags QgsCreateArrayOffsetLinesAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
+}
+
 ///@endcond
 
 
