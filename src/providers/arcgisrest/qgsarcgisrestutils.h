@@ -43,12 +43,12 @@ class QgsArcGisRestUtils
 
     static QVariantMap getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap() );
     static QVariantMap getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap() );
-    static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, const QString &objectIdFieldName, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(),
+    static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(),
                                      const QgsRectangle &bbox = QgsRectangle() );
     static QVariantMap getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
                                    const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
-    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
+    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
     static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
     static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
 

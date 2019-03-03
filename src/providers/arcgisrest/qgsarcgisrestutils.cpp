@@ -381,10 +381,8 @@ QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString &layerurl, const QSt
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
 }
 
-QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QString &authcfg, const QString &objectIdFieldName, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, const QgsRectangle &bbox )
+QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, const QgsRectangle &bbox )
 {
-  Q_UNUSED( objectIdFieldName );
-
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
@@ -442,10 +440,8 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QStri
   return queryServiceJSON( queryUrl,  authcfg, errorTitle, errorText, requestHeaders, feedback );
 }
 
-QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
+QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
 {
-  Q_UNUSED( objectIdField );
-
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
