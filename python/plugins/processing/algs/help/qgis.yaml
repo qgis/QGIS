@@ -173,7 +173,7 @@ qgis:fieldcalculator: >
 qgis:findprojection: >
   This algorithm allows creation of a shortlist of possible candidate coordinate reference systems for a layer with an unknown projection.
 
-  The expected area which the layer should reside in must be specified via the target area parameter. Additionally, the coordinate reference system for this target area must also be set.
+  The expected area which the layer should reside in must be specified via the target area parameter.
 
   The algorithm operates by testing the layer's extent in every known reference system and listing any in which the bounds would fall near the target area if the layer was in this projection.
 
