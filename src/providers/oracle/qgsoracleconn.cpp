@@ -96,6 +96,8 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
   QgsDebugMsg( QStringLiteral( "Connecting with options: " ) + options );
   if ( !mDatabase.open() )
   {
+    QgsCredentials::instance()->lock();
+
     while ( !mDatabase.open() )
     {
       bool ok = QgsCredentials::instance()->get( realm, username, password, mDatabase.lastError().text() );
@@ -125,6 +127,8 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
 
     if ( mDatabase.isOpen() )
       QgsCredentials::instance()->put( realm, username, password );
+
+    QgsCredentials::instance()->unlock();
   }
 
   if ( !mDatabase.isOpen() )
