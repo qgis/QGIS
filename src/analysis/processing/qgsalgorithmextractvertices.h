@@ -46,7 +46,6 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingAlgorithm
     QgsExtractVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
