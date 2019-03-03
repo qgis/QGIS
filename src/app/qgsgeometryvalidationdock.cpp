@@ -289,7 +289,6 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
 
 void QgsGeometryValidationDock::onLayerEditingStatusChanged()
 {
-  bool enabled = false;
   if ( mCurrentLayer && mCurrentLayer->isSpatial() && mCurrentLayer->isEditable() )
   {
     const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mCurrentLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
@@ -297,10 +296,7 @@ void QgsGeometryValidationDock::onLayerEditingStatusChanged()
     for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
     {
       if ( activeChecks.contains( factory->id() ) )
-      {
-        enabled = true;
         break;
-      }
     }
   }
 }

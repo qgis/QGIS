@@ -414,6 +414,7 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
   // in main thread this will trigger auth handler immediately and return once the request is satisfied,
   // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
   emit authRequestOccurred( reply, auth );
+
   if ( this != sMainNAM )
   {
     // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume

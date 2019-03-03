@@ -20,10 +20,13 @@
 #include "qgsauthmanager.h"
 #include "qgisapp.h"
 #include "qgscredentials.h"
+
 #include <QAuthenticator>
 
 void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+
   QString username = auth->user();
   QString password = auth->password();
 
@@ -52,19 +55,22 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
       return;
 
     if ( auth->user() != username || ( password != auth->password() && !password.isNull() ) )
+    {
+      // save credentials
+      QgsCredentials::instance()->put(
+        QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+        username, password
+      );
       break;
-
-    // credentials didn't change - stored ones probably wrong? clear password and retry
-    QgsCredentials::instance()->put(
-      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-      username, QString() );
+    }
+    else
+    {
+      // credentials didn't change - stored ones probably wrong? clear password and retry
+      QgsCredentials::instance()->put(
+        QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+        username, QString() );
+    }
   }
-
-  // save credentials
-  QgsCredentials::instance()->put(
-    QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-    username, password
-  );
 
   auth->setUser( username );
   auth->setPassword( password );
