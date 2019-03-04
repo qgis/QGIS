@@ -96,6 +96,14 @@ Default implementation calls drawSymbol() and drawSymbolText() methods.
 If ctx is ``None``, this is just first stage when preparing layout - without actual rendering.
 %End
 
+    void draw( const QgsLegendSettings &settings, QJsonObject &json );
+%Docstring
+Entry point called from QgsLegendRenderer to do the rendering in a \a
+json object.
+
+.. versionadded:: 3.8
+%End
+
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 %Docstring
 Draws symbol on the left side of the item
@@ -107,6 +115,17 @@ Draws symbol on the left side of the item
 :return: Real size of the symbol (may be bigger than "normal" symbol size from settings)
 %End
 
+    virtual void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const;
+%Docstring
+Adds a symbol in base64 string within the ``json`` object with the key
+"icon".
+
+:param settings: Legend layout configuration
+:param json: The json object to update
+
+.. versionadded:: 3.8
+%End
+
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 %Docstring
 Draws label on the right side of the item
@@ -116,6 +135,16 @@ Draws label on the right side of the item
 :param symbolSize: Real size of the associated symbol - used for correct positioning when rendering
 
 :return: Size of the label (may span multiple lines)
+%End
+
+    void drawSymbolText( const QgsLegendSettings &settings, QJsonObject &json ) const;
+%Docstring
+Adds a label in the ``json`` object with the key "title".
+
+:param settings: Legend layout configuration
+:param json: The json object to update
+
+.. versionadded:: 3.8
 %End
 
   signals:
@@ -170,6 +199,9 @@ Constructor for QgsSymbolLegendNode.
 
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
+
+    virtual void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const;
 
 
     virtual void setEmbeddedInParent( bool embedded );
@@ -358,6 +390,9 @@ Constructor for QgsImageLegendNode.
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
+    virtual void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const;
+
+
 };
 
 class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
@@ -389,6 +424,9 @@ Constructor for QgsRasterSymbolLegendNode.
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
+    virtual void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const;
+
+
 };
 
 
@@ -417,6 +455,9 @@ Constructor for QgsWmsLegendNode.
 
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
+
+    virtual void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const;
 
 
     virtual void invalidateMapBasedData();
