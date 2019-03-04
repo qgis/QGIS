@@ -26,7 +26,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsthreadingutils.h"
 #include "qgsgeometrycollection.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsmultisurface.h"
 #include "qgsgeometryfactory.h"
 #include "qgscurvepolygon.h"
