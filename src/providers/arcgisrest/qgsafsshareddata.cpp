@@ -169,7 +169,6 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   if ( !referer.isEmpty() )
     headers[ QStringLiteral( "Referer" )] = referer;
   const QList<quint32> featuresInRect = QgsArcGisRestUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
-                                        mObjectIdFieldName,
                                         extent, errorTitle, errorText, authcfg, headers, feedback );
 
   QgsFeatureIds ids;
