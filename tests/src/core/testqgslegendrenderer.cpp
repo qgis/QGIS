@@ -141,6 +141,7 @@ class TestQgsLegendRenderer : public QObject
     void testTextOnSymbol();
 
     void testBasicJson();
+    void testOpacityJson();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -927,6 +928,44 @@ void TestQgsLegendRenderer::testBasicJson()
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 }
 
+void TestQgsLegendRenderer::testOpacityJson()
+{
+  const int opacity = mVL3->opacity();
+  mVL3->setOpacity( 0.5 );
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  settings.setTitle( QStringLiteral( "Legend" ) );
+  _setStandardTestFont( settings );
+  const QJsonObject json = _renderJsonLegend( &legendModel, settings );
+
+  QCOMPARE( json[ "title" ], "Legend" );
+
+  const QJsonArray root = json["nodes"].toArray();
+
+  const QJsonObject point_layer = root[1].toObject();
+  const QJsonArray point_layer_symbols = point_layer["symbols"].toArray();
+
+  const QJsonObject point_layer_symbol_red = point_layer_symbols[0].toObject();
+  const QImage point_layer_icon_red = _base64ToImage( point_layer_symbol_red["icon"].toString() );
+  QString test_name = "point_layer_icon_red_opacity";
+  point_layer_icon_red.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  const QJsonObject point_layer_symbol_green = point_layer_symbols[1].toObject();
+  const QImage point_layer_icon_green = _base64ToImage( point_layer_symbol_green["icon"].toString() );
+  test_name = "point_layer_icon_green_opacity";
+  point_layer_icon_green.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  const QJsonObject point_layer_symbol_blue = point_layer_symbols[2].toObject();
+  const QImage point_layer_icon_blue = _base64ToImage( point_layer_symbol_blue["icon"].toString() );
+  test_name = "point_layer_icon_blue_opacity";
+  point_layer_icon_blue.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  mVL3->setOpacity( opacity );
+}
 
 QGSTEST_MAIN( TestQgsLegendRenderer )
 #include "testqgslegendrenderer.moc"
