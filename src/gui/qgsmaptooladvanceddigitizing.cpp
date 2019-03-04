@@ -34,6 +34,11 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
   {
     mCadDockWidget->applyConstraints( e );  // updates event's map point
 
+    if ( mCadDockWidget->mapPointMatch().hasVertex() )
+    {
+      e->snapPoint();
+    }
+
     if ( mCadDockWidget->constructionMode() )
       return;  // decided to eat the event and not pass it to the map tool (construction mode)
   }
@@ -72,6 +77,11 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
       mCadDockWidget->addPoint( e->mapPoint() );
 
       mCadDockWidget->releaseLocks( false );
+
+      if ( mCadDockWidget->mapPointMatch().hasVertex() )
+      {
+        e->snapPoint();
+      }
 
       if ( mCadDockWidget->constructionMode() )
         return;  // decided to eat the event and not pass it to the map tool (construction mode)
