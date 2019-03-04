@@ -160,7 +160,6 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
 
   const QString authcfg = mDataSource.authConfigId();
   const QList<quint32> featuresInRect = QgsArcGisRestUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
-                                        mObjectIdFieldName,
                                         extent, errorTitle, errorText, authcfg, feedback );
 
   QgsFeatureIds ids;

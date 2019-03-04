@@ -109,7 +109,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
 "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
             f.write("""
 {
  "objectIdFieldName": "OBJECTID",
@@ -363,7 +363,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
          ]
         }""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where=OBJECTID=OBJECTID&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json&where=1=1&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -374,7 +374,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where=OBJECTID=OBJECTID&returnIdsOnly=true&geometry=-73.000000,70.000000,-63.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json&where=1=1&returnIdsOnly=true&geometry=-73.000000,70.000000,-63.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -385,7 +385,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where=OBJECTID=OBJECTID&returnIdsOnly=true&geometry=-68.721119,68.177676,-64.678700,79.123755&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json&where=1=1&returnIdsOnly=true&geometry=-68.721119,68.177676,-64.678700,79.123755&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -440,7 +440,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
                 'UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID1=OBJECTID1_returnIdsOnly=true'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID1",
@@ -513,7 +513,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
                 'UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -596,7 +596,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
                 'UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -713,7 +713,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
                 'UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -765,7 +765,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
                 'UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json_where=OBJECTID=OBJECTID_returnIdsOnly=true'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
