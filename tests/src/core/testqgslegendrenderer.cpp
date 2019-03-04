@@ -142,6 +142,7 @@ class TestQgsLegendRenderer : public QObject
 
     void testBasicJson();
     void testOpacityJson();
+    void testBigMarkerJson();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -939,8 +940,6 @@ void TestQgsLegendRenderer::testOpacityJson()
   _setStandardTestFont( settings );
   const QJsonObject json = _renderJsonLegend( &legendModel, settings );
 
-  QCOMPARE( json[ "title" ], "Legend" );
-
   const QJsonArray root = json["nodes"].toArray();
 
   const QJsonObject point_layer = root[1].toObject();
@@ -966,6 +965,35 @@ void TestQgsLegendRenderer::testOpacityJson()
 
   mVL3->setOpacity( opacity );
 }
+
+void TestQgsLegendRenderer::testBigMarkerJson()
+{
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  settings.setTitle( QStringLiteral( "Legend" ) );
+  _setStandardTestFont( settings );
+  const QJsonObject json = _renderJsonLegend( &legendModel, settings );
+
+  const QJsonArray root = json["nodes"].toArray();
+
+  const QJsonObject point_layer = root[1].toObject();
+  const QJsonArray point_layer_symbols = point_layer["symbols"].toArray();
+
+  const QJsonObject point_layer_symbol_red = point_layer_symbols[0].toObject();
+  const QImage point_layer_icon_red = _base64ToImage( point_layer_symbol_red["icon"].toString() );
+  QString test_name = "point_layer_icon_red_big";
+  point_layer_icon_red.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+}
+
 
 QGSTEST_MAIN( TestQgsLegendRenderer )
 #include "testqgslegendrenderer.moc"
