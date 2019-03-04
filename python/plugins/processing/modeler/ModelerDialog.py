@@ -337,11 +337,11 @@ class ModelerDialog(BASE, WIDGET):
                 data = event.mimeData().data('application/x-vnd.qgis.qgis.algorithmid')
                 stream = QDataStream(data, QIODevice.ReadOnly)
                 algorithm_id = stream.readQString()
-                QTimer.singleShot(0, lambda id=algorithm_id, pos=event.pos(): alg_dropped(id, pos))
+                QTimer.singleShot(0, lambda id=algorithm_id, pos=self.view.mapToScene(event.pos()): alg_dropped(id, pos))
                 event.accept()
             elif event.mimeData().hasText():
                 itemId = event.mimeData().text()
-                QTimer.singleShot(0, lambda id=itemId, pos=event.pos(): input_dropped(id, pos))
+                QTimer.singleShot(0, lambda id=itemId, pos=self.view.mapToScene(event.pos()): input_dropped(id, pos))
                 event.accept()
             else:
                 event.ignore()
