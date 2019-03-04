@@ -436,7 +436,10 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     }
 
     if ( !clickedOnHighlightedVertex && e->button() == Qt::LeftButton )
+    {
       setHighlightedVertices( QList<Vertex>() ); // reset selection
+      updateLockedFeatureVertices();
+    }
   }
 
   if ( e->button() == Qt::LeftButton )
@@ -994,11 +997,7 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
     // there's really nothing under the cursor or while cycling through the list of available features
     // we got to the end of the list - let's deselect any feature we may have had selected
     setHighlightedVertices( QList<Vertex>(), ModeReset );
-    mLockedFeature.reset();
-    if ( mVertexEditor )
-    {
-      mVertexEditor->updateEditor( nullptr );
-    }
+    cleanupLockedFeature();
   }
 
   // we have either locked ourselves to a feature or unlocked again
@@ -1328,11 +1327,7 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
     if ( mLockedFeature && mLockedFeature->featureId() == fid && mLockedFeature->layer() == layer )
     {
       // if show feature is called on a feature that's already binded to the vertex editor, toggle it off
-      mLockedFeature.reset();
-      if ( mVertexEditor )
-      {
-        mVertexEditor->updateEditor( nullptr );
-      }
+      cleanupLockedFeature();
       return;
     }
 
@@ -1345,15 +1340,41 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
         mLockedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
       }
     }
-
     connect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
   }
+
+  updateLockedFeatureVertices();
 
   // make sure the vertex editor is alive and visible
   showVertexEditor();  //#spellok
 
   mVertexEditor->updateEditor( mLockedFeature.get() );
 }
+
+void QgsVertexTool::updateLockedFeatureVertices()
+{
+  qDeleteAll( mLockedFeatureVerticesMarkers );
+  mLockedFeatureVerticesMarkers.clear();
+  if ( mVertexEditor && mLockedFeature )
+  {
+    const QList<QgsVertexEntry *> &vertexMap = mLockedFeature->vertexMap();
+    for ( const QgsVertexEntry *vertex : vertexMap )
+    {
+      if ( !vertex->isSelected() )
+      {
+        QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
+        marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
+        marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+        marker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
+        marker->setColor( Qt::red );
+        marker->setFillColor( Qt::red );
+        marker->setCenter( toMapCoordinates( mLockedFeature->layer(), vertex->point() ) );
+        mLockedFeatureVerticesMarkers.append( marker );
+      }
+    }
+  }
+}
+
 
 void QgsVertexTool::showVertexEditor()  //#spellok
 {
@@ -1382,6 +1403,16 @@ void QgsVertexTool::cleanupVertexEditor()
   mVertexEditor.reset();
 }
 
+void QgsVertexTool::cleanupLockedFeature()
+{
+  mLockedFeature.reset();
+  if ( mVertexEditor )
+  {
+    mVertexEditor->updateEditor( nullptr );
+  }
+  updateLockedFeatureVertices();
+}
+
 void QgsVertexTool::lockedFeatureSelectionChanged()
 {
   Q_ASSERT( mLockedFeature );
@@ -1396,6 +1427,8 @@ void QgsVertexTool::lockedFeatureSelectionChanged()
   }
 
   setHighlightedVertices( vertices, ModeReset );
+
+  updateLockedFeatureVertices();
 }
 
 static int _firstSelectedVertex( QgsLockedFeature &selectedFeature )
