@@ -9,7 +9,7 @@ cache:
   directories:
     - ${HOME}/.ccache
   timeout: 1000
-if: branch !~ /^backport-\d+-on-/
+if: NOT branch =~ /^backport-\d+-on-/
 
 env:
   global:
