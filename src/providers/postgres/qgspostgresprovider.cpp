@@ -4341,7 +4341,7 @@ QVariant QgsPostgresProvider::parseMultidimensionalArray( const QString &txt )
     }
 
     values.append( text.left( ++i ) );
-    i = text.indexOf( ",", i );
+    i = text.indexOf( ',', i );
     i = i > 0 ? text.indexOf( "{", i ) : -1;
     if ( i == -1 )
       break;
