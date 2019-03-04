@@ -46,7 +46,8 @@ from qgis.PyQt.QtCore import (
     pyqtSignal,
     QDataStream,
     QIODevice,
-    QUrl)
+    QUrl,
+    QTimer)
 from qgis.PyQt.QtWidgets import (QGraphicsView,
                                  QTreeWidget,
                                  QMessageBox,
@@ -342,19 +343,26 @@ class ModelerDialog(BASE, WIDGET):
                 event.ignore()
 
         def _dropEvent(event):
+            def alg_dropped(algorithm_id, pos):
+                alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm_id)
+                if alg is not None:
+                    self._addAlgorithm(alg, pos)
+                else:
+                    assert False, algorithm_id
+
+            def input_dropped(id, pos):
+                if id in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
+                    self.addInputOfType(itemId, pos)
+
             if event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
                 data = event.mimeData().data('application/x-vnd.qgis.qgis.algorithmid')
                 stream = QDataStream(data, QIODevice.ReadOnly)
                 algorithm_id = stream.readQString()
-                alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm_id)
-                if alg is not None:
-                    self._addAlgorithm(alg, event.pos())
-                else:
-                    assert False, algorithm_id
+                QTimer.singleShot(0, lambda id=algorithm_id, pos=event.pos(): alg_dropped(id, pos))
+                event.accept()
             elif event.mimeData().hasText():
                 itemId = event.mimeData().text()
-                if itemId in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
-                    self.addInputOfType(itemId, event.pos())
+                QTimer.singleShot(0, lambda id=itemId, pos=event.pos(): input_dropped(id, pos))
                 event.accept()
             else:
                 event.ignore()
