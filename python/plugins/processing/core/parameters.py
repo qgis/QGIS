@@ -89,7 +89,7 @@ PARAMETER_FOLDER_DESTINATION = 'folderDestination'
 PARAMETER_RASTER_DESTINATION = 'rasterDestination'
 
 
-def getParameterFromString(s):
+def getParameterFromString(s, context):
     # Try the parameter definitions used in description files
     if '|' in s and (s.startswith("QgsProcessingParameter") or s.startswith("*QgsProcessingParameter") or s.startswith('Parameter') or s.startswith('*Parameter')):
         isAdvanced = False
@@ -243,6 +243,8 @@ def getParameterFromString(s):
             param = clazz(*params)
             if isAdvanced:
                 param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+
+            param.setDescription(QCoreApplication.translate(context, param.description()))
 
             return param
         else:

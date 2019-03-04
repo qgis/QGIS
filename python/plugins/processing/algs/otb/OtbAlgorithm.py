@@ -135,7 +135,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                         options = params[2].split(';')
                         param = OtbParameterChoice(params[0], params[1], options, params[3], params[4])
                     else:
-                        param = getParameterFromString(line)
+                        param = getParameterFromString(line, 'OtbAlgorithm')
 
                     #if parameter is None, then move to next line and continue
                     if param is None:

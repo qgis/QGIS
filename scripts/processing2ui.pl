@@ -48,6 +48,13 @@ for my $f (<python/plugins/processing/algs/grass*/description/*.txt>) {
 	my $name = scalar(<I>);
 	my $desc = scalar(<I>);
 	my $group = scalar(<I>);
+
+	while( my($class, $name, $description, $rest) = split /\|/, scalar(<I>) ) {
+		next unless defined $description;
+		$description =~ s/\s+$//;
+		$strings{"GrassAlgorithm"}{$description} = 1
+	}
+
 	close I;
 
 	chop $desc;
@@ -57,23 +64,16 @@ for my $f (<python/plugins/processing/algs/grass*/description/*.txt>) {
 	$strings{"GrassAlgorithm"}{$group} = 1;
 }
 
-for my $f (<python/plugins/processing/algs/taudem/description/*/*.txt>) {
-	open I, $f;
-	my $desc = scalar(<I>);
-	my $name = scalar(<I>);
-	my $group = scalar(<I>);
-	close I;
-
-	chop $desc;
-	chop $group;
-
-	$strings{"TAUDEMAlgorithm"}{$desc} = 1;
-	$strings{"TAUDEMAlgorithm"}{$group} = 1;
-}
-
 for my $f (<python/plugins/processing/algs/saga/description/*/*.txt>) {
 	open I, $f;
 	my $desc = scalar(<I>);
+
+	while( my($class, $name, $description, $rest) = split /\|/, scalar(<I>) ) {
+		next unless defined $description;
+		$description =~ s/\s+$//;
+		$strings{"SAGAAlgorithm"}{$description} = 1
+	}
+
 	close I;
 
 	chop $desc;
