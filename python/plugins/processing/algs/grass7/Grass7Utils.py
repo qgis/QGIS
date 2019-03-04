@@ -30,6 +30,7 @@ import shutil
 import shlex
 import subprocess
 import os
+import sys
 
 from qgis.core import (Qgis,
                        QgsApplication,
@@ -356,10 +357,14 @@ class Grass7Utils:
         # QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
 
         # For MS-Windows, we need to hide the console window.
+        kw = {}
         if isWindows():
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = subprocess.SW_HIDE
+            kw['startupinfo'] = si
+            if sys.version_info >= (3, 6):
+                kw['encoding'] = "cp{}".format(Grass7Utils.getWindowsCodePage())
 
         with subprocess.Popen(
                 command,
@@ -369,8 +374,7 @@ class Grass7Utils:
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 env=grassenv,
-                encoding="cp{}".format(Grass7Utils.getWindowsCodePage()) if isWindows() else None,
-                startupinfo=si if isWindows() else None
+                **kw
         ) as proc:
             for line in iter(proc.stdout.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:
@@ -401,10 +405,14 @@ class Grass7Utils:
         if not grassOutDone and outputCommands:
             command, grassenv = Grass7Utils.prepareGrassExecution(outputCommands)
             # For MS-Windows, we need to hide the console window.
+            kw = {}
             if isWindows():
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 si.wShowWindow = subprocess.SW_HIDE
+                kw['startupinfo'] = si
+                if sys.version_info >= (3, 6):
+                    kw['encoding'] = "cp{}".format(Grass7Utils.getWindowsCodePage())
             with subprocess.Popen(
                     command,
                     shell=False,
@@ -413,8 +421,7 @@ class Grass7Utils:
                     stderr=subprocess.STDOUT,
                     universal_newlines=True,
                     env=grassenv,
-                    encoding="cp{}".format(Grass7Utils.getWindowsCodePage()) if isWindows() else None,
-                    startupinfo=si if isWindows() else None
+                    **kw
             ) as proc:
                 for line in iter(proc.stdout.readline, ''):
                     if 'GRASS_INFO_PERCENT' in line:
