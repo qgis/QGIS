@@ -22,9 +22,11 @@
 #include "geometry/qgscircularstring.h"
 #include "geometry/qgscompoundcurve.h"
 #include "geometry/qgscurvepolygon.h"
+#include "geometry/qgsgeometryengine.h"
 #include "geometry/qgslinestring.h"
 #include "geometry/qgsmultipoint.h"
 #include "geometry/qgsmulticurve.h"
+#include "geometry/qgsmultisurface.h"
 #include "geometry/qgspolygon.h"
 #include "geometry/qgspoint.h"
 #include "qgsfeedback.h"
@@ -91,7 +93,7 @@ QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString &esriGe
   else if ( esriGeometryType == QLatin1String( "esriGeometryPolyline" ) )
     return QgsWkbTypes::MultiCurve;
   else if ( esriGeometryType == QLatin1String( "esriGeometryPolygon" ) )
-    return QgsWkbTypes::Polygon;
+    return QgsWkbTypes::MultiPolygon;
   else if ( esriGeometryType == QLatin1String( "esriGeometryEnvelope" ) )
     return QgsWkbTypes::Polygon;
   // Unsupported (either by qgis, or format unspecified by the specification)
@@ -256,7 +258,7 @@ static std::unique_ptr< QgsMultiCurve > parseEsriGeometryPolyline( const QVarian
   return multiCurve;
 }
 
-static std::unique_ptr< QgsCurvePolygon > parseEsriGeometryPolygon( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
+static std::unique_ptr< QgsMultiSurface > parseEsriGeometryPolygon( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curveRings": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList ringsList;
@@ -266,23 +268,50 @@ static std::unique_ptr< QgsCurvePolygon > parseEsriGeometryPolygon( const QVaria
     ringsList = geometryData[QStringLiteral( "ringPaths" )].toList();
   if ( ringsList.isEmpty() )
     return nullptr;
-  std::unique_ptr< QgsCurvePolygon > polygon = qgis::make_unique< QgsCurvePolygon >();
-  std::unique_ptr< QgsCompoundCurve > ext = parseCompoundCurve( ringsList.front().toList(), pointType );
-  if ( !ext )
-  {
-    return nullptr;
-  }
-  polygon->setExteriorRing( ext.release() );
-  for ( int i = 1, n = ringsList.size(); i < n; ++i )
+
+  QList< QgsCompoundCurve * > curves;
+  for ( int i = 0, n = ringsList.size(); i < n; ++i )
   {
     std::unique_ptr< QgsCompoundCurve > curve = parseCompoundCurve( ringsList[i].toList(), pointType );
     if ( !curve )
     {
-      return nullptr;
+      continue;
     }
-    polygon->addInteriorRing( curve.release() );
+    curves.append( curve.release() );
   }
-  return polygon;
+  if ( curves.count() == 0 )
+    return nullptr;
+
+  std::sort( curves.begin(), curves.end(), []( const QgsCompoundCurve * a, const QgsCompoundCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
+  std::unique_ptr< QgsMultiSurface > result = qgis::make_unique< QgsMultiSurface >();
+  while ( !curves.isEmpty() )
+  {
+    QgsCompoundCurve *exterior = curves.takeFirst();
+    QgsCurvePolygon *newPolygon = new QgsCurvePolygon();
+    newPolygon->setExteriorRing( exterior );
+
+    QMutableListIterator< QgsCompoundCurve * > it( curves );
+    while ( it.hasNext() )
+    {
+      QgsCompoundCurve *curve = it.next();
+      QgsRectangle boundingBox = newPolygon->boundingBox();
+      if ( boundingBox.intersects( curve->boundingBox() ) )
+      {
+        std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( newPolygon ) );
+        QgsPoint point = curve->vertexAt( QgsVertexId( 0, 0, 0 ) );
+        if ( engine->contains( &point ) )
+        {
+          newPolygon->addInteriorRing( curve );
+          it.remove();
+        }
+      }
+    }
+    result->addGeometry( newPolygon );
+  }
+  if ( result->numGeometries() == 0 )
+    return nullptr;
+
+  return result;
 }
 
 static std::unique_ptr< QgsPolygon > parseEsriEnvelope( const QVariantMap &geometryData )
