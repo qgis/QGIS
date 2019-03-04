@@ -3427,6 +3427,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "multiple exp" ) << "some [% 3+ 7 %] text [% 1 + 2 %]" << "some 10 text 3";
       QTest::newRow( "complex" ) << "some [%map('a', 1, 'b', 2)['a']%] text [%map('a', 1, 'b', 2)['b']%]" << "some 1 text 2";
       QTest::newRow( "complex2" ) << "some [% 'my text]' %] text" << "some my text] text";
+      QTest::newRow( "newline 1" ) << "some \n [% 1 + 2 %] \n text" << "some \n 3 \n text";
+      QTest::newRow( "newline 2" ) << "some [% \n 1 \n + \n 2 %] \n text" << "some 3 \n text";
     }
 
     void testReplaceExpressionText()
