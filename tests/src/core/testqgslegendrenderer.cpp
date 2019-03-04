@@ -56,6 +56,12 @@ static void _setStandardTestFont( QgsLegendSettings &settings, const QString &st
   }
 }
 
+static QImage _base64ToImage( const QString &base64 )
+{
+  const QByteArray bytearray = QByteArray::fromBase64( base64.toStdString().c_str() );
+  return QImage::fromData( bytearray, "PNG" );
+}
+
 static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendModel, QgsLegendSettings &settings )
 {
   settings.setTitle( QStringLiteral( "Legend" ) );
@@ -77,14 +83,23 @@ static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendMod
   img.save( _fileNameForTest( testName ) );
 }
 
-static bool _verifyImage( const QString &testName, QString &report )
+static QJsonObject _renderJsonLegend( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings )
+{
+  QgsLegendRenderer legendRenderer( legendModel, settings );
+
+  QJsonObject json;
+  legendRenderer.drawLegend( json );
+  return json;
+}
+
+static bool _verifyImage( const QString &testName, QString &report, int diff = 500 )
 {
   QgsRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "legend" ) );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( _fileNameForTest( testName ) );
   checker.setSizeTolerance( 3, 3 );
-  bool equal = checker.compareImages( testName, 500 );
+  bool equal = checker.compareImages( testName, diff );
   report += checker.report();
   return equal;
 }
@@ -124,6 +139,8 @@ class TestQgsLegendRenderer : public QObject
     void testDiagramSizeLegend();
     void testDataDefinedSizeCollapsed();
     void testTextOnSymbol();
+
+    void testBasicJson();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -827,6 +844,87 @@ void TestQgsLegendRenderer::testTextOnSymbol()
   QVERIFY( _verifyImage( testName, mReport ) );
 
   delete root;
+}
+
+void TestQgsLegendRenderer::testBasicJson()
+{
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  settings.setTitle( QStringLiteral( "Legend" ) );
+  _setStandardTestFont( settings );
+  const QJsonObject json = _renderJsonLegend( &legendModel, settings );
+
+  QCOMPARE( json[ "title" ], "Legend" );
+
+  const QJsonArray root = json["nodes"].toArray();
+
+  const QJsonObject grp1 = root[0].toObject();
+  QCOMPARE( grp1["title"], "Line + Polygon" );
+  QCOMPARE( grp1["type"], "group" );
+
+  const QJsonArray grp1_nodes = grp1["nodes"].toArray();
+
+  const QJsonObject line_layer = grp1_nodes[0].toObject();
+  QCOMPARE( line_layer["title"].toString(), "Line Layer" );
+  QCOMPARE( line_layer["type"].toString(), "layer" );
+  const QImage line_layer_icon = _base64ToImage( line_layer["icon"].toString() );
+  QString test_name = "line_layer_icon";
+  line_layer_icon.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  const QJsonObject polygon_layer = grp1_nodes[1].toObject();
+  QCOMPARE( polygon_layer["title"].toString(), "Polygon Layer" );
+  QCOMPARE( polygon_layer["type"].toString(), "layer" );
+  const QImage polygon_layer_icon = _base64ToImage( polygon_layer["icon"].toString() );
+  test_name = "polygon_layer_icon";
+  polygon_layer_icon.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  const QJsonObject point_layer = root[1].toObject();
+  QCOMPARE( point_layer["title"].toString(), "Point Layer" );
+  QCOMPARE( point_layer["type"].toString(), "layer" );
+  const QJsonArray point_layer_symbols = point_layer["symbols"].toArray();
+
+  const QJsonObject point_layer_symbol_red = point_layer_symbols[0].toObject();
+  QCOMPARE( point_layer_symbol_red["title"].toString(), "Red" );
+  const QImage point_layer_icon_red = _base64ToImage( point_layer_symbol_red["icon"].toString() );
+  test_name = "point_layer_icon_red";
+  point_layer_icon_red.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  const QJsonObject point_layer_symbol_green = point_layer_symbols[1].toObject();
+  QCOMPARE( point_layer_symbol_green["title"].toString(), "Green" );
+  const QImage point_layer_icon_green = _base64ToImage( point_layer_symbol_green["icon"].toString() );
+  test_name = "point_layer_icon_green";
+  point_layer_icon_green.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  const QJsonObject point_layer_symbol_blue = point_layer_symbols[2].toObject();
+  QCOMPARE( point_layer_symbol_blue["title"].toString(), "Blue" );
+  const QImage point_layer_icon_blue = _base64ToImage( point_layer_symbol_blue["icon"].toString() );
+  test_name = "point_layer_icon_blue";
+  point_layer_icon_blue.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  const QJsonObject raster_layer = root[2].toObject();
+  QCOMPARE( raster_layer["title"].toString(), "Raster Layer" );
+  QCOMPARE( raster_layer["type"].toString(), "layer" );
+  const QJsonArray raster_layer_symbols = raster_layer["symbols"].toArray();
+
+  const QJsonObject raster_layer_symbol_1 = raster_layer_symbols[0].toObject();
+  QCOMPARE( raster_layer_symbol_1["title"].toString(), "1" );
+  const QImage raster_layer_icon_1 = _base64ToImage( raster_layer_symbol_1["icon"].toString() );
+  test_name = "raster_layer_icon_1";
+  raster_layer_icon_1.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+
+  const QJsonObject raster_layer_symbol_2 = raster_layer_symbols[1].toObject();
+  QCOMPARE( raster_layer_symbol_2["title"].toString(), "2" );
+  const QImage raster_layer_icon_2 = _base64ToImage( raster_layer_symbol_2["icon"].toString() );
+  test_name = "raster_layer_icon_2";
+  raster_layer_icon_2.save( _fileNameForTest( test_name ) );
+  QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 }
 
 
