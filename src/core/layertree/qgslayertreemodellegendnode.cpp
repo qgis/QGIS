@@ -91,15 +91,15 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &setting
 
 void QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const
 {
-  QIcon icon = data( Qt::DecorationRole ).value<QIcon>();
+  const QIcon icon = data( Qt::DecorationRole ).value<QIcon>();
   if ( icon.isNull() )
     return;
 
-  QImage image( icon.pixmap( settings.symbolSize().width(), settings.symbolSize().height() ).toImage() );
+  const QImage image( icon.pixmap( settings.symbolSize().width(), settings.symbolSize().height() ).toImage() );
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
   image.save( &buffer, "PNG" );
-  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
   json[ "icon" ] = base64;
 }
 
@@ -149,7 +149,6 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
 void QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &, QJsonObject &json ) const
 {
-  QgsExpressionContext tempContext;
   const QString text = data( Qt::DisplayRole ).toString();
   json[ "title" ] = text;
 }
@@ -517,7 +516,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
 void QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const
 {
-  QgsSymbol *s = mItem.symbol();
+  const QgsSymbol *s = mItem.symbol();
   if ( !s )
   {
     return;
@@ -529,12 +528,7 @@ void QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonOb
   context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
   context.setForceVectorOutput( true );
 
-  // setup a minimal expression context
-  QgsExpressionContext expContext;
-  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
-  context.setExpressionContext( expContext );
-
-  QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), minimumIconSize(), 0, &context );
+  const QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), minimumIconSize(), 0, &context );
   QImage img( pix.toImage().convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
 
   int opacity = 255;
@@ -553,7 +547,7 @@ void QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonOb
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
   img.save( &buffer, "PNG" );
-  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
   json[ "icon" ] = base64;
 }
 
@@ -669,7 +663,7 @@ void QgsImageLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject &jso
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
   mImage.save( &buffer, "PNG" );
-  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
   json[ "icon" ] = base64;
 }
 
@@ -763,7 +757,7 @@ void QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, Q
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
   img.save( &buffer, "PNG" );
-  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
   json[ "icon" ] = base64;
 }
 
@@ -840,7 +834,7 @@ void QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject &json 
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
   mImage.save( &buffer, "PNG" );
-  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
   json[ "icon" ] = base64;
 }
 

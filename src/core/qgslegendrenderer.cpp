@@ -59,14 +59,12 @@ void QgsLegendRenderer::drawLegend( QJsonObject &json )
 void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &json )
 {
   QJsonArray nodes;
-  Q_FOREACH ( QgsLayerTreeNode *node, nodeGroup->children() )
+  for ( auto node : nodeGroup->children() )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
       QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
-
-      QModelIndex idx = mLegendModel->node2index( nodeGroup );
-      QgsExpressionContext tempContext;
+      const QModelIndex idx = mLegendModel->node2index( nodeGroup );
       const QString text = mLegendModel->data( idx, Qt::DisplayRole ).toString();
 
       QJsonObject group;
@@ -85,7 +83,7 @@ void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &j
       QString text;
       if ( nodeLegendStyle( nodeLayer ) != QgsLegendStyle::Hidden )
       {
-        QModelIndex idx = mLegendModel->node2index( nodeLayer );
+        const QModelIndex idx = mLegendModel->node2index( nodeLayer );
         text = mLegendModel->data( idx, Qt::DisplayRole ).toString();
       }
 
