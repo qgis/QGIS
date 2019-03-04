@@ -52,13 +52,13 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   // populate connections
   mCboConnection->addItems( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) );
 
+  connect( mCboProject, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
+  connect( mCboConnection, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
+
   // If possible, set the item currently displayed database
-  QString toSelect = QgsOgrDbConnection::selectedConnection(QStringLiteral( "GPKG" ));
+  QString toSelect = QgsOgrDbConnection::selectedConnection( QStringLiteral( "GPKG" ) );
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
 
-  connect( mCboProject, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
-
-  projectChanged();
 }
 
 QString QgsGeoPackageProjectStorageDialog::connectionName() const
@@ -81,10 +81,10 @@ void QgsGeoPackageProjectStorageDialog::populateProjects()
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "geopackage" ) );
   Q_ASSERT( storage );
   const auto projects { storage->listProjects( uri ) };
-  for (const auto &projectName: projects )
+  for ( const auto &projectName : projects )
   {
     // Set data to true for existing projects
-    mCboProject->addItem( projectName, true);
+    mCboProject->addItem( projectName, true );
   }
   projectChanged();
 }
@@ -134,7 +134,7 @@ QString QgsGeoPackageProjectStorageDialog::currentProjectUri( )
 {
   QgsGeoPackageProjectUri gpkgUri;
   // find path in connections
-  QgsOgrDbConnection conn( mCboConnection->currentText(), QStringLiteral( "GPKG") );
+  QgsOgrDbConnection conn( mCboConnection->currentText(), QStringLiteral( "GPKG" ) );
   gpkgUri.database = conn.path();
   gpkgUri.projectName = mCboProject->currentText();
   return QgsGeoPackageProjectStorage::encodeUri( gpkgUri );

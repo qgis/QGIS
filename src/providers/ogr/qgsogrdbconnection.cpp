@@ -53,6 +53,11 @@ void QgsOgrDbConnection::save( )
   settings.setValue( QStringLiteral( "%1/%2/path" ).arg( connectionsPath( mSettingsKey ), mConnName ), mPath );
 }
 
+bool QgsOgrDbConnection::allowProjectsInDatabase()
+{
+  return mSettingsKey == QStringLiteral( "GPKG" );
+}
+
 QString QgsOgrDbConnection::fullKey( const QString &settingsKey )
 {
   return QStringLiteral( "providers/ogr/%1" ).arg( settingsKey );
