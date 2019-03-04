@@ -252,7 +252,7 @@ class ModelerDialog(BASE, WIDGET):
         self.variables_dock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
         self.variables_dock.setObjectName("variablesDock")
         self.variables_dock_contents = QWidget()
-        vl_v = QVBoxLayout(self.algorithmsDockContents)
+        vl_v = QVBoxLayout()
         vl_v.setContentsMargins(0, 0, 0, 0)
         self.variables_editor = QgsVariableEditorWidget()
         vl_v.addWidget(self.variables_editor)
