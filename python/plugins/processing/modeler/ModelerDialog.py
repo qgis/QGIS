@@ -298,8 +298,6 @@ class ModelerDialog(BASE, WIDGET):
         self.tabifyDockWidget(self.inputsDock, self.algorithmsDock)
         self.inputsDock.raise_()
 
-        self.zoom = 1
-
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
@@ -314,6 +312,7 @@ class ModelerDialog(BASE, WIDGET):
         self.view.setScene(self.scene)
         self.view.setAcceptDrops(True)
         self.view.ensureVisible(0, 0, 10, 10)
+        self.view.scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
 
         def _dragEnterEvent(event):
             if event.mimeData().hasText() or event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
@@ -549,6 +548,7 @@ class ModelerDialog(BASE, WIDGET):
     def zoomActual(self):
         point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
         self.view.resetTransform()
+        self.view.scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
         self.view.centerOn(point)
 
     def zoomToItems(self):
