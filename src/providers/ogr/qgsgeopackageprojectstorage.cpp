@@ -196,89 +196,56 @@ bool QgsGeoPackageProjectStorage::readProject( const QString &uri, QIODevice *de
 bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context )
 {
   QgsGeoPackageProjectUri projectUri = decodeUri( uri );
-  if ( !projectUri.valid )
+
+  QString errCause;
+
+  if ( !_projectsTableExists( projectUri.database ) )
   {
-    context.pushMessage( QObject::tr( "Invalid URI for GeoPackage OGR provider: " ) + uri, Qgis::Critical );
-    return false;
+    errCause = _executeSql( uri, QStringLiteral( "CREATE TABLE qgis_projects(name TEXT PRIMARY KEY, metadata BLOB, content BLOB)" ) );
+
+    if ( ! errCause.isEmpty() )
+    {
+      errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. <b>%1</b>: %2" )
+                 .arg( projectUri.database,
+                       errCause );
+
+      context.pushMessage( errCause, Qgis::Critical );
+      return false;
+    }
   }
 
-  sqlite3_database_unique_ptr database;
-  sqlite3_statement_unique_ptr statement;
+  // read from device and write to the table
+  QByteArray content = device->readAll();
 
-  int status = database.open_v2( projectUri.database, SQLITE_OPEN_READWRITE, nullptr );
-  if ( status != SQLITE_OK )
+  QString metadataExpr = QStringLiteral( "{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }" ).arg(
+                           "2019-01-01",
+                           "username"
+                         );
+  QString sql;
+  if ( listProjects( uri ).contains( projectUri.projectName ) )
   {
-    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.database, Qgis::Critical );
-    return false;
+    sql = QStringLiteral( "UPDATE qgis_projects SET metadata = %2, content = %3 WHERE name = %1" );
   }
   else
   {
-    if ( !_projectsTableExists( projectUri.database ) )
-    {
-      char *errmsg = nullptr;
-      // try to create projects table
-      ( void )sqlite3_exec(
-        database.get(),                      /* An open database */
-        "CREATE TABLE qgis_projects(name TEXT PRIMARY KEY, metadata BLOB, content BLOB)",                             /* SQL to be evaluated */
-        nullptr,                             /* Callback function */
-        nullptr,                             /* 1st argument to callback */
-        &errmsg                              /* Error msg written here */
-      );
-      if ( status != SQLITE_OK || errmsg )
-      {
-        const QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. <b>%1</b>: %2" )
-                                 .arg( projectUri.database,
-                                       QString::fromUtf8( errmsg ) );
-
-        context.pushMessage( errCause, Qgis::Critical );
-        sqlite3_free( errmsg );
-        return false;
-      }
-
-    }
-
-
-    // read from device and write to the table
-    QByteArray content = device->readAll();
-
-    QString metadataExpr = QStringLiteral( "{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }" ).arg(
-                             "2019-01-01",
-                             "username"
-                           );
-    QString sql;
-    if ( listProjects( uri ).contains( projectUri.projectName ) )
-    {
-      sql = QStringLiteral( "UPDATE qgis_projects SET metadata = %2, content = %3 WHERE name = %1" );
-    }
-    else
-    {
-      sql = QStringLiteral( "INSERT INTO qgis_projects VALUES (%1, %2, %3)" );
-    }
-    sql = sql.arg( QgsSqliteUtils::quotedIdentifier( projectUri.projectName ),
-                   QgsSqliteUtils::quotedValue( metadataExpr ),
-                   QgsSqliteUtils::quotedValue( QString::fromAscii( content.toHex() ) )
-                 );
-    char *errmsg = nullptr;
-    ( void )sqlite3_exec(
-      database.get(),                      /* An open database */
-      sql.toLocal8Bit(),                   /* SQL to be evaluated */
-      nullptr,                             /* Callback function */
-      nullptr,                             /* 1st argument to callback */
-      &errmsg                              /* Error msg written here */
-    );
-    if ( status != SQLITE_OK || errmsg )
-    {
-      const QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database: %2" )
-                               .arg( projectUri.database,
-                                     QString::fromUtf8( errmsg ) );
-
-      context.pushMessage( errCause, Qgis::Critical );
-      sqlite3_free( errmsg );
-      return false;
-    }
-    return true;
-
+    sql = QStringLiteral( "INSERT INTO qgis_projects VALUES (%1, %2, %3)" );
   }
+  sql = sql.arg( QgsSqliteUtils::quotedIdentifier( projectUri.projectName ),
+                 QgsSqliteUtils::quotedValue( metadataExpr ),
+                 QgsSqliteUtils::quotedValue( QString::fromAscii( content.toHex() ) )
+               );
+
+  errCause = _executeSql( projectUri.database, sql );
+  if ( !errCause.isEmpty() )
+  {
+    const QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database: %2" )
+                             .arg( uri,
+                                   errCause );
+
+    context.pushMessage( errCause, Qgis::Critical );
+    return false;
+  }
+  return true;
 }
 
 QString QgsGeoPackageProjectStorage::encodeUri( const QgsGeoPackageProjectUri &gpkgUri )
@@ -306,14 +273,65 @@ QgsGeoPackageProjectUri QgsGeoPackageProjectStorage::decodeUri( const QString &u
   return gpkgUri;
 }
 
+QString QgsGeoPackageProjectStorage::_executeSql( const QString &uri, const QString &sql )
+{
+
+  QgsGeoPackageProjectUri projectUri = decodeUri( uri );
+  if ( !projectUri.valid )
+  {
+    return QObject::tr( "Invalid URI for GeoPackage OGR provider: %1" ).arg( uri );
+  }
+
+  sqlite3_database_unique_ptr db;
+  sqlite3_statement_unique_ptr statement;
+
+  int status = db.open_v2( projectUri.database, SQLITE_OPEN_READWRITE, nullptr );
+  if ( status != SQLITE_OK )
+  {
+    return QObject::tr( "Could not connect to the database: %1" ).arg( projectUri.database );
+  }
+
+  QString errCause;
+  char *errmsg = nullptr;
+  ( void )sqlite3_exec(
+    db.get(),                            /* An open database */
+    sql.toLocal8Bit(),                   /* SQL to be evaluated */
+    nullptr,                             /* Callback function */
+    nullptr,                             /* 1st argument to callback */
+    &errmsg                              /* Error msg written here */
+  );
+  if ( status != SQLITE_OK || errmsg )
+  {
+    errCause = QString::fromUtf8( errmsg );
+  }
+  return errCause;
+}
+
 bool QgsGeoPackageProjectStorage::removeProject( const QString &uri )
 {
-  return true;
+  QgsGeoPackageProjectUri projectUri = decodeUri( uri );
+  QString errCause = _executeSql( uri, QStringLiteral( "DELETE FROM qgis_projects WHERE name = %1" ).arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) ) );
+  if ( ! errCause.isEmpty() )
+  {
+    errCause = QObject::tr( "Could not remove project %1: %2" ).arg( uri, errCause );
+    QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
+  }
+  return  errCause.isEmpty();
 }
 
 bool QgsGeoPackageProjectStorage::renameProject( const QString &uri, const QString &uriNew )
 {
-  return true;
+  QgsGeoPackageProjectUri projectNewUri = decodeUri( uriNew );
+  QgsGeoPackageProjectUri projectUri = decodeUri( uri );
+  QString errCause = _executeSql( uri, QStringLiteral( "UPDATE qgis_projects SET name = %1 WHERE name = %1" )
+                                  .arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) )
+                                  .arg( QgsSqliteUtils::quotedValue( projectNewUri.projectName ) ) );
+  if ( ! errCause.isEmpty() )
+  {
+    errCause = QObject::tr( "Could not rename project %1: %2" ).arg( uri, errCause );
+    QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
+  }
+  return  errCause.isEmpty();
 }
 
 bool QgsGeoPackageProjectStorage::readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata )
