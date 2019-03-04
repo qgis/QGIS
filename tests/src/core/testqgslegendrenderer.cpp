@@ -857,72 +857,72 @@ void TestQgsLegendRenderer::testBasicJson()
   _setStandardTestFont( settings );
   const QJsonObject json = _renderJsonLegend( &legendModel, settings );
 
-  QCOMPARE( json[ "title" ], "Legend" );
+  QCOMPARE( json[ "title" ].toString(), QString( "Legend" ) );
 
   const QJsonArray root = json["nodes"].toArray();
 
   const QJsonObject grp1 = root[0].toObject();
-  QCOMPARE( grp1["title"], "Line + Polygon" );
-  QCOMPARE( grp1["type"], "group" );
+  QCOMPARE( grp1["title"].toString(), QString( "Line + Polygon" ) );
+  QCOMPARE( grp1["type"].toString(), QString( "group" ) );
 
   const QJsonArray grp1_nodes = grp1["nodes"].toArray();
 
   const QJsonObject line_layer = grp1_nodes[0].toObject();
-  QCOMPARE( line_layer["title"].toString(), "Line Layer" );
-  QCOMPARE( line_layer["type"].toString(), "layer" );
+  QCOMPARE( line_layer["title"].toString(), QString( "Line Layer" ) );
+  QCOMPARE( line_layer["type"].toString(), QString( "layer" ) );
   const QImage line_layer_icon = _base64ToImage( line_layer["icon"].toString() );
   QString test_name = "line_layer_icon";
   line_layer_icon.save( _fileNameForTest( test_name ) );
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 
   const QJsonObject polygon_layer = grp1_nodes[1].toObject();
-  QCOMPARE( polygon_layer["title"].toString(), "Polygon Layer" );
-  QCOMPARE( polygon_layer["type"].toString(), "layer" );
+  QCOMPARE( polygon_layer["title"].toString(), QString( "Polygon Layer" ) );
+  QCOMPARE( polygon_layer["type"].toString(), QString( "layer" ) );
   const QImage polygon_layer_icon = _base64ToImage( polygon_layer["icon"].toString() );
   test_name = "polygon_layer_icon";
   polygon_layer_icon.save( _fileNameForTest( test_name ) );
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 
   const QJsonObject point_layer = root[1].toObject();
-  QCOMPARE( point_layer["title"].toString(), "Point Layer" );
-  QCOMPARE( point_layer["type"].toString(), "layer" );
+  QCOMPARE( point_layer["title"].toString(), QString( "Point Layer" ) );
+  QCOMPARE( point_layer["type"].toString(), QString( "layer" ) );
   const QJsonArray point_layer_symbols = point_layer["symbols"].toArray();
 
   const QJsonObject point_layer_symbol_red = point_layer_symbols[0].toObject();
-  QCOMPARE( point_layer_symbol_red["title"].toString(), "Red" );
+  QCOMPARE( point_layer_symbol_red["title"].toString(), QString( "Red" ) );
   const QImage point_layer_icon_red = _base64ToImage( point_layer_symbol_red["icon"].toString() );
   test_name = "point_layer_icon_red";
   point_layer_icon_red.save( _fileNameForTest( test_name ) );
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 
   const QJsonObject point_layer_symbol_green = point_layer_symbols[1].toObject();
-  QCOMPARE( point_layer_symbol_green["title"].toString(), "Green" );
+  QCOMPARE( point_layer_symbol_green["title"].toString(), QString( "Green" ) );
   const QImage point_layer_icon_green = _base64ToImage( point_layer_symbol_green["icon"].toString() );
   test_name = "point_layer_icon_green";
   point_layer_icon_green.save( _fileNameForTest( test_name ) );
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 
   const QJsonObject point_layer_symbol_blue = point_layer_symbols[2].toObject();
-  QCOMPARE( point_layer_symbol_blue["title"].toString(), "Blue" );
+  QCOMPARE( point_layer_symbol_blue["title"].toString(), QString( "Blue" ) );
   const QImage point_layer_icon_blue = _base64ToImage( point_layer_symbol_blue["icon"].toString() );
   test_name = "point_layer_icon_blue";
   point_layer_icon_blue.save( _fileNameForTest( test_name ) );
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 
   const QJsonObject raster_layer = root[2].toObject();
-  QCOMPARE( raster_layer["title"].toString(), "Raster Layer" );
-  QCOMPARE( raster_layer["type"].toString(), "layer" );
+  QCOMPARE( raster_layer["title"].toString(), QString( "Raster Layer" ) );
+  QCOMPARE( raster_layer["type"].toString(), QString( "layer" ) );
   const QJsonArray raster_layer_symbols = raster_layer["symbols"].toArray();
 
   const QJsonObject raster_layer_symbol_1 = raster_layer_symbols[0].toObject();
-  QCOMPARE( raster_layer_symbol_1["title"].toString(), "1" );
+  QCOMPARE( raster_layer_symbol_1["title"].toString(), QString( "1" ) );
   const QImage raster_layer_icon_1 = _base64ToImage( raster_layer_symbol_1["icon"].toString() );
   test_name = "raster_layer_icon_1";
   raster_layer_icon_1.save( _fileNameForTest( test_name ) );
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 
   const QJsonObject raster_layer_symbol_2 = raster_layer_symbols[1].toObject();
-  QCOMPARE( raster_layer_symbol_2["title"].toString(), "2" );
+  QCOMPARE( raster_layer_symbol_2["title"].toString(), QString( "2" ) );
   const QImage raster_layer_icon_2 = _base64ToImage( raster_layer_symbol_2["icon"].toString() );
   test_name = "raster_layer_icon_2";
   raster_layer_icon_2.save( _fileNameForTest( test_name ) );
