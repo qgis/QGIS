@@ -771,7 +771,7 @@ QgsRectangle QgsVectorLayer::extent() const
     mLazyExtent = false;
   }
 
-  if ( !mValidExtent && mLazyExtent && mDataProvider )
+  if ( !mValidExtent && mLazyExtent && mDataProvider && mDataProvider->isValid() )
   {
     // get the extent
     QgsRectangle mbr = mDataProvider->extent();

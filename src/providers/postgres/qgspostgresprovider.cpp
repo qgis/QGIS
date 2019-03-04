@@ -3224,7 +3224,7 @@ bool QgsPostgresProvider::empty() const
 
 QgsRectangle QgsPostgresProvider::extent() const
 {
-  if ( mGeometryColumn.isNull() )
+  if ( !isValid() || mGeometryColumn.isNull() )
     return QgsRectangle();
 
   if ( mSpatialColType == SctGeography )
