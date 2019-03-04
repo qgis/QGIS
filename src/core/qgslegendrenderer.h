@@ -93,6 +93,11 @@ class CORE_EXPORT QgsLegendRenderer
      */
     void drawLegend( QgsRenderContext &context );
 
+    /**
+     * Renders the legend in a \a json object.
+     *
+     * \since QGIS 3.8
+     */
     void drawLegend( QJsonObject &json );
 
     /**
@@ -235,6 +240,11 @@ class CORE_EXPORT QgsLegendRenderer
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );
 
+    /**
+     * Renders a group item in a \a json object.
+     *
+     * \since QGIS 3.8
+     */
     void drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &json );
 
     /**
