@@ -753,7 +753,7 @@ void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
   else
   {
     mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
-    const QList< QgsLayerTreeLayer * > layers;
+    const QList< QgsLayerTreeLayer * > layers =  mLegendModel->rootGroup()->findLayers();
     for ( QgsLayerTreeLayer *nodeLayer : layers )
       mLegendModel->refreshLayerLegend( nodeLayer );
   }
@@ -858,7 +858,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
   if ( replace )
   {
     mExpContext.~QgsExpressionContext();
-    QList<QgsExpressionContextScope *> scopes;
+    QList<QgsExpressionContextScope *> scopes = context.takeScopes();
     for ( QgsExpressionContextScope *scopep : scopes )
     {
       mExpContext.appendScope( scopep );
