@@ -78,6 +78,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         self._group = ''
         self._groupId = ''
         self.params = []
+        self.known_issues = False
         self.defineCharacteristicsFromFile()
 
     def createInstance(self):
@@ -110,11 +111,15 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
     def flags(self):
         # TODO - maybe it's safe to background thread this?
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        f = super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        if self.known_issues:
+            f = f | QgsProcessingAlgorithm.FlagKnownIssues
+        return f
 
     def defineCharacteristicsFromFile(self):
         with open(self.description_file, encoding="utf-8") as lines:
             line = lines.readline().strip('\n').strip()
+
             self._name = line
             if '|' in self._name:
                 tokens = self._name.split('|')
@@ -134,6 +139,10 @@ class SagaAlgorithm(SagaAlgorithmBase):
             self._name = ''.join(c for c in self._name if c in validChars)
 
             line = lines.readline().strip('\n').strip()
+            if line == '##known_issues':
+                self.known_issues = True
+                line = lines.readline().strip('\n').strip()
+
             self.undecorated_group = line
             self._group = self.tr(decoratedGroupName(self.undecorated_group))
 
