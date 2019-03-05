@@ -19,6 +19,8 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
 
+const QString EXTERNAL_LAYER_PREFIX = QStringLiteral( "EXTERNAL_WMS:" );
+
 namespace QgsWms
 {
   //
@@ -1409,7 +1411,7 @@ namespace QgsWms
     {
       QString layer = layers[i];
 
-      if ( layer.startsWith( QStringLiteral( "EXTERNAL_WMS:" ) ) )
+      if ( isExternalLayer( layer ) )
         continue;
 
       QgsWmsParametersLayer param;
@@ -1503,15 +1505,10 @@ namespace QgsWms
     const QStringList layers = allLayersNickname();
     for ( const QString &layer : allLayersNickname() )
     {
-      if ( ! layer.startsWith( QStringLiteral( "EXTERNAL_WMS:" ) ) )
+      if ( ! isExternalLayer( layer ) )
         continue;
 
-      QgsWmsParametersExternalLayer externalLayer;
-      externalLayer.mName = layer;
-      externalLayer.mName.remove( 0, 13 );
-      externalLayer.mUri = externalWMSUri( externalLayer.mName );
-
-      externalLayers << externalLayer;
+      externalLayers << externalLayerParameter( layer );
     }
 
     return externalLayers;
@@ -1615,14 +1612,9 @@ namespace QgsWms
 
     for ( const auto &layer : allLayers )
     {
-      if ( layer.startsWith( QStringLiteral( "EXTERNAL_WMS:" ) ) )
+      if ( isExternalLayer( layer ) )
       {
-        QgsWmsParametersExternalLayer externalParam;
-        externalParam.mName = layer;
-        externalParam.mName.remove( 0, 13 );
-        externalParam.mUri = externalWMSUri( externalParam.mName );
-
-        eParams << externalParam;
+        eParams << externalLayerParameter( layer );
       }
       else
       {
@@ -1809,5 +1801,21 @@ namespace QgsWms
     }
 
     return p;
+  }
+
+  QgsWmsParametersExternalLayer QgsWmsParameters::externalLayerParameter( const QString &name ) const
+  {
+    QgsWmsParametersExternalLayer param;
+
+    param.mName = name;
+    param.mName.remove( 0, EXTERNAL_LAYER_PREFIX.size() );
+    param.mUri = externalWMSUri( param.mName );
+
+    return param;
+  }
+
+  bool QgsWmsParameters::isExternalLayer( const QString &name ) const
+  {
+    return name.startsWith( EXTERNAL_LAYER_PREFIX );
   }
 }
