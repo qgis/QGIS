@@ -16,11 +16,11 @@
 
 set -e
 
-pushd .docker
-
 DOCKER_DEPS_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ "${TRAVIS_EVENT_TYPE}" != "pull_request" ]] && echo "true" || echo "false" )
 
 .ci/travis/scripts/echo_travis_var.sh
+
+pushd .docker
 
 echo "travis_fold:start:docker_build"
 echo "${bold}Docker build deps${endbold}"
