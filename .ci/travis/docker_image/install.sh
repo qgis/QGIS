@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    before_install.sh
+#    install.sh
 #    ---------------------
 #    Date                 : March 2016
 #    Copyright            : (C) 2016 by Matthias Kuhn
