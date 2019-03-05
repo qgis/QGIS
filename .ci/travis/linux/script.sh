@@ -16,7 +16,7 @@
 
 set -e
 
-mkdir -p "$CCACHE_DIR"
+mkdir -p "CCACHE_DIR_IMAGE_BUILD"
 
 if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   # copy ccache dir within QGIS source so it can be accessed from docker
@@ -33,7 +33,7 @@ if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   docker push "qgis/qgis:${DOCKER_TAG}"
   echo "Copy build cache from Docker container to Travis cache directory"
-  rm -rf ${CCACHE_DIR_IMAGE_BUILD}/*
+  rm -rf "${CCACHE_DIR_IMAGE_BUILD:?}/"*
   container_id=$(docker images -q "qgis/qgis:${DOCKER_TAG}")
   docker cp ${container_id}:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR_IMAGE_BUILD}
   popd
