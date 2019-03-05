@@ -555,8 +555,6 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 
   mSnapMatch = context.snappingUtils->snapToMap( point );
 
-  mSnappedToVertex = mSnapMatch.hasVertex();
-
   // update the point list
   updateCurrentPoint( point );
 
@@ -1028,7 +1026,6 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
 {
   mCadPointList.clear();
   mSnappedSegment.clear();
-  mSnappedToVertex = false;
 
   updateCapacity();
 }
