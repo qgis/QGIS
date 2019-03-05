@@ -15,10 +15,23 @@
 #ifndef QGSARCGISRESTUTILS_H
 #define QGSARCGISRESTUTILS_H
 
-#include <QStringList>
-#include <QVariant>
 #include "qgswkbtypes.h"
 #include "qgsrectangle.h"
+#include "qgsmarkersymbollayer.h"
+#include "geometry/qgsabstractgeometry.h"
+#include "geometry/qgscircularstring.h"
+#include "geometry/qgscompoundcurve.h"
+#include "geometry/qgscurvepolygon.h"
+#include "geometry/qgsgeometryengine.h"
+#include "geometry/qgslinestring.h"
+#include "geometry/qgsmultipoint.h"
+#include "geometry/qgsmulticurve.h"
+#include "geometry/qgsmultisurface.h"
+#include "geometry/qgspolygon.h"
+#include "geometry/qgspoint.h"
+
+#include <QStringList>
+#include <QVariant>
 
 class QNetworkReply;
 class QgsNetworkAccessManager;
@@ -52,6 +65,15 @@ class QgsArcGisRestUtils
     static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
     static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
 
+    static std::unique_ptr< QgsPoint > parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsCircularString > parseCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPoint &startPoint );
+    static std::unique_ptr< QgsCompoundCurve > parseCompoundCurve( const QVariantList &curvesList, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsPoint > parseEsriGeometryPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsMultiPoint > parseEsriGeometryMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsMultiCurve > parseEsriGeometryPolyline( const QVariantMap &geometryData, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsMultiSurface > parseEsriGeometryPolygon( const QVariantMap &geometryData, QgsWkbTypes::Type pointType );
+    static std::unique_ptr< QgsPolygon > parseEsriEnvelope( const QVariantMap &geometryData );
+
     static std::unique_ptr< QgsSymbol > parseEsriSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsLineSymbol > parseEsriLineSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsFillSymbol > parseEsriFillSymbolJson( const QVariantMap &symbolData );
@@ -65,6 +87,7 @@ class QgsArcGisRestUtils
     static QColor parseEsriColorJson( const QVariant &colorData );
     static Qt::PenStyle parseEsriLineStyle( const QString &style );
     static Qt::BrushStyle parseEsriFillStyle( const QString &style );
+    static QgsSimpleMarkerSymbolLayerBase::Shape parseEsriMarkerShape( const QString &style );
 
     static QDateTime parseDateTime( const QVariant &value );
 
