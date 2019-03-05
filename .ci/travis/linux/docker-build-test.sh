@@ -170,7 +170,7 @@ popd > /dev/null # /root/QGIS
 ##############################
 # Run Python Tests on QGIS app
 ##############################
-pushd /root/QGIS/tests/src/python
+pushd /root/QGIS/.docker/qgis_resources/test_runner
 # Passing cases:
 [[ $(qgis_testrunner.sh test_testrunner.run_passing) -eq '0' ]] || exit 1
 [[ $(qgis_testrunner.sh test_testrunner.run_skipped_and_passing) -eq '0' ]] || exit 1
