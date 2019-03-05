@@ -20,7 +20,7 @@ mkdir -p "$CCACHE_DIR"
 
 if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   # copy ccache dir within QGIS source so it can be accessed from docker
-  cp -r ${CCACHE_DIR} ${TRAVIS_BUILD_DIR}/.ccache
+  cp -r ${CCACHE_DIR_IMAGE_BUILD} ${TRAVIS_BUILD_DIR}/.ccache_image_build
   # building docker images
   DIR=$(git rev-parse --show-toplevel)/.docker
   pushd "${DIR}"
@@ -32,20 +32,24 @@ if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   echo "${bold}Pushing image to docker hub...${endbold}"
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   docker push "qgis/qgis:${DOCKER_TAG}"
+  echo "Copy build cache from Docker container to Travis cache directory"
+  rm -rf ${CCACHE_DIR_IMAGE_BUILD}/*
+  container_id=$(docker images -q "qgis/qgis:${DOCKER_TAG}")
+  docker cp ${container_id}:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR_IMAGE_BUILD}
   popd
   echo "Trigger build of PyQGIS Documentation"
-  body='{
-    "request": {
-      "branch":"master",
-      "message": "Trigger PyQGIS doc build after release of new Docker image",
-      "config": {
-        "merge_mode": "deep_merge",
-        "env": {
-          "global": ["QGIS_VERSION_BRANCH=release-3_4"]
+  body="{
+    'request': {
+      'branch':'master',
+      'message': 'Trigger PyQGIS doc build after release of new Docker image as ${DOCKER_TAG}',
+      'config': {
+        'merge_mode': 'deep_merge',
+        'env': {
+          'global': ['QGIS_VERSION_BRANCH=${TRAVIS_BRANCH}']
         }
       }
     }
-  }'
+  }"
   curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" \
     -H "Travis-API-Version: 3" -H "Authorization: token $TRAVIS_TOKEN" -d "$body" \
     https://api.travis-ci.org/repo/qgis%2Fpyqgis/requests
