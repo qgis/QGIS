@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    script.sh
+#    before_install.sh
 #    ---------------------
-#    Date                 : March 2016
-#    Copyright            : (C) 2016 by Matthias Kuhn
-#    Email                : matthias at opengis dot ch
+#    Date                 : March 2019
+#    Copyright            : (C) 2019 by Denis Rouzaud
+#    Email                : denis@opengis.ch
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -13,9 +13,4 @@
 #   (at your option) any later version.                                   #
 #                                                                         #
 ###########################################################################
-
-set -e
-
-# running QGIS tests
-docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
 
