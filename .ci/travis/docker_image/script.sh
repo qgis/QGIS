@@ -17,10 +17,10 @@
 
 set -e
 
-mkdir -p "CCACHE_DIR_IMAGE_BUILD"
+mkdir -p "${CCACHE_DIR}"
 
 # copy ccache dir within QGIS source so it can be accessed from docker
-cp -r ${CCACHE_DIR_IMAGE_BUILD} ${TRAVIS_BUILD_DIR}/.ccache_image_build
+cp -r ${CCACHE_DIR} ${TRAVIS_BUILD_DIR}/.ccache_image_build
 # building docker images
 DIR=$(git rev-parse --show-toplevel)/.docker
 pushd "${DIR}"
@@ -33,10 +33,10 @@ echo "${bold}Pushing image to docker hub...${endbold}"
 docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 docker push "qgis/qgis:${DOCKER_TAG}"
 echo "Copy build cache from Docker container to Travis cache directory"
-rm -rf "${CCACHE_DIR_IMAGE_BUILD:?}/"*
+rm -rf "${CCACHE_DIR:?}/"*
 container_id=$(docker images -q "qgis/qgis:${DOCKER_TAG}")
 docker start ${container_id}
-docker cp ${container_id}:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR_IMAGE_BUILD}
+docker cp ${container_id}:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR}
 popd
 echo "Trigger build of PyQGIS Documentation"
 body='{
