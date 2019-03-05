@@ -653,13 +653,14 @@ namespace QgsWms
 
       if ( !map->keepLayerSet() )
       {
-        if ( cMapParams.mLayers.isEmpty() )
+        if ( cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty() )
         {
           map->setLayers( mapSettings.layers() );
         }
         else
         {
           QList<QgsMapLayer *> layerSet = stylizedLayers( cMapParams.mLayers );
+          layerSet << externalLayers( cMapParams.mExternalLayers );
           layerSet << highlightLayers( cMapParams.mHighlightLayers );
           std::reverse( layerSet.begin(), layerSet.end() );
           map->setLayers( layerSet );
@@ -855,6 +856,9 @@ namespace QgsWms
 
       setLayerAccessControlFilter( layer );
     }
+
+    // add external layers
+    layers = layers << externalLayers( mWmsParameters.externalLayersParameters() );
 
     // add highlight layers above others
     layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
@@ -2914,6 +2918,26 @@ namespace QgsWms
     return highlightLayers;
   }
 
+  QList<QgsMapLayer *> QgsRenderer::externalLayers( const QList<QgsWmsParametersExternalLayer> &params )
+  {
+    QList<QgsMapLayer *> layers;
+
+    for ( const QgsWmsParametersExternalLayer &param : params )
+    {
+      std::unique_ptr<QgsMapLayer> layer;
+      layer.reset( new QgsRasterLayer( param.mUri, param.mName, QStringLiteral( "wms" ) ) );
+
+      if ( layer->isValid() )
+      {
+        // to delete later
+        mTemporaryLayers.append( layer.release() );
+        layers << mTemporaryLayers.last();
+      }
+    }
+
+    return layers;
+  }
+
   QList<QgsMapLayer *> QgsRenderer::sldStylizedLayers( const QString &sld ) const
   {
     QList<QgsMapLayer *> layers;
@@ -2976,19 +3000,7 @@ namespace QgsWms
     {
       QString nickname = param.mNickname;
       QString style = param.mStyle;
-      if ( nickname.startsWith( "EXTERNAL_WMS:" ) )
-      {
-        QString externalLayerId = nickname;
-        externalLayerId.remove( 0, 13 );
-        QgsMapLayer *externalWMSLayer = createExternalWMSLayer( externalLayerId );
-        if ( externalWMSLayer )
-        {
-          layers.append( externalWMSLayer );
-          mNicknameLayers[nickname] = externalWMSLayer; //might be used later in GetPrint request
-          mTemporaryLayers.append( externalWMSLayer );
-        }
-      }
-      else if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
+      if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
       {
         if ( !style.isEmpty() )
         {
@@ -3030,19 +3042,6 @@ namespace QgsWms
     }
 
     return layers;
-  }
-
-  QgsMapLayer *QgsRenderer::createExternalWMSLayer( const QString &externalLayerId ) const
-  {
-    QString wmsUri = mWmsParameters.externalWMSUri( externalLayerId.toUpper() );
-    QgsMapLayer *wmsLayer = new QgsRasterLayer( wmsUri, externalLayerId, QStringLiteral( "wms" ) );
-    if ( !wmsLayer->isValid() )
-    {
-      delete wmsLayer;
-      return nullptr;
-    }
-
-    return wmsLayer;
   }
 
   void QgsRenderer::removeTemporaryLayers()

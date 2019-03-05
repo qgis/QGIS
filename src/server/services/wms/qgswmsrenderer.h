@@ -122,6 +122,9 @@ namespace QgsWms
       // Build and returns highlight layers
       QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
 
+      // Build and returns external layers
+      QList<QgsMapLayer *> externalLayers( const QList<QgsWmsParametersExternalLayer> &params );
+
       // Init a map with nickname for layers' project
       void initNicknameLayers();
 
@@ -288,9 +291,6 @@ namespace QgsWms
        *\returns true in case of success
        * */
       bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint = false );
-
-      //! Creates external WMS layer. Caller takes ownership
-      QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;
 
       void removeTemporaryLayers();
 

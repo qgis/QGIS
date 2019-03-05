@@ -55,6 +55,12 @@ namespace QgsWms
     QString mStyle;
   };
 
+  struct QgsWmsParametersExternalLayer
+  {
+    QString mName;
+    QString mUri;
+  };
+
   struct QgsWmsParametersHighlightLayer
   {
     QString mName;
@@ -79,6 +85,7 @@ namespace QgsWms
     float mGridX = 0;
     float mGridY = 0;
     QList<QgsWmsParametersLayer> mLayers; // list of layers for this composer map
+    QList<QgsWmsParametersExternalLayer> mExternalLayers; // list of external layers for this composer map
     QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
   };
 
@@ -943,6 +950,8 @@ namespace QgsWms
        * \returns parameters for each highlight layer
        */
       QList<QgsWmsParametersHighlightLayer> highlightLayersParameters() const;
+
+      QList<QgsWmsParametersExternalLayer> externalLayersParameters() const;
 
       /**
        * Returns HIGHLIGHT_GEOM as a list of string in WKT.

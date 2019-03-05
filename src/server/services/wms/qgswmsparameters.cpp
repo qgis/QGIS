@@ -1408,6 +1408,10 @@ namespace QgsWms
     for ( int i = 0; i < layers.size(); i++ )
     {
       QString layer = layers[i];
+
+      if ( layer.startsWith( QStringLiteral( "EXTERNAL_WMS:" ) ) )
+        continue;
+
       QgsWmsParametersLayer param;
       param.mNickname = layer;
 
@@ -1490,6 +1494,27 @@ namespace QgsWms
     }
 
     return params;
+  }
+
+  QList<QgsWmsParametersExternalLayer> QgsWmsParameters::externalLayersParameters() const
+  {
+    QList<QgsWmsParametersExternalLayer> externalLayers;
+
+    const QStringList layers = allLayersNickname();
+    for ( const QString &layer : allLayersNickname() )
+    {
+      if ( ! layer.startsWith( QStringLiteral( "EXTERNAL_WMS:" ) ) )
+        continue;
+
+      QgsWmsParametersExternalLayer externalLayer;
+      externalLayer.mName = layer;
+      externalLayer.mName.remove( 0, 13 );
+      externalLayer.mUri = externalWMSUri( externalLayer.mName );
+
+      externalLayers << externalLayer;
+    }
+
+    return externalLayers;
   }
 
   QString QgsWmsParameters::backgroundColor() const
@@ -1577,12 +1602,34 @@ namespace QgsWms
     }
 
     //layers
-    QStringList layers;
+    QStringList allLayers;
     wmsParam = idParameter( QgsWmsParameter::LAYERS, mapId );
     if ( wmsParam.isValid() )
     {
-      layers = wmsParam.toStringList();
+      allLayers = wmsParam.toStringList();
     }
+
+    // external layers
+    QStringList layers;
+    QList<QgsWmsParametersExternalLayer> eParams;
+
+    for ( const auto &layer : allLayers )
+    {
+      if ( layer.startsWith( QStringLiteral( "EXTERNAL_WMS:" ) ) )
+      {
+        QgsWmsParametersExternalLayer externalParam;
+        externalParam.mName = layer;
+        externalParam.mName.remove( 0, 13 );
+        externalParam.mUri = externalWMSUri( externalParam.mName );
+
+        eParams << externalParam;
+      }
+      else
+      {
+        layers << layer;
+      }
+    }
+    param.mExternalLayers = eParams;
 
     QStringList styles;
     wmsParam = idParameter( QgsWmsParameter::STYLES, mapId );
