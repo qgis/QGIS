@@ -92,6 +92,7 @@ Item {
 
     background: Rectangle {
         color: customStyle.backgroundColor
+        radius: customStyle.cornerRadius
     }
 
     onEditingFinished: {

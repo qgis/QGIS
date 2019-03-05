@@ -29,6 +29,7 @@ Item {
   property var image: image
   property var brokenImageSource: QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
   property var notavailableImageSource: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
+  property real iconSize:  customStyle.height * 0.75
 
   id: fieldItem
   height: image.hasValidSource? customStyle.height * 3 : customStyle.height
@@ -53,7 +54,7 @@ Item {
 
     id: image
     height: fieldItem.height
-    sourceSize.height: height
+    sourceSize.height: image.hasValidSource? customStyle.height * 3 : fieldItem.iconSize
     autoTransform: true
     fillMode: Image.PreserveAspectFit
     visible: hasValidSource
@@ -93,8 +94,8 @@ Item {
 
   Button {
     id: deleteButton
-    visible: fieldItem.enabled && image.hasValidSource
-    width: customStyle.height
+    visible: enableChildren && image.hasValidSource
+    width: fieldItem.iconSize
     height: width
     padding: 0
 
@@ -117,14 +118,14 @@ Item {
     ColorOverlay {
         anchors.fill: deleteIcon
         source: deleteIcon
-        color: customStyle.fontColor
+        color: customStyle.attentionColor
     }
   }
 
   Button {
     id: imageBrowserButton
-    visible: fieldItem.enabled
-    width: customStyle.height
+    visible: enableChildren
+    width: fieldItem.iconSize
     height: width
     padding: 0
 
@@ -153,8 +154,8 @@ Item {
 
   Button {
     id: button
-    visible: fieldItem.enabled
-    width: customStyle.height
+    visible: enableChildren
+    width: fieldItem.iconSize
     height: width
     padding: 0
 
