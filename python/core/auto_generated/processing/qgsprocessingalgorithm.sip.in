@@ -45,6 +45,7 @@ Abstract base class for processing algorithms.
       FlagNoThreading,
       FlagDisplayNameIsLiteral,
       FlagSupportsInPlaceEdits,
+      FlagKnownIssues,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
