@@ -1374,11 +1374,12 @@ void QgsAttributeForm::init()
       }
     }
 
-    Q_FOREACH ( const QgsRelation &rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
+    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
+    for ( const QgsRelation &rel : relations )
     {
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
-      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, rel.id() );
-      rww->setConfig( setup.config() );
+      const QVariantMap config = mLayer->editFormConfig().widgetConfig( rel.id() );
+      rww->setConfig( config );
       rww->setContext( mContext );
 
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
