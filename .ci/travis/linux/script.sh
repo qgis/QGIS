@@ -38,18 +38,21 @@ if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   docker cp ${container_id}:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR_IMAGE_BUILD}
   popd
   echo "Trigger build of PyQGIS Documentation"
-  body="{
-    'request': {
-      'branch':'master',
-      'message': 'Trigger PyQGIS doc build after release of new Docker image as ${DOCKER_TAG}',
-      'config': {
-        'merge_mode': 'deep_merge',
-        'env': {
-          'global': ['QGIS_VERSION_BRANCH=${TRAVIS_BRANCH}']
+  body='{
+    "request": {
+      "branch":"master",
+      "message": "Trigger PyQGIS doc build after release of new Docker image as __DOCKER_TAG__",
+      "config": {
+        "merge_mode": "deep_merge",
+        "matrix": {
+          "include": {
+            "env": ["QGIS_VERSION_BRANCH=__QGIS_VERSION_BRANCH__"]
+          }
         }
       }
     }
-  }"
+  }'
+  body=$(sed "s/__QGIS_VERSION_BRANCH__/${TRAVIS_BRANCH}/; s/__DOCKER_TAG__/${DOCKER_TAG}/" <<< $body)
   curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" \
     -H "Travis-API-Version: 3" -H "Authorization: token $TRAVIS_TOKEN" -d "$body" \
     https://api.travis-ci.org/repo/qgis%2Fpyqgis/requests
