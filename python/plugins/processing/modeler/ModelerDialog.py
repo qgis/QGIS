@@ -93,6 +93,7 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
+from processing.core.ProcessingConfig import ProcessingConfig
 from qgis.utils import iface
 
 
@@ -409,7 +410,10 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmTree.setDragDropMode(QTreeWidget.DragOnly)
         self.algorithmTree.setDropIndicatorShown(True)
 
-        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterModeler)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterModeler)
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        self.algorithmTree.setFilters(filters)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(QCoreApplication.translate('ModelerDialog', 'Search…'))
