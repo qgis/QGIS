@@ -753,8 +753,8 @@ void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
   else
   {
     mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
-
-    Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLegendModel->rootGroup()->findLayers() )
+    const QList< QgsLayerTreeLayer * > layers;
+    for ( QgsLayerTreeLayer *nodeLayer : layers )
       mLegendModel->refreshLayerLegend( nodeLayer );
   }
 
@@ -858,7 +858,8 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
   if ( replace )
   {
     mExpContext.~QgsExpressionContext();
-    Q_FOREACH ( QgsExpressionContextScope *scopep, context.takeScopes() )
+    QList<QgsExpressionContextScope *> scopes
+    for ( QgsExpressionContextScope *scopep : scopes )
     {
       mExpContext.appendScope( scopep );
     }
@@ -939,7 +940,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       // get non-embedded node since embedded nodes should pop un as ltmln in theory
       if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
       {
-        Q_FOREACH ( QgsLayerTreeModelLegendNode *treenode, legendnodes )
+        for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
         {
           if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( treenode ) )
             synode->evaluateLabel( context );
