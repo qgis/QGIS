@@ -68,7 +68,7 @@ bool QgsVectorLayerFeatureCounter::run()
     {
       renderContext.expressionContext().setFeature( f );
       QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
-      Q_FOREACH ( const QString &key, featureKeyList )
+      for ( const QString &key : featureKeyList )
       {
         mSymbolFeatureCountMap[key] += 1;
         mSymbolFeatureIdMap[key].insert( f.id() );
