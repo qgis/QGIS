@@ -951,6 +951,10 @@ namespace QgsWms
        */
       QList<QgsWmsParametersHighlightLayer> highlightLayersParameters() const;
 
+      /**
+       * Returns parameters for each external layer.
+       * \since QGIS 3.8
+       */
       QList<QgsWmsParametersExternalLayer> externalLayersParameters() const;
 
       /**
