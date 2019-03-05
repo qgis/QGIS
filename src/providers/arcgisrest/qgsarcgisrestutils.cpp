@@ -277,6 +277,8 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::parseEsriGeometryPolygon(
     QgsCompoundCurve *exterior = curves.takeFirst();
     QgsCurvePolygon *newPolygon = new QgsCurvePolygon();
     newPolygon->setExteriorRing( exterior );
+    std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( newPolygon ) );
+    engine->prepareGeometry();
 
     QMutableListIterator< QgsCompoundCurve * > it( curves );
     while ( it.hasNext() )
@@ -285,12 +287,13 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::parseEsriGeometryPolygon(
       QgsRectangle boundingBox = newPolygon->boundingBox();
       if ( boundingBox.intersects( curve->boundingBox() ) )
       {
-        std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( newPolygon ) );
-        QgsPoint point = curve->vertexAt( QgsVertexId( 0, 0, 0 ) );
+        QgsPoint point = curve->startPoint();
         if ( engine->contains( &point ) )
         {
           newPolygon->addInteriorRing( curve );
           it.remove();
+          engine.reset( QgsGeometry::createGeometryEngine( newPolygon ) );
+          engine->prepareGeometry();
         }
       }
     }
