@@ -10,8 +10,12 @@
 
 TEST_NAME=$1
 
+TEST_RUNNER_PATH=${TEST_RUNNER_PATH:-/usr/bin/qgis_testrunner.py}
+QGIS_BUILD_PATH=${QGIS_BUILD_PATH:-qgis}
+
 echo "Running test $1 ..."
-OUTPUT=$(QGIS_TEST_MODULE=${TEST_NAME} unbuffer qgis --version-migration --nologo --code /usr/bin/qgis_testrunner.py "$TEST_NAME"  2>/dev/null | tee /dev/tty)
+OUTPUT=$(QGIS_TEST_MODULE=${TEST_NAME} unbuffer ${QGIS_BUILD_PATH} --version-migration --nologo --code ${TEST_RUNNER_PATH} "$TEST_NAME"  2>/dev/null | tee /dev/tty)
+
 EXIT_CODE="$?"
 if [ -z "$OUTPUT" ]; then
     echo "ERROR: no output from the test runner! (exit code: ${EXIT_CODE})"
