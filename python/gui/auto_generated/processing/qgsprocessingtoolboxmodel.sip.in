@@ -380,6 +380,7 @@ the results.
       FilterToolbox,
       FilterModeler,
       FilterInPlace,
+      FilterShowKnownIssues,
     };
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 

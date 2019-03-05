@@ -71,8 +71,18 @@ if no algorithm is currently selected.
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
 Sets ``filters`` controlling the view's contents.
+
+.. seealso:: :py:func:`filters`
 %End
 
+    QgsProcessingToolboxProxyModel::Filters filters() const;
+%Docstring
+Returns the current filters controlling the view's contents.
+
+.. seealso:: :py:func:`setFilters`
+
+.. versionadded:: 3.8
+%End
 
     void setInPlaceLayer( QgsVectorLayer *layer );
 %Docstring
