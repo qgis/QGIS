@@ -26,6 +26,8 @@
 #include "qgsrulebasedlabeling.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "geometry/qgsmultisurface.h"
+
 #include <QObject>
 
 class TestQgsArcGisRestUtils : public QObject
@@ -40,6 +42,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testMapEsriFieldType();
     void testParseSpatialReference();
     void testMapEsriGeometryType();
+    void testParseEsriGeometryPolygon();
     void testParseEsriFillStyle();
     void testParseEsriLineStyle();
     void testParseEsriColorJson();
@@ -113,10 +116,25 @@ void TestQgsArcGisRestUtils::testMapEsriGeometryType()
   QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryMultipoint" ) ), QgsWkbTypes::MultiPoint );
   //unsure why this maps to multicurve and not multilinestring
   //QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral("esriGeometryPolyline") ),QgsWkbTypes::MultiCurve );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryPolygon" ) ), QgsWkbTypes::Polygon );
+  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryPolygon" ) ), QgsWkbTypes::MultiPolygon );
   QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryEnvelope" ) ), QgsWkbTypes::Polygon );
 
   QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "xxx" ) ), QgsWkbTypes::Unknown );
+}
+
+void TestQgsArcGisRestUtils::testParseEsriGeometryPolygon()
+{
+  QVariantMap map = jsonStringToMap( "{"
+                                     "\"rings\": ["
+                                     "[[12,0],[13,0],[13,10],[12,10],[12,0]],"
+                                     "[[3,3],[9,3],[6,9],[3,3]],"
+                                     "[[0,0],[10,0],[10,10],[0,10],[0,0]]"
+                                     "]"
+                                     "}" );
+  QCOMPARE( map[QStringLiteral( "rings" )].isValid(), true );
+  std::unique_ptr<QgsMultiSurface> geometry = QgsArcGisRestUtils::parseEsriGeometryPolygon( map, QgsWkbTypes::Point );
+  QVERIFY( geometry.get() );
+  QCOMPARE( geometry->asWkt(), QStringLiteral( "MultiSurface (CurvePolygon (CompoundCurve ((0 0, 10 0, 10 10, 0 10, 0 0)),CompoundCurve ((3 3, 9 3, 6 9, 3 3))),CurvePolygon (CompoundCurve ((12 0, 13 0, 13 10, 12 10, 12 0))))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParseEsriFillStyle()
