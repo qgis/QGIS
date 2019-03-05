@@ -858,7 +858,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
   if ( replace )
   {
     mExpContext.~QgsExpressionContext();
-    QList<QgsExpressionContextScope *> scopes
+    QList<QgsExpressionContextScope *> scopes;
     for ( QgsExpressionContextScope *scopep : scopes )
     {
       mExpContext.appendScope( scopep );
