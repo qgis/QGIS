@@ -1457,6 +1457,32 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         self.assertTrue('ServerException' in str(r))
 
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Can\'t rely on external resources for continuous integration')
+    def test_wms_getmap_external(self):
+        # 1 bits
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "REQUEST": "GetMap",
+            "LAYERS": "EXTERNAL_WMS:landsat",
+            "landsat:layers": "GEBCO_LATEST",
+            "landsat:dpiMode": "7",
+            "landsat:url": "https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv",
+            "landsat:crs": "EPSG:4326",
+            "landsat:styles": "default",
+            "landsat:format": "image/jpeg",
+            "landsat:bbox": "-90,-180,90,180",
+            "landsat:version": "1.3.0",
+            "STYLES": "",
+            "BBOX": "-90,-180,90,180",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_External", 20000)
+
 
 if __name__ == '__main__':
     unittest.main()
