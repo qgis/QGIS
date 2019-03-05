@@ -33,6 +33,22 @@ if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   docker push "qgis/qgis:${DOCKER_TAG}"
   popd
+  echo "Trigger build of PyQGIS Documentation"
+  body='{
+    "request": {
+      "branch":"master",
+      "message": "Trigger PyQGIS doc build after release of new Docker image",
+      "config": {
+        "merge_mode": "deep_merge",
+        "env": {
+          "global": ["QGIS_VERSION_BRANCH=release-3_4"]
+        }
+      }
+    }
+  }'
+  curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" \
+    -H "Travis-API-Version: 3" -H "Authorization: token $TRAVIS_TOKEN" -d "$body" \
+    https://api.travis-ci.org/repo/qgis%2Fpyqgis/requests
 else
   # running QGIS tests
   docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
