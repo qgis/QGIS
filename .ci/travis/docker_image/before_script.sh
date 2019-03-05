@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    before_script.sh
+#    before_install.sh
 #    ---------------------
-#    Date                 : August 2015
-#    Copyright            : (C) 2015 by Nyall Dawson
-#    Email                : nyall dot dawson at gmail dot com
+#    Date                 : March 2019
+#    Copyright            : (C) 2019 by Denis Rouzaud
+#    Email                : denis@opengis.ch
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -13,6 +13,7 @@
 #   (at your option) any later version.                                   #
 #                                                                         #
 ###########################################################################
+
 
 set -e
 
