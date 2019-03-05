@@ -16,62 +16,21 @@
 
 set -e
 
-mkdir -p "CCACHE_DIR_IMAGE_BUILD"
+# running QGIS tests
+docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
 
-if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
-  # copy ccache dir within QGIS source so it can be accessed from docker
-  cp -r ${CCACHE_DIR_IMAGE_BUILD} ${TRAVIS_BUILD_DIR}/.ccache_image_build
-  # building docker images
-  DIR=$(git rev-parse --show-toplevel)/.docker
-  pushd "${DIR}"
-  echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
-  docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
-               --cache-from "qgis/qgis:${DOCKER_TAG}" \
-               -t "qgis/qgis:${DOCKER_TAG}" \
-               -f qgis.dockerfile ..
-  echo "${bold}Pushing image to docker hub...${endbold}"
-  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  docker push "qgis/qgis:${DOCKER_TAG}"
-  echo "Copy build cache from Docker container to Travis cache directory"
-  rm -rf "${CCACHE_DIR_IMAGE_BUILD:?}/"*
-  container_id=$(docker images -q "qgis/qgis:${DOCKER_TAG}")
-  docker cp ${container_id}:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR_IMAGE_BUILD}
-  popd
-  echo "Trigger build of PyQGIS Documentation"
-  body='{
-    "request": {
-      "branch":"master",
-      "message": "Trigger PyQGIS doc build after release of new Docker image as __DOCKER_TAG__",
-      "config": {
-        "merge_mode": "deep_merge",
-        "matrix": {
-          "include": {
-            "env": ["QGIS_VERSION_BRANCH=__QGIS_VERSION_BRANCH__"]
-          }
-        }
-      }
-    }
-  }'
-  body=$(sed "s/__QGIS_VERSION_BRANCH__/${TRAVIS_BRANCH}/; s/__DOCKER_TAG__/${DOCKER_TAG}/" <<< $body)
-  curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" \
-    -H "Travis-API-Version: 3" -H "Authorization: token $TRAVIS_TOKEN" -d "$body" \
-    https://api.travis-ci.org/repo/qgis%2Fpyqgis/requests
-else
-  # running QGIS tests
-  docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
+# running tests for the python test runner
+docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 "qgis/qgis:${DOCKER_TAG}"
+sleep 10  # Wait for xvfb to finish starting
+# Temporary workaround until docker images are built
+docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/qgis_testrunner.sh qgis-testing-environment:/usr/bin/qgis_testrunner.sh
+# Run tests in the docker
+# Passing cases:
+TEST_SCRIPT_PATH=${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker_test.sh
+[[ $(${TEST_SCRIPT_PATH} test_testrunner.run_passing) -eq '0' ]]
+[[ $(${TEST_SCRIPT_PATH} test_testrunner.run_skipped_and_passing) -eq '0' ]]
+# Failing cases:
+[[ $(${TEST_SCRIPT_PATH} test_testrunner) -eq '1' ]]
+[[ $(${TEST_SCRIPT_PATH} test_testrunner.run_all) -eq '1' ]]
+[[ $(${TEST_SCRIPT_PATH} test_testrunner.run_failing) -eq '1' ]]
 
-  # running tests for the python test runner
-  docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 "qgis/qgis:${DOCKER_TAG}"
-  sleep 10  # Wait for xvfb to finish starting
-  # Temporary workaround until docker images are built
-  docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/qgis_testrunner.sh qgis-testing-environment:/usr/bin/qgis_testrunner.sh
-  # Run tests in the docker
-  # Passing cases:
-  TEST_SCRIPT_PATH=${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker_test.sh
-  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_passing) -eq '0' ]]
-  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_skipped_and_passing) -eq '0' ]]
-  # Failing cases:
-  [[ $(${TEST_SCRIPT_PATH} test_testrunner) -eq '1' ]]
-  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_all) -eq '1' ]]
-  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_failing) -eq '1' ]]
-fi

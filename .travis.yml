@@ -43,7 +43,6 @@ matrix:
       env:
         - TRAVIS_CONFIG=linux
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
-        - DOCKER_BUILD_QGIS_IMAGE=false
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
       ##########################################################
@@ -104,9 +103,8 @@ matrix:
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       env:
-        - TRAVIS_CONFIG=linux
+        - TRAVIS_CONFIG=docker_image
         - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
-        - DOCKER_BUILD_QGIS_IMAGE=true
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
       ##########################################################
@@ -117,9 +115,8 @@ matrix:
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       env:
-        - TRAVIS_CONFIG=linux
+        - TRAVIS_CONFIG=docker_image
         - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_cosmic"
-        - DOCKER_BUILD_QGIS_IMAGE=true
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-cosmic.dockerfile
 
 
