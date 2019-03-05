@@ -8,15 +8,14 @@ cache:
   pip: true
   directories:
     - ${HOME}/.ccache_testing
-    - ${HOME}/.ccache_docker_build
+    - ${HOME}/.ccache_docker_build_cosmic
+    - ${HOME}/.ccache_docker_build_bionic
   timeout: 1000
 if: NOT branch =~ /^(cherry-pick-)?backport-\d+-on-/
 
 env:
   global:
     - TRAVIS_TIMESTAMP=$(date +%s)
-    - CCACHE_DIR_TESTING=${HOME}/.ccache_testing
-    - CCACHE_DIR_IMAGE_BUILD=${HOME}/.ccache_docker_build
     # Docker hub username and passowrd
     - secure: "b7eMDIolaAnq1voGKC1ez7Kcf+/A0WZDJEHBvNwk2KubBfrGOE83GMDrFNF4NqjIprqIAvVKj+TrX1ckCvs24re3IqUJo71TaF1IgxzDDPwSsmNh5UMmvZkeiJys9bWjqDO9wYR5ietNmIE18qyMc8ToJk8oKm6AXuAG2n6znmM="
     - secure: "PHCp7F3nApp38Mz6b4/OLxgfBiikRGzPQDHg3R5LX+SQOll24c/DMtwpPwizNuFEiCFcRmJ9uc1t0HWEerIZe5uqm7AtE/nMXBsvDZ+hj4Tz/fEBF98a1k4WLYheN1exFidVkJgdAeiwMOOUQXw5KuIX62bxBdzsdcd0QGwxiXo="
@@ -41,6 +40,7 @@ matrix:
       services: docker
       env:
         - TRAVIS_CONFIG=linux
+        - CCACHE_DIR=${HOME}/.ccache_testing
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
@@ -101,6 +101,7 @@ matrix:
       services: docker
       env:
         - TRAVIS_CONFIG=docker_image
+        - CCACHE_DIR=${HOME}/.ccache_docker_build_bionic
         - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
@@ -112,6 +113,7 @@ matrix:
       services: docker
       env:
         - TRAVIS_CONFIG=docker_image
+        - CCACHE_DIR=${HOME}/.ccache_docker_build_cosmic
         - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_cosmic"
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-cosmic.dockerfile
 
