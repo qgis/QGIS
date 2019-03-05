@@ -82,7 +82,7 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def canBeActivated(self):
         version = SagaUtils.getInstalledVersion(True)
-        if version is not None and version > REQUIRED_VERSION:
+        if version is not None and version.startswith(REQUIRED_VERSION):
             return True
         return False
 
@@ -93,8 +93,8 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
                                      self.tr('Processing'), Qgis.Critical)
             return
 
-        if version < REQUIRED_VERSION:
-            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version (found: {}, min required: {}).').format(version, REQUIRED_VERSION),
+        if not version.startswith(REQUIRED_VERSION):
+            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version (found: {}, required: {}).').format(version, REQUIRED_VERSION),
                                      self.tr('Processing'),
                                      Qgis.Critical)
             return
