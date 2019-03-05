@@ -81,11 +81,14 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
                                        QgsGui.instance().processingRecentAlgorithmLog())
-        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        self.algorithmTree.setFilters(filters)
 
         self.searchBox.setShowSearchIcon(True)
 
-        self.searchBox.textChanged.connect(self.algorithmTree.setFilterString)
+        self.searchBox.textChanged.connect(self.set_filter_string)
         self.searchBox.returnPressed.connect(self.activateCurrent)
         self.algorithmTree.customContextMenuRequested.connect(
             self.showPopupMenu)
@@ -114,11 +117,24 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         iface.currentLayerChanged.connect(self.layer_changed)
 
-    def set_in_place_edit_mode(self, enabled):
-        if enabled:
-            self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox | QgsProcessingToolboxProxyModel.FilterInPlace))
+    def set_filter_string(self, string):
+        filters = self.algorithmTree.filters()
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
         else:
-            self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
+            filters &= ~QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        self.algorithmTree.setFilters(filters)
+        self.algorithmTree.setFilterString(string)
+
+    def set_in_place_edit_mode(self, enabled):
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+
+        if enabled:
+            self.algorithmTree.setFilters(filters | QgsProcessingToolboxProxyModel.FilterInPlace)
+        else:
+            self.algorithmTree.setFilters(filters)
         self.in_place_mode = enabled
 
     def layer_changed(self, layer):
