@@ -71,5 +71,6 @@ class Parameters:
                 params[4] = True if params[4].lower() == 'true' else False
             param = SagaImageOutputParam(*params)
             param.setDescription(QCoreApplication.translate("SAGAAlgorithm", param.description()))
+            return param
         else:
             return getParameterFromString(line, "SAGAAlgorithm")
