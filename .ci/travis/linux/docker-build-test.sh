@@ -166,3 +166,16 @@ popd > /dev/null # build
 popd > /dev/null # /root/QGIS
 
 [ -r /tmp/ctest-important.log ] && cat /tmp/ctest-important.log || true
+
+##############################
+# Run Python Tests on QGIS app
+##############################
+pushd /root/QGIS/tests/src/python
+# Passing cases:
+[[ $(qgis_testrunner.sh test_testrunner.run_passing) -eq '0' ]] || exit 1
+[[ $(qgis_testrunner.sh test_testrunner.run_skipped_and_passing) -eq '0' ]] || exit 1
+# Failing cases:
+[[ $(qgis_testrunner.sh test_testrunner) -eq '1' ]] || exit 1
+[[ $(qgis_testrunner.sh test_testrunner.run_all) -eq '1' ]] || exit 1
+[[ $(qgis_testrunner.sh test_testrunner.run_failing) -eq '1' ]] || exit 1
+popd
