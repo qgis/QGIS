@@ -425,6 +425,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
       FilterToolbox = 1 << 1, //!< Filters out any algorithms and content which should not be shown in the toolbox
       FilterModeler = 1 << 2, //!< Filters out any algorithms and content which should not be shown in the modeler
       FilterInPlace = 1 << 3, //!< Only show algorithms which support in-place edits
+      FilterShowKnownIssues = 1 << 4, //!< Show algorithms with known issues (hidden by default)
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )

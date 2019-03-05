@@ -40,6 +40,7 @@ from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmExecutor import execute_in_place
 from qgis.utils import iface
+from processing.core.ProcessingConfig import ProcessingConfig
 
 
 class AlgorithmLocatorFilter(QgsLocatorFilter):
@@ -70,6 +71,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
         # accessing the processing registry is not thread safe
         for a in QgsApplication.processingRegistry().algorithms():
             if a.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
+                continue
+            if not ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES) and \
+                    a.flags() & QgsProcessingAlgorithm.FlagKnownIssues:
                 continue
 
             if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)] or \

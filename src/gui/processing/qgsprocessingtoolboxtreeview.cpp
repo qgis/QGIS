@@ -93,6 +93,11 @@ void QgsProcessingToolboxTreeView::setFilters( QgsProcessingToolboxProxyModel::F
   mModel->setFilters( filters );
 }
 
+QgsProcessingToolboxProxyModel::Filters QgsProcessingToolboxTreeView::filters() const
+{
+  return mModel->filters();
+}
+
 void QgsProcessingToolboxTreeView::setInPlaceLayer( QgsVectorLayer *layer )
 {
   mModel->setInPlaceLayer( layer );
