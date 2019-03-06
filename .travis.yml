@@ -102,6 +102,7 @@ matrix:
       env:
         - TRAVIS_CONFIG=docker_image
         - CCACHE_DIR=${HOME}/.ccache_docker_build_bionic
+        - TRIGGER_PYQGIS_DOC=FALSE
         - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
@@ -114,6 +115,7 @@ matrix:
       env:
         - TRAVIS_CONFIG=docker_image
         - CCACHE_DIR=${HOME}/.ccache_docker_build_cosmic
+        - TRIGGER_PYQGIS_DOC=TRUE
         - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_cosmic"
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-cosmic.dockerfile
 
