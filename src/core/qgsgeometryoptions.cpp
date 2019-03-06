@@ -19,6 +19,13 @@
 
 #include "qgsxmlutils.h"
 
+#include "qgssettings.h"
+
+QgsGeometryOptions::QgsGeometryOptions()
+{
+  mGeometryChecks = QgsSettings().value( QStringLiteral( "geometry_validation/default_checks" ) ).toString().split( ',' ) ;
+}
+
 bool QgsGeometryOptions::removeDuplicateNodes() const
 {
   return mRemoveDuplicateNodes;
