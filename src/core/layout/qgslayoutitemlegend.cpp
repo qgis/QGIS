@@ -34,8 +34,6 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
-
-// unsure if needed
 #include "qgsexpressioncontext.h"
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
