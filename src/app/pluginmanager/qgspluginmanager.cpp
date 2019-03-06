@@ -541,7 +541,7 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( error, PLUGIN_ERROR_ROLE );
       mypDetailItem->setData( description, PLUGIN_DESCRIPTION_ROLE );
       mypDetailItem->setData( author, PLUGIN_AUTHOR_ROLE );
-      mypDetailItem->setData( it->value( QStringLiteral( "tags" ) ).toLower(), PLUGIN_TAGS_ROLE );
+      mypDetailItem->setData( it->value( QStringLiteral( "tags" ) ), PLUGIN_TAGS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "downloads" ) ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "average_vote" ) ), PLUGIN_VOTE_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "deprecated" ) ), PLUGIN_ISDEPRECATED_ROLE );
@@ -862,13 +862,21 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<img src=\"%1\" style=\"float:right;max-width:64px;max-height:64px;\">" ).arg( iconPath );
   }
 
-  html += QStringLiteral( "<h1>%1</h1>" ).arg( metadata->value( QStringLiteral( "name" ) ) );
+  QRegularExpression stripHtml = QRegularExpression( QStringLiteral( "&lt;[^\\s].*?&gt;" ) );
 
-  html += QStringLiteral( "<h3>%1</h3>" ).arg( metadata->value( QStringLiteral( "description" ) ) );
+  QString name = metadata->value( QStringLiteral( "name" ) );
+  name = name.remove( stripHtml );
+  html += QStringLiteral( "<h1>%1</h1>" ).arg( name );
+
+  QString description = metadata->value( QStringLiteral( "description" ) );
+  description = description.remove( stripHtml );
+  html += QStringLiteral( "<h3>%1</h3>" ).arg( description );
 
   if ( ! metadata->value( QStringLiteral( "about" ) ).isEmpty() )
   {
     QString about = metadata->value( QStringLiteral( "about" ) );
+    // The regular expression insures that a new line will be present after the closure of a paragraph tag (i.e. </p>)
+    about = about.replace( QRegularExpression( QStringLiteral( "&lt;\\/p&gt;([^\\n])" ) ), QStringLiteral( "&lt;/p&gt;\n\\1" ) ).remove( stripHtml );
     html += about.replace( '\n', QLatin1String( "<br/>" ) );
     html += QLatin1String( "<br/><br/>" );
   }
@@ -909,7 +917,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
   if ( ! metadata->value( QStringLiteral( "tags" ) ).isEmpty() )
   {
-    QStringList tags = metadata->value( QStringLiteral( "tags" ) ).split( ',' );
+    QStringList tags = metadata->value( QStringLiteral( "tags" ) ).toLower().split( ',' );
     for ( auto tag = tags.begin(); tag != tags.end(); ++tag )
     {
       *tag = QStringLiteral( "<a href='rpc2://search.tag/%1/'>%1</a>" ).arg( ( *tag ).trimmed() );
