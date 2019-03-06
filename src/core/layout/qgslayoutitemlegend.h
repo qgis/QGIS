@@ -460,7 +460,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * Creates an expression context
      * \since QGIS 3.8
      */
-    QgsExpressionContext createExpressionContext() const;
+    QgsExpressionContext createExpressionContext() const override;
     
     /**
      * Updates the member QgsExpressionContext and returns it.
