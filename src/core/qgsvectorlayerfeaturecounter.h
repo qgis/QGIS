@@ -66,6 +66,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      * Returns the QgsFeatureIds for each symbol. Only valid after the symbolsCounted()
      * signal has been emitted.
      *
+     * \see symbolFeatureCountMap
      * \note Not available in Python bindings.
      * \since QGIS 3.8
      */
