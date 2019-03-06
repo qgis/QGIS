@@ -26,6 +26,7 @@
 #include "qgsmessagelog.h"
 #include "qgssqliteutils.h"
 #include "qgsreadwritecontext.h"
+#include "qgsapplication.h"
 
 
 static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::Metadata &metadata )
@@ -216,10 +217,9 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
 
   // read from device and write to the table
   QByteArray content = device->readAll();
-
   QString metadataExpr = QStringLiteral( "{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }" ).arg(
-                           "2019-01-01",
-                           "username"
+                           QTime().toString(),
+                           QgsApplication::instance()->userLoginName()
                          );
   QString sql;
   if ( listProjects( uri ).contains( projectUri.projectName ) )
