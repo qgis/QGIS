@@ -10,7 +10,6 @@
 
 
 
-
 class QgsLegendModel : QgsLayerTreeModel
 {
 %Docstring
@@ -498,7 +497,8 @@ Returns the legend's renderer settings object.
     virtual void finalizeRestoreFromXml();
 
 
-    QgsExpressionContext createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const;
+
 %Docstring
 Creates an expression context
 
@@ -509,7 +509,7 @@ Creates an expression context
 %Docstring
 Updates the member QgsExpressionContext and returns it.
 
-.. versionadded:: 3.8 
+.. versionadded:: 3.8
 %End
 
 
