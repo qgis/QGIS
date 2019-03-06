@@ -541,7 +541,7 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( error, PLUGIN_ERROR_ROLE );
       mypDetailItem->setData( description, PLUGIN_DESCRIPTION_ROLE );
       mypDetailItem->setData( author, PLUGIN_AUTHOR_ROLE );
-      mypDetailItem->setData( it->value( QStringLiteral( "tags" ) ), PLUGIN_TAGS_ROLE );
+      mypDetailItem->setData( it->value( QStringLiteral( "tags" ) ).toLower(), PLUGIN_TAGS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "downloads" ) ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "average_vote" ) ), PLUGIN_VOTE_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "deprecated" ) ), PLUGIN_ISDEPRECATED_ROLE );
@@ -909,7 +909,12 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
   if ( ! metadata->value( QStringLiteral( "tags" ) ).isEmpty() )
   {
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Tags" ), metadata->value( QStringLiteral( "tags" ) ) );
+    QStringList tags = metadata->value( QStringLiteral( "tags" ) ).split( ',' );
+    for ( auto tag = tags.begin(); tag != tags.end(); ++tag )
+    {
+      *tag = QStringLiteral( "<a href='rpc2://search.tag/%1/'>%1</a>" ).arg( ( *tag ).trimmed() );
+    }
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Tags" ), tags.join( QStringLiteral( ", " ) ) );
   }
 
   if ( ! metadata->value( QStringLiteral( "homepage" ) ).isEmpty() || ! metadata->value( QStringLiteral( "tracker" ) ).isEmpty() || ! metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
@@ -1305,8 +1310,13 @@ void QgsPluginManager::wvDetails_linkClicked( const QUrl &url )
   {
     if ( url.host() == QLatin1String( "plugin.vote" ) )
     {
-      QString params = url.path();
-      sendVote( params.split( '/' )[1].toInt(), params.split( '/' )[2].toInt() );
+      QStringList params = url.path().split( '/' );
+      sendVote( params[1].toInt(), params[2].toInt() );
+    }
+    else if ( url.host() == QLatin1String( "search.tag" ) )
+    {
+      QStringList params = url.path().split( '/' );
+      leFilter->setText( QStringLiteral( "tag:%1" ).arg( params[1] ) );
     }
   }
   else
