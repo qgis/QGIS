@@ -67,16 +67,16 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      * signal has been emitted.
      *
      * \note Not available in Python bindings.
-     * \since: 3.8
+     * \since QGIS 3.8
      */
     QHash<QString, QgsFeatureIds> symbolFeatureIdMap() const SIP_SKIP;
 
     /**
      * Returns the feature Ids for a particular \a legendKey.
-     * If run() has not yet been executed, it will be.
+     * If run() has not yet been executed, run() will be called.
      * If the key has not been found an empty QSet will be returned.
      *
-     * \since:3.8
+     * \since QGIS 3.8
      */
     QgsFeatureIds featureIds( const QString symbolkey ) const;
 
