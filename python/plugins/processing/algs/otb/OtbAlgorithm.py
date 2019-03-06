@@ -53,8 +53,7 @@ from qgis.core import (Qgis,
 
 from processing.core.parameters import getParameterFromString
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
-from processing.algs.otb import OtbUtils
-
+from processing.algs.otb.OtbUtils import OtbUtils
 
 class OtbAlgorithm(QgsProcessingAlgorithm):
 
@@ -200,8 +199,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         return valid_params
 
     def processAlgorithm(self, parameters, context, feedback):
-        otb_cli_file = OtbUtils.cliPath()
-        command = '"{}" {} {}'.format(otb_cli_file, self.name(), OtbUtils.appFolder())
+        app_launcher_path = OtbUtils.getExecutableInPath(OtbUtils.otbFolder(), 'otbApplicationLauncherCommandLine')
+        command = '"{}" {} {}'.format(app_launcher_path, self.name(), OtbUtils.appFolder())
         outputPixelType = None
         for k, v in parameters.items():
             # if value is None for a parameter we don't have any businees with this key
@@ -263,11 +262,6 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 command += ' -{} "{}" "{}"'.format(out.name(), filePath, outputPixelType)
             else:
                 command += ' -{} "{}"'.format(out.name(), filePath)
-
-        QgsMessageLog.logMessage(self.tr('cmd={}'.format(command)), self.tr('Processing'), Qgis.Info)
-        if not os.path.exists(otb_cli_file) or not os.path.isfile(otb_cli_file):
-            import errno
-            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), otb_cli_file)
 
         OtbUtils.executeOtb(command, feedback)
 
