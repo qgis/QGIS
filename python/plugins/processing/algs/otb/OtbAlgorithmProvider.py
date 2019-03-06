@@ -36,7 +36,6 @@ from qgis import utils
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.algs.otb.OtbUtils import OtbUtils
-from processing.algs.otb.OtbSettings import OtbSettings
 from processing.algs.otb.OtbAlgorithm import OtbAlgorithm
 
 class OtbAlgorithmProvider(QgsProcessingProvider):
@@ -50,35 +49,35 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
     def load(self):
         group = self.name()
         ProcessingConfig.settingIcons[group] = self.icon()
-        ProcessingConfig.addSetting(Setting(group, OtbSettings.ACTIVATE, self.tr('Activate'), True))
-        ProcessingConfig.addSetting(Setting(group, OtbSettings.FOLDER,
+        ProcessingConfig.addSetting(Setting(group, OtbUtils.ACTIVATE, self.tr('Activate'), True))
+        ProcessingConfig.addSetting(Setting(group, OtbUtils.FOLDER,
                                             self.tr("OTB folder"),
                                             OtbUtils.otbFolder(),
                                             valuetype=Setting.FOLDER,
                                             validator=self.validateOtbFolder
                                             ))
-        ProcessingConfig.addSetting(Setting(group, OtbSettings.APP_FOLDER,
+        ProcessingConfig.addSetting(Setting(group, OtbUtils.APP_FOLDER,
                                             self.tr("OTB application folder"),
                                             OtbUtils.appFolder(),
                                             valuetype=Setting.MULTIPLE_FOLDERS,
                                             validator=self.validateAppFolders
                                             ))
-        ProcessingConfig.addSetting(Setting(group, OtbSettings.SRTM_FOLDER,
+        ProcessingConfig.addSetting(Setting(group, OtbUtils.SRTM_FOLDER,
                                             self.tr("SRTM tiles folder"),
                                             OtbUtils.srtmFolder(),
                                             valuetype=Setting.FOLDER
                                             ))
-        ProcessingConfig.addSetting(Setting(group, OtbSettings.GEOID_FILE,
+        ProcessingConfig.addSetting(Setting(group, OtbUtils.GEOID_FILE,
                                             self.tr("Geoid file"),
                                             OtbUtils.geoidFile(),
                                             valuetype=Setting.FOLDER
                                             ))
-        ProcessingConfig.addSetting(Setting(group, OtbSettings.MAX_RAM_HINT,
+        ProcessingConfig.addSetting(Setting(group, OtbUtils.MAX_RAM_HINT,
                                             self.tr("Maximum RAM to use"),
                                             OtbUtils.maxRAMHint(),
                                             valuetype=Setting.STRING
                                             ))
-        ProcessingConfig.addSetting(Setting(group, OtbSettings.LOGGER_LEVEL,
+        ProcessingConfig.addSetting(Setting(group, OtbUtils.LOGGER_LEVEL,
                                             self.tr("Logger level"),
                                             OtbUtils.loggerLevel(),
                                             valuetype=Setting.STRING,
@@ -89,14 +88,14 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         return True
 
     def unload(self):
-        for setting in OtbSettings.keys():
+        for setting in OtbUtils.settingNames():
             ProcessingConfig.removeSetting(setting)
 
     def isActive(self):
-        return ProcessingConfig.getSetting(OtbSettings.ACTIVATE)
+        return ProcessingConfig.getSetting(OtbUtils.ACTIVATE)
 
     def setActive(self, active):
-        ProcessingConfig.setSettingValue(OtbSettings.ACTIVATE, active)
+        ProcessingConfig.setSettingValue(OtbUtils.ACTIVATE, active)
 
     def createAlgsList(self):
         algs = []

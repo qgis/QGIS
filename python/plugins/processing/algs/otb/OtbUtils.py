@@ -31,39 +31,73 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import sys
 import re
 import subprocess
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from qgis.core import (Qgis, QgsApplication, QgsMessageLog)
 from qgis.PyQt.QtCore import QCoreApplication
-from processing.algs.otb.OtbSettings import OtbSettings
-
 
 class OtbUtils:
+    # Checkbox to enable/disable otb provider (bool).
+    ACTIVATE = "OTB_ACTIVATE"
+
+    # Path to otb installation folder (string, directory).
+    FOLDER = "OTB_FOLDER"
+
+    # Path to otb application folder. multiple paths are supported (string, directory).
+    APP_FOLDER = "OTB_APP_FOLDER"
+
+    # A string to hold current version number. Useful for bug reporting.
+    VERSION = "OTB_VERSION"
+
+    # Default directory were DEM tiles are stored. It should only contain ```.hgt`` or or georeferenced ``.tif`` files. Empty if not set (no directory set).
+    SRTM_FOLDER = "OTB_SRTM_FOLDER"
+
+    # Default path to the geoid file that will be used to retrieve height of DEM above ellipsoid. Empty if not set (no geoid set).
+    GEOID_FILE = "OTB_GEOID_FILE"
+
+    # Default maximum memory that OTB should use for processing, in MB. If not set, default value is 128 MB.
+    # This is set through environment variable ``OTB_MAX_RAM_HINT``
+    MAX_RAM_HINT = 'OTB_MAX_RAM_HINT'
+
+    # ``OTB_LOGGER_LEVEL``: Default level of logging for OTB. Should be one of ``DEBUG``, ``INFO``, ``WARNING``, ``CRITICAL`` or ``FATAL``, by increasing order of priority. Only messages with a higher priority than the level of logging will be displayed. If not set, default level is ``INFO``.
+    LOGGER_LEVEL = 'OTB_LOGGER_LEVEL'
+
+    @staticmethod
+    def settingNames():
+        return [
+            OtbUtils.ACTIVATE,
+            OtbUtils.FOLDER,
+            OtbUtils.SRTM_FOLDER,
+            OtbUtils.GEOID_FILE,
+            OtbUtils.LOGGER_LEVEL,
+            OtbUtils.MAX_RAM_HINT
+        ]
 
     @staticmethod
     def version():
-        return ProcessingConfig.getSetting(OtbSettings.VERSION) or '0.0.0'
+        return ProcessingConfig.getSetting(OtbUtils.VERSION) or '0.0.0'
 
     @staticmethod
     def loggerLevel():
-        return ProcessingConfig.getSetting(OtbSettings.LOGGER_LEVEL) or 'INFO'
+        return ProcessingConfig.getSetting(OtbUtils.LOGGER_LEVEL) or 'INFO'
 
     @staticmethod
     def maxRAMHint():
-        return ProcessingConfig.getSetting(OtbSettings.MAX_RAM_HINT) or ''
+        return ProcessingConfig.getSetting(OtbUtils.MAX_RAM_HINT) or ''
 
     @staticmethod
     def otbFolder():
-        if ProcessingConfig.getSetting(OtbSettings.FOLDER):
-            return os.path.normpath(os.sep.join(re.split(r'\\|/', ProcessingConfig.getSetting(OtbSettings.FOLDER))))
+        if ProcessingConfig.getSetting(OtbUtils.FOLDER):
+            return os.path.normpath(os.sep.join(re.split(r'\\|/', ProcessingConfig.getSetting(OtbUtils.FOLDER))))
         else:
             return None
 
     @staticmethod
     def appFolder():
-        app_folder = ProcessingConfig.getSetting(OtbSettings.APP_FOLDER)
+        app_folder = ProcessingConfig.getSetting(OtbUtils.APP_FOLDER)
         if app_folder:
             return os.pathsep.join(app_folder.split(';'))
         else:
@@ -71,11 +105,11 @@ class OtbUtils:
 
     @staticmethod
     def srtmFolder():
-        return ProcessingConfig.getSetting(OtbSettings.SRTM_FOLDER) or ''
+        return ProcessingConfig.getSetting(OtbUtils.SRTM_FOLDER) or ''
 
     @staticmethod
     def geoidFile():
-        return ProcessingConfig.getSetting(OtbSettings.GEOID_FILE) or ''
+        return ProcessingConfig.getSetting(OtbUtils.GEOID_FILE) or ''
 
     @staticmethod
     def getExecutableInPath(path, exe):
