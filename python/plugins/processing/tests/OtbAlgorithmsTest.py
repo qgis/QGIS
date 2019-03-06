@@ -48,7 +48,7 @@ from processing.gui.wrappers import *
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.algs.otb.OtbAlgorithm import OtbAlgorithm
 from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider
-from processing.algs.otb.OtbSettings import OtbSettings
+from processing.algs.otb.OtbUtils import OtbUtils
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice, OtbChoiceWidgetWrapper
 import AlgorithmsTestBase
 
@@ -165,8 +165,8 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         from processing.core.Processing import Processing
         Processing.initialize()
         ProcessingConfig.setSettingValue("OTB_ACTIVATE", True)
-        ProcessingConfig.setSettingValue(OtbSettings.FOLDER, OTB_INSTALL_DIR)
-        ProcessingConfig.setSettingValue(OtbSettings.APP_FOLDER, os.path.join(OTB_INSTALL_DIR, 'lib', 'otb', 'applications'))
+        ProcessingConfig.setSettingValue(OtbUtils.FOLDER, OTB_INSTALL_DIR)
+        ProcessingConfig.setSettingValue(OtbUtils.APP_FOLDER, os.path.join(OTB_INSTALL_DIR, 'lib', 'otb', 'applications'))
         ProcessingConfig.readSettings()
         # Refresh OTB Algorithms after settings are changed.
         for p in QgsApplication.processingRegistry().providers():
