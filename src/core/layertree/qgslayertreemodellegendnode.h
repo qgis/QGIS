@@ -254,7 +254,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     /**
      * Create an expression context containing symbol elements
      * \param context extra QgsExpressionContext to use for evaluation
-     * \since: 3.8
+     * \since QGIS 3.8
      */
     QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const;
 
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     * \param label text to evaluate
     * \param vl pointer to the vectorlayer
     * \param context extra QgsExpressionContext to use for evaluation
-    * \since 3.8
+    * \since QGIS 3.8
     */
     QString evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context = QgsExpressionContext() ) const;
 
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Evaluates  and returns the text label of the current node
      * \param context extra QgsExpressionContext to use for evaluating the expression
      * \param label text to evaluate instead of the layer layertree string
-     * \since: 3.8
+     * \since QGIS 3.8
      */
     QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
 
