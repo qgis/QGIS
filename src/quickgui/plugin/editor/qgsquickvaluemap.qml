@@ -25,15 +25,15 @@ import QgsQuick 0.1 as QgsQuick
  */
 Item {
   signal valueChanged(var value, bool isNull)
-  id: fieldItem
 
+  id: fieldItem
+  enabled: !readOnly
+  height: customStyle.height
   anchors {
     left: parent.left
     right: parent.right
     rightMargin: 10 * QgsQuick.Utils.dp
   }
-
-  height: customStyle.height
 
   ComboBox {
     id: comboBox

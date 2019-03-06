@@ -170,7 +170,7 @@ Item {
         left: parent.left
         right: parent.right
       }
-      height: tabRow.height
+      height: form.model.hasTabs ? tabRow.height : 0
 
       flickableDirection: Flickable.HorizontalFlick
       contentWidth: tabRow.width
@@ -339,8 +339,6 @@ Item {
           height: childrenRect.height
           anchors { left: parent.left; right: parent.right }
 
-          enabled: form.state !== "ReadOnly" && !!AttributeEditable
-
           property var value: AttributeValue
           property var config: EditorWidgetConfig
           property var widget: EditorWidget
@@ -349,6 +347,7 @@ Item {
           property var homePath: form.project ? form.project.homePath : ""
           property var customStyle: form.style.fields
           property var externalResourceHandler: form.externalResourceHandler
+          property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
 
           active: widget !== 'Hidden'
 

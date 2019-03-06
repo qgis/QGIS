@@ -50,6 +50,7 @@ QtObject {
       property color backgroundColor: "lightGray"
       property color backgroundColorInactive: "lightGray"
       property color activeColor: "#1B5E20"
+      property color attentionColor: "red"
       property color normalColor: "#4CAF50"
       property real height: 48 * QgsQuick.Utils.dp
       property real cornerRadius: 0 * QgsQuick.Utils.dp

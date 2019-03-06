@@ -22,6 +22,7 @@ import QgsQuick 0.1 as QgsQuick
  * External Resource (Photo capture) for QGIS Attribute Form
  * Requires various global properties set to function, see qgsquickfeatureform Loader section
  * Do not use directly from Application QML
+ * The widget is interactive which allows interactions even in readOnly state (e.g showing preview), but no edit!
  */
 Item {
   signal valueChanged(var value, bool isNull)
@@ -29,8 +30,10 @@ Item {
   property var image: image
   property var brokenImageSource: QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
   property var notavailableImageSource: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
+  property real iconSize:  customStyle.height * 0.75
 
   id: fieldItem
+  enabled: true // its interactive widget
   height: image.hasValidSource? customStyle.height * 3 : customStyle.height
   anchors {
     left: parent.left
@@ -53,7 +56,7 @@ Item {
 
     id: image
     height: fieldItem.height
-    sourceSize.height: height
+    sourceSize.height: image.hasValidSource? customStyle.height * 3 : fieldItem.iconSize
     autoTransform: true
     fillMode: Image.PreserveAspectFit
     visible: hasValidSource
@@ -93,8 +96,8 @@ Item {
 
   Button {
     id: deleteButton
-    visible: fieldItem.enabled && image.hasValidSource
-    width: customStyle.height
+    visible: !readOnly && image.hasValidSource
+    width: fieldItem.iconSize
     height: width
     padding: 0
 
@@ -117,14 +120,14 @@ Item {
     ColorOverlay {
         anchors.fill: deleteIcon
         source: deleteIcon
-        color: customStyle.fontColor
+        color: customStyle.attentionColor
     }
   }
 
   Button {
     id: imageBrowserButton
-    visible: fieldItem.enabled
-    width: customStyle.height
+    visible: !readOnly
+    width: fieldItem.iconSize
     height: width
     padding: 0
 
@@ -153,8 +156,8 @@ Item {
 
   Button {
     id: button
-    visible: fieldItem.enabled
-    width: customStyle.height
+    visible: !readOnly
+    width: fieldItem.iconSize
     height: width
     padding: 0
 
