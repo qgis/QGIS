@@ -461,7 +461,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * \since QGIS 3.8
      */
     QgsExpressionContext createExpressionContext() const override;
-    
+
     /**
      * Updates the member QgsExpressionContext and returns it.
      * \since QGIS 3.8
