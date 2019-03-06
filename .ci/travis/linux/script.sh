@@ -17,4 +17,4 @@
 set -e
 
 # running QGIS tests
-docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run -T qgis-deps
+docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run qgis-deps
