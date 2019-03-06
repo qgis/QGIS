@@ -35,6 +35,7 @@ class QgsMessageBarItem;
 class QgsWidgetWrapper;
 class QgsTabWidget;
 class QgsAttributeFormWidget;
+class QgsRelationWidgetWrapper;
 
 /**
  * \ingroup gui
@@ -363,6 +364,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
+
+    QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context );
 
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature mFeature;
