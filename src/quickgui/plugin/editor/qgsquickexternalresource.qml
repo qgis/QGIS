@@ -22,6 +22,7 @@ import QgsQuick 0.1 as QgsQuick
  * External Resource (Photo capture) for QGIS Attribute Form
  * Requires various global properties set to function, see qgsquickfeatureform Loader section
  * Do not use directly from Application QML
+ * The widget is interactive which allows interactions even in readOnly state (e.g showing preview), but no edit!
  */
 Item {
   signal valueChanged(var value, bool isNull)
@@ -32,6 +33,7 @@ Item {
   property real iconSize:  customStyle.height * 0.75
 
   id: fieldItem
+  enabled: true // its interactive widget
   height: image.hasValidSource? customStyle.height * 3 : customStyle.height
   anchors {
     left: parent.left
@@ -94,7 +96,7 @@ Item {
 
   Button {
     id: deleteButton
-    visible: enableChildren && image.hasValidSource
+    visible: !readOnly && image.hasValidSource
     width: fieldItem.iconSize
     height: width
     padding: 0
@@ -124,7 +126,7 @@ Item {
 
   Button {
     id: imageBrowserButton
-    visible: enableChildren
+    visible: !readOnly
     width: fieldItem.iconSize
     height: width
     padding: 0
@@ -154,7 +156,7 @@ Item {
 
   Button {
     id: button
-    visible: enableChildren
+    visible: !readOnly
     width: fieldItem.iconSize
     height: width
     padding: 0

@@ -339,9 +339,6 @@ Item {
           height: childrenRect.height
           anchors { left: parent.left; right: parent.right }
 
-          // always enable ExternalResource widget due to preview
-          enabled:EditorWidget === "ExternalResource" || (form.state !== "ReadOnly" && !!AttributeEditable)
-
           property var value: AttributeValue
           property var config: EditorWidgetConfig
           property var widget: EditorWidget
@@ -350,7 +347,7 @@ Item {
           property var homePath: form.project ? form.project.homePath : ""
           property var customStyle: form.style.fields
           property var externalResourceHandler: form.externalResourceHandler
-          property bool enableChildren: form.state !== "ReadOnly" && !!AttributeEditable
+          property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
 
           active: widget !== 'Hidden'
 
