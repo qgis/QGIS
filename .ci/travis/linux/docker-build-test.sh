@@ -170,12 +170,12 @@ popd > /dev/null # /root/QGIS
 ##############################
 # Run Python Tests on QGIS app
 ##############################
-pushd /root/qgis_test_runner
 # Passing cases:
-[[ $(qgis_testrunner.sh test_testrunner.run_passing) -eq '0' ]] || exit 1
-[[ $(qgis_testrunner.sh test_testrunner.run_skipped_and_passing) -eq '0' ]] || exit 1
+echo "QGIS tests runner"
+cd /root/qgis_test_runner && [[ $(qgis_testrunner.sh test_testrunner.run_passing) -eq '0' ]] && echo "1/5 succeeded" || exit 1
+cd /root/qgis_test_runner && [[ $(qgis_testrunner.sh test_testrunner.run_skipped_and_passing) -eq '0' ]] && echo "2/5 succeeded"  || exit 1
 # Failing cases:
-[[ $(qgis_testrunner.sh test_testrunner) -eq '1' ]] || exit 1
-[[ $(qgis_testrunner.sh test_testrunner.run_all) -eq '1' ]] || exit 1
-[[ $(qgis_testrunner.sh test_testrunner.run_failing) -eq '1' ]] || exit 1
+cd /root/qgis_test_runner && [[ $(qgis_testrunner.sh test_testrunner) -eq '1' ]] && echo "3/5 succeeded"  || exit 1
+cd /root/qgis_test_runner && [[ $(qgis_testrunner.sh test_testrunner.run_all) -eq '1' ]] && echo "4/5 succeeded"  || exit 1
+cd /root/qgis_test_runner && [[ $(qgis_testrunner.sh test_testrunner.run_failing) -eq '1' ]] && echo "5/5 succeeded"  || exit 1
 popd
