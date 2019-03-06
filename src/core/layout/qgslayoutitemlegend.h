@@ -460,10 +460,15 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Creates an expression context
-     * \param replace replace the object's current expression context or create a new one
-     * \since: 3.8
+     * \since QGIS 3.8
      */
-    QgsExpressionContext createExpressionContext( bool replace = false ) const;
+    QgsExpressionContext createExpressionContext() const;
+    
+    /**
+     * Updates the member QgsExpressionContext and returns it.
+     * \since QGIS 3.8
+     */
+    QgsExpressionContext updateExpressionContext();
 
 
   public slots:
