@@ -17,6 +17,7 @@ services:
     volumes:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS
       - ${CCACHE_DIR}:/root/.ccache  # if changed, also change env var
+      - ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner:/root/qgis_test_runner
     links:
       - postgres
       - mssql
