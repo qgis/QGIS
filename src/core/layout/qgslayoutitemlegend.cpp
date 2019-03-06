@@ -935,9 +935,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     }
     else
     {
-      // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
       const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
-      // get non-embedded node since embedded nodes should pop un as ltmln in theory
       if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
       {
         for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
