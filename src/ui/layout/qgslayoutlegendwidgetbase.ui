@@ -419,8 +419,8 @@
             </item>
             <item>
              <widget class="QToolButton" name="mLayerExpressionButton">
-              <property name="text">
-               <string/>
+              <property name="toolTip">
+               <string> Add an expression to the vector layer and each child symbol's label</string>
               </property>
               <property name="icon">
                <iconset>
