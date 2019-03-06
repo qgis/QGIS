@@ -35,7 +35,7 @@ docker push "qgis/qgis:${DOCKER_TAG}"
 echo "Copy build cache from Docker container to Travis cache directory"
 rm -rf "${CCACHE_DIR:?}/"*
 docker run --name qgis_container qgis/qgis:${DOCKER_TAG} /bin/true
-docker cp qgis_container:/usr/src/QGIS/.ccache_image_build ${CCACHE_DIR}
+docker cp qgis_container:/usr/src/.ccache_image_build ${CCACHE_DIR}
 docker rm qgis_container
 popd
 echo "Trigger build of PyQGIS Documentation"
