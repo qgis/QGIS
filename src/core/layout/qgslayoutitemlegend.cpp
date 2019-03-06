@@ -46,7 +46,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
 #endif
 
-  createExpressionContext( true );
+  updateExpressionContext();
   mTitle = mSettings.title();
   mLegendModel->setLayoutExpContext( &mExpContext );
 
@@ -687,7 +687,7 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
   updateFilterByMap();
 
   // unsure if needed
-  QgsExpressionContext context = createExpressionContext( true );
+  QgsExpressionContext context = updateExpressionContext();
   mLegendModel->setLayoutExpContext( &mExpContext );
 
 }
