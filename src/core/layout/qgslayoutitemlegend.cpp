@@ -831,7 +831,7 @@ void QgsLayoutItemLegend::onAtlasEnded()
   updateFilterByMap();
 }
 
-QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace ) const
+QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 {
   QgsExpressionContext context = QgsLayoutItem::createExpressionContext();
 
@@ -854,21 +854,22 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_out_atlas" ), legendFilterOutAtlas(), true ) );
 
   context.appendScope( scope );
+  return context;
+}
 
-  if ( replace )
+QgsExpressionContext QgsLayoutItemLegend::updateExpressionContext()
+{
+
+  QgsExpressionContext context = createExpressionContext();
+
+  mExpContext.~QgsExpressionContext();
+  const QList<QgsExpressionContextScope *> scopes = context.takeScopes();
+  for ( QgsExpressionContextScope *scopep : scopes )
   {
-    mExpContext.~QgsExpressionContext();
-    const QList<QgsExpressionContextScope *> scopes = context.takeScopes();
-    for ( QgsExpressionContextScope *scopep : scopes )
-    {
-      mExpContext.appendScope( scopep );
-    }
-    return mExpContext;
+    mExpContext.appendScope( scopep );
   }
-  else
-  {
-    return context;
-  }
+  return mExpContext;
+
 }
 
 
