@@ -54,11 +54,11 @@ QgsAuthOAuth2Method::QgsAuthOAuth2Method()
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" ) );
 
-  QStringList cachedirpaths;
-  cachedirpaths << QgsAuthOAuth2Config::tokenCacheDirectory()
-                << QgsAuthOAuth2Config::tokenCacheDirectory( true );
+  const QStringList cachedirpaths = QStringList()
+                                    << QgsAuthOAuth2Config::tokenCacheDirectory()
+                                    << QgsAuthOAuth2Config::tokenCacheDirectory( true );
 
-  Q_FOREACH ( const QString &cachedirpath, cachedirpaths )
+  for ( const QString &cachedirpath : cachedirpaths )
   {
     QDir cachedir( cachedirpath );
     if ( !cachedir.mkpath( cachedirpath ) )
@@ -71,10 +71,10 @@ QgsAuthOAuth2Method::QgsAuthOAuth2Method()
 QgsAuthOAuth2Method::~QgsAuthOAuth2Method()
 {
   QDir tempdir( QgsAuthOAuth2Config::tokenCacheDirectory( true ) );
-  QStringList dirlist = tempdir.entryList( QDir::Files | QDir::NoDotAndDotDot );
-  Q_FOREACH ( const QString &f, dirlist )
+  const QStringList dirlist = tempdir.entryList( QDir::Files | QDir::NoDotAndDotDot );
+  for ( const QString &f : dirlist )
   {
-    QString tempfile( tempdir.path() + QStringLiteral( "/" ) + f );
+    QString tempfile( tempdir.path() + '/' + f );
     if ( !QFile::remove( tempfile ) )
     {
       QgsDebugMsg( QStringLiteral( "FAILED to delete temp token cache file: %1" ).arg( tempfile ) );
@@ -343,7 +343,8 @@ void QgsAuthOAuth2Method::onLinkingSucceeded()
   if ( !extraTokens.isEmpty() )
   {
     QString msg = QStringLiteral( "Extra tokens in response:\n" );
-    Q_FOREACH ( const QString &key, extraTokens.keys() )
+    const QStringList extraTokenKeys = extraTokens.keys();
+    for ( const QString &key : extraTokenKeys )
     {
       // don't expose the values in a log (unless they are only 3 chars long, of course)
       msg += QStringLiteral( "    %1:%2…\n" ).arg( key, extraTokens.value( key ).toString().left( 3 ) );
@@ -371,7 +372,8 @@ void QgsAuthOAuth2Method::onCloseBrowser()
   // Bring focus back to QGIS app
   if ( qobject_cast<QApplication *>( qApp ) )
   {
-    Q_FOREACH ( QWidget *topwdgt, QgsApplication::topLevelWidgets() )
+    const QList<QWidget *> widgets = QgsApplication::topLevelWidgets();
+    for ( QWidget *topwdgt : widgets )
     {
       if ( topwdgt->objectName() == QStringLiteral( "MainWindow" ) )
       {
