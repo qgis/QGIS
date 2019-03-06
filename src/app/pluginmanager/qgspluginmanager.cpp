@@ -899,11 +899,14 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
 
 #ifdef WITH_QTWEBKIT
-  html += QLatin1String( "<div id='stars_bg'/><div id='stars'/>" );
-  html += QLatin1String( "<div id='votes'>" );
-  html += votes;
-  html += QLatin1String( "</div>" );
-  html += QLatin1String( "<div><a id='send_vote_trigger'/></div>" );
+  if ( metadata->value( QStringLiteral( "readonly" ) ) == QLatin1String( "false" ) )
+  {
+    html += QLatin1String( "<div id='stars_bg'/><div id='stars'/>" );
+    html += QLatin1String( "<div id='votes'>" );
+    html += votes;
+    html += QLatin1String( "</div>" );
+    html += QLatin1String( "<div><a id='send_vote_trigger'/></div>" );
+  }
 #else
   voteRating->setText( votes );
 #endif
@@ -992,7 +995,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Changelog" ), changelog );
   }
 
-  html += QLatin1String( "</td></tr></table>" );
+  html += QLatin1String( "</table>" );
 
   html += QLatin1String( "</body>" );
 
