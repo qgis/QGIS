@@ -5646,9 +5646,9 @@ void QgisApp::fileOpenAfterLaunch()
   // Is this a storage based project?
   const bool projectIsFromStorage { QgsApplication::instance()->projectStorageRegistry()->projectStorageFromUri( projPath )  };
 
-  if ( !( projectIsFromStorage ||
-          projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) ||
-          projPath.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) ) )
+  if ( !projectIsFromStorage &&
+       !projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
+       !projPath.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
   {
     visibleMessageBar()->pushMessage( autoOpenMsgTitle,
                                       tr( "Not valid project file: %1" ).arg( projPath ),
