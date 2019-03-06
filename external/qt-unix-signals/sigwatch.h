@@ -31,7 +31,7 @@
 
 class UnixSignalWatcherPrivate;
 
-#if Q_OS_WIN
+#if !defined(Q_OS_WIN) && !defined(SIGINT)
 const int SIGINT = 2;
 const int SIGTERM = 15;
 #endif

@@ -38,7 +38,9 @@
 #include <cstdlib>
 #include <cstdarg>
 
+#if !defined(Q_OS_WIN)
 #include "sigwatch.h"
+#endif
 
 #ifdef WIN32
 // Open files in binary mode
@@ -1523,6 +1525,7 @@ int main( int argc, char *argv[] )
   qgis->menuBar()->setVisible( true );
 #endif
 
+#if !defined(Q_OS_WIN)
   UnixSignalWatcher sigwatch;
   sigwatch.watchForSignal( SIGINT );
 
@@ -1538,6 +1541,7 @@ int main( int argc, char *argv[] )
         break;
     }
   } );
+#endif
 
   int retval = myApp.exec();
   delete qgis;
