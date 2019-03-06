@@ -1040,6 +1040,16 @@ QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEdi
   return wDeps;
 }
 
+QgsRelationWidgetWrapper *QgsAttributeForm::setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context )
+{
+  QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
+  const QVariantMap config = mLayer->editFormConfig().widgetConfig( rel.id() );
+  rww->setConfig( config );
+  rww->setContext( context );
+
+  return rww;
+}
+
 void QgsAttributeForm::preventFeatureRefresh()
 {
   mPreventFeatureRefresh = true;
@@ -1377,10 +1387,7 @@ void QgsAttributeForm::init()
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
     for ( const QgsRelation &rel : relations )
     {
-      QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
-      const QVariantMap config = mLayer->editFormConfig().widgetConfig( rel.id() );
-      rww->setConfig( config );
-      rww->setContext( mContext );
+      QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( rel, mContext );
 
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
@@ -1678,9 +1685,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
     {
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
-      QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
-      rww->setConfig( mLayer->editFormConfig().widgetConfig( relDef->relation().id() ) );
-      rww->setContext( context );
+      QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relation(), context );
+
       rww->setShowLabel( relDef->showLabel() );
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
