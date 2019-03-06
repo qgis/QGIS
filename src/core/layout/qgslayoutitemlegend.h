@@ -24,8 +24,6 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgslayertreegroup.h"
-
-//unsure if needed
 #include "qgsexpressioncontext.h"
 
 class QgsLayerTreeModel;
