@@ -950,8 +950,9 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # Enum declaration
-    if ( $LINE =~ m/^\s*enum\s+\w+.*?$/ ){
-        write_output("ENU1", "$LINE\n");
+    # For scoped and type based enum, the type has to be removed
+    if ( $LINE =~ m/^(\s*enum\s+(class\s+)?\w+)(\s*:\s*\w+)?.*$/ ){
+        write_output("ENU1", "$1\n");
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
           $LINE !~ m/=/ or exit_with_error("spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.");
