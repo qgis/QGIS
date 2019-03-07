@@ -35,7 +35,7 @@ by implementing filters called from QgsMapToolAdvancedDigitizing.
     typedef QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> CadCapacities;
 
 
-    enum AdditionalConstraint
+    enum class AdditionalConstraint
     {
       NoConstraint,
       Perpendicular,

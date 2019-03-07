@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Additional constraints which can be enabled
      */
-    enum AdditionalConstraint
+    enum class AdditionalConstraint : int
     {
       NoConstraint,  //!< No additional constraint
       Perpendicular, //!< Perpendicular
