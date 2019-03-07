@@ -269,7 +269,7 @@ Returns the legend label of the layer or symbol.
 
 .. versionadded:: 3.8
 %End
- 
+
     QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const;
 %Docstring
 Create an expression context containing symbol elements
