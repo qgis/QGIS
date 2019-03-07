@@ -122,13 +122,13 @@ RUN  apt-get update \
     oauthlib \
     pyopenssl \
     msodbcsql17 \
-    mssql-tools
+    mssql-tools \
   && apt-get clean
 
 # Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
-RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
-RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-RUN locale-gen
+RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen \
+ && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+ && locale-gen
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
