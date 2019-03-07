@@ -924,7 +924,13 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   QgsLayerTreeLayer *layer = qobject_cast<QgsLayerTreeLayer *>( currentNode );
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
-  QgsExpressionBuilderDialog expressiondialog( vl, layer->expression(), nullptr, "generic", vl->createExpressionContext() );
+  QString currentExpression;
+  if ( layer->expression().isEmpty() )
+     currentExpression = QStringLiteral( "@symbol_label" );
+  else
+    currentExpression = layer->expression();
+  
+  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", vl->createExpressionContext() );
   if ( expressiondialog.exec() )
     layer->setExpression( expressiondialog.expressionText() );
 
