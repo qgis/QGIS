@@ -19,6 +19,7 @@ export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 export SEGFAULT_SIGNALS="abrt segv"
 export CTEST_BUILD_COMMAND="/usr/bin/ninja"
 export CTEST_PARALLEL_LEVEL=1
+export CTEST_BUILD_DIR=/root/QGIS
 
 ##############################
 # Variables for output styling
@@ -77,7 +78,7 @@ echo "travis_fold:end:cmake"
 # Hopefully clocks are in sync :)
 
 CURRENT_TIME=$(date +%s)
-TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_AVAILABLE_TIMESTAMP))
+TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - TRAVIS_UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_AVAILABLE_TIMESTAMP))
 TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
 echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_AVAILABLE_TIMESTAMP}, current: ${CURRENT_TIME})"
 
