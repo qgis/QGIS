@@ -78,9 +78,9 @@ echo "travis_fold:end:cmake"
 # Hopefully clocks are in sync :)
 
 CURRENT_TIME=$(date +%s)
-TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - TRAVIS_UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_AVAILABLE_TIMESTAMP))
+TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - TRAVIS_UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
 TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
-echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_AVAILABLE_TIMESTAMP}, current: ${CURRENT_TIME})"
+echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
 
 # echo "travis_fold:start:ninja-build.1"
 echo "${bold}Building QGIS...${endbold}"
