@@ -16,5 +16,12 @@
 
 set -e
 
+docker run -t --name qgis_container -v ${TRAVIS_BUILD_DIR}:/root/QGIS -v ${CCACHE_DIR}:/root/.ccache qgis/qgis3-build-deps:${DOCKER_TAG} /root/QGIS/.ci/travis/linux/scripts/docker-qgis-build.sh
+docker commit qgis_container qgis_image
+
+docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run qgis-deps
+
+ docker run -it qgis-deps
+
 # running QGIS tests
 docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run qgis-deps

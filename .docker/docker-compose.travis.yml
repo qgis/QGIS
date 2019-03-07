@@ -13,7 +13,7 @@ services:
 
   qgis-deps:
     tty: true
-    image: qgis/qgis3-build-deps:${DOCKER_TAG}
+    image: qgis_image
     volumes:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS
       - ${CCACHE_DIR}:/root/.ccache  # if changed, also change env var
