@@ -457,6 +457,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   cboGraduatedMode->addItem( tr( "Natural Breaks (Jenks)" ), QgsGraduatedSymbolRenderer::Jenks );
   cboGraduatedMode->addItem( tr( "Standard Deviation" ), QgsGraduatedSymbolRenderer::StdDev );
   cboGraduatedMode->addItem( tr( "Pretty Breaks" ), QgsGraduatedSymbolRenderer::Pretty );
+  cboGraduatedMode->addItem( tr( "Logarithmic Breaks" ), QgsGraduatedSymbolRenderer::Logarithmic );
 
   connect( methodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -655,6 +656,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     case QgsGraduatedSymbolRenderer::Quantile:
     case QgsGraduatedSymbolRenderer::Jenks:
     case QgsGraduatedSymbolRenderer::Custom:
+    case QgsGraduatedSymbolRenderer::Logarithmic:  // TODO: sure about this?
     {
       mGroupBoxSymmetric->setVisible( false );
       cbxAstride->setVisible( false );
@@ -914,6 +916,25 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
         symmetryPoint = spinSymmetryPointForOtherMethods->value();
         astride = cbxAstride->isChecked();
       }
+      break;
+    }
+
+    case QgsGraduatedSymbolRenderer::Logarithmic:
+    {
+       if (minimum <= 0){
+          int result = QMessageBox::warning(
+                         this,
+                         tr( "There is/are value(s) in your data <= zero. " ),
+                         tr( "Logarithmic mode cannot be used." ),
+                         QMessageBox::Ok );
+          if ( result != QMessageBox::Ok )
+          {
+            // set back too ???
+            //cboGraduatedMode->set
+            return;
+          }
+      }
+      mode = QgsGraduatedSymbolRenderer::Logarithmic;
       break;
     }
 

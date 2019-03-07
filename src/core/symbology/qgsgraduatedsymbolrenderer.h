@@ -217,7 +217,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
       Jenks,
       StdDev,
       Pretty,
-      Custom
+      Custom,
+      Logarithmic
     };
 
     Mode mode() const { return mMode; }

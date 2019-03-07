@@ -848,6 +848,24 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   return breaks.toList();
 } //_calcJenksBreaks
 
+static QList<double> _calcLogarithmicBreaks( QList<double> values, int classes,
+                                       double minimum, double maximum)
+{
+    QVector<double> breaks( 0 );
+    double value = minimum;
+    breaks.reserve( classes );
+    int lg10 = floor(log10(minimum));
+    //lg10--; // just to be 1 lower
+    for ( int i = 0; i < classes; i++ )
+    {
+      value = pow(10, lg10++);
+      breaks.append( value );
+    }
+
+    return breaks.toList();
+
+} //_calcLogarithmicBreaks
+
 static QStringList _breaksAsStrings( const QList<double> &breaks ) // get QStringList from QList<double> without maxi break (min is not in)
 {
   QStringList breaksAsStrings;
@@ -907,6 +925,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   bool valuesLoaded = false;
   double minimum;
   double maximum;
+  double length;
 
   int attrNum = vlayer->fields().lookupField( mAttrName );
 
@@ -920,15 +939,17 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
     auto result = std::minmax_element( values.begin(), values.end() );
     minimum = *result.first;
     maximum = *result.second;
+    length = values.length();
     valuesLoaded = true;
   }
   else
   {
     minimum = vlayer->minimumValue( attrNum ).toDouble();
     maximum = vlayer->maximumValue( attrNum ).toDouble();
+    length = vlayer->featureCount();
   }
 
-  QgsDebugMsg( QStringLiteral( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );
+  QgsDebugMsg( QStringLiteral( "min %1 // max %2 // length %3" ).arg( minimum ).arg( maximum ).arg( length ) );
   QList<double> breaks;
   QList<double> labels;
 
@@ -949,10 +970,10 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
         QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
       break;
     }
-
     case Quantile:
     case Jenks:
     case StdDev:
+    case Logarithmic:
     {
       // get values from layer
       if ( !valuesLoaded )
@@ -966,6 +987,10 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
         breaks = _calcJenksBreaks( values, nclasses, minimum, maximum );
       else if ( mode == StdDev )
         breaks = _calcStdDevBreaks( values, nclasses, labels, mUseSymmetricMode, symmetryPoint, astride );
+      else if ( mode == Jenks )
+        breaks = _calcJenksBreaks( values, nclasses, minimum, maximum );
+      else if ( mode == Logarithmic )
+        breaks = _calcLogarithmicBreaks( values, nclasses, minimum, maximum );
       break;
     }
 
@@ -1000,6 +1025,9 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
       {
         label = QString::number( labels[i - 1], 'f', 2 ) + " Std Dev" + " - " + QString::number( labels[i], 'f', 2 ) + " Std Dev";
       }
+    }
+    else if ( mode == Logarithmic ) {
+        label = QString::number( lower, 'E', 0 ) + " - " + QString::number( upper, 'E', 1 );
     }
     else
     {
@@ -1095,6 +1123,8 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
       r->setMode( StdDev );
     else if ( modeString == QLatin1String( "pretty" ) )
       r->setMode( Pretty );
+    else if ( modeString == QLatin1String( "logarithmic" ) )
+      r->setMode( Logarithmic );
   }
 
   // symmetric mode
@@ -1228,6 +1258,9 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
       break;
     case Pretty:
       modeString = QStringLiteral( "pretty" );
+      break;
+    case Logarithmic:
+      modeString = QStringLiteral( "logarithmic" );
       break;
     case Custom:
       break;
