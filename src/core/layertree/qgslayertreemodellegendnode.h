@@ -255,7 +255,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Returns the legend label of the layer or symbol.
      * \since QGIS 3.8
      */
-     QString getCurrentLabel() const;
+    QString getCurrentLabel() const;
+
     /**
      * Create an expression context containing symbol elements
      * \param context extra QgsExpressionContext to use for evaluation
