@@ -220,6 +220,8 @@ QString QgsSymbolLegendNode::getCurrentLabel() const
   }
   else
     label = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
+  if ( label.contains( "[%" ) )
+    label = label.remove( "[%" ).remove( "%]" );
   return label;
 }
 
