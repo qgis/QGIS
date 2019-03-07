@@ -17,14 +17,4 @@
 set -e
 
 # running QGIS tests
-
-docker build -t qgis_testing -f .docker/qgis_testing.dockerfile .
-
-docker run qgis test.sh
-docker exec
-
-
-
 docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run qgis-deps
-
-docker run -it qgis-deps

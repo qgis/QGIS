@@ -10,6 +10,17 @@
 
 TEST_NAME=$1
 
+export PYTHONUNBUFFERED=TRUE
+
+echo "Running test $1 ..."
+
+qgis --version-migration --nologo --code /usr/bin/qgis_testrunner.py "$TEST_NAME"  2>/dev/null
+
+
+echo "Running test  with unbuffer $1 ..."
+
+unbuffer qgis --version-migration --nologo --code /usr/bin/qgis_testrunner.py "$TEST_NAME"  2>/dev/null
+
 echo "Running test really $1 ..."
 OUTPUT=$(QGIS_TEST_MODULE=${TEST_NAME} unbuffer qgis --version-migration --nologo --code /usr/bin/qgis_testrunner.py "$TEST_NAME"  2>/dev/null | tee /dev/tty )
 EXIT_CODE="$?"
