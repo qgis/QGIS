@@ -68,6 +68,8 @@ QVector<QgsPointXY> QgsMeasureTool::points() const
 void QgsMeasureTool::activate()
 {
   mDialog->show();
+  mRubberBand->show();
+  mRubberBandPoints->show();
   QgsMapTool::activate();
 
   // ensure that we have correct settings
@@ -98,6 +100,8 @@ void QgsMeasureTool::deactivate()
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
   mDialog->hide();
+  mRubberBand->hide();
+  mRubberBandPoints->hide();
   QgsMapTool::deactivate();
 }
 
