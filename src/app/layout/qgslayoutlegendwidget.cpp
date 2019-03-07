@@ -926,10 +926,10 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   QString currentExpression;
   if ( layer->expression().isEmpty() )
-     currentExpression = QStringLiteral( "@symbol_label" );
+    currentExpression = QStringLiteral( "@symbol_label" );
   else
     currentExpression = layer->expression();
-  
+
   QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", vl->createExpressionContext() );
   if ( expressiondialog.exec() )
     layer->setExpression( expressiondialog.expressionText() );
