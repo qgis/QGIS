@@ -263,6 +263,13 @@ Sets format of text to be shown on top of the symbol.
 .. versionadded:: 3.2
 %End
 
+    QString getCurrentLabel() const;
+%Docstring
+Returns the legend label of the layer or symbol.
+
+.. versionadded:: 3.8
+%End
+ 
     QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const;
 %Docstring
 Create an expression context containing symbol elements
