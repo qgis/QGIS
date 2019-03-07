@@ -19,9 +19,22 @@ set -e
 docker run -t --name qgis_container -v ${TRAVIS_BUILD_DIR}:/root/QGIS -v ${CCACHE_DIR}:/root/.ccache qgis/qgis3-build-deps:${DOCKER_TAG} /root/QGIS/.ci/travis/linux/scripts/docker-qgis-build.sh
 docker commit qgis_container qgis_image
 
-docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run qgis-deps
-
- docker run -it qgis-deps
-
 # running QGIS tests
-docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run qgis-deps
+docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh
+
+docker run -it
+      - ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner:/root/qgis_test_runner
+
+# running tests for the python test runner
+docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
+sleep 10  # Wait for xvfb to finish starting
+
+# Run tests in the docker
+# Passing cases:
+TEST_SCRIPT_PATH=${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker_test.sh
+[[ $(${TEST_SCRIPT_PATH} test_testrunner.run_passing) -eq '0' ]]
+[[ $(${TEST_SCRIPT_PATH} test_testrunner.run_skipped_and_passing) -eq '0' ]]
+# Failing cases:
+[[ $(${TEST_SCRIPT_PATH} test_testrunner) -eq '1' ]]
+[[ $(${TEST_SCRIPT_PATH} test_testrunner.run_all) -eq '1' ]]
+[[ $(${TEST_SCRIPT_PATH} test_testrunner.run_failing) -eq '1' ]]
