@@ -20,12 +20,12 @@ set -e
 docker run -t --name qgis_container \
            -v ${TRAVIS_BUILD_DIR}:/root/QGIS \
            -v ${CCACHE_DIR}:/root/.ccache qgis/qgis3-build-deps:${DOCKER_TAG} \
-           -e TRAVIS_UPLOAD_TIME=${TRAVIS_UPLOAD_TIME} \
-           -e TRAVIS_BRANCH=${TRAVIS_BRANCH} \
-           -e TRAVIS_OS_NAME=${TRAVIS_OS_NAME} \
-           -e TRAVIS_CONFIG=${TRAVIS_CONFIG} \
-           -e TRAVIS=${TRAVIS} \
-           -e QGIS_NO_OVERRIDE_IMPORT=1 \
+           -e "TRAVIS_UPLOAD_TIME=${TRAVIS_UPLOAD_TIME}" \
+           -e "TRAVIS_BRANCH=${TRAVIS_BRANCH}" \
+           -e "TRAVIS_OS_NAME=${TRAVIS_OS_NAME}" \
+           -e "TRAVIS_CONFIG=${TRAVIS_CONFIG}" \
+           -e "TRAVIS=${TRAVIS}" \
+           -e "QGIS_NO_OVERRIDE_IMPORT=1" \
            /root/QGIS/.ci/travis/linux/scripts/docker-qgis-build.sh
 
 # commit container
