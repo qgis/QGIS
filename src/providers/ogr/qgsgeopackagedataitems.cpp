@@ -42,7 +42,8 @@
 #include "qgsproviderregistry.h"
 #include "qgsproxyprogresstask.h"
 #include "qgssqliteutils.h"
-
+#include "qgsprojectstorageregistry.h"
+#include "qgsgeopackageprojectstorage.h"
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
@@ -144,6 +145,16 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
     }
   }
   qDeleteAll( layers );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "geopackage" );
+  if ( storage )
+  {
+    const QStringList projectNames = storage->listProjects( mPath );
+    for ( const QString &projectName : projectNames )
+    {
+      QgsGeoPackageProjectUri projectUri { true, mPath, projectName };
+      children.append( new QgsProjectItem( this, projectName, QgsGeoPackageProjectStorage::encodeUri( projectUri ) ) );
+    }
+  }
   return children;
 }
 

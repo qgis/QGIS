@@ -38,6 +38,8 @@ email                : sherman at mrcc.com
 #include "qgswkbtypes.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogrtransaction.h"
+#include "qgsgeopackageprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -6428,14 +6430,6 @@ QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
          );
 }
 
-QGISEXTERN void cleanupProvider()
-{
-  QgsOgrConnPool::cleanupInstance();
-  // NOTE: QgsApplication takes care of
-  // calling OGRCleanupAll();
-}
-
-
 
 QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
 {
@@ -6606,3 +6600,23 @@ QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
 
   return new QgsOgrTransaction( connString, ds );
 }
+
+QgsGeoPackageProjectStorage *gProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+
+QGISEXTERN void initProvider()
+{
+  Q_ASSERT( !gProjectStorage );
+  gProjectStorage = new QgsGeoPackageProjectStorage;
+  QgsApplication::projectStorageRegistry()->registerProjectStorage( gProjectStorage );  // takes ownership
+}
+
+
+QGISEXTERN void cleanupProvider()
+{
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gProjectStorage );  // destroys the object
+  gProjectStorage = nullptr;
+  QgsOgrConnPool::cleanupInstance();
+  // NOTE: QgsApplication takes care of
+  // calling OGRCleanupAll();
+}
+
