@@ -119,7 +119,7 @@ void QgsPalettedRasterRenderer::setLabel( int idx, const QString &label )
   }
 }
 
-QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput || mClassData.isEmpty() )
@@ -127,7 +127,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
     return outputBlock.release();
   }
 
-  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, extent, width, height, feedback ) );
+  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
