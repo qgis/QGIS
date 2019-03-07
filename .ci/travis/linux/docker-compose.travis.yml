@@ -19,10 +19,6 @@ services:
     links:
       - postgres
       - mssql
-    environment:
-      - TRAVIS_UPLOAD_TIME=${TRAVIS_UPLOAD_TIME}
-      - TRAVIS_BRANCH=${TRAVIS_BRANCH}
-      - TRAVIS_OS_NAME=${TRAVIS_OS_NAME}
-      - TRAVIS_CONFIG=${TRAVIS_CONFIG}
-      - TRAVIS=${TRAVIS}
-      - QGIS_NO_OVERRIDE_IMPORT=1
+    env_file:
+      - docker-variables.env
+

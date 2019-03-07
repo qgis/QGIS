@@ -19,20 +19,16 @@ set -e
 # build QGIS in docker
 docker run -t --name qgis_container \
            -v ${TRAVIS_BUILD_DIR}:/root/QGIS \
-           -v ${CCACHE_DIR}:/root/.ccache qgis/qgis3-build-deps:${DOCKER_TAG} \
-           -e "TRAVIS_UPLOAD_TIME=${TRAVIS_UPLOAD_TIME}" \
-           -e "TRAVIS_BRANCH=${TRAVIS_BRANCH}" \
-           -e "TRAVIS_OS_NAME=${TRAVIS_OS_NAME}" \
-           -e "TRAVIS_CONFIG=${TRAVIS_CONFIG}" \
-           -e "TRAVIS=${TRAVIS}" \
-           -e "QGIS_NO_OVERRIDE_IMPORT=1" \
+           -v ${CCACHE_DIR}:/root/.ccache \
+           --env-file {TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-variables.env \
+           qgis/qgis3-build-deps:${DOCKER_TAG} \
            /root/QGIS/.ci/travis/linux/scripts/docker-qgis-build.sh
 
 # commit container
 docker commit qgis_container qgis_image
 
 # running QGIS tests in commited image
-docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh
+docker-compose -f {TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh
 
 # running tests for the python test runner
 docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
