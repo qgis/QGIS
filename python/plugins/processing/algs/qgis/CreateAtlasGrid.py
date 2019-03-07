@@ -141,6 +141,10 @@ class CreateAtlasGrid(QgisAlgorithm):
 
         coverage = coverage_layer.sourceExtent().buffered(coverage_distance)
 
+        xmin = coverage.xMinimum()
+        xmax = coverage.xMaximum()
+        resto = (w - ((xmax - xmin) % w)) / 2
+
         yMax = coverage.yMaximum()
         yMin = yMax - h
 
@@ -149,7 +153,7 @@ class CreateAtlasGrid(QgisAlgorithm):
         # Columns loop
         while current_y < coverage.height():
             current_x = 0
-            xMin = coverage.xMinimum()
+            xMin = coverage.xMinimum() - resto
             xMax = xMin + w
             # Lines loop
             while current_x < coverage.width():
