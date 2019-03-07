@@ -220,8 +220,6 @@ QString QgsSymbolLegendNode::getCurrentLabel() const
   }
   else
     label = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
-  if ( label.contains( "[%" ) )
-    label = label.remove( "[%" ).remove( "%]" );
   return label;
 }
 
@@ -600,7 +598,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
 
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
   QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures( true );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
