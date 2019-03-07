@@ -561,30 +561,24 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  if ( label.isEmpty() )
+  if ( vl && label.isEmpty() )
   {
-    if ( mEmbeddedInParent )
-    {
-      mLabel = getCurrentLabel();
-      if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
-        mLabel = evaluateLabelExpression( mLabel, vl, context );
-    }
-    else
-    {
-      mLabel = getCurrentLabel();
-      if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
-        mLabel = evaluateLabelExpression( mLabel, vl, context );
-    }
+     mLabel = getCurrentLabel();
+     if ( ! mLayerNode->expression().isEmpty() )
+       mLabel = evaluateLabelExpression( mLayerNode->expression(), vl, context );
+     else if ( mLabel.contains( "[%" ) )
+       mLabel = evaluateLabelExpression( mLabel, vl, context );
+
     emit dataChanged();
     return mLabel;
   }
-  else
+  else if ( vl )
   {
-    if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
-    {
-      label = evaluateLabelExpression( label, vl, context );
-    }
-    return label;
+   if ( ! mLayerNode->expression().isEmpty() )
+     label = evaluateLabelExpression( label + mLayerNode->expression(), vl, context );
+   else if ( label.contains( "[%" ) )
+     label = evaluateLabelExpression( label, vl, context );
+   return label;
   }
 }
 
@@ -626,18 +620,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
 QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context ) const
 {
-  if ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )
-  {
-    context = createExpressionContext( context );
-    QString expression = mLayerNode->expression();
-    if ( !expression.isEmpty() )
-      label = label + "[% " + expression + " %]";
-    Q_UNUSED( vl );
-  }
-  else
-  {
-    context = vl->createExpressionContext( context );
-  }
+  context = ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )? createExpressionContext( context ) : vl->createExpressionContext( context );
   label = QgsExpression().replaceExpressionText( label, &context );
   return label;
 }
