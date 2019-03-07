@@ -565,29 +565,29 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
 
   if ( vl && label.isEmpty() )
   {
-     mLabel = getCurrentLabel();
-     if ( ! mLayerNode->expression().isEmpty() )
-       mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", vl, context );
-     else if ( mLabel.contains( "[%" ) )
-       mLabel = evaluateLabelExpression( mLabel, vl, context );
+    mLabel = getCurrentLabel();
+    if ( ! mLayerNode->expression().isEmpty() )
+      mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", vl, context );
+    else if ( mLabel.contains( "[%" ) )
+      mLabel = evaluateLabelExpression( mLabel, vl, context );
 
     emit dataChanged();
     return mLabel;
   }
   else if ( vl )
   {
-   if ( ! mLayerNode->expression().isEmpty() )
-     label = evaluateLabelExpression( label + "[%" + mLayerNode->expression() + "%]", vl, context );
-   else if ( label.contains( "[%" ) )
-     label = evaluateLabelExpression( label, vl, context );
-   return label;
+    if ( ! mLayerNode->expression().isEmpty() )
+      label = evaluateLabelExpression( label + "[%" + mLayerNode->expression() + "%]", vl, context );
+    else if ( label.contains( "[%" ) )
+      label = evaluateLabelExpression( label, vl, context );
+    return label;
   }
   else
   {
-   if ( label.isEmpty() )
-     return mLabel;
-   else
-     return label;
+    if ( label.isEmpty() )
+      return mLabel;
+    else
+      return label;
   }
 }
 
@@ -626,7 +626,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
 QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context ) const
 {
-  context = ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )? createExpressionContext( context ) : vl->createExpressionContext( context );
+  context = ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer ) ? createExpressionContext( context ) : vl->createExpressionContext( context );
   label = QgsExpression().replaceExpressionText( label, &context );
   return label;
 }
