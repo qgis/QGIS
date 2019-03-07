@@ -402,7 +402,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(label2, '5')
         self.assertEqual(label3, '12')
 
-        legendlayer.setExpression("Concat(' ', @symbol_id)")
+        legendlayer.setExpression("Concat(@symbol_label,' ', @symbol_id)")
 
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
