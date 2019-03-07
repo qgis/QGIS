@@ -580,17 +580,21 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
      label = evaluateLabelExpression( label, vl, context );
    return label;
   }
+  else
+  {
+   if ( label.isEmpty() )
+     return mLabel;
+   else
+     return label;
+  }
 }
 
 QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpressionContext context ) const
 {
-  //= QgsLayoutItem::createExpressionContext();
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  // TODO: ADD NECESSARY SCOPES ??
   context.appendScope( vl->createExpressionContextScope() );
-
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
 
