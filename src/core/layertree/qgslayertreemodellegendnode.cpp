@@ -215,11 +215,11 @@ QString QgsSymbolLegendNode::getCurrentLabel() const
   if ( mEmbeddedInParent )
   {
     QVariant legendlabel = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) );
-    QString layerName = legendlabel.isNull() ? mLayerNode->name(), legendlabel.toString();
+    QString layerName = legendlabel.isNull() ? mLayerNode->name() : legendlabel.toString();
     label = mUserLabel.isEmpty() ? layerName : mUserLabel;
   }
   else
-    label = mUserLabel.isEmpty() ? mItem.Label() : mUserLabel;
+    label = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
   return label;
 }
 
