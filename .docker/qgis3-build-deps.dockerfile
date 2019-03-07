@@ -3,15 +3,23 @@ MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.1"
 
+#############
+# Add sources
+#############
 # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 314DF160 \
 
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
 
+##################
+# Install packages
+##################
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
   && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive \
+  && DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y \
   apt-get install -y \
     apt-transport-https \
     bison \
@@ -126,20 +134,14 @@ RUN  apt-get update \
     sphinx \
     requests \
     six \
+    msodbcsql17 \
+    mssql-tools
   && apt-get clean
-
-
-# MSSQL: client side
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
-RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-tools
 
 # Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
 RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
 RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 RUN locale-gen
-
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
@@ -153,4 +155,5 @@ ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"
 
-CMD /root/QGIS/.ci/travis/linux/docker-build-test.sh
+
+
