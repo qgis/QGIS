@@ -237,6 +237,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * are simply truncated to match the number of fields present in \a fields (or if
      * less attributes are present in \a feature than in \a fields, the feature's attributes
      * are padded with NULL values to match the required length).
+     * Finally, the feature's fields are set to \a fields.
      *
      * \since QGIS 3.4
      */
