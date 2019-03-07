@@ -72,6 +72,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       Parallel       //!< Parallel
     };
 
+
     /**
      * \ingroup gui
      * \brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).

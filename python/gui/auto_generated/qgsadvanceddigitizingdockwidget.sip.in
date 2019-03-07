@@ -42,6 +42,7 @@ by implementing filters called from QgsMapToolAdvancedDigitizing.
       Parallel
     };
 
+
     class CadConstraint
 {
 %Docstring
