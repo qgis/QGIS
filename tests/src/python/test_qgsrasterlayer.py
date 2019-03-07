@@ -401,6 +401,47 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         self.assertTrue(checker.runTest("expected_paletted_renderer"), "Paletted rendering test failed")
 
+    def testPalettedBand(self):
+        """ test paletted raster render band"""
+        path = os.path.join(unitTestDataPath(),
+                            'landsat_4326.tif')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
+
+        renderer = QgsPalettedRasterRenderer(layer.dataProvider(), 2,
+                                             [QgsPalettedRasterRenderer.Class(137, QColor(0, 255, 0), 'class 2'),
+                                              QgsPalettedRasterRenderer.Class(138, QColor(255, 0, 0), 'class 1'),
+                                              QgsPalettedRasterRenderer.Class(139, QColor(0, 0, 255), 'class 1')])
+
+        layer.setRenderer(renderer)
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_paletted_renderer_band2")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_paletted_renderer_band2"), "Paletted rendering test failed")
+
+        renderer = QgsPalettedRasterRenderer(layer.dataProvider(), 3,
+                                             [QgsPalettedRasterRenderer.Class(120, QColor(0, 255, 0), 'class 2'),
+                                              QgsPalettedRasterRenderer.Class(123, QColor(255, 0, 0), 'class 1'),
+                                              QgsPalettedRasterRenderer.Class(124, QColor(0, 0, 255), 'class 1')])
+
+        layer.setRenderer(renderer)
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_paletted_renderer_band3")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_paletted_renderer_band3"), "Paletted rendering test failed")
+
     def testPalettedColorTableToClassData(self):
         entries = [QgsColorRampShader.ColorRampItem(5, QColor(255, 0, 0), 'item1'),
                    QgsColorRampShader.ColorRampItem(3, QColor(0, 255, 0), 'item2'),
