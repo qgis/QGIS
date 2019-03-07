@@ -213,7 +213,7 @@ QString QgsSymbolLegendNode::getCurrentLabel() const
 {
   QString label;
   if ( mEmbeddedInParent )
-    QString legendlabel = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) );
+    QVariant legendlabel = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) );
     QString layerName = legendlabel.isNull() ? mLayerNode->name(), legendlabel.toString();
     label = mUserLabel.isEmpty() ? layerName : mUserLabel;
   else
