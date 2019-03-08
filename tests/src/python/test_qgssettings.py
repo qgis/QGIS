@@ -14,7 +14,8 @@ import os
 import tempfile
 from qgis.core import QgsSettings, QgsTolerance, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, QVariant
+from pathlib import Path
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '02/02/2017'
@@ -33,9 +34,12 @@ class TestQgsSettings(unittest.TestCase):
     def setUp(self):
         self.cnt += 1
         h, path = tempfile.mkstemp('.ini')
+        Path(path).touch()
         assert QgsSettings.setGlobalSettingsPath(path)
         self.settings = QgsSettings('testqgissettings', 'testqgissettings%s' % self.cnt)
         self.globalsettings = QSettings(self.settings.globalSettingsPath(), QSettings.IniFormat)
+        self.globalsettings.sync()
+        assert os.path.exists(self.globalsettings.fileName())
 
     def tearDown(self):
         settings_file = self.settings.fileName()
@@ -329,6 +333,7 @@ class TestQgsSettings(unittest.TestCase):
         self.settings.setValue('key1', 'provider1', section=QgsSettings.Providers)
         self.settings.setValue('key2', 'provider2', section=QgsSettings.Providers)
 
+        # This is an overwrite of previous setting and it is intentional
         self.settings.setValue('key1', 'auth1', section=QgsSettings.Auth)
         self.settings.setValue('key2', 'auth2', section=QgsSettings.Auth)
 
@@ -421,6 +426,46 @@ class TestQgsSettings(unittest.TestCase):
         self.settings.setValue('flag', 'dummy_setting')
         self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndLine)
         self.assertEqual(type(self.settings.flagValue('enum', pointAndLine)), QgsMapLayerProxyModel.Filters)
+
+    def test_overwriteDefaultValues(self):
+        """Test that unchanged values are not stored"""
+        self.globalsettings.setValue('a_value_with_default', 'a value')
+        self.globalsettings.setValue('an_invalid_value', QVariant())
+
+        self.assertEqual(self.settings.value('a_value_with_default'), 'a value')
+        self.assertEqual(self.settings.value('an_invalid_value'), QVariant())
+
+        # Now, set them with the same current value
+        self.settings.setValue('a_value_with_default', 'a value')
+        self.settings.setValue('an_invalid_value', QVariant())
+
+        # Check
+        pure_settings = QSettings(self.settings.fileName(), QSettings.IniFormat)
+        self.assertFalse('a_value_with_default' in pure_settings.allKeys())
+        self.assertFalse('an_invalid_value' in pure_settings.allKeys())
+
+        # Set a changed value
+        self.settings.setValue('a_value_with_default', 'a new value')
+        self.settings.setValue('an_invalid_value', 'valid value')
+
+        # Check
+        self.assertTrue('a_value_with_default' in pure_settings.allKeys())
+        self.assertTrue('an_invalid_value' in pure_settings.allKeys())
+
+        self.assertEqual(self.settings.value('a_value_with_default'), 'a new value')
+        self.assertEqual(self.settings.value('an_invalid_value'), 'valid value')
+
+        # Re-set to original values
+        self.settings.setValue('a_value_with_default', 'a value')
+        self.settings.setValue('an_invalid_value', QVariant())
+
+        self.assertEqual(self.settings.value('a_value_with_default'), 'a value')
+        self.assertEqual(self.settings.value('an_invalid_value'), QVariant())
+
+        # Check if they are gone
+        pure_settings = QSettings(self.settings.fileName(), QSettings.IniFormat)
+        self.assertFalse('a_value_with_default' not in pure_settings.allKeys())
+        self.assertFalse('an_invalid_value' not in pure_settings.allKeys())
 
 
 if __name__ == '__main__':
