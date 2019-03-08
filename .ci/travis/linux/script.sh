@@ -39,7 +39,7 @@ echo "travis_fold:end:docker_test_qgis"
 # running tests for the python test runner
 echo "travis_fold:start:docker_test_runners"
 echo "${bold}Docker test QGIS runners${endbold}"
-docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image 'bash -c "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"'
+docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 sleep 8  # Wait for xvfb to finish starting
 
 declare -A testrunners
