@@ -58,7 +58,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
     invalidateCache();
     update();
   } );
-  connect( mLegendModel, &QgsLegendModel::refreshLegend, this, &QgsLayoutItemLegend::refresh );
+  connect( mLegendModel.data(), &QgsLegendModel::refreshLegend, this, &QgsLayoutItemLegend::refresh );
 }
 
 QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout )
