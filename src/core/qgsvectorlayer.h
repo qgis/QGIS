@@ -2587,7 +2587,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     friend class QgsVectorLayerFeatureSource;
 
-    Qlist<long> mPendingTasks;
+    QList<long> mPendingTasks;
 };
 
 

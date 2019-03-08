@@ -725,7 +725,7 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 
   long taskid = QgsApplication::taskManager()->addTask( mFeatureCounter );
   emit startCount( taskid );
-  mPendingTasks.append(taskid);
+  mPendingTasks.append( taskid );
 
   return mFeatureCounter;
 }
@@ -4440,9 +4440,9 @@ void QgsVectorLayer::onFeatureCounterTerminated()
 
 void QgsVectorLayer::doneTask()
 {
-  for( long taskid : mPendingTasks)
+  for ( long taskid : mPendingTasks)
   {
-    if QgsApplication::taskManager()->task( taskid )
+    if ( QgsApplication::taskManager()->task( taskid ) )
     {
       mPendingTasks.removeOne( taskid );
       emit countDone( taskid );
