@@ -96,7 +96,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         super(ModelerParameterDefinitionDialog, self).closeEvent(event)
 
     def setupUi(self):
-        self.setWindowTitle(self.tr('Parameter Definition'))
+        type_metadata = QgsApplication.processingRegistry().parameterType(self.param.type() if self.param else self.paramType)
+        self.setWindowTitle(self.tr('{} Parameter Definition').format(type_metadata.name()))
         self.setMinimumWidth(300)
 
         self.verticalLayout = QVBoxLayout(self)
