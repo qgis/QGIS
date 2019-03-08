@@ -951,8 +951,10 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
-    if ( $LINE =~ m/^(\s*enum\s+(class\s+)?(\w+))(\s*:\s*\w+)?.*$/ ){
-        write_output("ENU1", "$1\n");
+    if ( $LINE =~ m/^(\s*enum\s+(class\s+)?(\w+))(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+        write_output("ENU1", "$1");
+        write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
+        write_output("ENU1", "\n");
         my $is_scope_based = "0";
         $is_scope_based = "1" if defined $2;
         my $enum_qualname = $3;
@@ -977,7 +979,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
 
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/^(\s*(\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(\s*\/\/!<\s*(.*$))?/$1$3$4/r;
+                    my $enum_decl = $LINE =~ s/^(\s*(\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(.*)|.*)$/$1$3$4/r;
                     my $enum_member = $2;
                     push @enum_members_doc, "'* $enum_member: ' + $ACTUAL_CLASS.$enum_qualname.$2.__doc__";
                     my $comment = $6;
