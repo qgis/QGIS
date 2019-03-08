@@ -20,7 +20,7 @@ set -e
 docker run -t --name qgis_container \
            -v ${TRAVIS_BUILD_DIR}:/root/QGIS \
            -v ${CCACHE_DIR}:/root/.ccache \
-          /root/qgis_test_runner --env-file ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-variables.env \
+           /root/qgis_test_runner --env-file ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-variables.env \
            qgis/qgis3-build-deps:${DOCKER_TAG} \
            /root/QGIS/.ci/travis/linux/scripts/docker-qgis-build.sh
 
