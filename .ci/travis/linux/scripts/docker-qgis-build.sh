@@ -12,15 +12,6 @@ ccache -M 1G
 # export CCACHE_LOGFILE=/tmp/cache.debug
 ccache -z
 
-############################
-# Setup the (c)test environment
-############################
-export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
-export SEGFAULT_SIGNALS="abrt segv"
-export CTEST_BUILD_COMMAND="/usr/bin/ninja"
-export CTEST_PARALLEL_LEVEL=1
-export CTEST_BUILD_DIR=/root/QGIS
-
 ##############################
 # Variables for output styling
 ##############################

@@ -17,6 +17,8 @@
 set -e
 
 # build QGIS in docker
+echo "travis_fold:start:docker_build_qgis"
+echo "${bold}Docker build QGIS${endbold}"
 docker run -t --name qgis_container \
            -v ${TRAVIS_BUILD_DIR}:/root/QGIS \
            -v ${CCACHE_DIR}:/root/.ccache \
@@ -26,11 +28,17 @@ docker run -t --name qgis_container \
 
 # commit container
 docker commit qgis_container qgis_image
+echo "travis_fold:end:docker_build_qgis"
 
 # running QGIS tests in commited image
+echo "travis_fold:start:docker_test_qgis"
+echo "${bold}Docker run tests${endbold}"
 docker-compose -f ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh
+echo "travis_fold:end:docker_test_qgis"
 
 # running tests for the python test runner
+echo "travis_fold:start:docker_test_runners"
+echo "${bold}Docker test QGIS runners${endbold}"
 docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
 sleep 8  # Wait for xvfb to finish starting
 
@@ -48,3 +56,4 @@ do
   echo "test ${i}..."
   [[ $(docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh ${i}" &>/dev/null) -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
 done
+echo "travis_fold:end:docker_test_runners"
