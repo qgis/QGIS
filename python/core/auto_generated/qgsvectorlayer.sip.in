@@ -1005,14 +1005,12 @@ if the geometry type of the new data source matches the current geometry type of
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool wait = false );
+    QgsVectorLayerFeatureCounter *countSymbolFeatures();
 %Docstring
 Count features for symbols.
 The method will return the feature counter task. You will need to
 connect to the symbolFeatureCountMapChanged() signal to be
 notified when the freshly updated feature counts are ready.
-
-:param wait: wait for the features to be counter or put the action on the stack
 
 .. note::
 
@@ -2628,6 +2626,21 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 
 .. versionadded:: 3.0
 %End
+
+    void startCount( long taskid );
+%Docstring
+Emitted when counting started
+
+.. versionadded:: 3.8
+%End
+
+    void countDone( long taskid );
+%Docstring
+Emitted when a counting task is finished
+
+.. versionadded:: 3.8
+%End
+
 
   protected:
     virtual void setExtent( const QgsRectangle &rect ) ${SIP_FINAL};
