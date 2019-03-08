@@ -48,7 +48,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
   mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
   mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
-  mAdditionalConstraint = NoConstraint;
+  mAdditionalConstraint = AdditionalConstraint::NoConstraint;
 
   mMapCanvas->installEventFilter( this );
   mAngleLineEdit->installEventFilter( this );
@@ -187,15 +187,15 @@ void QgsAdvancedDigitizingDockWidget::additionalConstraintClicked( bool activate
 {
   if ( !activated )
   {
-    lockAdditionalConstraint( NoConstraint );
+    lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
   }
   if ( sender() == mParallelAction )
   {
-    lockAdditionalConstraint( Parallel );
+    lockAdditionalConstraint( AdditionalConstraint::Parallel );
   }
   else if ( sender() == mPerpendicularAction )
   {
-    lockAdditionalConstraint( Perpendicular );
+    lockAdditionalConstraint( AdditionalConstraint::Perpendicular );
   }
 }
 
@@ -258,7 +258,7 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
 {
   // release all locks except construction mode
 
-  lockAdditionalConstraint( NoConstraint );
+  lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
 
   if ( releaseRepeatingLocks || !mAngleConstraint->isRepeatingLock() )
     mAngleConstraint->setLockMode( CadConstraint::NoLock );
@@ -380,7 +380,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     // deactivate perpendicular/parallel if angle has been activated
     if ( constraint == mAngleConstraint.get() )
     {
-      lockAdditionalConstraint( NoConstraint );
+      lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
     }
 
     // run a fake map mouse event to update the paint item
@@ -417,8 +417,8 @@ void QgsAdvancedDigitizingDockWidget::constraintFocusOut()
 void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstraint constraint )
 {
   mAdditionalConstraint = constraint;
-  mPerpendicularAction->setChecked( constraint == Perpendicular );
-  mParallelAction->setChecked( constraint == Parallel );
+  mPerpendicularAction->setChecked( constraint == AdditionalConstraint::Perpendicular );
+  mParallelAction->setChecked( constraint == AdditionalConstraint::Parallel );
 }
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
@@ -465,7 +465,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
   if ( !absoluteAngle )
   {
-    lockAdditionalConstraint( NoConstraint );
+    lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
   }
 
   // absolute angle = azimuth, relative = from previous line
@@ -663,7 +663,7 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
 
 bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )
 {
-  if ( mAdditionalConstraint == NoConstraint )
+  if ( mAdditionalConstraint == AdditionalConstraint::NoConstraint )
   {
     return false;
   }
@@ -685,7 +685,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
     angle -= std::atan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() );
   }
 
-  if ( mAdditionalConstraint == Perpendicular )
+  if ( mAdditionalConstraint == AdditionalConstraint::Perpendicular )
   {
     angle += M_PI_2;
   }
@@ -696,7 +696,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   mAngleConstraint->setLockMode( lockMode );
   if ( lockMode == CadConstraint::HardLock )
   {
-    mAdditionalConstraint = NoConstraint;
+    mAdditionalConstraint = AdditionalConstraint::NoConstraint;
   }
 
   return true;
@@ -931,15 +931,15 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
         if ( !parallel && !perpendicular )
         {
-          lockAdditionalConstraint( Perpendicular );
+          lockAdditionalConstraint( AdditionalConstraint::Perpendicular );
         }
         else if ( perpendicular )
         {
-          lockAdditionalConstraint( Parallel );
+          lockAdditionalConstraint( AdditionalConstraint::Parallel );
         }
         else
         {
-          lockAdditionalConstraint( NoConstraint );
+          lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
         }
         e->accept();
       }
