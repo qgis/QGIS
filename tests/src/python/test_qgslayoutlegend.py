@@ -389,7 +389,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
         legendlayer.countSymbolFeatures()
         sleep(3) # try to ensure that the counting is done before evaluation
-        
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
