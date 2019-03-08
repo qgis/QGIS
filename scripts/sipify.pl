@@ -951,13 +951,15 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
-    if ( $LINE =~ m/^(\s*enum\s+(class\s+)?(\w+))(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+    if ( $LINE =~ m/^(\s*enum\s+(class\s+)?(\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
         write_output("ENU1", "$1");
         write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
         write_output("ENU1", "\n");
+        my $enum_qualname = $3;
         my $is_scope_based = "0";
         $is_scope_based = "1" if defined $2;
-        my $enum_qualname = $3;
+        my $monkeypatch = "0";
+        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM/;
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
           $LINE !~ m/=/ or exit_with_error("spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.");
@@ -979,12 +981,12 @@ while ($LINE_IDX < $LINE_COUNT){
                 next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
 
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/^(\s*(\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(.*)|.*)$/$1$3$4/r;
-                    my $enum_member = $2;
+                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$4/r;
+                    my $enum_member = $+{em};
                     push @enum_members_doc, "'* $enum_member: ' + $ACTUAL_CLASS.$enum_qualname.$2.__doc__";
-                    my $comment = $6;
+                    my $comment = $+{co};
                     push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n" if $is_scope_based eq "1";
-                    push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n" if $is_scope_based eq "1";
+                    push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n" if $monkeypatch eq "1";
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");
                 };

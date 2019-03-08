@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Additional constraints which can be enabled
      */
-    enum class AdditionalConstraint : int
+    enum class AdditionalConstraint SIP_MONKEYPATCH_SCOPEENUM : int
     {
       NoConstraint,  //!< No additional constraint
       Perpendicular, //!< Perpendicular

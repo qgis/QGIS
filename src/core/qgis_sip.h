@@ -232,4 +232,12 @@
 #define SIP_PYTHON_SPECIAL_BOOL(method_or_code)
 #define SIP_PYTHON_SPECIAL_REPR(method_or_code)
 
+/*
+ * If one reformat an enum to a scope based enum
+ * sipify will take care of monkey patching to keep
+ * API compatibility
+ */
+#define SIP_MONKEYPATCH_SCOPEENUM
+
+
 #endif // QGIS_SIP_H
