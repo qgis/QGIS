@@ -538,24 +538,12 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItemInternal( QgsLayerTr
 {
   QgsLayerTreeModelLegendNode::ItemContext ctx;
   ctx.context = context;
-
-  // add a layer expression context scope
-  QgsExpressionContextScope *layerScope = nullptr;
-  if ( context && symbolItem->layerNode()->layer() )
-  {
-    layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() );
-    context->expressionContext().appendScope( layerScope );
-  }
-
   ctx.painter = context ? context->painter() : painter;
   ctx.point = point;
   ctx.labelXOffset = labelXOffset;
 
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
       : ( painter ? &ctx : nullptr ) );
-
-  if ( layerScope )
-    delete context->expressionContext().popScope();
 
   Nucleon nucleon;
   nucleon.item = symbolItem;
@@ -591,18 +579,15 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
-  QgsExpressionContextScope *layerScope = nullptr;
-  if ( context && nodeLayer->layer() )
-  {
-    layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() );
-    context->expressionContext().appendScope( layerScope );
-  }
+  if ( context && context->painter() )
+    context->painter()->setPen( mSettings.fontColor() );
+  else if ( painter )
+    painter->setPen( mSettings.fontColor() );
 
-  QgsExpressionContext tempContext;
+  QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
-  const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
-                            context ? context->expressionContext() : tempContext );
-  for ( QStringList::ConstIterator layerItemPart = lines.constBegin(); layerItemPart != lines.constEnd(); ++layerItemPart )
+  QStringList lines = mSettings.splitStringForWrapping( mLegendModel->data( idx, Qt::DisplayRole ).toString() );
+  for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
   {
     y += mSettings.fontAscentMillimeters( layerFont );
     if ( context && context->painter() )
