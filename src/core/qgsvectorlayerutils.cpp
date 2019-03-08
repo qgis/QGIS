@@ -673,6 +673,7 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
       feature.setAttributes( attributes );
     }
   }
+  feature.setFields( fields );
 }
 
 QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer )
