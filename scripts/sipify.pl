@@ -959,7 +959,9 @@ while ($LINE_IDX < $LINE_COUNT){
         my $is_scope_based = "0";
         $is_scope_based = "1" if defined $2;
         my $monkeypatch = "0";
-        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM/;
+        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(:?\(\s*(?<emkb>\w+)\s*\))/;
+        my $enum_mk_base = "";
+        $enum_mk_base = $+{emkb} if defined $+{emkb};
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
           $LINE !~ m/=/ or exit_with_error("spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.");
@@ -986,7 +988,13 @@ while ($LINE_IDX < $LINE_COUNT){
                     push @enum_members_doc, "'* $enum_member: ' + $ACTUAL_CLASS.$enum_qualname.$2.__doc__";
                     my $comment = $+{co};
                     push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n" if $is_scope_based eq "1";
-                    push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n" if $monkeypatch eq "1";
+                    if ($monkeypatch eq "1") {
+                        if ( $enum_mk_base ne "" ){
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
+                        } else {
+                            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                        }
+                    }
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");
                 };
