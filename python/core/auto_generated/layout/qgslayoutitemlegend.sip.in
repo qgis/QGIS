@@ -42,6 +42,15 @@ Set the pointer to the layoutlegend expressioncontext
 :param econtext: pointer to the context
 \since: 3.8
 %End
+  signals:
+
+    void refreshLegend();
+%Docstring
+Emitted to refresh the legend once counting is done.
+
+.. versionadded:: 3.8
+%End
+
 
 };
 
@@ -511,7 +520,6 @@ Updates the member QgsExpressionContext and returns it.
 
 .. versionadded:: 3.8
 %End
-
 
   public slots:
 
