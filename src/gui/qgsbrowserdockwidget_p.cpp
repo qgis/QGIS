@@ -173,7 +173,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
   mNoticeLabel->clear();
 
-  QgsMapLayer::LayerType type = layerItem->mapLayerType();
+  QgsMapLayerType type = layerItem->mapLayerType();
   QString layerMetadata = tr( "Error" );
   QgsCoordinateReferenceSystem layerCrs;
 
@@ -191,7 +191,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   QgsDebugMsg( QStringLiteral( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
   switch ( type )
   {
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
       // should copy code from addLayer() to split uri ?
@@ -199,21 +199,21 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       break;
     }
 
-    case QgsMapLayer::MeshLayer:
+    case QgsMapLayerType::MeshLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
       mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
       break;
     }
 
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
       mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
       break;
     }
 
-    case QgsMapLayer::PluginLayer:
+    case QgsMapLayerType::PluginLayer:
     {
       // TODO: support display of properties for plugin layers
       return;
@@ -238,7 +238,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     mMapCanvas->setLayers( QList< QgsMapLayer * >() << mLayer.get() );
     mMapCanvas->zoomToFullExtent();
 
-    if ( mAttributesTab && mLayer->type() != QgsMapLayer::VectorLayer )
+    if ( mAttributesTab && mLayer->type() != QgsMapLayerType::VectorLayer )
     {
       mTabWidget->removeTab( mTabWidget->indexOf( mAttributesTab ) );
       mAttributesTab = nullptr;
@@ -280,7 +280,7 @@ void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 
 void QgsBrowserLayerProperties::loadAttributeTable()
 {
-  if ( !mLayer || !mLayer->isValid() || mLayer->type() != QgsMapLayer::VectorLayer )
+  if ( !mLayer || !mLayer->isValid() || mLayer->type() != QgsMapLayerType::VectorLayer )
     return;
 
   // Initialize the cache

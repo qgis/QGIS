@@ -352,7 +352,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
       layerid = layerid.mid( 1, layerid.size() - 2 );
     }
     QgsMapLayer *l = QgsProject::instance()->mapLayer( layerid );
-    if ( !l || l->type() != QgsMapLayer::VectorLayer )
+    if ( !l || l->type() != QgsMapLayerType::VectorLayer )
     {
       if ( outErr )
       {

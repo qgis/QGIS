@@ -54,7 +54,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsLayerTreeView *layerTreeView() override;
 
     void addCustomActionForLayerType( QAction *action, QString menu,
-                                      QgsMapLayer::LayerType type, bool allLayers ) override;
+                                      QgsMapLayerType type, bool allLayers ) override;
     void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) override;
     bool removeCustomActionForLayerType( QAction *action ) override;
 

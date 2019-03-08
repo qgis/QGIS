@@ -168,7 +168,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       }
 
       addCustomLayerActions( menu, layer );
-      if ( layer && layer->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( layer )->providerType() == QLatin1String( "virtual" ) )
+      if ( layer && layer->type() == QgsMapLayerType::VectorLayer && static_cast<QgsVectorLayer *>( layer )->providerType() == QLatin1String( "virtual" ) )
       {
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ), tr( "Edit Virtual Layer…" ), QgisApp::instance(), &QgisApp::addVirtualLayer );
       }
@@ -328,7 +328,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menuExportRaster->addAction( actionSaveStyle );
         menu->addMenu( menuExportRaster );
       }
-      else if ( layer && layer->type() == QgsMapLayer::PluginLayer && mView->selectedLayerNodes().count() == 1 )
+      else if ( layer && layer->type() == QgsMapLayerType::PluginLayer && mView->selectedLayerNodes().count() == 1 )
       {
         // disable duplication of plugin layers
         duplicateLayersAction->setEnabled( false );
@@ -343,7 +343,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QMenu *menuStyleManager = new QMenu( tr( "Styles" ), menu );
 
         QgisApp *app = QgisApp::instance();
-        if ( layer->type() == QgsMapLayer::VectorLayer )
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
           QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style" ) );
           copyStyleMenu->setToolTipsVisible( true );
@@ -371,7 +371,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( layer && app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
-          if ( layer->type() == QgsMapLayer::VectorLayer )
+          if ( layer->type() == QgsMapLayerType::VectorLayer )
           {
             QDomDocument doc( QStringLiteral( "qgis" ) );
             QString errorMsg;
@@ -532,14 +532,14 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
 
 void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction *action, const QString &menu,
-    QgsMapLayer::LayerType type, bool allLayers )
+    QgsMapLayerType type, bool allLayers )
 {
   mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, allLayers ) );
 }
 
 bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction *action )
 {
-  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  QMap< QgsMapLayerType, QList< LegendLayerAction > >::iterator it;
   for ( it = mLegendLayerActionMap.begin();
         it != mLegendLayerActionMap.end(); ++it )
   {
@@ -564,7 +564,7 @@ void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction *act
   if ( !mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
-  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
+  QMap< QgsMapLayerType, QList< LegendLayerAction > >::iterator it
     = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
@@ -581,7 +581,7 @@ void QgsAppLayerTreeViewMenuProvider::removeLegendLayerActionsForLayer( QgsMapLa
   if ( ! layer || ! mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
-  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
+  QMap< QgsMapLayerType, QList< LegendLayerAction > >::iterator it
     = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
@@ -589,12 +589,12 @@ void QgsAppLayerTreeViewMenuProvider::removeLegendLayerActionsForLayer( QgsMapLa
   }
 }
 
-QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( QgsMapLayer::LayerType type ) const
+QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( QgsMapLayerType type ) const
 {
 #ifdef QGISDEBUG
   if ( mLegendLayerActionMap.contains( type ) )
   {
-    QgsDebugMsg( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( type ) );
+    QgsDebugMsg( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( static_cast<int>( type ) ) );
 
     Q_FOREACH ( const LegendLayerAction &lyrAction, mLegendLayerActionMap[ type ] )
     {

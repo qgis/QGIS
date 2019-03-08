@@ -1034,7 +1034,7 @@ void TestQgsProcessing::mapLayers()
   // test loadMapLayerFromString with raster
   QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayer::RasterLayer );
+  QCOMPARE( l->type(), QgsMapLayerType::RasterLayer );
   QCOMPARE( l->name(), QStringLiteral( "landsat" ) );
 
   delete l;
@@ -1042,7 +1042,7 @@ void TestQgsProcessing::mapLayers()
   //test with vector
   l = QgsProcessingUtils::loadMapLayerFromString( vector );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
   QCOMPARE( l->name(), QStringLiteral( "points" ) );
   delete l;
 
@@ -1052,7 +1052,7 @@ void TestQgsProcessing::mapLayers()
   QVERIFY( !l );
   l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp" );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
   QCOMPARE( l->name(), QStringLiteral( "multipoint" ) );
   delete l;
 
@@ -1188,7 +1188,7 @@ void TestQgsProcessing::mapLayerFromString()
   // allow loading
   QgsMapLayer *loadedLayer = QgsProcessingUtils::mapLayerFromString( newRaster, c, true );
   QVERIFY( loadedLayer->isValid() );
-  QCOMPARE( loadedLayer->type(), QgsMapLayer::RasterLayer );
+  QCOMPARE( loadedLayer->type(), QgsMapLayerType::RasterLayer );
   // should now be in temporary store
   QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
 

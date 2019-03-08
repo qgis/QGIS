@@ -56,6 +56,16 @@ class QPainter;
  */
 #define QGSCLIPBOARD_MAPLAYER_MIME "application/qgis.maplayer"
 
+
+//! Types of layers that can be added to a map
+enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer ) : int
+  {
+  VectorLayer,
+  RasterLayer,
+  PluginLayer,
+  MeshLayer      //!< Added in 3.2
+};
+
 /**
  * \ingroup core
  * Base class for all map layer types.
@@ -72,7 +82,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
+    QgsMapLayer * layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
     sipType = 0;
 
@@ -80,16 +90,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     {
       switch ( layer->type() )
       {
-        case QgsMapLayer::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
           sipType = sipType_QgsVectorLayer;
           break;
-        case QgsMapLayer::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
           sipType = sipType_QgsRasterLayer;
           break;
-        case QgsMapLayer::PluginLayer:
+        case QgsMapLayerType::PluginLayer:
           sipType = sipType_QgsPluginLayer;
           break;
-        case QgsMapLayer::MeshLayer:
+        case QgsMapLayerType::MeshLayer:
           sipType = sipType_QgsMeshLayer;
           break;
         default:
@@ -101,15 +111,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 #endif
 
   public:
-
-    //! Types of layers that can be added to a map
-    enum LayerType
-    {
-      VectorLayer,
-      RasterLayer,
-      PluginLayer,
-      MeshLayer      //!< Added in 3.2
-    };
 
     /**
      * Maplayer has a style and a metadata property
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param name display name for the layer
      * \param source datasource of layer
      */
-    QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
+    QgsMapLayer( QgsMapLayerType type = QgsMapLayerType::VectorLayer, const QString &name = QString(), const QString &source = QString() );
 
     ~QgsMapLayer() override;
 
@@ -188,7 +189,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the type of the layer.
      */
-    QgsMapLayer::LayerType type() const;
+    QgsMapLayerType type() const;
 
     /**
      * Returns the flags for this layer.
@@ -831,7 +832,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage )
-    { Q_UNUSED( node ); errorMessage = QStringLiteral( "Layer type %1 not supported" ).arg( type() ); return false; }
+    { Q_UNUSED( node ); errorMessage = QStringLiteral( "Layer type %1 not supported" ).arg( static_cast<int>( type() ) ); return false; }
 
 
 
@@ -1483,7 +1484,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mID;
 
     //! Type of the layer (e.g., vector, raster)
-    QgsMapLayer::LayerType mLayerType;
+    QgsMapLayerType mLayerType;
 
     LayerFlags mFlags = LayerFlags( Identifiable | Removable | Searchable );
 

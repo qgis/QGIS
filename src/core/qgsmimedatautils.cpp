@@ -174,7 +174,7 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
 
     switch ( layer->type() )
     {
-      case QgsMapLayer::VectorLayer:
+      case QgsMapLayerType::VectorLayer:
       {
         uri.layerType = QStringLiteral( "vector" );
         if ( uri.providerKey == QStringLiteral( "memory" ) )
@@ -186,14 +186,14 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
         }
         break;
       }
-      case QgsMapLayer::RasterLayer:
+      case QgsMapLayerType::RasterLayer:
       {
         uri.layerType = QStringLiteral( "raster" );
         break;
       }
 
-      case QgsMapLayer::MeshLayer:
-      case QgsMapLayer::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::PluginLayer:
       {
         // plugin layers do not have a standard way of storing their URI...
         return;

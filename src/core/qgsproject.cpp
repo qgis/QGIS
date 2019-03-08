@@ -508,7 +508,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
 
     QgsMapLayer *mapLayer = layer->layer();
-    if ( mapLayer && mapLayer->type() == QgsMapLayer::VectorLayer )
+    if ( mapLayer && mapLayer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -2756,7 +2756,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   {
     for ( QgsMapLayer *mlayer : myResultList )
     {
-      if ( mlayer->type() != QgsMapLayer::VectorLayer )
+      if ( mlayer->type() != QgsMapLayerType::VectorLayer )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
@@ -2872,7 +2872,7 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
   bool empty = true;
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( it.value()->type() != QgsMapLayer::VectorLayer )
+    if ( it.value()->type() != QgsMapLayerType::VectorLayer )
       continue;
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );

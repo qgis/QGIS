@@ -740,7 +740,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
-    if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+    if ( currentLayer->type() == QgsMapLayerType::VectorLayer )
     {
 
       QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
@@ -804,7 +804,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
-    if ( currentLayer->type() == QgsMapLayer::RasterLayer )
+    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
     {
 
       QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
@@ -866,7 +866,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QList<QgsVectorLayer *> vectorLayers;
   Q_FOREACH ( QgsMapLayer *mapLayer, mapLayers )
   {
-    if ( QgsMapLayer::VectorLayer == mapLayer->type() )
+    if ( QgsMapLayerType::VectorLayer == mapLayer->type() )
     {
       vectorLayers.append( qobject_cast<QgsVectorLayer *>( mapLayer ) );
     }
@@ -2299,7 +2299,7 @@ void QgsProjectProperties::checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &
           owsNames << l->name();
         else
           owsNames << shortName;
-        if ( l->type() == QgsMapLayer::VectorLayer )
+        if ( l->type() == QgsMapLayerType::VectorLayer )
         {
           QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
           if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )

@@ -57,7 +57,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
      */
     QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = nullptr,
                                bool setFilterByLayerType = false,
-                               const QgsMapLayer::LayerType &layerType = QgsMapLayer::LayerType::VectorLayer,
+                               const QgsMapLayerType &layerType = QgsMapLayerType::VectorLayer,
                                QWidget *parent = nullptr );
 
 
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     /**
      * Sets layer type filter to \a layerType and activates the filtering
      */
-    void setLayerTypeFilter( QgsMapLayer::LayerType layerType );
+    void setLayerTypeFilter( QgsMapLayerType layerType );
 
     /**
      * Returns the (possibly invalid) uri of the selected data source

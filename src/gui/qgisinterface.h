@@ -100,7 +100,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see addCustomActionForLayer()
      */
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        QgsMapLayer::LayerType type, bool allLayers ) = 0;
+        QgsMapLayerType type, bool allLayers ) = 0;
 
     /**
      * Add action to context menu for a specific layer in the layer tree.
