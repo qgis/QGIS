@@ -46,5 +46,5 @@ testrunners["test_testrunner.run_failing"]=1
 for i in "${!testrunners[@]}"
 do
   echo "test ${i}..."
-  $(docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh ${i}" &>/dev/null) -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
+  [[ $(docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh ${i}" &>/dev/null) -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
 done
