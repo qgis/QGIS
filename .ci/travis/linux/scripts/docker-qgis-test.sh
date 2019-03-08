@@ -2,21 +2,6 @@
 
 set -e
 
-##############################
-# Run Python Tests on QGIS app
-##############################
-# Passing cases:
-echo "QGIS tests runner"
-pushd /root/qgis_test_runner
-./qgis_testrunner.sh test_testrunner.run_passing && echo "1/5 succeeded" || exit 1
-./qgis_testrunner.sh test_testrunner.run_skipped_and_passing && echo "2/5 succeeded"  || exit 1
-# Failing cases:
-./qgis_testrunner.sh test_testrunner && exit 1 || echo "3/5 succeeded"
-./qgis_testrunner.sh test_testrunner.run_all && exit 1 || echo "5/5 succeeded"
-./qgis_testrunner.sh test_testrunner.run_failing && exit 1 || echo "5/5 succeeded"
-popd
-
-
 # Temporarily uncomment to debug ccache issues
 # echo "travis_fold:start:ccache-debug"
 # cat /tmp/cache.debug
