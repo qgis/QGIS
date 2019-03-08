@@ -993,7 +993,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 detect_comment_block(strict_mode => UNSTRICT);
             }
             write_output("ENU4", "$LINE\n");
-            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.__doc__ = '$COMMENT\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n" if $is_scope_based eq "1";
+            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.__doc__ = '$COMMENT\\n\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n" if $is_scope_based eq "1";
             # enums don't have Docstring apparently
             $COMMENT = '';
             next;
