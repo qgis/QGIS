@@ -2,6 +2,9 @@
 
 set -e
 
+# wait for the DB to be available
+sleep
+
 # Temporarily uncomment to debug ccache issues
 # echo "travis_fold:start:ccache-debug"
 # cat /tmp/cache.debug

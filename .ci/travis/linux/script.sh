@@ -27,12 +27,12 @@ docker run -t --name qgis_container \
 # commit container
 docker commit qgis_container qgis_image
 
-# running tests for the python test runner
-docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
-
 # running QGIS tests in commited image
 docker-compose -f ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh
 
+# running tests for the python test runner
+docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
+sleep 8  # Wait for xvfb to finish starting
 
 declare -A testrunners
 # Passing cases:
