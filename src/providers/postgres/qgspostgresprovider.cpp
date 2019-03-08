@@ -3190,7 +3190,7 @@ long QgsPostgresProvider::featureCount() const
   // - but make huge dataset usable.
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
-    sql = QStringLiteral( "SELECT reltuples::int FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+    sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   }
   else
   {
@@ -3249,7 +3249,7 @@ QgsRectangle QgsPostgresProvider::extent() const
       {
         if ( result.PQgetvalue( 0, 0 ).toInt() > 0 )
         {
-          sql = QStringLiteral( "SELECT reltuples::int FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+          sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
           result = connectionRO()->PQexec( sql );
           if ( result.PQresultStatus() == PGRES_TUPLES_OK
                && result.PQntuples() == 1
