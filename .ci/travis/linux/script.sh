@@ -31,8 +31,8 @@ docker commit qgis_container qgis_image
 echo "travis_fold:end:docker_build_qgis"
 
 docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" || true
-docker tag qgis_image qgis/testing || true
-docker push qgis_image || true
+docker tag qgis_image qgis/qgis:travis_testing || true
+docker push qgis/qgis:travis_testing || true
 
 # running QGIS tests in commited image
 echo "travis_fold:start:docker_test_qgis"
@@ -44,7 +44,7 @@ echo "travis_fold:end:docker_test_qgis"
 echo "travis_fold:start:docker_test_runners"
 echo "${bold}Docker test QGIS runners${endbold}"
 docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-sleep 10  # Wait for xvfb to finish starting
+sleep 15  # Wait for xvfb to finish starting
 
 declare -A testrunners
 # Passing cases:
