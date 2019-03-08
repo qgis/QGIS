@@ -97,6 +97,66 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
   if ( items.size() < 2 )
     return;
 
+  double minCoord = std::numeric_limits<double>::max();
+  double maxCoord = std::numeric_limits<double>::lowest();
+  QMap< double, QgsLayoutItem * > itemCoords;
+
+  double step;
+
+  // equispaced distribution doesn't follow the same approach of the other distribution types
+  if ( distribution == DistributeHSpace || distribution == DistributeVSpace )
+  {
+    double length = 0.0;
+
+    for ( QgsLayoutItem *item : items )
+    {
+      QRectF itemBBox = item->sceneBoundingRect();
+      double item_min, item_max;
+
+      item_min = ( distribution == DistributeHSpace ? itemBBox.left() :
+                   itemBBox.top() );
+      item_max = ( distribution == DistributeHSpace ? itemBBox.right() :
+                   itemBBox.bottom() );
+
+      minCoord = std::min( minCoord, item_min );
+      maxCoord = std::max( maxCoord, item_max );
+      length += ( item_max - item_min );
+      itemCoords.insert( item_min, item );
+    }
+    step = ( maxCoord - minCoord - length ) / ( items.size() - 1 );
+
+    double currentVal = minCoord;
+    layout->undoStack()->beginMacro( undoText( distribution ) );
+    for ( auto itemIt = itemCoords.constBegin(); itemIt != itemCoords.constEnd(); ++itemIt )
+    {
+      QgsLayoutItem *item = itemIt.value();
+      QPointF shifted = item->pos();
+
+      layout->undoStack()->beginCommand( itemIt.value(), QString() );
+
+      if ( distribution == DistributeHSpace )
+      {
+        shifted.setX( currentVal );
+      }
+      else
+      {
+        shifted.setY( currentVal );
+      }
+
+      QgsLayoutPoint newPos = layout->convertFromLayoutUnits( shifted, item->positionWithUnits().units() );
+      item->attemptMove( newPos );
+
+      layout->undoStack()->endCommand();
+
+      currentVal += ( distribution == DistributeHSpace ? item->rect().width() :
+                      item->rect().height() ) + step;
+
+      layout->undoStack()->endMacro();
+    }
+
+    return;
+  }
+
   auto collectReferenceCoord = [distribution]( QgsLayoutItem * item )->double
   {
     QRectF itemBBox = item->sceneBoundingRect();
@@ -114,15 +174,16 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
         return itemBBox.center().y();
       case DistributeBottom:
         return itemBBox.bottom();
+      case DistributeHSpace:
+      case DistributeVSpace:
+        // not reachable branch, just to avoid compilation warning
+        return 0.0;
     }
     // no warnings
     return itemBBox.left();
   };
 
 
-  double minCoord = std::numeric_limits<double>::max();
-  double maxCoord = std::numeric_limits<double>::lowest();
-  QMap< double, QgsLayoutItem * > itemCoords;
   for ( QgsLayoutItem *item : items )
   {
     double refCoord = collectReferenceCoord( item );
@@ -131,7 +192,7 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
     itemCoords.insert( refCoord, item );
   }
 
-  double step = ( maxCoord - minCoord ) / ( items.size() - 1 );
+  step = ( maxCoord - minCoord ) / ( items.size() - 1 );
 
   auto distributeItemToCoord = [layout, distribution]( QgsLayoutItem * item, double refCoord )
   {
@@ -155,6 +216,10 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
         break;
       case DistributeBottom:
         shifted.setY( refCoord - item->rect().height() );
+        break;
+      case DistributeHSpace:
+      case DistributeVSpace:
+        // not reachable branch, just to avoid compilation warning
         break;
     }
 
@@ -302,13 +367,17 @@ QString QgsLayoutAligner::undoText( Distribution distribution )
     case DistributeLeft:
       return QObject::tr( "Distribute Items by Left" );
     case DistributeHCenter:
-      return QObject::tr( "Distribute Items by Center" );
+      return QObject::tr( "Distribute Items by Horizontal Center" );
+    case DistributeHSpace:
+      return QObject::tr( "Distribute Items by Horizontal Equispaced" );
     case DistributeRight:
       return QObject::tr( "Distribute Items by Right" );
     case DistributeTop:
       return QObject::tr( "Distribute Items by Top" );
     case DistributeVCenter:
       return QObject::tr( "Distribute Items by Vertical Center" );
+    case DistributeVSpace:
+      return QObject::tr( "Distribute Items by Vertical Equispaced" );
     case DistributeBottom:
       return QObject::tr( "Distribute Items by Bottom" );
   }
