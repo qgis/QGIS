@@ -578,16 +578,9 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
     painter->setPen( mSettings.fontColor() );
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
-  QgsExpressionContextScope *layerScope = nullptr;
-  if ( context && nodeLayer->layer() )
-  {
-    layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() );
-    context->expressionContext().appendScope( layerScope );
-  }
 
-  const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
-                            context ? context->expressionContext() : tempContext );
-  for ( QStringList::ConstIterator layerItemPart = lines.constBegin(); layerItemPart != lines.constEnd(); ++layerItemPart )
+  QStringList lines = mSettings.splitStringForWrapping( mLegendModel->data( idx, Qt::DisplayRole ).toString() );
+  for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
   {
     y += mSettings.fontAscentMillimeters( layerFont );
     if ( context && context->painter() )

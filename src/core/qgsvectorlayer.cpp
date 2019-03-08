@@ -695,7 +695,7 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
-QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool wait )
+QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
   if ( mSymbolFeatureCounted || mFeatureCounter )
     return mFeatureCounter;
@@ -718,19 +718,14 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool wait )
     return mFeatureCounter;
   }
 
-  if ( !mFeatureCounter && !wait )
-  {
-    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
-    connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
-    connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
 
-    QgsApplication::taskManager()->addTask( mFeatureCounter );
-  }
-  else if ( !mFeatureCounter && wait )
-  {
-    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
-    mFeatureCounter->run();
-  }
+  mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
+  connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
+  connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
+
+  long taskid = QgsApplication::taskManager()->addTask( mFeatureCounter );
+  emit startCount( taskid );
+  mPendingTasks.append(taskid);
 
   return mFeatureCounter;
 }
@@ -4434,13 +4429,25 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 
 void QgsVectorLayer::onFeatureCounterCompleted()
 {
+  doneTask();
   onSymbolsCounted();
-  mFeatureCounter = nullptr;
 }
 
 void QgsVectorLayer::onFeatureCounterTerminated()
 {
-  mFeatureCounter = nullptr;
+  doneTask();
+}
+
+void QgsVectorLayer::doneTask()
+{
+  for( long taskid : mPendingTasks)
+  {
+    if QgsApplication::taskManager()->task( taskid )
+    {
+      mPendingTasks.removeOne( taskid );
+      emit countDone( taskid );
+    }
+  }
 }
 
 void QgsVectorLayer::onJoinedFieldsChanged()
