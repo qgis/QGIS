@@ -2643,7 +2643,6 @@ Emitted when a counting task is finished
 
 
 
-
   protected:
     virtual void setExtent( const QgsRectangle &rect ) ${SIP_FINAL};
 
