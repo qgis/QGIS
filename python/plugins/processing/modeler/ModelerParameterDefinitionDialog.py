@@ -229,6 +229,14 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 self.parentCombo.setCurrentIndex(idx)
                         idx += 1
                 self.verticalLayout.addWidget(self.parentCombo)
+            else:
+                self.verticalLayout.addWidget(QLabel(self.tr('Number type')))
+                self.type_combo = QComboBox()
+                self.type_combo.addItem(self.tr('Float'), QgsProcessingParameterNumber.Double)
+                self.type_combo.addItem(self.tr('Integer'), QgsProcessingParameterNumber.Integer)
+                if self.param:
+                    self.type_combo.setCurrentIndex(self.type_combo.findData(self.param.dataType()))
+                self.verticalLayout.addWidget(self.type_combo)
 
             self.verticalLayout.addWidget(QLabel(self.tr('Min value')))
             self.minTextBox = QLineEdit()
@@ -245,7 +253,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 default = self.param.defaultValue()
                 if self.param.dataType() == QgsProcessingParameterNumber.Integer:
-                    default = int(math.floor(default))
+                    default = int(math.floor(float(default)))
                 if default:
                     self.defaultTextBox.setText(str(default))
             self.verticalLayout.addWidget(self.defaultTextBox)
@@ -445,7 +453,9 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.param.setParentParameterName(parent)
         elif (self.paramType == parameters.PARAMETER_NUMBER or
               isinstance(self.param, QgsProcessingParameterNumber)):
-            self.param = QgsProcessingParameterNumber(name, description, QgsProcessingParameterNumber.Double,
+
+            type = self.type_combo.currentData()
+            self.param = QgsProcessingParameterNumber(name, description, type,
                                                       self.defaultTextBox.text())
             try:
                 vmin = self.minTextBox.text().strip()
