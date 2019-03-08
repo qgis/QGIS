@@ -30,6 +30,10 @@ docker run -t --name qgis_container \
 docker commit qgis_container qgis_image
 echo "travis_fold:end:docker_build_qgis"
 
+docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" || true
+docker tag qgis_image qgis/testing || true
+docker push qgis_image || true
+
 # running QGIS tests in commited image
 echo "travis_fold:start:docker_test_qgis"
 echo "${bold}Docker run tests${endbold}"
@@ -53,8 +57,10 @@ testrunners["test_testrunner.run_failing"]=1
 # Run tests in the docker
 for i in "${!testrunners[@]}"
 do
+  echo "travis_fold:start:docker_test_runner_${i}"
   echo "test ${i}..."
-  docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh ${i}" &>/dev/null
+  docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh ${i}"
   [[ $? -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
+  echo "travis_fold:end:docker_test_runner_${i}"
 done
 echo "travis_fold:end:docker_test_runners"
