@@ -928,8 +928,8 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
     if ( vlayer )
     {
-      connect(vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::pendingCount );
-      connect(vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::doneCount );
+      connect( vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::pendingCount );
+      connect( vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::doneCount );
     }
 
     if ( ltmln )
