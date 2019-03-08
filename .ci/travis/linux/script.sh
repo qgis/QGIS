@@ -30,9 +30,9 @@ docker run -t --name qgis_container \
 docker commit qgis_container qgis_image
 echo "travis_fold:end:docker_build_qgis"
 
-docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" || true
-docker tag qgis_image qgis/qgis:travis_testing || true
-docker push qgis/qgis:travis_testing || true
+#docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" || true
+#docker tag qgis_image qgis/qgis:travis_testing || true
+#docker push qgis/qgis:travis_testing || true
 
 # running QGIS tests in commited image
 echo "travis_fold:start:docker_test_qgis"
