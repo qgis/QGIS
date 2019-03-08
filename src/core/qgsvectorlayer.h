@@ -2075,6 +2075,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.4
      */
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
+    
+    /**
+     * Returns true if the features were counted
+     * \since QIGS 3.8
+     */
+    bool featuresCounted() SIP_SKIP { return mSymbolFeatureCounted; }
 
   public slots:
 
