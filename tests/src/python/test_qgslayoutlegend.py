@@ -41,7 +41,7 @@ from qgis.testing import (start_app,
 from utilities import unitTestDataPath
 from qgslayoutchecker import QgsLayoutChecker
 import os
-
+from time import sleep
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
@@ -387,6 +387,9 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().addMapLayers([point_layer])
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
+        legendlayer.countSymbolFeatures()
+        sleep(3)#try to ensure that the counting is done before evaluation
+        
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
