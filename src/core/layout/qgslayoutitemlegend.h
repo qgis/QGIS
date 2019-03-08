@@ -58,6 +58,27 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void setLayoutExpContext( QgsExpressionContext *econtext );
 
+  signals:
+    /**
+     * Emitted to refresh the legend once counting is done.
+     * \since QGIS 3.8
+     */
+    void refreshLegend();
+
+
+  private slots:
+    /**
+     * keep track of current counting tasks
+     * \since QGIS 3.8
+     */
+    void pendingCount( long taskid);
+
+    /**
+     * Ensure that no more counting is remaining to refresh the legend
+     * \since QGIS 3.8
+     */
+    void doneCount( long taskid);
+
   private:
     QgsExpressionContext *mLayoutLegendContext = nullptr;
 
@@ -69,6 +90,13 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \since QGIS 3.8
      */
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
+
+    /**
+     * storage for current counting tasks
+     * \since QGIS 3.8
+     */
+    Qlist<long> mPendingCount;
+
 };
 
 
@@ -467,7 +495,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * \since QGIS 3.8
      */
     QgsExpressionContext updateExpressionContext();
-
 
   public slots:
 

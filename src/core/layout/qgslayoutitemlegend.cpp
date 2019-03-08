@@ -58,6 +58,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
     invalidateCache();
     update();
   } );
+  connect( mLegendModel, &QgsLegendModel::refreshLegend, this, &QgsLayoutItemLegend::refresh );
 }
 
 QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout )
@@ -900,7 +901,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ); // Possibly useless
   QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node ) ? QgsLayerTree::toLayer( node ) : nullptr;
-
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
   if ( ( nodeLayer && !ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     //finding the first label that is stored
@@ -914,9 +915,9 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
       if ( vlayer && vlayer->featureCount() >= 0 )
       {
+        name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
         Q_UNUSED( ltmln );
         return name;
       }
@@ -925,6 +926,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   if ( ( nodeLayer || ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
+    if( vlayer )
+      {
+        connect(vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::pendingCount );
+        connect(vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::doneCount );
+      }
 
     if ( ltmln )
     {
@@ -968,3 +974,16 @@ void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
 {
   mLayoutLegendContext = econtext;
 }
+
+void QgsLegendModel::pendingCount( long taskid )
+{
+  mPendingCount.append( taskid );
+}
+
+void QgsLegendModel::doneCount( long taskid )
+{
+  mPendingCount.removeOne( taksid );
+  if( mPendingCount.isEmpty() )
+    emit refreshLegend();
+}
+
