@@ -4440,7 +4440,7 @@ void QgsVectorLayer::onFeatureCounterTerminated()
 
 void QgsVectorLayer::doneTask()
 {
-  for ( long taskid : mPendingTasks)
+  for ( long taskid : mPendingTasks )
   {
     if ( QgsApplication::taskManager()->task( taskid ) )
     {
