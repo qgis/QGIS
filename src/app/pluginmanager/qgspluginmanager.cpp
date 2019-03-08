@@ -1328,6 +1328,7 @@ void QgsPluginManager::wvDetails_linkClicked( const QUrl &url )
     {
       QStringList params = url.path().split( '/' );
       leFilter->setText( QStringLiteral( "tag:%1" ).arg( params[1] ) );
+      mOptionsListWidget->setCurrentRow( PLUGMAN_TAB_ALL );
     }
   }
   else
