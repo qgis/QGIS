@@ -176,6 +176,3 @@ class CreateAtlasGrid(QgisAlgorithm):
             current_y += h
 
         return {self.OUTPUT: dest_id}
-
-
-
