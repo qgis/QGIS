@@ -2,9 +2,6 @@
 
 set -e
 
-# wait for the DB to be available
-sleep 8
-
 # Temporarily uncomment to debug ccache issues
 # echo "travis_fold:start:ccache-debug"
 # cat /tmp/cache.debug
@@ -18,6 +15,15 @@ export PGUSER=docker
 export PGHOST=postgres
 export PGPASSWORD=docker
 export PGDATABASE=qgis_test
+
+# wait for the DB to be available
+echo "Wait a moment while loading the database."
+while ! PGPASSWORD='docker' psql -h postgres -U docker -p 5432 -l &> /dev/null
+do
+  printf "🐘"
+  sleep 1
+done
+echo " done 🥩"
 
 pushd /root/QGIS > /dev/null
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
