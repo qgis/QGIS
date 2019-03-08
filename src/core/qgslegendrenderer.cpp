@@ -579,13 +579,6 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
-  if ( context && context->painter() )
-    context->painter()->setPen( mSettings.fontColor() );
-  else if ( painter )
-    painter->setPen( mSettings.fontColor() );
-
-  QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
-
   QStringList lines = mSettings.splitStringForWrapping( mLegendModel->data( idx, Qt::DisplayRole ).toString() );
   for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
   {
@@ -603,9 +596,6 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   }
   size.rheight() = y - point.y();
   size.rheight() += mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Side::Bottom );
-
-  if ( layerScope )
-    delete context->expressionContext().popScope();
 
   return size;
 }
