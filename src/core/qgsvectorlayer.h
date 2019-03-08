@@ -2446,6 +2446,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
 
+    /**
+     * Function used to emit a signal when a task is completed.
+     * \since QGIS 3.8
+     */
+    void doneTask() SIP_SKIP;
+
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );
 #endif
