@@ -41,10 +41,6 @@ echo "travis_fold:start:docker_test_runners"
 echo "${bold}Docker test QGIS runners${endbold}"
 docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
-docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/. qgis-testing-environment:/usr/bin/
-docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor/supervisord.conf qgis-testing-environment:/etc/supervisor/
-docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor/supervisor.xvfb.conf qgis-testing-environment:/etc/supervisor/supervisor.d/
-
 echo "Waiting for the docker..."
 until [ "`/usr/bin/docker inspect -f {{.State.Running}} qgis-testing-environment`"=="true" ]; do
     printf '🐳'
@@ -66,7 +62,7 @@ for i in "${!testrunners[@]}"
 do
   echo "travis_fold:start:docker_test_runner_${i}"
   echo "test ${i}..."
-  docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh ${i}"
+  docker exec -it qgis-testing-environment sh -c "cd /tests_directory && /usr/bin/test_runner/qgis_testrunner.sh ${i}"
   [[ $? -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
   echo "travis_fold:end:docker_test_runner_${i}"
 done

@@ -16,6 +16,8 @@ services:
     image: qgis_image
     volumes:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS
+      - ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor:/etc/supervisor
+      - ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner:/usr/bin/test_runner
     links:
       - postgres
       - mssql

@@ -19,8 +19,9 @@ export TRAVIS_BUILD_DIR=~/opt/qgis/QGIS
 docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis/qgis /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/. qgis-testing-environment:/usr/bin/
-docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor/supervisord.conf qgis-testing-environment:/etc/supervisor/
-docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor/supervisor.xvfb.conf qgis-testing-environment:/etc/supervisor/supervisor.d/
+docker exec
+docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor/supervisord.conf qgis-testing-environment:/etc/supervisor2/
+docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor/supervisor.xvfb.conf qgis-testing-environment:/etc/supervisor2/supervisor.d/
 
 
 echo "Waiting for the docker..."
