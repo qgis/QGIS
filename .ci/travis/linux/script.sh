@@ -30,10 +30,6 @@ docker run -t --name qgis_container \
 docker commit qgis_container qgis_image
 echo "travis_fold:end:docker_build_qgis"
 
-#docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" || true
-#docker tag qgis_image qgis/qgis:travis_testing || true
-#docker push qgis/qgis:travis_testing || true
-
 # running QGIS tests in commited image
 echo "travis_fold:start:docker_test_qgis"
 echo "${bold}Docker run tests${endbold}"
@@ -44,6 +40,10 @@ echo "travis_fold:end:docker_test_qgis"
 echo "travis_fold:start:docker_test_runners"
 echo "${bold}Docker test QGIS runners${endbold}"
 docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+
+docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/. qgis-testing-environment:/usr/bin/
+docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor/supervisord.conf qgis-testing-environment:/etc/supervisor/
+docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor/supervisor.xvfb.conf qgis-testing-environment:/etc/supervisor/supervisor.d/
 
 echo "Waiting for the docker..."
 until [ "`/usr/bin/docker inspect -f {{.State.Running}} qgis-testing-environment`"=="true" ]; do
@@ -70,4 +70,5 @@ do
   [[ $? -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
   echo "travis_fold:end:docker_test_runner_${i}"
 done
+docker stop qgis-testing-environment
 echo "travis_fold:end:docker_test_runners"
