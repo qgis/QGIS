@@ -32,6 +32,8 @@ QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *laye
 
 bool QgsVectorLayerFeatureCounter::run()
 {
+  mSymbolFeatureCountMap.clear();
+  mSymbolFeatureIdMap.clear();
   QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
   QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
 
