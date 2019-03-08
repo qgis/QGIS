@@ -151,9 +151,9 @@ class ModelerParametersDialog(QDialog):
         if self.algorithmItem:
             self.algorithmItem.setWidgetContext(widget_context)
             self.algorithmItem.registerProcessingContextGenerator(self.context_generator)
-        if self.configuration:
-            self.algorithmItem.setConfiguration(self.configuration)
-        self.verticalLayout.addWidget(self.algorithmItem)
+            if self.configuration:
+                self.algorithmItem.setConfiguration(self.configuration)
+            self.verticalLayout.addWidget(self.algorithmItem)
 
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
