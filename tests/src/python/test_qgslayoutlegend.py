@@ -372,7 +372,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-
+        point_layer.countSymbolFeatures()
         QgsProject.instance().clear()
 
         layout = QgsPrintLayout(QgsProject.instance())
@@ -387,7 +387,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().addMapLayers([point_layer])
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
-        legendlayer.countSymbolFeatures()
         sleep(1) # try to ensure that the counting is done before evaluation
 
         legend.model().refreshLayerLegend(legendlayer)
