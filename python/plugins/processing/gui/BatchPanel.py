@@ -35,6 +35,9 @@ from qgis.PyQt.QtCore import QDir, QFileInfo
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
+                       QgsProperty,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
                        QgsProcessingModelAlgorithm)
 from qgis.gui import (QgsProcessingParameterWidgetContext,
