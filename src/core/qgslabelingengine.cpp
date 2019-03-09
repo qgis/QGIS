@@ -85,12 +85,12 @@ QgsLabelingEngine::~QgsLabelingEngine()
 QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
 {
   QSet< QgsMapLayer * > layers;
-  Q_FOREACH ( QgsAbstractLabelProvider *provider, mProviders )
+  for ( QgsAbstractLabelProvider *provider : mProviders )
   {
     if ( provider->layer() )
       layers << provider->layer();
   }
-  Q_FOREACH ( QgsAbstractLabelProvider *provider, mSubProviders )
+  for ( QgsAbstractLabelProvider *provider : mSubProviders )
   {
     if ( provider->layer() )
       layers << provider->layer();
@@ -161,9 +161,9 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
   l->setUpsidedownLabels( upsdnlabels );
 
 
-  QList<QgsLabelFeature *> features = provider->labelFeatures( context );
+  const QList<QgsLabelFeature *> features = provider->labelFeatures( context );
 
-  Q_FOREACH ( QgsLabelFeature *feature, features )
+  for ( QgsLabelFeature *feature : features )
   {
     try
     {
@@ -178,7 +178,8 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
   }
 
   // any sub-providers?
-  Q_FOREACH ( QgsAbstractLabelProvider *subProvider, provider->subProviders() )
+  const auto subproviders = provider->subProviders();
+  for ( QgsAbstractLabelProvider *subProvider : subproviders )
   {
     mSubProviders << subProvider;
     processProvider( subProvider, context, p );
@@ -224,7 +225,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
 
 
   // for each provider: get labels and register them in PAL
-  Q_FOREACH ( QgsAbstractLabelProvider *provider, mProviders )
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
   {
     bool appendedLayerScope = false;
     if ( QgsMapLayer *ml = provider->layer() )
