@@ -382,6 +382,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   mFormat = s.mFormat;
   mDataDefinedProperties = s.mDataDefinedProperties;
 
+  geometryGenerator = s.geometryGenerator;
+
   return *this;
 }
 
@@ -678,6 +680,8 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   obstacleType = static_cast< ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( PolygonInterior ) ).toUInt() );
   zIndex = layer->customProperty( QStringLiteral( "labeling/zIndex" ), QVariant( 0.0 ) ).toDouble();
 
+  geometryGenerator = layer->customProperty( QStringLiteral( "labeling/zIndex" ), QString( "translate($geometry, 10, 10)" ) ).toString();
+
   mDataDefinedProperties.clear();
   if ( layer->customProperty( QStringLiteral( "labeling/ddProperties" ) ).isValid() )
   {
@@ -891,6 +895,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   obstacleFactor = renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble();
   obstacleType = static_cast< ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( PolygonInterior ) ).toUInt() );
   zIndex = renderingElem.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0.0" ) ).toDouble();
+  geometryGenerator = renderingElem.attribute( QStringLiteral( "geometryGenerator" ), "translate($geometry, 10, 10)" );
 
   QDomElement ddElem = elem.firstChildElement( QStringLiteral( "dd_properties" ) );
   if ( !ddElem.isNull() )
@@ -941,6 +946,8 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
     mDataDefinedProperties.setProperty( MinimumScale, mDataDefinedProperties.property( MaxScale ) );
     mDataDefinedProperties.setProperty( MaxScale, QgsProperty() );
   }
+
+
 }
 
 
@@ -998,6 +1005,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "repeatDistance" ), repeatDistance );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceUnits" ), QgsUnitTypes::encodeUnit( repeatDistanceUnit ) );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
+  placementElem.setAttribute( QStringLiteral( "geometryGenerator" ), geometryGenerator );
 
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
@@ -1186,11 +1194,23 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature, QgsGeometry obstacleGeometry )
 {
+  QgsFeature feature = f;
+  if ( !geometryGenerator.isNull() )
+  {
+    QgsExpressionContext expContext = context.expressionContext();
+    // TODO: cache and prepare
+    QgsExpression exp( geometryGenerator );
+    exp.prepare( &expContext );
+    expContext.setFeature( feature );
+    QgsGeometry geometry = exp.evaluate( &expContext ).value<QgsGeometry>();
+    feature.setGeometry( geometry );
+  }
+
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngine (labelFeature is set)
   Q_ASSERT( labelFeature );
 
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
-  mCurFeat = &f;
+  mCurFeat = &feature;
 
   // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
   bool isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::IsObstacle, context.expressionContext(), obstacle ); // default to layer default
@@ -1199,7 +1219,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     if ( isObstacle )
     {
-      registerObstacleFeature( f, context, labelFeature, obstacleGeometry );
+      registerObstacleFeature( feature, context, labelFeature, obstacleGeometry );
     }
     return;
   }
@@ -1337,7 +1357,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
   else
   {
-    const QVariant &v = f.attribute( fieldIndex );
+    const QVariant &v = feature.attribute( fieldIndex );
     labelText = v.isNull() ? QString() : v.toString();
   }
 
@@ -1464,7 +1484,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
 
-  QgsGeometry geom = f.geometry();
+  QgsGeometry geom = feature.geometry();
   if ( geom.isNull() )
   {
     return;
@@ -1849,7 +1869,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   //  feature to the layer
-  QgsTextLabelFeature *lf = new QgsTextLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
+  QgsTextLabelFeature *lf = new QgsTextLabelFeature( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
   mFeatsRegPal++;
 
   *labelFeature = lf;
