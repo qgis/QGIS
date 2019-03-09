@@ -1633,7 +1633,6 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
       quadOffsetY = -1.0;
       break;
     case QuadrantOver:
-    default:
       break;
   }
 
@@ -2133,7 +2132,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
       case DDOpacity:
       {
         bool ok;
-        int size = exprVal.toDouble( &ok );
+        int size = exprVal.toInt( &ok );
         if ( ok && size >= 0 && size <= 100 )
         {
           dataDefinedValues.insert( p, QVariant( size ) );
