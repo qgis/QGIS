@@ -388,7 +388,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().addMapLayers([point_layer])
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
         legendlayer.countSymbolFeatures()
-        sleep(3) # try to ensure that the counting is done before evaluation
+        sleep(1) # try to ensure that the counting is done before evaluation
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
