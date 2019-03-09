@@ -2075,7 +2075,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.4
      */
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
-    
+
     /**
      * Returns true if the features were counted
      * \since QIGS 3.8
@@ -2599,7 +2599,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     friend class QgsVectorLayerFeatureSource;
 
-    QList<long> mPendingTasks = QList();
+    QList<long> mPendingTasks;
 };
 
 
