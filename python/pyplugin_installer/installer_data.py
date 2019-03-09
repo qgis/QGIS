@@ -353,8 +353,8 @@ class Repositories(QObject):
     def killConnection(self, key):
         """ kill the fetching on demand """
         if self.mRepositories[key]["state"] == 1 and self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
-            self.mRepositories[key]["xmlData"].finished.disconnect()
             self.mRepositories[key]["xmlData"].abort()
+            self.mRepositories[key]["xmlData"].finished.disconnect()
 
     # ----------------------------------------- #
     def xmlDownloaded(self):
