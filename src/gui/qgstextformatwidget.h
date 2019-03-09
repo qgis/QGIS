@@ -163,6 +163,10 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     bool mLoadSvgParams = false;
 
     void initWidget();
+    /**
+     * Used to setup child classes. Called at the end of initWidget.
+     */
+    virtual void setupWidget();
     void setWidgetMode( Mode mode );
     void toggleDDButtons( bool visible );
     void blockFontChangeSignals( bool blk );
