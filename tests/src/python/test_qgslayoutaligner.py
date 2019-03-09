@@ -188,6 +188,28 @@ class TestQgsLayoutAligner(unittest.TestCase):
         self.assertEqual(item3.positionWithUnits().units(), QgsUnitTypes.LayoutCentimeters)
         self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
 
+        QgsLayoutAligner.distributeItems(l, [item1, item2, item3], QgsLayoutAligner.DistributeHSpace)
+        self.assertAlmostEqual(item1.positionWithUnits().x(), -2.65, 3)
+        self.assertEqual(item1.positionWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertAlmostEqual(item2.positionWithUnits().x(), 10.25, 3)
+        self.assertEqual(item2.positionWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertAlmostEqual(item3.positionWithUnits().x(), 0.65, 3)
+        self.assertEqual(item3.positionWithUnits().units(), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
+        QgsLayoutAligner.distributeItems(l, [item1, item2, item3], QgsLayoutAligner.DistributeVSpace)
+        self.assertAlmostEqual(item1.positionWithUnits().y(), 2.45, 3)
+        self.assertEqual(item1.positionWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertAlmostEqual(item2.positionWithUnits().y(), 14.25, 3)
+        self.assertEqual(item2.positionWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertAlmostEqual(item3.positionWithUnits().y(), 1.05, 3)
+        self.assertEqual(item3.positionWithUnits().units(), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
     def testResize(self):
         p = QgsProject()
         l = QgsLayout(p)
