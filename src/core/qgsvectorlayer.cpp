@@ -4440,12 +4440,16 @@ void QgsVectorLayer::onFeatureCounterTerminated()
 
 void QgsVectorLayer::doneTask()
 {
-  for ( long taskid : mPendingTasks )
+  if ( mPendingTasks && !mPendingTasks.isEmpty() )
   {
-    if ( QgsApplication::taskManager()->task( taskid ) )
+    const QList<long> pendingtasks = mPendingTasks;
+    for ( long taskid : pendingTasks )
     {
-      mPendingTasks.removeOne( taskid );
-      emit countDone( taskid );
+      if ( QgsApplication::taskManager()->task( taskid ) )
+      {
+        mPendingTasks.removeOne( taskid );
+        emit countDone( taskid );
+      }
     }
   }
 }
