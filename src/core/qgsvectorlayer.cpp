@@ -4440,10 +4440,10 @@ void QgsVectorLayer::onFeatureCounterTerminated()
 
 void QgsVectorLayer::doneTask()
 {
-  if ( mPendingTasks && !mPendingTasks.isEmpty() )
+  if ( !mPendingTasks.isEmpty() )
   {
     const QList<long> pendingtasks = mPendingTasks;
-    for ( long taskid : pendingTasks )
+    for ( long taskid : pendingtasks )
     {
       if ( QgsApplication::taskManager()->task( taskid ) )
       {
