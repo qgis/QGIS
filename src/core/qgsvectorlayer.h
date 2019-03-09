@@ -2416,7 +2416,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void countDone( long taskid );
 
 
-
   protected:
     //! Sets the extent
     void setExtent( const QgsRectangle &rect ) FINAL;
