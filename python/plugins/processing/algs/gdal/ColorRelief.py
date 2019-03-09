@@ -45,6 +45,7 @@ class ColorRelief(GdalAlgorithm):
     INPUT = 'INPUT'
     BAND = 'BAND'
     COMPUTE_EDGES = 'COMPUTE_EDGES'
+    ALPHA = 'ALPHA'
     COLOR_TABLE = 'COLOR_TABLE'
     MATCH_MODE = 'MATCH_MODE'
     OPTIONS = 'OPTIONS'
@@ -66,6 +67,9 @@ class ColorRelief(GdalAlgorithm):
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_EDGES,
                                                         self.tr('Compute edges'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ALPHA,
+                                                        self.tr('Add an alpha channel to the output raster'),
                                                         defaultValue=False))
         self.addParameter(QgsProcessingParameterFile(self.COLOR_TABLE,
                                                      self.tr('Color configuration file')))
@@ -122,6 +126,9 @@ class ColorRelief(GdalAlgorithm):
 
         if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
+
+        if self.parameterAsBool(parameters, self.ALPHA, context):
+            arguments.append('-alpha')
 
         arguments.append(self.modes[self.parameterAsEnum(parameters, self.MATCH_MODE, context)][1])
 
