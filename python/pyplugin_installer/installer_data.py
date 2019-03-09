@@ -338,7 +338,7 @@ class Repositories(QObject):
         self.mRepositories[key]["xmlData"].setProperty('reposName', key)
         self.mRepositories[key]["xmlData"].setProperty('redirectionCounter', redirectionCounter)
         self.mRepositories[key]["xmlData"].downloadProgress.connect(self.mRepositories[key]["Relay"].dataReadProgress)
-        self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
+        self.mRepositories[key]["xmlDataFinished"] = self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
 
     # ----------------------------------------- #
     def fetchingInProgress(self):
@@ -352,8 +352,8 @@ class Repositories(QObject):
     def killConnection(self, key):
         """ kill the fetching on demand """
         if self.mRepositories[key]["state"] == 1 and self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
+            self.mRepositories[key]["xmlData"].finished.disconnect(self.mRepositories[key]["xmlDataFinished"])
             self.mRepositories[key]["xmlData"].abort()
-            self.mRepositories[key]["xmlData"].finished.disconnect()
 
     # ----------------------------------------- #
     def xmlDownloaded(self):
