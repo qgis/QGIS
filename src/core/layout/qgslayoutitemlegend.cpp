@@ -982,11 +982,11 @@ void QgsLegendModel::pendingCount( long taskid )
 
 void QgsLegendModel::doneCount( long taskid )
 {
-  if (mPendingCount && !mPendingCount.isEmpty())
+  if ( mPendingCount && !mPendingCount.isEmpty() )
   {
-  mPendingCount.removeOne( taskid );
-  if ( mPendingCount.isEmpty() )
-    emit refreshLegend();
+    mPendingCount.removeOne( taskid );
+    if ( mPendingCount.isEmpty() )
+      emit refreshLegend();
   }
 }
 
