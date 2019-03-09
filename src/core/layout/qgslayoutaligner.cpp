@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <cmath>
+
 #include "qgslayoutaligner.h"
 #include "qgslayoutitem.h"
 #include "qgslayout.h"
@@ -177,7 +179,7 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
       case DistributeHSpace:
       case DistributeVSpace:
         // not reachable branch, just to avoid compilation warning
-        return 0.0;
+        return nan("");
     }
     // no warnings
     return itemBBox.left();
