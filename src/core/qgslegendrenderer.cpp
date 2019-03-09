@@ -579,8 +579,18 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
-  QStringList lines = mSettings.splitStringForWrapping( mLegendModel->data( idx, Qt::DisplayRole ).toString() );
-  for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
+  QgsExpressionContextScope *layerScope = nullptr;
+  if ( context && nodeLayer->layer() )
+  {
+    layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() );
+    context->expressionContext().appendScope( layerScope );
+  }
+
+  QgsExpressionContext tempContext;
+
+  const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
+                            context ? context->expressionContext() : tempContext );
+  for ( QStringList::ConstIterator layerItemPart = lines.constBegin(); layerItemPart != lines.constEnd(); ++layerItemPart )
   {
     y += mSettings.fontAscentMillimeters( layerFont );
     if ( context && context->painter() )
@@ -596,6 +606,9 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   }
   size.rheight() = y - point.y();
   size.rheight() += mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Side::Bottom );
+
+  if ( layerScope )
+    delete context->expressionContext().popScope();
 
   return size;
 }
