@@ -600,14 +600,15 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
+  QVariantList featureIds;
   if ( vl )
   {
     QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures();
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
+
     if ( vl->featuresCounted() )
     {
-      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
-
-      QVariantList featureIds;
+      
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
 
       const QgsFeatureIds fids = counter->featureIds( mItem.ruleKey() );
@@ -619,6 +620,15 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
       }
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
     }
+    else
+    {
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+    }
+  }
+  else
+  {
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( -1 ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
   }
 
   context.appendScope( scope );
