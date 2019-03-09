@@ -929,7 +929,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     if ( vlayer )
     {
       connect( vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::pendingCount );
-      connect( vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::doneCount );
+      connect( vlayer, &QgsVectorLayer::countDone, this, &QgsLegendModel::doneCount );
     }
 
     if ( ltmln )
@@ -982,8 +982,11 @@ void QgsLegendModel::pendingCount( long taskid )
 
 void QgsLegendModel::doneCount( long taskid )
 {
+  if (mPendingCount && !mPendingCount.isEmpty())
+  {
   mPendingCount.removeOne( taskid );
   if ( mPendingCount.isEmpty() )
     emit refreshLegend();
+  }
 }
 
