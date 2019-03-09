@@ -21,6 +21,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmeshtimeformatdialog.h"
 
 QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget *parent )
   : QWidget( parent )
@@ -30,6 +31,7 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
   connect( mTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererActiveDatasetWidget::onActiveTimeChanged );
   connect( mDatasetSlider, &QSlider::valueChanged, mTimeComboBox, &QComboBox::setCurrentIndex );
 
+  connect( mTimeFormatButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onTimeSettingsClicked );
   connect( mFirstDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onFirstTimeClicked );
   connect( mPreviousDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onPreviousTimeClicked );
   connect( mNextDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onNextTimeClicked );
@@ -45,6 +47,12 @@ void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
 {
   mMeshLayer = layer;
   mDatasetGroupTreeView->setLayer( layer );
+  setTimeRange();
+
+  if ( layer )
+  {
+    connect( mMeshLayer, &QgsMeshLayer::timeSettingsChanged, this, &QgsMeshRendererActiveDatasetWidget::setTimeRange );
+  }
 }
 
 int QgsMeshRendererActiveDatasetWidget::activeScalarDatasetGroup() const
@@ -102,7 +110,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
       QgsMeshDatasetIndex index( groupWithMaximumDatasets, i );
       QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( index );
       double time = meta.time();
-      mTimeComboBox->addItem( formatTime( time ), time );
+      mTimeComboBox->addItem( mMeshLayer->formatTime( time ), time );
     }
   }
   mTimeComboBox->blockSignals( false );
@@ -111,6 +119,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
   bool isTimeVarying = datasetCount > 1;
   mTimeComboBox->setEnabled( isTimeVarying );
   mDatasetSlider->setEnabled( isTimeVarying );
+  mTimeFormatButton->setEnabled( isTimeVarying );
   mFirstDatasetButton->setEnabled( isTimeVarying );
   mPreviousDatasetButton->setEnabled( isTimeVarying );
   mNextDatasetButton->setEnabled( isTimeVarying );
@@ -123,7 +132,6 @@ void QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged( int groupIn
     return;
 
   mActiveScalarDatasetGroup = groupIndex;
-
   // keep the same timestep if possible
   onActiveTimeChanged( mTimeComboBox->currentIndex() );
   emit activeScalarGroupChanged( mActiveScalarDatasetGroup );
@@ -174,6 +182,15 @@ void QgsMeshRendererActiveDatasetWidget::onActiveTimeChanged( int value )
     updateMetadata();
     emit widgetChanged();
   }
+}
+
+void QgsMeshRendererActiveDatasetWidget::onTimeSettingsClicked()
+{
+  if ( !mMeshLayer )
+    return;
+  QgsMeshTimeFormatDialog dlg( mMeshLayer );
+  dlg.setModal( true );
+  dlg.exec();
 }
 
 void QgsMeshRendererActiveDatasetWidget::onFirstTimeClicked()
@@ -249,21 +266,6 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
   mActiveDatasetMetadata->setText( msg );
 }
 
-QString QgsMeshRendererActiveDatasetWidget::formatTime( double hours )
-{
-  // time should be in hours
-  int seconds = static_cast<int>( qgsRound( hours * 3600.0, 0 ) );
-  int days = static_cast<int>( floor( hours / 24.0 ) );
-  QTime t = QTime( 0, 0 ).addSecs( seconds );
-  if ( days > 0 )
-  {
-    return QStringLiteral( "%1 d %2" ).arg( days ).arg( t.toString() ); // the format is "d HH:mm:ss
-  }
-  else
-  {
-    return t.toString();  // the format is "HH:mm:ss"
-  }
-}
 
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
 {
@@ -276,9 +278,11 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
          .arg( tr( "Is valid" ) )
          .arg( meta.isValid() ? tr( "Yes" ) : tr( "No" ) );
 
-  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+  const double time = meta.time();
+  msg += QStringLiteral( "<tr><td>%1</td><td>%2 (%3)</td></tr>" )
          .arg( tr( "Time" ) )
-         .arg( meta.time() );
+         .arg( mMeshLayer->formatTime( time ) )
+         .arg( time );
 
   const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )

@@ -24,6 +24,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmeshtimesettings.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -179,6 +180,28 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void setRendererSettings( const QgsMeshRendererSettings &settings );
 
     /**
+     * Returns time format settings
+     *
+     * \since QGIS 3.8
+     */
+    QgsMeshTimeSettings timeSettings() const;
+
+    /**
+     * Sets time format settings
+     *
+     * \since QGIS 3.8
+     */
+    void setTimeSettings( const QgsMeshTimeSettings &settings );
+
+    /**
+     * Returns (date) time in hours formatted to human readable form
+     * \param hours time in double in hours
+     * \returns formatted time string
+     * \since QGIS 3.8
+     */
+    QString formatTime( double hours );
+
+    /**
       * Interpolates the value on the given point from given dataset.
       *
       * \note It uses previously cached and indexed triangular mesh
@@ -210,6 +233,13 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.4
      */
     void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
+
+    /**
+     * Emitted when time format is changed
+     *
+     * \since QGIS 3.8
+     */
+    void timeSettingsChanged( );
 
   private: // Private methods
 
@@ -252,6 +282,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Renderer configuration
     QgsMeshRendererSettings mRendererSettings;
+
+    //! Time format configuration
+    QgsMeshTimeSettings mTimeSettings;
 };
 
 #endif //QGSMESHLAYER_H

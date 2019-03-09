@@ -484,6 +484,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshspatialindex.cpp
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
+  mesh/qgsmeshtimesettings.cpp
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
@@ -1117,6 +1118,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshspatialindex.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
+  mesh/qgsmeshtimesettings.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h
