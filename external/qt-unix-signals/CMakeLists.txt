@@ -17,21 +17,16 @@ SET(CMAKE_CXX_STANDARD 11)
 
 option(CMAKE_ENABLE "Enable automatic path configuration" ON)
 
-
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
+UNSET(CMAKE_CXX_VISIBILITY_PRESET)
 
-include_directories(
-  ${Qt5Core_INCLUDE_DIRS})
-add_library(QTSignal SHARED
-		sigwatch.cpp
-		)
-target_link_libraries (QTSignal
-    ${Qt5Core_LIBRARIES}
-)
+include_directories(${Qt5Core_INCLUDE_DIRS})
+add_library(QTSignal STATIC sigwatch.cpp)
+target_link_libraries (QTSignal ${Qt5Core_LIBRARIES})
 
 #option(WITH_EXAMPLE "Build example executable" ON)
 #if (WITH_EXAMPLE)
@@ -40,10 +35,3 @@ target_link_libraries (QTSignal
 #      QTSignal
 #  )
 #endif(WITH_EXAMPLE)
-
-INSTALL(TARGETS QTSignal
-  RUNTIME DESTINATION ${QGIS_BIN_DIR}
-  LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
