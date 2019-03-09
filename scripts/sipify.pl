@@ -675,7 +675,7 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # Skip forward declarations
-    if ($LINE =~ m/^\s*(class|struct) \w+(?<external> *SIP_EXTERNAL)?;\s*(\/\/.*)?$/){
+    if ($LINE =~ m/^\s*(enum\s+)?(class|struct) \w+(?<external> *SIP_EXTERNAL)?;\s*(\/\/.*)?$/){
         if ($+{external}){
             dbg_info('do not skip external forward declaration');
             $COMMENT = '';
@@ -959,7 +959,7 @@ while ($LINE_IDX < $LINE_COUNT){
         my $is_scope_based = "0";
         $is_scope_based = "1" if defined $2;
         my $monkeypatch = "0";
-        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(:?\(\s*(?<emkb>\w+)\s*\))/;
+        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM_UNNEST(:?\(\s*(?<emkb>\w+)\s*\))/;
         my $enum_mk_base = "";
         $enum_mk_base = $+{emkb} if defined $+{emkb};
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
@@ -984,15 +984,20 @@ while ($LINE_IDX < $LINE_COUNT){
 
                 do {no warnings 'uninitialized';
                     my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$4/r;
-                    my $enum_member = $+{em};
-                    push @enum_members_doc, "'* $enum_member: ' + $ACTUAL_CLASS.$enum_qualname.$2.__doc__";
+                    my $enum_member = $+{em};                    
                     my $comment = $+{co};
-                    push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n" if $is_scope_based eq "1";
-                    if ($monkeypatch eq "1") {
+                    push @enum_members_doc, "'* $enum_member: ' + $ACTUAL_CLASS.$enum_qualname.$2.__doc__";
+                    dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
+                    if ($is_scope_based eq "1") {
                         if ( $enum_mk_base ne "" ){
-                            push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;
+                            if ($monkeypatch eq "1") {
+                                push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
+                            } else {
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            }
                         } else {
-                            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
                         }
                     }
                     $enum_decl = fix_annotations($enum_decl);
