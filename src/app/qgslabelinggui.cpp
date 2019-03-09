@@ -57,6 +57,12 @@ void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton *butto
   mButtons[key] = button;
 }
 
+void QgsLabelingGui::setupWidget()
+{
+  connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
+  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
+}
+
 void QgsLabelingGui::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
@@ -96,60 +102,22 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
     setEnabled( false );
     return;
   }
-  else
-  {
-    setEnabled( true );
-  }
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+  setEnabled( true );
+
+  QgsVectorLayer *layer = static_cast<QgsVectorLayer *>( mapLayer );
   mLayer = layer;
 
   // load labeling settings from layer
   const QgsPalLayerSettings &lyr = mSettings;
 
-  // show/hide options based upon geometry type
-  chkMergeLines->setVisible( mLayer->geometryType() == QgsWkbTypes::LineGeometry );
-  mDirectSymbolsFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::LineGeometry );
-  mMinSizeFrame->setVisible( mLayer->geometryType() != QgsWkbTypes::PointGeometry );
-  mPolygonObstacleTypeFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
-  mPolygonFeatureOptionsFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
+  updateGeometryTypeBasedWidgets();
 
   mFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea da;
   da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
-
-  // set placement methods page based on geometry type
-  switch ( mLayer->geometryType() )
-  {
-    case QgsWkbTypes::PointGeometry:
-      stackedPlacement->setCurrentWidget( pagePoint );
-      break;
-    case QgsWkbTypes::LineGeometry:
-      stackedPlacement->setCurrentWidget( pageLine );
-      break;
-    case QgsWkbTypes::PolygonGeometry:
-      stackedPlacement->setCurrentWidget( pagePolygon );
-      break;
-    case QgsWkbTypes::NullGeometry:
-      break;
-    case QgsWkbTypes::UnknownGeometry:
-      qFatal( "unknown geometry type unexpected" );
-  }
-
-  if ( mLayer->geometryType() == QgsWkbTypes::PointGeometry )
-  {
-    // follow placement alignment is only valid for point layers
-    if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )
-      mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
-  }
-  else
-  {
-    int idx = mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) );
-    if ( idx >= 0 )
-      mFontMultiLineAlignComboBox->removeItem( idx );
-  }
 
   mFieldExpressionWidget->setEnabled( mMode == Labels );
   mLabelingFrame->setEnabled( mMode == Labels );
@@ -273,6 +241,10 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
 
   mZIndexSpinBox->setValue( lyr.zIndex );
+
+  mGeometryGenerator->setText( lyr.geometryGenerator );
+  mGeometryGeneratorGroupBox->setChecked( lyr.geometryGeneratorEnabled );
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( lyr.geometryGeneratorType ) );
 
   mDataDefinedProperties = lyr.dataDefinedProperties();
 
@@ -442,6 +414,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
   lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineAlignComboBox->currentIndex();
   lyr.preserveRotation = chkPreserveRotation->isChecked();
+  lyr.geometryGenerator = mGeometryGenerator->text();
+  lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+  lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
 
   lyr.zIndex = mZIndexSpinBox->value();
 
@@ -666,5 +641,54 @@ void QgsLabelingGui::deactivateField( QgsPalLayerSettings::Property key )
     button->updateFieldLists();
     button->setToProperty( p );
     mDataDefinedProperties.setProperty( key, p );
+  }
+}
+
+void QgsLabelingGui::updateGeometryTypeBasedWidgets()
+{
+  QgsWkbTypes::GeometryType geometryType;
+
+  if ( mGeometryGeneratorGroupBox->isChecked() )
+    geometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+  else
+    geometryType = mLayer->geometryType();
+
+  // show/hide options based upon geometry type
+  chkMergeLines->setVisible( geometryType == QgsWkbTypes::LineGeometry );
+  mDirectSymbolsFrame->setVisible( geometryType == QgsWkbTypes::LineGeometry );
+  mMinSizeFrame->setVisible( geometryType != QgsWkbTypes::PointGeometry );
+  mPolygonObstacleTypeFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
+  mPolygonFeatureOptionsFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
+
+
+  // set placement methods page based on geometry type
+  switch ( geometryType )
+  {
+    case QgsWkbTypes::PointGeometry:
+      stackedPlacement->setCurrentWidget( pagePoint );
+      break;
+    case QgsWkbTypes::LineGeometry:
+      stackedPlacement->setCurrentWidget( pageLine );
+      break;
+    case QgsWkbTypes::PolygonGeometry:
+      stackedPlacement->setCurrentWidget( pagePolygon );
+      break;
+    case QgsWkbTypes::NullGeometry:
+      break;
+    case QgsWkbTypes::UnknownGeometry:
+      qFatal( "unknown geometry type unexpected" );
+  }
+
+  if ( geometryType == QgsWkbTypes::PointGeometry )
+  {
+    // follow placement alignment is only valid for point layers
+    if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )
+      mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
+  }
+  else
+  {
+    int idx = mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) );
+    if ( idx >= 0 )
+      mFontMultiLineAlignComboBox->removeItem( idx );
   }
 }
