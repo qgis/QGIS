@@ -54,6 +54,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
       QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
     };
 
+    void processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, bool hasDDExtrusion, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
     Qt3DExtras::QPhongMaterial *material( const QgsPolygon3DSymbol &symbol ) const;
 
@@ -73,6 +74,15 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   return true;
+}
+
+void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, bool hasDDExtrusion, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
+{
+  Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
+  out.polygons.append( polyClone );
+  out.fids.append( fid );
+  if ( hasDDExtrusion )
+    out.extrusionHeightPerPolygon.append( extrusionHeight );
 }
 
 void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRenderContext &context )
@@ -104,11 +114,7 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
   if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
   {
     QgsPolygon *polyClone = poly->clone();
-    Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
-    out.polygons.append( polyClone );
-    out.fids.append( f.id() );
-    if ( hasDDExtrusion )
-      out.extrusionHeightPerPolygon.append( extrusionHeight );
+    processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
   }
   else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
   {
@@ -117,11 +123,19 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
       const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
       Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
       QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
-      Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
-      out.polygons.append( polyClone );
-      out.fids.append( f.id() );
-      if ( hasDDExtrusion )
-        out.extrusionHeightPerPolygon.append( extrusionHeight );
+      processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
+    }
+  }
+  else if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( g ) )
+  {
+    for ( int i = 0; i < gc->numGeometries(); ++i )
+    {
+      const QgsAbstractGeometry *g2 = gc->geometryN( i );
+      if ( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon )
+      {
+        QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
+        processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
+      }
     }
   }
   else
