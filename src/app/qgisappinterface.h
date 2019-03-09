@@ -18,9 +18,11 @@
 #ifndef QGISIFACE_H
 #define QGISIFACE_H
 
+#include "qgis_app.h"
 #include "qgisinterface.h"
 #include "qgsapppluginmanagerinterface.h"
-#include "qgis_app.h"
+
+class QTimer;
 
 class QgisApp;
 
