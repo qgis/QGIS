@@ -63,6 +63,7 @@ testrunners["test_testrunner.run_skipped_and_passing"]=0
 testrunners["test_testrunner"]=1
 testrunners["test_testrunner.run_all"]=1
 testrunners["test_testrunner.run_failing"]=1
+set +e # do not exit on error
 # Run tests in the docker
 for i in "${!testrunners[@]}"
 do
@@ -72,5 +73,6 @@ do
   [[ $? -eq "${testrunners[$i]}" ]] && echo "success" || exit 1
   echo "travis_fold:end:docker_test_runner_${i}"
 done
+set -e # switch back
 docker stop qgis-testing-environment
 echo "travis_fold:end:docker_test_runners"
