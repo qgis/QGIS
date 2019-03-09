@@ -35,6 +35,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
@@ -50,12 +51,18 @@ class ClipRasterByMask(GdalAlgorithm):
 
     INPUT = 'INPUT'
     MASK = 'MASK'
+    SOURCE_CRS = 'SOURCE_CRS'
+    TARGET_CRS = 'TARGET_CRS'
     NODATA = 'NODATA'
     ALPHA_BAND = 'ALPHA_BAND'
     CROP_TO_CUTLINE = 'CROP_TO_CUTLINE'
     KEEP_RESOLUTION = 'KEEP_RESOLUTION'
+    SET_RESOLUTION = 'SET_RESOLUTION'
+    X_RESOLUTION = 'X_RESOLUTION'
+    Y_RESOLUTION = 'Y_RESOLUTION'
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
+    MULTITHREADING = 'MULTITHREADING'
     OUTPUT = 'OUTPUT'
 
     TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
@@ -69,6 +76,12 @@ class ClipRasterByMask(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.MASK,
                                                               self.tr('Mask layer'),
                                                               [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterCrs(self.SOURCE_CRS,
+                                                    self.tr('Source CRS'),
+                                                    optional=True))
+        self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
+                                                    self.tr('Target CRS'),
+                                                    optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -81,9 +94,26 @@ class ClipRasterByMask(GdalAlgorithm):
                                                         self.tr('Match the extent of the clipped raster to the extent of the mask layer'),
                                                         defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.KEEP_RESOLUTION,
-                                                        self.tr('Keep resolution of output raster'),
+                                                        self.tr('Keep resolution of input raster'),
                                                         defaultValue=False))
-
+        self.addParameter(QgsProcessingParameterBoolean(self.SET_RESOLUTION,
+                                                        self.tr('Set output file resolution'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterNumber(self.X_RESOLUTION,
+                                                       self.tr('X Resolution to output bands'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=None,
+                                                       optional=True))
+        self.addParameter(QgsProcessingParameterNumber(self.Y_RESOLUTION,
+                                                       self.tr('Y Resolution to output bands'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=None,
+                                                       optional=True))
+        multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
+                                                             self.tr('Use multithreaded warping implementation'),
+                                                             defaultValue=False)
+        multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(multithreading_param)
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
@@ -130,6 +160,9 @@ class ClipRasterByMask(GdalAlgorithm):
 
         maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
 
+        sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
+        targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
+
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
             nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         else:
@@ -139,6 +172,14 @@ class ClipRasterByMask(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
+
+        if sourceCrs.isValid():
+            arguments.append('-s_srs')
+            arguments.append(GdalUtils.gdal_crs_string(sourceCrs))
+
+        if targetCrs.isValid():
+            arguments.append('-t_srs')
+            arguments.append(GdalUtils.gdal_crs_string(targetCrs))
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
         if data_type:
@@ -153,6 +194,20 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
             arguments.append('-tap')
 
+        if self.parameterAsBool(parameters, self.SET_RESOLUTION, context):
+            arguments.append('-tr')
+            if self.X_RESOLUTION in parameters and parameters[self.X_RESOLUTION] is not None:
+                xres = self.parameterAsDouble(parameters, self.X_RESOLUTION, context)
+                arguments.append('{}'.format(xres))
+            else:
+                arguments.append(str(inLayer.rasterUnitsPerPixelX()))
+            if self.Y_RESOLUTION in parameters and parameters[self.Y_RESOLUTION] is not None:
+                yres = self.parameterAsDouble(parameters, self.Y_RESOLUTION, context)
+                arguments.append('{}'.format(yres))
+            else:
+                arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
+            arguments.append('-tap')
+
         arguments.append('-cutline')
         arguments.append(maskLayer)
 
@@ -164,6 +219,9 @@ class ClipRasterByMask(GdalAlgorithm):
 
         if nodata is not None:
             arguments.append('-dstnodata {}'.format(nodata))
+
+        if self.parameterAsBool(parameters, self.MULTITHREADING, context):
+            arguments.append('-multi')
 
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
