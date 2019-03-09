@@ -97,7 +97,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * storage for current counting tasks
      * \since QGIS 3.8
      */
-    QList<long> mPendingCount = QList();
+    QList<long> mPendingCount;
 
 };
 
