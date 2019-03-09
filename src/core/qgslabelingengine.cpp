@@ -154,9 +154,6 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
     case QgsPalLayerSettings::ShowAll:
       upsdnlabels = pal::Layer::ShowAll;
       break;
-    default:
-      Q_ASSERT( "unsupported upside-down label setting" && false );
-      return;
   }
   l->setUpsidedownLabels( upsdnlabels );
 
@@ -195,7 +192,6 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   pal::SearchMethod s;
   switch ( settings.searchMethod() )
   {
-    default:
     case QgsLabelingEngineSettings::Chain:
       s = pal::CHAIN;
       break;
