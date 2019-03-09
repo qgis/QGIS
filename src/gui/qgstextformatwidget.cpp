@@ -111,7 +111,8 @@ void QgsTextFormatWidget::initWidget()
   mPreviewScaleComboBox->setShowCurrentScaleButton( true );
   connect( mPreviewScaleComboBox, &QgsScaleWidget::scaleChanged, this, &QgsTextFormatWidget::previewScaleChanged );
 
-  Q_FOREACH ( QgsUnitSelectionWidget *unitWidget, findChildren<QgsUnitSelectionWidget *>() )
+  const auto unitWidgets = findChildren<QgsUnitSelectionWidget *>();
+  for ( QgsUnitSelectionWidget *unitWidget : unitWidgets )
   {
     unitWidget->setMapCanvas( mMapCanvas );
   }
@@ -259,15 +260,13 @@ void QgsTextFormatWidget::initWidget()
 
   // Global settings group for groupboxes' saved/restored collapsed state
   // maintains state across different dialogs
-  Q_FOREACH ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox *>() )
+  const auto groupBoxes = findChildren<QgsCollapsibleGroupBox *>();
+  for ( QgsCollapsibleGroupBox *grpbox : groupBoxes )
   {
     grpbox->setSettingGroup( QStringLiteral( "mAdvLabelingDlg" ) );
   }
 
-  connect( groupBox_mPreview,
-           &QgsCollapsibleGroupBoxBasic::collapsedStateChanged,
-           this,
-           &QgsTextFormatWidget::collapseSample );
+  connect( groupBox_mPreview, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsTextFormatWidget::collapseSample );
 
   // get rid of annoying outer focus rect on Mac
   mLabelingOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
@@ -303,7 +302,6 @@ void QgsTextFormatWidget::initWidget()
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
   setDockMode( false );
-
 
   QList<QWidget *> widgets;
   widgets << btnBufferColor
@@ -1105,8 +1103,7 @@ void QgsTextFormatWidget::mFontSizeSpinBox_valueChanged( double d )
 
 void QgsTextFormatWidget::mFontCapitalsComboBox_currentIndexChanged( int index )
 {
-  int capitalsindex = mFontCapitalsComboBox->itemData( index ).toUInt();
-  mRefFont.setCapitalization( ( QFont::Capitalization ) capitalsindex );
+  mRefFont.setCapitalization( mFontCapitalsComboBox->itemData( index ).value<QFont::Capitalization>() );
   updateFont( mRefFont );
 }
 
