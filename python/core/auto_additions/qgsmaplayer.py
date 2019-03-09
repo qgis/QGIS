@@ -1,4 +1,5 @@
 # The following has been generated automatically from src/core/qgsmaplayer.h
+QgsMapLayer.LayerType = QgsMapLayerType
 # monkey patching scoped based enum
 QgsMapLayer.VectorLayer = QgsMapLayerType.VectorLayer
 QgsMapLayer.VectorLayer.__doc__ = ""

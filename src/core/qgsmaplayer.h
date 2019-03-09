@@ -58,7 +58,7 @@ class QPainter;
 
 
 //! Types of layers that can be added to a map
-enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer ) : int
+enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
   {
   VectorLayer,
   RasterLayer,

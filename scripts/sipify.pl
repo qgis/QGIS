@@ -959,12 +959,15 @@ while ($LINE_IDX < $LINE_COUNT){
         my $is_scope_based = "0";
         $is_scope_based = "1" if defined $2;
         my $monkeypatch = "0";
-        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*\))?/;
+        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\))?/;
         my $enum_mk_base = "";
         $enum_mk_base = $+{emkb} if defined $+{emkb};
+        if (defined $+{emkf} and $monkeypatch eq "1"){
+            push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $enum_qualname\n";
+        }
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
-          $LINE !~ m/=/ or exit_with_error("spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.");
+          $LINE !~ m/=/ or exit_with_error("Sipify does not handle enum one liners with value assignment. Use multiple lines instead. Or jusr write a new parser.");
           next;
         }
         else
@@ -984,7 +987,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
                 do {no warnings 'uninitialized';
                     my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$4/r;
-                    my $enum_member = $+{em};                    
+                    my $enum_member = $+{em};
                     my $comment = $+{co};
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ($is_scope_based eq "1") {
