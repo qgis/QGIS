@@ -39,15 +39,21 @@ echo "travis_fold:end:docker_test_qgis"
 # running tests for the python test runner
 echo "travis_fold:start:docker_test_runners"
 echo "${bold}Docker test QGIS runners${endbold}"
-docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 qgis_image /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+docker run -d --name qgis-testing-environment \
+           -v ${TRAVIS_BUILD_DIR}:/root/QGIS \
+           -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory \
+           -v ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner:/usr/bin/test_runner \
+           -v ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/supervisor:/etc/supervisor \
+           -e QGIS_BUILD_PATH=/root/QGIS/build/output/bin/qgis \
+           -e TEST_RUNNER_PATH=/usr/bin/test_runner/qgis_testrunner.py \
+           -e DISPLAY=:99 \
+           qgis_image \
+           /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
-echo "Waiting for the docker..."
-until [ "`/usr/bin/docker inspect -f {{.State.Running}} qgis-testing-environment`"=="true" ]; do
-    printf '🐳'
-    sleep 0.5;
-done;
+# Wait for xvfb to finish starting
+printf "Waiting for the docker...🐳..."
+sleep 10
 echo " done 🥩"
-sleep 1  # Wait for xvfb to finish starting
 
 declare -A testrunners
 # Passing cases:
