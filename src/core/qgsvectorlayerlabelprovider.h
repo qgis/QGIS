@@ -108,9 +108,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Layer's CRS
     QgsCoordinateReferenceSystem mCrs;
     //! Layer's feature source
-    QgsAbstractFeatureSource *mSource = nullptr;
-    //! Whether layer's feature source is owned
-    bool mOwnsSource;
+    std::unique_ptr<QgsAbstractFeatureSource> mSource;
 
     //! List of generated
     QList<QgsLabelFeature *> mLabels;

@@ -47,13 +47,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
 
   if ( withFeatureLoop )
   {
-    mSource = new QgsVectorLayerFeatureSource( layer );
-    mOwnsSource = true;
-  }
-  else
-  {
-    mSource = nullptr;
-    mOwnsSource = false;
+    mSource = qgis::make_unique<QgsVectorLayerFeatureSource>( layer );
   }
 
   init();
@@ -94,9 +88,6 @@ void QgsVectorLayerLabelProvider::init()
 QgsVectorLayerLabelProvider::~QgsVectorLayerLabelProvider()
 {
   qDeleteAll( mLabels );
-
-  if ( mOwnsSource )
-    delete mSource;
 }
 
 
