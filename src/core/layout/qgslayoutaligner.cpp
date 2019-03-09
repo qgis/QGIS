@@ -152,9 +152,8 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
 
       currentVal += ( distribution == DistributeHSpace ? item->rect().width() :
                       item->rect().height() ) + step;
-
-      layout->undoStack()->endMacro();
     }
+    layout->undoStack()->endMacro();
 
     return;
   }
