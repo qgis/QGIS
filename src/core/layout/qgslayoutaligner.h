@@ -54,9 +54,11 @@ class CORE_EXPORT QgsLayoutAligner
     {
       DistributeLeft, //!< Distribute left edges
       DistributeHCenter, //!< Distribute horizontal centers
+      DistributeHSpace, //!< Distribute horizontal equispaced
       DistributeRight, //!< Distribute right edges
       DistributeTop, //!< Distribute top edges
       DistributeVCenter, //!< Distribute vertical centers
+      DistributeVSpace, //!< Distribute vertical equispaced
       DistributeBottom, //!< Distribute bottom edges
     };
 
