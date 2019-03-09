@@ -390,6 +390,12 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     double zIndex;
 
+    QString geometryGenerator;
+
+    QgsWkbTypes::GeometryType geometryGeneratorType;
+
+    bool geometryGeneratorEnabled;
+
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0 );
 %Docstring
 Calculates the space required to render the provided ``text`` in map units.

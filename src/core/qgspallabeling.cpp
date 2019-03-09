@@ -383,6 +383,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   mDataDefinedProperties = s.mDataDefinedProperties;
 
   geometryGenerator = s.geometryGenerator;
+  geometryGeneratorEnabled = s.geometryGeneratorEnabled;
+  geometryGeneratorType = s.geometryGeneratorType;
 
   return *this;
 }
@@ -680,7 +682,11 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   obstacleType = static_cast< ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( PolygonInterior ) ).toUInt() );
   zIndex = layer->customProperty( QStringLiteral( "labeling/zIndex" ), QVariant( 0.0 ) ).toDouble();
 
-  geometryGenerator = layer->customProperty( QStringLiteral( "labeling/zIndex" ), QString( "translate($geometry, 10, 10)" ) ).toString();
+  geometryGenerator = layer->customProperty( QStringLiteral( "labeling/geometryGenerator" ), QString() ).toString();
+  geometryGeneratorEnabled = layer->customProperty( QStringLiteral( "labeling/geometryGeneratorEnabled" ) ).toBool();
+
+  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
+  geometryGeneratorType = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( layer->customProperty( QStringLiteral( "labeling/geometryGeneratorType" ) ).toString().toUtf8().constData() ) );
 
   mDataDefinedProperties.clear();
   if ( layer->customProperty( QStringLiteral( "labeling/ddProperties" ) ).isValid() )
@@ -871,6 +877,13 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
     repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "repeatDistanceMapUnitScale" ) ) );
   }
 
+  geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
+  geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "labeling/geometryGeneratorEnabled" ) ).toInt();
+
+  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
+  geometryGeneratorType = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ).toUtf8().constData() ) );
+
+
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
 
@@ -895,7 +908,6 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   obstacleFactor = renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble();
   obstacleType = static_cast< ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( PolygonInterior ) ).toUInt() );
   zIndex = renderingElem.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0.0" ) ).toDouble();
-  geometryGenerator = renderingElem.attribute( QStringLiteral( "geometryGenerator" ), "translate($geometry, 10, 10)" );
 
   QDomElement ddElem = elem.firstChildElement( QStringLiteral( "dd_properties" ) );
   if ( !ddElem.isNull() )
@@ -1005,7 +1017,12 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "repeatDistance" ), repeatDistance );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceUnits" ), QgsUnitTypes::encodeUnit( repeatDistanceUnit ) );
   placementElem.setAttribute( QStringLiteral( "repeatDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
+
   placementElem.setAttribute( QStringLiteral( "geometryGenerator" ), geometryGenerator );
+  placementElem.setAttribute( QStringLiteral( "geometryGeneratorEnabled" ), geometryGeneratorEnabled );
+  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
+  placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), metaEnum.valueToKey( geometryGeneratorType ) );
+
 
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
@@ -1195,7 +1212,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature, QgsGeometry obstacleGeometry )
 {
   QgsFeature feature = f;
-  if ( !geometryGenerator.isNull() )
+  if ( geometryGeneratorEnabled )
   {
     QgsExpressionContext expContext = context.expressionContext();
     // TODO: cache and prepare

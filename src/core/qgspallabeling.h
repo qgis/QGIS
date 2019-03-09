@@ -757,6 +757,12 @@ class CORE_EXPORT QgsPalLayerSettings
     //! The geometry generator expression. Null if disabled.
     QString geometryGenerator;
 
+    //! The type of the result geometry of the geometry generator.
+    QgsWkbTypes::GeometryType geometryGeneratorType = QgsWkbTypes::GeometryType::UnknownGeometry;
+
+    //! Defines if the geometry generator is enabled or not. If disabled, the standard geometry will be taken.
+    bool geometryGeneratorEnabled = false;
+
     /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
