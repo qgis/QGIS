@@ -608,7 +608,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
     if ( vl->featuresCounted() )
     {
-      
+
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
 
       const QgsFeatureIds fids = counter->featureIds( mItem.ruleKey() );
