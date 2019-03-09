@@ -174,7 +174,6 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       else
       {
         addObstaclePart( fpart.release() );
-        fpart = nullptr;
       }
     }
 
