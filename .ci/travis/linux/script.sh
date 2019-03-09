@@ -33,7 +33,7 @@ echo "travis_fold:end:docker_build_qgis"
 # running QGIS tests in commited image
 echo "travis_fold:start:docker_test_qgis"
 echo "${bold}Docker run tests${endbold}"
-#docker-compose -f ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh
+docker-compose -f ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh
 echo "travis_fold:end:docker_test_qgis"
 
 # running tests for the python test runner
