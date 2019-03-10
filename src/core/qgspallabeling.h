@@ -927,6 +927,8 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsTextFormat mFormat;
 
+    QgsExpression mGeometryGeneratorExpression;
+
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 
     static void initPropertyDefinitions();

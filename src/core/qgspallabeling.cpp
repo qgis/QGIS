@@ -1223,12 +1223,13 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   QgsFeature feature = f;
   if ( geometryGeneratorEnabled )
   {
-    QgsExpressionContext expContext = context.expressionContext();
-    // TODO: cache and prepare
-    QgsExpression exp( geometryGenerator );
-    exp.prepare( &expContext );
-    expContext.setFeature( feature );
-    QgsGeometry geometry = exp.evaluate( &expContext ).value<QgsGeometry>();
+    if ( !mGeometryGeneratorExpression.isValid() )
+    {
+      mGeometryGeneratorExpression = QgsExpression( geometryGenerator );
+      mGeometryGeneratorExpression.prepare( &context.expressionContext() );
+    }
+    context.expressionContext().setFeature( feature );
+    const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
     feature.setGeometry( geometry );
   }
 
