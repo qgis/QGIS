@@ -77,16 +77,20 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolIdentify::activate()
 {
-  Qt3DRender::QObjectPicker *picker = mCanvas->scene()->terrainEntity()->terrainPicker();
-  connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
+  {
+    connect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  }
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
 }
 
 void Qgs3DMapToolIdentify::deactivate()
 {
-  Qt3DRender::QObjectPicker *picker = mCanvas->scene()->terrainEntity()->terrainPicker();
-  disconnect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
+  {
+    disconnect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  }
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
 }
@@ -137,6 +141,8 @@ void Qgs3DMapToolIdentify::onTerrainEntityChanged()
 {
   // no need to disconnect from the previous entity: it has been destroyed
   // start listening to the new terrain entity
-  Qt3DRender::QObjectPicker *picker = mCanvas->scene()->terrainEntity()->terrainPicker();
-  connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
+  {
+    connect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  }
 }
