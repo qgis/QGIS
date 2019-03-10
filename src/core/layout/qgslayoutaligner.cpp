@@ -370,7 +370,7 @@ QString QgsLayoutAligner::undoText( Distribution distribution )
     case DistributeHCenter:
       return QObject::tr( "Distribute Items by Horizontal Center" );
     case DistributeHSpace:
-      return QObject::tr( "Distribute Items by Horizontal Equispaced" );
+      return QObject::tr( "Distribute Horizontal Spacing Equally" );
     case DistributeRight:
       return QObject::tr( "Distribute Items by Right" );
     case DistributeTop:
@@ -378,7 +378,7 @@ QString QgsLayoutAligner::undoText( Distribution distribution )
     case DistributeVCenter:
       return QObject::tr( "Distribute Items by Vertical Center" );
     case DistributeVSpace:
-      return QObject::tr( "Distribute Items by Vertical Equispaced" );
+      return QObject::tr( "Distribute Vertical Spacing Equally" );
     case DistributeBottom:
       return QObject::tr( "Distribute Items by Bottom" );
   }
