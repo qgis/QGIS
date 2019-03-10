@@ -724,7 +724,7 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
             if self.parameterDefinition().layerType() == QgsProcessing.TypeFile:
-                return self.parameterDefinition().setValue(self.widget.selectedoptions)
+                return self.widget.selectedoptions
             else:
                 if self.parameterDefinition().layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
