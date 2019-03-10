@@ -61,6 +61,25 @@
 #include "qgscurvepolygon.h"
 #include <QMessageBox>
 
+// TODO: Move to qgis.h?
+
+/**
+ * Converts a string representation \a key of an enum into the value.
+ * If it cannot be converted, the \a defaultValue will be returned.
+ *
+ */
+template <class T>
+T enumValueToKey( const QString &key, T defaultValue )
+{
+  const QMetaEnum metaEnum( QMetaEnum::fromType<T>() );
+  bool ok;
+  T result = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( key.toUtf8().constData(), &ok ) );
+  if ( !ok )
+    result = defaultValue;
+
+  return result;
+}
+
 
 using namespace pal;
 
@@ -682,12 +701,6 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   obstacleType = static_cast< ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( PolygonInterior ) ).toUInt() );
   zIndex = layer->customProperty( QStringLiteral( "labeling/zIndex" ), QVariant( 0.0 ) ).toDouble();
 
-  geometryGenerator = layer->customProperty( QStringLiteral( "labeling/geometryGenerator" ), QString() ).toString();
-  geometryGeneratorEnabled = layer->customProperty( QStringLiteral( "labeling/geometryGeneratorEnabled" ) ).toBool();
-
-  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
-  geometryGeneratorType = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( layer->customProperty( QStringLiteral( "labeling/geometryGeneratorType" ) ).toString().toUtf8().constData() ) );
-
   mDataDefinedProperties.clear();
   if ( layer->customProperty( QStringLiteral( "labeling/ddProperties" ) ).isValid() )
   {
@@ -879,10 +892,15 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
 
   geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
+  geometryGeneratorType = enumValueToKey( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::PointGeometry );
 
+#if 0
   const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
-  geometryGeneratorType = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ).toUtf8().constData() ) );
-
+  bool ok;
+  geometryGeneratorType = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ).toUtf8().constData(), &ok ) );
+  if ( !ok )
+    geometryGeneratorType = QgsWkbTypes::GeometryType::PointGeometry;
+#endif
 
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );

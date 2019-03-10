@@ -68,14 +68,22 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     void syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f );
 
   private slots:
+
+    /**
+     * Called when the geometry type is changed and
+     * configuration options which only work with a specific
+     * geometry type should be updated.
+     */
     void updateGeometryTypeBasedWidgets();
     void showGeometryGeneratorExpressionBuilder();
+    void validateGeometryGeneratorExpression();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
     const QgsPalLayerSettings &mSettings;
     QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
+    QgsFeature mPreviewFeature;
 
     QgsExpressionContext createExpressionContext() const override;
 

@@ -82,6 +82,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
   connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
   connect( mGeometryGeneratorExpressionButton, &QToolButton::clicked, this, &QgsLabelingGui::showGeometryGeneratorExpressionBuilder );
+  connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
+  connect( mGeometryGenerator, &QgsCodeEditorExpression::textChanged, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
+  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
@@ -90,11 +93,15 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mMaxScaleWidget->setMapCanvas( mapCanvas );
   mMaxScaleWidget->setShowCurrentScaleButton( true );
 
+  mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );
+
   setLayer( layer );
 }
 
 void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 {
+  mPreviewFeature = QgsFeature();
+
   if ( !mapLayer || mapLayer->type() != QgsMapLayer::VectorLayer )
   {
     setEnabled( false );
@@ -216,7 +223,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   wrapCharacterEdit->setText( lyr.wrapChar );
   mAutoWrapLengthSpinBox->setValue( lyr.autoWrapLength );
   mAutoWrapTypeComboBox->setCurrentIndex( lyr.useMaxLineLengthForAutoWrap ? 0 : 1 );
-  mFontMultiLineAlignComboBox->setCurrentIndex( ( unsigned int ) lyr.multilineAlign );
+  mFontMultiLineAlignComboBox->setCurrentIndex( lyr.multilineAlign );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
   mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
@@ -698,9 +705,54 @@ void QgsLabelingGui::showGeometryGeneratorExpressionBuilder()
   expressionBuilder.setExpressionText( mGeometryGenerator->text() );
   expressionBuilder.setExpressionContext( createExpressionContext() );
 
+  QgsDistanceArea da;
+  da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  expressionBuilder.setGeomCalculator( da );
+
   if ( expressionBuilder.exec() )
   {
     mGeometryGenerator->setText( expressionBuilder.expressionText() );
   }
+}
 
+void QgsLabelingGui::validateGeometryGeneratorExpression()
+{
+  bool valid = true;
+
+  if ( mGeometryGeneratorGroupBox->isChecked() )
+  {
+    if ( !mPreviewFeature.isValid() && mLayer )
+      mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
+
+    QgsExpression expression( mGeometryGenerator->text() );
+    QgsExpressionContext context = createExpressionContext();
+    context.setFeature( mPreviewFeature );
+
+    expression.prepare( &context );
+
+    if ( expression.hasParserError() )
+    {
+      mGeometryGeneratorWarningLabel->setText( expression.parserErrorString() );
+      valid = false;
+    }
+    else
+    {
+      const QVariant result = expression.evaluate( &context );
+      const QgsGeometry geometry = result.value<QgsGeometry>();
+      QgsWkbTypes::GeometryType configuredGeometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+      if ( geometry.isNull() )
+      {
+        mGeometryGeneratorWarningLabel->setText( tr( "Result of the expression is not a geometry" ) );
+        valid = false;
+      }
+      else if ( geometry.type() != configuredGeometryType )
+      {
+        mGeometryGeneratorWarningLabel->setText( tr( "Result of the expression does not match configured geometry type. Result is %1, Configured %2." ).arg( QgsWkbTypes::geometryDisplayString( geometry.type() ), QgsWkbTypes::geometryDisplayString( configuredGeometryType ) ) );
+        valid = false;
+      }
+    }
+  }
+
+  mGeometryGeneratorWarningLabel->setVisible( !valid );
 }

@@ -568,7 +568,8 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
 
 void QgsTextFormatWidget::toggleDDButtons( bool visible )
 {
-  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
+  const auto buttons = findChildren< QgsPropertyOverrideButton * >();
+  for ( QgsPropertyOverrideButton *button : buttons )
   {
     button->setVisible( visible );
   }
@@ -649,6 +650,10 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, 
     else if ( QGroupBox *w = qobject_cast<QGroupBox *>( widget ) )
     {
       connect( w, SIGNAL( toggled( bool ) ), this, slot );
+    }
+    else if ( QgsCodeEditorExpression *w = qobject_cast<QgsCodeEditorExpression *>( widget ) )
+    {
+      connect( w, SIGNAL( textChanged() ), this, slot );
     }
     else
     {
