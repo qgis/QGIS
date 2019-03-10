@@ -370,7 +370,7 @@ bool QgsRuleBasedLabeling::Rule::isFilterOK( const QgsFeature &f, QgsRenderConte
 
   context.expressionContext().setFeature( f );
   QVariant res = mFilter->evaluate( &context.expressionContext() );
-  return res.toInt() != 0;
+  return res.toBool();
 }
 
 bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
