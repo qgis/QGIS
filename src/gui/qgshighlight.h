@@ -38,6 +38,9 @@ class QgsSymbol;
  * for highlighting features or geometries on a map canvas.
  *
  * \code{.py}
+ *   mapCanvas = iface.mapCanvas()
+ *   feature = QgsFeature()
+ *   layer = QgsVectorLayer("Point", "temporary_points", "memory")
  *   color = QColor(Qt.red)
  *   highlight = QgsHighlight(mapCanvas, feature, layer)
  *   highlight.setColor(color)

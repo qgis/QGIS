@@ -18,6 +18,9 @@ for highlighting features or geometries on a map canvas.
 
 .. code-block:: python
 
+       mapCanvas = iface.mapCanvas()
+       feature = QgsFeature()
+       layer = QgsVectorLayer("Point", "temporary_points", "memory")
        color = QColor(Qt.red)
        highlight = QgsHighlight(mapCanvas, feature, layer)
        highlight.setColor(color)
