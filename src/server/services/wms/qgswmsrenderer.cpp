@@ -1028,7 +1028,7 @@ namespace QgsWms
     if ( queryLayers.isEmpty() )
     {
       QString msg = QObject::tr( "QUERY_LAYERS parameter is required for GetFeatureInfo" );
-      throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
+      throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
     }
 
     // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
