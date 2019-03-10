@@ -935,7 +935,7 @@
     <string>Distribute &amp;Horizontally Equispaced</string>
    </property>
    <property name="toolTip">
-    <string>Distributes items equidistantly with respect to their horizontal edges</string>
+    <string>Distributes the horizontal spacing equally between all items</string>
    </property>
   </action>
   <action name="mActionDistributeRight">
