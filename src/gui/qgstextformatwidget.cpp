@@ -1109,7 +1109,8 @@ void QgsTextFormatWidget::mFontSizeSpinBox_valueChanged( double d )
 
 void QgsTextFormatWidget::mFontCapitalsComboBox_currentIndexChanged( int index )
 {
-  mRefFont.setCapitalization( mFontCapitalsComboBox->itemData( index ).value<QFont::Capitalization>() );
+  int capitalsindex = mFontCapitalsComboBox->itemData( index ).toInt();
+  mRefFont.setCapitalization( ( QFont::Capitalization ) capitalsindex );
   updateFont( mRefFont );
 }
 
