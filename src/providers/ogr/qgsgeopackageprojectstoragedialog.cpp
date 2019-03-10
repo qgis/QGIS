@@ -18,6 +18,7 @@
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsogrdbconnection.h"
+#include "qgsvectorfilewriter.h"
 #include "qgis.h"
 
 #include <QMenu>
@@ -41,6 +42,7 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   btnManageProjects->setMenu( menuManageProjects );
   buttonBox->addButton( btnManageProjects, QDialogButtonBox::ActionRole );
   mFileWidget->lineEdit()->hide();
+  mFileWidget->setFilter( QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) ) );
 
   connect( mFileWidget, &QgsFileWidget::fileChanged, [ = ]( const QString & path )
   {
