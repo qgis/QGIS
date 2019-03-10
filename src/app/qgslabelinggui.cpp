@@ -24,6 +24,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include <QButtonGroup>
 
@@ -57,12 +58,6 @@ void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton *butto
   mButtons[key] = button;
 }
 
-void QgsLabelingGui::setupWidget()
-{
-  connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
-  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
-}
-
 void QgsLabelingGui::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
@@ -84,6 +79,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mFormatNumChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mScaleBasedVisibilityChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mFontLimitPixelChkBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
+  connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
+  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
+  connect( mGeometryGeneratorExpressionButton, &QToolButton::clicked, this, &QgsLabelingGui::showGeometryGeneratorExpressionBuilder );
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
@@ -691,4 +689,18 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
     if ( idx >= 0 )
       mFontMultiLineAlignComboBox->removeItem( idx );
   }
+}
+
+void QgsLabelingGui::showGeometryGeneratorExpressionBuilder()
+{
+  QgsExpressionBuilderDialog expressionBuilder( mLayer );
+
+  expressionBuilder.setExpressionText( mGeometryGenerator->text() );
+  expressionBuilder.setExpressionContext( createExpressionContext() );
+
+  if ( expressionBuilder.exec() )
+  {
+    mGeometryGenerator->setText( expressionBuilder.expressionText() );
+  }
+
 }

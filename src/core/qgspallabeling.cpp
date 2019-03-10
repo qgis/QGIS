@@ -878,7 +878,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   }
 
   geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
-  geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "labeling/geometryGeneratorEnabled" ) ).toInt();
+  geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
 
   const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
   geometryGeneratorType = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ).toUtf8().constData() ) );
@@ -1022,7 +1022,6 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorEnabled" ), geometryGeneratorEnabled );
   const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), metaEnum.valueToKey( geometryGeneratorType ) );
-
 
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );

@@ -67,6 +67,10 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     void blockInitSignals( bool block );
     void syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f );
 
+  private slots:
+    void updateGeometryTypeBasedWidgets();
+    void showGeometryGeneratorExpressionBuilder();
+
   private:
     QgsVectorLayer *mLayer = nullptr;
     const QgsPalLayerSettings &mSettings;
