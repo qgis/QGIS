@@ -94,6 +94,12 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mMaxScaleWidget->setShowCurrentScaleButton( true );
 
   mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );
+  mGeometryGeneratorWarningLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  connect( mGeometryGeneratorWarningLabel, &QLabel::linkActivated, this, [this]( const QString & link )
+  {
+    if ( link == QLatin1String( "#determineGeometryGeneratorType" ) )
+      determineGeometryGeneratorType();
+  } );
 
   setLayer( layer );
 }
@@ -748,11 +754,28 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
       }
       else if ( geometry.type() != configuredGeometryType )
       {
-        mGeometryGeneratorWarningLabel->setText( tr( "Result of the expression does not match configured geometry type. Result is %1, Configured %2." ).arg( QgsWkbTypes::geometryDisplayString( geometry.type() ), QgsWkbTypes::geometryDisplayString( configuredGeometryType ) ) );
+        mGeometryGeneratorWarningLabel->setText( QStringLiteral( "<p>%1</p><p><a href=\"#determineGeometryGeneratorType\">%2</a></p>" ).arg(
+              tr( "Result of the expression does not match configured geometry type." ),
+              tr( "Fix it" ) ) );
         valid = false;
       }
     }
   }
 
   mGeometryGeneratorWarningLabel->setVisible( !valid );
+}
+
+void QgsLabelingGui::determineGeometryGeneratorType()
+{
+  if ( !mPreviewFeature.isValid() && mLayer )
+    mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
+
+  QgsExpression expression( mGeometryGenerator->text() );
+  QgsExpressionContext context = createExpressionContext();
+  context.setFeature( mPreviewFeature );
+
+  expression.prepare( &context );
+  const QgsGeometry geometry = expression.evaluate( &context ).value<QgsGeometry>();
+
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( geometry.type() ) );
 }

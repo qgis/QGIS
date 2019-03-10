@@ -77,6 +77,7 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     void updateGeometryTypeBasedWidgets();
     void showGeometryGeneratorExpressionBuilder();
     void validateGeometryGeneratorExpression();
+    void determineGeometryGeneratorType();
 
   private:
     QgsVectorLayer *mLayer = nullptr;

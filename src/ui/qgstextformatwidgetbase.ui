@@ -4993,6 +4993,9 @@ font-style: italic;</string>
                       </item>
                       <item>
                        <widget class="QGroupBox" name="mGeometryGeneratorGroupBox">
+                        <property name="toolTip">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Generates or transforms the geometry to be used for labeling&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The expression will be applied to each feature while rendering and the label will be placed based on the expression result.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        </property>
                         <property name="title">
                          <string>Geometry generator</string>
                         </property>
@@ -5000,6 +5003,12 @@ font-style: italic;</string>
                          <bool>true</bool>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_41">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
                          <item row="1" column="0" rowspan="2">
                           <widget class="QgsCodeEditorExpression" name="mGeometryGenerator" native="true"/>
                          </item>
