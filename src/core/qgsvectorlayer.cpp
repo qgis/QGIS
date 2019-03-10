@@ -4445,7 +4445,7 @@ void QgsVectorLayer::doneTask()
     const QList<long> pendingtasks = mPendingTasks;
     for ( long taskid : pendingtasks )
     {
-      if ( QgsApplication::taskManager()->task( taskid ) )
+      if ( !( QgsApplication::taskManager()->task( taskid ) ) )
       {
         mPendingTasks.removeOne( taskid );
         emit countDone( taskid );
