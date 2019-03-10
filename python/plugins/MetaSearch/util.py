@@ -24,7 +24,7 @@
 #
 ###############################################################################
 
-# avoid PendingDeprecationWarning from PyQt4.uic
+# avoid PendingDeprecationWarning from qgis.PyQt.uic
 import warnings
 warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)

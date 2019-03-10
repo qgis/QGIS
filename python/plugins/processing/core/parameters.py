@@ -62,7 +62,7 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber)
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 PARAMETER_NUMBER = 'number'
 PARAMETER_DISTANCE = 'distance'
