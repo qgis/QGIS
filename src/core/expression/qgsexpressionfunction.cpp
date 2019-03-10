@@ -1455,7 +1455,7 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
     QString errorMessage;
     QString currentValSql;
 
-    qlonglong nextId;
+    qlonglong nextId = 0;
     bool cachedMode = false;
     bool valueRetrieved = false;
 
