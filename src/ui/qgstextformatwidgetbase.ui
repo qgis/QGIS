@@ -3664,7 +3664,7 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-400</y>
+                       <y>-320</y>
                        <width>772</width>
                        <height>1211</height>
                       </rect>
@@ -4992,7 +4992,7 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QGroupBox" name="mGeometryGeneratorGroupBox">
+                       <widget class="QgsCollapsibleGroupBox" name="mGeometryGeneratorGroupBox">
                         <property name="toolTip">
                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Generates or transforms the geometry to be used for labeling&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The expression will be applied to each feature while rendering and the label will be placed based on the expression result.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
@@ -5011,16 +5011,6 @@ font-style: italic;</string>
                          </property>
                          <item row="1" column="0" rowspan="2">
                           <widget class="QgsCodeEditorExpression" name="mGeometryGenerator" native="true"/>
-                         </item>
-                         <item row="3" column="0" colspan="2">
-                          <widget class="QComboBox" name="mGeometryGeneratorType">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                          </widget>
                          </item>
                          <item row="2" column="1">
                           <spacer name="verticalSpacer_9">
@@ -5049,6 +5039,16 @@ font-style: italic;</string>
                            </property>
                            <property name="wordWrap">
                             <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="0">
+                          <widget class="QComboBox" name="mGeometryGeneratorType">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
                            </property>
                           </widget>
                          </item>
