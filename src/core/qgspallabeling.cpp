@@ -894,14 +894,6 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
   geometryGeneratorType = enumValueToKey( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::PointGeometry );
 
-#if 0
-  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
-  bool ok;
-  geometryGeneratorType = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ).toUtf8().constData(), &ok ) );
-  if ( !ok )
-    geometryGeneratorType = QgsWkbTypes::GeometryType::PointGeometry;
-#endif
-
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
 
