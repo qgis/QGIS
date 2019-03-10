@@ -351,6 +351,16 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
 void Qgs3DMapScene::createTerrain()
 {
+  if ( mTerrain )
+  {
+    mChunkEntities.removeOne( mTerrain );
+
+    mTerrain->deleteLater();
+    mTerrain = nullptr;
+
+    emit terrainEntityChanged();
+  }
+
   if ( !mTerrainUpdateScheduled )
   {
     // defer re-creation of terrain: there may be multiple invocations of this slot, so create the new entity just once
@@ -362,14 +372,6 @@ void Qgs3DMapScene::createTerrain()
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
-  if ( mTerrain )
-  {
-    mChunkEntities.removeOne( mTerrain );
-
-    mTerrain->deleteLater();
-    mTerrain = nullptr;
-  }
-
   double tile0width = mMap.terrainGenerator()->extent().width();
   int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
 
