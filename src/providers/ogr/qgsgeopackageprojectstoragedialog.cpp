@@ -18,11 +18,14 @@
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsogrdbconnection.h"
+#include "qgsvectorfilewriter.h"
 #include "qgis.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QFileInfo>
+#include <QFile>
 
 QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool saving, QWidget *parent )
   : QDialog( parent )
@@ -38,6 +41,19 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   connect( mActionRemoveProject, &QAction::triggered, this, &QgsGeoPackageProjectStorageDialog::removeProject );
   btnManageProjects->setMenu( menuManageProjects );
   buttonBox->addButton( btnManageProjects, QDialogButtonBox::ActionRole );
+  mFileWidget->lineEdit()->hide();
+  mFileWidget->setFilter( QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) ) );
+
+  connect( mFileWidget, &QgsFileWidget::fileChanged, [ = ]( const QString & path )
+  {
+    const QString fileName{QFileInfo( path ).fileName()};
+    if ( mCboConnection->findData( path ) == -1 )
+    {
+      mCboConnection->addItem( QFileInfo( path ).fileName(), path );
+      mCboConnection->setItemData( mCboConnection->findText( fileName ), path, Qt::ItemDataRole::ToolTipRole );
+    }
+    mCboConnection->setCurrentIndex( mCboConnection->findText( fileName ) );
+  } );
 
   if ( saving )
   {
@@ -50,7 +66,13 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   }
 
   // populate connections
-  mCboConnection->addItems( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) );
+  const auto &connList { QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) };
+  for ( const auto &connName : connList )
+  {
+    QgsOgrDbConnection conn { connName, QStringLiteral( "GPKG" ) };
+    mCboConnection->addItem( connName, conn.path() );
+    mCboConnection->setItemData( mCboConnection->findText( connName ), conn.path(), Qt::ItemDataRole::ToolTipRole );
+  }
 
   connect( mCboProject, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
   connect( mCboConnection, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
@@ -124,7 +146,7 @@ void QgsGeoPackageProjectStorageDialog::removeProject()
   if ( res != QMessageBox::Yes )
     return;
 
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "GeoPackage" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "geopackage" ) );
   Q_ASSERT( storage );
   storage->removeProject( currentProjectUri() );
   populateProjects();
@@ -133,9 +155,7 @@ void QgsGeoPackageProjectStorageDialog::removeProject()
 QString QgsGeoPackageProjectStorageDialog::currentProjectUri( )
 {
   QgsGeoPackageProjectUri gpkgUri;
-  // find path in connections
-  QgsOgrDbConnection conn( mCboConnection->currentText(), QStringLiteral( "GPKG" ) );
-  gpkgUri.database = conn.path();
+  gpkgUri.database = mCboConnection->currentData().toString();
   gpkgUri.projectName = mCboProject->currentText();
   return QgsGeoPackageProjectStorage::encodeUri( gpkgUri );
 }
