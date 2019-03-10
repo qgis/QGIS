@@ -59,6 +59,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgscurvepolygon.h"
+#include "qgsmessagelog.h"
 #include <QMessageBox>
 
 // TODO: Move to qgis.h?
@@ -1227,9 +1228,14 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     {
       mGeometryGeneratorExpression = QgsExpression( geometryGenerator );
       mGeometryGeneratorExpression.prepare( &context.expressionContext() );
+      if ( mGeometryGeneratorExpression.hasParserError() )
+        QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.parserErrorString() );
     }
     context.expressionContext().setFeature( feature );
     const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
+    if ( mGeometryGeneratorExpression.hasEvalError() )
+      QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.evalErrorString() );
+
     feature.setGeometry( geometry );
   }
 
