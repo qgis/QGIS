@@ -418,7 +418,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule()
   return mRootRule.get();
 }
 
-const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() const SIP_SKIP
+const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() const
 {
   return mRootRule.get();
 }

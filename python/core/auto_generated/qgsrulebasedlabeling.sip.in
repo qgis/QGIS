@@ -269,7 +269,6 @@ Constructs the labeling from given tree of rules (takes ownership)
     ~QgsRuleBasedLabeling();
 
     QgsRuleBasedLabeling::Rule *rootRule();
-    const Rule *rootRule() const;
 
     static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
