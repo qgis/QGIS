@@ -913,9 +913,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   QModelIndex currentIndex = mItemTreeView->currentIndex();
   if ( !currentIndex.isValid() )
-  {
     return;
-  }
 
   QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
   if ( !QgsLayerTree::isLayer( currentNode ) )
@@ -923,6 +921,9 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   QgsLayerTreeLayer *layer = qobject_cast<QgsLayerTreeLayer *>( currentNode );
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+
+  if ( !vl )
+    return;
 
   QString currentExpression;
   if ( layer->expression().isEmpty() )
