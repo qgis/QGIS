@@ -430,7 +430,7 @@
     <string>Delete selected features</string>
    </property>
    <property name="shortcut">
-    <string>Del</string>
+    <string notr="true">Del</string>
    </property>
   </action>
   <action name="mActionExpressionSelect">

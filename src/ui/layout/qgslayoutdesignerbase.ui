@@ -1058,7 +1058,7 @@
     <string>Delete selected items</string>
    </property>
    <property name="shortcut">
-    <string>Del</string>
+    <string notr="true">Del</string>
    </property>
   </action>
   <action name="mActionResizeToSquare">
