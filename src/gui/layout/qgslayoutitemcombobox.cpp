@@ -27,12 +27,14 @@ QgsLayoutItemComboBox::QgsLayoutItemComboBox( QWidget *parent, QgsLayout *layout
 
 void QgsLayoutItemComboBox::setCurrentLayout( QgsLayout *layout )
 {
+  const bool prevAllowEmpty = mProxyModel && mProxyModel->allowEmptyItem();
   mProxyModel = qgis::make_unique< QgsLayoutProxyModel >( layout, this );
   connect( mProxyModel.get(), &QAbstractItemModel::rowsInserted, this, &QgsLayoutItemComboBox::rowsChanged );
   connect( mProxyModel.get(), &QAbstractItemModel::rowsRemoved, this, &QgsLayoutItemComboBox::rowsChanged );
   setModel( mProxyModel.get() );
   setModelColumn( QgsLayoutModel::ItemId );
   mProxyModel->sort( 0, Qt::AscendingOrder );
+  mProxyModel->setAllowEmptyItem( prevAllowEmpty );
 }
 
 QgsLayout *QgsLayoutItemComboBox::currentLayout()
@@ -55,7 +57,7 @@ void QgsLayoutItemComboBox::setItem( const QgsLayoutItem *item )
       return;
     }
   }
-  setCurrentIndex( mProxyModel->allowEmptyItem() ? 0 : -1 );
+  setCurrentIndex( mProxyModel->allowEmptyItem() ? mProxyModel->rowCount() - 1 : -1 );
 }
 
 QgsLayoutItem *QgsLayoutItemComboBox::currentItem() const
