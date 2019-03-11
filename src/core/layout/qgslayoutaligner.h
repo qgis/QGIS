@@ -54,9 +54,11 @@ class CORE_EXPORT QgsLayoutAligner
     {
       DistributeLeft, //!< Distribute left edges
       DistributeHCenter, //!< Distribute horizontal centers
+      DistributeHSpace, //!< Distribute horizontal equispaced
       DistributeRight, //!< Distribute right edges
       DistributeTop, //!< Distribute top edges
       DistributeVCenter, //!< Distribute vertical centers
+      DistributeVSpace, //!< Distribute vertical equispaced
       DistributeBottom, //!< Distribute bottom edges
     };
 
@@ -103,6 +105,13 @@ class CORE_EXPORT QgsLayoutAligner
     static QString undoText( Distribution distribution );
     static QString undoText( Resize resize );
 
+    /**
+     * Distributes a set of \a items from a \a layout in place for \a DistributeHSpace
+     * and \a DistributeVSpace distribution type special cases.
+     *
+     * The \a distribution argument specifies the method to use when distributing the items.
+     */
+    static void distributeEquispacedItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, QgsLayoutAligner::Distribution distribution );
 
 
 };
