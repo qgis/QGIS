@@ -28,6 +28,7 @@ QgsLayoutItemComboBox::QgsLayoutItemComboBox( QWidget *parent, QgsLayout *layout
 void QgsLayoutItemComboBox::setCurrentLayout( QgsLayout *layout )
 {
   const bool prevAllowEmpty = mProxyModel && mProxyModel->allowEmptyItem();
+  int itemType = mProxyModel ? mProxyModel->filterType() : -1;
   mProxyModel = qgis::make_unique< QgsLayoutProxyModel >( layout, this );
   connect( mProxyModel.get(), &QAbstractItemModel::rowsInserted, this, &QgsLayoutItemComboBox::rowsChanged );
   connect( mProxyModel.get(), &QAbstractItemModel::rowsRemoved, this, &QgsLayoutItemComboBox::rowsChanged );
@@ -35,6 +36,8 @@ void QgsLayoutItemComboBox::setCurrentLayout( QgsLayout *layout )
   setModelColumn( QgsLayoutModel::ItemId );
   mProxyModel->sort( QgsLayoutModel::ItemId, Qt::AscendingOrder );
   mProxyModel->setAllowEmptyItem( prevAllowEmpty );
+  if ( itemType >= 0 )
+    mProxyModel->setFilterType( static_cast< QgsLayoutItemRegistry::ItemType >( itemType ) );
 }
 
 QgsLayout *QgsLayoutItemComboBox::currentLayout()
