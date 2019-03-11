@@ -486,7 +486,16 @@ bool QgsPalLayerSettings::prepare( const QgsRenderContext &context, QSet<QString
     mGeometryGeneratorExpression = QgsExpression( geometryGenerator );
     mGeometryGeneratorExpression.prepare( &context.expressionContext() );
     if ( mGeometryGeneratorExpression.hasParserError() )
+    {
       QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.parserErrorString() );
+      return false;
+    }
+
+    const auto referencedColumns = mGeometryGeneratorExpression.referencedColumns();
+    for ( const QString &name : referencedColumns )
+    {
+      attributeNames.insert( name );
+    }
   }
 
   return true;
@@ -1601,7 +1610,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   std::unique_ptr<QgsGeometry> scopedClonedGeom;
   if ( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
   {
-    int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
+    unsigned int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
     QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( simplifyMethod.simplifyAlgorithm() );
     QgsGeometry g = geom;
     QgsMapToPixelSimplifier simplifier( simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm );
