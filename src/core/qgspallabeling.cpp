@@ -62,26 +62,6 @@
 #include "qgsmessagelog.h"
 #include <QMessageBox>
 
-// TODO: Move to qgis.h?
-
-/**
- * Converts a string representation \a key of an enum into the value.
- * If it cannot be converted, the \a defaultValue will be returned.
- *
- */
-template <class T>
-T enumValueToKey( const QString &key, T defaultValue )
-{
-  const QMetaEnum metaEnum( QMetaEnum::fromType<T>() );
-  bool ok;
-  T result = static_cast<QgsWkbTypes::GeometryType>( metaEnum.keyToValue( key.toUtf8().constData(), &ok ) );
-  if ( !ok )
-    result = defaultValue;
-
-  return result;
-}
-
-
 using namespace pal;
 
 // -------------
@@ -893,7 +873,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
 
   geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
-  geometryGeneratorType = enumValueToKey( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::PointGeometry );
+  geometryGeneratorType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::PointGeometry );
 
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
