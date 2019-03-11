@@ -33,7 +33,7 @@ void QgsLayoutItemComboBox::setCurrentLayout( QgsLayout *layout )
   connect( mProxyModel.get(), &QAbstractItemModel::rowsRemoved, this, &QgsLayoutItemComboBox::rowsChanged );
   setModel( mProxyModel.get() );
   setModelColumn( QgsLayoutModel::ItemId );
-  mProxyModel->sort( 0, Qt::AscendingOrder );
+  mProxyModel->sort( QgsLayoutModel::ItemId, Qt::AscendingOrder );
   mProxyModel->setAllowEmptyItem( prevAllowEmpty );
 }
 
