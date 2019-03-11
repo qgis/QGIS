@@ -41,7 +41,9 @@
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsprintlayout.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutitemlabel.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -5816,6 +5818,14 @@ void TestQgsProcessing::parameterLayout()
 {
   QgsProcessingContext context;
 
+  QgsProject p;
+  QgsPrintLayout *l = new QgsPrintLayout( &p );
+  l->setName( "l1" );
+  QgsPrintLayout *l2 = new QgsPrintLayout( &p );
+  l2->setName( "l2" );
+  p.layoutManager()->addLayout( l );
+  p.layoutManager()->addLayout( l2 );
+
   // not optional!
   std::unique_ptr< QgsProcessingParameterLayout > def( new QgsProcessingParameterLayout( "non_optional", QString(), QString(), false ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
@@ -5827,6 +5837,16 @@ void TestQgsProcessing::parameterLayout()
   QVariantMap params;
   params.insert( "non_optional", QString( "abcdef" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString( "abcdef" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayout( def.get(), params, context ) );
+  params.insert( "non_optional", QString( "l1" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayout( def.get(), params, context ) );
+  context.setProject( &p );
+  params.insert( "non_optional", QString( "abcdef" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayout( def.get(), params, context ) );
+  params.insert( "non_optional", QString( "l1" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayout( def.get(), params, context ), l );
+  params.insert( "non_optional", QString( "l2" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayout( def.get(), params, context ), l2 );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "'5'" ) );
@@ -5932,6 +5952,18 @@ void TestQgsProcessing::parameterLayoutItem()
 {
   QgsProcessingContext context;
 
+  QgsProject p;
+  QgsPrintLayout *l = new QgsPrintLayout( &p );
+  l->setName( "l1" );
+  QgsLayoutItemLabel *label1 = new QgsLayoutItemLabel( l );
+  label1->setId( "a" );
+  l->addLayoutItem( label1 );
+  QgsLayoutItemLabel *label2 = new QgsLayoutItemLabel( l );
+  label2->setId( "b" );
+  l->addLayoutItem( label2 );
+
+  QgsPrintLayout *l2 = new QgsPrintLayout( &p );
+
   // not optional!
   std::unique_ptr< QgsProcessingParameterLayoutItem > def( new QgsProcessingParameterLayoutItem( "non_optional", QString(), QVariant(), QString(), -1, false ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
@@ -5941,9 +5973,34 @@ void TestQgsProcessing::parameterLayoutItem()
 
   // string
   QVariantMap params;
-  params.insert( "non_optional", QString( "a" ) );
+  params.insert( "non_optional", QString( "aaaa" ) );
   QString f = QgsProcessingParameters::parameterAsString( def.get(), params, context );
-  QCOMPARE( f, QStringLiteral( "a" ) );
+  QCOMPARE( f, QStringLiteral( "aaaa" ) );
+
+  QVERIFY( !QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, nullptr ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l ) );
+  params.insert( "non_optional", label1->uuid() );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, nullptr ) );
+  params.insert( "non_optional", QString( "abcdef" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, nullptr ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l ) );
+  params.insert( "non_optional", label1->uuid() );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, nullptr ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l2 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l ), label1 );
+  params.insert( "non_optional", label1->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l ), label1 );
+  params.insert( "non_optional", label2->uuid() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l ), label2 );
+  params.insert( "non_optional", label2->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l ), label2 );
+  // UUID matching must take precedence
+  label1->setId( label2->uuid() );
+  params.insert( "non_optional", label2->uuid() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l ), label2 );
+  label2->setId( label1->uuid() );
+  params.insert( "non_optional", label1->uuid() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayoutItem( def.get(), params, context, l ), label1 );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );

@@ -785,6 +785,30 @@ Evaluates the parameter with matching ``name`` to a range of values.
 Evaluates the parameter with matching ``name`` to a list of fields.
 %End
 
+    QgsPrintLayout *parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a print layout.
+
+.. warning::
+
+   This method is not safe to run in a background thread, so it must either be used within a prepareAlgorithm
+   implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
+
+.. versionadded:: 3.8
+%End
+
+    QgsLayoutItem *parameterAsLayoutItem( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsPrintLayout *layout );
+%Docstring
+Evaluates the parameter with matching ``name`` to a print layout item, taken from the specified ``layout``.
+
+.. warning::
+
+   This method is not safe to run in a background thread, so it must either be used within a prepareAlgorithm
+   implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
+
+.. versionadded:: 3.8
+%End
+
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 %Docstring
 Returns a user-friendly string to use as an error when a source parameter could

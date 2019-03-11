@@ -31,7 +31,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsapplication.h"
-
+#include "qgslayoutmanager.h"
+#include "qgsprintlayout.h"
 #include <functional>
 
 
@@ -1462,6 +1463,56 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
   }
 
   return resultStringList;
+}
+
+QgsPrintLayout *QgsProcessingParameters::parameterAsLayout( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return nullptr;
+
+  return parameterAsLayout( definition, parameters.value( definition->name() ), context );
+}
+
+QgsPrintLayout *QgsProcessingParameters::parameterAsLayout( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  const QString layoutName = parameterAsString( definition, value, context );
+  if ( layoutName.isEmpty() )
+    return nullptr;
+
+  if ( !context.project() )
+    return nullptr;
+
+  QgsMasterLayoutInterface *l = context.project()->layoutManager()->layoutByName( layoutName );
+  if ( l && l->layoutType() == QgsMasterLayoutInterface::PrintLayout )
+    return static_cast< QgsPrintLayout * >( l );
+  else
+    return nullptr;
+}
+
+QgsLayoutItem *QgsProcessingParameters::parameterAsLayoutItem( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsPrintLayout *layout )
+{
+  if ( !definition )
+    return nullptr;
+
+  return parameterAsLayoutItem( definition, parameters.value( definition->name() ), context, layout );
+}
+
+QgsLayoutItem *QgsProcessingParameters::parameterAsLayoutItem( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsPrintLayout *layout )
+{
+  if ( !layout )
+    return nullptr;
+
+  const QString id = parameterAsString( definition, value, context );
+  if ( id.isEmpty() )
+    return nullptr;
+
+  // prefer matching by uuid, since it's gauranteed to be unique.
+  if ( QgsLayoutItem *item = layout->itemByUuid( id ) )
+    return item;
+  else if ( QgsLayoutItem *item = layout->itemById( id ) )
+    return item;
+  else
+    return nullptr;
 }
 
 QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
