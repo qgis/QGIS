@@ -390,6 +390,9 @@ void TestProcessingGui::testWrapperGeneral()
   QgsProcessingParameterWidgetContext widgetContext;
   widgetContext.setMapCanvas( mc.get() );
   QCOMPARE( widgetContext.mapCanvas(), mc.get() );
+  QgsProject p;
+  widgetContext.setProject( &p );
+  QCOMPARE( widgetContext.project(), &p );
   std::unique_ptr< QgsProcessingModelAlgorithm > model = qgis::make_unique< QgsProcessingModelAlgorithm >();
   widgetContext.setModel( model.get() );
   QCOMPARE( widgetContext.model(), model.get() );
