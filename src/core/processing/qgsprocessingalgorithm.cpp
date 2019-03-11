@@ -691,6 +691,16 @@ QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parame
   return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
 }
 
+QgsPrintLayout *QgsProcessingAlgorithm::parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsLayout( parameterDefinition( name ), parameters, context );
+}
+
+QgsLayoutItem *QgsProcessingAlgorithm::parameterAsLayoutItem( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsPrintLayout *layout )
+{
+  return QgsProcessingParameters::parameterAsLayoutItem( parameterDefinition( name ), parameters, context, layout );
+}
+
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
 {
   if ( !parameters.contains( name ) )
