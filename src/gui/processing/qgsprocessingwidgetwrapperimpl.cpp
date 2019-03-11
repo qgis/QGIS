@@ -30,6 +30,11 @@
 #include "qgsexpressionlineedit.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsprocessingmultipleselectiondialog.h"
+#include "qgslayoutmanager.h"
+#include "qgsproject.h"
+#include "qgslayoutcombobox.h"
+#include "qgslayoutitemcombobox.h"
+#include "qgsprintlayout.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -1734,6 +1739,287 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingEnumWidgetWrapper::cre
 }
 
 
+
+//
+// QgsProcessingLayoutWidgetWrapper
+//
+
+QgsProcessingLayoutWidgetWrapper::QgsProcessingLayoutWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingLayoutWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterLayout *layoutParam = dynamic_cast< const QgsProcessingParameterLayout *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      // combobox only for use outside modeler!
+      mComboBox = new QgsLayoutComboBox( nullptr, widgetContext().project() ? widgetContext().project()->layoutManager() : nullptr );
+      if ( layoutParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mComboBox->setAllowEmptyLayout( true );
+      mComboBox->setFilters( QgsLayoutManagerProxyModel::FilterPrintLayouts );
+
+      mComboBox->setToolTip( parameterDefinition()->toolTip() );
+      connect( mComboBox, &QgsLayoutComboBox::layoutChanged, this, [ = ]( QgsMasterLayoutInterface * )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mComboBox;
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( tr( "Name of an existing print layout" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingLayoutWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setCurrentLayout( nullptr );
+    else
+    {
+      if ( QgsPrintLayout *l = QgsProcessingParameters::parameterAsLayout( parameterDefinition(), value, context ) )
+        mComboBox->setCurrentLayout( l );
+      else
+        mComboBox->setCurrentLayout( nullptr );
+    }
+  }
+  else if ( mLineEdit )
+  {
+    const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+    mLineEdit->setText( v );
+  }
+}
+
+QVariant QgsProcessingLayoutWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+  {
+    const QgsMasterLayoutInterface *l = mComboBox->currentLayout();
+    return l ? l->name() : QVariant();
+  }
+  else if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingLayoutWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterLayout::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingLayoutWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingLayoutWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingLayoutWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representing the name of an existing print layout" );
+}
+
+QString QgsProcessingLayoutWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterLayout::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingLayoutWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingLayoutItemWidgetWrapper
+//
+
+QgsProcessingLayoutItemWidgetWrapper::QgsProcessingLayoutItemWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingLayoutItemWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterLayoutItem *layoutParam = dynamic_cast< const QgsProcessingParameterLayoutItem *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      // combobox only for use outside modeler!
+      mComboBox = new QgsLayoutItemComboBox( nullptr, nullptr );
+      if ( layoutParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mComboBox->setAllowEmptyItem( true );
+      if ( layoutParam->itemType() >= 0 )
+        mComboBox->setItemType( static_cast< QgsLayoutItemRegistry::ItemType >( layoutParam->itemType() ) );
+
+      mComboBox->setToolTip( parameterDefinition()->toolTip() );
+      connect( mComboBox, &QgsLayoutItemComboBox::itemChanged, this, [ = ]( QgsLayoutItem * )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mComboBox;
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( tr( "UUID or ID of an existing print layout item" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingLayoutItemWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterLayoutItem * >( parameterDefinition() )->parentLayoutParameterName() )
+        {
+          setLayoutParameterValue( wrapper->parameterValue() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setLayoutParameterValue( wrapper->parameterValue() );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingLayoutItemWidgetWrapper::setLayoutParameterValue( const QVariant &value )
+{
+  QgsPrintLayout *layout = nullptr;
+
+  // evaluate value to layout
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  layout = QgsProcessingParameters::parameterAsLayout( parameterDefinition(), value, *context );
+  setLayout( layout );
+}
+
+void QgsProcessingLayoutItemWidgetWrapper::setLayout( QgsPrintLayout *layout )
+{
+  if ( mComboBox )
+    mComboBox->setCurrentLayout( layout );
+}
+
+void QgsProcessingLayoutItemWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setItem( nullptr );
+    else
+    {
+      QgsLayoutItem *item = QgsProcessingParameters::parameterAsLayoutItem( parameterDefinition(), value, context, qobject_cast< QgsPrintLayout * >( mComboBox->currentLayout() ) );
+      mComboBox->setItem( item );
+    }
+  }
+  else if ( mLineEdit )
+  {
+    const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+    mLineEdit->setText( v );
+  }
+}
+
+QVariant QgsProcessingLayoutItemWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+  {
+    const QgsLayoutItem *i = mComboBox->currentItem();
+    return i ? i->uuid() : QVariant();
+  }
+  else if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingLayoutItemWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterLayoutItem::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingLayoutItemWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingLayoutItemWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingLayoutItemWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representing the UUID or ID of an existing print layout item" );
+}
+
+QString QgsProcessingLayoutItemWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterLayoutItem::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutItemWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingLayoutItemWidgetWrapper( parameter, type );
+}
 
 ///@endcond PRIVATE
 

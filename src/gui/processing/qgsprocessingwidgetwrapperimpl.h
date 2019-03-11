@@ -38,6 +38,9 @@ class QgsFileWidget;
 class QgsFieldExpressionWidget;
 class QgsExpressionLineEdit;
 class QgsProcessingParameterEnum;
+class QgsLayoutComboBox;
+class QgsLayoutItemComboBox;
+class QgsPrintLayout;
 
 ///@cond PRIVATE
 
@@ -501,6 +504,85 @@ class GUI_EXPORT QgsProcessingEnumWidgetWrapper : public QgsAbstractProcessingPa
     QComboBox *mComboBox = nullptr;
     QgsProcessingEnumPanelWidget *mPanel = nullptr;
     QgsProcessingEnumCheckboxPanelWidget *mCheckboxPanel = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+
+
+class GUI_EXPORT QgsProcessingLayoutWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingLayoutWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+  private:
+
+    QgsLayoutComboBox *mComboBox = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingLayoutItemWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingLayoutItemWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                          QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers ) override;
+
+
+  public slots:
+    void setLayoutParameterValue( const QVariant &value );
+    void setLayout( QgsPrintLayout *layout );
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+  private:
+
+    QgsLayoutItemComboBox *mComboBox = nullptr;
+    QLineEdit *mLineEdit = nullptr;
 
     friend class TestProcessingGui;
 };

@@ -38,6 +38,8 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFileWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingExpressionWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingEnumWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingLayoutWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingLayoutItemWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

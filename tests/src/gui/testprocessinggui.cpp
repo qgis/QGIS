@@ -52,6 +52,11 @@
 #include "qgsexpressionlineedit.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutcombobox.h"
+#include "qgslayoutitemcombobox.h"
+#include "qgslayoutitemlabel.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -170,6 +175,8 @@ class TestProcessingGui : public QObject
     void testEnumSelectionPanel();
     void testEnumCheckboxPanel();
     void testEnumWrapper();
+    void testLayoutWrapper();
+    void testLayoutItemWrapper();
 
   private:
 
@@ -2428,6 +2435,297 @@ void TestProcessingGui::testEnumWrapper()
 
   // checkbox style (not for batch or model mode!)
   testWrapper( QgsProcessingGui::Standard, true );
+
+}
+
+void TestProcessingGui::testLayoutWrapper()
+{
+  QgsProject p;
+  QgsPrintLayout *l1 = new QgsPrintLayout( &p );
+  l1->setName( "l1" );
+  p.layoutManager()->addLayout( l1 );
+  QgsPrintLayout *l2 = new QgsPrintLayout( &p );
+  l2->setName( "l2" );
+  p.layoutManager()->addLayout( l2 );
+
+  auto testWrapper = [&p]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterLayout param( QStringLiteral( "layout" ), QStringLiteral( "layout" ), false );
+
+    QgsProcessingLayoutWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    context.setProject( &p );
+    QgsProcessingParameterWidgetContext widgetContext;
+    widgetContext.setProject( &p );
+    wrapper.setWidgetContext( widgetContext );
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingLayoutWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "l2", context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  QStringLiteral( "l2" ) );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper.wrappedWidget() )->currentIndex(), 1 );
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "l2" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "l2" ) );
+    }
+    wrapper.setWidgetValue( "l1", context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toString(),  QStringLiteral( "l1" ) );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper.wrappedWidget() )->currentIndex(), 0 );
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "l1" ) );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "layout" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      static_cast< QComboBox * >( wrapper.wrappedWidget() )->setCurrentIndex( 1 );
+    }
+    else
+    {
+      static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "aaaa" ) );
+    }
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterLayout param2( QStringLiteral( "layout" ), QStringLiteral( "layout" ), QVariant(), true );
+
+    QgsProcessingLayoutWidgetWrapper wrapper2( &param2, type );
+    wrapper2.setWidgetContext( widgetContext );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "l2", context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "l2" ) );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 2 );
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l2" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "l2" ) );
+    }
+    wrapper2.setWidgetValue( "l1", context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "l1" ) );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 1 );
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "l1" ) );
+    }
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 3 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 0 );
+      QVERIFY( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentText().isEmpty() );
+    }
+    else
+    {
+      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+      static_cast< QComboBox * >( wrapper2.wrappedWidget() )->setCurrentIndex( 2 );
+    else
+      static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "aaa" ) );
+    QCOMPARE( spy2.count(), 4 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+}
+
+void TestProcessingGui::testLayoutItemWrapper()
+{
+  QgsProject p;
+  QgsPrintLayout *l1 = new QgsPrintLayout( &p );
+  l1->setName( "l1" );
+  p.layoutManager()->addLayout( l1 );
+  QgsLayoutItemLabel *label1 = new QgsLayoutItemLabel( l1 );
+  label1->setId( "a" );
+  l1->addLayoutItem( label1 );
+  QgsLayoutItemLabel *label2 = new QgsLayoutItemLabel( l1 );
+  label2->setId( "b" );
+  l1->addLayoutItem( label2 );
+
+  auto testWrapper = [&p, l1, label1, label2]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterLayoutItem param( QStringLiteral( "layout" ), QStringLiteral( "layout" ), false );
+
+    QgsProcessingLayoutItemWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    context.setProject( &p );
+    QgsProcessingParameterWidgetContext widgetContext;
+    widgetContext.setProject( &p );
+    wrapper.setWidgetContext( widgetContext );
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    wrapper.setLayout( l1 );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "b", context );
+    QCOMPARE( spy.count(), 1 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), label2->uuid() );
+      QCOMPARE( static_cast< QgsLayoutItemComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "b" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "b" ) );
+    }
+    wrapper.setWidgetValue( "a", context );
+    QCOMPARE( spy.count(), 2 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), label1->uuid() );
+      QCOMPARE( static_cast< QgsLayoutItemComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "a" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "a" ) );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "layout" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      static_cast< QComboBox * >( wrapper.wrappedWidget() )->setCurrentIndex( 0 );
+    }
+    else
+    {
+      static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "aaaa" ) );
+    }
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterLayoutItem param2( QStringLiteral( "layout" ), QStringLiteral( "layout" ), QVariant(), QString(), -1, true );
+
+    QgsProcessingLayoutItemWidgetWrapper wrapper2( &param2, type );
+    wrapper2.setWidgetContext( widgetContext );
+    w = wrapper2.createWrappedWidget( context );
+    wrapper2.setLayout( l1 );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "b", context );
+    QCOMPARE( spy2.count(), 1 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), label2->uuid() );
+      QCOMPARE( static_cast< QgsLayoutItemComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "b" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "b" ) );
+    }
+    wrapper2.setWidgetValue( "a", context );
+    QCOMPARE( spy2.count(), 2 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), label1->uuid() );
+      QCOMPARE( static_cast< QgsLayoutItemComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "a" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "a" ) );
+    }
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 3 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QVERIFY( static_cast< QgsLayoutItemComboBox * >( wrapper2.wrappedWidget() )->currentText().isEmpty() );
+    }
+    else
+    {
+      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+      static_cast< QgsLayoutItemComboBox * >( wrapper2.wrappedWidget() )->setCurrentIndex( 1 );
+    else
+      static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "aaa" ) );
+    QCOMPARE( spy2.count(), 4 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 
 }
 
