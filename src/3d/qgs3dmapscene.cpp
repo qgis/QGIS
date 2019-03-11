@@ -365,6 +365,8 @@ void Qgs3DMapScene::createTerrain()
 
     mTerrain->deleteLater();
     mTerrain = nullptr;
+
+    emit terrainEntityChanged();
   }
 
   if ( !mTerrainUpdateScheduled )

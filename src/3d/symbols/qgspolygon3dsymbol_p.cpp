@@ -209,6 +209,21 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
           extrusionHeightPerPolygon.append( extrusionHeight );
       }
     }
+    else if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( g ) )
+    {
+      for ( int i = 0; i < gc->numGeometries(); ++i )
+      {
+        const QgsAbstractGeometry *g2 = gc->geometryN( i );
+        if ( QgsWkbTypes::flatType( g2->wkbType() ) != QgsWkbTypes::Polygon )
+          continue;
+        QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
+        Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
+        polygons.append( polyClone );
+        fids.append( f.id() );
+        if ( hasDDExtrusion )
+          extrusionHeightPerPolygon.append( extrusionHeight );
+      }
+    }
     else
       qDebug() << "not a polygon";
   }
