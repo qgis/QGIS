@@ -2338,13 +2338,13 @@ class TestQgsGeometry(unittest.TestCase):
         g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         expWkt = g.asWkt()
         g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(-1, -1)]))
-        assert compareWkt(g.asWkt(), expWkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        self.assertTrue(compareWkt(g.asWkt(), expWkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
         # Test reshape a polygon with a line starting or ending at the polygon's first vertex
         g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
-        g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(0.5, 0.5), QgsPoint(0, 1)]))
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(0.5, 0.5), QgsPoint(0, 1)])), QgsGeometry.Success)
         expWkt = 'Polygon ((0 0, 1 0, 1 1, 0 1, 0.5 0.5, 0 0))'
-        assert compareWkt(g.asWkt(), expWkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+        self.assertTrue(compareWkt(g.asWkt(), expWkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
         # Test reshape a line from first/last vertex
         g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1)')
