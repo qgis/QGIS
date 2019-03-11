@@ -14,8 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
-
 #include "qgslayoutaligner.h"
 #include "qgslayoutitem.h"
 #include "qgslayout.h"
@@ -126,13 +124,16 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
       case DistributeHSpace:
       case DistributeVSpace:
         // not reachable branch, just to avoid compilation warning
-        return nan( "" );
+        return std::numeric_limits<double>::quiet_NaN();
     }
     // no warnings
     return itemBBox.left();
   };
 
 
+  double minCoord = std::numeric_limits<double>::max();
+  double maxCoord = std::numeric_limits<double>::lowest();
+  QMap< double, QgsLayoutItem * > itemCoords;
   for ( QgsLayoutItem *item : items )
   {
     double refCoord = collectReferenceCoord( item );
@@ -141,7 +142,7 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
     itemCoords.insert( refCoord, item );
   }
 
-  step = ( maxCoord - minCoord ) / ( items.size() - 1 );
+  const double step = ( maxCoord - minCoord ) / ( items.size() - 1 );
 
   auto distributeItemToCoord = [layout, distribution]( QgsLayoutItem * item, double refCoord )
   {
