@@ -491,7 +491,7 @@ Add a new field which is calculated by the expression specified
 
     void removeExpressionField( int index );
 %Docstring
-Remove an expression field
+Removes an expression field
 
 :param index: The index of the field
 
@@ -539,7 +539,7 @@ Returns the number of features that are selected in this layer.
 
     void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
 %Docstring
-Select features found within the search rectangle (in layer's coordinates)
+Selects features found within the search rectangle (in layer's coordinates)
 
 :param rect: search rectangle
 :param behavior: selection type, allows adding to current selection, removing
@@ -554,7 +554,7 @@ Select features found within the search rectangle (in layer's coordinates)
 
     void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
 %Docstring
-Select matching features using an expression.
+Selects matching features using an expression.
 
 :param expression: expression to evaluate to select features
 :param behavior: selection type, allows adding to current selection, removing
@@ -569,7 +569,7 @@ Select matching features using an expression.
 
     void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 %Docstring
-Select matching features using a list of feature IDs. Will emit the
+Selects matching features using a list of feature IDs. Will emit the
 selectionChanged() signal with the clearAndSelect flag set.
 
 :param ids: feature IDs to select
@@ -601,7 +601,7 @@ Modifies the current selection on this layer
 
     void invertSelection();
 %Docstring
-Select not selected features and deselect selected ones
+Selects not selected features and deselects selected ones
 %End
 
     void selectAll();
@@ -611,7 +611,7 @@ Select all the features
 
     void invertSelectionInRectangle( QgsRectangle &rect );
 %Docstring
-Invert selection of features found within the search rectangle (in layer's coordinates)
+Inverts selection of features found within the search rectangle (in layer's coordinates)
 
 :param rect: The rectangle in which the selection of features will be inverted
 
@@ -725,7 +725,7 @@ Returns renderer.
 
     void setRenderer( QgsFeatureRenderer *r /Transfer/ );
 %Docstring
-Set renderer which will be invoked to represent this layer.
+Sets renderer which will be invoked to represent this layer.
 Ownership is transferred.
 %End
 
@@ -758,7 +758,7 @@ Reads vector layer specific state from project file Dom node.
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const ${SIP_FINAL};
 
 %Docstring
-Write vector layer specific state to project file Dom node.
+Writes vector layer specific state to project file Dom node.
 
 .. note::
 
@@ -773,7 +773,7 @@ Write vector layer specific state to project file Dom node.
     virtual void resolveReferences( QgsProject *project ) ${SIP_FINAL};
 
 %Docstring
-Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+Resolves references to other layers (kept as layer IDs after reading XML) into layer objects.
 
 .. versionadded:: 3.0
 %End
@@ -782,7 +782,7 @@ Resolve references to other layers (kept as layer IDs after reading XML) into la
                                       bool useAsDefault, const QString &uiFileContent,
                                       QString &msgError /Out/ );
 %Docstring
-Save named and sld style of the layer to the style table in the db.
+Saves named and sld style of the layer to the style table in the db.
 
 :param name:
 :param description:
@@ -809,12 +809,12 @@ Lists all the style in db split into related to the layer and not related to
 
     virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
 %Docstring
-Will return the named style corresponding to style id provided
+Returns the named style corresponding to style id provided
 %End
 
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
 %Docstring
-Delete a style from the database
+Deletes a style from the database
 
 :param styleId: the provider's layer_styles table id of the style to delete
 
@@ -827,7 +827,7 @@ Delete a style from the database
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb,
                                     QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 %Docstring
-Load a named style from file/local db/datasource db
+Loads a named style from file/local db/datasource db
 
 :param theURI: the URI of the style or the URI of the layer
 :param resultFlag: will be set to ``True`` if a named style is correctly loaded
@@ -879,7 +879,7 @@ Returns the current auxiliary layer.
      virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) ${SIP_FINAL};
 %Docstring
-Read the symbology for the current layer from the Dom node supplied.
+Reads the symbology for the current layer from the Dom node supplied.
 
 :param layerNode: node that will contain the symbology definition for this layer.
 :param errorMessage: reference to string that will be updated with any error messages
@@ -892,7 +892,7 @@ Read the symbology for the current layer from the Dom node supplied.
      virtual bool readStyle( const QDomNode &node, QString &errorMessage,
                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) ${SIP_FINAL};
 %Docstring
-Read the style for the current layer from the Dom node supplied.
+Reads the style for the current layer from the Dom node supplied.
 
 :param node: node that will contain the style definition for this layer.
 :param errorMessage: reference to string that will be updated with any error messages
@@ -905,7 +905,7 @@ Read the style for the current layer from the Dom node supplied.
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                          const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const ${SIP_FINAL};
 %Docstring
-Write the symbology for the layer into the docment provided.
+Writes the symbology for the layer into the document provided.
 
 :param node: the node that will have the style element added to it.
 :param doc: the document that will have the QDomNode added.
@@ -919,7 +919,7 @@ Write the symbology for the layer into the docment provided.
      virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const ${SIP_FINAL};
 %Docstring
-Write just the style information for the layer into the document
+Writes just the style information for the layer into the document
 
 :param node: the node that will have the style element added to it.
 :param doc: the document that will have the QDomNode added.
@@ -1023,7 +1023,7 @@ notified when the freshly updated feature counts are ready.
 
     virtual bool setSubsetString( const QString &subset );
 %Docstring
-Set the string (typically sql) used to define a subset of the layer
+Sets the string (typically sql) used to define a subset of the layer
 
 :param subset: The subset string. This may be the where clause of a sql statement
                or other definition string specific to the underlying dataprovider
@@ -1042,7 +1042,7 @@ Returns the string (typically sql) used to define a subset of the layer.
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const ${SIP_FINAL};
 
 %Docstring
-Query the layer for features specified in request.
+Queries the layer for features specified in request.
 
 :param request: feature request describing parameters of features to return
 
@@ -1051,29 +1051,29 @@ Query the layer for features specified in request.
 
     QgsFeatureIterator getFeatures( const QString &expression );
 %Docstring
-Query the layer for features matching a given expression.
+Queries the layer for features matching a given expression.
 %End
 
     QgsFeature getFeature( QgsFeatureId fid ) const;
 %Docstring
-Query the layer for the feature with the given id.
+Queries the layer for the feature with the given id.
 If there is no such feature, the returned feature will be invalid.
 %End
 
     QgsGeometry getGeometry( QgsFeatureId fid ) const;
 %Docstring
-Query the layer for the geometry at the given id.
+Queries the layer for the geometry at the given id.
 If there is no such feature, the returned geometry will be invalid.
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureIds &fids );
 %Docstring
-Query the layer for the features with the given ids.
+Queries the layer for the features with the given ids.
 %End
 
     QgsFeatureIterator getFeatures( const QgsRectangle &rectangle );
 %Docstring
-Query the layer for the features which intersect the specified rectangle.
+Queries the layer for the features which intersect the specified rectangle.
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) ${SIP_FINAL};
@@ -1116,8 +1116,9 @@ Returns ``True`` if the feature's attribute was successfully changed.
 
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
-Insert a new vertex before the given vertex number,
-in the given ring, item (first number is index 0), and feature
+Inserts a new vertex before the given vertex number,
+in the given ring, item (first number is index 0), and feature.
+
 Not meaningful for Point geometries
 
 .. note::
@@ -1130,8 +1131,9 @@ Not meaningful for Point geometries
 
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
-Insert a new vertex before the given vertex number,
-in the given ring, item (first number is index 0), and feature
+Inserts a new vertex before the given vertex number,
+in the given ring, item (first number is index 0), and feature.
+
 Not meaningful for Point geometries
 
 .. note::
@@ -1146,7 +1148,7 @@ Not meaningful for Point geometries
 %Docstring
 Moves the vertex at the given position number,
 ring and item (first number is index 0), and feature
-to the given coordinates
+to the given coordinates.
 
 .. note::
 
@@ -1160,7 +1162,7 @@ to the given coordinates
 %Docstring
 Moves the vertex at the given position number,
 ring and item (first number is index 0), and feature
-to the given coordinates
+to the given coordinates.
 
 .. note::
 
@@ -1434,7 +1436,7 @@ Access to labeling configuration. May be null if labeling is not used.
 
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling /Transfer/ );
 %Docstring
-Set labeling configuration. Takes ownership of the object.
+Sets labeling configuration. Takes ownership of the object.
 
 .. versionadded:: 3.0
 %End
@@ -1513,7 +1515,7 @@ If you need only the count of committed features call this method on this layer'
 
     bool setReadOnly( bool readonly = true );
 %Docstring
-Make layer read-only (editing disabled) or not
+Makes layer read-only (editing disabled) or not
 
 :return: ``False`` if the layer is in editing yet
 %End
@@ -1527,7 +1529,7 @@ specifies the ID of the feature to be changed.
 If ``skipDefaultValue`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value expressions.
 
-Returns ``True`` if the feature's geometry was successfully changed.
+:return: ``True`` if the feature's geometry was successfully changed.
 
 .. note::
 
@@ -1535,6 +1537,7 @@ Returns ``True`` if the feature's geometry was successfully changed.
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+
 
 .. seealso:: :py:func:`startEditing`
 
@@ -1564,7 +1567,7 @@ so it is more efficient to explicitly pass an ``oldValue`` if it is already avai
 If ``skipDefaultValues`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value expressions.
 
-Returns ``True`` if the feature's attribute was successfully changed.
+:return: ``True`` if the feature's attribute was successfully changed.
 
 .. note::
 
@@ -1572,6 +1575,7 @@ Returns ``True`` if the feature's attribute was successfully changed.
    by a call to startEditing(). Changes made to features using this method are not committed
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
+
 
 .. seealso:: :py:func:`startEditing`
 
@@ -1602,7 +1606,7 @@ If ``skipDefaultValues`` is set to ``True``, default field values will not
 be updated. This can be used to override default field value
 expressions.
 
-Returns ``True`` if feature's attributes was successfully changed.
+:return: ``True`` if feature's attributes was successfully changed.
 
 .. note::
 
@@ -1611,6 +1615,7 @@ Returns ``True`` if feature's attributes was successfully changed.
    to features using this method are not committed to the underlying data
    provider until a commitChanges() call is made. Any uncommitted changes
    can be discarded by calling rollBack().
+
 
 .. seealso:: :py:func:`startEditing`
 
@@ -1990,7 +1995,7 @@ Returns the descriptive name for the constraint expression for a specified field
 
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
 %Docstring
-Set the constraint expression for the specified field index. An optional descriptive name for the constraint
+Sets the constraint expression for the specified field index. An optional descriptive name for the constraint
 can also be set. Setting an empty expression will clear any existing expression constraint.
 
 .. seealso:: :py:func:`constraintExpression`
@@ -2133,7 +2138,7 @@ and 1.0 (fully opaque).
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
-Set the simplification settings for fast rendering of features
+Sets the simplification settings for fast rendering of features
 
 .. versionadded:: 2.2
 %End
@@ -2175,7 +2180,7 @@ This defines the appearance of the attribute table.
 
     void setAttributeTableConfig( const QgsAttributeTableConfig &attributeTableConfig );
 %Docstring
-Set the attribute table configuration object.
+Sets the attribute table configuration object.
 This defines the appearance of the attribute table.
 %End
 
@@ -2214,7 +2219,7 @@ Returns the configuration of the form used to represent this vector layer.
 
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 %Docstring
-Set the ``editFormConfig`` (configuration) of the form used to represent this vector layer.
+Sets the ``editFormConfig`` (configuration) of the form used to represent this vector layer.
 
 .. seealso:: :py:func:`editFormConfig`
 
@@ -2241,7 +2246,7 @@ it.
 
     bool isEditCommandActive() const;
 %Docstring
-Test if an edit command is active
+Tests if an edit command is active
 
 .. versionadded:: 3.0
 %End
@@ -2259,7 +2264,7 @@ Configuration and logic to apply automatically on any edit happening on this lay
 
     void select( QgsFeatureId featureId );
 %Docstring
-Select feature by its ID
+Selects feature by its ID
 
 :param featureId: The id of the feature to select
 
@@ -2268,7 +2273,7 @@ Select feature by its ID
 
     void select( const QgsFeatureIds &featureIds );
 %Docstring
-Select features by their ID
+Selects features by their ID
 
 :param featureIds: The ids of the features to select
 
@@ -2277,7 +2282,7 @@ Select features by their ID
 
     void deselect( QgsFeatureId featureId );
 %Docstring
-Deselect feature by its ID
+Deselects feature by its ID
 
 :param featureId: The id of the feature to deselect
 
@@ -2286,7 +2291,7 @@ Deselect feature by its ID
 
     void deselect( const QgsFeatureIds &featureIds );
 %Docstring
-Deselect features by their ID
+Deselects features by their ID
 
 :param featureIds: The ids of the features to deselect
 
@@ -2316,9 +2321,9 @@ This starts an edit session on this layer. Changes made in this edit session wil
 be made persistent until commitChanges() is called, and can be reverted by calling
 rollBack().
 
-Returns ``True`` if the layer was successfully made editable, or ``False`` if the operation
-failed (e.g. due to an underlying read-only data source, or lack of edit support
-by the backend data provider).
+:return: ``True`` if the layer was successfully made editable, or ``False`` if the operation
+         failed (e.g. due to an underlying read-only data source, or lack of edit support
+         by the backend data provider).
 
 .. seealso:: :py:func:`commitChanges`
 
