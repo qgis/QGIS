@@ -185,6 +185,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterBand;
     else if ( sipCpp->type() == QgsProcessingParameterLayout::typeName() )
       sipType = sipType_QgsProcessingParameterLayout;
+    else if ( sipCpp->type() == QgsProcessingParameterLayoutItem::typeName() )
+      sipType = sipType_QgsProcessingParameterLayoutItem;
     else
       sipType = nullptr;
 %End
@@ -2788,6 +2790,90 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterLayout *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+class QgsProcessingParameterLayoutItem : QgsProcessingParameterDefinition
+{
+%Docstring
+A print layout item parameter, allowing users to select a particular item from a print layout.
+
+QgsProcessingParameterLayoutItem should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsLayoutItem()`
+Internally, QgsProcessingParameterLayoutItems are string parameters, storing references to items either by
+their UUID (QgsLayoutItem.uuid()) or ID (QgsLayoutItem.id()).
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterLayoutItem( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                      const QString &parentLayoutParameterName = QString(),
+                                      int itemType = -1,
+                                      bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterLayoutItem.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    static QgsProcessingParameterLayoutItem *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+    QString parentLayoutParameterName() const;
+%Docstring
+Returns the name of the parent layout parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentLayoutParameterName`
+%End
+
+    void setParentLayoutParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent layout parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentLayoutParameterName`
+%End
+
+    int itemType() const;
+%Docstring
+Returns the acceptable item type, or -1 if any item type is allowed.
+
+These values correspond to the registered item types from :py:class:`QgsLayoutItemRegistry`.
+
+.. seealso:: :py:func:`setItemType`
+%End
+
+    void setItemType( int type );
+%Docstring
+Sets the acceptable item ``type``, or -1 if any item type is allowed.
+
+These values correspond to the registered item types from :py:class:`QgsLayoutItemRegistry`.
+
+.. seealso:: :py:func:`itemType`
 %End
 
 };

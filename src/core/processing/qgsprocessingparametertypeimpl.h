@@ -1511,4 +1511,60 @@ class CORE_EXPORT QgsProcessingParameterTypeLayout : public QgsProcessingParamet
 
 
 };
+
+
+
+/**
+ * A print layout item parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('layoutitem')
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingParameterTypeLayoutItem : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterLayoutItem( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A print layout item parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Print Layout Item" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "layoutitem" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterLayoutItem" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterLayoutItem" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: UUID of print layout item" )
+             << QObject::tr( "str: id of print layout item" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "UUID or item id of layout item" );
+    }
+
+
+};
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

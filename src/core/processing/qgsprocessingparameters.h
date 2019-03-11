@@ -260,6 +260,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterBand;
     else if ( sipCpp->type() == QgsProcessingParameterLayout::typeName() )
       sipType = sipType_QgsProcessingParameterLayout;
+    else if ( sipCpp->type() == QgsProcessingParameterLayoutItem::typeName() )
+      sipType = sipType_QgsProcessingParameterLayoutItem;
     else
       sipType = nullptr;
     SIP_END
@@ -2619,6 +2621,82 @@ class CORE_EXPORT QgsProcessingParameterLayout : public QgsProcessingParameterDe
      */
     static QgsProcessingParameterLayout *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+};
+
+/**
+ * \class QgsProcessingParameterLayoutItem
+ * \ingroup core
+ * A print layout item parameter, allowing users to select a particular item from a print layout.
+ *
+ * QgsProcessingParameterLayoutItem should be evaluated by calling QgsProcessingAlgorithm::parameterAsLayoutItem().
+ * Internally, QgsProcessingParameterLayoutItems are string parameters, storing references to items either by
+ * their UUID (QgsLayoutItem::uuid()) or ID (QgsLayoutItem::id()).
+ *
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingParameterLayoutItem : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterLayoutItem.
+     */
+    QgsProcessingParameterLayoutItem( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                      const QString &parentLayoutParameterName = QString(),
+                                      int itemType = -1,
+                                      bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "layoutitem" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+    QStringList dependsOnOtherParameters() const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterLayoutItem *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+    /**
+     * Returns the name of the parent layout parameter, or an empty string if this is not set.
+     * \see setParentLayoutParameterName()
+     */
+    QString parentLayoutParameterName() const;
+
+    /**
+     * Sets the \a name of the parent layout parameter. Use an empty string if this is not required.
+     * \see parentLayoutParameterName()
+     */
+    void setParentLayoutParameterName( const QString &name );
+
+    /**
+     * Returns the acceptable item type, or -1 if any item type is allowed.
+     *
+     * These values correspond to the registered item types from QgsLayoutItemRegistry.
+     *
+     * \see setItemType()
+     */
+    int itemType() const;
+
+    /**
+     * Sets the acceptable item \a type, or -1 if any item type is allowed.
+     *
+     * These values correspond to the registered item types from QgsLayoutItemRegistry.
+     *
+     * \see itemType()
+     */
+    void setItemType( int type );
+
+  private:
+    QString mParentLayoutParameterName;
+    int mItemType = -1;
 };
 
 // clazy:excludeall=qstring-allocations

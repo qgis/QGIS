@@ -1521,6 +1521,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterMeshLayer( name ) );
   else if ( type == QgsProcessingParameterLayout::typeName() )
     def.reset( new QgsProcessingParameterLayout( name ) );
+  else if ( type == QgsProcessingParameterLayoutItem::typeName() )
+    def.reset( new QgsProcessingParameterLayoutItem( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
@@ -1607,6 +1609,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterMeshLayer::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "layout" ) )
     return QgsProcessingParameterLayout::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "layoutitem" ) )
+    return QgsProcessingParameterLayoutItem::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -5271,4 +5275,138 @@ QgsProcessingParameterLayout *QgsProcessingParameterLayout::fromScriptCode( cons
     defaultValue = QVariant();
 
   return new QgsProcessingParameterLayout( name, description, defaultValue, isOptional );
+}
+
+
+//
+// QString mParentLayerParameterName;
+//
+
+QgsProcessingParameterLayoutItem::QgsProcessingParameterLayoutItem( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayoutParameterName, int itemType, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mParentLayoutParameterName( parentLayoutParameterName )
+  , mItemType( itemType )
+{
+
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterLayoutItem::clone() const
+{
+  return new QgsProcessingParameterLayoutItem( *this );
+}
+
+QString QgsProcessingParameterLayoutItem::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() || value.isNull() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QString s = value.toString();
+  return QgsProcessingUtils::stringToPythonLiteral( s );
+}
+
+QString QgsProcessingParameterLayoutItem::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "layoutitem " );
+  if ( mItemType >= 0 )
+    code += QString::number( mItemType ) + ' ';
+
+  code += mParentLayoutParameterName + ' ';
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterLayoutItem::asPythonString( QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterLayoutItem('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      if ( mItemType >= 0 )
+        code += QStringLiteral( ", itemType=%1" ).arg( mItemType );
+
+      code += QStringLiteral( ", parentLayoutParameterName='%1'" ).arg( mParentLayoutParameterName );
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+QVariantMap QgsProcessingParameterLayoutItem::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "parent_layout" ), mParentLayoutParameterName );
+  map.insert( QStringLiteral( "item_type" ), mItemType );
+  return map;
+}
+
+bool QgsProcessingParameterLayoutItem::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentLayoutParameterName = map.value( QStringLiteral( "parent_layout" ) ).toString();
+  mItemType = map.value( QStringLiteral( "item_type" ) ).toInt();
+  return true;
+}
+
+QStringList QgsProcessingParameterLayoutItem::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentLayoutParameterName.isEmpty() )
+    depends << mParentLayoutParameterName;
+  return depends;
+}
+
+QgsProcessingParameterLayoutItem *QgsProcessingParameterLayoutItem::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString parent;
+  QString def = definition;
+  int itemType = -1;
+  QRegularExpression re( QStringLiteral( "(\\d+)?\\s*(.*?)\\s+(.*)$" ) );
+  QRegularExpressionMatch m = re.match( def );
+  if ( m.hasMatch() )
+  {
+    itemType = m.captured( 1 ).trimmed().isEmpty() ? -1 : m.captured( 1 ).trimmed().toInt();
+    parent = m.captured( 2 ).trimmed().isEmpty() ? m.captured( 3 ).trimmed() : m.captured( 2 ).trimmed();
+    def = !m.captured( 2 ).trimmed().isEmpty() ? m.captured( 3 ) : QString();
+  }
+  else
+  {
+    parent = def;
+    def.clear();
+  }
+
+  return new QgsProcessingParameterLayoutItem( name, description, def.isEmpty() ? QVariant() : def, parent, itemType, isOptional );
+}
+
+QString QgsProcessingParameterLayoutItem::parentLayoutParameterName() const
+{
+  return mParentLayoutParameterName;
+}
+
+void QgsProcessingParameterLayoutItem::setParentLayoutParameterName( const QString &name )
+{
+  mParentLayoutParameterName = name;
+}
+
+int QgsProcessingParameterLayoutItem::itemType() const
+{
+  return mItemType;
+}
+
+void QgsProcessingParameterLayoutItem::setItemType( int type )
+{
+  mItemType = type;
 }
