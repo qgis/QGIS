@@ -2652,7 +2652,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     // check signal
     if ( type != QgsProcessingGui::Modeler )
     {
-      static_cast< QComboBox * >( wrapper.wrappedWidget() )->setCurrentIndex( 0 );
+      static_cast< QComboBox * >( wrapper.wrappedWidget() )->setCurrentIndex( 1 );
     }
     else
     {
