@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
+#include "qgslayoutitemlabel.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -58,6 +59,7 @@ class TestQgsLayoutModel : public QObject
     void reorderToTopWithRemoved(); //test reordering to top with removed items
     void reorderToBottomWithRemoved(); //test reordering to bottom with removed items
 
+    void proxy();
     void proxyCrash();
 
 };
@@ -769,6 +771,48 @@ void TestQgsLayoutModel::reorderToBottomWithRemoved()
   QCOMPARE( layout.itemsModel()->mItemsInScene.size(), 2 );
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 0 ), item1 );
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 1 ), item2 );
+}
+
+void TestQgsLayoutModel::proxy()
+{
+  QgsLayout *layout = new QgsLayout( QgsProject::instance() );
+  QgsLayoutProxyModel *proxy = new QgsLayoutProxyModel( layout );
+  // add some items to composition
+  QgsLayoutItemMap *item1 = new QgsLayoutItemMap( layout );
+  item1->setId( QStringLiteral( "c" ) );
+  layout->addLayoutItem( item1 );
+  QgsLayoutItemMap *item2 = new QgsLayoutItemMap( layout );
+  item2->setId( QStringLiteral( "b" ) );
+  layout->addLayoutItem( item2 );
+  QgsLayoutItemLabel *item3 = new QgsLayoutItemLabel( layout );
+  item3->setId( QStringLiteral( "a" ) );
+  layout->addLayoutItem( item3 );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 3 );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
+  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
+
+  proxy->setAllowEmptyItem( true );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 4 );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
+  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
+  QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), QString() );
+
+  proxy->setFilterType( QgsLayoutItemRegistry::LayoutMap );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 3 );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
+  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QString() );
+
+  proxy->setFilterType( QgsLayoutItemRegistry::LayoutLabel );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 2 );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QString() );
+
+  proxy->setFilterType( QgsLayoutItemRegistry::LayoutScaleBar );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 1 );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QString() );
 }
 
 void TestQgsLayoutModel::proxyCrash()

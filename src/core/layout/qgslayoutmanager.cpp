@@ -323,7 +323,7 @@ QgsLayoutManagerModel::QgsLayoutManagerModel( QgsLayoutManager *manager, QObject
 int QgsLayoutManagerModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return mLayoutManager->layouts().count() + ( mAllowEmpty ? 1 : 0 );
+  return ( mLayoutManager ? mLayoutManager->layouts().count() : 0 ) + ( mAllowEmpty ? 1 : 0 );
 }
 
 QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
@@ -339,11 +339,11 @@ QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
     case Qt::EditRole:
-      return !isEmpty ? mLayoutManager->layouts().at( layoutRow )->name() : QVariant();
+      return !isEmpty && mLayoutManager ? mLayoutManager->layouts().at( layoutRow )->name() : QVariant();
 
     case LayoutRole:
     {
-      if ( isEmpty )
+      if ( isEmpty || !mLayoutManager )
         return QVariant();
       else if ( QgsLayout *l = dynamic_cast< QgsLayout * >( mLayoutManager->layouts().at( layoutRow ) ) )
         return QVariant::fromValue( l );
@@ -355,7 +355,7 @@ QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
 
     case Qt::DecorationRole:
     {
-      return isEmpty ? QIcon() : mLayoutManager->layouts().at( layoutRow )->icon();
+      return isEmpty || !mLayoutManager ? QIcon() : mLayoutManager->layouts().at( layoutRow )->icon();
     }
 
     default:

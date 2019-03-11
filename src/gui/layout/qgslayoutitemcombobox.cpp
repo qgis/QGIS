@@ -35,6 +35,11 @@ void QgsLayoutItemComboBox::setCurrentLayout( QgsLayout *layout )
   mProxyModel->sort( 0, Qt::AscendingOrder );
 }
 
+QgsLayout *QgsLayoutItemComboBox::currentLayout()
+{
+  return mProxyModel->layout();
+}
+
 void QgsLayoutItemComboBox::setItem( const QgsLayoutItem *item )
 {
   if ( !mProxyModel->sourceLayerModel() )
@@ -50,7 +55,7 @@ void QgsLayoutItemComboBox::setItem( const QgsLayoutItem *item )
       return;
     }
   }
-  setCurrentIndex( -1 );
+  setCurrentIndex( mProxyModel->allowEmptyItem() ? 0 : -1 );
 }
 
 QgsLayoutItem *QgsLayoutItemComboBox::currentItem() const
@@ -95,6 +100,16 @@ void QgsLayoutItemComboBox::setExceptedItemList( const QList<QgsLayoutItem *> &e
 QList< QgsLayoutItem *> QgsLayoutItemComboBox::exceptedItemList() const
 {
   return mProxyModel->exceptedItemList();
+}
+
+void QgsLayoutItemComboBox::setAllowEmptyItem( bool allowEmpty )
+{
+  mProxyModel->setAllowEmptyItem( allowEmpty );
+}
+
+bool QgsLayoutItemComboBox::allowEmptyItem() const
+{
+  return mProxyModel->allowEmptyItem();
 }
 
 QgsLayoutItem *QgsLayoutItemComboBox::item( int index ) const
