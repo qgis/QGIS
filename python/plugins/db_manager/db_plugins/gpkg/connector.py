@@ -25,6 +25,7 @@ from builtins import str
 from functools import cmp_to_key
 
 from qgis.PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtCore import QThread
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -61,6 +62,26 @@ class GPKGDBConnector(DBConnector):
             raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{0}" not found').format(self.dbname))
         self.has_raster = self.gdal_ds.RasterCount != 0 or self.gdal_ds.GetMetadata('SUBDATASETS') is not None
         self.connection = None
+        self._current_thread = None
+
+    @property
+    def connection(self):
+        """Creates and returns a spatialite connection, if
+        the existing connection was created in another thread
+        invalidates it and create a new one.
+        """
+
+        if self._connection is None or self._current_thread != int(QThread.currentThreadId()):
+            self._current_thread = int(QThread.currentThreadId())
+            try:
+                self._connection = spatialite_connect(str(self.dbname))
+            except self.connection_error_types() as e:
+                raise ConnectionError(e)
+        return self._connection
+
+    @connection.setter
+    def connection(self, conn):
+        self._connection = conn
 
     def unquoteId(self, quotedId):
         if len(quotedId) <= 2 or quotedId[0] != '"' or quotedId[len(quotedId) - 1] != '"':
