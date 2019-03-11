@@ -99,62 +99,10 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
   if ( items.size() < 2 )
     return;
 
-  double minCoord = std::numeric_limits<double>::max();
-  double maxCoord = std::numeric_limits<double>::lowest();
-  QMap< double, QgsLayoutItem * > itemCoords;
-
-  double step;
-
   // equispaced distribution doesn't follow the same approach of the other distribution types
   if ( distribution == DistributeHSpace || distribution == DistributeVSpace )
   {
-    double length = 0.0;
-
-    for ( QgsLayoutItem *item : items )
-    {
-      QRectF itemBBox = item->sceneBoundingRect();
-      double item_min, item_max;
-
-      item_min = ( distribution == DistributeHSpace ? itemBBox.left() :
-                   itemBBox.top() );
-      item_max = ( distribution == DistributeHSpace ? itemBBox.right() :
-                   itemBBox.bottom() );
-
-      minCoord = std::min( minCoord, item_min );
-      maxCoord = std::max( maxCoord, item_max );
-      length += ( item_max - item_min );
-      itemCoords.insert( item_min, item );
-    }
-    step = ( maxCoord - minCoord - length ) / ( items.size() - 1 );
-
-    double currentVal = minCoord;
-    layout->undoStack()->beginMacro( undoText( distribution ) );
-    for ( auto itemIt = itemCoords.constBegin(); itemIt != itemCoords.constEnd(); ++itemIt )
-    {
-      QgsLayoutItem *item = itemIt.value();
-      QPointF shifted = item->pos();
-
-      layout->undoStack()->beginCommand( itemIt.value(), QString() );
-
-      if ( distribution == DistributeHSpace )
-      {
-        shifted.setX( currentVal );
-      }
-      else
-      {
-        shifted.setY( currentVal );
-      }
-
-      QgsLayoutPoint newPos = layout->convertFromLayoutUnits( shifted, item->positionWithUnits().units() );
-      item->attemptMove( newPos );
-
-      layout->undoStack()->endCommand();
-
-      currentVal += ( distribution == DistributeHSpace ? item->rect().width() :
-                      item->rect().height() ) + step;
-    }
-    layout->undoStack()->endMacro();
-
+    distributeEquispacedItems( layout, items, distribution );
     return;
   }
 
@@ -421,4 +369,57 @@ QString QgsLayoutAligner::undoText( Alignment alignment )
       return QObject::tr( "Align Items to Bottom" );
   }
   return QString(); //no warnings
+}
+
+void QgsLayoutAligner::distributeEquispacedItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, QgsLayoutAligner::Distribution distribution )
+{
+  double length = 0.0;
+  double minCoord = std::numeric_limits<double>::max();
+  double maxCoord = std::numeric_limits<double>::lowest();
+  QMap< double, QgsLayoutItem * > itemCoords;
+
+  for ( QgsLayoutItem *item : items )
+  {
+    QRectF itemBBox = item->sceneBoundingRect();
+
+    double item_min = ( distribution == DistributeHSpace ? itemBBox.left() :
+                        itemBBox.top() );
+    double item_max = ( distribution == DistributeHSpace ? itemBBox.right() :
+                        itemBBox.bottom() );
+
+    minCoord = std::min( minCoord, item_min );
+    maxCoord = std::max( maxCoord, item_max );
+    length += ( item_max - item_min );
+    itemCoords.insert( item_min, item );
+  }
+  const double step = ( maxCoord - minCoord - length ) / ( items.size() - 1 );
+
+  double currentVal = minCoord;
+  layout->undoStack()->beginMacro( undoText( distribution ) );
+  for ( auto itemIt = itemCoords.constBegin(); itemIt != itemCoords.constEnd(); ++itemIt )
+  {
+    QgsLayoutItem *item = itemIt.value();
+    QPointF shifted = item->pos();
+
+    layout->undoStack()->beginCommand( itemIt.value(), QString() );
+
+    if ( distribution == DistributeHSpace )
+    {
+      shifted.setX( currentVal );
+    }
+    else
+    {
+      shifted.setY( currentVal );
+    }
+
+    QgsLayoutPoint newPos = layout->convertFromLayoutUnits( shifted, item->positionWithUnits().units() );
+    item->attemptMove( newPos );
+
+    layout->undoStack()->endCommand();
+
+    currentVal += ( distribution == DistributeHSpace ? item->rect().width() :
+                    item->rect().height() ) + step;
+  }
+  layout->undoStack()->endMacro();
+  return;
 }
