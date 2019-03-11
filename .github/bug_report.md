@@ -12,7 +12,7 @@ assignees: ''
 
 *Checklist before submitting*
 
-- [ ] *Search in the issues, stackexchange, forums before if the issue already exists*
+- [ ] *Search through existing issue reports and gis.stackexchange.com to check whether the issue already exists*
 - [ ] *Test with a [clean new user profile](https://docs.qgis.org/testing/en/docs/user_manual/introduction/qgis_configuration.html?highlight=profile#working-with-user-profiles).*
 - [ ] *Create a light and self-contained sample dataset and project file which demonstrates the issue*
 
