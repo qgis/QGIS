@@ -20,6 +20,8 @@
 #include "qgis_sip.h"
 #include "qgsmasterlayoutinterface.h"
 #include <QObject>
+#include <QAbstractListModel>
+#include <QSortFilterProxyModel>
 
 class QgsProject;
 class QgsPrintLayout;
@@ -38,7 +40,6 @@ class QgsPrintLayout;
  * in the manager.
  * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsLayoutManager : public QObject
 {
     Q_OBJECT
@@ -145,5 +146,124 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     QList< QgsMasterLayoutInterface * > mLayouts;
 
 };
+
+
+/**
+ * \ingroup core
+ * \class QgsLayoutManagerModel
+ *
+ * List model representing the print layouts and reports available in a
+ * layout manager.
+ *
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+  public:
+
+    //! Custom model roles
+    enum Role
+    {
+      LayoutRole = Qt::UserRole + 1, //!< Layout object
+    };
+
+    /**
+     * Constructor for QgsLayoutManagerModel, showing the layouts from the specified \a manager.
+     */
+    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    int rowCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * Returns the layout at the corresponding \a index.
+     * \see indexFromLayout()
+     */
+    QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns the model index corresponding to a \a layout.
+     * \see layoutFromIndex()
+     */
+    QModelIndex indexFromLayout( QgsMasterLayoutInterface *layout ) const;
+
+    /**
+     * Sets whether an optional empty layout ("not set") option is present in the model.
+     * \see allowEmptyLayout()
+     */
+    void setAllowEmptyLayout( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the model allows the empty layout ("not set") choice.
+     * \see setAllowEmptyLayout()
+     */
+    bool allowEmptyLayout() const { return mAllowEmpty; }
+
+  private slots:
+    void layoutAboutToBeAdded( const QString &name );
+    void layoutAboutToBeRemoved( const QString &name );
+    void layoutAdded( const QString &name );
+    void layoutRemoved( const QString &name );
+    void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
+  private:
+    QgsLayoutManager *mLayoutManager = nullptr;
+    bool mAllowEmpty = false;
+};
+
+
+/**
+ * \ingroup core
+ * \class QgsLayoutManagerProxyModel
+ *
+ * QSortFilterProxyModel subclass for QgsLayoutManagerModel
+ *
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsLayoutManagerProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    //! Available filter flags for filtering the model
+    enum Filter
+    {
+      FilterPrintLayouts = 1 << 1, //!< Includes print layouts
+      FilterReports = 1 << 2, //!< Includes reports
+    };
+    Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
+
+    /**
+     * Constructor for QgsLayoutManagerProxyModel.
+     */
+    explicit QgsLayoutManagerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    /**
+     * Returns the current filters used for filtering available layouts.
+     *
+     * \see setFilters()
+     */
+    QgsLayoutManagerProxyModel::Filters filters() const;
+
+    /**
+     * Sets the current \a filters used for filtering available layouts.
+     *
+     * \see filters()
+     */
+    void setFilters( QgsLayoutManagerProxyModel::Filters filters );
+
+  private:
+
+    Filters mFilters = Filters( FilterPrintLayouts | FilterReports );
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutManagerProxyModel::Filters )
 
 #endif // QGSLAYOUTMANAGER_H
