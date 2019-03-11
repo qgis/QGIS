@@ -1506,7 +1506,7 @@ QgsLayoutItem *QgsProcessingParameters::parameterAsLayoutItem( const QgsProcessi
   if ( id.isEmpty() )
     return nullptr;
 
-  // prefer matching by uuid, since it's gauranteed to be unique.
+  // prefer matching by uuid, since it's guaranteed to be unique.
   if ( QgsLayoutItem *item = layout->itemByUuid( id ) )
     return item;
   else if ( QgsLayoutItem *item = layout->itemById( id ) )
