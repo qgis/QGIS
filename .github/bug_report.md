@@ -14,7 +14,7 @@ assignees: ''
 
 - [ ] *Search in the issues, stackexchange, forums before if the issue already exists*
 - [ ] *Test with a [clean new user profile](https://docs.qgis.org/testing/en/docs/user_manual/introduction/qgis_configuration.html?highlight=profile#working-with-user-profiles).*
-- [ ] *Create light and portable sample dataset and project file that reproduce the issue*
+- [ ] *Create a light and self-contained sample dataset and project file which demonstrates the issue*
 
 *If the issue concerns a **third party plugin**, then it **cannot** be fixed by the QGIS team. Please raise your issue in the dedicated bug tracker for that specific plugin (as listed in the plugin's description).*
 
