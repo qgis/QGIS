@@ -751,7 +751,7 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
       {
         mGeometryGeneratorWarningLabel->setText( QStringLiteral( "<p>%1</p><p><a href=\"#determineGeometryGeneratorType\">%2</a></p>" ).arg(
               tr( "Result of the expression does not match configured geometry type." ),
-              tr( "Fix it" ) ) );
+              tr( "Change to %1" ).arg( QgsWkbTypes::geometryDisplayString( geometry.type() ) ) ) );
         valid = false;
       }
     }
