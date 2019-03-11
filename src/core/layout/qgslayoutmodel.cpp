@@ -958,6 +958,13 @@ QgsLayoutProxyModel::QgsLayoutProxyModel( QgsLayout *layout, QObject *parent )
 
 bool QgsLayoutProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
+  const QString leftText = sourceModel()->data( left, Qt::DisplayRole ).toString();
+  const QString rightText = sourceModel()->data( right, Qt::DisplayRole ).toString();
+  if ( leftText.isEmpty() )
+    return true;
+  if ( rightText.isEmpty() )
+    return false;
+
   //sort by item id
   const QgsLayoutItem *item1 = itemFromSourceIndex( left );
   const QgsLayoutItem *item2 = itemFromSourceIndex( right );
@@ -970,6 +977,35 @@ bool QgsLayoutProxyModel::lessThan( const QModelIndex &left, const QModelIndex &
   return QString::localeAwareCompare( item1->displayName(), item2->displayName() ) < 0;
 }
 
+int QgsLayoutProxyModel::rowCount( const QModelIndex &parent ) const
+{
+  return QSortFilterProxyModel::rowCount( parent ) + ( mAllowEmpty ? 1 : 0 );
+}
+
+QVariant QgsLayoutProxyModel::data( const QModelIndex &index, int role ) const
+{
+  if ( mAllowEmpty && index.row() == rowCount() - 1 )
+  {
+    return QVariant();
+  }
+  else
+  {
+    return QSortFilterProxyModel::data( index, role );
+  }
+}
+
+bool QgsLayoutProxyModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( mAllowEmpty && index.row() == rowCount() - 1 )
+  {
+    return false;
+  }
+  else
+  {
+    return QSortFilterProxyModel::setData( index, value, role );
+  }
+}
+
 QgsLayoutItem *QgsLayoutProxyModel::itemFromSourceIndex( const QModelIndex &sourceIndex ) const
 {
   if ( !mLayout )
@@ -978,6 +1014,17 @@ QgsLayoutItem *QgsLayoutProxyModel::itemFromSourceIndex( const QModelIndex &sour
   //get column corresponding to an index from the source model
   QVariant itemAsVariant = sourceModel()->data( sourceIndex, Qt::UserRole + 1 );
   return qobject_cast<QgsLayoutItem *>( itemAsVariant.value<QObject *>() );
+}
+
+void QgsLayoutProxyModel::setAllowEmptyItem( bool allowEmpty )
+{
+  mAllowEmpty = allowEmpty;
+  invalidateFilter();
+}
+
+bool QgsLayoutProxyModel::allowEmptyItem() const
+{
+  return mAllowEmpty;
 }
 
 void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter )
@@ -1002,7 +1049,7 @@ bool QgsLayoutProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &so
   QgsLayoutItem *item = itemFromSourceIndex( index );
 
   if ( !item )
-    return false;
+    return mAllowEmpty;
 
   // specific exceptions
   if ( mExceptedList.contains( item ) )
