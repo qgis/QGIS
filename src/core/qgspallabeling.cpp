@@ -389,6 +389,109 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   return *this;
 }
 
+bool QgsPalLayerSettings::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( drawLabels )
+  {
+    if ( fieldName.isEmpty() )
+    {
+      return false;
+    }
+
+    if ( isExpression )
+    {
+      QgsExpression exp( fieldName );
+      if ( exp.hasEvalError() )
+      {
+        QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
+        return false;
+      }
+    }
+    else
+    {
+      // If we aren't an expression, we check to see if we can find the column.
+      if ( fields.lookupField( fieldName ) == -1 )
+      {
+        return false;
+      }
+    }
+  }
+
+  mCurFields = fields;
+
+  if ( drawLabels || obstacle )
+  {
+    if ( drawLabels )
+    {
+      // add field indices for label's text, from expression or field
+      if ( isExpression )
+      {
+        // prepare expression for use in QgsPalLayerSettings::registerFeature()
+        QgsExpression *exp = getLabelExpression();
+        exp->prepare( &context.expressionContext() );
+        if ( exp->hasEvalError() )
+        {
+          QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
+        }
+        const auto referencedColumns = exp->referencedColumns();
+        for ( const QString &name : referencedColumns )
+        {
+          attributeNames.insert( name );
+        }
+      }
+      else
+      {
+        attributeNames.insert( fieldName );
+      }
+    }
+
+    mDataDefinedProperties.prepare( context.expressionContext() );
+    // add field indices of data defined expression or field
+    attributeNames.unite( dataDefinedProperties().referencedFields( context.expressionContext() ) );
+  }
+
+  // NOW INITIALIZE QgsPalLayerSettings
+
+  // TODO: ideally these (non-configuration) members should get out of QgsPalLayerSettings to QgsVectorLayerLabelProvider::prepare
+  // (together with registerFeature() & related methods) and QgsPalLayerSettings just stores config
+
+  // save the pal layer to our layer context (with some additional info)
+  fieldIndex = fields.lookupField( fieldName );
+
+  xform = &mapSettings.mapToPixel();
+  ct = QgsCoordinateTransform();
+  if ( context.coordinateTransform().isValid() )
+    // this is context for layer rendering
+    ct = context.coordinateTransform();
+  else
+  {
+    // otherwise fall back to creating our own CT
+    ct = QgsCoordinateTransform( crs, mapSettings.destinationCrs(), mapSettings.transformContext() );
+  }
+  ptZero = xform->toMapCoordinates( 0, 0 );
+  ptOne = xform->toMapCoordinates( 1, 0 );
+
+  // rect for clipping
+  extentGeom = QgsGeometry::fromRect( mapSettings.visibleExtent() );
+  if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
+  {
+    //PAL features are prerotated, so extent also needs to be unrotated
+    extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+  }
+
+  mFeatsSendingToPal = 0;
+
+  if ( !mGeometryGeneratorExpression.isValid() )
+  {
+    mGeometryGeneratorExpression = QgsExpression( geometryGenerator );
+    mGeometryGeneratorExpression.prepare( &context.expressionContext() );
+    if ( mGeometryGeneratorExpression.hasParserError() )
+      QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.parserErrorString() );
+  }
+
+  return true;
+}
+
 
 QgsPalLayerSettings::~QgsPalLayerSettings()
 {
@@ -1222,13 +1325,6 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   QgsFeature feature = f;
   if ( geometryGeneratorEnabled )
   {
-    if ( !mGeometryGeneratorExpression.isValid() )
-    {
-      mGeometryGeneratorExpression = QgsExpression( geometryGenerator );
-      mGeometryGeneratorExpression.prepare( &context.expressionContext() );
-      if ( mGeometryGeneratorExpression.hasParserError() )
-        QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.parserErrorString() );
-    }
     const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
     if ( mGeometryGeneratorExpression.hasEvalError() )
       QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.evalErrorString() );
