@@ -711,11 +711,6 @@ void QgsLabelingGui::showGeometryGeneratorExpressionBuilder()
   expressionBuilder.setExpressionText( mGeometryGenerator->text() );
   expressionBuilder.setExpressionContext( createExpressionContext() );
 
-  QgsDistanceArea da;
-  da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  expressionBuilder.setGeomCalculator( da );
-
   if ( expressionBuilder.exec() )
   {
     mGeometryGenerator->setText( expressionBuilder.expressionText() );
