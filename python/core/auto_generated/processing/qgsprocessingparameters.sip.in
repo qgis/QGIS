@@ -183,6 +183,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterFolderDestination;
     else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
       sipType = sipType_QgsProcessingParameterBand;
+    else if ( sipCpp->type() == QgsProcessingParameterLayout::typeName() )
+      sipType = sipType_QgsProcessingParameterLayout;
     else
       sipType = nullptr;
 %End
@@ -2743,6 +2745,49 @@ Sets whether multiple band selections are permitted.
 .. seealso:: :py:func:`allowMultiple`
 
 .. versionadded:: 3.4
+%End
+
+};
+
+class QgsProcessingParameterLayout : QgsProcessingParameterDefinition
+{
+%Docstring
+A print layout parameter, allowing users to select a print layout.
+
+QgsProcessingParameterLayout should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`
+This will return the name of the target print layout.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterLayout( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                  bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterLayout.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    static QgsProcessingParameterLayout *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
 %End
 
 };
