@@ -1222,7 +1222,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature, QgsGeometry obstacleGeometry )
 {
   QgsFeature feature = f;
-  if ( geometryGeneratorEnabled )
+  if ( geometryGeneratorEnabled && drawLabels )
   {
     if ( !mGeometryGeneratorExpression.isValid() )
     {
