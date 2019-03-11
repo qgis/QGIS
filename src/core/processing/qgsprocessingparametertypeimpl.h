@@ -1458,4 +1458,57 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
 
 };
 
+
+/**
+ * A print layout parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('layout')
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingParameterTypeLayout : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterLayout( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A print layout parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Print Layout" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "layout" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterLayout" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterLayout" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: name of print layout in current project" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of print layout in current project" );
+    }
+
+
+};
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

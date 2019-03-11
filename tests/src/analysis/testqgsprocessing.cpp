@@ -558,6 +558,7 @@ class TestQgsProcessing: public QObject
     void parameterFileOut();
     void parameterFolderOut();
     void parameterBand();
+    void parameterLayout();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -5808,6 +5809,122 @@ void TestQgsProcessing::parameterBand()
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
+}
+
+void TestQgsProcessing::parameterLayout()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterLayout > def( new QgsProcessingParameterLayout( "non_optional", QString(), QString(), false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // string
+  QVariantMap params;
+  params.insert( "non_optional", QString( "abcdef" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString( "abcdef" ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "'5'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc\ndef" ), context ), QStringLiteral( "'abc\\ndef'" ) );
+  QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterLayout('non_optional', '', defaultValue=None)" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layout" ) );
+  std::unique_ptr< QgsProcessingParameterLayout > fromCode( dynamic_cast< QgsProcessingParameterLayout * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterLayout fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  def.reset( dynamic_cast< QgsProcessingParameterLayout *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterLayout *>( def.get() ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterLayout * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=layout None" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QVERIFY( !fromCode->defaultValue().isValid() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterLayout * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=layout it's mario" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "it's mario" ) );
+
+  def->setDefaultValue( QStringLiteral( "it's mario" ) );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterLayout('non_optional', '', defaultValue='it\\'s mario')" ) );
+
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterLayout * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterLayout * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=layout 'my val'" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "my val" ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterLayout * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=layout \"my val\"" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "my val" ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterLayout( "optional", QString(), QString( "default" ), true ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString( "default" ) );
+  params.insert( "optional",  QString() ); //empty string should not result in default value
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString() );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterLayout('optional', '', optional=True, defaultValue='default')" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional layout default" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterLayout * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // not optional, valid default!
+  def.reset( new QgsProcessingParameterLayout( "non_optional", QString(), QString( "def" ), false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be valid, falls back to valid default
 }
 
 void TestQgsProcessing::checkParamValues()

@@ -258,6 +258,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFolderDestination;
     else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
       sipType = sipType_QgsProcessingParameterBand;
+    else if ( sipCpp->type() == QgsProcessingParameterLayout::typeName() )
+      sipType = sipType_QgsProcessingParameterLayout;
     else
       sipType = nullptr;
     SIP_END
@@ -2580,6 +2582,43 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
 
     QString mParentLayerParameterName;
     bool mAllowMultiple = false;
+};
+
+/**
+ * \class QgsProcessingParameterLayout
+ * \ingroup core
+ * A print layout parameter, allowing users to select a print layout.
+ *
+ * QgsProcessingParameterLayout should be evaluated by calling QgsProcessingAlgorithm::parameterAsString().
+ * This will return the name of the target print layout.
+ *
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingParameterLayout : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterLayout.
+     */
+    QgsProcessingParameterLayout( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                  bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "layout" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterLayout *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
 };
 
 // clazy:excludeall=qstring-allocations
