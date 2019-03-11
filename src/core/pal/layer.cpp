@@ -118,7 +118,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   std::unique_ptr<FeaturePart> biggest_part;
 
   // break the (possibly multi-part) geometry into simple geometries
-  QLinkedList<const GEOSGeometry *> *simpleGeometries = Util::unmulti( lf->geometry() );
+  std::unique_ptr<QLinkedList<const GEOSGeometry *>> simpleGeometries( Util::unmulti( lf->geometry() ) );
   if ( !simpleGeometries ) // unmulti() failed?
   {
     throw InternalException::UnknownGeometry();
@@ -203,12 +203,11 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     addFeaturePart( fpart.release(), lf->labelText() );
     addedFeature = true;
   }
-  delete simpleGeometries;
 
   if ( !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
-    simpleGeometries = Util::unmulti( lf->obstacleGeometry() );
+    simpleGeometries.reset( Util::unmulti( lf->obstacleGeometry() ) );
     if ( !simpleGeometries ) // unmulti() failed?
     {
       throw InternalException::UnknownGeometry();
@@ -249,7 +248,6 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       // feature part is ready!
       addObstaclePart( fpart.release() );
     }
-    delete simpleGeometries;
   }
 
   locker.unlock();

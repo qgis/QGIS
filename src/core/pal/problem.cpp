@@ -2138,10 +2138,7 @@ void Problem::chain_search()
 
   featWrap = nullptr;
 
-  for ( i = 0; i < nbft; i++ )
-  {
-    ok[i] = false;
-  }
+  std::fill( ok, ok + nbft, false );
 
   //initialization();
   init_sol_falp();

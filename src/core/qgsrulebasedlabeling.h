@@ -346,8 +346,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root SIP_TRANSFER );
     ~QgsRuleBasedLabeling() override;
 
-    QgsRuleBasedLabeling::Rule *rootRule() { return mRootRule; }
-    const Rule *rootRule() const SIP_SKIP { return mRootRule; }
+    QgsRuleBasedLabeling::Rule *rootRule();
+    const Rule *rootRule() const SIP_SKIP;
 
     //! Create the instance from a DOM element with saved configuration
     static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 
   protected:
-    Rule *mRootRule = nullptr;
+    std::unique_ptr<Rule> mRootRule;
 };
 
 #ifndef SIP_RUN
