@@ -481,7 +481,7 @@ bool QgsPalLayerSettings::prepare( const QgsRenderContext &context, QSet<QString
 
   mFeatsSendingToPal = 0;
 
-  if ( !mGeometryGeneratorExpression.isValid() )
+  if ( geometryGeneratorEnabled )
   {
     mGeometryGeneratorExpression = QgsExpression( geometryGenerator );
     mGeometryGeneratorExpression.prepare( &context.expressionContext() );
