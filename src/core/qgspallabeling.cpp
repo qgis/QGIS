@@ -1221,29 +1221,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature, QgsGeometry obstacleGeometry )
 {
-  QgsFeature feature = f;
-  if ( geometryGeneratorEnabled && drawLabels )
-  {
-    if ( !mGeometryGeneratorExpression.isValid() )
-    {
-      mGeometryGeneratorExpression = QgsExpression( geometryGenerator );
-      mGeometryGeneratorExpression.prepare( &context.expressionContext() );
-      if ( mGeometryGeneratorExpression.hasParserError() )
-        QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.parserErrorString() );
-    }
-    context.expressionContext().setFeature( feature );
-    const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
-    if ( mGeometryGeneratorExpression.hasEvalError() )
-      QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.evalErrorString() );
-
-    feature.setGeometry( geometry );
-  }
-
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngine (labelFeature is set)
   Q_ASSERT( labelFeature );
 
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
-  mCurFeat = &feature;
+  mCurFeat = &f;
 
   // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
   bool isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::IsObstacle, context.expressionContext(), obstacle ); // default to layer default
@@ -1252,12 +1234,27 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     if ( isObstacle )
     {
-      registerObstacleFeature( feature, context, labelFeature, obstacleGeometry );
+      registerObstacleFeature( f, context, labelFeature, obstacleGeometry );
     }
     return;
   }
 
-//  mCurFields = &layer->fields();
+  QgsFeature feature = f;
+  if ( geometryGeneratorEnabled )
+  {
+    if ( !mGeometryGeneratorExpression.isValid() )
+    {
+      mGeometryGeneratorExpression = QgsExpression( geometryGenerator );
+      mGeometryGeneratorExpression.prepare( &context.expressionContext() );
+      if ( mGeometryGeneratorExpression.hasParserError() )
+        QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.parserErrorString() );
+    }
+    const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
+    if ( mGeometryGeneratorExpression.hasEvalError() )
+      QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.evalErrorString() );
+
+    feature.setGeometry( geometry );
+  }
 
   // store data defined-derived values for later adding to label feature for use during rendering
   dataDefinedValues.clear();
