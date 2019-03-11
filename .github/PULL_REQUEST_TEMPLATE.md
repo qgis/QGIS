@@ -13,4 +13,3 @@ Include a few sentences describing the overall goals for this PR (pull request).
 - [ ] This PR passes all existing unit tests (test results will be reported by travis-ci after opening this PR)
 - [ ] New unit tests have been added for core changes
 - [ ] I have run [the `scripts/prepare-commit.sh` script](https://github.com/qgis/QGIS/blob/master/.github/CONTRIBUTING.md#contributing-to-qgis) before each commit
-- [ ] Did not drink while coding
