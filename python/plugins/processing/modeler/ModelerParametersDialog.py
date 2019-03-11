@@ -36,6 +36,7 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QHBoxLayout, QWidget)
 
 from qgis.core import (Qgis,
+                       QgsProject,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterExtent,
@@ -142,6 +143,7 @@ class ModelerParametersDialog(QDialog):
         self.verticalLayout.addWidget(line)
 
         widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
         widget_context.setModel(self.model)

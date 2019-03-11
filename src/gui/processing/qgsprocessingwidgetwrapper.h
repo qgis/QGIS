@@ -94,6 +94,20 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsMapCanvas *mapCanvas() const;
 
     /**
+     * Sets the \a project associated with the widget. This allows the widget to retrieve the map layers
+     * and other properties from the correct project.
+     * \see project()
+     * \since QGIS 3.8
+     */
+    void setProject( QgsProject *project );
+
+    /**
+     * Returns the project associated with the widget.
+     * \see setProject()
+     */
+    QgsProject *project() const;
+
+    /**
      * Returns the model which the parameter widget is associated with.
      *
      * \see setModel()
@@ -132,6 +146,8 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QString mModelChildAlgorithmId;
 
     QgsMapCanvas *mMapCanvas = nullptr;
+
+    QgsProject *mProject = nullptr;
 
 };
 

@@ -41,6 +41,16 @@ QgsMapCanvas *QgsProcessingParameterWidgetContext::mapCanvas() const
   return mMapCanvas;
 }
 
+void QgsProcessingParameterWidgetContext::setProject( QgsProject *project )
+{
+  mProject = project;
+}
+
+QgsProject *QgsProcessingParameterWidgetContext::project() const
+{
+  return mProject;
+}
+
 QString QgsProcessingParameterWidgetContext::modelChildAlgorithmId() const
 {
   return mModelChildAlgorithmId;
