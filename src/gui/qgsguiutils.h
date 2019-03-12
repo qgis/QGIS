@@ -181,6 +181,7 @@ namespace QgsGuiUtils
  * When the object is deleted, the cursor override is removed.
  *
  * \ingroup gui
+ * \see QgsTemporaryCursorRestoreOverride
  * \since QGIS 3.2
  */
 class GUI_EXPORT QgsTemporaryCursorOverride
@@ -212,6 +213,7 @@ class GUI_EXPORT QgsTemporaryCursorOverride
  * When the object is deleted, all stacked cursor overrides are restored.
  *
  * \ingroup gui
+ * \see QgsTemporaryCursorOverride
  * \since QGIS 3.8
  */
 class GUI_EXPORT QgsTemporaryCursorRestoreOverride
