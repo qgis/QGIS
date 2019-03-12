@@ -36,13 +36,13 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
 
   mDatumTransformTableWidget->setColumnCount( 2 );
   QStringList headers;
-  headers << tr( "Source transform" ) << tr( "Destination transform" ) ;
+  headers << tr( "Source Transform" ) << tr( "Destination Transform" ) ;
   mDatumTransformTableWidget->setHorizontalHeaderLabels( headers );
 
   mSourceProjectionSelectionWidget->setCrs( sourceCrs );
   mDestinationProjectionSelectionWidget->setCrs( destinationCrs );
 
-  connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, &QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged );
+  connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [ = ] { load(); } );
   connect( mDatumTransformTableWidget, &QTableWidget::currentItemChanged, this, &QgsDatumTransformDialog::tableCurrentItemChanged );
 
   connect( mSourceProjectionSelectionWidget, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDatumTransformDialog::setSourceCrs );
@@ -67,7 +67,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   load( selectedDatumTransforms );
 }
 
-void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransforms )
+void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
 {
   mDatumTransformTableWidget->setRowCount( 0 );
 
@@ -260,11 +260,6 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTableWidgetItem *i
     return false; //not found in PROJ_LIB directory
   }
   return true;
-}
-
-void QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged( int )
-{
-  load();
 }
 
 void QgsDatumTransformDialog::tableCurrentItemChanged( QTableWidgetItem *, QTableWidgetItem * )
