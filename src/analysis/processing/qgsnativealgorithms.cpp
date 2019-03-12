@@ -42,6 +42,7 @@
 #include "qgsalgorithmextractbyexpression.h"
 #include "qgsalgorithmextractbyextent.h"
 #include "qgsalgorithmextractbylocation.h"
+#include "qgsalgorithmextractlayoutmapextent.h"
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmextractzmvalues.h"
 #include "qgsalgorithmfiledownloader.h"
@@ -191,6 +192,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsKMeansClusteringAlgorithm() );
+  addAlgorithm( new QgsLayoutMapExtentToLayerAlgorithm() );
   addAlgorithm( new QgsLineIntersectionAlgorithm() );
   addAlgorithm( new QgsLineSubstringAlgorithm() );
   addAlgorithm( new QgsLoadLayerAlgorithm() );

@@ -34,6 +34,9 @@
 #include "qgsrasterfilewriter.h"
 #include "qgsreclassifyutils.h"
 #include "qgsalgorithmrasterlogicalop.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutitemmap.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -71,6 +74,8 @@ class TestQgsProcessingAlgs: public QObject
 
     void rasterLogicOp_data();
     void rasterLogicOp();
+
+    void layoutMapExtent();
 
   private:
 
@@ -1114,6 +1119,132 @@ void TestQgsProcessingAlgs::rasterLogicOp()
       QCOMPARE( res2[row * nCols + col], expectedAnd[row * nCols + col] );
     }
   }
+}
+
+void TestQgsProcessingAlgs::layoutMapExtent()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayoutmapextenttolayer" ) ) );
+  QVERIFY( alg != nullptr );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "l" ) );
+  parameters.insert( QStringLiteral( "MAP" ), QStringLiteral( "m" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  // no layout
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->setName( QStringLiteral( "l" ) );
+  p.layoutManager()->addLayout( layout );
+
+  // no matching map
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
+  layout->addLayoutItem( map );
+  map->setId( QStringLiteral( "m" ) );
+  map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  map->attemptSetSceneRect( QRectF( 100, 100, 150, 180 ) );
+  map->zoomToExtent( QgsRectangle( 10000, 100000, 60000, 180000 ) );
+  map->setMapRotation( 45 );
+  map->setScale( 10000 );
+  QgsLayoutItemMap *map2 = new QgsLayoutItemMap( layout );
+  layout->addLayoutItem( map2 );
+  map2->setId( QStringLiteral( "m2" ) );
+  map2->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3785" ) ) );
+  map2->attemptSetSceneRect( QRectF( 100, 100, 50, 80 ) );
+  map2->zoomToExtent( QgsRectangle( 10000, 100000, 5000, 8000 ) );
+  map2->setMapRotation( 0 );
+  map2->setScale( 1000 );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "WIDTH" ) ).toDouble(), 150.0 );
+  QCOMPARE( results.value( QStringLiteral( "HEIGHT" ) ).toDouble(), 180.0 );
+  QCOMPARE( results.value( QStringLiteral( "SCALE" ) ).toDouble(), 10000.0 );
+  QCOMPARE( results.value( QStringLiteral( "ROTATION" ) ).toDouble(), 45.0 );
+
+  QgsFeature f;
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QVERIFY( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
+  QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((33833 140106, 34894 141167, 36167 139894, 35106 138833, 33833 140106))" ) );
+
+  // all maps
+  parameters.remove( QStringLiteral( "MAP" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "WIDTH" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "HEIGHT" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "SCALE" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "ROTATION" ) ).isValid() );
+
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:3785" ) );
+  QgsFeatureIterator it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
+  QgsFeature f1;
+  QVERIFY( it.nextFeature( f1 ) );
+  QgsFeature f2;
+  QVERIFY( it.nextFeature( f2 ) );
+  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f1 : f2;
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
+  QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((12077408 -7108521, 12079627 -7107575, 12080760 -7110245, 12078540 -7111191, 12077408 -7108521))" ) );
+  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f2 : f1;
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m2" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 50.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 80.0 );
+  QGSCOMPARENEAR( f.attribute( 3 ).toDouble(), 1000.0, 0.0001 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 0.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((7475 54040, 7525 54040, 7525 53960, 7475 53960, 7475 54040))" ) );
+
+  // crs override
+  parameters.insert( QStringLiteral( "CRS" ),  QStringLiteral( "EPSG:3111" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "WIDTH" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "HEIGHT" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "SCALE" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "ROTATION" ) ).isValid() );
+
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
+  QVERIFY( it.nextFeature( f1 ) );
+  QVERIFY( it.nextFeature( f2 ) );
+  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f1 : f2;
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
+  QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((33833 140106, 34894 141167, 36167 139894, 35106 138833, 33833 140106))" ) );
+  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f2 : f1;
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m2" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 50.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 80.0 );
+  QGSCOMPARENEAR( f.attribute( 3 ).toDouble(), 1000.0, 0.0001 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 0.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((-10399464 -5347896, -10399461 -5347835, -10399364 -5347840, -10399367 -5347901, -10399464 -5347896))" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
