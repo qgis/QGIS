@@ -2132,40 +2132,6 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-#if 0
-void QgsMapCanvas::getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
-{
-  if ( !source.isValid() || !destination.isValid() )
-    return;
-
-  //check if default datum transformation available
-  QgsSettings s;
-  QString settingsString = "/Projections/" + source.authid() + "//" + destination.authid();
-  QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
-  QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
-  if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
-  {
-    int sourceDatumTransform = defaultSrcTransform.toInt();
-    int destinationDatumTransform = defaultDestTransform.toInt();
-
-    QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-    context.addSourceDestinationDatumTransform( source, destination, sourceDatumTransform, destinationDatumTransform );
-    QgsProject::instance()->setTransformContext( context );
-    return;
-  }
-
-  if ( !s.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool() )
-  {
-    return;
-  }
-
-  //if several possibilities:  present dialog
-  QgsDatumTransformDialog d( source, destination );
-  if ( d.availableTransformationCount() > 1 )
-    d.exec();
-}
-#endif
-
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 {
   if ( mScaleLocked )

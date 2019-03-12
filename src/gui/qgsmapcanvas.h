@@ -678,11 +678,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
 
-#if 0
-    //! ask user about datum transformation
-    void getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
-#endif
-
     /**
      * Sets the factor of magnification to apply to the map canvas. Indeed, we
      * increase/decrease the DPI of the map settings according to this factor

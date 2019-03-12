@@ -776,7 +776,6 @@ called to read map canvas settings from project
 called to write map canvas settings to project
 %End
 
-
     void setMagnificationFactor( double factor );
 %Docstring
 Sets the factor of magnification to apply to the map canvas. Indeed, we
