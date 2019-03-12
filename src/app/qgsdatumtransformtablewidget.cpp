@@ -197,7 +197,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
 void QgsDatumTransformTableWidget::addDatumTransform()
 {
-  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false );
+  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false );
   if ( dlg.exec() )
   {
     QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
@@ -250,7 +250,7 @@ void QgsDatumTransformTableWidget::editDatumTransform()
     if ( sourceCrs.isValid() && destinationCrs.isValid() &&
          ( sourceTransform != -1 || destinationTransform != -1 ) )
     {
-      QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, qMakePair( sourceTransform, destinationTransform ) );
+      QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ) );
       if ( dlg.exec() )
       {
         QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
