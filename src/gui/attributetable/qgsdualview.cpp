@@ -110,8 +110,6 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   // This slows down load of the attribute table heaps and uses loads of memory.
   //mTableView->resizeColumnsToContents();
-
-  mFeatureList->setEditSelection( QgsFeatureIds() << mFeatureListModel->idxToFid( mFeatureListModel->index( 0, 0 ) ) );
 }
 
 void QgsDualView::columnBoxInit()
