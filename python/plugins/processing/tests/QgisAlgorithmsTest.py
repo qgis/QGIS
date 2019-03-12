@@ -30,11 +30,19 @@ import AlgorithmsTestBase
 import nose2
 import shutil
 import os
+import tempfile
+
+from qgis.PyQt.Qt import QDomDocument
 
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeedback,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsProject,
+                       QgsVectorLayer,
+                       QgsPrintLayout,
+                       QgsReadWriteContext,
+                       QgsProcessingContext)
 from qgis.analysis import (QgsNativeAlgorithms)
 from qgis.testing import start_app, unittest
 from processing.tools.dataobjects import createContext
@@ -107,6 +115,57 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             exec(import_string)
             # and now we should be able to instantiate an object!
             exec('test = {}(\'id\',\'name\')\nself.assertIsNotNone(test)'.format(t.className()))
+
+    def testCreateGridFromLayout(self):
+
+        testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
+        temp_dir = tempfile.mkdtemp()
+
+        p = QgsProject().instance()
+        source = os.path.join(testDataPath, 'airports.gml')
+        vl = QgsVectorLayer(source)
+        self.assertTrue(vl.isValid())
+        p.addMapLayer(vl)
+
+        pl = QgsPrintLayout(p)
+
+        doc = QDomDocument()
+        f = open(os.path.join(testDataPath, 'test_layout.qpt'))
+        doc.setContent(f.read())
+        f.close()
+
+        pl.loadFromTemplate(doc, QgsReadWriteContext())
+        layoutname = pl.name()
+        mapuuid = pl.referenceMap().uuid()
+
+        lomanager = p.layoutManager()
+        lomanager.addLayout(pl)
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('qgis:createatlasgrid')
+
+        self.assertIsNotNone(alg)
+
+        temp_file = os.path.join(temp_dir, 'grid.shp')
+        parameters = {'LAYOUT': layoutname,
+                      'MAP': mapuuid,
+                      'COVERAGE_LAYER': vl,
+                      'COVERAGE_BUFFER': 0,
+                      'ONLY_ON_FEATURES': True,
+                      'OUTPUT': temp_file}
+        context = QgsProcessingContext()
+        context.setProject(p)
+        feedback = QgsProcessingFeedback()
+
+        results, ok = alg.run(parameters, context, feedback)
+
+        self.assertTrue(ok)
+        self.assertTrue(os.path.exists(temp_file))
+
+        res = QgsVectorLayer(temp_file, 'res')
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.featureCount(), 37)
+
+        QgsProject.instance().removeMapLayer(vl)
 
 
 if __name__ == '__main__':
