@@ -554,7 +554,17 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   e->setMapPoint( point );
 
   mSnapMatch = context.snappingUtils->snapToMap( point );
-
+  /*
+   * Constraints are applied in 2D, they are always called when using the tool
+   * but they do not take into account if when you snap on a vertex it has
+   * a Z value.
+   * To get the value we use the snapPoint method. However, we only apply it
+   * when the snapped point corresponds to the constrained point.
+   */
+  if ( mSnapMatch.hasVertex() && ( point == mSnapMatch.point() ) )
+  {
+    e->snapPoint();
+  }
   // update the point list
   updateCurrentPoint( point );
 
