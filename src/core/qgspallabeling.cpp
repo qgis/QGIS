@@ -1338,6 +1338,15 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     if ( mGeometryGeneratorExpression.hasEvalError() )
       QgsMessageLog::logMessage( QObject::tr( "Labeling" ), mGeometryGeneratorExpression.evalErrorString() );
 
+    if ( obstacleGeometry.isNull() )
+    {
+      // if an explicit obstacle geometry hasn't been set, we must always use the original feature geometry
+      // as the obstacle -- because we want to use the geometry which was used to render the symbology
+      // for the feature as the obstacle for other layers' labels, NOT the generated geometry which is used
+      // only to place labels for this layer.
+      obstacleGeometry = f.geometry();
+    }
+
     feature.setGeometry( geometry );
   }
 
