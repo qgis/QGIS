@@ -195,6 +195,16 @@ int QgsDatumTransformDialog::availableTransformationCount()
   return mDatumTransforms.count();
 }
 
+bool QgsDatumTransformDialog::shouldAskUserForSelection()
+{
+  if ( availableTransformationCount() > 1 )
+  {
+    return QgsSettings().value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+  }
+  // TODO: show if transform grids are required, but missing
+  return false;
+}
+
 QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > QgsDatumTransformDialog::selectedDatumTransforms()
 {
   int row = mDatumTransformTableWidget->currentRow();
