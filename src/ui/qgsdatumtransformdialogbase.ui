@@ -32,7 +32,7 @@
      <item>
       <widget class="QCheckBox" name="mHideDeprecatedCheckBox">
        <property name="text">
-        <string>Hide deprecated</string>
+        <string>Hide deprecated transformations</string>
        </property>
       </widget>
      </item>
