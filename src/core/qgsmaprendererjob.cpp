@@ -87,7 +87,8 @@ bool QgsMapRendererJob::prepareLabelCache() const
 
   // calculate which layers will be labeled
   QSet< QgsMapLayer * > labeledLayers;
-  Q_FOREACH ( const QgsMapLayer *ml, mSettings.layers() )
+  const QList<QgsMapLayer *> layers = mSettings.layers();
+  for ( const QgsMapLayer *ml : layers )
   {
     QgsVectorLayer *vl = const_cast< QgsVectorLayer * >( qobject_cast<const QgsVectorLayer *>( ml ) );
     if ( vl && QgsPalLabeling::staticWillUseLayer( vl ) )
@@ -314,7 +315,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       job.cached = true;
       job.imageInitialized = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
-      job.img->setDevicePixelRatio( mSettings.devicePixelRatio() );
+      job.img->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
       job.renderer = nullptr;
       job.context.setPainter( nullptr );
       continue;
@@ -328,7 +329,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       // Flattened image for drawing when a blending mode is set
       QImage *mypFlattenedImage = new QImage( mSettings.deviceOutputSize(),
                                               mSettings.outputImageFormat() );
-      mypFlattenedImage->setDevicePixelRatio( mSettings.devicePixelRatio() );
+      mypFlattenedImage->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
       if ( mypFlattenedImage->isNull() )
       {
         mErrors.append( Error( ml->id(), tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );

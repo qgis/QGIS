@@ -261,6 +261,20 @@ class QgsPalLayerSettings
       AlwaysShow
     };
 
+
+    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames /In,Out/, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Prepare for registration of features.
+The ``context``, ``mapSettings`` and ``fields`` parameters give more
+information about the rendering environment.
+If target ``crs`` is not specified, the targetCrs from ``mapSettings``
+will be taken.
+The parameter ``attributeNames`` should be updated to contain all the field
+names which the labeling requires for the rendering.
+
+.. versionadded:: 3.8
+%End
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the labeling property definitions.
@@ -389,6 +403,12 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
     ObstacleType obstacleType;
 
     double zIndex;
+
+    QString geometryGenerator;
+
+    QgsWkbTypes::GeometryType geometryGeneratorType;
+
+    bool geometryGeneratorEnabled;
 
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0 );
 %Docstring

@@ -233,7 +233,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   if ( mLayer->dataProvider() )//enable spatial index button group if supported by provider
   {
-    int capabilities = mLayer->dataProvider()->capabilities();
+    QgsVectorDataProvider::Capabilities capabilities = mLayer->dataProvider()->capabilities();
     if ( !( capabilities & QgsVectorDataProvider::CreateSpatialIndex ) )
     {
       pbnIndex->setEnabled( false );
@@ -1669,7 +1669,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
     mAuxiliaryStorageKeyLineEdit->setText( alayer->joinInfo().targetFieldName() );
 
     // update feature count
-    int features = alayer->featureCount();
+    long features = alayer->featureCount();
     mAuxiliaryStorageFeaturesLineEdit->setText( QString::number( features ) );
 
     // update actions
