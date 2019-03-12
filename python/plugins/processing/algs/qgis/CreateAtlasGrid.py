@@ -93,7 +93,7 @@ class CreateAtlasGrid(QgisAlgorithm):
                                                             self.tr('Grid'),
                                                             QgsProcessing.TypeVectorPolygon))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def prepareAlgorithm(self, parameters, context, feedback):
 
         layout = self.parameterAsLayout(parameters, self.LAYOUT, context)
         if layout is None:
@@ -103,7 +103,10 @@ class CreateAtlasGrid(QgisAlgorithm):
         if map is None:
             raise QgsProcessingException('Cannot find matching map item with ID {}'.format(parameters[self.MAP]))
 
-        coverage_layer = self.parameterAsVectorLayer(
+        self.mapheight = map.extent().height()
+        self.mapwidth = map.extent().width()
+
+        self.coverage_layer = self.parameterAsVectorLayer(
             parameters,
             self.COVERAGE_LAYER,
             context
@@ -113,11 +116,16 @@ class CreateAtlasGrid(QgisAlgorithm):
             self.COVERAGE_BUFFER,
             context
         )
-        only_on_features = self.parameterAsBool(
+        self.only_on_features = self.parameterAsBool(
             parameters,
             self.ONLY_ON_FEATURES,
             context
         )
+        self.coverage = self.coverage_layer.sourceExtent().buffered(coverage_distance)
+
+        return True
+
+    def processAlgorithm(self, parameters, context, feedback):
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
@@ -127,54 +135,49 @@ class CreateAtlasGrid(QgisAlgorithm):
             context,
             fields,
             QgsWkbTypes.Polygon,
-            coverage_layer.sourceCrs()
+            self.coverage_layer.sourceCrs()
         )
 
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        h = map.extent().height()
-        w = map.extent().width()
+        xmin = self.coverage.xMinimum()
+        xmax = self.coverage.xMaximum()
+        remainder = (self.mapwidth - ((xmax - xmin) % self.mapwidth)) / 2
 
-        coverage = coverage_layer.sourceExtent().buffered(coverage_distance)
-
-        xmin = coverage.xMinimum()
-        xmax = coverage.xMaximum()
-        remainder = (w - ((xmax - xmin) % w)) / 2
-
-        yMax = coverage.yMaximum()
-        yMin = yMax - h
+        yMax = self.coverage.yMaximum()
+        yMin = yMax - self.mapheight
 
         n = 1
         current_y = 0
         # Columns loop
-        while current_y < coverage.height():
+        while current_y < self.coverage.height():
             current_x = 0
-            xMin = coverage.xMinimum() - remainder
-            xMax = xMin + w
+            xMin = self.coverage.xMinimum() - remainder
+            xMax = xMin + self.mapwidth
             # Lines loop
-            while current_x < coverage.width():
+            while current_x < self.coverage.width():
                 geom = QgsRectangle(xMin, yMin, xMax, yMax)
                 output_feature = QgsFeature()
                 output_feature.setGeometry(QgsGeometry.fromRect(geom))
                 output_feature.setAttributes([n])
-                if only_on_features:
+                if self.only_on_features:
                     fr = QgsFeatureRequest(geom)
                     fr.setFlags(QgsFeatureRequest.ExactIntersect)
                     fr.setNoAttributes()
                     fr.setLimit(1)
 
-                    if len(list(coverage_layer.getFeatures(fr))) > 0:
+                    if len(list(self.coverage_layer.getFeatures(fr))) > 0:
                         sink.addFeatures([output_feature])
                         n += 1
                 else:
                     sink.addFeatures([output_feature])
                     n += 1
                 xMin = xMax
-                xMax = xMax + w
-                current_x += w
+                xMax = xMax + self.mapwidth
+                current_x += self.mapwidth
             yMax = yMin
-            yMin = yMin - h
-            current_y += h
+            yMin = yMin - self.mapheight
+            current_y += self.mapheight
 
         return {self.OUTPUT: dest_id}
