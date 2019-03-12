@@ -101,6 +101,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
       return font;
     }
     case Qt::DisplayRole:
+    case Qt::ToolTipRole:
       switch ( index.column() )
       {
         case SourceCrsColumn:
@@ -149,16 +150,17 @@ QVariant QgsDatumTransformTableModel::headerData( int section, Qt::Orientation o
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::ToolTipRole:
       switch ( section )
       {
         case SourceCrsColumn :
           return tr( "Source CRS" );
         case SourceTransformColumn:
-          return tr( "Source datum transform" );
+          return tr( "Source Datum Transform" );
         case DestinationCrsColumn:
           return tr( "Destination CRS" );
         case DestinationTransformColumn:
-          return tr( "Destination datum transform" );
+          return tr( "Destination Datum Transform" );
         default:
           break;
       }
