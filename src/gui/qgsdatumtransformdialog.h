@@ -55,6 +55,13 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     int availableTransformationCount();
 
     /**
+     * Returns true if the dialog should be shown and the user prompted to make the transformation selection.
+     *
+     * \since QGIS 3.8
+     */
+    bool shouldAskUserForSelection();
+
+    /**
      * Returns the source and destination transforms, each being a pair of QgsCoordinateReferenceSystems and datum transform code
      * \since 3.0
      */

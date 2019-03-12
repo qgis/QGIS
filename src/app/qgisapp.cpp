@@ -7855,8 +7855,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
       //ask user about datum transformation
       QgsSettings settings;
       QgsDatumTransformDialog dlg( vlayer->crs(), destCRS );
-      if ( dlg.availableTransformationCount() > 1 &&
-           settings.value( QStringLiteral( "Projections/showDatumTransformDialog" ), false ).toBool() )
+      if ( dlg.shouldAskUserForSelection() )
       {
         dlg.exec();
       }
@@ -9912,6 +9911,7 @@ void QgisApp::projectCrsChanged()
   }
   else if ( transformsToAskFor.count() > 1 )
   {
+    // TODO - this should actually loop through and ask for each in turn
     bool ask = QgsSettings().value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
     if ( ask )
     {
@@ -9921,8 +9921,6 @@ void QgisApp::projectCrsChanged()
                                         5 );
     }
   }
-
-
 }
 
 // toggle overview status
@@ -13736,14 +13734,9 @@ bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sour
   {
     //if several possibilities:  present dialog
     QgsDatumTransformDialog dlg( sourceCrs, destinationCrs );
-    if ( dlg.availableTransformationCount() > 1 )
+    if ( dlg.shouldAskUserForSelection() )
     {
-      bool ask = QgsSettings().value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
-      if ( !ask )
-      {
-        ok = false;
-      }
-      else if ( dlg.exec() )
+      if ( dlg.exec() )
       {
         QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
         QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
