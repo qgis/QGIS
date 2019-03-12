@@ -45,7 +45,7 @@ The histogram will fetch the ranges from the renderer before every refresh.
 %Docstring
 Emitted when the user modifies the graduated ranges using the histogram widget.
 
-:param rangesAdded: true if the user has added ranges, false if the user has just
+:param rangesAdded: ``True`` if the user has added ranges, ``False`` if the user has just
                     modified existing range breaks
 %End
 

@@ -194,14 +194,14 @@ class CORE_EXPORT QgsProcessingContext
         QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::UnknownType;
 
         /**
-         * Layer post-processor. May be nullptr if no post-processing is required.
+         * Layer post-processor. May be NULLPTR if no post-processing is required.
          * \see setPostProcessor()
          * \since QGIS 3.2
          */
         QgsProcessingLayerPostProcessorInterface *postProcessor() const;
 
         /**
-         * Sets the layer post-processor. May be nullptr if no post-processing is required.
+         * Sets the layer post-processor. May be NULLPTR if no post-processing is required.
          *
          * Ownership of \a processor is transferred.
          *
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsProcessingContext
     }
 
     /**
-     * Returns true if the given \a layer (by ID or datasource) will be loaded into the current project
+     * Returns TRUE if the given \a layer (by ID or datasource) will be loaded into the current project
      * upon completion of the algorithm or model.
      * \see layersToLoadOnCompletion()
      * \see setLayersToLoadOnCompletion()

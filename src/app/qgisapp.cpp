@@ -5643,7 +5643,11 @@ void QgisApp::fileOpenAfterLaunch()
     return;
   }
 
-  if ( !projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
+  // Is this a storage based project?
+  const bool projectIsFromStorage { QgsApplication::instance()->projectStorageRegistry()->projectStorageFromUri( projPath ) != nullptr };
+
+  if ( !projectIsFromStorage &&
+       !projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
        !projPath.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
   {
     visibleMessageBar()->pushMessage( autoOpenMsgTitle,
@@ -5652,7 +5656,7 @@ void QgisApp::fileOpenAfterLaunch()
     return;
   }
 
-  if ( QFile::exists( projPath ) )
+  if ( projectIsFromStorage || QFile::exists( projPath ) )
   {
     // set flag to check on next app launch if the following project opened OK
     settings.setValue( QStringLiteral( "qgis/projOpenedOKAtLaunch" ), QVariant( false ) );
@@ -10473,7 +10477,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 void QgisApp::loadPythonSupport()
 {
   QString pythonlibName( QStringLiteral( "qgispython" ) );
-#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_UNIX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
@@ -10511,7 +10515,7 @@ void QgisApp::loadPythonSupport()
   mPythonUtils = pythonlib_inst();
   if ( mPythonUtils )
   {
-    mPythonUtils->initPython( mQgisInterface );
+    mPythonUtils->initPython( mQgisInterface, true );
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )

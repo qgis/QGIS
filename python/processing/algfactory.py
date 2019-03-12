@@ -176,7 +176,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
             if parentname == name:
                 raise ProcessingAlgFactoryException("{} can't depend on itself. "
                                                     "We know QGIS is smart but it's not that smart".format(name))
-            if parentname not in self._inputs or parentname not in self._outputs:
+            if parentname not in self._inputs and parentname not in self._outputs:
                 raise ProcessingAlgFactoryException("Can't find parent named {}".format(parentname))
 
         kwargs['description'] = kwargs.pop("label", "")
@@ -211,7 +211,8 @@ class AlgWrapper(QgsProcessingAlgorithm):
         """
         True if this alg wrapper has outputs defined.
         """
-        return bool(self._outputs)
+        dests = [p for p in self._inputs.values() if p.isDestination()]
+        return bool(self._outputs) or bool(dests)
 
     @property
     def has_inputs(self):

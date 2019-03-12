@@ -65,7 +65,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 
   private:
     bool gridShiftTransformation( const QString &itemText ) const;
-    //! Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
+    //! Returns FALSE if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
     bool testGridShiftFileAvailability( QTableWidgetItem *item ) const;
     void load( const QPair<int, int> &selectedDatumTransforms = qMakePair( -1, -1 ) );
     void setOKButtonEnabled();

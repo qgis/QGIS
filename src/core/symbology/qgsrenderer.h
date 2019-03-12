@@ -201,7 +201,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 
     /**
-     * Returns true if this renderer requires the geometry to apply the filter.
+     * Returns TRUE if this renderer requires the geometry to apply the filter.
      */
     virtual bool filterNeedsGeometry() const;
 
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Render a feature using this renderer in the given context.
      * Must be called between startRender() and stopRender() calls.
      * Default implementation renders a symbol as determined by symbolForFeature() call.
-     * Returns true if the feature has been returned (this is used for example
+     * Returns TRUE if the feature has been returned (this is used for example
      * to determine whether the feature may be labelled).
      *
      * If layer is not -1, the renderer should draw only a particula layer from symbols
@@ -401,7 +401,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Sets whether the renderer should be rendered to a raster destination.
-     * \param forceRaster set to true if renderer must be drawn on a raster surface.
+     * \param forceRaster set to TRUE if renderer must be drawn on a raster surface.
      * This may be desirable for highly detailed layers where rendering as a vector
      * would result in a large, complex vector output.
      * \see forceRasterRender
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Gets the order in which features shall be processed by this renderer.
-     * \note this property has no effect if orderByEnabled() is false
+     * \note this property has no effect if orderByEnabled() is FALSE
      * \see orderByEnabled()
      * \since QGIS 2.14
      */
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Define the order in which features shall be processed by this renderer.
-     * \note this property has no effect if orderByEnabled() is false
+     * \note this property has no effect if orderByEnabled() is FALSE
      * \see setOrderByEnabled()
      * \since QGIS 2.14
      */
@@ -435,7 +435,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Sets whether custom ordering should be applied before features are processed by this renderer.
-     * \param enabled set to true to enable custom feature ordering
+     * \param enabled set to TRUE to enable custom feature ordering
      * \see setOrderBy()
      * \see orderByEnabled()
      * \since QGIS 2.14
@@ -453,7 +453,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
-     * implementation does not use subrenderers and will always return null.
+     * implementation does not use subrenderers and will always return NULLPTR.
      * \see setEmbeddedRenderer()
      * \since QGIS 2.16
      */

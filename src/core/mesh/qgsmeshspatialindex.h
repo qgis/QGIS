@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMeshSpatialIndex
     /**
      * Constructor - creates R-tree and bulk loads faces from the specified mesh
      *
-     * The optional \a feedback object can be used to allow cancelation of bulk face loading. Ownership
+     * The optional \a feedback object can be used to allow cancellation of bulk face loading. Ownership
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      */

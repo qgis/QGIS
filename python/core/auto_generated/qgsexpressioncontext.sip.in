@@ -101,8 +101,8 @@ Constructor for StaticVariable.
 
 :param name: variable name (should be unique within the QgsExpressionContextScope)
 :param value: initial variable value
-:param readOnly: true if variable should not be editable by users
-:param isStatic: true if the variable will not change during the lifteime of an iterator.
+:param readOnly: ``True`` if variable should not be editable by users
+:param isStatic: ``True`` if the variable will not change during the lifteime of an iterator.
 :param description: optional translated description of variable, for use in expression builder widgets
 %End
 
@@ -141,7 +141,7 @@ Returns the friendly display name of the context scope.
 %Docstring
 Convenience method for setting a variable in the context scope by ``name`` name and ``value``. If a variable
 with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
-If the ``isStatic`` parameter is set to true, this variable can be cached during the execution
+If the ``isStatic`` parameter is set to ``True``, this variable can be cached during the execution
 of :py:func:`QgsExpression.prepare()`
 
 .. seealso:: :py:func:`addVariable`
@@ -165,7 +165,7 @@ Removes a variable from the context scope, if found.
 
 :param name: name of variable to remove
 
-:return: true if variable was removed from the scope, false if matching variable was not
+:return: ``True`` if variable was removed from the scope, ``False`` if matching variable was not
          found within the scope
 %End
 
@@ -175,7 +175,7 @@ Tests whether a variable with the specified name exists in the scope.
 
 :param name: variable name
 
-:return: true if matching variable was found in the scope
+:return: ``True`` if matching variable was found in the scope
 
 .. seealso:: :py:func:`variable`
 
@@ -220,7 +220,7 @@ by users.
 
 :param name: variable name
 
-:return: true if variable is read only
+:return: ``True`` if variable is read only
 %End
 
     bool isStatic( const QString &name ) const;
@@ -250,7 +250,7 @@ Tests whether a function with the specified name exists in the scope.
 
 :param name: function name
 
-:return: true if matching function was found in the scope
+:return: ``True`` if matching function was found in the scope
 
 .. seealso:: :py:func:`function`
 
@@ -263,7 +263,7 @@ Retrieves a function from the scope.
 
 :param name: function name
 
-:return: function, or null if matching function could not be found
+:return: function, or ``None`` if matching function could not be found
 
 .. seealso:: :py:func:`hasFunction`
 
@@ -293,7 +293,7 @@ Adds a function to the scope.
 
     bool hasFeature() const;
 %Docstring
-Returns true if the scope has a feature associated with it.
+Returns ``True`` if the scope has a feature associated with it.
 
 .. seealso:: :py:func:`feature`
 
@@ -409,7 +409,7 @@ Check whether a variable is specified by any scope within the context.
 
 :param name: variable name
 
-:return: true if variable is set
+:return: ``True`` if variable is set
 
 .. seealso:: :py:func:`variable`
 
@@ -441,7 +441,7 @@ contained by the context.
 
     bool isHighlightedVariable( const QString &name ) const;
 %Docstring
-Returns true if the specified variable ``name`` is intended to be highlighted to the
+Returns ``True`` if the specified variable ``name`` is intended to be highlighted to the
 user. This is used by the expression builder to more prominently display the
 variable.
 
@@ -464,7 +464,7 @@ is used by the expression builder to more prominently display these variables.
 
     bool isHighlightedFunction( const QString &name ) const;
 %Docstring
-Returns true if the specified function ``name`` is intended to be highlighted to the
+Returns ``True`` if the specified function ``name`` is intended to be highlighted to the
 user. This is used by the expression builder to more prominently display the
 function.
 
@@ -498,7 +498,7 @@ scope which contains a matching variable.
 
 :param name: variable name
 
-:return: matching scope containing variable, or null if none found
+:return: matching scope containing variable, or ``None`` if none found
 %End
 
 
@@ -508,7 +508,7 @@ Returns the scope at the specified index within the context.
 
 :param index: index of scope
 
-:return: matching scope, or null if none found
+:return: matching scope, or ``None`` if none found
 
 .. seealso:: :py:func:`lastScope`
 %End
@@ -578,7 +578,7 @@ Returns whether a variable is read only, and should not be modifiable by users.
 
 :param name: variable name
 
-:return: true if variable is read only. Read only status will be taken from last
+:return: ``True`` if variable is read only. Read only status will be taken from last
          matching scope which contains a matching variable.
 %End
 
@@ -598,7 +598,7 @@ Checks whether a specified function is contained in the context.
 
 :param name: function name
 
-:return: true if context provides a matching function
+:return: ``True`` if context provides a matching function
 
 .. seealso:: :py:func:`function`
 %End
@@ -620,7 +620,7 @@ function set.
 
 :param name: function name
 
-:return: function if contained by the context, otherwise null.
+:return: function if contained by the context, otherwise ``None``.
 
 .. seealso:: :py:func:`hasFunction`
 %End
@@ -670,7 +670,7 @@ existing features within the context.
 
     bool hasFeature() const;
 %Docstring
-Returns true if the context has a feature associated with it.
+Returns ``True`` if the context has a feature associated with it.
 
 .. seealso:: :py:func:`feature`
 
@@ -732,7 +732,7 @@ expression context.
 
     bool hasCachedValue( const QString &key ) const;
 %Docstring
-Returns true if the expression context contains a cached value with a matching key.
+Returns ``True`` if the expression context contains a cached value with a matching key.
 
 :param key: unique key used to store cached value
 

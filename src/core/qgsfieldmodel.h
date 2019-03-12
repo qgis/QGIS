@@ -75,7 +75,7 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     void setAllowExpression( bool allowExpression );
 
     /**
-     * Returns true if the model allows custom expressions to be created and displayed.
+     * Returns TRUE if the model allows custom expressions to be created and displayed.
      * \see setAllowExpression()
      */
     bool allowExpression() { return mAllowExpression; }
@@ -88,14 +88,14 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
-     * Returns true if the model allows the empty field ("not set") choice.
+     * Returns TRUE if the model allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
      * \since QGIS 3.0
      */
     bool allowEmptyFieldName() const { return mAllowEmpty; }
 
     /**
-     * Returns true if a string represents a field reference, or false if it is an
+     * Returns TRUE if a string represents a field reference, or FALSE if it is an
      * expression consisting of more than direct field reference.
      */
     bool isField( const QString &expression ) const;

@@ -65,7 +65,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * to set the correct \a transformContext if a \a destinationCrs is specified. This is usually taken
      * from the current QgsProject::transformContext().
      *
-     * If \a extent is not null, the locator will index only a subset of the layer which falls within that extent.
+     * If \a extent is not NULLPTR, the locator will index only a subset of the layer which falls within that extent.
      */
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
@@ -86,19 +86,19 @@ class CORE_EXPORT QgsPointLocator : public QObject
     QgsCoordinateReferenceSystem destinationCrs() const;
 
     /**
-     * Gets extent of the area point locator covers - if null then it caches the whole layer
+     * Gets extent of the area point locator covers - if NULLPTR then it caches the whole layer
      * \since QGIS 2.14
      */
     const QgsRectangle *extent() const { return mExtent.get(); }
 
     /**
-     * Configure extent - if not null, it will index only that area
+     * Configure extent - if not NULLPTR, it will index only that area
      * \since QGIS 2.14
      */
     void setExtent( const QgsRectangle *extent );
 
     /**
-     * Configure render context  - if not null, it will use to index only visible feature
+     * Configure render context  - if not NULLPTR, it will use to index only visible feature
      * \since QGIS 3.2
      */
     void setRenderContext( const QgsRenderContext *context );
@@ -121,7 +121,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
-     * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
+     * FALSE if the creation of index has been prematurely stopped due to the limit of features, otherwise TRUE
+    */
     bool init( int maxFeaturesToIndex = -1 );
 
     //! Indicate whether the data have been already indexed
@@ -171,7 +172,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
         /**
          * The vector layer where the snap occurred.
-         * Will be null if the snap happened on an intersection.
+         * Will be NULLPTR if the snap happened on an intersection.
          */
         QgsVectorLayer *layer() const { return mLayer; }
 

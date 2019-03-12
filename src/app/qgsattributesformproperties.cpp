@@ -21,6 +21,7 @@
 #include "qgsfieldcombobox.h"
 #include "qgsqmlwidgetwrapper.h"
 #include "qgsapplication.h"
+#include "qgscolorbutton.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -451,6 +452,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
       itemData.setColumnCount( container->columnCount() );
       itemData.setShowAsGroupBox( container->isGroupBox() );
+      itemData.setBackgroundColor( container->backgroundColor() );
       itemData.setVisibilityExpression( container->visibilityExpression() );
       newWidget = tree->addItem( parent, itemData );
 
@@ -582,10 +584,11 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
     case DnDTreeItemData::Container:
     {
-      QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
+      QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent, itemData.backgroundColor() );
       container->setColumnCount( itemData.columnCount() );
       container->setIsGroupBox( forceGroup ? true : itemData.showAsGroupBox() );
       container->setVisibilityExpression( itemData.visibilityExpression() );
+      container->setBackgroundColor( itemData.backgroundColor( ) );
 
       for ( int t = 0; t < item->childCount(); t++ )
       {
@@ -1014,6 +1017,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     {
       QDialog dlg;
+      dlg.setObjectName( QLatin1Literal( "attributeFormPropertiesContainerDialog" ) );
       dlg.setWindowTitle( tr( "Configure Container" ) );
       QFormLayout *layout = new QFormLayout() ;
       dlg.setLayout( layout );
@@ -1046,6 +1050,17 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         layout->addRow( showAsGroupBox );
       }
 
+      QgsCollapsibleGroupBox *styleGroupBox = new QgsCollapsibleGroupBox( tr( "Style" ), layout->widget() );
+      styleGroupBox->setObjectName( QLatin1Literal( "attributeFormPropertiesContainerStyle" ) );
+      QFormLayout *customizeGroupBoxLayout = new QFormLayout( styleGroupBox ) ;
+      QgsColorButton *backgroundColorButton = new QgsColorButton( styleGroupBox, tr( "Container Background Color" ) );
+      backgroundColorButton->setShowNull( true );
+      backgroundColorButton->setColor( itemData.backgroundColor() );
+      customizeGroupBoxLayout->addRow( new QLabel( tr( "Background color" ), styleGroupBox ),
+                                       backgroundColorButton );
+      styleGroupBox->setLayout( customizeGroupBoxLayout );
+      layout->addRow( styleGroupBox );
+
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
           | QDialogButtonBox::Cancel );
 
@@ -1060,6 +1075,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
         itemData.setName( title->text() );
         itemData.setShowLabel( showLabelCheckbox->isChecked() );
+        itemData.setBackgroundColor( backgroundColorButton->color() );
 
         QgsOptionalExpression visibilityExpression;
         visibilityExpression.setData( QgsExpression( visibilityExpressionWidget->expression() ) );
@@ -1377,5 +1393,15 @@ QgsAttributesFormProperties::QmlElementEditorConfiguration QgsAttributesFormProp
 void QgsAttributesFormProperties::DnDTreeItemData::setQmlElementEditorConfiguration( QgsAttributesFormProperties::QmlElementEditorConfiguration qmlElementEditorConfiguration )
 {
   mQmlElementEditorConfiguration = qmlElementEditorConfiguration;
+}
+
+QColor QgsAttributesFormProperties::DnDTreeItemData::backgroundColor() const
+{
+  return mBackgroundColor;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setBackgroundColor( const QColor &backgroundColor )
+{
+  mBackgroundColor = backgroundColor;
 }
 

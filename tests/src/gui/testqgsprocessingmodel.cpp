@@ -113,6 +113,7 @@ class TestQgsProcessingModel: public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void testModel();
+    void testKnownIssues();
     void testProxyModel();
     void testView();
 };
@@ -597,6 +598,7 @@ void TestQgsProcessingModel::testView()
 
   // empty providers/groups should not be shown
   view.setFilters( QgsProcessingToolboxProxyModel::FilterModeler );
+  QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::FilterModeler );
   QCOMPARE( view.model()->rowCount(), 1 );
   provider2Index = view.model()->index( 0, 0, QModelIndex() );
   QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
@@ -614,6 +616,7 @@ void TestQgsProcessingModel::testView()
   QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), QStringLiteral( "p1:a2" ) );
 
   view.setFilters( nullptr );
+  QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::Filters() );
   // test filter strings
   view.setFilterString( "a1" );
   provider2Index = view.model()->index( 0, 0, QModelIndex() );
@@ -651,6 +654,44 @@ void TestQgsProcessingModel::testView()
   QVERIFY( view.mModel );
   QVERIFY( view.mToolboxModel );
   QCOMPARE( view.mModel->toolboxModel(), view.mToolboxModel );
+}
+
+void TestQgsProcessingModel::testKnownIssues()
+{
+  QgsProcessingRegistry registry;
+  QgsProcessingRecentAlgorithmLog recentLog;
+  QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
+  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", QgsProcessingAlgorithm::FlagKnownIssues, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
+  DummyAlgorithm *a2 = new DummyAlgorithm( "b1", "group1", nullptr, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc b" ) );
+  DummyProvider *p = new DummyProvider( "p3", "provider3", QList< QgsProcessingAlgorithm * >() << a1 << a2 );
+  registry.addProvider( p );
+
+  QModelIndex providerIndex = model.index( 1, 0, QModelIndex() );
+  QModelIndex group1Index = model.index( 0, 0, providerIndex );
+  QCOMPARE( model.data( model.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
+  QVERIFY( model.data( model.index( 0, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );
+  QCOMPARE( model.data( model.index( 0, 0, group1Index ), Qt::ForegroundRole ).value< QBrush >().color().name(), QStringLiteral( "#ff0000" ) );
+  QCOMPARE( model.data( model.index( 1, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "b1" ) );
+  QVERIFY( !model.data( model.index( 1, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );
+  QCOMPARE( model.data( model.index( 1, 0, group1Index ), Qt::ForegroundRole ).value< QBrush >().color().name(), QStringLiteral( "#000000" ) );
+
+  QgsProcessingToolboxProxyModel proxyModel( nullptr, &registry, &recentLog );
+  providerIndex = proxyModel.index( 0, 0, QModelIndex() );
+  group1Index = proxyModel.index( 0, 0, providerIndex );
+  // by default known issues are filtered out
+  QCOMPARE( proxyModel.rowCount( group1Index ), 1 );
+  QCOMPARE( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "b1" ) );
+  QVERIFY( !proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );
+  QCOMPARE( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::ForegroundRole ).value< QBrush >().color().name(), QStringLiteral( "#000000" ) );
+  proxyModel.setFilters( QgsProcessingToolboxProxyModel::Filters( QgsProcessingToolboxProxyModel::FilterToolbox | QgsProcessingToolboxProxyModel::FilterShowKnownIssues ) );
+  QCOMPARE( proxyModel.rowCount( group1Index ), 2 );
+  QCOMPARE( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
+  QVERIFY( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );
+  QCOMPARE( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::ForegroundRole ).value< QBrush >().color().name(), QStringLiteral( "#ff0000" ) );
+  QCOMPARE( proxyModel.data( proxyModel.index( 1, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "b1" ) );
+  QVERIFY( !proxyModel.data( proxyModel.index( 1, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );
+  QCOMPARE( proxyModel.data( proxyModel.index( 1, 0, group1Index ), Qt::ForegroundRole ).value< QBrush >().color().name(), QStringLiteral( "#000000" ) );
+
 
 }
 

@@ -145,7 +145,7 @@ Returns the symbol layer property definitions.
 
     bool enabled() const;
 %Docstring
-Returns true if symbol layer is enabled and will be drawn.
+Returns ``True`` if symbol layer is enabled and will be drawn.
 
 .. seealso:: :py:func:`setEnabled`
 
@@ -407,7 +407,7 @@ Sets the symbol layer's property collection, used for data defined overrides.
 
     virtual bool hasDataDefinedProperties() const;
 %Docstring
-Returns true if the symbol layer (or any of its sub-symbols) contains data defined properties.
+Returns ``True`` if the symbol layer (or any of its sub-symbols) contains data defined properties.
 
 .. versionadded:: 3.4.5
 %End
@@ -767,7 +767,7 @@ any data defined overrides and offsets which are set for the marker layer.
 %Docstring
 Constructor for QgsMarkerSymbolLayer.
 
-:param locked: set to true to lock symbol color
+:param locked: set to ``True`` to lock symbol color
 %End
 
     void markerOffset( QgsSymbolRenderContext &context, double &offsetX, double &offsetY ) const;

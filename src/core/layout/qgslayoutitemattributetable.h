@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     /**
      * Sets a layout \a map to use to limit the extent of features shown in the
      * attribute table. This setting only has an effect if setDisplayOnlyVisibleFeatures is
-     * set to true. Changing the map forces the table to refetch features from its
+     * set to TRUE. Changing the map forces the table to refetch features from its
      * vector layer, and may result in the table changing size to accommodate the new displayed
      * feature attributes.
      * \see map()
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     /**
      * Returns the layout map whose extents are controlling the features shown in the
-     * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
+     * table. The extents of the map are only used if displayOnlyVisibleFeatures() is TRUE.
      * \see setMap()
      * \see displayOnlyVisibleFeatures()
      */
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     /**
      * Sets attribute table to only show unique rows.
      *
-     * Set \a uniqueOnly to true to show only unique rows. Duplicate rows
+     * Set \a uniqueOnly to TRUE to show only unique rows. Duplicate rows
      * will be stripped from the table.
      *
      * \see uniqueRowsOnly()
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     void setUniqueRowsOnly( bool uniqueOnly );
 
     /**
-     * Returns true if the table is set to show only unique rows.
+     * Returns TRUE if the table is set to show only unique rows.
      *
      * \see setUniqueRowsOnly()
      */
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     void setDisplayOnlyVisibleFeatures( bool visibleOnly );
 
     /**
-     * Returns true if the table is set to show only features visible on a corresponding
+     * Returns TRUE if the table is set to show only features visible on a corresponding
      * map item.
      *
      * \see map()
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     void setFilterToAtlasFeature( bool filterToAtlas );
 
     /**
-     * Returns true if the table is set to only show features which intersect the current atlas
+     * Returns TRUE if the table is set to only show features which intersect the current atlas
      * feature.
      *
      * \see setFilterToAtlasFeature()
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     bool filterToAtlasFeature() const { return mFilterToAtlasIntersection; }
 
     /**
-     * Returns true if a feature filter is active on the attribute table.
+     * Returns TRUE if a feature filter is active on the attribute table.
      *
      * \see setFilterFeatures()
      * \see featureFilter()
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     /**
      * Returns the current expression used to filter features for the table. The filter is only
-     * active if filterFeatures() is true.
+     * active if filterFeatures() is TRUE.
      *
      * \see setFeatureFilter()
      * \see filterFeatures()
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     /**
      * Sets the \a expression used for filtering features in the table. The filter is only
-     * active if filterFeatures() is set to true. Changing this setting forces the table
+     * active if filterFeatures() is set to TRUE. Changing this setting forces the table
      * to refetch features from its vector layer, and may result in
      * the table changing size to accommodate the new displayed feature attributes.
      *
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
      * Sets the attributes to display in the table.
      * \param fields list of fields names from the vector layer to show.
      * Set to an empty list to show all feature attributes.
-     * \param refresh set to true to force the table to refetch features from its vector layer
+     * \param refresh set to TRUE to force the table to refetch features from its vector layer
      * and immediately update the display of the table. This may result in the table changing size
      * to accommodate the new displayed feature attributes.
      */
@@ -259,8 +259,8 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     /**
      * Returns the attributes used to sort the table's features.
      * \returns a QList of integer/bool pairs, where the integer refers to the attribute index and
-     * the bool to the sort order for the attribute. If true the attribute is sorted ascending,
-     * if false, the attribute is sorted in descending order.
+     * the bool to the sort order for the attribute. If TRUE the attribute is sorted ascending,
+     * if FALSE, the attribute is sorted in descending order.
      * \note not available in Python bindings
      */
     QVector< QPair<int, bool> > sortAttributes() const SIP_SKIP;
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     /**
      * Queries the attribute table's vector layer for attributes to show in the table.
      * \param contents table content
-     * \returns true if attributes were successfully fetched
+     * \returns TRUE if attributes were successfully fetched
      * \note not available in Python bindings
      */
     bool getTableContents( QgsLayoutTableContents &contents ) override SIP_SKIP;
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     //! True if only unique rows should be shown
     bool mShowUniqueRowsOnly = false;
 
-    //! Shows only the features that are visible in the associated layout map (true by default)
+    //! Shows only the features that are visible in the associated layout map (TRUE by default)
     bool mShowOnlyVisibleFeatures = false;
 
     //! Shows only the features that intersect the current atlas feature

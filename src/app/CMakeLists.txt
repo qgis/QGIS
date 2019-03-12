@@ -1,4 +1,7 @@
 ADD_SUBDIRECTORY(../../external/libdxfrw dwg/libdxfrw)
+IF(NOT WIN32)
+SUBDIRS(${CMAKE_SOURCE_DIR}/external/qt-unix-signals)
+ENDIF(NOT WIN32)
 
 SET(QGIS_APP_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
@@ -126,7 +129,6 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgriddialog.cpp
 
   vertextool/qgslockedfeature.cpp
-  vertextool/qgsvertexentry.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
 
@@ -474,8 +476,8 @@ SET (QGIS_APP_MOC_HDRS
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
-    3d/qgs3danimationsettings.cpp
     3d/qgs3danimationwidget.cpp
+    3d/qgs3danimationexportdialog.cpp
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
@@ -497,6 +499,7 @@ IF (WITH_3D)
   SET (QGIS_APP_MOC_HDRS
     ${QGIS_APP_MOC_HDRS}
     3d/qgs3danimationwidget.h
+    3d/qgs3danimationexportdialog.h
     3d/qgs3dmapcanvas.h
     3d/qgs3dmapcanvasdockwidget.h
     3d/qgs3dmapconfigwidget.h
@@ -729,6 +732,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
 INCLUDE_DIRECTORIES(
   ../analysis/processing
@@ -882,6 +886,10 @@ IF(WIN32)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_native)
+
+IF (NOT WIN32)
+TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} QTSignal)
+ENDIF (NOT WIN32)
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(${QGIS_APP_NAME} PROPERTIES

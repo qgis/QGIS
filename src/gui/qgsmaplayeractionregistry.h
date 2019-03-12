@@ -100,7 +100,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     const Targets &targets() const {return mTargets;}
 
     /**
-     * Returns true if the action is only enabled for layers in editable mode.
+     * Returns TRUE if the action is only enabled for layers in editable mode.
      * \since QGIS 3.0
      */
     bool isEnabledOnlyWhenEditable() const;

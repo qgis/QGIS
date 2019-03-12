@@ -121,7 +121,7 @@ QString QgsMultiSurface::asJson( int precision ) const
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
-      json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
+      json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + QLatin1String( ", " );
 
       std::unique_ptr< QgsLineString > interiorLineString;
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
@@ -129,7 +129,7 @@ QString QgsMultiSurface::asJson( int precision ) const
         interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
         QgsPointSequence interiorPts;
         interiorLineString->points( interiorPts );
-        json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
+        json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + QLatin1String( ", " );
       }
       if ( json.endsWith( QLatin1String( ", " ) ) )
       {

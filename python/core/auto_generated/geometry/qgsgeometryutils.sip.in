@@ -67,7 +67,7 @@ Retrieves the vertices which are before and after the interpolated point at a sp
 :param distance: distance to traverse along geometry
 :param previousVertex: will be set to previous vertex ID
 
-:return: - true if vertices were successfully retrieved
+:return: - ``True`` if vertices were successfully retrieved
          - nextVertex: will be set to next vertex ID
 
 .. note::
@@ -110,9 +110,9 @@ Compute the intersection between two segments
 :param p2: First segment end point
 :param q1: Second segment start point
 :param q2: Second segment end point
-:param isIntersection: Output parameter, return true if an intersection is found
+:param isIntersection: Output parameter, return ``True`` if an intersection is found
 :param tolerance: The tolerance to use
-:param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
+:param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
 :return: - Whether the segments intersect
          - intersectionPoint: Output parameter, the intersection point
@@ -154,7 +154,7 @@ the closest point to the initial ``intersection`` point is returned.
 :param linePoint2: a second point on the line
 :param intersection: the initial point and the returned intersection point
 
-:return: true if an intersection has been found
+:return: ``True`` if an intersection has been found
 %End
 
     static int circleCircleIntersections( QgsPointXY center1, double radius1,
@@ -289,7 +289,7 @@ Returns radius and center of the circle through pt1, pt2, pt3
 
     static bool circleClockwise( double angle1, double angle2, double angle3 );
 %Docstring
-Returns true if the circle defined by three angles is ordered clockwise.
+Returns ``True`` if the circle defined by three angles is ordered clockwise.
 
 The angles are defined counter-clockwise from the origin, i.e. using
 Euclidean angles as opposed to geographic "North up" angles.
@@ -297,12 +297,12 @@ Euclidean angles as opposed to geographic "North up" angles.
 
     static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );
 %Docstring
-Returns true if, in a circle, angle is between angle1 and angle2
+Returns ``True`` if, in a circle, angle is between angle1 and angle2
 %End
 
     static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 );
 %Docstring
-Returns true if an angle is between angle1 and angle3 on a circle described by
+Returns ``True`` if an angle is between angle1 and angle3 on a circle described by
 angle1, angle2 and angle3.
 %End
 
@@ -330,8 +330,8 @@ first 3D point amongst ``p1`` and ``p2``.
 Calculates the midpoint on the circle passing through ``p1`` and ``p2``,
 with the specified ``center`` coordinate.
 
-If ``useShortestArc`` is true, then the midpoint returned will be that corresponding
-to the shorter arc from ``p1`` to ``p2``. If it is false, the longer arc from ``p1``
+If ``useShortestArc`` is ``True``, then the midpoint returned will be that corresponding
+to the shorter arc from ``p1`` to ``p2``. If it is ``False``, the longer arc from ``p1``
 to ``p2`` will be used (i.e. winding the other way around the circle).
 
 .. seealso:: :py:func:`segmentMidPoint`
@@ -583,7 +583,7 @@ A method to project one skew line onto another.
 :param X1: is the result projection point of line P2P22 onto line P1P12,
 :param epsilon: the tolerance to use.
 
-:return: true if such point exists, false - otherwise.
+:return: ``True`` if such point exists, ``False`` - otherwise.
 %End
 
     static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
@@ -597,7 +597,7 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 :param Lb1: is the first point on the second line,
 :param Lb2: is the second point on the second line,
 
-:return: - true if the intersection can be found, false - otherwise.
+:return: - ``True`` if the intersection can be found, ``False`` - otherwise.
          - intersection: is the result intersection, of it can be found.
          example:
 .. code-block:: python
@@ -634,7 +634,7 @@ A Z dimension is added to ``point`` if one of the point in the list
 :param points: List of points in which a 3D point is searched.
 :param point: The point to update with Z dimension and value.
 
-:return: true if the point is updated, false otherwise
+:return: ``True`` if the point is updated, ``False`` otherwise
 
 .. versionadded:: 3.0
 %End

@@ -4,6 +4,7 @@
 SET(QGIS_3D_SRCS
   qgsaabb.cpp
   qgsabstract3dengine.cpp
+  qgs3danimationsettings.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
   qgs3dutils.cpp
@@ -90,6 +91,7 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 SET(QGIS_3D_HDRS
   qgsaabb.h
   qgsabstract3dengine.h
+  qgs3danimationsettings.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
   qgs3dtypes.h

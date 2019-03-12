@@ -17,7 +17,7 @@ The QgsDefaultValue class provides a container for managing client
 side default values for fields.
 
 A QgsDefaultValue consists of an expression string that will be evaluated
-on the client when a defeault field value needs to be generated.
+on the client when a default field value needs to be generated.
 
 Usual values for such an expression are
 
@@ -74,7 +74,7 @@ applied when a feature is updated or only when it's created.
 %Docstring
 Returns if this default value should be applied.
 
-:return: false if the expression is a null string.
+:return: ``False`` if the expression is a null string.
 %End
 
 

@@ -47,7 +47,7 @@ class CORE_EXPORT QgsProjectVersion
     QString text();
 
     /**
-     * Returns true if this is a NULL project version.
+     * Returns TRUE if this is a NULL project version.
      */
     bool isNull() const;
 

@@ -1548,6 +1548,20 @@ class TestQgsExpression: public QObject
       QgsExpression exp2( QStringLiteral( "attribute($currentfeature,'second'||'_column')" ) );
       v = exp2.evaluate( &context );
       QCOMPARE( v.toInt(), 5 );
+
+      QgsExpression exp3( QStringLiteral( "attribute()" ) );
+      v = exp3.evaluate( &context );
+      QVERIFY( v.isNull() );
+      QVERIFY( exp3.hasEvalError() );
+
+      QgsExpression exp4( QStringLiteral( "attribute('a','b','c')" ) );
+      v = exp4.evaluate( &context );
+      QVERIFY( v.isNull() );
+      QVERIFY( exp4.hasEvalError() );
+
+      QgsExpression exp5( QStringLiteral( "attribute('col1')" ) );
+      v = exp5.evaluate( &context );
+      QCOMPARE( v.toString(), QString( "test value" ) );
     }
 
     void eval_get_feature_data()
@@ -3402,6 +3416,28 @@ class TestQgsExpression: public QObject
       zustaendigkeitskataster->commitChanges();
 
       QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 4l );
+    }
+
+    void testReplaceExpressionText_data()
+    {
+      QTest::addColumn<QString>( "input" );
+      QTest::addColumn<QString>( "expected" );
+      QTest::newRow( "no exp" ) << "some text" << "some text";
+      QTest::newRow( "simple exp" ) << "some text [% 1 + 2 %]" << "some text 3";
+      QTest::newRow( "multiple exp" ) << "some [% 3+ 7 %] text [% 1 + 2 %]" << "some 10 text 3";
+      QTest::newRow( "complex" ) << "some [%map('a', 1, 'b', 2)['a']%] text [%map('a', 1, 'b', 2)['b']%]" << "some 1 text 2";
+      QTest::newRow( "complex2" ) << "some [% 'my text]' %] text" << "some my text] text";
+      QTest::newRow( "newline 1" ) << "some \n [% 1 + 2 %] \n text" << "some \n 3 \n text";
+      QTest::newRow( "newline 2" ) << "some [% \n 1 \n + \n 2 %] \n text" << "some 3 \n text";
+    }
+
+    void testReplaceExpressionText()
+    {
+      QFETCH( QString, input );
+      QFETCH( QString, expected );
+
+      QgsExpressionContext context;
+      QCOMPARE( QgsExpression::replaceExpressionText( input, &context ), expected );
     }
 
 };

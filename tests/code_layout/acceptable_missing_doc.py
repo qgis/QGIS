@@ -213,7 +213,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsInterpolator": ['QgsInterpolator(const QList< QgsInterpolator::LayerData > &layerData)'],
     "QgsLUDialog": ['QgsLUDialog(QWidget *parent=nullptr, Qt::WindowFlags fl=QgsGuiUtils::ModalDialogFlags)', 'lowerValue() const', 'setLowerValue(const QString &val)', 'setUpperValue(const QString &val)', 'upperValue() const'],
     "QgsLabelCandidate": ['QgsLabelCandidate(const QRectF &r, double c)'],
-    "QgsLabelPosition": ['QgsLabelPosition(int id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram=false, bool pinned=false, const QString &providerId=QString())'],
+    "QgsLabelPosition": ['QgsLabelPosition(QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram=false, bool pinned=false, const QString &providerId=QString())'],
     "QgsLabelSorter": ['QgsLabelSorter(const QgsMapSettings &mapSettings)', 'operator()(pal::LabelPosition *lp1, pal::LabelPosition *lp2) const'],
     "QgsLabelingEngine": ['processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)'],
     "QgsLayerItem": ['LayerType', 'QgsLayerItem(QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey)', 'iconDefault()', 'iconLine()', 'iconPoint()', 'iconPolygon()', 'iconRaster()', 'iconTable()'],

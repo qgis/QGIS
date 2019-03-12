@@ -26,45 +26,8 @@ class QListWidgetItem;
 class QgsLayoutDesignerDialog;
 class QgsMasterLayoutInterface;
 class QgsLayoutManager;
-
-class QgsLayoutManagerModel : public QAbstractListModel
-{
-    Q_OBJECT
-
-  public:
-
-    enum Role
-    {
-      LayoutRole = Qt::UserRole + 1,
-    };
-
-    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent = nullptr );
-
-    int rowCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
-
-  private slots:
-    void layoutAboutToBeAdded( const QString &name );
-    void layoutAboutToBeRemoved( const QString &name );
-    void layoutAdded( const QString &name );
-    void layoutRemoved( const QString &name );
-    void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
-  private:
-    QgsLayoutManager *mLayoutManager = nullptr;
-};
-
-class QgsLayoutManagerProxyModel : public QSortFilterProxyModel
-{
-    Q_OBJECT
-
-  public:
-
-    explicit QgsLayoutManagerProxyModel( QObject *parent );
-
-};
+class QgsLayoutManagerModel;
+class QgsLayoutManagerProxyModel;
 
 /**
  * A dialog that allows management of layouts within a project.

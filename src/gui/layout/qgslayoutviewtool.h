@@ -127,7 +127,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     void setAction( QAction *action );
 
     /**
-     * Returns the action associated with the tool or nullptr if no action is associated.
+     * Returns the action associated with the tool or NULLPTR if no action is associated.
      * \see setAction()
      */
     QAction *action();
@@ -205,9 +205,9 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     QgsLayoutViewTool( QgsLayoutView *view SIP_TRANSFERTHIS, const QString &name );
 
     /**
-     * Returns true if a mouse press/release operation which started at
+     * Returns TRUE if a mouse press/release operation which started at
      * \a startViewPoint and ended at \a endViewPoint should be considered
-     * a "click and drag". If false is returned, the operation should be
+     * a "click and drag". If FALSE is returned, the operation should be
      * instead treated as just a click on \a startViewPoint.
      */
     bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;

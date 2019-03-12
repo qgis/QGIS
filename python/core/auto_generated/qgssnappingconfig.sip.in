@@ -268,7 +268,7 @@ with standard configuration.
 When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
 it is best to directly feed this with information from the layer registry.
 
-:return: True if changes have been done.
+:return: ``True`` if changes have been done.
 
 .. versionadded:: 3.0
 %End
@@ -280,7 +280,7 @@ Removes the specified layers from the individual layer configuration.
 When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
 it is best to directly feed this with information from the layer registry.
 
-:return: True if changes have been done.
+:return: ``True`` if changes have been done.
 
 .. versionadded:: 3.0
 %End

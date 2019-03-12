@@ -11,7 +11,7 @@
 ***************************************************************************
 """
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing,
                        QgsFeatureSink,
                        QgsProcessingException,
@@ -179,7 +179,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         # processing.run(...). Make sure you pass the current context and feedback
         # to processing.run to ensure that all temporary layer outputs are available
         # to the executed algorithm, and that the executed algorithm can send feedback
-        # reports to the user (and correctly handle cancelation and progress reports!)
+        # reports to the user (and correctly handle cancellation and progress reports!)
         if False:
             buffered_layer = processing.run("native:buffer", {
                 'INPUT': dest_id,

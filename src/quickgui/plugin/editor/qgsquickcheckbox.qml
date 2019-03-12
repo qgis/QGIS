@@ -25,12 +25,13 @@ import QgsQuick 0.1 as QgsQuick
 Item {
   signal valueChanged( var value, bool isNull )
 
+  id: fieldItem
+  enabled: !readOnly
   height: childrenRect.height
   anchors {
     right: parent.right
     left: parent.left
   }
-  id: fieldItem
 
   CheckBox {
     property var currentValue: value

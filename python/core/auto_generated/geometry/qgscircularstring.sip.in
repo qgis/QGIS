@@ -47,8 +47,8 @@ arc passing through ``p1``, ``p2`` and ``p3``.
 Creates a circular string with a single arc representing
 the curve from ``p1`` to ``p2`` with the specified ``center``.
 
-If ``useShortestArc`` is true, then the arc returned will be that corresponding
-to the shorter arc from ``p1`` to ``p2``. If it is false, the longer arc from ``p1``
+If ``useShortestArc`` is ``True``, then the arc returned will be that corresponding
+to the shorter arc from ``p1`` to ``p2``. If it is ``False``, the longer arc from ``p1``
 to ``p2`` will be used (i.e. winding the other way around the circle).
 
 .. versionadded:: 3.2

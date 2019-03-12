@@ -135,5 +135,3 @@ ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"
-
-CMD /root/QGIS/.ci/travis/linux/docker-build-test.sh

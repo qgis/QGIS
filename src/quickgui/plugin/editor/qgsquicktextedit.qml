@@ -28,14 +28,13 @@ Item {
   signal valueChanged(var value, bool isNull)
 
   id: fieldItem
-
+  enabled: !readOnly
+  height: childrenRect.height
   anchors {
     left: parent.left
     right: parent.right
     rightMargin: 10 * QgsQuick.Utils.dp
   }
-
-  height: childrenRect.height
 
   TextField {
     id: textField
@@ -92,6 +91,7 @@ Item {
 
     background: Rectangle {
         color: customStyle.backgroundColor
+        radius: customStyle.cornerRadius
     }
 
     onEditingFinished: {

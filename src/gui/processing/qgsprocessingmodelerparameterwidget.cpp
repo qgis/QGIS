@@ -198,6 +198,7 @@ QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContex
     QStringList highlightedVariables = childScope->variableNames();
     QStringList highlightedFunctions = childScope->functionNames();
     highlightedVariables += algorithmScope->variableNames();
+    highlightedVariables += mModel->variables().keys();
     highlightedFunctions += algorithmScope->functionNames();
     c.setHighlightedVariables( highlightedVariables );
     c.setHighlightedFunctions( highlightedFunctions );

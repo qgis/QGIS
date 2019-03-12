@@ -50,7 +50,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
 
     /**
      * Indicates if successfully parsed
-      * \returns true if successfully parsed */
+      * \returns TRUE if successfully parsed */
     bool isValid() const { return mValid; }
 
     /**
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
 
     /**
      * Test if reply is multipart.
-      * \returns true if reply is multipart */
+      * \returns TRUE if reply is multipart */
     static bool isMultipart( QNetworkReply *reply );
 
   private:

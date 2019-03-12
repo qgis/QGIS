@@ -96,7 +96,7 @@ class CORE_EXPORT QgsConditionalStyle
      * \brief Check if the rule matches using the given value and feature
      * \param value The current value being checked. The "value" variable from the context is replaced with this value.
      * \param context Expression context for evaluating rule expression
-     * \returns True of the rule matches against the given feature
+     * \returns TRUE of the rule matches against the given feature
      */
     bool matches( const QVariant &value, QgsExpressionContext &context ) const;
 
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsConditionalStyle
     /**
      * \brief Check if the text color is valid for render.
      * Valid colors are non invalid QColors and a color with a > 0 alpha
-     * \returns True of the color set for text is valid.
+     * \returns TRUE of the color set for text is valid.
      */
     bool validTextColor() const;
 
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsConditionalStyle
     /**
      * \brief Check if the background color is valid for render.
      * Valid colors are non invalid QColors and a color with a > 0 alpha
-     * \returns True of the color set for background is valid.
+     * \returns TRUE of the color set for background is valid.
      */
     bool validBackgroundColor() const;
 
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsConditionalStyle
     /**
      * \brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
-     * \returns True if the rule is valid.
+     * \returns TRUE if the rule is valid.
      */
     bool isValid() const { return mValid; }
 

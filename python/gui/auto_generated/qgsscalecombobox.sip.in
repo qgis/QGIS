@@ -70,7 +70,7 @@ The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
 %Docstring
 Helper function to convert a scale ``string`` to double.
 The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
+If specified, ``ok`` will be set to ``True`` if the string was successfully interpreted as a scale.
 
 .. seealso:: :py:func:`toString`
 %End

@@ -251,8 +251,8 @@ class CORE_EXPORT QgsFeature
      * The feature will be valid if it was successful.
      * \param field the index of the field to set
      * \param attr the value of the attribute
-     * \returns false, if the field index does not exist
-     * \note For Python: raises a KeyError exception instead of returning false
+     * \returns FALSE, if the field index does not exist
+     * \note For Python: raises a KeyError exception instead of returning FALSE
      * \note Alternatively in Python: @code feature[field] = attr @endcode
      * \see setAttributes
      */
@@ -318,13 +318,13 @@ class CORE_EXPORT QgsFeature
 
     /**
      * Sets the validity of the feature.
-     * \param validity set to true if feature is valid
+     * \param validity set to TRUE if feature is valid
      * \see isValid
      */
     void setValid( bool validity );
 
     /**
-     * Returns true if the feature has an associated geometry.
+     * Returns TRUE if the feature has an associated geometry.
      * \see geometry()
      * \since QGIS 3.0.
      */
@@ -392,9 +392,9 @@ class CORE_EXPORT QgsFeature
     /**
      * Assign a field map with the feature to allow attribute access by attribute name.
      *  \param fields The attribute fields which this feature holds
-     *  \param initAttributes If true, attributes are initialized. Clears any data previously assigned.
-     *                        C++: Defaults to false
-     *                        Python: Defaults to true
+     *  \param initAttributes If TRUE, attributes are initialized. Clears any data previously assigned.
+     *                        C++: Defaults to FALSE
+     *                        Python: Defaults to TRUE
      * \see fields
      * \since QGIS 2.9
      */
@@ -407,13 +407,13 @@ class CORE_EXPORT QgsFeature
     QgsFields fields() const;
 
     /**
-     * Insert a value into attribute. Returns false if attribute name could not be converted to index.
+     * Insert a value into attribute. Returns FALSE if attribute name could not be converted to index.
      *  Field map must be associated using setFields() before this method can be used.
      *  The feature will be valid if it was successful
      *  \param name The name of the field to set
      *  \param value The value to set
-     *  \returns false if attribute name could not be converted to index (C++ only)
-     *  \note For Python: raises a KeyError exception instead of returning false
+     *  \returns FALSE if attribute name could not be converted to index (C++ only)
+     *  \note For Python: raises a KeyError exception instead of returning FALSE
      *  \note Alternatively in Python: @code feature[name] = attr @endcode
      *  \see setFields
      */
@@ -446,8 +446,8 @@ class CORE_EXPORT QgsFeature
      * Removes an attribute value by field name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the field to delete
-     *  \returns false if attribute name could not be converted to index (C++ only)
-     *  \note For Python: raises a KeyError exception instead of returning false
+     *  \returns FALSE if attribute name could not be converted to index (C++ only)
+     *  \note For Python: raises a KeyError exception instead of returning FALSE
      *  \note Alternatively in Python: @code del feature[name] @endcode
      *  \see setFields
      */

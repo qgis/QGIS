@@ -481,8 +481,9 @@ QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
   return s;
 }
 
-void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter )
+void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension )
 {
+  extension.clear();
   QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
   QRegularExpressionMatch match = splitRx.match( destination );
   if ( match.hasMatch() )
@@ -504,7 +505,12 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
           options.insert( QStringLiteral( "layerName" ), layerName );
         }
         uri = dsUri.database();
-        format = QgsVectorFileWriter::driverForExtension( QFileInfo( uri ).completeSuffix() );
+        extension = QFileInfo( uri ).completeSuffix();
+        format = QgsVectorFileWriter::driverForExtension( extension );
+      }
+      else
+      {
+        extension = QFileInfo( uri ).completeSuffix();
       }
       options.insert( QStringLiteral( "update" ), true );
     }
@@ -516,7 +522,6 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
     providerKey = QStringLiteral( "ogr" );
     QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
-    QString extension;
     if ( match.hasMatch() )
     {
       extension = match.captured( 2 );
@@ -574,8 +579,9 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     QString uri;
     QString layerName;
     QString format;
+    QString extension;
     bool useWriter = false;
-    parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+    parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
 
     QgsFields newFields = fields;
     if ( useWriter && providerKey == QLatin1String( "ogr" ) )

@@ -180,7 +180,7 @@ Returns the display name of the layer.
 
     virtual QgsDataProvider *dataProvider();
 %Docstring
-Returns the layer's data provider, it may be null.
+Returns the layer's data provider, it may be ``None``.
 %End
 
 
@@ -460,7 +460,7 @@ Returns the extent of the layer.
 Returns the status of the layer. An invalid layer is one which has a bad datasource
 or other problem. Child classes set this flag when initialized.
 
-:return: true if the layer is valid and can be accessed
+:return: ``True`` if the layer is valid and can be accessed
 %End
 
     QString publicSource() const;
@@ -502,12 +502,12 @@ Set the visibility of the given sublayer name.
 
     virtual bool isEditable() const;
 %Docstring
-Returns true if the layer can be edited.
+Returns ``True`` if the layer can be edited.
 %End
 
     virtual bool isSpatial() const;
 %Docstring
-Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
+Returns ``True`` if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
 
 .. versionadded:: 2.16
 %End
@@ -528,7 +528,7 @@ by sub-classes so that they can read their own specific state from the given DOM
 
 Invoked by :py:func:`QgsProject.read()`
 
-:return: true if successful
+:return: ``True`` if successful
 %End
 
     bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -548,7 +548,7 @@ by sub-classes so that they can write their own specific state to the given DOM 
 
 Invoked by :py:func:`QgsProject.write()`
 
-:return: true if successful
+:return: ``True`` if successful
 %End
 
     virtual void resolveReferences( QgsProject *project );
@@ -652,7 +652,7 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to false if we did not manage to save the default metadata.
+         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default metadata.
 
 .. versionadded:: 3.0
 %End
@@ -668,7 +668,7 @@ record in the users style table in their personal qgis.db)
             is a file and save to that, if that fails the qgis.db metadata
             table will be used to create a metadata entry who's
             key matches the URI.
-:param resultFlag: a reference to a flag that will be set to false if
+:param resultFlag: a reference to a flag that will be set to ``False`` if
                    we did not manage to save the default metadata.
 
 :return: a QString with any status messages
@@ -689,7 +689,7 @@ record in the users style table in their personal qgis.db)
             key matches the URI.
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to false if we did not manage to load the default metadata.
+         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default metadata.
 
 .. versionadded:: 3.0
 %End
@@ -700,7 +700,7 @@ Retrieve the default metadata for this layer if one
 exists (either as a .qmd file on disk or as a
 record in the users metadata table in their personal qgis.db)
 
-:param resultFlag: a reference to a flag that will be set to false if
+:param resultFlag: a reference to a flag that will be set to ``False`` if
                    we did not manage to load the default metadata.
 
 :return: a QString with any status messages
@@ -716,7 +716,7 @@ Retrieve a named metadata for this layer from a sqlite database.
 :param uri: uri for table
 :param qmd: will be set to QMD xml metadata content from database
 
-:return: true if style was successfully loaded
+:return: ``True`` if style was successfully loaded
 
 .. versionadded:: 3.0
 %End
@@ -728,7 +728,7 @@ Import the metadata of this layer from a QDomDocument
 :param document: source QDomDocument
 :param errorMessage: this QString will be initialized on error
 
-:return: true on success
+:return: ``True`` on success
 
 .. versionadded:: 3.0
 %End
@@ -752,7 +752,7 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to false if we did not manage to load the default style.
+         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default style.
 
 .. seealso:: :py:func:`also`
 %End
@@ -771,7 +771,7 @@ record in the users style table in their personal qgis.db)
 :param categories: the style categories to be loaded.
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to false if we did not manage to load the default style.
+         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default style.
 
 .. seealso:: :py:func:`also`
 %End
@@ -783,7 +783,7 @@ Retrieve a named style for this layer from a sqlite database.
 :param db: path to sqlite database
 :param uri: uri for table
 
-:return: - true if style was successfully loaded
+:return: - ``True`` if style was successfully loaded
          - qml: will be set to QML style content from database
 %End
 
@@ -797,7 +797,7 @@ Import the properties of this layer from a QDomDocument
                  during the execution of readSymbology
 :param categories: the style categories to import
 
-:return: true on success
+:return: ``True`` on success
 
 .. versionadded:: 2.8
 %End
@@ -832,7 +832,7 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to false if we did not manage to save the default style.
+         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
 %End
@@ -851,7 +851,7 @@ record in the users style table in their personal qgis.db)
 :param categories: the style categories to be saved.
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to false if we did not manage to save the default style.
+         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`saveDefaultStyle`
 %End
@@ -861,7 +861,7 @@ record in the users style table in their personal qgis.db)
 Saves the properties of this layer to an SLD format file.
 
 :param uri: uri of destination for exported SLD file.
-:param resultFlag: a reference to a flag that will be set to false if
+:param resultFlag: a reference to a flag that will be set to ``False`` if
                    the SLD file could not be generated
 
 :return: a string with any status or error messages
@@ -874,7 +874,7 @@ Saves the properties of this layer to an SLD format file.
 Attempts to style the layer using the formatting from an SLD type file.
 
 :param uri: uri of source SLD file
-:param resultFlag: a reference to a flag that will be set to false if
+:param resultFlag: a reference to a flag that will be set to ``False`` if
                    the SLD file could not be loaded
 
 :return: a string with any status or error messages
@@ -896,7 +896,7 @@ Read the symbology for the current layer from the DOM node supplied.
 :param context: reading context (used for transform from relative to absolute paths)
 :param categories: the style categories to be read
 
-:return: true in case of success.
+:return: ``True`` in case of success.
 %End
 
     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
@@ -909,11 +909,11 @@ Read the style for the current layer from the DOM node supplied.
 :param context: reading context (used for transform from relative to absolute paths)
 :param categories: the style categories to be read
 
-:return: true in case of success.
+:return: ``True`` in case of success.
 
 .. note::
 
-   To be implemented in subclasses. Default implementation does nothing and returns false.
+   To be implemented in subclasses. Default implementation does nothing and returns ``False``.
 
 .. versionadded:: 2.16
 %End
@@ -933,7 +933,7 @@ Write the style for the layer into the docment provided.
 
    There is a confusion of terms with the GUI. This method actually writes what is called a style in the application.
 
-:return: true in case of success.
+:return: ``True`` in case of success.
 %End
 
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
@@ -947,11 +947,11 @@ Write just the symbology information for the layer into the document
 :param context: writing context (used for transform from absolute to relative paths)
 :param categories: the style categories to be written
 
-:return: true in case of success.
+:return: ``True`` in case of success.
 
 .. note::
 
-   To be implemented in subclasses. Default implementation does nothing and returns false.
+   To be implemented in subclasses. Default implementation does nothing and returns ``False``.
 
 .. note::
 
@@ -972,7 +972,7 @@ Subclasses should override this method: default implementation does nothing.
 :param baseName: base name of the layer
 :param provider: provider string
 :param options: provider options
-:param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
+:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
                              data source
 
 .. seealso:: :py:func:`dataSourceChanged`
@@ -1021,14 +1021,14 @@ Returns the format for a URL based layer legend.
 %Docstring
 Assign a legend controller to the map layer. The object will be responsible for providing legend items.
 
-:param legend: Takes ownership of the object. Can be null pointer
+:param legend: Takes ownership of the object. Can be ``None``.
 
 .. versionadded:: 2.6
 %End
 
     QgsMapLayerLegend *legend() const;
 %Docstring
-Can be null.
+Can be ``None``.
 
 .. versionadded:: 2.6
 %End
@@ -1049,7 +1049,7 @@ Sets 3D renderer for the layer. Takes ownership of the renderer.
 
     QgsAbstract3DRenderer *renderer3D() const;
 %Docstring
-Returns 3D renderer associated with the layer. May be null.
+Returns 3D renderer associated with the layer. May be ``None``.
 
 .. versionadded:: 3.0
 %End
@@ -1059,7 +1059,7 @@ Returns 3D renderer associated with the layer. May be null.
 Tests whether the layer should be visible at the specified ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-:return: true if the layer is visible at the given scale.
+:return: ``True`` if the layer is visible at the given scale.
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -1078,7 +1078,7 @@ A scale of 0 indicates no minimum scale visibility.
 
 .. note::
 
-   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+   Scale based visibility is only used if setScaleBasedVisibility() is set to ``True``.
 
 .. seealso:: :py:func:`setMinimumScale`
 
@@ -1097,7 +1097,7 @@ A scale of 0 indicates no maximum scale visibility.
 
 .. note::
 
-   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+   Scale based visibility is only used if setScaleBasedVisibility() is set to ``True``.
 
 .. seealso:: :py:func:`setMaximumScale`
 
@@ -1112,7 +1112,7 @@ A scale of 0 indicates no maximum scale visibility.
 %Docstring
 Returns whether scale based visibility is enabled for the layer.
 
-:return: true if scale based visibility is enabled
+:return: ``True`` if scale based visibility is enabled
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -1125,7 +1125,7 @@ Returns whether scale based visibility is enabled for the layer.
 
     bool hasAutoRefreshEnabled() const;
 %Docstring
-Returns true if auto refresh is enabled for the layer.
+Returns ``True`` if auto refresh is enabled for the layer.
 
 .. seealso:: :py:func:`autoRefreshInterval`
 
@@ -1137,7 +1137,7 @@ Returns true if auto refresh is enabled for the layer.
     int autoRefreshInterval() const;
 %Docstring
 Returns the auto refresh interval (in milliseconds). Note that
-auto refresh is only active when hasAutoRefreshEnabled() is true.
+auto refresh is only active when hasAutoRefreshEnabled() is ``True``.
 
 .. seealso:: :py:func:`hasAutoRefreshEnabled`
 
@@ -1226,7 +1226,7 @@ Returns the message that should be notified by the provider to triggerRepaint
 
     bool isRefreshOnNotifyEnabled() const;
 %Docstring
-Returns true if the refresh on provider nofification is enabled
+Returns ``True`` if the refresh on provider nofification is enabled
 
 .. versionadded:: 3.0
 %End
@@ -1260,7 +1260,7 @@ A ``scale`` of 0 indicates no minimum scale visibility.
 
 .. note::
 
-   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+   Scale based visibility is only used if setScaleBasedVisibility() is set to ``True``.
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -1277,7 +1277,7 @@ A ``scale`` of 0 indicates no maximum scale visibility.
 
 .. note::
 
-   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+   Scale based visibility is only used if setScaleBasedVisibility() is set to ``True``.
 
 .. seealso:: :py:func:`maximumScale`
 
@@ -1290,7 +1290,7 @@ A ``scale`` of 0 indicates no maximum scale visibility.
 %Docstring
 Sets whether scale based visibility is enabled for the layer.
 
-:param enabled: set to true to enable scale based visibility
+:param enabled: set to ``True`` to enable scale based visibility
 
 .. seealso:: :py:func:`setMinimumScale`
 
@@ -1303,7 +1303,7 @@ Sets whether scale based visibility is enabled for the layer.
 %Docstring
 Will advise the map canvas (and any other interested party) that this layer requires to be repainted.
 Will emit a repaintRequested() signal.
-If ``deferredUpdate`` is true then the layer will only be repainted when the canvas is next
+If ``deferredUpdate`` is ``True`` then the layer will only be repainted when the canvas is next
 re-rendered, and will not trigger any canvas redraws itself.
 
 .. note::
@@ -1326,7 +1326,7 @@ Sets the list of dependencies.
 
 :param layers: set of QgsMapLayerDependency. Only user-defined dependencies will be added
 
-:return: false if a dependency cycle has been detected
+:return: ``False`` if a dependency cycle has been detected
 
 .. versionadded:: 3.0
 %End
@@ -1370,7 +1370,7 @@ Emit a signal that layer's CRS has been reset
 %Docstring
 By emitting this signal the layer tells that either appearance or content have been changed
 and any view showing the rendered layer should refresh itself.
-If ``deferredUpdate`` is true then the layer will only be repainted when the canvas is next
+If ``deferredUpdate`` is ``True`` then the layer will only be repainted when the canvas is next
 re-rendered, and will not trigger any canvas redraws itself.
 %End
 

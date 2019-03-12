@@ -136,13 +136,13 @@ Find all group layer nodes
 
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+Read group (tree) from XML element <layer-tree-group> and return the newly created group (or ``None`` on error).
 Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
 %End
 
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+Read group (tree) from XML element <layer-tree-group> and return the newly created group (or ``None`` on error).
 Also resolves textual references to layers from the project (calls resolveReferences() internally).
 
 .. versionadded:: 3.0

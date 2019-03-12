@@ -148,7 +148,7 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 
     bool isNull() const;
 %Docstring
-Returns true if the geometry is null (ie, contains no underlying geometry
+Returns ``True`` if the geometry is null (ie, contains no underlying geometry
 accessible via geometry() ).
 
 .. seealso:: :py:func:`get`
@@ -261,16 +261,16 @@ Returns type of the geometry as a QgsWkbTypes.GeometryType
 
     bool isEmpty() const;
 %Docstring
-Returns true if the geometry is empty (eg a linestring with no vertices,
+Returns ``True`` if the geometry is empty (eg a linestring with no vertices,
 or a collection with no geometries). A null geometry will always
-return true for isEmpty().
+return ``True`` for isEmpty().
 
 .. seealso:: :py:func:`isNull`
 %End
 
     bool isMultipart() const;
 %Docstring
-Returns true if WKB of the geometry is of WKBMulti* type
+Returns ``True`` if WKB of the geometry is of WKBMulti* type
 %End
 
     bool equals( const QgsGeometry &geometry ) const;
@@ -285,7 +285,7 @@ equality test performed by isGeosEqual().
 
 .. note::
 
-   Comparing two null geometries will return false.
+   Comparing two null geometries will return ``False``.
 
 .. seealso:: :py:func:`isGeosEqual`
 
@@ -306,16 +306,25 @@ by equals() instead.
 
 .. note::
 
-   Comparing two null geometries will return false.
+   Comparing two null geometries will return ``False``.
 
 .. seealso:: :py:func:`equals`
 
 .. versionadded:: 1.5
 %End
 
-    bool isGeosValid() const;
+    enum ValidityFlag
+    {
+      FlagAllowSelfTouchingHoles,
+    };
+    typedef QFlags<QgsGeometry::ValidityFlag> ValidityFlags;
+
+
+    bool isGeosValid( QgsGeometry::ValidityFlags flags = 0 ) const;
 %Docstring
-Checks validity of the geometry using GEOS
+Checks validity of the geometry using GEOS.
+
+The ``flags`` parameter indicates optional flags which control the type of validity checking performed.
 
 .. versionadded:: 1.5
 %End
@@ -561,7 +570,7 @@ ring and item (first number is index 0)
 If the requested vertex number (beforeVertex.back()) is greater
 than the last actual vertex on the requested ring and item,
 it is assumed that the vertex is to be appended instead of inserted.
-Returns false if atVertex does not correspond to a valid vertex
+Returns ``False`` if atVertex does not correspond to a valid vertex
 on this geometry (including if this geometry is a Point).
 It is up to the caller to distinguish between
 these error conditions.  (Or maybe we add another method to this
@@ -575,7 +584,7 @@ ring and item (first number is index 0)
 If the requested vertex number (beforeVertex.back()) is greater
 than the last actual vertex on the requested ring and item,
 it is assumed that the vertex is to be appended instead of inserted.
-Returns false if atVertex does not correspond to a valid vertex
+Returns ``False`` if atVertex does not correspond to a valid vertex
 on this geometry (including if this geometry is a Point).
 It is up to the caller to distinguish between
 these error conditions.  (Or maybe we add another method to this
@@ -587,7 +596,7 @@ object to help make the distinction?)
 Moves the vertex at the given position number
 and item (first number is index 0)
 to the given coordinates.
-Returns false if atVertex does not correspond to a valid vertex
+Returns ``False`` if atVertex does not correspond to a valid vertex
 on this geometry
 %End
 
@@ -596,7 +605,7 @@ on this geometry
 Moves the vertex at the given position number
 and item (first number is index 0)
 to the given coordinates.
-Returns false if atVertex does not correspond to a valid vertex
+Returns ``False`` if atVertex does not correspond to a valid vertex
 on this geometry
 %End
 
@@ -605,7 +614,7 @@ on this geometry
 Deletes the vertex at the given position number and item
 (first number is index 0)
 
-:return: false if atVertex does not correspond to a valid vertex
+:return: ``False`` if atVertex does not correspond to a valid vertex
          on this geometry (including if this geometry is a Point),
          or if the number of remaining vertices in the linestring
          would be less than two.
@@ -757,7 +766,7 @@ by setting the ``direction`` argument.
 
 By default, z-coordinates are not transformed, even if the coordinate transform
 includes a vertical datum transformation. To transform z-coordinates, set
-``transformZ`` to true. This requires that the z coordinates in the geometry represent
+``transformZ`` to ``True``. This requires that the z coordinates in the geometry represent
 height relative to the vertical datum of the source CRS (generally ellipsoidal heights)
 and are expressed in its vertical units (generally meters).
 
@@ -790,7 +799,7 @@ Splits this geometry according to a given line.
 
 :param splitLine: the line that splits the geometry
 \param[out] newGeometries list of new geometries that have been created with the split
-:param topological: true if topological editing is enabled
+:param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
 
 :return: OperationResult a result code: success or reason of failure
@@ -886,13 +895,13 @@ vertices are identical.
 
 By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
 with the same x and y coordinate but different z values will still be considered
-duplicate and one will be removed. If ``useZValues`` is true, then the z values are
+duplicate and one will be removed. If ``useZValues`` is ``True``, then the z values are
 also tested and nodes with the same x and y but different z will be maintained.
 
 Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
 a multipoint geometry with overlapping points will not be changed by this method.
 
-The function will return true if nodes were removed, or false if no duplicate nodes
+The function will return ``True`` if nodes were removed, or ``False`` if no duplicate nodes
 were found.
 
 .. versionadded:: 3.0
@@ -900,7 +909,7 @@ were found.
 
     bool intersects( const QgsRectangle &rectangle ) const;
 %Docstring
-Returns true if this geometry exactly intersects with a ``rectangle``. This test is exact
+Returns ``True`` if this geometry exactly intersects with a ``rectangle``. This test is exact
 and can be slow for complex geometries.
 
 The GEOS library is used to perform the intersection test. Geometries which are not
@@ -911,7 +920,7 @@ valid may return incorrect results.
 
     bool intersects( const QgsGeometry &geometry ) const;
 %Docstring
-Returns true if this geometry exactly intersects with another ``geometry``. This test is exact
+Returns ``True`` if this geometry exactly intersects with another ``geometry``. This test is exact
 and can be slow for complex geometries.
 
 The GEOS library is used to perform the intersection test. Geometries which are not
@@ -922,7 +931,7 @@ valid may return incorrect results.
 
     bool boundingBoxIntersects( const QgsRectangle &rectangle ) const;
 %Docstring
-Returns true if the bounding box of this geometry intersects with a ``rectangle``. Since this
+Returns ``True`` if the bounding box of this geometry intersects with a ``rectangle``. Since this
 test only considers the bounding box of the geometry, is is very fast to calculate and handles invalid
 geometries.
 
@@ -933,7 +942,7 @@ geometries.
 
     bool boundingBoxIntersects( const QgsGeometry &geometry ) const;
 %Docstring
-Returns true if the bounding box of this geometry intersects with the bounding box of another ``geometry``. Since this
+Returns ``True`` if the bounding box of this geometry intersects with the bounding box of another ``geometry``. Since this
 test only considers the bounding box of the geometries, is is very fast to calculate and handles invalid
 geometries.
 
@@ -1230,7 +1239,7 @@ In either case the diagram will be clipped to the larger of the provided envelop
 OR the envelope surrounding all input nodes.
 The ``tolerance`` parameter specifies an optional snapping tolerance which can
 be used to improve the robustness of the diagram calculation.
-If ``edgesOnly`` is true than line string boundary geometries will be returned
+If ``edgesOnly`` is ``True`` than line string boundary geometries will be returned
 instead of polygons.
 An empty geometry will be returned if the diagram could not be calculated.
 
@@ -1242,7 +1251,7 @@ An empty geometry will be returned if the diagram could not be calculated.
 Returns the Delaunay triangulation for the vertices of the geometry.
 The ``tolerance`` parameter specifies an optional snapping tolerance which can
 be used to improve the robustness of the triangulation.
-If ``edgesOnly`` is true than line string boundary geometries will be returned
+If ``edgesOnly`` is ``True`` than line string boundary geometries will be returned
 instead of polygons.
 An empty geometry will be returned if the diagram could not be calculated.
 
@@ -1405,7 +1414,7 @@ Export the geometry to WKB
 %Docstring
 Exports the geometry to WKT
 
-:return: true in case of success and false else
+:return: ``True`` in case of success and ``False`` else
 
 .. note::
 
@@ -1439,7 +1448,7 @@ Try to convert the geometry to the requested type
 :param destType: the geometry type to be converted to
 :param destMultipart: determines if the output geometry will be multipart or not
 
-:return: the converted geometry or None if the conversion fails.
+:return: the converted geometry or ``None`` if the conversion fails.
 
 .. versionadded:: 2.2
 %End
@@ -1657,7 +1666,7 @@ then the result will be a closed QPolygonF of the geometry's exterior ring.
 Deletes a ring in polygon or multipolygon.
 Ring 0 is outer ring and can't be deleted.
 
-:return: true on success
+:return: ``True`` on success
 
 .. versionadded:: 1.2
 %End
@@ -1666,7 +1675,7 @@ Ring 0 is outer ring and can't be deleted.
 %Docstring
 Deletes part identified by the part number
 
-:return: true on success
+:return: ``True`` on success
 
 .. versionadded:: 1.2
 %End
@@ -1675,10 +1684,10 @@ Deletes part identified by the part number
 %Docstring
 Converts single type geometry into multitype geometry
 e.g. a polygon into a multipolygon geometry with one polygon
-If it is already a multipart geometry, it will return true and
+If it is already a multipart geometry, it will return ``True`` and
 not change the geometry.
 
-:return: true in case of success and false else
+:return: ``True`` in case of success and ``False`` else
 %End
 
     bool convertToSingleType();
@@ -1686,10 +1695,10 @@ not change the geometry.
 Converts multi type geometry into single type geometry
 e.g. a multipolygon into a polygon geometry. Only the first part of the
 multi geometry will be retained.
-If it is already a single part geometry, it will return true and
+If it is already a single part geometry, it will return ``True`` and
 not change the geometry.
 
-:return: true in case of success and false else
+:return: ``True`` in case of success and ``False`` else
 %End
 
     bool convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType geomType );
@@ -1699,7 +1708,7 @@ multi-linestring or multi-polygon). Child geometries of different type are filte
 Does nothing the geometry is not a geometry collection. May leave the geometry
 empty if none of the child geometries match the desired type.
 
-:return: true in case of success and false else
+:return: ``True`` in case of success and ``False`` else
 
 .. versionadded:: 3.2
 %End
@@ -1775,7 +1784,7 @@ The coordinates at which the error is located and should be visualized.
 
         bool hasWhere() const;
 %Docstring
-True if the location available from :py:func:`where` is valid.
+``True`` if the location available from :py:func:`where` is valid.
 %End
 
         SIP_PYOBJECT __repr__();
@@ -1783,6 +1792,8 @@ True if the location available from :py:func:`where` is valid.
         QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
         sipRes = PyUnicode_FromString( str.toUtf8().data() );
 %End
+
+        bool operator==( const QgsGeometry::Error &other ) const;
 
     };
 
@@ -1792,14 +1803,12 @@ True if the location available from :py:func:`where` is valid.
       ValidatorGeos,
     };
 
-    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = 0 ) const;
 %Docstring
 Validates geometry and produces a list of geometry errors.
 The ``method`` argument dictates which validator to utilize.
 
-.. note::
-
-   Available in Python bindings since QGIS 1.6
+The ``flags`` parameter indicates optional flags which control the type of validity checking performed.
 
 .. versionadded:: 1.5
 %End
@@ -1836,7 +1845,7 @@ Converts the geometry to straight line segments, if it is a curved geometry type
 
     bool requiresConversionToStraightSegments() const;
 %Docstring
-Returns true if the geometry is a curved geometry type which requires conversion to
+Returns ``True`` if the geometry is a curved geometry type which requires conversion to
 display as straight line segments.
 
 .. seealso:: :py:func:`convertToStraightSegment`
@@ -1868,7 +1877,7 @@ Calculates the vertex ID from a vertex ``number``.
 
 If a matching vertex was found, it will be stored in ``id``.
 
-Returns true if vertex was found.
+Returns ``True`` if vertex was found.
 
 .. seealso:: :py:func:`vertexNrFromVertexId`
 
@@ -1953,7 +1962,7 @@ The 2 types should match.
 :param p2: second geometry object
 :param epsilon: maximum difference for coordinates between the objects
 
-:return: true if objects are
+:return: ``True`` if objects are
          - polylines and have the same number of points and all
          points are equal within the specified tolerance
          - polygons and have the same number of points and all
@@ -2106,6 +2115,8 @@ Downgrades a point list from QgsPoint to :py:class:`QgsPointXY`
     operator QVariant() const;
 
 }; // class QgsGeometry
+
+QFlags<QgsGeometry::ValidityFlag> operator|(QgsGeometry::ValidityFlag f1, QFlags<QgsGeometry::ValidityFlag> f2);
 
 
 

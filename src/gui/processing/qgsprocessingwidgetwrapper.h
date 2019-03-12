@@ -94,6 +94,20 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsMapCanvas *mapCanvas() const;
 
     /**
+     * Sets the \a project associated with the widget. This allows the widget to retrieve the map layers
+     * and other properties from the correct project.
+     * \see project()
+     * \since QGIS 3.8
+     */
+    void setProject( QgsProject *project );
+
+    /**
+     * Returns the project associated with the widget.
+     * \see setProject()
+     */
+    QgsProject *project() const;
+
+    /**
      * Returns the model which the parameter widget is associated with.
      *
      * \see setModel()
@@ -132,6 +146,8 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QString mModelChildAlgorithmId;
 
     QgsMapCanvas *mMapCanvas = nullptr;
+
+    QgsProject *mProject = nullptr;
 
 };
 
@@ -224,7 +240,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      * Creates and returns a new label to accompany widgets created by the wrapper.
      *
      * The caller takes ownership of the returned label. Some parameter type and dialog type
-     * combinations will return nullptr for this method. If nullptr is returned, then no
+     * combinations will return NULLPTR for this method. If NULLPTR is returned, then no
      * label should be shown for the parameter's widget (i.e. the label is embedded inside the
      * widget itself).
      *
@@ -312,7 +328,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      * Creates a new label to accompany widgets created by the wrapper.
      *
      * The caller takes ownership of the returned label. Some parameter type and dialog type
-     * combinations will return nullptr for this method. If nullptr is returned, then no
+     * combinations will return NULLPTR for this method. If NULLPTR is returned, then no
      * label should be shown for the parameter's widget (i.e. the label is embedded inside the
      * widget itself).
      *
@@ -338,7 +354,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     virtual QVariant widgetValue() const = 0;
 
     /**
-     * Returns the optional vector layer associated with this widget wrapper, or nullptr if no vector
+     * Returns the optional vector layer associated with this widget wrapper, or NULLPTR if no vector
      * layer is applicable.
      *
      * This is used to correctly generate expression contexts within the GUI, e.g. to allow expression

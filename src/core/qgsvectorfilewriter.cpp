@@ -1007,7 +1007,7 @@ class QgsVectorFileWriterMetadataContainer
 
       layerOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new QgsVectorFileWriter::IntOption(
                              QObject::tr( "Maximum number of figures after decimal separator to write in coordinates. "
-                                          "Default to 15. Truncation will occur to remove trailing zeros." ),
+                                          "Defaults to 15. Truncation will occur to remove trailing zeros." ),
                              15 // Default value
                            ) );
 
@@ -1017,6 +1017,35 @@ class QgsVectorFileWriterMetadataContainer
                                QObject::tr( "GeoJSON" ),
                                QStringLiteral( "*.geojson" ),
                                QStringLiteral( "geojson" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
+      // GeoJSONSeq
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      layerOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new QgsVectorFileWriter::IntOption(
+                             QObject::tr( "Maximum number of figures after decimal separator to write in coordinates. "
+                                          "Defaults to 15. Truncation will occur to remove trailing zeros." ),
+                             15 // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "RS" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to start records with the RS=0x1E character (RFC 8142 standard). "
+                                          "Defaults to NO: Newline Delimited JSON (geojsonl). \n"
+                                          "If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons)." ),
+                             false  // Default value = NO
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "GeoJSONSeq" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "GeoJSON - Newline Delimited" ),
+                               QObject::tr( "GeoJSON - Newline Delimited" ),
+                               QStringLiteral( "*.geojsonl *.geojsons *.json" ),
+                               QStringLiteral( "json" ),  // add json for now
                                datasetOptions,
                                layerOptions,
                                QStringLiteral( "UTF-8" )

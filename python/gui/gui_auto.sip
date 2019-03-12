@@ -302,6 +302,7 @@
 %Include auto_generated/layertree/qgslayertreeview.sip
 %Include auto_generated/layertree/qgslayertreeviewdefaultactions.sip
 %Include auto_generated/layertree/qgslayertreeviewindicator.sip
+%Include auto_generated/layout/qgslayoutcombobox.sip
 %Include auto_generated/layout/qgslayoutcustomdrophandler.sip
 %Include auto_generated/layout/qgslayoutdesignerinterface.sip
 %Include auto_generated/layout/qgslayoutitemcombobox.sip
@@ -327,6 +328,7 @@
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessingmodelerparameterwidget.sip
+%Include auto_generated/processing/qgsprocessingmultipleselectiondialog.sip
 %Include auto_generated/processing/qgsprocessingrecentalgorithmlog.sip
 %Include auto_generated/processing/qgsprocessingtoolboxmodel.sip
 %Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip

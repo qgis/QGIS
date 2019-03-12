@@ -411,9 +411,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   distributeToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
   distributeToolButton->addAction( mActionDistributeLeft );
   distributeToolButton->addAction( mActionDistributeHCenter );
+  distributeToolButton->addAction( mActionDistributeHSpace );
   distributeToolButton->addAction( mActionDistributeRight );
   distributeToolButton->addAction( mActionDistributeTop );
   distributeToolButton->addAction( mActionDistributeVCenter );
+  distributeToolButton->addAction( mActionDistributeVSpace );
   distributeToolButton->addAction( mActionDistributeBottom );
   distributeToolButton->setDefaultAction( mActionDistributeLeft );
   mActionsToolbar->addWidget( distributeToolButton );
@@ -582,6 +584,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeHCenter );
   } );
+  connect( mActionDistributeHSpace, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeHSpace );
+  } );
   connect( mActionDistributeRight, &QAction::triggered, this, [ = ]
   {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeRight );
@@ -593,6 +599,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionDistributeVCenter, &QAction::triggered, this, [ = ]
   {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeVCenter );
+  } );
+  connect( mActionDistributeVSpace, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeVSpace );
   } );
   connect( mActionDistributeBottom, &QAction::triggered, this, [ = ]
   {
@@ -4330,9 +4340,11 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   mActionAlignBottom->setEnabled( layoutAvailable );
   mActionDistributeLeft->setEnabled( layoutAvailable );
   mActionDistributeHCenter->setEnabled( layoutAvailable );
+  mActionDistributeHSpace->setEnabled( layoutAvailable );
   mActionDistributeRight->setEnabled( layoutAvailable );
   mActionDistributeTop->setEnabled( layoutAvailable );
   mActionDistributeVCenter->setEnabled( layoutAvailable );
+  mActionDistributeVSpace->setEnabled( layoutAvailable );
   mActionDistributeBottom->setEnabled( layoutAvailable );
   mActionResizeNarrowest->setEnabled( layoutAvailable );
   mActionResizeWidest->setEnabled( layoutAvailable );
@@ -4475,9 +4487,16 @@ void QgsLayoutDesignerDialog::setLastExportPath( const QString &path ) const
 
 bool QgsLayoutDesignerDialog::checkBeforeExport()
 {
-  QgsLayoutValidityCheckContext context( mLayout );
-  return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
-         tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
+  if ( mLayout )
+  {
+    QgsLayoutValidityCheckContext context( mLayout );
+    return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
+           tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
+  }
+  else
+  {
+    return true;
+  }
 }
 
 void QgsLayoutDesignerDialog::updateWindowTitle()

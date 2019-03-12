@@ -64,8 +64,8 @@ input box).
 
     void setOverwriteEnabled( bool enabled );
 %Docstring
-Sets whether users are permitted to overwrite existing names. If true, then
-the dialog will reflect that the new name will overwrite an existing name. If false,
+Sets whether users are permitted to overwrite existing names. If ``True``, then
+the dialog will reflect that the new name will overwrite an existing name. If ``False``,
 then the dialog will not accept names which already exist.
 
 .. seealso:: :py:func:`overwriteEnabled`
@@ -121,7 +121,7 @@ Test if name or name with at least one extension exists.
 :param existing: existing names
 :param cs: case sensitivity for new name to existing names comparison
 
-:return: true if name exists
+:return: ``True`` if name exists
 %End
   signals:
 

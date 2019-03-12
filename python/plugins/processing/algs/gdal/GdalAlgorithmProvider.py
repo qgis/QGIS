@@ -70,6 +70,7 @@ from .translate import translate
 from .tpi import tpi
 from .tri import tri
 from .warp import warp
+from .pansharp import pansharp
 
 from .extractprojection import ExtractProjection
 # from .rasterize_over import rasterize_over
@@ -174,6 +175,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             tpi(),
             tri(),
             warp(),
+            pansharp(),
             # rasterize(),
             ExtractProjection(),
             # rasterize_over(),

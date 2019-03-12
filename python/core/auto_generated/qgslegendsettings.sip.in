@@ -95,7 +95,7 @@ Returns whether a stroke will be drawn around raster symbol items.
 %Docstring
 Sets whether a stroke will be drawn around raster symbol items.
 
-:param enabled: set to true to draw borders
+:param enabled: set to ``True`` to draw borders
 
 .. seealso:: :py:func:`drawRasterStroke`
 
@@ -109,7 +109,7 @@ Sets whether a stroke will be drawn around raster symbol items.
     QColor rasterStrokeColor() const;
 %Docstring
 Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeColor`
 
@@ -123,7 +123,7 @@ only drawn if drawRasterStroke() is true.
     void setRasterStrokeColor( const QColor &color );
 %Docstring
 Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 :param color: stroke color
 
@@ -139,7 +139,7 @@ only drawn if drawRasterStroke() is true.
     double rasterStrokeWidth() const;
 %Docstring
 Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
 
@@ -153,7 +153,7 @@ only drawn if drawRasterStroke() is true.
     void setRasterStrokeWidth( double width );
 %Docstring
 Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-only drawn if drawRasterStroke() is true.
+only drawn if drawRasterStroke() is ``True``.
 
 :param width: stroke width in millimeters
 
@@ -192,6 +192,24 @@ Sets the legend map ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`mapScale`
+%End
+
+    double mapUnitsPerPixel() const;
+%Docstring
+Returns the factor of map units per pixel for symbols with size given in map units calculated by dpi and mmPerMapUnit
+
+.. seealso:: :py:func:`setMapUnitsPerPixel`
+
+.. versionadded:: 3.8
+%End
+
+    void setMapUnitsPerPixel( double mapUnitsPerPixel );
+%Docstring
+Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the map settings.
+
+.. seealso:: :py:func:`mapUnitsPerPixel`
+
+.. versionadded:: 3.8
 %End
 
     int dpi() const;

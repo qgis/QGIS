@@ -71,7 +71,7 @@ is transferred to the report section.
 
     bool bodyEnabled() const;
 %Docstring
-Returns true if the body for the section is enabled.
+Returns ``True`` if the body for the section is enabled.
 
 .. seealso:: :py:func:`setBodyEnabled`
 
@@ -122,16 +122,16 @@ Sets the ``field`` associated with this section.
 
     bool sortAscending() const;
 %Docstring
-Returns true if the field values should be sorted ascending,
-or false for descending sort.
+Returns ``True`` if the field values should be sorted ascending,
+or ``False`` for descending sort.
 
 .. seealso:: :py:func:`setSortAscending`
 %End
 
     void setSortAscending( bool sortAscending );
 %Docstring
-Sets whether the field values should be sorted ascending. Set to true to sort
-ascending, or false for descending sort.
+Sets whether the field values should be sorted ascending. Set to ``True`` to sort
+ascending, or ``False`` for descending sort.
 
 .. seealso:: :py:func:`sortAscending`
 %End

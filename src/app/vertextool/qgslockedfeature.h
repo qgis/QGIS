@@ -16,24 +16,17 @@
 #ifndef QGSLOCKEDFEATURE_H
 #define QGSLOCKEDFEATURE_H
 
+#include <QObject>
+
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
-
-#include <QObject>
 
 class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsMapLayer;
-class QgsRubberBand;
 class QgsGeometryValidator;
 class QgsVertexMarker;
-
 class QgsVertexEntry;
-
-/**
- * Constant representing zero value for distance. It's 0 because of error in double counting.
- */
-static const double ZERO_TOLERANCE = 0.000000001;
 
 /**
  * Class that keeps the selected feature
@@ -135,11 +128,6 @@ class QgsLockedFeature: public QObject
      * geometry validation finished
      */
     void validationFinished();
-
-    /**
-     * Updates vertex markers position accoording to changed feature geometry
-     */
-    void updateVertexMarkersPosition();
 
     /*
      * a feature was removed from the layer - might be the selected

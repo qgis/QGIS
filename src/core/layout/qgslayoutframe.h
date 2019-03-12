@@ -77,28 +77,28 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
 
     /**
      * Returns whether the page should be hidden (ie, not included in layout exports) if this frame is empty
-     * \returns true if page should be hidden if frame is empty
+     * \returns TRUE if page should be hidden if frame is empty
      * \see setHidePageIfEmpty()
      */
     bool hidePageIfEmpty() const { return mHidePageIfEmpty; }
 
     /**
      * Sets whether the page should be hidden (ie, not included in layout exports) if this frame is empty
-     * \param hidePageIfEmpty set to true if page should be hidden if frame is empty
+     * \param hidePageIfEmpty set to TRUE if page should be hidden if frame is empty
      * \see hidePageIfEmpty()
      */
     void setHidePageIfEmpty( bool hidePageIfEmpty );
 
     /**
      * Returns whether the background and frame stroke should be hidden if this frame is empty
-     * \returns true if background and stroke should be hidden if frame is empty
+     * \returns TRUE if background and stroke should be hidden if frame is empty
      * \see setHideBackgroundIfEmpty()
      */
     bool hideBackgroundIfEmpty() const { return mHideBackgroundIfEmpty; }
 
     /**
      * Sets whether the background and frame stroke should be hidden if this frame is empty
-     * \param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
+     * \param hideBackgroundIfEmpty set to TRUE if background and stroke should be hidden if frame is empty
      * \see hideBackgroundIfEmpty()
      */
     void setHideBackgroundIfEmpty( bool hideBackgroundIfEmpty );
@@ -125,9 +125,9 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     QString mMultiFrameUuid;
     QRectF mSection;
 
-    //! If true, layout will not export page if this frame is empty
+    //! If TRUE, layout will not export page if this frame is empty
     bool mHidePageIfEmpty = false;
-    //! If true, background and outside frame will not be drawn if frame is empty
+    //! If TRUE, background and outside frame will not be drawn if frame is empty
     bool mHideBackgroundIfEmpty = false;
 
     friend class QgsLayoutMultiFrame;

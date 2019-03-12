@@ -141,7 +141,7 @@ class QgsAuthOAuth2Config : public QObject
     //! API key
     QString apiKey() const { return mApiKey; }
 
-    //! Returns true if the token is persistent
+    //! Returns TRUE if the token is persistent
     bool persistToken() const { return mPersistToken; }
 
     //! Access method
@@ -179,7 +179,7 @@ class QgsAuthOAuth2Config : public QObject
      * \param variant map where configuration is stored
      * \param format output format
      * \param pretty indentation in output
-     * \param ok is set to false in case something goes wrong, true otherwise
+     * \param ok is set to FALSE in case something goes wrong, TRUE otherwise
      * \return serialized config
      */
     static QByteArray serializeFromVariant( const QVariantMap &variant,
@@ -191,7 +191,7 @@ class QgsAuthOAuth2Config : public QObject
      * Unserialize the configuration in \a serial according to \a format
      * \param serial serialized configuration
      * \param format output format
-     * \param ok is set to false in case something goes wrong, true otherwise
+     * \param ok is set to FALSE in case something goes wrong, TRUE otherwise
      * \return config map
      */
     static QVariantMap variantFromSerialized( const QByteArray &serial,

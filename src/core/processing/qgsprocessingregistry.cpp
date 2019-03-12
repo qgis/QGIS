@@ -48,6 +48,8 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeDistance() );
   addParameterType( new QgsProcessingParameterTypeBand() );
   addParameterType( new QgsProcessingParameterTypeFeatureSink() );
+  addParameterType( new QgsProcessingParameterTypeLayout() );
+  addParameterType( new QgsProcessingParameterTypeLayoutItem() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

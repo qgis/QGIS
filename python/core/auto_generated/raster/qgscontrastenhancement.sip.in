@@ -79,7 +79,7 @@ Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 m
 
     bool isValueInDisplayableRange( double value );
 %Docstring
-Returns true if a pixel ``value`` is in displayable range, false if pixel
+Returns ``True`` if a pixel ``value`` is in displayable range, ``False`` if pixel
 is outside of range (i.e. clipped).
 %End
 

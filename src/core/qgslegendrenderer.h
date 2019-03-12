@@ -174,7 +174,7 @@ class CORE_EXPORT QgsLegendRenderer
     /**
      * Draws the legend and returns the actual size of the legend.
      *
-     * If \a painter is nullptr, only the size of the legend will be calculated and no
+     * If \a painter is NULLPTR, only the size of the legend will be calculated and no
      * painting will be attempted.
      */
     QSizeF paintAndDetermineSize( QPainter *painter = nullptr );
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * Returns the size required to draw the complete title.
      *
-     * If \a painter is nullptr, no painting will be attempted, but the required size will still be calculated and returned.
+     * If \a painter is NULLPTR, no painting will be attempted, but the required size will still be calculated and returned.
      */
     QSizeF drawTitle( QPainter *painter = nullptr, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * Returns the size of the title.
      *
-     * The \a painter may be nullptr, in which case on the size is calculated and no painting is attempted.
+     * The \a painter may be NULLPTR, in which case on the size is calculated and no painting is attempted.
      */
     QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QPainter *painter = nullptr, QPointF point = QPointF() );
 
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsLegendRenderer
     /**
      * Draws the legend using the specified render \a context, and returns the actual size of the legend.
      *
-     * If \a context is nullptr, only the size of the legend will be calculated and no
+     * If \a context is NULLPTR, only the size of the legend will be calculated and no
      * painting will be attempted.
      */
     QSizeF paintAndDetermineSize( QgsRenderContext *context );
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * Returns the size required to draw the complete title.
      *
-     * If \a context is nullptr, no painting will be attempted, but the required size will still be calculated and returned.
+     * If \a context is NULLPTR, no painting will be attempted, but the required size will still be calculated and returned.
      */
     QSizeF drawTitle( QgsRenderContext *context, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsLegendRenderer
      * The \a atom is drawn with the space above it, so that the first atoms in column are all
      * aligned to the same line regardless of their style top spacing.
      *
-     * If \a context is nullptr, no painting will be attempted, but the required size will still be calculated and returned.
+     * If \a context is NULLPTR, no painting will be attempted, but the required size will still be calculated and returned.
     */
     QSizeF drawAtom( const Atom &atom, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * Returns the size of the title.
      *
-     * The \a context may be nullptr, in which case on the size is calculated and no painting is attempted.
+     * The \a context may be NULLPTR, in which case on the size is calculated and no painting is attempted.
      */
     QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, QPointF point = QPointF() );
 

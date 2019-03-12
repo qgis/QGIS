@@ -1574,6 +1574,18 @@ tests:
         name: expected/export_multiline_info.gml
         type: vector
 
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export multipoint info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: multipoints.gml|layername=multipoints
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_geometry_info_multipoint.gml
+        type: vector
+
   - algorithm: qgis:texttofloat
     name: Text to float
     params:
@@ -3732,6 +3744,43 @@ tests:
     results:
       OUTPUT:
         name: expected/valid.gml
+        type: vector
+
+  - algorithm: qgis:checkvalidity
+    name: Check validity polygon ring self intersection
+    params:
+      INPUT_LAYER:
+        name: custom/poly_ring_self_intersection.gml|layername=poly_ring_self_intersection
+        type: vector
+      METHOD: 2
+    results:
+      ERROR_OUTPUT:
+        name: expected/poly_ring_self_intersection_error.gml
+        type: vector
+      INVALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_invalid.gml
+        type: vector
+      VALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_valid.gml
+        type: vector
+
+  - algorithm: qgis:checkvalidity
+    name: Check validity polygon ring self intersection, ignoring self intersections
+    params:
+      IGNORE_RING_SELF_INTERSECTION: true
+      INPUT_LAYER:
+        name: custom/poly_ring_self_intersection.gml|layername=poly_ring_self_intersection
+        type: vector
+      METHOD: 2
+    results:
+      ERROR_OUTPUT:
+        name: expected/poly_ring_self_intersection_error_ignore_self.gml
+        type: vector
+      INVALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_invalid_ignore_self.gml
+        type: vector
+      VALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_valid_ignore_self.gml
         type: vector
 
   - algorithm: qgis:polygonize
@@ -6996,5 +7045,246 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_gaps.gml
         type: vector
+
+  - algorithm: native:dissolve
+    name: Test dissolve with consecutive lines
+    params:
+      INPUT:
+        name: custom/consecutivelines.gml|layername=consecutivelines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolved_consecutive_lines.gml
+        type: vector
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND, nodata
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean1.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 96799caed50406d3e31e05a182a6872231f800f01dea126aa9fbafdd
+        type: rasterhash
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND, nodata as false
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: true
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean1.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: bf225380193226957a2210dc45a9c10dffac5dadcee932459e243456
+        type: rasterhash
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND, resampling
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3_resample.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -999.0
+      REF_LAYER:
+        name: custom/raster_boolean3.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: cdf6edb6afcefc5e80d60fa213df17aae59423019240807f5a49b72d
+        type: rasterhash
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND resample, nodata as false
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3_resample.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: true
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 1de336faba85a6b51684bda85b4f3b954b7e54486632352e05c9fab3
+        type: rasterhash
+
+  - algorithm: native:rasterbooleanand
+    name: Boolean AND, reference layer
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3_resample.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: dfe0bfc934a9d2a8ab865ad77db4278067830ac8e6f0470a730ad434
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean1.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: d9fe5b26cf76ff58674fd6adeb1933f4b5c9b39ca6f57b876455f167
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR, nodata as false
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: true
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean1.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: de7a8dabce3872e6ef1acd4821f7f550ac41a43d5b5914ab4474cec1
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR resample
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3_resample.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 56c4396468098a6f421e14682e22bb9cbb14027ed97f99cb8f85f953
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR resample, nodata as false
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3_resample.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: true
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: f8f7a412274c3133aee7fc24e3e6df2ddb52c6bc82663dd25154d3be
+        type: rasterhash
+
+  - algorithm: native:rasterlogicalor
+    name: Boolean OR, reference layer
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        params:
+        - name: custom/raster_boolean1.tif
+          type: raster
+        - name: custom/raster_boolean2.tif
+          type: raster
+        - name: custom/raster_boolean3.tif
+          type: raster
+        type: multi
+      NODATA_AS_FALSE: false
+      NO_DATA: -9999.0
+      REF_LAYER:
+        name: custom/raster_boolean3_resample.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 6c09e13126e16a267e36c79b0eeba7761422da7bd0387125f4c823e6
+        type: rasterhash
 
 # See ../README.md for a description of the file format

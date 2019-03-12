@@ -69,37 +69,15 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
      */
     const OverlappedFeature &overlappedFeature() const { return mOverlappedFeature; }
 
-    bool isEqual( QgsGeometryCheckError *other ) const override
-    {
-      QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
-      return err &&
-             other->layerId() == layerId() &&
-             other->featureId() == featureId() &&
-             err->overlappedFeature() == overlappedFeature() &&
-             QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->context()->reducedTolerance ) &&
-             std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->context()->reducedTolerance;
-    }
+    bool isEqual( QgsGeometryCheckError *other ) const override;
 
-    bool closeMatch( QgsGeometryCheckError *other ) const override
-    {
-      QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
-      return err && other->layerId() == layerId() && other->featureId() == featureId() && err->overlappedFeature() == overlappedFeature();
-    }
+    bool closeMatch( QgsGeometryCheckError *other ) const override;
 
-    bool handleChanges( const QgsGeometryCheck::Changes &changes ) override
-    {
-      if ( !QgsGeometryCheckError::handleChanges( changes ) )
-      {
-        return false;
-      }
-      if ( changes.value( mOverlappedFeature.layerId() ).keys().contains( mOverlappedFeature.featureId() ) )
-      {
-        return false;
-      }
-      return true;
-    }
+    bool handleChanges( const QgsGeometryCheck::Changes &changes ) override;
 
     QString description() const override;
+
+    QMap<QString, QgsFeatureIds > involvedFeatures() const override;
 
   private:
     OverlappedFeature mOverlappedFeature;

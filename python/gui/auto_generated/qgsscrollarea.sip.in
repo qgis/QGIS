@@ -43,7 +43,7 @@ QScrollArea itself or its child viewport().
 
     bool hasScrolled() const;
 %Docstring
-Returns true if a scroll recently occurred within
+Returns ``True`` if a scroll recently occurred within
 the QScrollArea or its child viewport()
 %End
 

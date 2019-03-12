@@ -55,7 +55,7 @@ so the rasterlayer class appends the band number in brackets behind each band na
 
 Sample usage of the QgsRasterLayer class:
 
-In order to automate redrawing of a raster layer, you should like it to a map canvas like this :
+In order to automate redrawing of a raster layer, you should link it to a map canvas like this :
 
 Once a layer has been created you can find out what type of layer it is (GrayOrUndefined, Palette or Multiband):
 
@@ -204,7 +204,7 @@ if the geometry type of the new data source matches the current geometry type of
 :param baseName: base name of the layer
 :param provider: provider string
 :param options: provider options
-:param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
+:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
                              data source
 
 .. seealso:: :py:func:`dataSourceChanged`
@@ -371,7 +371,7 @@ Writes the symbology of the layer into the document provided in SLD 1.0.0 format
 :param errorMessage: reference to string that will be updated with any error messages
 :param props: a open ended set of properties that can drive/inform the SLD encoding
 
-:return: true in case of success
+:return: ``True`` in case of success
 
 .. versionadded:: 3.6
 %End

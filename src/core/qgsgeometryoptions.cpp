@@ -52,7 +52,7 @@ void QgsGeometryOptions::apply( QgsGeometry &geometry ) const
     geometry = geometry.snappedToGrid( mGeometryPrecision, mGeometryPrecision );
 
   if ( mRemoveDuplicateNodes )
-    geometry.removeDuplicateNodes();
+    geometry.removeDuplicateNodes( 4 * std::numeric_limits<double>::epsilon(), true );
 }
 
 QStringList QgsGeometryOptions::geometryChecks() const

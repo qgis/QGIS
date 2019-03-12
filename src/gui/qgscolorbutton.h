@@ -90,8 +90,8 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /**
      * Sets whether opacity modification (transparency) is permitted
-     * for the color. Defaults to false.
-     * \param allowOpacity set to true to allow opacity modification
+     * for the color. Defaults to FALSE.
+     * \param allowOpacity set to TRUE to allow opacity modification
      * \see allowOpacity()
      * \since QGIS 3.0
      */
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Returns whether opacity modification (transparency) is permitted
      * for the color.
-     * \returns true if opacity modification is allowed
+     * \returns TRUE if opacity modification is allowed
      * \see setAllowOpacity()
      * \since QGIS 3.0
      */
@@ -123,14 +123,14 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Sets whether the drop-down menu should be shown for the button. The default behavior is to
      * show the menu.
-     * \param showMenu set to false to hide the drop-down menu
+     * \param showMenu set to FALSE to hide the drop-down menu
      * \see showMenu
      */
     void setShowMenu( bool showMenu );
 
     /**
      * Returns whether the drop-down menu is shown for the button.
-     * \returns true if drop-down menu is shown
+     * \returns TRUE if drop-down menu is shown
      * \see setShowMenu
      */
     bool showMenu() const { return menu() ? true : false; }
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Sets whether the "no color" option should be shown in the button's drop-down menu. If selected,
      * the "no color" option sets the color button's color to a totally transparent color.
-     * \param showNoColorOption set to true to show the no color option. This is disabled by default.
+     * \param showNoColorOption set to TRUE to show the no color option. This is disabled by default.
      * \see showNoColor
      * \see setNoColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Returns whether the "no color" option is shown in the button's drop-down menu. If selected,
      * the "no color" option sets the color button's color to a totally transparent color.
-     * \returns true if the no color option is shown.
+     * \returns TRUE if the no color option is shown.
      * \see setShowNoColor
      * \see noColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -202,7 +202,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /**
      * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
-     * \param showNull set to true to show a null option
+     * \param showNull set to TRUE to show a null option
      * \see showNull()
      * \see isNull()
      * \since QGIS 2.16
@@ -218,7 +218,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     bool showNull() const;
 
     /**
-     * Returns true if the current color is null.
+     * Returns TRUE if the current color is null.
      * \see setShowNull()
      * \see showNull()
      * \since QGIS 2.16
@@ -298,7 +298,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Creates an icon for displaying a \a color in a drop-down menu.
      *
-     * If \a showChecks set to true, then a checkboard pattern will be shown behind
+     * If \a showChecks set to TRUE, then a checkboard pattern will be shown behind
      * semi-transparent colors.
      *
      * \since QGIS 3.6
@@ -380,7 +380,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
   signals:
 
     /**
-     * Is emitted whenever a new color is set for the button. The color is always valid.
+     * Emitted whenever a new color is set for the button. The color is always valid.
      * In case the new color is the same no signal is emitted, to avoid infinite loops.
      * \param color New color
      */
@@ -490,7 +490,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
-     * \returns true if mime data could be intrepreted as a color
+     * \returns TRUE if mime data could be intrepreted as a color
      * \param mimeData mime data
      * \param resultColor QColor to store evaluated color
      * \see createColorMimeData
@@ -500,7 +500,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Ends a color picking operation
      * \param eventPos global position of pixel to sample color from
-     * \param samplingColor set to true to actually sample the color, false to just cancel
+     * \param samplingColor set to TRUE to actually sample the color, FALSE to just cancel
      * the color picking operation
      */
     void stopPicking( QPoint eventPos, bool samplingColor = true );

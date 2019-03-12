@@ -55,36 +55,17 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
      */
     const QMap<QString, QgsFeatureIds> &neighbors() const { return mNeighbors; }
 
-    bool isEqual( QgsGeometryCheckError *other ) const override
-    {
-      QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
-      return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), mCheck->context()->reducedTolerance ) && err->neighbors() == neighbors();
-    }
+    bool isEqual( QgsGeometryCheckError *other ) const override;
 
-    bool closeMatch( QgsGeometryCheckError *other ) const override
-    {
-      QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
-      return err && err->layerId() == layerId() && err->neighbors() == neighbors();
-    }
+    bool closeMatch( QgsGeometryCheckError *other ) const override;
 
-    void update( const QgsGeometryCheckError *other ) override
-    {
-      QgsGeometryCheckError::update( other );
-      // Static cast since this should only get called if isEqual == true
-      const QgsGeometryGapCheckError *err = static_cast<const QgsGeometryGapCheckError *>( other );
-      mNeighbors = err->mNeighbors;
-      mGapAreaBBox = err->mGapAreaBBox;
-    }
+    void update( const QgsGeometryCheckError *other ) override;
 
-    bool handleChanges( const QgsGeometryCheck::Changes & /*changes*/ ) override
-    {
-      return true;
-    }
+    bool handleChanges( const QgsGeometryCheck::Changes & /*changes*/ ) override;
 
-    QgsRectangle affectedAreaBBox() const override
-    {
-      return mGapAreaBBox;
-    }
+    QgsRectangle affectedAreaBBox() const override;
+
+    QMap<QString, QgsFeatureIds > involvedFeatures() const override;
 
   private:
     QMap<QString, QgsFeatureIds> mNeighbors;

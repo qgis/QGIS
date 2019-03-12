@@ -152,11 +152,6 @@ QPushButton
     color:@text;
 }
 
-QPushButton[text^=""]
-{
-    min-width: 2.5em;
-}
-
 QToolButton
 {
     padding: 0.12em;
@@ -863,4 +858,8 @@ QListWidget#mOptionsListWidget::item {
 QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,
 QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab QTabBar::tab {
     width: 1.2em;
+}
+
+QWidget#QgsRasterCalcDialogBase QWidget#mOperatorsGroupBox QPushButton {
+    min-width:2.3em;
 }

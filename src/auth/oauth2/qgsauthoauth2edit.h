@@ -40,7 +40,7 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     /**
      * Validate current configuration
-     * \return true if current configuration is valid
+     * \return TRUE if current configuration is valid
      */
     bool validateConfig() override;
 

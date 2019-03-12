@@ -38,7 +38,15 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
 
 bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback )
 {
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  // Why is there a write lock acquired here? Weird, we only want to read a feature from the cache, right?
+  // A method like `QCache::object(const Key &key) const` certainly would not modify its internals.
+  // Mmmh. What if reality was different?
+  // If one reads the docs very, very carefully one will find the term "reentrant" in the
+  // small print of the QCache docs. This is the hint that reality is different.
+  //
+  // https://bugreports.qt.io/browse/QTBUG-19794
+
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
   QgsFeature *cachedFeature = mFeatureCache.object( id );
   if ( cachedFeature )
   {

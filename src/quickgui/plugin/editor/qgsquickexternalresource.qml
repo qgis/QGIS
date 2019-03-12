@@ -22,6 +22,7 @@ import QgsQuick 0.1 as QgsQuick
  * External Resource (Photo capture) for QGIS Attribute Form
  * Requires various global properties set to function, see qgsquickfeatureform Loader section
  * Do not use directly from Application QML
+ * The widget is interactive which allows interactions even in readOnly state (e.g showing preview), but no edit!
  */
 Item {
   signal valueChanged(var value, bool isNull)
@@ -29,15 +30,17 @@ Item {
   property var image: image
   property var brokenImageSource: QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
   property var notavailableImageSource: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
+  property real iconSize:  customStyle.height * 0.75
 
   id: fieldItem
+  enabled: true // its interactive widget
+  height: image.hasValidSource? customStyle.height * 3 : customStyle.height
   anchors {
     left: parent.left
     right: parent.right
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  height: Math.max(image.height, button.height)
   QgsQuick.PhotoCapture {
     id: photoCapturePanel
     visible: false
@@ -52,10 +55,20 @@ Item {
     property bool hasValidSource: false
 
     id: image
-    height: hasValidSource? customStyle.height * 3 : customStyle.height
+    height: fieldItem.height
+    sourceSize.height: image.hasValidSource? customStyle.height * 3 : fieldItem.iconSize
     autoTransform: true
     fillMode: Image.PreserveAspectFit
     visible: hasValidSource
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: externalResourceHandler.previewImage(homePath + "/" + image.currentValue)
+    }
+
+    onCurrentValueChanged: {
+        image.source = image.getSource()
+    }
 
     onSourceChanged: {
         hasValidSource = (image.source ===  fieldItem.brokenImageSource ||
@@ -82,9 +95,69 @@ Item {
   }
 
   Button {
+    id: deleteButton
+    visible: !readOnly && image.hasValidSource
+    width: fieldItem.iconSize
+    height: width
+    padding: 0
+
+    anchors.right: imageBrowserButton.left
+    anchors.bottom: parent.bottom
+    anchors.verticalCenter: parent.verticalCenter
+
+    onClicked: externalResourceHandler.removeImage(fieldItem, homePath + "/" + image.currentValue)
+
+    background: Image {
+      id: deleteIcon
+      source: QgsQuick.Utils.getThemeIcon("ic_delete_forever_white")
+      width: deleteButton.width
+      height: deleteButton.height
+      sourceSize.width: width
+      sourceSize.height: height
+      fillMode: Image.PreserveAspectFit
+    }
+
+    ColorOverlay {
+        anchors.fill: deleteIcon
+        source: deleteIcon
+        color: customStyle.attentionColor
+    }
+  }
+
+  Button {
+    id: imageBrowserButton
+    visible: !readOnly
+    width: fieldItem.iconSize
+    height: width
+    padding: 0
+
+    anchors.right: button.left
+    anchors.bottom: parent.bottom
+    anchors.verticalCenter: parent.verticalCenter
+
+    onClicked:externalResourceHandler.chooseImage(fieldItem)
+
+    background: Image {
+      id: browseIcon
+      source: QgsQuick.Utils.getThemeIcon("ic_gallery")
+      width: imageBrowserButton.width
+      height: imageBrowserButton.height
+      sourceSize.width: width
+      sourceSize.height: height
+      fillMode: Image.PreserveAspectFit
+    }
+
+    ColorOverlay {
+        anchors.fill: browseIcon
+        source: browseIcon
+        color: customStyle.fontColor
+    }
+  }
+
+  Button {
     id: button
-    visible: fieldItem.enabled
-    width: customStyle.height
+    visible: !readOnly
+    width: fieldItem.iconSize
     height: width
     padding: 0
 

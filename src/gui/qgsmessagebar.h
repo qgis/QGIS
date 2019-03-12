@@ -73,7 +73,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * Remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
      *  \param item item to remove
-     *  \returns true if the widget was removed, false otherwise
+     *  \returns TRUE if the widget was removed, FALSE otherwise
      */
     bool popWidget( QgsMessageBarItem *item );
 
@@ -106,13 +106,13 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     /**
      * Remove the currently displayed widget from the bar and
      *  display the next in the stack if any or hide the bar.
-     *  \returns true if the widget was removed, false otherwise
+     *  \returns TRUE if the widget was removed, FALSE otherwise
      */
     bool popWidget();
 
     /**
      * Remove all items from the bar's widget list
-     *  \returns true if all items were removed, false otherwise
+     *  \returns TRUE if all items were removed, FALSE otherwise
      */
     bool clearWidgets();
 

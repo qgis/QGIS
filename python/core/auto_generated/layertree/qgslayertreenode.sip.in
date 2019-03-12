@@ -89,7 +89,7 @@ Find out about type of the node. It is usually shorter to use convenience functi
 %End
     QgsLayerTreeNode *parent();
 %Docstring
-Gets pointer to the parent. If parent is a null pointer, the node is a root node
+Gets pointer to the parent. If parent is ``None``, the node is a root node
 %End
     QList<QgsLayerTreeNode *> children();
 %Docstring
@@ -143,7 +143,7 @@ Create a copy of the node. Returns new instance
 %Docstring
 Turn textual references to layers into map layer object from project.
 This method should be called after readXml()
-If ``looseMatching`` is true then a looser match will be used, where a layer
+If ``looseMatching`` is ``True`` then a looser match will be used, where a layer
 will match if the name, public source, and data provider match. This can be
 used to match legend customization from different projects where layers
 will have different layer IDs.

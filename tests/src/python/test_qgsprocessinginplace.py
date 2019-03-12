@@ -412,6 +412,26 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(new_features[0].attributes()[0], 1)
         self.assertEqual(new_features[0].attributes()[1], 'foo')
 
+    def test_make_features_compatible_different_field_length(self):
+        """Test regression #21497"""
+        fields = QgsFields()
+        fields.append(QgsField('int_f1', QVariant.Int))
+        f1 = QgsFeature(fields)
+        f1.setAttributes([12345])
+        f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
+
+        fields = QgsFields()
+        fields.append(QgsField('int_f2', QVariant.Int))
+        fields.append(QgsField('int_f1', QVariant.Int))
+        vl2 = QgsMemoryProviderUtils.createMemoryLayer(
+            'mymultiplayer', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326))
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], vl2)
+        self.assertEqual(new_features[0].attributes(), [None, 12345])
+
+        f1.setGeometry(QgsGeometry.fromWkt('MultiPoint((9 45))'))
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], vl2)
+        self.assertEqual(new_features[0].attributes(), [None, 12345])
+
     def test_make_features_compatible_geometry(self):
         """Test corner cases for geometries"""
 

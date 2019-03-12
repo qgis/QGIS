@@ -86,7 +86,7 @@ Check if the rule matches using the given value and feature
 :param value: The current value being checked. The "value" variable from the context is replaced with this value.
 :param context: Expression context for evaluating rule expression
 
-:return: True of the rule matches against the given feature
+:return: ``True`` of the rule matches against the given feature
 %End
 
     QPixmap renderPreview() const;
@@ -179,7 +179,7 @@ The text color set for style
 Check if the text color is valid for render.
 Valid colors are non invalid QColors and a color with a > 0 alpha
 
-:return: True of the color set for text is valid.
+:return: ``True`` of the color set for text is valid.
 %End
 
     QColor backgroundColor() const;
@@ -194,7 +194,7 @@ The background color for style
 Check if the background color is valid for render.
 Valid colors are non invalid QColors and a color with a > 0 alpha
 
-:return: True of the color set for background is valid.
+:return: ``True`` of the color set for background is valid.
 %End
 
     QFont font() const;
@@ -217,7 +217,7 @@ to represent the current value
 isValid Check if this rule is valid.  A valid rule has one or more properties
 set.
 
-:return: True if the rule is valid.
+:return: ``True`` if the rule is valid.
 %End
 
     static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );

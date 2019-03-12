@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     sipRes = sipCpp->count();
     % End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
     int __bool__() const;
     % MethodCode
     sipRes = true;
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     /**
      * Retrieve a pointer to a layer by layer \a id.
      * \param id ID of layer to retrieve
-     * \returns matching layer, or nullptr if no matching layer found
+     * \returns matching layer, or NULLPTR if no matching layer found
      * \see mapLayersByName()
      * \see mapLayers()
      */
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * \param layers A list of layer which should be added to the store.
      * \param takeOwnership Ownership will be transferred to the layer store.
-     *                      If you specify false here you have take care of deleting
+     *                      If you specify FALSE here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
@@ -169,10 +169,10 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * \param layer A layer to add to the store
      * \param takeOwnership Ownership will be transferred to the layer store.
-     *                      If you specify false here you have take care of deleting
+     *                      If you specify FALSE here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
-     * \returns nullptr if unable to add layer, otherwise pointer to newly added layer
+     * \returns NULLPTR if unable to add layer, otherwise pointer to newly added layer
      *
      * \see addMapLayers
      *
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * The specified layers will be removed from the store.
      * These layers will also be deleted.
      *
-     * \param layers A list of layers to remove. Null pointers are ignored.
+     * \param layers A list of layers to remove. NULLPTR values are ignored.
      *
      * \see takeMapLayer()
      * \see removeMapLayer()
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * The specified layer will be removed from the store. The layer will also be deleted.
      *
-     * \param layer The layer to remove. Null pointers are ignored.
+     * \param layer The layer to remove. NULLPTR values are ignored.
      *
      * \see takeMapLayer()
      * \see removeMapLayers()

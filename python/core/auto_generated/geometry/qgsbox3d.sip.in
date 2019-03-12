@@ -197,23 +197,23 @@ Returns the intersection of this box and another 3D box.
 
     bool is2d() const;
 %Docstring
-Returns true if the box can be considered a 2-dimensional box, i.e.
+Returns ``True`` if the box can be considered a 2-dimensional box, i.e.
 it has equal minimum and maximum z values.
 %End
 
     bool intersects( const QgsBox3d &other ) const;
 %Docstring
-Returns true if box intersects with another box.
+Returns ``True`` if box intersects with another box.
 %End
 
     bool contains( const QgsBox3d &other ) const;
 %Docstring
-Returns true when box contains other box.
+Returns ``True`` when box contains other box.
 %End
 
     bool contains( const QgsPoint &point ) const;
 %Docstring
-Returns true when box contains a ``point``.
+Returns ``True`` when box contains a ``point``.
 
 If the point is a 2D point (no z-coordinate), then the containment test
 will be performed on the x/y extent of the box only.

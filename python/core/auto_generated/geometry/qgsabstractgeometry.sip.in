@@ -139,14 +139,14 @@ Returns the WKT type string of the geometry.
 
     bool is3D() const;
 %Docstring
-Returns true if the geometry is 3D and contains a z-value.
+Returns ``True`` if the geometry is 3D and contains a z-value.
 
 .. seealso:: :py:func:`isMeasure`
 %End
 
     bool isMeasure() const;
 %Docstring
-Returns true if the geometry contains m values.
+Returns ``True`` if the geometry contains m values.
 
 .. seealso:: :py:func:`is3D`
 %End
@@ -266,10 +266,10 @@ Transforms the geometry using a coordinate transform
 
 :param ct: coordinate transform
 :param d: transformation direction
-:param transformZ: set to true to also transform z coordinates. This requires that
+:param transformZ: set to ``True`` to also transform z coordinates. This requires that
                    the z coordinates in the geometry represent height relative to the vertical datum
                    of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
-                   units (generally meters). If false, then z coordinates will not be changed by the
+                   units (generally meters). If ``False``, then z coordinates will not be changed by the
                    transform.
 %End
 
@@ -308,7 +308,7 @@ Returns next vertex id and coordinates
 :param id: initial value should be the starting vertex id. The next vertex id will be stored
            in this variable if found.
 
-:return: - false if at end
+:return: - ``False`` if at end
          - vertex: container for found node
 %End
 
@@ -348,7 +348,7 @@ Searches for the closest segment of the geometry to a given point.
 :param epsilon: epsilon for segment snapping
 
 :return: - squared distance to closest segment or negative value on error
-         - leftOf: indicates whether the point lies on the left side of the geometry (-1 if point is to the left of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not be determined, e.g. point exactly on a line) false if point is to right of segment)
+         - leftOf: indicates whether the point lies on the left side of the geometry (-1 if point is to the left of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not be determined, e.g. point exactly on a line) ``False`` if point is to right of segment)
 %End
 
 
@@ -359,7 +359,7 @@ Inserts a vertex into the geometry
 :param position: vertex id for position of inserted vertex
 :param vertex: vertex to insert
 
-:return: true if insert was successful
+:return: ``True`` if insert was successful
 
 .. seealso:: :py:func:`moveVertex`
 
@@ -373,7 +373,7 @@ Moves a vertex within the geometry
 :param position: vertex id for vertex to move
 :param newPos: new position of vertex
 
-:return: true if move was successful
+:return: ``True`` if move was successful
 
 .. seealso:: :py:func:`insertVertex`
 
@@ -386,7 +386,7 @@ Deletes a vertex within the geometry
 
 :param position: vertex id for vertex to delete
 
-:return: true if delete was successful
+:return: ``True`` if delete was successful
 
 .. seealso:: :py:func:`insertVertex`
 
@@ -434,12 +434,12 @@ Returns the centroid of the geometry
 
     virtual bool isEmpty() const;
 %Docstring
-Returns true if the geometry is empty
+Returns ``True`` if the geometry is empty
 %End
 
     virtual bool hasCurvedSegments() const;
 %Docstring
-Returns true if the geometry contains curved segments
+Returns ``True`` if the geometry contains curved segments
 %End
 
     virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
@@ -465,7 +465,7 @@ E.g. :py:class:`QgsLineString` -> :py:class:`QgsCompoundCurve`, :py:class:`QgsPo
 Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
 Ownership is transferred to the caller.
 
-If the gridified geometry could not be calculated a None will be returned.
+If the gridified geometry could not be calculated ``None`` will be returned.
 It may generate an invalid geometry (in some corner cases).
 It can also be thought as rounding the edges and it may be useful for removing errors.
 Example:
@@ -491,13 +491,13 @@ vertices are identical.
 
 By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
 with the same x and y coordinate but different z values will still be considered
-duplicate and one will be removed. If ``useZValues`` is true, then the z values are
+duplicate and one will be removed. If ``useZValues`` is ``True``, then the z values are
 also tested and nodes with the same x and y but different z will be maintained.
 
 Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
 a multipoint geometry with overlapping points will not be changed by this method.
 
-The function will return true if nodes were removed, or false if no duplicate nodes
+The function will return ``True`` if nodes were removed, or ``False`` if no duplicate nodes
 were found.
 
 .. versionadded:: 3.0
@@ -539,7 +539,7 @@ Adds a z-dimension to the geometry, initialized to a preset value.
 
 :param zValue: initial z-value for all nodes
 
-:return: true on success
+:return: ``True`` on success
 
 .. seealso:: :py:func:`dropZValue`
 
@@ -554,7 +554,7 @@ Adds a measure to the geometry, initialized to a preset value.
 
 :param mValue: initial m-value for all nodes
 
-:return: true on success
+:return: ``True`` on success
 
 .. seealso:: :py:func:`dropMValue`
 
@@ -567,7 +567,7 @@ Adds a measure to the geometry, initialized to a preset value.
 %Docstring
 Drops any z-dimensions which exist in the geometry.
 
-:return: true if Z values were present and have been removed
+:return: ``True`` if Z values were present and have been removed
 
 .. seealso:: :py:func:`addZValue`
 
@@ -580,7 +580,7 @@ Drops any z-dimensions which exist in the geometry.
 %Docstring
 Drops any measure values which exist in the geometry.
 
-:return: true if m-values were present and have been removed
+:return: ``True`` if m-values were present and have been removed
 
 .. seealso:: :py:func:`addMValue`
 
@@ -602,9 +602,23 @@ coordinates reversed.
 %Docstring
 Converts the geometry to a specified type.
 
-:return: true if conversion was successful
+:return: ``True`` if conversion was successful
 
 .. versionadded:: 2.14
+%End
+
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const = 0;
+%Docstring
+Checks validity of the geometry, and returns ``True`` if the geometry is valid.
+
+:param flags: indicates optional flags which control the type of validity checking performed
+              (corresponding to QgsGeometry.ValidityFlags).
+
+:return: - ``True`` if geometry is valid
+         - error: will be set to the validity error message
+
+
+.. versionadded:: 3.8
 %End
 
 
@@ -684,7 +698,7 @@ To create it, the geometry is default constructed and then the WKB is changed.
 
     virtual bool hasChildGeometries() const;
 %Docstring
-Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
+Returns whether the geometry has any child geometries (``False`` for point / curve, ``True`` otherwise)
 
 .. note::
 
@@ -759,7 +773,7 @@ struct QgsVertexId
 
   bool isValid() const;
 %Docstring
-Returns true if the vertex id is valid
+Returns ``True`` if the vertex id is valid
 %End
 
   bool operator==( QgsVertexId other ) const;
@@ -806,7 +820,7 @@ Find out whether there are more vertices
 
     QgsPoint next();
 %Docstring
-Returns next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+Returns next vertex of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
 %End
 
     QgsVertexIterator *__iter__();
@@ -853,7 +867,7 @@ Find out whether there are more parts
 
     QgsAbstractGeometry *next();
 %Docstring
-Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+Returns next part of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
 %End
 
     QgsGeometryPartIterator *__iter__();
@@ -901,7 +915,7 @@ Find out whether there are more parts
 
     const QgsAbstractGeometry *next();
 %Docstring
-Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+Returns next part of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
 %End
 
     QgsGeometryConstPartIterator *__iter__();

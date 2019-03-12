@@ -313,7 +313,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Sets this CRS by lookup of the given ID in the CRS database.
-     * \returns True on success else false
+     * \returns TRUE on success else FALSE
      * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
      */
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Accepts both "<auth>:<code>" format and OGC URN "urn:ogc:def:crs:<auth>:[<version>]:<code>".
      * It also recognizes "QGIS", "USER", "CUSTOM" authorities, which all have the same meaning
      * and refer to QGIS internal CRS IDs.
-     * \returns True on success else false
+     * \returns TRUE on success else FALSE
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromOgcWmsCrs()
      */
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
      * \param srid The PostGIS SRID for the desired spatial reference system.
-     * \returns True on success else false
+     * \returns TRUE on success else FALSE
      */
     bool createFromSrid( long srid );
 
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Otherwise the WKT will be converted to a proj4 string and createFromProj4()
      * set up the object.
      * \param wkt The WKT for the desired spatial reference system.
-     * \returns True on success else false
+     * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromWkt()
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * If the srsid is < USER_CRS_START_ID, system CRS database is used, otherwise
      * user's local CRS database from home directory is used.
      * \param srsId The internal QGIS CRS ID for the desired spatial reference system.
-     * \returns True on success else false
+     * \returns TRUE on success else FALSE
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromSrsId()
      */
@@ -387,7 +387,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * - if none of the above match, use findMatchingProj()
      *
      * \param projString A proj4 format string
-     * \returns True on success else false
+     * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromProj4()
@@ -406,7 +406,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If no prefix is specified, WKT definition is assumed.
      * \param definition A String containing a coordinate reference system definition.
-     * \returns True on success else false
+     * \returns TRUE on success else FALSE
      */
     bool createFromString( const QString &definition );
 
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * For more details on supported formats see OGRSpatialReference::SetFromUserInput()
      * ( http://www.gdal.org/ogr/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
      * \param definition A String containing a coordinate reference system definition.
-     * \returns True on success else false
+     * \returns TRUE on success else FALSE
      * \note this function generates a WKT string using OSRSetFromUserInput() and
      * passes it to createFromWkt() function.
      */    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
@@ -483,7 +483,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Restores state from the given DOM node.
      * If it fails or if the node is empty, a default empty CRS will be returned.
      * \param node The node from which state will be restored
-     * \returns bool True on success, False on failure
+     * \returns bool TRUE on success, FALSE on failure
      */
     bool readXml( const QDomNode &node );
 
@@ -491,7 +491,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Stores state to the given Dom node in the given document.
      * \param node The node in which state will be restored
      * \param doc The document in which state will be stored
-     * \returns bool True on success, False on failure
+     * \returns bool TRUE on success, FALSE on failure
      */
     bool writeXml( QDomNode &node, QDomDocument &doc ) const;
 
@@ -585,13 +585,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
-     * \returns true if CRS is geographic, or false if it is a projected CRS
+     * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
      */
     bool isGeographic() const;
 
     /**
      * Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.
-     * \returns true if CRS axis is inverted
+     * \returns TRUE if CRS axis is inverted
      */
     bool hasAxisInverted() const;
 

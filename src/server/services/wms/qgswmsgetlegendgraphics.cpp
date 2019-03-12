@@ -85,7 +85,7 @@ namespace QgsWms
 
     if ( result )
     {
-      writeImage( response, *result,  format, renderer.getImageQuality() );
+      writeImage( response, *result,  format, renderer.imageQuality() );
       if ( cacheManager )
       {
         QByteArray content = response.data();

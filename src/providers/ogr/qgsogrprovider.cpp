@@ -38,6 +38,8 @@ email                : sherman at mrcc.com
 #include "qgswkbtypes.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogrtransaction.h"
+#include "qgsgeopackageprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -2792,9 +2794,15 @@ QString createFilters( const QString &type )
         sFileFilters += createFileFilter_( QObject::tr( "FMEObjects Gateway" ), QStringLiteral( "*.fdd" ) );
         sExtensions << QStringLiteral( "fdd" );
       }
+      else if ( driverName.startsWith( QLatin1String( "GeoJSONSeq" ) ) )
+      {
+        sProtocolDrivers += QLatin1String( "GeoJSON - Newline Delimited;" );
+        sFileFilters += createFileFilter_( QObject::tr( "GeoJSON Newline Delimited JSON" ), QStringLiteral( "*.geojsonl *.geojsons *.nlgeojson *.json" ) );
+        sExtensions << QStringLiteral( "geojsonl" ) << QStringLiteral( "geojsons" ) << QStringLiteral( "nlgeojson" ) << QStringLiteral( "json" );
+      }
       else if ( driverName.startsWith( QLatin1String( "GeoJSON" ) ) )
       {
-        sProtocolDrivers += QLatin1String( "GeoJSON,GeoJSON;" );
+        sProtocolDrivers += QLatin1String( "GeoJSON;" );
         sFileFilters += createFileFilter_( QObject::tr( "GeoJSON" ), QStringLiteral( "*.geojson" ) );
         sExtensions << QStringLiteral( "geojson" );
       }
@@ -6428,14 +6436,6 @@ QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
          );
 }
 
-QGISEXTERN void cleanupProvider()
-{
-  QgsOgrConnPool::cleanupInstance();
-  // NOTE: QgsApplication takes care of
-  // calling OGRCleanupAll();
-}
-
-
 
 QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
 {
@@ -6606,3 +6606,23 @@ QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
 
   return new QgsOgrTransaction( connString, ds );
 }
+
+QgsGeoPackageProjectStorage *gProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+
+QGISEXTERN void initProvider()
+{
+  Q_ASSERT( !gProjectStorage );
+  gProjectStorage = new QgsGeoPackageProjectStorage;
+  QgsApplication::projectStorageRegistry()->registerProjectStorage( gProjectStorage );  // takes ownership
+}
+
+
+QGISEXTERN void cleanupProvider()
+{
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gProjectStorage );  // destroys the object
+  gProjectStorage = nullptr;
+  QgsOgrConnPool::cleanupInstance();
+  // NOTE: QgsApplication takes care of
+  // calling OGRCleanupAll();
+}
+

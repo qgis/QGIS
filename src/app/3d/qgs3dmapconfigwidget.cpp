@@ -35,6 +35,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   Q_ASSERT( map );
   Q_ASSERT( mainCanvas );
 
+  spinCameraFieldOfView->setClearValue( 45.0 );
   spinTerrainScale->setClearValue( 1.0 );
   spinTerrainResolution->setClearValue( 16 );
   spinTerrainSkirtHeight->setClearValue( 10 );
@@ -61,6 +62,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     spinTerrainSkirtHeight->setValue( 10 );
   }
 
+  spinCameraFieldOfView->setValue( mMap->fieldOfView() );
   spinTerrainScale->setValue( mMap->terrainVerticalScale() );
   spinMapResolution->setValue( mMap->mapTileResolution() );
   spinScreenError->setValue( mMap->maxTerrainScreenError() );
@@ -141,6 +143,7 @@ void Qgs3DMapConfigWidget::apply()
     mMap->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
   }
 
+  mMap->setFieldOfView( spinCameraFieldOfView->value() );
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );
   mMap->setMapTileResolution( spinMapResolution->value() );
   mMap->setMaxTerrainScreenError( spinScreenError->value() );

@@ -111,7 +111,7 @@ class CORE_EXPORT QgsContrastEnhancement
     int enhanceContrast( double value );
 
     /**
-     * Returns true if a pixel \a value is in displayable range, false if pixel
+     * Returns TRUE if a pixel \a value is in displayable range, FALSE if pixel
      * is outside of range (i.e. clipped).
      */
     bool isValueInDisplayableRange( double value );

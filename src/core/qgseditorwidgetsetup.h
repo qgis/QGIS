@@ -51,7 +51,7 @@ class CORE_EXPORT QgsEditorWidgetSetup
     QVariantMap config() const { return mConfig; }
 
     /**
-     * \returns true if there is no widget configured.
+     * \returns TRUE if there is no widget configured.
      */
     bool isNull() const { return mType.isEmpty(); }
 

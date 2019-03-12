@@ -85,7 +85,7 @@ Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
 retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
-:return: true if ellipsoid was successfully set
+:return: ``True`` if ellipsoid was successfully set
 
 .. seealso:: :py:func:`ellipsoid`
 
@@ -97,7 +97,7 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
 a valid ellipsoid been set.
 
-:return: true if ellipsoid was successfully set
+:return: ``True`` if ellipsoid was successfully set
 
 .. seealso:: :py:func:`ellipsoid`
 
@@ -286,7 +286,7 @@ Returns an distance formatted as a friendly string.
 :param distance: distance to format
 :param decimals: number of decimal places to show
 :param unit: unit of distance
-:param keepBaseUnit: set to false to allow conversion of large distances to more suitable units, e.g., meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large distances to more suitable units, e.g., meters to
                      kilometers
 
 :return: formatted distance string
@@ -303,7 +303,7 @@ Returns an area formatted as a friendly string.
 :param area: area to format
 :param decimals: number of decimal places to show
 :param unit: unit of area
-:param keepBaseUnit: set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large areas to more suitable units, e.g., square meters to
                      square kilometers
 
 :return: formatted area string
@@ -384,7 +384,7 @@ The ``interval`` parameter gives the maximum distance between points on the comp
 This argument is always specified in meters. A shorter distance results in a denser line,
 at the cost of extra computing time.
 
-If the geodesic line crosses the antimeridian (+/- 180 degrees longitude) and ``breakLine`` is true, then
+If the geodesic line crosses the antimeridian (+/- 180 degrees longitude) and ``breakLine`` is ``True``, then
 the line will be split into two parts, broken at the antimeridian. In this case the function
 will return two lines, corresponding to the portions at either side of the antimeridian.
 

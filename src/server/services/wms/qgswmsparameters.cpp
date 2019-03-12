@@ -310,7 +310,9 @@ namespace QgsWms
     const QgsWmsParameter pSRS( QgsWmsParameter::SRS );
     save( pSRS );
 
-    const QgsWmsParameter pFormat( QgsWmsParameter::FORMAT );
+    const QgsWmsParameter pFormat( QgsWmsParameter::FORMAT,
+                                   QVariant::String,
+                                   QVariant( "png" ) );
     save( pFormat );
 
     const QgsWmsParameter pInfoFormat( QgsWmsParameter::INFO_FORMAT );
@@ -713,21 +715,42 @@ namespace QgsWms
 
   QString QgsWmsParameters::formatAsString() const
   {
-    return mWmsParameters[ QgsWmsParameter::FORMAT ].toString();
+    return mWmsParameters[ QgsWmsParameter::FORMAT ].toString( true );
+  }
+
+  QString QgsWmsParameters::formatAsString( const QgsWmsParameters::Format format )
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWmsParameters::Format>() );
+    return metaEnum.valueToKey( format );
   }
 
   QgsWmsParameters::Format QgsWmsParameters::format() const
   {
-    QString fStr = formatAsString();
+    const QString fStr = formatAsString();
 
-    if ( fStr.isEmpty() )
-      return Format::NONE;
-
-    Format f = Format::PNG;
-    if ( fStr.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
-         || fStr.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
-         || fStr.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+    Format f = Format::NONE;
+    if ( fStr.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 ||
+         fStr.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
+    {
+      f = Format::PNG;
+    }
+    else if ( fStr.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
+              || fStr.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
+              || fStr.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+    {
       f = Format::JPG;
+    }
+    else if ( fStr.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      f = Format::SVG;
+    }
+    else if ( fStr.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    {
+      f = Format::PDF;
+    }
 
     return f;
   }
@@ -1332,15 +1355,19 @@ namespace QgsWms
       }
       else if ( !f.isEmpty() )
       {
-        // filter format: "LayerName:filterString;LayerName2:filterString2;..."
+        // filter format: "LayerName,LayerName2:filterString;LayerName3:filterString2;..."
         // several filters can be defined for one layer
         const QStringList splits = f.split( ':' );
         if ( splits.size() == 2 )
         {
-          QgsWmsParametersFilter filter;
-          filter.mFilter = splits[1];
-          filter.mType = QgsWmsParametersFilter::SQL;
-          filters.insert( splits[0], filter );
+          const QStringList layers = splits[0].split( ',' );
+          for ( const QString &layer : layers )
+          {
+            QgsWmsParametersFilter filter;
+            filter.mFilter = splits[1];
+            filter.mType = QgsWmsParametersFilter::SQL;
+            filters.insert( layer, filter );
+          }
         }
         else
         {

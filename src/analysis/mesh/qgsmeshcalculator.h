@@ -97,7 +97,7 @@ class ANALYSIS_EXPORT QgsMeshCalculator
 
     /**
      * Starts the calculation, writes new dataset group to file and adds it to the mesh layer
-     * \param feedback The optional feedback argument for progress reporting and cancelation support
+     * \param feedback The optional feedback argument for progress reporting and cancellation support
      * \returns QgsMeshCalculator::Success in case of success
      */
     Result processCalculation( QgsFeedback *feedback = nullptr );

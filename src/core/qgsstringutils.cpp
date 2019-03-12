@@ -19,6 +19,7 @@
 #include <QStringList>
 #include <QTextBoundaryFinder>
 #include <QRegularExpression>
+#include <cstdlib> // for std::abs
 
 QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capitalization capitalization )
 {

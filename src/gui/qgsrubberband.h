@@ -202,7 +202,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
     /**
      * Adds a vertex to the rubberband and update canvas.
      * The rendering of the vertex depends on the current GeometryType and icon.
-     * If adding more points consider using update=false for better performance
+     * If adding more points consider using update=FALSE for better performance
      *  \param p             The vertex/point to add
      *  \param doUpdate      Should the map canvas be updated immediately?
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
@@ -212,7 +212,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
     /**
      * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
-     * \param doUpdate set to true to update the map canvas immediately
+     * \param doUpdate set to TRUE to update the map canvas immediately
      * \param geometryIndex index of the feature part (in case of multipart geometries)
      * \since QGIS 2.16
      */
@@ -256,7 +256,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
      *  \param geom the geometry object
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. If \a layer is nullptr, the coordinates are not going to be transformed.
+     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
      */
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
@@ -286,7 +286,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      *
      *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. If \a layer is nullptr, the coordinates are not going to be transformed.
+     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
      */
     void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
 

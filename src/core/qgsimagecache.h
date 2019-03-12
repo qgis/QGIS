@@ -43,7 +43,7 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
     /**
      * Constructor for QgsImageCacheEntry, corresponding to the specified image \a path , \a size and \a opacity.
      *
-     * If \a keepAspectRatio is true then the original raster aspect ratio will always be preserved
+     * If \a keepAspectRatio is TRUE then the original raster aspect ratio will always be preserved
      * when resizing.
      */
     QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity ) ;
@@ -107,15 +107,15 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      *
      * The \a size parameter dictates the target size of the image. An invalid size indicates the
      * original raster image size (with no resampling). A size in which the width or height is
-     * set to zero will have the zeroed value automatically computed when keepAspectRatio is true.
+     * set to zero will have the zeroed value automatically computed when keepAspectRatio is TRUE.
      *
-     * If \a keepAspectRatio is true, then the original raster aspect ratio will be maintained during
+     * If \a keepAspectRatio is TRUE, then the original raster aspect ratio will be maintained during
      * any resampling operations.
      *
      * An \a opacity parameter dictates the opacity of the image.
      *
      * If the resultant raster was of a sufficiently small size to store in the cache, then \a fitsInCache
-     * will be set to true.
+     * will be set to TRUE.
      */
     QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT );
 

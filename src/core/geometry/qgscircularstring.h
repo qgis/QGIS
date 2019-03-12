@@ -54,8 +54,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Creates a circular string with a single arc representing
      * the curve from \a p1 to \a p2 with the specified \a center.
      *
-     * If \a useShortestArc is true, then the arc returned will be that corresponding
-     * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
+     * If \a useShortestArc is TRUE, then the arc returned will be that corresponding
+     * to the shorter arc from \a p1 to \a p2. If it is FALSE, the longer arc from \a p1
      * to \a p2 will be used (i.e. winding the other way around the circle).
      *
      * \since QGIS 3.2

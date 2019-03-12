@@ -244,17 +244,6 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
   bool hasFeature = !FID_IS_NULL( current.data( QgsGeometryValidationModel::ErrorFeatureIdRole ) );
   mZoomToFeatureButton->setEnabled( hasFeature );
-
-  switch ( mLastZoomToAction )
-  {
-    case  ZoomToProblem:
-      zoomToProblem();
-      break;
-
-    case ZoomToFeature:
-      zoomToFeature();
-      break;
-  }
 }
 
 void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
@@ -335,7 +324,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
 
     QPropertyAnimation *errorAnimation = new QPropertyAnimation( mErrorRubberband, "fillColor" );
     errorAnimation->setEasingCurve( QEasingCurve::OutQuad );
-    connect( errorAnimation, &QPropertyAnimation::finished, featureAnimation, &QPropertyAnimation::deleteLater );
+    connect( errorAnimation, &QPropertyAnimation::finished, errorAnimation, &QPropertyAnimation::deleteLater );
     connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this]
     {
       mErrorRubberband->update();

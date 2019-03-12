@@ -127,6 +127,7 @@ class ParametersPanel(BASE, WIDGET):
                 break
 
         widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
         if isinstance(self.alg, QgsProcessingModelAlgorithm):

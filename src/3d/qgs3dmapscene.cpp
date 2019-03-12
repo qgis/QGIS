@@ -71,7 +71,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   // Camera
   float aspectRatio = ( float )viewportRect.width() / viewportRect.height();
-  mEngine->camera()->lens()->setPerspectiveProjection( 45.0f, aspectRatio, 10.f, 10000.0f );
+  mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), aspectRatio, 10.f, 10000.0f );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered,
@@ -96,6 +96,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
 
   // create entities of renderers
 
@@ -351,6 +352,16 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
 void Qgs3DMapScene::createTerrain()
 {
+  if ( mTerrain )
+  {
+    mChunkEntities.removeOne( mTerrain );
+
+    mTerrain->deleteLater();
+    mTerrain = nullptr;
+
+    emit terrainEntityChanged();
+  }
+
   if ( !mTerrainUpdateScheduled )
   {
     // defer re-creation of terrain: there may be multiple invocations of this slot, so create the new entity just once
@@ -362,14 +373,6 @@ void Qgs3DMapScene::createTerrain()
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
-  if ( mTerrain )
-  {
-    mChunkEntities.removeOne( mTerrain );
-
-    mTerrain->deleteLater();
-    mTerrain = nullptr;
-  }
-
   double tile0width = mMap.terrainGenerator()->extent().width();
   int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
 
@@ -484,6 +487,12 @@ void Qgs3DMapScene::updateLights()
     lightEntity->setParent( this );
     mLightEntities << lightEntity;
   }
+}
+
+void Qgs3DMapScene::updateCameraLens()
+{
+  mEngine->camera()->lens()->setFieldOfView( mMap.fieldOfView() );
+  onCameraChanged();
 }
 
 void Qgs3DMapScene::onLayerRenderer3DChanged()

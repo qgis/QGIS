@@ -83,7 +83,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \param request    Use a modified request to limit the shown features
      * \param context    The context in which this view is shown
      * \param loadFeatures whether to initially load all features into the view. If set to
-     * false, limited features can later be loaded using setFilterMode()
+     * FALSE, limited features can later be loaded using setFilterMode()
      */
     void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
                bool loadFeatures = true );
@@ -120,8 +120,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
      *
-     * \param selectedOnTop True: Show selected features on top.
-     *                      False: Use defined sorting column.
+     * \param selectedOnTop TRUE: Show selected features on top.
+     *                      FALSE: Use defined sorting column.
      */
     void setSelectedOnTop( bool selectedOnTop );
 
@@ -215,7 +215,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * \brief saveEditChanges
      *
-     * \returns true if the saving was OK. false is possible due to connected
+     * \returns TRUE if the saving was OK. FALSE is possible due to connected
      *         validation logic.
      */
     bool saveEditChanges();
@@ -230,7 +230,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * Toggles whether search mode should be enabled in the form.
-     * \param enabled set to true to switch on search mode
+     * \param enabled set to TRUE to switch on search mode
      * \since QGIS 2.16
      */
     void toggleSearchMode( bool enabled );
@@ -250,18 +250,18 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
   signals:
 
     /**
-     * Is emitted, whenever the display expression is successfully changed
+     * Emitted whenever the display expression is successfully changed
      * \param expression The expression that was applied
      */
     void displayExpressionChanged( const QString &expression );
 
     /**
-     * Is emitted, whenever the filter changes
+     * Emitted whenever the filter changes
      */
     void filterChanged();
 
     /**
-     * Is emitted when a filter expression is set using the view.
+     * Emitted when a filter expression is set using the view.
      * \param expression filter expression
      * \param type filter type
      * \since QGIS 2.16
@@ -338,7 +338,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Will be called periodically, when loading layers from slow data providers.
      *
      * \param i       The number of features already loaded
-     * \param cancel  Set to true to cancel
+     * \param cancel  Set to TRUE to cancel
      */
     virtual void progress( int i, bool &cancel );
 

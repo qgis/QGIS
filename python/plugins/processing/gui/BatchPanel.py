@@ -35,6 +35,10 @@ from qgis.PyQt.QtCore import QDir, QFileInfo
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
+                       QgsProperty,
+                       QgsProject,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
                        QgsProcessingModelAlgorithm)
 from qgis.gui import (QgsProcessingParameterWidgetContext,
@@ -266,6 +270,7 @@ class BatchPanel(BASE, WIDGET):
         self.wrappers[row][column] = wrapper
 
         widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
         if isinstance(self.alg, QgsProcessingModelAlgorithm):

@@ -85,7 +85,7 @@ defaultMenuEntries.update({'qgis:checkvalidity': geometryToolsMenu,
                            'qgis:densifygeometries': geometryToolsMenu,
                            'native:multiparttosingleparts': geometryToolsMenu,
                            'native:collect': geometryToolsMenu,
-                           'qgis:polygonstolines': geometryToolsMenu,
+                           'native:polygonstolines': geometryToolsMenu,
                            'qgis:linestopolygons': geometryToolsMenu,
                            'native:extractvertices': geometryToolsMenu})
 managementToolsMenu = vectorMenu + "/" + Processing.tr('&Data Management Tools')

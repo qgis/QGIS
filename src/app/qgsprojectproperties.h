@@ -195,7 +195,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
       DecimalDegrees, //!< Decimal degrees
       DegreesMinutes, //!< Degrees, decimal minutes
       DegreesMinutesSeconds, //!< Degrees, minutes, seconds
-      MapUnits, //! Show coordinates in map units
+      MapUnits, //!< Show coordinates in map units
     };
 
     QgsRelationManagerDialog *mRelationManagerDlg = nullptr;

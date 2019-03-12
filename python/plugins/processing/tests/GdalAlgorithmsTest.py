@@ -63,6 +63,7 @@ from processing.algs.gdal.gdaladdo import gdaladdo
 from processing.algs.gdal.sieve import sieve
 from processing.algs.gdal.gdal2xyz import gdal2xyz
 from processing.algs.gdal.polygonize import polygonize
+from processing.algs.gdal.pansharp import pansharp
 
 from processing.tools.system import isWindows
 
@@ -2703,6 +2704,45 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outsource + ' ' +
                  '-b 1 -f "GPKG" check DN'
+                 ])
+
+    def testGdalPansharpen(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        panchrom = os.path.join(testDataPath, 'dem.tif')
+        spectral = os.path.join(testDataPath, 'raster.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/out.tif'
+            alg = pansharp()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'SPECTRAL': spectral,
+                                        'PANCHROMATIC': panchrom,
+                                        'RESAMPLING': 2,
+                                        'OPTIONS': '',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_pansharpen.py',
+                 panchrom + ' ' +
+                 spectral + ' ' +
+                 outsource + ' ' +
+                 '-r cubic -of GTiff'
+                 ])
+
+            # custom resampling
+            self.assertEqual(
+                alg.getConsoleCommands({'SPECTRAL': spectral,
+                                        'PANCHROMATIC': panchrom,
+                                        'RESAMPLING': 4,
+                                        'OPTIONS': '',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_pansharpen.py',
+                 panchrom + ' ' +
+                 spectral + ' ' +
+                 outsource + ' ' +
+                 '-r lanczos -of GTiff'
                  ])
 
 

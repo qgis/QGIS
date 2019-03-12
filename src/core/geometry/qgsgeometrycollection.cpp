@@ -26,6 +26,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
+#include "qgsgeos.h"
 #include <memory>
 
 QgsGeometryCollection::QgsGeometryCollection()
@@ -373,7 +374,7 @@ QByteArray QgsGeometryCollection::asWkb() const
 
 QString QgsGeometryCollection::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
+  QString wkt = wktTypeStr() + QLatin1String( " (" );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     QString childWkt = geom->asWkt( precision );
@@ -420,7 +421,7 @@ QString QgsGeometryCollection::asJson( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [" );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    json += geom->asJson( precision ) + ", ";
+    json += geom->asJson( precision ) + QLatin1String( ", " );
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
   {
@@ -458,6 +459,8 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
 void QgsGeometryCollection::clearCache() const
 {
   mBoundingBox = QgsRectangle();
+  mHasCachedValidity = false;
+  mValidityFailureReason.clear();
   QgsAbstractGeometry::clearCache();
 }
 
@@ -770,6 +773,25 @@ int QgsGeometryCollection::partCount() const
 QgsPoint QgsGeometryCollection::vertexAt( QgsVertexId id ) const
 {
   return mGeometries[id.part]->vertexAt( id );
+}
+
+bool QgsGeometryCollection::isValid( QString &error, int flags ) const
+{
+  if ( flags == 0 && mHasCachedValidity )
+  {
+    // use cached validity results
+    error = mValidityFailureReason;
+    return error.isEmpty();
+  }
+
+  QgsGeos geos( this );
+  bool res = geos.isValid( &error, flags & QgsGeometry::FlagAllowSelfTouchingHoles, nullptr );
+  if ( flags == 0 )
+  {
+    mValidityFailureReason = !res ? error : QString();
+    mHasCachedValidity = true;
+  }
+  return res;
 }
 
 bool QgsGeometryCollection::addZValue( double zValue )

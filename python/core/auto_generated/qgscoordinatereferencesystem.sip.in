@@ -299,7 +299,7 @@ Creates a CRS from a specified QGIS SRS ID.
 %Docstring
 Sets this CRS by lookup of the given ID in the CRS database.
 
-:return: True on success else false
+:return: ``True`` on success else ``False``
 
 .. note::
 
@@ -316,7 +316,7 @@ Accepts both "<auth>:<code>" format and OGC URN "urn:ogc:def:crs:<auth>:[<versio
 It also recognizes "QGIS", "USER", "CUSTOM" authorities, which all have the same meaning
 and refer to QGIS internal CRS IDs.
 
-:return: True on success else false
+:return: ``True`` on success else ``False``
 
 .. note::
 
@@ -332,7 +332,7 @@ Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 
 :param srid: The PostGIS SRID for the desired spatial reference system.
 
-:return: True on success else false
+:return: ``True`` on success else ``False``
 %End
 
     bool createFromWkt( const QString &wkt );
@@ -346,7 +346,7 @@ set up the object.
 
 :param wkt: The WKT for the desired spatial reference system.
 
-:return: True on success else false
+:return: ``True`` on success else ``False``
 
 .. note::
 
@@ -368,7 +368,7 @@ user's local CRS database from home directory is used.
 
 :param srsId: The internal QGIS CRS ID for the desired spatial reference system.
 
-:return: True on success else false
+:return: ``True`` on success else ``False``
 
 .. note::
 
@@ -397,7 +397,7 @@ a match where the parameters are in a different order
 
 :param projString: A proj4 format string
 
-:return: True on success else false
+:return: ``True`` on success else ``False``
 
 .. note::
 
@@ -425,7 +425,7 @@ If no prefix is specified, WKT definition is assumed.
 
 :param definition: A String containing a coordinate reference system definition.
 
-:return: True on success else false
+:return: ``True`` on success else ``False``
 %End
 
     bool createFromUserInput( const QString &definition );
@@ -442,7 +442,7 @@ For more details on supported formats see OGRSpatialReference.SetFromUserInput()
 
 :param definition: A String containing a coordinate reference system definition.
 
-:return: True on success else false
+:return: ``True`` on success else ``False``
 
 .. note::
 
@@ -514,7 +514,7 @@ If it fails or if the node is empty, a default empty CRS will be returned.
 
 :param node: The node from which state will be restored
 
-:return: bool True on success, False on failure
+:return: bool ``True`` on success, ``False`` on failure
 %End
 
     bool writeXml( QDomNode &node, QDomDocument &doc ) const;
@@ -524,7 +524,7 @@ Stores state to the given Dom node in the given document.
 :param node: The node in which state will be restored
 :param doc: The document in which state will be stored
 
-:return: bool True on success, False on failure
+:return: bool ``True`` on success, ``False`` on failure
 %End
 
 
@@ -633,14 +633,14 @@ overridden with these.
 %Docstring
 Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
 
-:return: true if CRS is geographic, or false if it is a projected CRS
+:return: ``True`` if CRS is geographic, or ``False`` if it is a projected CRS
 %End
 
     bool hasAxisInverted() const;
 %Docstring
 Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.
 
-:return: true if CRS axis is inverted
+:return: ``True`` if CRS axis is inverted
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;

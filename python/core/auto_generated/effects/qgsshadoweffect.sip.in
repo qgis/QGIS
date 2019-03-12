@@ -219,7 +219,7 @@ Returns the blend mode for the effect
 Specifies whether the shadow is drawn outside the picture or within
 the picture.
 
-:return: true if shadow is to be drawn outside the picture, or false
+:return: ``True`` if shadow is to be drawn outside the picture, or ``False``
          to draw shadow within the picture
 %End
 

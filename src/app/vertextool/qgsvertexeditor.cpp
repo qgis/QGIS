@@ -20,7 +20,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
 #include "qgslockedfeature.h"
-#include "qgsvertexentry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
 #include "qgsproject.h"
@@ -197,6 +196,28 @@ QVariant QgsVertexEditorModel::headerData( int section, Qt::Orientation orientat
         return QVariant();
     }
   }
+  else if ( role == Qt::ToolTipRole )
+  {
+    if ( orientation == Qt::Vertical )
+    {
+      return QVariant( tr( "Vertex %1" ).arg( section ) );
+    }
+    else
+    {
+      if ( section == 0 )
+        return QVariant( tr( "X Coordinate" ) );
+      else if ( section == 1 )
+        return QVariant( tr( "Y Coordinate" ) );
+      else if ( section == mZCol )
+        return QVariant( tr( "Z Coordinate" ) );
+      else if ( section == mMCol )
+        return QVariant( tr( "M Value" ) );
+      else if ( section == mRCol )
+        return QVariant( tr( "Radius Value" ) );
+      else
+        return QVariant();
+    }
+  }
   else
   {
     return QVariant();
@@ -339,6 +360,8 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
 
   mVertexModel->setFeature( mLockedFeature );
 
+  updateTableSelection();
+
   if ( mLockedFeature )
   {
     mHintLabel->setVisible( false );
@@ -355,11 +378,10 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
 
 void QgsVertexEditor::updateTableSelection()
 {
-  if ( !mLockedFeature || mUpdatingVertexSelection )
+  if ( !mLockedFeature || mUpdatingVertexSelection || mUpdatingTableSelection )
     return;
 
   mUpdatingTableSelection = true;
-  mTableView->selectionModel()->clearSelection();
   const QList<QgsVertexEntry *> &vertexMap = mLockedFeature->vertexMap();
   int firstSelectedRow = -1;
   QItemSelection selection;
@@ -372,7 +394,7 @@ void QgsVertexEditor::updateTableSelection()
       selection.select( mVertexModel->index( i, 0 ), mVertexModel->index( i, mVertexModel->columnCount() - 1 ) );
     }
   }
-  mTableView->selectionModel()->select( selection, QItemSelectionModel::Select );
+  mTableView->selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect );
 
   if ( firstSelectedRow >= 0 )
     mTableView->scrollTo( mVertexModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
@@ -380,9 +402,9 @@ void QgsVertexEditor::updateTableSelection()
   mUpdatingTableSelection = false;
 }
 
-void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, const QItemSelection & )
+void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItemSelection & )
 {
-  if ( !mLockedFeature || mUpdatingTableSelection )
+  if ( !mLockedFeature || mUpdatingVertexSelection || mUpdatingTableSelection )
     return;
 
   mUpdatingVertexSelection = true;
@@ -391,10 +413,10 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
 
   QgsCoordinateTransform t( mLockedFeature->layer()->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   std::unique_ptr<QgsRectangle> bbox;
-  QModelIndexList indexList = selected.indexes();
-  for ( int i = 0; i < indexList.length(); ++i )
+  const QModelIndexList indexList = mTableView->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : indexList )
   {
-    int vertexIdx = indexList.at( i ).row();
+    int vertexIdx = index.row();
     mLockedFeature->selectVertex( vertexIdx );
 
     // create a bounding box of selected vertices
@@ -475,3 +497,5 @@ void CoordinateItemDelegate::setModelData( QWidget *editor, QAbstractItemModel *
     QStyledItemDelegate::setModelData( editor, model, index );
   }
 }
+
+

@@ -98,11 +98,10 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   if ( lf->size().width() < 0 || lf->size().height() < 0 )
     return false;
 
-  mMutex.lock();
+  QMutexLocker locker( &mMutex );
 
   if ( mHashtable.contains( lf->id() ) )
   {
-    mMutex.unlock();
     //A feature with this id already exists. Don't throw an exception as sometimes,
     //the same feature is added twice (dateline split with otf-reprojection)
     return false;
@@ -116,13 +115,12 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   bool addedFeature = false;
 
   double geom_size = -1, biggest_size = -1;
-  FeaturePart *biggest_part = nullptr;
+  std::unique_ptr<FeaturePart> biggest_part;
 
   // break the (possibly multi-part) geometry into simple geometries
-  QLinkedList<const GEOSGeometry *> *simpleGeometries = Util::unmulti( lf->geometry() );
+  std::unique_ptr<QLinkedList<const GEOSGeometry *>> simpleGeometries( Util::unmulti( lf->geometry() ) );
   if ( !simpleGeometries ) // unmulti() failed?
   {
-    mMutex.unlock();
     throw InternalException::UnknownGeometry();
   }
 
@@ -144,24 +142,21 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
     if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
     {
-      mMutex.unlock();
       throw InternalException::UnknownGeometry();
     }
 
-    FeaturePart *fpart = new FeaturePart( lf, geom );
+    std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom );
 
     // ignore invalid geometries
     if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
          ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
     {
-      delete fpart;
       continue;
     }
 
     // polygons: reorder coordinates
     if ( type == GEOS_POLYGON && GeomFunction::reorderPolygon( fpart->nbPoints, fpart->x, fpart->y ) != 0 )
     {
-      delete fpart;
       continue;
     }
 
@@ -178,8 +173,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       }
       else
       {
-        addObstaclePart( fpart );
-        fpart = nullptr;
+        addObstaclePart( fpart.release() );
       }
     }
 
@@ -187,7 +181,6 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     if ( !mLabelLayer || !labelWellDefined )
     {
       //nothing more to do for this part
-      delete fpart;
       continue;
     }
 
@@ -201,29 +194,22 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       if ( geom_size > biggest_size )
       {
         biggest_size = geom_size;
-        delete biggest_part; // safe with NULL part
-        biggest_part = fpart;
-      }
-      else
-      {
-        delete fpart;
+        biggest_part.reset( fpart.release() );
       }
       continue; // don't add the feature part now, do it later
     }
 
     // feature part is ready!
-    addFeaturePart( fpart, lf->labelText() );
+    addFeaturePart( fpart.release(), lf->labelText() );
     addedFeature = true;
   }
-  delete simpleGeometries;
 
   if ( !featureGeomIsObstacleGeom )
   {
     //do the same for the obstacle geometry
-    simpleGeometries = Util::unmulti( lf->obstacleGeometry() );
+    simpleGeometries.reset( Util::unmulti( lf->obstacleGeometry() ) );
     if ( !simpleGeometries ) // unmulti() failed?
     {
-      mMutex.unlock();
       throw InternalException::UnknownGeometry();
     }
 
@@ -241,39 +227,35 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
       {
-        mMutex.unlock();
         throw InternalException::UnknownGeometry();
       }
 
-      FeaturePart *fpart = new FeaturePart( lf, geom );
+      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom );
 
       // ignore invalid geometries
       if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
            ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
       {
-        delete fpart;
         continue;
       }
 
       // polygons: reorder coordinates
       if ( type == GEOS_POLYGON && GeomFunction::reorderPolygon( fpart->nbPoints, fpart->x, fpart->y ) != 0 )
       {
-        delete fpart;
         continue;
       }
 
       // feature part is ready!
-      addObstaclePart( fpart );
+      addObstaclePart( fpart.release() );
     }
-    delete simpleGeometries;
   }
 
-  mMutex.unlock();
+  locker.unlock();
 
   // if using only biggest parts...
   if ( ( mMode == LabelPerFeature || lf->hasFixedPosition() ) && biggest_part )
   {
-    addFeaturePart( biggest_part, lf->labelText() );
+    addFeaturePart( biggest_part.release(), lf->labelText() );
     addedFeature = true;
   }
 

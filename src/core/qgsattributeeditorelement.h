@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
+#include <QColor>
 
 class QgsRelationManager;
 
@@ -173,11 +174,13 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \param name   The name to show as title
      * \param parent The parent. May be another container.
+     * \param backgroundColor The optional background color of the container.
      */
-    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent )
+    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() )
       : QgsAttributeEditorElement( AeTypeContainer, name, parent )
       , mIsGroupBox( true )
       , mColumnCount( 1 )
+      , mBackgroundColor( backgroundColor )
     {}
 
 
@@ -193,14 +196,14 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget
      *
-     * \param isGroupBox If true, this will be a group box
+     * \param isGroupBox If TRUE, this will be a group box
      */
     virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
 
     /**
      * Returns if this container is going to be rendered as a group box
      *
-     * \returns True if it will be a group box, false if it will be a tab
+     * \returns TRUE if it will be a group box, FALSE if it will be a tab
      */
     virtual bool isGroupBox() const { return mIsGroupBox; }
 
@@ -265,6 +268,18 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      */
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
+    /**
+     * \brief backgroundColor
+     * \return background color of the container
+     * \since QGIS 3.8
+     */
+    QColor backgroundColor() const;
+
+    /**
+     * Sets the background color to \a backgroundColor
+     */
+    void setBackgroundColor( const QColor &backgroundColor );
+
   private:
     void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
@@ -273,6 +288,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     QList<QgsAttributeEditorElement *> mChildren;
     int mColumnCount;
     QgsOptionalExpression mVisibilityExpression;
+    QColor mBackgroundColor;
 };
 
 /**
@@ -368,7 +384,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * Initializes the relation from the id
      *
      * \param relManager The relation manager to use for the initialization
-     * \returns true if the relation was found in the relationmanager
+     * \returns TRUE if the relation was found in the relationmanager
      */
     bool init( QgsRelationManager *relManager );
 

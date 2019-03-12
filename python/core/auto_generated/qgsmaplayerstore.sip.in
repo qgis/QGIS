@@ -53,7 +53,7 @@ Returns the number of layers contained in the store.
     sipRes = sipCpp->count();
 %End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
     int __bool__() const;
 %MethodCode
     sipRes = true;
@@ -65,7 +65,7 @@ Retrieve a pointer to a layer by layer ``id``.
 
 :param id: ID of layer to retrieve
 
-:return: matching layer, or None if no matching layer found
+:return: matching layer, or ``None`` if no matching layer found
 
 .. seealso:: :py:func:`mapLayersByName`
 
@@ -140,7 +140,7 @@ addMapLayers() instead.
 
 :param layer: A layer to add to the store
 
-:return: None if unable to add layer, otherwise pointer to newly added layer
+:return: ``None`` if unable to add layer, otherwise pointer to newly added layer
 
 
 .. seealso:: :py:func:`addMapLayers`
@@ -180,7 +180,7 @@ Remove a set of ``layers`` from the store.
 The specified layers will be removed from the store.
 These layers will also be deleted.
 
-:param layers: A list of layers to remove. Null pointers are ignored.
+:param layers: A list of layers to remove. ``None`` values are ignored.
 
 .. seealso:: :py:func:`takeMapLayer`
 
@@ -210,7 +210,7 @@ Remove a ``layer`` from the store.
 
 The specified layer will be removed from the store. The layer will also be deleted.
 
-:param layer: The layer to remove. Null pointers are ignored.
+:param layer: The layer to remove. ``None`` values are ignored.
 
 .. seealso:: :py:func:`takeMapLayer`
 

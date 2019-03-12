@@ -88,10 +88,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         //do we need that
         DnDTreeItemData() = default;
 
-        DnDTreeItemData( Type type, const QString &name, const QString &displayName )
+        DnDTreeItemData( Type type, const QString &name, const QString &displayName, const QColor &backgroundColor = QColor() )
           : mType( type )
           , mName( name )
           , mDisplayName( displayName )
+          , mBackgroundColor( backgroundColor )
         {}
 
         QString name() const { return mName; }
@@ -123,6 +124,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
         void setQmlElementEditorConfiguration( QmlElementEditorConfiguration qmlElementEditorConfiguration );
 
+        QColor backgroundColor() const;
+        void setBackgroundColor( const QColor &backgroundColor );
+
       private:
         Type mType = Field;
         QString mName;
@@ -134,6 +138,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;
+        QColor mBackgroundColor;
     };
 
 

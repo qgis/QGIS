@@ -76,7 +76,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     bool hasDataDefinedProperties() const override;
 
     /**
-     * Will always return true.
+     * Will always return TRUE.
      * This is a hybrid layer, it constructs its own geometry so it does not
      * care about the geometry of its parents.
      */

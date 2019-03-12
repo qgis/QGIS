@@ -164,7 +164,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
 
     /**
      * Check if this error is almost equal to \a other.
-     * If this returns true, it can be used to update existing errors after re-checking.
+     * If this returns TRUE, it can be used to update existing errors after re-checking.
      */
     virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
 
@@ -178,6 +178,15 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
      * Apply a list of \a changes.
      */
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes ) SIP_SKIP;
+
+    /**
+     * Returns a list of involved features.
+     * By default returns an empty map.
+     * The map keys are layer ids, the map value is a set of feature ids.
+     *
+     * \since QGIS 3.8
+     */
+    virtual QMap<QString, QgsFeatureIds > involvedFeatures() const SIP_SKIP;
 
   protected:
 

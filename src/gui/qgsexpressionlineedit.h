@@ -73,7 +73,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
     /**
      * Sets whether the widget should show a multiline text editor.
-     * \param multiLine set to true to show multiline editor, or false
+     * \param multiLine set to TRUE to show multiline editor, or FALSE
      * to show single line editor (the default).
      */
     void setMultiLine( bool multiLine );
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     /**
       * Determines if the current expression is valid.
       * \param expressionError will be set to any generated error message if specified
-      * \returns true if the current expression is valid.
+      * \returns TRUE if the current expression is valid.
       */
     bool isValidExpression( QString *expressionError SIP_OUT = nullptr ) const;
 

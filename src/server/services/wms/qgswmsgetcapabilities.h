@@ -76,7 +76,7 @@ namespace QgsWms
    * \param project Project
    * \param version WMS version
    * \param request WMS request
-   * \param projectSettings If true, adds extended project information (does not validate against WMS schema)
+   * \param projectSettings If TRUE, adds extended project information (does not validate against WMS schema)
    * \returns GetCapabilities XML document
    */
   QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project,

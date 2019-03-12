@@ -777,6 +777,14 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingModelAlgorithmSc
   modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_folder" ), QDir::toNativeSeparators( modelFolder ), true, true ) );
   modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_name" ), model->displayName(), true ) );
   modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_group" ), model->group(), true ) );
+
+  // custom variables
+  const QVariantMap customVariables = model->variables();
+  for ( auto it = customVariables.constBegin(); it != customVariables.constEnd(); ++it )
+  {
+    modelScope->addVariable( QgsExpressionContextScope::StaticVariable( it.key(), it.value(), true ) );
+  }
+
   return modelScope.release();
 }
 

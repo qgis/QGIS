@@ -54,9 +54,9 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Convert QString to Qt::CheckState
     static Qt::CheckState checkStateFromXml( const QString &txt );
 
-    //! Returns true if any of the layers is editable
+    //! Returns TRUE if any of the layers is editable
     static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes );
-    //! Returns true if any of the layers is modified
+    //! Returns TRUE if any of the layers is modified
     static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 
     //! Removes layer nodes that refer to invalid layers

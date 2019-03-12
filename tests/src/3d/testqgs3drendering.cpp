@@ -40,6 +40,9 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
 
+#include <QFileInfo>
+#include <QDir>
+
 class TestQgs3DRendering : public QObject
 {
     Q_OBJECT
@@ -53,6 +56,7 @@ class TestQgs3DRendering : public QObject
     void testMapTheme();
     void testMesh();
     void testRuleBasedRenderer();
+    void testAnimationExport();
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -210,6 +214,11 @@ void TestQgs3DRendering::testFlatTerrain()
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 45 );
   QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "flat_terrain_3", img3, 40 ) );
+
+  // change camera lens field of view
+  map->setFieldOfView( 85.0f );
+  QImage img4 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "flat_terrain_4", img4, 40 ) );
 }
 
 void TestQgs3DRendering::testDemTerrain()
@@ -392,6 +401,48 @@ bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, in
   bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
+}
+
+void TestQgs3DRendering::testAnimationExport()
+{
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings map;
+  map.setCrs( mProject->crs() );
+  map.setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map.setLayers( QList<QgsMapLayer *>() << mLayerRgb );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map.crs() );
+  flatTerrain->setExtent( fullExtent );
+  map.setTerrainGenerator( flatTerrain );
+
+  Qgs3DAnimationSettings animSettings;
+  Qgs3DAnimationSettings::Keyframes keyframes;
+  Qgs3DAnimationSettings::Keyframe kf1;
+  kf1.dist = 2500;
+  Qgs3DAnimationSettings::Keyframe kf2;
+  kf2.time = 2;
+  kf2.dist = 3000;
+  keyframes << kf1;
+  keyframes << kf2;
+  animSettings.setKeyframes( keyframes );
+
+  QString dir = QDir::temp().path();
+  QString error;
+
+  bool success = Qgs3DUtils::exportAnimation(
+                   animSettings,
+                   map,
+                   1,
+                   dir,
+                   "test3danimation###.png",
+                   QSize( 600, 400 ),
+                   error,
+                   nullptr );
+
+  QVERIFY( success );
+  QVERIFY( QFileInfo( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ).exists() );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

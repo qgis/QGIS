@@ -63,7 +63,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     sipRes = sipCpp->numGeometries();
     % End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
     int __bool__() const;
     % MethodCode
     sipRes = true;
@@ -120,11 +120,11 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
-    //! Adds a geometry and takes ownership. Returns true in case of success.
+    //! Adds a geometry and takes ownership. Returns TRUE in case of success.
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
 
     /**
-     * Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+     * Inserts a geometry before a specified index and takes ownership. Returns TRUE in case of success.
      * \param g geometry to insert. Ownership is transferred to the collection.
      * \param index position to insert geometry before
      */
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Removes a geometry from the collection.
      * \param nr index of geometry to remove
-     * \returns true if removal was successful.
+     * \returns TRUE if removal was successful.
      */
     virtual bool removeGeometry( int nr );
 #else
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      *
      * An IndexError will be raised if no geometry with the specified index exists.
      *
-     * \returns true if removal was successful.
+     * \returns TRUE if removal was successful.
      */
     virtual bool removeGeometry( int nr );
     % MethodCode
@@ -206,6 +206,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId id ) const override;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
@@ -321,6 +322,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   private:
 
     mutable QgsRectangle mBoundingBox;
+    mutable bool mHasCachedValidity = false;
+    mutable QString mValidityFailureReason;
 };
 
 // clazy:excludeall=qstring-allocations

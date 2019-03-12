@@ -46,12 +46,12 @@ Constructor for QgsAttributeFormEditorWidget.
 Resets the widget to an initial value.
 
 :param initialValue: initial value to show in widget
-:param mixedValues: set to true to initially show the mixed values state
+:param mixedValues: set to ``True`` to initially show the mixed values state
 %End
 
     bool hasChanged() const;
 %Docstring
-Returns true if the widget's value has been changed since it was initialized.
+Returns ``True`` if the widget's value has been changed since it was initialized.
 
 .. seealso:: :py:func:`initialize`
 %End
@@ -77,7 +77,7 @@ Set the constraint result label visible or invisible according to the layer edit
 %Docstring
 Sets whether the widget should be displayed in a "mixed values" mode.
 
-:param mixed: set to true to show in a mixed values state
+:param mixed: set to ``True`` to show in a mixed values state
 %End
 
     void changesCommitted();

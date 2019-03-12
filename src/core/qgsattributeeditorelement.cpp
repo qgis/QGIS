@@ -39,6 +39,16 @@ void QgsAttributeEditorContainer::setVisibilityExpression( const QgsOptionalExpr
   mVisibilityExpression = visibilityExpression;
 }
 
+QColor QgsAttributeEditorContainer::backgroundColor() const
+{
+  return mBackgroundColor;
+}
+
+void QgsAttributeEditorContainer::setBackgroundColor( const QColor &backgroundColor )
+{
+  mBackgroundColor = backgroundColor;
+}
+
 QList<QgsAttributeEditorElement *> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
 {
   QList<QgsAttributeEditorElement *> results;

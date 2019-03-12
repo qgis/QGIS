@@ -105,7 +105,7 @@ class CORE_EXPORT QgsNetworkReplyContent
 #endif
 
     /**
-     * Returns true if the reply contains a header with the specified \a headerName.
+     * Returns TRUE if the reply contains a header with the specified \a headerName.
      * \see rawHeaderPairs()
      * \see rawHeaderList()
      * \see rawHeader()

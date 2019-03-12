@@ -393,7 +393,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         else:
             geomFieldName = None
 
-        query = self._getSqlExecutableQuery()
+        query = self._getExecutableSqlQuery()
         if query == "":
             return None
 

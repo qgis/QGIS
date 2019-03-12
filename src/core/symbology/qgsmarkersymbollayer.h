@@ -76,9 +76,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     static QList< QgsSimpleMarkerSymbolLayerBase::Shape > availableShapes();
 
     /**
-     * Returns true if a symbol shape has a fill.
+     * Returns TRUE if a symbol shape has a fill.
      * \param shape shape to test
-     * \returns true if shape uses a fill, or false if shape uses lines only
+     * \returns TRUE if shape uses a fill, or FALSE if shape uses lines only
      */
     static bool shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * Attempts to decode a string representation of a shape name to the corresponding
      * shape.
      * \param name encoded shape name
-     * \param ok if specified, will be set to true if shape was successfully decoded
+     * \param ok if specified, will be set to TRUE if shape was successfully decoded
      * \returns decoded name
      * \see encodeShape()
      */
@@ -146,14 +146,14 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * Creates a polygon representing the specified shape.
      * \param shape shape to create
      * \param polygon destination polygon for shape
-     * \returns true if shape was successfully stored in polygon
+     * \returns TRUE if shape was successfully stored in polygon
      */
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 
     /**
      * Calculates the desired size of the marker, considering data defined size overrides.
      * \param context symbol render context
-     * \param hasDataDefinedSize will be set to true if marker uses data defined sizes
+     * \param hasDataDefinedSize will be set to TRUE if marker uses data defined sizes
      * \returns marker size, in original size units
      */
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * Calculates the marker offset and rotation.
      * \param context symbol render context
      * \param scaledSize size of symbol to render
-     * \param hasDataDefinedRotation will be set to true if marker has data defined rotation
+     * \param hasDataDefinedRotation will be set to TRUE if marker has data defined rotation
      * \param offset will be set to calculated marker offset (in painter units)
      * \param angle will be set to calculated marker angle
      */
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     /**
      * Prepares cache image
-     * \returns true in case of success, false if cache image size too large
+     * \returns TRUE in case of success, FALSE if cache image size too large
     */
     bool prepareCache( QgsSymbolRenderContext &context );
 
@@ -404,7 +404,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QImage mSelCache;
 
     /**
-     * True if using cached images of markers for drawing. This is faster, but cannot
+     * TRUE if using cached images of markers for drawing. This is faster, but cannot
      * be used when data defined properties are present
      */
     bool mUsingCache = false;
@@ -543,7 +543,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double updateDefaultAspectRatio();
 
     /**
-     * Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+     * Returns the preserved aspect ratio value, TRUE if fixed aspect ratio has been lower or equal to 0.
      * \see setPreservedAspectRatio()
      */
     bool preservedAspectRatio() const { return mFixedAspectRatio <= 0.0; }
@@ -551,7 +551,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Set preserved the marker aspect ratio between width and height.
      * \param par Preserved Aspect Ratio
-     * \returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+     * \returns the preserved aspect ratio value, TRUE if fixed aspect ratio has been lower or equal to 0
      * \see preservedAspectRatio()
      */
     bool setPreservedAspectRatio( bool par );
@@ -612,7 +612,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Calculates the marker aspect ratio between width and height.
      * \param context symbol render context
      * \param scaledSize size of symbol to render
-     * \param hasDataDefinedAspectRatio will be set to true if marker has data defined aspectRatio
+     * \param hasDataDefinedAspectRatio will be set to TRUE if marker has data defined aspectRatio
      */
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 
@@ -685,7 +685,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Calculates the marker aspect ratio between width and height.
      * \param context symbol render context
      * \param scaledSize size of symbol to render
-     * \param hasDataDefinedAspectRatio will be set to true if marker has data defined aspectRatio
+     * \param hasDataDefinedAspectRatio will be set to TRUE if marker has data defined aspectRatio
      */
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 
@@ -730,7 +730,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double updateDefaultAspectRatio();
 
     /**
-     * Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+     * Returns the preserved aspect ratio value, TRUE if fixed aspect ratio has been lower or equal to 0.
      * \see setPreservedAspectRatio()
      */
     bool preservedAspectRatio() const { return mFixedAspectRatio <= 0.0; }
@@ -738,7 +738,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Set preserved the marker aspect ratio between width and height.
      * \param par Preserved Aspect Ratio
-     * \returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+     * \returns the preserved aspect ratio value, TRUE if fixed aspect ratio has been lower or equal to 0
      * \see preservedAspectRatio()
      */
     bool setPreservedAspectRatio( bool par );

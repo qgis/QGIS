@@ -58,11 +58,11 @@ Returns a list of all available shape types.
 
     static bool shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 %Docstring
-Returns true if a symbol shape has a fill.
+Returns ``True`` if a symbol shape has a fill.
 
 :param shape: shape to test
 
-:return: true if shape uses a fill, or false if shape uses lines only
+:return: ``True`` if shape uses a fill, or ``False`` if shape uses lines only
 %End
 
     QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
@@ -100,7 +100,7 @@ Attempts to decode a string representation of a shape name to the corresponding
 shape.
 
 :param name: encoded shape name
-:param ok: if specified, will be set to true if shape was successfully decoded
+:param ok: if specified, will be set to ``True`` if shape was successfully decoded
 
 :return: decoded name
 
@@ -146,7 +146,7 @@ Creates a polygon representing the specified shape.
 :param shape: shape to create
 :param polygon: destination polygon for shape
 
-:return: true if shape was successfully stored in polygon
+:return: ``True`` if shape was successfully stored in polygon
 %End
 
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
@@ -154,7 +154,7 @@ Creates a polygon representing the specified shape.
 Calculates the desired size of the marker, considering data defined size overrides.
 
 :param context: symbol render context
-:param hasDataDefinedSize: will be set to true if marker uses data defined sizes
+:param hasDataDefinedSize: will be set to ``True`` if marker uses data defined sizes
 
 :return: marker size, in original size units
 %End
@@ -165,7 +165,7 @@ Calculates the marker offset and rotation.
 
 :param context: symbol render context
 :param scaledSize: size of symbol to render
-:param hasDataDefinedRotation: will be set to true if marker has data defined rotation
+:param hasDataDefinedRotation: will be set to ``True`` if marker has data defined rotation
 :param offset: will be set to calculated marker offset (in painter units)
 :param angle: will be set to calculated marker angle
 %End
@@ -440,7 +440,7 @@ Draws the marker shape in the specified painter.
 %Docstring
 Prepares cache image
 
-:return: true in case of success, false if cache image size too large
+:return: ``True`` in case of success, ``False`` if cache image size too large
 %End
 
 
@@ -603,7 +603,7 @@ Calculates the default marker aspect ratio between width and height.
 
     bool preservedAspectRatio() const;
 %Docstring
-Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+Returns the preserved aspect ratio value, ``True`` if fixed aspect ratio has been lower or equal to 0.
 
 .. seealso:: :py:func:`setPreservedAspectRatio`
 %End
@@ -614,7 +614,7 @@ Set preserved the marker aspect ratio between width and height.
 
 :param par: Preserved Aspect Ratio
 
-:return: the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+:return: the preserved aspect ratio value, ``True`` if fixed aspect ratio has been lower or equal to 0
 
 .. seealso:: :py:func:`preservedAspectRatio`
 %End
@@ -689,7 +689,7 @@ Calculates the marker aspect ratio between width and height.
 
 :param context: symbol render context
 :param scaledSize: size of symbol to render
-:param hasDataDefinedAspectRatio: will be set to true if marker has data defined aspectRatio
+:param hasDataDefinedAspectRatio: will be set to ``True`` if marker has data defined aspectRatio
 %End
 
 
@@ -754,7 +754,7 @@ Calculates the marker aspect ratio between width and height.
 
 :param context: symbol render context
 :param scaledSize: size of symbol to render
-:param hasDataDefinedAspectRatio: will be set to true if marker has data defined aspectRatio
+:param hasDataDefinedAspectRatio: will be set to ``True`` if marker has data defined aspectRatio
 %End
 
     QString path() const;
@@ -809,7 +809,7 @@ Calculates the default marker aspect ratio between width and height.
 
     bool preservedAspectRatio() const;
 %Docstring
-Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+Returns the preserved aspect ratio value, ``True`` if fixed aspect ratio has been lower or equal to 0.
 
 .. seealso:: :py:func:`setPreservedAspectRatio`
 %End
@@ -820,7 +820,7 @@ Set preserved the marker aspect ratio between width and height.
 
 :param par: Preserved Aspect Ratio
 
-:return: the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+:return: the preserved aspect ratio value, ``True`` if fixed aspect ratio has been lower or equal to 0
 
 .. seealso:: :py:func:`preservedAspectRatio`
 %End

@@ -193,7 +193,7 @@ Compares this point with another point with a fuzzy tolerance
 :param other: point to compare with
 :param epsilon: maximum difference for coordinates between the points
 
-:return: true if points are equal within specified tolerance
+:return: ``True`` if points are equal within specified tolerance
 
 .. versionadded:: 2.9
 %End

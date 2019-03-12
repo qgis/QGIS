@@ -185,7 +185,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual ~QgsSymbolLayer();
 
     /**
-     * Returns true if symbol layer is enabled and will be drawn.
+     * Returns TRUE if symbol layer is enabled and will be drawn.
      * \see setEnabled()
      * \since QGIS 3.0
      */
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsSymbolLayer
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /**
-     * Returns true if the symbol layer (or any of its sub-symbols) contains data defined properties.
+     * Returns TRUE if the symbol layer (or any of its sub-symbols) contains data defined properties.
      *
      * \since QGIS 3.4.5
      */
@@ -703,7 +703,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 
     /**
      * Constructor for QgsMarkerSymbolLayer.
-     * \param locked set to true to lock symbol color
+     * \param locked set to TRUE to lock symbol color
      */
     QgsMarkerSymbolLayer( bool locked = false );
 

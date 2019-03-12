@@ -441,7 +441,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   return prob;
 }
 
-void Pal::registerCancelationCallback( Pal::FnIsCanceled fnCanceled, void *context )
+void Pal::registerCancellationCallback( Pal::FnIsCanceled fnCanceled, void *context )
 {
   fnIsCanceled = fnCanceled;
   fnIsCanceledContext = context;

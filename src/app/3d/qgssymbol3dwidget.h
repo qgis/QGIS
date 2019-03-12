@@ -38,7 +38,7 @@ class QgsSymbol3DWidget : public QWidget
   public:
     QgsSymbol3DWidget( QWidget *parent = nullptr );
 
-    //! Returns a new symbol instance or nullptr
+    //! Returns a new symbol instance or NULLPTR
     QgsAbstract3DSymbol *symbol();
 
     //! Sets symbol (does not take ownership)

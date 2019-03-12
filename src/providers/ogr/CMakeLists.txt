@@ -7,6 +7,7 @@ SET (OGR_SRCS
     qgsgeopackagedataitems.cpp
     qgsgeopackagerasterwriter.cpp
     qgsgeopackagerasterwritertask.cpp
+    qgsgeopackageprojectstorage.cpp
     qgsogrdbconnection.cpp
     qgsogrdbtablemodel.cpp
     qgsogrtransaction.cpp
@@ -27,10 +28,12 @@ IF (WITH_GUI)
   SET(OGR_SRCS ${OGR_SRCS}
     qgsogrdbsourceselect.cpp
     qgsogrsourceselect.cpp
+    qgsgeopackageprojectstoragedialog.cpp
   )
   SET(OGR_MOC_HDRS ${OGR_MOC_HDRS}
     qgsogrsourceselect.h
     qgsogrdbsourceselect.h
+    qgsgeopackageprojectstoragedialog.h
   )
 ENDIF ()
 
