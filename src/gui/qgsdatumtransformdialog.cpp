@@ -94,9 +94,10 @@ void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransfor
       if ( info.datumTransformId == -1 )
         continue;
 
-      if ( mHideDeprecatedCheckBox->isChecked() && info.deprecated )
+      if ( info.deprecated )
       {
-        itemHidden = true;
+        itemHidden = mHideDeprecatedCheckBox->isChecked();
+        item->setForeground( QBrush( QColor( 255, 0, 0 ) ) );
       }
 
       QString toolTipString;
