@@ -22,6 +22,7 @@
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgsguiutils.h"
+#include "qgsgui.h"
 
 #include <QDir>
 #include <QPushButton>
@@ -35,6 +36,8 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   , mPreviousCursorOverride( qgis::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
 
   mDatumTransformTableWidget->setColumnCount( 2 );
   QStringList headers;
@@ -58,7 +61,6 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   setOKButtonEnabled();
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/DatumTransformDialog/geometry" ) ).toByteArray() );
   mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), true ).toBool() );
 
   mLabelSrcDescription->clear();
@@ -83,7 +85,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
 
     for ( int i = 0; i < 2; ++i )
     {
-      QTableWidgetItem *item = new QTableWidgetItem();
+      std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
       int nr = i == 0 ? transform.sourceTransformId : transform.destinationTransformId;
       item->setData( Qt::UserRole, nr );
 
@@ -122,7 +124,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
 
       item->setToolTip( toolTipString );
 
-      if ( gridShiftTransformation( item->text() ) && !testGridShiftFileAvailability( item ) )
+      if ( gridShiftTransformation( item->text() ) && !testGridShiftFileAvailability( item.get() ) )
       {
         itemDisabled = true;
       }
@@ -134,11 +136,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
           item->setFlags( Qt::NoItemFlags );
         }
         mDatumTransformTableWidget->setRowCount( row + 1 );
-        mDatumTransformTableWidget->setItem( row, i, item );
-      }
-      else
-      {
-        delete item;
+        mDatumTransformTableWidget->setItem( row, i, item.release() );
       }
     }
 
@@ -165,7 +163,6 @@ void QgsDatumTransformDialog::setOKButtonEnabled()
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), mHideDeprecatedCheckBox->isChecked() );
 
   for ( int i = 0; i < 2; i++ )
@@ -178,7 +175,6 @@ int QgsDatumTransformDialog::availableTransformationCount()
 {
   return mDatumTransforms.count();
 }
-
 
 QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > QgsDatumTransformDialog::selectedDatumTransforms()
 {
