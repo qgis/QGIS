@@ -114,7 +114,7 @@ QMenu::item:checked
 
 QWidget:disabled, QWidget:editable:disabled
 {
-    color: #404040;
+    color: @itemdarkbackground;
     background-color: @background;
 }
 
@@ -474,6 +474,10 @@ QTabBar::tab {
     padding-top: 0.1em;
     padding-bottom: 0.1em;
     margin-right: -0.05em;
+}
+
+QTabBar::tab:disabled {
+    color: @itemdarkbackground;
 }
 
 QTabBar::tab:last
