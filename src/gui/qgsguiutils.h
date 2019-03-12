@@ -206,4 +206,35 @@ class GUI_EXPORT QgsTemporaryCursorOverride
 
 };
 
+/**
+ * Temporarily removes all cursor overrides for the QApplication for the lifetime of the object.
+ *
+ * When the object is deleted, all stacked cursor overrides are restored.
+ *
+ * \ingroup gui
+ * \since QGIS 3.8
+ */
+class GUI_EXPORT QgsTemporaryCursorRestoreOverride
+{
+  public:
+
+    /**
+     * Constructor for QgsTemporaryCursorRestoreOverride. Removes all application override
+     * cursors.
+     */
+    QgsTemporaryCursorRestoreOverride();
+
+    ~QgsTemporaryCursorRestoreOverride();
+
+    /**
+     * Restores the cursor override early (i.e. before this object is destroyed).
+     */
+    void restore();
+
+  private:
+
+    std::vector< QCursor > mCursors;
+
+};
+
 #endif // QGSGUIUTILS_H
