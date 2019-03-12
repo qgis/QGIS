@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgsguiutils.h"
 
 #include <QDir>
 #include <QPushButton>
@@ -31,6 +32,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     QWidget *parent,
     Qt::WindowFlags f )
   : QDialog( parent, f )
+  , mPreviousCursorOverride( qgis::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
   setupUi( this );
 
@@ -52,8 +54,6 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   mSourceCrs = sourceCrs;
   mDestinationCrs = destinationCrs;
   mDatumTransforms = QgsDatumTransform::datumTransformations( sourceCrs, destinationCrs );
-
-  QApplication::setOverrideCursor( Qt::ArrowCursor );
 
   setOKButtonEnabled();
 
@@ -172,8 +172,6 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   {
     settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mDatumTransformTableWidget->columnWidth( i ) );
   }
-
-  QApplication::restoreOverrideCursor();
 }
 
 int QgsDatumTransformDialog::availableTransformationCount()
