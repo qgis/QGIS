@@ -99,14 +99,12 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
       QFont font;
       font.setPointSize( font.pointSize() - 1 );
       return font;
-      break;
     }
     case Qt::DisplayRole:
       switch ( index.column() )
       {
         case SourceCrsColumn:
           return sourceCrs;
-          break;
         case SourceTransformColumn:
           if ( sourceTransform != -1 )
           {
@@ -115,7 +113,6 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
           break;
         case DestinationCrsColumn:
           return destinationCrs;
-          break;
         case DestinationTransformColumn:
           if ( destinationTransform != -1 )
           {
@@ -131,10 +128,8 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
       {
         case SourceTransformColumn:
           return sourceTransform;
-          break;
         case DestinationTransformColumn:
           return destinationTransform;
-          break;
         default:
           break;
       }
