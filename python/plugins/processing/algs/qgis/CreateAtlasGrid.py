@@ -125,6 +125,13 @@ class CreateAtlasGrid(QgisAlgorithm):
 
         self.total = (self.coverage.height() / self.mapheight) * (self.coverage.width() / self.mapwidth)
 
+        mapcrs = map.crs()
+        laycrs = self.coverage_layer.crs()
+
+        if mapcrs != laycrs:
+            feedback.reportError('Mixed crs between layer and layout ')
+            feedback.cancel()
+
         return True
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -137,7 +144,7 @@ class CreateAtlasGrid(QgisAlgorithm):
             context,
             fields,
             QgsWkbTypes.Polygon,
-            self.coverage_layer.sourceCrs()
+            self.coverage_layer.crs()
         )
 
         if sink is None:
@@ -155,6 +162,8 @@ class CreateAtlasGrid(QgisAlgorithm):
         current_y = 0
         # Columns loop
         while current_y < self.coverage.height():
+            if feedback.isCanceled():
+                break
             current_x = 0
             xMin = self.coverage.xMinimum() - remainder
             xMax = xMin + self.mapwidth
