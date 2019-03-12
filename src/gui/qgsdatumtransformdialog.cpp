@@ -38,7 +38,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
     return true;
   }
 
-  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, qMakePair( -1, -1 ), parent );
+  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, qMakePair( -1, -1 ), parent );
   if ( dlg.shouldAskUserForSelection() )
   {
     if ( dlg.exec() )
@@ -62,7 +62,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
 }
 
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs,
-    const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges,
+    const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges, const bool showMakeDefault,
     QPair<int, int> selectedDatumTransforms,
     QWidget *parent,
     Qt::WindowFlags f )
@@ -72,6 +72,9 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   setupUi( this );
 
   QgsGui::enableAutoGeometryRestore( this );
+
+  if ( !showMakeDefault )
+    mMakeDefaultCheckBox->setVisible( false );
 
   mDatumTransformTableWidget->setColumnCount( 2 );
   QStringList headers;
@@ -222,6 +225,32 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   {
     settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mDatumTransformTableWidget->columnWidth( i ) );
   }
+}
+
+void QgsDatumTransformDialog::accept()
+{
+  if ( mMakeDefaultCheckBox->isChecked() && !mDatumTransformTableWidget->selectedItems().isEmpty() )
+  {
+    QgsSettings settings;
+    settings.beginGroup( QStringLiteral( "/Projections" ) );
+
+    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = selectedDatumTransforms();
+
+    QString srcAuthId = dt.first.first.authid();
+    QString destAuthId = dt.second.first.authid();
+    int sourceDatumTransform = dt.first.second;
+    QString sourceDatumProj;
+    if ( sourceDatumTransform >= 0 )
+      sourceDatumProj = QgsDatumTransform::datumTransformToProj( sourceDatumTransform );
+    int destinationDatumTransform = dt.second.second;
+    QString destinationDatumProj;
+    if ( destinationDatumTransform >= 0 )
+      destinationDatumProj = QgsDatumTransform::datumTransformToProj( destinationDatumTransform );
+
+    settings.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumProj );
+    settings.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumProj );
+  }
+  QDialog::accept();
 }
 
 bool QgsDatumTransformDialog::shouldAskUserForSelection()
