@@ -1979,8 +1979,19 @@ static QVariant fcnPointN( const QVariantList &values, const QgsExpressionContex
   if ( geom.isNull() )
     return QVariant();
 
-  //idx is 1 based
-  qlonglong idx = QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) - 1;
+  qlonglong idx = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+
+  if ( idx < 0 )
+  {
+    //negative idx
+    int count = geom.constGet()->nCoordinates();
+    idx = count + idx;
+  }
+  else
+  {
+    //positive idx is 1 based
+    idx -= 1;
+  }
 
   QgsVertexId vId;
   if ( idx < 0 || !geom.vertexIdFromVertexNr( idx, vId ) )
@@ -3586,6 +3597,12 @@ static QVariant fcnAngleAtVertex( const QVariantList &values, const QgsExpressio
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   qlonglong vertex = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  if ( vertex < 0 )
+  {
+    //negative idx
+    int count = geom.constGet()->nCoordinates();
+    vertex = count + vertex;
+  }
 
   return geom.angleAtVertex( vertex ) * 180.0 / M_PI;
 }
@@ -3594,6 +3611,12 @@ static QVariant fcnDistanceToVertex( const QVariantList &values, const QgsExpres
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   qlonglong vertex = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  if ( vertex < 0 )
+  {
+    //negative idx
+    int count = geom.constGet()->nCoordinates();
+    vertex = count + vertex;
+  }
 
   return geom.distanceToVertex( vertex );
 }
