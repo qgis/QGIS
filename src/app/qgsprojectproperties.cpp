@@ -943,6 +943,10 @@ void QgsProjectProperties::apply()
 {
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
 
+  // important - set the transform context first, as changing the project CRS may otherwise change this and
+  // cause loss of user changes
+  QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
+  QgsProject::instance()->setTransformContext( transformContext );
   if ( projectionSelector->hasValidSelection() )
   {
     QgsCoordinateReferenceSystem srs = projectionSelector->crs();
@@ -961,9 +965,6 @@ void QgsProjectProperties::apply()
     // mark selected projection for push to front
     projectionSelector->pushProjectionToFront();
   }
-
-  QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
-  QgsProject::instance()->setTransformContext( transformContext );
 
   mMetadataWidget->acceptMetadata();
 
