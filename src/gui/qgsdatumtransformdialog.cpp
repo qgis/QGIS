@@ -82,6 +82,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
   mDatumTransformTableWidget->setRowCount( 0 );
 
   int row = 0;
+  int preferredInitialRow = -1;
 
   for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
   {
@@ -109,6 +110,12 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
       {
         itemHidden = mHideDeprecatedCheckBox->isChecked();
         item->setForeground( QBrush( QColor( 255, 0, 0 ) ) );
+      }
+
+      if ( info.preferred && !info.deprecated && preferredInitialRow < 0 )
+      {
+        // try to select a "preferred" entry by default
+        preferredInitialRow = row;
       }
 
       QString toolTipString;
@@ -158,9 +165,12 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
     row++;
   }
 
+  if ( mDatumTransformTableWidget->currentRow() < 0 )
+    mDatumTransformTableWidget->selectRow( preferredInitialRow >= 0 ? preferredInitialRow : 0 );
+
   mDatumTransformTableWidget->resizeColumnsToContents();
 
-  setOKButtonEnabled();
+  tableCurrentItemChanged( nullptr, nullptr );
 }
 
 void QgsDatumTransformDialog::setOKButtonEnabled()
@@ -269,12 +279,18 @@ void QgsDatumTransformDialog::tableCurrentItemChanged( QTableWidgetItem *, QTabl
 {
   int row = mDatumTransformTableWidget->currentRow();
   if ( row < 0 )
-    return;
+  {
+    mLabelSrcDescription->clear();
+    mLabelDstDescription->clear();
+  }
+  else
+  {
 
-  QTableWidgetItem *srcItem = mDatumTransformTableWidget->item( row, 0 );
-  mLabelSrcDescription->setText( srcItem ? srcItem->toolTip() : QString() );
-  QTableWidgetItem *destItem = mDatumTransformTableWidget->item( row, 1 );
-  mLabelDstDescription->setText( destItem ? destItem->toolTip() : QString() );
+    QTableWidgetItem *srcItem = mDatumTransformTableWidget->item( row, 0 );
+    mLabelSrcDescription->setText( srcItem ? srcItem->toolTip() : QString() );
+    QTableWidgetItem *destItem = mDatumTransformTableWidget->item( row, 1 );
+    mLabelDstDescription->setText( destItem ? destItem->toolTip() : QString() );
+  }
 
   setOKButtonEnabled();
 }
