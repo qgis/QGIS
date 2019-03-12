@@ -88,6 +88,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
       std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
       int nr = i == 0 ? transform.sourceTransformId : transform.destinationTransformId;
       item->setData( Qt::UserRole, nr );
+      item->setFlags( item->flags() & ~Qt::ItemIsEditable );
 
       item->setText( QgsDatumTransform::datumTransformToProj( nr ) );
 
