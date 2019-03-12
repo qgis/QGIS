@@ -757,7 +757,15 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
     }
   }
 
-  mGeometryGeneratorWarningLabel->setVisible( !valid );
+  // The collapsible groupbox internally changes the visibility of this
+  // Work around by setting the visibility deferred in the next event loop cycle.
+  QTimer *timer = new QTimer();
+  connect( timer, &QTimer::timeout, this, [this, valid]()
+  {
+    mGeometryGeneratorWarningLabel->setVisible( !valid );
+  } );
+  connect( timer, &QTimer::timeout, timer, &QTimer::deleteLater );
+  timer->start( 0 );
 }
 
 void QgsLabelingGui::determineGeometryGeneratorType()
