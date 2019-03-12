@@ -123,6 +123,8 @@ class CreateAtlasGrid(QgisAlgorithm):
         )
         self.coverage = self.coverage_layer.sourceExtent().buffered(coverage_distance)
 
+        self.total = (self.coverage.height() / self.mapheight) * (self.coverage.width() / self.mapwidth)
+
         return True
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -149,6 +151,7 @@ class CreateAtlasGrid(QgisAlgorithm):
         yMin = yMax - self.mapheight
 
         n = 1
+        current = 1
         current_y = 0
         # Columns loop
         while current_y < self.coverage.height():
@@ -176,6 +179,8 @@ class CreateAtlasGrid(QgisAlgorithm):
                 xMin = xMax
                 xMax = xMax + self.mapwidth
                 current_x += self.mapwidth
+                feedback.setProgress(int(current * self.total))
+                current += 1
             yMax = yMin
             yMin = yMin - self.mapheight
             current_y += self.mapheight
