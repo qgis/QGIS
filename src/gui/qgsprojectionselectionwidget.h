@@ -91,6 +91,14 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     void setMessage( const QString &text );
 
+    /**
+     * Returns display text for the specified \a crs.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static QString crsOptionText( const QgsCoordinateReferenceSystem &crs ) SIP_SKIP;
+
   signals:
 
     /**
@@ -140,7 +148,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     void addProjectCrsOption();
     void addDefaultCrsOption();
     void addCurrentCrsOption();
-    QString currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const;
+
     void addRecentCrs();
     bool crsIsShown( long srsid ) const;
 
