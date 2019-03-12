@@ -5,7 +5,7 @@
  CreateAtlasGrid.py
                               -------------------
         begin                : 2019-02-27
-        copyright            : (C) 20169 by fpsampayo
+        copyright            : (C) 2019 by fpsampayo
         email                : fpsampayo@gmail.com
  ***************************************************************************/
 /***************************************************************************
@@ -30,24 +30,27 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle,
-                       QgsProject,
-                       QgsProcessingException,
-                       QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterDistance,
+                       QgsProcessingParameterLayout,
+                       QgsProcessingParameterLayoutItem,
+                       QgsLayoutItemRegistry,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsFields,
                        QgsField,
                        QgsWkbTypes,
                        QgsFeature,
-                       QgsGeometry)
+                       QgsGeometry,
+                       QgsFeatureRequest)
 
 
 class CreateAtlasGrid(QgisAlgorithm):
 
     LAYOUT = 'LAYOUT'
+    MAP = 'MAP'
     COVERAGE_LAYER = 'COVERAGE_LAYER'
     COVERAGE_BUFFER = 'COVERAGE_BUFFER'
     ONLY_ON_FEATURES = 'ONLY_ON_FEATURES'
@@ -72,26 +75,19 @@ class CreateAtlasGrid(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
 
-        layout_param = QgsProcessingParameterString(
-            self.LAYOUT,
-            description=self.tr('Layout to use'),
-            defaultValue=None,
-            optional=False)
-
-        layout_param.setMetadata(
-            {'widget_wrapper': {
-                'class':
-                    'processing.gui.wrappers_layout.LayoutWrapper'}})
-        self.addParameter(layout_param)
-
+        param = QgsProcessingParameterLayout(self.LAYOUT, 'Print layout')
+        self.addParameter(param)
+        map_param = QgsProcessingParameterLayoutItem(self.MAP, 'Map item', parentLayoutParameterName=self.LAYOUT,
+                                                     itemType=QgsLayoutItemRegistry.LayoutMap)
+        self.addParameter(map_param)
         self.addParameter(QgsProcessingParameterFeatureSource(self.COVERAGE_LAYER,
                                                               self.tr('Coverage layer'),
                                                               [QgsProcessing.TypeMapLayer]))
         self.addParameter(QgsProcessingParameterDistance(self.COVERAGE_BUFFER,
-                                                         self.tr('Coverage Buffer'), parentParameterName='COVERAGE_LAYER',
+                                                         self.tr('Coverage buffer'), parentParameterName='COVERAGE_LAYER',
                                                          defaultValue=0.0))
         self.addParameter(QgsProcessingParameterBoolean(self.ONLY_ON_FEATURES,
-                                                        self.tr('Only on intersection features'),
+                                                        self.tr('Only on intersected features'),
                                                         defaultValue=True))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Grid'),
@@ -99,11 +95,14 @@ class CreateAtlasGrid(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
 
-        layout_name = self.parameterAsString(
-            parameters,
-            self.LAYOUT,
-            context
-        )
+        layout = self.parameterAsLayout(parameters, self.LAYOUT, context)
+        if layout is None:
+            raise QgsProcessingException('Cannot find layout with name "{}"'.format(parameters[self.LAYOUT]))
+
+        map = self.parameterAsLayoutItem(parameters, self.MAP, context, layout)
+        if map is None:
+            raise QgsProcessingException('Cannot find matching map item with ID {}'.format(parameters[self.MAP]))
+
         coverage_layer = self.parameterAsVectorLayer(
             parameters,
             self.COVERAGE_LAYER,
@@ -134,8 +133,6 @@ class CreateAtlasGrid(QgisAlgorithm):
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        layout = QgsProject().instance().layoutManager().layoutByName(layout_name)
-        map = layout.referenceMap()
         h = map.extent().height()
         w = map.extent().width()
 
@@ -143,7 +140,7 @@ class CreateAtlasGrid(QgisAlgorithm):
 
         xmin = coverage.xMinimum()
         xmax = coverage.xMaximum()
-        resto = (w - ((xmax - xmin) % w)) / 2
+        remainder = (w - ((xmax - xmin) % w)) / 2
 
         yMax = coverage.yMaximum()
         yMin = yMax - h
@@ -153,7 +150,7 @@ class CreateAtlasGrid(QgisAlgorithm):
         # Columns loop
         while current_y < coverage.height():
             current_x = 0
-            xMin = coverage.xMinimum() - resto
+            xMin = coverage.xMinimum() - remainder
             xMax = xMin + w
             # Lines loop
             while current_x < coverage.width():
@@ -162,7 +159,12 @@ class CreateAtlasGrid(QgisAlgorithm):
                 output_feature.setGeometry(QgsGeometry.fromRect(geom))
                 output_feature.setAttributes([n])
                 if only_on_features:
-                    if len(list(coverage_layer.getFeatures(geom))) > 0:
+                    fr = QgsFeatureRequest(geom)
+                    fr.setFlags(QgsFeatureRequest.ExactIntersect)
+                    fr.setNoAttributes()
+                    fr.setLimit(1)
+
+                    if len(list(coverage_layer.getFeatures(fr))) > 0:
                         sink.addFeatures([output_feature])
                         n += 1
                 else:
