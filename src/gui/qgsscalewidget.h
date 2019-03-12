@@ -88,7 +88,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Returns true if the widget is currently set to a "null" value.
      *
      * \see setAllowNull()
-     * \see clear()
+     * \see setNull()
      * \since QGIS 3.8
      */
     bool isNull() const;
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Sets whether the scale widget can be set to a NULL value.
      * \see allowNull()
      * \see isNull()
-     * \see clear()
+     * \see setNull()
      * \since QGIS 3.8
      */
     void setAllowNull( bool allowNull );
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Returns TRUE if the widget can be set to a NULL value.
      * \see setAllowNull()
      * \see isNull()
-     * \see clear()
+     * \see setNull()
      * \since QGIS 3.8
      */
     bool allowNull() const;
@@ -174,7 +174,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * \see isNull()
      * \since QGIS 3.8
      */
-    void clear();
+    void setNull();
 
   signals:
 

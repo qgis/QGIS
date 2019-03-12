@@ -51,7 +51,7 @@ class TestQgsScaleWidget(unittest.TestCase):
 
         w.setScale(50)
         self.assertFalse(w.allowNull())
-        w.clear() # no effect
+        w.setNull() # no effect
         self.assertEqual(w.scale(), 50.0)
         self.assertFalse(w.isNull())
 
@@ -85,7 +85,7 @@ class TestQgsScaleWidget(unittest.TestCase):
         self.assertEqual(len(spy), 4)
         self.assertEqual(spy[-1][0], 50.0)
         self.assertFalse(w.isNull())
-        w.clear()
+        w.setNull()
         self.assertTrue(math.isnan(w.scale()))
         self.assertEqual(len(spy), 5)
         self.assertTrue(math.isnan(spy[-1][0]))

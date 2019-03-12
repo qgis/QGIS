@@ -63,7 +63,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * Returns true if the combo box is currently set to a "null" value.
      *
      * \see setAllowNull()
-     * \see clear()
+     * \see setNull()
      * \since QGIS 3.8
      */
     bool isNull() const;
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * Sets whether the scale combobox can be set to a NULL value.
      * \see allowNull()
      * \see isNull()
-     * \see clear()
+     * \see setNull()
      * \since QGIS 3.8
      */
     void setAllowNull( bool allowNull );
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * Returns TRUE if the combobox can be set to a NULL value.
      * \see setAllowNull()
      * \see isNull()
-     * \see clear()
+     * \see setNull()
      * \since QGIS 3.8
      */
     bool allowNull() const;
@@ -151,7 +151,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * \see isNull()
      * \since QGIS 3.8
      */
-    void clear();
+    void setNull();
 
   protected:
     void showPopup() override;

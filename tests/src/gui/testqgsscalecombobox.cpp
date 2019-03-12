@@ -192,7 +192,7 @@ void TestQgsScaleComboBox::allowNull()
 {
   s->setScale( 50 );
   QVERIFY( !s->allowNull() );
-  s->clear(); // no effect
+  s->setNull(); // no effect
   QCOMPARE( s->scale(), 50.0 );
   QVERIFY( !s->isNull() );
 
@@ -227,7 +227,7 @@ void TestQgsScaleComboBox::allowNull()
   enterScale( 0.02 );
   QCOMPARE( s->scale(), 50.0 );
   QCOMPARE( spyScaleChanged.count(), 4 );
-  s->clear();
+  s->setNull();
   QVERIFY( std::isnan( s->scale() ) );
   QCOMPARE( spyScaleChanged.count(), 5 );
   QVERIFY( s->lineEdit()->text().isEmpty() );

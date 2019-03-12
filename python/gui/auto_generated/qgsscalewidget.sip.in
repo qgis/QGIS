@@ -82,7 +82,7 @@ Returns true if the widget is currently set to a "null" value.
 
 .. seealso:: :py:func:`setAllowNull`
 
-.. seealso:: :py:func:`clear`
+.. seealso:: :py:func:`setNull`
 
 .. versionadded:: 3.8
 %End
@@ -122,7 +122,7 @@ Sets whether the scale widget can be set to a NULL value.
 
 .. seealso:: :py:func:`isNull`
 
-.. seealso:: :py:func:`clear`
+.. seealso:: :py:func:`setNull`
 
 .. versionadded:: 3.8
 %End
@@ -135,7 +135,7 @@ Returns ``True`` if the widget can be set to a NULL value.
 
 .. seealso:: :py:func:`isNull`
 
-.. seealso:: :py:func:`clear`
+.. seealso:: :py:func:`setNull`
 
 .. versionadded:: 3.8
 %End
@@ -171,7 +171,7 @@ Any scale lower than the minimum scale will automatically be converted to the mi
 Except for 0 which is always allowed.
 %End
 
-    void clear();
+    void setNull();
 %Docstring
 Sets the widget to the null value.
 
