@@ -134,6 +134,8 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
     if ( transform.sourceTransformId == -1 && transform.destinationTransformId == -1 )
       continue;
 
+    QgsDatumTransform::TransformInfo srcInfo = QgsDatumTransform::datumTransformInfo( transform.sourceTransformId );
+    QgsDatumTransform::TransformInfo destInfo = QgsDatumTransform::datumTransformInfo( transform.destinationTransformId );
     for ( int i = 0; i < 2; ++i )
     {
       std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
@@ -144,7 +146,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
       item->setText( QgsDatumTransform::datumTransformToProj( nr ) );
 
       //Describe datums in a tooltip
-      QgsDatumTransform::TransformInfo info = QgsDatumTransform::datumTransformInfo( nr );
+      QgsDatumTransform::TransformInfo info = i == 0 ? srcInfo : destInfo;
       if ( info.datumTransformId == -1 )
         continue;
 
@@ -152,6 +154,14 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
       {
         itemHidden = mHideDeprecatedCheckBox->isChecked();
         item->setForeground( QBrush( QColor( 255, 0, 0 ) ) );
+      }
+
+      if ( ( srcInfo.preferred && !srcInfo.deprecated ) || ( destInfo.preferred && !destInfo.deprecated ) )
+      {
+        QFont f = item->font();
+        f.setBold( true );
+        item->setFont( f );
+        item->setForeground( QBrush( QColor( 0, 120, 0 ) ) );
       }
 
       if ( info.preferred && !info.deprecated && preferredInitialRow < 0 )
