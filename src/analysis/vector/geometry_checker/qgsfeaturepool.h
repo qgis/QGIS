@@ -42,19 +42,20 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     virtual ~QgsFeaturePool() = default;
 
     /**
-     * Retrieve the feature with the specified \a id into \a feature.
-     * It will be retrieved from the cache or from the underlying layer if unavailable.
-     * If the feature is neither available from the cache nor from the layer it will return false.
-     * If \a feedback is specified, the call may return if the feedback is canceled.
+     * Retrieves the feature with the specified \a id into \a feature.
+     * It will be retrieved from the cache or from the underlying feature source if unavailable.
+     * If the feature is neither available from the cache nor from the source it will return FALSE.
      */
-    bool getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback = nullptr );
+    bool getFeature( QgsFeatureId id, QgsFeature &feature );
 
     /**
      * Get features for the provided \a request. No features will be fetched
      * from the cache and the request is sent directly to the underlying feature source.
      * Results of the request are cached in the pool and the ids of all the features
-     * are returned. This can be used to warm the cache for a particular area of interest
+     * are returned. This is used to warm the cache for a particular area of interest
      * (bounding box) or other set of features.
+     * This will get a new feature source from the source vector layer.
+     * This needs to be called from the main thread.
      * If \a feedback is specified, the call may return if the feedback is canceled.
      */
     QgsFeatureIds getFeatures( const QgsFeatureRequest &request, QgsFeedback *feedback = nullptr ) SIP_SKIP;
@@ -120,6 +121,12 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      */
     QgsCoordinateReferenceSystem crs() const;
 
+    /**
+     * Returns the name of the layer.
+     *
+     * Should be preferred over layer().name() because it can directly be run on
+     * the background thread.
+     */
     QString layerName() const;
 
   protected:

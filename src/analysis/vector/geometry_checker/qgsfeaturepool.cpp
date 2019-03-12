@@ -36,7 +36,7 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
 
 }
 
-bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback )
+bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
 {
   // Why is there a write lock acquired here? Weird, we only want to read a feature from the cache, right?
   // A method like `QCache::object(const Key &key) const` certainly would not modify its internals.
