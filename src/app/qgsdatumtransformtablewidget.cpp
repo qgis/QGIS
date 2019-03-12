@@ -188,6 +188,9 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
   connect( mEditButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::editDatumTransform );
+
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDatumTransformTableWidget::selectionChanged );
+  mEditButton->setEnabled( false );
 }
 
 void QgsDatumTransformTableWidget::addDatumTransform()
@@ -199,6 +202,7 @@ void QgsDatumTransformTableWidget::addDatumTransform()
     QgsCoordinateTransformContext context = mModel->transformContext();
     context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
     mModel->setTransformContext( context );
+    selectionChanged();
   }
 }
 
@@ -208,6 +212,7 @@ void QgsDatumTransformTableWidget::removeDatumTransform()
   if ( selectedIndexes.count() > 0 )
   {
     mModel->removeTransform( selectedIndexes );
+    selectionChanged();
   }
 }
 
@@ -254,4 +259,9 @@ void QgsDatumTransformTableWidget::editDatumTransform()
       }
     }
   }
+}
+
+void QgsDatumTransformTableWidget::selectionChanged( const QItemSelection &, const QItemSelection & )
+{
+  mEditButton->setEnabled( !mTableView->selectionModel()->selection().empty() );
 }
