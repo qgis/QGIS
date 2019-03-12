@@ -272,3 +272,31 @@ void QgsTemporaryCursorOverride::release()
   mHasOverride = false;
   QApplication::restoreOverrideCursor();
 }
+
+
+//
+// QgsTemporaryCursorRestoreOverride
+//
+
+QgsTemporaryCursorRestoreOverride::QgsTemporaryCursorRestoreOverride()
+{
+  while ( QApplication::overrideCursor() )
+  {
+    mCursors.emplace_back( QCursor( *QApplication::overrideCursor() ) );
+    QApplication::restoreOverrideCursor();
+  }
+}
+
+QgsTemporaryCursorRestoreOverride::~QgsTemporaryCursorRestoreOverride()
+{
+  restore();
+}
+
+void QgsTemporaryCursorRestoreOverride::restore()
+{
+  for ( auto it = mCursors.rbegin(); it != mCursors.rend(); ++it )
+  {
+    QApplication::setOverrideCursor( *it );
+  }
+  mCursors.clear();
+}
