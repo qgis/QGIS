@@ -58,7 +58,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > selectedDatumTransforms();
 
   private slots:
-    void mHideDeprecatedCheckBox_stateChanged( int state );
+
     void tableCurrentItemChanged( QTableWidgetItem *, QTableWidgetItem * );
     void setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs );
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
