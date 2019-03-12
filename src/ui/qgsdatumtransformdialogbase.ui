@@ -135,6 +135,16 @@
    <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
+      <widget class="QCheckBox" name="mMakeDefaultCheckBox">
+       <property name="toolTip">
+        <string>If checked, the selected transformation will become the default choice in all new projects</string>
+       </property>
+       <property name="text">
+        <string>Make default</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -191,8 +201,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>mDatumTransformTableWidget</tabstop>
+  <tabstop>mMakeDefaultCheckBox</tabstop>
   <tabstop>mHideDeprecatedCheckBox</tabstop>
-  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
