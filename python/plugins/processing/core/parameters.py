@@ -66,6 +66,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 PARAMETER_NUMBER = 'number'
 PARAMETER_DISTANCE = 'distance'
+PARAMETER_SCALE = 'scale'
 PARAMETER_RASTER = 'raster'
 PARAMETER_TABLE = 'vector'
 PARAMETER_VECTOR = 'source'

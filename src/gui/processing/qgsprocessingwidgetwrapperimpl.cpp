@@ -35,6 +35,7 @@
 #include "qgslayoutcombobox.h"
 #include "qgslayoutitemcombobox.h"
 #include "qgsprintlayout.h"
+#include "qgsscalewidget.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -147,6 +148,7 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterScale::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
          << QgsProcessingParameterFeatureSource::typeName()
@@ -397,6 +399,7 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterAuthConfig::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterScale::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
          << QgsProcessingParameterExpression::typeName();
@@ -693,7 +696,8 @@ QStringList QgsProcessingNumericWidgetWrapper::compatibleParameterTypes() const
   return QStringList()
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingParameterDistance::typeName();
+         << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterScale::typeName();
 }
 
 QStringList QgsProcessingNumericWidgetWrapper::compatibleOutputTypes() const
@@ -893,6 +897,81 @@ QVariant QgsProcessingDistanceWidgetWrapper::widgetValue() const
   else
   {
     return val;
+  }
+}
+
+//
+// QgsProcessingScaleWidgetWrapper
+//
+
+QgsProcessingScaleWidgetWrapper::QgsProcessingScaleWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingNumericWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingScaleWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterScale::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingScaleWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingScaleWidgetWrapper( parameter, type );
+}
+
+QWidget *QgsProcessingScaleWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterScale *scaleDef = static_cast< const QgsProcessingParameterScale * >( parameterDefinition() );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      mScaleWidget = new QgsScaleWidget( nullptr );
+      if ( scaleDef->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mScaleWidget->setAllowNull( true );
+
+      mScaleWidget->setMapCanvas( widgetContext().mapCanvas() );
+      mScaleWidget->setShowCurrentScaleButton( true );
+
+      mScaleWidget->setToolTip( parameterDefinition()->toolTip() );
+      connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, [ = ]( double )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mScaleWidget;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingScaleWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  if ( mScaleWidget )
+    mScaleWidget->setMapCanvas( context.mapCanvas() );
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+}
+
+
+QVariant QgsProcessingScaleWidgetWrapper::widgetValue() const
+{
+  return mScaleWidget && !mScaleWidget->isNull() ? QVariant( mScaleWidget->scale() ) : QVariant();
+}
+
+void QgsProcessingScaleWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mScaleWidget )
+  {
+    if ( mScaleWidget->allowNull() && !value.isValid() )
+      mScaleWidget->clear();
+    else
+    {
+      const double v = QgsProcessingParameters::parameterAsDouble( parameterDefinition(), value, context );
+      mScaleWidget->setScale( v );
+    }
   }
 }
 
@@ -1367,7 +1446,8 @@ QStringList QgsProcessingExpressionWidgetWrapper::compatibleParameterTypes() con
          << QgsProcessingParameterExpression::typeName()
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingParameterDistance::typeName();
+         << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterScale::typeName();
 }
 
 QStringList QgsProcessingExpressionWidgetWrapper::compatibleOutputTypes() const

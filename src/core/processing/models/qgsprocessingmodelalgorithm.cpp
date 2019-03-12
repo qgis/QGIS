@@ -641,6 +641,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
   // "static"/single value sources
   QgsProcessingModelChildParameterSources sources = availableSourcesForChild( childId, QStringList() << QgsProcessingParameterNumber::typeName()
       << QgsProcessingParameterDistance::typeName()
+      << QgsProcessingParameterScale::typeName()
       << QgsProcessingParameterBoolean::typeName()
       << QgsProcessingParameterExpression::typeName()
       << QgsProcessingParameterField::typeName()
