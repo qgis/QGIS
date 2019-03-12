@@ -27,6 +27,40 @@
 #include <QDir>
 #include <QPushButton>
 
+bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent )
+{
+  if ( sourceCrs == destinationCrs )
+    return true;
+
+  QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+  if ( context.hasTransform( sourceCrs, destinationCrs ) )
+  {
+    return true;
+  }
+
+  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, qMakePair( -1, -1 ), parent );
+  if ( dlg.shouldAskUserForSelection() )
+  {
+    if ( dlg.exec() )
+    {
+      QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
+      QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+      context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
+      QgsProject::instance()->setTransformContext( context );
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    dlg.applyDefaultTransform();
+    return true;
+  }
+}
+
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs,
     const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges,
     QPair<int, int> selectedDatumTransforms,
@@ -154,8 +188,10 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
       }
     }
 
-    if ( transform.sourceTransformId == selectedDatumTransforms.first &&
-         transform.destinationTransformId == selectedDatumTransforms.second )
+    if ( ( transform.sourceTransformId == selectedDatumTransforms.first &&
+           transform.destinationTransformId == selectedDatumTransforms.second ) ||
+         ( transform.sourceTransformId == selectedDatumTransforms.second &&
+           transform.destinationTransformId == selectedDatumTransforms.first ) )
     {
       mDatumTransformTableWidget->selectRow( row );
     }
@@ -188,19 +224,89 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   }
 }
 
-int QgsDatumTransformDialog::availableTransformationCount()
-{
-  return mDatumTransforms.count();
-}
-
 bool QgsDatumTransformDialog::shouldAskUserForSelection()
 {
-  if ( availableTransformationCount() > 1 )
+  if ( mDatumTransforms.count() > 1 )
   {
     return QgsSettings().value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
   }
   // TODO: show if transform grids are required, but missing
   return false;
+}
+
+QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > QgsDatumTransformDialog::defaultDatumTransform()
+{
+  QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > preferredNonDeprecated;
+  preferredNonDeprecated.first.first = mSourceCrs;
+  preferredNonDeprecated.second.first = mDestinationCrs;
+  bool foundPreferredNonDeprecated = false;
+  QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > preferred;
+  preferred.first.first = mSourceCrs;
+  preferred.second.first = mDestinationCrs;
+  bool foundPreferred  = false;
+  QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > nonDeprecated;
+  nonDeprecated.first.first = mSourceCrs;
+  nonDeprecated.second.first = mDestinationCrs;
+  bool foundNonDeprecated = false;
+  QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > fallback;
+  fallback.first.first = mSourceCrs;
+  fallback.second.first = mDestinationCrs;
+  bool foundFallback = false;
+
+  for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
+  {
+    if ( transform.sourceTransformId == -1 && transform.destinationTransformId == -1 )
+      continue;
+
+    const QgsDatumTransform::TransformInfo srcInfo = QgsDatumTransform::datumTransformInfo( transform.sourceTransformId );
+    const QgsDatumTransform::TransformInfo destInfo = QgsDatumTransform::datumTransformInfo( transform.destinationTransformId );
+    if ( !foundPreferredNonDeprecated && ( ( srcInfo.preferred && !srcInfo.deprecated ) || transform.sourceTransformId == -1 )
+         && ( ( destInfo.preferred && !destInfo.deprecated ) || transform.destinationTransformId == -1 ) )
+    {
+      preferredNonDeprecated.first.second = transform.sourceTransformId;
+      preferredNonDeprecated.second.second = transform.destinationTransformId;
+      foundPreferredNonDeprecated = true;
+    }
+    else if ( !foundPreferred && ( srcInfo.preferred || transform.sourceTransformId == -1 ) &&
+              ( destInfo.preferred || transform.destinationTransformId == -1 ) )
+    {
+      preferred.first.second = transform.sourceTransformId;
+      preferred.second.second = transform.destinationTransformId;
+      foundPreferred = true;
+    }
+    else if ( !foundNonDeprecated && ( !srcInfo.deprecated || transform.sourceTransformId == -1 )
+              && ( !destInfo.deprecated || transform.destinationTransformId == -1 ) )
+    {
+      nonDeprecated.first.second = transform.sourceTransformId;
+      nonDeprecated.second.second = transform.destinationTransformId;
+      foundNonDeprecated = true;
+    }
+    else if ( !foundFallback )
+    {
+      fallback.first.second = transform.sourceTransformId;
+      fallback.second.second = transform.destinationTransformId;
+      foundFallback = true;
+    }
+  }
+  if ( foundPreferredNonDeprecated )
+    return preferredNonDeprecated;
+  else if ( foundPreferred )
+    return preferred;
+  else if ( foundNonDeprecated )
+    return nonDeprecated;
+  else
+    return fallback;
+}
+
+void QgsDatumTransformDialog::applyDefaultTransform()
+{
+  if ( mDatumTransforms.count() > 0 )
+  {
+    QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+    const QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > dt = defaultDatumTransform();
+    context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
+    QgsProject::instance()->setTransformContext( context );
+  }
 }
 
 QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > QgsDatumTransformDialog::selectedDatumTransforms()
