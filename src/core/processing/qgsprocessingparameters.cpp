@@ -1626,6 +1626,10 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterMultipleLayers::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "number" ) )
     return QgsProcessingParameterNumber::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "distance" ) )
+    return QgsProcessingParameterDistance::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "scale" ) )
+    return QgsProcessingParameterScale::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "range" ) )
     return QgsProcessingParameterRange::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "raster" ) )
@@ -5256,6 +5260,50 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
   mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
   mDefaultUnit = static_cast< QgsUnitTypes::DistanceUnit>( map.value( QStringLiteral( "default_unit" ), QgsUnitTypes::DistanceUnknownUnit ).toInt() );
   return true;
+}
+
+
+//
+// QgsProcessingParameterScale
+//
+
+QgsProcessingParameterScale::QgsProcessingParameterScale( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterNumber( name, description, Double, defaultValue, optional )
+{
+
+}
+
+QgsProcessingParameterScale *QgsProcessingParameterScale::clone() const
+{
+  return new QgsProcessingParameterScale( *this );
+}
+
+QString QgsProcessingParameterScale::type() const
+{
+  return typeName();
+}
+
+QString QgsProcessingParameterScale::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterScale('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+QgsProcessingParameterScale *QgsProcessingParameterScale::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterScale( name, description, definition.isEmpty() ? QVariant()
+                                          : ( definition.toLower().trimmed() == QStringLiteral( "none" ) ? QVariant() : definition ), isOptional );
 }
 
 

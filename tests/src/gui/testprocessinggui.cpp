@@ -57,6 +57,7 @@
 #include "qgslayoutcombobox.h"
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutitemlabel.h"
+#include "qgsscalewidget.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -167,6 +168,7 @@ class TestProcessingGui : public QObject
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
     void testDistanceWrapper();
+    void testScaleWrapper();
     void testRangeWrapper();
     void testMatrixDialog();
     void testMatrixWrapper();
@@ -1661,6 +1663,95 @@ void TestProcessingGui::testDistanceWrapper()
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
+}
+
+void TestProcessingGui::testScaleWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterScale param( QStringLiteral( "num" ), QStringLiteral( "num" ) );
+    QgsProcessingScaleWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    QSignalSpy spy( &wrapper, &QgsProcessingNumericWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 5, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 5.0 );
+    QCOMPARE( static_cast< QgsScaleWidget * >( wrapper.wrappedWidget() )->scale(), 5.0 );
+    wrapper.setWidgetValue( QStringLiteral( "28356" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 28356.0 );
+    QCOMPARE( static_cast< QgsScaleWidget * >( wrapper.wrappedWidget() )->scale(), 28356.0 );
+    wrapper.setWidgetValue( QVariant(), context ); // not optional, so shouldn't work
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 0.0 );
+    QCOMPARE( static_cast< QgsScaleWidget * >( wrapper.wrappedWidget() )->scale(), 0.0 );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "num" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsScaleWidget * >( wrapper.wrappedWidget() )->setScale( 37.0 );
+    QCOMPARE( spy.count(), 4 );
+
+    delete w;
+
+    // optional, no default
+    QgsProcessingParameterScale paramOptional( QStringLiteral( "num" ), QStringLiteral( "num" ), QVariant(), true );
+
+    QgsProcessingScaleWidgetWrapper wrapperOptional( &paramOptional, type );
+
+    w = wrapperOptional.createWrappedWidget( context );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+    wrapperOptional.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptional.parameterValue().toDouble(), 5.0 );
+    wrapperOptional.setParameterValue( QVariant(), context );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+    wrapperOptional.setParameterValue( 5, context );
+    static_cast< QgsScaleWidget * >( wrapperOptional.wrappedWidget() )->setScale( std::numeric_limits< double >::quiet_NaN() );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+
+    // optional, with default
+    paramOptional.setDefaultValue( 3 );
+    QgsProcessingScaleWidgetWrapper wrapperOptionalDefault( &paramOptional, type );
+
+    w = wrapperOptionalDefault.createWrappedWidget( context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 3.0 );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
+    wrapperOptionalDefault.setParameterValue( QVariant(), context );
+    QVERIFY( std::isnan( static_cast< QgsScaleWidget * >( wrapperOptionalDefault.wrappedWidget() )->scale() ) );
+    QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
+    static_cast< QgsScaleWidget * >( wrapperOptionalDefault.wrappedWidget() )->setScale( std::numeric_limits< double >::quiet_NaN() );
+    QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::testRangeWrapper()

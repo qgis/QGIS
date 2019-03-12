@@ -41,6 +41,7 @@ class QgsProcessingParameterEnum;
 class QgsLayoutComboBox;
 class QgsLayoutItemComboBox;
 class QgsPrintLayout;
+class QgsScaleWidget;
 
 ///@cond PRIVATE
 
@@ -262,6 +263,34 @@ class GUI_EXPORT QgsProcessingDistanceWidgetWrapper : public QgsProcessingNumeri
     friend class TestProcessingGui;
 };
 
+
+class GUI_EXPORT QgsProcessingScaleWidgetWrapper : public QgsProcessingNumericWidgetWrapper
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingScaleWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                     QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
+  protected:
+
+    QVariant widgetValue() const override;
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+
+  private:
+
+    QgsScaleWidget *mScaleWidget = nullptr;
+
+    friend class TestProcessingGui;
+};
 
 class GUI_EXPORT QgsProcessingRangeWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {

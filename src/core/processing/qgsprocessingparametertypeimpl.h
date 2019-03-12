@@ -1342,6 +1342,61 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
 
 };
 
+
+/**
+ * A scale parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('scale')
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingParameterTypeScale : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterScale( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A numeric parameter representing a map scale." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Scale" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "scale" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterScale" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterScale" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int: scale denominator" )
+             << QStringLiteral( "float: scale denominator" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A numeric value representing the scale denominator" );
+    }
+
+
+};
+
 /**
  * A raster band parameter for Processing algorithms.
  *

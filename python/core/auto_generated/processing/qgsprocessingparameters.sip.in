@@ -151,6 +151,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterNumber;
     else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
       sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
+      sipType = sipType_QgsProcessingParameterScale;
     else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
@@ -1652,6 +1654,49 @@ Sets the default distance ``unit`` for the parameter.
 
     virtual bool fromVariantMap( const QVariantMap &map );
 
+
+};
+
+class QgsProcessingParameterScale : QgsProcessingParameterNumber
+{
+%Docstring
+A double numeric parameter for map scale values.
+
+QgsProcessingParameterScale should be evaluated by calling QgsProcessingAlgorithm.parameterAsDouble(),
+which will return a numeric value representing the scale denominator.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    explicit QgsProcessingParameterScale( const QString &name, const QString &description = QString(),
+                                          const QVariant &defaultValue = QVariant(),
+                                          bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterScale.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    virtual QgsProcessingParameterScale *clone() const /Factory/;
+
+
+    virtual QString type() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    static QgsProcessingParameterScale *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
 
 };
 
