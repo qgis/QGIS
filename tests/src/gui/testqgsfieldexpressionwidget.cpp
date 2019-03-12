@@ -332,5 +332,3 @@ void TestQgsFieldExpressionWidget::setNull()
 
 QGSTEST_MAIN( TestQgsFieldExpressionWidget )
 #include "testqgsfieldexpressionwidget.moc"
-
-
