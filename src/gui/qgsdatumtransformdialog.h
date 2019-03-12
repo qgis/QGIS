@@ -38,6 +38,21 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
   public:
 
     /**
+     * Runs the dialog (if required) prompting for the desired transform to use from \a sourceCrs to
+     * \a destinationCrs, updating the current project transform context as required
+     * based on the results of the run.
+     *
+     * This handles EVERYTHING, including only showing the dialog if multiple choices exist
+     * and the user has asked to be prompted, not re-adding transforms already in the current project
+     * context, etc.
+     *
+     * \since QGIS 3.8
+     */
+    static bool run( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
+                     const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                     QWidget *parent = nullptr );
+
+    /**
      * Constructor for QgsDatumTransformDialog.
      */
     QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
@@ -47,19 +62,6 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                              QWidget *parent = nullptr,
                              Qt::WindowFlags f = nullptr );
     ~QgsDatumTransformDialog() override;
-
-    /**
-     * Returns the number of possible datum transformation for currently selected source and destination CRS
-     * \since 3.0
-     */
-    int availableTransformationCount();
-
-    /**
-     * Returns true if the dialog should be shown and the user prompted to make the transformation selection.
-     *
-     * \since QGIS 3.8
-     */
-    bool shouldAskUserForSelection();
 
     /**
      * Returns the source and destination transforms, each being a pair of QgsCoordinateReferenceSystems and datum transform code
@@ -80,6 +82,26 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void load( QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ) );
     void setOKButtonEnabled();
 
+    /**
+     * Returns true if the dialog should be shown and the user prompted to make the transformation selection.
+     *
+     * \see defaultDatumTransform()
+     */
+    bool shouldAskUserForSelection();
+
+    /**
+     * Returns the default transform (or only available transform). This represents the transform which
+     * should be used if the user is not being prompted to make this selection for themselves.
+     *
+     * \see shouldAskUserForSelection()
+     * \see applyDefaultTransform()
+     */
+    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > defaultDatumTransform();
+
+    /**
+     * Applies the defaultDatumTransform(), adding it to the current QgsProject instance.
+     */
+    void applyDefaultTransform();
 
     QList< QgsDatumTransform::TransformPair > mDatumTransforms;
     QgsCoordinateReferenceSystem mSourceCrs;

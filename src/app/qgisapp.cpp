@@ -7850,15 +7850,9 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     QgsCoordinateTransform ct;
     destCRS = QgsCoordinateReferenceSystem::fromSrsId( dialog->crs() );
 
-    if ( destCRS.isValid() && destCRS != vlayer->crs() )
+    if ( destCRS.isValid() )
     {
-      //ask user about datum transformation
-      QgsSettings settings;
-      QgsDatumTransformDialog dlg( vlayer->crs(), destCRS );
-      if ( dlg.shouldAskUserForSelection() )
-      {
-        dlg.exec();
-      }
+      QgsDatumTransformDialog::run( vlayer->crs(), destCRS, this );
       ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
     }
 
@@ -9892,33 +9886,15 @@ void QgisApp::projectCrsChanged()
   mMapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
 
   // handle datum transforms
-  QList<QgsCoordinateReferenceSystem> transformsToAskFor = QList<QgsCoordinateReferenceSystem>();
+  QList<QgsCoordinateReferenceSystem> alreadyAsked;
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( !transformsToAskFor.contains( it.value()->crs() ) &&
-         it.value()->crs() != QgsProject::instance()->crs() &&
-         !QgsProject::instance()->transformContext().hasTransform( it.value()->crs(), QgsProject::instance()->crs() ) &&
-         QgsDatumTransform::datumTransformations( it.value()->crs(), QgsProject::instance()->crs() ).count() > 1 )
+    if ( !alreadyAsked.contains( it.value()->crs() ) )
     {
-      transformsToAskFor.append( it.value()->crs() );
-    }
-  }
-  if ( transformsToAskFor.count() == 1 )
-  {
-    askUserForDatumTransform( transformsToAskFor.at( 0 ),
-                              QgsProject::instance()->crs() );
-  }
-  else if ( transformsToAskFor.count() > 1 )
-  {
-    // TODO - this should actually loop through and ask for each in turn
-    bool ask = QgsSettings().value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
-    if ( ask )
-    {
-      visibleMessageBar()->pushMessage( tr( "Datum transforms" ),
-                                        tr( "Project CRS changed and datum transforms might need to be adapted." ),
-                                        Qgis::Warning,
-                                        5 );
+      alreadyAsked.append( it.value()->crs() );
+      askUserForDatumTransform( it.value()->crs(),
+                                QgsProject::instance()->crs() );
     }
   }
 }
@@ -13723,38 +13699,7 @@ bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sour
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
-  bool ok = false;
-
-  QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-  if ( context.hasTransform( sourceCrs, destinationCrs ) )
-  {
-    ok = true;
-  }
-  else
-  {
-    //if several possibilities:  present dialog
-    QgsDatumTransformDialog dlg( sourceCrs, destinationCrs );
-    if ( dlg.shouldAskUserForSelection() )
-    {
-      if ( dlg.exec() )
-      {
-        QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
-        QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-        context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
-        QgsProject::instance()->setTransformContext( context );
-        ok = true;
-      }
-      else
-      {
-        ok = false;
-      }
-    }
-    else
-    {
-      ok = true;
-    }
-  }
-  return ok;
+  return QgsDatumTransformDialog::run( sourceCrs, destinationCrs, this );
 }
 
 void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
