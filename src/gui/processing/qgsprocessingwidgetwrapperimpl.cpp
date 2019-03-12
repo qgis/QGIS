@@ -966,7 +966,7 @@ void QgsProcessingScaleWidgetWrapper::setWidgetValue( const QVariant &value, Qgs
   if ( mScaleWidget )
   {
     if ( mScaleWidget->allowNull() && !value.isValid() )
-      mScaleWidget->clear();
+      mScaleWidget->setNull();
     else
     {
       const double v = QgsProcessingParameters::parameterAsDouble( parameterDefinition(), value, context );

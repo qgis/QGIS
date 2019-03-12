@@ -281,7 +281,7 @@ void QgsScaleComboBox::setMinScale( double scale )
   }
 }
 
-void QgsScaleComboBox::clear()
+void QgsScaleComboBox::setNull()
 {
   if ( allowNull() )
     setScale( std::numeric_limits< double >::quiet_NaN() );
