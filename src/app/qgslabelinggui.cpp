@@ -702,6 +702,9 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
     if ( idx >= 0 )
       mFontMultiLineAlignComboBox->removeItem( idx );
   }
+
+  updatePlacementWidgets();
+  updateLinePlacementOptions();
 }
 
 void QgsLabelingGui::showGeometryGeneratorExpressionBuilder()
