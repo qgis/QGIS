@@ -28,7 +28,7 @@
 #include <QPushButton>
 
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs,
-    const QgsCoordinateReferenceSystem &destinationCrs,
+    const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges,
     QPair<int, int> selectedDatumTransforms,
     QWidget *parent,
     Qt::WindowFlags f )
@@ -46,6 +46,14 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
 
   mSourceProjectionSelectionWidget->setCrs( sourceCrs );
   mDestinationProjectionSelectionWidget->setCrs( destinationCrs );
+  if ( !allowCrsChanges )
+  {
+    mCrsStackedWidget->setCurrentIndex( 1 );
+    mSourceProjectionSelectionWidget->setEnabled( false );
+    mDestinationProjectionSelectionWidget->setEnabled( false );
+    mSourceCrsLabel->setText( QgsProjectionSelectionWidget::crsOptionText( sourceCrs ) );
+    mDestCrsLabel->setText( QgsProjectionSelectionWidget::crsOptionText( destinationCrs ) );
+  }
 
   connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [ = ] { load(); } );
   connect( mDatumTransformTableWidget, &QTableWidget::currentItemChanged, this, &QgsDatumTransformDialog::tableCurrentItemChanged );

@@ -42,6 +42,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      */
     QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
                              const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                             bool allowCrsChanges = false,
                              QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
                              QWidget *parent = nullptr,
                              Qt::WindowFlags f = nullptr );
