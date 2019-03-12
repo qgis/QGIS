@@ -23,6 +23,8 @@
 #include "qgscoordinatetransform.h"
 #include "qgis_gui.h"
 
+class QgsTemporaryCursorRestoreOverride;
+
 #define SIP_NO_FILE
 
 /**
@@ -74,6 +76,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     QList< QgsDatumTransform::TransformPair > mDatumTransforms;
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
+    std::unique_ptr< QgsTemporaryCursorRestoreOverride > mPreviousCursorOverride;
 };
 
 #endif // QGSDATUMTRANSFORMDIALOG_H
