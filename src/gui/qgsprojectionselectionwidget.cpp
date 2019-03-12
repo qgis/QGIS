@@ -236,7 +236,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
     if ( !optionVisible( QgsProjectionSelectionWidget::CurrentCrs ) )
       setOptionVisible( QgsProjectionSelectionWidget::CurrentCrs, true );
     mCrsComboBox->setItemText( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ),
-                               currentCrsOptionText( crs ) );
+                               crsOptionText( crs ) );
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
@@ -253,7 +253,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
     else
     {
       mCrsComboBox->setItemText( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ),
-                                 currentCrsOptionText( crs ) );
+                                 crsOptionText( crs ) );
     }
   }
   if ( mCrs != crs )
@@ -303,11 +303,11 @@ void QgsProjectionSelectionWidget::addDefaultCrsOption()
 void QgsProjectionSelectionWidget::addCurrentCrsOption()
 {
   int index = optionVisible( CrsNotSet ) ? 1 : 0;
-  mCrsComboBox->insertItem( index, currentCrsOptionText( mCrs ), QgsProjectionSelectionWidget::CurrentCrs );
+  mCrsComboBox->insertItem( index, crsOptionText( mCrs ), QgsProjectionSelectionWidget::CurrentCrs );
 
 }
 
-QString QgsProjectionSelectionWidget::currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const
+QString QgsProjectionSelectionWidget::crsOptionText( const QgsCoordinateReferenceSystem &crs )
 {
   if ( crs.isValid() )
     return tr( "%1 - %2" ).arg( crs.authid(), crs.description() );
