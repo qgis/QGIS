@@ -55,6 +55,9 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     mDestCrsLabel->setText( QgsProjectionSelectionWidget::crsOptionText( destinationCrs ) );
   }
 
+  QgsSettings settings;
+  mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), true ).toBool() );
+
   connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [ = ] { load(); } );
   connect( mDatumTransformTableWidget, &QTableWidget::currentItemChanged, this, &QgsDatumTransformDialog::tableCurrentItemChanged );
 
@@ -65,11 +68,6 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   mSourceCrs = sourceCrs;
   mDestinationCrs = destinationCrs;
   mDatumTransforms = QgsDatumTransform::datumTransformations( sourceCrs, destinationCrs );
-
-  setOKButtonEnabled();
-
-  QgsSettings settings;
-  mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), true ).toBool() );
 
   mLabelSrcDescription->clear();
   mLabelDstDescription->clear();
