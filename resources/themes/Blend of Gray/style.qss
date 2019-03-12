@@ -468,6 +468,10 @@ QTabBar::tab {
     margin-right: -0.05em;
 }
 
+QTabBar::tab:disabled {
+    color: @itemalternativebackground
+}
+
 QTabBar::tab:last
 {
     margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
