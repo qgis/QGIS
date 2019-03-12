@@ -257,7 +257,7 @@ bool QgsDatumTransformDialog::shouldAskUserForSelection()
 {
   if ( mDatumTransforms.count() > 1 )
   {
-    return QgsSettings().value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+    return QgsSettings().value( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), false, QgsSettings::App ).toBool();
   }
   // TODO: show if transform grids are required, but missing
   return false;

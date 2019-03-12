@@ -175,7 +175,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
   mDatumTransformTableWidget->setTransformContext( context );
 
-  bool show = settings.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+  bool show = settings.value( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), false, QgsSettings::App ).toBool();
   mShowDatumTransformDialogCheckBox->setChecked( show );
 
   QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
