@@ -38,7 +38,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
     return true;
   }
 
-  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, qMakePair( -1, -1 ), parent );
+  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, true, qMakePair( -1, -1 ), parent );
   if ( dlg.shouldAskUserForSelection() )
   {
     if ( dlg.exec() )
@@ -62,7 +62,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
 }
 
 QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs,
-    const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges, const bool showMakeDefault,
+    const QgsCoordinateReferenceSystem &destinationCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice,
     QPair<int, int> selectedDatumTransforms,
     QWidget *parent,
     Qt::WindowFlags f )
@@ -75,6 +75,13 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
 
   if ( !showMakeDefault )
     mMakeDefaultCheckBox->setVisible( false );
+
+  if ( forceChoice )
+  {
+    mButtonBox->removeButton( mButtonBox->button( QDialogButtonBox::Cancel ) );
+    setWindowFlags( windowFlags() | Qt::CustomizeWindowHint );
+    setWindowFlags( windowFlags() & ~Qt::WindowCloseButtonHint );
+  }
 
   mDatumTransformTableWidget->setColumnCount( 2 );
   QStringList headers;
@@ -251,6 +258,14 @@ void QgsDatumTransformDialog::accept()
     settings.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumProj );
   }
   QDialog::accept();
+}
+
+void QgsDatumTransformDialog::reject()
+{
+  if ( !mButtonBox->button( QDialogButtonBox::Cancel ) )
+    return; // users HAVE to make a choice, no click on the dialog "x" to avoid this!
+
+  QDialog::reject();
 }
 
 bool QgsDatumTransformDialog::shouldAskUserForSelection()

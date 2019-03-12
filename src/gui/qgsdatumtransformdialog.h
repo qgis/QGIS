@@ -59,12 +59,14 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                              const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                              bool allowCrsChanges = false,
                              bool showMakeDefault = true,
+                             bool forceChoice = true,
                              QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
                              QWidget *parent = nullptr,
                              Qt::WindowFlags f = nullptr );
     ~QgsDatumTransformDialog() override;
 
     void accept() override;
+    void reject() override;
 
     /**
      * Returns the source and destination transforms, each being a pair of QgsCoordinateReferenceSystems and datum transform code
