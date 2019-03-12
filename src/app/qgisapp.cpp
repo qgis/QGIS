@@ -7631,7 +7631,13 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
       if ( dlg.availableTransformationCount() > 1 &&
            settings.value( QStringLiteral( "Projections/showDatumTransformDialog" ), false ).toBool() )
       {
-        dlg.exec();
+        if ( dlg.exec() )
+        {
+          QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
+          QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+          context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
+          QgsProject::instance()->setTransformContext( context );
+        }
       }
       ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
     }
