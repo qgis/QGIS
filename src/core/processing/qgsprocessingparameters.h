@@ -1631,7 +1631,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
 };
 
 /**
- * \class QgsProcessingParameterDistance
+ * \class QgsProcessingParameterScale
  * \ingroup core
  * A double numeric parameter for map scale values.
  *
