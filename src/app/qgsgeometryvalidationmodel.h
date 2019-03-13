@@ -49,6 +49,15 @@ class QgsGeometryValidationModel : public QAbstractItemModel
 
     QgsVectorLayer *currentLayer() const;
 
+  signals:
+
+    /**
+     * Emitted before single geometry check results are removed.
+     * This is guaranteed to be emitted before the models regular
+     * aboutToRemoveRows() signal.
+     */
+    void aboutToRemoveSingleGeometryCheck();
+
   public slots:
     void setCurrentLayer( QgsVectorLayer *currentLayer );
 
