@@ -257,6 +257,7 @@ void QgsGeometryValidationModel::onSingleGeometryCheckCleared( QgsVectorLayer *l
 
   if ( mCurrentLayer == layer && !layerErrors.empty() )
   {
+    emit aboutToRemoveSingleGeometryCheck();
     beginRemoveRows( QModelIndex(), 0, layerErrors.size() - 1 );
   }
 
@@ -279,7 +280,10 @@ void QgsGeometryValidationModel::onGeometryCheckCompleted( QgsVectorLayer *layer
   if ( featureIdx > -1 && errors.empty() ) // && !mGeometryValidationService->validationActive( layer, fid ) )
   {
     if ( mCurrentLayer == layer )
+    {
+      emit aboutToRemoveSingleGeometryCheck();
       beginRemoveRows( QModelIndex(), featureIdx, featureIdx );
+    }
 
     layerErrors.removeAt( featureIdx );
 

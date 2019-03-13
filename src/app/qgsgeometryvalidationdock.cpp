@@ -87,6 +87,11 @@ void QgsGeometryValidationDock::setGeometryValidationModel( QgsGeometryValidatio
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::dataChanged, this, &QgsGeometryValidationDock::onDataChanged );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsRemoved, this, &QgsGeometryValidationDock::updateCurrentError );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsInserted, this, &QgsGeometryValidationDock::onRowsInserted );
+
+  // We cannot connect to the regular aboutToRemoveRows signal, because we need this to happen
+  // before the currentIndex is changed.
+  connect( mGeometryValidationModel, &QgsGeometryValidationModel::aboutToRemoveSingleGeometryCheck, this, [this]() { mPreventZoomToError = true; } );
+  connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsRemoved, this, [this]() { mPreventZoomToError = false; } );
 }
 
 void QgsGeometryValidationDock::gotoNextError()
@@ -244,6 +249,20 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
   bool hasFeature = !FID_IS_NULL( current.data( QgsGeometryValidationModel::ErrorFeatureIdRole ) );
   mZoomToFeatureButton->setEnabled( hasFeature );
+
+  if ( !mPreventZoomToError )
+  {
+    switch ( mLastZoomToAction )
+    {
+      case  ZoomToProblem:
+        zoomToProblem();
+        break;
+
+      case ZoomToFeature:
+        zoomToFeature();
+        break;
+    }
+  }
 }
 
 void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
