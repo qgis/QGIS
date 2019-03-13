@@ -180,13 +180,6 @@ Returns ``True`` if the model includes the empty item choice.
 .. versionadded:: 3.8
 %End
 
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
-
-
   protected:
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 

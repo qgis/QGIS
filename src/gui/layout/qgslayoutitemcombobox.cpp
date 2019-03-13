@@ -16,6 +16,10 @@
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutmodel.h"
 
+//
+// QgsLayoutItemComboBox
+//
+
 QgsLayoutItemComboBox::QgsLayoutItemComboBox( QWidget *parent, QgsLayout *layout )
   : QComboBox( parent )
 {
@@ -60,7 +64,7 @@ void QgsLayoutItemComboBox::setItem( const QgsLayoutItem *item )
       return;
     }
   }
-  setCurrentIndex( mProxyModel->allowEmptyItem() ? mProxyModel->rowCount() - 1 : -1 );
+  setCurrentIndex( mProxyModel->allowEmptyItem() ? 0 : -1 );
 }
 
 QgsLayoutItem *QgsLayoutItemComboBox::currentItem() const

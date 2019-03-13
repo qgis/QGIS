@@ -23,6 +23,7 @@
 #include "qgis_gui.h"
 #include "qgslayoutmodel.h"
 
+
 /**
  * \class QgsLayoutItemComboBox
  * \ingroup gui
