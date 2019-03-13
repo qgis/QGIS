@@ -35,9 +35,12 @@ This is a container for configuration of the snapping of the project
 
     enum SnappingType
     {
+      NoSnap,
       Vertex,
-      VertexAndSegment,
       Segment,
+      Area,
+      Centroid,
+      Middle,
     };
 
     class IndividualLayerSettings
@@ -53,7 +56,7 @@ This is a container of advanced configuration (per layer) of the snapping of the
 %End
       public:
 
-        IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units );
+        IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units );
 %Docstring
 IndividualLayerSettings
 
@@ -84,9 +87,6 @@ enables the snapping
 %End
 
         QgsSnappingConfig::SnappingType type() const;
-%Docstring
-Returns the type (vertices and/or segments)
-%End
 
         void setType( QgsSnappingConfig::SnappingType type );
 %Docstring
@@ -151,12 +151,12 @@ Returns the mode (all layers, active layer, per layer settings)
 define the mode of snapping
 %End
 
-    SnappingType type() const;
+    QgsSnappingConfig::SnappingType type() const;
 %Docstring
-Returns the type (vertices and/or segments)
+Returns the flags type (vertices | segments | area | centroid | middle)
 %End
 
-    void setType( SnappingType type );
+    void setType( QgsSnappingConfig::SnappingType type );
 %Docstring
 define the type of snapping
 %End

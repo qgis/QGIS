@@ -220,6 +220,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       u.setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
+      snappingConfig.setType( QgsSnappingConfig::Vertex );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       u.setConfig( snappingConfig );
 

@@ -35,6 +35,7 @@ class QgsVectorLayerFeatureSource;
 #include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;
+class QgsPointLocator_VisitorNearestCentroid;
 class QgsPointLocator_VisitorNearestEdge;
 class QgsPointLocator_VisitorArea;
 class QgsPointLocator_VisitorEdgesInRect;
@@ -116,7 +117,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
       Vertex  = 1, //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
       Edge    = 2, //!< Snapped to an edge
       Area    = 4, //!< Snapped to an area
-      All = Vertex | Edge | Area //!< Combination of vertex, edge and area
+      Centroid = 8, //!< Snapped to a centroid
+      Middle = 16, //!< Snapped to the middle of a segment
+      All = Vertex | Edge | Area | Centroid | Middle//!< Combination of vertex, edge and area
     };
 
     Q_DECLARE_FLAGS( Types, Type )
@@ -164,7 +167,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
         bool isValid() const { return mType != Invalid; }
         bool hasVertex() const { return mType == Vertex; }
         bool hasEdge() const { return mType == Edge; }
+        bool hasCentroid() const { return mType == Centroid; }
         bool hasArea() const { return mType == Area; }
+        bool hasMiddleSegment() const { return mType == Middle; }
 
         /**
          * for vertex / edge match
@@ -202,7 +207,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
         /**
          * Convenient method to return a point on an edge with linear
          * interpolation of the Z value.
-         * \since 3.10
+         * \since 3.12
          */
         QgsPoint interpolatedPoint() const
         {
@@ -225,7 +230,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
                  mLayer == other.mLayer &&
                  mFid == other.mFid &&
                  mVertexIndex == other.mVertexIndex &&
-                 mEdgePoints == other.mEdgePoints;
+                 mEdgePoints == other.mEdgePoints &&
+                 mCentroid == other.mCentroid &&
+                 mMiddle == other.mMiddle;
         }
 
       protected:
@@ -236,6 +243,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
         QgsFeatureId mFid = 0;
         int mVertexIndex = 0; // e.g. vertex index
         QgsPointXY mEdgePoints[2];
+        QgsPointXY mCentroid;
+        QgsPointXY mMiddle;
     };
 
 #ifndef SIP_RUN
@@ -263,6 +272,18 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
     Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
+
+    /**
+     * Find nearest centroid to the specified point - up to distance specified by tolerance
+     * Optional filter may discard unwanted matches.
+     */
+    Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+
+    /**
+     * Find nearest centroid to the specified point - up to distance specified by tolerance
+     * Optional filter may discard unwanted matches.
+     */
+    Match nearestMiddle( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
 
     /**
      * Find nearest edge to the specified point - up to distance specified by tolerance
@@ -309,6 +330,31 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
+    /**
+     * Find centroids within a specified recangle
+     * Optional filter may discard unwanted matches.
+     * \since QGIS 3.12
+     */
+    MatchList centroidsInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr );
+
+    /**
+     * Override of centroidsInRect that construct rectangle from a center point and tolerance
+     * \since QGIS 3.12
+     */
+    MatchList centroidsInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+
+    /**
+     * Find middle segment within a specified recangle
+     * Optional filter may discard unwanted matches.
+     * \since QGIS 3.12
+     */
+    MatchList middlesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr );
+
+    /**
+     * Override of middleInRect that construct rectangle from a center point and tolerance
+     * \since QGIS 3.12
+     */
+    MatchList middlesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
     // point-in-polygon query
 
     // TODO: function to return just the first match?
@@ -394,12 +440,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
     QPointer<QgsPointLocatorInitTask> mInitTask;
 
     friend class QgsPointLocator_VisitorNearestVertex;
+    friend class QgsPointLocator_VisitorNearestCentroid;
+    friend class QgsPointLocator_VisitorNearestMiddle;
     friend class QgsPointLocator_VisitorNearestEdge;
     friend class QgsPointLocator_VisitorArea;
     friend class QgsPointLocator_VisitorEdgesInRect;
     friend class QgsPointLocator_VisitorVerticesInRect;
     friend class QgsPointLocatorInitTask;
     friend class TestQgsPointLocator;
+    friend class QgsPointLocator_VisitorCentroidsInRect;
+    friend class QgsPointLocator_VisitorMiddlesInRect;
 };
 
 

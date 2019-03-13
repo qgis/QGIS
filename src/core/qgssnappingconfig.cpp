@@ -25,7 +25,7 @@
 #include "qgsapplication.h"
 
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
+QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units )
   : mValid( true )
   , mEnabled( enabled )
   , mType( type )
@@ -53,7 +53,7 @@ QgsSnappingConfig::SnappingType QgsSnappingConfig::IndividualLayerSettings::type
   return mType;
 }
 
-void QgsSnappingConfig::IndividualLayerSettings::setType( SnappingType type )
+void QgsSnappingConfig::IndividualLayerSettings::setType( QgsSnappingConfig::SnappingType type )
 {
   mType = type;
 }
@@ -126,7 +126,7 @@ void QgsSnappingConfig::reset()
     // could be removed in 3.4+
     mode = AllLayers;
   }
-  SnappingType type = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  Vertex );
+  QgsSnappingConfig::SnappingType type = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  NoSnap );
   double tolerance = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
   QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),  Qgis::DEFAULT_SNAP_UNITS );
 
@@ -295,7 +295,47 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
     mMode = ( SnappingMode )snapSettingsElem.attribute( QStringLiteral( "mode" ) ).toInt();
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "type" ) ) )
-    mType = ( SnappingType )snapSettingsElem.attribute( QStringLiteral( "type" ) ).toInt();
+  {
+    int type = snapSettingsElem.attribute( QStringLiteral( "type" ) ).toInt();
+    QDomElement versionElem = doc.firstChildElement( QStringLiteral( "qgis" ) );
+    QString version;
+    bool before3_12 = false;
+    if ( versionElem.hasAttribute( QStringLiteral( "version" ) ) )
+    {
+      version = versionElem.attribute( QStringLiteral( "version" ) );
+      QRegularExpression re( "(\\d).(\\d)" );
+      QRegularExpressionMatch match = re.match( version );
+      if ( match.hasMatch() )
+      {
+        if ( ( match.captured( 1 ).toInt() <= 3 ) && ( match.captured( 2 ).toInt() < 12 ) )
+          before3_12 = true;
+      }
+    }
+    if ( before3_12 )
+    {
+      // BEFORE 3.12:
+      // 1 = vertex
+      // 2 = vertexandsegment
+      // 3 = segment
+      switch ( type )
+      {
+        case 1:
+          mType = Vertex;
+          break;
+        case 2:
+          mType = static_cast<QgsSnappingConfig::SnappingType>( Vertex | Segment );
+          break;
+        case 3:
+          mType = Segment;
+          break;
+        default:
+          mType = NoSnap;
+          break;
+      }
+    }
+    else
+      mType = static_cast<QgsSnappingConfig::SnappingType>( type );
+  }
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "tolerance" ) ) )
     mTolerance = snapSettingsElem.attribute( QStringLiteral( "tolerance" ) ).toDouble();
@@ -324,7 +364,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
 
       QString layerId = settingElement.attribute( QStringLiteral( "id" ) );
       bool enabled = settingElement.attribute( QStringLiteral( "enabled" ) ) == QLatin1String( "1" );
-      SnappingType type = ( SnappingType )settingElement.attribute( QStringLiteral( "type" ) ).toInt();
+      QgsSnappingConfig::SnappingType type = static_cast<QgsSnappingConfig::SnappingType>( settingElement.attribute( QStringLiteral( "type" ) ).toInt() );
       double tolerance = settingElement.attribute( QStringLiteral( "tolerance" ) ).toDouble();
       QgsTolerance::UnitType units = ( QgsTolerance::UnitType )settingElement.attribute( QStringLiteral( "units" ) ).toInt();
 
@@ -373,7 +413,7 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
 {
   bool changed = false;
   bool enabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), true ).toBool();
-  SnappingType type = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), Vertex );
+  QgsSnappingConfig::SnappingType type = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), NoSnap );
   double tolerance = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
   QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
 
@@ -452,11 +492,11 @@ void QgsSnappingConfig::readLegacySettings()
     if ( !vlayer || !vlayer->isSpatial() )
       continue;
 
-    SnappingType t( *snapIt == QLatin1String( "to_vertex" ) ? Vertex :
-                    ( *snapIt == QLatin1String( "to_segment" ) ? Segment :
-                      VertexAndSegment
-                    )
-                  );
+    QgsSnappingConfig::SnappingType t( *snapIt == QLatin1String( "to_vertex" ) ? Vertex :
+                                       ( *snapIt == QLatin1String( "to_segment" ) ? Segment :
+                                         static_cast<QgsSnappingConfig::SnappingType>( Vertex | Segment )
+                                       )
+                                     );
 
     mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == QLatin1String( "enabled" ), t, tolIt->toDouble(), static_cast<QgsTolerance::UnitType>( tolUnitIt->toInt() ) ) );
   }
@@ -466,7 +506,7 @@ void QgsSnappingConfig::readLegacySettings()
   if ( snapType == QLatin1String( "to segment" ) )
     mType = Segment;
   else if ( snapType == QLatin1String( "to vertex and segment" ) )
-    mType = VertexAndSegment;
+    mType = static_cast<QgsSnappingConfig::SnappingType>( Vertex | Segment );
   else if ( snapType == QLatin1String( "to vertex" ) )
     mType = Vertex;
   else if ( mMode != AdvancedConfiguration ) // Type is off but mode is advanced

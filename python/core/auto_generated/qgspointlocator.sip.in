@@ -86,6 +86,8 @@ Configure render context  - if not ``None``, it will use to index only visible f
       Vertex,
       Edge,
       Area,
+      Centroid,
+      Middle,
       All
     };
 
@@ -126,7 +128,9 @@ construct invalid match
         bool isValid() const;
         bool hasVertex() const;
         bool hasEdge() const;
+        bool hasCentroid() const;
         bool hasArea() const;
+        bool hasMiddleSegment() const;
 
         double distance() const;
 %Docstring
@@ -166,7 +170,7 @@ Only for a valid edge match - obtain endpoints of the edge
 Convenient method to return a point on an edge with linear
 interpolation of the Z value.
 
-.. versionadded:: 3.10
+.. versionadded:: 3.12
 %End
 
         bool operator==( const QgsPointLocator::Match &other ) const;
@@ -188,6 +192,18 @@ interpolation of the Z value.
 Find nearest vertex to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
+%End
+
+    Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find nearest centroid to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+%End
+
+    Match nearestMiddle( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find nearest centroid to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
 %End
 
     Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
@@ -238,6 +254,35 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 .. versionadded:: 3.6
 %End
 
+    MatchList centroidsInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find centroids within a specified recangle
+Optional filter may discard unwanted matches.
+
+.. versionadded:: 3.12
+%End
+
+    MatchList centroidsInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Override of centroidsInRect that construct rectangle from a center point and tolerance
+
+.. versionadded:: 3.12
+%End
+
+    MatchList middlesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find middle segment within a specified recangle
+Optional filter may discard unwanted matches.
+
+.. versionadded:: 3.12
+%End
+
+    MatchList middlesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Override of middleInRect that construct rectangle from a center point and tolerance
+
+.. versionadded:: 3.12
+%End
 
 
     MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );

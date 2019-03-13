@@ -85,6 +85,14 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
       else
         iconType = QgsVertexMarker::ICON_X;  // intersection snap
     }
+    else if ( match.hasMiddleSegment() )
+    {
+      iconType = QgsVertexMarker::ICON_TRIANGLE; // middle snap
+    }
+    else if ( match.hasCentroid() )
+    {
+      iconType = QgsVertexMarker::ICON_CIRCLE; // centroid snap
+    }
     else  // must be segment snap
     {
       iconType = QgsVertexMarker::ICON_DOUBLE_TRIANGLE;

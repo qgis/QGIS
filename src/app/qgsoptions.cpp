@@ -1035,10 +1035,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
+  mDefaultSnapModeComboBox->addItem( tr( "No snapping" ), QgsSnappingConfig::NoSnap );
   mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::Vertex );
-  mDefaultSnapModeComboBox->addItem( tr( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
   mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
-  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ) ) );
+  mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), QgsSnappingConfig::Centroid );
+  mDefaultSnapModeComboBox->addItem( tr( "Middle" ), QgsSnappingConfig::Middle );
+  mDefaultSnapModeComboBox->addItem( tr( "Area" ), QgsSnappingConfig::Area );
+  QgsSnappingConfig::SnappingType defaultSnapMode = static_cast<QgsSnappingConfig::SnappingType>( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::NoSnap ).toInt() );
+  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapMode ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
   QgsTolerance::UnitType defSnapUnits = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
@@ -1666,7 +1670,7 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), mSnappingEnabledDefault->isChecked() );
-  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<QgsSnappingConfig::SnappingType>( mDefaultSnapModeComboBox->currentData().toInt() ) );
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), ( mDefaultSnapModeComboBox->currentData().toInt() ) );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), mDefaultSnappingToleranceSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), mSearchRadiusVertexEditSpinBox->value() );
   mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),

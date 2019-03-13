@@ -143,11 +143,20 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *typeMenu = new QMenu( tr( "Set Snapping Mode" ), this );
   mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), tr( "Vertex" ), typeMenu );
-  mVertexAndSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertexAndSegment.svg" ) ), tr( "Vertex and Segment" ), typeMenu );
   mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
+  mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
+  mCentroidAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingCentroid.svg" ) ), tr( "Centroid" ), typeMenu );
+  mMiddleAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingMiddle.svg" ) ), tr( "Middle segment" ), typeMenu );
+  mVertexAction->setCheckable( true );
+  mSegmentAction->setCheckable( true );
+  mAreaAction->setCheckable( true );
+  mCentroidAction->setCheckable( true );
+  mMiddleAction->setCheckable( true );
   typeMenu->addAction( mVertexAction );
-  typeMenu->addAction( mVertexAndSegmentAction );
   typeMenu->addAction( mSegmentAction );
+  typeMenu->addAction( mAreaAction );
+  typeMenu->addAction( mCentroidAction );
+  typeMenu->addAction( mMiddleAction );
   mTypeButton->setMenu( typeMenu );
   mTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
   if ( mDisplayMode == Widget )
@@ -349,17 +358,37 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     updateToleranceDecimals();
   }
 
-  if ( config.type() == QgsSnappingConfig::Vertex && mTypeButton->defaultAction() != mVertexAction )
+  // Clear
+  mVertexAction->setChecked( false );
+  mSegmentAction->setChecked( false );
+  mAreaAction->setChecked( false );
+  mCentroidAction->setChecked( false );
+  mMiddleAction->setChecked( false );
+
+  if ( config.type() & QgsSnappingConfig::Vertex )
   {
     mTypeButton->setDefaultAction( mVertexAction );
+    mVertexAction->setChecked( true );
   }
-  if ( config.type() == QgsSnappingConfig::VertexAndSegment && mTypeButton->defaultAction() != mVertexAndSegmentAction )
-  {
-    mTypeButton->setDefaultAction( mVertexAndSegmentAction );
-  }
-  if ( config.type() == QgsSnappingConfig::Segment && mTypeButton->defaultAction() != mSegmentAction )
+  if ( config.type() & QgsSnappingConfig::Segment )
   {
     mTypeButton->setDefaultAction( mSegmentAction );
+    mSegmentAction->setChecked( true );
+  }
+  if ( config.type() & QgsSnappingConfig::Area )
+  {
+    mTypeButton->setDefaultAction( mAreaAction );
+    mAreaAction->setChecked( true );
+  }
+  if ( config.type() & QgsSnappingConfig::Centroid )
+  {
+    mTypeButton->setDefaultAction( mCentroidAction );
+    mCentroidAction->setChecked( true );
+  }
+  if ( config.type() & QgsSnappingConfig::Middle )
+  {
+    mTypeButton->setDefaultAction( mMiddleAction );
+    mMiddleAction->setChecked( true );
   }
 
   if ( static_cast<QgsTolerance::UnitType>( mUnitsComboBox->currentData().toInt() ) != config.units() )
@@ -473,23 +502,31 @@ void QgsSnappingWidget::modeButtonTriggered( QAction *action )
 
 void QgsSnappingWidget::typeButtonTriggered( QAction *action )
 {
-  if ( action != mTypeButton->defaultAction() )
+  unsigned int type = mConfig.type();
+
+  mTypeButton->setDefaultAction( action );
+  if ( action == mVertexAction )
   {
-    mTypeButton->setDefaultAction( action );
-    if ( action == mVertexAction )
-    {
-      mConfig.setType( QgsSnappingConfig::Vertex );
-    }
-    else if ( action == mVertexAndSegmentAction )
-    {
-      mConfig.setType( QgsSnappingConfig::VertexAndSegment );
-    }
-    else if ( action == mSegmentAction )
-    {
-      mConfig.setType( QgsSnappingConfig::Segment );
-    }
-    mProject->setSnappingConfig( mConfig );
+    type ^= QgsSnappingConfig::Vertex;
   }
+  else if ( action == mSegmentAction )
+  {
+    type ^= QgsSnappingConfig::Segment;
+  }
+  else if ( action == mAreaAction )
+  {
+    type ^= QgsSnappingConfig::Area;
+  }
+  else if ( action == mCentroidAction )
+  {
+    type ^= QgsSnappingConfig::Centroid;
+  }
+  else if ( action == mMiddleAction )
+  {
+    type ^= QgsSnappingConfig::Middle;
+  }
+  mConfig.setType( static_cast<QgsSnappingConfig::SnappingType>( type ) );
+  mProject->setSnappingConfig( mConfig );
 }
 
 void QgsSnappingWidget::updateToleranceDecimals()

@@ -169,7 +169,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       mSnappingUtils->setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
       snappingConfig.setTolerance( 100 );
-      snappingConfig.setType( QgsSnappingConfig::VertexAndSegment );
+      snappingConfig.setType( static_cast<QgsSnappingConfig::SnappingType>( QgsSnappingConfig::Vertex | QgsSnappingConfig::Segment ) );
       snappingConfig.setUnits( QgsTolerance::Pixels );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       mSnappingUtils->setConfig( snappingConfig );

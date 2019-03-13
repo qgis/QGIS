@@ -52,12 +52,16 @@ class CORE_EXPORT QgsSnappingConfig
 
     /**
      * SnappingType defines on what object the snapping is performed
+     * Since QGIS 3.10 SnappingType is a flags
      */
-    enum SnappingType
+    enum SnappingType : int
     {
-      Vertex = 1, //!< On vertices only
-      VertexAndSegment = 2, //!< Both on vertices and segments
-      Segment = 3, //!< On segments only
+      NoSnap = 0, //!< No snapping
+      Vertex = 1, //!< On vertices
+      Segment = 2, //!< On segments
+      Area = 4, //!< On Area
+      Centroid = 8, //!< On centroid
+      Middle = 16, //!< On Middle segment
     };
     Q_ENUM( SnappingType )
 
@@ -77,7 +81,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param tolerance
          * \param units
          */
-        IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units );
+        IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units );
 
         /**
          * Constructs an invalid setting
@@ -93,7 +97,8 @@ class CORE_EXPORT QgsSnappingConfig
         //! enables the snapping
         void setEnabled( bool enabled );
 
-        //! Returns the type (vertices and/or segments)
+        //! Returns the flags type (vertices | segments | centroid | area |
+        //middle)
         QgsSnappingConfig::SnappingType type() const;
 
         //! define the type of snapping
@@ -121,7 +126,7 @@ class CORE_EXPORT QgsSnappingConfig
       private:
         bool mValid = false;
         bool mEnabled = false;
-        SnappingType mType = Vertex;
+        QgsSnappingConfig::SnappingType mType = NoSnap;
         double mTolerance = 0;
         QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
     };
@@ -148,11 +153,11 @@ class CORE_EXPORT QgsSnappingConfig
     //! define the mode of snapping
     void setMode( SnappingMode mode );
 
-    //! Returns the type (vertices and/or segments)
-    SnappingType type() const;
+    //! Returns the flags type (vertices | segments | area | centroid | middle)
+    QgsSnappingConfig::SnappingType type() const;
 
     //! define the type of snapping
-    void setType( SnappingType type );
+    void setType( QgsSnappingConfig::SnappingType type );
 
     //! Returns the tolerance
     double tolerance() const;
@@ -288,7 +293,7 @@ class CORE_EXPORT QgsSnappingConfig
     QgsProject *mProject = nullptr;
     bool mEnabled = false;
     SnappingMode mMode = ActiveLayer;
-    SnappingType mType = Vertex;
+    QgsSnappingConfig::SnappingType mType = NoSnap;
     double mTolerance = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;

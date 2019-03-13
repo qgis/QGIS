@@ -98,6 +98,12 @@ void QgsVertexMarker::paint( QPainter *p )
       p->drawLine( QLineF( -s, -s,  s,  s ) );
       p->drawLine( QLineF( s, -s, -s,  s ) );
       break;
+
+    case ICON_TRIANGLE:
+      p->drawLine( QLineF( -s,  s,  s,  s ) );
+      p->drawLine( QLineF( s,  s,  0, -s ) );
+      p->drawLine( QLineF( 0, -s, -s,  s ) );
+      break;
   }
 }
 

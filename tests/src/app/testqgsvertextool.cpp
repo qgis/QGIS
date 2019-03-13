@@ -280,7 +280,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( QgsSnappingConfig::AllLayers );
   cfg.setTolerance( 10 );
-  cfg.setType( QgsSnappingConfig::VertexAndSegment );
+  cfg.setType( static_cast<QgsSnappingConfig::SnappingType>( QgsSnappingConfig::Vertex | QgsSnappingConfig::Segment ) );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
@@ -305,7 +305,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( QgsSnappingConfig::AllLayers );
   cfg.setTolerance( 10 );
-  cfg.setType( QgsSnappingConfig::VertexAndSegment );
+  cfg.setType( static_cast<QgsSnappingConfig::SnappingType>( QgsSnappingConfig::Vertex | QgsSnappingConfig::Segment ) );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 

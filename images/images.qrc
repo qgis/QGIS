@@ -676,7 +676,9 @@
         <file>themes/default/mIconSnappingActiveLayer.svg</file>
         <file>themes/default/mIconSnappingAdvanced.svg</file>
         <file>themes/default/mIconSnappingAllLayers.svg</file>
-        <file>themes/default/mIconSnappingVertexAndSegment.svg</file>
+        <file>themes/default/mIconSnappingArea.svg</file>
+        <file>themes/default/mIconSnappingCentroid.svg</file>
+        <file>themes/default/mIconSnappingMiddle.svg</file>
         <file>themes/default/mIconSnappingVertex.svg</file>
         <file>themes/default/mIconSnappingSegment.svg</file>
         <file>themes/default/mIconTopologicalEditing.svg</file>
