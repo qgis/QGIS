@@ -96,6 +96,8 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 scope = QgsExpressionContextScope()
                 expcontext.appendScope(scope)
                 for out in alg.outputDefinitions():
+                    if out.name() not in parameters:
+                        continue
                     outValue = parameters[out.name()]
                     if hasattr(outValue, "sink"):
                         outValue = outValue.sink.valueAsString(expcontext)[0]
