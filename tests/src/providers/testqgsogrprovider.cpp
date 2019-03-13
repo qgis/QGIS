@@ -159,7 +159,9 @@ class ReadVectorLayer : public QThread
       qDebug() << "ReadVectorLayer_run_test2";
 
       _mutex.lock();
+      qDebug() << "ReadVectorLayer_run_test2.1";
       _waitForVlCreation.wakeAll();
+      qDebug() << "ReadVectorLayer_run_test2.2";
       _mutex.unlock();
 
       qDebug() << "ReadVectorLayer_run_test3";
@@ -195,7 +197,9 @@ void failOnWarning( QtMsgType type, const QMessageLogContext &context, const QSt
       qDebug() << "failOnWarning test1";
       QFAIL( QString( "No Qt warning message expect : %1" ).arg( msg ).toUtf8() );
       qDebug() << "failOnWarning test2";
-    default:;
+    default:
+      qDebug() << "failOnWarning default type=" << type << " msg=" << msg;
+      ;
   }
 
   qDebug() << "failOnWarning end";
@@ -246,7 +250,9 @@ void TestQgsOgrProvider::testThread()
   qDebug() << "testThread test5";
 
   mutex.lock();
+  qDebug() << "testThread test5.1";
   waitForProcessEvents.wakeAll();
+  qDebug() << "testThread test5.2";
   mutex.unlock();
 
   qDebug() << "testThread test6";
