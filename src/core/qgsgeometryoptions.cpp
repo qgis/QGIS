@@ -115,15 +115,3 @@ void QgsGeometryOptions::readXml( const QDomNode &node )
   const QVariant checkConfiguration = QgsXmlUtils::readVariant( checkConfigurationElem );
   mCheckConfiguration = checkConfiguration.toMap();
 }
-
-bool QgsGeometryOptions::automaticProblemResolutionEnabled() const
-{
-  return mAutomaticProblemResolutionEnabled;
-}
-
-void QgsGeometryOptions::setAutomaticProblemResolutionEnabled( bool automaticFixesEnabled )
-{
-  if ( automaticFixesEnabled != mAutomaticProblemResolutionEnabled )
-    mAutomaticProblemResolutionEnabled = automaticFixesEnabled;
-  emit automaticProblemResolutionEnabledChanged();
-}

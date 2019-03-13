@@ -68,8 +68,10 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mErrorLocationRubberband->setColor( QColor( 50, 255, 50, 255 ) );
 
   mProblemDetailWidget->setVisible( false );
-}
 
+  // Problem resolution is unstable and therefore disabled by default
+  mResolutionWidget->setVisible( QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ) == QLatin1String( "true" ) );
+}
 
 QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel() const
 {
@@ -153,14 +155,6 @@ void QgsGeometryValidationDock::onRowsInserted()
     mQgisApp->addDockWidget( Qt::RightDockWidgetArea, this );
   }
   setUserVisible( true );
-}
-
-void QgsGeometryValidationDock::updateResolutionWidgetVisibility()
-{
-  if ( !mCurrentLayer )
-    return;
-
-  mResolutionWidget->setVisible( mCurrentLayer->geometryOptions()->automaticProblemResolutionEnabled() );
 }
 
 QgsGeometryValidationService *QgsGeometryValidationDock::geometryValidationService() const
@@ -274,8 +268,6 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
     disconnect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     disconnect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     disconnect( mCurrentLayer, &QgsVectorLayer::destroyed, this, &QgsGeometryValidationDock::onLayerDestroyed );
-    disconnect( mCurrentLayer->geometryOptions(), &QgsGeometryOptions::automaticProblemResolutionEnabledChanged, this, &QgsGeometryValidationDock::updateResolutionWidgetVisibility );
-    updateResolutionWidgetVisibility();
   }
 
   mCurrentLayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -285,7 +277,6 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
     connect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     connect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     connect( mCurrentLayer, &QgsVectorLayer::destroyed, this, &QgsGeometryValidationDock::onLayerDestroyed );
-    connect( mCurrentLayer->geometryOptions(), &QgsGeometryOptions::automaticProblemResolutionEnabledChanged, this, &QgsGeometryValidationDock::updateResolutionWidgetVisibility );
   }
 
   onLayerEditingStatusChanged();

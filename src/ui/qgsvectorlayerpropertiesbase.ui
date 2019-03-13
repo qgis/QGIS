@@ -436,8 +436,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>315</width>
-                <height>403</height>
+                <width>662</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -724,8 +724,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>662</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -910,8 +910,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>113</width>
-                <height>110</height>
+                <width>662</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1305,8 +1305,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>662</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1508,7 +1508,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>734</width>
-                <height>372</height>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1964,8 +1964,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>378</width>
-                <height>678</height>
+                <width>662</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2436,16 +2436,6 @@ border-radius: 2px;</string>
                 <widget class="QGroupBox" name="mTopologyChecksGroupBox">
                  <property name="title">
                   <string>Topology checks</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="mAutomaticProblemResolutionCheckbox">
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This enables additional buttons for check results that will automatically fix problems.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Experimental&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This functionality is tagged as experimental since some of the automatic fixes do not work completely reliable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="text">
-                  <string>Offer automatic problem resolution (Experimental)</string>
                  </property>
                 </widget>
                </item>

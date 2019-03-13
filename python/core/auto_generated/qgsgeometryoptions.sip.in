@@ -118,24 +118,6 @@ Read the geometry options from ``node``.
 .. versionadded:: 3.4
 %End
 
-    bool automaticProblemResolutionEnabled() const;
-%Docstring
-Automatic problem resolution offers strategies to fix errors with
-a single click.
-This is currently experimental
-
-.. versionadded:: 3.8
-%End
-
-    void setAutomaticProblemResolutionEnabled( bool automaticProblemResolutionEnabled );
-%Docstring
-Automatic problem resolution offers strategies to fix errors with
-a single click.
-This is currently experimental
-
-.. versionadded:: 3.8
-%End
-
   signals:
 
     void checkConfigurationChanged();
@@ -166,11 +148,6 @@ Geometries which are edited on this layer will be rounded to multiples of this v
 Set to 0.0 to disable.
 
 .. versionadded:: 3.4
-%End
-
-    void automaticProblemResolutionEnabledChanged();
-%Docstring
-Defines if the automatic fixes
 %End
 
 };
