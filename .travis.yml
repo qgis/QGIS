@@ -11,7 +11,7 @@ cache:
     - ${HOME}/.ccache_docker_build_cosmic
     - ${HOME}/.ccache_docker_build_bionic
   timeout: 1000
-if: NOT branch =~ /^(cherry-pick-)?backport-\d+-on-/ AND NOT branch =~ /-patch-\d+$/ 
+if: NOT branch =~ /^(cherry-pick-)?backport-\d+-on-/ AND NOT branch =~ /-patch-\d+$/
 
 env:
   global:
@@ -46,6 +46,7 @@ matrix:
         - CCACHE_DIR=${HOME}/.ccache_testing
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
+        - RUN_FLAKY_TESTS=$(node ./ci/travis/scripts/should-run-flaky-tests.js $TRAVIS_PULL_REQUEST && echo "true" || echo "false")
 
       ##########################################################
       # CODE LAYOUT
