@@ -527,7 +527,18 @@ static QgsMessageOutput *messageOutputViewer_()
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
 {
-  QgisApp::instance()->emitCustomCrsValidation( srs );
+  if ( QThread::currentThread() != QApplication::instance()->thread() )
+  {
+    // Running in a background thread -- we can't queue this connection, because
+    // srs is a reference and may be deleted before the queued slot is called.
+    // We also can't do ANY gui related stuff here. Best we can do is log
+    // a warning and move on...
+    QgsMessageLog::logMessage( QObject::tr( "Layer has unknown CRS" ) );
+  }
+  else
+  {
+    QgisApp::instance()->emitCustomCrsValidation( srs );
+  }
 }
 
 void QgisApp::emitCustomCrsValidation( QgsCoordinateReferenceSystem &srs )
