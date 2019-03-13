@@ -39,6 +39,13 @@ void QgsLayoutItemsListViewModel::setSelected( const QModelIndex &index )
   mModel->setSelected( mapToSource( index ) );
 }
 
+bool QgsLayoutItemsListViewModel::filterAcceptsRow( int sourceRow, const QModelIndex & ) const
+{
+  if ( sourceRow == 0 )
+    return false; // hide empty null item row
+  return true;
+}
+
 QVariant QgsLayoutItemsListViewModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
