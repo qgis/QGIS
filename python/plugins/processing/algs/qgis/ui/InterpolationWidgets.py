@@ -201,11 +201,11 @@ class InterpolationDataWidget(BASE, WIDGET):
                 else:
                     inputType = QgsInterpolator.SourceBreakLines
 
-            layers += '{}::~::{:d}::~::{:d}::~::{:d}::|::'.format(layer.source(),
-                                                                  interpolationSource,
-                                                                  fieldIndex,
-                                                                  inputType)
-        return layers[:-1]
+                layers += '{}::~::{:d}::~::{:d}::~::{:d}::|::'.format(layer.source(),
+                                                                      interpolationSource,
+                                                                      fieldIndex,
+                                                                      inputType)
+        return layers[:-len('::|::')]
 
 
 class InterpolationDataWidgetWrapper(WidgetWrapper):
