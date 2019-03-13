@@ -127,12 +127,14 @@ void TestQgsOgrProvider::setupProxy()
 
 void TestQgsOgrProvider::decodeUri()
 {
+  qDebug() << "startDecodeUri";
   auto parts( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'" ) ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "database_name" ) );
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MYSQL:westholland,user=root,password=psv9570,port=3306,tables=bedrijven" ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "westholland" ) );
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=a_layer" ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
+  qDebug() << "endDecodeUri";
 }
 
 
@@ -145,21 +147,33 @@ class ReadVectorLayer : public QThread
 
     void run() override
     {
+      qDebug() << "ReadVectorLayer_run_start";
 
       QgsVectorLayer *vl2 = new QgsVectorLayer( _filePath, QStringLiteral( "thread_test" ), QLatin1Literal( "ogr" ) );
 
+      qDebug() << "ReadVectorLayer_run_test1";
+
       QgsFeature f;
       QVERIFY( vl2->getFeatures().nextFeature( f ) );
+
+      qDebug() << "ReadVectorLayer_run_test2";
 
       _mutex.lock();
       _waitForVlCreation.wakeAll();
       _mutex.unlock();
 
+      qDebug() << "ReadVectorLayer_run_test3";
+
       _mutex.lock();
       _waitForProcessEvents.wait( &_mutex );
       _mutex.unlock();
 
+      qDebug() << "ReadVectorLayer_run_test4";
+
       delete vl2;
+
+      qDebug() << "ReadVectorLayer_run_end";
+
     }
 
   private:
@@ -172,14 +186,19 @@ class ReadVectorLayer : public QThread
 
 void failOnWarning( QtMsgType type, const QMessageLogContext &context, const QString &msg )
 {
+  qDebug() << "failOnWarning start";
   Q_UNUSED( context );
 
   switch ( type )
   {
     case QtWarningMsg:
+      qDebug() << "failOnWarning test1";
       QFAIL( QString( "No Qt warning message expect : %1" ).arg( msg ).toUtf8() );
+      qDebug() << "failOnWarning test2";
     default:;
   }
+
+  qDebug() << "failOnWarning end";
 }
 
 void TestQgsOgrProvider::testThread()
@@ -187,8 +206,10 @@ void TestQgsOgrProvider::testThread()
   // Disabled by @m-kuhn
   // This test is flaky
   // See https://travis-ci.org/qgis/QGIS/jobs/505008602#L6464-L7108
-  if ( QgsTest::isTravis() )
-    QSKIP( "This test is disabled on Travis CI environment" );
+  // if ( QgsTest::isTravis() )
+  //   QSKIP( "This test is disabled on Travis CI environment" );
+
+  qDebug() << "testThread start";
 
   // After reading a QgsVectorLayer (getFeatures) from another thread the QgsOgrConnPoolGroup starts
   // an expiration timer. The timer belongs to the main thread in order to listening the event
@@ -203,28 +224,47 @@ void TestQgsOgrProvider::testThread()
   QString filePath = mTestDataDir + '/' + QStringLiteral( "lines.shp" );
   QThread *thread = new ReadVectorLayer( filePath, mutex, waitForVlCreation, waitForProcessEvents );
 
+  qDebug() << "testThread test1";
+
   thread->start();
+
+  qDebug() << "testThread test2";
 
   mutex.lock();
   waitForVlCreation.wait( &mutex );
   mutex.unlock();
 
+  qDebug() << "testThread test3";
+
   // make sure timer as been started
   QCoreApplication::processEvents();
 
+  qDebug() << "testThread test4";
+
   qInstallMessageHandler( failOnWarning );
+
+  qDebug() << "testThread test5";
 
   mutex.lock();
   waitForProcessEvents.wakeAll();
   mutex.unlock();
 
+  qDebug() << "testThread test6";
+
   thread->wait();
+
+  qDebug() << "testThread test7";
+
   qInstallMessageHandler( 0 );
+
+  qDebug() << "testThread end";
 
 }
 
 void TestQgsOgrProvider::testGpkgDataItemRename()
 {
+  qDebug() << "testGpkgDataItemRename start";
+
   QTemporaryFile f( QStringLiteral( "qgis-XXXXXX.gpkg" ) );
   f.open();
   f.close();
@@ -237,7 +277,9 @@ void TestQgsOgrProvider::testGpkgDataItemRename()
                                      .arg( fileName ),
                                      QStringLiteral( "%1|layername=layer 1" ).arg( fileName ),
                                      QgsLayerItem::LayerType::TableLayer );
+  qDebug() << "testGpkgDataItemRename test1";
   item.rename( "layer 3" );
+  qDebug() << "testGpkgDataItemRename test2";
   // Check that the style is still available
   QgsVectorLayer metadataLayer( QStringLiteral( "/%1|layername=layer_styles" ).arg( fileName ) );
   QVERIFY( metadataLayer.isValid() );
@@ -252,6 +294,9 @@ void TestQgsOgrProvider::testGpkgDataItemRename()
   QVERIFY( it.nextFeature( feature ) );
   QVERIFY( feature.isValid() );
   QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 2" ) );
+
+  qDebug() << "testGpkgDataItemRename end";
+
 }
 
 
