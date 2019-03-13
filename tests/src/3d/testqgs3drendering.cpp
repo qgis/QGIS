@@ -314,6 +314,11 @@ void TestQgs3DRendering::testMapTheme()
 
 void TestQgs3DRendering::testMesh()
 {
+  // Disabled on travic ci. This test is flaky
+  // See https://travis-ci.org/qgis/QGIS/jobs/505456689#L1351
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   QgsRectangle fullExtent = mLayerMesh->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
