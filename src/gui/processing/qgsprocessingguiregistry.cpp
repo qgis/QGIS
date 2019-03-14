@@ -41,6 +41,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingEnumWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingLayoutWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingLayoutItemWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingPointWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

@@ -21,6 +21,8 @@
 
 #define SIP_NO_FILE
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsmaptool.h"
+
 #include <QAbstractButton>
 
 class QCheckBox;
@@ -42,6 +44,8 @@ class QgsLayoutComboBox;
 class QgsLayoutItemComboBox;
 class QgsPrintLayout;
 class QgsScaleWidget;
+class QgsSnapIndicator;
+class QgsFilterLineEdit;
 
 ///@cond PRIVATE
 
@@ -616,6 +620,102 @@ class GUI_EXPORT QgsProcessingLayoutItemWidgetWrapper : public QgsAbstractProces
     friend class TestProcessingGui;
 };
 
+class GUI_EXPORT QgsProcessingPointMapTool : public QgsMapTool
+{
+    Q_OBJECT
+  public:
+    QgsProcessingPointMapTool( QgsMapCanvas *canvas );
+    ~QgsProcessingPointMapTool() override;
+    void deactivate() override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
+
+  signals:
+
+    void clicked( const QgsPointXY &point );
+    void complete();
+
+  private:
+
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsProcessingPointPanel : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingPointPanel( QWidget *parent );
+    void setMapCanvas( QgsMapCanvas *canvas );
+    void setAllowNull( bool allowNull );
+
+    QVariant value() const;
+    void clear();
+    void setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
+
+  signals:
+
+    void toggleDialogVisibility( bool visible );
+    void changed();
+
+  private slots:
+
+    void selectOnCanvas();
+    void updatePoint( const QgsPointXY &point );
+    void pointPicked();
+
+  private:
+
+    QgsFilterLineEdit *mLineEdit = nullptr;
+    QToolButton *mButton = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsCoordinateReferenceSystem mCrs;
+    QPointer< QgsMapTool > mPrevTool;
+    std::unique_ptr< QgsProcessingPointMapTool > mTool;
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingPointWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingPointWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                     QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
+    void setDialog( QDialog *dialog ) override;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+  private:
+
+    QgsProcessingPointPanel *mPanel = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QDialog *mDialog = nullptr;
+
+    friend class TestProcessingGui;
+};
 
 ///@endcond PRIVATE
 

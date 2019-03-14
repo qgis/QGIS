@@ -877,6 +877,15 @@ Returns the coordinate reference system associated with an point parameter value
 .. seealso:: :py:func:`parameterAsPoint`
 %End
 
+    static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with an point parameter value.
+
+.. seealso:: :py:func:`parameterAsPoint`
+
+.. versionadded:: 3.8
+%End
+
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a file/folder name.

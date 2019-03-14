@@ -303,6 +303,13 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Sets the parent \a dialog in which the wrapper is shown.
+     *
+     * \since QGIS 3.8
+     */
+    virtual void setDialog( QDialog *dialog );
+
   signals:
 
     // TODO QGIS 4.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,

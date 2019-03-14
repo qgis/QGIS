@@ -263,6 +263,13 @@ allowing the wrapper to connect to the wrappers of other, related parameters.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    virtual void setDialog( QDialog *dialog );
+%Docstring
+Sets the parent ``dialog`` in which the wrapper is shown.
+
+.. versionadded:: 3.8
+%End
+
   signals:
 
 
