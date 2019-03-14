@@ -101,7 +101,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 ogr_data_path = 'path_to_data_file'
                 ogr_layer_name = 'layer_name'
         elif input_layer.dataProvider().name() == 'ogr':
-            if executing:
+            if executing and isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition) and parameters[parameter_name].selectedFeaturesOnly:
                 # parameter is a vector layer, with OGR data provider
                 # so extract selection if required
                 ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
@@ -114,6 +114,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 else:
                     ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
             else:
+                #either not using the selection, or
                 #not executing - don't worry about 'selected features only' handling. It has no meaning
                 #for the command line preview since it has no meaning outside of a QGIS session!
                 ogr_data_path = GdalUtils.ogrConnectionStringAndFormatFromLayer(input_layer)[0]
