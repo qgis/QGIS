@@ -487,10 +487,10 @@ void TestQgsMeshLayer::test_time_format()
 {
   QFETCH( QgsMeshTimeSettings, settings );
   QFETCH( double, hours );
-  QFETCH( QString, expectedFormatedTime );
+  QFETCH( QString, expectedTime );
 
   QString time = QgsMeshLayerUtils::formatTime( hours, settings );
-  QCOMPARE( time, expectedFormatedTime );
+  QCOMPARE( time, expectedTime );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

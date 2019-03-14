@@ -35,11 +35,11 @@
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
-    //! Default contructor for relative time formate and 0 offset
+    //! Default constructor for relative time formate and 0 offset
     QgsMeshTimeSettings();
     //! Constructs relative time format settings with defined offset in hours
     QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
-    //! Contructs absolute time format settings with defined reference time
+    //! Constructs absolute time format settings with defined reference time
     QgsMeshTimeSettings( const QDateTime &absoluteTimeReferenceTime, const QString &absoluteTimeFormat );
 
     //! Writes configuration to a new DOM element
