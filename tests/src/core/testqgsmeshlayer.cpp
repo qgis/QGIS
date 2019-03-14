@@ -434,7 +434,7 @@ void TestQgsMeshLayer::test_time_format_data()
 {
   QTest::addColumn<QgsMeshTimeSettings>( "settings" );
   QTest::addColumn<double>( "hours" );
-  QTest::addColumn<QString>( "expectedFormatedTime" );
+  QTest::addColumn<QString>( "expectedTime" );
 
   QTest::newRow( "rel1" ) << QgsMeshTimeSettings( 0, "hh:mm:ss.zzz" ) << 0.0 << QString( "00:00:00.000" );
   QTest::newRow( "rel2" ) << QgsMeshTimeSettings( 0, "hh:mm:ss" ) << 0.0 << QString( "00:00:00" );
