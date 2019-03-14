@@ -46,7 +46,7 @@ matrix:
         - CCACHE_DIR=${HOME}/.ccache_testing
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
-        - RUN_FLAKY_TESTS=$(node .ci/travis/scripts/should-run-flaky-tests.js $TRAVIS_PULL_REQUEST && echo "true" || echo "false")
+        - RUN_FLAKY_TESTS=$(node .ci/travis/scripts/should-run-flaky-tests.js $TRAVIS_PULL_REQUEST &>/dev/null && echo "true" || echo "false")
 
       ##########################################################
       # CODE LAYOUT
