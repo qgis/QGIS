@@ -36,7 +36,7 @@ const parseResponse = (res) => {
   }
   const ciEnabledLabel = labels.find(item => item.id === flakyLabelId)
   if (ciEnabledLabel) {
-    console.log(`CI enabled label found on PR ${pullRequestId}`)
+    console.log(`flaky tests enabled on PR ${pullRequestId}`)
     process.exit(0)
   }
   console.log(`CI Enabled label not found on PR ${pullRequestId}`)
