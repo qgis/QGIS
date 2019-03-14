@@ -583,7 +583,10 @@ void TestQgsRasterCalculator::testRasterEntries()
   }
   QStringList keys( entryMap.keys() );
   keys.sort();
-  QCOMPARE( keys.join( ',' ), QStringLiteral( "dem@1,dem_1@1,landsat@1,landsat_4326@1,slope2@1" ) );
+  QCOMPARE( keys.join( ',' ), QStringLiteral( "dem@1,dem_1@1,landsat@1,landsat@2,landsat@3,landsat@4,"
+            "landsat@5,landsat@6,landsat@7,landsat@8,landsat@9,"
+            "landsat_4326@1,landsat_4326@2,landsat_4326@3,landsat_4326@4,"
+            "landsat_4326@5,landsat_4326@6,landsat_4326@7,landsat_4326@8,landsat_4326@9,slope2@1" ) );
 }
 
 void TestQgsRasterCalculator::errors( )

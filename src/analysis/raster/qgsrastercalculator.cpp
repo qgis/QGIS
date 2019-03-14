@@ -636,9 +636,18 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
         // Safety belt
         if ( !( entry.raster && ref.raster ) )
           continue;
-        // Check if a layer with the same data source was already added to the list
+        // Check if is another band of the same raster
         if ( ref.raster->publicSource() == entry.raster->publicSource() )
-          return false;
+        {
+          if ( ref.bandNumber != entry.bandNumber )
+          {
+            continue;
+          }
+          else // a layer with the same data source was already added to the list
+          {
+            return false;
+          }
+        }
         // If same name but different source
         if ( ref.ref == entry.ref )
         {
@@ -664,7 +673,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
         entry.raster = rlayer;
         entry.bandNumber = i + 1;
         if ( ! uniqueRasterBandIdentifier( entry ) )
-          continue;
+          break;
         availableEntries.push_back( entry );
       }
     }
