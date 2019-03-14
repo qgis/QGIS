@@ -23,6 +23,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsreadwritecontext.h"
 
 /**
  * \ingroup core
@@ -34,10 +35,17 @@
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
+    //! Default contructor for relative time formate and 0 offset
+    QgsMeshTimeSettings();
+    //! Constructs relative time format settings with defined offset in hours
+    QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
+    //! Contructs absolute time format settings with defined reference time
+    QgsMeshTimeSettings( const QDateTime &absoluteTimeReferenceTime, const QString &absoluteTimeFormat );
+
     //! Writes configuration to a new DOM element
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
     //! Reads configuration from the given DOM element
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     //! Returns whether to use absolute time format
     bool useAbsoluteTime() const;
@@ -73,5 +81,7 @@ class CORE_EXPORT QgsMeshTimeSettings
     QDateTime mAbsoluteTimeReferenceTime;
     QString mAbsoluteTimeFormat = QStringLiteral( "dd.MM.yyyy hh:mm:ss" );
 };
+
+Q_DECLARE_METATYPE( QgsMeshTimeSettings );
 
 #endif // QGSMESHTIMESETTINGS_H

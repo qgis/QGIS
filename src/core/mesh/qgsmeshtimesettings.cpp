@@ -17,8 +17,23 @@
 
 #include "qgsmeshtimesettings.h"
 
-QDomElement QgsMeshTimeSettings::writeXml( QDomDocument &doc ) const
+QgsMeshTimeSettings::QgsMeshTimeSettings() = default;
+
+QgsMeshTimeSettings::QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat )
+  : mUseAbsoluteTime( false )
+  , mRelativeTimeOffsetHours( relativeTimeOffsetHours )
+  , mRelativeTimeFormat( relativeTimeFormat )
+{}
+
+QgsMeshTimeSettings::QgsMeshTimeSettings( const QDateTime &absoluteTimeReferenceTime, const QString &absoluteTimeFormat )
+  : mUseAbsoluteTime( true )
+  , mAbsoluteTimeReferenceTime( absoluteTimeReferenceTime )
+  , mAbsoluteTimeFormat( absoluteTimeFormat )
+{}
+
+QDomElement QgsMeshTimeSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  Q_UNUSED( context );
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-time-settings" ) );
   elem.setAttribute( QStringLiteral( "use-absolute-time" ), mUseAbsoluteTime ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "relative-time-offset-hours" ), mRelativeTimeOffsetHours );
@@ -28,8 +43,9 @@ QDomElement QgsMeshTimeSettings::writeXml( QDomDocument &doc ) const
   return elem;
 }
 
-void QgsMeshTimeSettings::readXml( const QDomElement &elem )
+void QgsMeshTimeSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
   mUseAbsoluteTime = elem.attribute( QStringLiteral( "use-absolute-time" ) ).toInt(); //bool
   mRelativeTimeOffsetHours = elem.attribute( QStringLiteral( "relative-time-offset-hours" ) ).toDouble();
   mRelativeTimeFormat = elem.attribute( QStringLiteral( "relative-time-format" ) );

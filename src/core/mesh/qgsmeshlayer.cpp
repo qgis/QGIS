@@ -299,7 +299,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
 
   QDomElement elemTimeSettings = elem.firstChildElement( "mesh-time-settings" );
   if ( !elemTimeSettings.isNull() )
-    mTimeSettings.readXml( elemTimeSettings );
+    mTimeSettings.readXml( elemTimeSettings, context );
 
   // get and set the blend mode if it exists
   QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
@@ -325,7 +325,7 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
   elem.appendChild( elemRendererSettings );
 
-  QDomElement elemTimeSettings = mRendererSettings.writeXml( doc );
+  QDomElement elemTimeSettings = mTimeSettings.writeXml( doc, context );
   elem.appendChild( elemTimeSettings );
 
   // add blend mode node

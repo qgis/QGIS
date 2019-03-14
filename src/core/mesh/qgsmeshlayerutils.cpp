@@ -199,7 +199,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &
       int h = totalHours % 24;
       ret = QStringLiteral( "%1 d %2" ).
             arg( d ).
-            arg( h, 2, 10, QLatin1Char( '0' ) );
+            arg( h );
     }
     else if ( format == QStringLiteral( "d" ) )
     {

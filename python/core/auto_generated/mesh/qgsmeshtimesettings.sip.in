@@ -23,11 +23,24 @@ Represents a mesh time settings for mesh datasets
 #include "qgsmeshtimesettings.h"
 %End
   public:
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QgsMeshTimeSettings();
+%Docstring
+Default contructor for relative time formate and 0 offset
+%End
+    QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
+%Docstring
+Constructs relative time format settings with defined offset in hours
+%End
+    QgsMeshTimeSettings( const QDateTime &absoluteTimeReferenceTime, const QString &absoluteTimeFormat );
+%Docstring
+Contructs absolute time format settings with defined reference time
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes configuration to a new DOM element
 %End
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
 Reads configuration from the given DOM element
 %End
@@ -78,6 +91,7 @@ Sets format used for absolute time
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
