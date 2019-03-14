@@ -552,10 +552,10 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         f1.setAttributes([1, 'foo', 'blah'])
         QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
         self.assertEqual(len(f1.attributes()), 4)
-        self.assertEqual(f1.attributes()[0], 'foo')
-        self.assertEqual(f1.attributes()[1], 1)
-        self.assertEqual(f1.attributes()[2], QVariant())
-        self.assertEqual(f1.attributes()[3], 'blah')
+        self.assertEqual(f1.attributes()[0], 1)
+        self.assertEqual(f1.attributes()[1], 'foo')
+        self.assertEqual(f1.attributes()[2], 'blah')
+        self.assertEqual(f1.attributes()[3], QVariant())
 
         # case insensitive
         fields2.append(QgsField('extra3', QVariant.String))

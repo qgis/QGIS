@@ -231,6 +231,7 @@ If the ``feature`` does not have a valid fields container set, then the feature'
 are simply truncated to match the number of fields present in ``fields`` (or if
 less attributes are present in ``feature`` than in ``fields``, the feature's attributes
 are padded with NULL values to match the required length).
+Finally, the feature's fields are set to ``fields``.
 
 .. versionadded:: 3.4
 %End
