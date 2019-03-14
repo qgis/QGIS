@@ -121,6 +121,13 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setWidgetValue`
 %End
 
+    void setDialog( QDialog *dialog );
+%Docstring
+Sets the parent ``dialog`` in which the widget is shown.
+
+.. versionadded:: 3.8
+%End
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 

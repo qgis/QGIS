@@ -1848,6 +1848,7 @@ class WidgetWrapperFactory:
                                               QgsProcessingGui.Standard)
                 wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(param, dialog_type)
             if wrapper is not None:
+                wrapper.setDialog(dialog)
                 return wrapper
 
             # fallback to Python registry

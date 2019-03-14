@@ -36,6 +36,11 @@
 #include "qgslayoutitemcombobox.h"
 #include "qgsprintlayout.h"
 #include "qgsscalewidget.h"
+#include "qgssnapindicator.h"
+#include "qgsmapmouseevent.h"
+#include "qgsfilterlineedit.h"
+#include "qgsmapcanvas.h"
+#include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -2101,5 +2106,284 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutItemWidgetWrappe
   return new QgsProcessingLayoutItemWidgetWrapper( parameter, type );
 }
 
-///@endcond PRIVATE
+//
+// QgsProcessingPointMapTool
+//
 
+QgsProcessingPointMapTool::QgsProcessingPointMapTool( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+{
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+}
+
+QgsProcessingPointMapTool::~QgsProcessingPointMapTool() = default;
+
+void QgsProcessingPointMapTool::deactivate()
+{
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  QgsMapTool::deactivate();
+}
+
+void QgsProcessingPointMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
+{
+  e->snapPoint();
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+}
+
+void QgsProcessingPointMapTool::canvasPressEvent( QgsMapMouseEvent *e )
+{
+  if ( e->button() == Qt::LeftButton )
+  {
+    QgsPointXY point = e->snapPoint();
+    emit clicked( point );
+    emit complete();
+  }
+}
+
+void QgsProcessingPointMapTool::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Escape )
+  {
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+    emit complete();
+  }
+}
+
+
+
+//
+// QgsProcessingPointPanel
+//
+
+QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
+  : QWidget( parent )
+{
+  QHBoxLayout *l = new QHBoxLayout();
+  l->setContentsMargins( 0, 0, 0, 0 );
+  l->setMargin( 0 );
+  mLineEdit = new QgsFilterLineEdit( );
+  mLineEdit->setShowClearButton( false );
+  l->addWidget( mLineEdit, 1 );
+  mButton = new QToolButton();
+  mButton->setText( QStringLiteral( "…" ) );
+  l->addWidget( mButton );
+  setLayout( l );
+
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsProcessingPointPanel::changed );
+  connect( mButton, &QToolButton::clicked, this, &QgsProcessingPointPanel::selectOnCanvas );
+  mButton->setVisible( false );
+}
+
+void QgsProcessingPointPanel::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mCanvas = canvas;
+  mButton->setVisible( true );
+
+  mCrs = canvas->mapSettings().destinationCrs();
+  mTool = qgis::make_unique< QgsProcessingPointMapTool >( mCanvas );
+  connect( mTool.get(), &QgsProcessingPointMapTool::clicked, this, &QgsProcessingPointPanel::updatePoint );
+  connect( mTool.get(), &QgsProcessingPointMapTool::complete, this, &QgsProcessingPointPanel::pointPicked );
+}
+
+void QgsProcessingPointPanel::setAllowNull( bool allowNull )
+{
+  mLineEdit->setShowClearButton( allowNull );
+}
+
+QVariant QgsProcessingPointPanel::value() const
+{
+  return mLineEdit->showClearButton() && mLineEdit->text().trimmed().isEmpty() ? QVariant() : QVariant( mLineEdit->text() );
+}
+
+void QgsProcessingPointPanel::clear()
+{
+  mLineEdit->clear();
+}
+
+void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
+{
+  QString newText = QStringLiteral( "%1,%2" ).arg( point.x() ).arg( point.y() );
+  mCrs = crs;
+  if ( mCrs.isValid() )
+  {
+    newText += QStringLiteral( " [%1]" ).arg( mCrs.authid() );
+  }
+  mLineEdit->setText( newText );
+}
+
+void QgsProcessingPointPanel::selectOnCanvas()
+{
+  if ( !mCanvas )
+    return;
+
+  mPrevTool = mCanvas->mapTool();
+  mCanvas->setMapTool( mTool.get() );
+
+  emit toggleDialogVisibility( false );
+}
+
+void QgsProcessingPointPanel::updatePoint( const QgsPointXY &point )
+{
+  setValue( point, mCanvas->mapSettings().destinationCrs() );
+}
+
+void QgsProcessingPointPanel::pointPicked()
+{
+  if ( !mCanvas )
+    return;
+
+  mCanvas->setMapTool( mPrevTool );
+
+  emit toggleDialogVisibility( true );
+}
+
+
+
+
+//
+// QgsProcessingPointWidgetWrapper
+//
+
+QgsProcessingPointWidgetWrapper::QgsProcessingPointWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingPointWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterPoint *pointParam = dynamic_cast< const QgsProcessingParameterPoint *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      mPanel = new QgsProcessingPointPanel( nullptr );
+      if ( widgetContext().mapCanvas() )
+        mPanel->setMapCanvas( widgetContext().mapCanvas() );
+
+      if ( pointParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mPanel->setAllowNull( true );
+
+      mPanel->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mPanel, &QgsProcessingPointPanel::changed, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      if ( mDialog )
+        setDialog( mDialog ); // setup connections to panel - dialog was previously set before the widget was created
+      return mPanel;
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( tr( "Point as 'x,y'" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingPointWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mPanel && context.mapCanvas() )
+    mPanel->setMapCanvas( context.mapCanvas() );
+}
+
+void QgsProcessingPointWidgetWrapper::setDialog( QDialog *dialog )
+{
+  mDialog = dialog;
+  if ( mPanel )
+  {
+    connect( mPanel, &QgsProcessingPointPanel::toggleDialogVisibility, mDialog, [ = ]( bool visible )
+    {
+      if ( !visible )
+        mDialog->showMinimized();
+      else
+      {
+        mDialog->showNormal();
+        mDialog->raise();
+        mDialog->activateWindow();
+      }
+    } );
+  }
+  QgsAbstractProcessingParameterWidgetWrapper::setDialog( dialog );
+}
+
+void QgsProcessingPointWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mPanel )
+  {
+    if ( !value.isValid() || ( value.type() == QVariant::String && value.toString().isEmpty() ) )
+      mPanel->clear();
+    else
+    {
+      QgsPointXY p = QgsProcessingParameters::parameterAsPoint( parameterDefinition(), value, context );
+      QgsCoordinateReferenceSystem crs = QgsProcessingParameters::parameterAsPointCrs( parameterDefinition(), value, context );
+      mPanel->setValue( p, crs );
+    }
+  }
+  else if ( mLineEdit )
+  {
+    const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+    mLineEdit->setText( v );
+  }
+}
+
+QVariant QgsProcessingPointWidgetWrapper::widgetValue() const
+{
+  if ( mPanel )
+  {
+    return mPanel->value();
+  }
+  else if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingPointWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterPoint::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingPointWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingPointWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingPointWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string of the format 'x,y'" );
+}
+
+QString QgsProcessingPointWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterPoint::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingPointWidgetWrapper( parameter, type );
+}
+
+///@endcond PRIVATE

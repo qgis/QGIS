@@ -179,6 +179,8 @@ class TestProcessingGui : public QObject
     void testEnumWrapper();
     void testLayoutWrapper();
     void testLayoutItemWrapper();
+    void testPointPanel();
+    void testPointWrapper();
 
   private:
 
@@ -2818,6 +2820,185 @@ void TestProcessingGui::testLayoutItemWrapper()
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
 
+}
+
+void TestProcessingGui::testPointPanel()
+{
+  std::unique_ptr< QgsProcessingPointPanel > panel = qgis::make_unique< QgsProcessingPointPanel >( nullptr );
+  QSignalSpy spy( panel.get(), &QgsProcessingPointPanel::changed );
+
+  panel->setValue( QgsPointXY( 100, 150 ), QgsCoordinateReferenceSystem() );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "100,150" ) );
+  QCOMPARE( spy.count(), 1 );
+
+  panel->setValue( QgsPointXY( 200, 250 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "200,250 [EPSG:3111]" ) );
+  QCOMPARE( spy.count(), 2 );
+
+  QVERIFY( !panel->mLineEdit->showClearButton() );
+  panel->setAllowNull( true );
+  QVERIFY( panel->mLineEdit->showClearButton() );
+  panel->clear();
+  QVERIFY( !panel->value().isValid() );
+  QCOMPARE( spy.count(), 3 );
+
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  panel->setMapCanvas( &canvas );
+  panel->updatePoint( QgsPointXY( 1.5, -3.5 ) );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "1.5,-3.5 [EPSG:28356]" ) );
+  QCOMPARE( spy.count(), 4 );
+
+  panel.reset();
+}
+
+void TestProcessingGui::testPointWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterPoint param( QStringLiteral( "point" ), QStringLiteral( "point" ), false );
+
+    QgsProcessingPointWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "1,2", context );
+    QCOMPARE( spy.count(), 1 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "1,2" ) );
+    }
+    wrapper.setWidgetValue( "1,2 [EPSG:3111]", context );
+    QCOMPARE( spy.count(), 2 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->setText( QStringLiteral( "b" ) );
+    }
+    else
+    {
+      static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "aaaa" ) );
+    }
+    QCOMPARE( spy.count(), 3 );
+
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "point" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterPoint param2( QStringLiteral( "point" ), QStringLiteral( "point" ), QVariant(), true );
+
+    QgsProcessingPointWidgetWrapper wrapper2( &param2, type );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "1,2", context );
+    QCOMPARE( spy2.count(), 1 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2" ) );
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "1,2" ) );
+    }
+
+    wrapper2.setWidgetValue( "1,2 [EPSG:3111]", context );
+    QCOMPARE( spy2.count(), 2 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+    }
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 3 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    if ( type == QgsProcessingGui::Modeler )
+    {
+      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+    }
+    else
+    {
+      QVERIFY( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text().isEmpty() );
+    }
+    wrapper2.setWidgetValue( "1,3", context );
+    QCOMPARE( spy2.count(), 4 );
+    wrapper2.setWidgetValue( "", context );
+    QCOMPARE( spy2.count(), 5 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    if ( type == QgsProcessingGui::Modeler )
+    {
+      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+    }
+    else
+    {
+      QVERIFY( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text().isEmpty() );
+    }
+
+    // check signals
+    wrapper2.setWidgetValue( "1,3", context );
+    QCOMPARE( spy2.count(), 6 );
+    if ( type == QgsProcessingGui::Modeler )
+    {
+      static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->clear();
+    }
+    else
+    {
+      static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->clear();
+    }
+    QCOMPARE( spy2.count(), 7 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::cleanupTempDir()

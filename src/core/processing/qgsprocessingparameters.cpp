@@ -1189,10 +1189,14 @@ QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParamet
 QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   QVariant val = parameters.value( definition->name() );
+  return parameterAsPointCrs( definition, val, context );
+}
 
-  if ( val.canConvert< QgsReferencedPointXY >() )
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  if ( value.canConvert< QgsReferencedPointXY >() )
   {
-    QgsReferencedPointXY rr = val.value<QgsReferencedPointXY>();
+    QgsReferencedPointXY rr = value.value<QgsReferencedPointXY>();
     if ( rr.crs().isValid() )
     {
       return rr.crs();
@@ -1201,7 +1205,7 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsPointCrs( const
 
   QRegularExpression rx( QStringLiteral( "^\\s*\\(?\\s*(.*?)\\s*,\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*\\)?\\s*$" ) );
 
-  QString valueAsString = parameterAsString( definition, parameters, context );
+  QString valueAsString = parameterAsString( definition, value, context );
   QRegularExpressionMatch match = rx.match( valueAsString );
   if ( match.hasMatch() )
   {

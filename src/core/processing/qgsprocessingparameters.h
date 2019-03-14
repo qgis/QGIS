@@ -937,6 +937,14 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Returns the coordinate reference system associated with an point parameter value.
+     *
+     * \see parameterAsPoint()
+     * \since QGIS 3.8
+     */
+    static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a file/folder name.
      */
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );

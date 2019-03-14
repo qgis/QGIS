@@ -180,6 +180,12 @@ QgsProcessingModelChildParameterSource QgsProcessingModelerParameterWidget::valu
   return QgsProcessingModelChildParameterSource();
 }
 
+void QgsProcessingModelerParameterWidget::setDialog( QDialog *dialog )
+{
+  if ( mStaticWidgetWrapper )
+    mStaticWidgetWrapper->setDialog( dialog );
+}
+
 QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContext() const
 {
   QgsExpressionContext c = mContext.expressionContext();

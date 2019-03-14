@@ -238,6 +238,11 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
   return QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
 }
 
+void QgsAbstractProcessingParameterWidgetWrapper::setDialog( QDialog * )
+{
+
+}
+
 void QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
   if ( wrapper )
