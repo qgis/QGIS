@@ -141,6 +141,31 @@ Returns renderer settings
 Sets new renderer settings
 %End
 
+    QgsMeshTimeSettings timeSettings() const;
+%Docstring
+Returns time format settings
+
+.. versionadded:: 3.8
+%End
+
+    void setTimeSettings( const QgsMeshTimeSettings &settings );
+%Docstring
+Sets time format settings
+
+.. versionadded:: 3.8
+%End
+
+    QString formatTime( double hours );
+%Docstring
+Returns (date) time in hours formatted to human readable form
+
+:param hours: time in double in hours
+
+:return: formatted time string
+
+.. versionadded:: 3.8
+%End
+
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
 %Docstring
 Interpolates the value on the given point from given dataset.
@@ -176,6 +201,13 @@ Emitted when active scalar dataset is changed
 Emitted when active vector dataset is changed
 
 .. versionadded:: 3.4
+%End
+
+    void timeSettingsChanged( );
+%Docstring
+Emitted when time format is changed
+
+.. versionadded:: 3.8
 %End
 
   private: // Private methods

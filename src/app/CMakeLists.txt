@@ -244,6 +244,7 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
+  mesh/qgsmeshtimeformatdialog.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -470,6 +471,7 @@ SET (QGIS_APP_MOC_HDRS
   mesh/qgsmeshrendereractivedatasetwidget.h
   mesh/qgsmeshdatasetgrouptreeview.h
   mesh/qgsmeshcalculatordialog.h
+  mesh/qgsmeshtimeformatdialog.h
 )
 
 
