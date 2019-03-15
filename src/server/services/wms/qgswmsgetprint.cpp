@@ -35,22 +35,24 @@ namespace QgsWms
     QString contentType;
 
     // GetPrint supports svg/png/pdf
-    if ( format == QgsWmsParameters::PNG )
+    switch ( format )
     {
-      contentType = "image/png";
-    }
-    else if ( format == QgsWmsParameters::SVG )
-    {
-      contentType = "image/svg+xml";
-    }
-    else if ( format == QgsWmsParameters::PDF )
-    {
-      contentType = "application/pdf";
-    }
-    else
-    {
-      throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
-                                 QString( "Output format %1 is not supported by the GetPrint request" ).arg( wmsParameters.formatAsString() ) );
+      case QgsWmsParameters::PNG:
+        contentType = QStringLiteral( "image/png" );
+        break;
+      case QgsWmsParameters::JPG:
+        contentType = QStringLiteral( "image/jpeg" );
+        break;
+      case QgsWmsParameters::SVG:
+        contentType = QStringLiteral( "image/svg+xml" );
+        break;
+      case QgsWmsParameters::PDF:
+        contentType = QStringLiteral( "application/pdf" );
+        break;
+      default:
+        throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
+                                   QString( "Output format %1 is not supported by the GetPrint request" ).arg( wmsParameters.formatAsString() ) );
+        break;
     }
 
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
