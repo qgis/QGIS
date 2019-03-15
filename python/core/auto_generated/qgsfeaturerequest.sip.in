@@ -243,6 +243,17 @@ Deserialize from XML
         QSet<QString> usedAttributes() const;
 %Docstring
 Returns a set of used attributes
+
+.. note::
+
+   The returned attributes names are NOT guaranteed to be valid.
+%End
+
+        QSet<int> usedAttributeIndices( const QgsFields &fields ) const;
+%Docstring
+Returns a set of used, validated attribute indices
+
+.. versionadded:: 3.8
 %End
 
         QString dump() const;

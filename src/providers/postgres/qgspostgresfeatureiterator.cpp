@@ -186,9 +186,9 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
       QgsAttributeList attrs = mRequest.subsetOfAttributes();
-      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+      for ( int attrIndex : usedAttributeIndices )
       {
-        int attrIndex = mSource->mFields.lookupField( attr );
         if ( !attrs.contains( attrIndex ) )
           attrs << attrIndex;
       }

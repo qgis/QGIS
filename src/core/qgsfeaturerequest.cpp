@@ -485,6 +485,24 @@ QSet<QString> QgsFeatureRequest::OrderBy::usedAttributes() const
   return usedAttributes;
 }
 
+QSet<int> QgsFeatureRequest::OrderBy::usedAttributeIndices( const QgsFields &fields ) const
+{
+  QSet<int> usedAttributeIdx;
+  for ( const OrderByClause &clause : *this )
+  {
+    const auto referencedColumns = clause.expression().referencedColumns();
+    for ( const QString &fieldName : referencedColumns )
+    {
+      int idx = fields.lookupField( fieldName );
+      if ( idx >= 0 )
+      {
+        usedAttributeIdx.insert( idx );
+      }
+    }
+  }
+  return usedAttributeIdx;
+}
+
 QString QgsFeatureRequest::OrderBy::dump() const
 {
   QStringList results;
