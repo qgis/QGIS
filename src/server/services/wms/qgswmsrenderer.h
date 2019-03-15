@@ -199,9 +199,10 @@ namespace QgsWms
        * Configures map settings according to WMS parameters.
        * \param paintDevice The device that is used for painting (for dpi)
        * \param mapSettings Map settings to use for rendering
+       * \param mandatoryCrsParam does the CRS parameter has to be considered mandatory
        * may throw an exception
        */
-      void configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const;
+      void configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings, bool mandatoryCrsParam = true ) const;
 
       QDomDocument featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
                                         const QImage *outputImage, const QString &version ) const;
