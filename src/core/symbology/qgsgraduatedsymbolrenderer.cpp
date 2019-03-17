@@ -848,21 +848,20 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   return breaks.toList();
 } //_calcJenksBreaks
 
-static QList<double> _calcLogarithmicBreaks( QList<double> values, int classes,
-                                       double minimum, double maximum)
+static QList<double> _calcLogarithmicBreaks( QList<double> values, int classes, double minimum, double maximum )
 {
-    QVector<double> breaks( 0 );
-    double value = minimum;
-    breaks.reserve( classes );
-    int lg10 = floor(log10(minimum));
-    //lg10--; // just to be 1 lower
-    for ( int i = 0; i < classes; i++ )
-    {
-      value = pow(10, lg10++);
-      breaks.append( value );
-    }
+  QVector<double> breaks( 0 );
+  double value = minimum;
+  breaks.reserve( classes );
+  int lg10 = floor( log10( minimum ) );
+  //lg10--; // just to be 1 lower
+  for ( int i = 0; i < classes; i++ )
+  {
+    value = pow( 10, lg10++ );
+    breaks.append( value );
+  }
 
-    return breaks.toList();
+  return breaks.toList();
 
 } //_calcLogarithmicBreaks
 
@@ -1026,8 +1025,9 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
         label = QString::number( labels[i - 1], 'f', 2 ) + " Std Dev" + " - " + QString::number( labels[i], 'f', 2 ) + " Std Dev";
       }
     }
-    else if ( mode == Logarithmic ) {
-        label = QString::number( lower, 'E', 0 ) + " - " + QString::number( upper, 'E', 1 );
+    else if ( mode == Logarithmic )
+    {
+      label = QString::number( lower, 'E', 0 ) + " - " + QString::number( upper, 'E', 0 );
     }
     else
     {

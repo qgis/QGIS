@@ -656,7 +656,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     case QgsGraduatedSymbolRenderer::Quantile:
     case QgsGraduatedSymbolRenderer::Jenks:
     case QgsGraduatedSymbolRenderer::Custom:
-    case QgsGraduatedSymbolRenderer::Logarithmic:  // TODO: sure about this?
+    case QgsGraduatedSymbolRenderer::Logarithmic:
     {
       mGroupBoxSymmetric->setVisible( false );
       cbxAstride->setVisible( false );
@@ -921,18 +921,19 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
     case QgsGraduatedSymbolRenderer::Logarithmic:
     {
-       if (minimum <= 0){
-          int result = QMessageBox::warning(
-                         this,
-                         tr( "There is/are value(s) in your data <= zero. " ),
-                         tr( "Logarithmic mode cannot be used." ),
-                         QMessageBox::Ok );
-          if ( result != QMessageBox::Ok )
-          {
-            // set back too ???
-            //cboGraduatedMode->set
-            return;
-          }
+      if ( minimum <= 0 )
+      {
+        int result = QMessageBox::warning(
+                       this,
+                       tr( "Logarithmic mode cannot be used." ),
+                       tr( "There is/are value(s) in your data <= zero.\nColumn: '%1' contains: %2 " ).arg( attrName, QString::number( minimum ) ),
+                       QMessageBox::Ok );
+        if ( result == QMessageBox::Ok )
+        {
+          // set back too ???
+          //cboGraduatedMode
+          return;
+        }
       }
       mode = QgsGraduatedSymbolRenderer::Logarithmic;
       break;
