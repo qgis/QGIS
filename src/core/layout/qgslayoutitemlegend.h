@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     /**
      * Set the pointer to the layoutlegend expressioncontext
      * \param econtext pointer to the context
-     * \since: 3.8
+     * \since QGIS 3.8
      */
     void setLayoutExpContext( QgsExpressionContext *econtext );
 
