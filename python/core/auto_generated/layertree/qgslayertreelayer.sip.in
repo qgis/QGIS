@@ -113,14 +113,14 @@ Resolves reference to layer from stored layer ID (if it has not been resolved al
 %Docstring
 set the expression to evaluate
 
-\since: 3.8
+.. versionadded:: 3.8
 %End
 
     QString expression() const;
 %Docstring
 Returns the expression member of the LayerTreeNode
 
-\since: 3.8
+.. versionadded:: 3.8
 %End
 
   signals:
