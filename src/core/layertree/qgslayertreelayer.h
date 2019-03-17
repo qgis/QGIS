@@ -118,14 +118,14 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     /**
      * set the expression to evaluate
      *
-     * \since: 3.8
+     * \since QGIS 3.8
      */
     void setExpression( const QString &expression );
 
     /**
      * Returns the expression member of the LayerTreeNode
      *
-     * \since: 3.8
+     * \since QGIS 3.8
      */
     QString expression() const { return mExpression; }
 
