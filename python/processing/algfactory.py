@@ -426,6 +426,7 @@ class ProcessingAlgFactory():
             alg.SOURCE: QgsProcessingParameterFeatureSource
             alg.FILE_DEST: QgsProcessingParameterFileDestination
             alg.FOLDER_DEST: QgsProcessingParameterFolderDestination
+            alg.RASTER_LAYER: QgsProcessingParameterRasterLayer
             alg.RASTER_LAYER_DEST: QgsProcessingParameterRasterDestination
             alg.VECTOR_LAYER_DEST: QgsProcessingParameterVectorDestination
             alg.BAND: QgsProcessingParameterBand
