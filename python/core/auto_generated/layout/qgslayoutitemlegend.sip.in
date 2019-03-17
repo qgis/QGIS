@@ -40,6 +40,7 @@ Construct the model based on the given layer tree
 Set the pointer to the layoutlegend expressioncontext
 
 :param econtext: pointer to the context
+
 .. versionadded:: 3.8
 %End
 
