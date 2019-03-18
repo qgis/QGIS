@@ -70,8 +70,10 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mErrorLocationRubberband->setColor( QColor( 50, 255, 50, 255 ) );
 
   mProblemDetailWidget->setVisible( false );
-}
 
+  // Problem resolution is unstable and therefore disabled by default
+  mResolutionWidget->setVisible( QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ) == QLatin1String( "true" ) );
+}
 
 QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel() const
 {
