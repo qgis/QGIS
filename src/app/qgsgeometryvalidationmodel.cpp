@@ -191,12 +191,18 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case ErrorLocationGeometryRole:
       {
+        if ( featureItem.errors.empty() )
+          return QVariant();
+
         QgsSingleGeometryCheckError *error = featureItem.errors.first().get();
         return error->errorLocation();
       }
 
       case ProblemExtentRole:
       {
+        if ( featureItem.errors.empty() )
+          return QVariant();
+
         QgsSingleGeometryCheckError *error = featureItem.errors.first().get();
         return error->errorLocation().boundingBox();
       }
