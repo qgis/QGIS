@@ -22,6 +22,7 @@
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
+#include <mutex>
 #endif
 
 QReadWriteLock QgsEllipsoidUtils::sEllipsoidCacheLock;
@@ -31,6 +32,15 @@ QList< QgsEllipsoidUtils::EllipsoidDefinition > QgsEllipsoidUtils::sDefinitionCa
 
 QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( const QString &ellipsoid )
 {
+#if PROJ_VERSION_MAJOR >= 6
+  // ensure ellipsoid database is populated when first called
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
+  {
+    ( void )definitions();
+  } );
+#endif
+
   // check cache
   sEllipsoidCacheLock.lockForRead();
   QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache.constFind( ellipsoid );
@@ -73,7 +83,9 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     return params;
   }
 
+#if PROJ_VERSION_MAJOR< 6
   // cache miss - get from database
+  // NOT REQUIRED FOR PROJ >= 6 -- we populate known types once by calling definitions() above
 
   QString radius, parameter2;
   //
@@ -177,6 +189,13 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   sEllipsoidCache.insert( ellipsoid, params );
   sEllipsoidCacheLock.unlock();
   return params;
+#else
+  params.valid = false;
+  sEllipsoidCacheLock.lockForWrite();
+  sEllipsoidCache.insert( ellipsoid, params );
+  sEllipsoidCacheLock.unlock();
+  return params;
+#endif
 }
 
 QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
@@ -194,6 +213,8 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   QList<QgsEllipsoidUtils::EllipsoidDefinition> defs;
 
 #if PROJ_VERSION_MAJOR>=6
+  sEllipsoidCacheLock.lockForWrite();
+
   // use proj to get ellipsoids
   const PJ_ELLPS *ellipsoid = proj_list_ellps();
   while ( ellipsoid->name )
@@ -218,13 +239,26 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
     }
 
     QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +ellps=%1 +no_defs" ).arg( def.acronym ) );
-    if ( crs.isValid() )
-      def.parameters.crs = crs;
+    if ( crs.srsid() == 0 )
+    {
+      //TODO: createFromProj4 used to save to the user database any new CRS
+      // this behavior was changed in order to separate creation and saving.
+      // Not sure if it necessary to save it here, should be checked by someone
+      // familiar with the code (should also give a more descriptive name to the generated CRS)
+      QString name = QStringLiteral( " * %1 (%2)" )
+                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
+                           crs.toProj4() );
+      crs.saveAsUserCrs( name );
+    }
+    def.parameters.crs = crs;
 
     defs << def;
 
+    sEllipsoidCache.insert( QString( ellipsoid->id ), def.parameters );
+
     ellipsoid++;
   }
+  sEllipsoidCacheLock.unlock();
 
 
 #else
