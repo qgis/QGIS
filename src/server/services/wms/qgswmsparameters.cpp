@@ -1502,12 +1502,12 @@ namespace QgsWms
   {
     QList<QgsWmsParametersExternalLayer> externalLayers;
 
-    for ( const QString &layer : allLayersNickname() )
-    {
-      if ( ! isExternalLayer( layer ) )
-        continue;
+    QStringList layers = allLayersNickname();
+    QStringList::const_iterator rit = std::remove_if( layers.begin(), layers.end(), QgsWmsParameters::isExternalLayer );
 
-      externalLayers << externalLayerParameter( layer );
+    for ( QStringList::const_iterator it = layers.begin(); it != rit; ++it )
+    {
+      externalLayers << externalLayerParameter( *it );
     }
 
     return externalLayers;
@@ -1813,7 +1813,7 @@ namespace QgsWms
     return param;
   }
 
-  bool QgsWmsParameters::isExternalLayer( const QString &name ) const
+  bool QgsWmsParameters::isExternalLayer( const QString &name )
   {
     return name.startsWith( EXTERNAL_LAYER_PREFIX );
   }

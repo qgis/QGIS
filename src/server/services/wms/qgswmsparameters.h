@@ -1178,6 +1178,8 @@ namespace QgsWms
       QStringList atlasPk() const;
 
     private:
+      static bool isExternalLayer( const QString &name );
+
       bool loadParameter( const QString &name, const QString &value ) override;
 
       void save( const QgsWmsParameter &parameter, bool multi = false );
@@ -1187,7 +1189,6 @@ namespace QgsWms
       void raiseError( const QString &msg ) const;
       void log( const QString &msg ) const;
 
-      bool isExternalLayer( const QString &name ) const;
       QgsWmsParametersExternalLayer externalLayerParameter( const QString &name ) const;
 
       QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
