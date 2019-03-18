@@ -90,4 +90,21 @@ class CORE_EXPORT QgsProcessingException : public QgsException
 
 };
 
+/**
+ * \class OwnershipException
+ * \ingroup core
+ * Custom exception class for object ownership issues.
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT OwnershipException : public QgsException
+{
+  public:
+
+    /**
+     * Constructor for OwnershipException, with the specified error \a message.
+     */
+    OwnershipException( const QString &message ) : QgsException( message ) {}
+
+};
+
 #endif

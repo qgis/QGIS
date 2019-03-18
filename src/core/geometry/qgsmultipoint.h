@@ -40,7 +40,32 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
     int nCoordinates() const override;
+#ifndef SIP_RUN
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+#else
+    bool addGeometry( QgsAbstractGeometry *g ) SIP_TYPEHINT( bool );
+    % MethodCode
+    PyObject *obj = sipConvertFromType( a0, sipType_QgsAbstractGeometry, NULL );
+    if ( !sipIsPyOwned( ( sipSimpleWrapper * )obj ) )
+    {
+      PyErr_SetString( sipException_OwnershipException, "Geometry is already owned by another c++ object. Use .clone() to add a deep copy of the geometry to this multipoint." );
+      sipIsErr = 1;
+      Py_DECREF( obj );
+    }
+    else
+    {
+      bool res = sipCpp->addGeometry( a0 );
+      if ( res )
+      {
+        PyObject *owner = sipConvertFromType( sipCpp, sipType_QgsAbstractGeometry, NULL );
+        sipTransferTo( obj,  owner );
+      }
+      //Py_DECREF( obj );
+      return PyBool_FromLong( res );
+    }
+
+    % End
+#endif
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
