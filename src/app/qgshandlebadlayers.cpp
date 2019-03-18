@@ -361,14 +361,6 @@ void QgsHandleBadLayers::apply()
 {
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
   buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
-  QList<QgsMapLayer *> toRemove;
-  for ( const auto &l : QgsProject::instance()->mapLayers( ) )
-  {
-    if ( ! l->isValid() )
-      toRemove << l;
-  }
-
-  QgsProject::instance()->removeMapLayers( toRemove );
 
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
@@ -378,20 +370,60 @@ void QgsHandleBadLayers::apply()
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
 
-    node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
-    if ( QgsProject::instance()->readLayer( node ) )
+    bool dataSourceChanged { false };
+    const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+    const QString provider { node.namedItem( QStringLiteral( "provider" ) ).toElement().text() };
+    const QString name { mLayerList->item( i, 0 )->text() };
+
+    // Try first to change the datasource of the existing layers, this will
+    // maintain the current status (checked/unchecked) and group
+    if ( QgsProject::instance()->mapLayer( layerId ) )
+    {
+      QgsDataProvider::ProviderOptions options;
+      QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
+      if ( mapLayer )
+      {
+        mapLayer->setDataSource( datasource, name, provider, options );
+        dataSourceChanged = mapLayer->isValid();
+      }
+    }
+
+    // If the data source was changed successfully, remove the bad layer from the dialog
+    // otherwise, try to set the new datasource in the XML node and reload the layer,
+    // finally marks with red all remaining bad layers.
+    if ( dataSourceChanged )
     {
       mLayerList->removeRow( i-- );
     }
     else
     {
-      item->setForeground( QBrush( Qt::red ) );
+      node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
+      if ( QgsProject::instance()->readLayer( node ) )
+      {
+        mLayerList->removeRow( i-- );
+      }
+      else
+      {
+        item->setForeground( QBrush( Qt::red ) );
+      }
     }
   }
-  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
 
+  // Final cleanup: remove any bad layer (it should not be any btw)
   if ( mLayerList->rowCount() == 0 )
+  {
+    QList<QgsMapLayer *> toRemove;
+    const auto mapLayers = QgsProject::instance()->mapLayers();
+    for ( const auto &l : mapLayers )
+    {
+      if ( ! l->isValid() )
+        toRemove << l;
+    }
+    QgsProject::instance()->removeMapLayers( toRemove );
     accept();
+  }
+
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
 
 }
 
