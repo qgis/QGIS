@@ -265,8 +265,6 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
 
   if ( mCurrentLayer )
   {
-    disconnect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
-    disconnect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     disconnect( mCurrentLayer, &QgsVectorLayer::destroyed, this, &QgsGeometryValidationDock::onLayerDestroyed );
   }
 
@@ -274,29 +272,7 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
 
   if ( mCurrentLayer )
   {
-    connect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
-    connect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     connect( mCurrentLayer, &QgsVectorLayer::destroyed, this, &QgsGeometryValidationDock::onLayerDestroyed );
-  }
-
-  onLayerEditingStatusChanged();
-}
-
-void QgsGeometryValidationDock::onLayerEditingStatusChanged()
-{
-  bool enabled = false;
-  if ( mCurrentLayer && mCurrentLayer->isSpatial() && mCurrentLayer->isEditable() )
-  {
-    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mCurrentLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
-    const QStringList activeChecks = mCurrentLayer->geometryOptions()->geometryChecks();
-    for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
-    {
-      if ( activeChecks.contains( factory->id() ) )
-      {
-        enabled = true;
-        break;
-      }
-    }
   }
 }
 
