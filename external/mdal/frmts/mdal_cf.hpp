@@ -41,10 +41,6 @@ namespace MDAL
       size_t size( Type type ) const;
       //! Sets a dimension
       void setDimension( Type type, size_t count, int ncid = -1 );
-      //! Returns number of faces (1D + 2D)
-      size_t faceCount() const;
-      //! Returns number of vertices (1D + 2D)
-      size_t vertexCount() const;
       //! Returns whether the type is one that case be used for datasets definition
       bool isDatasetType( Type type ) const;
 

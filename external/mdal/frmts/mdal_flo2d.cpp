@@ -502,23 +502,6 @@ void MDAL::DriverFlo2D::createMesh( const std::vector<CellCenter> &cells, double
   mMesh->vertices = vertices;
 }
 
-bool MDAL::DriverFlo2D::isFlo2DFile( const std::string &fileName )
-{
-  std::vector<std::string> required_files =
-  {
-    "CADPTS.DAT",
-    "FPLAIN.DAT"
-  };
-
-  for ( const std::string &str : required_files )
-  {
-    std::string fn( fileNameFromDir( fileName, str ) );
-    if ( !fileExists( fn ) )
-      return false;
-  }
-  return true;
-}
-
 bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
 {
   //return true on error

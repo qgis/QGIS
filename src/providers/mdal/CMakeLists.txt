@@ -19,6 +19,7 @@ ENDIF ()
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/external/mdal/cmake ${CMAKE_MODULE_PATH})
 FIND_PACKAGE(HDF5)
 FIND_PACKAGE(NetCDF)
+FIND_PACKAGE(LibXml2)
 
 ########################################################
 # Compile internal MDAL
@@ -109,6 +110,19 @@ IF (WITH_INTERNAL_MDAL)
     )
   ENDIF(GDAL_FOUND AND NETCDF_FOUND)
 
+  IF(HDF5_FOUND AND LIBXML2_FOUND)
+    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xml.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xdmf.cpp
+    )
+    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xml.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xdmf.hpp
+    )
+    SET (HAVE_XML TRUE)
+  ENDIF(HDF5_FOUND AND LIBXML2_FOUND)
+
+
   # create mdal_config.h
   CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/external/mdal/cmake_templates/mdal_config.hpp.in ${CMAKE_BINARY_DIR}/mdal_config.hpp)
   INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
@@ -169,6 +183,12 @@ IF (NETCDF_FOUND)
   TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${NETCDF_INCLUDE_DIR})
   TARGET_LINK_LIBRARIES(mdalprovider ${NETCDF_LIBRARY} )
 ENDIF (NETCDF_FOUND)
+
+IF (LIBXML2_FOUND)
+  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${LIBXML2_INCLUDE_DIR})
+  TARGET_LINK_LIBRARIES(mdalprovider ${LIBXML2_LIBRARIES} )
+  TARGET_COMPILE_DEFINITIONS(mdalprovider PRIVATE ${LIBXML2_DEFINITIONS})
+ENDIF (LIBXML2_FOUND)
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)
