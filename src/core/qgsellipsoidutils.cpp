@@ -263,6 +263,12 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
 
 #endif
 
+  QCollator collator;
+  collator.setCaseSensitivity( Qt::CaseInsensitive );
+  std::sort( defs.begin(), defs.end(), [&collator]( const EllipsoidDefinition & a, const EllipsoidDefinition & b )
+  {
+    return collator.compare( a.acronym, b.acronym ) < 0;
+  } );
   sDefinitionCache = defs;
   sDefinitionCacheLock.unlock();
 
