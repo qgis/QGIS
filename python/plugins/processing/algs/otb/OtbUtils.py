@@ -39,6 +39,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from qgis.core import (Qgis, QgsApplication, QgsMessageLog)
 from qgis.PyQt.QtCore import QCoreApplication
 
+
 class OtbUtils:
     # Checkbox to enable/disable otb provider (bool).
     ACTIVATE = "OTB_ACTIVATE"
@@ -192,12 +193,13 @@ class OtbUtils:
                     except:
                         pass
                 else:
-
                     if feedback is None:
                         QgsMessageLog.logMessage(line, OtbUtils.tr('Processing'), Qgis.Info)
                     else:
-                        if any([l in line for l in ['(WARNING)', '(FATAL)', 'ERROR']]):
-                            feedback.reportError(line)
+                        if any([l in line for l in ['(WARNING)', 'WARNING:']]):
+                            feedback.reportError(line, False)
+                        elif any([l in line for l in ['(FATAL)', 'ERROR:', 'ERROR']]):
+                            feedback.reportError(line, True)
                         else:
                             feedback.pushConsoleInfo(line.strip())
 
