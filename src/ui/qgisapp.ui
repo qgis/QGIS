@@ -427,6 +427,7 @@
    </attribute>
    <addaction name="mActionAddOgrLayer"/>
    <addaction name="mActionAddRasterLayer"/>
+   <addaction name="mActionAddMeshLayer"/>
    <addaction name="mActionAddDelimitedText"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddVirtualLayer"/>
