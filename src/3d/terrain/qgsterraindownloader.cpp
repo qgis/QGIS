@@ -73,7 +73,7 @@ double QgsTerrainDownloader::findBestTileResolution( double requestedMupp )
 
 void QgsTerrainDownloader::tileImageToHeightMap( const QImage &img, QByteArray &heightMap )
 {
-  // assuming ARGB preformatted but with alpha 255
+  // assuming ARGB premultiplied but with alpha 255
   const QRgb *rgb = reinterpret_cast<const QRgb *>( img.constBits() );
   int count = img.width() * img.height();
   heightMap.resize( sizeof( float ) * count );
