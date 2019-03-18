@@ -149,10 +149,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       bool mEditableEnabled =  true ;
       bool mLabelOnTop =  false ;
       QgsFieldConstraints mFieldConstraints;
-      QgsFieldConstraints::Constraints mConstraints = nullptr;
-      QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
-      QString mConstraint;
-      QString mConstraintDescription;
       QPushButton *mButton = nullptr;
       QString mEditorWidgetType;
       QMap<QString, QVariant> mEditorWidgetConfig;
