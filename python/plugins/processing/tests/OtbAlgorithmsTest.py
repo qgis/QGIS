@@ -34,6 +34,7 @@ import nose2
 import tempfile
 from qgis.core import (QgsProcessingParameterNumber,
                        QgsApplication,
+                       QgsRasterLayer,
                        QgsMapLayer,
                        QgsProject,
                        QgsProcessingContext,
@@ -57,6 +58,68 @@ OTB_INSTALL_DIR = os.environ.get('OTB_INSTALL_DIR')
 
 
 class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+
+    @staticmethod
+    def __input_raster_layer():
+        options = QgsRasterLayer.LayerOptions()
+        options.loadDefaultStyle = False
+        return QgsRasterLayer(os.path.join(AlgorithmsTestBase.processingTestDataPath(), 'raster.tif'),
+                              "raster_input",
+                              'gdal',
+                              options)
+
+    def test_bug21373_mode_vector(self):
+        """
+        This issue is reported on qgis bug tracker: #21373
+        This issue is reported on qgis-otb-plugin tracker: #30
+        """
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = QgsProcessingFeedback()
+        parameters = {
+            'in': TestOtbAlgorithms.__input_raster_layer(),
+            'filter': 'meanshift',
+            'mode.vector.out': 'vector.shp'
+        }
+        alg = OtbAlgorithm('Segmentation', 'Segmentation', os.path.join(self.descrFolder, 'Segmentation.txt'))
+        results = alg.processAlgorithm(parameters, context, feedback)
+        self.assertDictEqual(results, {'mode.vector.out': 'vector.shp'})
+
+    def test_bug21373_mode_raster(self):
+        """
+        This issue is reported on qgis bug tracker: #21373
+        """
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = QgsProcessingFeedback()
+        parameters = {
+            'in': TestOtbAlgorithms.__input_raster_layer(),
+            'filter': 'meanshift',
+            'mode': 'raster',
+            'mode.raster.out': 'raster.tif'
+        }
+        alg = OtbAlgorithm('Segmentation', 'Segmentation', os.path.join(self.descrFolder, 'Segmentation.txt'))
+        results = alg.processAlgorithm(parameters, context, feedback)
+        self.assertDictEqual(results, {'mode.raster.out': 'raster.tif'})
+
+    def test_bug21374_Fail(self):
+        """
+        This issue is reported on qgis bug tracker: #21374
+        """
+        outdir = tempfile.mkdtemp()
+        self.cleanup_paths.append(outdir)
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = QgsProcessingFeedback()
+        parameters = {
+            'in': TestOtbAlgorithms.__input_raster_layer(),
+            'filter': 'cc',
+            'mode.vector.out': os.path.join(outdir, 'vector.shp')
+        }
+
+        alg = OtbAlgorithm('Segmentation', 'Segmentation', os.path.join(self.descrFolder, 'Segmentation.txt'))
+        ok, msg = alg.checkParameterValues(parameters, context)
+        self.assertFalse(ok, 'Algorithm failed checkParameterValues with result {}'.format(msg))
 
     def test_init_algorithms(self):
         """
