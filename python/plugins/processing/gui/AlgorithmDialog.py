@@ -165,9 +165,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     parameters[param.name()] = value
                     if param.isDestination():
                         context = dataobjects.createContext()
+                        #TODO: could we ignore below check if parameter is optional?
                         ok, error = self.algorithm().provider().isSupportedOutputValue(value, param, context)
                         if not ok:
-                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
+                            if not param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                                raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
 
         return self.algorithm().preprocessParameters(parameters)
 
