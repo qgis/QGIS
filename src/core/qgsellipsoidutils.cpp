@@ -18,6 +18,11 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include <sqlite3.h>
+#include <QCollator>
+
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#endif
 
 QReadWriteLock QgsEllipsoidUtils::sEllipsoidCacheLock;
 QHash< QString, QgsEllipsoidUtils::EllipsoidParameters > QgsEllipsoidUtils::sEllipsoidCache;
@@ -186,11 +191,46 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   sDefinitionCacheLock.unlock();
 
   sDefinitionCacheLock.lockForWrite();
+  QList<QgsEllipsoidUtils::EllipsoidDefinition> defs;
+
+#if PROJ_VERSION_MAJOR>=6
+  // use proj to get ellipsoids
+  const PJ_ELLPS *ellipsoid = proj_list_ellps();
+  while ( ellipsoid->name )
+  {
+    EllipsoidDefinition def;
+    def.acronym = ellipsoid->id ;
+    def.description = ellipsoid->name;
+    const QString majorString( ellipsoid->major );
+    def.parameters.semiMajor = majorString.midRef( 2 ).toDouble();
+    const QString minorString( ellipsoid->ell );
+    if ( minorString.startsWith( 'b' ) )
+    {
+      // b= style
+      def.parameters.semiMinor = minorString.midRef( 2 ).toDouble();
+      def.parameters.inverseFlattening = def.parameters.semiMajor / ( def.parameters.semiMajor - def.parameters.semiMinor );
+    }
+    else
+    {
+      // rf= style
+      def.parameters.inverseFlattening = minorString.midRef( 2 ).toDouble();
+      def.parameters.semiMinor = def.parameters.semiMajor  * ( 1 - def.parameters.inverseFlattening );
+    }
+
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +ellps=%1 +no_defs" ).arg( def.acronym ) );
+    if ( crs.isValid() )
+      def.parameters.crs = crs;
+
+    defs << def;
+
+    ellipsoid++;
+  }
+
+
+#else
   sqlite3_database_unique_ptr database;
   sqlite3_statement_unique_ptr statement;
   int result;
-
-  QList<QgsEllipsoidUtils::EllipsoidDefinition> defs;
 
   //check the db is available
   result = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
@@ -220,6 +260,8 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
       defs << def;
     }
   }
+
+#endif
 
   sDefinitionCache = defs;
   sDefinitionCacheLock.unlock();
