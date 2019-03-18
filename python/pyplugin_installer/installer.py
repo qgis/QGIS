@@ -43,7 +43,7 @@ from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDi
 from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
 from .qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
 from .unzip import unzip
-from .qgsplugindependencies import find_dependencies
+from .plugindependencies import find_dependencies
 from .qgsplugindependenciesdialog import QgsPluginDependenciesDialog
 
 

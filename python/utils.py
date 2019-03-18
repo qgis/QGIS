@@ -282,6 +282,7 @@ def updateAvailablePlugins():
     available_plugins = plugins
     global plugins_metadata_parser
     plugins_metadata_parser = metadata_parser
+    return metadata_parser
 
 
 def pluginMetadata(packageName, fct):

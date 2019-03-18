@@ -9,8 +9,8 @@ SET(PY_PLUGININSTALLER_FILES
     qgsplugininstallerpluginerrordialog.py
     qgsplugininstallerfetchingdialog.py
     qgsplugininstallerrepositorydialog.py
-    qgsplugindependencies.py
     qgsplugindependenciesdialog.py
+    plugindependencies.py
     unzip.py
     version_compare.py
 )
