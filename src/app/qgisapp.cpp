@@ -352,7 +352,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 //
 #include <ogr_api.h>
 #include <gdal_version.h>
-#ifdef PROJ_HAS_INFO
+#if PROJ_VERSION_MAJOR > 4
 #include <proj.h>
 #endif
 #ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
@@ -4509,7 +4509,7 @@ void QgisApp::about()
 
     versionString += QLatin1String( "</tr><tr>" );
 
-#ifdef PROJ_HAS_INFO
+#if PROJ_VERSION_MAJOR > 4
     PJ_INFO info = proj_info();
     versionString += "<td>" + tr( "Compiled against PROJ" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
     versionString += "<td>" + tr( "Running against PROJ" ) + "</td><td>" + info.version + "</td>";
