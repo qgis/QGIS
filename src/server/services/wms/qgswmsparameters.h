@@ -176,7 +176,9 @@ namespace QgsWms
         WITH_MAPTIP,
         WMTVER,
         ATLAS_PK,
-        FORMAT_OPTIONS
+        FORMAT_OPTIONS,
+        SRCWIDTH,
+        SRCHEIGHT
       };
       Q_ENUM( Name )
 
@@ -389,6 +391,50 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       int heightAsInt() const;
+
+      /**
+       * Returns SRCWIDTH parameter or an empty string if not defined.
+       * \returns srcWidth parameter
+       */
+      QString srcWidth() const;
+
+      /**
+       * Returns SRCWIDTH parameter as an int or its default value if not
+       * defined. An exception is raised if SRCWIDTH is defined and cannot be
+       * converted.
+       * \returns srcWidth parameter
+       * \throws QgsBadRequestException
+       */
+      int srcWidthAsInt() const;
+
+      /**
+       * Returns SRCHEIGHT parameter or an empty string if not defined.
+       * \returns srcHeight parameter
+       */
+      QString srcHeight() const;
+
+      /**
+       * Returns SRCHEIGHT parameter as an int or its default value if not
+       * defined. An exception is raised if SRCHEIGHT is defined and cannot be
+       * converted.
+       * \returns srcHeight parameter
+       * \throws QgsBadRequestException
+       */
+      int srcHeightAsInt() const;
+
+      /**
+       * Returns SRCHEIGHT parameter if it's a GetLegendGraphics request and otherwise HEIGHT parameter
+       *
+       * \returns getHeightAsInt parameter
+       */
+      int getHeightAsInt() const;
+
+      /**
+       * Returns SRCWIDTH parameter if it's a GetLegendGraphics request and otherwise WIDTH parameter
+       *
+       * \returns getWidthAsInt parameter
+       */
+      int getWidthAsInt() const;
 
       /**
        * Returns VERSION parameter if defined or its default value.

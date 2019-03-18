@@ -363,6 +363,16 @@ namespace QgsWms
                                   QVariant( 0 ) );
     save( pWidth );
 
+    const QgsWmsParameter pSrcHeight( QgsWmsParameter::SRCHEIGHT,
+                                      QVariant::Int,
+                                      QVariant( 0 ) );
+    save( pSrcHeight );
+
+    const QgsWmsParameter pSrcWidth( QgsWmsParameter::SRCWIDTH,
+                                     QVariant::Int,
+                                     QVariant( 0 ) );
+    save( pSrcWidth );
+
     const QgsWmsParameter pBbox( QgsWmsParameter::BBOX );
     save( pBbox );
 
@@ -684,6 +694,42 @@ namespace QgsWms
   int QgsWmsParameters::widthAsInt() const
   {
     return mWmsParameters[ QgsWmsParameter::WIDTH ].toInt();
+  }
+
+  QString QgsWmsParameters::srcHeight() const
+  {
+    return mWmsParameters[ QgsWmsParameter::SRCHEIGHT ].toString();
+  }
+
+  QString QgsWmsParameters::srcWidth() const
+  {
+    return mWmsParameters[ QgsWmsParameter::SRCWIDTH ].toString();
+  }
+
+  int QgsWmsParameters::srcHeightAsInt() const
+  {
+    return mWmsParameters[ QgsWmsParameter::SRCHEIGHT ].toInt();
+  }
+
+  int QgsWmsParameters::srcWidthAsInt() const
+  {
+    return mWmsParameters[ QgsWmsParameter::SRCWIDTH ].toInt();
+  }
+
+  int QgsWmsParameters::getHeightAsInt() const
+  {
+    if ( request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) != 0 &&
+         request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) != 0 )
+      return heightAsInt();
+    return srcHeightAsInt();
+  }
+
+  int QgsWmsParameters::getWidthAsInt() const
+  {
+    if ( request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) != 0 &&
+         request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) != 0 )
+      return widthAsInt();
+    return srcWidthAsInt();
   }
 
   QString QgsWmsParameters::dpi() const
