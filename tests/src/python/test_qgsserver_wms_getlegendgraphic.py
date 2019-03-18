@@ -495,6 +495,42 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
 
+    def test_wms_GetLegendGraphic_BBox_Fallback(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello,db_point",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "BBOX": "-151.7,-38.9,51.0,78.0",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox")
+
+    def test_wms_GetLegendGraphic_BBox2_Fallback(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello,db_point",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "BBOX": "-76.08,-6.4,-19.38,38.04",
+            "SRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
+
     def test_wms_GetLegendGraphic_EmptyLegend(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": self.testdata_path + 'test_project_contextual_legend.qgs',

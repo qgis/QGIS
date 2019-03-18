@@ -718,18 +718,17 @@ namespace QgsWms
 
   int QgsWmsParameters::getHeightAsInt() const
   {
-    if ( request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) != 0 &&
-         request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) != 0 )
-      return heightAsInt();
-    return srcHeightAsInt();
+    if ( QStringList( { QStringLiteral( "GetLegendGraphic" ), QStringLiteral( "GetLegendGraphics" ) } ).contains( request() ) && srcHeightAsInt() > 0 )
+      return srcHeightAsInt();
+    return heightAsInt();
   }
 
   int QgsWmsParameters::getWidthAsInt() const
   {
-    if ( request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) != 0 &&
-         request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) != 0 )
-      return widthAsInt();
-    return srcWidthAsInt();
+
+    if ( QStringList( { QStringLiteral( "GetLegendGraphic" ), QStringLiteral( "GetLegendGraphics" ) } ).contains( request() ) && srcWidthAsInt() > 0 )
+      return srcWidthAsInt();
+    return widthAsInt();
   }
 
   QString QgsWmsParameters::dpi() const
