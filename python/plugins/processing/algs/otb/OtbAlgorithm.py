@@ -55,6 +55,7 @@ from processing.core.parameters import getParameterFromString
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
 from processing.algs.otb.OtbUtils import OtbUtils
 
+
 class OtbAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self, group, name, descriptionfile, display_name='', groupId=''):
@@ -204,7 +205,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         outputPixelType = None
         for k, v in parameters.items():
             # if value is None for a parameter we don't have any businees with this key
-            if v is None:
+            if not v or v is None:
                 continue
             # for 'outputpixeltype' parameter we find the pixeltype string from self.pixelTypes
             if k == 'outputpixeltype':
@@ -257,11 +258,12 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
         for out in self.destinationParameterDefinitions():
             filePath = self.parameterAsOutputLayer(parameters, out.name(), context)
-            output_files[out.name()] = filePath
-            if outputPixelType is not None:
-                command += ' -{} "{}" "{}"'.format(out.name(), filePath, outputPixelType)
-            else:
-                command += ' -{} "{}"'.format(out.name(), filePath)
+            if filePath:
+                output_files[out.name()] = filePath
+                if outputPixelType is not None:
+                    command += ' -{} "{}" "{}"'.format(out.name(), filePath, outputPixelType)
+                else:
+                    command += ' -{} "{}"'.format(out.name(), filePath)
 
         OtbUtils.executeOtb(command, feedback)
 
