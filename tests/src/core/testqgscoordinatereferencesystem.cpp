@@ -894,7 +894,7 @@ void TestQgsCoordinateReferenceSystem::projectEPSG25833()
   QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
   QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/epsg25833.qgs" ) ) );
   QVERIFY( p.crs().isValid() );
-  QVERIFY( p.crs().authid() == QStringLiteral( "EPSG:25833" ) );
+  QCOMPARE( p.crs().authid(), QStringLiteral( "EPSG:25833" ) );
   QCOMPARE( spyCrsChanged.count(), 1 );
 }
 
