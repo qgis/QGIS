@@ -38,6 +38,7 @@ typedef void PJ_CONTEXT;
  * \ingroup core
  * Used to create and store a proj context object, correctly freeing the context upon destruction.
  * \note Not available in Python bindings
+ * \since QGIS 3.8
  */
 class CORE_EXPORT QgsProjContext
 {
