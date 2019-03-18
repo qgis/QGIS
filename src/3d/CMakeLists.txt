@@ -46,6 +46,8 @@ SET(QGIS_3D_SRCS
   terrain/qgsdemterraintilegeometry_p.cpp
   terrain/qgsdemterraintileloader_p.cpp
   terrain/qgsflatterraingenerator.cpp
+  terrain/qgsonlineterraingenerator.cpp
+  terrain/qgsterraindownloader.cpp
   terrain/qgsterrainentity_p.cpp
   terrain/qgsterraingenerator.cpp
   terrain/qgsterraintexturegenerator_p.cpp
@@ -130,6 +132,8 @@ SET(QGIS_3D_HDRS
   terrain/qgsdemterraingenerator.h
   terrain/qgsdemterraintilegeometry_p.h
   terrain/qgsdemterraintileloader_p.h
+  terrain/qgsonlineterraingenerator.h
+  terrain/qgsterraindownloader.h
   terrain/qgsterrainentity_p.h
   terrain/qgsterraingenerator.h
   terrain/qgsterraintexturegenerator_p.h

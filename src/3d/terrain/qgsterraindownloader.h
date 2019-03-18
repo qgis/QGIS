@@ -1,0 +1,76 @@
+/***************************************************************************
+  qgsterraindownloader.h
+  --------------------------------------
+  Date                 : March 2019
+  Copyright            : (C) 2019 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSTERRAINDOWNLOADER_H
+#define QGSTERRAINDOWNLOADER_H
+
+#include "qgis_3d.h"
+
+#include <memory>
+#include <QByteArray>
+#include <QImage>
+
+#include "qgscoordinatetransformcontext.h"
+
+class QgsRectangle;
+class QgsCoordinateReferenceSystem;
+class QgsRasterLayer;
+
+/**
+ * \ingroup 3d
+ * Takes care of downloading terrain data from a publicly available data source.
+ *
+ * Currently using terrain tiles in GeoTIFF format hosted on AWS.
+ *
+ * \since QGIS 3.8
+ */
+class _3D_EXPORT QgsTerrainDownloader
+{
+
+  public:
+    QgsTerrainDownloader();
+    ~QgsTerrainDownloader();
+
+    /**
+     * For given extent and resolution (number of pixels for width/height) in specified CRS, download necessary
+     * tile images (if not cached already) and produce height map out of them (byte array of res*res float values)
+     */
+    QByteArray getHeightMap( const QgsRectangle &extentOrig, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext(), QString tmpFilenameImg = QString(), QString tmpFilenameTif = QString() );
+
+  private:
+
+    /**
+     * For the requested resolution given as map units per pixel, find out the best native tile resolution
+     * (higher resolution = fewer map units per pixel)
+     */
+    double findBestTileResolution( double requestedMupp );
+
+    /**
+     * Given extent and map units per pixels, adjust the extent and resolution
+     */
+    static void adjustExtentAndResolution( double mupp, const QgsRectangle &extentOrig, QgsRectangle &extent, int &res );
+
+    /**
+     * Takes an image tile with heights encoded using "terrarium" encoding and converts it to
+     * an array of 32-bit floats with decoded elevations.
+     */
+    static void tileImageToHeightMap( const QImage &img, QByteArray &heightMap );
+
+  private:
+    std::unique_ptr<QgsRasterLayer> onlineDtm;
+    double mXSpan = 0;   //!< Width of the tile at zoom level 0 in map units
+};
+
+#endif // QGSTERRAINDOWNLOADER_H

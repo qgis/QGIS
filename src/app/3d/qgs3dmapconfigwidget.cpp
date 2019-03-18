@@ -18,6 +18,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsonlineterraingenerator.h"
 #include "qgs3dutils.h"
 
 #include "qgsmapcanvas.h"
@@ -49,15 +50,23 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   QgsTerrainGenerator *terrainGen = mMap->terrainGenerator();
   if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Dem )
   {
+    cboTerrainType->setCurrentIndex( 1 );
     QgsDemTerrainGenerator *demTerrainGen = static_cast<QgsDemTerrainGenerator *>( terrainGen );
     spinTerrainResolution->setValue( demTerrainGen->resolution() );
     spinTerrainSkirtHeight->setValue( demTerrainGen->skirtHeight() );
     cboTerrainLayer->setLayer( demTerrainGen->layer() );
   }
+  else if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Online )
+  {
+    cboTerrainType->setCurrentIndex( 2 );
+    QgsOnlineTerrainGenerator *onlineTerrainGen = static_cast<QgsOnlineTerrainGenerator *>( terrainGen );
+    spinTerrainResolution->setValue( onlineTerrainGen->resolution() );
+    spinTerrainSkirtHeight->setValue( onlineTerrainGen->skirtHeight() );
+  }
   else
   {
+    cboTerrainType->setCurrentIndex( 0 );
     cboTerrainLayer->setLayer( nullptr );
-    spinTerrainResolution->setEnabled( false );
     spinTerrainResolution->setValue( 16 );
     spinTerrainSkirtHeight->setValue( 10 );
   }
@@ -86,21 +95,23 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   widgetLights->setPointLights( mMap->pointLights() );
 
+  connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
 
   updateMaxZoomLevel();
+  onTerrainTypeChanged();
 }
 
 void Qgs3DMapConfigWidget::apply()
 {
-  QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
-
   bool needsUpdateOrigin = false;
 
-  if ( demLayer )
+  if ( cboTerrainType->currentIndex() == 1 )  // DEM from raster layer
   {
+    QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
+
     bool tGenNeedsUpdate = true;
     if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Dem )
     {
@@ -123,7 +134,29 @@ void Qgs3DMapConfigWidget::apply()
       needsUpdateOrigin = true;
     }
   }
-  else if ( !demLayer && mMap->terrainGenerator()->type() != QgsTerrainGenerator::Flat )
+  else if ( cboTerrainType->currentIndex() == 2 )  // Online
+  {
+    bool tGenNeedsUpdate = true;
+    if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Online )
+    {
+      QgsOnlineTerrainGenerator *oldOnlineTerrainGen = static_cast<QgsOnlineTerrainGenerator *>( mMap->terrainGenerator() );
+      if ( oldOnlineTerrainGen->resolution() == spinTerrainResolution->value() &&
+           oldOnlineTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
+        tGenNeedsUpdate = false;
+    }
+
+    if ( tGenNeedsUpdate )
+    {
+      QgsOnlineTerrainGenerator *onlineTerrainGen = new QgsOnlineTerrainGenerator;
+      onlineTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
+      onlineTerrainGen->setExtent( mMainCanvas->fullExtent() );
+      onlineTerrainGen->setResolution( spinTerrainResolution->value() );
+      onlineTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
+      mMap->setTerrainGenerator( onlineTerrainGen );
+      needsUpdateOrigin = true;
+    }
+  }
+  else if ( cboTerrainType->currentIndex() == 0 ) // flat terrain
   {
     QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
     flatTerrainGen->setCrs( mMap->crs() );
@@ -161,9 +194,20 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setPointLights( widgetLights->pointLights() );
 }
 
+void Qgs3DMapConfigWidget::onTerrainTypeChanged()
+{
+  bool isFlat = cboTerrainType->currentIndex() == 0;
+  bool isDem = cboTerrainType->currentIndex() == 1;
+  labelTerrainResolution->setVisible( !isFlat );
+  spinTerrainResolution->setVisible( !isFlat );
+  labelTerrainSkirtHeight->setVisible( !isFlat );
+  spinTerrainSkirtHeight->setVisible( !isFlat );
+  labelTerrainLayer->setVisible( isDem );
+  cboTerrainLayer->setVisible( isDem );
+}
+
 void Qgs3DMapConfigWidget::onTerrainLayerChanged()
 {
-  spinTerrainResolution->setEnabled( cboTerrainLayer->currentLayer() );
 }
 
 void Qgs3DMapConfigWidget::updateMaxZoomLevel()
