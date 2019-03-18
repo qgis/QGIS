@@ -2774,6 +2774,8 @@ void TestQgsProcessing::parameterPoint()
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( def->checkValueIsAcceptable( QgsPointXY( 1, 2 ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromWkt( QStringLiteral( "LineString(10 10, 20 20)" ) ) ) );
 
   // string representing a point
   QVariantMap params;
@@ -2847,15 +2849,32 @@ void TestQgsProcessing::parameterPoint()
   QCOMPARE( QgsProcessingParameters::parameterAsPointCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
 
   // with target CRS
+  params.insert( "non_optional", QgsReferencedPointXY( QgsPointXY( 1.1, 2.2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
   point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
   QGSCOMPARENEAR( point.x(), 122451, 100 );
   QGSCOMPARENEAR( point.y(), 244963, 100 );
+
+  // QgsGeometry
+  params.insert( "non_optional", QgsGeometry::fromPointXY( QgsPointXY( 13.1, 14.2 ) ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
+  QGSCOMPARENEAR( point.x(), 13.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 14.2, 0.001 );
+  // non point geometry should use centroid
+  params.insert( "non_optional", QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 10)" ) ) );
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context );
+  QGSCOMPARENEAR( point.x(), 15.0, 0.001 );
+  QGSCOMPARENEAR( point.y(), 10.0, 0.001 );
+  // with target CRS - should make no difference, because source CRS is unknown
+  point = QgsProcessingParameters::parameterAsPoint( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QGSCOMPARENEAR( point.x(), 15.0, 0.001 );
+  QGSCOMPARENEAR( point.y(), 10.0, 0.001 );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( "1,2", context ), QStringLiteral( "'1,2'" ) );
   QCOMPARE( def->valueAsPythonString( "1,2 [EPSG:4326]", context ), QStringLiteral( "'1,2 [EPSG:4326]'" ) );
   QCOMPARE( def->valueAsPythonString( QgsPointXY( 11, 12 ), context ), QStringLiteral( "'11,12'" ) );
   QCOMPARE( def->valueAsPythonString( QgsReferencedPointXY( QgsPointXY( 11, 12 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ), context ), QStringLiteral( "'11,12 [EPSG:4326]'" ) );
+  QCOMPARE( def->valueAsPythonString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QStringLiteral( "QgsGeometry.fromWkt('LineString (10 10, 20 20)')" ) );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPoint('non_optional', '', defaultValue='1,2')" ) );

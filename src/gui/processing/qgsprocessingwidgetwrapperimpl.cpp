@@ -2373,7 +2373,7 @@ QList<int> QgsProcessingPointWidgetWrapper::compatibleDataTypes() const
 
 QString QgsProcessingPointWidgetWrapper::modelerExpressionFormatString() const
 {
-  return tr( "string of the format 'x,y'" );
+  return tr( "string of the format 'x,y' or a geometry value (centroid is used)" );
 }
 
 QString QgsProcessingPointWidgetWrapper::parameterType() const

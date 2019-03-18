@@ -508,7 +508,8 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
       return QStringList() << QObject::tr( "str: as an 'x,y' string, e.g. '1.5,10.1'" )
              << QStringLiteral( "QgsPointXY" )
              << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsReferencedPointXY" );
+             << QStringLiteral( "QgsReferencedPointXY" )
+             << QStringLiteral( "QgsGeometry: centroid of geometry is used" );
     }
 
     QStringList acceptedStringValues() const override
