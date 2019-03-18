@@ -27,20 +27,34 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.core import (QgsProcessingParameterString,
-                       QgsProcessingOutputString)
+                       QgsProcessingOutputString,
+                       QgsProcessingParameterDefinition)
+from qgis.gui import QgsProcessingModelerParameterWidget
 from processing.gui.wrappers import (WidgetWrapper,
                                      DIALOG_STANDARD,
                                      DIALOG_BATCH,
                                      DIALOG_MODELER)
 
+# TODO: QGIS 3.8 move this class to processing/gui/
+# OtbChoiceWidget is a crucial parameter type in otb provider
+# It is the one that can handles required parameters are run-time depending on user input!.
+# This idea is indeed different from static list of required/optional parameters from a descriptor file.
+# So this class (if treated as first class citizen in processing/gui) have potential
+# to be reused in existing or future processing providers.
+
 
 class OtbChoiceWidgetWrapper(WidgetWrapper):
+
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        self.flagsModified = {}
+        super().__init__(param, dialog, row=0, col=0, **kwargs)
+        self.updateAllParameters(None)
 
     def createWidget(self):
         widget = QComboBox()
         widget.addItems(self.param.options)
         if self.dialogType in(DIALOG_MODELER, DIALOG_STANDARD):
-            widget.currentIndexChanged.connect(self.valueChanged)
+            widget.currentIndexChanged.connect(self.updateAllParameters)
         return widget
 
     def get_algorithm(self):
@@ -49,46 +63,59 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
         else:
             return self.dialog.algorithm()
 
-    def setWrapperVisible(self, name, visible):
-        if self.dialogType == DIALOG_STANDARD:
+    def __updateWrapper(self, name, visible):
+        if self.dialogType == DIALOG_BATCH:
+            return
+        elif self.dialogType == DIALOG_STANDARD:
             if self.dialog.mainWidget() is None:
                 return
-            # For compatibility with 3.x API, we need to check whether the wrapper is
-            # the deprecated WidgetWrapper class. If not, it's the newer
-            # QgsAbstractProcessingParameterWidgetWrapper class
-            # TODO QGIS 4.0 - remove is_python_wrapper logic
-            is_python_wrapper = issubclass(self.dialog.mainWidget().wrappers[name].__class__, WidgetWrapper)
-            if is_python_wrapper:
-                self.dialog.mainWidget().wrappers[name].widget.setVisible(visible)
-                if self.dialog.mainWidget().wrappers[name].label:
-                    self.dialog.mainWidget().wrappers[name].label.setVisible(visible)
-            else:
-                self.dialog.mainWidget().wrappers[name].wrappedWidget().setVisible(visible)
-                if self.dialog.mainWidget().wrappers[name].wrappedLabel():
-                    self.dialog.mainWidget().wrappers[name].wrappedLabel().setVisible(visible)
-        else:
-            # For compatibility with 3.x API, we need to check whether the wrapper is
-            # the deprecated WidgetWrapper class. If not, it's the newer
-            # QgsAbstractProcessingParameterWidgetWrapper class
-            # TODO QGIS 4.0 - remove is_python_wrapper logic
-            if name in self.dialog.wrappers:
-                is_python_wrapper = issubclass(self.dialog.wrappers[name].__class__, WidgetWrapper)
-                if is_python_wrapper:
-                    self.dialog.wrappers[name].widget.setVisible(visible)
-                    if self.dialog.wrappers[name].label:
-                        self.dialog.wrappers[name].label.setVisible(visible)
-                else:
-                    self.dialog.wrappers[name].setVisible(visible)
-                    if name in self.dialog.widget_labels:
-                        self.dialog.widget_labels[name].setVisible(visible)
+            if name in self.dialog.mainWidget().wrappers:
+                self.__setWrapperVisibility(self.dialog.mainWidget().wrappers[name], visible)
 
-    def valueChanged(self, value):
+        #Fur Qgis modeler
+        else:
+            if name in self.dialog.wrappers:
+                self.__setWrapperVisibility(self.dialog.wrappers[name], visible)
+            if name in self.dialog.widget_labels:
+                self.dialog.widget_labels[name].setVisible(visible)
+
+    def __setWrapperVisibility(self, wrapper, v):
+        # For compatibility with 3.x API, we need to check whether the wrapper is
+        # the deprecated WidgetWrapper class. If not, it's the newer
+        # QgsAbstractProcessingParameterWidgetWrapper class
+        # TODO QGIS 4.0 - remove is_python_wrapper logic
+        if issubclass(wrapper.__class__, WidgetWrapper):
+            wrapper.widget.setVisible(v)
+            if wrapper.label:
+                wrapper.label.setVisible(v)
+        elif issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+            wrapper.setVisible(v)
+        else:
+            wrapper.wrappedWidget().setVisible(v)
+            if wrapper.wrappedLabel():
+                wrapper.wrappedLabel().setVisible(v)
+
+    def updateAllParameters(self, current_value):
         for parameter in self.get_algorithm().parameterDefinitions():
             if not 'group_key' in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
                 continue
             name = parameter.name()
-            v = self.value() == parameter.metadata()['group_value']
-            self.setWrapperVisible(name, v)
+            choice_key = parameter.metadata()['group_key']
+            if choice_key and choice_key + "." in name:
+                choice_param = self.get_algorithm().parameterDefinition(choice_key)
+                if current_value is None:
+                    current_value = choice_param.defaultValue()
+                pattern = "{}.{}.".format(choice_key, choice_param.getValueAsText(current_value))
+                if not pattern in name:
+                    flags = self.get_algorithm().parameterDefinition(name).flags()
+                    if not flags & QgsProcessingParameterDefinition.FlagOptional:
+                        self.flagsModified[name] = True
+                    self.get_algorithm().parameterDefinition(name).setFlags(QgsProcessingParameterDefinition.FlagOptional)
+                    self.__updateWrapper(name, False)
+                else:
+                    if name in self.flagsModified.keys():
+                        self.get_algorithm().parameterDefinition(name).setFlags(QgsProcessingParameterDefinition.FlagAdvanced)
+                    self.__updateWrapper(name, True)
 
     def setValue(self, value):
         if value in self.param.options:
@@ -101,29 +128,16 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
         return self.widget.currentText()
 
     def postInitialize(self, wrappers):
-        if self.dialogType == DIALOG_BATCH:
-            return
-
+        # if self.dialogType == DIALOG_BATCH:
+        #     return
+        self.updateAllParameters(current_value=None)
         for parameter in self.get_algorithm().parameterDefinitions():
             if not 'group_key' in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
                 continue
-            name = parameter.name()
-            v = self.value() == parameter.metadata()['group_value']
             for wrapper in wrappers:
-                # For compatibility with 3.x API, we need to check whether the wrapper is
-                # the deprecated WidgetWrapper class. If not, it's the newer
-                # QgsAbstractProcessingParameterWidgetWrapper class
-                # TODO QGIS 4.0 - remove is_python_wrapper logic
-                is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
-                if wrapper.param.name() == name:
-                    if is_python_wrapper:
-                        wrapper.widget.setVisible(v)
-                        if wrapper.label:
-                            wrapper.label.setVisible(v)
-                    else:
-                        wrapper.wrappedWidget().setVisible(v)
-                        if wrapper.wrappedLabel():
-                            wrapper.wrappedLabel().setVisible(v)
+                if wrapper.param.name() == parameter.name():
+                    v = self.value() == parameter.metadata()['group_value']
+                    self.__setWrapperVisibility(wrapper, v)
 
 
 from qgis.core import QgsProcessingParameterDefinition
@@ -147,6 +161,11 @@ class OtbParameterChoice(QgsProcessingParameterDefinition):
             except:
                 self.default = 0
             self.value = self.default
+
+    def getValueAsText(self, value):
+        if not value in self.options:
+            value = self.options[int(value)]
+        return value
 
     def setValue(self, value):
         if value is None:
