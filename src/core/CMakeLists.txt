@@ -284,6 +284,7 @@ SET(QGIS_CORE_SRCS
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
   qgsprojectversion.cpp
+  qgsprojutils.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
   qgspropertytransformer.cpp
@@ -940,6 +941,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectstorageregistry.h
   qgsprojecttranslator.h
   qgsprojectversion.h
+  qgsprojutils.h
   qgsproperty.h
   qgsproperty_p.h
   qgspropertycollection.h
