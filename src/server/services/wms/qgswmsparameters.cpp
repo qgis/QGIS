@@ -1502,7 +1502,6 @@ namespace QgsWms
   {
     QList<QgsWmsParametersExternalLayer> externalLayers;
 
-    const QStringList layers = allLayersNickname();
     for ( const QString &layer : allLayersNickname() )
     {
       if ( ! isExternalLayer( layer ) )
@@ -1610,7 +1609,7 @@ namespace QgsWms
     QStringList layers;
     QList<QgsWmsParametersExternalLayer> eParams;
 
-    for ( const auto &layer : allLayers )
+    for ( const auto &layer : qgis::as_const( allLayers ) )
     {
       if ( isExternalLayer( layer ) )
       {

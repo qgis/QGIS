@@ -2924,8 +2924,7 @@ namespace QgsWms
 
     for ( const QgsWmsParametersExternalLayer &param : params )
     {
-      std::unique_ptr<QgsMapLayer> layer;
-      layer.reset( new QgsRasterLayer( param.mUri, param.mName, QStringLiteral( "wms" ) ) );
+      std::unique_ptr<QgsMapLayer> layer = qgis::make_unique< QgsRasterLayer >( param.mUri, param.mName, QStringLiteral( "wms" ) );
 
       if ( layer->isValid() )
       {
