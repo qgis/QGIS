@@ -38,6 +38,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.algs.otb.OtbUtils import OtbUtils
 from processing.algs.otb.OtbAlgorithm import OtbAlgorithm
 
+
 class OtbAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
