@@ -504,6 +504,10 @@ namespace QgsWms
     const QgsWmsParameter pAtlasPk( QgsWmsParameter::ATLAS_PK,
                                     QVariant::StringList );
     save( pAtlasPk );
+
+    const QgsWmsParameter pFormatOpts( QgsWmsParameter::FORMAT_OPTIONS,
+                                       QVariant::String );
+    save( pFormatOpts );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerParameters &parameters )
