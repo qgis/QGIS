@@ -26,7 +26,26 @@
 #include <QThreadStorage>
 #endif
 
-#define SIP_NO_FILE
+/**
+ * \class QgsProjUtils
+ * \ingroup core
+ * Utility functions for working with the proj library.
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProjUtils
+{
+  public:
+
+    /**
+     * Returns the proj library major version number.
+     */
+    static int projVersionMajor()
+    {
+      return PROJ_VERSION_MAJOR;
+    }
+};
+
+#ifndef SIP_RUN
 
 #if PROJ_VERSION_MAJOR>=6
 struct projCtx_t;
@@ -68,5 +87,5 @@ class CORE_EXPORT QgsProjContext
 #endif
 };
 
-
+#endif
 #endif // QGSPROJUTILS_H
