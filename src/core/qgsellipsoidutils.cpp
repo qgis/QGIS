@@ -31,8 +31,128 @@ QHash< QString, QgsEllipsoidUtils::EllipsoidParameters > QgsEllipsoidUtils::sEll
 QReadWriteLock QgsEllipsoidUtils::sDefinitionCacheLock;
 QList< QgsEllipsoidUtils::EllipsoidDefinition > QgsEllipsoidUtils::sDefinitionCache;
 
-QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( const QString &ellipsoid )
+// maps older QGIS ellipsoid acronyms to proj acronyms/names
+const QMap< QString, QString > sProj6EllipsoidAcronymMap
 {
+  { "clrk80", "clrk80ign"  },
+  {"Adrastea2000", "ESRI:107909"},
+  {"Amalthea2000", "ESRI:107910"},
+  {"Ananke2000", "ESRI:107911"},
+  {"Ariel2000", "ESRI:107945"},
+  {"Atlas2000", "ESRI:107926"},
+  {"Belinda2000", "ESRI:107946"},
+  {"Bianca2000", "ESRI:107947"},
+  {"Callisto2000", "ESRI:107912"},
+  {"Calypso2000", "ESRI:107927"},
+  {"Carme2000", "ESRI:107913"},
+  {"Charon2000", "ESRI:107970"},
+  {"Cordelia2000", "ESRI:107948"},
+  {"Cressida2000", "ESRI:107949"},
+  {"Deimos2000", "ESRI:107906"},
+  {"Desdemona2000", "ESRI:107950"},
+  {"Despina2000", "ESRI:107961"},
+  {"Dione2000", "ESRI:107928"},
+  {"Elara2000", "ESRI:107914"},
+  {"Enceladus2000", "ESRI:107929"},
+  {"Epimetheus2000", "ESRI:107930"},
+  {"Europa2000", "ESRI:107915"},
+  {"Galatea2000", "ESRI:107962"},
+  {"Ganymede2000", "ESRI:107916"},
+  {"Helene2000", "ESRI:107931"},
+  {"Himalia2000", "ESRI:107917"},
+  {"Hyperion2000", "ESRI:107932"},
+  {"Iapetus2000", "ESRI:107933"},
+  {"Io2000", "ESRI:107918"},
+  {"Janus2000", "ESRI:107934"},
+  {"Juliet2000", "ESRI:107951"},
+  {"Jupiter2000", "ESRI:107908"},
+  {"Larissa2000", "ESRI:107963"},
+  {"Leda2000", "ESRI:107919"},
+  {"Lysithea2000", "ESRI:107920"},
+  {"Mars2000", "ESRI:107905"},
+  {"Mercury2000", "ESRI:107900"},
+  {"Metis2000", "ESRI:107921"},
+  {"Mimas2000", "ESRI:107935"},
+  {"Miranda2000", "ESRI:107952"},
+  {"Moon2000", "ESRI:107903"},
+  {"Naiad2000", "ESRI:107964"},
+  {"Neptune2000", "ESRI:107960"},
+  {"Nereid2000", "ESRI:107965"},
+  {"Oberon2000", "ESRI:107953"},
+  {"Ophelia2000", "ESRI:107954"},
+  {"Pan2000", "ESRI:107936"},
+  {"Pandora2000", "ESRI:107937"},
+  {"Pasiphae2000", "ESRI:107922"},
+  {"Phobos2000", "ESRI:107907"},
+  {"Phoebe2000", "ESRI:107938"},
+  {"Pluto2000", "ESRI:107969"},
+  {"Portia2000", "ESRI:107955"},
+  {"Prometheus2000", "ESRI:107939"},
+  {"Proteus2000", "ESRI:107966"},
+  {"Puck2000", "ESRI:107956"},
+  {"Rhea2000", "ESRI:107940"},
+  {"Rosalind2000", "ESRI:107957"},
+  {"Saturn2000", "ESRI:107925"},
+  {"Sinope2000", "ESRI:107923"},
+  {"Telesto2000", "ESRI:107941"},
+  {"Tethys2000", "ESRI:107942"},
+  {"Thalassa2000", "ESRI:107967"},
+  {"Thebe2000", "ESRI:107924"},
+  {"Titan2000", "ESRI:107943"},
+  {"Titania2000", "ESRI:107958"},
+  {"Triton2000", "ESRI:107968"},
+  {"Umbriel2000", "ESRI:107959"},
+  {"Uranus2000", "ESRI:107944"},
+  {"Venus2000", "ESRI:107902"},
+  {"IGNF:ELG053", "EPSG:7030"},
+  {"IGNF:ELG052", "EPSG:7043"},
+  {"IGNF:ELG102", "EPSG:7043"},
+  {"WGS66", "ESRI:107001"},
+  {"plessis", "EPSG:7027"},
+  {"IGNF:ELG017", "EPSG:7027"},
+  {"mod_airy", "EPSG:7002"},
+  {"IGNF:ELG037", "EPSG:7019"},
+  {"IGNF:ELG108", "EPSG:7036"},
+  {"cape", "EPSG:7034"},
+  {"IGNF:ELG010", "EPSG:7011"},
+  {"IGNF:ELG003", "EPSG:7012"},
+  {"IGNF:ELG004", "EPSG:7008"},
+  {"GSK2011", "EPSG:1025"},
+  {"airy", "EPSG:7001"},
+  {"aust_SA", "EPSG:7003"},
+  {"bessel", "EPSG:7004"},
+  {"clrk66", "EPSG:7008"},
+  {"clrk80ign", "EPSG:7011"},
+  {"evrst30", "EPSG:7015"},
+  {"evrstSS", "EPSG:7016"},
+  {"evrst48", "EPSG:7018"},
+  {"GRS80", "EPSG:7019"},
+  {"helmert", "EPSG:7020"},
+  {"intl", "EPSG:7022"},
+  {"krass", "EPSG:7024"},
+  {"NWL9D", "EPSG:7025"},
+  {"WGS84", "EPSG:7030"},
+  {"GRS67", "EPSG:7036"},
+  {"WGS72", "EPSG:7043"},
+  {"bess_nam", "EPSG:7046"},
+  {"IAU76", "EPSG:7049"},
+  {"sphere", "EPSG:7052"},
+  {"hough", "EPSG:7053"},
+  {"evrst69", "EPSG:7056"},
+  {"fschr60", "ESRI:107002"},
+  {"fschr68", "ESRI:107003"},
+  {"fschr60m", "ESRI:107004"},
+  {"walbeck", "ESRI:107007"},
+  {"IGNF:ELG001", "EPSG:7022"},
+  {"engelis", "EPSG:7054"},
+  {"evrst56", "EPSG:7044"},
+  {"SEasia", "ESRI:107004"},
+  {"SGS85", "EPSG:7054"}
+};
+
+QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( const QString &e )
+{
+  QString ellipsoid = e;
 #if PROJ_VERSION_MAJOR >= 6
   // ensure ellipsoid database is populated when first called
   static std::once_flag initialized;
@@ -40,6 +160,8 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   {
     ( void )definitions();
   } );
+
+  ellipsoid = sProj6EllipsoidAcronymMap.value( ellipsoid, ellipsoid ); // silently upgrade older QGIS acronyms to proj acronyms
 #endif
 
   // check cache
@@ -221,27 +343,36 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   PROJ_STRING_LIST authoritiesIt = authorities;
   while ( char *authority = *authoritiesIt )
   {
-    QgsDebugMsg( QString( authority ) );
     PROJ_STRING_LIST codes = proj_get_codes_from_database( context, authority, PJ_TYPE_ELLIPSOID, 0 );
     PROJ_STRING_LIST codesIt = codes;
     while ( char *code = *codesIt )
     {
       EllipsoidDefinition def;
 
-      QgsDebugMsg( QString( code ) );
-
       PJ *ellipsoid = proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr );
 
-      QgsDebugMsg( QString( proj_get_name( ellipsoid ) ) );
-      def.description = QString( proj_get_name( ellipsoid ) ) ;
+      QString name = QString( proj_get_name( ellipsoid ) );
+      def.acronym = QStringLiteral( "%1:%2" ).arg( authority, code );
+      name.replace( '_', ' ' );
+      def.description = QStringLiteral( "%1 (%2:%3)" ).arg( name, authority, code );
 
       double semiMajor, semiMinor, invFlattening;
       int semiMinorComputed;
-      if ( proj_ellipsoid_get_parameters( context, ellipsoid, &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) == 0 )
+      if ( proj_ellipsoid_get_parameters( context, ellipsoid, &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
       {
         def.parameters.semiMajor = semiMajor;
-        def.parameters.semiMinor = semiMinor;
-        def.parameters.inverseFlattening = invFlattening;
+        if ( semiMinor > 0 )
+        {
+          def.parameters.semiMinor = semiMinor;
+          def.parameters.inverseFlattening = def.parameters.semiMajor / ( def.parameters.semiMajor - def.parameters.semiMinor );
+          def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs" ).arg( def.parameters.semiMajor ).arg( def.parameters.semiMinor ) );
+        }
+        else
+        {
+          def.parameters.inverseFlattening = invFlattening;
+          def.parameters.semiMinor = def.parameters.semiMajor  * ( 1 - def.parameters.inverseFlattening );
+          def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +rf=%2 +no_defs" ).arg( def.parameters.semiMajor ).arg( def.parameters.inverseFlattening ) );
+        }
       }
       else
       {
@@ -249,9 +380,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
       }
 
       defs << def;
-
-      //    sEllipsoidCache.insert( QString( ellipsoid->id ), def.parameters );
-
+      sEllipsoidCache.insert( def.acronym, def.parameters );
 
       codesIt++;
     }
@@ -260,56 +389,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
     authoritiesIt++;
   }
   proj_string_list_destroy( authorities );
-
-#if 0
-  // use proj to get ellipsoids
-  const PJ_ELLPS *ellipsoid = proj_list_ellps();
-  while ( ellipsoid->name )
-  {
-    EllipsoidDefinition def;
-    def.acronym = ellipsoid->id ;
-    def.description = ellipsoid->name;
-    QgsDebugMsg( QString( ellipsoid->id ) );
-    QgsDebugMsg( QString( ellipsoid->name ) );
-    const QString majorString( ellipsoid->major );
-    def.parameters.semiMajor = majorString.midRef( 2 ).toDouble();
-    const QString minorString( ellipsoid->ell );
-    if ( minorString.startsWith( 'b' ) )
-    {
-      // b= style
-      def.parameters.semiMinor = minorString.midRef( 2 ).toDouble();
-      def.parameters.inverseFlattening = def.parameters.semiMajor / ( def.parameters.semiMajor - def.parameters.semiMinor );
-    }
-    else
-    {
-      // rf= style
-      def.parameters.inverseFlattening = minorString.midRef( 2 ).toDouble();
-      def.parameters.semiMinor = def.parameters.semiMajor  * ( 1 - def.parameters.inverseFlattening );
-    }
-
-    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +ellps=%1 +no_defs" ).arg( def.acronym ) );
-    if ( crs.srsid() == 0 )
-    {
-      //TODO: createFromProj4 used to save to the user database any new CRS
-      // this behavior was changed in order to separate creation and saving.
-      // Not sure if it necessary to save it here, should be checked by someone
-      // familiar with the code (should also give a more descriptive name to the generated CRS)
-      QString name = QStringLiteral( " * %1 (%2)" )
-                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
-                           crs.toProj4() );
-      crs.saveAsUserCrs( name );
-    }
-    def.parameters.crs = crs;
-
-    defs << def;
-
-    sEllipsoidCache.insert( QString( ellipsoid->id ), def.parameters );
-
-    ellipsoid++;
-  }
-#endif
   sEllipsoidCacheLock.unlock();
-
 
 #else
   sqlite3_database_unique_ptr database;

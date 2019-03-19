@@ -295,6 +295,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     int index = 0;
     for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
+      // TODO - use parameters instead of acronym
       if ( mEllipsoidList[ i ].acronym == QgsProject::instance()->crs().ellipsoidAcronym() )
       {
         index = i;
@@ -1651,6 +1652,7 @@ void QgsProjectProperties::srIdUpdated()
     int index = 0;
     for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
+      // TODO - use parameters instead of acronym
       if ( mEllipsoidList[ i ].acronym == mCrs.ellipsoidAcronym() )
       {
         index = i;
