@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import math
 from qgis.core import (QgsEllipsoidUtils,
                        QgsProjUtils)
 from qgis.testing import start_app, unittest
@@ -40,25 +39,44 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
             if QgsProjUtils.projVersionMajor() < 6:
                 self.assertEqual(params.crs.authid(), 'EPSG:4030')
             else:
-                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=6378137 +b=6356752.3142451793 +no_defs')
+                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=6378137 +rf=298.25722356300003 +no_defs')
 
         for i in range(2):
             params = QgsEllipsoidUtils.ellipsoidParameters("Ganymede2000")
             self.assertTrue(params.valid)
             self.assertEqual(params.semiMajor, 2632400.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
             self.assertEqual(params.semiMinor, 2632350.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
-            self.assertEqual(params.inverseFlattening, 52648.0 if QgsProjUtils.projVersionMajor() < 6 else math.inf)
+            self.assertEqual(params.inverseFlattening, 52648.0 if QgsProjUtils.projVersionMajor() < 6 else 0)
             self.assertFalse(params.useCustomParameters)
-            self.assertEqual(params.crs.authid(), '')
+            if QgsProjUtils.projVersionMajor() < 6:
+                self.assertEqual(params.crs.authid(), '')
+            else:
+                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=2632345 +no_defs')
 
             if QgsProjUtils.projVersionMajor() >= 6:
                 params = QgsEllipsoidUtils.ellipsoidParameters("ESRI:107916")
                 self.assertTrue(params.valid)
-                self.assertEqual(params.semiMajor, 2632400.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
-                self.assertEqual(params.semiMinor, 2632350.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
-                self.assertEqual(params.inverseFlattening, 52648.0 if QgsProjUtils.projVersionMajor() < 6 else math.inf)
+                self.assertEqual(params.semiMajor, 2632345.0)
+                self.assertEqual(params.semiMinor, 2632345.0)
+                self.assertEqual(params.inverseFlattening, 0)
                 self.assertFalse(params.useCustomParameters)
-                self.assertEqual(params.crs.authid(), '')
+                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=2632345 +no_defs')
+
+                params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:7001")
+                self.assertTrue(params.valid)
+                self.assertEqual(params.semiMajor, 6377563.396)
+                self.assertEqual(params.semiMinor, 6356256.909237285)
+                self.assertEqual(params.inverseFlattening, 299.3249646)
+                self.assertFalse(params.useCustomParameters)
+                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=6377563.3959999997 +rf=299.32496459999999 +no_defs')
+
+                params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:7008")
+                self.assertTrue(params.valid)
+                self.assertEqual(params.semiMajor, 6378206.4)
+                self.assertEqual(params.semiMinor, 6356583.8)
+                self.assertEqual(params.inverseFlattening, 294.9786982138982)
+                self.assertFalse(params.useCustomParameters)
+                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=6378206.4000000004 +b=6356583.7999999998 +no_defs')
 
         # using parameters
         for i in range(2):
@@ -89,7 +107,7 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
         self.assertTrue(gany_defs.parameters.valid)
         self.assertEqual(gany_defs.parameters.semiMajor, 2632400.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
         self.assertEqual(gany_defs.parameters.semiMinor, 2632350.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
-        self.assertEqual(gany_defs.parameters.inverseFlattening, 52648.0 if QgsProjUtils.projVersionMajor() < 6 else math.inf)
+        self.assertEqual(gany_defs.parameters.inverseFlattening, 52648.0 if QgsProjUtils.projVersionMajor() < 6 else 0.0)
         self.assertFalse(gany_defs.parameters.useCustomParameters)
         self.assertEqual(gany_defs.parameters.crs.authid(), '')
 
