@@ -1190,16 +1190,40 @@ namespace QgsWms
       */
       QStringList atlasPk() const;
 
+      /*
+       * Returns a map of DXF options defined within FORMAT_OPTIONS parameter.
+       * \since QGIS 3.8
+       */
       QMap<DxfFormatOption, QString> dxfFormatOptions() const;
 
+      /*
+       * Returns the DXF LAYERATTRIBUTES parameter.
+       * \since QGIS 3.8
+       */
       QStringList dxfLayerAttributes() const;
 
+      /*
+       * Returns the DXF USE_TITLE_AS_LAYERNAME parameter.
+       * \since QGIS 3.8
+       */
       bool dxfUseLayerTitleAsName() const;
 
+      /*
+       * Returns the DXF SCALE parameter.
+       * \since QGIS 3.8
+       */
       double dxfScale() const;
 
+      /*
+       * Returns the DXF MODE parameter.
+       * \since QGIS 3.8
+       */
       QgsDxfExport::SymbologyExport dxfMode() const;
 
+      /*
+       * Returns the DXF CODEC parameter.
+       * \since QGIS 3.8
+       */
       QString dxfCodec() const;
 
     private:
