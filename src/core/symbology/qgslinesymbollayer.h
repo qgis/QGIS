@@ -34,65 +34,116 @@ class QgsExpression;
 /**
  * \ingroup core
  * \class QgsSimpleLineSymbolLayer
+ * A simple line symbol layer, which renders lines using a line in a variety of styles (e.g. solid, dotted, dashed).
  */
 class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
+
+    /**
+     * Constructor for QgsSimpleLineSymbolLayer. Creates a simple line
+     * symbol in the specified \a color, \a width (in millimeters)
+     * and \a penStyle.
+     */
     QgsSimpleLineSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
                               double width = DEFAULT_SIMPLELINE_WIDTH,
                               Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
     // static stuff
 
+    /**
+     * Creates a new QgsSimpleLineSymbolLayer, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsSimpleLineSymbolLayer::properties() ).
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    /**
+     * Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM \a element.
+     */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
-    // implemented from base classes
-
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
-
     //overridden so that clip path can be set when using draw inside polygon option
     void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
-
     QgsStringMap properties() const override;
-
     QgsSimpleLineSymbolLayer *clone() const override SIP_FACTORY;
-
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
-
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
-
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
-
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const override;
+    Qt::PenStyle dxfPenStyle() const override;
+    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    QColor dxfColor( QgsSymbolRenderContext &context ) const override;
 
-    // new stuff
-
+    /**
+     * Returns the pen style used to render the line (e.g. solid, dashed, etc).
+     *
+     * \see setPenStyle()
+     */
     Qt::PenStyle penStyle() const { return mPenStyle; }
+
+    /**
+     * Sets the pen \a style used to render the line (e.g. solid, dashed, etc).
+     *
+     * \see penStyle()
+     */
     void setPenStyle( Qt::PenStyle style ) { mPenStyle = style; }
 
+    /**
+     * Returns the pen join style used to render the line (e.g. miter, bevel, round, etc).
+     *
+     * \see setPenJoinStyle()
+     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+
+    /**
+     * Sets the pen join \a style used to render the line (e.g. miter, bevel, round, etc).
+     *
+     * \see penJoinStyle()
+     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
+    /**
+     * Returns the pen cap style used to render the line (e.g. flat, square, round, etc).
+     *
+     * \see setPenCapStyle()
+     */
     Qt::PenCapStyle penCapStyle() const { return mPenCapStyle; }
+
+    /**
+     * Sets the pen cap \a style used to render the line (e.g. flat, square, round, etc).
+     *
+     * \see penCapStyle()
+     */
     void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
 
+    /**
+     * Returns TRUE if the line uses a custom dash pattern.
+     * \see setUseCustomDashPattern()
+     * \see customDashPatternUnit()
+     * \see customDashVector()
+     */
     bool useCustomDashPattern() const { return mUseCustomDashPattern; }
+
+    /**
+     * Sets whether the line uses a custom dash pattern.
+     * \see useCustomDashPattern()
+     * \see setCustomDashPatternUnit()
+     * \see setCustomDashVector()
+     */
     void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
 
     /**
-     * Sets the units for lengths used in the custom dash pattern.
-     * \param unit length units
+     * Sets the \a unit for lengths used in the custom dash pattern.
      * \see customDashPatternUnit()
     */
     void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit ) { mCustomDashPatternUnit = unit; }
@@ -103,10 +154,44 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     */
     QgsUnitTypes::RenderUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
 
+    /**
+     * Returns the map unit scale for lengths used in the custom dash pattern.
+     * \see setCustomDashPatternMapUnitScale()
+    */
     const QgsMapUnitScale &customDashPatternMapUnitScale() const { return mCustomDashPatternMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for lengths used in the custom dash pattern.
+     * \see customDashPatternMapUnitScale()
+    */
     void setCustomDashPatternMapUnitScale( const QgsMapUnitScale &scale ) { mCustomDashPatternMapUnitScale = scale; }
 
+    /**
+     * Returns the custom dash vector, which is the pattern of alternating drawn/skipped lengths
+     * used while rendering a custom dash pattern.
+     *
+     * Units for the vector are specified by customDashPatternUnit()
+     *
+     * This setting is only used when useCustomDashPattern() returns TRUE.
+     *
+     * \see setCustomDashVector()
+     * \see customDashPatternUnit()
+     * \see useCustomDashPattern()
+     */
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
+
+    /**
+     * Sets the custom dash \a vector, which is the pattern of alternating drawn/skipped lengths
+     * used while rendering a custom dash pattern.
+     *
+     * Units for the vector are specified by customDashPatternUnit()
+     *
+     * This setting is only used when useCustomDashPattern() returns TRUE.
+     *
+     * \see customDashVector()
+     * \see setCustomDashPatternUnit()
+     * \see setUseCustomDashPattern()
+     */
     void setCustomDashVector( const QVector<qreal> &vector ) { mCustomDashVector = vector; }
 
     /**
@@ -131,21 +216,14 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      */
     void setDrawInsidePolygon( bool drawInsidePolygon ) { mDrawInsidePolygon = drawInsidePolygon; }
 
-    QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const override;
-    Qt::PenStyle dxfPenStyle() const override;
+  private:
 
-    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
-    double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
-    QColor dxfColor( QgsSymbolRenderContext &context ) const override;
-
-  protected:
-    Qt::PenStyle mPenStyle;
+    Qt::PenStyle mPenStyle = Qt::SolidLine;
     Qt::PenJoinStyle mPenJoinStyle = DEFAULT_SIMPLELINE_JOINSTYLE;
     Qt::PenCapStyle mPenCapStyle = DEFAULT_SIMPLELINE_CAPSTYLE;
     QPen mPen;
     QPen mSelPen;
 
-    //use a custom dash dot pattern instead of the predefined ones
     bool mUseCustomDashPattern = false;
     QgsUnitTypes::RenderUnit mCustomDashPatternUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
@@ -155,7 +233,6 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
     bool mDrawInsidePolygon = false;
 
-  private:
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext &context, QPen &pen, QPen &selPen, double &offset );
 };
@@ -168,10 +245,19 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 /**
  * \ingroup core
  * \class QgsMarkerLineSymbolLayer
+ * Line symbol layer type which draws repeating marker symbols along a line feature.
  */
 class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
+
+    /**
+     * Constructor for QgsMarkerLineSymbolLayer. Creates a marker line
+     * with a default marker symbol, placed at the specified \a interval (in millimeters).
+     *
+     * The \a rotateMarker argument specifies whether individual marker symbols
+     * should be rotated to match the line segment alignment.
+     */
     QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
                               double interval = DEFAULT_MARKERLINE_INTERVAL );
 
@@ -180,31 +266,25 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      */
     enum Placement
     {
-      Interval,
-      Vertex,
-      LastVertex,
-      FirstVertex,
-      CentralPoint,
-      CurvePoint
+      Interval, //!< Place symbols at regular intervals
+      Vertex, //!< Place symbols on every vertex in the line
+      LastVertex, //!< Place symbols on the last vertex in the line
+      FirstVertex, //!< Place symbols on the first vertex in the line
+      CentralPoint, //!< Place symbols at the mid point of the line
+      CurvePoint, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
     };
 
     // static stuff
 
     /**
-     * Create a new MarkerLineSymbolLayerV2
-     *
-     * \param properties A property map to deserialize saved information from properties()
-     *
-     * \returns A new MarkerLineSymbolLayerV2
+     * Creates a new QgsMarkerLineSymbolLayer, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsMarkerLineSymbolLayer::properties() ).
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     /**
-     * Create a new MarkerLineSymbolLayerV2 from SLD
-     *
-     * \param element An SLD XML DOM element
-     *
-     * \returns A new MarkerLineSymbolLayerV2
+     * Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM \a element.
      */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
@@ -241,14 +321,14 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     // new stuff
 
     /**
-     * Shall the marker be rotated.
-     *
-     * \returns TRUE if the marker should be rotated.
+     * Returns TRUE if the repeating symbols will be rotated to match their line segment orientation.
+     * \see setRotateMarker()
      */
     bool rotateMarker() const { return mRotateMarker; }
 
     /**
-     * Shall the marker be rotated.
+     * Sets whether the repeating symbols should be rotated to match their line segment orientation.
+     * \see rotateMarker()
      */
     void setRotateMarker( bool rotate ) { mRotateMarker = rotate; }
 
@@ -268,12 +348,14 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     void setInterval( double interval ) { mInterval = interval; }
 
     /**
-     * The placement of the markers.
+     * Returns the placement of the symbols.
+     * \see setPlacement()
      */
     Placement placement() const { return mPlacement; }
 
     /**
-     * The placement of the markers.
+     * Sets the \a placement of the symbols.
+     * \see placement()
      */
     void setPlacement( Placement p ) { mPlacement = p; }
 
@@ -321,19 +403,19 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetAlongLineUnit = unit; }
 
     /**
-     * Returns the map unit scale used for calculating the offset in map units along line for markers.
-     * \returns Offset along line map unit scale.
+     * Returns the map unit scale used for calculating the offset in map units along line for symbols.
+     * \see setOffsetAlongLineMapUnitScale()
      */
     const QgsMapUnitScale &offsetAlongLineMapUnitScale() const { return mOffsetAlongLineMapUnitScale; }
 
     /**
-     * Sets the map unit scale used for calculating the offset in map units along line for markers.
-     * \param scale Offset along line map unit scale.
+     * Sets the map unit \a scale used for calculating the offset in map units along line for symbols.
+     * \see offsetAlongLineMapUnitScale()
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetAlongLineMapUnitScale = scale; }
 
     /**
-     * Sets the units for the interval between markers.
+     * Sets the units for the interval between symbols.
      * \param unit interval units
      * \see intervalUnit()
      * \see setInterval()
@@ -341,13 +423,26 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     void setIntervalUnit( QgsUnitTypes::RenderUnit unit ) { mIntervalUnit = unit; }
 
     /**
-     * Returns the units for the interval between markers.
+     * Returns the units for the interval between symbols.
      * \see setIntervalUnit()
      * \see interval()
     */
     QgsUnitTypes::RenderUnit intervalUnit() const { return mIntervalUnit; }
 
+    /**
+     * Sets the map unit \a scale for the interval between symbols.
+     * \see intervalMapUnitScale()
+     * \see setIntervalUnit()
+     * \see setInterval()
+     */
     void setIntervalMapUnitScale( const QgsMapUnitScale &scale ) { mIntervalMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the interval between symbols.
+     * \see setIntervalMapUnitScale()
+     * \see intervalUnit()
+     * \see interval()
+     */
     const QgsMapUnitScale &intervalMapUnitScale() const { return mIntervalMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;

@@ -887,6 +887,18 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
 
+    /**
+     * Renders the symbol at the specified \a point, using the given render \a context.
+     *
+     * The \a f argument is used to pass the feature currently being rendered (when available).
+     *
+     * If only a single symbol layer from the symbol should be rendered, it should be specified
+     * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
+     * rendered.
+     *
+     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * style and colors instead of the symbol's normal style.
+     */
     void renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
     /**
@@ -983,6 +995,18 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      */
     QgsProperty dataDefinedWidth() const;
 
+    /**
+     * Renders the symbol along the line joining \a points, using the given render \a context.
+     *
+     * The \a f argument is used to pass the feature currently being rendered (when available).
+     *
+     * If only a single symbol layer from the symbol should be rendered, it should be specified
+     * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
+     * rendered.
+     *
+     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * style and colors instead of the symbol's normal style.
+     */
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
     QgsLineSymbol *clone() const override SIP_FACTORY;
@@ -1017,6 +1041,22 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      */
     QgsFillSymbol( const QgsSymbolLayerList &layers SIP_TRANSFER = QgsSymbolLayerList() );
     void setAngle( double angle );
+
+    /**
+     * Renders the symbol using the given render \a context.
+     *
+     * The \a points list dictates the exterior ring for the polygon to render, and
+     * interior rings are optionally specified via the \a rings argument.
+     *
+     * The \a f argument is used to pass the feature currently being rendered (when available).
+     *
+     * If only a single symbol layer from the symbol should be rendered, it should be specified
+     * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
+     * rendered.
+     *
+     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * style and colors instead of the symbol's normal style.
+     */
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
     QgsFillSymbol *clone() const override SIP_FACTORY;
