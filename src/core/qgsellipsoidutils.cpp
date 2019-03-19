@@ -357,22 +357,18 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
       def.description = QStringLiteral( "%1 (%2:%3)" ).arg( name, authority, code );
 
       double semiMajor, semiMinor, invFlattening;
-      int semiMinorComputed;
+      int semiMinorComputed = 0;
       if ( proj_ellipsoid_get_parameters( context, ellipsoid, &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
       {
         def.parameters.semiMajor = semiMajor;
-        if ( semiMinor > 0 )
-        {
-          def.parameters.semiMinor = semiMinor;
-          def.parameters.inverseFlattening = def.parameters.semiMajor / ( def.parameters.semiMajor - def.parameters.semiMinor );
+        def.parameters.semiMinor = semiMinor;
+        def.parameters.inverseFlattening = invFlattening;
+        if ( !semiMinorComputed )
           def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.semiMinor, 0, 'g', 17 ) );
-        }
-        else
-        {
-          def.parameters.inverseFlattening = invFlattening;
-          def.parameters.semiMinor = def.parameters.semiMajor  * ( 1 - def.parameters.inverseFlattening );
+        else if ( !qgsDoubleNear( def.parameters.inverseFlattening, 0.0 ) )
           def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +rf=%2 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.inverseFlattening, 0, 'g', 17 ) );
-        }
+        else
+          def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ) );
       }
       else
       {
