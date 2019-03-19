@@ -21,29 +21,6 @@ email                : david dot marteau at 3liz dot com
 
 namespace QgsWms
 {
-
-  namespace
-  {
-
-    QMap<QString, QString> parseFormatOptions( const QString &optionString )
-    {
-      QMap<QString, QString> options;
-
-      QStringList optionsList = optionString.split( ';' );
-      for ( auto optionsIt = optionsList.constBegin(); optionsIt != optionsList.constEnd(); ++optionsIt )
-      {
-        int equalIdx = optionsIt->indexOf( ':' );
-        if ( equalIdx > 0 && equalIdx < ( optionsIt->length() - 1 ) )
-        {
-          options.insert( optionsIt->left( equalIdx ).toUpper(),
-                          optionsIt->right( optionsIt->length() - equalIdx - 1 ).toUpper() );
-        }
-      }
-      return options;
-    }
-
-  }
-
   void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project,
                    const QString &version,  const QgsServerRequest &request,
                    QgsServerResponse &response )
