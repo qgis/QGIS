@@ -502,6 +502,57 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 };
 
 
+#include "ui_widget_hashline.h"
+
+class QgsHashedLineSymbolLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsHashedLineSymbolLayerWidget
+ */
+class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsHashedLineSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsHashedLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Creates a new QgsHashedLineSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsHashedLineSymbolLayerWidget( vl ); }
+
+    // from base class
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+
+  private slots:
+
+    void setInterval( double val );
+    void setOffsetAlongLine( double val );
+    void setHashLength( double val );
+    void setHashAngle( double val );
+
+    void setRotate();
+    void setOffset();
+    void setPlacement();
+    void mIntervalUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mOffsetAlongLineUnitWidget_changed();
+    void hashLengthUnitWidgetChanged();
+  private:
+    QgsHashedLineSymbolLayer *mLayer = nullptr;
+
+
+};
+
 ///////////
 
 #include "ui_widget_svgmarker.h"
