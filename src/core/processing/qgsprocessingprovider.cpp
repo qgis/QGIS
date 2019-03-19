@@ -109,12 +109,26 @@ QStringList QgsProcessingProvider::supportedOutputTableExtensions() const
 
 bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context, QString &error ) const
 {
-  QString outputPath = QgsProcessingParameters::parameterAsOutputLayer( parameter, outputValue, context );
   error.clear();
+  QString outputPath = QgsProcessingParameters::parameterAsOutputLayer( parameter, outputValue, context ).trimmed();
+
+  if ( outputPath.isEmpty() )
+  {
+    if ( parameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    {
+      return true;
+    }
+    else
+    {
+      error = tr( "Missing parameter value %1" ).arg( parameter->description() );
+      return false;
+    }
+  }
+
   if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName()
        ||  parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
   {
-    if ( outputPath.isEmpty() || outputPath.startsWith( QLatin1String( "memory:" ) ) )
+    if ( outputPath.startsWith( QLatin1String( "memory:" ) ) )
     {
       if ( !supportsNonFileBasedOutput() )
       {
@@ -145,7 +159,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
 
     if ( !supportedOutputVectorLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
     {
-      error = tr( "%1 files are not supported as outputs for this algorithm" ).arg( extension );
+      error = tr( "“.%1” files are not supported as outputs for this algorithm" ).arg( extension );
       return false;
     }
     return true;
@@ -156,7 +170,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
     const QString extension = fi.completeSuffix();
     if ( !supportedOutputRasterLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
     {
-      error = tr( "%1 files are not supported as outputs for this algorithm" ).arg( extension );
+      error = tr( "“.%1” files are not supported as outputs for this algorithm" ).arg( extension );
       return false;
     }
     return true;

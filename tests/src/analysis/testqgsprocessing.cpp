@@ -5423,6 +5423,8 @@ void TestQgsProcessing::parameterVectorOut()
   def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
   DummyProvider3 provider;
   QString error;
+  QVERIFY( provider.isSupportedOutputValue( QVariant(), def.get(), context, error ) ); // optional
+  QVERIFY( provider.isSupportedOutputValue( QString(), def.get(), context, error ) ); // optional
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.shp", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.SHP", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "ogr:d:/test.shp", def.get(), context, error ) );
@@ -5431,6 +5433,9 @@ void TestQgsProcessing::parameterVectorOut()
   QVERIFY( provider.isSupportedOutputValue( "d:/test.MIF", def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( "ogr:d:/test.MIF", def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIF" ), def.get(), context, error ) );
+  def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
+  QVERIFY( !provider.isSupportedOutputValue( QVariant(), def.get(), context, error ) ); // non-optional
+  QVERIFY( !provider.isSupportedOutputValue( QString(), def.get(), context, error ) ); // non-optional
 
   provider.loadAlgorithms();
   def->mOriginalProvider = &provider;
@@ -5546,6 +5551,8 @@ void TestQgsProcessing::parameterRasterOut()
 
   DummyProvider3 provider;
   QString error;
+  QVERIFY( !provider.isSupportedOutputValue( QVariant(), def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( QString(), def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.tif", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( "d:/test.TIF", def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.tif" ), def.get(), context, error ) );
