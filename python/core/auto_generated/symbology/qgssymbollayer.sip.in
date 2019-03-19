@@ -835,11 +835,53 @@ class QgsLineSymbolLayer : QgsSymbolLayer
       InteriorRingsOnly,
     };
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
+
+    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;
+%Docstring
+Renders the line symbol layer along the line joining ``points``, using the given render ``context``.
+
+.. seealso:: :py:func:`renderPolygonStroke`
+%End
 
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+%Docstring
+Renders the line symbol layer along the outline of polygon, using the given render ``context``.
+
+The exterior ring of the polygon is specified in ``points``. Optionally, interior
+rings are set via the ``rings`` arugment.
+
+.. seealso:: :py:func:`renderPolyline`
+%End
 
     virtual void setWidth( double width );
+%Docstring
+Sets the ``width`` of the line symbol layer.
+
+Calling this method updates the width of the line symbol layer, without
+changing the existing width units. It has different effects depending
+on the line symbol layer subclass, e.g. for a simple line layer it
+changes the stroke width of the line, for a marker line layer it
+changes the size of the markers used to draw the line.
+
+.. seealso:: :py:func:`width`
+
+.. warning::
+
+   Since the width units vary, this method is useful for changing the
+   relative width of a line symbol layer only.
+%End
 
     virtual double width() const;
 %Docstring
@@ -867,7 +909,75 @@ width of the symbol layer using the provided render ``context``.
 %End
 
     double offset() const;
+%Docstring
+Returns the line's offset.
+
+Offset units can be retrieved by calling offsetUnit().
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`offsetUnit`
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+%End
+
     void setOffset( double offset );
+%Docstring
+Sets the line's ``offset``.
+
+Offset units are set via setOffsetUnit().
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`setOffsetUnit`
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+%End
+
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the line's offset.
+
+.. seealso:: :py:func:`offsetUnit`
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+%End
+
+    QgsUnitTypes::RenderUnit offsetUnit() const;
+%Docstring
+Returns the units for the line's offset.
+
+.. seealso:: :py:func:`setOffsetUnit`
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+%End
+
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the line's offset.
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`setOffsetUnit`
+%End
+
+    const QgsMapUnitScale &offsetMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the line's offset.
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`offsetUnit`
+%End
+
 
     void setWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
@@ -887,41 +997,6 @@ Returns the units for the line's width.
 
     void setWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &widthMapUnitScale() const;
-
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the units for the line's offset.
-
-:param unit: offset units
-
-.. seealso:: :py:func:`offsetUnit`
-%End
-
-    QgsUnitTypes::RenderUnit offsetUnit() const;
-%Docstring
-Returns the units for the line's offset.
-
-.. seealso:: :py:func:`setOffsetUnit`
-%End
-
-    void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
-    const QgsMapUnitScale &offsetMapUnitScale() const;
-
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
-
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
-
-
-    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
-
-    virtual QgsMapUnitScale mapUnitScale() const;
-
-
-    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
-
-
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
-
 
     RenderRingFilter ringFilter() const;
 %Docstring
