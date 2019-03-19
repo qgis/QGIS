@@ -1865,24 +1865,24 @@ namespace QgsWms
   {
     const QMap<DxfFormatOption, QString> options = dxfFormatOptions();
 
-    QgsDxfExport::SymbologyExport symbo = QgsDxfExport::NoSymbology;
+    QgsDxfExport::SymbologyExport symbol = QgsDxfExport::NoSymbology;
 
     if ( ! options.contains( DxfFormatOption::MODE ) )
     {
-      return symbo;
+      return symbol;
     }
 
     const QString mode = options[ DxfFormatOption::MODE ];
     if ( mode.compare( QLatin1String( "SymbolLayerSymbology" ), Qt::CaseInsensitive ) == 0 )
     {
-      symbo = QgsDxfExport::SymbolLayerSymbology;
+      symbol = QgsDxfExport::SymbolLayerSymbology;
     }
     else if ( mode.compare( QLatin1String( "FeatureSymbology" ), Qt::CaseInsensitive ) == 0 )
     {
-      symbo = QgsDxfExport::FeatureSymbology;
+      symbol = QgsDxfExport::FeatureSymbology;
     }
 
-    return symbo;
+    return symbol;
   }
 
   QString QgsWmsParameters::dxfCodec() const
