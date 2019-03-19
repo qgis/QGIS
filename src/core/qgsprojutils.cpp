@@ -23,7 +23,7 @@
 #endif
 
 
-#ifdef USE_THREAD_LOCAL
+#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
 thread_local QgsProjContext QgsProjContext::sProjContext;
 #else
 QThreadStorage< QgsProjContext * > QgsProjContext::sProjContext;
@@ -49,7 +49,7 @@ QgsProjContext::~QgsProjContext()
 
 PJ_CONTEXT *QgsProjContext::get()
 {
-#ifdef USE_THREAD_LOCAL
+#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
   return sProjContext.mContext;
 #else
   PJ_CONTEXT *pContext = nullptr;

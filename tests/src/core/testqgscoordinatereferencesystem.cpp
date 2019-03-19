@@ -123,7 +123,8 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
 #if PROJ_VERSION_MAJOR > 4
-  qDebug() << "PROJ version:           " << pj_release;
+  PJ_INFO info = proj_info();
+  qDebug() << "PROJ version:           " << info.release;
 #else
   qDebug() << "PROJ version:           " << PJ_VERSION;
 #endif

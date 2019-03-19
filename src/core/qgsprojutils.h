@@ -17,10 +17,12 @@
 #ifndef QGSPROJUTILS_H
 #define QGSPROJUTILS_H
 
+#include <QtGlobal>
+
 #include "qgis_core.h"
 #include "qgsconfig.h"
 
-#ifndef USE_THREAD_LOCAL
+#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
 #include <QThreadStorage>
 #endif
 
@@ -59,7 +61,7 @@ class CORE_EXPORT QgsProjContext
      * Thread local proj context storage. A new proj context will be created
      * for every thread.
      */
-#ifdef USE_THREAD_LOCAL
+#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
     static thread_local QgsProjContext sProjContext;
 #else
     static QThreadStorage< QgsProjContext * > sProjContext;
