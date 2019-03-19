@@ -189,9 +189,10 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     // and only modify the subset if we cannot.
     if ( !mProviderRequest.orderBy().isEmpty() )
     {
-      Q_FOREACH ( const QString &attr, mProviderRequest.orderBy().usedAttributes() )
+      const auto usedAttributeIndices = mProviderRequest.orderBy().usedAttributeIndices( mSource->mFields );
+      for ( int attrIndex : usedAttributeIndices )
       {
-        providerSubset << mSource->mFields.lookupField( attr );
+        providerSubset << attrIndex;
       }
     }
 

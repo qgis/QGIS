@@ -257,8 +257,15 @@ class CORE_EXPORT QgsFeatureRequest
 
         /**
          * Returns a set of used attributes
+         * \note The returned attributes names are NOT guaranteed to be valid.
          */
         QSet<QString> CORE_EXPORT usedAttributes() const;
+
+        /**
+         * Returns a set of used, validated attribute indices
+         * \since QGIS 3.8
+         */
+        QSet<int> CORE_EXPORT usedAttributeIndices( const QgsFields &fields ) const;
 
         /**
          * Dumps the content to an SQL equivalent syntax

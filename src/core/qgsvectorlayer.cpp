@@ -1594,6 +1594,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( !mValid )
   {
     QgsDebugMsgLevel( QStringLiteral( "Invalid provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
+    return false;
   }
 
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )

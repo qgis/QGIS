@@ -161,9 +161,9 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
   {
     QgsAttributeList attrs = request.subsetOfAttributes();
-    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIndex : usedAttributeIndices )
     {
-      int attrIndex = mSource->mFields.lookupField( attr );
       if ( !attrs.contains( attrIndex ) )
         attrs << attrIndex;
     }

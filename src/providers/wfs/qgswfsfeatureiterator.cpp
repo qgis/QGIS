@@ -1030,7 +1030,8 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
   {
     QgsFields dataProviderFields = mShared->mCacheDataProvider->fields();
     QgsAttributeList cacheSubSet;
-    Q_FOREACH ( int i, mRequest.subsetOfAttributes() )
+    const auto subsetOfAttributes = mRequest.subsetOfAttributes();
+    for ( int i : subsetOfAttributes )
     {
       int idx = dataProviderFields.indexFromName( mShared->mFields.at( i ).name() );
       if ( idx >= 0 )
@@ -1043,7 +1044,8 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
-      Q_FOREACH ( const QString &field, mRequest.filterExpression()->referencedColumns() )
+      const auto referencedColumns = mRequest.filterExpression()->referencedColumns();
+      for ( const QString &field : referencedColumns )
       {
         int idx = dataProviderFields.indexFromName( field );
         if ( idx >= 0 && !cacheSubSet.contains( idx ) )
@@ -1057,15 +1059,18 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
     // also need attributes required by order by
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
     {
-      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      const auto usedProviderAttributeIndices = mRequest.orderBy().usedAttributeIndices( dataProviderFields );
+      for ( int attrIdx : usedProviderAttributeIndices )
       {
-        int idx = dataProviderFields.indexFromName( attr );
-        if ( idx >= 0 && !cacheSubSet.contains( idx ) )
-          cacheSubSet.append( idx );
+        if ( !cacheSubSet.contains( attrIdx ) )
+          cacheSubSet.append( attrIdx );
+      }
 
-        idx = mShared->mFields.indexFromName( attr );
-        if ( idx >= 0  && !mSubSetAttributes.contains( idx ) )
-          mSubSetAttributes.append( idx );
+      const auto usedSharedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mShared->mFields );
+      for ( int attrIdx : usedSharedAttributeIndices )
+      {
+        if ( !mSubSetAttributes.contains( attrIdx ) )
+          mSubSetAttributes.append( attrIdx );
       }
     }
 
