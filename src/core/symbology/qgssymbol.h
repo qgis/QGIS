@@ -550,6 +550,8 @@ class CORE_EXPORT QgsSymbolRenderContext
 {
   public:
 
+    //TODO QGIS 4.0 - remove mapUnitScale
+
     /**
      * Constructor for QgsSymbolRenderContext
      * \param c
@@ -701,7 +703,10 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     void setGeometryPartNum( int num ) { mGeometryPartNum = num; }
 
-    double outputLineWidth( double width ) const;
+    /**
+     * \deprecated Use the size conversion methods in QgsRenderContext instead.
+     */
+    Q_DECL_DEPRECATED double outputLineWidth( double width ) const SIP_DEPRECATED;
 
     /**
      * \deprecated Use the size conversion methods in QgsRenderContext instead.

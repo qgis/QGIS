@@ -514,6 +514,7 @@ class QgsSymbolRenderContext
 %End
   public:
 
+
     QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = 0, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 %Docstring
 Constructor for QgsSymbolRenderContext
@@ -682,7 +683,11 @@ Sets the part number of current geometry
 .. versionadded:: 2.16
 %End
 
-    double outputLineWidth( double width ) const;
+ double outputLineWidth( double width ) const /Deprecated/;
+%Docstring
+
+.. deprecated:: Use the size conversion methods in QgsRenderContext instead.
+%End
 
  double outputPixelSize( double size ) const /Deprecated/;
 %Docstring
