@@ -319,8 +319,11 @@ override_dh_auto_install:
 
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
 
+override_dh_missing:
+	dh_missing --fail-missing
+
 override_dh_install:
-	dh_install --autodest --list-missing
+	dh_install --autodest
 
 override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog
