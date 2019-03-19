@@ -373,7 +373,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 #ifndef SIP_RUN
     struct LayerLegendTree
     {
-      //! Pointer to parent for each active node. Top-level nodes have null parent. Pointers are not owned.
+      //! Pointer to parent for each active node. Top-level nodes have NULLPTR parent. Pointers are not owned.
       QMap<QgsLayerTreeModelLegendNode *, QgsLayerTreeModelLegendNode *> parents;
       //! List of children for each active node. Top-level nodes are under NULLPTR key. Pointers are not owned.
       QMap<QgsLayerTreeModelLegendNode *, QList<QgsLayerTreeModelLegendNode *> > children;

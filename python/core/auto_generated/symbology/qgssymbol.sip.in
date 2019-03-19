@@ -545,18 +545,31 @@ Sets the original value variable value for data defined symbology
 .. versionadded:: 2.12
 %End
 
-    QgsUnitTypes::RenderUnit outputUnit() const;
+ QgsUnitTypes::RenderUnit outputUnit() const /Deprecated/;
 %Docstring
-Returns the output unit for the context
+Returns the output unit for the context.
+
+.. deprecated:: No longer used and will be removed in QGIS 4.0
 %End
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit u );
+ void setOutputUnit( QgsUnitTypes::RenderUnit u ) /Deprecated/;
 %Docstring
-Sets the output unit for the context
+Sets the output unit for the context.
+
+.. deprecated:: No longer used and will be removed in QGIS 4.0
 %End
 
-    QgsMapUnitScale mapUnitScale() const;
-    void setMapUnitScale( const QgsMapUnitScale &scale );
+ QgsMapUnitScale mapUnitScale() const /Deprecated/;
+%Docstring
+
+.. deprecated:: Will be removed in QGIS 4.0
+%End
+
+ void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
+%Docstring
+
+.. deprecated:: Will be removed in QGIS 4.0
+%End
 
     qreal opacity() const;
 %Docstring
@@ -577,7 +590,18 @@ Sets the ``opacity`` for the symbol.
 %End
 
     bool selected() const;
+%Docstring
+Returns ``True`` if symbols should be rendered using the selected symbol coloring and style.
+
+.. seealso:: :py:func:`setSelected`
+%End
+
     void setSelected( bool selected );
+%Docstring
+Sets whether symbols should be rendered using the selected symbol coloring and style.
+
+.. seealso:: :py:func:`selected`
+%End
 
     QgsSymbol::RenderHints renderHints() const;
 %Docstring
@@ -594,9 +618,10 @@ Sets rendering hint flags for the symbol.
 %End
 
     void setFeature( const QgsFeature *f );
+
     const QgsFeature *feature() const;
 %Docstring
-Current feature being rendered - may be null
+Returns the current feature being rendered. This may be ``None``.
 %End
 
     void setOriginalGeometryType( QgsWkbTypes::GeometryType type );
@@ -658,7 +683,12 @@ Sets the part number of current geometry
 %End
 
     double outputLineWidth( double width ) const;
-    double outputPixelSize( double size ) const;
+
+ double outputPixelSize( double size ) const /Deprecated/;
+%Docstring
+
+.. deprecated:: Use the size conversion methods in QgsRenderContext instead.
+%End
 
 
     QgsExpressionContextScope *expressionContextScope();

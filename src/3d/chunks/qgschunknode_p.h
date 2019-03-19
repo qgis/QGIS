@@ -109,15 +109,15 @@ class QgsChunkNode
     //! Returns current state of the node
     State state() const { return mState; }
 
-    //! Returns node's entry in the loader queue. Not null only when in QueuedForLoad / QueuedForUpdate state
+    //! Returns node's entry in the loader queue. Not NULLPTR only when in QueuedForLoad / QueuedForUpdate state
     QgsChunkListEntry *loaderQueueEntry() const { return mLoaderQueueEntry; }
-    //! Returns node's entry in the replacement queue. Not null only when in Loaded / QueuedForUpdate / Updating state
+    //! Returns node's entry in the replacement queue. Not NULLPTR only when in Loaded / QueuedForUpdate / Updating state
     QgsChunkListEntry *replacementQueueEntry() const { return mReplacementQueueEntry; }
-    //! Returns loader of the node. Not null only when in Loading state
+    //! Returns loader of the node. Not NULLPTR only when in Loading state
     QgsChunkLoader *loader() const { return mLoader; }
-    //! Returns associated entity (3D object). Not null only when Loaded / QueuedForUpdate / Updating state
+    //! Returns associated entity (3D object). Not NULLPTR only when Loaded / QueuedForUpdate / Updating state
     Qt3DCore::QEntity *entity() const { return mEntity; }
-    //! Returns updater job. Not null only when in Updating state
+    //! Returns updater job. Not NULLPTR only when in Updating state
     QgsChunkQueueJob *updater() const { return mUpdater; }
 
     //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes

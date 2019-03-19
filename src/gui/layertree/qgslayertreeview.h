@@ -244,7 +244,7 @@ class GUI_EXPORT QgsLayerTreeViewMenuProvider
   public:
     virtual ~QgsLayerTreeViewMenuProvider() = default;
 
-    //! Returns a newly created menu instance (or null pointer on error)
+    //! Returns a newly created menu instance (or NULLPTR on error)
     virtual QMenu *createContextMenu() = 0 SIP_FACTORY;
 };
 

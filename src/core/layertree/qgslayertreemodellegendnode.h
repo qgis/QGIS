@@ -163,7 +163,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     //! Construct the node with pointer to its parent layer node
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Returns a temporary context or null if legendMapViewData are not valid
+    //! Returns a temporary context or NULLPTR if legendMapViewData are not valid
     QgsRenderContext *createTemporaryRenderContext() const SIP_FACTORY;
 
   protected:

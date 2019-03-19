@@ -585,14 +585,27 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     void setOriginalValueVariable( const QVariant &value );
 
-    //! Returns the output unit for the context
-    QgsUnitTypes::RenderUnit outputUnit() const { return mOutputUnit; }
+    /**
+     * Returns the output unit for the context.
+     * \deprecated No longer used and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED QgsUnitTypes::RenderUnit outputUnit() const SIP_DEPRECATED { return mOutputUnit; }
 
-    //! Sets the output unit for the context
-    void setOutputUnit( QgsUnitTypes::RenderUnit u ) { mOutputUnit = u; }
+    /**
+     * Sets the output unit for the context.
+     * \deprecated No longer used and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void setOutputUnit( QgsUnitTypes::RenderUnit u ) SIP_DEPRECATED { mOutputUnit = u; }
 
-    QgsMapUnitScale mapUnitScale() const { return mMapUnitScale; }
-    void setMapUnitScale( const QgsMapUnitScale &scale ) { mMapUnitScale = scale; }
+    /**
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED QgsMapUnitScale mapUnitScale() const SIP_DEPRECATED { return mMapUnitScale; }
+
+    /**
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void setMapUnitScale( const QgsMapUnitScale &scale ) SIP_DEPRECATED { mMapUnitScale = scale; }
 
     /**
      * Returns the opacity for the symbol.
@@ -608,7 +621,16 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     void setOpacity( qreal opacity ) { mOpacity = opacity; }
 
+    /**
+     * Returns TRUE if symbols should be rendered using the selected symbol coloring and style.
+     * \see setSelected()
+     */
     bool selected() const { return mSelected; }
+
+    /**
+     * Sets whether symbols should be rendered using the selected symbol coloring and style.
+     * \see selected()
+     */
     void setSelected( bool selected ) { mSelected = selected; }
 
     /**
@@ -624,7 +646,10 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setRenderHints( QgsSymbol::RenderHints hints ) { mRenderHints = hints; }
 
     void setFeature( const QgsFeature *f ) { mFeature = f; }
-    //! Current feature being rendered - may be null
+
+    /**
+     * Returns the current feature being rendered. This may be NULLPTR.
+     */
     const QgsFeature *feature() const { return mFeature; }
 
     /**
@@ -677,7 +702,11 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setGeometryPartNum( int num ) { mGeometryPartNum = num; }
 
     double outputLineWidth( double width ) const;
-    double outputPixelSize( double size ) const;
+
+    /**
+     * \deprecated Use the size conversion methods in QgsRenderContext instead.
+     */
+    Q_DECL_DEPRECATED double outputPixelSize( double size ) const SIP_DEPRECATED;
 
     // workaround for sip 4.7. Don't use assignment - will fail with assertion error
     QgsSymbolRenderContext &operator=( const QgsSymbolRenderContext & );

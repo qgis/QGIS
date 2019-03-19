@@ -93,7 +93,7 @@ class Qgs3DMapCanvas : public QWidget
     //! Root entity of the 3D scene
     Qgs3DMapScene *mScene = nullptr;
 
-    //! Active map tool that receives events (if null then mouse/keyboard events are used for camera manipulation)
+    //! Active map tool that receives events (if NULLPTR then mouse/keyboard events are used for camera manipulation)
     Qgs3DMapTool *mMapTool = nullptr;
 };
 

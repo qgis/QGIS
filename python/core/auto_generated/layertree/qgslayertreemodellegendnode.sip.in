@@ -165,7 +165,7 @@ Construct the node with pointer to its parent layer node
 
     QgsRenderContext *createTemporaryRenderContext() const /Factory/;
 %Docstring
-Returns a temporary context or null if legendMapViewData are not valid
+Returns a temporary context or ``None`` if legendMapViewData are not valid
 %End
 
   protected:

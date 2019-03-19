@@ -68,7 +68,10 @@ class CORE_EXPORT QgsSQLStatement
 
     class Node;
 
-    //! Returns root node of the statement. Root node is null is parsing has failed
+    /**
+     * Returns the root node of the statement.
+     * The root node is NULLPTR if parsing has failed.
+     */
     const QgsSQLStatement::Node *rootNode() const;
 
     /**

@@ -41,7 +41,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     //! Sets weak reference to the joined layer
     void setJoinLayer( QgsVectorLayer *layer ) { mJoinLayerRef = QgsVectorLayerRef( layer ); }
-    //! Returns joined layer (may be null if the reference was set by layer ID and not resolved yet)
+    //! Returns joined layer (may be NULLPTR if the reference was set by layer ID and not resolved yet)
     QgsVectorLayer *joinLayer() const { return mJoinLayerRef.get(); }
 
     //! Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to a reference to real layer
@@ -59,9 +59,9 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! Returns name of the field of joined layer that will be used for join
     QString joinFieldName() const { return mJoinFieldName; }
 
-    //! Sets prefix of fields from the joined layer. If null, joined layer's name will be used.
+    //! Sets prefix of fields from the joined layer. If NULLPTR, joined layer's name will be used.
     void setPrefix( const QString &prefix ) { mPrefix = prefix; }
-    //! Returns prefix of fields from the joined layer. If null, joined layer's name will be used.
+    //! Returns prefix of fields from the joined layer. If NULLPTR, joined layer's name will be used.
     QString prefix() const { return mPrefix; }
 
     //! Sets whether values from the joined layer should be cached in memory to speed up lookups
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! True if the join is cached in virtual memory
     bool mMemoryCache = false;
 
-    //! Subset of fields to use from joined layer. null = use all fields
+    //! Subset of fields to use from joined layer. NULLPTR = use all fields
     std::shared_ptr<QStringList> mJoinFieldsSubset;
 
     // caching support
