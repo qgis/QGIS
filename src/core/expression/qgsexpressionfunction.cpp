@@ -3815,7 +3815,7 @@ static QVariant fcnGetGeometry( const QVariantList &values, const QgsExpressionC
   return QVariant();
 }
 
-static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QString sAuthId = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
@@ -3828,9 +3828,10 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
   if ( ! d.isValid() )
     return QVariant::fromValue( fGeom );
 
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsCoordinateTransform t( s, d );
-  Q_NOWARN_DEPRECATED_POP
+  QgsCoordinateTransformContext tContext;
+  if ( context )
+    tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
+  QgsCoordinateTransform t( s, d, tContext );
   try
   {
     if ( fGeom.transform( t ) == 0 )
