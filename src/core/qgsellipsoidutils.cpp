@@ -19,6 +19,7 @@
 #include "qgsmessagelog.h"
 #include <sqlite3.h>
 #include <QCollator>
+#include "qgsprojutils.h"
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
@@ -215,6 +216,52 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
 #if PROJ_VERSION_MAJOR>=6
   sEllipsoidCacheLock.lockForWrite();
 
+  PJ_CONTEXT *context = QgsProjContext::get();
+  PROJ_STRING_LIST authorities = proj_get_authorities_from_database( context );
+  PROJ_STRING_LIST authoritiesIt = authorities;
+  while ( char *authority = *authoritiesIt )
+  {
+    QgsDebugMsg( QString( authority ) );
+    PROJ_STRING_LIST codes = proj_get_codes_from_database( context, authority, PJ_TYPE_ELLIPSOID, 0 );
+    PROJ_STRING_LIST codesIt = codes;
+    while ( char *code = *codesIt )
+    {
+      EllipsoidDefinition def;
+
+      QgsDebugMsg( QString( code ) );
+
+      PJ *ellipsoid = proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr );
+
+      QgsDebugMsg( QString( proj_get_name( ellipsoid ) ) );
+      def.description = QString( proj_get_name( ellipsoid ) ) ;
+
+      double semiMajor, semiMinor, invFlattening;
+      int semiMinorComputed;
+      if ( proj_ellipsoid_get_parameters( context, ellipsoid, &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) == 0 )
+      {
+        def.parameters.semiMajor = semiMajor;
+        def.parameters.semiMinor = semiMinor;
+        def.parameters.inverseFlattening = invFlattening;
+      }
+      else
+      {
+        def.parameters.valid = false;
+      }
+
+      defs << def;
+
+      //    sEllipsoidCache.insert( QString( ellipsoid->id ), def.parameters );
+
+
+      codesIt++;
+    }
+    proj_string_list_destroy( codes );
+
+    authoritiesIt++;
+  }
+  proj_string_list_destroy( authorities );
+
+#if 0
   // use proj to get ellipsoids
   const PJ_ELLPS *ellipsoid = proj_list_ellps();
   while ( ellipsoid->name )
@@ -222,6 +269,8 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
     EllipsoidDefinition def;
     def.acronym = ellipsoid->id ;
     def.description = ellipsoid->name;
+    QgsDebugMsg( QString( ellipsoid->id ) );
+    QgsDebugMsg( QString( ellipsoid->name ) );
     const QString majorString( ellipsoid->major );
     def.parameters.semiMajor = majorString.midRef( 2 ).toDouble();
     const QString minorString( ellipsoid->ell );
@@ -258,6 +307,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
 
     ellipsoid++;
   }
+#endif
   sEllipsoidCacheLock.unlock();
 
 
@@ -301,7 +351,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   collator.setCaseSensitivity( Qt::CaseInsensitive );
   std::sort( defs.begin(), defs.end(), [&collator]( const EllipsoidDefinition & a, const EllipsoidDefinition & b )
   {
-    return collator.compare( a.acronym, b.acronym ) < 0;
+    return collator.compare( a.description, b.description ) < 0;
   } );
   sDefinitionCache = defs;
   sDefinitionCacheLock.unlock();
