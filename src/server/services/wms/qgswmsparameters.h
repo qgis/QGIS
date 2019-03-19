@@ -55,6 +55,12 @@ namespace QgsWms
     QString mStyle;
   };
 
+  struct QgsWmsParametersExternalLayer
+  {
+    QString mName;
+    QString mUri;
+  };
+
   struct QgsWmsParametersHighlightLayer
   {
     QString mName;
@@ -79,6 +85,7 @@ namespace QgsWms
     float mGridX = 0;
     float mGridY = 0;
     QList<QgsWmsParametersLayer> mLayers; // list of layers for this composer map
+    QList<QgsWmsParametersExternalLayer> mExternalLayers; // list of external layers for this composer map
     QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
   };
 
@@ -945,6 +952,12 @@ namespace QgsWms
       QList<QgsWmsParametersHighlightLayer> highlightLayersParameters() const;
 
       /**
+       * Returns parameters for each external layer.
+       * \since QGIS 3.8
+       */
+      QList<QgsWmsParametersExternalLayer> externalLayersParameters() const;
+
+      /**
        * Returns HIGHLIGHT_GEOM as a list of string in WKT.
        * \returns highlight geometries
        */
@@ -1165,6 +1178,8 @@ namespace QgsWms
       QStringList atlasPk() const;
 
     private:
+      static bool isExternalLayer( const QString &name );
+
       bool loadParameter( const QString &name, const QString &value ) override;
 
       void save( const QgsWmsParameter &parameter, bool multi = false );
@@ -1173,6 +1188,8 @@ namespace QgsWms
 
       void raiseError( const QString &msg ) const;
       void log( const QString &msg ) const;
+
+      QgsWmsParametersExternalLayer externalLayerParameter( const QString &name ) const;
 
       QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
 

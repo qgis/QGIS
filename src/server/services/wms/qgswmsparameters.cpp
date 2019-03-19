@@ -19,6 +19,8 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
 
+const QString EXTERNAL_LAYER_PREFIX = QStringLiteral( "EXTERNAL_WMS:" );
+
 namespace QgsWms
 {
   //
@@ -1408,6 +1410,10 @@ namespace QgsWms
     for ( int i = 0; i < layers.size(); i++ )
     {
       QString layer = layers[i];
+
+      if ( isExternalLayer( layer ) )
+        continue;
+
       QgsWmsParametersLayer param;
       param.mNickname = layer;
 
@@ -1490,6 +1496,21 @@ namespace QgsWms
     }
 
     return params;
+  }
+
+  QList<QgsWmsParametersExternalLayer> QgsWmsParameters::externalLayersParameters() const
+  {
+    QList<QgsWmsParametersExternalLayer> externalLayers;
+
+    QStringList layers = allLayersNickname();
+    QStringList::const_iterator rit = std::remove_if( layers.begin(), layers.end(), QgsWmsParameters::isExternalLayer );
+
+    for ( QStringList::const_iterator it = layers.begin(); it != rit; ++it )
+    {
+      externalLayers << externalLayerParameter( *it );
+    }
+
+    return externalLayers;
   }
 
   QString QgsWmsParameters::backgroundColor() const
@@ -1577,12 +1598,29 @@ namespace QgsWms
     }
 
     //layers
-    QStringList layers;
+    QStringList allLayers;
     wmsParam = idParameter( QgsWmsParameter::LAYERS, mapId );
     if ( wmsParam.isValid() )
     {
-      layers = wmsParam.toStringList();
+      allLayers = wmsParam.toStringList();
     }
+
+    // external layers
+    QStringList layers;
+    QList<QgsWmsParametersExternalLayer> eParams;
+
+    for ( const auto &layer : qgis::as_const( allLayers ) )
+    {
+      if ( isExternalLayer( layer ) )
+      {
+        eParams << externalLayerParameter( layer );
+      }
+      else
+      {
+        layers << layer;
+      }
+    }
+    param.mExternalLayers = eParams;
 
     QStringList styles;
     wmsParam = idParameter( QgsWmsParameter::STYLES, mapId );
@@ -1762,5 +1800,21 @@ namespace QgsWms
     }
 
     return p;
+  }
+
+  QgsWmsParametersExternalLayer QgsWmsParameters::externalLayerParameter( const QString &name ) const
+  {
+    QgsWmsParametersExternalLayer param;
+
+    param.mName = name;
+    param.mName.remove( 0, EXTERNAL_LAYER_PREFIX.size() );
+    param.mUri = externalWMSUri( param.mName );
+
+    return param;
+  }
+
+  bool QgsWmsParameters::isExternalLayer( const QString &name )
+  {
+    return name.startsWith( EXTERNAL_LAYER_PREFIX );
   }
 }
