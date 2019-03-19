@@ -72,10 +72,10 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     //! Returns the currently selected shortcut object (QAction or QShortcut)
     QObject *currentObject();
 
-    //! Returns the currently selected action, or null if no action selected
+    //! Returns the currently selected action, or NULLPTR if no action selected
     QAction *currentAction();
 
-    //! Returns the currently selected QShortcut, or null if no shortcut selected
+    //! Returns the currently selected QShortcut, or NULLPTR if no shortcut selected
     QShortcut *currentShortcut();
 
     void setGettingShortcut( bool getting );

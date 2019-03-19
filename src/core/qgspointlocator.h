@@ -299,7 +299,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     QHash<QgsFeatureId, QgsGeometry *> mGeoms;
     std::unique_ptr< SpatialIndex::ISpatialIndex > mRTree;
 
-    //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
+    //! flag whether the layer is currently empty (i.e. mRTree is NULLPTR but it is not necessary to rebuild it)
     bool mIsEmptyLayer = false;
 
 

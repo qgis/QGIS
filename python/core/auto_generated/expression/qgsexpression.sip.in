@@ -144,7 +144,9 @@ Returns parser error details including location of error.
 
     const QgsExpressionNode *rootNode() const;
 %Docstring
-Returns root node of the expression. Root node is null is parsing has failed
+Returns the root node of the expression.
+
+The root node is ``None`` if parsing has failed.
 %End
 
     bool prepare( const QgsExpressionContext *context );

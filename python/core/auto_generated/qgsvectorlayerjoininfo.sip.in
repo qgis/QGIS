@@ -34,7 +34,7 @@ Sets weak reference to the joined layer
 %End
     QgsVectorLayer *joinLayer() const;
 %Docstring
-Returns joined layer (may be null if the reference was set by layer ID and not resolved yet)
+Returns joined layer (may be ``None`` if the reference was set by layer ID and not resolved yet)
 %End
 
     void setJoinLayerId( const QString &layerId );
@@ -66,11 +66,11 @@ Returns name of the field of joined layer that will be used for join
 
     void setPrefix( const QString &prefix );
 %Docstring
-Sets prefix of fields from the joined layer. If null, joined layer's name will be used.
+Sets prefix of fields from the joined layer. If ``None``, joined layer's name will be used.
 %End
     QString prefix() const;
 %Docstring
-Returns prefix of fields from the joined layer. If null, joined layer's name will be used.
+Returns prefix of fields from the joined layer. If ``None``, joined layer's name will be used.
 %End
 
     void setUsingMemoryCache( bool enabled );

@@ -59,7 +59,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 
     //! Returns camera controller
     QgsCameraController *cameraController() { return mCameraController; }
-    //! Returns terrain entity (may be temporarily null)
+    //! Returns terrain entity (may be temporarily NULLPTR)
     QgsTerrainEntity *terrainEntity() { return mTerrain; }
 
     //! Resets camera view to show the whole scene (top view)

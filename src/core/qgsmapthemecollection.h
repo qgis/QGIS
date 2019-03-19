@@ -73,7 +73,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
           return !( *this == other );
         }
 
-        //! Returns map layer or null if the layer does not exist anymore
+        //! Returns map layer or NULLPTR if the layer does not exist anymore
         QgsMapLayer *layer() const { return mLayer; }
 
         //! Sets the map layer for this record
