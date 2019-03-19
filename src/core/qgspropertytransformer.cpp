@@ -213,9 +213,9 @@ QString QgsGenericNumericTransformer::toExpression( const QString &baseExpressio
   QString exponentString = QString::number( mExponent );
 
   if ( qgsDoubleNear( mExponent, 1.0 ) )
-    return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, nullOutputString );
+    return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5)), %6)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, nullOutputString );
   else
-    return QStringLiteral( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, exponentString, nullOutputString );
+    return QStringLiteral( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6)), %7)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, exponentString, nullOutputString );
 }
 
 QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName )
@@ -419,12 +419,12 @@ QString QgsSizeScaleTransformer::toExpression( const QString &baseExpression ) c
   switch ( mType )
   {
     case Linear:
-      return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
+      return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5)), %6)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
 
     case Area:
     case Flannery:
     case Exponential:
-      return QStringLiteral( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
+      return QStringLiteral( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6)), %7)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
 
   }
   return QString();
@@ -619,7 +619,7 @@ QString QgsColorRampTransformer::toExpression( const QString &baseExpression ) c
   QString maxValueString = QString::number( mMaxValue );
   QString nullColorString = mNullColor.name();
 
-  return QStringLiteral( "coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1), '%5')" ).arg( !mRampName.isEmpty() ? mRampName : QStringLiteral( "custom ramp" ),
+  return QStringLiteral( "coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1)), '%5')" ).arg( !mRampName.isEmpty() ? mRampName : QStringLiteral( "custom ramp" ),
          baseExpression, minValueString, maxValueString, nullColorString );
 }
 
