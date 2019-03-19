@@ -95,7 +95,7 @@ namespace QgsWms
        * \returns the map as DXF data
        * \since QGIS 3.0
       */
-      QgsDxfExport getDxf( const QMap<QString, QString> &options );
+      QgsDxfExport getDxf();
 
       /**
        * Returns printed page as binary

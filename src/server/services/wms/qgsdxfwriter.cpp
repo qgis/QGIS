@@ -50,26 +50,12 @@ namespace QgsWms
   {
     Q_UNUSED( version );
 
-    QgsServerRequest::Parameters params = request.parameters();
-
     QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
     QgsRenderer renderer( serverIface, project, wmsParameters );
 
-    QMap<QString, QString> formatOptionsMap = parseFormatOptions( params.value( QStringLiteral( "FORMAT_OPTIONS" ) ) );
-
-    QgsDxfExport dxf = renderer.getDxf( formatOptionsMap );
-
-    QString codec = QStringLiteral( "ISO-8859-1" );
-    QMap<QString, QString>::const_iterator codecIt = formatOptionsMap.find( QStringLiteral( "CODEC" ) );
-    if ( codecIt != formatOptionsMap.constEnd() )
-    {
-      codec = formatOptionsMap.value( QStringLiteral( "CODEC" ) );
-    }
-
     // Write output
+    QgsDxfExport dxf = renderer.getDxf();
     response.setHeader( "Content-Type", "application/dxf" );
-    dxf.writeToFile( response.io(), codec );
+    dxf.writeToFile( response.io(), wmsParameters.dxfCodec() );
   }
-
-
 } // namespace QgsWms
