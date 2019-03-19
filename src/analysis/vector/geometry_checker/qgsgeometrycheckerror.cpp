@@ -53,7 +53,8 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 {
   if ( vidx.part != -1 )
   {
-    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry().constGet(), vidx.part )->clone() );
+    const QgsGeometry geom = layerFeature.geometry();
+    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom.constGet(), vidx.part )->clone() );
   }
   else
   {
@@ -178,6 +179,11 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
     }
   }
   return true;
+}
+
+QMap<QString, QgsFeatureIds> QgsGeometryCheckError::involvedFeatures() const
+{
+  return QMap<QString, QSet<QgsFeatureId> >();
 }
 
 void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )

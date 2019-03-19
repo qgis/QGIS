@@ -47,13 +47,11 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void updateCurrentError();
     void onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous );
     void onCurrentLayerChanged( QgsMapLayer *layer );
-    void onLayerEditingStatusChanged();
     void onLayerDestroyed( QObject *layer );
     void gotoNextError();
     void gotoPreviousError();
     void zoomToProblem();
     void zoomToFeature();
-    void triggerTopologyChecks();
     void updateLayerTransform();
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
     void onRowsInserted();
@@ -80,6 +78,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     QgsRubberBand *mErrorRubberband = nullptr;
     QgsRubberBand *mErrorLocationRubberband = nullptr;
     QgsVectorLayer *mCurrentLayer = nullptr;
+    bool mPreventZoomToError = false;
 };
 
 #endif // QGSGEOMETRYVALIDATIONPANEL_H
