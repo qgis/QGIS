@@ -833,6 +833,11 @@ void QgsRasterLayerProperties::sync()
  */
 void QgsRasterLayerProperties::apply()
 {
+
+  // Do nothing on "bad" layers
+  if ( !mRasterLayer->isValid() )
+    return;
+
   /*
    * Legend Tab
    */
@@ -1193,7 +1198,7 @@ void QgsRasterLayerProperties::urlClicked( const QUrl &url )
 
 void QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged( int index )
 {
-  if ( index < 0 || mDisableRenderTypeComboBoxCurrentIndexChanged )
+  if ( index < 0 || mDisableRenderTypeComboBoxCurrentIndexChanged || ! mRasterLayer->renderer() )
   {
     return;
   }
