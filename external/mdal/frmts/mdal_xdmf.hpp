@@ -105,7 +105,7 @@ namespace MDAL
       enum FunctionType
       {
         Join = 1, //!< vector: [$0, $1] from 2 scalars
-        Substract, //!< scalar: $1 - $0, e.g. calculate relative depth
+        Subtract, //!< scalar: $1 - $0, e.g. calculate relative depth
         Flow, //!< scalar: flow velocity (abs) = sqrt($0/($2-$3)*$0/($2-$3) + $1/($2-$3)*$1/($2-$3))
       };
 

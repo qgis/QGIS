@@ -152,7 +152,7 @@ size_t MDAL::XdmfFunctionDataset::scalarData( size_t indexStart, size_t count, d
   assert( group()->isScalar() ); //checked in C API interface
   assert( mType != FunctionType::Join );
 
-  if ( mType == FunctionType::Substract )
+  if ( mType == FunctionType::Subtract )
     return substractFunction( indexStart, count, buffer );
 
   if ( mType == FunctionType::Flow )
@@ -487,11 +487,11 @@ MDAL::DatasetGroups MDAL::DriverXdmf::parseXdmfXml( )
         else if ( function == "$0-$1" )
         {
           reversed = true;
-          type = XdmfFunctionDataset::Substract;
+          type = XdmfFunctionDataset::Subtract;
         }
         else if ( function == "$1-$0" )
         {
-          type = XdmfFunctionDataset::Substract;
+          type = XdmfFunctionDataset::Subtract;
         }
         else if ( ( function == "JOIN($0,$1,0*$1)" ) || ( function == "JOIN($0,$1,0)" ) )
         {
