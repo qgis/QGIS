@@ -148,14 +148,12 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QS
   const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
   if ( context.coordinateTransform().isValid() )
-    // this is context for layer rendering - use its CT as it includes correct datum transform
+    // this is context for layer rendering
     s2.setCoordinateTransform( context.coordinateTransform() );
   else
   {
-    // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
-    Q_NOWARN_DEPRECATED_PUSH
-    s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
-    Q_NOWARN_DEPRECATED_POP
+    // otherwise fall back to creating our own CT
+    s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs(), context.transformContext() ) );
   }
 
   s2.setRenderer( mDiagRenderer );
