@@ -33,7 +33,7 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
 {
   public:
     //! Constructor for QgsOnlineTerrainGenerator
-    QgsOnlineTerrainGenerator() = default;
+    QgsOnlineTerrainGenerator();
     ~QgsOnlineTerrainGenerator() override;
 
     //! Sets extent of the terrain
@@ -55,7 +55,7 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     float skirtHeight() const { return mSkirtHeight; }
 
     //! Returns height map generator object - takes care of extraction of elevations from the layer)
-    QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator; }
+    QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator.get(); }
 
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
@@ -80,7 +80,7 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
     float mSkirtHeight = 10.f;
 
-    QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
+    std::unique_ptr<QgsDemHeightMapGenerator> mHeightMapGenerator;
 };
 
 #endif // QGSONLINETERRAINGENERATOR_H

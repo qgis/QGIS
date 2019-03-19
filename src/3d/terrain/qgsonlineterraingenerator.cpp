@@ -18,10 +18,9 @@
 #include "qgsdemterraintileloader_p.h"
 
 
-QgsOnlineTerrainGenerator::~QgsOnlineTerrainGenerator()
-{
-  delete mHeightMapGenerator;
-}
+QgsOnlineTerrainGenerator::QgsOnlineTerrainGenerator() = default;
+
+QgsOnlineTerrainGenerator::~QgsOnlineTerrainGenerator() = default;
 
 QgsChunkLoader *QgsOnlineTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
@@ -114,6 +113,5 @@ void QgsOnlineTerrainGenerator::updateGenerator()
     mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
   }
 
-  delete mHeightMapGenerator;
-  mHeightMapGenerator = new QgsDemHeightMapGenerator( nullptr, mTerrainTilingScheme, mResolution );
+  mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( nullptr, mTerrainTilingScheme, mResolution ) );
 }

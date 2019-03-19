@@ -23,8 +23,7 @@
 
 QgsTerrainDownloader::QgsTerrainDownloader()
 {
-  QString uri = "type=xyz&url=http://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png&zmax=15&zmin=0";
-  onlineDtm.reset( new QgsRasterLayer( uri, "terrarium", "wms" ) );
+  setDataSource( defaultDataSource() );
 
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
@@ -40,6 +39,28 @@ QgsTerrainDownloader::QgsTerrainDownloader()
 }
 
 QgsTerrainDownloader::~QgsTerrainDownloader() = default;
+
+QgsTerrainDownloader::DataSource QgsTerrainDownloader::defaultDataSource()
+{
+  // using terrain tiles stored on AWS and listed within Registry of Open Data on AWS
+  // see https://registry.opendata.aws/terrain-tiles/
+  //
+  // tiles are generated using a variety of sources (SRTM, ETOPO1 and more detailed data for some countries)
+  // for more details and attribution see https://github.com/tilezen/joerd/blob/master/docs/data-sources.md
+
+  DataSource ds;
+  ds.uri = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
+  ds.zMin = 0;
+  ds.zMax = 15;
+  return ds;
+}
+
+void QgsTerrainDownloader::setDataSource( const QgsTerrainDownloader::DataSource &ds )
+{
+  mDataSource = ds;
+  QString uri = QString( "type=xyz&url=%1&zmin=%2&zmax=%3" ).arg( mDataSource.uri ).arg( mDataSource.zMin ).arg( mDataSource.zMax );
+  mOnlineDtm.reset( new QgsRasterLayer( uri, "terrarium", "wms" ) );
+}
 
 
 void QgsTerrainDownloader::adjustExtentAndResolution( double mupp, const QgsRectangle &extentOrig, QgsRectangle &extent, int &res )
@@ -73,6 +94,9 @@ double QgsTerrainDownloader::findBestTileResolution( double requestedMupp )
 
 void QgsTerrainDownloader::tileImageToHeightMap( const QImage &img, QByteArray &heightMap )
 {
+  // for description of the "terrarium" format:
+  // https://github.com/tilezen/joerd/blob/master/docs/formats.md
+
   // assuming ARGB premultiplied but with alpha 255
   const QRgb *rgb = reinterpret_cast<const QRgb *>( img.constBits() );
   int count = img.width() * img.height();
@@ -96,11 +120,17 @@ void QgsTerrainDownloader::tileImageToHeightMap( const QImage &img, QByteArray &
 
 QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context, QString tmpFilenameImg, QString tmpFilenameTif )
 {
+  if ( !mOnlineDtm || !mOnlineDtm->isValid() )
+  {
+    QgsDebugMsg( "missing a valid data source" );
+    return QByteArray();
+  }
+
   QgsRectangle extentTr = extentOrig;
-  if ( destCrs != onlineDtm->crs() )
+  if ( destCrs != mOnlineDtm->crs() )
   {
     // if in different CRS - need to reproject extent and resolution
-    QgsCoordinateTransform ct( destCrs, onlineDtm->crs(), context );
+    QgsCoordinateTransform ct( destCrs, mOnlineDtm->crs(), context );
     extentTr = ct.transformBoundingBox( extentOrig );
   }
 
@@ -115,7 +145,7 @@ QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, i
 
   // request tile
 
-  QgsRasterBlock *b = onlineDtm->dataProvider()->block( 1, extent, res, res );
+  QgsRasterBlock *b = mOnlineDtm->dataProvider()->block( 1, extent, res, res );
   QImage img = b->image();
   delete b;
   if ( !tmpFilenameImg.isEmpty() )
@@ -128,7 +158,7 @@ QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, i
 
   // prepare source/destination datasets for resampling
 
-  gdal::dataset_unique_ptr hSrcDS( QgsGdalUtils::createSingleBandMemoryDataset( GDT_Float32, extent, res, res, onlineDtm->crs() ) );
+  gdal::dataset_unique_ptr hSrcDS( QgsGdalUtils::createSingleBandMemoryDataset( GDT_Float32, extent, res, res, mOnlineDtm->crs() ) );
   gdal::dataset_unique_ptr hDstDS;
   if ( !tmpFilenameTif.isEmpty() )
     hDstDS = QgsGdalUtils::createSingleBandTiffDataset( tmpFilenameTif, GDT_Float32, extentOrig, resOrig, resOrig, destCrs );

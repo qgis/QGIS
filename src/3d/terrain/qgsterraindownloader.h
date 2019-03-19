@@ -32,7 +32,10 @@ class QgsRasterLayer;
  * \ingroup 3d
  * Takes care of downloading terrain data from a publicly available data source.
  *
- * Currently using terrain tiles in GeoTIFF format hosted on AWS.
+ * Currently using terrain tiles in Terrarium format hosted on AWS. More info:
+ * - data format: https://github.com/tilezen/joerd/blob/master/docs/formats.md
+ * - data sources: https://github.com/tilezen/joerd/blob/master/docs/data-sources.md
+ * - hosting: https://registry.opendata.aws/terrain-tiles/
  *
  * \since QGIS 3.8
  */
@@ -42,6 +45,23 @@ class _3D_EXPORT QgsTerrainDownloader
   public:
     QgsTerrainDownloader();
     ~QgsTerrainDownloader();
+
+    //! Definition of data source for terrain tiles (assuming "terrarium" data encoding with usual XYZ tiling scheme)
+    typedef struct
+    {
+      QString uri;  //!< HTTP(S) template for XYZ tiles requests (e.g. http://example.com/{z}/{x}/{y}.png)
+      int zMin = 0;  //!< Minimum zoom level (Z) with valid data
+      int zMax = 0;  //!< Maximum zoom level (Z) with valid data
+    } DataSource;
+
+    //! Returns the data source used by default
+    static DataSource defaultDataSource();
+
+    //! Configures data source to be used for download of terrain tiles
+    void setDataSource( const DataSource &ds );
+
+    //! Returns currently configured data source
+    DataSource dataSource() const { return mDataSource; }
 
     /**
      * For given extent and resolution (number of pixels for width/height) in specified CRS, download necessary
@@ -69,7 +89,8 @@ class _3D_EXPORT QgsTerrainDownloader
     static void tileImageToHeightMap( const QImage &img, QByteArray &heightMap );
 
   private:
-    std::unique_ptr<QgsRasterLayer> onlineDtm;
+    DataSource mDataSource;
+    std::unique_ptr<QgsRasterLayer> mOnlineDtm;
     double mXSpan = 0;   //!< Width of the tile at zoom level 0 in map units
 };
 
