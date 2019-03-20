@@ -169,6 +169,14 @@ Item {
                 }
 
                 RowLayout {
+
+                    Button {
+                        text: qsTr( "Today" )
+                        Layout.fillWidth: true
+
+                        onClicked: main.currentValue = new Date()
+                    }
+
                     Button {
                         text: qsTr( "Ok" )
                         Layout.fillWidth: true
