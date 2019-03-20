@@ -71,10 +71,10 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   return im;
 }
 
-void QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings &settings, QJsonObject &json )
+void QgsLayerTreeModelLegendNode::exportToJson( const QgsLegendSettings &settings, QJsonObject &json )
 {
-  drawSymbol( settings, json );
-  drawSymbolText( settings, json );
+  exportSymbolToJson( settings, json );
+  exportSymbolTextToJson( settings, json );
 }
 
 QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
@@ -89,7 +89,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &setting
   return settings.symbolSize();
 }
 
-void QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const
+void QgsLayerTreeModelLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const
 {
   const QIcon icon = data( Qt::DecorationRole ).value<QIcon>();
   if ( icon.isNull() )
@@ -147,7 +147,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   return labelSize;
 }
 
-void QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &, QJsonObject &json ) const
+void QgsLayerTreeModelLegendNode::exportSymbolTextToJson( const QgsLegendSettings &, QJsonObject &json ) const
 {
   const QString text = data( Qt::DisplayRole ).toString();
   json[ "title" ] = text;
@@ -514,7 +514,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
                  std::max( height + 2 * heightOffset, static_cast< double >( settings.symbolSize().height() ) ) );
 }
 
-void QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const
+void QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const
 {
   const QgsSymbol *s = mItem.symbol();
   if ( !s )
@@ -658,7 +658,7 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCo
   return settings.wmsLegendSize();
 }
 
-void QgsImageLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject &json ) const
+void QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, QJsonObject &json ) const
 {
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
@@ -723,7 +723,7 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings,
   return settings.symbolSize();
 }
 
-void QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const
+void QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const
 {
   QImage img = QImage( settings.symbolSize().toSize(), QImage::Format_ARGB32 );
   img.fill( Qt::transparent );
@@ -829,7 +829,7 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
   return settings.wmsLegendSize();
 }
 
-void QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject &json ) const
+void QgsWmsLegendNode::exportSymbolToJson( const QgsLegendSettings &, QJsonObject &json ) const
 {
   QByteArray byteArray;
   QBuffer buffer( &byteArray );

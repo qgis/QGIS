@@ -94,7 +94,7 @@ void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &j
 
       if ( legendNodes.count() == 1 )
       {
-        legendNodes.at( 0 )->draw( mSettings, group );
+        legendNodes.at( 0 )->exportToJson( mSettings, group );
         nodes.append( group );
       }
       else if ( legendNodes.count() > 1 )
@@ -104,7 +104,7 @@ void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &j
         {
           QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
           QJsonObject symbol;
-          legendNode->draw( mSettings, symbol );
+          legendNode->exportToJson( mSettings, symbol );
           symbols.append( symbol );
         }
         group[ "title" ] = text;
