@@ -514,7 +514,7 @@ namespace QgsWms
         exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
       }
     }
-    else if ( format == QgsWmsParameters::PNG )
+    else if ( format == QgsWmsParameters::PNG || format == QgsWmsParameters::JPG )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::ImageExportSettings exportSettings;
