@@ -851,6 +851,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
           QgsLayerTreeNode *newLayerTreeLayerClone = newLayerTreeLayer->clone();
           //copy the showFeatureCount property to the new node
           newLayerTreeLayerClone->setCustomProperty( CUSTOM_SHOW_FEATURE_COUNT, layerTreeLayer->customProperty( CUSTOM_SHOW_FEATURE_COUNT ) );
+          newLayerTreeLayerClone->setItemVisibilityChecked( layerTreeLayer->isVisible() );
           QgsLayerTreeGroup *grp = qobject_cast<QgsLayerTreeGroup *>( newLayerTreeLayer->parent() );
           parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
           if ( grp )
