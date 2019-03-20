@@ -163,6 +163,12 @@ Will be used to update existing errors whenever they are re-checked.
 
 
 
+    virtual QIcon icon() const;
+%Docstring
+Returns an icon that should be shown for this kind of error.
+
+.. versionadded:: 3.8
+%End
   protected:
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,

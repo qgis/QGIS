@@ -72,10 +72,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
     switch ( role )
     {
       case Qt::DecorationRole:
-        if ( topologyError->status() == QgsGeometryCheckError::StatusFixed )
-          return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
-        else
-          return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) );
+        return topologyError->icon();
 
       case Qt::DisplayRole:
       case DetailsRole:
@@ -166,13 +163,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case Qt::DecorationRole:
       {
-#if 0
-        if ( mGeometryValidationService->validationActive( mCurrentLayer, featureItem.fid ) )
-          return QgsApplication::getThemeIcon( "/mActionTracing.svg" );
-        else
-          return QVariant();
-#endif
-        break;
+        return QgsApplication::getThemeIcon( "/checks/InvalidGeometry.svg" );
       }
 
       case GeometryCheckErrorRole:
