@@ -1630,12 +1630,15 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         if isinstance(layer, QgsProcessingFeatureSourceDefinition):
             layer, ok = layer.source.valueAsString(self.context.expressionContext())
         if isinstance(layer, str):
-            layer = QgsProcessingUtils.mapLayerFromString(layer, self.context)
-            if not isinstance(layer, QgsVectorLayer) or not layer.isValid():
-                self.dialog.messageBar().clearWidgets()
-                self.dialog.messageBar().pushMessage("", self.tr("Could not load selected layer/table. Dependent field could not be populated"),
-                                                     level=Qgis.Warning, duration=5)
-                return
+            if not layer:  # empty string
+                layer = None
+            else:
+                layer = QgsProcessingUtils.mapLayerFromString(layer, self.context)
+                if not isinstance(layer, QgsVectorLayer) or not layer.isValid():
+                    self.dialog.messageBar().clearWidgets()
+                    self.dialog.messageBar().pushMessage("", self.tr("Could not load selected layer/table. Dependent field could not be populated"),
+                                                         level=Qgis.Warning, duration=5)
+                    return
 
         self._layer = layer
 
