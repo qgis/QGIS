@@ -196,7 +196,6 @@ Item {
                 }
 
                 RowLayout {
-
                     Button {
                         text: qsTr( "Ok" )
                         Layout.fillWidth: true
