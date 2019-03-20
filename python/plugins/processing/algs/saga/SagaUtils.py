@@ -109,7 +109,10 @@ def createSagaBatchJobFileFromSagaCommands(commands):
         else:
             pass
         for command in commands:
-            fout.write('saga_cmd ' + command + '\n')
+            if isWindows():
+                fout.write('call saga_cmd ' + command + '\n')
+            else:
+                fout.write('saga_cmd ' + command + '\n')
 
         fout.write('exit')
 
@@ -163,8 +166,8 @@ def executeSaga(feedback):
     if isWindows():
         command = ['cmd.exe', '/C ', sagaBatchJobFilename()]
     else:
-        os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
-                 stat.S_IREAD | stat.S_IWRITE)
+        os.chmod(sagaBatchJobFilename(), stat.S_IEXEC 
+                | stat.S_IREAD | stat.S_IWRITE)
         command = ["'" + sagaBatchJobFilename() + "'"]
     loglines = []
     loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
