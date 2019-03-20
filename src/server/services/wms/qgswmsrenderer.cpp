@@ -2303,7 +2303,7 @@ namespace QgsWms
       const QDomElement layerElem = layerList.at( i ).toElement();
       const QString layerName = layerElem.attribute( QStringLiteral( "name" ) );
 
-      QgsMapLayer *layer;
+      QgsMapLayer *layer = nullptr;
       for ( QgsMapLayer *l : layers )
       {
         if ( layerNickname( *l ).compare( layerName ) == 0 )
@@ -2312,7 +2312,7 @@ namespace QgsWms
         }
       }
 
-      if ( ! layer )
+      if ( !layer )
         continue;
 
       if ( layer->type() == QgsMapLayer::VectorLayer )
