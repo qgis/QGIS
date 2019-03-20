@@ -1802,7 +1802,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
   long srid = 0;
   if ( srs.isValid() )
   {
-    srid = srs.srsid();
+    srid = srs.postgisSrid();
     QString auth_srid = QStringLiteral( "null" );
     QString auth_name = QStringLiteral( "null" );
     QStringList sl = srs.authid().split( ':' );
@@ -1812,7 +1812,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
       auth_srid = sl[1];
     }
     sql = QStringLiteral( "IF NOT EXISTS (SELECT * FROM spatial_ref_sys WHERE srid=%1) INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) VALUES (%1, %2, %3, '%4', '%5')" )
-          .arg( srs.srsid() )
+          .arg( srid )
           .arg( auth_name,
                 auth_srid,
                 srs.toWkt(),
