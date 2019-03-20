@@ -98,8 +98,11 @@ If ctx is ``None``, this is just first stage when preparing layout - without act
 
     void exportToJson( const QgsLegendSettings &settings, QJsonObject &json );
 %Docstring
-Entry point called from QgsLegendRenderer to do the rendering in a \a
-json object.
+Entry point called from QgsLegendRenderer to do the rendering in a
+JSON object.
+
+:param settings: Legend layout configuration
+:param json: The json object to update
 
 .. versionadded:: 3.8
 %End
@@ -117,8 +120,7 @@ Draws symbol on the left side of the item
 
     virtual void exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
 %Docstring
-Adds a symbol in base64 string within the ``json`` object with the key
-"icon".
+Adds a symbol in base64 string within a JSON object with the key "icon".
 
 :param settings: Legend layout configuration
 :param json: The json object to update
@@ -139,7 +141,7 @@ Draws label on the right side of the item
 
     void exportSymbolTextToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
 %Docstring
-Adds a label in the ``json`` object with the key "title".
+Adds a label in a JSON object with the key "title".
 
 :param settings: Legend layout configuration
 :param json: The json object to update

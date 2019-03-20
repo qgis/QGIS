@@ -111,9 +111,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 
     /**
-     * Entry point called from QgsLegendRenderer to do the rendering in a \a
-     * json object.
-     *
+     * Entry point called from QgsLegendRenderer to do the rendering in a
+     * JSON object.
+     * \param settings Legend layout configuration
+     * \param json The json object to update
      * \since QGIS 3.8
      */
     void exportToJson( const QgsLegendSettings &settings, QJsonObject &json );
@@ -128,11 +129,9 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
     /**
-     * Adds a symbol in base64 string within the \a json object with the key
-     * "icon".
+     * Adds a symbol in base64 string within a JSON object with the key "icon".
      * \param settings Legend layout configuration
      * \param json The json object to update
-     *
      * \since QGIS 3.8
      */
     virtual void exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
@@ -147,10 +146,9 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
     /**
-     * Adds a label in the \a json object with the key "title".
+     * Adds a label in a JSON object with the key "title".
      * \param settings Legend layout configuration
      * \param json The json object to update
-     *
      * \since QGIS 3.8
      */
     void exportSymbolTextToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
