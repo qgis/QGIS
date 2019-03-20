@@ -69,7 +69,7 @@ int QgsMeshLayerInterpolator::bandCount() const
 QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock( Qgis::Float64, width, height ) );
-  const double noDataValue = std::numeric_limits<double>::min();
+  const double noDataValue = std::numeric_limits<double>::quiet_NaN();
   outputBlock->setNoDataValue( noDataValue );
   outputBlock->setIsNoData();  // assume initially that all values are unset
   double *data = reinterpret_cast<double *>( outputBlock->bits() );
@@ -146,7 +146,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
 
   }
 
-  return outputBlock.release();;
+  return outputBlock.release();
 }
 
 ///@endcond
