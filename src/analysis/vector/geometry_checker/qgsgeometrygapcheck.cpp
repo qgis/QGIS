@@ -20,6 +20,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
+#include "qgsapplication.h"
 
 #include "geos_c.h"
 
@@ -328,4 +329,13 @@ QgsRectangle QgsGeometryGapCheckError::affectedAreaBBox() const
 QMap<QString, QgsFeatureIds> QgsGeometryGapCheckError::involvedFeatures() const
 {
   return mNeighbors;
+}
+
+QIcon QgsGeometryGapCheckError::icon() const
+{
+
+  if ( status() == QgsGeometryCheckError::StatusFixed )
+    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+  else
+    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/SliverOrGap.svg" ) );
 }

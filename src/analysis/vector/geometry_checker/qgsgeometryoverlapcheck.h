@@ -63,6 +63,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
     QString description() const override;
 
     QMap<QString, QgsFeatureIds > involvedFeatures() const override;
+    QIcon icon() const override;
 
   private:
     OverlappedFeature mOverlappedFeature;
