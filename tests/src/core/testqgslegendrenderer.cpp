@@ -88,7 +88,8 @@ static QJsonObject _renderJsonLegend( QgsLayerTreeModel *legendModel, const QgsL
   QgsLegendRenderer legendRenderer( legendModel, settings );
 
   QJsonObject json;
-  legendRenderer.drawLegend( json );
+  QgsRenderContext context;
+  legendRenderer.exportLegendToJson( context, json );
   return json;
 }
 
