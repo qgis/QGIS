@@ -18,7 +18,7 @@
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
-//#include "quantizedmeshterraingenerator.h"
+#include "qgsonlineterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
 
@@ -141,12 +141,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     demTerrainGenerator->setCrs( mCrs, mTransformContext );
     mTerrainGenerator.reset( demTerrainGenerator );
   }
-  else if ( terrainGenType == QLatin1String( "quantized-mesh" ) )
+  else if ( terrainGenType == QLatin1String( "online" ) )
   {
-#if 0
-    terrainGenerator.reset( new QuantizedMeshTerrainGenerator );
-#endif
-    Q_ASSERT( false ); // currently disabled
+    QgsOnlineTerrainGenerator *onlineTerrainGenerator = new QgsOnlineTerrainGenerator;
+    onlineTerrainGenerator->setCrs( mCrs, mTransformContext );
+    mTerrainGenerator.reset( onlineTerrainGenerator );
   }
   else // "flat"
   {

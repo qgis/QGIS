@@ -19,6 +19,7 @@
 #include "qgschunknode_p.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
+#include "qgsonlineterraingenerator.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
@@ -56,13 +57,27 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
 {
 
   const Qgs3DMapSettings &map = terrain->map3D();
-  QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
+
+  QgsDemHeightMapGenerator *heightMapGenerator = nullptr;
+  if ( map.terrainGenerator()->type() == QgsTerrainGenerator::Dem )
+  {
+    QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
+    heightMapGenerator = generator->heightMapGenerator();
+    mSkirtHeight = generator->skirtHeight();
+  }
+  else if ( map.terrainGenerator()->type() == QgsTerrainGenerator::Online )
+  {
+    QgsOnlineTerrainGenerator *generator = static_cast<QgsOnlineTerrainGenerator *>( map.terrainGenerator() );
+    heightMapGenerator = generator->heightMapGenerator();
+    mSkirtHeight = generator->skirtHeight();
+  }
+  else
+    Q_ASSERT( false );
 
   // get heightmap asynchronously
-  connect( generator->heightMapGenerator(), &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainTileLoader::onHeightMapReady );
-  mHeightMapJobId = generator->heightMapGenerator()->render( node->tileX(), node->tileY(), node->tileZ() );
-  mResolution = generator->heightMapGenerator()->resolution();
-  mSkirtHeight = generator->skirtHeight();
+  connect( heightMapGenerator, &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainTileLoader::onHeightMapReady );
+  mHeightMapJobId = heightMapGenerator->render( node->tileX(), node->tileY(), node->tileZ() );
+  mResolution = heightMapGenerator->resolution();
 }
 
 Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
@@ -131,13 +146,15 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 #include <qgsrasterprojector.h>
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
+#include "qgsterraindownloader.h"
 
 QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution )
   : mDtm( dtm )
-  , mClonedProvider( ( QgsRasterDataProvider * )dtm->dataProvider()->clone() )
+  , mClonedProvider( dtm ? ( QgsRasterDataProvider * )dtm->dataProvider()->clone() : nullptr )
   , mTilingScheme( tilingScheme )
   , mResolution( resolution )
   , mLastJobId( 0 )
+  , mDownloader( dtm ? nullptr : new QgsTerrainDownloader )
 {
 }
 
@@ -188,6 +205,12 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   return data;
 }
 
+
+static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRectangle &extent, int res, const QgsCoordinateReferenceSystem &destCrs )
+{
+  return downloader->getHeightMap( extent, res, destCrs );
+}
+
 int QgsDemHeightMapGenerator::render( int x, int y, int z )
 {
   Q_ASSERT( mJobs.isEmpty() );  // should be always just one active job...
@@ -205,7 +228,10 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
   jd.extent = extent;
   jd.timer.start();
   // make a clone of the data provider so it is safe to use in worker thread
-  jd.future = QtConcurrent::run( _readDtmData, mClonedProvider, extent, mResolution, mTilingScheme.crs() );
+  if ( mDtm )
+    jd.future = QtConcurrent::run( _readDtmData, mClonedProvider, extent, mResolution, mTilingScheme.crs() );
+  else
+    jd.future = QtConcurrent::run( _readOnlineDtm, mDownloader.get(), extent, mResolution, mTilingScheme.crs() );
 
   QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>( nullptr );
   fw->setFuture( jd.future );
@@ -241,6 +267,9 @@ QByteArray QgsDemHeightMapGenerator::renderSynchronously( int x, int y, int z )
 
 float QgsDemHeightMapGenerator::heightAt( double x, double y )
 {
+  if ( !mDtm )
+    return 0;  // TODO: calculate heights for online DTM
+
   // TODO: this is quite a primitive implementation: better to use heightmaps currently in use
   int res = 1024;
   QgsRectangle rect = mDtm->extent();

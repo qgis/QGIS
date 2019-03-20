@@ -64,6 +64,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
 };
 
 
+class QgsTerrainDownloader;
 
 /**
  * \ingroup 3d
@@ -113,6 +114,8 @@ class QgsDemHeightMapGenerator : public QObject
     int mResolution;
 
     int mLastJobId;
+
+    std::unique_ptr<QgsTerrainDownloader> mDownloader;
 
     struct JobData
     {
