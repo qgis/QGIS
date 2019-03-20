@@ -46,17 +46,17 @@ void QgsLegendRenderer::drawLegend( QPainter *painter )
   paintAndDetermineSize( painter );
 }
 
-void QgsLegendRenderer::drawLegend( QJsonObject &json )
+void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, QJsonObject &json )
 {
   QgsLayerTreeGroup *rootGroup = mLegendModel->rootGroup();
   if ( !rootGroup )
     return;
 
   json["title"] = mSettings.title();
-  drawLegend( rootGroup, json );
+  exportLegendToJson( context, rootGroup, json );
 }
 
-void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &json )
+void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, QgsLayerTreeGroup *nodeGroup, QJsonObject &json )
 {
   QJsonArray nodes;
   for ( auto node : nodeGroup->children() )
@@ -70,7 +70,7 @@ void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &j
       QJsonObject group;
       group[ "type" ] = "group";
       group[ "title" ] = text;
-      drawLegend( nodeGroup, group );
+      exportLegendToJson( context, nodeGroup, group );
       nodes.append( group );
     }
     else if ( QgsLayerTree::isLayer( node ) )
@@ -94,7 +94,7 @@ void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &j
 
       if ( legendNodes.count() == 1 )
       {
-        legendNodes.at( 0 )->exportToJson( mSettings, group );
+        legendNodes.at( 0 )->exportToJson( mSettings, context, group );
         nodes.append( group );
       }
       else if ( legendNodes.count() > 1 )
@@ -104,7 +104,7 @@ void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &j
         {
           QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
           QJsonObject symbol;
-          legendNode->exportToJson( mSettings, symbol );
+          legendNode->exportToJson( mSettings, context, symbol );
           symbols.append( symbol );
         }
         group[ "title" ] = text;

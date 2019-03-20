@@ -71,9 +71,9 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   return im;
 }
 
-void QgsLayerTreeModelLegendNode::exportToJson( const QgsLegendSettings &settings, QJsonObject &json )
+void QgsLayerTreeModelLegendNode::exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json )
 {
-  exportSymbolToJson( settings, json );
+  exportSymbolToJson( settings, context, json );
   exportSymbolTextToJson( settings, json );
 }
 
@@ -89,7 +89,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &setting
   return settings.symbolSize();
 }
 
-void QgsLayerTreeModelLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const
+void QgsLayerTreeModelLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &, QJsonObject &json ) const
 {
   const QIcon icon = data( Qt::DecorationRole ).value<QIcon>();
   if ( icon.isNull() )
@@ -514,7 +514,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
                  std::max( height + 2 * heightOffset, static_cast< double >( settings.symbolSize().height() ) ) );
 }
 
-void QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const
+void QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const
 {
   const QgsSymbol *s = mItem.symbol();
   if ( !s )
@@ -522,13 +522,18 @@ void QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings,
     return;
   }
 
-  QgsRenderContext context;
-  context.setScaleFactor( settings.dpi() / 25.4 );
-  context.setRendererScale( settings.mapScale() );
-  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
-  context.setForceVectorOutput( true );
+  QgsRenderContext ctx;
+  ctx.setScaleFactor( settings.dpi() / 25.4 );
+  ctx.setRendererScale( settings.mapScale() );
+  ctx.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * ctx.scaleFactor() ) ) );
+  ctx.setForceVectorOutput( true );
 
-  const QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), minimumIconSize(), 0, &context );
+  // ensure that a minimal expression context is available
+  QgsExpressionContext expContext = context.expressionContext();
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+  ctx.setExpressionContext( expContext );
+
+  const QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), minimumIconSize(), 0, &ctx );
   QImage img( pix.toImage().convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
 
   int opacity = 255;
@@ -658,7 +663,7 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCo
   return settings.wmsLegendSize();
 }
 
-void QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, QJsonObject &json ) const
+void QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, const QgsRenderContext &, QJsonObject &json ) const
 {
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
@@ -723,7 +728,7 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings,
   return settings.symbolSize();
 }
 
-void QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const
+void QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &, QJsonObject &json ) const
 {
   QImage img = QImage( settings.symbolSize().toSize(), QImage::Format_ARGB32 );
   img.fill( Qt::transparent );
@@ -829,7 +834,7 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
   return settings.wmsLegendSize();
 }
 
-void QgsWmsLegendNode::exportSymbolToJson( const QgsLegendSettings &, QJsonObject &json ) const
+void QgsWmsLegendNode::exportSymbolToJson( const QgsLegendSettings &, const QgsRenderContext &, QJsonObject &json ) const
 {
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
