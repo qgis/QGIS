@@ -96,7 +96,7 @@ Default implementation calls drawSymbol() and drawSymbolText() methods.
 If ctx is ``None``, this is just first stage when preparing layout - without actual rendering.
 %End
 
-    void exportToJson( const QgsLegendSettings &settings, QJsonObject &json );
+    void exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json );
 %Docstring
 Entry point called from QgsLegendRenderer to do the rendering in a
 JSON object.
@@ -118,7 +118,7 @@ Draws symbol on the left side of the item
 :return: Real size of the symbol (may be bigger than "normal" symbol size from settings)
 %End
 
-    virtual void exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
+    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
 %Docstring
 Adds a symbol in base64 string within a JSON object with the key "icon".
 
@@ -203,7 +203,7 @@ Constructor for QgsSymbolLegendNode.
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
-    virtual void exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
+    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
 
 
     virtual void setEmbeddedInParent( bool embedded );
@@ -392,7 +392,7 @@ Constructor for QgsImageLegendNode.
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
-    virtual void exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
+    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
 
 
 };
@@ -426,7 +426,7 @@ Constructor for QgsRasterSymbolLegendNode.
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
-    virtual void exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
+    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
 
 
 };
@@ -459,7 +459,7 @@ Constructor for QgsWmsLegendNode.
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
-    virtual void exportSymbolToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
+    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
 
 
     virtual void invalidateMapBasedData();
