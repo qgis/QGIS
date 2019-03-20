@@ -47,10 +47,14 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
+  cboTerrainType->addItem( tr( "Flat terrain" ), QgsTerrainGenerator::Flat );
+  cboTerrainType->addItem( tr( "DEM (Raster layer)" ), QgsTerrainGenerator::Dem );
+  cboTerrainType->addItem( tr( "Online" ), QgsTerrainGenerator::Online );
+
   QgsTerrainGenerator *terrainGen = mMap->terrainGenerator();
   if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Dem )
   {
-    cboTerrainType->setCurrentIndex( 1 );
+    cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Dem ) );
     QgsDemTerrainGenerator *demTerrainGen = static_cast<QgsDemTerrainGenerator *>( terrainGen );
     spinTerrainResolution->setValue( demTerrainGen->resolution() );
     spinTerrainSkirtHeight->setValue( demTerrainGen->skirtHeight() );
@@ -58,14 +62,14 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   }
   else if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Online )
   {
-    cboTerrainType->setCurrentIndex( 2 );
+    cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Online ) );
     QgsOnlineTerrainGenerator *onlineTerrainGen = static_cast<QgsOnlineTerrainGenerator *>( terrainGen );
     spinTerrainResolution->setValue( onlineTerrainGen->resolution() );
     spinTerrainSkirtHeight->setValue( onlineTerrainGen->skirtHeight() );
   }
   else
   {
-    cboTerrainType->setCurrentIndex( 0 );
+    cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Flat ) );
     cboTerrainLayer->setLayer( nullptr );
     spinTerrainResolution->setValue( 16 );
     spinTerrainSkirtHeight->setValue( 10 );
@@ -100,7 +104,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
 
-  updateMaxZoomLevel();
   onTerrainTypeChanged();
 }
 
@@ -108,7 +111,9 @@ void Qgs3DMapConfigWidget::apply()
 {
   bool needsUpdateOrigin = false;
 
-  if ( cboTerrainType->currentIndex() == 1 )  // DEM from raster layer
+  QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
+
+  if ( terrainType == QgsTerrainGenerator::Dem )  // DEM from raster layer
   {
     QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
 
@@ -134,7 +139,7 @@ void Qgs3DMapConfigWidget::apply()
       needsUpdateOrigin = true;
     }
   }
-  else if ( cboTerrainType->currentIndex() == 2 )  // Online
+  else if ( terrainType == QgsTerrainGenerator::Online )
   {
     bool tGenNeedsUpdate = true;
     if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Online )
@@ -156,7 +161,7 @@ void Qgs3DMapConfigWidget::apply()
       needsUpdateOrigin = true;
     }
   }
-  else if ( cboTerrainType->currentIndex() == 0 ) // flat terrain
+  else if ( terrainType == QgsTerrainGenerator::Flat )
   {
     QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
     flatTerrainGen->setCrs( mMap->crs() );
@@ -204,34 +209,34 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
   spinTerrainSkirtHeight->setVisible( !isFlat );
   labelTerrainLayer->setVisible( isDem );
   cboTerrainLayer->setVisible( isDem );
+
+  updateMaxZoomLevel();
 }
 
 void Qgs3DMapConfigWidget::onTerrainLayerChanged()
 {
+  updateMaxZoomLevel();
 }
 
 void Qgs3DMapConfigWidget::updateMaxZoomLevel()
 {
-  // TODO: tidy up, less duplication with apply()
-  std::unique_ptr<QgsTerrainGenerator> tGen;
-  QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
-  if ( demLayer )
+  QgsRectangle te;
+  QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
+  if ( terrainType == QgsTerrainGenerator::Dem )
   {
-    QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
-    demTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
-    demTerrainGen->setLayer( demLayer );
-    demTerrainGen->setResolution( spinTerrainResolution->value() );
-    tGen.reset( demTerrainGen );
+    if ( QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() ) )
+    {
+      te = demLayer->extent();
+      QgsCoordinateTransform terrainToMapTransform( demLayer->crs(), mMap->crs(), QgsProject::instance()->transformContext() );
+      te = terrainToMapTransform.transformBoundingBox( te );
+    }
   }
-  else
+  else  // flat or online
   {
-    QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
-    flatTerrainGen->setCrs( mMap->crs() );
-    flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
-    tGen.reset( flatTerrainGen );
+    te = mMainCanvas->fullExtent();
   }
 
-  double tile0width = tGen->extent().width();
+  double tile0width = std::max( te.width(), te.height() );
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
 }
