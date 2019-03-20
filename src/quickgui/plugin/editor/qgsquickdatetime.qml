@@ -17,6 +17,7 @@ import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.4 as Controls1
+import QtGraphicalEffects 1.0
 import QgsQuick 0.1 as QgsQuick
 
 /**
@@ -26,6 +27,7 @@ import QgsQuick 0.1 as QgsQuick
  */
 Item {
     signal valueChanged(var value, bool isNull)
+    property real iconSize:  fieldItem.height * 0.75
 
     id: fieldItem
     enabled: !readOnly
@@ -137,6 +139,31 @@ Item {
                     }
                 }
             }
+
+            Image {
+                id: todayBtn
+                height: fieldItem.iconSize
+                sourceSize.height: fieldItem.iconSize
+                autoTransform: true
+                fillMode: Image.PreserveAspectFit
+                source: QgsQuick.Utils.getThemeIcon("ic_today")
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                visible: fieldItem.enabled
+                anchors.rightMargin: fieldItem.anchors.rightMargin
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: main.currentValue = new Date()
+                }
+            }
+
+            ColorOverlay {
+                anchors.fill: todayBtn
+                source: todayBtn
+                color: customStyle.fontColor
+                visible: todayBtn.visible
+            }
         }
 
         Popup {
@@ -169,13 +196,6 @@ Item {
                 }
 
                 RowLayout {
-
-                    Button {
-                        text: qsTr( "Today" )
-                        Layout.fillWidth: true
-
-                        onClicked: main.currentValue = new Date()
-                    }
 
                     Button {
                         text: qsTr( "Ok" )
