@@ -114,6 +114,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * Entry point called from QgsLegendRenderer to do the rendering in a
      * JSON object.
      * \param settings Legend layout configuration
+     * \param context Rendering context
      * \param json The json object to update
      * \since QGIS 3.8
      */
@@ -131,6 +132,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     /**
      * Adds a symbol in base64 string within a JSON object with the key "icon".
      * \param settings Legend layout configuration
+     * \param context Rendering context
      * \param json The json object to update
      * \since QGIS 3.8
      */
