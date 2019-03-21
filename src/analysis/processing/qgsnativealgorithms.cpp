@@ -17,6 +17,7 @@
 
 #include "qgsnativealgorithms.h"
 #include "qgsalgorithmaddincrementalfield.h"
+#include "qgsalgorithmaddxyfields.h"
 #include "qgsalgorithmarraytranslatedfeatures.h"
 #include "qgsalgorithmassignprojection.h"
 #include "qgsalgorithmboundary.h"
@@ -150,6 +151,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 void QgsNativeAlgorithms::loadAlgorithms()
 {
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
+  addAlgorithm( new QgsAddXYFieldsAlgorithm() );
   addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
   addAlgorithm( new QgsArrayTranslatedFeaturesAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );

@@ -7287,4 +7287,31 @@ tests:
         hash: 6c09e13126e16a267e36c79b0eeba7761422da7bd0387125f4c823e6
         type: rasterhash
 
+  - algorithm: native:addxyfields
+    name: Add XY 4326
+    params:
+      CRS: EPSG:4326
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/add_xy_4326.gml
+        type: vector
+
+  - algorithm: native:addxyfields
+    name: Add XY 3785
+    params:
+      CRS: EPSG:3785
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      PREFIX: p_
+    results:
+      OUTPUT:
+        name: expected/add_xy_3857.gml
+        type: vector
+
+
 # See ../README.md for a description of the file format
