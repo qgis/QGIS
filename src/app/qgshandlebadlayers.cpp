@@ -437,6 +437,10 @@ void QgsHandleBadLayers::apply()
       else
       {
         item->setForeground( QBrush( Qt::red ) );
+        if ( mFileBase[ name ].size() == 1  )
+          mFileBase[ name ][0] = basepath ;
+        else if ( mFileBase[ name ].size() > 1 )
+          mFileBase[ name ].append( basepath );
       }
     }
   }
