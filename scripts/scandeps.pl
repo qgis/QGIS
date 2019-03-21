@@ -63,7 +63,7 @@ for my $dist (@dists) {
 
 	while(<F>) {
 		chop;
-		last if /^Package: python-qgis/;
+		last if /^Package: python3-qgis/;
 	}
 
 	while(<F>) {
@@ -84,13 +84,14 @@ for my $dist (@dists) {
 
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
 
-	$deps .= ",cmake-curses-gui,ccache,expect,qt5-default,libyaml-tiny-perl,python-autopep8";
+	$deps .= ",cmake-curses-gui,ccache,expect,qt5-default,libyaml-tiny-perl,python3-autopep8";
 
 	my @deps;
 	my %deps;
 	foreach my $p (split /,/, $deps) {
 		$p =~ s/^\s+//;
 		$p =~ s/\s+.*$//;
+		next if $p eq "";
 		next if $p =~ /\$|qgis/;
 		next if $p =~ /^(debhelper|subversion|python-central)$/;
 		push @deps, $p if not exists $deps{$p};
