@@ -75,7 +75,6 @@ If the provider isn't capable of returning its projection then an invalid
 QgsCoordinateReferenceSystem will be returned.
 %End
 
-
     virtual void setDataSourceUri( const QString &uri );
 %Docstring
 Set the data source specification. This may be a path or database

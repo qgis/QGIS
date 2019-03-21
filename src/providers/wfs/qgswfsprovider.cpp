@@ -1819,10 +1819,7 @@ bool QgsWFSProvider::getCapabilities()
         if ( mShared->mCaps.featureTypes[i].bboxSRSIsWGS84 )
         {
           QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
-          Q_NOWARN_DEPRECATED_PUSH
-          QgsCoordinateTransform ct( src, mShared->mSourceCRS );
-          Q_NOWARN_DEPRECATED_POP
-
+          QgsCoordinateTransform ct( src, mShared->mSourceCRS, options().coordinateTransformContext );
           QgsDebugMsgLevel( "latlon ext:" + r.toString(), 4 );
           QgsDebugMsgLevel( "src:" + src.authid(), 4 );
           QgsDebugMsgLevel( "dst:" + mShared->mSourceCRS.authid(), 4 );
