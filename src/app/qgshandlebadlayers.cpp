@@ -117,7 +117,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     bool providerFileBased = ( QgsProviderRegistry::instance()->providerCapabilities( provider ) & QgsDataProvider::File ) != 0;
-    const QString basepath = datasource.left( datasource.lastIndexOf('/') );
+    const QString basepath = datasource.left( datasource.lastIndexOf( '/' ) );
     mFileBase[name].append( basepath );
 
     QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
@@ -375,10 +375,10 @@ void QgsHandleBadLayers::apply()
     const QString name = mLayerList->item( i, 0 )->text();
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
-    const QString basepath = datasource.left( datasource.lastIndexOf('/') );
+    const QString basepath = datasource.left( datasource.lastIndexOf( '/' ) );
     bool changed = false;
 
-    if ( mFileBase[ name ].size() == 1  )
+    if ( mFileBase[ name ].size() == 1 )
     {
       if ( mFileBase[ name ][0] != basepath && !baseChange.contains( mFileBase[ name ][0] ) )
       {
@@ -439,7 +439,7 @@ void QgsHandleBadLayers::apply()
       else
       {
         item->setForeground( QBrush( Qt::red ) );
-        if ( mFileBase[ name ].size() == 1  )
+        if ( mFileBase[ name ].size() == 1 )
           mFileBase[ name ][0] = basepath ;
         else if ( mFileBase[ name ].size() > 1 )
           mFileBase[ name ].append( basepath );
