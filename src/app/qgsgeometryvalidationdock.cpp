@@ -84,6 +84,7 @@ void QgsGeometryValidationDock::setGeometryValidationModel( QgsGeometryValidatio
   mErrorListView->setModel( mGeometryValidationModel );
 
   connect( mErrorListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsGeometryValidationDock::onCurrentErrorChanged );
+  connect( mErrorListView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this]() { updateMapCanvasExtent(); } );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::dataChanged, this, &QgsGeometryValidationDock::onDataChanged );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsRemoved, this, &QgsGeometryValidationDock::updateCurrentError );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsInserted, this, &QgsGeometryValidationDock::onRowsInserted );
@@ -242,7 +243,10 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
   bool hasFeature = !FID_IS_NULL( current.data( QgsGeometryValidationModel::ErrorFeatureIdRole ) );
   mZoomToFeatureButton->setEnabled( hasFeature );
+}
 
+void QgsGeometryValidationDock::updateMapCanvasExtent()
+{
   if ( !mPreventZoomToError )
   {
     switch ( mLastZoomToAction )
