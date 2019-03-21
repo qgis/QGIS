@@ -365,6 +365,8 @@ void QgsHandleBadLayers::apply()
   buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
   QHash<QString, QString> baseChange;
 
+
+
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
