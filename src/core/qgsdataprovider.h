@@ -24,6 +24,7 @@
 
 //#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgslayermetadata.h"
 #include "qgserror.h"
 
@@ -94,7 +95,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct ProviderOptions
     {
-      int unused; //!< @todo remove me once there are actual members here (breaks SIP <4.19)
+      QgsCoordinateTransformContext coordinateTransformContext;
     };
 
     /**
