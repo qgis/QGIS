@@ -1231,7 +1231,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int &epsgNr, const XML_Char **
       {
         bIsUrn = true;
         epsgNrString = epsgString.split( '/' ).last();
-	    QgsDebugMsg(QStringLiteral("epsgNrString from new OGC HTTP URI branch is: %1").arg(epsgNrString));
+	    QgsDebugMsg( QStringLiteral( "epsgNrString from new OGC HTTP URI branch is: %1" ).arg( epsgNrString ) );
       }
       else //e.g. umn mapserver: "EPSG:4326">
       {
