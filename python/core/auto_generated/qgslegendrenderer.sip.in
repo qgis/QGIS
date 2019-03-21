@@ -78,6 +78,13 @@ Draws the legend using a given render ``context``. The legend will occupy the ar
 .. versionadded:: 3.6
 %End
 
+    void exportLegendToJson( const QgsRenderContext &context, QJsonObject &json );
+%Docstring
+Renders the legend in a ``json`` object.
+
+.. versionadded:: 3.8
+%End
+
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
 %Docstring
 Sets the ``style`` of a ``node``.

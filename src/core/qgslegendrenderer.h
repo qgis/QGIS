@@ -21,6 +21,7 @@
 
 class QRectF;
 class QStandardItem;
+class QJsonObject;
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -91,6 +92,13 @@ class CORE_EXPORT QgsLegendRenderer
      * \since QGIS 3.6
      */
     void drawLegend( QgsRenderContext &context );
+
+    /**
+     * Renders the legend in a \a json object.
+     *
+     * \since QGIS 3.8
+     */
+    void exportLegendToJson( const QgsRenderContext &context, QJsonObject &json );
 
     /**
      * Sets the \a style of a \a node.
@@ -231,6 +239,13 @@ class CORE_EXPORT QgsLegendRenderer
      * Returns the size of the title.
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );
+
+    /**
+     * Renders a group item in a \a json object.
+     *
+     * \since QGIS 3.8
+     */
+    void exportLegendToJson( const QgsRenderContext &context, QgsLayerTreeGroup *nodeGroup, QJsonObject &json );
 
     /**
      * Draws the legend using the specified render \a context, and returns the actual size of the legend.

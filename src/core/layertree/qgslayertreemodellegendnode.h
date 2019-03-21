@@ -111,6 +111,16 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 
     /**
+     * Entry point called from QgsLegendRenderer to do the rendering in a
+     * JSON object.
+     * \param settings Legend layout configuration
+     * \param context Rendering context
+     * \param json The json object to update
+     * \since QGIS 3.8
+     */
+    void exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json );
+
+    /**
      * Draws symbol on the left side of the item
      * \param settings Legend layout configuration
      * \param ctx Context for rendering - may be NULLPTR if only doing layout without actual rendering
@@ -120,6 +130,15 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
     /**
+     * Adds a symbol in base64 string within a JSON object with the key "icon".
+     * \param settings Legend layout configuration
+     * \param context Rendering context
+     * \param json The json object to update
+     * \since QGIS 3.8
+     */
+    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
+
+    /**
      * Draws label on the right side of the item
      * \param settings Legend layout configuration
      * \param ctx Context for rendering - may be NULLPTR if only doing layout without actual rendering
@@ -127,6 +146,14 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \returns Size of the label (may span multiple lines)
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
+
+    /**
+     * Adds a label in a JSON object with the key "title".
+     * \param settings Legend layout configuration
+     * \param json The json object to update
+     * \since QGIS 3.8
+     */
+    void exportSymbolTextToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
 
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
@@ -174,6 +201,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     bool setData( const QVariant &value, int role ) override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
 
     void setEmbeddedInParent( bool embedded ) override;
 
@@ -354,6 +383,8 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
+    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+
   private:
     QImage mImage;
 };
@@ -382,6 +413,8 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QVariant data( int role ) const override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
 
   private:
     QColor mColor;
@@ -412,6 +445,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
     QVariant data( int role ) const override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
 
     void invalidateMapBasedData() override;
 
