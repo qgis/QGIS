@@ -115,7 +115,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QgsCoordinateReferenceSystem crs() const = 0;
 
-
     /**
      * Set the data source specification. This may be a path or database
      * connection string
