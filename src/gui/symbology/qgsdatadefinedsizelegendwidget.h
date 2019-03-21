@@ -57,7 +57,7 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
     explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol SIP_TRANSFER, QgsMapCanvas *canvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsDataDefinedSizeLegendWidget() override;
 
-    //! Returns configuration as set up in the dialog (may be null). Ownership is passed to the caller.
+    //! Returns configuration as set up in the dialog (may be NULLPTR). Ownership is passed to the caller.
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const SIP_FACTORY;
 
   signals:

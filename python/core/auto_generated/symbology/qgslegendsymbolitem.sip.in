@@ -43,7 +43,7 @@ Construct item. Does not take ownership of symbol (makes internal clone)
 
     QgsSymbol *symbol() const;
 %Docstring
-Returns associated symbol. May be null.
+Returns associated symbol. May be ``None``.
 %End
     QString label() const;
 %Docstring

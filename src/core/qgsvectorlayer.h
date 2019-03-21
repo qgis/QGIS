@@ -1330,7 +1330,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     int addTopologicalPoints( const QgsPointXY &p );
 
     /**
-     * Access to const labeling configuration. May be null if labeling is not used.
+     * Access to const labeling configuration. May be NULLPTR if labeling is not used.
      * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
      * \since QGIS 3.0
@@ -1338,7 +1338,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
     /**
-     * Access to labeling configuration. May be null if labeling is not used.
+     * Access to labeling configuration. May be NULLPTR if labeling is not used.
      * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
      * \since QGIS 3.0

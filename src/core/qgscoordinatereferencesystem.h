@@ -771,7 +771,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
-    //! Function for CRS validation. May be null.
+    //! Function for CRS validation. May be NULLPTR.
     static CUSTOM_CRS_VALIDATION mCustomSrsValidation;
 
 

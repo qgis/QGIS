@@ -1423,7 +1423,7 @@ editing.
 
     QgsAbstractVectorLayerLabeling *labeling();
 %Docstring
-Access to labeling configuration. May be null if labeling is not used.
+Access to labeling configuration. May be ``None`` if labeling is not used.
 
 .. note::
 

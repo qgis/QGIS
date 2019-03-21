@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
     QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
-    //! Returns associated symbol. May be null.
+    //! Returns associated symbol. May be NULLPTR.
     QgsSymbol *symbol() const { return mSymbol; }
     //! Returns text label
     QString label() const { return mLabel; }
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 
   private:
-    //! Legend symbol -- may be null.
+    //! Legend symbol -- may be NULLPTR.
     QgsSymbol *mSymbol = nullptr;
     //! label of the item (may be empty or non-unique)
     QString mLabel;

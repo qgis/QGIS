@@ -1513,7 +1513,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Controller of legend items of this layer
     QgsMapLayerLegend *mLegend = nullptr;
 
-    //! Manager of multiple styles available for a layer (may be null)
+    //! Manager of multiple styles available for a layer (may be NULLPTR)
     QgsMapLayerStyleManager *mStyleManager = nullptr;
 
     //! Timer for triggering automatic refreshes of the layer

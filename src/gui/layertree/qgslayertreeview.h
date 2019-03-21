@@ -77,7 +77,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     //! Sets provider for context menu. Takes ownership of the instance
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
-    //! Returns pointer to the context menu provider. May be null
+    //! Returns pointer to the context menu provider. May be NULLPTR
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
     /**
@@ -96,9 +96,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     void setCurrentLayer( QgsMapLayer *layer );
 
-    //! Gets current node. May be null
+    //! Gets current node. May be NULLPTR
     QgsLayerTreeNode *currentNode() const;
-    //! Gets current group node. If a layer is current node, the function will return parent group. May be null.
+    //! Gets current group node. If a layer is current node, the function will return parent group. May be NULLPTR.
     QgsLayerTreeGroup *currentGroupNode() const;
 
     /**

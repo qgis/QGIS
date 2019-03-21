@@ -67,7 +67,7 @@ Sets provider for context menu. Takes ownership of the instance
 %End
     QgsLayerTreeViewMenuProvider *menuProvider() const;
 %Docstring
-Returns pointer to the context menu provider. May be null
+Returns pointer to the context menu provider. May be ``None``
 %End
 
     QgsMapLayer *currentLayer() const;
@@ -88,11 +88,11 @@ If ``layer`` is ``None`` then all layers will be deselected.
 
     QgsLayerTreeNode *currentNode() const;
 %Docstring
-Gets current node. May be null
+Gets current node. May be ``None``
 %End
     QgsLayerTreeGroup *currentGroupNode() const;
 %Docstring
-Gets current group node. If a layer is current node, the function will return parent group. May be null.
+Gets current group node. If a layer is current node, the function will return parent group. May be ``None``.
 %End
 
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
