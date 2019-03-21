@@ -1193,7 +1193,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
       return false;
     }
 
-    QgsWmsCapabilities caps;
+    QgsWmsCapabilities caps( options() );
     if ( !caps.parseResponse( downloadCaps.response(), mSettings.parserSettings() ) )
     {
       mErrorFormat = caps.lastErrorFormat();
@@ -1217,9 +1217,8 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   QgsDataSourceUri parsedUri;
   parsedUri.setEncodedUri( uri );
 
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ) );
-  Q_NOWARN_DEPRECATED_POP
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ),
+                             options().coordinateTransformContext );
 
   // the whole world is projected to a square:
   // X going from 180 W to 180 E

@@ -91,6 +91,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /**
      * Setting options for creating vector data providers.
+     *
+     * \note coordinateTransformContext was added in QGIS 3.10
+     *
      * \since QGIS 3.2
      */
     struct ProviderOptions
@@ -103,10 +106,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Additional creation options are specified within the \a options value.
      */
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() )
-      : mDataSourceURI( uri )
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ):
+      mDataSourceURI( uri ),
+      mOptions( options )
     {
-      Q_UNUSED( options );
     }
 
     /**
@@ -523,6 +526,26 @@ class CORE_EXPORT QgsDataProvider : public QObject
     */
     virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ); return false; }
 
+    /**
+     * Returns data provider options
+     *
+     * \see setOptions()
+     * \see optionsChanged()
+     *
+     * \since QGIS 3.10
+     */
+    QgsDataProvider::ProviderOptions options() const;
+
+    /**
+     * Sets data provider options to \a options
+     *
+     * \see options()
+     * \see optionsChanged()
+     *
+     * \since QGIS 3.10
+     */
+    void setOptions( const QgsDataProvider::ProviderOptions &options );
+
   signals:
 
     /**
@@ -556,6 +579,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     void notify( const QString &msg );
 
+    /**
+     * Emitted when the data provider options has changed
+     *
+     * \see setOptions()
+     * \see options()
+     *
+     * \since QGIS 3.10
+     */
+    void optionsChanged( const QgsDataProvider::ProviderOptions &options );
+
 
   protected:
 
@@ -582,6 +615,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QString mDataSourceURI;
 
     QMap< int, QVariant > mProviderProperties;
+
+    QgsDataProvider::ProviderOptions mOptions;
+
 };
 
 
