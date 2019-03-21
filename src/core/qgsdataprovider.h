@@ -106,11 +106,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Additional creation options are specified within the \a options value.
      */
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ):
-      mDataSourceURI( uri ),
-      mOptions( options )
-    {
-    }
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
     /**
      * Returns the coordinate system for the data source.

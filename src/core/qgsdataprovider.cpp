@@ -17,6 +17,12 @@
 
 QString QgsDataProvider::SUBLAYER_SEPARATOR = QString( "!!::!!" );
 
+QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+  : mDataSourceURI( uri ),
+    mOptions( options )
+{
+}
+
 void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant &value )
 {
   mProviderProperties.insert( property, value );
