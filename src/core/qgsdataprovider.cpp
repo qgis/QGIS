@@ -46,3 +46,14 @@ bool QgsDataProvider::renderInPreview( const PreviewContext &context )
 {
   return context.lastRenderingTimeMs <= context.maxRenderingTimeMs;
 }
+
+QgsDataProvider::ProviderOptions QgsDataProvider::options() const
+{
+  return mOptions;
+}
+
+void QgsDataProvider::setOptions( const QgsDataProvider::ProviderOptions &options )
+{
+  mOptions = options;
+  emit optionsChanged( options );
+}
