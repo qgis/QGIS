@@ -374,6 +374,13 @@ class TestQgsServerWFS(QgsServerTestBase):
     def test_getFeatureBBOX(self):
         """Test with (1.1.0) and without (1.0.0) CRS"""
 
+        # Tests without CRS
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.20347,44.901471,8.2035354,44.901493", 'wfs_getFeature_1_0_0_bbox_1_feature')
+        self.wfs_request_compare(
+            "GetFeature", '1.0.0', "TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.203127,44.9012765,8.204138,44.901632", 'wfs_getFeature_1_0_0_bbox_3_feature')
+
+        # Tests with CRS
         self.wfs_request_compare(
             "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.20347,44.901471,8.2035354,44.901493,EPSG:4326", 'wfs_getFeature_1_0_0_epsgbbox_1_feature')
         self.wfs_request_compare(
