@@ -118,6 +118,8 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     bool providerFileBased = ( QgsProviderRegistry::instance()->providerCapabilities( provider ) & QgsDataProvider::File ) != 0;
 
+    mFileBase[name].append( const datasource.left( datasource.lastIndexOf('/') ) );
+
     QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
                  .arg( name,
                        type,
@@ -361,6 +363,7 @@ void QgsHandleBadLayers::apply()
 {
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
   buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
+  QHash<QString, QString> baseChange;
 
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
@@ -369,6 +372,35 @@ void QgsHandleBadLayers::apply()
 
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
+    const QString basepath = datasource.left( datasource.lastIndexOf('/') )
+    bool changed = false;
+
+    if ( mFileBase[ name ].size() == 1  )
+    {
+      if ( mFileBase[ name ][0] != basepath && !baseChange.contains( mFileBase[ name ][0] ) )
+      {
+        baseChange[ mFileBase[ name ][0] ] = basepath;
+        changed = true;
+      }
+    }
+    else if ( mFileBase[ name ].size() > 1 )
+    {
+      if ( mFileBase[ name ].indexOf( basepath ) == -1 )
+      {
+        const QList fileBases = mFileBase[ name ];
+        for ( QString fileBase : fileBases )
+        {
+          if ( !baseChange.contains( fileBase ) )
+          {
+            baseChange[ fileBase ] = basepath;
+            changed = true;
+          }
+        }
+      }
+    }
+    if ( !changed && baseChange.contains( basepath ) )
+      datasource = datasource.replace( basepath, baseChange( basepath ) );
+
 
     bool dataSourceChanged { false };
     const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
