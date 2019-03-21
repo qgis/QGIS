@@ -370,7 +370,7 @@ void QgsHandleBadLayers::apply()
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
 
-    QString name = mLayerList->item( i, 0 )->text();
+    const QString name = mLayerList->item( i, 0 )->text();
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
     const QString basepath = datasource.left( datasource.lastIndexOf('/') );
@@ -406,7 +406,6 @@ void QgsHandleBadLayers::apply()
     bool dataSourceChanged { false };
     const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
     const QString provider { node.namedItem( QStringLiteral( "provider" ) ).toElement().text() };
-    const QString name { mLayerList->item( i, 0 )->text() };
 
     // Try first to change the datasource of the existing layers, this will
     // maintain the current status (checked/unchecked) and group
