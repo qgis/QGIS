@@ -42,6 +42,7 @@ class QgsAccessControl;
 class QgsDxfExport;
 class QgsLayerTreeModel;
 class QgsLayerTree;
+class QgsServerInterface;
 
 class QImage;
 class QPaintDevice;

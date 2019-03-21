@@ -32,7 +32,7 @@
  * \brief Interfaces exposed by QGIS Server and made available to plugins.
  * \since QGIS 2.8
  */
-class QgsServerInterfaceImpl : public QgsServerInterface
+class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
 {
   public:
 

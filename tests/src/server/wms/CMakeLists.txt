@@ -9,10 +9,15 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/annotations
+  ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/server
   ${CMAKE_BINARY_DIR}/src/server
+  ${CMAKE_SOURCE_DIR}/src/server/services
   ${CMAKE_SOURCE_DIR}/src/server/services/wms
 )
 
@@ -25,7 +30,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 SET(MODULE_WMS_SRCS
-  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsparameters.cpp)
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrenderer.cpp
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgslayerrestorer.cpp
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgsmaprendererjobproxy.cpp
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsparameters.cpp
+)
 
 MACRO (ADD_QGIS_TEST TESTSRC)
   SET (TESTNAME  ${TESTSRC})
@@ -45,7 +54,7 @@ MACRO (ADD_QGIS_TEST TESTSRC)
     ${GDAL_LIBRARY}
     qgis_core
     qgis_server
-    )
+  )
   ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
 ENDMACRO (ADD_QGIS_TEST)
 
@@ -53,7 +62,7 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 SET(TESTS
-  testqgswmsparameters.cpp
+  test_qgsserver_wms_dxf.cpp
 )
 
 FOREACH(TESTSRC ${TESTS})
