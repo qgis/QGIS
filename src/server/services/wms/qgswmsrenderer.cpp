@@ -1093,8 +1093,16 @@ namespace QgsWms
     QgsMapSettings mapSettings;
     std::unique_ptr<QImage> outputImage( createImage( imageWidth, imageHeight ) );
 
+    // The CRS parameter is considered as mandatory in configureMapSettings
+    // but in the case of filter parameter, CRS parameter has not to be mandatory
+    bool mandatoryCrsParam = true;
+    if ( filtersDefined && !ijDefined && !xyDefined && mWmsParameters.crs().isEmpty() )
+    {
+      mandatoryCrsParam = false;
+    }
+
     // configure map settings (background, DPI, ...)
-    configureMapSettings( outputImage.get(), mapSettings );
+    configureMapSettings( outputImage.get(), mapSettings, mandatoryCrsParam );
 
     QgsMessageLog::logMessage( "mapSettings.destinationCrs(): " +  mapSettings.destinationCrs().authid() );
     QgsMessageLog::logMessage( "mapSettings.extent(): " +  mapSettings.extent().toString() );
@@ -1231,7 +1239,7 @@ namespace QgsWms
     return image.release();
   }
 
-  void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const
+  void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings, bool mandatoryCrsParam ) const
   {
     if ( !paintDevice )
     {
@@ -1253,6 +1261,10 @@ namespace QgsWms
     {
       crs = QString( "EPSG:4326" );
       mapExtent.invert();
+    }
+    else if ( crs.isEmpty() && !mandatoryCrsParam )
+    {
+      crs = QString( "EPSG:4326" );
     }
 
     QgsCoordinateReferenceSystem outputCRS;
