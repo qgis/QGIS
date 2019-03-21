@@ -734,7 +734,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
     {
       Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
-      Q_NOWARN_DEPRECATED_PUSH
+      Q_NOWARN_DEPRECATED_POP
       emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
 
       signalEmitted = true;
@@ -773,7 +773,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
   {
     Q_NOWARN_DEPRECATED_PUSH
     emit attributeChanged( eww->field().name(), value );
-    Q_NOWARN_DEPRECATED_PUSH
+    Q_NOWARN_DEPRECATED_POP
     emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
   }
 }
