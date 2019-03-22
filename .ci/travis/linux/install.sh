@@ -16,6 +16,3 @@
 
 shopt -s expand_aliases
 alias python=python3
-
-# used for getting labels of PR (should-run-flaky-tests.js)
-npm install
