@@ -128,6 +128,8 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
     std::unique_ptr< QgsTemporaryCursorRestoreOverride > mPreviousCursorOverride;
+
+    friend class TestQgsDatumTransformDialog;
 };
 
 #endif // QGSDATUMTRANSFORMDIALOG_H
