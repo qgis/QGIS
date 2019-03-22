@@ -160,8 +160,8 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 // ----------------------
 
 
-QgsWmsCapabilities::QgsWmsCapabilities( const QgsDataProvider::ProviderOptions &options ):
-  mOptions( options )
+QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext ):
+  mCoordinateTransformContext( coordinateTransformContext )
 {
 
 }
@@ -835,7 +835,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( e1.attribute( QStringLiteral( "SRS" ) ) );
             QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
-            QgsCoordinateTransform ct( src, dst, mOptions.coordinateTransformContext );
+            QgsCoordinateTransform ct( src, dst, mCoordinateTransformContext );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
           }
           catch ( QgsCsException &cse )

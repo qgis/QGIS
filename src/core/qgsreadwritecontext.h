@@ -21,6 +21,7 @@
 #include "qgspathresolver.h"
 #include "qgis.h"
 #include "qgsprojecttranslator.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QgsReadWriteContextCategoryPopper;
 
@@ -114,6 +115,24 @@ class CORE_EXPORT QgsReadWriteContext
      */
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 
+    /**
+     * Returns data provider coordinate transform context
+     *
+     * \see setCoordinateTranformContext()
+     *
+     * \since QGIS 3.10
+     */
+    QgsCoordinateTransformContext coordinateTransformContext() const;
+
+    /**
+     * Sets data coordinate transform context to \a coordinateTransformContext
+     *
+     * \see coordinateTransformContext()
+     *
+     * \since QGIS 3.10
+     */
+    void setCoordinateTransformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
+
   private:
 
     class DefaultTranslator : public QgsProjectTranslator
@@ -132,6 +151,7 @@ class CORE_EXPORT QgsReadWriteContext
     QgsProjectTranslator *mProjectTranslator = nullptr;
     friend class QgsReadWriteContextCategoryPopper;
     DefaultTranslator mDefaultTranslator;
+    QgsCoordinateTransformContext mCoordinateTransformContext = QgsCoordinateTransformContext();
 };
 
 
