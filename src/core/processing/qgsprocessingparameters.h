@@ -1886,7 +1886,7 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
 /**
  * \class QgsProcessingParameterAuthConfig
  * \ingroup core
- * A string parameter for authentication configuration configuration ID values.
+ * A string parameter for authentication configuration ID values.
  *
  * This parameter allows for users to select from available authentication configurations,
  * or create new authentication configurations as required.
