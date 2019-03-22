@@ -140,19 +140,15 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
     {
       std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
       int nr = i == 0 ? transform.sourceTransformId : transform.destinationTransformId;
+      item->setData( Qt::UserRole, nr );
       item->setFlags( item->flags() & ~Qt::ItemIsEditable );
+
+      item->setText( QgsDatumTransform::datumTransformToProj( nr ) );
 
       //Describe datums in a tooltip
       QgsDatumTransform::TransformInfo info = i == 0 ? srcInfo : destInfo;
       if ( info.datumTransformId == -1 )
-      {
-        mDatumTransformTableWidget->setRowCount( row + 1 );
-        mDatumTransformTableWidget->setItem( row, i, item.release() );
         continue;
-      }
-
-      item->setData( Qt::UserRole, nr );
-      item->setText( QgsDatumTransform::datumTransformToProj( nr ) );
 
       if ( info.deprecated )
       {
