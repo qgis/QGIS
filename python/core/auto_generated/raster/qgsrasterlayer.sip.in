@@ -104,12 +104,16 @@ Constructor. Provider is not set.
     struct LayerOptions
     {
 
-      explicit LayerOptions( bool loadDefaultStyle = true );
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions.
 %End
 
       bool loadDefaultStyle;
+
+      QgsCoordinateTransformContext coordinateTransformContext;
+
     };
 
     explicit QgsRasterLayer( const QString &uri,
@@ -379,6 +383,13 @@ Writes the symbology of the layer into the document provided in SLD 1.0.0 format
 
   public slots:
     void showStatusMessage( const QString &message );
+
+    void changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
+%Docstring
+Change coordinate transform context to ``coordinateTransformContext``
+
+.. versionadded:: 3.10
+%End
 
   protected:
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );

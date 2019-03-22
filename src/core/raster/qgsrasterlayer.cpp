@@ -1510,6 +1510,12 @@ void QgsRasterLayer::showStatusMessage( QString const &message )
   emit statusChanged( message );
 }
 
+void QgsRasterLayer::changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setCoordinateTransformContext( coordinateTransformContext );
+}
+
 QStringList QgsRasterLayer::subLayers() const
 {
   return mDataProvider->subLayers();
@@ -1746,7 +1752,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
 
-  QgsDataProvider::ProviderOptions providerOptions;
+  QgsDataProvider::ProviderOptions providerOptions { context.coordinateTransformContext() };
   setDataProvider( mProviderKey, providerOptions );
 
   if ( ! mDataProvider )

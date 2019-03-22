@@ -36,7 +36,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   public:
 
-    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;

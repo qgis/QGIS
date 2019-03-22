@@ -106,7 +106,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Additional creation options are specified within the \a options value.
      */
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
 
     /**
      * Returns the coordinate system for the data source.
@@ -522,24 +522,24 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ); return false; }
 
     /**
-     * Returns data provider options
+     * Returns data provider coordinate transform context
      *
-     * \see setOptions()
-     * \see optionsChanged()
+     * \see setCoordinateTranformContext()
+     * \see coordinateTransformContextChanged()
      *
      * \since QGIS 3.10
      */
-    QgsDataProvider::ProviderOptions options() const;
+    QgsCoordinateTransformContext coordinateTransformContext() const;
 
     /**
-     * Sets data provider options to \a options
+     * Sets data coordinate transform context to \a coordinateTransformContext
      *
-     * \see options()
-     * \see optionsChanged()
+     * \see coordinateTransformContext()
+     * \see coordinateTransformContextChanged()
      *
      * \since QGIS 3.10
      */
-    void setOptions( const QgsDataProvider::ProviderOptions &options );
+    void setCoordinateTransformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
 
   signals:
 
@@ -575,14 +575,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
     void notify( const QString &msg );
 
     /**
-     * Emitted when the data provider options has changed
+     * Emitted when the data provider coordinate transform context has changed
      *
-     * \see setOptions()
-     * \see options()
+     * \see coordinateTransformContext()
+     * \see setCoordinateTranformContext()
      *
      * \since QGIS 3.10
      */
-    void optionsChanged( const QgsDataProvider::ProviderOptions &options );
+    void coordinateTransformContextChanged( const QgsCoordinateTransformContext &coordinateTransformContext );
 
 
   protected:
