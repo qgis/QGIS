@@ -1341,11 +1341,18 @@ Set whether provider notification is connected to triggerRepaint
 
     void setRefreshOnNofifyMessage( const QString &message );
 %Docstring
-Set the notification message that triggers repaine
+Set the notification message that triggers repaint
 If refresh on notification is enabled, the notification will triggerRepaint only
 if the notification message is equal to:param message:
 
 .. versionadded:: 3.0
+%End
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
+%Docstring
+Triggered when the coordinate transform context has changed ``transformContext``
+
+.. versionadded:: 3.10
 %End
 
   signals:
@@ -1481,6 +1488,7 @@ Emitted whenever the layer's data source has been changed.
 
 .. versionadded:: 3.5
 %End
+
 
   protected:
 

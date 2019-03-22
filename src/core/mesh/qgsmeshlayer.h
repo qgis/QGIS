@@ -97,7 +97,15 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      */
     struct LayerOptions
     {
-      int unused;  //!< @todo remove me once there are actual members here (breaks SIP <4.19)
+
+      /**
+       * Constructor for LayerOptions.
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+        : transformContext( transformContext )
+      {}
+
+      QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
     };
 
     /**
@@ -217,6 +225,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \since QGIS 3.4
       */
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
+  public slots:
+
+    /**
+     * Triggered when the coordinate transform context has changed \a transformContext
+     *
+     * \since QGIS 3.10
+     */
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+
 
   signals:
 

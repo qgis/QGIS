@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMutexLocker>
 #include "qgsdataprovider.h"
 
 QString QgsDataProvider::SUBLAYER_SEPARATOR = QString( "!!::!!" );
@@ -53,13 +54,14 @@ bool QgsDataProvider::renderInPreview( const PreviewContext &context )
   return context.lastRenderingTimeMs <= context.maxRenderingTimeMs;
 }
 
-QgsCoordinateTransformContext QgsDataProvider::coordinateTransformContext() const
+QgsCoordinateTransformContext QgsDataProvider::transformContext() const
 {
-  return mOptions.coordinateTransformContext;
+  QMutexLocker locker( &mOptionsMutex );
+  return mOptions.transformContext;
 }
 
-void QgsDataProvider::setCoordinateTransformContext( const QgsCoordinateTransformContext &value )
+void QgsDataProvider::setTransformContext( const QgsCoordinateTransformContext &value )
 {
-  mOptions.coordinateTransformContext = value;
-  emit coordinateTransformContextChanged( value );
+  QMutexLocker locker( &mOptionsMutex );
+  mOptions.transformContext = value;
 }

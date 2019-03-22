@@ -328,7 +328,7 @@ TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
 
       explicit LayerOptions( bool loadDefaultStyle = true,
                              bool readExtentFromXml = false,
-                             const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
+                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions.
 %End
@@ -337,7 +337,7 @@ Constructor for LayerOptions.
 
       bool readExtentFromXml;
 
-      QgsCoordinateTransformContext coordinateTransformContext;
+      QgsCoordinateTransformContext transformContext;
 
     };
 
@@ -2335,10 +2335,9 @@ rollBack().
 .. seealso:: :py:func:`rollBack`
 %End
 
-
-    void changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 %Docstring
-Change coordinate transform context to ``coordinateTransformContext``
+Triggered when the coordinate transform context has changed ``transformContext``
 
 .. versionadded:: 3.10
 %End

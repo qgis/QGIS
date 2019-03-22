@@ -1193,7 +1193,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
       return false;
     }
 
-    QgsWmsCapabilities caps( coordinateTransformContext() );
+    QgsWmsCapabilities caps( transformContext() );
     if ( !caps.parseResponse( downloadCaps.response(), mSettings.parserSettings() ) )
     {
       mErrorFormat = caps.lastErrorFormat();
@@ -1218,7 +1218,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   parsedUri.setEncodedUri( uri );
 
   QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ),
-                             coordinateTransformContext() );
+                             transformContext() );
 
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
@@ -1365,7 +1365,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
   if ( !wgs.isValid() || !dst.isValid() )
     return false;
 
-  QgsCoordinateTransform xform( wgs, dst, coordinateTransformContext() );
+  QgsCoordinateTransform xform( wgs, dst, transformContext() );
 
   QgsDebugMsg( QStringLiteral( "transforming layer extent %1" ).arg( extent.toString( true ) ) );
   try
@@ -1596,7 +1596,7 @@ bool QgsWmsProvider::calculateExtent() const
         {
           QgsCoordinateReferenceSystem qgisSrsSource = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mTileLayer->boundingBoxes[i].crs );
 
-          QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest, coordinateTransformContext() );
+          QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest, transformContext() );
 
           QgsDebugMsg( QStringLiteral( "ct: %1 => %2" ).arg( mTileLayer->boundingBoxes.at( i ).crs, mImageCrs ) );
 
@@ -2950,7 +2950,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           QgsCoordinateTransform coordinateTransform;
           if ( featuresCrs.isValid() && featuresCrs != crs() )
           {
-            coordinateTransform = QgsCoordinateTransform( featuresCrs, crs(), coordinateTransformContext() );
+            coordinateTransform = QgsCoordinateTransform( featuresCrs, crs(), transformContext() );
           }
           QgsFeatureStore featureStore( fields, crs() );
           QMap<QString, QVariant> params;
@@ -3026,7 +3026,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 
             if ( featuresCrs.isValid() && featuresCrs != crs() )
             {
-              coordinateTransform = QgsCoordinateTransform( featuresCrs, crs(), coordinateTransformContext() );
+              coordinateTransform = QgsCoordinateTransform( featuresCrs, crs(), transformContext() );
             }
           }
 

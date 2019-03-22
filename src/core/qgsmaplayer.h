@@ -1192,13 +1192,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setRefreshOnNotifyEnabled( bool enabled );
 
     /**
-     * Set the notification message that triggers repaine
+     * Set the notification message that triggers repaint
      * If refresh on notification is enabled, the notification will triggerRepaint only
      * if the notification message is equal to \param message
      *
      * \since QGIS 3.0
      */
     void setRefreshOnNofifyMessage( const QString &message ) { mRefreshOnNofifyMessage = message; }
+
+    /**
+     * Triggered when the coordinate transform context has changed \a transformContext
+     *
+     * \since QGIS 3.10
+     */
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
 
   signals:
 
@@ -1309,6 +1316,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.5
      */
     void dataSourceChanged();
+
 
   private slots:
 

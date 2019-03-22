@@ -163,7 +163,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions { options.coordinateTransformContext };
+    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
   }
 
@@ -1372,10 +1372,10 @@ bool QgsVectorLayer::startEditing()
   return true;
 }
 
-void QgsVectorLayer::changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext )
+void QgsVectorLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
   if ( mDataProvider )
-    mDataProvider->setCoordinateTransformContext( coordinateTransformContext );
+    mDataProvider->setTransformContext( transformContext );
 }
 
 bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )

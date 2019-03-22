@@ -105,14 +105,14 @@ Constructor. Provider is not set.
     {
 
       explicit LayerOptions( bool loadDefaultStyle = true,
-                             const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
+                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions.
 %End
 
       bool loadDefaultStyle;
 
-      QgsCoordinateTransformContext coordinateTransformContext;
+      QgsCoordinateTransformContext transformContext;
 
     };
 
@@ -384,9 +384,9 @@ Writes the symbology of the layer into the document provided in SLD 1.0.0 format
   public slots:
     void showStatusMessage( const QString &message );
 
-    void changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 %Docstring
-Change coordinate transform context to ``coordinateTransformContext``
+Triggered when the coordinate transform context has changed ``transformContext``
 
 .. versionadded:: 3.10
 %End
