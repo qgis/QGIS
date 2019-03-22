@@ -37,6 +37,22 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     Q_OBJECT
   public:
 
+    //! Dialog transformation entry info
+    struct TransformInfo
+    {
+      //! Source coordinate reference system
+      QgsCoordinateReferenceSystem sourceCrs;
+
+      //! Source transform ID
+      int sourceTransformId = -1;
+
+      //! Destination coordinate reference system
+      QgsCoordinateReferenceSystem destinationCrs;
+
+      //! Destination transform ID
+      int destinationTransformId = -1;
+    };
+
     /**
      * Runs the dialog (if required) prompting for the desired transform to use from \a sourceCrs to
      * \a destinationCrs, updating the current project transform context as required
@@ -72,7 +88,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      * Returns the source and destination transforms, each being a pair of QgsCoordinateReferenceSystems and datum transform code
      * \since 3.0
      */
-    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > selectedDatumTransforms();
+    TransformInfo selectedDatumTransform();
 
   private slots:
 
@@ -101,7 +117,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      * \see shouldAskUserForSelection()
      * \see applyDefaultTransform()
      */
-    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > defaultDatumTransform() const;
+    TransformInfo defaultDatumTransform() const;
 
     /**
      * Applies the defaultDatumTransform(), adding it to the current QgsProject instance.
