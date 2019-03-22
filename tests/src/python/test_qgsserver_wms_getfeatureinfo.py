@@ -347,6 +347,16 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  urllib.parse.quote(':"NAME" = \'two\''),
                                  'wms_getfeatureinfo_filter_no_width')
 
+        # Test a filter without CRS parameter
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' +
+                                 urllib.parse.quote(':"NAME" = \'two\''),
+                                 'wms_getfeatureinfo_filter_no_crs')
+
     def testGetFeatureInfoTolerance(self):
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=layer3&styles=&' +
