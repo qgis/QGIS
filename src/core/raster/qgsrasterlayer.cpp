@@ -1510,10 +1510,10 @@ void QgsRasterLayer::showStatusMessage( QString const &message )
   emit statusChanged( message );
 }
 
-void QgsRasterLayer::changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext )
+void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
   if ( mDataProvider )
-    mDataProvider->setCoordinateTransformContext( coordinateTransformContext );
+    mDataProvider->setTransformContext( transformContext );
 }
 
 QStringList QgsRasterLayer::subLayers() const
