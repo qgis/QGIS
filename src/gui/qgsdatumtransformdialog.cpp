@@ -268,8 +268,8 @@ void QgsDatumTransformDialog::accept()
     if ( destinationDatumTransform >= 0 )
       destinationDatumProj = QgsDatumTransform::datumTransformToProj( destinationDatumTransform );
 
-    settings.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumProj );
-    settings.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumProj );
+    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_srcTransform" ), sourceDatumProj );
+    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_destTransform" ), destinationDatumProj );
   }
   QDialog::accept();
 }
@@ -282,7 +282,7 @@ void QgsDatumTransformDialog::reject()
   QDialog::reject();
 }
 
-bool QgsDatumTransformDialog::shouldAskUserForSelection()
+bool QgsDatumTransformDialog::shouldAskUserForSelection() const
 {
   if ( mDatumTransforms.count() > 1 )
   {
@@ -292,7 +292,7 @@ bool QgsDatumTransformDialog::shouldAskUserForSelection()
   return false;
 }
 
-QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > QgsDatumTransformDialog::defaultDatumTransform()
+QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > QgsDatumTransformDialog::defaultDatumTransform() const
 {
   QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > preferredNonDeprecated;
   preferredNonDeprecated.first.first = mSourceCrs;
