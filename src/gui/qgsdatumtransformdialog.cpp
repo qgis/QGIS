@@ -43,9 +43,9 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
   {
     if ( dlg.exec() )
     {
-      QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
+      const TransformInfo dt = dlg.selectedDatumTransform();
       QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-      context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
+      context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
       QgsProject::instance()->setTransformContext( context );
       return true;
     }
@@ -255,15 +255,15 @@ void QgsDatumTransformDialog::accept()
     QgsSettings settings;
     settings.beginGroup( QStringLiteral( "/Projections" ) );
 
-    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = selectedDatumTransforms();
+    const TransformInfo dt = selectedDatumTransform();
 
-    QString srcAuthId = dt.first.first.authid();
-    QString destAuthId = dt.second.first.authid();
-    int sourceDatumTransform = dt.first.second;
+    QString srcAuthId = dt.sourceCrs.authid();
+    QString destAuthId = dt.destinationCrs.authid();
+    int sourceDatumTransform = dt.sourceTransformId;
     QString sourceDatumProj;
     if ( sourceDatumTransform >= 0 )
       sourceDatumProj = QgsDatumTransform::datumTransformToProj( sourceDatumTransform );
-    int destinationDatumTransform = dt.second.second;
+    int destinationDatumTransform = dt.destinationTransformId;
     QString destinationDatumProj;
     if ( destinationDatumTransform >= 0 )
       destinationDatumProj = QgsDatumTransform::datumTransformToProj( destinationDatumTransform );
@@ -292,23 +292,23 @@ bool QgsDatumTransformDialog::shouldAskUserForSelection() const
   return false;
 }
 
-QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > QgsDatumTransformDialog::defaultDatumTransform() const
+QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::defaultDatumTransform() const
 {
-  QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > preferredNonDeprecated;
-  preferredNonDeprecated.first.first = mSourceCrs;
-  preferredNonDeprecated.second.first = mDestinationCrs;
+  TransformInfo preferredNonDeprecated;
+  preferredNonDeprecated.sourceCrs = mSourceCrs;
+  preferredNonDeprecated.destinationCrs = mDestinationCrs;
   bool foundPreferredNonDeprecated = false;
-  QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > preferred;
-  preferred.first.first = mSourceCrs;
-  preferred.second.first = mDestinationCrs;
+  TransformInfo preferred;
+  preferred.sourceCrs = mSourceCrs;
+  preferred.destinationCrs = mDestinationCrs;
   bool foundPreferred  = false;
-  QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > nonDeprecated;
-  nonDeprecated.first.first = mSourceCrs;
-  nonDeprecated.second.first = mDestinationCrs;
+  TransformInfo nonDeprecated;
+  nonDeprecated.sourceCrs = mSourceCrs;
+  nonDeprecated.destinationCrs = mDestinationCrs;
   bool foundNonDeprecated = false;
-  QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > fallback;
-  fallback.first.first = mSourceCrs;
-  fallback.second.first = mDestinationCrs;
+  TransformInfo fallback;
+  fallback.sourceCrs = mSourceCrs;
+  fallback.destinationCrs = mDestinationCrs;
   bool foundFallback = false;
 
   for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
@@ -321,28 +321,28 @@ QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSyst
     if ( !foundPreferredNonDeprecated && ( ( srcInfo.preferred && !srcInfo.deprecated ) || transform.sourceTransformId == -1 )
          && ( ( destInfo.preferred && !destInfo.deprecated ) || transform.destinationTransformId == -1 ) )
     {
-      preferredNonDeprecated.first.second = transform.sourceTransformId;
-      preferredNonDeprecated.second.second = transform.destinationTransformId;
+      preferredNonDeprecated.sourceTransformId = transform.sourceTransformId;
+      preferredNonDeprecated.destinationTransformId = transform.destinationTransformId;
       foundPreferredNonDeprecated = true;
     }
     else if ( !foundPreferred && ( srcInfo.preferred || transform.sourceTransformId == -1 ) &&
               ( destInfo.preferred || transform.destinationTransformId == -1 ) )
     {
-      preferred.first.second = transform.sourceTransformId;
-      preferred.second.second = transform.destinationTransformId;
+      preferred.sourceTransformId = transform.sourceTransformId;
+      preferred.destinationTransformId = transform.destinationTransformId;
       foundPreferred = true;
     }
     else if ( !foundNonDeprecated && ( !srcInfo.deprecated || transform.sourceTransformId == -1 )
               && ( !destInfo.deprecated || transform.destinationTransformId == -1 ) )
     {
-      nonDeprecated.first.second = transform.sourceTransformId;
-      nonDeprecated.second.second = transform.destinationTransformId;
+      nonDeprecated.sourceTransformId = transform.sourceTransformId;
+      nonDeprecated.destinationTransformId = transform.destinationTransformId;
       foundNonDeprecated = true;
     }
     else if ( !foundFallback )
     {
-      fallback.first.second = transform.sourceTransformId;
-      fallback.second.second = transform.destinationTransformId;
+      fallback.sourceTransformId = transform.sourceTransformId;
+      fallback.destinationTransformId = transform.destinationTransformId;
       foundFallback = true;
     }
   }
@@ -361,30 +361,30 @@ void QgsDatumTransformDialog::applyDefaultTransform()
   if ( mDatumTransforms.count() > 0 )
   {
     QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-    const QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > dt = defaultDatumTransform();
-    context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
+    const TransformInfo dt = defaultDatumTransform();
+    context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
     QgsProject::instance()->setTransformContext( context );
   }
 }
 
-QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int> > QgsDatumTransformDialog::selectedDatumTransforms()
+QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::selectedDatumTransform()
 {
   int row = mDatumTransformTableWidget->currentRow();
-  QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > sdt;
-  sdt.first.first = mSourceCrs;
-  sdt.second.first = mDestinationCrs;
+  TransformInfo sdt;
+  sdt.sourceCrs = mSourceCrs;
+  sdt.destinationCrs = mDestinationCrs;
 
   if ( row >= 0 )
   {
     QTableWidgetItem *srcItem = mDatumTransformTableWidget->item( row, 0 );
-    sdt.first.second = srcItem ? srcItem->data( Qt::UserRole ).toInt() : -1;
+    sdt.sourceTransformId = srcItem ? srcItem->data( Qt::UserRole ).toInt() : -1;
     QTableWidgetItem *destItem = mDatumTransformTableWidget->item( row, 1 );
-    sdt.second.second = destItem ? destItem->data( Qt::UserRole ).toInt() : -1;
+    sdt.destinationTransformId = destItem ? destItem->data( Qt::UserRole ).toInt() : -1;
   }
   else
   {
-    sdt.first.second = -1;
-    sdt.second.second = -1;
+    sdt.sourceTransformId = -1;
+    sdt.destinationTransformId = -1;
   }
   return sdt;
 }
