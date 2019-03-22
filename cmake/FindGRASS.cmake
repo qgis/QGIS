@@ -77,8 +77,8 @@ MACRO (CHECK_GRASS G_PREFIX)
           # and then again with no specified paths to search the default
           # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
           # searching for the same item do nothing. 
-          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} PATHS ${G_PREFIX}/lib NO_DEFAULT_PATH)
-          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} PATHS ${G_PREFIX}/lib)
+          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} grass_${LIB}.${GRASS_MAJOR_VERSION${GRASS_FIND_VERSION}}.${GRASS_MINOR_VERSION${GRASS_FIND_VERSION}} PATHS ${G_PREFIX}/lib NO_DEFAULT_PATH)
+          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} grass_${LIB}.${GRASS_MAJOR_VERSION${GRASS_FIND_VERSION}}.${GRASS_MINOR_VERSION${GRASS_FIND_VERSION}} PATHS ${G_PREFIX}/lib)
 
           IF(LIB_PATH)
             SET(GRASS_LIBRARY${GRASS_FIND_VERSION}_${LIB} ${LIB_PATH})

@@ -9,7 +9,8 @@ if not %OSGEO4W_MENU_LINKS%==0 mkdir "%OSGEO4W_STARTMENU%"
 if not %OSGEO4W_DESKTOP_LINKS%==0 mkdir "%OSGEO4W_DESKTOP%"
 
 for %%g in (@grassversions@) do (
-	for /F "delims=." %%i in ("%%g") do set v=%%i
+        for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
+	for /F "delims=." %%i in ("%%gv") do set v=%%i
 
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.exe" "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe"
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.vars" "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.vars"
