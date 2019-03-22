@@ -62,13 +62,13 @@ class Qgs3DMapCanvas : public QWidget
 
     /**
      * Sets the active map tool that will receive events from the 3D canvas. Does not transfer ownership.
-     * If the tool is null, events will be used for camera manipulation.
+     * If the tool is NULLPTR, events will be used for camera manipulation.
      */
     void setMapTool( Qgs3DMapTool *tool );
 
     /**
      * Returns the active map tool that will receive events from the 3D canvas.
-     * If the tool is null, events will be used for camera manipulation.
+     * If the tool is NULLPTR, events will be used for camera manipulation.
      */
     Qgs3DMapTool *mapTool() const { return mMapTool; }
 
