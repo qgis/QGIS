@@ -147,7 +147,18 @@ const QMap< QString, QString > sProj6EllipsoidAcronymMap
   {"engelis", "EPSG:7054"},
   {"evrst56", "EPSG:7044"},
   {"SEasia", "ESRI:107004"},
-  {"SGS85", "EPSG:7054"}
+  {"SGS85", "EPSG:7054"},
+  {"andrae", "PROJ:ANDRAE"},
+  {"clrk80", "EPSG:7034"},
+  {"CPM", "PROJ:CPM"},
+  {"delmbr", "PROJ:DELMBR"},
+  {"Earth2000", "PROJ:EARTH2000"},
+  {"kaula", "PROJ:KAULA"},
+  {"lerch", "PROJ:LERCH"},
+  {"MERIT", "PROJ:MERIT"},
+  {"mprts", "PROJ:MPRTS"},
+  {"new_intl", "PROJ:NEW_INTL"},
+  {"WGS60", "PROJ:WGS60"}
 };
 
 QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( const QString &e )
