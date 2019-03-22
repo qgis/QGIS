@@ -352,7 +352,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     catch ( QgsException &ex )
     {
       // Internal server error
-      response.sendError( 500, ex.what() );
+      response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
       QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
