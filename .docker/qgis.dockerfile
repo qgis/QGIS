@@ -53,7 +53,7 @@ RUN cmake \
 # Python testing environment setup
 
 # Add QGIS test runner
-COPY .docker/qgis_resources/test_runner/qgis_* /usr/bin
+COPY .docker/qgis_resources/test_runner/qgis_* /usr/bin/
 
 # Make all scripts executable
 RUN chmod +x /usr/bin/qgis_*
