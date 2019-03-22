@@ -49,15 +49,22 @@ class SERVER_EXPORT QgsServerException
     int responseCode() const { return mResponseCode; }
 
     /**
-     * Format the exception for sending to client
+     * Formats the exception for sending to client
      *
      * \param responseFormat QString to store the content type of the response format.
-     * \returns QByteArray the fermatted response.
+     * \returns QByteArray The formatted response.
      *
      * The default implementation returns text/xml format.
      */
     virtual QByteArray formatResponse( QString &responseFormat SIP_OUT ) const;
 
+    /**
+     * Formats the exception for sending to client
+     *
+     * \returns QByteArray The formatted response.
+     *
+     * \since QGIS 3.8
+     */
     QByteArray formatResponse() const;
 
   private:
