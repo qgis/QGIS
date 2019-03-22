@@ -1013,7 +1013,7 @@ void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF &points, 
   }
 
   double painterUnitInterval = rc.convertToPainterUnits( interval, mIntervalUnit, mIntervalMapUnitScale );
-  lengthLeft = painterUnitInterval - rc.convertToPainterUnits( offsetAlongLine, mIntervalUnit, mIntervalMapUnitScale );
+  lengthLeft = painterUnitInterval - rc.convertToPainterUnits( offsetAlongLine, mOffsetAlongLineUnit, mOffsetAlongLineMapUnitScale );
 
   int pointNum = 0;
   for ( int i = 1; i < points.count(); ++i )
