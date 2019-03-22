@@ -77,7 +77,13 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
 
     struct LayerOptions
     {
-      int unused;  //!< @todo remove me once there are actual members here (breaks SIP <4.19)
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
+%Docstring
+Constructor for LayerOptions.
+%End
+
+      QgsCoordinateTransformContext transformContext;
     };
 
     explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
@@ -186,6 +192,16 @@ Interpolates the value on the given point from given dataset.
 
 .. versionadded:: 3.4
 %End
+
+  public slots:
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Triggered when the coordinate transform context has changed ``transformContext``
+
+.. versionadded:: 3.10
+%End
+
 
   signals:
 

@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QMutex>
 
 //#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct ProviderOptions
     {
-      QgsCoordinateTransformContext coordinateTransformContext;
+      QgsCoordinateTransformContext transformContext;
     };
 
     /**
@@ -524,22 +525,23 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Returns data provider coordinate transform context
      *
-     * \see setCoordinateTranformContext()
-     * \see coordinateTransformContextChanged()
+     * \see setTranformContext()
      *
      * \since QGIS 3.10
      */
-    QgsCoordinateTransformContext coordinateTransformContext() const;
+    QgsCoordinateTransformContext transformContext() const;
 
     /**
-     * Sets data coordinate transform context to \a coordinateTransformContext
+     * Sets data coordinate transform context to \a transformContext
      *
-     * \see coordinateTransformContext()
-     * \see coordinateTransformContextChanged()
+     * The default implementation is a simple setter, subclasses may override to perform
+     * additional actions required by a change of coordinate tranform context.
+     *
+     * \see transformContext()
      *
      * \since QGIS 3.10
      */
-    void setCoordinateTransformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
   signals:
 
@@ -574,16 +576,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     void notify( const QString &msg );
 
-    /**
-     * Emitted when the data provider coordinate transform context has changed
-     *
-     * \see coordinateTransformContext()
-     * \see setCoordinateTranformContext()
-     *
-     * \since QGIS 3.10
-     */
-    void coordinateTransformContextChanged( const QgsCoordinateTransformContext &coordinateTransformContext );
-
 
   protected:
 
@@ -612,6 +604,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QMap< int, QVariant > mProviderProperties;
 
     QgsDataProvider::ProviderOptions mOptions;
+
+    /**
+     * Protects options from being accessed concurrently
+     */
+    mutable QMutex mOptionsMutex;
 
 };
 

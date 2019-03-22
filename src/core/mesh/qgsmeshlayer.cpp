@@ -202,6 +202,12 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
   return value;
 }
 
+void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
+}
+
 void QgsMeshLayer::fillNativeMesh()
 {
   Q_ASSERT( !mNativeMesh );

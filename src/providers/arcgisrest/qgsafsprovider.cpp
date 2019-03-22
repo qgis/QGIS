@@ -117,7 +117,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   if ( mSharedData->mExtent.isEmpty() )
   {
     mSharedData->mExtent = originalExtent;
-    mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS, coordinateTransformContext() ).transformBoundingBox( mSharedData->mExtent );
+    mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS, transformContext() ).transformBoundingBox( mSharedData->mExtent );
   }
 
   QString objectIdFieldName;

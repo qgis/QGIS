@@ -485,7 +485,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
 
-          QgsCoordinateTransform ct( crsWGS84, crs, mOptions.coordinateTransformContext );
+          QgsCoordinateTransform ct( crsWGS84, crs, mOptions.transformContext );
 
           QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
           QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
