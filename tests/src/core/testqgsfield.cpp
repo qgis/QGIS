@@ -417,6 +417,10 @@ void TestQgsField::displayString()
   QString testBAString( QStringLiteral( "test string" ) );
   QByteArray testBA( testBAString.toLocal8Bit() );
   QCOMPARE( binaryField.displayString( testBA ), QStringLiteral( "BLOB" ) );
+
+  // string list field
+  QgsField stringListField( QStringLiteral( "stringlist" ), QVariant::StringList, QStringLiteral( "_text" ) );
+  QCOMPARE( stringListField.displayString( QStringList() << "test1" << "test2" << "test3" ), QString( "{test1,test2,test3}" ) );
 }
 
 void TestQgsField::convertCompatible()
