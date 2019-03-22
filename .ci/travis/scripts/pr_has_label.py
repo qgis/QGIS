@@ -2,8 +2,8 @@
 
 import sys
 import json
-import urllib.request  # using urllib since it is a standard module (vs. requests)
-
+from urllib.request import urlopen # using urllib since it is a standard module (vs. requests)
+from urllib.error import URLError
 import argparse
 
 parser = argparse.ArgumentParser(description='Determines if a pull request has a defined label')
@@ -16,7 +16,12 @@ args = parser.parse_args()
 
 url = "https://api.github.com/repos/qgis/QGIS/pulls/{}".format(args.pull_request)
 
-data = urllib.request.urlopen(url).read()
+try:
+    data = urlopen(url).read()
+except URLError as err:
+    print("URLError: %s", err.reason)
+    sys.exit(1)
+
 obj = json.loads(data)
 
 for label in obj['labels']:
