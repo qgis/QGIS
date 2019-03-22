@@ -17,7 +17,7 @@ args = parser.parse_args()
 url = "https://api.github.com/repos/qgis/QGIS/pulls/{}".format(args.pull_request)
 
 try:
-    data = urlopen(url).read()
+    data = urlopen(url).read().decode('utf-8')
 except URLError as err:
     print("URLError: %s", err.reason)
     sys.exit(1)
