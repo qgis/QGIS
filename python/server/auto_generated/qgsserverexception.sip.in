@@ -45,15 +45,6 @@ Formats the exception for sending to client
 The default implementation returns text/xml format.
 %End
 
-    QByteArray formatResponse() const;
-%Docstring
-Formats the exception for sending to client
-
-:return: QByteArray The formatted response.
-
-.. versionadded:: 3.8
-%End
-
 };
 
 class QgsOgcServiceException

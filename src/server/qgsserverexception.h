@@ -58,15 +58,6 @@ class SERVER_EXPORT QgsServerException
      */
     virtual QByteArray formatResponse( QString &responseFormat SIP_OUT ) const;
 
-    /**
-     * Formats the exception for sending to client
-     *
-     * \returns QByteArray The formatted response.
-     *
-     * \since QGIS 3.8
-     */
-    QByteArray formatResponse() const;
-
   private:
     int mResponseCode;
 };

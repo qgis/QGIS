@@ -347,7 +347,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     catch ( QgsServerException &ex )
     {
       responseDecorator.write( ex );
-      QgsMessageLog::logMessage( ex.formatResponse(), QStringLiteral( "Server" ), Qgis::Info );
+      QString format;
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Info );
     }
     catch ( QgsException &ex )
     {

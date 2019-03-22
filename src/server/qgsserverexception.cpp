@@ -27,12 +27,6 @@ QgsServerException::QgsServerException( const QString &message, int responseCode
 
 }
 
-QByteArray QgsServerException::formatResponse() const
-{
-  QString responseFormat;
-  return formatResponse( responseFormat );
-}
-
 QByteArray QgsServerException::formatResponse( QString &responseFormat ) const
 {
   QDomDocument doc;
