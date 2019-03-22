@@ -61,7 +61,7 @@ Abstract base class for spatial data provider implementations.
       QgsCoordinateTransformContext coordinateTransformContext;
     };
 
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
 
@@ -387,24 +387,24 @@ Returns ``True`` if metadata was successfully written to the data provider.
 .. versionadded:: 3.0
 %End
 
-    QgsDataProvider::ProviderOptions options() const;
+    QgsCoordinateTransformContext coordinateTransformContext() const;
 %Docstring
-Returns data provider options
+Returns data provider coordinate transform context
 
-.. seealso:: :py:func:`setOptions`
+.. seealso:: :py:func:`setCoordinateTranformContext`
 
-.. seealso:: :py:func:`optionsChanged`
+.. seealso:: :py:func:`coordinateTransformContextChanged`
 
 .. versionadded:: 3.10
 %End
 
-    void setOptions( const QgsDataProvider::ProviderOptions &options );
+    void setCoordinateTransformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
 %Docstring
-Sets data provider options to ``options``
+Sets data coordinate transform context to ``coordinateTransformContext``
 
-.. seealso:: :py:func:`options`
+.. seealso:: :py:func:`coordinateTransformContext`
 
-.. seealso:: :py:func:`optionsChanged`
+.. seealso:: :py:func:`coordinateTransformContextChanged`
 
 .. versionadded:: 3.10
 %End
@@ -444,13 +444,13 @@ Emitted when the datasource issues a notification.
 .. versionadded:: 3.0
 %End
 
-    void optionsChanged( const QgsDataProvider::ProviderOptions &options );
+    void coordinateTransformContextChanged( const QgsCoordinateTransformContext &coordinateTransformContext );
 %Docstring
-Emitted when the data provider options has changed
+Emitted when the data provider coordinate transform context has changed
 
-.. seealso:: :py:func:`setOptions`
+.. seealso:: :py:func:`coordinateTransformContext`
 
-.. seealso:: :py:func:`options`
+.. seealso:: :py:func:`setCoordinateTranformContext`
 
 .. versionadded:: 3.10
 %End

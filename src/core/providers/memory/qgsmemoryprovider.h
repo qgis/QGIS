@@ -31,7 +31,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsMemoryProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &options );
+    explicit QgsMemoryProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &coordinateTransformContext );
 
     ~QgsMemoryProvider() override;
 
@@ -44,7 +44,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * Creates a new memory provider, with provider properties embedded within the given \a uri and \a options
      * argument.
      */
-    static QgsMemoryProvider *createProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &options );
+    static QgsMemoryProvider *createProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &coordinateTransformContext );
 
     /* Implementation of functions from QgsVectorDataProvider */
 

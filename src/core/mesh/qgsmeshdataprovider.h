@@ -551,7 +551,7 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
 
   public:
     //! Ctor
-    QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
   signals:
     //! Emitted when some new dataset groups have been added
