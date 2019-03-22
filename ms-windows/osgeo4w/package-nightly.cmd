@@ -68,7 +68,6 @@ set CMAKE_OPT=^
 
 :cmake
 for %%i in ("%GRASS_PREFIX%") do set GRASS7_VERSION=%%~nxi
-set GRASS7_VERSION=%GRASS7_VERSION:grass-=%
 set GRASS_VERSIONS=%GRASS7_VERSION%
 
 set TAR=tar.exe
@@ -206,8 +205,8 @@ if exist "%TEMP%" rmdir /s /q "%TEMP%"
 mkdir "%TEMP%"
 
 for %%g IN (%GRASS_VERSIONS%) do (
-	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
-	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
+	set path=!path!;%OSGEO4W_ROOT%\apps\grass\%%g\lib
+	set GISBASE=%OSGEO4W_ROOT%\apps\grass\%%g
 )
 PATH %path%;%BUILDDIR%\output\plugins
 set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
@@ -251,9 +250,10 @@ if errorlevel 1 (echo creation of registry template & goto error)
 
 set batches=
 for %%g IN (%GRASS_VERSIONS%) do (
-	for /F "delims=." %%i in ("%%g") do set v=%%i
+	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
+	for /F "delims=." %%i in ("!gv!") do set v=%%i
 
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g!v!.bat.tmpl
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grasspath@/%%g/g' -e 's/@grassversion@/!gv!/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g!v!.bat.tmpl
 	if errorlevel 1 (echo creation of desktop template failed & goto error)
 	set batches=!batches! bin/%PACKAGENAME%-g!v!.bat.tmpl
 )

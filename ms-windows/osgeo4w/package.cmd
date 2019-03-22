@@ -63,14 +63,7 @@ set CMAKE_OPT=^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :cmake
-set GRASS7=
-if exist %OSGEO4W_ROOT%\bin\grass74.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass74.bat
-if exist %OSGEO4W_ROOT%\bin\grass76.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass76.bat
-if "%GRASS7%"=="" (echo GRASS7 not found & goto error)
-
-for /f "usebackq tokens=1" %%a in (`%GRASS7% --config path`) do set GRASS7_PATH=%%a
-for %%i in ("%GRASS7_PATH%") do set GRASS7_VERSION=%%~nxi
-set GRASS7_VERSION=%GRASS7_VERSION:grass-=%
+for %%i in ("%GRASS_PREFIX%") do set GRASS7_VERSION=%%~nxi
 set GRASS_VERSIONS=%GRASS7_VERSION%
 
 set TAR=tar.exe
@@ -207,8 +200,8 @@ if exist "%TEMP%" rmdir /s /q "%TEMP%"
 mkdir "%TEMP%"
 
 for %%g IN (%GRASS_VERSIONS%) do (
-	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
-	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
+	set path=!path!;%OSGEO4W_ROOT%\apps\grass\%%g\lib
+	set GISBASE=%OSGEO4W_ROOT%\apps\grass\%%g
 )
 PATH %path%;%BUILDDIR%\output\plugins
 set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
@@ -265,15 +258,16 @@ if errorlevel 1 (echo creation of httpd.conf template failed & goto error)
 set packages="" "-common" "-server" "-devel" "-oracle-provider" "-grass-plugin-common"
 
 for %%g IN (%GRASS_VERSIONS%) do (
-	for /F "delims=." %%i in ("%%g") do set v=%%i
+	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
+	for /F "delims=." %%i in ("!gv!") do set v=%%i
 	set w=!v!
 	if !v!==6 set w=
 
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' postinstall-grass.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-grass-plugin!w!.bat
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grasspath@/%%g/g' -e 's/@grassversion@/!gv!/g' -e 's/@grassmajor@/!v!/g' postinstall-grass.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-grass-plugin!w!.bat
 	if errorlevel 1 (echo creation of grass desktop postinstall failed & goto error)
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' preremove-grass.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-grass-plugin!w!.bat
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grasspath@/%%g/g' -e 's/@grassversion@/!gv!/g' -e 's/@grassmajor@/!v!/g' preremove-grass.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-grass-plugin!w!.bat
 	if errorlevel 1 (echo creation of grass desktop preremove failed & goto error)
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-grass!v!.bat.tmpl
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grasspath@/%%g/g' -e 's/@grassversion@/!gv!/g' -e 's/@grassmajor@/!v!/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-grass!v!.bat.tmpl
 	if errorlevel 1 (echo creation of grass desktop template failed & goto error)
 
 	set packages=!packages! "-grass-plugin!w!"
@@ -437,7 +431,8 @@ if errorlevel 1 (echo tar failed & goto error)
 if errorlevel 1 (echo tar grass-plugin failed & goto error)
 
 for %%g IN (%GRASS_VERSIONS%) do (
-	for /F "delims=." %%i in ("%%g") do set v=%%i
+	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
+	for /F "delims=." %%i in ("!gv!") do set v=%%i
 	set w=!v!
 	if !v!==6 set w=
 
