@@ -393,8 +393,8 @@ Depends:
  python3-yaml,
  ${python3:Depends},
  ${shlibs:Depends},
- ${sip3:Depends}
- ${misc:Depends},
+ ${sip3:Depends},
+ ${misc:Depends}
 Breaks: python-qgis (<< 1:3.7.1)
 Replaces: python-qgis (<< 1:3.7.1)
 Description: Python bindings to QGIS
