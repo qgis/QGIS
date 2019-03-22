@@ -694,7 +694,7 @@ class MyLine
       else
       {
         mVertical = false;
-        mT = float( p2.y() - p1.y() ) / ( p2.x() - p1.x() );
+        mT = ( p2.y() - p1.y() ) / ( p2.x() - p1.x() );
         mIncreasing = ( p2.x() > p1.x() );
       }
 
