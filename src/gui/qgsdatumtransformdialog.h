@@ -92,7 +92,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      *
      * \see defaultDatumTransform()
      */
-    bool shouldAskUserForSelection();
+    bool shouldAskUserForSelection() const;
 
     /**
      * Returns the default transform (or only available transform). This represents the transform which
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      * \see shouldAskUserForSelection()
      * \see applyDefaultTransform()
      */
-    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > defaultDatumTransform();
+    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > defaultDatumTransform() const;
 
     /**
      * Applies the defaultDatumTransform(), adding it to the current QgsProject instance.
