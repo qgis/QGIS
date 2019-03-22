@@ -370,11 +370,11 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   QRegExp re_urn( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
   if ( re_uri.exactMatch( wmsCrs ) )
   {
-	  wmsCrs = re_uri.cap( 1 ) + ':' + re_uri.cap( 2 );
+	wmsCrs = re_uri.cap( 1 ) + ':' + re_uri.cap( 2 );
   }
   else if ( re_urn.exactMatch( wmsCrs ) )
   {
-	  wmsCrs = re_urn.cap( 1 ) + ':' + re_urn.cap( 2 );
+	wmsCrs = re_urn.cap( 1 ) + ':' + re_urn.cap( 2 );
   }
   else
   {
