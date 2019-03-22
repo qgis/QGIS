@@ -54,9 +54,11 @@ class SERVER_EXPORT QgsServerException
      * \param responseFormat QString to store the content type of the response format.
      * \returns QByteArray the fermatted response.
      *
-     * The defaolt implementation return text/xml format.
+     * The default implementation returns text/xml format.
      */
     virtual QByteArray formatResponse( QString &responseFormat SIP_OUT ) const;
+
+    QByteArray formatResponse() const;
 
   private:
     int mResponseCode;

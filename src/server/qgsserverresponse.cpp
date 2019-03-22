@@ -80,7 +80,4 @@ void QgsServerResponse::write( const QgsServerException &ex )
   setStatusCode( ex.responseCode() );
   setHeader( "Content-Type", responseFormat );
   write( ba );
-
-  // log exception on server side too
-  QgsMessageLog::logMessage( ba, QStringLiteral( "Server" ), Qgis::Critical );
 }
