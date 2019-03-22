@@ -630,9 +630,9 @@ class QgsWmsCapabilities
   public:
 
     /**
-     * Constructs a QgsWmsCapabilities object with the given \a options
+     * Constructs a QgsWmsCapabilities object with the given \a coordinateTransformContext
      */
-    QgsWmsCapabilities( const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
+    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
 
     bool isValid() const { return mValid; }
 
@@ -767,7 +767,7 @@ class QgsWmsCapabilities
 
   private:
 
-    QgsDataProvider::ProviderOptions mOptions;
+    QgsCoordinateTransformContext mCoordinateTransformContext;
 
     friend class QgsWmsProvider;
 };

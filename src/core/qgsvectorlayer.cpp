@@ -163,7 +163,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions;
+    QgsDataProvider::ProviderOptions providerOptions { options.coordinateTransformContext };
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
   }
 
@@ -1372,6 +1372,12 @@ bool QgsVectorLayer::startEditing()
   return true;
 }
 
+void QgsVectorLayer::changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setCoordinateTransformContext( coordinateTransformContext );
+}
+
 bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
   QgsDebugMsgLevel( QStringLiteral( "Datasource in QgsVectorLayer::readXml: %1" ).arg( mDataSource.toLocal8Bit().data() ), 3 );
@@ -1404,7 +1410,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mProviderKey = QStringLiteral( "ogr" );
   }
 
-  QgsDataProvider::ProviderOptions options;
+  QgsDataProvider::ProviderOptions options; // {  };
   if ( !setDataProvider( mProviderKey, options ) )
   {
     QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );

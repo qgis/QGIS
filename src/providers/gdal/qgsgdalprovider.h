@@ -70,7 +70,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      * \param   newDataset  handle of newly created dataset.
      *
      */
-    QgsGdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, bool update = false, GDALDatasetH newDataset = nullptr );
+    QgsGdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, bool update = false, GDALDatasetH newDataset = nullptr );
 
     //! Create invalid provider with error
     QgsGdalProvider( const QString &uri, const QgsError &error );

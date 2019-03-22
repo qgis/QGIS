@@ -17,9 +17,9 @@
 
 QString QgsDataProvider::SUBLAYER_SEPARATOR = QString( "!!::!!" );
 
-QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )
   : mDataSourceURI( uri ),
-    mOptions( options )
+    mOptions( providerOptions )
 {
 }
 
@@ -53,13 +53,13 @@ bool QgsDataProvider::renderInPreview( const PreviewContext &context )
   return context.lastRenderingTimeMs <= context.maxRenderingTimeMs;
 }
 
-QgsDataProvider::ProviderOptions QgsDataProvider::options() const
+QgsCoordinateTransformContext QgsDataProvider::coordinateTransformContext() const
 {
-  return mOptions;
+  return mOptions.coordinateTransformContext;
 }
 
-void QgsDataProvider::setOptions( const QgsDataProvider::ProviderOptions &options )
+void QgsDataProvider::setCoordinateTransformContext( const QgsCoordinateTransformContext &value )
 {
-  mOptions = options;
-  emit optionsChanged( options );
+  mOptions.coordinateTransformContext = value;
+  emit coordinateTransformContextChanged( value );
 }

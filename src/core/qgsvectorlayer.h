@@ -401,9 +401,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false )
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false,
+                             const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() )
         : loadDefaultStyle( loadDefaultStyle )
         , readExtentFromXml( readExtentFromXml )
+        , coordinateTransformContext( coordinateTransformContext )
       {}
 
       //! Set to TRUE if the default layer style should be loaded
@@ -414,6 +417,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * project file). If FALSE, the extent will be determined by the provider on layer load.
        */
       bool readExtentFromXml = false;
+
+      /**
+       * Coordinate transform context
+       * \since QGIS 3.10
+       */
+      QgsCoordinateTransformContext coordinateTransformContext = QgsCoordinateTransformContext();
 
     };
 
@@ -2070,6 +2079,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
 
+
   public slots:
 
     /**
@@ -2138,6 +2148,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see rollBack()
      */
     bool startEditing();
+
+
+    /**
+     * Change coordinate transform context to \a coordinateTransformContext
+     *
+     * \since QGIS 3.10
+     */
+    void changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
 
   signals:
 
