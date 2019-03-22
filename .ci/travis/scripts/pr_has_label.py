@@ -2,7 +2,7 @@
 
 import sys
 import json
-import requests
+import urllib.request  # using urllib since it is a standard module (vs. requests)
 
 import argparse
 
@@ -15,9 +15,9 @@ parser.add_argument('label', type=int,
 args = parser.parse_args()
 
 url = "https://api.github.com/repos/qgis/QGIS/pulls/{}".format(args.pull_request)
-response = requests.get(url)
-obj = response.json()
 
+data = urllib.request.urlopen(url).read()
+obj = json.loads(data)
 
 for label in obj['labels']:
     if label["id"] == args.label:

@@ -48,7 +48,6 @@ matrix:
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
         # Label ID can be found here https://api.github.com/repos/qgis/QGIS/labels
         - RUN_FLAKY_TESTS=$(.ci/travis/scripts/pr_has_label.py $TRAVIS_PULL_REQUEST 1271248184 && echo "true" || echo "false")
-        - node .ci/travis/scripts/should-run-flaky-tests.js $TRAVIS_PULL_REQUEST
 
       ##########################################################
       # CODE LAYOUT
