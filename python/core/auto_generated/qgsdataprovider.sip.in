@@ -58,7 +58,7 @@ Abstract base class for spatial data provider implementations.
 
     struct ProviderOptions
     {
-      QgsCoordinateTransformContext coordinateTransformContext;
+      QgsCoordinateTransformContext transformContext;
     };
 
     QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
@@ -387,24 +387,23 @@ Returns ``True`` if metadata was successfully written to the data provider.
 .. versionadded:: 3.0
 %End
 
-    QgsCoordinateTransformContext coordinateTransformContext() const;
+    QgsCoordinateTransformContext transformContext() const;
 %Docstring
 Returns data provider coordinate transform context
 
-.. seealso:: :py:func:`setCoordinateTranformContext`
-
-.. seealso:: :py:func:`coordinateTransformContextChanged`
+.. seealso:: :py:func:`setTranformContext`
 
 .. versionadded:: 3.10
 %End
 
-    void setCoordinateTransformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 %Docstring
-Sets data coordinate transform context to ``coordinateTransformContext``
+Sets data coordinate transform context to ``transformContext``
 
-.. seealso:: :py:func:`coordinateTransformContext`
+The default implementation is a simple setter, subclasses may override to perform
+additional actions required by a change of coordinate tranform context.
 
-.. seealso:: :py:func:`coordinateTransformContextChanged`
+.. seealso:: :py:func:`transformContext`
 
 .. versionadded:: 3.10
 %End
@@ -442,17 +441,6 @@ Emitted when the datasource issues a notification.
 .. seealso:: :py:func:`setListening`
 
 .. versionadded:: 3.0
-%End
-
-    void coordinateTransformContextChanged( const QgsCoordinateTransformContext &coordinateTransformContext );
-%Docstring
-Emitted when the data provider coordinate transform context has changed
-
-.. seealso:: :py:func:`coordinateTransformContext`
-
-.. seealso:: :py:func:`setCoordinateTranformContext`
-
-.. versionadded:: 3.10
 %End
 
 

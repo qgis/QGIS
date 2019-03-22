@@ -403,10 +403,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        */
       explicit LayerOptions( bool loadDefaultStyle = true,
                              bool readExtentFromXml = false,
-                             const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() )
+                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
         : loadDefaultStyle( loadDefaultStyle )
         , readExtentFromXml( readExtentFromXml )
-        , coordinateTransformContext( coordinateTransformContext )
+        , transformContext( transformContext )
       {}
 
       //! Set to TRUE if the default layer style should be loaded
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * Coordinate transform context
        * \since QGIS 3.10
        */
-      QgsCoordinateTransformContext coordinateTransformContext = QgsCoordinateTransformContext();
+      QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
 
     };
 
@@ -2149,13 +2149,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool startEditing();
 
-
     /**
-     * Change coordinate transform context to \a coordinateTransformContext
+     * Triggered when the coordinate transform context has changed \a transformContext
      *
      * \since QGIS 3.10
      */
-    void changeCoordinateTranformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
   signals:
 
