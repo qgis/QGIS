@@ -388,8 +388,8 @@ Depends:
  python3-yaml,
  ${python3:Depends},
  ${shlibs:Depends},
- ${sip3:Depends}
- ${misc:Depends},
+ ${sip3:Depends},
+ ${misc:Depends}
 Provides: ${python3:Provides}
 Description: Python bindings to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
