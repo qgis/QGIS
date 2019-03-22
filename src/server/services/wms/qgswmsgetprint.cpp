@@ -42,21 +42,29 @@ namespace QgsWms
     if ( format.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 ||
          format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
     {
-      format   = "png";
-      contentType = "image/png";
+      format   = QStringLiteral( "png" );
+      contentType = QStringLiteral( "image/png" );
+    }
+    else if ( format.compare( QLatin1String( "image/jpg" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      format   = QStringLiteral( "jpg" );
+      contentType = QStringLiteral( "image/jpeg" );
     }
     else if ( format.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
               format.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
               format.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
-      format   = "svg";
-      contentType = "image/svg+xml";
+      format   = QStringLiteral( "svg" );
+      contentType = QStringLiteral( "image/svg+xml" );
     }
     else if ( format.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
               format.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
     {
-      format = "pdf";
-      contentType = "application/pdf";
+      format = QStringLiteral( "pdf" );
+      contentType = QStringLiteral( "application/pdf" );
     }
     else
     {
