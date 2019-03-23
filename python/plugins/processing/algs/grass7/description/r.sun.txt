@@ -5,7 +5,7 @@ QgsProcessingParameterRasterLayer|elevation|Elevation layer [meters]|None|False
 QgsProcessingParameterRasterLayer|aspect|Aspect layer [decimal degrees]|None|False
 QgsProcessingParameterNumber|aspect_value|A single value of the orientation (aspect), 270 is south|QgsProcessingParameterNumber.Double|270.0|True|0.0|360.0
 QgsProcessingParameterRasterLayer|slope|Name of the input slope raster map (terrain slope or solar panel inclination) [decimal degrees]|None|False
-QgsProcessingParameterNumber|slope_value|A single value of of inclination (slope)|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
+QgsProcessingParameterNumber|slope_value|A single value of inclination (slope)|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
 QgsProcessingParameterRasterLayer|linke|Name of the Linke atmospheric turbidity coefficient input raster map|None|True
 QgsProcessingParameterRasterLayer|albedo|Name of the ground albedo coefficient input raster map|None|True
 QgsProcessingParameterNumber|albedo_value|A single value of the ground albedo coefficient|QgsProcessingParameterNumber.Double|0.2|True|0.0|360.0
