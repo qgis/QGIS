@@ -185,7 +185,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void init();
     void apply();
 
-    void onAttributeSelectionChanged();
 
     void loadRelations();
 
@@ -194,6 +193,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void initLayoutConfig();
     void initInitPython();
     void initSuppressCombo();
+
+  public slots:
+
+    void onInvertSelectionButtonClicked( bool checked );
+    void onAttributeSelectionChanged();
 
   protected:
     void updateButtons();

@@ -66,6 +66,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addTabOrGroupButton );
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
+  connect( mInvertSelectionButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::onInvertSelectionButtonClicked );
   connect( mEditorLayoutComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged );
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
@@ -523,6 +524,16 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
   }
 }
 
+void QgsAttributesFormProperties::onInvertSelectionButtonClicked( bool checked )
+{
+  Q_UNUSED( checked );
+  const auto selectedItemList { mFormLayoutTree->selectedItems() };
+  const auto rootItem { mFormLayoutTree->invisibleRootItem() };
+  for ( int i = 0; i < rootItem->childCount(); ++i )
+  {
+    rootItem->child( i )->setSelected( ! selectedItemList.contains( rootItem->child( i ) ) );
+  }
+}
 
 void QgsAttributesFormProperties::addTabOrGroupButton()
 {

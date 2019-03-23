@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>653</width>
+    <width>1041</width>
     <height>556</height>
    </rect>
   </property>
@@ -151,19 +151,31 @@ Use this function to add extra logic to your forms.</string>
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="0" column="2">
-        <widget class="QToolButton" name="mAddTabOrGroupButton">
-         <property name="text">
-          <string>…</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+       <item row="0" column="1" rowspan="7">
+        <widget class="QWidget" name="mFormLayoutWidget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" rowspan="6">
-        <widget class="QWidget" name="mFormLayoutWidget" native="true">
+       <item row="4" column="2">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="0" rowspan="7">
+        <widget class="QWidget" name="mAvailableWidgetsWidget" native="true">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -183,26 +195,28 @@ Use this function to add extra logic to your forms.</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="0" column="2">
+        <widget class="QToolButton" name="mAddTabOrGroupButton">
+         <property name="text">
+          <string>…</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
          </property>
-        </spacer>
+        </widget>
        </item>
-       <item row="0" column="0" rowspan="6">
-        <widget class="QWidget" name="mAvailableWidgetsWidget" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>0</height>
-          </size>
+       <item row="3" column="2">
+        <widget class="QToolButton" name="mInvertSelectionButton">
+         <property name="toolTip">
+          <string>Invert selection</string>
+         </property>
+         <property name="text">
+          <string>Invert selection</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
          </property>
         </widget>
        </item>
@@ -223,8 +237,8 @@ Use this function to add extra logic to your forms.</string>
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>596</width>
-         <height>428</height>
+         <width>598</width>
+         <height>490</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
