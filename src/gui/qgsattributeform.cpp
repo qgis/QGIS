@@ -1847,10 +1847,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorHtmlElement *elementDef = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
 
       QgsHtmlWidgetWrapper *htmlWrapper = new QgsHtmlWidgetWrapper( mLayer, nullptr, this );
-      htmlWrapper->setHtmlCode( elementDef->htmlCode() );
-      htmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
       context.setAttributeFormMode( mMode );
-      htmlWrapper->setContext( context );
+      htmlWrapper->setHtmlCode( elementDef->htmlCode() );
+      htmlWrapper->reinitWidget();
+      htmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
 
       mWidgets.append( htmlWrapper );
 
