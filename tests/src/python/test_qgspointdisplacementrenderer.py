@@ -40,6 +40,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsUnitTypes,
                        QgsMapUnitScale,
                        QgsMarkerSymbol,
+                       QgsCategorizedSymbolRenderer,
+                       QgsRendererCategory,
                        QgsSingleSymbolRenderer,
                        QgsPointClusterRenderer,
                        QgsMapSettings,
@@ -122,6 +124,16 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertEqual(r.centerSymbol().color(), QColor(0, 255, 0))
         self.assertEqual(r.embeddedRenderer().symbol().color().name(), '#fdbf6f')
         self.assertEqual(r.labelDistanceFactor(), 0.25)
+
+    def _set_categorized_renderer(self):
+        renderer = QgsCategorizedSymbolRenderer(attrName='Class')
+        sym1 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '6', 'outline_style': 'no'})
+        cat1 = QgsRendererCategory('Biplane', sym1, 'Big')
+        renderer.addCategory(cat1)
+        sym2 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '3', 'outline_style': 'no'})
+        cat2 = QgsRendererCategory(['B52', 'Jet'], sym2, 'Smaller')
+        renderer.addCategory(cat2)
+        self.renderer.setEmbeddedRenderer(renderer)
 
     def testGettersSetters(self):
         """ test getters and setters """
@@ -227,6 +239,74 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_adjust_grid')
         self.assertTrue(renderchecker.runTest('expected_displacement_adjust_grid'))
+
+    def testClusterRingLabels(self):
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(0.35)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_ring_labels')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels'))
+
+    def testClusterGridLabels(self):
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(0.35)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_grid_labels')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels'))
+
+    def testClusterConcentricLabels(self):
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(0.35)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_concentric_labels')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels'))
+
+    def testClusterRingLabelsDifferetSizes(self):
+        self._set_categorized_renderer()
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(0.35)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_ring_labels_diff_size')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels_diff_size'))
+
+    def testClusterGridLabelsDifferetSizes(self):
+        self._set_categorized_renderer()
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(0.35)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_grid_labels_diff_size')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels_diff_size'))
+
+    def testClusterConcentricLabelsDifferetSizes(self):
+        self._set_categorized_renderer()
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(0.35)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_concentric_labels_diff_size')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels_diff_size'))
+
 
 
 if __name__ == '__main__':
