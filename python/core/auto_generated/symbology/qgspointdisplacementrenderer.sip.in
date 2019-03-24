@@ -113,6 +113,8 @@ Sets a factor for increasing the label distances from the symbol.
 :param factor: addition factor
 
 .. seealso:: :py:func:`labelDistanceFactor`
+
+.. versionadded:: 3.8
 %End
 
     double labelDistanceFactor() const;
@@ -120,6 +122,8 @@ Sets a factor for increasing the label distances from the symbol.
 Returns the factor for label distance from the symbol.
 
 .. seealso:: :py:func:`setLabelDistanceFactor`
+
+.. versionadded:: 3.8
 %End
 
     Placement placement() const;

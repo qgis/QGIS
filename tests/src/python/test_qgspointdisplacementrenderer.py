@@ -303,9 +303,44 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
-        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlPathPrefix('displacement_renderer') 
         renderchecker.setControlName('expected_displacement_cluster_concentric_labels_diff_size')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels_diff_size'))
+
+    def testClusterRingLabelsDifferetSizesFurther(self):
+        self._set_categorized_renderer()
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(1)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_ring_labels_diff_size_further')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels_diff_size_further'))
+
+    def testClusterGridLabelsDifferetSizesFurther(self):
+        self._set_categorized_renderer()
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(1)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_grid_labels_diff_size_further')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels_diff_size_further'))
+
+    def testClusterConcentricLabelsDifferetSizesFurther(self):
+        self._set_categorized_renderer()
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setLabelAttributeName('Class')
+        self.layer.renderer().setLabelDistanceFactor(1)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_concentric_labels_diff_size_further')
+        self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels_diff_size_further'))
 
 
 
