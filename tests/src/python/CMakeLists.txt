@@ -75,6 +75,7 @@ ADD_PYTHON_TEST(PyQgsGeometryGeneratorSymbolLayer test_qgsgeometrygeneratorsymbo
 ADD_PYTHON_TEST(PyQgsGeometryTest test_qgsgeometry.py)
 ADD_PYTHON_TEST(PyQgsGeometryValidator test_qgsgeometryvalidator.py)
 ADD_PYTHON_TEST(PyQgsGraduatedSymbolRenderer test_qgsgraduatedsymbolrenderer.py)
+ADD_PYTHON_TEST(PyQgsHashLineSymbolLayer test_qgshashlinesymbollayer.py)
 ADD_PYTHON_TEST(PyQgsHighlight test_qgshighlight.py)
 ADD_PYTHON_TEST(PyQgsImageCache test_qgsimagecache.py)
 ADD_PYTHON_TEST(PyQgsImageSourceLineEdit test_qgsimagesourcelineedit.py)
