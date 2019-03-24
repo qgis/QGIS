@@ -101,6 +101,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
 
     /**
      * Sets a factor for increasing the label distances from the symbol.
+     * /since QGIS 3.8
      * \param factor addition factor
      * \see labelDistanceFactor()
      */
@@ -108,6 +109,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
 
     /**
      * Returns the factor for label distance from the symbol.
+     * /since QGIS 3.8
      * \see setLabelDistanceFactor()
      */
     double labelDistanceFactor() const { return mLabelDistanceFactor; }
