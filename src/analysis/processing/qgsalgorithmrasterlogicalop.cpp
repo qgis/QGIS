@@ -90,7 +90,7 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
   rasterLayers.reserve( layers.count() );
   for ( QgsMapLayer *l : layers )
   {
-    if ( l->type() == QgsMapLayer::RasterLayer )
+    if ( l->type() == QgsMapLayerType::RasterLayer )
     {
       QgsRasterLayer *layer = qobject_cast< QgsRasterLayer * >( l );
       QgsRasterAnalysisUtils::RasterLogicInput input;
