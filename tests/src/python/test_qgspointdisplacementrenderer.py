@@ -264,7 +264,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels'))
         self._tearDown(layer)
 
-    def _testClusterGridLabels(self):
+    def testClusterGridLabels(self):
         layer, renderer, mapsettings = self._setUp()
         layer.renderer().setTolerance(10)
         layer.renderer().setLabelAttributeName('Class')
@@ -277,7 +277,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels'))
         self._tearDown(layer)
 
-    def _testClusterConcentricLabels(self):
+    def testClusterConcentricLabels(self):
         layer, renderer, mapsettings = self._setUp()
         layer.renderer().setTolerance(10)
         layer.renderer().setLabelAttributeName('Class')
@@ -290,7 +290,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels'))
         self._tearDown(layer)
 
-    def _testClusterRingLabelsDifferentSizes(self):
+    def testClusterRingLabelsDifferentSizes(self):
         layer, renderer, mapsettings = self._setUp()
         renderer.setEmbeddedRenderer(self._create_categorized_renderer())
         layer.renderer().setTolerance(10)
@@ -303,7 +303,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels_diff_size'))
         self._tearDown(layer)
 
-    def _testClusterGridLabelsDifferentSizes(self):
+    def testClusterGridLabelsDifferentSizes(self):
         layer, renderer, mapsettings = self._setUp()
         renderer.setEmbeddedRenderer(self._create_categorized_renderer())
         layer.renderer().setTolerance(10)
@@ -317,7 +317,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels_diff_size'))
         self._tearDown(layer)
 
-    def _testClusterConcentricLabelsDifferentSizes(self):
+    def testClusterConcentricLabelsDifferentSizes(self):
         layer, renderer, mapsettings = self._setUp()
         renderer.setEmbeddedRenderer(self._create_categorized_renderer())
         layer.renderer().setTolerance(10)
@@ -331,7 +331,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels_diff_size'))
         self._tearDown(layer)
 
-    def _testClusterRingLabelsDifferentSizesFarther(self):
+    def testClusterRingLabelsDifferentSizesFarther(self):
         layer, renderer, mapsettings = self._setUp()
         renderer.setEmbeddedRenderer(self._create_categorized_renderer())
         layer.renderer().setTolerance(10)
@@ -344,7 +344,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels_diff_size_farther'))
         self._tearDown(layer)
 
-    def _testClusterGridLabelsDifferentSizesFarther(self):
+    def testClusterGridLabelsDifferentSizesFarther(self):
         layer, renderer, mapsettings = self._setUp()
         renderer.setEmbeddedRenderer(self._create_categorized_renderer())
         layer.renderer().setTolerance(10)
@@ -358,7 +358,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels_diff_size_farther'))
         self._tearDown(layer)
 
-    def _testClusterConcentricLabelsDifferentSizesFarther(self):
+    def testClusterConcentricLabelsDifferentSizesFarther(self):
         layer, renderer, mapsettings = self._setUp()
         renderer.setEmbeddedRenderer(self._create_categorized_renderer())
         layer.renderer().setTolerance(10)
