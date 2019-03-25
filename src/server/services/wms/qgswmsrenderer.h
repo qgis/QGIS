@@ -42,6 +42,7 @@ class QgsAccessControl;
 class QgsDxfExport;
 class QgsLayerTreeModel;
 class QgsLayerTree;
+class QgsServerInterface;
 
 class QImage;
 class QPaintDevice;
@@ -91,11 +92,10 @@ namespace QgsWms
 
       /**
        * Returns the map as DXF data
-       * \param options extracted from the FORMAT_OPTIONS parameter
        * \returns the map as DXF data
        * \since QGIS 3.0
       */
-      QgsDxfExport getDxf( const QMap<QString, QString> &options );
+      QgsDxfExport getDxf();
 
       /**
        * Returns printed page as binary
