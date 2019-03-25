@@ -34,6 +34,7 @@ SET(MODULE_WMS_SRCS
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgslayerrestorer.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgsmaprendererjobproxy.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsparameters.cpp
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrendercontext.cpp
 )
 
 MACRO (ADD_QGIS_TEST TESTSRC)
