@@ -57,7 +57,11 @@ class QPainter;
 #define QGSCLIPBOARD_MAPLAYER_MIME "application/qgis.maplayer"
 
 
-//! Types of layers that can be added to a map
+/**
+ * \ingroup core
+ * Types of layers that can be added to a map
+ * \since QGIS 3.8
+ */
 enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
   {
   VectorLayer,
