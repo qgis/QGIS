@@ -117,6 +117,8 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     bool providerFileBased = ( QgsProviderRegistry::instance()->providerCapabilities( provider ) & QgsDataProvider::File ) != 0;
+    const QString basepath = datasource.left( datasource.lastIndexOf( '/' ) );
+    mFileBase[name].append( basepath );
 
     QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
                  .arg( name,
@@ -361,19 +363,51 @@ void QgsHandleBadLayers::apply()
 {
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
   buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
+  QHash<QString, QString> baseChange;
+
+
 
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
 
+    const QString name = mLayerList->item( i, 0 )->text();
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
+    const QString basepath = datasource.left( datasource.lastIndexOf( '/' ) );
+    bool changed = false;
+
+    if ( mFileBase[ name ].size() == 1 )
+    {
+      if ( mFileBase[ name ][0] != basepath && !baseChange.contains( mFileBase[ name ][0] ) )
+      {
+        baseChange[ mFileBase[ name ][0] ] = basepath;
+        changed = true;
+      }
+    }
+    else if ( mFileBase[ name ].size() > 1 )
+    {
+      if ( mFileBase[ name ].indexOf( basepath ) == -1 )
+      {
+        const QList<QString> fileBases = mFileBase[ name ];
+        for ( QString fileBase : fileBases )
+        {
+          if ( !baseChange.contains( fileBase ) )
+          {
+            baseChange[ fileBase ] = basepath;
+            changed = true;
+          }
+        }
+      }
+    }
+    if ( !changed && baseChange.contains( basepath ) )
+      datasource = datasource.replace( basepath, baseChange[basepath] );
+
 
     bool dataSourceChanged { false };
     const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
     const QString provider { node.namedItem( QStringLiteral( "provider" ) ).toElement().text() };
-    const QString name { mLayerList->item( i, 0 )->text() };
 
     // Try first to change the datasource of the existing layers, this will
     // maintain the current status (checked/unchecked) and group
@@ -405,6 +439,10 @@ void QgsHandleBadLayers::apply()
       else
       {
         item->setForeground( QBrush( Qt::red ) );
+        if ( mFileBase[ name ].size() == 1 )
+          mFileBase[ name ][0] = basepath ;
+        else if ( mFileBase[ name ].size() > 1 )
+          mFileBase[ name ].append( basepath );
       }
     }
   }
