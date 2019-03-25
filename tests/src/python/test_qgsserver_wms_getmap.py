@@ -622,7 +622,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
-            "LAYERS": "Hello",
+            "LAYERS": "",
             "STYLES": "",
             "FORMAT": "image/png",
             "HEIGHT": "5001",
