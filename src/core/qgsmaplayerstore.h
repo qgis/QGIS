@@ -151,7 +151,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      *
      * \note If a layer with the same id is already in the store it is not added again,
-     *       but if the validity of the layer has changed from false to true, the
+     *       but if the validity of the layer has changed from FALSE to TRUE, the
      *       layer data source is updated to the new one.
      *
      * \returns a list of the map layers that were added
