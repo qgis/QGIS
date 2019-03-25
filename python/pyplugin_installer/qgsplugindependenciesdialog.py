@@ -34,7 +34,7 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
         :type to_install: list
         :param to_upgrade: list of plugin IDs that needs to be upgraded
         :type to_upgrade: list
-        :param not_found: list of plugin IDs that are not found (unvailable)
+        :param not_found: list of plugin IDs that are not found (unavailable)
         :type not_found: list
         :param parent: parent object, defaults to None
         :param parent: QWidget, optional
