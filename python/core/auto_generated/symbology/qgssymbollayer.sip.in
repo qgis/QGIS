@@ -123,6 +123,7 @@ class QgsSymbolLayer
       PropertyPlacement,
       PropertyInterval,
       PropertyOffsetAlongLine,
+      PropertyAverageAngleLength,
       PropertyHorizontalAnchor,
       PropertyVerticalAnchor,
       PropertyLayerEnabled,

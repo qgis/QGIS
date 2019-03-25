@@ -165,6 +165,7 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyPlacement, //!< Line marker placement
       PropertyInterval, //!< Line marker interval
       PropertyOffsetAlongLine, //!< Offset along line
+      PropertyAverageAngleLength, //!< Length to average symbol angles over
       PropertyHorizontalAnchor, //!< Horizontal anchor point
       PropertyVerticalAnchor, //!< Vertical anchor point
       PropertyLayerEnabled, //!< Whether symbol layer is enabled

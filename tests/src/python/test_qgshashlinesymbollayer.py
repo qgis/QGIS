@@ -119,6 +119,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         hash_line.setSubSymbol(line_symbol)
         hash_line.setHashLength(7)
         hash_line.setHashAngle(45)
+        hash_line.setAverageAngleLength(0)
 
         s.appendSymbolLayer(hash_line.clone())
 
@@ -131,6 +132,74 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('line_hash_no_rotate', 'line_hash_no_rotate', rendered_image)
+
+    def testHashAverageAngle(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        hash_line = QgsHashedLineSymbolLayer(True)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setInterval(6)
+        simple_line = QgsSimpleLineSymbolLayer()
+        simple_line.setColor(QColor(0, 255, 0))
+        simple_line.setWidth(1)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, simple_line)
+        hash_line.setSubSymbol(line_symbol)
+        hash_line.setHashLength(7)
+        hash_line.setHashAngle(45)
+        hash_line.setAverageAngleLength(30)
+
+        s.appendSymbolLayer(hash_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('line_hash_average_angle', 'line_hash_average_angle', rendered_image)
+
+    def testHashAverageAngle(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        hash_line = QgsHashedLineSymbolLayer(True)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        simple_line = QgsSimpleLineSymbolLayer()
+        simple_line.setColor(QColor(0, 255, 0))
+        simple_line.setWidth(1)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, simple_line)
+        hash_line.setSubSymbol(line_symbol)
+        hash_line.setHashLength(7)
+        hash_line.setHashAngle(45)
+        hash_line.setAverageAngleLength(30)
+
+        s.appendSymbolLayer(hash_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('line_hash_center_average_angle', 'line_hash_center_average_angle', rendered_image)
+
+    def testHashAverageAngleClosedRing(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        hash_line = QgsHashedLineSymbolLayer(True)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setInterval(6)
+        simple_line = QgsSimpleLineSymbolLayer()
+        simple_line.setColor(QColor(0, 255, 0))
+        simple_line.setWidth(1)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, simple_line)
+        hash_line.setSubSymbol(line_symbol)
+        hash_line.setHashLength(7)
+        hash_line.setHashAngle(0)
+        hash_line.setAverageAngleLength(30)
+
+        s.appendSymbolLayer(hash_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 10 0, 0 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('line_hash_ring_average_angle', 'line_hash_ring_average_angle', rendered_image)
 
     def testHashPlacement(self):
         s = QgsLineSymbol()
@@ -146,6 +215,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         line_symbol.changeSymbolLayer(0, simple_line)
         hash_line.setSubSymbol(line_symbol)
         hash_line.setHashLength(7)
+        hash_line.setAverageAngleLength(0)
 
         s.appendSymbolLayer(hash_line.clone())
 
@@ -180,6 +250,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         line_symbol.changeSymbolLayer(0, simple_line)
         hash_line.setSubSymbol(line_symbol)
         hash_line.setHashLength(10)
+        hash_line.setAverageAngleLength(0)
 
         s.appendSymbolLayer(hash_line.clone())
         self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.AllRings)
@@ -226,6 +297,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         line_symbol.changeSymbolLayer(0, simple_line)
         hash_line.setSubSymbol(line_symbol)
         hash_line.setHashLength(10)
+        hash_line.setAverageAngleLength(0)
 
         s.appendSymbolLayer(hash_line.clone())
 
@@ -253,6 +325,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         line_symbol.changeSymbolLayer(0, simple_line)
         hash_line.setSubSymbol(line_symbol)
         hash_line.setHashLength(10)
+        hash_line.setAverageAngleLength(0)
 
         s.appendSymbolLayer(hash_line.clone())
 
