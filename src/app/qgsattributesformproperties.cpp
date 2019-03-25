@@ -636,6 +636,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mUiFileFrame->setVisible( false );
       mAddTabOrGroupButton->setVisible( false );
       mRemoveTabOrGroupButton->setVisible( false );
+      mInvertSelectionButton->setVisible( false );
       break;
 
     case 1:
@@ -643,6 +644,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mUiFileFrame->setVisible( false );
       mAddTabOrGroupButton->setVisible( true );
       mRemoveTabOrGroupButton->setVisible( true );
+      mInvertSelectionButton->setVisible( true );
       break;
 
     case 2:
@@ -650,6 +652,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mUiFileFrame->setVisible( true );
       mAddTabOrGroupButton->setVisible( false );
       mRemoveTabOrGroupButton->setVisible( false );
+      mInvertSelectionButton->setVisible( false );
       break;
   }
 }
