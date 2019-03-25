@@ -801,33 +801,13 @@ namespace QgsWms
 
   QgsDxfExport QgsRenderer::getDxf()
   {
-    QgsDxfExport dxf;
-
-    // set extent
-    QgsRectangle extent = mWmsParameters.bboxAsRectangle();
-    dxf.setExtent( extent );
-
-    // get layers parameters
-    QList<QgsMapLayer *> layers;
-    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
-
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
 
-    // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sldBody();
-    if ( !sld.isEmpty() )
-    {
-      layers = sldStylizedLayers( sld );
-    }
-    else
-    {
-      layers = stylizedLayers( params );
-    }
-
-    // only wfs layers are allowed to be published
-    QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *mProject );
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
 
     // get dxf layers
     const QStringList attributes = mWmsParameters.dxfLayerAttributes();
@@ -838,24 +818,6 @@ namespace QgsWms
       layerIdx++;
       if ( layer->type() != QgsMapLayerType::VectorLayer )
         continue;
-      if ( !wfsLayerIds.contains( layer->id() ) )
-        continue;
-
-      checkLayerReadPermissions( layer );
-
-      for ( const QgsWmsParametersLayer &param : params )
-      {
-        if ( param.mNickname == layerNickname( *layer ) )
-        {
-          setLayerOpacity( layer, param.mOpacity );
-
-          setLayerFilter( layer, param.mFilter );
-
-          break;
-        }
-      }
-
-      setLayerAccessControlFilter( layer );
 
       // cast for dxf layers
       QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
@@ -871,6 +833,8 @@ namespace QgsWms
     }
 
     // add layers to dxf
+    QgsDxfExport dxf;
+    dxf.setExtent( mWmsParameters.bboxAsRectangle() );
     dxf.addLayers( dxfLayers );
     dxf.setLayerTitleAsName( mWmsParameters.dxfUseLayerTitleAsName() );
     dxf.setSymbologyExport( mWmsParameters.dxfMode() );
