@@ -90,8 +90,7 @@ CMAKE_OPTS := \
 	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
-	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
-	-DDOXYGEN_ON_DEMAND=TRUE
+	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#')
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -251,9 +250,6 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 else
 	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)
 endif
-
-override_dh_auto_build-indep:
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
 
 override_dh_auto_test: test-stamp
 
