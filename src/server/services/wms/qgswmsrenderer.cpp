@@ -825,59 +825,13 @@ namespace QgsWms
                                     QStringLiteral( "The requested map size is too large" ) );
     }
 
-    // get layers parameters
-    QList<QgsMapLayer *> layers;
-    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
-
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
 
-    // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sldBody();
-    if ( !sld.isEmpty() )
-    {
-      layers = sldStylizedLayers( sld );
-    }
-    else
-    {
-      layers = stylizedLayers( params );
-    }
-
-    // remove unwanted layers (restricted layers, ...)
-    removeUnwantedLayers( layers );
-
-    // configure each layer with opacity, selection filter, ...
-    bool updateMapExtent = mWmsParameters.bbox().isEmpty();
-    for ( QgsMapLayer *layer : layers )
-    {
-      checkLayerReadPermissions( layer );
-
-      for ( const QgsWmsParametersLayer &param : params )
-      {
-        if ( param.mNickname == layerNickname( *layer ) )
-        {
-          setLayerOpacity( layer, param.mOpacity );
-
-          setLayerFilter( layer, param.mFilter );
-
-          setLayerSelection( layer, param.mSelection );
-
-          if ( updateMapExtent )
-            updateExtent( layer, mapSettings );
-
-          break;
-        }
-      }
-
-      setLayerAccessControlFilter( layer );
-    }
-
-    // add external layers
-    layers = layers << externalLayers( mWmsParameters.externalLayersParameters() );
-
-    // add highlight layers above others
-    layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers, &mapSettings );
 
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
@@ -887,7 +841,6 @@ namespace QgsWms
     configureMapSettings( image.get(), mapSettings );
 
     // add layers to map settings (revert order for the rendering)
-    std::reverse( layers.begin(), layers.end() );
     mapSettings.setLayers( layers );
 
     // rendering step for layers

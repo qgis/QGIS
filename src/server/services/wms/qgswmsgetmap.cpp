@@ -28,20 +28,30 @@ namespace QgsWms
 {
 
   void writeGetMap( QgsServerInterface *serverIface, const QgsProject *project,
-                    const QString &version, const QgsServerRequest &request,
+                    const QString &, const QgsServerRequest &request,
                     QgsServerResponse &response )
   {
-    Q_UNUSED( version );
+    // get wms parameters from query
+    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
-    QgsServerRequest::Parameters params = request.parameters();
+    // prepare render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::UpdateExtent );
+    context.setFlag( QgsWmsRenderContext::UseOpacity );
+    context.setFlag( QgsWmsRenderContext::UseFilter );
+    context.setFlag( QgsWmsRenderContext::UseSelection );
+    context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
+    context.setFlag( QgsWmsRenderContext::AddExternalLayers );
+    context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setParameters( parameters );
 
-    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
-    QgsRenderer renderer( serverIface, project, wmsParameters );
-
+    // rendering
+    QgsRenderer renderer( context );
     std::unique_ptr<QImage> result( renderer.getMap() );
+
     if ( result )
     {
-      QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
+      const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
       writeImage( response, *result, format, renderer.imageQuality() );
     }
     else
