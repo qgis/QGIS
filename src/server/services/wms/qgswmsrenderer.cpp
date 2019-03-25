@@ -130,6 +130,22 @@ namespace QgsWms
     initNicknameLayers();
   }
 
+  QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
+    : mContext( context )
+  {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    mAccessControl = mContext.accessControl();
+#endif
+
+    mProject = mContext.project();
+
+    mWmsParameters = mContext.parameters();
+    mWmsParameters.dump();
+
+    initRestrictedLayers();
+    initNicknameLayers();
+  }
+
   QgsRenderer::~QgsRenderer()
   {
     removeTemporaryLayers();
@@ -3436,4 +3452,84 @@ namespace QgsWms
     return mWmsParameters.widthAsInt();
   }
 
+  void QgsRenderer::configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings )
+  {
+    const bool useSld = !mContext.parameters().sldBody().isEmpty();
+
+    for ( auto layer : layers )
+    {
+      const QgsWmsParametersLayer param = mContext.parameters( *layer );
+
+      if ( param.mNickname.isEmpty() )
+      {
+        continue;
+      }
+
+      if ( useSld )
+      {
+        setLayerSld( layer, mContext.sld( *layer ) );
+      }
+      else
+      {
+        setLayerStyle( layer, mContext.style( *layer ) );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::UseOpacity ) )
+      {
+        setLayerOpacity( layer, param.mOpacity );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::UseFilter ) )
+      {
+        setLayerFilter( layer, param.mFilter );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::UseSelection ) )
+      {
+        setLayerSelection( layer, param.mSelection );
+      }
+
+      if ( settings && mContext.updateExtent() )
+      {
+        updateExtent( layer, *settings );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::SetAccessControl ) )
+      {
+        setLayerAccessControlFilter( layer );
+      }
+    }
+
+    if ( mContext.testFlag( QgsWmsRenderContext::AddHighlightLayers ) )
+    {
+      layers = highlightLayers( mWmsParameters.highlightLayersParameters() ) << layers;
+    }
+
+    if ( mContext.testFlag( QgsWmsRenderContext::AddExternalLayers ) )
+    {
+      layers = externalLayers( mWmsParameters.externalLayersParameters() ) << layers;
+    }
+  }
+
+  void QgsRenderer::setLayerStyle( QgsMapLayer *layer, const QString &style ) const
+  {
+    if ( style.isEmpty() )
+    {
+      return;
+    }
+
+    bool rc = layer->styleManager()->setCurrentStyle( style );
+    if ( ! rc )
+    {
+      throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ),
+                                    QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layer->name() ) );
+    }
+  }
+
+  void QgsRenderer::setLayerSld( QgsMapLayer *layer, const QDomElement &sld ) const
+  {
+    QString err;
+    layer->readSld( sld, err );
+    layer->setCustomProperty( "readSLD", true );
+  }
 } // namespace QgsWms
