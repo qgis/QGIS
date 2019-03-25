@@ -74,8 +74,8 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
       QgsDebugMsg( QStringLiteral( "Cannot add null layers" ) );
       continue;
     }
-    // If the layer is already in the store but its validity has changed reset data source
-    if ( mMapLayers.contains( myLayer->id() ) && ! mMapLayers[myLayer->id()]->isValid() && myLayer->isValid() &&  myLayer->dataProvider() )
+    // If the layer is already in the store but its validity has flipped to TRUE reset data source
+    if ( mMapLayers.contains( myLayer->id() ) && ! mMapLayers[myLayer->id()]->isValid() && myLayer->isValid() && myLayer->dataProvider() )
     {
       mMapLayers[myLayer->id()]->setDataSource( myLayer->dataProvider()->dataSourceUri(), myLayer->name(), myLayer->providerType(), QgsDataProvider::ProviderOptions() );
     }

@@ -122,8 +122,8 @@ The layersAdded() and layerWasAdded() signals will always be emitted.
 
 .. note::
 
-   if layer with the same id is already in the store it is not added again,
-   but if the validity of the layer has changed from false to true, the
+   If a layer with the same id is already in the store it is not added again,
+   but if the validity of the layer has changed from ``False`` to ``True``, the
    layer data source is updated to the new one.
 
 
