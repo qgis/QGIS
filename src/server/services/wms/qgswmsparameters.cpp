@@ -716,21 +716,6 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::SRCWIDTH ].toInt();
   }
 
-  int QgsWmsParameters::getHeightAsInt() const
-  {
-    if ( QStringList( { QStringLiteral( "GetLegendGraphic" ), QStringLiteral( "GetLegendGraphics" ) } ).contains( request() ) && srcHeightAsInt() > 0 )
-      return srcHeightAsInt();
-    return heightAsInt();
-  }
-
-  int QgsWmsParameters::getWidthAsInt() const
-  {
-
-    if ( QStringList( { QStringLiteral( "GetLegendGraphic" ), QStringLiteral( "GetLegendGraphics" ) } ).contains( request() ) && srcWidthAsInt() > 0 )
-      return srcWidthAsInt();
-    return widthAsInt();
-  }
-
   QString QgsWmsParameters::dpi() const
   {
     return mWmsParameters[ QgsWmsParameter::DPI ].toString();

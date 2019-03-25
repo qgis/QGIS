@@ -423,20 +423,6 @@ namespace QgsWms
       int srcHeightAsInt() const;
 
       /**
-       * Returns SRCHEIGHT parameter if it's a GetLegendGraphics request and otherwise HEIGHT parameter
-       *
-       * \returns getHeightAsInt parameter
-       */
-      int getHeightAsInt() const;
-
-      /**
-       * Returns SRCWIDTH parameter if it's a GetLegendGraphics request and otherwise WIDTH parameter
-       *
-       * \returns getWidthAsInt parameter
-       */
-      int getWidthAsInt() const;
-
-      /**
        * Returns VERSION parameter if defined or its default value.
        * \returns version
        */

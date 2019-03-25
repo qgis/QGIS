@@ -297,6 +297,18 @@ namespace QgsWms
 
       void handlePrintErrors( const QgsLayout *layout ) const;
 
+      /**
+       * Returns QgsWmsParameter SRCWIDTH if it's a GetLegendGraphics request and otherwise HEIGHT parameter
+       * \returns getHeightAsInt parameter
+       */
+      int getHeightAsInt() const;
+
+      /**
+       * Returns QgsWmsParameter SRCWIDTH parameter if it's a GetLegendGraphics request and otherwise WIDTH parameter
+       * \returns getWidthAsInt parameter
+       */
+      int getWidthAsInt() const;
+
       const QgsWmsParameters &mWmsParameters;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
