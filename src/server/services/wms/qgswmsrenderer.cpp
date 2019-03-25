@@ -286,77 +286,19 @@ namespace QgsWms
 
   QByteArray QgsRenderer::getPrint()
   {
-    //GetPrint request needs a template parameter
-    QString templateName = mWmsParameters.composerTemplate();
+    // init layer restorer before doing anything
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+
+    // GetPrint request needs a template parameter
+    const QString templateName = mWmsParameters.composerTemplate();
     if ( templateName.isEmpty() )
     {
       throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
                                     QStringLiteral( "The TEMPLATE parameter is required for the GetPrint request" ) );
     }
 
-    // get layers parameters
-    QList<QgsMapLayer *> layers;
-    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
-
-    // create the output image (this is not really used but configureMapSettings
-    // needs it)
-    std::unique_ptr<QImage> image( new QImage() );
-
-    // configure map settings (background, DPI, ...)
-    QgsMapSettings mapSettings;
-    configureMapSettings( image.get(), mapSettings );
-
-    // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
-
-    // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sldBody();
-    if ( !sld.isEmpty() )
-    {
-      layers = sldStylizedLayers( sld );
-    }
-    else
-    {
-      layers = stylizedLayers( params );
-    }
-
-    // remove unwanted layers (restricted layers, ...)
-    removeUnwantedLayers( layers );
-
-    // configure each layer with opacity, selection filter, ...
-    bool updateMapExtent = mWmsParameters.bbox().isEmpty();
-    for ( QgsMapLayer *layer : layers )
-    {
-      checkLayerReadPermissions( layer );
-
-      for ( const QgsWmsParametersLayer &param : params )
-      {
-        if ( param.mNickname == layerNickname( *layer ) )
-        {
-          setLayerOpacity( layer, param.mOpacity );
-
-          setLayerFilter( layer, param.mFilter );
-
-          setLayerSelection( layer, param.mSelection );
-
-          if ( updateMapExtent )
-            updateExtent( layer, mapSettings );
-
-          break;
-        }
-      }
-
-      setLayerAccessControlFilter( layer );
-    }
-
-    // add highlight layers above others
-    layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
-
-    // add layers to map settings (revert order for the rendering)
-    std::reverse( layers.begin(), layers.end() );
-    mapSettings.setLayers( layers );
-
+    // check template
     const QgsLayoutManager *lManager = mProject->layoutManager();
     QgsPrintLayout *sourceLayout( dynamic_cast<QgsPrintLayout *>( lManager->layoutByName( templateName ) ) );
     if ( !sourceLayout )
@@ -470,6 +412,19 @@ namespace QgsWms
       }
     }
 
+    // configure layers
+    QgsMapSettings mapSettings;
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers, &mapSettings );
+
+    // configure map settings (background, DPI, ...)
+    std::unique_ptr<QImage> image( new QImage() );
+    configureMapSettings( image.get(), mapSettings );
+
+    // add layers to map settings (revert order for the rendering)
+    mapSettings.setLayers( layers );
+
+    // configure layout
     configurePrintLayout( layout.get(), mapSettings, atlas );
 
     // Get the temporary output file

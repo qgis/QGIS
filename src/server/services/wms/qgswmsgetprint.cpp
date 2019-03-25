@@ -28,13 +28,12 @@ namespace QgsWms
                       const QString &, const QgsServerRequest &request,
                       QgsServerResponse &response )
   {
+    // get wms parameters from query
     const QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
-    QgsRenderer renderer( serverIface, project, wmsParameters );
-
-    const QgsWmsParameters::Format format = wmsParameters.format();
-    QString contentType;
 
     // GetPrint supports svg/png/pdf
+    const QgsWmsParameters::Format format = wmsParameters.format();
+    QString contentType;
     switch ( format )
     {
       case QgsWmsParameters::PNG:
@@ -55,8 +54,20 @@ namespace QgsWms
         break;
     }
 
+    // prepare render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::UpdateExtent );
+    context.setFlag( QgsWmsRenderContext::UseOpacity );
+    context.setFlag( QgsWmsRenderContext::UseFilter );
+    context.setFlag( QgsWmsRenderContext::UseSelection );
+    context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
+    context.setFlag( QgsWmsRenderContext::AddExternalLayers );
+    context.setParameters( wmsParameters );
+
+    // rendering
+    QgsRenderer renderer( context );
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
     response.write( renderer.getPrint() );
   }
-
 } // namespace QgsWms
