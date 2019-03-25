@@ -185,7 +185,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void init();
     void apply();
 
-    void onAttributeSelectionChanged();
 
     void loadRelations();
 
@@ -209,7 +208,13 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
 
+  private slots:
+
+    void onInvertSelectionButtonClicked( bool checked );
+    void onAttributeSelectionChanged();
+
   private:
+
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
 
