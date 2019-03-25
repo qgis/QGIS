@@ -60,30 +60,32 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsPointDisplacementRenderer(unittest.TestCase):
 
-    def setUp(self):
+    def _setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
-        self.layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
-        QgsProject.instance().addMapLayer(self.layer)
+        layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
+        QgsProject.instance().addMapLayer(layer)
 
-        self.renderer = QgsPointDisplacementRenderer()
+        renderer = QgsPointDisplacementRenderer()
         sym1 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '3', 'outline_style': 'no'})
-        renderer = QgsSingleSymbolRenderer(sym1)
-        self.renderer.setEmbeddedRenderer(renderer)
-        self.renderer.setCircleRadiusAddition(2)
-        self.renderer.setCircleWidth(1)
-        self.renderer.setCircleColor(QColor(0, 0, 0))
-        self.renderer.setCenterSymbol(QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'}))
-        self.layer.setRenderer(self.renderer)
+        sym_renderer = QgsSingleSymbolRenderer(sym1)
+        renderer.setEmbeddedRenderer(sym_renderer)
+        renderer.setCircleRadiusAddition(2)
+        renderer.setCircleWidth(1)
+        renderer.setCircleColor(QColor(0, 0, 0))
+        renderer.setCenterSymbol(QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'}))
+        layer.setRenderer(renderer)
 
-        rendered_layers = [self.layer]
-        self.mapsettings = QgsMapSettings()
-        self.mapsettings.setOutputSize(QSize(400, 400))
-        self.mapsettings.setOutputDpi(96)
-        self.mapsettings.setExtent(QgsRectangle(-123, 18, -70, 52))
-        self.mapsettings.setLayers(rendered_layers)
+        rendered_layers = [layer]
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setExtent(QgsRectangle(-123, 18, -70, 52))
+        mapsettings.setLayers(rendered_layers)
+        return layer, renderer, mapsettings
 
-    def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+    def _tearDown(self, layer):
+        #QgsProject.instance().removeAllMapLayers()
+        QgsProject.instance().removeMapLayer(layer)
 
     def _setProperties(self, r):
         """ set properties for a renderer for testing with _checkProperties"""
@@ -125,15 +127,15 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertEqual(r.embeddedRenderer().symbol().color().name(), '#fdbf6f')
         self.assertEqual(r.labelDistanceFactor(), 0.25)
 
-    def _set_categorized_renderer(self):
-        renderer = QgsCategorizedSymbolRenderer(attrName='Class')
+    def _create_categorized_renderer(self):
+        cat_renderer = QgsCategorizedSymbolRenderer(attrName='Class')
         sym1 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '6', 'outline_style': 'no'})
         cat1 = QgsRendererCategory('Biplane', sym1, 'Big')
-        renderer.addCategory(cat1)
+        cat_renderer.addCategory(cat1)
         sym2 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '3', 'outline_style': 'no'})
         cat2 = QgsRendererCategory(['B52', 'Jet'], sym2, 'Smaller')
-        renderer.addCategory(cat2)
-        self.renderer.setEmbeddedRenderer(renderer)
+        cat_renderer.addCategory(cat2)
+        return cat_renderer
 
     def testGettersSetters(self):
         """ test getters and setters """
@@ -187,160 +189,188 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertEqual(d.embeddedRenderer().symbol().color().name(), '#fdbf6f')
 
     def testRenderNoCluster(self):
-        self.layer.renderer().setTolerance(1)
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(1)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_no_cluster')
         self.assertTrue(renderchecker.runTest('displacement_no_cluster'))
+        self._tearDown(layer)
 
     def testRenderWithin(self):
-        self.layer.renderer().setTolerance(10)
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(10)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster'))
+        self._tearDown(layer)
 
     def testRenderVariables(self):
         """ test rendering with expression variables in marker """
-        self.layer.renderer().setTolerance(10)
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(10)
 
-        old_marker = self.layer.renderer().centerSymbol().clone()
+        old_marker = layer.renderer().centerSymbol().clone()
 
         new_marker = QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'})
         new_marker.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('@cluster_color'))
         new_marker.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertySize, QgsProperty.fromExpression('@cluster_size*2'))
-        self.layer.renderer().setCenterSymbol(new_marker)
+        layer.renderer().setCenterSymbol(new_marker)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_variables')
         result = renderchecker.runTest('expected_displacement_variables')
-        self.layer.renderer().setCenterSymbol(old_marker)
+        layer.renderer().setCenterSymbol(old_marker)
         self.assertTrue(result)
+        self._tearDown(layer)
 
     def testRenderGrid(self):
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(10)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_grid')
         self.assertTrue(renderchecker.runTest('expected_displacement_grid'))
+        self._tearDown(layer)
 
     def testRenderGridAdjust(self):
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setCircleRadiusAddition(5)
-        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
-        self.layer.renderer().setCircleColor(QColor())
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(10)
+        layer.renderer().setCircleRadiusAddition(5)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        layer.renderer().setCircleColor(QColor())
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_adjust_grid')
         self.assertTrue(renderchecker.runTest('expected_displacement_adjust_grid'))
+        self._tearDown(layer)
 
     def testClusterRingLabels(self):
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(0.35)
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(0.35)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_ring_labels')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels'))
+        self._tearDown(layer)
 
-    def testClusterGridLabels(self):
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(0.35)
-        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+    def _testClusterGridLabels(self):
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(0.35)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_grid_labels')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels'))
+        self._tearDown(layer)
 
-    def testClusterConcentricLabels(self):
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(0.35)
-        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
+    def _testClusterConcentricLabels(self):
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(0.35)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_concentric_labels')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels'))
+        self._tearDown(layer)
 
-    def testClusterRingLabelsDifferentSizes(self):
-        self._set_categorized_renderer()
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(0.35)
+    def _testClusterRingLabelsDifferentSizes(self):
+        layer, renderer, mapsettings = self._setUp()
+        renderer.setEmbeddedRenderer(self._create_categorized_renderer())
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(0.35)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_ring_labels_diff_size')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels_diff_size'))
+        self._tearDown(layer)
 
-    def testClusterGridLabelsDifferentSizes(self):
-        self._set_categorized_renderer()
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(0.35)
-        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+    def _testClusterGridLabelsDifferentSizes(self):
+        layer, renderer, mapsettings = self._setUp()
+        renderer.setEmbeddedRenderer(self._create_categorized_renderer())
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(0.35)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_grid_labels_diff_size')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels_diff_size'))
+        self._tearDown(layer)
 
-    def testClusterConcentricLabelsDifferentSizes(self):
-        self._set_categorized_renderer()
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(0.35)
-        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
+    def _testClusterConcentricLabelsDifferentSizes(self):
+        layer, renderer, mapsettings = self._setUp()
+        renderer.setEmbeddedRenderer(self._create_categorized_renderer())
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(0.35)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer') 
         renderchecker.setControlName('expected_displacement_cluster_concentric_labels_diff_size')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels_diff_size'))
+        self._tearDown(layer)
 
-    def testClusterRingLabelsDifferentSizesFarther(self):
-        self._set_categorized_renderer()
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(1)
+    def _testClusterRingLabelsDifferentSizesFarther(self):
+        layer, renderer, mapsettings = self._setUp()
+        renderer.setEmbeddedRenderer(self._create_categorized_renderer())
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(1)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_ring_labels_diff_size_farther')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_ring_labels_diff_size_farther'))
+        self._tearDown(layer)
 
-    def testClusterGridLabelsDifferentSizesFarther(self):
-        self._set_categorized_renderer()
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(1)
-        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+    def _testClusterGridLabelsDifferentSizesFarther(self):
+        layer, renderer, mapsettings = self._setUp()
+        renderer.setEmbeddedRenderer(self._create_categorized_renderer())
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(1)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_grid_labels_diff_size_farther')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_grid_labels_diff_size_farther'))
+        self._tearDown(layer)
 
-    def testClusterConcentricLabelsDifferentSizesFarther(self):
-        self._set_categorized_renderer()
-        self.layer.renderer().setTolerance(10)
-        self.layer.renderer().setLabelAttributeName('Class')
-        self.layer.renderer().setLabelDistanceFactor(1)
-        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
+    def _testClusterConcentricLabelsDifferentSizesFarther(self):
+        layer, renderer, mapsettings = self._setUp()
+        renderer.setEmbeddedRenderer(self._create_categorized_renderer())
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(1)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
         renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_concentric_labels_diff_size_farther')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels_diff_size_farther'))
+        self._tearDown(layer)
 
 
 
