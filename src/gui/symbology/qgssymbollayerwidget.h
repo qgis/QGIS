@@ -498,6 +498,8 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void mIntervalUnitWidget_changed();
     void mOffsetUnitWidget_changed();
     void mOffsetAlongLineUnitWidget_changed();
+    void averageAngleUnitChanged();
+    void setAverageAngle( double val );
 
 };
 
@@ -549,6 +551,8 @@ class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void mOffsetUnitWidget_changed();
     void mOffsetAlongLineUnitWidget_changed();
     void hashLengthUnitWidgetChanged();
+    void averageAngleUnitChanged();
+    void setAverageAngle( double val );
   private:
     QgsHashedLineSymbolLayer *mLayer = nullptr;
 

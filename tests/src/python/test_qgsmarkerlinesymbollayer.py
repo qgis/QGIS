@@ -41,6 +41,7 @@ from qgis.core import (QgsGeometry,
                        QgsSymbolLayerUtils,
                        QgsSimpleMarkerSymbolLayer,
                        QgsLineSymbolLayer,
+                       QgsTemplatedLineSymbolLayerBase,
                        QgsMarkerLineSymbolLayer,
                        QgsMarkerSymbol,
                        QgsGeometryGeneratorSymbolLayer,
@@ -137,6 +138,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         s3.appendSymbolLayer(
             QgsMarkerLineSymbolLayer())
         s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
+        s3.symbolLayer(0).setAverageAngleLength(0)
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
@@ -164,6 +166,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         marker_line.setSubSymbol(marker_symbol)
+        marker_line.setAverageAngleLength(0)
         line_symbol = QgsLineSymbol()
         line_symbol.changeSymbolLayer(0, marker_line)
         sym_layer.setSubSymbol(line_symbol)
@@ -180,6 +183,97 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g, buffer=4)
         assert self.imageCheck('part_count_variable', 'part_count_variable', rendered_image)
+
+    def testMarkerAverageAngle(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setInterval(6)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        marker_line.setAverageAngleLength(60)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_average_angle', 'markerline_average_angle', rendered_image)
+
+    def testMarkerAverageAngleRing(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setInterval(6)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        marker_line.setAverageAngleLength(60)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 10 0, 0 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_ring_average_angle', 'markerline_ring_average_angle', rendered_image)
+
+    def testMarkerAverageAngleCenter(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        marker_line.setAverageAngleLength(60)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_center_average_angle', 'markerline_center_average_angle', rendered_image)
+
+    def testRingNoDupe(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setInterval(10)
+        marker_line.setIntervalUnit(QgsUnitTypes.RenderMapUnits)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 10 0, 0 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_ring_no_dupes', 'markerline_ring_no_dupes', rendered_image)
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()

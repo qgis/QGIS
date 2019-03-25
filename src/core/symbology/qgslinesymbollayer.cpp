@@ -799,16 +799,24 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
 
   context.renderContext().painter()->save();
 
+  double averageOver = mAverageAngleLength;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAverageAngleLength ) )
+  {
+    context.setOriginalValueVariable( mAverageAngleLength );
+    averageOver = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAverageAngleLength, context.renderContext().expressionContext(), mAverageAngleLength );
+  }
+  averageOver = context.renderContext().convertToPainterUnits( averageOver, mAverageAngleLengthUnit, mAverageAngleLengthMapUnitScale ) / 2.0;
+
   if ( qgsDoubleNear( offset, 0.0 ) )
   {
     switch ( placement )
     {
       case Interval:
-        renderPolylineInterval( points, context );
+        renderPolylineInterval( points, context, averageOver );
         break;
 
       case CentralPoint:
-        renderPolylineCentral( points, context );
+        renderPolylineCentral( points, context, averageOver );
         break;
 
       case Vertex:
@@ -831,11 +839,11 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       switch ( placement )
       {
         case Interval:
-          renderPolylineInterval( points2, context );
+          renderPolylineInterval( points2, context, averageOver );
           break;
 
         case CentralPoint:
-          renderPolylineCentral( points2, context );
+          renderPolylineCentral( points2, context, averageOver );
           break;
 
         case Vertex:
@@ -937,6 +945,10 @@ QgsStringMap QgsTemplatedLineSymbolLayerBase::properties() const
   map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
   map[QStringLiteral( "interval_unit" )] = QgsUnitTypes::encodeUnit( intervalUnit() );
   map[QStringLiteral( "interval_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( intervalMapUnitScale() );
+  map[QStringLiteral( "average_angle_length" )] = QString::number( mAverageAngleLength );
+  map[QStringLiteral( "average_angle_unit" )] = QgsUnitTypes::encodeUnit( mAverageAngleLengthUnit );
+  map[QStringLiteral( "average_angle_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mAverageAngleLengthMapUnitScale );
+
   switch ( mPlacement )
   {
     case Vertex:
@@ -975,6 +987,9 @@ void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplated
   destLayer->setOffsetAlongLine( offsetAlongLine() );
   destLayer->setOffsetAlongLineMapUnitScale( offsetAlongLineMapUnitScale() );
   destLayer->setOffsetAlongLineUnit( offsetAlongLineUnit() );
+  destLayer->setAverageAngleLength( mAverageAngleLength );
+  destLayer->setAverageAngleUnit( mAverageAngleLengthUnit );
+  destLayer->setAverageAngleMapUnitScale( mAverageAngleLengthMapUnitScale );
   destLayer->setRingFilter( mRingFilter );
   copyDataDefinedProperties( destLayer );
   copyPaintEffect( destLayer );
@@ -1016,6 +1031,19 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
     destLayer->setIntervalMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "interval_map_unit_scale" )] ) );
   }
 
+  if ( properties.contains( QStringLiteral( "average_angle_length" ) ) )
+  {
+    destLayer->setAverageAngleLength( properties[QStringLiteral( "average_angle_length" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "average_angle_unit" ) ) )
+  {
+    destLayer->setAverageAngleUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "average_angle_unit" )] ) );
+  }
+  if ( properties.contains( ( QStringLiteral( "average_angle_map_unit_scale" ) ) ) )
+  {
+    destLayer->setAverageAngleMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "average_angle_map_unit_scale" )] ) );
+  }
+
   if ( properties.contains( QStringLiteral( "placement" ) ) )
   {
     if ( properties[QStringLiteral( "placement" )] == QLatin1String( "vertex" ) )
@@ -1040,12 +1068,11 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
   destLayer->restoreOldDataDefinedProperties( properties );
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context )
+void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageOver )
 {
   if ( points.isEmpty() )
     return;
 
-  QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
 
   QgsRenderContext &rc = context.renderContext();
@@ -1070,45 +1097,106 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     offsetAlongLine = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetAlongLine, context.renderContext().expressionContext(), mOffsetAlongLine );
   }
 
-  double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
-  lengthLeft = painterUnitInterval - rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+  const double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
 
-  int pointNum = 0;
-  for ( int i = 1; i < points.count(); ++i )
+  if ( painterUnitInterval < 0 )
+    return;
+
+  const double painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+  lengthLeft = painterUnitInterval - painterUnitOffsetAlongLine;
+
+  if ( averageOver > 0 && !qgsDoubleNear( averageOver, 0.0 ) )
   {
-    const QPointF &pt = points[i];
+    QVector< QPointF > angleStartPoints;
+    QVector< QPointF > symbolPoints;
+    QVector< QPointF > angleEndPoints;
 
-    if ( lastPt == pt ) // must not be equal!
-      continue;
+    // we collect 3 arrays of points. These correspond to
+    // 1. the actual point at which to render the symbol
+    // 2. the start point of a line averaging the angle over the desired distance (i.e. -averageOver distance from the points in array 1)
+    // 3. the end point of a line averaging the angle over the desired distance (i.e. +averageOver distance from the points in array 2)
+    // it gets quite tricky, because for closed rings we need to trace backwards from the initial point to calculate this
+    // (or trace past the final point)
+    collectOffsetPoints( points, symbolPoints, painterUnitInterval, lengthLeft );
 
-    // for each line, find out dx and dy, and length
-    MyLine l( lastPt, pt );
-    QPointF diff = l.diffForInterval( painterUnitInterval );
-
-    // if there's some length left from previous line
-    // use only the rest for the first point in new line segment
-    double c = 1 - lengthLeft / painterUnitInterval;
-
-    lengthLeft += l.length();
-
-    // rotate marker (if desired)
-    if ( rotateSymbols() )
+    if ( symbolPoints.constFirst() == symbolPoints.constLast() )
     {
-      setSymbolLineAngle( l.angle() * 180 / M_PI );
+      // avoid duplicate points at start and end of closed rings
+      symbolPoints.pop_back();
     }
 
-    // while we're not at the end of line segment, draw!
-    while ( lengthLeft > painterUnitInterval )
+    angleEndPoints.reserve( symbolPoints.size() );
+    angleStartPoints.reserve( symbolPoints.size() );
+    if ( averageOver <= painterUnitOffsetAlongLine )
     {
-      // "c" is 1 for regular point or in interval (0,1] for begin of line segment
-      lastPt += c * diff;
-      lengthLeft -= painterUnitInterval;
+      collectOffsetPoints( points, angleStartPoints, painterUnitInterval, lengthLeft + averageOver, 0, symbolPoints.size() );
+    }
+    else
+    {
+      collectOffsetPoints( points, angleStartPoints, painterUnitInterval, 0, averageOver - painterUnitOffsetAlongLine, symbolPoints.size() );
+    }
+    collectOffsetPoints( points, angleEndPoints, painterUnitInterval, lengthLeft - averageOver, 0, symbolPoints.size() );
+
+    int pointNum = 0;
+    for ( int i = 0; i < symbolPoints.size(); ++ i )
+    {
+      const QPointF pt = symbolPoints[i];
+      const QPointF startPt = angleStartPoints[i];
+      const QPointF endPt = angleEndPoints[i];
+
+      MyLine l( startPt, endPt );
+      // rotate marker (if desired)
+      if ( rotateSymbols() )
+      {
+        setSymbolLineAngle( l.angle() * 180 / M_PI );
+      }
+
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
-      renderSymbol( lastPt, context.feature(), rc, -1, context.selected() );
-      c = 1; // reset c (if wasn't 1 already)
+      renderSymbol( pt, context.feature(), rc, -1, context.selected() );
+    }
+  }
+  else
+  {
+    // not averaging line angle -- always use exact section angle
+    int pointNum = 0;
+    QPointF lastPt = points[0];
+    for ( int i = 1; i < points.count(); ++i )
+    {
+      const QPointF &pt = points[i];
+
+      if ( lastPt == pt ) // must not be equal!
+        continue;
+
+      // for each line, find out dx and dy, and length
+      MyLine l( lastPt, pt );
+      QPointF diff = l.diffForInterval( painterUnitInterval );
+
+      // if there's some length left from previous line
+      // use only the rest for the first point in new line segment
+      double c = 1 - lengthLeft / painterUnitInterval;
+
+      lengthLeft += l.length();
+
+      // rotate marker (if desired)
+      if ( rotateSymbols() )
+      {
+        setSymbolLineAngle( l.angle() * 180 / M_PI );
+      }
+
+      // while we're not at the end of line segment, draw!
+      while ( lengthLeft > painterUnitInterval )
+      {
+        // "c" is 1 for regular point or in interval (0,1] for begin of line segment
+        lastPt += c * diff;
+        lengthLeft -= painterUnitInterval;
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
+        renderSymbol( lastPt, context.feature(), rc, -1, context.selected() );
+        c = 1; // reset c (if wasn't 1 already)
+      }
+
+      lastPt = pt;
     }
 
-    lastPt = pt;
   }
 
   delete context.renderContext().expressionContext().popScope();
@@ -1397,7 +1485,116 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
   //didn't find point
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context )
+void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( const QVector<QPointF> &p, QVector<QPointF> &dest, double intervalPainterUnits, double initialOffset, double initialLag, int numberPointsRequired )
+{
+  if ( p.empty() )
+    return;
+
+  QVector< QPointF > points = p;
+  const bool closedRing = points.first() == points.last();
+
+  double lengthLeft = initialOffset;
+
+  double initialLagLeft = initialLag > 0 ? -initialLag : 1; // an initialLagLeft of > 0 signifies end of lagging start points
+  if ( initialLagLeft < 0 && closedRing )
+  {
+    // tracking back around the ring from the first point, insert pseudo vertices before the first vertex
+    QPointF lastPt = points.constLast();
+    QVector< QPointF > pseudoPoints;
+    for ( int i = points.count() - 2; i > 0; --i )
+    {
+      if ( initialLagLeft >= 0 )
+      {
+        break;
+      }
+
+      const QPointF &pt = points[i];
+
+      if ( lastPt == pt ) // must not be equal!
+        continue;
+
+      MyLine l( lastPt, pt );
+      initialLagLeft += l.length();
+      lastPt = pt;
+
+      pseudoPoints << pt;
+    }
+    std::reverse( pseudoPoints.begin(), pseudoPoints.end() );
+
+    points = pseudoPoints;
+    points.append( p );
+  }
+  else
+  {
+    while ( initialLagLeft < 0 )
+    {
+      dest << points.constFirst();
+      initialLagLeft += intervalPainterUnits;
+    }
+  }
+  if ( initialLag > 0 )
+  {
+    lengthLeft += intervalPainterUnits - initialLagLeft;
+  }
+
+  QPointF lastPt = points[0];
+  for ( int i = 1; i < points.count(); ++i )
+  {
+    const QPointF &pt = points[i];
+
+    if ( lastPt == pt ) // must not be equal!
+    {
+      if ( closedRing && i == points.count() - 1 && numberPointsRequired > 0 && dest.size() < numberPointsRequired )
+      {
+        lastPt = points[0];
+        i = 0;
+      }
+      continue;
+    }
+
+    // for each line, find out dx and dy, and length
+    MyLine l( lastPt, pt );
+    QPointF diff = l.diffForInterval( intervalPainterUnits );
+
+    // if there's some length left from previous line
+    // use only the rest for the first point in new line segment
+    double c = 1 - lengthLeft / intervalPainterUnits;
+
+    lengthLeft += l.length();
+
+
+    while ( lengthLeft > intervalPainterUnits || qgsDoubleNear( lengthLeft, intervalPainterUnits, 0.000000001 ) )
+    {
+      // "c" is 1 for regular point or in interval (0,1] for begin of line segment
+      lastPt += c * diff;
+      lengthLeft -= intervalPainterUnits;
+      dest << lastPt;
+      c = 1; // reset c (if wasn't 1 already)
+      if ( numberPointsRequired > 0 && dest.size() >= numberPointsRequired )
+        break;
+    }
+    lastPt = pt;
+
+    if ( numberPointsRequired > 0 && dest.size() >= numberPointsRequired )
+      break;
+
+    // if a closed ring, we keep looping around the ring until we hit the required number of points
+    if ( closedRing && i == points.count() - 1 && numberPointsRequired > 0 && dest.size() < numberPointsRequired )
+    {
+      lastPt = points[0];
+      i = 0;
+    }
+  }
+
+  if ( !closedRing && numberPointsRequired > 0 && dest.size() < numberPointsRequired )
+  {
+    // pad with repeating last point to match desired size
+    while ( dest.size() < numberPointsRequired )
+      dest << points.constLast();
+  }
+}
+
+void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver )
 {
   if ( !points.isEmpty() )
   {
@@ -1412,33 +1609,56 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
       last = *it;
     }
 
-    // find the segment where the central point lies
-    it = points.constBegin();
-    last = *it;
-    qreal last_at = 0, next_at = 0;
-    QPointF next;
-    int segment = 0;
-    for ( ++it; it != points.constEnd(); ++it )
-    {
-      next = *it;
-      next_at += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                            ( last.y() - it->y() ) * ( last.y() - it->y() ) );
-      if ( next_at >= length / 2 )
-        break; // we have reached the center
-      last = *it;
-      last_at = next_at;
-      segment++;
-    }
+    const double midPoint = length / 2;
 
-    // find out the central point on segment
-    MyLine l( last, next ); // for line angle
-    qreal k = ( length * 0.5 - last_at ) / ( next_at - last_at );
-    QPointF pt = last + ( next - last ) * k;
+    QPointF pt;
+    double thisSymbolAngle = 0;
+
+    if ( averageAngleOver > 0 && !qgsDoubleNear( averageAngleOver, 0.0 ) )
+    {
+      QVector< QPointF > angleStartPoints;
+      QVector< QPointF > symbolPoints;
+      QVector< QPointF > angleEndPoints;
+      // collectOffsetPoints will have the first point in the line as the first result -- we don't want this, we need the second
+      collectOffsetPoints( points, symbolPoints, midPoint, midPoint, 0.0, 2 );
+      collectOffsetPoints( points, angleStartPoints, midPoint, 0, averageAngleOver, 2 );
+      collectOffsetPoints( points, angleEndPoints, midPoint, midPoint - averageAngleOver, 0, 2 );
+
+      pt = symbolPoints.at( 1 );
+      MyLine l( angleStartPoints.at( 1 ), angleEndPoints.at( 1 ) );
+      thisSymbolAngle = l.angle();
+    }
+    else
+    {
+      // find the segment where the central point lies
+      it = points.constBegin();
+      last = *it;
+      qreal last_at = 0, next_at = 0;
+      QPointF next;
+      int segment = 0;
+      for ( ++it; it != points.constEnd(); ++it )
+      {
+        next = *it;
+        next_at += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                              ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+        if ( next_at >= midPoint )
+          break; // we have reached the center
+        last = *it;
+        last_at = next_at;
+        segment++;
+      }
+
+      // find out the central point on segment
+      MyLine l( last, next ); // for line angle
+      qreal k = ( length * 0.5 - last_at ) / ( next_at - last_at );
+      pt = last + ( next - last ) * k;
+      thisSymbolAngle = l.angle();
+    }
 
     // draw the marker
     double origAngle = symbolAngle();
     if ( rotateSymbols() )
-      setSymbolAngle( origAngle + l.angle() * 180 / M_PI );
+      setSymbolAngle( origAngle + thisSymbolAngle * 180 / M_PI );
     renderSymbol( pt, context.feature(), context.renderContext(), -1, context.selected() );
     if ( rotateSymbols() )
       setSymbolAngle( origAngle );
