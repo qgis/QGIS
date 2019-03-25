@@ -83,11 +83,7 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
 
   HtmlExpression *htmlExpression = new HtmlExpression();
   htmlExpression->setExpressionContext( expressionContext );
-
-#ifdef QGISDEBUG
   mWidget->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
-#endif
-
   auto frame = mWidget->page()->mainFrame();
   connect( frame, &QWebFrame::javaScriptWindowObjectCleared, [ = ]
   {

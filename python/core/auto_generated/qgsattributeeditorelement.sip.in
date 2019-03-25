@@ -395,9 +395,7 @@ The QML code that will be represented within this widget.
 
     void setQmlCode( const QString &qmlCode );
 %Docstring
-The QML code that will be represented within this widget.
-
-@param qmlCode
+Sets the QML code that will be represented within this widget to ``qmlCode``.
 %End
 
 };
@@ -436,9 +434,7 @@ The QML code that will be represented within this widget.
 
     void setHtmlCode( const QString &htmlCode );
 %Docstring
-The HTML code that will be represented within this widget.
-
-@param htmlCode
+Sets the HTML code that will be represented within this widget to ``htmlCode``.
 %End
 
 };

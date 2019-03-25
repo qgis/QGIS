@@ -459,9 +459,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
     QString qmlCode() const;
 
     /**
-     * The QML code that will be represented within this widget.
-     *
-     * @param qmlCode
+     * Sets the QML code that will be represented within this widget to \a qmlCode.
      */
     void setQmlCode( const QString &qmlCode );
 
@@ -502,9 +500,7 @@ class CORE_EXPORT QgsAttributeEditorHtmlElement : public QgsAttributeEditorEleme
     QString htmlCode() const;
 
     /**
-     * The HTML code that will be represented within this widget.
-     *
-     * @param htmlCode
+     * Sets the HTML code that will be represented within this widget to \a htmlCode.
      */
     void setHtmlCode( const QString &htmlCode );
 
