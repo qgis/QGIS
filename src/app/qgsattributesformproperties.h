@@ -194,11 +194,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void initInitPython();
     void initSuppressCombo();
 
-  public slots:
-
-    void onInvertSelectionButtonClicked( bool checked );
-    void onAttributeSelectionChanged();
-
   protected:
     void updateButtons();
 
@@ -213,7 +208,13 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
 
+  private slots:
+
+    void onInvertSelectionButtonClicked( bool checked );
+    void onAttributeSelectionChanged();
+
   private:
+
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
 
