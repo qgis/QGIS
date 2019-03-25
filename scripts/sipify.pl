@@ -983,7 +983,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 do {no warnings 'uninitialized';
                     my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$4/r;
                     my $enum_member = $+{em};
-                    push @enum_members_doc, "'* $enum_member: ' + $ACTUAL_CLASS.$enum_qualname.$2.__doc__";
+                    push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$2.__doc__";
                     my $comment = $+{co};
                     push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n" if $is_scope_based eq "1";
                     push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n" if $monkeypatch eq "1";
