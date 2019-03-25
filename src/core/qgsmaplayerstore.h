@@ -150,7 +150,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *                      the layers yourself. Not available in Python.
      *
      *
-     * \note if layer with the same id is already in the store it is not added again,
+     * \note If a layer with the same id is already in the store it is not added again,
      *       but if the validity of the layer has changed from false to true, the
      *       layer data source is updated to the new one.
      *
