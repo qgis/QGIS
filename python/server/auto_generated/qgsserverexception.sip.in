@@ -36,13 +36,13 @@ Constructor
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
 %Docstring
-Format the exception for sending to client
+Formats the exception for sending to client
 
 
-:return: - QByteArray the fermatted response.
+:return: - QByteArray The formatted response.
          - responseFormat: QString to store the content type of the response format.
 
-The defaolt implementation return text/xml format.
+The default implementation returns text/xml format.
 %End
 
 };
