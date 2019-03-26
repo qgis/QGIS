@@ -15,6 +15,7 @@
 %ModuleCode
 #include "qgsrelationwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
+#include "qgshtmlwidgetwrapper.h"
 %End
 
 class QgsWidgetWrapper : QObject
@@ -40,6 +41,8 @@ changed status of the widget will be saved.
       sipType = sipType_QgsRelationWidgetWrapper;
     else if ( qobject_cast<QgsQmlWidgetWrapper *>( sipCpp ) )
       sipType = sipType_QgsQmlWidgetWrapper;
+    else if ( qobject_cast<QgsHtmlWidgetWrapper *>( sipCpp ) )
+      sipType = sipType_QgsHtmlWidgetWrapper;
     else
       sipType = 0;
 %End

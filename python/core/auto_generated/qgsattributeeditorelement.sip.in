@@ -48,7 +48,8 @@ layer.
       AeTypeField,
       AeTypeRelation,
       AeTypeInvalid,
-      AeTypeQmlElement
+      AeTypeQmlElement,
+      AeTypeHtmlElement
     };
 
     QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );
@@ -394,12 +395,50 @@ The QML code that will be represented within this widget.
 
     void setQmlCode( const QString &qmlCode );
 %Docstring
-The QML code that will be represented within this widget.
-
-@param qmlCode
+Sets the QML code that will be represented within this widget to ``qmlCode``.
 %End
 
 };
+
+
+class QgsAttributeEditorHtmlElement : QgsAttributeEditorElement
+{
+%Docstring
+An attribute editor widget that will represent arbitrary HTML code.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorelement.h"
+%End
+  public:
+
+    QgsAttributeEditorHtmlElement( const QString &name, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display HTML
+
+:param name: The name of the widget
+:param parent: The parent (used as container)
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    QString htmlCode() const;
+%Docstring
+The QML code that will be represented within this widget.
+
+.. versionadded:: 3.4
+%End
+
+    void setHtmlCode( const QString &htmlCode );
+%Docstring
+Sets the HTML code that will be represented within this widget to ``htmlCode``.
+%End
+
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

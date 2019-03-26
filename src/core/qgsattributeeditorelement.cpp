@@ -189,3 +189,33 @@ QString QgsAttributeEditorQmlElement::typeIdentifier() const
 {
   return QStringLiteral( "attributeEditorQmlElement" );
 }
+
+QgsAttributeEditorElement *QgsAttributeEditorHtmlElement::clone( QgsAttributeEditorElement *parent ) const
+{
+  QgsAttributeEditorHtmlElement *element = new QgsAttributeEditorHtmlElement( name(), parent );
+  element->setHtmlCode( mHtmlCode );
+
+  return element;
+}
+
+QString QgsAttributeEditorHtmlElement::htmlCode() const
+{
+  return mHtmlCode;
+}
+
+void QgsAttributeEditorHtmlElement::setHtmlCode( const QString &htmlCode )
+{
+  mHtmlCode = htmlCode;
+}
+
+void QgsAttributeEditorHtmlElement::saveConfiguration( QDomElement &elem ) const
+{
+  QDomText codeElem = elem.ownerDocument().createTextNode( mHtmlCode );
+  elem.appendChild( codeElem );
+}
+
+QString QgsAttributeEditorHtmlElement::typeIdentifier() const
+{
+  return QStringLiteral( "attributeEditorHtmlElement" );
+}
+
