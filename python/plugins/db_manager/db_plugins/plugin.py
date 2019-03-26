@@ -278,7 +278,7 @@ class Database(DbItemObject):
         return "row_number() over ()"
 
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
-        from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
+        from qgis.core import QgsVectorLayer, QgsRasterLayer
 
         if uniqueCol is None:
             if hasattr(self, 'uniqueIdFunction'):
