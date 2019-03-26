@@ -511,7 +511,7 @@ void QgsWmsRenderContext::checkLayerReadPermissions()
 }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-QgsAccessControl *QgsWmsRenderContext::accessControl()
+QgsAccessControl *QgsWmsRenderContext::accessControl() const
 {
   return mInterface->accessControls();
 }

@@ -285,13 +285,8 @@ namespace QgsWms
 
       QgsWmsParameters mWmsParameters;
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      //! The access control helper
-      QgsAccessControl *mAccessControl = nullptr;
-#endif
       QgsFeatureFilter mFeatureFilter;
 
-      QgsServerSettings mSettings;
       const QgsProject *mProject = nullptr;
       QList<QgsMapLayer *> mTemporaryLayers;
       QgsWmsRenderContext mContext;

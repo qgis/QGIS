@@ -184,7 +184,7 @@ namespace QgsWms
       /**
        * Returns the access control interface.
        */
-      QgsAccessControl *accessControl();
+      QgsAccessControl *accessControl() const;
 #endif
 
     private:

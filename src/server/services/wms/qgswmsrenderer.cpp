@@ -116,10 +116,6 @@ namespace QgsWms
   QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
     : mContext( context )
   {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    mAccessControl = mContext.accessControl();
-#endif
-
     mProject = mContext.project();
 
     mWmsParameters = mContext.parameters();
@@ -1415,14 +1411,14 @@ namespace QgsWms
     }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    mAccessControl->filterFeatures( layer, fReq );
+    mContext.accessControl()->filterFeatures( layer, fReq );
 
     QStringList attributes;
     for ( const QgsField &field : fields )
     {
       attributes.append( field.name() );
     }
-    attributes = mAccessControl->layerAttributes( layer, attributes );
+    attributes = mContext.accessControl()->layerAttributes( layer, attributes );
     fReq.setSubsetOfAttributes( attributes, layer->fields() );
 #endif
 
@@ -2611,10 +2607,10 @@ namespace QgsWms
       QgsFeatureFilterProviderGroup filters;
       filters.addProvider( &mFeatureFilter );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      mAccessControl->resolveFilterFeatures( mapSettings.layers() );
-      filters.addProvider( mAccessControl );
+      mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
+      filters.addProvider( mContext.accessControl() );
 #endif
-      QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads(), &filters );
+      QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
       renderJob.render( mapSettings, &image );
       painter = renderJob.takePainter();
 
@@ -2740,7 +2736,7 @@ namespace QgsWms
   void QgsRenderer::setLayerAccessControlFilter( QgsMapLayer *layer ) const
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( mAccessControl, layer );
+    QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( mContext.accessControl(), layer );
 #else
     Q_UNUSED( layer );
 #endif
