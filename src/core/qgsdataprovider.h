@@ -525,7 +525,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Returns data provider coordinate transform context
      *
-     * \see setTranformContext()
+     * \see setTransformContext()
      *
      * \since QGIS 3.10
      */

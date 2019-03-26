@@ -391,7 +391,7 @@ Returns ``True`` if metadata was successfully written to the data provider.
 %Docstring
 Returns data provider coordinate transform context
 
-.. seealso:: :py:func:`setTranformContext`
+.. seealso:: :py:func:`setTransformContext`
 
 .. versionadded:: 3.10
 %End
