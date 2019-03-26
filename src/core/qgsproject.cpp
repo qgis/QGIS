@@ -944,30 +944,30 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 {
   QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
-  QgsMapLayer *mapLayer = nullptr;
+  std::unique_ptr<QgsMapLayer> mapLayer;
 
   if ( type == QLatin1String( "vector" ) )
   {
-    mapLayer = new QgsVectorLayer;
+    mapLayer = qgis::make_unique<QgsVectorLayer>();
 
     // apply specific settings to vector layer
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer ) )
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
     {
       vl->setReadExtentFromXml( mTrustLayerMetadata );
     }
   }
   else if ( type == QLatin1String( "raster" ) )
   {
-    mapLayer = new QgsRasterLayer;
+    mapLayer =  qgis::make_unique<QgsRasterLayer>();
   }
   else if ( type == QLatin1String( "mesh" ) )
   {
-    mapLayer = new QgsMeshLayer;
+    mapLayer = qgis::make_unique<QgsMeshLayer>();
   }
   else if ( type == QLatin1String( "plugin" ) )
   {
     QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-    mapLayer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
+    mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
   }
 
   if ( !mapLayer )
@@ -978,13 +978,19 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   Q_CHECK_PTR( mapLayer ); // NOLINT
 
+  // This is tricky: to avoid a leak we need to check if the layer was already in the store
+  // because if it was, the newly created layer will not be added to the store and it would leak.
+  const QString layerId { layerElem.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+  Q_ASSERT( ! layerId.isEmpty() );
+  const bool layerWasStored { layerStore()->mapLayer( layerId ) };
+
   // have the layer restore state that is stored in Dom node
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid();
   QList<QgsMapLayer *> newLayers;
-  newLayers << mapLayer;
+  newLayers << mapLayer.get();
   if ( layerIsValid )
   {
-    emit readMapLayer( mapLayer, layerElem );
+    emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
   }
   else
@@ -995,6 +1001,14 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     QgsDebugMsg( "Unable to load " + type + " layer" );
     brokenNodes.push_back( layerElem );
   }
+
+  // It should be safe to delete the layer now if layer was stored, because all the store
+  // had to to was to reset the data source in case the validity changed.
+  if ( ! layerWasStored )
+  {
+    mapLayer.release();
+  }
+
   return layerIsValid;
 }
 
