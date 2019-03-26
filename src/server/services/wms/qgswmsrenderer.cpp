@@ -113,23 +113,6 @@ namespace QgsWms
 
   } // namespace
 
-
-  QgsRenderer::QgsRenderer( QgsServerInterface *serverIface,
-                            const QgsProject *project,
-                            const QgsWmsParameters &parameters )
-    : mWmsParameters( parameters )
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    , mAccessControl( serverIface->accessControls() )
-#endif
-    , mSettings( *serverIface->serverSettings() )
-    , mProject( project )
-  {
-    mWmsParameters.dump();
-
-    initRestrictedLayers();
-    initNicknameLayers();
-  }
-
   QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
     : mContext( context )
   {
@@ -2554,20 +2537,6 @@ namespace QgsWms
     return name;
   }
 
-  bool QgsRenderer::layerScaleVisibility( const QgsMapLayer &layer, double scaleDenominator ) const
-  {
-    bool visible = false;
-    bool scaleBasedVisibility = layer.hasScaleBasedVisibility();
-    bool useScaleConstraint = ( scaleDenominator > 0 && scaleBasedVisibility );
-
-    if ( !useScaleConstraint || layer.isInScaleRange( scaleDenominator ) )
-    {
-      visible = true;
-    }
-
-    return visible;
-  }
-
   QList<QgsMapLayer *> QgsRenderer::highlightLayers( QList<QgsWmsParametersHighlightLayer> params )
   {
     QList<QgsMapLayer *> highlightLayers;
@@ -2735,60 +2704,6 @@ namespace QgsWms
         // to delete later
         mTemporaryLayers.append( layer.release() );
         layers << mTemporaryLayers.last();
-      }
-    }
-
-    return layers;
-  }
-
-  QList<QgsMapLayer *> QgsRenderer::sldStylizedLayers( const QString &sld ) const
-  {
-    QList<QgsMapLayer *> layers;
-
-    if ( !sld.isEmpty() )
-    {
-      QDomDocument doc;
-      ( void )doc.setContent( sld, true );
-      QDomElement docEl = doc.documentElement();
-
-      QDomElement root = doc.firstChildElement( "StyledLayerDescriptor" );
-      QDomElement namedElem = root.firstChildElement( "NamedLayer" );
-
-      if ( !docEl.isNull() )
-      {
-        QDomNodeList named = docEl.elementsByTagName( "NamedLayer" );
-        for ( int i = 0; i < named.size(); ++i )
-        {
-          QDomNodeList names = named.item( i ).toElement().elementsByTagName( "Name" );
-          if ( !names.isEmpty() )
-          {
-            QString lname = names.item( 0 ).toElement().text();
-            QString err;
-            if ( mNicknameLayers.contains( lname ) && !mRestrictedLayers.contains( lname ) )
-            {
-              mNicknameLayers[lname]->readSld( namedElem, err );
-              mNicknameLayers[lname]->setCustomProperty( "readSLD", true );
-              layers.append( mNicknameLayers[lname] );
-            }
-            else if ( mLayerGroups.contains( lname ) )
-            {
-              for ( QgsMapLayer *layer : mLayerGroups[lname] )
-              {
-                if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
-                {
-                  layer->readSld( namedElem, err );
-                  layer->setCustomProperty( "readSLD", true );
-                  layers.insert( 0, layer );
-                }
-              }
-            }
-            else
-            {
-              throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                            QStringLiteral( "Layer \"%1\" does not exist" ).arg( lname ) );
-            }
-          }
-        }
       }
     }
 
@@ -3041,48 +2956,6 @@ namespace QgsWms
     }
 
     return scaledImage;
-  }
-
-  void QgsRenderer::checkLayerReadPermissions( QgsMapLayer *layer ) const
-  {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    if ( !mAccessControl->layerReadPermission( layer ) )
-    {
-      throw QgsSecurityException( QStringLiteral( "You are not allowed to access to the layer: %1" ).arg( layer->name() ) );
-    }
-#else
-    Q_UNUSED( layer );
-#endif
-  }
-
-  void QgsRenderer::removeUnwantedLayers( QList<QgsMapLayer *> &layers, double scaleDenominator ) const
-  {
-    QList<QgsMapLayer *> wantedLayers;
-
-    for ( QgsMapLayer *layer : layers )
-    {
-      if ( !layerScaleVisibility( *layer, scaleDenominator ) )
-        continue;
-
-      if ( mRestrictedLayers.contains( layerNickname( *layer ) ) )
-        continue;
-
-      wantedLayers.append( layer );
-    }
-
-    layers = wantedLayers;
-  }
-
-  void QgsRenderer::removeNonIdentifiableLayers( QList<QgsMapLayer *> &layers ) const
-  {
-    QList<QgsMapLayer *>::iterator it = layers.begin();
-    while ( it != layers.end() )
-    {
-      if ( !( *it )->flags().testFlag( QgsMapLayer::Identifiable ) )
-        it = layers.erase( it );
-      else
-        ++it;
-    }
   }
 
   QgsLayerTreeModel *QgsRenderer::buildLegendTreeModel( const QList<QgsMapLayer *> &layers, double scaleDenominator, QgsLayerTree &rootGroup )

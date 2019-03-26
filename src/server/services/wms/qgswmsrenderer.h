@@ -63,13 +63,6 @@ namespace QgsWms
   {
     public:
 
-      /**
-       * Constructor. Does _NOT_ take ownership of
-          QgsConfigParser and QgsCapabilitiesCache*/
-      QgsRenderer( QgsServerInterface *serverIface,
-                   const QgsProject *project,
-                   const QgsWmsParameters &parameters );
-
       QgsRenderer( const QgsWmsRenderContext &context );
 
       ~QgsRenderer();
@@ -137,16 +130,6 @@ namespace QgsWms
       // the project configuration)
       QString layerNickname( const QgsMapLayer &layer ) const;
 
-      // Return true if the layer has to be displayed according to he current
-      // scale
-      bool layerScaleVisibility( const QgsMapLayer &layer, double scaleDenominator ) const;
-
-      // Remove unwanted layers (restricted, not visible, etc)
-      void removeUnwantedLayers( QList<QgsMapLayer *> &layers, double scaleDenominator = -1 ) const;
-
-      // Remove non identifiable layers (restricted, not visible, etc)
-      void removeNonIdentifiableLayers( QList<QgsMapLayer *> &layers ) const;
-
       // Rendering step for layers
       QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest = nullptr ) const;
 
@@ -155,9 +138,6 @@ namespace QgsWms
 
       // Return a list of layers stylized with LAYERS/STYLES parameters
       QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params );
-
-      // Return a list of layers stylized with SLD parameter
-      QList<QgsMapLayer *> sldStylizedLayers( const QString &sld ) const;
 
       // Set layer opacity
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;
@@ -176,9 +156,6 @@ namespace QgsWms
 
       // Scale image with WIDTH/HEIGHT if necessary
       QImage *scaleImage( const QImage *image ) const;
-
-      // Check layer read permissions
-      void checkLayerReadPermissions( QgsMapLayer *layer ) const;
 
       // Build a layer tree model for legend
       QgsLayerTreeModel *buildLegendTreeModel( const QList<QgsMapLayer *> &layers, double scaleDenominator, QgsLayerTree &rootGroup );
