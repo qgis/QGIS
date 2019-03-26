@@ -995,11 +995,11 @@ while ($LINE_IDX < $LINE_COUNT){
                             if ($enum_mk_base ne "") {
                                 push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
                                 push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;
-                                push @enum_members_doc, "'* $enum_member: ' + $enum_qualname.$enum_member.__doc__";
+                                push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
                             } else {
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
-                                push @enum_members_doc, "'* $enum_member: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                                push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
                             }
                         }
                     }
