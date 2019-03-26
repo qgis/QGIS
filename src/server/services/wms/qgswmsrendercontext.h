@@ -159,6 +159,22 @@ namespace QgsWms
       QString layerNickname( const QgsMapLayer &layer ) const;
 
       /**
+       * Returns the layer corresponding to the nickname, or a nullptr if not
+       * found or if the layer do not need to be rendered.
+       */
+      QgsMapLayer *layer( const QString &nickname ) const;
+
+      /**
+       * Returns true if the layer has to be rendered, false otherwise.
+       */
+      bool isValidLayer( const QString &nickname ) const;
+
+      /**
+       * Returns true if \a name is a group.
+       */
+      bool isValidGroup( const QString &name ) const;
+
+      /**
        * Returns default dots per mm according to the current configuration.
        */
       qreal dotsPerMm() const;

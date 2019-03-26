@@ -124,16 +124,12 @@ namespace QgsWms
 
     mWmsParameters = mContext.parameters();
     mWmsParameters.dump();
-
-    initRestrictedLayers();
-    initNicknameLayers();
   }
 
   QgsRenderer::~QgsRenderer()
   {
     removeTemporaryLayers();
   }
-
 
   QImage *QgsRenderer::getLegendGraphics()
   {
@@ -599,12 +595,13 @@ namespace QgsWms
           QList<QgsMapLayer *> layerSet;
           for ( auto layer : cMapParams.mLayers )
           {
-            if ( ! mNicknameLayers.contains( layer.mNickname ) )
+            QgsMapLayer *mlayer = mContext.layer( layer.mNickname );
+
+            if ( ! mlayer )
             {
               continue;
             }
 
-            QgsMapLayer *mlayer = mNicknameLayers[ layer.mNickname ];
             setLayerStyle( mlayer, layer.mStyle );
             layerSet << mlayer;
           }
@@ -1285,12 +1282,12 @@ namespace QgsWms
           break;
         }
       }
-      if ( !validLayer && !mNicknameLayers.contains( queryLayer ) && !mLayerGroups.contains( queryLayer ) )
+      if ( !validLayer && !mContext.isValidLayer( queryLayer ) && !mContext.isValidGroup( queryLayer ) )
       {
         QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
         throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
       }
-      else if ( ( validLayer && !queryableLayer ) || ( !validLayer && mLayerGroups.contains( queryLayer ) ) )
+      else if ( ( validLayer && !queryableLayer ) || ( !validLayer && mContext.isValidGroup( queryLayer ) ) )
       {
         QString msg = QObject::tr( "Layer '%1' is not queryable" ).arg( queryLayer );
         throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
@@ -2421,100 +2418,6 @@ namespace QgsWms
                                infoPoint.x() + mapUnitTolerance, infoPoint.y() + mapUnitTolerance );
     return ( mapSettings.mapToLayerCoordinates( ml, mapRectangle ) );
   }
-
-
-  void QgsRenderer::initRestrictedLayers()
-  {
-    mRestrictedLayers.clear();
-
-    // get name of restricted layers/groups in project
-    QStringList restricted = QgsServerProjectUtils::wmsRestrictedLayers( *mProject );
-
-    // extract restricted layers from excluded groups
-    QStringList restrictedLayersNames;
-    QgsLayerTreeGroup *root = mProject->layerTreeRoot();
-
-    for ( const QString &l : restricted )
-    {
-      QgsLayerTreeGroup *group = root->findGroup( l );
-      if ( group )
-      {
-        QList<QgsLayerTreeLayer *> groupLayers = group->findLayers();
-        for ( QgsLayerTreeLayer *treeLayer : groupLayers )
-        {
-          restrictedLayersNames.append( treeLayer->name() );
-        }
-      }
-      else
-      {
-        restrictedLayersNames.append( l );
-      }
-    }
-
-    // build output with names, ids or short name according to the configuration
-    QList<QgsLayerTreeLayer *> layers = root->findLayers();
-    for ( QgsLayerTreeLayer *layer : layers )
-    {
-      if ( restrictedLayersNames.contains( layer->name() ) )
-      {
-        mRestrictedLayers.append( mContext.layerNickname( *layer->layer() ) );
-      }
-    }
-  }
-
-  void QgsRenderer::initNicknameLayers()
-  {
-    for ( QgsMapLayer *ml : mProject->mapLayers() )
-    {
-      mNicknameLayers[ mContext.layerNickname( *ml ) ] = ml;
-    }
-
-    // init groups
-    const QString rootName { QgsServerProjectUtils::wmsRootName( *mProject ) };
-    const QgsLayerTreeGroup *root = mProject->layerTreeRoot();
-    initLayerGroupsRecursive( root, rootName.isEmpty() ? mProject->title() : rootName );
-  }
-
-  void QgsRenderer::initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName )
-  {
-    if ( !groupName.isEmpty() )
-    {
-      mLayerGroups[groupName] = QList<QgsMapLayer *>();
-      for ( QgsLayerTreeLayer *layer : group->findLayers() )
-      {
-        mLayerGroups[groupName].append( layer->layer() );
-      }
-    }
-
-    for ( const QgsLayerTreeNode *child : group->children() )
-    {
-      if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
-      {
-        QString name = child->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
-
-        if ( name.isEmpty() )
-          name = child->name();
-
-        initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), name );
-
-      }
-    }
-  }
-
-  /*QString QgsRenderer::layerNickname( const QgsMapLayer &layer ) const
-  {
-    QString name = layer.shortName();
-    if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject ) )
-    {
-      name = layer.id();
-    }
-    else if ( name.isEmpty() )
-    {
-      name = layer.name();
-    }
-
-    return name;
-  }*/
 
   QList<QgsMapLayer *> QgsRenderer::highlightLayers( QList<QgsWmsParametersHighlightLayer> params )
   {

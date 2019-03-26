@@ -114,19 +114,11 @@ namespace QgsWms
 
     private:
 
-      // Init the restricted layers with nicknames
-      void initRestrictedLayers();
-
       // Build and returns highlight layers
       QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
 
       // Build and returns external layers
       QList<QgsMapLayer *> externalLayers( const QList<QgsWmsParametersExternalLayer> &params );
-
-      // Init a map with nickname for layers' project
-      void initNicknameLayers();
-
-      void initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName );
 
       // Rendering step for layers
       QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest = nullptr ) const;
@@ -301,9 +293,6 @@ namespace QgsWms
 
       QgsServerSettings mSettings;
       const QgsProject *mProject = nullptr;
-      QStringList mRestrictedLayers;
-      QMap<QString, QgsMapLayer *> mNicknameLayers;
-      QMap<QString, QList<QgsMapLayer *> > mLayerGroups;
       QList<QgsMapLayer *> mTemporaryLayers;
       QgsWmsRenderContext mContext;
   };

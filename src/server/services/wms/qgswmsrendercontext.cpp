@@ -214,6 +214,32 @@ QString QgsWmsRenderContext::layerNickname( const QgsMapLayer &layer ) const
   return name;
 }
 
+QgsMapLayer *QgsWmsRenderContext::layer( const QString &nickname ) const
+{
+  QgsMapLayer *mlayer = nullptr;
+
+  for ( auto layer : mLayersToRender )
+  {
+    if ( layerNickname( *layer ).compare( nickname ) == 0 )
+    {
+      mlayer = layer;
+      break;
+    }
+  }
+
+  return mlayer;
+}
+
+bool QgsWmsRenderContext::isValidLayer( const QString &nickname ) const
+{
+  return layer( nickname ) != nullptr;
+}
+
+bool QgsWmsRenderContext::isValidGroup( const QString &name ) const
+{
+  return mLayerGroups.contains( name );
+}
+
 void QgsWmsRenderContext::initNicknameLayers()
 {
   for ( QgsMapLayer *ml : mProject->mapLayers() )
