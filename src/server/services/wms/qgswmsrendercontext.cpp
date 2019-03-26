@@ -22,6 +22,8 @@
 
 using namespace QgsWms;
 
+const double OGC_PX_M = 0.00028; // OGC reference pixel size in meter
+
 QgsWmsRenderContext::QgsWmsRenderContext( const QgsProject *project, QgsServerInterface *interface )
   : mProject( project )
   , mInterface( interface )
@@ -146,11 +148,12 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   // Apply DPI parameter if present. This is an extension of QGIS Server
   // compared to WMS 1.3.
   // Because of backwards compatibility, this parameter is optional
-  double OGC_PX_M = 0.00028; // OGC reference pixel size in meter
   int dpm = 1 / OGC_PX_M;
 
   if ( !mParameters.dpi().isEmpty() )
+  {
     dpm = mParameters.dpiAsDouble() / 0.0254;
+  }
 
   return dpm / 1000.0;
 }
@@ -285,18 +288,18 @@ void QgsWmsRenderContext::initRestrictedLayers()
   mRestrictedLayers.clear();
 
   // get name of restricted layers/groups in project
-  QStringList restricted = QgsServerProjectUtils::wmsRestrictedLayers( *mProject );
+  const QStringList restricted = QgsServerProjectUtils::wmsRestrictedLayers( *mProject );
 
   // extract restricted layers from excluded groups
   QStringList restrictedLayersNames;
   QgsLayerTreeGroup *root = mProject->layerTreeRoot();
 
-  for ( const QString &l : restricted )
+  for ( const QString &l : qgis::as_const( restricted ) )
   {
-    QgsLayerTreeGroup *group = root->findGroup( l );
+    const QgsLayerTreeGroup *group = root->findGroup( l );
     if ( group )
     {
-      QList<QgsLayerTreeLayer *> groupLayers = group->findLayers();
+      const QList<QgsLayerTreeLayer *> groupLayers = group->findLayers();
       for ( QgsLayerTreeLayer *treeLayer : groupLayers )
       {
         restrictedLayersNames.append( treeLayer->name() );
@@ -309,7 +312,7 @@ void QgsWmsRenderContext::initRestrictedLayers()
   }
 
   // build output with names, ids or short name according to the configuration
-  QList<QgsLayerTreeLayer *> layers = root->findLayers();
+  const QList<QgsLayerTreeLayer *> layers = root->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
     if ( restrictedLayersNames.contains( layer->name() ) )
@@ -429,7 +432,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         layersFromGroup.push_front( nickname );
       }
 
-      for ( const auto name : layersFromGroup )
+      for ( const auto &name : layersFromGroup )
       {
         mLayersToRender.append( mNicknameLayers[ name ] );
       }
