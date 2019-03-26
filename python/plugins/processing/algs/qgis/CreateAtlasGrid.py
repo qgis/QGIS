@@ -39,6 +39,9 @@ from qgis.core import (QgsRectangle,
                        QgsLayoutItemRegistry,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsCoordinateTransform,
+                       QgsCoordinateTransformContext,
+                       QgsProject,
                        QgsFields,
                        QgsField,
                        QgsWkbTypes,
@@ -106,7 +109,7 @@ class CreateAtlasGrid(QgisAlgorithm):
         self.mapheight = map.extent().height()
         self.mapwidth = map.extent().width()
 
-        self.coverage_layer = self.parameterAsVectorLayer(
+        self.coverage_layer = self.parameterAsSource(
             parameters,
             self.COVERAGE_LAYER,
             context
@@ -121,16 +124,18 @@ class CreateAtlasGrid(QgisAlgorithm):
             self.ONLY_ON_FEATURES,
             context
         )
+
+        self.project = QgsProject.instance()
+        self.mapcrs = map.crs()
         self.coverage = self.coverage_layer.sourceExtent().buffered(coverage_distance)
 
         self.total = (self.coverage.height() / self.mapheight) * (self.coverage.width() / self.mapwidth)
 
-        mapcrs = map.crs()
-        laycrs = self.coverage_layer.crs()
+        laycrs = self.coverage_layer.sourceCrs()
 
-        if mapcrs != laycrs:
-            feedback.reportError('Mixed crs between layer and layout ')
-            feedback.cancel()
+        if laycrs != self.mapcrs:
+            ct = QgsCoordinateTransform(laycrs, self.mapcrs, self.project)
+            self.coverage = ct.transform(self.coverage)
 
         return True
 
@@ -144,7 +149,7 @@ class CreateAtlasGrid(QgisAlgorithm):
             context,
             fields,
             QgsWkbTypes.Polygon,
-            self.coverage_layer.crs()
+            self.mapcrs
         )
 
         if sink is None:
@@ -175,6 +180,7 @@ class CreateAtlasGrid(QgisAlgorithm):
                 output_feature.setAttributes([n])
                 if self.only_on_features:
                     fr = QgsFeatureRequest(geom)
+                    fr.setDestinationCrs(self.mapcrs, self.project.transformContext())
                     fr.setFlags(QgsFeatureRequest.ExactIntersect)
                     fr.setNoAttributes()
                     fr.setLimit(1)
