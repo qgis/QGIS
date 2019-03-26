@@ -24,9 +24,17 @@
 
 namespace QgsWms
 {
+
+  /**
+   * \ingroup server
+   * \class QgsWmsRenderContext
+   * \brief Rendering context for the WMS renderer
+   * \since QGIS 3.8
+   */
   class QgsWmsRenderContext
   {
     public:
+      //! Available rendering options
       enum Flag
       {
         UseScaleDenominator    = 0x01,
@@ -42,39 +50,102 @@ namespace QgsWms
       };
       Q_DECLARE_FLAGS( Flags, Flag )
 
+      /**
+       * Default constructor for QgsWmsRenderContext.
+       */
       QgsWmsRenderContext() = default;
 
+      /**
+       * Constructor for QgsWmsRenderContext.
+       * \param project The project to use for the rendering
+       * \param interface The server interface
+       */
       QgsWmsRenderContext( const QgsProject *project, QgsServerInterface *interface );
 
+      /**
+       * Sets WMS parameters.
+       */
       void setParameters( const QgsWmsParameters &parameters );
 
+      /**
+       * Returns WMS parameters.
+       */
       QgsWmsParameters parameters() const;
 
+      /**
+       * Returns settings of the server.
+       */
       const QgsServerSettings &settings() const;
 
+      /**
+       * Returns the project.
+       */
       const QgsProject *project() const;
 
+      /**
+       * Sets or unsets a rendering flag according to the \a on value.
+       */
       void setFlag( Flag flag, bool on = true );
 
+      /**
+       * Returns the status of a rendering flag.
+       * \param flag The flag to test
+       * \returns true if the rendering option is activated, false otherwise
+       */
       bool testFlag( Flag flag ) const;
 
+      /**
+       * Returns a list of all layers read from the project.
+       */
       QList<QgsMapLayer *> layers() const;
 
+      /**
+       * Returns a list of all layers to actually render according to the
+       * current configuration.
+       */
       QList<QgsMapLayer *> layersToRender() const;
 
+      /**
+       * Returns a SLD document for a specific layer. An empty document is
+       * returned if not available.
+       */
       QDomElement sld( const QgsMapLayer &layer ) const;
 
+      /**
+       * Returns a style's name for a specific layer. An empty string is
+       * returned if not available.
+       */
       QString style( const QgsMapLayer &layer ) const;
 
+      /**
+       * Returns the scale denominator to use for rendering according to the
+       * current configuration.
+       */
       double scaleDenominator() const;
 
+      /**
+       * Sets a custom scale denominator. In this case, layers to render are
+       * updated according to their scale visibility.
+       */
       void setScaleDenominator( double scaleDenominator );
 
+      /**
+       * Returns true if the extent has to be updated before the rendering,
+       * false otherwise.
+       */
       bool updateExtent() const;
 
+      /**
+       * Returns WMS parameters for a specific layer. An empty instance is
+       * returned if not available.
+       */
       QgsWmsParametersLayer parameters( const QgsMapLayer &layer ) const;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+      /**
+       * Returns the access control interface.
+       */
       QgsAccessControl *accessControl();
 #endif
 
