@@ -596,7 +596,19 @@ namespace QgsWms
         }
         else
         {
-          QList<QgsMapLayer *> layerSet = stylizedLayers( cMapParams.mLayers );
+          QList<QgsMapLayer *> layerSet;
+          for ( auto layer : cMapParams.mLayers )
+          {
+            if ( ! mNicknameLayers.contains( layer.mNickname ) )
+            {
+              continue;
+            }
+
+            QgsMapLayer *mlayer = mNicknameLayers[ layer.mNickname ];
+            setLayerStyle( mlayer, layer.mStyle );
+            layerSet << mlayer;
+          }
+
           layerSet << externalLayers( cMapParams.mExternalLayers );
           layerSet << highlightLayers( cMapParams.mHighlightLayers );
           std::reverse( layerSet.begin(), layerSet.end() );
@@ -1208,7 +1220,7 @@ namespace QgsWms
       bool queryableLayer = true;
       for ( QgsMapLayer *layer : layers )
       {
-        if ( queryLayer == layerNickname( *layer ) )
+        if ( queryLayer == mContext.layerNickname( *layer ) )
         {
           validLayer = true;
           queryableLayer = layer->flags().testFlag( QgsMapLayer::Identifiable );
@@ -1488,7 +1500,7 @@ namespace QgsWms
       {
         bool withGeom = layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry;
         int gmlVersion = mWmsParameters.infoFormatVersion();
-        QString typeName = layerNickname( *layer );
+        QString typeName = mContext.layerNickname( *layer );
         QDomElement elem = createFeatureGML(
                              &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, gmlVersion
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1657,7 +1669,7 @@ namespace QgsWms
 
       QgsCoordinateReferenceSystem layerCrs = layer->crs();
       int gmlVersion = mWmsParameters.infoFormatVersion();
-      QString typeName = layerNickname( *layer );
+      QString typeName = mContext.layerNickname( *layer );
       QDomElement elem = createFeatureGML(
                            &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr );
       layerElement.appendChild( elem );
@@ -2101,7 +2113,7 @@ namespace QgsWms
       QgsMapLayer *layer = nullptr;
       for ( QgsMapLayer *l : layers )
       {
-        if ( layerNickname( *l ).compare( layerName ) == 0 )
+        if ( mContext.layerNickname( *l ).compare( layerName ) == 0 )
         {
           layer = l;
         }
@@ -2450,7 +2462,7 @@ namespace QgsWms
     {
       if ( restrictedLayersNames.contains( layer->name() ) )
       {
-        mRestrictedLayers.append( layerNickname( *layer->layer() ) );
+        mRestrictedLayers.append( mContext.layerNickname( *layer->layer() ) );
       }
     }
   }
@@ -2459,7 +2471,7 @@ namespace QgsWms
   {
     for ( QgsMapLayer *ml : mProject->mapLayers() )
     {
-      mNicknameLayers[ layerNickname( *ml ) ] = ml;
+      mNicknameLayers[ mContext.layerNickname( *ml ) ] = ml;
     }
 
     // init groups
@@ -2494,7 +2506,7 @@ namespace QgsWms
     }
   }
 
-  QString QgsRenderer::layerNickname( const QgsMapLayer &layer ) const
+  /*QString QgsRenderer::layerNickname( const QgsMapLayer &layer ) const
   {
     QString name = layer.shortName();
     if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject ) )
@@ -2507,7 +2519,7 @@ namespace QgsWms
     }
 
     return name;
-  }
+  }*/
 
   QList<QgsMapLayer *> QgsRenderer::highlightLayers( QList<QgsWmsParametersHighlightLayer> params )
   {
@@ -2682,58 +2694,6 @@ namespace QgsWms
     return layers;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params )
-  {
-    QList<QgsMapLayer *> layers;
-
-    for ( const QgsWmsParametersLayer &param : params )
-    {
-      QString nickname = param.mNickname;
-      QString style = param.mStyle;
-      if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
-      {
-        if ( !style.isEmpty() )
-        {
-          bool rc = mNicknameLayers[nickname]->styleManager()->setCurrentStyle( style );
-          if ( ! rc )
-          {
-            throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, nickname ) );
-          }
-        }
-
-        layers.append( mNicknameLayers[nickname] );
-      }
-      else if ( mLayerGroups.contains( nickname ) )
-      {
-        // Reverse order of layers from a group
-        QList<QgsMapLayer *> layersFromGroup;
-        for ( QgsMapLayer *layer : mLayerGroups[nickname] )
-        {
-          if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
-          {
-            if ( !style.isEmpty() )
-            {
-              bool rc = layer->styleManager()->setCurrentStyle( style );
-              if ( ! rc )
-              {
-                throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layerNickname( *layer ) ) );
-              }
-            }
-            layersFromGroup.push_front( layer );
-          }
-        }
-        layers.append( layersFromGroup );
-      }
-      else
-      {
-        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                      QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
-      }
-    }
-
-    return layers;
-  }
-
   void QgsRenderer::removeTemporaryLayers()
   {
     qDeleteAll( mTemporaryLayers );
@@ -2767,7 +2727,7 @@ namespace QgsWms
         QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
         if ( errorLayer )
         {
-          layerWMSName = layerNickname( *errorLayer );
+          layerWMSName = mContext.layerNickname( *errorLayer );
         }
 
         //Log first error

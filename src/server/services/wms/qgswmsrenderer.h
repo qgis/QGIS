@@ -128,18 +128,11 @@ namespace QgsWms
 
       void initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName );
 
-      // Return the nickname of the layer (short name, id or name according to
-      // the project configuration)
-      QString layerNickname( const QgsMapLayer &layer ) const;
-
       // Rendering step for layers
       QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest = nullptr ) const;
 
       // Rendering step for annotations
       void annotationsRendering( QPainter *painter ) const;
-
-      // Return a list of layers stylized with LAYERS/STYLES parameters
-      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params );
 
       // Set layer opacity
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;

@@ -152,6 +152,12 @@ namespace QgsWms
        */
       int precision() const;
 
+      /**
+       * Returns the nickname (short name, id or name) of the layer according
+       * to the current configuration.
+       */
+      QString layerNickname( const QgsMapLayer &layer ) const;
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
       /**
@@ -161,8 +167,6 @@ namespace QgsWms
 #endif
 
     private:
-      QString layerNickname( const QgsMapLayer &layer ) const;
-
       void initNicknameLayers();
       void initRestrictedLayers();
       void initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName );
