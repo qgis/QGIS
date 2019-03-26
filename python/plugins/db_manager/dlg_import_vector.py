@@ -132,7 +132,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         for nodeLayer in QgsProject.instance().layerTreeRoot().findLayers():
             layer = nodeLayer.layer()
             # TODO: add import raster support!
-            if layer.type() == QgsMapLayer.VectorLayer:
+            if layer.type() == QgsMapLayerType.VectorLayer:
                 self.cboInputLayer.addItem(layer.name(), layer.id())
 
     def deleteInputLayer(self):
@@ -177,7 +177,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             layerName = QFileInfo(filename).completeBaseName()
             layer = QgsVectorLayer(filename, layerName, "ogr")
-            if not layer.isValid() or layer.type() != QgsMapLayer.VectorLayer:
+            if not layer.isValid() or layer.type() != QgsMapLayerType.VectorLayer:
                 layer.deleteLater()
                 return False
 

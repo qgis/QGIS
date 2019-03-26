@@ -403,7 +403,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         from qgis.core import QgsMapLayer
 
-        layerType = QgsMapLayer.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayer.RasterLayer
+        layerType = QgsMapLayerType.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayerType.RasterLayer
 
         # get a new layer name
         names = []

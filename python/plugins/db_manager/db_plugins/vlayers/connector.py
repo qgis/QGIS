@@ -194,7 +194,7 @@ class VLayerConnector(DBConnector):
         VLayerRegistry.instance().reset()
         lst = []
         for _, l in QgsProject.instance().mapLayers().items():
-            if l.type() == QgsMapLayer.VectorLayer:
+            if l.type() == QgsMapLayerType.VectorLayer:
 
                 lname = l.name()
                 # if there is already a layer with this name, use the layer id

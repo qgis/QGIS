@@ -289,7 +289,7 @@ class ProcessingPlugin:
 
         old_enabled_state = self.editInPlaceAction.isEnabled()
 
-        new_enabled_state = layer is not None and layer.type() == QgsMapLayer.VectorLayer
+        new_enabled_state = layer is not None and layer.type() == QgsMapLayerType.VectorLayer
         self.editInPlaceAction.setEnabled(new_enabled_state)
 
         if new_enabled_state != old_enabled_state:

@@ -138,7 +138,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.in_place_mode = enabled
 
     def layer_changed(self, layer):
-        if layer is None or layer.type() != QgsMapLayer.VectorLayer:
+        if layer is None or layer.type() != QgsMapLayerType.VectorLayer:
             return
         self.algorithmTree.setInPlaceLayer(layer)
 

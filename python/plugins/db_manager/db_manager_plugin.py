@@ -56,7 +56,7 @@ class DBManagerPlugin(object):
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
-        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayer.VectorLayer, False)
+        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayerType.VectorLayer, False)
         for l in list(QgsProject.instance().mapLayers().values()):
             self.onLayerWasAdded(l)
         QgsProject.instance().layerWasAdded.connect(self.onLayerWasAdded)

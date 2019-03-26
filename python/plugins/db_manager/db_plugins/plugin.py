@@ -290,7 +290,7 @@ class Database(DbItemObject):
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
-        if layerType == QgsMapLayer.RasterLayer:
+        if layerType == QgsMapLayerType.RasterLayer:
             return QgsRasterLayer(uri.uri(False), layerName, provider)
         return QgsVectorLayer(uri.uri(False), layerName, provider)
 

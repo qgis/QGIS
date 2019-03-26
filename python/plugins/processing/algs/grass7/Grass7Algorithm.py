@@ -479,10 +479,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 for idx, layer in enumerate(layers):
                     layerName = '{}_{}'.format(paramName, idx)
                     # Add a raster layer
-                    if layer.type() == QgsMapLayer.RasterLayer:
+                    if layer.type() == QgsMapLayerType.RasterLayer:
                         self.loadRasterLayer(layerName, layer)
                     # Add a vector layer
-                    elif layer.type() == QgsMapLayer.VectorLayer:
+                    elif layer.type() == QgsMapLayerType.VectorLayer:
                         self.loadVectorLayer(layerName, layer, external=None, feedback=feedback)
 
         self.postInputs()

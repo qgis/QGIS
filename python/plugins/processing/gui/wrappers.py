@@ -1133,7 +1133,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 filters = QgsMapLayerProxyModel.VectorLayer
 
             try:
-                if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
+                if iface.activeLayer().type() == QgsMapLayerType.VectorLayer:
                     self.combo.setLayer(iface.activeLayer())
                     self.use_selection_checkbox.setEnabled(iface.activeLayer().selectedFeatureCount() > 0)
 
@@ -1184,7 +1184,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             return widget
 
     def layerChanged(self, layer):
-        if layer is None or layer.type() != QgsMapLayer.VectorLayer or layer.selectedFeatureCount() == 0:
+        if layer is None or layer.type() != QgsMapLayerType.VectorLayer or layer.selectedFeatureCount() == 0:
             self.use_selection_checkbox.setChecked(False)
             self.use_selection_checkbox.setEnabled(False)
         else:
@@ -1470,7 +1470,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
 
             self.combo.setExcludedProviders(['grass'])
             try:
-                if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
+                if iface.activeLayer().type() == QgsMapLayerType.VectorLayer:
                     self.combo.setLayer(iface.activeLayer())
             except:
                 pass

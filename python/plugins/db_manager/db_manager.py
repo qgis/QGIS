@@ -172,7 +172,7 @@ class DBManager(QMainWindow):
             return
 
         inLayer = table.toMapLayer()
-        if inLayer.type() != QgsMapLayer.VectorLayer:
+        if inLayer.type() != QgsMapLayerType.VectorLayer:
             self.infoBar.pushMessage(
                 self.tr("Select a vector or a tabular layer you want export."),
                 Qgis.Warning, self.iface.messageTimeout())
