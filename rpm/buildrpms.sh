@@ -38,9 +38,18 @@ Usage:
 '
 }
 
+function compress
+{
+  if command -v pbzip2 &> /dev/null; then
+    echo 'pbzip2'
+  else
+    echo 'bzip2'
+  fi
+}
+
 if [ $_MOCK_OLD_CHROOT ]
 then
-    mock_args="--old-chroot"
+  mock_args="--old-chroot"
 fi
 
 relver=1
@@ -133,7 +142,7 @@ then
 
   print_info "Creating source tarball"
   # Create source tarball
-  git -C .. archive --format=tar --prefix=qgis-$version/ HEAD | bzip2 > sources/qgis-$version.tar.bz2
+  git -C .. archive --format=tar --prefix=qgis-$version/ HEAD | compress > sources/qgis-$version.tar.bz2
 
   print_info "Creating source package"
   # Build source package
@@ -148,7 +157,7 @@ then
   fi
 
   srpm=$(grep -e 'Wrote: .*\.src\.rpm' $OUTDIR/build.log |
-      sed 's_Wrote: /builddir/build/SRPMS/\(.*\)_\1_')
+         sed 's_Wrote: /builddir/build/SRPMS/\(.*\)_\1_')
 
   print_info "Source package created: $srpm"
 fi
