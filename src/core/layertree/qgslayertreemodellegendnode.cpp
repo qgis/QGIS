@@ -638,7 +638,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
 QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context ) const
 {
-  context = ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer ) ? createExpressionContext( context ) : vl->createExpressionContext( context );
+  context = ( mLayerNode->layer()->type() == QgsMapLayerType::VectorLayer ) ? createExpressionContext( context ) : vl->createExpressionContext( context );
   label = QgsExpression().replaceExpressionText( label, &context );
   return label;
 }
