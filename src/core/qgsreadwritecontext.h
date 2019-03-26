@@ -118,7 +118,7 @@ class CORE_EXPORT QgsReadWriteContext
     /**
      * Returns data provider coordinate transform context
      *
-     * \see setTranformContext()
+     * \see setTransformContext()
      *
      * \since QGIS 3.10
      */
