@@ -617,6 +617,15 @@ Returns the layer's spatial reference system.
 Sets layer's spatial reference system
 %End
 
+    QgsCoordinateTransformContext transformContext( ) const;
+%Docstring
+Returns the layer data provider coordinate transform context
+or a default transform context if the layer does not have a valid data provider.
+
+.. versionadded:: 3.10
+%End
+
+
     static QString formatLayerName( const QString &name );
 %Docstring
 A convenience function to capitalize and format a layer ``name``.

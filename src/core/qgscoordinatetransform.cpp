@@ -52,20 +52,6 @@ QgsCoordinateTransform::QgsCoordinateTransform()
   d = new QgsCoordinateTransformPrivate();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
-{
-  d = new QgsCoordinateTransformPrivate( source, destination, QgsCoordinateTransformContext() );
-
-  if ( !d->checkValidity() )
-    return;
-
-  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
-  {
-    d->initialize();
-    addToCache();
-  }
-}
-
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
 {
   mContext = context;
