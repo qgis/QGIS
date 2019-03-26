@@ -935,7 +935,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
       QgsReadWriteContext context;
       context.setPathResolver( pathResolver() );
       context.setProjectTranslator( this );
-      context.setCoordinateTransformContext( transformContext() );
+      context.setTransformContext( transformContext() );
 
       if ( !addLayer( element, brokenNodes, context ) )
       {
@@ -1660,7 +1660,7 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
   context.setProjectTranslator( this );
-  context.setCoordinateTransformContext( transformContext() );
+  context.setTransformContext( transformContext() );
   QList<QDomNode> brokenNodes;
   if ( addLayer( layerNode.toElement(), brokenNodes, context ) )
   {
@@ -1708,7 +1708,7 @@ bool QgsProject::write()
     }
 
     QgsReadWriteContext context;
-    context.setCoordinateTransformContext( transformContext() );
+    context.setTransformContext( transformContext() );
     if ( !storage->writeProject( mFile.fileName(), &tmpZipFile, context ) )
     {
       QString err = tr( "Unable to save project to storage %1" ).arg( mFile.fileName() );
@@ -1765,7 +1765,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
-  context.setCoordinateTransformContext( transformContext() );
+  context.setTransformContext( transformContext() );
 
   QDomImplementation DomImplementation;
   DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
@@ -2321,7 +2321,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   if ( !useAbsolutePaths )
     embeddedContext.setPathResolver( QgsPathResolver( projectFilePath ) );
   embeddedContext.setProjectTranslator( this );
-  embeddedContext.setCoordinateTransformContext( transformContext() );
+  embeddedContext.setTransformContext( transformContext() );
 
   QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )
@@ -2379,7 +2379,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
   context.setProjectTranslator( this );
-  context.setCoordinateTransformContext( transformContext() );
+  context.setTransformContext( transformContext() );
 
   QgsLayerTreeGroup *root = new QgsLayerTreeGroup;
 

@@ -56,14 +56,14 @@ void QgsReadWriteContext::leaveCategory()
     mCategories.pop_back();
 }
 
-QgsCoordinateTransformContext QgsReadWriteContext::coordinateTransformContext() const
+QgsCoordinateTransformContext QgsReadWriteContext::transformContext() const
 {
   return mCoordinateTransformContext;
 }
 
-void QgsReadWriteContext::setCoordinateTransformContext( const QgsCoordinateTransformContext &value )
+void QgsReadWriteContext::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
-  mCoordinateTransformContext = value;
+  mCoordinateTransformContext = transformContext;
 }
 
 void QgsReadWriteContext::setProjectTranslator( QgsProjectTranslator *projectTranslator )
