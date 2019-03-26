@@ -8,5 +8,5 @@ QgsAdvancedDigitizingDockWidget.Perpendicular = QgsAdvancedDigitizingDockWidget.
 QgsAdvancedDigitizingDockWidget.AdditionalConstraint.Perpendicular.__doc__ = "Perpendicular"
 QgsAdvancedDigitizingDockWidget.Parallel = QgsAdvancedDigitizingDockWidget.AdditionalConstraint.Parallel
 QgsAdvancedDigitizingDockWidget.AdditionalConstraint.Parallel.__doc__ = "Parallel"
-QgsAdvancedDigitizingDockWidget.AdditionalConstraint.__doc__ = 'Additional constraints which can be enabled\n\n' + '* NoConstraint: ' + QgsAdvancedDigitizingDockWidget.AdditionalConstraint.NoConstraint.__doc__ + '\n' + '* Perpendicular: ' + QgsAdvancedDigitizingDockWidget.AdditionalConstraint.Perpendicular.__doc__ + '\n' + '* Parallel: ' + QgsAdvancedDigitizingDockWidget.AdditionalConstraint.Parallel.__doc__
+QgsAdvancedDigitizingDockWidget.AdditionalConstraint.__doc__ = 'Additional constraints which can be enabled\n\n' + '* ``NoConstraint``: ' + QgsAdvancedDigitizingDockWidget.AdditionalConstraint.NoConstraint.__doc__ + '\n' + '* ``Perpendicular``: ' + QgsAdvancedDigitizingDockWidget.AdditionalConstraint.Perpendicular.__doc__ + '\n' + '* ``Parallel``: ' + QgsAdvancedDigitizingDockWidget.AdditionalConstraint.Parallel.__doc__
 # --
