@@ -535,7 +535,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Sets data coordinate transform context to \a transformContext
      *
      * The default implementation is a simple setter, subclasses may override to perform
-     * additional actions required by a change of coordinate tranform context.
+     * additional actions required by a change of coordinate transform context.
      *
      * \see transformContext()
      *
