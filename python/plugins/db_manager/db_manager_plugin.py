@@ -25,7 +25,12 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsProject, QgsMapLayer, QgsDataSourceUri, QgsApplication
+from qgis.core import (
+    QgsProject,
+    QgsMapLayerType,
+    QgsDataSourceUri,
+    QgsApplication
+)
 
 from . import resources_rc  # NOQA
 

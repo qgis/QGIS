@@ -32,7 +32,12 @@ from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardI
 from qgis.PyQt.Qsci import QsciAPIs
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import QgsProject, QgsDataSourceUri, QgsReadWriteContext
+from qgis.core import (
+    QgsProject,
+    QgsDataSourceUri,
+    QgsReadWriteContext,
+    QgsMapLayerType
+)
 from qgis.utils import OverrideCursor
 
 from .db_plugins import createDbPlugin

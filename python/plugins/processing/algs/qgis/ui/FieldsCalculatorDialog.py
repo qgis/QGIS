@@ -41,7 +41,7 @@ from qgis.core import (Qgis,
                        QgsProperty,
                        QgsProject,
                        QgsMessageLog,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsProcessingOutputLayerDefinition)
 from qgis.gui import QgsEncodingFileDialog, QgsGui
 from qgis.utils import OverrideCursor, iface

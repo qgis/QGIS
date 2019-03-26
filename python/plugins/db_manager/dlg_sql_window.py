@@ -33,7 +33,13 @@ from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputD
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.Qsci import QsciAPIs
 
-from qgis.core import QgsProject, QgsApplication, QgsTask, QgsSettings
+from qgis.core import (
+    QgsProject,
+    QgsApplication,
+    QgsTask,
+    QgsSettings,
+    QgsMapLayerType
+)
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError

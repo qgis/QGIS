@@ -27,7 +27,12 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMes
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsApplication, QgsSettings
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsMapLayerType
+)
 from ..db_plugins import createDbPlugin
 
 

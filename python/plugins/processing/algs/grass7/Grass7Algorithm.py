@@ -36,7 +36,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.core import (Qgis,
                        QgsRasterLayer,
                        QgsApplication,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsProcessingUtils,
                        QgsProcessing,
                        QgsMessageLog,

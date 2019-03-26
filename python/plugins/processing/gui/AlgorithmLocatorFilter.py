@@ -33,7 +33,7 @@ from qgis.core import (QgsApplication,
                        QgsLocatorResult,
                        QgsProcessing,
                        QgsWkbTypes,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsFields)
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.MessageDialog import MessageDialog

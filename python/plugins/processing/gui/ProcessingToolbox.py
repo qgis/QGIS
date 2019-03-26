@@ -34,7 +34,7 @@ from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction
 from qgis.utils import iface
 from qgis.core import (QgsWkbTypes,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsApplication,
                        QgsProcessingAlgorithm)
 from qgis.gui import (QgsGui,

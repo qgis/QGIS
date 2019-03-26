@@ -36,7 +36,7 @@ from qgis.core import (QgsApplication,
                        QgsDataItemProvider,
                        QgsDataProvider,
                        QgsDataItem,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsMimeDataUtils)
 from qgis.gui import (QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)

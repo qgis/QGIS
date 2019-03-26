@@ -29,7 +29,7 @@ from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from qgis.core import (QgsDataSourceUri,
                        QgsVectorLayer,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsProviderRegistry,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayerExporter,

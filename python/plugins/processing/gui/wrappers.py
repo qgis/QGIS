@@ -44,7 +44,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsSettings,
     QgsProject,
-    QgsMapLayer,
+    QgsMapLayerType,
     QgsVectorLayer,
     QgsProcessing,
     QgsProcessingUtils,
