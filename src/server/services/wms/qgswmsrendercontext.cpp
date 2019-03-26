@@ -141,6 +141,20 @@ int QgsWmsRenderContext::precision() const
   return precision;
 }
 
+qreal QgsWmsRenderContext::dotsPerMm() const
+{
+  // Apply DPI parameter if present. This is an extension of QGIS Server
+  // compared to WMS 1.3.
+  // Because of backwards compatibility, this parameter is optional
+  double OGC_PX_M = 0.00028; // OGC reference pixel size in meter
+  int dpm = 1 / OGC_PX_M;
+
+  if ( !mParameters.dpi().isEmpty() )
+    dpm = mParameters.dpiAsDouble() / 0.0254;
+
+  return dpm / 1000.0;
+}
+
 QList<QgsMapLayer *> QgsWmsRenderContext::layersToRender() const
 {
   return mLayersToRender;

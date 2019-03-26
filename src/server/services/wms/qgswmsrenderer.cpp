@@ -161,7 +161,7 @@ namespace QgsWms
     legendModel.reset( buildLegendTreeModel( layers, mContext.scaleDenominator(), rootGroup ) );
 
     // rendering step
-    qreal dpmm = dotsPerMm();
+    const qreal dpmm = mContext.dotsPerMm();
     std::unique_ptr<QImage> image;
     std::unique_ptr<QPainter> painter;
 
@@ -1014,15 +1014,10 @@ namespace QgsWms
       throw QgsException( QStringLiteral( "createImage: image could not be created, check for out of memory conditions" ) );
     }
 
-    //apply DPI parameter if present. This is an extension of Qgis Mapserver compared to WMS 1.3.
-    //Because of backwards compatibility, this parameter is optional
-    double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
-    int dpm = 1 / OGC_PX_M;
-    if ( !mWmsParameters.dpi().isEmpty() )
-      dpm = mWmsParameters.dpiAsDouble() / 0.0254;
-
+    const qreal dpm = mContext.dotsPerMm() * 1000.0;
     image->setDotsPerMeterX( dpm );
     image->setDotsPerMeterY( dpm );
+
     return image.release();
   }
 
@@ -3018,12 +3013,6 @@ namespace QgsWms
     }
 
     return legendModel;
-  }
-
-  qreal QgsRenderer::dotsPerMm() const
-  {
-    std::unique_ptr<QImage> tmpImage( createImage( 1, 1, false ) );
-    return tmpImage->dotsPerMeterX() / 1000.0;
   }
 
   void QgsRenderer::handlePrintErrors( const QgsLayout *layout ) const

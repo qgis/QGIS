@@ -155,9 +155,6 @@ namespace QgsWms
       // Build a layer tree model for legend
       QgsLayerTreeModel *buildLegendTreeModel( const QList<QgsMapLayer *> &layers, double scaleDenominator, QgsLayerTree &rootGroup );
 
-      // Returns default dots per mm
-      qreal dotsPerMm() const;
-
       /**
        * Creates a QImage from the HEIGHT and WIDTH parameters
        * \param width image width (or -1 if width should be taken from WIDTH wms parameter)

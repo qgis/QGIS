@@ -158,6 +158,11 @@ namespace QgsWms
        */
       QString layerNickname( const QgsMapLayer &layer ) const;
 
+      /**
+       * Returns default dots per mm according to the current configuration.
+       */
+      qreal dotsPerMm() const;
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
       /**
