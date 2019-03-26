@@ -782,6 +782,11 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
     emit crsChanged();
 }
 
+QgsCoordinateTransformContext QgsMapLayer::transformContext() const
+{
+  return dataProvider() ? dataProvider()->transformContext() : QgsCoordinateTransformContext();
+}
+
 QString QgsMapLayer::formatLayerName( const QString &name )
 {
   QString layerName( name );

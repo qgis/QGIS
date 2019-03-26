@@ -613,6 +613,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal = true );
 
     /**
+     * Returns the layer data provider coordinate transform context
+     * or a default transform context if the layer does not have a valid data provider.
+    \since QGIS 3.10
+     */
+    QgsCoordinateTransformContext transformContext( ) const;
+
+
+    /**
      * A convenience function to capitalize and format a layer \a name.
      *
      * \since QGIS 3.0
