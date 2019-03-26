@@ -100,6 +100,21 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     double circleRadiusAddition() const { return mCircleRadiusAddition; }
 
     /**
+     * Sets a factor for increasing the label distances from the symbol.
+     * \param factor addition factor
+     * \see labelDistanceFactor()
+     * \since QGIS 3.8
+     */
+    void setLabelDistanceFactor( double factor ) { mLabelDistanceFactor = factor; }
+
+    /**
+     * Returns the factor for label distance from the symbol.
+     * \see setLabelDistanceFactor()
+     * \since QGIS 3.8
+     */
+    double labelDistanceFactor() const { return mLabelDistanceFactor; }
+
+    /**
      * Returns the placement method used for dispersing the points.
      * \see setPlacement()
      * \since QGIS 2.12
@@ -152,12 +167,14 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     QColor mCircleColor;
     //! Addition to the default circle radius
     double mCircleRadiusAddition = 0;
+    //! Factor for label distance
+    double mLabelDistanceFactor = 0.5;
 
     void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
 
     //helper functions
     void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius,
-                                           double &gridRadius, int &gridSize ) const;
+                                           double &gridRadius, int &gridSize, QVector<double> &diagonals ) const;
     void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext &context, QPointF centerPoint, int nSymbols );
     void drawSymbols( const ClusteredGroup &group, QgsRenderContext &context, const QList<QPointF> &symbolPositions );
     void drawGrid( int gridSizeUnits, QgsSymbolRenderContext &context,

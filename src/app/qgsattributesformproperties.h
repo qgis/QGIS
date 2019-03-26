@@ -74,6 +74,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       QString qmlCode;
     };
 
+    struct HtmlElementEditorConfiguration
+    {
+      QString htmlCode;
+    };
+
     class DnDTreeItemData : public QTreeWidgetItem
     {
       public:
@@ -82,7 +87,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
           Field,
           Relation,
           Container,
-          QmlWidget
+          QmlWidget,
+          HtmlWidget
         };
 
         //do we need that
@@ -124,6 +130,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
         void setQmlElementEditorConfiguration( QmlElementEditorConfiguration qmlElementEditorConfiguration );
 
+        HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
+        void setHtmlElementEditorConfiguration( HtmlElementEditorConfiguration htmlElementEditorConfiguration );
+
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
 
@@ -138,6 +147,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;
+        HtmlElementEditorConfiguration mHtmlElementEditorConfiguration;
         QColor mBackgroundColor;
     };
 

@@ -33,6 +33,7 @@ class QgsVectorLayer;
 % ModuleCode
 #include "qgsrelationwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
+#include "qgshtmlwidgetwrapper.h"
 % End
 #endif
 
@@ -59,6 +60,8 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
       sipType = sipType_QgsRelationWidgetWrapper;
     else if ( qobject_cast<QgsQmlWidgetWrapper *>( sipCpp ) )
       sipType = sipType_QgsQmlWidgetWrapper;
+    else if ( qobject_cast<QgsHtmlWidgetWrapper *>( sipCpp ) )
+      sipType = sipType_QgsHtmlWidgetWrapper;
     else
       sipType = 0;
     SIP_END
