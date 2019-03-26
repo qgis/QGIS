@@ -112,12 +112,6 @@ namespace QgsWms
        */
       QByteArray getFeatureInfo( const QString &version = "1.3.0" );
 
-      //! Returns the image quality to use for getMap request
-      int imageQuality() const;
-
-      //! Returns the precision to use for GetFeatureInfo request
-      int wmsPrecision() const;
-
     private:
 
       // Init the restricted layers with nicknames

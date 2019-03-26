@@ -1554,10 +1554,10 @@ namespace QgsWms
         {
           QDomElement bBoxElem = infoDocument.createElement( QStringLiteral( "BoundingBox" ) );
           bBoxElem.setAttribute( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS", outputCrs.authid() );
-          bBoxElem.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( box.xMinimum(), wmsPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( box.xMaximum(), wmsPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( box.yMinimum(), wmsPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( box.yMaximum(), wmsPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( box.xMinimum(), mContext.precision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( box.xMaximum(), mContext.precision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( box.yMinimum(), mContext.precision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( box.yMaximum(), mContext.precision() ) );
           featureElement.appendChild( bBoxElem );
         }
 
@@ -1588,7 +1588,7 @@ namespace QgsWms
             }
             QDomElement geometryElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
             geometryElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
-            geometryElement.setAttribute( QStringLiteral( "value" ), geom.asWkt( wmsPrecision() ) );
+            geometryElement.setAttribute( QStringLiteral( "value" ), geom.asWkt( mContext.precision() ) );
             geometryElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "derived" ) );
             featureElement.appendChild( geometryElement );
           }
@@ -2260,11 +2260,11 @@ namespace QgsWms
       QDomElement boxElem;
       if ( version < 3 )
       {
-        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, wmsPrecision() );
+        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, mContext.precision() );
       }
       else
       {
-        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, wmsPrecision() );
+        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, mContext.precision() );
       }
 
       if ( crs.isValid() )
@@ -2288,11 +2288,11 @@ namespace QgsWms
       QDomElement gmlElem;
       if ( version < 3 )
       {
-        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, wmsPrecision() );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, mContext.precision() );
       }
       else
       {
-        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), wmsPrecision() );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), mContext.precision() );
       }
 
       if ( !gmlElem.isNull() )
@@ -2363,34 +2363,6 @@ namespace QgsWms
       value = value.mid( 1, value.size() - 2 );
     }
     return value;
-  }
-
-  int QgsRenderer::imageQuality() const
-  {
-    // First taken from QGIS project
-    int imageQuality = QgsServerProjectUtils::wmsImageQuality( *mProject );
-
-    // Then checks if a parameter is given, if so use it instead
-    if ( !mWmsParameters.imageQuality().isEmpty() )
-    {
-      imageQuality = mWmsParameters.imageQualityAsInt();
-    }
-
-    return imageQuality;
-  }
-
-  int QgsRenderer::wmsPrecision() const
-  {
-    // First taken from QGIS project and the default value is 6
-    int WMSPrecision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );
-
-    // Then checks if a parameter is given, if so use it instead
-    int WMSPrecisionParameter = mWmsParameters.wmsPrecisionAsInt();
-
-    if ( WMSPrecisionParameter > -1 )
-      return WMSPrecisionParameter;
-    else
-      return WMSPrecision;
   }
 
   QgsRectangle QgsRenderer::featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &mapSettings, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const

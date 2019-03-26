@@ -117,6 +117,30 @@ QgsWmsParametersLayer QgsWmsRenderContext::parameters( const QgsMapLayer &layer 
   return parameters;
 }
 
+int QgsWmsRenderContext::imageQuality() const
+{
+  int imageQuality = QgsServerProjectUtils::wmsImageQuality( *mProject );
+
+  if ( !mParameters.imageQuality().isEmpty() )
+  {
+    imageQuality = mParameters.imageQualityAsInt();
+  }
+
+  return imageQuality;
+}
+
+int QgsWmsRenderContext::precision() const
+{
+  int precision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );
+
+  if ( mParameters.wmsPrecisionAsInt() > -1 )
+  {
+    precision = mParameters.wmsPrecisionAsInt();
+  }
+
+  return precision;
+}
+
 QList<QgsMapLayer *> QgsWmsRenderContext::layersToRender() const
 {
   return mLayersToRender;

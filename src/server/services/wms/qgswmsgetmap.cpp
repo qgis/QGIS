@@ -52,7 +52,7 @@ namespace QgsWms
     if ( result )
     {
       const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
-      writeImage( response, *result, format, renderer.imageQuality() );
+      writeImage( response, *result, format, context.imageQuality() );
     }
     else
     {
@@ -60,9 +60,4 @@ namespace QgsWms
                                  QStringLiteral( "Failed to compute GetMap image" ) );
     }
   }
-
 } // namespace QgsWms
-
-
-
-

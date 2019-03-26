@@ -141,6 +141,17 @@ namespace QgsWms
        */
       QgsWmsParametersLayer parameters( const QgsMapLayer &layer ) const;
 
+      /**
+       * Returns the image quality to use for rendering according to the
+       * current configuration.
+       */
+      int imageQuality() const;
+
+      /**
+       * Returns the precision to use according to the current configuration.
+       */
+      int precision() const;
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
       /**
