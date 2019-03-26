@@ -118,20 +118,20 @@ class CORE_EXPORT QgsReadWriteContext
     /**
      * Returns data provider coordinate transform context
      *
-     * \see setCoordinateTranformContext()
+     * \see setTranformContext()
      *
      * \since QGIS 3.10
      */
-    QgsCoordinateTransformContext coordinateTransformContext() const;
+    QgsCoordinateTransformContext transformContext() const;
 
     /**
-     * Sets data coordinate transform context to \a coordinateTransformContext
+     * Sets data coordinate transform context to \a transformContext
      *
-     * \see coordinateTransformContext()
+     * \see transformContext()
      *
      * \since QGIS 3.10
      */
-    void setCoordinateTransformContext( const QgsCoordinateTransformContext &coordinateTransformContext );
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
   private:
 
