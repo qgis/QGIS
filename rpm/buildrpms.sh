@@ -47,19 +47,16 @@ Usage:
 '
 }
 
-function compress
-{
-  if command -v pbzip2 &> /dev/null
-  then
-    echo 'pbzip2'
-  else
-    echo 'bzip2'
-  fi
-}
-
 if [ $_MOCK_OLD_CHROOT ]
 then
   mock_args="--old-chroot"
+fi
+
+if command -v pbzip2 &> /dev/null
+then
+  bzip2_cmd="pbzip2"
+else
+  bzip2_cmd="bzip2"
 fi
 
 relver=1
@@ -117,13 +114,6 @@ else
   timestamp=$(date +'%s')
 fi
 
-# Clean logfiles
-if [ -f $OUTDIR/build.log ]
-then
-  print_info "Cleaning log file"
-  rm $OUTDIR/build.log
-fi
-
 # Get the version string
 major=$(grep -e 'SET(CPACK_PACKAGE_VERSION_MAJOR' ../CMakeLists.txt |
         sed -r 's/.*\"([0-9]+)\".*/\1/g')
@@ -137,6 +127,12 @@ version=$major.$minor.$patch
 print_info "Building version $version-$relver"
 if [ "$build_only" -ne "1" ]
 then
+  # Clean logfiles
+  if [ -f $OUTDIR/build.log ]
+  then
+    print_info "Cleaning log file"
+    rm $OUTDIR/build.log
+  fi
   print_info "Creating spec file from template"
   # Create spec file
   cat qgis.spec.template \
@@ -152,7 +148,7 @@ then
 
   print_info "Creating source tarball"
   # Create source tarball
-  git -C .. archive --format=tar --prefix=qgis-$version/ HEAD | $(compress) > sources/qgis-$version.tar.bz2
+  git -C .. archive --format=tar --prefix=qgis-$version/ HEAD | $bzip2_cmd > sources/qgis-$version.tar.bz2
 
   print_info "Creating source package"
   # Build source package
@@ -165,12 +161,11 @@ then
     print_error "Creating source package failed"
     exit 1
   fi
-
-  print_info "Source package created: $srpm"
+  print_info "Source package created"
 fi
 
-srpm="$(ls -t $OUTDIR/qgis-$version-$relver.*.src.rpm | head -n 1 ||
-        (print_error "Source package unavailable. Abort"; exit 1))"
+srpm=$(grep -e 'Wrote: .*\.src\.rpm' $OUTDIR/build.log 2>/dev/null |
+       sed 's_Wrote: /builddir/build/SRPMS/\(.*\)_\1_')
 
 if [ "$srpm_only" -eq "1" ]
 then
@@ -180,29 +175,34 @@ fi
 # Create packages for every ARCH defined in the config file
 for arch in "${ARCHS[@]}"
 do :
-  print_info "Building packages for $arch"
-  if [ -d $OUTDIR/$arch ]
+  if [ -f $OUTDIR/$srpm ]
   then
-    if [ -f $OUTDIR/$arch/build.log ]
+    print_info "Building $srpm for $arch"
+    if [ -d $OUTDIR/$arch ]
     then
-      print_info "Cleaning log file"
-      rm $OUTDIR/$arch/build.log
+      if [ -f $OUTDIR/$arch/build.log ]
+      then
+        print_info "Cleaning log file"
+        rm $OUTDIR/$arch/build.log
+      fi
+    else
+      mkdir $OUTDIR/$arch
+    fi
+    if ! mock -r $arch --rebuild $OUTDIR/$srpm \
+         --define "_relver $relver" \
+         --define "_version $version" \
+         --define "_timestamp $timestamp" \
+         --resultdir=$OUTDIR/$arch $mock_args
+    then
+      print_error "Package creation for $arch failed. Abort"
+      exit 1
+    else
+      # Add to package list
+      packages="$packages $(ls $OUTDIR/$arch/*-$version-$relver.*.rpm)"
     fi
   else
-    mkdir $OUTDIR/$arch
-  fi
-
-  if ! mock -r $arch --rebuild $srpm \
-       --define "_relver $relver" \
-       --define "_version $version" \
-       --define "_timestamp $timestamp" \
-       --resultdir=$OUTDIR/$arch $mock_args
-  then
-    print_error "Package creation for $arch failed. Abort"
+    print_error "Source package unavailable. Abort"
     exit 1
-  else
-    # Add to package list
-    packages="$packages $(ls $OUTDIR/$arch/*-$version-$relver.*.rpm)"
   fi
 done
 
