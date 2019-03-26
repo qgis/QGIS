@@ -63,8 +63,16 @@ namespace QgsWms
   {
     public:
 
+      /**
+       * Constructor for QgsRenderer.
+       * \param context The rendering context.
+       * \since QGIS 3.8
+       */
       QgsRenderer( const QgsWmsRenderContext &context );
 
+      /**
+       * Destructor for QgsRenderer.
+       */
       ~QgsRenderer();
 
       /**
