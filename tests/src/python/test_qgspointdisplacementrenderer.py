@@ -28,7 +28,7 @@ import qgis  # NOQA
 import os
 
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize, QThreadPool
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsVectorLayer,
@@ -86,6 +86,11 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
     def _tearDown(self, layer):
         #QgsProject.instance().removeAllMapLayers()
         QgsProject.instance().removeMapLayer(layer)
+
+    @classmethod
+    def tearDownClass(cls):
+        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
+        QThreadPool.globalInstance().waitForDone()
 
     def _setProperties(self, r):
         """ set properties for a renderer for testing with _checkProperties"""
@@ -326,7 +331,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         layer.renderer().setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('displacement_renderer') 
+        renderchecker.setControlPathPrefix('displacement_renderer')
         renderchecker.setControlName('expected_displacement_cluster_concentric_labels_diff_size')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels_diff_size'))
         self._tearDown(layer)
@@ -371,7 +376,6 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         renderchecker.setControlName('expected_displacement_cluster_concentric_labels_diff_size_farther')
         self.assertTrue(renderchecker.runTest('expected_displacement_cluster_concentric_labels_diff_size_farther'))
         self._tearDown(layer)
-
 
 
 if __name__ == '__main__':
