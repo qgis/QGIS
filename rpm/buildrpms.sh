@@ -3,8 +3,12 @@
 #    buildrpms.sh
 #    ---------------------
 #    Date                 : March 2014
-#    Copyright            : (C) 2014 by Matthias Kuhn
+#    Copyright            : (C) 2014-2019 by Matthias Kuhn
 #    Email                : matthias at opengis dot ch
+#    ---------------------
+#    Date                 : October 2017
+#    Copyright            : (C) 2017-2019 by Daniele Viganò
+#    Email                : daniele at vigano dot me
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -13,6 +17,11 @@
 #   (at your option) any later version.                                   #
 #                                                                         #
 ###########################################################################
+
+if [ $_BUILDRPMS_DEBUG ]
+then
+  set -x
+fi
 
 function print_info
 {
@@ -40,7 +49,8 @@ Usage:
 
 function compress
 {
-  if command -v pbzip2 &> /dev/null; then
+  if command -v pbzip2 &> /dev/null
+  then
     echo 'pbzip2'
   else
     echo 'bzip2'
@@ -142,7 +152,7 @@ then
 
   print_info "Creating source tarball"
   # Create source tarball
-  git -C .. archive --format=tar --prefix=qgis-$version/ HEAD | compress > sources/qgis-$version.tar.bz2
+  git -C .. archive --format=tar --prefix=qgis-$version/ HEAD | $(compress) > sources/qgis-$version.tar.bz2
 
   print_info "Creating source package"
   # Build source package
@@ -156,11 +166,11 @@ then
     exit 1
   fi
 
-  srpm=$(grep -e 'Wrote: .*\.src\.rpm' $OUTDIR/build.log |
-         sed 's_Wrote: /builddir/build/SRPMS/\(.*\)_\1_')
-
   print_info "Source package created: $srpm"
 fi
+
+srpm="$(ls -t $OUTDIR/qgis-$version-$relver.*.src.rpm | head -n 1 ||
+        (print_error "Source package unavailable. Abort"; exit 1))"
 
 if [ "$srpm_only" -eq "1" ]
 then
@@ -171,14 +181,18 @@ fi
 for arch in "${ARCHS[@]}"
 do :
   print_info "Building packages for $arch"
-  if [ -f $OUTDIR/$arch/build.log ]
+  if [ -d $OUTDIR/$arch ]
   then
-    print_info "Cleaning log file"
-    rm $OUTDIR/$arch/build.log
+    if [ -f $OUTDIR/$arch/build.log ]
+    then
+      print_info "Cleaning log file"
+      rm $OUTDIR/$arch/build.log
+    fi
+  else
+    mkdir $OUTDIR/$arch
   fi
-  mkdir $OUTDIR/$arch
 
-  if ! mock -r $arch --rebuild $OUTDIR/$srpm \
+  if ! mock -r $arch --rebuild $srpm \
        --define "_relver $relver" \
        --define "_version $version" \
        --define "_timestamp $timestamp" \
