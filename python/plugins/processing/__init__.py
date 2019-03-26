@@ -31,6 +31,17 @@ from processing.tools.vector import *               # NOQA
 from processing.tools.raster import *               # NOQA
 from processing.tools.system import *               # NOQA
 
+# monkey patch Python specific Processing API into stable qgis.processing module
+import qgis.processing
+qgis.processing.algorithmHelp = algorithmHelp
+qgis.processing.run = run
+qgis.processing.runAndLoadResults = runAndLoadResults
+qgis.processing.createAlgorithmDialog = createAlgorithmDialog
+qgis.processing.execAlgorithmDialog = execAlgorithmDialog
+qgis.processing.createContext = createContext
+qgis.processing.isWindows = isWindows
+qgis.processing.isMac = isMac
+
 
 def classFactory(iface):
     from processing.ProcessingPlugin import ProcessingPlugin
