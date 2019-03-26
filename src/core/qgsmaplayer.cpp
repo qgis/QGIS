@@ -67,7 +67,7 @@ QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
   return QString();
 }
 
-QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
+QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
                           const QString &lyrname,
                           const QString &source )
   : mDataSource( source )
@@ -138,7 +138,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setCustomProperties( mCustomProperties );
 }
 
-QgsMapLayer::LayerType QgsMapLayer::type() const
+QgsMapLayerType QgsMapLayer::type() const
 {
   return mLayerType;
 }
@@ -1062,7 +1062,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
   if ( ( sourceCategories.testFlag( QgsMapLayer::Symbology ) || sourceCategories.testFlag( QgsMapLayer::Symbology3D ) ) &&
        ( categories.testFlag( QgsMapLayer::Symbology ) || categories.testFlag( QgsMapLayer::Symbology3D ) ) )
   {
-    if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
+    if ( type() == QgsMapLayerType::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
       QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
@@ -1117,7 +1117,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
    * Check to see if the layer is vector - in which case we should also export its geometryType
    * to avoid eventually pasting to a layer with a different geometry
   */
-  if ( type() == QgsMapLayer::VectorLayer )
+  if ( type() == QgsMapLayerType::VectorLayer )
   {
     //Getting the selectionLayer geometry
     const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( this );

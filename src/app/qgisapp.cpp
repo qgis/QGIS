@@ -7126,7 +7126,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
 {
   // Get provider type
   QString providerType( layer->providerType() );
-  QgsMapLayer::LayerType layerType( layer->type() );
+  QgsMapLayerType layerType( layer->type() );
 
   QgsDataSourceSelectDialog dlg( mBrowserModel, true, layerType );
 
@@ -7610,17 +7610,17 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
   if ( !layer )
     return QString();
 
-  QgsMapLayer::LayerType layerType = layer->type();
+  QgsMapLayerType layerType = layer->type();
   switch ( layerType )
   {
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
       return saveAsRasterFile( qobject_cast<QgsRasterLayer *>( layer ), defaultToAddToMap );
 
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
       return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap );
 
-    case QgsMapLayer::MeshLayer:
-    case QgsMapLayer::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PluginLayer:
       return QString();
   }
   return QString();
@@ -9289,8 +9289,8 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCateg
       }
 
       bool isVectorStyle = doc.elementsByTagName( QStringLiteral( "pipe" ) ).isEmpty();
-      if ( ( selectionLayer->type() == QgsMapLayer::RasterLayer && isVectorStyle ) ||
-           ( selectionLayer->type() == QgsMapLayer::VectorLayer && !isVectorStyle ) )
+      if ( ( selectionLayer->type() == QgsMapLayerType::RasterLayer && isVectorStyle ) ||
+           ( selectionLayer->type() == QgsMapLayerType::VectorLayer && !isVectorStyle ) )
       {
         return;
       }
@@ -10034,7 +10034,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     unSppType.clear();
     layerDupName = selectedLyr->name() + ' ' + tr( "copy" );
 
-    if ( selectedLyr->type() == QgsMapLayer::PluginLayer )
+    if ( selectedLyr->type() == QgsMapLayerType::PluginLayer )
     {
       unSppType = tr( "Plugin layer" );
     }
@@ -12371,7 +12371,7 @@ void QgisApp::showMapTip()
     {
       // QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
       // only process vector layers
-      if ( mypLayer->type() == QgsMapLayer::VectorLayer )
+      if ( mypLayer->type() == QgsMapLayerType::VectorLayer )
       {
         // Show the maptip if the maptips button is depressed
         if ( mMapTipsVisible )
@@ -12470,7 +12470,7 @@ void QgisApp::legendLayerSelectionChanged()
   if ( selectedLayers.size() == 1 )
   {
     QgsLayerTreeLayer *l = selectedLayers.front();
-    if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
+    if ( l->layer() && l->layer()->type() == QgsMapLayerType::VectorLayer )
     {
       mLegendExpressionFilterButton->setEnabled( true );
       bool exprEnabled;
@@ -12651,7 +12651,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   // Vector layers
   switch ( layer->type() )
   {
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsVectorDataProvider *dprovider = vlayer->dataProvider();
@@ -12875,7 +12875,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
     {
       const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
       if ( rlayer->dataProvider()->dataType( 1 ) != Qgis::ARGB32
@@ -12984,7 +12984,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayer::MeshLayer:
+    case QgsMapLayerType::MeshLayer:
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
       mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -13045,7 +13045,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionIdentify->setEnabled( true );
       break;
 
-    case QgsMapLayer::PluginLayer:
+    case QgsMapLayerType::PluginLayer:
       break;
 
   }
@@ -13848,7 +13848,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
 
   switch ( mapLayer->type() )
   {
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
     {
       QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
       // Cannot use exec here due to raster transparency map tool:
@@ -13869,7 +13869,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
       break;
     }
 
-    case QgsMapLayer::MeshLayer:
+    case QgsMapLayerType::MeshLayer:
     {
       QgsMeshLayerProperties meshLayerPropertiesDialog( mapLayer, mMapCanvas, this );
       mMapStyleWidget->blockUpdates( true );
@@ -13882,7 +13882,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
       break;
     }
 
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -13904,7 +13904,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
       break;
     }
 
-    case QgsMapLayer::PluginLayer:
+    case QgsMapLayerType::PluginLayer:
     {
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( mapLayer );
       if ( !pl )
@@ -14268,7 +14268,7 @@ void QgisApp::transactionGroupCommitError( const QString &error )
 
 QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature )
 {
-  if ( mlayer->type() != QgsMapLayer::VectorLayer )
+  if ( mlayer->type() != QgsMapLayerType::VectorLayer )
     return QgsFeature();
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
@@ -14318,7 +14318,7 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
 
 QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature )
 {
-  if ( mlayer->type() != QgsMapLayer::VectorLayer )
+  if ( mlayer->type() != QgsMapLayerType::VectorLayer )
     return QgsFeature();
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );

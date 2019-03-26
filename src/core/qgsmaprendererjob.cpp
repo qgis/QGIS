@@ -134,7 +134,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
     if ( ml->crs().isGeographic() )
     {
-      if ( ml->type() == QgsMapLayer::VectorLayer && !ct.destinationCrs().isGeographic() )
+      if ( ml->type() == QgsMapLayerType::VectorLayer && !ct.destinationCrs().isGeographic() )
       {
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
@@ -270,7 +270,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
     // Force render of layers that are being edited
     // or if there's a labeling engine that needs the layer to register features
-    if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
+    if ( mCache && ml->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
       bool requiresLabeling = false;

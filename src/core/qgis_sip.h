@@ -235,9 +235,14 @@
 /*
  * If one reformat an enum to a scope based enum
  * sipify will take care of monkey patching to keep
- * API compatibility
+ * API compatibility.
+ * If OUTSIDE_CLASS is defined, the enum has been unnested
+ * from the class, and it will be used for monkey patching
+ * e.g. QgsMapLayer.VectorLayer = QgsMapLayerType.VectorLayer
+ * These macros should be removed in QGIS 4
  */
 #define SIP_MONKEYPATCH_SCOPEENUM
+#define SIP_MONKEYPATCH_SCOPEENUM_UNNEST(OUTSIDE_CLASS,FORMERNAME)
 
 
 #endif // QGIS_SIP_H

@@ -132,7 +132,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      * \see setLayerType()
      * \see filterByLayerType()
      */
-    QgsMapLayer::LayerType layerType() const;
+    QgsMapLayerType layerType() const;
 
     /**
      * Sets the layer \a type to filter the model by. This is only used if
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      * \see layerType()
      * \see setFilterByLayerType()
      */
-    void setLayerType( QgsMapLayer::LayerType type );
+    void setLayerType( QgsMapLayerType type );
 
   protected:
 
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     Qt::CaseSensitivity mCaseSensitivity = Qt::CaseInsensitive;
 
     bool mFilterByLayerType = false;
-    QgsMapLayer::LayerType mLayerType = QgsMapLayer::VectorLayer;
+    QgsMapLayerType mLayerType = QgsMapLayerType::VectorLayer;
 
     //! Update filter
     void updateFilter();

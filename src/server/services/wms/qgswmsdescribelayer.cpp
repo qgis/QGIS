@@ -157,7 +157,7 @@ namespace QgsWms
       QDomElement nameNode = myDocument.createElement( QStringLiteral( "TypeName" ) );
       switch ( layer->type() )
       {
-        case QgsMapLayer::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
         {
           typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wfs" ) ) );
 
@@ -172,7 +172,7 @@ namespace QgsWms
           nameNode.appendChild( typeNameNode );
           break;
         }
-        case QgsMapLayer::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
         {
           typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wcs" ) ) );
 
@@ -188,8 +188,8 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayer::MeshLayer:
-        case QgsMapLayer::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::PluginLayer:
           break;
       }
       layerNode.appendChild( typeNode );

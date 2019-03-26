@@ -38,7 +38,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
                             const LayerOptions & )
-  : QgsMapLayer( MeshLayer, baseName, meshLayerPath )
+  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
 {
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer

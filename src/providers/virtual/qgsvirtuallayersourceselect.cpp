@@ -272,7 +272,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   if ( mTreeView )
   {
     QList<QgsMapLayer *> selected = mTreeView->selectedLayers();
-    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
+    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayerType::VectorLayer && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
     {
       mLayerNameCombo->setCurrentIndex( mLayerNameCombo->findData( selected[0]->id() ) );
     }
@@ -296,7 +296,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   // configure auto completion with table and column names
   Q_FOREACH ( QgsMapLayer *l, QgsProject::instance()->mapLayers() )
   {
-    if ( l->type() == QgsMapLayer::VectorLayer )
+    if ( l->type() == QgsMapLayerType::VectorLayer )
     {
       apis->add( l->name() );
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );

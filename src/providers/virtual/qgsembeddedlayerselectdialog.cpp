@@ -56,7 +56,7 @@ void QgsEmbeddedLayerSelectDialog::updateLayersList()
   QList<QgsLayerTreeLayer *> layers = mTreeView->layerTreeModel()->rootGroup()->findLayers();
   Q_FOREACH ( const QgsLayerTreeLayer *l, layers )
   {
-    if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
+    if ( l->layer() && l->layer()->type() == QgsMapLayerType::VectorLayer )
     {
       // display layer name and store its pointer
       QListWidgetItem *item = new QListWidgetItem();

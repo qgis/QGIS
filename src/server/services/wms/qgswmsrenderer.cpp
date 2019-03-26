@@ -929,7 +929,7 @@ namespace QgsWms
     for ( QgsMapLayer *layer : layers )
     {
       layerIdx++;
-      if ( layer->type() != QgsMapLayer::VectorLayer )
+      if ( layer->type() != QgsMapLayerType::VectorLayer )
         continue;
       if ( !wfsLayerIds.contains( layer->id() ) )
         continue;
@@ -1432,7 +1432,7 @@ namespace QgsWms
             }
           }
 
-          if ( layer->type() == QgsMapLayer::VectorLayer )
+          if ( layer->type() == QgsMapLayerType::VectorLayer )
           {
             QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
             if ( vectorLayer )
@@ -2300,7 +2300,7 @@ namespace QgsWms
       if ( !layer )
         continue;
 
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      if ( layer->type() == QgsMapLayerType::VectorLayer )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
@@ -3072,14 +3072,14 @@ namespace QgsWms
     {
       switch ( layer->type() )
       {
-        case QgsMapLayer::LayerType::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
           vl->setOpacity( opacity / 255. );
           break;
         }
 
-        case QgsMapLayer::LayerType::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
         {
           QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
           QgsRasterRenderer *rasterRenderer = rl->renderer();
@@ -3087,8 +3087,8 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayer::MeshLayer:
-        case QgsMapLayer::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::PluginLayer:
           break;
       }
     }
@@ -3096,7 +3096,7 @@ namespace QgsWms
 
   void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters )
   {
-    if ( layer->type() == QgsMapLayer::VectorLayer )
+    if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
       for ( const QgsWmsParametersFilter &filter : filters )
@@ -3151,7 +3151,7 @@ namespace QgsWms
 
   void QgsRenderer::setLayerSelection( QgsMapLayer *layer, const QStringList &fids ) const
   {
-    if ( layer->type() == QgsMapLayer::VectorLayer )
+    if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsFeatureIds selectedIds;
 
@@ -3295,7 +3295,7 @@ namespace QgsWms
       if ( !ml->title().isEmpty() )
         lt->setName( ml->title() );
 
-      if ( ml->type() != QgsMapLayer::VectorLayer || !showFeatureCount )
+      if ( ml->type() != QgsMapLayerType::VectorLayer || !showFeatureCount )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );

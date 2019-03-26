@@ -29,7 +29,7 @@ QgsLayerCapabilitiesModel::QgsLayerCapabilitiesModel( QgsProject *project, QObje
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     mReadOnlyLayers.insert( it.value(), it.value()->readOnly() );
-    mSearchableLayers.insert( it.value(), it.value()->type() == QgsMapLayer::VectorLayer && it.value()->flags().testFlag( QgsMapLayer::Searchable ) );
+    mSearchableLayers.insert( it.value(), it.value()->type() == QgsMapLayerType::VectorLayer && it.value()->flags().testFlag( QgsMapLayer::Searchable ) );
     mIdentifiableLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Identifiable ) );
     mRemovableLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Removable ) );
   }
@@ -160,7 +160,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
     }
     else if ( idx.column() == ReadOnlyColumn )
     {
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      if ( layer->type() == QgsMapLayerType::VectorLayer )
       {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
       }
@@ -171,7 +171,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
     }
     else if ( idx.column() == SearchableColumn )
     {
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      if ( layer->type() == QgsMapLayerType::VectorLayer )
       {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
       }
@@ -261,12 +261,12 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
       }
       else if ( idx.column() == ReadOnlyColumn )
       {
-        if ( layer->type() == QgsMapLayer::VectorLayer )
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
           return mReadOnlyLayers.value( layer, true ) ? trueValue : falseValue;
       }
       else if ( idx.column() == SearchableColumn )
       {
-        if ( layer->type() == QgsMapLayer::VectorLayer )
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
           return mSearchableLayers.value( layer, true ) ? trueValue : falseValue;
       }
       else if ( idx.column() == RequiredColumn )
@@ -301,7 +301,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
       }
       else if ( index.column() == ReadOnlyColumn )
       {
-        if ( layer->type() == QgsMapLayer::VectorLayer )
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
           bool readOnly = value == Qt::Checked;
           if ( readOnly != mReadOnlyLayers.value( layer, true ) )
@@ -314,7 +314,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
       }
       else if ( index.column() == SearchableColumn )
       {
-        if ( layer->type() == QgsMapLayer::VectorLayer )
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
           bool searchable = value == Qt::Checked;
           if ( searchable != mSearchableLayers.value( layer, true ) )

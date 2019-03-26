@@ -121,7 +121,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
         PROVIDER_ERROR( QString( "Cannot find layer %1" ).arg( layer.reference() ) );
         return false;
       }
-      if ( l->type() != QgsMapLayer::VectorLayer )
+      if ( l->type() != QgsMapLayerType::VectorLayer )
       {
         PROVIDER_ERROR( QString( "Layer %1 is not a vector layer" ).arg( layer.reference() ) );
         return false;
@@ -246,7 +246,7 @@ bool QgsVirtualLayerProvider::createIt()
       bool found = false;
       Q_FOREACH ( const QgsMapLayer *l, QgsProject::instance()->mapLayers() )
       {
-        if ( l->type() != QgsMapLayer::VectorLayer )
+        if ( l->type() != QgsMapLayerType::VectorLayer )
           continue;
 
         const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );

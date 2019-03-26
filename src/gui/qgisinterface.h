@@ -18,7 +18,17 @@
 #ifndef QGISINTERFACE_H
 #define QGISINTERFACE_H
 
+#include <QObject>
+#include <map>
+
+#include "qgis.h"
+#include "qgis_sip.h"
+#include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
+
 class QAction;
+class QDialog;
+class QFont;
 class QMenu;
 class QToolBar;
 class QDockWidget;
@@ -37,6 +47,7 @@ class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
+enum class QgsMapLayerType;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMessageBar;
 class QgsPluginManagerInterface;
@@ -49,15 +60,6 @@ class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
 class QgsBrowserModel;
-
-#include <QObject>
-#include <QFont>
-#include <QPair>
-#include <map>
-
-#include "qgis_sip.h"
-#include "qgsmaplayer.h"
-#include "qgis_gui.h"
 
 
 /**
@@ -100,7 +102,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see addCustomActionForLayer()
      */
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        QgsMapLayer::LayerType type, bool allLayers ) = 0;
+        QgsMapLayerType type, bool allLayers ) = 0;
 
     /**
      * Add action to context menu for a specific layer in the layer tree.

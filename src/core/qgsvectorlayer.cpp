@@ -143,7 +143,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
                                 const LayerOptions &options )
-  : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
+  : QgsMapLayer( QgsMapLayerType::VectorLayer, baseName, vectorLayerPath )
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
