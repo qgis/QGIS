@@ -35,6 +35,7 @@ import tempfile
 from qgis.PyQt.Qt import QDomDocument
 
 from qgis.core import (QgsApplication,
+                       QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeedback,
                        QgsProcessingException,
@@ -119,10 +120,9 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     def testCreateGridFromLayout(self):
 
         testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
-        temp_dir = tempfile.mkdtemp()
 
         p = QgsProject().instance()
-        source = os.path.join(testDataPath, 'airports.gml')
+        source = os.path.join(testDataPath, 'lines.gml')
         vl = QgsVectorLayer(source)
         self.assertTrue(vl.isValid())
         p.addMapLayer(vl)
@@ -145,13 +145,12 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
         self.assertIsNotNone(alg)
 
-        temp_file = os.path.join(temp_dir, 'grid.shp')
         parameters = {'LAYOUT': layoutname,
                       'MAP': mapuuid,
                       'COVERAGE_LAYER': vl,
                       'COVERAGE_BUFFER': 0,
                       'ONLY_ON_FEATURES': True,
-                      'OUTPUT': temp_file}
+                      'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT}
         context = QgsProcessingContext()
         context.setProject(p)
         feedback = QgsProcessingFeedback()
@@ -159,13 +158,25 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         results, ok = alg.run(parameters, context, feedback)
 
         self.assertTrue(ok)
-        self.assertTrue(os.path.exists(temp_file))
 
-        res = QgsVectorLayer(temp_file, 'res')
-        self.assertTrue(res.isValid())
-        self.assertEqual(res.featureCount(), 37)
+        outlayer = context.getMapLayer(results['OUTPUT'])
+
+        self.assertTrue(outlayer.isValid())
+        self.assertEqual(outlayer.featureCount(), 4)
+
+        expectedgeometries = {
+            1: 'Polygon ((-1.88946692676713646 0.27437286623174284, 5 0.27437286623174284, 5 5, -1.88946692676713646 5, -1.88946692676713646 0.27437286623174284))',
+            2: 'Polygon ((5 0.27437286623174284, 11.88946692676713646 0.27437286623174284, 11.88946692676713646 5, 5 5, 5 0.27437286623174284))',
+            3: 'Polygon ((-1.88946692676713646 -4.45125426753651432, 5 -4.45125426753651432, 5 0.27437286623174284, -1.88946692676713646 0.27437286623174284, -1.88946692676713646 -4.45125426753651432))',
+            4: 'Polygon ((5 -4.45125426753651432, 11.88946692676713646 -4.45125426753651432, 11.88946692676713646 0.27437286623174284, 5 0.27437286623174284, 5 -4.45125426753651432))'
+        }
+
+        for i in range(1, outlayer.featureCount() + 1):
+            self.assertEqual(expectedgeometries[i], outlayer.getGeometry(i).asWkt())
 
         QgsProject.instance().removeMapLayer(vl)
+
+        # Example on PR 9488
 
 
 if __name__ == '__main__':

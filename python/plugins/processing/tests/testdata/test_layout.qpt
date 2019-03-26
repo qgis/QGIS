@@ -1,20 +1,20 @@
-<Layout units="mm" worldFileMap="{8d39b08c-8c14-4e42-9504-d595fb619753}" printResolution="300" name="test_layout">
- <Snapper tolerance="5" snapToItems="1" snapToGrid="0" snapToGuides="1"/>
- <Grid offsetY="0" resUnits="mm" offsetX="0" offsetUnits="mm" resolution="10"/>
+<Layout worldFileMap="{8d39b08c-8c14-4e42-9504-d595fb619753}" printResolution="300" units="mm" name="test_layout">
+ <Snapper tolerance="5" snapToGuides="1" snapToItems="1" snapToGrid="0"/>
+ <Grid resUnits="mm" offsetX="0" offsetUnits="mm" offsetY="0" resolution="10"/>
  <PageCollection>
-  <symbol clip_to_extent="1" type="fill" force_rhr="0" alpha="1" name="">
-   <layer class="SimpleFill" enabled="1" locked="0" pass="0">
-    <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-    <prop k="color" v="255,255,255,255"/>
-    <prop k="joinstyle" v="miter"/>
-    <prop k="offset" v="0,0"/>
-    <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-    <prop k="offset_unit" v="MM"/>
-    <prop k="outline_color" v="35,35,35,255"/>
-    <prop k="outline_style" v="no"/>
-    <prop k="outline_width" v="0.26"/>
-    <prop k="outline_width_unit" v="MM"/>
-    <prop k="style" v="solid"/>
+  <symbol clip_to_extent="1" type="fill" alpha="1" force_rhr="0" name="">
+   <layer locked="0" class="SimpleFill" pass="0" enabled="1">
+    <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+    <prop v="255,255,255,255" k="color"/>
+    <prop v="miter" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="35,35,35,255" k="outline_color"/>
+    <prop v="no" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
     <data_defined_properties>
      <Option type="Map">
       <Option type="QString" value="" name="name"/>
@@ -24,9 +24,9 @@
     </data_defined_properties>
    </layer>
   </symbol>
-  <LayoutItem outlineWidthM="0.3,mm" groupUuid="" opacity="1" zValue="0" id="" background="true" size="297,210,mm" position="0,0,mm" frame="false" visibility="1" blendMode="0" excludeFromExports="0" positionLock="false" positionOnPage="0,0,mm" type="65638" frameJoinStyle="miter" uuid="{e7794933-aee0-4a49-8e2a-9fb7d0cd5939}" templateUuid="{e7794933-aee0-4a49-8e2a-9fb7d0cd5939}" referencePoint="0" itemRotation="0">
-   <FrameColor blue="0" green="0" alpha="255" red="0"/>
-   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
+  <LayoutItem outlineWidthM="0.3,mm" frame="false" frameJoinStyle="miter" groupUuid="" referencePoint="0" position="0,0,mm" uuid="{acae77e4-404d-4a43-953f-3cb8e12bcc75}" positionOnPage="0,0,mm" type="65638" blendMode="0" opacity="1" templateUuid="{acae77e4-404d-4a43-953f-3cb8e12bcc75}" id="" excludeFromExports="0" itemRotation="0" positionLock="false" visibility="1" zValue="0" size="297,210,mm" background="true">
+   <FrameColor green="0" alpha="255" red="0" blue="0"/>
+   <BackgroundColor green="255" alpha="255" red="255" blue="255"/>
    <LayoutObject>
     <dataDefinedProperties>
      <Option type="Map">
@@ -40,9 +40,9 @@
   </LayoutItem>
   <GuideCollection visible="1"/>
  </PageCollection>
- <LayoutItem keepLayerSet="false" drawCanvasItems="true" outlineWidthM="0.3,mm" labelMargin="0,mm" groupUuid="" opacity="1" zValue="1" followPreset="false" id="" background="true" size="277,190,mm" position="10,10,mm" mapFlags="0" frame="true" visibility="1" blendMode="0" excludeFromExports="0" positionLock="false" positionOnPage="10,10,mm" type="65639" mapRotation="0" followPresetName="" frameJoinStyle="miter" uuid="{6dc4728b-4483-451c-aa1c-4edb094a79a1}" templateUuid="{6dc4728b-4483-451c-aa1c-4edb094a79a1}" referencePoint="0" itemRotation="0">
-  <FrameColor blue="0" green="0" alpha="255" red="0"/>
-  <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
+ <LayoutItem outlineWidthM="0.3,mm" keepLayerSet="false" frame="true" followPresetName="" frameJoinStyle="miter" groupUuid="" referencePoint="0" position="10,10,mm" uuid="{bb3251b0-203b-44b0-8bf2-8454d6044ddc}" positionOnPage="10,10,mm" mapRotation="0" type="65639" blendMode="0" opacity="1" templateUuid="{bb3251b0-203b-44b0-8bf2-8454d6044ddc}" id="" excludeFromExports="0" followPreset="false" itemRotation="0" labelMargin="0,mm" drawCanvasItems="true" positionLock="false" mapFlags="0" visibility="1" zValue="1" size="277,190,mm" background="true">
+  <FrameColor green="0" alpha="255" red="0" blue="0"/>
+  <BackgroundColor green="255" alpha="255" red="255" blue="255"/>
   <LayoutObject>
    <dataDefinedProperties>
     <Option type="Map">
@@ -53,19 +53,7 @@
    </dataDefinedProperties>
    <customproperties/>
   </LayoutObject>
-  <Extent ymin="4198426.6477967007085681" xmax="937298.90332214836962521" xmin="28506.25240351312095299" ymax="4821786.22784919384866953"/>
-  <crs>
-   <spatialrefsys>
-    <proj4>+proj=aea +lat_1=55 +lat_2=65 +lat_0=50 +lon_0=-154 +x_0=0 +y_0=0 +datum=NAD27 +units=us-ft +no_defs</proj4>
-    <srsid>932</srsid>
-    <srid>2964</srid>
-    <authid>EPSG:2964</authid>
-    <description>NAD27 / Alaska Albers</description>
-    <projectionacronym>aea</projectionacronym>
-    <ellipsoidacronym>clrk66</ellipsoidacronym>
-    <geographicflag>false</geographicflag>
-   </spatialrefsys>
-  </crs>
+  <Extent xmin="0.04209958091966323" ymin="-2.20669365311252408" ymax="2.51893348065573308" xmax="6.93156650768679938"/>
   <LayerSet/>
   <AtlasMap atlasDriven="0" scalingMode="2" margin="0.10000000000000001"/>
   <labelBlockingItems/>
@@ -73,5 +61,5 @@
  <customproperties>
   <property key="atlasRasterFormat" value="png"/>
  </customproperties>
- <Atlas coverageLayer="" sortFeatures="0" pageNameExpression="" enabled="0" filterFeatures="0" filenamePattern="'output_'||@atlas_featurenumber" hideCoverage="0"/>
+ <Atlas filterFeatures="0" coverageLayer="" filenamePattern="'output_'||@atlas_featurenumber" enabled="0" hideCoverage="0" sortFeatures="0" pageNameExpression=""/>
 </Layout>
