@@ -159,16 +159,16 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   {
     switch ( typeHint )
     {
-      case UnknownType:
+      case LayerHint::UnknownType:
         return true;
 
-      case Vector:
+      case LayerHint::Vector:
         return l->type() == QgsMapLayerType::VectorLayer;
 
-      case Raster:
+      case LayerHint::Raster:
         return l->type() == QgsMapLayerType::RasterLayer;
 
-      case Mesh:
+      case LayerHint::Mesh:
         return l->type() == QgsMapLayerType::MeshLayer;
     }
     return true;
@@ -235,7 +235,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   QString name = fi.baseName();
 
   // brute force attempt to load a matching layer
-  if ( typeHint == UnknownType || typeHint == Vector )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Vector )
   {
     QgsVectorLayer::LayerOptions options;
     options.loadDefaultStyle = false;
@@ -245,7 +245,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return layer.release();
     }
   }
-  if ( typeHint == UnknownType || typeHint == Raster )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Raster )
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
@@ -255,7 +255,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return rasterLayer.release();
     }
   }
-  if ( typeHint == UnknownType || typeHint == Mesh )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
   {
     QgsMeshLayer::LayerOptions meshOptions;
     std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
@@ -346,7 +346,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   if ( layerRef.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, Vector ) );
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, LayerHint::Vector ) );
   if ( !vl )
     return nullptr;
 
