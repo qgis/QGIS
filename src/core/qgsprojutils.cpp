@@ -65,3 +65,10 @@ PJ_CONTEXT *QgsProjContext::get()
   return pContext;
 #endif
 }
+
+#if PROJ_VERSION_MAJOR>=6
+void QgsProjUtils::ProjPJDeleter::operator()( PJ *object )
+{
+  proj_destroy( object );
+}
+#endif

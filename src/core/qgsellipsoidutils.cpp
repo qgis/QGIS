@@ -359,17 +359,18 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
         PROJ_STRING_LIST codesIt = codes;
         while ( char *code = *codesIt )
         {
-          if ( PJ *ellipsoid = proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr ) )
+          QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr ) );
+          if ( ellipsoid.get() )
           {
             EllipsoidDefinition def;
-            QString name = QString( proj_get_name( ellipsoid ) );
+            QString name = QString( proj_get_name( ellipsoid.get() ) );
             def.acronym = QStringLiteral( "%1:%2" ).arg( authority, code );
             name.replace( '_', ' ' );
             def.description = QStringLiteral( "%1 (%2:%3)" ).arg( name, authority, code );
 
             double semiMajor, semiMinor, invFlattening;
             int semiMinorComputed = 0;
-            if ( proj_ellipsoid_get_parameters( context, ellipsoid, &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
+            if ( proj_ellipsoid_get_parameters( context, ellipsoid.get(), &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
             {
               def.parameters.semiMajor = semiMajor;
               def.parameters.semiMinor = semiMinor;
@@ -385,8 +386,6 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
             {
               def.parameters.valid = false;
             }
-
-            proj_destroy( ellipsoid );
 
             defs << def;
             sEllipsoidCache.insert( def.acronym, def.parameters );
