@@ -1289,11 +1289,8 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
-    QString *errorMessage,
-    const QMap<QString, QVariant> *options )
+    QString *errorMessage )
 {
-  Q_UNUSED( options );
-
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
 
@@ -1772,12 +1769,11 @@ QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+  QString *errorMessage )
 {
   return QgsDb2Provider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           oldToNewAttrIdxMap, errorMessage, options
+           oldToNewAttrIdxMap, errorMessage
          );
 }
 
