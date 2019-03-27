@@ -322,8 +322,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
         createErrors.append( errMsg );
         continue;
       }
-
-      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ) );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsVectorLayer *newlayer = new QgsVectorLayer( options, outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ) );
       if ( selectedOnly )
       {
         QgsFeature feature;

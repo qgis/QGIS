@@ -963,7 +963,6 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   if ( type == QLatin1String( "vector" ) )
   {
     mapLayer = qgis::make_unique<QgsVectorLayer>();
-
     // apply specific settings to vector layer
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
     {

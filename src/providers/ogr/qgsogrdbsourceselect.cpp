@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsquerybuilder.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QMessageBox>
 
@@ -369,7 +370,8 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
 
-  std::unique_ptr<QgsVectorLayer> vlayer( new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "ogr" ) ) );
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr<QgsVectorLayer> vlayer = qgis::make_unique<QgsVectorLayer>( options, layerURI( idx ), tableName, QStringLiteral( "ogr" ) );
 
   if ( !vlayer->isValid() )
   {

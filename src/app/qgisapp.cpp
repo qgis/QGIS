@@ -4638,7 +4638,7 @@ static void setupVectorLayer( const QString &vectorLayerPath,
     QString composedURI( uriParts.value( QStringLiteral( "path" ) ).toString() );
     composedURI += "|layername=" + rawLayerName;
 
-    auto newLayer = qgis::make_unique<QgsVectorLayer>( composedURI, layer->name(), QStringLiteral( "ogr" ), options );
+    auto newLayer = qgis::make_unique<QgsVectorLayer>( options, composedURI, layer->name(), QStringLiteral( "ogr" ) );
     if ( newLayer && newLayer->isValid() )
     {
       delete layer;
@@ -4716,7 +4716,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
       QApplication::setOverrideCursor( Qt::WaitCursor );
       qApp->processEvents();
     }
-    QgsVectorLayer *layer = new QgsVectorLayer( src, baseName, QStringLiteral( "ogr" ), options );
+    QgsVectorLayer *layer = new QgsVectorLayer( options, src, baseName, QStringLiteral( "ogr" ) );
     Q_CHECK_PTR( layer );
     if ( isVsiCurl || isRemoteUrl )
     {
@@ -5256,7 +5256,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     QString name = fileName + " " + def.layerName;
     QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     options.loadDefaultStyle = false;
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
+    QgsVectorLayer *layer = new QgsVectorLayer( options, composedURI, name, QStringLiteral( "ogr" ) );
     if ( layer && layer->isValid() )
     {
       result << layer;
@@ -5320,7 +5320,7 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
 
     QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     options.loadDefaultStyle = false;
-    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri( false ), uri.table(), providerKey, options );
+    QgsVectorLayer *layer = new QgsVectorLayer( options, uri.uri( false ), uri.table(), providerKey );
     Q_CHECK_PTR( layer );
 
     if ( ! layer )
@@ -5397,7 +5397,8 @@ void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &u
   if ( !old )
     return;
   QgsVectorLayer *oldLayer = static_cast<QgsVectorLayer *>( old );
-  QgsVectorLayer *newLayer = new QgsVectorLayer( uri, layerName, provider );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *newLayer = new QgsVectorLayer( options, uri, layerName, provider );
   if ( !newLayer || !newLayer->isValid() )
     return;
 
@@ -9853,7 +9854,8 @@ void QgisApp::layerSubsetString()
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
     {
       QgsVirtualLayerDefinition def = QgsVirtualLayerDefinitionUtils::fromJoinedLayer( vlayer );
-      QgsVectorLayer *newLayer = new QgsVectorLayer( def.toString(), vlayer->name() + " (virtual)", QStringLiteral( "virtual" ) );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsVectorLayer *newLayer = new QgsVectorLayer( options, def.toString(), vlayer->name() + " (virtual)", QStringLiteral( "virtual" ) );
       if ( newLayer->isValid() )
       {
         duplicateVectorStyle( vlayer, newLayer );
@@ -11111,7 +11113,7 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   // Default style is loaded later in this method
   options.loadDefaultStyle = false;
-  QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, options );
+  QgsVectorLayer *layer = new QgsVectorLayer( options, vectorLayerPath, baseName, providerKey );
 
   if ( authok && layer && layer->isValid() )
   {
