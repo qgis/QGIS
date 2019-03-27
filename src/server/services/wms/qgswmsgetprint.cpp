@@ -21,6 +21,7 @@
 #include "qgswmsutils.h"
 #include "qgswmsgetprint.h"
 #include "qgswmsrenderer.h"
+#include "qgswmsserviceexception.h"
 
 namespace QgsWms
 {

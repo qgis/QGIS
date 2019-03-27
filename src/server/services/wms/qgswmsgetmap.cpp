@@ -21,6 +21,7 @@
 #include "qgswmsutils.h"
 #include "qgswmsgetmap.h"
 #include "qgswmsrenderer.h"
+#include "qgswmsserviceexception.h"
 
 #include <QImage>
 

@@ -22,6 +22,7 @@
 #include <QMetaEnum>
 
 #include "qgsserverexception.h"
+#include "qgswmsparameters.h"
 
 namespace QgsWms
 {
@@ -89,7 +90,45 @@ namespace QgsWms
         : QgsServiceException( formatCode( code ), message, QString(), responseCode )
       {}
 
+      QgsServiceException( ExceptionCode code, QgsWmsParameter::Name name, int responseCode )
+        : QgsServiceException( formatCode( code ), formatMessage( code, name ), QString(), responseCode )
+      {}
+
     private:
+      static QString formatMessage( ExceptionCode code, QgsWmsParameter::Name parameter )
+      {
+        QString message;
+
+        const QString name = QgsWmsParameter::name( parameter );
+
+        switch ( code )
+        {
+          case QgsServiceException::QGIS_MISSING_PARAMETER_VALUE:
+          {
+            message = QStringLiteral( "The %1 parameter is missing." ).arg( name );
+            break;
+          }
+          case OGC_INVALID_FORMAT:
+          case OGC_INVALID_SRS:
+          case OGC_LAYER_NOT_DEFINED:
+          case OGC_STYLE_NOT_DEFINED:
+          case OGC_LAYER_NOT_QUERYABLE:
+          case OGC_CURRENT_UPDATE_SEQUENCE:
+          case OGC_INVALID_UPDATE_SEQUENCE:
+          case OGC_MISSING_DIMENSION_VALUE:
+          case OGC_INVALID_DIMENSION_VALUE:
+          case OGC_INVALID_CRS:
+          case OGC_OPERATION_NOT_SUPPORTED:
+          case QGIS_INVALID_PARAMETER_VALUE:
+          case QGIS_ERROR:
+          {
+            break;
+          }
+        }
+
+        return message;
+      }
+
       static QString formatCode( ExceptionCode code )
       {
         // get key as a string from enum
@@ -155,6 +194,10 @@ namespace QgsWms
 
       QgsBadRequestException( ExceptionCode code, const QString &message )
         : QgsServiceException( code, message, 400 )
+      {}
+
+      QgsBadRequestException( ExceptionCode code, QgsWmsParameter::Name parameter )
+        : QgsServiceException( code, parameter, 400 )
       {}
   };
 } // namespace QgsWms

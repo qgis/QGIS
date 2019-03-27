@@ -131,12 +131,12 @@ namespace QgsWms
   {
     // check parameters
     if ( mWmsParameters.allLayersNickname().isEmpty() )
-      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
-                                    QStringLiteral( "LAYER is mandatory for GetLegendGraphic operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::LAYER );
 
     if ( mWmsParameters.format() == QgsWmsParameters::Format::NONE )
-      throw QgsBadRequestException( QStringLiteral( "FormatNotSpecified" ),
-                                    QStringLiteral( "FORMAT is mandatory for GetLegendGraphic operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::FORMAT );
 
     // get layers
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -269,8 +269,8 @@ namespace QgsWms
     const QString templateName = mWmsParameters.composerTemplate();
     if ( templateName.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
-                                    QStringLiteral( "The TEMPLATE parameter is required for the GetPrint request" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::TEMPLATE );
     }
 
     // check template
@@ -854,8 +854,8 @@ namespace QgsWms
     // The QUERY_LAYERS parameter is Mandatory
     if ( mWmsParameters.queryLayersNickname().isEmpty() )
     {
-      QString msg = QObject::tr( "QUERY_LAYERS parameter is required for GetFeatureInfo" );
-      throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::QUERY_LAYERS );
     }
 
     // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
@@ -866,8 +866,12 @@ namespace QgsWms
 
     if ( !ijDefined && !xyDefined && !filtersDefined && !filterGeomDefined )
     {
-      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
-                                    QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
+      QgsWmsParameter::Name name = QgsWmsParameter::I;
+
+      if ( mWmsParameters.j().isEmpty() )
+        name = QgsWmsParameter::J;
+
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE, name );
     }
 
     const QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();

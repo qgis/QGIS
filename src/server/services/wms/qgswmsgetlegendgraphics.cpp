@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsutils.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
 

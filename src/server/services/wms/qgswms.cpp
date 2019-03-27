@@ -21,6 +21,7 @@
 
 #include "qgsmodule.h"
 #include "qgsdxfwriter.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgswmsgetmap.h"
 #include "qgswmsgetstyles.h"

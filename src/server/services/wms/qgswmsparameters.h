@@ -23,7 +23,6 @@
 #include <QColor>
 
 #include "qgsrectangle.h"
-#include "qgswmsserviceexception.h"
 #include "qgslegendsettings.h"
 #include "qgsprojectversion.h"
 #include "qgsogcutils.h"
