@@ -34,23 +34,34 @@
 #include "qgsstyle.h"
 #include "qgstriangularmesh.h"
 
+
+
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
-                            const LayerOptions & )
+                            const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
+  , mOptions( options )
 {
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions;
+    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataProvider( providerKey, providerOptions );
   }
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
   setDefaultRendererSettings();
 } // QgsMeshLayer ctor
+
+QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
+                            const QString &baseName,
+                            const QString &providerKey,
+                            const LayerOptions &options )
+  : QgsMeshLayer( options, meshLayerPath, baseName, providerKey )
+{
+}
 
 void QgsMeshLayer::setDefaultRendererSettings()
 {
@@ -85,7 +96,7 @@ const QgsMeshDataProvider *QgsMeshLayer::dataProvider() const
 
 QgsMeshLayer *QgsMeshLayer::clone() const
 {
-  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey );
+  QgsMeshLayer *layer = new QgsMeshLayer( mOptions, source(), name(), mProviderKey );
   QgsMapLayer::clone( layer );
   return layer;
 }
