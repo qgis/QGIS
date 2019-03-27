@@ -19,6 +19,7 @@
 #define QGSWMSSERVICEEXCEPTION_H
 
 #include <QString>
+#include <QMetaEnum>
 
 #include "qgsserverexception.h"
 
@@ -40,7 +41,27 @@ namespace QgsWms
    */
   class QgsServiceException : public QgsOgcServiceException
   {
+      Q_GADGET
+
     public:
+      enum ExceptionCode
+      {
+        OGC_INVALID_FORMAT,
+        OGC_INVALID_SRS,
+        OGC_LAYER_NOT_DEFINED,
+        OGC_STYLE_NOT_DEFINED,
+        OGC_LAYER_NOT_QUERYABLE,
+        OGC_CURRENT_UPDATE_SEQUENCE,
+        OGC_INVALID_UPDATE_SEQUENCE,
+        OGC_MISSING_DIMENSION_VALUE,
+        OGC_INVALID_DIMENSION_VALUE,
+        OGC_INVALID_CRS, // new in WMS 1.3.0
+        OGC_OPERATION_NOT_SUPPORTED, // new in WMS 1.3.0
+        QGIS_MISSING_PARAMETER_VALUE,
+        QGIS_INVALID_PARAMETER_VALUE,
+        QGIS_ERROR
+      };
+      Q_ENUM( ExceptionCode )
 
       /**
        * Constructor for QgsServiceException.
@@ -64,6 +85,31 @@ namespace QgsWms
         : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.3.0" ) )
       {}
 
+      QgsServiceException( ExceptionCode code, const QString &message, int responseCode )
+        : QgsServiceException( formatCode( code ), message, QString(), responseCode )
+      {}
+
+    private:
+      static QString formatCode( ExceptionCode code )
+      {
+        // get key as a string from enum
+        const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServiceException::ExceptionCode>() );
+        QString key = metaEnum.valueToKey( code );
+
+        // remove prefix
+        key.replace( QStringLiteral( "OGC_" ), QString() );
+        key.replace( QStringLiteral( "QGIS_" ), QString() );
+
+        // build the exception name
+        QString formattedCode;
+        for ( auto &part : key.split( '_' ) )
+        {
+          part = part.toLower().replace( 0, 1, part[0].toUpper() );
+          formattedCode = QString( "%1%2" ).arg( formattedCode ).arg( part );
+        }
+
+        return formattedCode;
+      }
   };
 
   /**
@@ -105,6 +151,10 @@ namespace QgsWms
        */
       QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
         : QgsServiceException( code, message, locator, 400 )
+      {}
+
+      QgsBadRequestException( ExceptionCode code, const QString &message )
+        : QgsServiceException( code, message, 400 )
       {}
   };
 } // namespace QgsWms
