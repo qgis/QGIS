@@ -61,7 +61,7 @@ def usage():
     print("""
 voronoi - compute Voronoi diagram or Delaunay triangulation
 
-voronoi [-t -p -d]  [filename]
+voronoi [-t -p -d -f threshold]  [filename]
 
 Voronoi reads from filename (or standard input if no filename given) for a set
 of points in the plane and writes either the Voronoi diagram or the Delaunay
@@ -81,13 +81,11 @@ v a b      indicates a vertex at a b.
 e l v1 v2  indicates a Voronoi segment which is a subsegment of line number l
            with endpoints numbered v1 and v2.  If v1 or v2 is -1, the line
            extends to infinity.
-
 Other options include:
-
 d    Print debugging info
-
 p    Produce output suitable for input to plot (1), rather than the forms
      described above.
+f    Filter input using spacial tree and threshold min distance between points
 
 On unsorted data uniformly distributed in the unit square, voronoi uses about
 20n+140 bytes of storage.
@@ -96,6 +94,7 @@ AUTHOR
 Steve J. Fortune (1987) A Sweepline Algorithm for Voronoi Diagrams,
 Algorithmica 2, 153-174.
 """)
+
 
 #############################################################################
 #
@@ -140,11 +139,11 @@ class Context(object):
         self.debug = 0
         self.plot = 0
         self.triangulate = False
-        self.vertices = []    # list of vertex 2-tuples: (x,y)
-        self.lines = []    # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c
-        self.edges = []    # edge 3-tuple: (line index, vertex 1 index, vertex 2 index)   if either vertex index is -1, the edge extends to infiinity
-        self.triangles = []    # 3-tuple of vertex indices
-        self.polygons = {}    # a dict of site:[edges] pairs
+        self.vertices = []  # list of vertex 2-tuples: (x,y)
+        self.lines = []  # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c
+        self.edges = []  # edge 3-tuple: (line index, vertex 1 index, vertex 2 index)   if either vertex index is -1, the edge extends to infiinity
+        self.triangles = []  # 3-tuple of vertex indices
+        self.polygons = {}  # a dict of site:[edges] pairs
 
     def circle(self, x, y, rad):
         pass
@@ -159,43 +158,44 @@ class Context(object):
         if self.debug:
             # fix_print_with_import
             print("site (%d) at %f %f" % (s.sitenum, s.x, s.y))
-        elif(self.triangulate):
+        elif (self.triangulate):
             pass
         elif self.plot:
             self.circle(s.x, s.y, None)  # No radius?
-        elif(self.doPrint):
+        elif (self.doPrint):
             # fix_print_with_import
             print("s %f %f" % (s.x, s.y))
 
     def outVertex(self, s):
         self.vertices.append((s.x, s.y))
-        if(self.debug):
+        if (self.debug):
             # fix_print_with_import
             print("vertex(%d) at %f %f" % (s.sitenum, s.x, s.y))
-        elif(self.triangulate):
+        elif (self.triangulate):
             pass
-        elif(self.doPrint and not self.plot):
+        elif (self.doPrint and not self.plot):
             # fix_print_with_import
             print("v %f %f" % (s.x, s.y))
 
     def outTriple(self, s1, s2, s3):
         self.triangles.append((s1.sitenum, s2.sitenum, s3.sitenum))
-        if(self.debug):
+        if (self.debug):
             # fix_print_with_import
             print("circle through left=%d right=%d bottom=%d" % (s1.sitenum, s2.sitenum, s3.sitenum))
-        elif(self.triangulate and self.doPrint and not self.plot):
+        elif (self.triangulate and self.doPrint and not self.plot):
             # fix_print_with_import
             print("%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum))
 
     def outBisector(self, edge):
         self.lines.append((edge.a, edge.b, edge.c))
-        if(self.debug):
+        if (self.debug):
             # fix_print_with_import
-            print("line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
-        elif(self.triangulate):
-            if(self.plot):
+            print("line(%d) %gx+%gy=%g, bisecting %d %d" % (
+            edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
+        elif (self.triangulate):
+            if (self.plot):
                 self.line(edge.reg[0].x, edge.reg[0].y, edge.reg[1].x, edge.reg[1].y)
-        elif(self.doPrint and not self.plot):
+        elif (self.doPrint and not self.plot):
             # fix_print_with_import
             print("l %f %f %f" % (edge.a, edge.b, edge.c))
 
@@ -213,12 +213,13 @@ class Context(object):
         self.polygons[edge.reg[0].sitenum].append((edge.edgenum, sitenumL, sitenumR))
         self.polygons[edge.reg[1].sitenum].append((edge.edgenum, sitenumL, sitenumR))
         self.edges.append((edge.edgenum, sitenumL, sitenumR))
-        if(not self.triangulate):
+        if (not self.triangulate):
             if self.plot:
                 self.clip_line(edge)
-            elif(self.doPrint):
+            elif (self.doPrint):
                 # fix_print_with_import
                 print("e %d %d %d" % (edge.edgenum, sitenumL, sitenumR))
+
 
 # ------------------------------------------------------------------
 
@@ -359,6 +360,7 @@ def voronoi(siteList, context):
         he = he.right
     Edge.EDGE_NUM = 0
 
+
 # ------------------------------------------------------------------
 
 
@@ -367,10 +369,13 @@ def isEqual(a, b, relativeError=TOLERANCE):
     norm = max(abs(a), abs(b))
     return (norm < relativeError) or (abs(a - b) < (relativeError * norm))
 
+
 # ------------------------------------------------------------------
 
 
 class Site(object):
+
+    __slots__ = ("x", "y", "sitenum")
 
     def __init__(self, x=0.0, y=0.0, sitenum=0):
         self.x = x
@@ -394,19 +399,26 @@ class Site(object):
         else:
             return False
 
+    def __getitem__(self, item):
+        return [self.x, self.y][item]
+
     def distance(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
         return math.sqrt(dx * dx + dy * dy)
 
+
 # ------------------------------------------------------------------
 
 
 class Edge(object):
+
+    __slots__ = ("a", "b", "c", "ep", "reg", "edgenum")
+
     LE = 0
     RE = 1
     EDGE_NUM = 0
-    DELETED = {}   # marker value
+    DELETED = {}  # marker value
 
     def __init__(self):
         self.a = 0.0
@@ -466,11 +478,13 @@ class Edge(object):
 # ------------------------------------------------------------------
 class Halfedge(object):
 
+    __slots__ = ("left", "right", "qnext", "edge", "pm", "vertex", "ystar")
+
     def __init__(self, edge=None, pm=Edge.LE):
-        self.left = None   # left Halfedge in the edge list
-        self.right = None   # right Halfedge in the edge list
-        self.qnext = None   # priority queue linked list pointer
-        self.edge = edge   # edge list Edge
+        self.left = None  # left Halfedge in the edge list
+        self.right = None  # right Halfedge in the edge list
+        self.qnext = None  # priority queue linked list pointer
+        self.edge = edge  # edge list Edge
         self.pm = pm
         self.vertex = None  # Site()
         self.ystar = BIG_FLOAT
@@ -531,13 +545,13 @@ class Halfedge(object):
         topsite = e.reg[1]
         right_of_site = pt.x > topsite.x
 
-        if(right_of_site and self.pm == Edge.LE):
+        if (right_of_site and self.pm == Edge.LE):
             return True
 
-        if(not right_of_site and self.pm == Edge.RE):
+        if (not right_of_site and self.pm == Edge.RE):
             return False
 
-        if(e.a == 1.0):
+        if (e.a == 1.0):
             dyp = pt.y - topsite.y
             dxp = pt.x - topsite.x
             fast = 0
@@ -546,14 +560,14 @@ class Halfedge(object):
                 fast = above
             else:
                 above = pt.x + pt.y * e.b > e.c
-                if(e.b < 0.0):
+                if (e.b < 0.0):
                     above = not above
                 if (not above):
                     fast = 1
             if (not fast):
                 dxs = topsite.x - (e.reg[0]).x
                 above = e.b * (dxp * dxp - dyp * dyp) < dxs * dyp * (1.0 + 2.0 * dxp / dxs + e.b * e.b)
-                if(e.b < 0.0):
+                if (e.b < 0.0):
                     above = not above
         else:  # e.b == 1.0
             yl = e.c - e.a * pt.x
@@ -562,7 +576,7 @@ class Halfedge(object):
             t3 = yl - topsite.y
             above = t1 * t1 > t2 * t2 + t3 * t3
 
-        if(self.pm == Edge.LE):
+        if (self.pm == Edge.LE):
             return above
         else:
             return not above
@@ -585,7 +599,7 @@ class Halfedge(object):
 
         xint = (e1.c * e2.b - e2.c * e1.b) / d
         yint = (e2.c * e1.a - e1.c * e2.a) / d
-        if(cmp(e1.reg[1], e2.reg[1]) < 0):
+        if (cmp(e1.reg[1], e2.reg[1]) < 0):
             he = self
             e = e1
         else:
@@ -593,8 +607,8 @@ class Halfedge(object):
             e = e2
 
         rightOfSite = xint >= e.reg[1].x
-        if((rightOfSite and he.pm == Edge.LE) or
-           (not rightOfSite and he.pm == Edge.RE)):
+        if ((rightOfSite and he.pm == Edge.LE) or
+                (not rightOfSite and he.pm == Edge.RE)):
             return None
 
         # create a new site at the point of intersection - this is a new
@@ -604,6 +618,8 @@ class Halfedge(object):
 
 # ------------------------------------------------------------------
 class EdgeList(object):
+
+    __slots__ = ("hash", "rightend", "leftend", "xmin",  "deltax", "hashsize")
 
     def __init__(self, xmin, xmax, nsites):
         if xmin > xmax:
@@ -634,7 +650,7 @@ class EdgeList(object):
 
     # Get entry from hash table, pruning any deleted nodes
     def gethash(self, b):
-        if(b < 0 or b >= self.hashsize):
+        if (b < 0 or b >= self.hashsize):
             return None
         he = self.hash[b]
         if he is None or he.edge is not Edge.DELETED:
@@ -648,14 +664,14 @@ class EdgeList(object):
         # Use hash table to get close to desired halfedge
         bucket = int(((pt.x - self.xmin) / self.deltax * self.hashsize))
 
-        if(bucket < 0):
+        if (bucket < 0):
             bucket = 0
 
-        if(bucket >= self.hashsize):
+        if (bucket >= self.hashsize):
             bucket = self.hashsize - 1
 
         he = self.gethash(bucket)
-        if(he is None):
+        if (he is None):
             i = 1
             while True:
                 he = self.gethash(bucket - i)
@@ -678,13 +694,15 @@ class EdgeList(object):
                 he = he.left
 
         # Update hash table and reference counts
-        if(bucket > 0 and bucket < self.hashsize - 1):
+        if (bucket > 0 and bucket < self.hashsize - 1):
             self.hash[bucket] = he
         return he
 
 
 # ------------------------------------------------------------------
 class PriorityQueue(object):
+
+    __slots__ = ("hash", "minidx", "count", "ymin", "deltay", "hashsize")
 
     def __init__(self, ymin, ymax, nsites):
         self.ymin = ymin
@@ -707,7 +725,7 @@ class PriorityQueue(object):
         he.ystar = site.y + offset
         last = self.hash[self.getBucket(he)]
         next = last.qnext
-        while((next is not None) and cmp(he, next) > 0):
+        while ((next is not None) and cmp(he, next) > 0):
             last = next
             next = last.qnext
         he.qnext = last.qnext
@@ -734,7 +752,7 @@ class PriorityQueue(object):
         return bucket
 
     def getMinPt(self):
-        while(self.hash[self.minidx].qnext is None):
+        while (self.hash[self.minidx].qnext is None):
             self.minidx += 1
         he = self.hash[self.minidx].qnext
         x = he.vertex.x
@@ -750,6 +768,8 @@ class PriorityQueue(object):
 
 # ------------------------------------------------------------------
 class SiteList(object):
+
+    __slots__ = ("__sites", "__sitenum", "__xmin", "__ymin", "__xmax", "__ymax")
 
     def __init__(self, pointList):
         self.__sites = []
@@ -820,7 +840,6 @@ class SiteList(object):
 def computeVoronoiDiagram(points):
     """ Takes a list of point objects (which must have x and y fields).
         Returns a 3-tuple of:
-
            (1) a list of 2-tuples, which are the x,y coordinates of the
                Voronoi diagram vertices
            (2) a list of 3-tuples (a,b,c) which are the equations of the
@@ -834,6 +853,7 @@ def computeVoronoiDiagram(points):
     context = Context()
     voronoi(siteList, context)
     return (context.vertices, context.lines, context.edges)
+
 
 # ------------------------------------------------------------------
 
@@ -853,12 +873,14 @@ def computeDelaunayTriangulation(points):
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        optlist, args = getopt.getopt(sys.argv[1:], "thdp")
+        optlist, args = getopt.getopt(sys.argv[1:], "thdpf:")
     except getopt.GetoptError:
         usage()
         sys.exit(2)
 
     doHelp = 0
+    filtering = False
+    threshold = 0
     c = Context()
     c.doPrint = 1
     for opt in optlist:
@@ -870,8 +892,13 @@ if __name__ == "__main__":
             c.triangulate = 1
         if opt[0] == "-h":
             doHelp = 1
+        if opt[0] == "-f":
+            filtering = len(opt) > 1
+            if filtering:
+                threshold = 0.5 * float(opt[1])
 
     if not doHelp:
+
         pts = []
         fp = sys.stdin
         if len(args) > 0:
@@ -883,6 +910,29 @@ if __name__ == "__main__":
             pts.append(Site(x, y))
         if len(args) > 0:
             fp.close()
+
+        if filtering and threshold > 0:
+
+            # [Home Page](http://github.com/karimbahgat/Pyqtree)
+            # filter input using spacial tree
+            from pyqtree import _QuadTree as Qtree
+
+            x, y = zip(*pts)
+            min_x, min_y, max_x, max_y = min(x), min(y), max(x), max(y)
+            cx, cy = 0.5 * (min_x + max_x),  0.5 * (min_y + max_y)
+            sx, sy = max_x - min_x, max_y - min_y
+            tree = Qtree(cx, cy, sx, sy, max_items=30, max_depth=5)
+
+            filtered = []
+            for site in pts:
+                x, y = site
+                bounds = (x - threshold, y - threshold, x + threshold, y + threshold)
+                nodes = tree._intersect(bounds)
+                if len(nodes) < 1:
+                    # only insert boundary, not storing any other data on tree
+                    tree._insert(None, bounds)
+                    filtered.append(site)
+            pts = filtered
 
     if doHelp or len(pts) == 0:
         usage()
@@ -896,7 +946,6 @@ def cmp(a, b):
     """Compare the two objects x and y and return an integer according to the
     outcome. The return value is negative if x < y, zero if x == y and strictly
     positive if x > y.
-
     In python 2 cmp() was a built in function but in python 3 is gone.
     """
     return (b < a) - (a < b)
