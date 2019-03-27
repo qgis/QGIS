@@ -386,6 +386,8 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
               def.parameters.valid = false;
             }
 
+            proj_destroy( ellipsoid );
+
             defs << def;
             sEllipsoidCache.insert( def.acronym, def.parameters );
           }
