@@ -275,8 +275,6 @@ namespace QgsWms
        */
       int width() const;
 
-      const QgsWmsParameters &mWmsParameters;
-
       void configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings = nullptr );
 
       void setLayerStyle( QgsMapLayer *layer, const QString &style ) const;
