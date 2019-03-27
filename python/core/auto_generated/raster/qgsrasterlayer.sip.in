@@ -104,20 +104,11 @@ Constructor. Provider is not set.
     struct LayerOptions
     {
 
- explicit LayerOptions( bool loadDefaultStyle = true ) /Deprecated/;
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions.
-
-.. deprecated:: Use version with transformContext argument instead
 %End
-
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext, bool loadDefaultStyle = true );
-%Docstring
-Constructor for LayerOptions.
-
-.. versionadded:: 3.10
-%End
-
 
       bool loadDefaultStyle;
 
