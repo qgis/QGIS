@@ -209,7 +209,8 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     case QgsMapLayerType::VectorLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
-      mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      mLayer = qgis::make_unique < QgsVectorLayer>( options, layerItem->uri(), layerItem->name(), layerItem->providerKey() );
       break;
     }
 

@@ -30,6 +30,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -593,7 +594,8 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDb2TableModel::DbtmTable ) )->text();
 
-  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer >( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer >( options,  mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ) );
 
   if ( !vlayer->isValid() )
   {

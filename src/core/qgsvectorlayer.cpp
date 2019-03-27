@@ -139,7 +139,6 @@ typedef bool deleteStyleById_t(
 );
 
 
-
 QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
@@ -148,6 +147,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
+  , mOptions( options )
 {
   setProviderType( providerKey );
 
@@ -208,7 +208,7 @@ QgsVectorLayer::~QgsVectorLayer()
 
 QgsVectorLayer *QgsVectorLayer::clone() const
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( source(), name(), mProviderKey );
+  QgsVectorLayer *layer = new QgsVectorLayer( mOptions, source(), name(), mProviderKey );
   QgsMapLayer::clone( layer );
 
   QList<QgsVectorLayerJoinInfo> joins = vectorJoins();

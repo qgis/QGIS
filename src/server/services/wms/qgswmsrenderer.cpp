@@ -2572,8 +2572,8 @@ namespace QgsWms
       }
 
       // create vector layer
-      std::unique_ptr<QgsVectorLayer> layer;
-      layer.reset( new QgsVectorLayer( url, param.mName, "memory" ) );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( options, url, param.mName, QLatin1Literal( "memory" ) );
       if ( !layer->isValid() )
       {
         continue;
