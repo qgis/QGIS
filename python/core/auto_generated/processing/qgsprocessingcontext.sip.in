@@ -126,7 +126,7 @@ Details for layers to load into projects.
 %End
       public:
 
-        LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString(), QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::UnknownType );
+        LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString(), QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::LayerHint::UnknownType );
 %Docstring
 Constructor for LayerDetails.
 %End

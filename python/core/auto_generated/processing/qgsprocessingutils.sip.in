@@ -92,7 +92,7 @@ value.
 .. seealso:: :py:func:`compatibleVectorLayers`
 %End
 
-    enum LayerHint
+    enum class LayerHint
     {
       UnknownType,
       Vector,
@@ -100,7 +100,7 @@ value.
       Mesh,
     };
 
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 %Docstring
 Interprets a string as a map layer within the supplied ``context``.
 

@@ -109,7 +109,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Layer type hints.
      * \since QGIS 3.4
      */
-    enum LayerHint
+    enum class LayerHint SIP_MONKEYPATCH_SCOPEENUM : int
     {
       UnknownType, //!< Unknown layer type
       Vector, //!< Vector layer type
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * The \a typeHint can be used to dictate the type of map layer expected.
      */
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 
     /**
      * Converts a variant \a value to a new feature source.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsProcessingUtils
      * returned.
      * \see mapLayerFromString()
      */
-    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 
     /**
      * Interprets a string as a map layer. The method will attempt to
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsProcessingUtils
      * then the layer at this file path will be loaded.
      * The caller takes responsibility for deleting the returned map layer.
      */
-    static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *loadMapLayerFromString( const QString &string, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 
     static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension );
 

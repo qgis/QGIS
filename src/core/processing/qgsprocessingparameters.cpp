@@ -427,7 +427,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     QString outputName;
     if ( definition )
       outputName = definition->name();
-    context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, QgsProcessingUtils::Vector ) );
+    context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, QgsProcessingUtils::LayerHint::Vector ) );
   }
 
   return sink.release();
@@ -506,7 +506,7 @@ QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const Qgs
       if ( layerRef.isEmpty() )
         return QString();
 
-      vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, QgsProcessingUtils::Vector ) );
+      vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, QgsProcessingUtils::LayerHint::Vector ) );
     }
   }
 
@@ -652,11 +652,11 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
     if ( definition )
       outputName = definition->name();
 
-    QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::UnknownType;
+    QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::LayerHint::UnknownType;
     if ( definition->type() == QgsProcessingParameterVectorDestination::typeName() )
-      layerTypeHint = QgsProcessingUtils::Vector;
+      layerTypeHint = QgsProcessingUtils::LayerHint::Vector;
     else if ( definition->type() == QgsProcessingParameterRasterDestination::typeName() )
-      layerTypeHint = QgsProcessingUtils::Raster;
+      layerTypeHint = QgsProcessingUtils::LayerHint::Raster;
 
     context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, layerTypeHint ) );
   }
@@ -2976,7 +2976,7 @@ bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &
   }
 
   // try to load as layer
-  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context, true, QgsProcessingUtils::Raster ) )
+  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context, true, QgsProcessingUtils::LayerHint::Raster ) )
     return true;
 
   return false;
@@ -3496,7 +3496,7 @@ bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &
   }
 
   // try to load as layer
-  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::Vector ) )
+  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::LayerHint::Vector ) )
     return true;
 
   return false;
@@ -3629,7 +3629,7 @@ bool QgsProcessingParameterMeshLayer::checkValueIsAcceptable( const QVariant &v,
   }
 
   // try to load as layer
-  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::Mesh ) )
+  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::LayerHint::Mesh ) )
     return true;
 
   return false;
@@ -3969,7 +3969,7 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
   }
 
   // try to load as layer
-  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::Vector ) )
+  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::LayerHint::Vector ) )
     return true;
 
   return false;
@@ -3996,7 +3996,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
       {
         QString layerString = fromVar.source.staticValue().toString();
         // prefer to use layer source instead of id if possible (since it's persistent)
-        if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::Vector ) ) )
+        if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
           layerString = layer->source();
         return QgsProcessingUtils::stringToPythonLiteral( layerString );
       }
@@ -4021,7 +4021,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
   QString layerString = value.toString();
 
   // prefer to use layer source if possible (since it's persistent)
-  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::Vector ) ) )
+  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
     layerString = layer->source();
 
   return QgsProcessingUtils::stringToPythonLiteral( layerString );
