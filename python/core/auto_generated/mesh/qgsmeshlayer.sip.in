@@ -78,16 +78,26 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
     struct LayerOptions
     {
 
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
+ explicit LayerOptions( ) /Deprecated/;
 %Docstring
 Constructor for LayerOptions.
+
+.. deprecated:: Use version with transformContext argument instead
+%End
+
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Constructor for LayerOptions.
+
+.. versionadded:: 3.10
 %End
 
       QgsCoordinateTransformContext transformContext;
     };
 
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
-                           const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
+ explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
+        const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() ) /Deprecated/;
 %Docstring
 Constructor - creates a mesh layer
 
@@ -100,7 +110,29 @@ data.
 :param baseName: The name used to represent the layer in the legend
 :param providerLib: The name of the data provider, e.g., "mesh_memory", "mdal"
 :param options: general mesh layer options
+
+.. deprecated:: Use version with layer options as a first argument instead
 %End
+
+    explicit QgsMeshLayer( const QgsMeshLayer::LayerOptions &options, const QString &path = QString(),
+                           const QString &baseName = QString(), const QString &providerLib = "mesh_memory" );
+%Docstring
+Constructor - creates a mesh layer
+
+The QgsMeshLayer is constructed by instantiating a data provider.  The provider
+interprets the supplied path (url) of the data source to connect to and access the
+data.
+
+:param options: general mesh layer options
+:param path: The path or url of the parameter.  Typically this encodes
+             parameters used by the data provider as url query items.
+:param baseName: The name used to represent the layer in the legend
+:param providerLib: The name of the data provider, e.g., "mesh_memory", "mdal"
+
+.. versionadded:: 3.10
+%End
+
+
     ~QgsMeshLayer();
 
 
