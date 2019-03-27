@@ -59,8 +59,7 @@ COPY .docker/qgis_resources/test_runner/qgis_* /usr/bin/
 RUN chmod +x /usr/bin/qgis_*
 
 # Add supervisor service configuration script
-COPY .docker/qgis_resources/supervisor/supervisord.conf /etc/supervisor/
-COPY .docker/qgis_resources/supervisor/supervisor.xvfb.conf /etc/supervisor/supervisor.d/
+COPY .docker/qgis_resources/supervisor/ /etc/supervisor
 
 # Python paths are for
 # - kartoza images (compiled)
