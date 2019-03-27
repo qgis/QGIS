@@ -395,6 +395,7 @@ namespace QgsWms
       /**
        * Returns SRCWIDTH parameter or an empty string if not defined.
        * \returns srcWidth parameter
+       * \since QGIS 3.8
        */
       QString srcWidth() const;
 
@@ -404,12 +405,14 @@ namespace QgsWms
        * converted.
        * \returns srcWidth parameter
        * \throws QgsBadRequestException
+       * \since QGIS 3.8
        */
       int srcWidthAsInt() const;
 
       /**
        * Returns SRCHEIGHT parameter or an empty string if not defined.
        * \returns srcHeight parameter
+       * \since QGIS 3.8
        */
       QString srcHeight() const;
 
@@ -419,6 +422,7 @@ namespace QgsWms
        * converted.
        * \returns srcHeight parameter
        * \throws QgsBadRequestException
+       * \since QGIS 3.8
        */
       int srcHeightAsInt() const;
 

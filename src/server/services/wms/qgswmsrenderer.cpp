@@ -187,7 +187,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      image.reset( createImage( getWidthAsInt(), getHeightAsInt(), false ) );
+      image.reset( createImage( width(), height(), false ) );
       configureMapSettings( image.get(), mapSettings );
       legendSettings.setMapScale( mapSettings.scale() );
       legendSettings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
@@ -1045,8 +1045,8 @@ namespace QgsWms
     }
 
     // create the mapSettings and the output image
-    int imageWidth = getWidthAsInt();
-    int imageHeight = getHeightAsInt();
+    int imageWidth = mWmsParameters.widthAsInt();
+    int imageHeight = mWmsParameters.heightAsInt();
 
     // Provide default image width/height values if format is not image
     if ( !( imageWidth && imageHeight ) &&  ! mWmsParameters.infoFormatIsImage() )
@@ -1123,10 +1123,10 @@ namespace QgsWms
   QImage *QgsRenderer::createImage( int width, int height, bool useBbox ) const
   {
     if ( width < 0 )
-      width = getWidthAsInt();
+      width = this->width();
 
     if ( height < 0 )
-      height = getHeightAsInt();
+      height = this->height();
 
     //Adapt width / height if the aspect ratio does not correspond with the BBOX.
     //Required by WMS spec. 1.3.
@@ -1315,8 +1315,8 @@ namespace QgsWms
       i = mWmsParameters.xAsInt();
       j = mWmsParameters.yAsInt();
     }
-    int width = getWidthAsInt();
-    int height = getHeightAsInt();
+    int width = mWmsParameters.widthAsInt();
+    int height = mWmsParameters.heightAsInt();
     if ( ( i != -1 && j != -1 && width != 0 && height != 0 ) && ( width != outputImage->width() || height != outputImage->height() ) )
     {
       i *= ( outputImage->width() / static_cast<double>( width ) );
@@ -1994,14 +1994,14 @@ namespace QgsWms
   {
     //test if maxWidth / maxHeight set and WIDTH / HEIGHT parameter is in the range
     int wmsMaxWidth = QgsServerProjectUtils::wmsMaxWidth( *mProject );
-    int width = getWidthAsInt();
+    int width = this->width();
     if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
     {
       return false;
     }
 
     int wmsMaxHeight = QgsServerProjectUtils::wmsMaxHeight( *mProject );
-    int height = getHeightAsInt();
+    int height = this->height();
     if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
     {
       return false;
@@ -3206,8 +3206,8 @@ namespace QgsWms
     // WIDTH / HEIGHT parameters. If not, the image has to be scaled (required
     // by WMS spec)
     QImage *scaledImage = nullptr;
-    int width = getWidthAsInt();
-    int height = getHeightAsInt();
+    int width = this->width();
+    int height = this->height();
     if ( width != image->width() || height != image->height() )
     {
       scaledImage = new QImage( image->scaled( width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
@@ -3418,20 +3418,22 @@ namespace QgsWms
     }
   }
 
-  int QgsRenderer::getHeightAsInt() const
+  int QgsRenderer::height() const
   {
-    if ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
-         mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) )
+    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
+           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
+         mWmsParameters.srcHeightAsInt() > 0 )
       return mWmsParameters.srcHeightAsInt();
     return mWmsParameters.heightAsInt();
   }
 
-  int QgsRenderer::getWidthAsInt() const
+  int QgsRenderer::width() const
   {
-    if ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
-         mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) )
+    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
+           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
+         mWmsParameters.srcWidthAsInt() > 0 )
       return mWmsParameters.srcWidthAsInt();
-    return mWmsParameters.heightAsInt();
+    return mWmsParameters.widthAsInt();
   }
 
 } // namespace QgsWms
