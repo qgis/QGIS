@@ -349,52 +349,56 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   QgsReadWriteLocker locker( sEllipsoidCacheLock, QgsReadWriteLocker::Write );
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  PROJ_STRING_LIST authorities = proj_get_authorities_from_database( context );
-  PROJ_STRING_LIST authoritiesIt = authorities;
-  while ( char *authority = *authoritiesIt )
+  if ( PROJ_STRING_LIST authorities = proj_get_authorities_from_database( context ) )
   {
-    PROJ_STRING_LIST codes = proj_get_codes_from_database( context, authority, PJ_TYPE_ELLIPSOID, 0 );
-    PROJ_STRING_LIST codesIt = codes;
-    while ( char *code = *codesIt )
+    PROJ_STRING_LIST authoritiesIt = authorities;
+    while ( char *authority = *authoritiesIt )
     {
-      EllipsoidDefinition def;
-
-      PJ *ellipsoid = proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr );
-
-      QString name = QString( proj_get_name( ellipsoid ) );
-      def.acronym = QStringLiteral( "%1:%2" ).arg( authority, code );
-      name.replace( '_', ' ' );
-      def.description = QStringLiteral( "%1 (%2:%3)" ).arg( name, authority, code );
-
-      double semiMajor, semiMinor, invFlattening;
-      int semiMinorComputed = 0;
-      if ( proj_ellipsoid_get_parameters( context, ellipsoid, &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
+      if ( PROJ_STRING_LIST codes = proj_get_codes_from_database( context, authority, PJ_TYPE_ELLIPSOID, 0 ) )
       {
-        def.parameters.semiMajor = semiMajor;
-        def.parameters.semiMinor = semiMinor;
-        def.parameters.inverseFlattening = invFlattening;
-        if ( !semiMinorComputed )
-          def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.semiMinor, 0, 'g', 17 ) );
-        else if ( !qgsDoubleNear( def.parameters.inverseFlattening, 0.0 ) )
-          def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +rf=%2 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.inverseFlattening, 0, 'g', 17 ) );
-        else
-          def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ) );
-      }
-      else
-      {
-        def.parameters.valid = false;
+        PROJ_STRING_LIST codesIt = codes;
+        while ( char *code = *codesIt )
+        {
+          if ( PJ *ellipsoid = proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr ) )
+          {
+            EllipsoidDefinition def;
+            QString name = QString( proj_get_name( ellipsoid ) );
+            def.acronym = QStringLiteral( "%1:%2" ).arg( authority, code );
+            name.replace( '_', ' ' );
+            def.description = QStringLiteral( "%1 (%2:%3)" ).arg( name, authority, code );
+
+            double semiMajor, semiMinor, invFlattening;
+            int semiMinorComputed = 0;
+            if ( proj_ellipsoid_get_parameters( context, ellipsoid, &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
+            {
+              def.parameters.semiMajor = semiMajor;
+              def.parameters.semiMinor = semiMinor;
+              def.parameters.inverseFlattening = invFlattening;
+              if ( !semiMinorComputed )
+                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.semiMinor, 0, 'g', 17 ) );
+              else if ( !qgsDoubleNear( def.parameters.inverseFlattening, 0.0 ) )
+                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +rf=%2 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.inverseFlattening, 0, 'g', 17 ) );
+              else
+                def.parameters.crs = QgsCoordinateReferenceSystem::fromProj4( QStringLiteral( "+proj=longlat +a=%1 +no_defs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ) );
+            }
+            else
+            {
+              def.parameters.valid = false;
+            }
+
+            defs << def;
+            sEllipsoidCache.insert( def.acronym, def.parameters );
+          }
+
+          codesIt++;
+        }
+        proj_string_list_destroy( codes );
       }
 
-      defs << def;
-      sEllipsoidCache.insert( def.acronym, def.parameters );
-
-      codesIt++;
+      authoritiesIt++;
     }
-    proj_string_list_destroy( codes );
-
-    authoritiesIt++;
+    proj_string_list_destroy( authorities );
   }
-  proj_string_list_destroy( authorities );
   locker.unlock();
 
 #else
