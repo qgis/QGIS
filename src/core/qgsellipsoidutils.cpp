@@ -20,6 +20,7 @@
 #include <sqlite3.h>
 #include <QCollator>
 #include "qgsprojutils.h"
+#include "qgsreadwritelocker.h"
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
@@ -176,16 +177,16 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
 #endif
 
   // check cache
-  sEllipsoidCacheLock.lockForRead();
-  QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache.constFind( ellipsoid );
-  if ( cacheIt != sEllipsoidCache.constEnd() )
   {
-    // found a match in the cache
-    QgsEllipsoidUtils::EllipsoidParameters params = cacheIt.value();
-    sEllipsoidCacheLock.unlock();
-    return params;
+    QgsReadWriteLocker locker( sEllipsoidCacheLock, QgsReadWriteLocker::Read );
+    QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache.constFind( ellipsoid );
+    if ( cacheIt != sEllipsoidCache.constEnd() )
+    {
+      // found a match in the cache
+      QgsEllipsoidUtils::EllipsoidParameters params = cacheIt.value();
+      return params;
+    }
   }
-  sEllipsoidCacheLock.unlock();
 
   EllipsoidParameters params;
 
@@ -211,9 +212,8 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
       params.valid = false;
     }
 
-    sEllipsoidCacheLock.lockForWrite();
+    QgsReadWriteLocker locker( sEllipsoidCacheLock, QgsReadWriteLocker::Write );
     sEllipsoidCache.insert( ellipsoid, params );
-    sEllipsoidCacheLock.unlock();
     return params;
   }
 
@@ -325,29 +325,28 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   return params;
 #else
   params.valid = false;
-  sEllipsoidCacheLock.lockForWrite();
+
+  QgsReadWriteLocker l( sEllipsoidCacheLock, QgsReadWriteLocker::Write );
   sEllipsoidCache.insert( ellipsoid, params );
-  sEllipsoidCacheLock.unlock();
+
   return params;
 #endif
 }
 
 QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
 {
-  sDefinitionCacheLock.lockForRead();
+  QgsReadWriteLocker defLocker( sDefinitionCacheLock, QgsReadWriteLocker::Read );
   if ( !sDefinitionCache.isEmpty() )
   {
     QList<QgsEllipsoidUtils::EllipsoidDefinition> defs = sDefinitionCache;
-    sDefinitionCacheLock.unlock();
     return defs;
   }
-  sDefinitionCacheLock.unlock();
+  defLocker.changeMode( QgsReadWriteLocker::Write );
 
-  sDefinitionCacheLock.lockForWrite();
   QList<QgsEllipsoidUtils::EllipsoidDefinition> defs;
 
 #if PROJ_VERSION_MAJOR>=6
-  sEllipsoidCacheLock.lockForWrite();
+  QgsReadWriteLocker locker( sEllipsoidCacheLock, QgsReadWriteLocker::Write );
 
   PJ_CONTEXT *context = QgsProjContext::get();
   PROJ_STRING_LIST authorities = proj_get_authorities_from_database( context );
@@ -396,7 +395,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
     authoritiesIt++;
   }
   proj_string_list_destroy( authorities );
-  sEllipsoidCacheLock.unlock();
+  locker.unlock();
 
 #else
   sqlite3_database_unique_ptr database;
@@ -441,7 +440,6 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
     return collator.compare( a.description, b.description ) < 0;
   } );
   sDefinitionCache = defs;
-  sDefinitionCacheLock.unlock();
 
   return defs;
 }
