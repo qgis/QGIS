@@ -472,7 +472,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 
 #if PROJ_VERSION_MAJOR<6
   northing *= DEG_TO_RAD;
-  easting * = DEG_TO_RAD;
+  easting *= DEG_TO_RAD;
 #endif
 
   if ( !okN || !okE )
