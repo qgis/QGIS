@@ -59,15 +59,15 @@ namespace QgsWms
 
     if ( layersName.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
-                                    QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::LAYERS );
     }
 
     QStringList layerList = layersName.split( ',', QString::SkipEmptyParts );
     if ( layerList.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
-                                    QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::LAYERS );
     }
 
     return getStyledLayerDescriptorDocument( serverIface, project, layerList );
@@ -96,14 +96,14 @@ namespace QgsWms
 
     if ( styleName.isEmpty() )
     {
-      throw QgsServiceException( QStringLiteral( "StyleNotSpecified" ),
-                                 QStringLiteral( "Style is mandatory for GetStyle operation" ), 400 );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::STYLE );
     }
 
     if ( layerName.isEmpty() )
     {
-      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ),
-                                 QStringLiteral( "Layer is mandatory for GetStyle operation" ), 400 );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::LAYERS );
     }
 
     QStringList layerList;

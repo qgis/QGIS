@@ -132,7 +132,7 @@ namespace QgsWms
     // check parameters
     if ( mWmsParameters.allLayersNickname().isEmpty() )
       throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
-                                    QgsWmsParameter::LAYER );
+                                    QgsWmsParameter::LAYERS );
 
     if ( mWmsParameters.format() == QgsWmsParameters::Format::NONE )
       throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
