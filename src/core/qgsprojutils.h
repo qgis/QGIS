@@ -21,9 +21,17 @@
 
 #include "qgis_core.h"
 #include "qgsconfig.h"
+#include <memory>
 
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
 #include <QThreadStorage>
+#endif
+
+#if PROJ_VERSION_MAJOR>=6
+#ifndef SIP_RUN
+struct PJconsts;
+typedef struct PJconsts PJ;
+#endif
 #endif
 
 /**
@@ -43,6 +51,30 @@ class CORE_EXPORT QgsProjUtils
     {
       return PROJ_VERSION_MAJOR;
     }
+
+#ifndef SIP_RUN
+#if PROJ_VERSION_MAJOR >= 6
+
+    /**
+     * Destroys Proj PJ objects.
+     */
+    struct ProjPJDeleter
+    {
+
+      /**
+       * Destroys an PJ \a object, using the correct proj calls.
+       */
+      void CORE_EXPORT operator()( PJ *object );
+
+    };
+
+    /**
+     * Scoped Proj PJ object.
+     */
+    using proj_pj_unique_ptr = std::unique_ptr< PJ, ProjPJDeleter >;
+
+#endif
+#endif
 };
 
 #ifndef SIP_RUN

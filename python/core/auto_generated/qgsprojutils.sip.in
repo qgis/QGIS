@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProjUtils
 {
 %Docstring
@@ -27,6 +28,7 @@ Utility functions for working with the proj library.
 %Docstring
 Returns the proj library major version number.
 %End
+
 };
 
 /************************************************************************
