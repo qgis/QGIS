@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+#include "qgswmsparameters.h"
 #include "qgswmsserviceexception.h"
 
 /**
@@ -29,6 +30,7 @@ class TestQgsServerWmsExceptions : public QObject
     void cleanupTestCase();
 
     void exception_code();
+    void exception_message();
 };
 
 void TestQgsServerWmsExceptions::initTestCase()
@@ -51,6 +53,13 @@ void TestQgsServerWmsExceptions::exception_code()
   code = QgsWms::QgsServiceException::QGIS_ERROR;
   QgsWms::QgsServiceException exception1( code, QString(), 400 );
   QCOMPARE( exception1.code(), QString( "Error" ) );
+}
+
+void TestQgsServerWmsExceptions::exception_message()
+{
+  QgsWms::QgsServiceException::ExceptionCode code = QgsWms::QgsServiceException::QGIS_MISSING_PARAMETER_VALUE;
+  QgsWms::QgsServiceException exception( code, QgsWms::QgsWmsParameter::LAYER, 400 );
+  QCOMPARE( exception.message(), QString( "The LAYER parameter is missing." ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsExceptions )
