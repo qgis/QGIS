@@ -212,7 +212,8 @@ void QgsStatusBarCoordinatesWidget::contributors()
   }
   QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
   QFileInfo fileInfo = QFileInfo( fileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( options, fileInfo.absoluteFilePath(),
       tr( "QGIS Contributors" ), QStringLiteral( "ogr" ) );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
@@ -228,7 +229,8 @@ void QgsStatusBarCoordinatesWidget::world()
   }
   QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
   QFileInfo fileInfo = QFileInfo( fileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( options, fileInfo.absoluteFilePath(),
       tr( "World Map" ), QStringLiteral( "ogr" ) );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
@@ -242,7 +244,8 @@ void QgsStatusBarCoordinatesWidget::hackfests()
   }
   QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
   QFileInfo fileInfo = QFileInfo( fileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( options, fileInfo.absoluteFilePath(),
       tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ) );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );

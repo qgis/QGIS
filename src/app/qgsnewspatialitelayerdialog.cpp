@@ -454,7 +454,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
     }
   }
 
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( options, QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
       .arg( mDatabaseComboBox->currentText(),
             leLayerName->text(),
             mGeometryTypeBox->currentIndex() != 0 ? QStringLiteral( "(%1)" ).arg( leGeometryColumn->text() ) : QString() ),

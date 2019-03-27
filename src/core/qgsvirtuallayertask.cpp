@@ -23,7 +23,8 @@ QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &defin
   : mDefinition( definition )
 {
   mDefinition.setLazy( true );
-  mLayer = qgis::make_unique<QgsVectorLayer>( mDefinition.toString(), "layer", "virtual" );
+  QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
+  mLayer = qgis::make_unique<QgsVectorLayer>( options, mDefinition.toString(), QStringLiteral( "layer" ), QLatin1Literal( "virtual" ) );
 }
 
 bool QgsVirtualLayerTask::run()

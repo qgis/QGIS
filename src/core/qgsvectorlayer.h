@@ -438,6 +438,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     };
 
+
     /**
      * Constructor - creates a vector layer
      *
@@ -2612,6 +2613,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     std::unique_ptr<QgsGeometryOptions> mGeometryOptions;
 
     bool mAllowCommit = true;
+
+    QgsVectorLayer::LayerOptions mOptions;
 
     friend class QgsVectorLayerFeatureSource;
 };

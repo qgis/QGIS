@@ -148,9 +148,9 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   bool lblVisible = false;
 
-  QgsVectorLayer::LayerOptions options;
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.loadDefaultStyle = false;
-  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
+  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( options, QStringLiteral( "%1|layername=drawing" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ) ) );
   if ( d && d->isValid() )
   {
     int idxPath = d->fields().lookupField( QStringLiteral( "path" ) );
@@ -185,7 +185,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   lblMessage->setVisible( lblVisible );
 
-  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
+  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( options, QStringLiteral( "%1|layername=layers" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ) ) );
   if ( l && l->isValid() )
   {
     int idxName = l->fields().lookupField( QStringLiteral( "name" ) );
@@ -263,9 +263,9 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
 
 QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const QString &layerFilter, const QString &table )
 {
-  QgsVectorLayer::LayerOptions options;
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.loadDefaultStyle = false;
-  QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( mDatabaseFileWidget->filePath(), table ), table, QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *l = new QgsVectorLayer( options, QStringLiteral( "%1|layername=%2" ).arg( mDatabaseFileWidget->filePath(), table ), table, QStringLiteral( "ogr" ) );
   l->setSubsetString( QStringLiteral( "%1space=0 AND block=-1" ).arg( layerFilter ) );
 
   if ( l->featureCount() == 0 )
