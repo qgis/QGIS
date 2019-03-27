@@ -176,7 +176,9 @@ namespace QgsWms
         WITH_MAPTIP,
         WMTVER,
         ATLAS_PK,
-        FORMAT_OPTIONS
+        FORMAT_OPTIONS,
+        SRCWIDTH,
+        SRCHEIGHT
       };
       Q_ENUM( Name )
 
@@ -389,6 +391,40 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       int heightAsInt() const;
+
+      /**
+       * Returns SRCWIDTH parameter or an empty string if not defined.
+       * \returns srcWidth parameter
+       * \since QGIS 3.8
+       */
+      QString srcWidth() const;
+
+      /**
+       * Returns SRCWIDTH parameter as an int or its default value if not
+       * defined. An exception is raised if SRCWIDTH is defined and cannot be
+       * converted.
+       * \returns srcWidth parameter
+       * \throws QgsBadRequestException
+       * \since QGIS 3.8
+       */
+      int srcWidthAsInt() const;
+
+      /**
+       * Returns SRCHEIGHT parameter or an empty string if not defined.
+       * \returns srcHeight parameter
+       * \since QGIS 3.8
+       */
+      QString srcHeight() const;
+
+      /**
+       * Returns SRCHEIGHT parameter as an int or its default value if not
+       * defined. An exception is raised if SRCHEIGHT is defined and cannot be
+       * converted.
+       * \returns srcHeight parameter
+       * \throws QgsBadRequestException
+       * \since QGIS 3.8
+       */
+      int srcHeightAsInt() const;
 
       /**
        * Returns VERSION parameter if defined or its default value.
