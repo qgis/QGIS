@@ -352,6 +352,7 @@ Constructor for LayerOptions.
 
     };
 
+
  explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
         const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() ) /Deprecated/;
 %Docstring

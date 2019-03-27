@@ -363,7 +363,8 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
       {
         case QgsMapLayerType::VectorLayer:
         {
-          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
+          const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( options, layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
           if ( layer && layer->isValid() )
           {
             QgisApp::instance()->saveAsFile( layer.get(), false, false );

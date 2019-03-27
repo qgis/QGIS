@@ -63,7 +63,8 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   mAreaCanvas->setDestinationCrs( srs );
 
   QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
-  mLayers << new QgsVectorLayer( layerPath );
+  const QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
+  mLayers << new QgsVectorLayer( options, layerPath );
   mAreaCanvas->setLayers( mLayers );
   mAreaCanvas->setMapTool( new QgsMapToolPan( mAreaCanvas ) );
   mAreaCanvas->setPreviewJobsEnabled( true );

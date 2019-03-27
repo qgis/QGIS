@@ -312,11 +312,25 @@ class CORE_EXPORT QgsProcessingUtils
 
     /**
      * Interprets a string as a map layer. The method will attempt to
+     * load a layer matching the passed \a string using the given coordinate
+     * \a transformContext.
+     * E.g. if the string is a file path,
+     * then the layer at this file path will be loaded.
+     * The caller takes responsibility for deleting the returned map layer.
+     *
+     * \since QGIS 3.8
+     */
+    static QgsMapLayer *loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint = UnknownType );
+
+    /**
+     * Interprets a string as a map layer. The method will attempt to
      * load a layer matching the passed \a string. E.g. if the string is a file path,
      * then the layer at this file path will be loaded.
      * The caller takes responsibility for deleting the returned map layer.
+     *
+     * \deprecated use mapLayerFromString() that takes QgsCoordinateTransformContext as an argument instead
      */
-    static QgsMapLayer *loadMapLayerFromString( const QString &string, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
+    Q_DECL_DEPRECATED static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = UnknownType ) SIP_DEPRECATED ;
 
     static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension );
 
