@@ -93,6 +93,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   {
     geom = qgis::make_unique< QgsPolygon >();
   }
+  else if ( trimmed.startsWith( QLatin1String( "Triangle" ), Qt::CaseInsensitive ) )
+  {
+    geom = qgis::make_unique< QgsTriangle >();
+  }
   else if ( trimmed.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
   {
     geom = qgis::make_unique< QgsCurvePolygon >();

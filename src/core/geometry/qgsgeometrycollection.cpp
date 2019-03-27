@@ -376,21 +376,28 @@ QByteArray QgsGeometryCollection::asWkb() const
 
 QString QgsGeometryCollection::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + QLatin1String( " (" );
-  for ( const QgsAbstractGeometry *geom : mGeometries )
+  QString wkt = wktTypeStr();
+
+  if ( isEmpty() )
+    wkt += QString( " EMPTY" );
+  else
   {
-    QString childWkt = geom->asWkt( precision );
-    if ( wktOmitChildType() )
+    wkt += QLatin1String( " (" );
+    for ( const QgsAbstractGeometry *geom : mGeometries )
     {
-      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      QString childWkt = geom->asWkt( precision );
+      if ( wktOmitChildType() )
+      {
+        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      }
+      wkt += childWkt + ',';
     }
-    wkt += childWkt + ',';
+    if ( wkt.endsWith( ',' ) )
+    {
+      wkt.chop( 1 ); // Remove last ','
+    }
+    wkt += ')';
   }
-  if ( wkt.endsWith( ',' ) )
-  {
-    wkt.chop( 1 ); // Remove last ','
-  }
-  wkt += ')';
   return wkt;
 }
 
@@ -635,6 +642,9 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
     return false;
   }
   mWkbType = parts.first;
+
+  if ( parts.second == QString( "EMPTY" ) )
+    return true;
 
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 

@@ -337,7 +337,6 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
-
 bool QgsLineString::fromWkt( const QString &wkt )
 {
   clear();
@@ -347,6 +346,9 @@ bool QgsLineString::fromWkt( const QString &wkt )
   if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::LineString )
     return false;
   mWkbType = parts.first;
+
+  if ( parts.second == "EMPTY" )
+    return true;
 
   setPoints( QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() ) );
   return true;
@@ -377,9 +379,15 @@ QByteArray QgsLineString::asWkb() const
 QString QgsLineString::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + ' ';
-  QgsPointSequence pts;
-  points( pts );
-  wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
+
+  if ( isEmpty() )
+    wkt += "EMPTY";
+  else
+  {
+    QgsPointSequence pts;
+    points( pts );
+    wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
+  }
   return wkt;
 }
 

@@ -314,6 +314,9 @@ bool QgsCircularString::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
+  if ( parts.second == QString( "EMPTY" ) )
+    return true;
+
   setPoints( QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() ) );
   return true;
 }
@@ -337,9 +340,15 @@ QByteArray QgsCircularString::asWkb() const
 QString QgsCircularString::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + ' ';
-  QgsPointSequence pts;
-  points( pts );
-  wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
+
+  if ( isEmpty() )
+    wkt += "EMPTY";
+  else
+  {
+    QgsPointSequence pts;
+    points( pts );
+    wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
+  }
   return wkt;
 }
 

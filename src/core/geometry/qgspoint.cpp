@@ -163,6 +163,9 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
+  if ( parts.second == QString( "EMPTY" ) )
+    return true;
+
   QRegularExpression rx( QStringLiteral( "\\s" ) );
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
   if ( coordinates.size() < 2 )
@@ -225,13 +228,20 @@ QByteArray QgsPoint::asWkb() const
 
 QString QgsPoint::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + QLatin1String( " (" );
-  wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
-  if ( is3D() )
-    wkt += ' ' + qgsDoubleToString( mZ, precision );
-  if ( isMeasure() )
-    wkt += ' ' + qgsDoubleToString( mM, precision );
-  wkt += ')';
+  QString wkt = wktTypeStr();
+
+  if ( isEmpty() )
+    wkt += QString( " EMPTY" );
+  else
+  {
+    wkt += QLatin1String( " (" );
+    wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
+    if ( is3D() )
+      wkt += ' ' + qgsDoubleToString( mZ, precision );
+    if ( isMeasure() )
+      wkt += ' ' + qgsDoubleToString( mM, precision );
+    wkt += ')';
+  }
   return wkt;
 }
 
@@ -298,7 +308,7 @@ void QgsPoint::draw( QPainter &p ) const
 
 void QgsPoint::clear()
 {
-  mX = mY = 0.;
+  mX = mY = std::numeric_limits<double>::quiet_NaN();
   if ( is3D() )
     mZ = 0.;
   else
@@ -686,7 +696,7 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
 
 bool QgsPoint::isEmpty() const
 {
-  return false;
+  return std::isnan( mX ) || std::isnan( mY );
 }
 
 QgsRectangle QgsPoint::boundingBox() const
