@@ -187,7 +187,7 @@ void TestQgsOgrProvider::testThread()
   // Disabled by @m-kuhn
   // This test is flaky
   // See https://travis-ci.org/qgis/QGIS/jobs/505008602#L6464-L7108
-  if ( QgsTest::isTravis() )
+  if ( !QgsTest::runFlakyTests() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
   // After reading a QgsVectorLayer (getFeatures) from another thread the QgsOgrConnPoolGroup starts
