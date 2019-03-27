@@ -278,14 +278,14 @@ namespace QgsWms
     QgsPrintLayout *sourceLayout( dynamic_cast<QgsPrintLayout *>( lManager->layoutByName( templateName ) ) );
     if ( !sourceLayout )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidTemplate" ),
-                                    QStringLiteral( "Template '%1' is not known" ).arg( templateName ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QgsWmsParameter::TEMPLATE );
     }
 
     // Check that layout has at least one page
     if ( sourceLayout->pageCollection()->pageCount() < 1 )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidTemplate" ),
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                     QStringLiteral( "Template '%1' has no pages" ).arg( templateName ) );
     }
 
@@ -747,7 +747,7 @@ namespace QgsWms
     // check size
     if ( !checkMaximumWidthHeight() )
     {
-      throw QgsBadRequestException( QStringLiteral( "Size error" ),
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                     QStringLiteral( "The requested map size is too large" ) );
     }
 
@@ -954,8 +954,8 @@ namespace QgsWms
       QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
       if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
       {
-        throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ),
-                                      QStringLiteral( "Invalid BBOX parameter" ) );
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                      QgsWmsParameter::BBOX );
       }
 
       QString crs = mWmsParameters.crs();
@@ -983,9 +983,15 @@ namespace QgsWms
       }
     }
 
-    if ( width <= 0 || height <= 0 )
+    if ( width <= 0 )
     {
-      throw QgsException( QStringLiteral( "createImage: Invalid width / height parameters" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QgsWmsParameter::WIDTH );
+    }
+    else if ( height <= 0 )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QgsWmsParameter::HEIGHT );
     }
 
     std::unique_ptr<QImage> image;
@@ -1032,7 +1038,8 @@ namespace QgsWms
     QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
     if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QgsWmsParameter::BBOX );
     }
 
     QString crs = mWmsParameters.crs();
@@ -2806,12 +2813,12 @@ namespace QgsWms
       contentBasedLegend = true;
       contentBasedLegendExtent = mWmsParameters.bboxAsRectangle();
       if ( contentBasedLegendExtent.isEmpty() )
-        throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ),
-                                      QStringLiteral( "Invalid BBOX parameter" ) );
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                      QgsWmsParameter::BBOX );
 
       if ( !mWmsParameters.rule().isEmpty() )
-        throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ),
-                                      QStringLiteral( "BBOX parameter cannot be combined with RULE" ) );
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                      QStringLiteral( "BBOX parameter cannot be combined with RULE." ) );
     }
 
     // build layer tree

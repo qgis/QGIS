@@ -108,6 +108,11 @@ namespace QgsWms
             message = QStringLiteral( "The %1 parameter is missing." ).arg( name );
             break;
           }
+          case QGIS_INVALID_PARAMETER_VALUE:
+          {
+            message = QStringLiteral( "The %1 parameter is invalid." ).arg( name );
+            break;
+          }
           case OGC_INVALID_FORMAT:
           case OGC_INVALID_SRS:
           case OGC_LAYER_NOT_DEFINED:
@@ -119,7 +124,6 @@ namespace QgsWms
           case OGC_INVALID_DIMENSION_VALUE:
           case OGC_INVALID_CRS:
           case OGC_OPERATION_NOT_SUPPORTED:
-          case QGIS_INVALID_PARAMETER_VALUE:
           case QGIS_ERROR:
           {
             break;
