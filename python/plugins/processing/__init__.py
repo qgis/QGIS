@@ -39,8 +39,6 @@ qgis.processing.runAndLoadResults = runAndLoadResults
 qgis.processing.createAlgorithmDialog = createAlgorithmDialog
 qgis.processing.execAlgorithmDialog = execAlgorithmDialog
 qgis.processing.createContext = createContext
-qgis.processing.isWindows = isWindows
-qgis.processing.isMac = isMac
 
 
 def classFactory(iface):
