@@ -34,6 +34,7 @@
 #include <QSharedData>
 
 #if PROJ_VERSION_MAJOR<6
+typedef void *projPJ;
 #ifndef USE_THREAD_LOCAL
 #include <QThreadStorage>
 #endif
@@ -48,7 +49,7 @@ typedef PJ *ProjData;
 #include "qgscoordinatetransformcontext.h"
 
 #if PROJ_VERSION_MAJOR<6
-typedef void *projPJ;
+
 typedef void *projCtx;
 
 /**
