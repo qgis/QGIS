@@ -100,8 +100,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
+      QString *errorMessage = nullptr
     );
 
     //! Convert a QgsField to work with DB2
