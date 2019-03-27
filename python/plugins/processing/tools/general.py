@@ -24,10 +24,6 @@ __copyright__ = '(C) 2013, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
-
-import os
-import configparser
-
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterEnum,
@@ -43,8 +39,13 @@ from qgis.utils import iface
 
 
 def algorithmHelp(id):
-    """Prints algorithm parameters with their types. Also
-    provides information about options if any.
+    """
+    Prints algorithm parameters with their types. Also
+    provides information about parameters and outputs,
+    and their acceptable values.
+
+    :param id: An algorithm's ID
+    :type id: str
     """
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
@@ -100,6 +101,9 @@ def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_ch
     :param context: Processing context object
     :param is_child_algorithm: Set to True if this algorithm is being run as part of a larger algorithm,
     i.e. it is a sub-part of an algorithm which calls other Processing algorithms.
+
+    :returns algorithm results as a dictionary, or None if execution failed
+    :rtype: Union[dict, None]
     """
     if onFinish or not is_child_algorithm:
         return Processing.runAlgorithm(algOrName, parameters, onFinish, feedback, context)
@@ -114,8 +118,17 @@ def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_ch
 
 
 def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
-    """Executes given algorithm and load its results into QGIS project
+    """
+    Executes given algorithm and load its results into the current QGIS project
     when possible.
+
+    :param algOrName: Either an instance of an algorithm, or an algorithm's ID
+    :param parameters: Algorithm parameters dictionary
+    :param feedback: Processing feedback object
+    :param context: Processing context object
+
+    :returns algorithm results as a dictionary, or None if execution failed
+    :rtype: Union[dict, None]
     """
     if isinstance(algOrName, QgsProcessingAlgorithm):
         alg = algOrName
@@ -127,7 +140,8 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
         if not param.name() in parameters:
             continue
 
-        if isinstance(param, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination, QgsProcessingParameterRasterDestination)):
+        if isinstance(param, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination,
+                              QgsProcessingParameterRasterDestination)):
             p = parameters[param.name()]
             if not isinstance(p, QgsProcessingOutputLayerDefinition):
                 parameters[param.name()] = QgsProcessingOutputLayerDefinition(p, QgsProject.instance())
@@ -135,13 +149,21 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
                 p.destinationProject = QgsProject.instance()
                 parameters[param.name()] = p
 
-    return Processing.runAlgorithm(alg, parameters=parameters, onFinish=handleAlgorithmResults, feedback=feedback, context=context)
+    return Processing.runAlgorithm(alg, parameters=parameters, onFinish=handleAlgorithmResults, feedback=feedback,
+                                   context=context)
 
 
 def createAlgorithmDialog(algOrName, parameters={}):
-    """Creates and returns an algorithm dialog for the specified algorithm, prepopulated
+    """
+    Creates and returns an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters. It is the caller's responsibility to execute
     and delete this dialog.
+
+    :param algOrName: Either an instance of an algorithm, or an algorithm's ID
+    :param parameters: Initial algorithm parameters dictionary
+
+    :returns algorithm results as a dictionary, or None if execution failed
+    :rtype: Union[dict, None]
     """
     if isinstance(algOrName, QgsProcessingAlgorithm):
         alg = algOrName.create()
@@ -162,10 +184,15 @@ def createAlgorithmDialog(algOrName, parameters={}):
 
 
 def execAlgorithmDialog(algOrName, parameters={}):
-    """Executes an algorithm dialog for the specified algorithm, prepopulated
+    """
+    Executes an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters.
 
-    Returns the algorithm's results.
+    :param algOrName: Either an instance of an algorithm, or an algorithm's ID
+    :param parameters: Initial algorithm parameters dictionary
+
+    :returns algorithm results as a dictionary, or None if execution failed
+    :rtype: Union[dict, None]
     """
     dlg = createAlgorithmDialog(algOrName, parameters)
     if dlg is None:
