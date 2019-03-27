@@ -213,11 +213,21 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static void createFeatureSinkPython( QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK, QString &destination SIP_INOUT, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) SIP_THROW( QgsProcessingException ) SIP_PYNAME( createFeatureSink );
 
+
+    /**
+     * Combines the extent of several map \a layers. If specified, the target \a crs
+     * will be used to transform the layer's extent to the desired output reference system
+     * using the specified \a transformContext.
+     * \since QGIS 3.10
+     */
+    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
+
     /**
      * Combines the extent of several map \a layers. If specified, the target \a crs
      * will be used to transform the layer's extent to the desired output reference system.
+     * \deprecated Use version with transformContext argument instead
      */
-    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    Q_DECL_DEPRECATED static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) SIP_DEPRECATED;
 
     /**
      * Converts an \a input parameter value for use in source iterating mode, where one individual sink
