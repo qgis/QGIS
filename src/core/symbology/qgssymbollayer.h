@@ -803,7 +803,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      * Renders the line symbol layer along the outline of polygon, using the given render \a context.
      *
      * The exterior ring of the polygon is specified in \a points. Optionally, interior
-     * rings are set via the \a rings arugment.
+     * rings are set via the \a rings argument.
      *
      * \see renderPolyline()
      */

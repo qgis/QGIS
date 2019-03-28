@@ -860,7 +860,7 @@ Renders the line symbol layer along the line joining ``points``, using the given
 Renders the line symbol layer along the outline of polygon, using the given render ``context``.
 
 The exterior ring of the polygon is specified in ``points``. Optionally, interior
-rings are set via the ``rings`` arugment.
+rings are set via the ``rings`` argument.
 
 .. seealso:: :py:func:`renderPolyline`
 %End
