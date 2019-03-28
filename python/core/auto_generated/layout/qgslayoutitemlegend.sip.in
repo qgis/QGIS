@@ -34,6 +34,26 @@ Construct the model based on the given layer tree
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
+
+    void setLayoutExpContext( QgsExpressionContext *econtext );
+%Docstring
+Set the pointer to the layoutlegend expressioncontext
+
+:param econtext: pointer to the context
+
+.. versionadded:: 3.8
+%End
+
+  signals:
+
+    void refreshLegend();
+%Docstring
+Emitted to refresh the legend once counting is done.
+
+.. versionadded:: 3.8
+%End
+
+
 };
 
 
@@ -490,7 +510,18 @@ Returns the legend's renderer settings object.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+%Docstring
+Creates an expression context
 
+.. versionadded:: 3.8
+%End
+
+    QgsExpressionContext updateExpressionContext();
+%Docstring
+Updates the member QgsExpressionContext and returns it.
+
+.. versionadded:: 3.8
+%End
 
   public slots:
 

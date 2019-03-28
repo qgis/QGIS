@@ -2085,7 +2085,8 @@ been changed inside the edit buffer then the previous saved value may be returne
                         const QString &fieldOrExpression,
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = 0,
-                        bool *ok = 0 ) const;
+                        bool *ok = 0,
+                        const QgsFeatureIds fids = QgsFeatureIds() ) const;
 %Docstring
 Calculates an aggregated value from the layer's features.
 
@@ -2094,6 +2095,7 @@ Calculates an aggregated value from the layer's features.
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for expressions and filters
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
+:param fids: List of feature Id to perform the aggregation on a subset
 
 :return: calculated aggregate value
 
@@ -2202,6 +2204,13 @@ It may also contain embedded expressions.
 .. versionadded:: 3.0
 %End
 
+    QgsExpressionContext createExpressionContext( QgsExpressionContext context ) const;
+%Docstring
+Provide the global and layer context for evaluation
+
+:param context: extra QgsExpressionContext to add
+%End
+
     virtual QgsExpressionContext createExpressionContext() const ${SIP_FINAL};
 
 
@@ -2257,6 +2266,7 @@ Configuration and logic to apply automatically on any edit happening on this lay
 
 .. versionadded:: 3.4
 %End
+
 
 
 
@@ -2622,6 +2632,21 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 
 .. versionadded:: 3.0
 %End
+
+    void startCount( long taskid );
+%Docstring
+Emitted when counting started
+
+.. versionadded:: 3.8
+%End
+
+    void countDone( long taskid );
+%Docstring
+Emitted when a counting task is finished
+
+.. versionadded:: 3.8
+%End
+
 
   protected:
     virtual void setExtent( const QgsRectangle &rect ) ${SIP_FINAL};

@@ -206,7 +206,8 @@ matching is done in a case-insensitive manner.
                                 int index,
                                 const QgsAggregateCalculator::AggregateParameters &parameters,
                                 QgsExpressionContext *context,
-                                bool &ok ) const;
+                                bool &ok,
+                                const QgsFeatureIds fids = QgsFeatureIds() ) const;
 %Docstring
 Calculates an aggregated value from the layer's features. The base implementation does nothing,
 but subclasses can override this method to handoff calculation of aggregates to the provider.
@@ -216,6 +217,7 @@ but subclasses can override this method to handoff calculation of aggregates to 
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for filter
 :param ok: will be set to ``True`` if calculation was successfully performed by the data provider
+:param fids: List of feature Id to perform the aggregation on a subset
 
 :return: calculated aggregate value
 

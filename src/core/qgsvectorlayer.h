@@ -27,7 +27,7 @@
 #include <QFont>
 #include <QMutex>
 
-#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
@@ -41,6 +41,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontextscopegenerator.h"
+#include "qgsexpressioncontext.h"
 
 class QPainter;
 class QImage;
@@ -996,7 +997,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * The method will return the feature counter task. You will need to
      * connect to the symbolFeatureCountMapChanged() signal to be
      * notified when the freshly updated feature counts are ready.
-     *
      * \note If the count features for symbols has been already done a
      *       NULLPTR is returned. If you need to wait for the results,
      *       you can call waitForFinished() on the feature counter.
@@ -1885,6 +1885,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param parameters parameters controlling aggregate calculation
      * \param context expression context for expressions and filters
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
+     * \param fids List of feature Id to perform the aggregation on a subset
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
@@ -1892,7 +1893,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         const QString &fieldOrExpression,
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = nullptr,
-                        bool *ok = nullptr ) const;
+                        bool *ok = nullptr,
+                        const QgsFeatureIds fids = QgsFeatureIds() ) const;
 
     //! Sets the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
@@ -1976,6 +1978,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.0
      */
     void setMapTipTemplate( const QString &mapTipTemplate );
+
+    /**
+     * Provide the global and layer context for evaluation
+     * \param context extra QgsExpressionContext to add
+     */
+    QgsExpressionContext createExpressionContext( QgsExpressionContext context ) const;
 
     QgsExpressionContext createExpressionContext() const FINAL;
 
@@ -2069,6 +2077,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.4
      */
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
+
+    /**
+     * Returns true if the features were counted
+     * \since QIGS 3.8
+     */
+    bool featuresCounted() SIP_SKIP { return mSymbolFeatureCounted; }
 
   public slots:
 
@@ -2391,6 +2405,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void symbolFeatureCountMapChanged();
 
+    /**
+     * Emitted when counting started
+     * \since QGIS 3.8
+     */
+    void startCount( long taskid );
+
+    /**
+     * Emitted when a counting task is finished
+     * \since QGIS 3.8
+     */
+    void countDone( long taskid );
+
+
   protected:
     //! Sets the extent
     void setExtent( const QgsRectangle &rect ) FINAL;
@@ -2425,6 +2452,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
+
+    /**
+     * Function used to emit a signal when a task is completed.
+     * \since QGIS 3.8
+     */
+    void doneTask() SIP_SKIP;
 
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );
@@ -2566,6 +2599,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mAllowCommit = true;
 
     friend class QgsVectorLayerFeatureSource;
+
+    QList<long> mPendingTasks;
 };
 
 

@@ -15,6 +15,7 @@
 
 #include "qgsvectorlayerfeaturecounter.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeatureid.h"
 
 QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context )
   : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel )
@@ -31,12 +32,15 @@ QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *laye
 
 bool QgsVectorLayerFeatureCounter::run()
 {
+  mSymbolFeatureCountMap.clear();
+  mSymbolFeatureIdMap.clear();
   QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
   QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
 
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
     mSymbolFeatureCountMap.insert( symbolIt->label(), 0 );
+    mSymbolFeatureIdMap.insert( symbolIt->label(), QgsFeatureIds() );
   }
 
   // If there are no features to be counted, we can spare us the trouble
@@ -65,10 +69,11 @@ bool QgsVectorLayerFeatureCounter::run()
     while ( fit.nextFeature( f ) )
     {
       renderContext.expressionContext().setFeature( f );
-      QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
-      Q_FOREACH ( const QString &key, featureKeyList )
+      const QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
+      for ( const QString &key : featureKeyList )
       {
         mSymbolFeatureCountMap[key] += 1;
+        mSymbolFeatureIdMap[key].insert( f.id() );
       }
       ++featuresCounted;
 
@@ -102,4 +107,14 @@ QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const
 {
   return mSymbolFeatureCountMap.value( legendKey, -1 );
+}
+
+QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const
+{
+  return mSymbolFeatureIdMap;
+}
+
+QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString symbolkey ) const
+{
+  return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
 }

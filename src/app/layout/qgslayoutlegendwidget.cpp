@@ -38,6 +38,7 @@
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsunittypes.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -99,6 +100,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mEditPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mEditPushButton_clicked );
   connect( mCountToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mCountToolButton_clicked );
   connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsLayoutLegendWidget::mExpressionFilterButton_toggled );
+  connect( mLayerExpressionButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
   connect( mFilterByMapToolButton, &QToolButton::toggled, this, &QgsLayoutLegendWidget::mFilterByMapToolButton_toggled );
   connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mUpdateAllPushButton_clicked );
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
@@ -118,6 +120,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mMoveUpToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowUp.svg" ) ) );
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
+  mLayerExpressionButton->setIcon( QIcon( QgsApplication::iconPath( "mActionAddExpression.svg" ) ) );
 
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
@@ -896,6 +899,44 @@ void QgsLayoutLegendWidget::mExpressionFilterButton_toggled( bool checked )
 
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->updateFilterByMap();
+  mLegend->adjustBoxSize();
+  mLegend->endCommand();
+}
+
+void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
+{
+
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  QModelIndex currentIndex = mItemTreeView->currentIndex();
+  if ( !currentIndex.isValid() )
+    return;
+
+  QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
+  if ( !QgsLayerTree::isLayer( currentNode ) )
+    return;
+
+  QgsLayerTreeLayer *layer = qobject_cast<QgsLayerTreeLayer *>( currentNode );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+
+  if ( !vl )
+    return;
+
+  QString currentExpression;
+  if ( layer->expression().isEmpty() )
+    currentExpression = QStringLiteral( "@symbol_label" );
+  else
+    currentExpression = layer->expression();
+
+  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", vl->createExpressionContext() );
+  if ( expressiondialog.exec() )
+    layer->setExpression( expressiondialog.expressionText() );
+
+  mLegend->beginCommand( tr( "Update Legend" ) );
+  mLegend->updateLegend();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
 }

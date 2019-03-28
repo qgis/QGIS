@@ -29,6 +29,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureid.h"
+#include "qgslayoutitem.h"
+#include "qgsvectorlayerfeaturecounter.h"
+#include "qgsexpression.h"
+
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )
@@ -226,6 +231,20 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
 const QgsSymbol *QgsSymbolLegendNode::symbol() const
 {
   return mItem.symbol();
+}
+
+QString QgsSymbolLegendNode::getCurrentLabel() const
+{
+  QString label;
+  if ( mEmbeddedInParent )
+  {
+    QVariant legendlabel = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) );
+    QString layerName = legendlabel.isNull() ? mLayerNode->name() : legendlabel.toString();
+    label = mUserLabel.isEmpty() ? layerName : mUserLabel;
+  }
+  else
+    label = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
+  return label;
 }
 
 void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
@@ -583,17 +602,13 @@ void QgsSymbolLegendNode::updateLabel()
 
   if ( mEmbeddedInParent )
   {
-    QString layerName = mLayerNode->name();
-    if ( !mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
-      layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-
-    mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
+    mLabel = getCurrentLabel();
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
   }
   else
   {
-    mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
+    mLabel = getCurrentLabel();
     if ( showFeatureCount && vl )
     {
       qlonglong count = vl->featureCount( mItem.ruleKey() );
@@ -604,7 +619,94 @@ void QgsSymbolLegendNode::updateLabel()
   emit dataChanged();
 }
 
+QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QString label )
+{
+  if ( !mLayerNode )
+    return QString();
 
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+
+  if ( vl && label.isEmpty() )
+  {
+    mLabel = getCurrentLabel();
+    if ( ! mLayerNode->expression().isEmpty() )
+      mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", vl, context );
+    else if ( mLabel.contains( "[%" ) )
+      mLabel = evaluateLabelExpression( mLabel, vl, context );
+
+    emit dataChanged();
+    return mLabel;
+  }
+  else if ( vl )
+  {
+    if ( ! mLayerNode->expression().isEmpty() )
+      label = evaluateLabelExpression( label + "[%" + mLayerNode->expression() + "%]", vl, context );
+    else if ( label.contains( "[%" ) )
+      label = evaluateLabelExpression( label, vl, context );
+    return label;
+  }
+  else
+  {
+    if ( label.isEmpty() )
+      return mLabel;
+    else
+      return label;
+  }
+}
+
+QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpressionContext context ) const
+{
+
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+
+  context.appendScope( vl->createExpressionContextScope() );
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
+  QVariantList featureIds;
+  if ( vl )
+  {
+    QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures();
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
+
+    if ( vl->featuresCounted() )
+    {
+
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+
+      const QgsFeatureIds fids = counter->featureIds( mItem.ruleKey() );
+
+      featureIds.reserve( fids.count() );
+      for ( QgsFeatureId fid : fids )
+      {
+        featureIds << static_cast<qint64>( fid );
+      }
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+    }
+    else
+    {
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+    }
+  }
+  else
+  {
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( -1 ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+  }
+
+  context.appendScope( scope );
+
+  return context;
+}
+
+QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context ) const
+{
+  context = ( mLayerNode->layer()->type() == QgsMapLayerType::VectorLayer ) ? createExpressionContext( context ) : vl->createExpressionContext( context );
+  label = QgsExpression().replaceExpressionText( label, &context );
+  return label;
+}
 
 // -------------------------------------------------------------------------
 

@@ -24,6 +24,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgslayertreegroup.h"
+#include "qgsexpressioncontext.h"
 
 class QgsLayerTreeModel;
 class QgsSymbol;
@@ -49,6 +50,55 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     QVariant data( const QModelIndex &index, int role ) const override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * Set the pointer to the layoutlegend expressioncontext
+     * \param econtext pointer to the context
+     * \since QGIS 3.8
+     */
+    void setLayoutExpContext( QgsExpressionContext *econtext );
+
+  signals:
+
+    /**
+     * Emitted to refresh the legend once counting is done.
+     * \since QGIS 3.8
+     */
+    void refreshLegend();
+
+
+  private slots:
+
+    /**
+     * keep track of current counting tasks
+     * \since QGIS 3.8
+     */
+    void pendingCount( long taskid );
+
+    /**
+     * Ensure that no more counting is remaining to refresh the legend
+     * \since QGIS 3.8
+     */
+    void doneCount( long taskid );
+
+  private:
+    QgsExpressionContext *mLayoutLegendContext = nullptr;
+
+    /**
+     * Returns filtered list of active legend nodes attached to a particular layer node
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
+     * \see layerOriginalLegendNodes()
+     * \since QGIS 3.8
+     */
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
+
+    /**
+     * storage for current counting tasks
+     * \since QGIS 3.8
+     */
+    QList<long> mPendingCount;
+
 };
 
 
@@ -436,8 +486,17 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
+    /**
+     * Creates an expression context
+     * \since QGIS 3.8
+     */
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Updates the member QgsExpressionContext and returns it.
+     * \since QGIS 3.8
+     */
+    QgsExpressionContext updateExpressionContext();
 
   public slots:
 
@@ -465,6 +524,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+
 
   private:
     QgsLayoutItemLegend() = delete;
@@ -508,6 +568,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     bool mSizeToContents = true;
 
     friend class QgsCompositionConverter;
+
+    mutable QgsExpressionContext mExpContext = QgsLayoutItem::createExpressionContext();
 
 };
 

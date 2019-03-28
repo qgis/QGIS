@@ -221,6 +221,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Remove a child from a node
     bool takeChild( QgsLayerTreeNode *node );
 
+
   signals:
 
     //! Emitted when one or more nodes will be added to a node within the tree
@@ -274,6 +275,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     bool mExpanded;
     //! custom properties attached to the node
     QgsObjectCustomProperties mProperties;
+
 };
 
 

@@ -29,14 +29,28 @@ QgsVectorLayer.countSymbolFeatures() and connect to the signal
 Create a new feature counter for ``layer``.
 %End
 
+
     virtual bool run();
 
+%Docstring
+Calculate the feature count and Ids per symbol
+%End
 
 
     long featureCount( const QString &legendKey ) const;
 %Docstring
-Gets the feature count for a particular ``legendKey``.
+Returns the feature count for a particular ``legendKey``.
 If the key has not been found, -1 will be returned.
+%End
+
+
+    QgsFeatureIds featureIds( const QString symbolkey ) const;
+%Docstring
+Returns the feature Ids for a particular ``legendKey``.
+If run() has not yet been executed, run() will be called.
+If the key has not been found an empty QSet will be returned.
+
+.. versionadded:: 3.8
 %End
 
   signals:

@@ -86,6 +86,7 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void resetLayerNodeToDefaults();
     void mUpdateAllPushButton_clicked();
     void mAddGroupToolButton_clicked();
+    void mLayerExpressionButton_clicked();
 
     void mFilterLegendByAtlasCheckBox_toggled( bool checked );
 

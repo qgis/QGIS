@@ -465,13 +465,14 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
 }
 
 QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,
-    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok ) const
+    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, const QgsFeatureIds fids ) const
 {
   //base implementation does nothing
   Q_UNUSED( aggregate );
   Q_UNUSED( index );
   Q_UNUSED( parameters );
   Q_UNUSED( context );
+  Q_UNUSED( fids );
 
   ok = false;
   return QVariant();

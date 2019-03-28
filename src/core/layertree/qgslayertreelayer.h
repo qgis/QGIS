@@ -115,6 +115,20 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
+    /**
+     * set the expression to evaluate
+     *
+     * \since QGIS 3.8
+     */
+    void setExpression( const QString &expression );
+
+    /**
+     * Returns the expression member of the LayerTreeNode
+     *
+     * \since QGIS 3.8
+     */
+    QString expression() const { return mExpression; }
+
   signals:
 
     /**
@@ -135,6 +149,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     QgsMapLayerRef mRef;
     //! Layer name - only used if layer does not exist
     QString mLayerName;
+    //! Expression to evaluate in the legend
+    QString mExpression;
 
   private slots:
 

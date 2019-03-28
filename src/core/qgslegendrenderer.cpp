@@ -610,24 +610,12 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItemInternal( QgsLayerTr
 {
   QgsLayerTreeModelLegendNode::ItemContext ctx;
   ctx.context = context;
-
-  // add a layer expression context scope
-  QgsExpressionContextScope *layerScope = nullptr;
-  if ( context && symbolItem->layerNode()->layer() )
-  {
-    layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() );
-    context->expressionContext().appendScope( layerScope );
-  }
-
   ctx.painter = context ? context->painter() : painter;
   ctx.point = point;
   ctx.labelXOffset = labelXOffset;
 
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
       : ( painter ? &ctx : nullptr ) );
-
-  if ( layerScope )
-    delete context->expressionContext().popScope();
 
   Nucleon nucleon;
   nucleon.item = symbolItem;

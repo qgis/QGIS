@@ -12,6 +12,7 @@
 
 
 
+
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring
@@ -298,6 +299,33 @@ Sets format of text to be shown on top of the symbol.
 .. versionadded:: 3.2
 %End
 
+    QString getCurrentLabel() const;
+%Docstring
+Returns the legend label of the layer or symbol.
+
+.. versionadded:: 3.8
+%End
+
+    QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const;
+%Docstring
+Create an expression context containing symbol elements
+
+:param context: extra QgsExpressionContext to use for evaluation
+
+.. versionadded:: 3.8
+%End
+
+    QString evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context = QgsExpressionContext() ) const;
+%Docstring
+Evaluate the label with the proper context
+
+:param label: text to evaluate
+:param vl: pointer to the vectorlayer
+:param context: extra QgsExpressionContext to use for evaluation
+
+.. versionadded:: 3.8
+%End
+
   public slots:
 
     void checkAllItems();
@@ -332,6 +360,17 @@ Toggle all items belonging to the same layer as this node.
 
 .. versionadded:: 3.6
 %End
+
+    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
+%Docstring
+Evaluates  and returns the text label of the current node
+
+:param context: extra QgsExpressionContext to use for evaluating the expression
+:param label: text to evaluate instead of the layer layertree string
+
+.. versionadded:: 3.8
+%End
+
 
 };
 
