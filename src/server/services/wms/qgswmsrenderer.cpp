@@ -286,7 +286,7 @@ namespace QgsWms
     if ( sourceLayout->pageCollection()->pageCount() < 1 )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                    QStringLiteral( "Template '%1' has no pages" ).arg( templateName ) );
+                                    QStringLiteral( "The template has no pages" ) );
     }
 
     std::unique_ptr<QgsPrintLayout> layout( sourceLayout->clone() );
@@ -300,14 +300,14 @@ namespace QgsWms
       if ( !atlas || !atlas->enabled() )
       {
         //error
-        throw QgsBadRequestException( QStringLiteral( "NoAtlas" ),
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                       QStringLiteral( "The template has no atlas enabled" ) );
       }
 
       QgsVectorLayer *cLayer = atlas->coverageLayer();
       if ( !cLayer )
       {
-        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                       QStringLiteral( "The atlas has no coverage layer" ) );
       }
 
@@ -318,7 +318,7 @@ namespace QgsWms
         atlas->updateFeatures();
         if ( atlas->count() > maxAtlasFeatures )
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+          throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                         QString( "The project configuration allows printing maximum %1 atlas features at a time" ).arg( maxAtlasFeatures ) );
         }
       }
@@ -339,14 +339,14 @@ namespace QgsWms
         int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
         if ( nAtlasFeatures * pkIndexes.size() != atlasPk.size() ) //Test is atlasPk.size() is a multiple of pkIndexes.size(). Bail out if not
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+          throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                         QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
         }
 
         //number of atlas features might be restricted
         if ( nAtlasFeatures > maxAtlasFeatures )
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+          throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                         QString( "%1 atlas features have been requestet, but the project configuration only allows printing %2 atlas features at a time" )
                                         .arg( nAtlasFeatures ).arg( maxAtlasFeatures ) );
         }
