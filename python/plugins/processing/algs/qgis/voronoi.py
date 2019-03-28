@@ -185,7 +185,7 @@ class Context(object):
         if (self.debug):
             # fix_print_with_import
             print("line(%d) %gx+%gy=%g, bisecting %d %d" % (
-            edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
+                edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
         elif (self.triangulate):
             if (self.plot):
                 self.line(edge.reg[0].x, edge.reg[0].y, edge.reg[1].x, edge.reg[1].y)
@@ -392,10 +392,10 @@ class Site(object):
             return True
         else:
             return False
-    
+
     def __getitem__(self, item):
         return [self.x, self.y][item]
-    
+
     def distance(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
@@ -601,8 +601,8 @@ class Halfedge(object):
             e = e2
 
         rightOfSite = xint >= e.reg[1].x
-        if ((rightOfSite and he.pm == Edge.LE) or
-                (not rightOfSite and he.pm == Edge.RE)):
+        if ((rightOfSite and he.pm == Edge.LE)
+                or (not rightOfSite and he.pm == Edge.RE)):
             return None
 
         # create a new site at the point of intersection - this is a new
@@ -613,7 +613,7 @@ class Halfedge(object):
 # ------------------------------------------------------------------
 class EdgeList(object):
 
-    __slots__ = ("hash", "rightend", "leftend", "xmin",  "deltax", "hashsize")
+    __slots__ = ("hash", "rightend", "leftend", "xmin", "deltax", "hashsize")
 
     def __init__(self, xmin, xmax, nsites):
         if xmin > xmax:
