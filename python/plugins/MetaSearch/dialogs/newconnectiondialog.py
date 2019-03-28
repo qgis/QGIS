@@ -27,7 +27,6 @@
 #
 ###############################################################################
 
-import warnings
 from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
