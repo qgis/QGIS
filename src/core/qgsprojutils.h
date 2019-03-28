@@ -73,6 +73,14 @@ class CORE_EXPORT QgsProjUtils
      */
     using proj_pj_unique_ptr = std::unique_ptr< PJ, ProjPJDeleter >;
 
+    /**
+     * Returns true if the given proj coordinate system uses angular units. \a projDef must be
+     * a proj string defining a CRS object.
+     */
+    static bool usesAngularUnit( const QString &projDef );
+
+
+
 #endif
 #endif
 };

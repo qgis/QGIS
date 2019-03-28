@@ -267,7 +267,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   locker.changeMode( QgsReadWriteLocker::Write );
 
 #if PROJ_VERSION_MAJOR>=6
-  ProjData res = proj_create_crs_to_crs( context, mSourceProjString.toUtf8(), mDestProjString.toUtf8(), nullptr );
+  ProjData res = proj_create_crs_to_crs( context, mSourceProjString.toUtf8().constData(), mDestProjString.toUtf8().constData(), nullptr );
   mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
 #else
 #ifdef USE_THREAD_LOCAL

@@ -538,16 +538,23 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   {
     QString tmp;
 
-    int precision = 7;
+    int precision = 4;
+    bool isLatLong = false;
 
-#if PROJ_VERSION_MAJOR<6
-    if ( pj_is_latlong( proj ) )
+#if PROJ_VERSION_MAJOR>= 6
+    isLatLong = QgsProjUtils::usesAngularUnit( projDef );
+#else
+    isLatLong = pj_is_latlong( proj );
+    if ( isLatLong )
     {
       northing *= RAD_TO_DEG;
       easting *= RAD_TO_DEG;
-      precision = 7;
     }
 #endif
+    if ( isLatLong )
+    {
+      precision = 7;
+    }
 
     tmp = QLocale().toString( northing, 'f', precision );
     projectedX->setText( tmp );
