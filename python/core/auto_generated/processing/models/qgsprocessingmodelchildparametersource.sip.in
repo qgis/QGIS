@@ -240,9 +240,11 @@ Loads this source from a QVariantMap.
 .. seealso:: :py:func:`toVariant`
 %End
 
-    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition ) const;
+    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlydChildNames ) const;
 %Docstring
 Attempts to convert the source to executable Python code.
+
+The ``friendlyChildNames`` argument gives a map of child id to a friendly algorithm name, to be used in the code to identify that algorithm instead of the raw child id.
 %End
 
 };

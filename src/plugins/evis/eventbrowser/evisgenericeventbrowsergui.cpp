@@ -228,7 +228,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     if ( mInterface->activeLayer() )
     {
       //verify that the active layer is a vector layer
-      if ( QgsMapLayer::VectorLayer == mInterface->activeLayer()->type() )
+      if ( QgsMapLayerType::VectorLayer == mInterface->activeLayer()->type() )
       {
         mVectorLayer = qobject_cast< QgsVectorLayer * >( mInterface->activeLayer() );
         mCanvas = mInterface->mapCanvas();
@@ -252,7 +252,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     if ( mCanvas->currentLayer() )
     {
       //verify that the active layer is a vector layer
-      if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer()->type() )
+      if ( QgsMapLayerType::VectorLayer == mCanvas->currentLayer()->type() )
       {
         mVectorLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() );
       }

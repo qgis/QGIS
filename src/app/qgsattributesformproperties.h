@@ -74,6 +74,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       QString qmlCode;
     };
 
+    struct HtmlElementEditorConfiguration
+    {
+      QString htmlCode;
+    };
+
     class DnDTreeItemData : public QTreeWidgetItem
     {
       public:
@@ -82,16 +87,18 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
           Field,
           Relation,
           Container,
-          QmlWidget
+          QmlWidget,
+          HtmlWidget
         };
 
         //do we need that
         DnDTreeItemData() = default;
 
-        DnDTreeItemData( Type type, const QString &name, const QString &displayName )
+        DnDTreeItemData( Type type, const QString &name, const QString &displayName, const QColor &backgroundColor = QColor() )
           : mType( type )
           , mName( name )
           , mDisplayName( displayName )
+          , mBackgroundColor( backgroundColor )
         {}
 
         QString name() const { return mName; }
@@ -123,6 +130,12 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
         void setQmlElementEditorConfiguration( QmlElementEditorConfiguration qmlElementEditorConfiguration );
 
+        HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
+        void setHtmlElementEditorConfiguration( HtmlElementEditorConfiguration htmlElementEditorConfiguration );
+
+        QColor backgroundColor() const;
+        void setBackgroundColor( const QColor &backgroundColor );
+
       private:
         Type mType = Field;
         QString mName;
@@ -134,6 +147,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;
+        HtmlElementEditorConfiguration mHtmlElementEditorConfiguration;
+        QColor mBackgroundColor;
     };
 
 
@@ -149,10 +164,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       bool mEditableEnabled =  true ;
       bool mLabelOnTop =  false ;
       QgsFieldConstraints mFieldConstraints;
-      QgsFieldConstraints::Constraints mConstraints = nullptr;
-      QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
-      QString mConstraint;
-      QString mConstraintDescription;
       QPushButton *mButton = nullptr;
       QString mEditorWidgetType;
       QMap<QString, QVariant> mEditorWidgetConfig;
@@ -184,7 +195,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void init();
     void apply();
 
-    void onAttributeSelectionChanged();
 
     void loadRelations();
 
@@ -208,7 +218,13 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
 
+  private slots:
+
+    void onInvertSelectionButtonClicked( bool checked );
+    void onAttributeSelectionChanged();
+
   private:
+
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
 

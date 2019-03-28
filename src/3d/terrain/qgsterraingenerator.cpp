@@ -64,8 +64,8 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
       return QStringLiteral( "flat" );
     case QgsTerrainGenerator::Dem:
       return QStringLiteral( "dem" );
-    case QgsTerrainGenerator::QuantizedMesh:
-      return QStringLiteral( "quantized-mesh" );
+    case QgsTerrainGenerator::Online:
+      return QStringLiteral( "online" );
   }
   return QString();
 }

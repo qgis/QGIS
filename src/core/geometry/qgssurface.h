@@ -39,9 +39,6 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      */
     virtual QgsPolygon *surfaceToPolygon() const = 0 SIP_FACTORY;
 
-    /**
-     * Returns the minimal bounding box for the geometry
-     */
     QgsRectangle boundingBox() const override
     {
       if ( mBoundingBox.isNull() )
@@ -50,6 +47,9 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
       }
       return mBoundingBox;
     }
+
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+
 
 #ifndef SIP_RUN
 
@@ -75,9 +75,11 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
 #endif
   protected:
 
-    void clearCache() const override { mBoundingBox = QgsRectangle(); QgsAbstractGeometry::clearCache(); }
+    void clearCache() const override;
 
     mutable QgsRectangle mBoundingBox;
+    mutable bool mHasCachedValidity = false;
+    mutable QString mValidityFailureReason;
 };
 
 #endif // QGSSURFACE_H

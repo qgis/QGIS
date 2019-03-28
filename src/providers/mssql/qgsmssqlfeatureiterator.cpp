@@ -95,10 +95,9 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
 
     // ensure that all attributes required for order by are fetched
-    const QSet< QString > orderByAttributes = mRequest.orderBy().usedAttributes();
-    for ( const QString &attr : orderByAttributes )
+    const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIndex : usedAttributeIndices )
     {
-      int attrIndex = mSource->mFields.lookupField( attr );
       if ( !attrs.contains( attrIndex ) )
         attrs << attrIndex;
     }

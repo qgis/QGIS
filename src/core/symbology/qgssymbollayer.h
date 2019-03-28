@@ -185,7 +185,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual ~QgsSymbolLayer();
 
     /**
-     * Returns true if symbol layer is enabled and will be drawn.
+     * Returns TRUE if symbol layer is enabled and will be drawn.
      * \see setEnabled()
      * \since QGIS 3.0
      */
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsSymbolLayer
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /**
-     * Returns true if the symbol layer (or any of its sub-symbols) contains data defined properties.
+     * Returns TRUE if the symbol layer (or any of its sub-symbols) contains data defined properties.
      *
      * \since QGIS 3.4.5
      */
@@ -703,7 +703,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 
     /**
      * Constructor for QgsMarkerSymbolLayer.
-     * \param locked set to true to lock symbol color
+     * \param locked set to TRUE to lock symbol color
      */
     QgsMarkerSymbolLayer( bool locked = false );
 
@@ -791,7 +791,29 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual void setWidth( double width ) { mWidth = width; }
+
+    /**
+     * Returns the estimated width for the line symbol layer.
+     *
+     * \warning This returned value is inaccurate if the symbol layer has sub-symbols with
+     * different width units. Use the overload accepting a QgsRenderContext
+     * argument instead for accurate sizes in this case.
+     *
+     * \see setWidth()
+     */
     virtual double width() const { return mWidth; }
+
+    /**
+     * Returns the line symbol layer width, in painter units.
+     *
+     * This method returns an accurate width by calculating the actual rendered
+     * width of the symbol layer using the provided render \a context.
+     *
+     * \see setWidth()
+     *
+     * \since QGIS 3.4.5
+     */
+    virtual double width( const QgsRenderContext &context ) const;
 
     double offset() const { return mOffset; }
     void setOffset( double offset ) { mOffset = offset; }

@@ -88,7 +88,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
      * or geometry of the currently edited feature).
      *
      * \param expression The widget's filter expression
-     * \return true if the expression requires a form scope
+     * \return TRUE if the expression requires a form scope
      * \since QGIS 3.2
      */
     static bool expressionRequiresFormScope( const QString &expression );
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     /**
      * Check whether the \a feature has all values required by the \a expression
      *
-     * \return True if the expression can be used
+     * \return TRUE if the expression can be used
      * \since QGIS 3.2
      */
     static bool expressionIsUsable( const QString &expression, const QgsFeature &feature );

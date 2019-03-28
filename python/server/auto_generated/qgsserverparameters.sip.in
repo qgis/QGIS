@@ -40,12 +40,13 @@ Returns the type of the parameter as a string.
 
     virtual bool isValid() const;
 %Docstring
-Returns true if the parameter is valid, false otherwise.
+Returns ``True`` if the parameter is valid, ``False`` otherwise.
 %End
 
-    QString toString() const;
+    QString toString( bool defaultValue = false ) const;
 %Docstring
-Converts the parameter into a string.
+Converts the parameter into a string. If ``defaultValue`` is true
+and current value is empty, then the default value is returned.
 %End
 
     QStringList toStringList( char delimiter = ',' ) const;
@@ -61,7 +62,7 @@ Converts the parameter into a list of strings.
 %Docstring
 Converts the parameter into a list of integers.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 :param delimiter: The character used for delimiting
 
 :return: A list of integers
@@ -71,7 +72,7 @@ Converts the parameter into a list of integers.
 %Docstring
 Converts the parameter into a list of doubles.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 :param delimiter: The character used for delimiting
 
 :return: A list of doubles
@@ -81,7 +82,7 @@ Converts the parameter into a list of doubles.
 %Docstring
 Converts the parameter into a list of colors.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 :param delimiter: The character used for delimiting
 
 :return: A list of colors
@@ -91,7 +92,7 @@ Converts the parameter into a list of colors.
 %Docstring
 Converts the parameter into a list of geometries.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 :param delimiter: The character used for delimiting
 
 :return: A list of geometries
@@ -101,7 +102,7 @@ Converts the parameter into a list of geometries.
 %Docstring
 Converts the parameter into a rectangle.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 
 :return: A rectangle
 %End
@@ -110,7 +111,7 @@ Converts the parameter into a rectangle.
 %Docstring
 Converts the parameter into an integer.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 
 :return: An integer
 %End
@@ -119,7 +120,7 @@ Converts the parameter into an integer.
 %Docstring
 Converts the parameter into a double.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 
 :return: A double
 %End
@@ -135,7 +136,7 @@ Converts the parameter into a boolean.
 %Docstring
 Converts the parameter into a color.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 
 :return: A color
 %End
@@ -144,7 +145,7 @@ Converts the parameter into a color.
 %Docstring
 Converts the parameter into an url.
 
-:param ok: True if there's no error during the conversion, false otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 
 :return: An url
 
@@ -155,7 +156,7 @@ Converts the parameter into an url.
 %Docstring
 Loads the data associated to the parameter converted into an url.
 
-:param ok: True if there's no error during the load, false otherwise
+:param ok: ``True`` if there's no error during the load, ``False`` otherwise
 
 :return: The content loaded
 

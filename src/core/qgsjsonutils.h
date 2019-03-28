@@ -64,7 +64,7 @@ class CORE_EXPORT QgsJsonExporter
 
     /**
      * Sets whether to include geometry in the JSON exports.
-     * \param includeGeometry set to false to prevent geometry inclusion
+     * \param includeGeometry set to FALSE to prevent geometry inclusion
      * \see includeGeometry()
      */
     void setIncludeGeometry( bool includeGeometry ) { mIncludeGeometry = includeGeometry; }
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsJsonExporter
 
     /**
      * Sets whether to include attributes in the JSON exports.
-     * \param includeAttributes set to false to prevent attribute inclusion
+     * \param includeAttributes set to FALSE to prevent attribute inclusion
      * \see includeAttributes()
      */
     void setIncludeAttributes( bool includeAttributes ) { mIncludeAttributes = includeAttributes; }
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsJsonExporter
 
     /**
      * Sets whether to include attributes of features linked via references in the JSON exports.
-     * \param includeRelated set to true to include attributes for any related child features
+     * \param includeRelated set to TRUE to include attributes for any related child features
      * within the exported properties element.
      * \note associated vector layer must be set with setVectorLayer()
      * \see includeRelated()

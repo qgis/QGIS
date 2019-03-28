@@ -15,6 +15,7 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
+#include <cmath>
 
 #include <QtGlobal>
 #include <QApplication>
@@ -69,14 +70,14 @@ email                : sherman at mrcc.com
 #include "qgscoordinatetransformcontext.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
-#include <cmath>
+#include "qgsexpressioncontextutils.h"
 
 /**
  * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
  * \note not available in Python bindings
 */
-//TODO QGIS 3.0 - remove
+//TODO QGIS 4.0 - remove
 class QgsMapCanvas::CanvasProperties
 {
   public:
@@ -1010,7 +1011,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     QgsFeatureIterator fit = layer->getFeatures( req );
     QgsFeature f;
     QgsPointXY closestPoint;
-    double closestSquaredDistance = extentRect.width() + extentRect.height();
+    double closestSquaredDistance = pow( extentRect.width(), 2.0 ) + pow( extentRect.height(), 2.0 );
     bool pointFound = false;
     while ( fit.nextFeature( f ) )
     {
@@ -2130,40 +2131,6 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
 
   // TODO: store only units, extent, projections, dest CRS
 }
-
-#if 0
-void QgsMapCanvas::getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
-{
-  if ( !source.isValid() || !destination.isValid() )
-    return;
-
-  //check if default datum transformation available
-  QgsSettings s;
-  QString settingsString = "/Projections/" + source.authid() + "//" + destination.authid();
-  QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
-  QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
-  if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
-  {
-    int sourceDatumTransform = defaultSrcTransform.toInt();
-    int destinationDatumTransform = defaultDestTransform.toInt();
-
-    QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-    context.addSourceDestinationDatumTransform( source, destination, sourceDatumTransform, destinationDatumTransform );
-    QgsProject::instance()->setTransformContext( context );
-    return;
-  }
-
-  if ( !s.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool() )
-  {
-    return;
-  }
-
-  //if several possibilities:  present dialog
-  QgsDatumTransformDialog d( source, destination );
-  if ( d.availableTransformationCount() > 1 )
-    d.exec();
-}
-#endif
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 {

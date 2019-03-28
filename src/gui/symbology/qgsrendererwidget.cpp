@@ -24,6 +24,7 @@
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QMessageBox>
 #include <QInputDialog>

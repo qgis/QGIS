@@ -64,7 +64,7 @@ class QgsHistogramValuesGatherer: public QThread
         return;
       }
 
-      // allow responsive cancelation
+      // allow responsive cancellation
       mFeedback = new QgsFeedback();
 
       mHistogram.setValues( mLayer, mExpression, mFeedback );
@@ -90,7 +90,7 @@ class QgsHistogramValuesGatherer: public QThread
       mWasCanceled = true;
     }
 
-    //! Returns true if collection was canceled before completion
+    //! Returns TRUE if collection was canceled before completion
     bool wasCanceled() const { return mWasCanceled; }
 
     const QgsHistogram &histogram() const { return mHistogram; }

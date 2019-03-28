@@ -76,7 +76,7 @@ Gets the expression to generate this geometry.
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 
 %Docstring
-Will always return true.
+Will always return ``True``.
 This is a hybrid layer, it constructs its own geometry so it does not
 care about the geometry of its parents.
 %End

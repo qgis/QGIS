@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgslogger.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QAction>
 #include <QClipboard>

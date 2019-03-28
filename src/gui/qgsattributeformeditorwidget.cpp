@@ -104,7 +104,7 @@ void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constrain
 
     case QgsEditorWidgetWrapper::ConstraintResultPass:
       mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) ) );
-      mConstraintResultLabel->setToolTip( QString() );
+      mConstraintResultLabel->setToolTip( description );
       break;
   }
 }

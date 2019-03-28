@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "qgsqmlwidgetwrapper.h"
 #include "qgsmessagelog.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QtQuickWidgets/QQuickWidget>
 #include <QQuickWidget>
 #include <QQmlContext>

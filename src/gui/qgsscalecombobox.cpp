@@ -119,9 +119,21 @@ QString QgsScaleComboBox::scaleString() const
 
 bool QgsScaleComboBox::setScaleString( const QString &string )
 {
+  double oldScale = mScale;
+  if ( mAllowNull && string.trimmed().isEmpty() )
+  {
+    mScale = std::numeric_limits< double >::quiet_NaN();
+    setEditText( toString( mScale ) );
+    clearFocus();
+    if ( !std::isnan( oldScale ) )
+    {
+      emit scaleChanged( mScale );
+    }
+    return true;
+  }
+
   bool ok;
   double newScale = toDouble( string, &ok );
-  double oldScale = mScale;
   if ( newScale > mMinScale && newScale != 0 && mMinScale != 0 )
   {
     newScale = mMinScale;
@@ -148,6 +160,11 @@ double QgsScaleComboBox::scale() const
   return mScale;
 }
 
+bool QgsScaleComboBox::isNull() const
+{
+  return std::isnan( mScale );
+}
+
 void QgsScaleComboBox::setScale( double scale )
 {
   setScaleString( toString( scale ) );
@@ -155,6 +172,12 @@ void QgsScaleComboBox::setScale( double scale )
 
 void QgsScaleComboBox::fixupScale()
 {
+  if ( mAllowNull && currentText().trimmed().isEmpty() )
+  {
+    setScale( std::numeric_limits< double >::quiet_NaN() );
+    return;
+  }
+
   QStringList txtList = currentText().split( ':' );
   bool userSetScale = txtList.size() != 2;
 
@@ -179,6 +202,10 @@ void QgsScaleComboBox::fixupScale()
 
 QString QgsScaleComboBox::toString( double scale )
 {
+  if ( std::isnan( scale ) )
+  {
+    return QString();
+  }
   if ( scale == 0 )
   {
     return QStringLiteral( "0" );
@@ -233,6 +260,18 @@ double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
   return scale;
 }
 
+void QgsScaleComboBox::setAllowNull( bool allowNull )
+{
+  mAllowNull = allowNull;
+  lineEdit()->setClearButtonEnabled( allowNull );
+  updateScales();
+}
+
+bool QgsScaleComboBox::allowNull() const
+{
+  return mAllowNull;
+}
+
 void QgsScaleComboBox::setMinScale( double scale )
 {
   mMinScale = scale;
@@ -240,4 +279,10 @@ void QgsScaleComboBox::setMinScale( double scale )
   {
     setScale( mMinScale );
   }
+}
+
+void QgsScaleComboBox::setNull()
+{
+  if ( allowNull() )
+    setScale( std::numeric_limits< double >::quiet_NaN() );
 }

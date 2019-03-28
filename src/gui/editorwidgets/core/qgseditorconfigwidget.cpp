@@ -15,6 +15,7 @@
 
 #include "qgseditorconfigwidget.h"
 #include "qgspropertyoverridebutton.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsEditorConfigWidget::QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QWidget( parent )

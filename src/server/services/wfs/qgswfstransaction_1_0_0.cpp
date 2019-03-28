@@ -34,6 +34,7 @@
 #include "qgsfilterrestorer.h"
 #include "qgsogcutils.h"
 #include "qgswfstransaction_1_0_0.h"
+#include "qgsexpressioncontextutils.h"
 
 namespace QgsWfs
 {
@@ -240,7 +241,7 @@ namespace QgsWfs
       for ( int i = 0; i < wfsLayerIds.size(); ++i )
       {
         QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
-        if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+        if ( layer->type() != QgsMapLayerType::VectorLayer )
         {
           continue;
         }

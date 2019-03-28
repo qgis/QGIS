@@ -70,7 +70,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     /**
      * Returns the network reply. Ownership is not transferred.
      *
-     * May return nullptr if the request has not yet completed.
+     * May return NULLPTR if the request has not yet completed.
      */
     QNetworkReply *reply();
 

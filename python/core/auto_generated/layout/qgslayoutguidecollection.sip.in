@@ -231,7 +231,7 @@ Returns the list of guides contained on a matching ``page``.
 
     bool visible() const;
 %Docstring
-Returns true if the guide lines should be drawn.
+Returns ``True`` if the guide lines should be drawn.
 
 .. seealso:: :py:func:`setVisible`
 %End

@@ -98,7 +98,7 @@ class SERVER_EXPORT QgsServerSettings
 
     /**
      * Load setting for a specific environment variable name.
-      * \returns true if loading is successful, false in case of an invalid name.
+      * \returns TRUE if loading is successful, FALSE in case of an invalid name.
       */
     bool load( const QString &envVarName );
 
@@ -115,7 +115,7 @@ class SERVER_EXPORT QgsServerSettings
 
     /**
      * Returns parallel rendering setting.
-      * \returns true if parallel rendering is activated, false otherwise.
+      * \returns TRUE if parallel rendering is activated, FALSE otherwise.
       */
     bool parallelRendering() const;
 
@@ -151,7 +151,7 @@ class SERVER_EXPORT QgsServerSettings
 
     /**
      * Returns whether logging to stderr is activated.
-     * \returns true if logging to stderr is activated, false otherwise.
+     * \returns TRUE if logging to stderr is activated, FALSE otherwise.
      * \since QGIS 3.4
      */
     bool logStderr() const;

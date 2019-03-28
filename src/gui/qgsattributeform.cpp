@@ -38,7 +38,9 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsqmlwidgetwrapper.h"
+#include "qgshtmlwidgetwrapper.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -1039,6 +1041,16 @@ QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEdi
   return wDeps;
 }
 
+QgsRelationWidgetWrapper *QgsAttributeForm::setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context )
+{
+  QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
+  const QVariantMap config = mLayer->editFormConfig().widgetConfig( rel.id() );
+  rww->setConfig( config );
+  rww->setContext( context );
+
+  return rww;
+}
+
 void QgsAttributeForm::preventFeatureRefresh()
 {
   mPreventFeatureRefresh = true;
@@ -1346,7 +1358,7 @@ void QgsAttributeForm::init()
       }
       else
       {
-        w = new QLabel( QStringLiteral( "<p style=\"color: red; font-style: italic;\">%1</p>" ).arg( tr( "Failed to create widget with type '%1'" ), widgetSetup.type() ) );
+        w = new QLabel( QStringLiteral( "<p style=\"color: red; font-style: italic;\">%1</p>" ).arg( tr( "Failed to create widget with type '%1'" ).arg( widgetSetup.type() ) ) );
       }
 
 
@@ -1373,12 +1385,10 @@ void QgsAttributeForm::init()
       }
     }
 
-    Q_FOREACH ( const QgsRelation &rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
+    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
+    for ( const QgsRelation &rel : relations )
     {
-      QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
-      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, rel.id() );
-      rww->setConfig( setup.config() );
-      rww->setContext( mContext );
+      QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( rel, mContext );
 
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
@@ -1676,9 +1686,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
     {
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
-      QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
-      rww->setConfig( mLayer->editFormConfig().widgetConfig( relDef->relation().id() ) );
-      rww->setContext( context );
+      QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relation(), context );
+
       rww->setShowLabel( relDef->showLabel() );
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
@@ -1706,10 +1715,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( columnCount <= 0 )
         columnCount = 1;
 
+      QString widgetName;
       QWidget *myContainer = nullptr;
       if ( container->isGroupBox() )
       {
         QGroupBox *groupBox = new QGroupBox( parent );
+        widgetName = QStringLiteral( "QGroupBox" );
         if ( container->showLabel() )
           groupBox->setTitle( container->name() );
         myContainer = groupBox;
@@ -1726,13 +1737,21 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           scrollArea->setWidget( myContainer );
           scrollArea->setWidgetResizable( true );
           scrollArea->setFrameShape( QFrame::NoFrame );
+          widgetName = QStringLiteral( "QScrollArea QWidget" );
 
           newWidgetInfo.widget = scrollArea;
         }
         else
         {
           newWidgetInfo.widget = myContainer;
+          widgetName = QStringLiteral( "QWidget" );
         }
+      }
+
+      if ( container->backgroundColor().isValid() )
+      {
+        QString style {QStringLiteral( "background-color: %1;" ).arg( container->backgroundColor().name() )};
+        newWidgetInfo.widget->setStyleSheet( style );
       }
 
       QGridLayout *gbLayout = new QGridLayout();
@@ -1817,6 +1836,25 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       mWidgets.append( qmlWrapper );
 
       newWidgetInfo.widget = qmlWrapper->widget();
+      newWidgetInfo.labelText = elementDef->name();
+      newWidgetInfo.labelOnTop = true;
+      newWidgetInfo.showLabel = widgetDef->showLabel();
+      break;
+    }
+
+    case QgsAttributeEditorElement::AeTypeHtmlElement:
+    {
+      const QgsAttributeEditorHtmlElement *elementDef = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
+
+      QgsHtmlWidgetWrapper *htmlWrapper = new QgsHtmlWidgetWrapper( mLayer, nullptr, this );
+      context.setAttributeFormMode( mMode );
+      htmlWrapper->setHtmlCode( elementDef->htmlCode() );
+      htmlWrapper->reinitWidget();
+      htmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
+
+      mWidgets.append( htmlWrapper );
+
+      newWidgetInfo.widget = htmlWrapper->widget();
       newWidgetInfo.labelText = elementDef->name();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();

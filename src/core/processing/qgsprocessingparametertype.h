@@ -99,7 +99,7 @@ class CORE_EXPORT QgsProcessingParameterType
 
     /**
      * Determines if this parameter is available in the modeler.
-     * The default implementation returns true.
+     * The default implementation returns TRUE.
      */
     virtual ParameterFlags flags() const;
 
@@ -116,8 +116,23 @@ class CORE_EXPORT QgsProcessingParameterType
      * These values should should match the Python types exactly
      * (e.g. "str" not "string", "bool" not "boolean"). Extra explanatory help can
      * be used (which must be translated), eg "str: as comma delimited list of numbers".
+     *
+     * \see acceptedStringValues()
      */
     virtual QStringList acceptedPythonTypes() const;
+
+    /**
+     * Returns a descriptive list of the possible string values acceptable for the parameter.
+     *
+     * E.g. for a QgsProcessingParameterVectorLayer this may include "Path to a vector layer",
+     * for QgsProcessingParameterBoolean "1 for true, 0 for false" etc.
+     *
+     * Extra explanatory help can be used (which must be translated), eg "a comma delimited list of numbers".
+     *
+     * \see acceptedPythonTypes()
+     * \since QGIS 3.8
+     */
+    virtual QStringList acceptedStringValues() const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParameterType::ParameterFlags )

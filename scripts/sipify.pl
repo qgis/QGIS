@@ -89,7 +89,8 @@ sub read_line {
                                   $IS_OVERRIDE,
                                   $ACTUAL_CLASS,
                                   $#CLASSNAME)." :: ".$new_line."\n";
-    return $new_line;
+   $new_line = replace_macros($new_line);
+   return $new_line;
 }
 
 sub write_output {
@@ -456,6 +457,14 @@ sub fix_constants {
     return $line;
 }
 
+sub replace_macros {
+    my $line = $_[0];
+    $line =~ s/\bTRUE\b/``True``/g;
+    $line =~ s/\bFALSE\b/``False``/g;
+    $line =~ s/\bNULLPTR\b/``None``/g;
+    return $line;
+}
+
 # detect a comment block, return 1 if found
 # if STRICT comment block shall begin at beginning of line (no code in front)
 sub detect_comment_block{
@@ -666,7 +675,7 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # Skip forward declarations
-    if ($LINE =~ m/^\s*(class|struct) \w+(?<external> *SIP_EXTERNAL)?;\s*(\/\/.*)?$/){
+    if ($LINE =~ m/^\s*(enum\s+)?(class|struct) \w+(?<external> *SIP_EXTERNAL)?;\s*(\/\/.*)?$/){
         if ($+{external}){
             dbg_info('do not skip external forward declaration');
             $COMMENT = '';
@@ -941,11 +950,24 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # Enum declaration
-    if ( $LINE =~ m/^\s*enum\s+\w+.*?$/ ){
-        write_output("ENU1", "$LINE\n");
+    # For scoped and type based enum, the type has to be removed
+    if ( $LINE =~ m/^(\s*enum\s+(class\s+)?(\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+        write_output("ENU1", "$1");
+        write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
+        write_output("ENU1", "\n");
+        my $enum_qualname = $3;
+        my $is_scope_based = "0";
+        $is_scope_based = "1" if defined $2;
+        my $monkeypatch = "0";
+        $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\))?/;
+        my $enum_mk_base = "";
+        $enum_mk_base = $+{emkb} if defined $+{emkb};
+        if (defined $+{emkf} and $monkeypatch eq "1"){
+            push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $enum_qualname\n";
+        }
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
-          $LINE !~ m/=/ or exit_with_error("spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.");
+          $LINE !~ m/=/ or exit_with_error("Sipify does not handle enum one liners with value assignment. Use multiple lines instead. Or jusr write a new parser.");
           next;
         }
         else
@@ -953,6 +975,8 @@ while ($LINE_IDX < $LINE_COUNT){
             $LINE = read_line();
             $LINE =~ m/^\s*\{\s*$/ or exit_with_error('Unexpected content: enum should be followed by {');
             write_output("ENU2", "$LINE\n");
+            push @OUTPUT_PYTHON, "# monkey patching scoped based enum\n" if $is_scope_based eq "1";
+            my @enum_members_doc = ();
             while ($LINE_IDX < $LINE_COUNT){
                 $LINE = read_line();
                 if (detect_comment_block()){
@@ -962,13 +986,37 @@ while ($LINE_IDX < $LINE_COUNT){
                 next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
 
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/^(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?).*$/$1$2$3/r;
+                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$4/r;
+                    my $enum_member = $+{em};
+                    my $comment = $+{co};
+                    dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
+                    if ($is_scope_based eq "1") {
+                        if ( $monkeypatch eq 1 ){
+                            if ($enum_mk_base ne "") {
+                                push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
+                                push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;
+                                push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
+                            } else {
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
+                                push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                            }
+                        }
+                    }
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");
                 };
                 detect_comment_block(strict_mode => UNSTRICT);
             }
             write_output("ENU4", "$LINE\n");
+            if ($is_scope_based eq "1") {
+                $COMMENT =~ s/\n/\\n/g;
+                if ( $ACTUAL_CLASS ne "" ){
+                    push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.__doc__ = '$COMMENT\\n\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n";
+                } else {
+                    push @OUTPUT_PYTHON, "$enum_qualname.__doc__ = '$COMMENT\\n\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n";
+                }
+            }
             # enums don't have Docstring apparently
             $COMMENT = '';
             next;
@@ -1210,7 +1258,8 @@ while ($LINE_IDX < $LINE_COUNT){
                   if ( $comment_line =~ m/^:param\s+(\w+)/) {
                     if ( $1 ~~ @SKIPPED_PARAMS_OUT || $1 ~~ @SKIPPED_PARAMS_REMOVE ) {
                       if ( $1 ~~ @SKIPPED_PARAMS_OUT ) {
-                        $comment_line =~ s/^:param\s+(\w+):(.*)$/$1: $2/;
+                        $comment_line =~ s/^:param\s+(\w+):\s*(.*?)$/$1: $2/;
+                        $comment_line =~ s/(?:optional|if specified|if given)[,]?\s*//g;
                         push @out_params, $comment_line ;
                         $skipping_param = 2;
                       }

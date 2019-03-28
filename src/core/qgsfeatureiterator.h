@@ -43,7 +43,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! destructor makes sure that the iterator is closed properly
     virtual ~QgsAbstractFeatureIterator() = default;
 
-    //! fetch next feature, return true on success
+    //! fetch next feature, return TRUE on success
     virtual bool nextFeature( QgsFeature &f );
 
     //! reset the iterator to the starting position
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * need to implement!!
      *
      * \param f The feature to write to
-     * \returns  true if a feature was written to f
+     * \returns  TRUE if a feature was written to f
      */
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * redirect this call to fetchFeature so the default check will be omitted.
      *
      * \param f The feature to write to
-     * \returns  true if a feature was written to f
+     * \returns  TRUE if a feature was written to f
      */
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * so the default check will be omitted.
      *
      * \param f The feature to write to
-     * \returns  true if a feature was written to f
+     * \returns  TRUE if a feature was written to f
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 
@@ -152,14 +152,14 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
 
-    //! Sets to true, as soon as the iterator is closed.
+    //! Sets to TRUE, as soon as the iterator is closed.
     bool mClosed = false;
 
     /**
      * A feature iterator may be closed already but still be serving features from the cache.
      * This is done when we serve features which have been pre-fetched and the order by has
      * been locally sorted.
-     * In such a scenario, all resources have been released (mClosed is true) but the deads
+     * In such a scenario, all resources have been released (mClosed is TRUE) but the deads
      * are still alive.
      */
     bool mZombie = false;
@@ -189,9 +189,9 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     /**
      * An invalid state of a feature iterator indicates that there was a problem with
      * even getting it up and running.
-     * This should be set to false by subclasses if they have problems connecting to
+     * This should be set to FALSE by subclasses if they have problems connecting to
      * the provider.
-     * Do NOT set this to false when the feature iterator closes or has no features but
+     * Do NOT set this to FALSE when the feature iterator closes or has no features but
      * we are sure, that it's just an empty dataset.
      */
     bool mValid = true;
@@ -206,16 +206,16 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
     /**
      * Should be overwritten by providers which implement an own order by strategy
-     * If the own order by strategy is successful, return true, if not, return false
+     * If the own order by strategy is successful, return TRUE, if not, return FALSE
      * and a local order by will be triggered instead.
-     * By default returns false
+     * By default returns FALSE
      *
      * \since QGIS 2.14
      */
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 
     /**
-     * Setup the orderby. Internally calls prepareOrderBy and if false is returned will
+     * Setup the orderby. Internally calls prepareOrderBy and if FALSE is returned will
      * cache all features and order them with local expression evaluation.
      *
      * \since QGIS 2.14

@@ -99,12 +99,12 @@ class CORE_EXPORT QgsGmlStreamingParser
     QgsGmlStreamingParser &operator=( const QgsGmlStreamingParser &other ) = delete;
 
     /**
-     * Process a new chunk of data. atEnd must be set to true when this is
+     * Process a new chunk of data. atEnd must be set to TRUE when this is
         the last chunk of data. */
     bool processData( const QByteArray &data, bool atEnd, QString &errorMsg );
 
     /**
-     * Process a new chunk of data. atEnd must be set to true when this is
+     * Process a new chunk of data. atEnd must be set to TRUE when this is
         the last chunk of data. */
     bool processData( const QByteArray &data, bool atEnd );
 
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Parsing depth
     int mParseDepth;
     int mFeatureTupleDepth;
-    QString mCurrentTypename; //! Used to track the current (unprefixed) typename for wfs:Member in join layer
+    QString mCurrentTypename; //!< Used to track the current (unprefixed) typename for wfs:Member in join layer
     //! Keep track about the most important nested elements
     QStack<ParseMode> mParseModeStack;
     //! This contains the character data if an important element has been encountered
@@ -347,7 +347,8 @@ class CORE_EXPORT QgsGmlStreamingParser
  * This class reads data from a WFS server or alternatively from a GML file. It
  * uses the expat XML parser and an event based model to keep performance high.
  * The parsing starts when the first data arrives, it does not wait until the
- * request is finished */
+ * request is finished
+*/
 class CORE_EXPORT QgsGml : public QObject
 {
     Q_OBJECT

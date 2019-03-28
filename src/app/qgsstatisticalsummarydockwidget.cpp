@@ -24,6 +24,7 @@
 #include "qgsfeedback.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QTableWidget>
 #include <QAction>

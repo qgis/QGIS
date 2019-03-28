@@ -29,7 +29,7 @@ within the dialog.
 
     bool hasScaleVisibility() const;
 %Docstring
-Returns true if scale based visibilty is enabled.
+Returns ``True`` if scale based visibilty is enabled.
 %End
 
     double minimumScale() const;

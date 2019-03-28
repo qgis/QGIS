@@ -138,7 +138,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Splits parts cut by the given line
      * \param splitLine line that splits the layer feature parts
-     * \param topologicalEditing true if topological editing is enabled
+     * \param topologicalEditing TRUE if topological editing is enabled
      * \returns  - QgsGeometry::InvalidBaseGeometry
      *  - QgsGeometry::Success
      *  - QgsGeometry::InvalidInput
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Splits features cut by the given line
      * \param splitLine line that splits the layer features
-     * \param topologicalEditing true if topological editing is enabled
+     * \param topologicalEditing TRUE if topological editing is enabled
      * \returns 0 in case of success,
      *  4 if there is a selection but no feature split
      */
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     /**
      * Little helper function that gives bounding box from a list of points.
-     * \returns True in case of success
+     * \returns TRUE in case of success
      */
     bool boundingBoxFromPointList( const QVector<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
 

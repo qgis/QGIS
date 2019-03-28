@@ -189,8 +189,8 @@ Sets the current context for the color grid
 Sets whether the parent menu should be dismissed and closed when a color is selected
 from the action's color widget.
 
-:param dismiss: set to true (default) to immediately close the menu when a color is selected
-                from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+:param dismiss: set to ``True`` (default) to immediately close the menu when a color is selected
+                from the widget. If set to ``False``, the colorChanged signal will be emitted but the menu will
                 stay open.
 
 .. seealso:: :py:func:`dismissOnColorSelection`

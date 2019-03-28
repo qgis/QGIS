@@ -317,10 +317,12 @@
      </property>
      <addaction name="mActionDistributeLeft"/>
      <addaction name="mActionDistributeHCenter"/>
+     <addaction name="mActionDistributeHSpace"/>
      <addaction name="mActionDistributeRight"/>
      <addaction name="separator"/>
      <addaction name="mActionDistributeTop"/>
      <addaction name="mActionDistributeVCenter"/>
+     <addaction name="mActionDistributeVSpace"/>
      <addaction name="mActionDistributeBottom"/>
     </widget>
     <widget class="QMenu" name="menuResize">
@@ -918,10 +920,22 @@
      <normaloff>:/images/themes/default/mActionDistributeHCenter.svg</normaloff>:/images/themes/default/mActionDistributeHCenter.svg</iconset>
    </property>
    <property name="text">
-    <string>Distribute &amp;Centers</string>
+    <string>Distribute Horizontal &amp;Centers</string>
    </property>
    <property name="toolTip">
     <string>Distributes horizontal centers of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeHSpace">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDistributeHSpace.svg</normaloff>:/images/themes/default/mActionDistributeHSpace.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Horizontal Spacing Equally</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes the horizontal spacing equally between all items</string>
    </property>
   </action>
   <action name="mActionDistributeRight">
@@ -958,6 +972,18 @@
    </property>
    <property name="toolTip">
     <string>Distributes vertical centers of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeVSpace">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDistributeVSpace.svg</normaloff>:/images/themes/default/mActionDistributeVSpace.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute Vertical Spacing &amp;Equally</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes items equidistantly with respect to their vertical edges</string>
    </property>
   </action>
   <action name="mActionDistributeBottom">
@@ -1032,7 +1058,7 @@
     <string>Delete selected items</string>
    </property>
    <property name="shortcut">
-    <string>Del</string>
+    <string notr="true">Del</string>
    </property>
   </action>
   <action name="mActionResizeToSquare">

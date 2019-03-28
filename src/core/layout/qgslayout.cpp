@@ -29,6 +29,7 @@
 #include "qgslayoutundostack.h"
 #include "qgscompositionconverter.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )

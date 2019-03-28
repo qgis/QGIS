@@ -431,7 +431,7 @@ void QgsGrassPlugin::onFieldsChanged()
   QgsDebugMsg( "uri = " + uri );
   Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
-    if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
+    if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
     {
       continue;
     }
@@ -800,7 +800,7 @@ void QgsGrassPlugin::unload()
 
   Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
-    if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
+    if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
     {
       continue;
     }

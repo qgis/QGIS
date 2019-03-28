@@ -38,7 +38,7 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   : mConnName( connName )
   , mService( service )
 {
-  QgsDebugMsg( "theConnName = " + connName );
+  QgsDebugMsgLevel( "theConnName = " + connName, 4 );
 
   QgsSettings settings;
 
@@ -82,7 +82,7 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
     addWfsConnectionSettings( mUri, key );
   }
 
-  QgsDebugMsg( QStringLiteral( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ), 4 );
 }
 
 QString QgsOwsConnection::connectionName() const

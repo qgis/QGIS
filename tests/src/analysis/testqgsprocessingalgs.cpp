@@ -30,6 +30,13 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmultipolygon.h"
+#include "qgsrasteranalysisutils.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsreclassifyutils.h"
+#include "qgsalgorithmrasterlogicalop.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutitemmap.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -64,6 +71,11 @@ class TestQgsProcessingAlgs: public QObject
 
     void densifyGeometries_data();
     void densifyGeometries();
+
+    void rasterLogicOp_data();
+    void rasterLogicOp();
+
+    void layoutMapExtent();
 
   private:
 
@@ -839,6 +851,400 @@ void TestQgsProcessingAlgs::densifyGeometries()
     QVERIFY( result.geometry().isNull() );
   else
     QVERIFY2( result.geometry().equals( expectedGeometry ), QStringLiteral( "Result: %1, Expected: %2" ).arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
+}
+
+void TestQgsProcessingAlgs::rasterLogicOp_data()
+{
+  QTest::addColumn<QVector< double >>( "input1" );
+  QTest::addColumn<QVector< double >>( "input2" );
+  QTest::addColumn<QVector< double >>( "input3" );
+  QTest::addColumn<bool>( "treatNodataAsFalse" );
+  QTest::addColumn<qgssize>( "expectedOrNoDataCount" );
+  QTest::addColumn<qgssize>( "expectedOrTrueCount" );
+  QTest::addColumn<qgssize>( "expectedOrFalseCount" );
+  QTest::addColumn<QVector< double >>( "expectedOr" );
+  QTest::addColumn<qgssize>( "expectedAndNoDataCount" );
+  QTest::addColumn<qgssize>( "expectedAndTrueCount" );
+  QTest::addColumn<qgssize>( "expectedAndFalseCount" );
+  QTest::addColumn<QVector< double >>( "expectedAnd" );
+  QTest::addColumn<int>( "nRows" );
+  QTest::addColumn<int>( "nCols" );
+  QTest::addColumn<double>( "destNoDataValue" );
+  QTest::addColumn<int>( "dataType" );
+
+  QTest::newRow( "no nodata" ) << QVector< double > { 1, 2, 0, 0, 0, 0 }
+                               << QVector< double > { 1, 0, 1, 1, 0, 1 }
+                               << QVector< double > { 1, 2, 0, 0, 0, -1 }
+                               << false
+                               << 0ULL << 5ULL << 1ULL
+                               << QVector< double > { 1, 1, 1, 1, 0, 1 }
+                               << 0ULL << 1ULL << 5ULL
+                               << QVector< double > { 1, 0, 0, 0, 0, 0 }
+                               << 3 << 2
+                               << -9999.0 << static_cast< int >( Qgis::Float32 );
+  QTest::newRow( "nodata" ) << QVector< double > { 1, -9999, 0, 0, 0, 0 }
+                            << QVector< double > { 1, 0, 1, 1, 0, 1 }
+                            << QVector< double > { 1, 2, 0, -9999, 0, -1 }
+                            << false
+                            << 2ULL << 3ULL << 1ULL
+                            << QVector< double > { 1, -9999, 1, -9999, 0, 1 }
+                            << 2ULL << 1ULL << 3ULL
+                            << QVector< double > { 1, -9999, 0, -9999, 0, 0 }
+                            << 3 << 2
+                            << -9999.0 << static_cast< int >( Qgis::Float32 );
+  QTest::newRow( "nodata as false" ) << QVector< double > { 1, -9999, 0, 0, 0, 0 }
+                                     << QVector< double > { 1, 0, 1, 1, 0, 1 }
+                                     << QVector< double > { 1, 2, 0, -9999, 0, -1 }
+                                     << true
+                                     << 0ULL << 5ULL << 1ULL
+                                     << QVector< double > { 1, 1, 1, 1, 0, 1 }
+                                     << 0ULL << 1ULL << 5ULL
+                                     << QVector< double > { 1, 0, 0, 0, 0, 0 }
+                                     << 3 << 2
+                                     << -9999.0 << static_cast< int >( Qgis::Float32 );
+  QTest::newRow( "missing block 1" ) << QVector< double > {}
+                                     << QVector< double > { 1, 0, 1, 1, 0, 1 }
+                                     << QVector< double > { 1, 2, 0, -9999, 0, -1 }
+                                     << false
+                                     << 6ULL << 0ULL << 0ULL
+                                     << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
+                                     << 6ULL << 0ULL << 0ULL
+                                     << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
+                                     << 3 << 2
+                                     << -9999.0 << static_cast< int >( Qgis::Float32 );
+  QTest::newRow( "missing block 1 nodata as false" ) << QVector< double > {}
+      << QVector< double > { 1, 0, 1, 1, 0, 1 }
+      << QVector< double > { 1, 2, 0, -9999, 0, -1 }
+      << true
+      << 0ULL << 5ULL << 1ULL
+      << QVector< double > { 1, 1, 1, 1, 0, 1 }
+      << 0ULL << 0ULL << 6ULL
+      << QVector< double > { 0, 0, 0, 0, 0, 0 }
+      << 3 << 2
+      << -9999.0 << static_cast< int >( Qgis::Float32 );
+  QTest::newRow( "missing block 2" ) << QVector< double > { 1, 0, 1, 1, 0, 1 }
+                                     << QVector< double > {}
+                                     << QVector< double > { 1, 2, 0, -9999, 0, -1 }
+                                     << false
+                                     << 6ULL << 0ULL << 0ULL
+                                     << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
+                                     << 6ULL << 0ULL << 0ULL
+                                     << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
+                                     << 3 << 2
+                                     << -9999.0 << static_cast< int >( Qgis::Float32 );
+  QTest::newRow( "missing block 2 nodata as false" ) << QVector< double > { 1, 0, 1, 1, 0, 1 }
+      << QVector< double > {}
+      << QVector< double > { 1, 2, 0, -9999, 0, -1 }
+      << true
+      << 0ULL << 5ULL << 1ULL
+      << QVector< double > { 1, 1, 1, 1, 0, 1 }
+      << 0ULL << 0ULL << 6ULL
+      << QVector< double > { 0, 0, 0, 0, 0, 0 }
+      << 3 << 2
+      << -9999.0 << static_cast< int >( Qgis::Float32 );
+  QTest::newRow( "missing block 3" ) << QVector< double > { 1, 0, 1, 1, 0, 1 }
+                                     << QVector< double > { 1, 2, 0, -9999, 0, -1 }
+                                     << QVector< double > {}
+                                     << false
+                                     << 6ULL << 0ULL << 0ULL
+                                     << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
+                                     << 6ULL << 0ULL << 0ULL
+                                     << QVector< double > { -9999, -9999, -9999, -9999, -9999, -9999 }
+                                     << 3 << 2
+                                     << -9999.0 << static_cast< int >( Qgis::Float32 );
+  QTest::newRow( "missing block 3 nodata as false" ) << QVector< double > { 1, 0, 1, 1, 0, 1 }
+      << QVector< double > { 1, 2, 0, -9999, 0, -1 }
+      << QVector< double > {}
+      << true
+      << 0ULL << 5ULL << 1ULL
+      << QVector< double > { 1, 1, 1, 1, 0, 1 }
+      << 0ULL << 0ULL << 6ULL
+      << QVector< double > { 0, 0, 0, 0, 0, 0 }
+      << 3 << 2
+      << -9999.0 << static_cast< int >( Qgis::Float32 );
+}
+
+void TestQgsProcessingAlgs::rasterLogicOp()
+{
+  QFETCH( QVector< double >, input1 );
+  QFETCH( QVector< double >, input2 );
+  QFETCH( QVector< double >, input3 );
+  QVector< QVector< double > > input;
+  input << input1 << input2 << input3;
+  QFETCH( bool, treatNodataAsFalse );
+  QFETCH( qgssize, expectedOrNoDataCount );
+  QFETCH( qgssize, expectedOrTrueCount );
+  QFETCH( qgssize, expectedOrFalseCount );
+  QFETCH( QVector< double >, expectedOr );
+  QFETCH( qgssize, expectedAndNoDataCount );
+  QFETCH( qgssize, expectedAndTrueCount );
+  QFETCH( qgssize, expectedAndFalseCount );
+  QFETCH( QVector< double >, expectedAnd );
+  QFETCH( int, nRows );
+  QFETCH( int, nCols );
+  QFETCH( double, destNoDataValue );
+  QFETCH( int, dataType );
+
+  QgsRasterLogicalOrAlgorithm orAlg;
+  QgsRasterLogicalAndAlgorithm andAlg;
+
+  QgsRectangle extent = QgsRectangle( 0, 0, nRows, nCols );
+  QgsRectangle badExtent = QgsRectangle( -100, -100, 90, 90 );
+  QgsCoordinateReferenceSystem crs( 3857 );
+  double tform[] =
+  {
+    extent.xMinimum(), extent.width() / nCols, 0.0,
+    extent.yMaximum(), 0.0, -extent.height() / nRows
+  };
+
+  std::vector< QgsRasterAnalysisUtils::RasterLogicInput > inputs;
+  for ( int ii = 0; ii < 3; ++ii )
+  {
+    // generate unique filename (need to open the file first to generate it)
+    QTemporaryFile tmpFile;
+    tmpFile.open();
+    tmpFile.close();
+
+    // create a GeoTIFF - this will create data provider in editable mode
+    QString filename = tmpFile.fileName();
+
+    std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( filename );
+    writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
+    writer->setOutputFormat( QStringLiteral( "GTiff" ) );
+    std::unique_ptr<QgsRasterDataProvider > dp( writer->createOneBandRaster( Qgis::Float32, nCols, nRows, input[ii].empty() ? badExtent : extent, crs ) );
+    QVERIFY( dp->isValid() );
+    dp->setNoDataValue( 1, -9999 );
+    std::unique_ptr< QgsRasterBlock > block( dp->block( 1, input[ii].empty() ? badExtent : extent, nCols, nRows ) );
+    if ( !dp->isEditable() )
+    {
+      QVERIFY( dp->setEditable( true ) );
+    }
+    int i = 0;
+    for ( int row = 0; row < nRows; row++ )
+    {
+      for ( int col = 0; col < nCols; col++ )
+      {
+        if ( !input[ii].empty() )
+          block->setValue( row, col, input[ii][i++] );
+      }
+    }
+    QVERIFY( dp->writeBlock( block.get(), 1 ) );
+    QVERIFY( dp->setEditable( false ) );
+
+    QgsRasterAnalysisUtils::RasterLogicInput input;
+    input.sourceDataProvider = std::move( dp );
+    input.hasNoDataValue = true;
+    input.interface = input.sourceDataProvider.get();
+
+    inputs.emplace_back( std::move( input ) );
+  }
+
+  // make destination OR raster
+  QTemporaryFile tmpFile2;
+  tmpFile2.open();
+  tmpFile2.close();
+
+  // create a GeoTIFF - this will create data provider in editable mode
+  QString filename = tmpFile2.fileName();
+  std::unique_ptr< QgsRasterDataProvider > dpOr( QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, static_cast< Qgis::DataType >( dataType ), 10, 10, tform, crs ) );
+  QVERIFY( dpOr->isValid() );
+
+  // make destination AND raster
+  QTemporaryFile tmpFile3;
+  tmpFile3.open();
+  tmpFile3.close();
+
+  // create a GeoTIFF - this will create data provider in editable mode
+  filename = tmpFile3.fileName();
+  std::unique_ptr< QgsRasterDataProvider > dpAnd( QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, static_cast< Qgis::DataType >( dataType ), 10, 10, tform, crs ) );
+  QVERIFY( dpAnd->isValid() );
+
+  QgsFeedback feedback;
+  qgssize noDataCount = 0;
+  qgssize trueCount = 0;
+  qgssize falseCount = 0;
+  QgsRasterAnalysisUtils::applyRasterLogicOperator( inputs, dpOr.get(), destNoDataValue, treatNodataAsFalse, nCols, nRows,
+      extent, &feedback, orAlg.mExtractValFunc, noDataCount, trueCount, falseCount );
+
+  QCOMPARE( noDataCount, expectedOrNoDataCount );
+  QCOMPARE( trueCount, expectedOrTrueCount );
+  QCOMPARE( falseCount, expectedOrFalseCount );
+
+  // read back in values
+  std::unique_ptr< QgsRasterBlock > block( dpOr->block( 1, extent, nCols, nRows ) );
+  QVector< double > res( nCols * nRows );
+  int i = 0;
+  for ( int row = 0; row < nRows; row++ )
+  {
+    for ( int col = 0; col < nCols; col++ )
+    {
+      res[i++] = block->value( row, col );
+    }
+  }
+
+  for ( int row = 0; row < nRows; row++ )
+  {
+    for ( int col = 0; col < nCols; col++ )
+    {
+      QCOMPARE( res[row * nCols + col], expectedOr[row * nCols + col] );
+    }
+  }
+
+  noDataCount = 0;
+  trueCount = 0;
+  falseCount = 0;
+  QgsRasterAnalysisUtils::applyRasterLogicOperator( inputs, dpAnd.get(), destNoDataValue, treatNodataAsFalse, nCols, nRows,
+      extent, &feedback, andAlg.mExtractValFunc, noDataCount, trueCount, falseCount );
+
+  QCOMPARE( noDataCount, expectedAndNoDataCount );
+  QCOMPARE( trueCount, expectedAndTrueCount );
+  QCOMPARE( falseCount, expectedAndFalseCount );
+
+  // read back in values
+  block.reset( dpAnd->block( 1, extent, nCols, nRows ) );
+  QVector< double > res2( nCols * nRows );
+  i = 0;
+  for ( int row = 0; row < nRows; row++ )
+  {
+    for ( int col = 0; col < nCols; col++ )
+    {
+      res2[i++] = block->value( row, col );
+    }
+  }
+
+  for ( int row = 0; row < nRows; row++ )
+  {
+    for ( int col = 0; col < nCols; col++ )
+    {
+      QCOMPARE( res2[row * nCols + col], expectedAnd[row * nCols + col] );
+    }
+  }
+}
+
+void TestQgsProcessingAlgs::layoutMapExtent()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayoutmapextenttolayer" ) ) );
+  QVERIFY( alg != nullptr );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "l" ) );
+  parameters.insert( QStringLiteral( "MAP" ), QStringLiteral( "m" ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  // no layout
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->setName( QStringLiteral( "l" ) );
+  p.layoutManager()->addLayout( layout );
+
+  // no matching map
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
+  layout->addLayoutItem( map );
+  map->setId( QStringLiteral( "m" ) );
+  map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  map->attemptSetSceneRect( QRectF( 100, 100, 150, 180 ) );
+  map->zoomToExtent( QgsRectangle( 10000, 100000, 60000, 180000 ) );
+  map->setMapRotation( 45 );
+  map->setScale( 10000 );
+  QgsLayoutItemMap *map2 = new QgsLayoutItemMap( layout );
+  layout->addLayoutItem( map2 );
+  map2->setId( QStringLiteral( "m2" ) );
+  map2->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3785" ) ) );
+  map2->attemptSetSceneRect( QRectF( 100, 100, 50, 80 ) );
+  map2->zoomToExtent( QgsRectangle( 10000, 100000, 5000, 8000 ) );
+  map2->setMapRotation( 0 );
+  map2->setScale( 1000 );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "WIDTH" ) ).toDouble(), 150.0 );
+  QCOMPARE( results.value( QStringLiteral( "HEIGHT" ) ).toDouble(), 180.0 );
+  QCOMPARE( results.value( QStringLiteral( "SCALE" ) ).toDouble(), 10000.0 );
+  QCOMPARE( results.value( QStringLiteral( "ROTATION" ) ).toDouble(), 45.0 );
+
+  QgsFeature f;
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QVERIFY( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
+  QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((33833 140106, 34894 141167, 36167 139894, 35106 138833, 33833 140106))" ) );
+
+  // all maps
+  parameters.remove( QStringLiteral( "MAP" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "WIDTH" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "HEIGHT" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "SCALE" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "ROTATION" ) ).isValid() );
+
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:3785" ) );
+  QgsFeatureIterator it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
+  QgsFeature f1;
+  QVERIFY( it.nextFeature( f1 ) );
+  QgsFeature f2;
+  QVERIFY( it.nextFeature( f2 ) );
+  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f1 : f2;
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
+  QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((12077408 -7108521, 12079627 -7107575, 12080760 -7110245, 12078540 -7111191, 12077408 -7108521))" ) );
+  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f2 : f1;
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m2" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 50.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 80.0 );
+  QGSCOMPARENEAR( f.attribute( 3 ).toDouble(), 1000.0, 0.0001 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 0.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((7475 54040, 7525 54040, 7525 53960, 7475 53960, 7475 54040))" ) );
+
+  // crs override
+  parameters.insert( QStringLiteral( "CRS" ),  QStringLiteral( "EPSG:3111" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "WIDTH" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "HEIGHT" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "SCALE" ) ).isValid() );
+  QVERIFY( !results.value( QStringLiteral( "ROTATION" ) ).isValid() );
+
+  QCOMPARE( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() )->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
+  QVERIFY( it.nextFeature( f1 ) );
+  QVERIFY( it.nextFeature( f2 ) );
+  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f1 : f2;
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
+  QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((33833 140106, 34894 141167, 36167 139894, 35106 138833, 33833 140106))" ) );
+  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f2 : f1;
+  QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m2" ) );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 50.0 );
+  QCOMPARE( f.attribute( 2 ).toDouble(), 80.0 );
+  QGSCOMPARENEAR( f.attribute( 3 ).toDouble(), 1000.0, 0.0001 );
+  QCOMPARE( f.attribute( 4 ).toDouble(), 0.0 );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((-10399464 -5347896, -10399461 -5347835, -10399364 -5347840, -10399367 -5347901, -10399464 -5347896))" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )

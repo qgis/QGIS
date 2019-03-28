@@ -394,7 +394,9 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
 
   //scale font (for printing)
   QFont pixelSizeFont = mLabelFont;
-  pixelSizeFont.setPixelSize( context.outputLineWidth( mLabelFont.pointSizeF() * 0.3527 ) );
+
+  const double fontSizeInPixels = context.renderContext().convertToPainterUnits( mLabelFont.pointSizeF(), QgsUnitTypes::RenderPoints );
+  pixelSizeFont.setPixelSize( static_cast< int >( std::round( fontSizeInPixels ) ) );
   QFont scaledFont = pixelSizeFont;
   scaledFont.setPixelSize( pixelSizeFont.pixelSize() );
   p->setFont( scaledFont );

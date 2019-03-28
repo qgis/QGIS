@@ -771,7 +771,7 @@ namespace QgsWms
     for ( int i = 0; i < wfsLayerIds.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
-      if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+      if ( layer->type() != QgsMapLayerType::VectorLayer )
       {
         continue;
       }
@@ -1014,7 +1014,7 @@ namespace QgsWms
 
           //vector layer without geometry
           bool geometryLayer = true;
-          if ( l->type() == QgsMapLayer::VectorLayer )
+          if ( l->type() == QgsMapLayerType::VectorLayer )
           {
             QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( l );
             if ( vLayer )
@@ -1036,7 +1036,7 @@ namespace QgsWms
 
             //Ex_GeographicBoundingBox
             QgsRectangle extent = l->extent();  // layer extent by default
-            if ( l->type() == QgsMapLayer::VectorLayer )
+            if ( l->type() == QgsMapLayerType::VectorLayer )
             {
               QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
               if ( vl && vl->featureCount() == 0 )
@@ -1710,7 +1710,7 @@ namespace QgsWms
 
       switch ( currentLayer->type() )
       {
-        case QgsMapLayer::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( currentLayer );
           const QSet<QString> &excludedAttributes = vLayer->excludeAttributesWms();
@@ -1783,7 +1783,7 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayer::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
         {
           const QgsDataProvider *provider = currentLayer->dataProvider();
           if ( provider && provider->name() == "wms" )
@@ -1820,8 +1820,8 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayer::MeshLayer:
-        case QgsMapLayer::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::PluginLayer:
           break;
       }
     }

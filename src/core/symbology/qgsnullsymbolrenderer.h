@@ -59,7 +59,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     /**
      * Creates a QgsNullSymbolRenderer from an existing renderer.
      * \param renderer renderer to convert from
-     * \returns a new renderer if the conversion was possible, otherwise nullptr.
+     * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
     static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

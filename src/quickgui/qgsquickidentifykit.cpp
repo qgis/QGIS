@@ -21,6 +21,7 @@
 
 #include "qgsquickidentifykit.h"
 #include "qgsquickmapsettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgis.h"
 
@@ -93,13 +94,13 @@ QgsQuickFeatureLayerPairs QgsQuickIdentifyKit::identify( const QPointF &point, Q
   return results;
 }
 
-static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs &results, const QgsMapSettings &mapSettings, const QPointF &point )
+static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs &results, const QgsMapSettings &mapSettings, const QPointF &point, double searchRadius )
 {
   QgsPointXY mapPoint = mapSettings.mapToPixel().toMapCoordinates( point.toPoint() );
   QgsGeometry mapPointGeom( QgsGeometry::fromPointXY( mapPoint ) );
 
-  double distMin = 1e10;
-  int iMin = -1;
+  double distMinPoint = 1e10, distMinLine = 1e10, distMinPolygon = 1e10;
+  int iMinPoint = -1, iMinLine = -1, iMinPolygon = -1;
   for ( int i = 0; i < results.count(); ++i )
   {
     const QgsQuickFeatureLayerPair &res = results.at( i );
@@ -116,27 +117,51 @@ static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs
     }
 
     double dist = geom.distance( mapPointGeom );
-    if ( dist < distMin )
+    QgsWkbTypes::GeometryType type = QgsWkbTypes::geometryType( geom.wkbType() );
+    if ( type == QgsWkbTypes::PointGeometry )
     {
-      iMin = i;
-      distMin = dist;
+      if ( dist < distMinPoint )
+      {
+        iMinPoint = i;
+        distMinPoint = dist;
+      }
+    }
+    else if ( type == QgsWkbTypes::LineGeometry )
+    {
+      if ( dist < distMinLine )
+      {
+        iMinLine = i;
+        distMinLine = dist;
+      }
+    }
+    else  // polygons
+    {
+      if ( dist < distMinPolygon )
+      {
+        iMinPolygon = i;
+        distMinPolygon = dist;
+      }
     }
   }
 
-  if ( results.empty() )
-  {
-    return QgsQuickFeatureLayerPair();
-  }
+  // we give priority to points, then lines, then polygons
+  // the rationale is that points in polygon (or on a line) would have nearly
+  // always non-zero distance while polygon surrounding it has zero distance,
+  // so it would be difficult to identify it
+  if ( iMinPoint != -1 && distMinPoint <= searchRadius )
+    return results.at( iMinPoint );
+  else if ( iMinLine != -1 && distMinLine <= searchRadius )
+    return results.at( iMinLine );
+  else if ( iMinPolygon != -1 )
+    return results.at( iMinPolygon );
   else
-  {
-    return results.at( iMin );
-  }
+    return QgsQuickFeatureLayerPair();
 }
 
 QgsQuickFeatureLayerPair QgsQuickIdentifyKit::identifyOne( const QPointF &point, QgsVectorLayer *layer )
 {
   QgsQuickFeatureLayerPairs results = identify( point, layer );
-  return _closestFeature( results, mMapSettings->mapSettings(), point );
+  return _closestFeature( results, mMapSettings->mapSettings(), point, searchRadiusMU() );
 }
 
 QgsFeatureList QgsQuickIdentifyKit::identifyVectorLayer( QgsVectorLayer *layer, const QgsPointXY &point ) const

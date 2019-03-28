@@ -95,8 +95,8 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
      * Sets the page size to a known page \a size, e.g. "A4" and \a orientation.
      * The known page sizes are managed by QgsPageSizeRegistry. Valid page sizes
      * can be retrieved via QgsPageSizeRegistry::entries().
-     * The function returns true if \a size was a valid page size and the page
-     * size was changed. If false is returned then \a size could not be matched
+     * The function returns TRUE if \a size was a valid page size and the page
+     * size was changed. If FALSE is returned then \a size could not be matched
      * to a known page size.
      * \see pageSize()
      */
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
 
     /**
      * Decodes a \a string representing a page orientation. If specified, \a ok
-     * will be set to true if string could be successfully interpreted as a
+     * will be set to TRUE if string could be successfully interpreted as a
      * page orientation.
     */
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok SIP_OUT = nullptr );

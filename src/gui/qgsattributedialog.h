@@ -46,9 +46,9 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      *
      * \param vl                The layer for which the dialog will be generated
      * \param thepFeature       A feature for which the dialog will be generated
-     * \param featureOwner      Set to true, if the dialog should take ownership of the feature
+     * \param featureOwner      Set to TRUE, if the dialog should take ownership of the feature
      * \param parent            A parent widget for the dialog
-     * \param showDialogButtons True: Show the dialog buttons accept/cancel
+     * \param showDialogButtons TRUE: Show the dialog buttons accept/cancel
      * \param context           The context in which this dialog is created
      *
      */
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     /**
      * Is this dialog editable?
      *
-     * \returns returns true, if this dialog was created in an editable manner.
+     * \returns returns TRUE, if this dialog was created in an editable manner.
      */
     bool editable() { return mAttributeForm->editable(); }
 

@@ -20,21 +20,21 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="GetCapabilities">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="https://www.qgis.org/"/>
+     <ows:Get xlink:href="https://www.qgis.org/?"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>
   <ows:Operation name="GetTile">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="https://www.qgis.org/"/>
+     <ows:Get xlink:href="https://www.qgis.org/?"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>
   <ows:Operation name="GetFeatureInfo">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="https://www.qgis.org/"/>
+     <ows:Get xlink:href="https://www.qgis.org/?"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>

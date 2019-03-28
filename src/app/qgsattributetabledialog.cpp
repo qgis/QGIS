@@ -22,7 +22,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
-
+#include "qgsexpressioncontextutils.h"
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"

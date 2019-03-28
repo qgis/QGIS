@@ -121,6 +121,7 @@ class ClipRasterByExtent(GdalAlgorithm):
             nodata = None
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
         arguments.append('-projwin')

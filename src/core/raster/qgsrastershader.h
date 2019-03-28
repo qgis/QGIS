@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRasterShader
      * \param returnGreenValue The green component of the new RGBA value
      * \param returnBlueValue The blue component of the new RGBA value
      * \param returnAlpha The alpha component of the new RGBA value
-     * \return True if the return values are valid otherwise false
+     * \return TRUE if the return values are valid otherwise FALSE
     */
     bool shade( double value,
                 int *returnRedValue SIP_OUT,
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsRasterShader
      * \param returnGreenValue The green component of the new RGBA value
      * \param returnBlueValue The blue component of the new RGBA value
      * \param returnAlpha The alpha component of the new RGBA value
-     * \return True if the return values are valid otherwise false
+     * \return TRUE if the return values are valid otherwise FALSE
     */
     bool shade( double redValue,
                 double greenValue,

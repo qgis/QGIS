@@ -33,6 +33,7 @@ class QgsProcessingContext;
 class QgsMapLayerStore;
 class QgsProcessingFeedback;
 class QgsProcessingFeatureSource;
+class QgsProcessingAlgorithm;
 
 #include <QString>
 #include <QVariant>
@@ -51,7 +52,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Returns a list of raster layers from a \a project which are compatible with the processing
      * framework.
      *
-     * If the \a sort argument is true then the layers will be sorted by their QgsMapLayer::name()
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
      * value.
      * \see compatibleVectorLayers()
      * \see compatibleMeshLayers()
@@ -68,7 +69,7 @@ class CORE_EXPORT QgsProcessingUtils
      * layers with the specified source type included in the list will be returned. Leaving the \a sourceTypes
      * list empty will cause all vector layers, regardless of their geometry type, to be returned.
      *
-     * If the \a sort argument is true then the layers will be sorted by their QgsMapLayer::name()
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
      * value.
      * \see compatibleRasterLayers()
      * \see compatibleMeshLayers()
@@ -82,7 +83,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Returns a list of mesh layers from a \a project which are compatible with the processing
      * framework.
      *
-     * If the \a sort argument is true then the layers will be sorted by their QgsMapLayer::name()
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
      * value.
      *
      * \see compatibleRasterLayers()
@@ -97,7 +98,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Returns a list of map layers from a \a project which are compatible with the processing
      * framework.
      *
-     * If the \a sort argument is true then the layers will be sorted by their QgsMapLayer::name()
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
      * value.
      * \see compatibleRasterLayers()
      * \see compatibleVectorLayers()
@@ -108,7 +109,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Layer type hints.
      * \since QGIS 3.4
      */
-    enum LayerHint
+    enum class LayerHint SIP_MONKEYPATCH_SCOPEENUM : int
     {
       UnknownType, //!< Unknown layer type
       Vector, //!< Vector layer type
@@ -122,13 +123,13 @@ class CORE_EXPORT QgsProcessingUtils
      * The method will attempt to
      * load a layer matching the passed \a string. E.g. if the string matches a layer ID or name
      * within the context's project or temporary layer store then this layer will be returned.
-     * If the string is a file path and \a allowLoadingNewLayers is true, then the layer at this
+     * If the string is a file path and \a allowLoadingNewLayers is TRUE, then the layer at this
      * file path will be loaded and added to the context's temporary layer store.
      * Ownership of the layer remains with the \a context or the context's current project.
      *
      * The \a typeHint can be used to dictate the type of map layer expected.
      */
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 
     /**
      * Converts a variant \a value to a new feature source.
@@ -307,7 +308,7 @@ class CORE_EXPORT QgsProcessingUtils
      * returned.
      * \see mapLayerFromString()
      */
-    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 
     /**
      * Interprets a string as a map layer. The method will attempt to
@@ -315,11 +316,12 @@ class CORE_EXPORT QgsProcessingUtils
      * then the layer at this file path will be loaded.
      * The caller takes responsibility for deleting the returned map layer.
      */
-    static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *loadMapLayerFromString( const QString &string, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 
-    static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter );
+    static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension );
 
     friend class TestQgsProcessing;
+    friend class QgsProcessingProvider;
 
 };
 
@@ -344,9 +346,9 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     /**
      * Constructor for QgsProcessingFeatureSource, accepting an original feature source \a originalSource
      * and processing \a context.
-     * Ownership of \a originalSource is dictated by \a ownsOriginalSource. If \a ownsOriginalSource is false,
+     * Ownership of \a originalSource is dictated by \a ownsOriginalSource. If \a ownsOriginalSource is FALSE,
      * ownership is not transferred, and callers must ensure that \a originalSource exists for the lifetime of this object.
-     * If \a ownsOriginalSource is true, then this object will take ownership of \a originalSource.
+     * If \a ownsOriginalSource is TRUE, then this object will take ownership of \a originalSource.
      */
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
 
@@ -411,9 +413,9 @@ class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
      *
      * The \a sinkName is used to identify the destination sink when reporting errors.
      *
-     * Ownership of \a originalSink is dictated by \a ownsOriginalSource. If \a ownsOriginalSink is false,
+     * Ownership of \a originalSink is dictated by \a ownsOriginalSource. If \a ownsOriginalSink is FALSE,
      * ownership is not transferred, and callers must ensure that \a originalSink exists for the lifetime of this object.
-     * If \a ownsOriginalSink is true, then this object will take ownership of \a originalSink.
+     * If \a ownsOriginalSink is TRUE, then this object will take ownership of \a originalSink.
      */
     QgsProcessingFeatureSink( QgsFeatureSink *originalSink, const QString &sinkName, QgsProcessingContext &context, bool ownsOriginalSink = false );
     ~QgsProcessingFeatureSink() override;

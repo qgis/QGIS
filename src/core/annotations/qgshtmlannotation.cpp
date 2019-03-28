@@ -25,6 +25,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgswebpage.h"
 #include "qgswebframe.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDomElement>
 #include <QDir>

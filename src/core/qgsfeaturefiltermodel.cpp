@@ -19,6 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QAbstractItemModel( parent )
@@ -353,7 +354,7 @@ void QgsFeatureFilterModel::scheduledReload()
   request.setSubsetOfAttributes( attributes, mSourceLayer->fields() );
   request.setFlags( QgsFeatureRequest::NoGeometry );
 
-  request.setLimit( 100 );
+  request.setLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
 
   mGatherer = new QgsFieldExpressionValuesGatherer( mSourceLayer, mDisplayExpression, mIdentifierField, request );
   mGatherer->setData( mShouldReloadCurrentFeature );

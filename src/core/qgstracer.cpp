@@ -25,6 +25,7 @@
 #include "qgsexception.h"
 #include "qgsrenderer.h"
 #include "qgssettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <queue>
 #include <vector>

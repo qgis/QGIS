@@ -77,7 +77,7 @@ Returns the layer read right
 
 :param layer: the layer to control
 
-:return: true if it can be read
+:return: ``True`` if it can be read
 %End
 
     bool layerInsertPermission( const QgsVectorLayer *layer ) const;
@@ -86,7 +86,7 @@ Returns the layer insert right
 
 :param layer: the layer to control
 
-:return: true if we can insert on it
+:return: ``True`` if we can insert on it
 %End
 
     bool layerUpdatePermission( const QgsVectorLayer *layer ) const;
@@ -95,7 +95,7 @@ Returns the layer update right
 
 :param layer: the layer to control
 
-:return: true if we can do an update
+:return: ``True`` if we can do an update
 %End
 
     bool layerDeletePermission( const QgsVectorLayer *layer ) const;
@@ -104,7 +104,7 @@ Returns the layer delete right
 
 :param layer: the layer to control
 
-:return: true if we can do a delete
+:return: ``True`` if we can do a delete
 %End
 
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
@@ -124,7 +124,7 @@ Are we authorized to modify the following geometry
 :param layer: the layer to control
 :param feature: the concerned feature
 
-:return: true if we are allowed to edit the feature
+:return: ``True`` if we are allowed to edit the feature
 %End
 
     bool fillCacheKey( QStringList &cacheKey ) const;
@@ -133,7 +133,7 @@ Fill the capabilities caching key
 
 :param cacheKey: the list to fill with a cache variant
 
-:return: false if we can't create a cache
+:return: ``False`` if we can't create a cache
 %End
 
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 );

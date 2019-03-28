@@ -162,20 +162,20 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
      * default values in the svg file, only the first one is considered.
      * \param path path to SVG file
-     * \param hasFillParam will be true if fill param present in SVG
-     * \param hasDefaultFillParam will be true if fill param has a default value specified
+     * \param hasFillParam will be TRUE if fill param present in SVG
+     * \param hasDefaultFillParam will be TRUE if fill param has a default value specified
      * \param defaultFillColor will be set to default fill color specified in SVG, if present
-     * \param hasFillOpacityParam will be true if fill opacity param present in SVG
-     * \param hasDefaultFillOpacity will be true if fill opacity param has a default value specified
+     * \param hasFillOpacityParam will be TRUE if fill opacity param present in SVG
+     * \param hasDefaultFillOpacity will be TRUE if fill opacity param has a default value specified
      * \param defaultFillOpacity will be set to default fill opacity specified in SVG, if present
-     * \param hasStrokeParam will be true if stroke param present in SVG
-     * \param hasDefaultStrokeColor will be true if stroke param has a default value specified
+     * \param hasStrokeParam will be TRUE if stroke param present in SVG
+     * \param hasDefaultStrokeColor will be TRUE if stroke param has a default value specified
      * \param defaultStrokeColor will be set to default stroke color specified in SVG, if present
-     * \param hasStrokeWidthParam will be true if stroke width param present in SVG
-     * \param hasDefaultStrokeWidth will be true if stroke width param has a default value specified
+     * \param hasStrokeWidthParam will be TRUE if stroke width param present in SVG
+     * \param hasDefaultStrokeWidth will be TRUE if stroke width param has a default value specified
      * \param defaultStrokeWidth will be set to default stroke width specified in SVG, if present
-     * \param hasStrokeOpacityParam will be true if stroke opacity param present in SVG
-     * \param hasDefaultStrokeOpacity will be true if stroke opacity param has a default value specified
+     * \param hasStrokeOpacityParam will be TRUE if stroke opacity param present in SVG
+     * \param hasDefaultStrokeOpacity will be TRUE if stroke opacity param has a default value specified
      * \param defaultStrokeOpacity will be set to default stroke opacity specified in SVG, if present
      * \note available in Python bindings as containsParamsV3
      * \since QGIS 2.14

@@ -77,28 +77,39 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     //! Sets provider for context menu. Takes ownership of the instance
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
-    //! Returns pointer to the context menu provider. May be null
+    //! Returns pointer to the context menu provider. May be NULLPTR
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
-    //! Gets currently selected layer. May be null
+    /**
+     * Returns the currently selected layer, or NULLPTR if no layers is selected.
+     *
+     * \see setCurrentLayer()
+     */
     QgsMapLayer *currentLayer() const;
-    //! Sets currently selected layer. Null pointer will deselect any layer.
+
+    /**
+     * Sets the currently selected \a layer.
+     *
+     * If \a layer is NULLPTR then all layers will be deselected.
+     *
+     * \see currentLayer()
+     */
     void setCurrentLayer( QgsMapLayer *layer );
 
-    //! Gets current node. May be null
+    //! Gets current node. May be NULLPTR
     QgsLayerTreeNode *currentNode() const;
-    //! Gets current group node. If a layer is current node, the function will return parent group. May be null.
+    //! Gets current group node. If a layer is current node, the function will return parent group. May be NULLPTR.
     QgsLayerTreeGroup *currentGroupNode() const;
 
     /**
-     * Gets current legend node. May be null if current node is not a legend node.
+     * Gets current legend node. May be NULLPTR if current node is not a legend node.
      * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
     /**
      * Returns list of selected nodes
-     * \param skipInternal If true, will ignore nodes which have an ancestor in the selection
+     * \param skipInternal If TRUE, will ignore nodes which have an ancestor in the selection
      */
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
     //! Returns list of selected nodes filtered to just layer nodes
@@ -233,7 +244,7 @@ class GUI_EXPORT QgsLayerTreeViewMenuProvider
   public:
     virtual ~QgsLayerTreeViewMenuProvider() = default;
 
-    //! Returns a newly created menu instance (or null pointer on error)
+    //! Returns a newly created menu instance (or NULLPTR on error)
     virtual QMenu *createContextMenu() = 0 SIP_FACTORY;
 };
 

@@ -75,15 +75,15 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const { return All; }
 
     /**
-     * Returns new instance of the renderer given the DOM element. Returns NULL on error.
+     * Returns new instance of the renderer given the DOM element. Returns NULLPTR on error.
      * Pure virtual function: must be implemented in derived classes.  */
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;
 
     /**
-     * Returns new instance of settings widget for the renderer. Returns NULL on error.
+     * Returns new instance of settings widget for the renderer. Returns NULLPTR on error.
      *
-     * The \a oldRenderer argument may refer to previously used renderer (or it is null).
-     * If not null, it may be used to initialize GUI of the widget from the previous settings.
+     * The \a oldRenderer argument may refer to previously used renderer (or it is NULLPTR).
+     * If not NULLPTR, it may be used to initialize GUI of the widget from the previous settings.
      * The old renderer does not have to be of the same type as returned by createRenderer().
      * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsRendererRegistry
     /**
      * Adds a renderer to the registry. Takes ownership of the metadata object.
      * \param metadata renderer metadata
-     * \returns true if renderer was added successfully, or false if renderer could not
+     * \returns TRUE if renderer was added successfully, or FALSE if renderer could not
      * be added (e.g., a renderer with a duplicate name already exists)
      */
     bool addRenderer( QgsRendererAbstractMetadata *metadata SIP_TRANSFER );
@@ -219,13 +219,13 @@ class CORE_EXPORT QgsRendererRegistry
     /**
      * Removes a renderer from registry.
      * \param rendererName name of renderer to remove from registry
-     * \returns true if renderer was successfully removed, or false if matching
+     * \returns TRUE if renderer was successfully removed, or FALSE if matching
      * renderer could not be found
      */
     bool removeRenderer( const QString &rendererName );
 
     /**
-     * Returns the metadata for a specified renderer. Returns NULL if a matching
+     * Returns the metadata for a specified renderer. Returns NULLPTR if a matching
      * renderer was not found in the registry.
      */
     QgsRendererAbstractMetadata *rendererMetadata( const QString &rendererName );

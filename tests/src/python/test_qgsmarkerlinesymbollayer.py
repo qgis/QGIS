@@ -27,7 +27,7 @@ import qgis  # NOQA
 
 from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir, Qt
+from qgis.PyQt.QtCore import QDir, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -49,7 +49,9 @@ from qgis.core import (QgsGeometry,
                        QgsFontUtils,
                        QgsLineSymbol,
                        QgsSymbolLayer,
-                       QgsProperty
+                       QgsProperty,
+                       QgsRectangle,
+                       QgsUnitTypes
                        )
 
 from qgis.testing import unittest, start_app
@@ -67,6 +69,38 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
+
+    def testWidth(self):
+        ms = QgsMapSettings()
+        extent = QgsRectangle(100, 200, 100, 200)
+        ms.setExtent(extent)
+        ms.setOutputSize(QSize(400, 400))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        ms.setExtent(QgsRectangle(100, 150, 100, 150))
+        ms.setOutputDpi(ms.outputDpi() * 2)
+        context2 = QgsRenderContext.fromMapSettings(ms)
+        context2.setScaleFactor(300 / 25.4)
+
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 10)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+
+        self.assertEqual(marker_line.width(), 10)
+        self.assertAlmostEqual(marker_line.width(context), 37.795275590551185, 3)
+        self.assertAlmostEqual(marker_line.width(context2), 118.11023622047244, 3)
+
+        marker_line.subSymbol().setSizeUnit(QgsUnitTypes.RenderPixels)
+        self.assertAlmostEqual(marker_line.width(context), 10.0, 3)
+        self.assertAlmostEqual(marker_line.width(context2), 10.0, 3)
 
     def testRingFilter(self):
         # test filtering rings during rendering

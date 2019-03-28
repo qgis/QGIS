@@ -55,7 +55,7 @@ Constructor for QgsRasterLayerSaveAsDialog
 
     bool addToCanvas() const;
 %Docstring
-Returns true if the "add to canvas" checkbox is checked.
+Returns ``True`` if the "add to canvas" checkbox is checked.
 
 .. seealso:: :py:func:`setAddToCanvas`
 %End

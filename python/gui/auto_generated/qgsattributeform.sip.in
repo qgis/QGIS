@@ -44,11 +44,32 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
+
     void hideButtonBox();
+%Docstring
+Hides the button box (OK/Cancel) and enables auto-commit
+
+.. note::
+
+   set Embed in QgsAttributeEditorContext in constructor instead
+%End
+
 
     void showButtonBox();
+%Docstring
+Shows the button box (OK/Cancel) and disables auto-commit
+
+.. note::
+
+   set Embed in QgsAttributeEditorContext in constructor instead
+%End
+
 
     void disconnectButtonBox();
+%Docstring
+Disconnects the button box (OK/Cancel) from the accept/resetValues slots
+If this method is called, you have to create these connections from outside
+%End
 
     void addInterface( QgsAttributeFormInterface *iface /Transfer/ );
 %Docstring
@@ -106,7 +127,7 @@ Intercepts keypress on custom form (escape should not close it)
 :param object: The object for which the event has been sent
 :param event: The event which is being filtered
 
-:return: true if the event has been handled (key was ESC)
+:return: ``True`` if the event has been handled (key was ESC)
 %End
 
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
@@ -156,7 +177,7 @@ Notifies about changes of attributes
 
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
-:param attributeChanged: If true, it corresponds to an actual change of the feature attribute
+:param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
 
 .. versionadded:: 3.0.1
 %End
@@ -164,12 +185,12 @@ Notifies about changes of attributes
 
     void featureSaved( const QgsFeature &feature );
 %Docstring
-Is emitted, when a feature is changed or added
+Emitted when a feature is changed or added
 %End
 
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 %Docstring
-Is emitted when a filter expression is set using the form.
+Emitted when a filter expression is set using the form.
 
 :param expression: filter expression
 :param type: filter type
@@ -227,7 +248,7 @@ Update all editors to correspond to a different feature.
 %Docstring
 Save all the values from the editors to the layer.
 
-:return: True if successful
+:return: ``True`` if successful
 %End
 
     void resetValues();

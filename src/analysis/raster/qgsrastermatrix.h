@@ -68,7 +68,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     QgsRasterMatrix( const QgsRasterMatrix &m );
     ~QgsRasterMatrix();
 
-    //! Returns true if matrix is 1x1 (=scalar number)
+    //! Returns TRUE if matrix is 1x1 (=scalar number)
     bool isNumber() const { return ( mColumns == 1 && mRows == 1 ); }
     double number() const { return mData[0]; }
 

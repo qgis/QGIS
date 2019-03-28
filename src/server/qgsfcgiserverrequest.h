@@ -37,7 +37,7 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
     QByteArray data() const override;
 
     /**
-     * Returns true if an error occurred during initialization
+     * Returns TRUE if an error occurred during initialization
      */
     bool hasError() const { return mHasError; }
 

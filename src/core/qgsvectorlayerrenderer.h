@@ -123,7 +123,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;
-    int mVertexMarkerStyle, mVertexMarkerSize;
+    int mVertexMarkerStyle = 0;
+    double mVertexMarkerSize = 2.0;
 
     QgsWkbTypes::GeometryType mGeometryType;
 
@@ -136,13 +137,13 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     /**
      * used with new labeling engine (QgsLabelingEngine): provider for labels.
-     * may be null. no need to delete: if exists it is owned by labeling engine
+     * may be NULLPTR. no need to delete: if exists it is owned by labeling engine
      */
     QgsVectorLayerLabelProvider *mLabelProvider = nullptr;
 
     /**
      * used with new labeling engine (QgsLabelingEngine): provider for diagrams.
-     * may be null. no need to delete: if exists it is owned by labeling engine
+     * may be NULLPTR. no need to delete: if exists it is owned by labeling engine
      */
     QgsVectorLayerDiagramProvider *mDiagramProvider = nullptr;
 

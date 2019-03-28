@@ -58,21 +58,31 @@ Sets the toolbox proxy model used to drive the view.
 
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index );
 %Docstring
-Returns the algorithm at the specified tree view ``index``, or a None
+Returns the algorithm at the specified tree view ``index``, or ``None``
 if the index does not correspond to an algorithm.
 %End
 
     const QgsProcessingAlgorithm *selectedAlgorithm();
 %Docstring
-Returns the currently selected algorithm in the tree view, or a None
+Returns the currently selected algorithm in the tree view, or ``None``
 if no algorithm is currently selected.
 %End
 
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
 Sets ``filters`` controlling the view's contents.
+
+.. seealso:: :py:func:`filters`
 %End
 
+    QgsProcessingToolboxProxyModel::Filters filters() const;
+%Docstring
+Returns the current filters controlling the view's contents.
+
+.. seealso:: :py:func:`setFilters`
+
+.. versionadded:: 3.8
+%End
 
     void setInPlaceLayer( QgsVectorLayer *layer );
 %Docstring

@@ -17,6 +17,7 @@
 
 #include "qgsnativealgorithms.h"
 #include "qgsalgorithmaddincrementalfield.h"
+#include "qgsalgorithmaddxyfields.h"
 #include "qgsalgorithmarraytranslatedfeatures.h"
 #include "qgsalgorithmassignprojection.h"
 #include "qgsalgorithmboundary.h"
@@ -42,6 +43,7 @@
 #include "qgsalgorithmextractbyexpression.h"
 #include "qgsalgorithmextractbyextent.h"
 #include "qgsalgorithmextractbylocation.h"
+#include "qgsalgorithmextractlayoutmapextent.h"
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmextractzmvalues.h"
 #include "qgsalgorithmfiledownloader.h"
@@ -73,6 +75,7 @@
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
+#include "qgsalgorithmrasterlogicalop.h"
 #include "qgsalgorithmrastersurfacevolume.h"
 #include "qgsalgorithmrasterzonalstats.h"
 #include "qgsalgorithmreclassifybylayer.h"
@@ -148,6 +151,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 void QgsNativeAlgorithms::loadAlgorithms()
 {
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
+  addAlgorithm( new QgsAddXYFieldsAlgorithm() );
   addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
   addAlgorithm( new QgsArrayTranslatedFeaturesAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
@@ -190,6 +194,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsKMeansClusteringAlgorithm() );
+  addAlgorithm( new QgsLayoutMapExtentToLayerAlgorithm() );
   addAlgorithm( new QgsLineIntersectionAlgorithm() );
   addAlgorithm( new QgsLineSubstringAlgorithm() );
   addAlgorithm( new QgsLoadLayerAlgorithm() );
@@ -209,6 +214,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsRasterLayerZonalStatsAlgorithm() );
+  addAlgorithm( new QgsRasterLogicalAndAlgorithm() );
+  addAlgorithm( new QgsRasterLogicalOrAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPointsAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPolygonsAlgorithm() );
   addAlgorithm( new QgsRasterSurfaceVolumeAlgorithm() );

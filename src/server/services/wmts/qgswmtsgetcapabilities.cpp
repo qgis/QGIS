@@ -272,8 +272,12 @@ namespace QgsWmts
     QDomElement httpElement = doc.createElement( QStringLiteral( "ows:HTTP" )/*ows:HTTP*/ );
     dcpElement.appendChild( httpElement );
 
-    //Prepare url
-    QString hrefString = serviceUrl( request, project );
+    // Get service URL
+    const QUrl href = serviceUrl( request, project );
+
+    //href needs to be a prefix
+    QString hrefString = href.toString();
+    hrefString.append( href.hasQuery() ? '&' : '?' );
 
     //ows:Get
     QDomElement getElement = doc.createElement( QStringLiteral( "ows:Get" )/*ows:Get*/ );

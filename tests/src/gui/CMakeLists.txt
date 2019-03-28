@@ -40,6 +40,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${SQLITE3_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
@@ -120,6 +121,7 @@ ADD_QGIS_TEST(edittooltest testqgsmaptooledit.cpp)
 
 #ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
 ADD_QGIS_TEST(categorizedrendererwidget testqgscategorizedrendererwidget.cpp)
+ADD_QGIS_TEST(datumtransformdialog testqgsdatumtransformdialog.cpp)
 ADD_QGIS_TEST(doublespinbox testqgsdoublespinbox.cpp)
 ADD_QGIS_TEST(dualviewtest testqgsdualview.cpp)
 ADD_QGIS_TEST(attributeformtest testqgsattributeform.cpp)

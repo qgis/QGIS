@@ -152,6 +152,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   //set on LayerTreeNode showFeatureCount property
   QgsLayerTreeLayer *layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
+  layerTreelayer->setItemVisibilityChecked( false );
 
   //convert
   mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
@@ -164,6 +165,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 1 );
+  QCOMPARE( layerTreelayer->isVisible(), false );
 
   QgsFeature firstFeatureInAction;
   it = mpLayer->getFeatures();

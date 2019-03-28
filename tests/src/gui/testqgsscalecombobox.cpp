@@ -40,6 +40,7 @@ class TestQgsScaleComboBox : public QObject
     void min_test();
     void toString();
     void toDouble();
+    void allowNull();
 
   private:
     void enterScale( const QString &scale );
@@ -157,6 +158,7 @@ void TestQgsScaleComboBox::toString()
   QCOMPARE( QgsScaleComboBox::toString( 100.02134234 ), QStringLiteral( "1:100" ) );
   QCOMPARE( QgsScaleComboBox::toString( 1 ), QStringLiteral( "1:1" ) );
   QCOMPARE( QgsScaleComboBox::toString( 1.0 / 100 ), QStringLiteral( "100:1" ) );
+  QCOMPARE( QgsScaleComboBox::toString( std::numeric_limits< double >::quiet_NaN() ), QString() );
 }
 
 void TestQgsScaleComboBox::toDouble()
@@ -184,6 +186,56 @@ void TestQgsScaleComboBox::toDouble()
   QVERIFY( !ok );
   QgsScaleComboBox::toDouble( QStringLiteral( "a:1" ), &ok );
   QVERIFY( !ok );
+}
+
+void TestQgsScaleComboBox::allowNull()
+{
+  s->setScale( 50 );
+  QVERIFY( !s->allowNull() );
+  s->setNull(); // no effect
+  QCOMPARE( s->scale(), 50.0 );
+  QVERIFY( !s->isNull() );
+
+  QSignalSpy spyScaleChanged( s, &QgsScaleComboBox::scaleChanged );
+  s->setAllowNull( true );
+  QVERIFY( s->allowNull() );
+
+  QVERIFY( s->lineEdit()->isClearButtonEnabled() );
+
+  s->setScaleString( QString() );
+  QCOMPARE( spyScaleChanged.count(), 1 );
+  QVERIFY( std::isnan( s->scale() ) );
+  QVERIFY( s->isNull() );
+  s->setScaleString( QStringLiteral( "    " ) );
+  QVERIFY( std::isnan( s->scale() ) );
+  QVERIFY( s->lineEdit()->text().isEmpty() );
+  QCOMPARE( spyScaleChanged.count(), 1 );
+  QVERIFY( s->isNull() );
+
+  enterScale( 0.02 );
+  QCOMPARE( s->scale(), 50.0 );
+  QCOMPARE( spyScaleChanged.count(), 2 );
+  QCOMPARE( s->lineEdit()->text(), QStringLiteral( "1:50" ) );
+  QVERIFY( !s->isNull() );
+
+  enterScale( QString() );
+  QVERIFY( std::isnan( s->scale() ) );
+  QCOMPARE( spyScaleChanged.count(), 3 );
+  QVERIFY( s->lineEdit()->text().isEmpty() );
+  QVERIFY( s->isNull() );
+
+  enterScale( 0.02 );
+  QCOMPARE( s->scale(), 50.0 );
+  QCOMPARE( spyScaleChanged.count(), 4 );
+  s->setNull();
+  QVERIFY( std::isnan( s->scale() ) );
+  QCOMPARE( spyScaleChanged.count(), 5 );
+  QVERIFY( s->lineEdit()->text().isEmpty() );
+  QVERIFY( s->isNull() );
+
+  s->setAllowNull( false );
+  QVERIFY( !s->allowNull() );
+  QVERIFY( !s->lineEdit()->isClearButtonEnabled() );
 }
 
 void TestQgsScaleComboBox::enterScale( const QString &scale )

@@ -27,18 +27,18 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsmeshtimesettings.h"
 #include "qgspainting.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
 #include "qgsstyle.h"
 #include "qgstriangularmesh.h"
 
-
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
                             const LayerOptions & )
-  : QgsMapLayer( MeshLayer, baseName, meshLayerPath )
+  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
 {
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
@@ -142,6 +142,22 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings 
   mRendererSettings = settings;
   emit rendererChanged();
   triggerRepaint();
+}
+
+QgsMeshTimeSettings QgsMeshLayer::timeSettings() const
+{
+  return mTimeSettings;
+}
+
+void QgsMeshLayer::setTimeSettings( const QgsMeshTimeSettings &settings )
+{
+  mTimeSettings = settings;
+  emit timeSettingsChanged();
+}
+
+QString QgsMeshLayer::formatTime( double hours )
+{
+  return QgsMeshLayerUtils::formatTime( hours, mTimeSettings );
 }
 
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
@@ -281,6 +297,10 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings );
 
+  QDomElement elemTimeSettings = elem.firstChildElement( "mesh-time-settings" );
+  if ( !elemTimeSettings.isNull() )
+    mTimeSettings.readXml( elemTimeSettings, context );
+
   // get and set the blend mode if it exists
   QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
   if ( !blendModeNode.isNull() )
@@ -304,6 +324,9 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
 
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
   elem.appendChild( elemRendererSettings );
+
+  QDomElement elemTimeSettings = mTimeSettings.writeXml( doc, context );
+  elem.appendChild( elemTimeSettings );
 
   // add blend mode node
   QDomElement blendModeElement  = doc.createElement( QStringLiteral( "blendMode" ) );

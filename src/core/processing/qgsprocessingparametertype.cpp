@@ -31,3 +31,8 @@ QStringList QgsProcessingParameterType::acceptedPythonTypes() const
 {
   return QStringList();
 }
+
+QStringList QgsProcessingParameterType::acceptedStringValues() const
+{
+  return QStringList();
+}

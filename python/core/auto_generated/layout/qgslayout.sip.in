@@ -78,7 +78,7 @@ Calling this method removes all items and pages from the layout.
     QgsProject *project() const;
 %Docstring
 The project associated with the layout. Used to get access to layers, map themes,
-relations and various other bits. It is never null.
+relations and various other bits. It is never ``None``.
 %End
 
     QgsLayoutModel *itemsModel();
@@ -92,7 +92,7 @@ Returns the items model attached to the layout.
 %Docstring
 Returns list of selected layout items.
 
-If ``includeLockedItems`` is set to true, then locked items will also be included
+If ``includeLockedItems`` is set to ``True``, then locked items will also be included
 in the returned list.
 %End
 
@@ -112,9 +112,9 @@ not correctly emit signals to allow the layout's model to update.
     bool raiseItem( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
 Raises an ``item`` up the z-order.
-Returns true if the item was successfully raised.
+Returns ``True`` if the item was successfully raised.
 
-If ``deferUpdate`` is true, the scene will not be visibly updated
+If ``deferUpdate`` is ``True``, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
@@ -127,9 +127,9 @@ updating the scene for each one.
     bool lowerItem( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
 Lowers an ``item`` down the z-order.
-Returns true if the item was successfully lowered.
+Returns ``True`` if the item was successfully lowered.
 
-If ``deferUpdate`` is true, the scene will not be visibly updated
+If ``deferUpdate`` is ``True``, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
@@ -142,9 +142,9 @@ updating the scene for each one.
     bool moveItemToTop( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
 Raises an ``item`` up to the top of the z-order.
-Returns true if the item was successfully raised.
+Returns ``True`` if the item was successfully raised.
 
-If ``deferUpdate`` is true, the scene will not be visibly updated
+If ``deferUpdate`` is ``True``, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
@@ -157,8 +157,8 @@ updating the scene for each one.
     bool moveItemToBottom( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
 Lowers an ``item`` down to the bottom of the z-order.
-Returns true if the item was successfully lowered.
-If ``deferUpdate`` is true, the scene will not be visibly updated
+Returns ``True`` if the item was successfully lowered.
+If ``deferUpdate`` is ``True``, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
@@ -177,10 +177,10 @@ which deferred z-order updates.
 
     QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 %Docstring
-Returns the layout item with matching ``uuid`` unique identifier, or a None
+Returns the layout item with matching ``uuid`` unique identifier, or ``None``
 if a matching item could not be found.
 
-If ``includeTemplateUuids`` is true, then item's template UUID
+If ``includeTemplateUuids`` is ``True``, then item's template UUID
 will also be tested when trying to match the uuid. This may differ from the item's UUID
 for items which have been added to an existing layout from a template. In this case
 the template UUID returns the original item UUID at the time the template was created,
@@ -196,7 +196,7 @@ Note that template UUIDs are only available while a layout is being restored fro
 
     QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
 %Docstring
-Returns the layout item with matching template ``uuid`` unique identifier, or a None
+Returns the layout item with matching template ``uuid`` unique identifier, or ``None``
 if a matching item could not be found. Unlike itemByUuid(), this method ONLY checks
 template UUIDs for a match.
 
@@ -224,10 +224,10 @@ item found.
 
     QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 %Docstring
-Returns the layout multiframe with matching ``uuid`` unique identifier, or a None
+Returns the layout multiframe with matching ``uuid`` unique identifier, or ``None``
 if a matching multiframe could not be found.
 
-If ``includeTemplateUuids`` is true, then the multiframe's :py:func:`QgsLayoutMultiFrame.templateUuid()`
+If ``includeTemplateUuids`` is ``True``, then the multiframe's :py:func:`QgsLayoutMultiFrame.templateUuid()`
 will also be tested when trying to match the uuid. Template UUIDs are valid only for items
 which have been added to an existing layout from a template. In this case
 the template UUID is the original item UUID at the time the template was created,
@@ -240,13 +240,13 @@ Note that template UUIDs are only available while a layout is being restored fro
     QgsLayoutItem *layoutItemAt( QPointF position, bool ignoreLocked = false ) const;
 %Docstring
 Returns the topmost layout item at a specified ``position``. Ignores paper items.
-If ``ignoreLocked`` is set to true any locked items will be ignored.
+If ``ignoreLocked`` is set to ``True`` any locked items will be ignored.
 %End
 
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, bool ignoreLocked = false ) const;
 %Docstring
 Returns the topmost layout item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
-If ``ignoreLocked`` is set to true any locked items will be ignored.
+If ``ignoreLocked`` is set to ``True`` any locked items will be ignored.
 %End
 
     void setUnits( QgsUnitTypes::LayoutUnit units );
@@ -438,7 +438,7 @@ Returns list of keys stored in custom properties for the layout.
 %Docstring
 Returns the map item which will be used to generate corresponding world files when the
 layout is exported. If no map was explicitly set via setReferenceMap(), the largest
-map in the layout will be returned (or None if there are no maps in the layout).
+map in the layout will be returned (or ``None`` if there are no maps in the layout).
 
 .. seealso:: :py:func:`setReferenceMap`
 %End
@@ -463,7 +463,7 @@ page items in the layout.
 Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
 and other cosmetic items.
 
-:param ignorePages: set to true to ignore page items
+:param ignorePages: set to ``True`` to ignore page items
 :param margin: optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
 
 :return: layout bounds, in layout units.
@@ -476,7 +476,7 @@ and other cosmetic items.
 Returns the bounding box of the items contained on a specified ``page``.
 A page number of 0 represents the first page in the layout.
 
-Set ``visibleOnly`` to true to only include visible items.
+Set ``visibleOnly`` to ``True`` to only include visible items.
 
 The returned bounds are in layout units.
 
@@ -526,7 +526,7 @@ Returns a list of multi frames contained in the layout.
     bool saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const;
 %Docstring
 Saves the layout as a template at the given file ``path``.
-Returns true if save was successful.
+Returns ``True`` if save was successful.
 
 .. seealso:: :py:func:`loadFromTemplate`
 %End
@@ -536,10 +536,10 @@ Returns true if save was successful.
 Load a layout template ``document``.
 
 By default this method will clear all items from the existing layout and real all layout
-settings from the template. Setting ``clearExisting`` to false will only add new items
+settings from the template. Setting ``clearExisting`` to ``False`` will only add new items
 from the template, without overwriting the existing items or layout settings.
 
-If ``ok`` is specified, it will be set to true if the load was successful.
+If ``ok`` is specified, it will be set to ``True`` if the load was successful.
 
 Returns a list of loaded items.
 %End
@@ -587,7 +587,7 @@ and it's associated objects.
     QgsLayoutItemGroup *groupItems( const QList<QgsLayoutItem *> &items );
 %Docstring
 Creates a new group from a list of layout ``items`` and adds the group to the layout.
-If grouping was not possible, a None will be returned.
+If grouping was not possible, ``None`` will be returned.
 
 .. seealso:: :py:func:`ungroupItems`
 %End
@@ -624,7 +624,7 @@ Updates the scene bounds of the layout.
 
     void changed();
 %Docstring
-Is emitted when properties of the layout change. This signal is only
+Emitted when properties of the layout change. This signal is only
 emitted for settings directly managed by the layout, and is not emitted
 when child items change.
 %End
@@ -637,12 +637,12 @@ Emitted whenever the expression variables stored in the layout have been changed
     void selectedItemChanged( QgsLayoutItem *selected );
 %Docstring
 Emitted whenever the selected item changes.
-If None, no item is selected.
+If ``None``, no item is selected.
 %End
 
     void refreshed();
 %Docstring
-Is emitted when the layout has been refreshed and items should also be refreshed
+Emitted when the layout has been refreshed and items should also be refreshed
 and updated.
 %End
 

@@ -51,7 +51,7 @@ the QGIS settings. The caller takes ownership of the
 returned object
 
 :param geometryType:
-:param alternativeBand: if true, rubber band will be set with more transparency and a dash pattern. default is false.
+:param alternativeBand: if ``True``, rubber band will be set with more transparency and a dash pattern. default is ``False``.
 %End
 
     QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;

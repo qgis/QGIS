@@ -402,7 +402,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets whether the shapeburst fill should be drawn using the entire shape.
-     * \param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
+     * \param useWholeShape Set to TRUE if shapeburst should cover entire shape. If FALSE, setMaxDistance is used to calculate how far from the boundary of the shape should
      * be shaded
      * \see useWholeShape
      * \see setMaxDistance
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Returns whether the shapeburst fill is set to cover the entire shape.
-     * \returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+     * \returns TRUE if shapeburst fill will cover the entire shape. If FALSE, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
      * \see setUseWholeShape
      * \see maxDistance
      * \since QGIS 2.3
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets the maximum distance to shape inside of the shape from the polygon's boundary.
-     * \param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+     * \param maxDistance distance from boundary to shade. setUseWholeShape must be set to FALSE for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
      * \see maxDistance
      * \see setUseWholeShape
      * \see setDistanceUnit
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setMaxDistance( double maxDistance ) { mMaxDistance = maxDistance; }
 
     /**
-     * Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
+     * Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is FALSE.
      * \returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
      * \see useWholeShape
      * \see setMaxDistance
@@ -523,7 +523,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Sets whether the shapeburst fill should ignore polygon rings when calculating
      * the buffered shading.
-     * \param ignoreRings Set to true if buffers should ignore interior rings for polygons.
+     * \param ignoreRings Set to TRUE if buffers should ignore interior rings for polygons.
      * \see ignoreRings
      * \since QGIS 2.3
      */
@@ -531,7 +531,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Returns whether the shapeburst fill is set to ignore polygon interior rings.
-     * \returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+     * \returns TRUE if the shapeburst fill will ignore interior rings when calculating buffered shading.
      * \see setIgnoreRings
      * \since QGIS 2.3
      */

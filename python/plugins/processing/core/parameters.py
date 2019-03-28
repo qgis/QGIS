@@ -62,10 +62,11 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber)
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 PARAMETER_NUMBER = 'number'
 PARAMETER_DISTANCE = 'distance'
+PARAMETER_SCALE = 'scale'
 PARAMETER_RASTER = 'raster'
 PARAMETER_TABLE = 'vector'
 PARAMETER_VECTOR = 'source'
@@ -79,6 +80,7 @@ PARAMETER_POINT = 'point'
 PARAMETER_CRS = 'crs'
 PARAMETER_MULTIPLE = 'multilayer'
 PARAMETER_BAND = 'band'
+PARAMETER_LAYOUTITEM = 'layoutitem'
 PARAMETER_MAP_LAYER = 'Map Layer'
 PARAMETER_RANGE = 'range'
 PARAMETER_ENUM = 'enum'
@@ -89,7 +91,7 @@ PARAMETER_FOLDER_DESTINATION = 'folderDestination'
 PARAMETER_RASTER_DESTINATION = 'rasterDestination'
 
 
-def getParameterFromString(s):
+def getParameterFromString(s, context):
     # Try the parameter definitions used in description files
     if '|' in s and (s.startswith("QgsProcessingParameter") or s.startswith("*QgsProcessingParameter") or s.startswith('Parameter') or s.startswith('*Parameter')):
         isAdvanced = False
@@ -243,6 +245,8 @@ def getParameterFromString(s):
             param = clazz(*params)
             if isAdvanced:
                 param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+
+            param.setDescription(QCoreApplication.translate(context, param.description()))
 
             return param
         else:

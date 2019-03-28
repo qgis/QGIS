@@ -20,7 +20,10 @@
 #include "qgisapp.h"
 #include "qgsfieldcombobox.h"
 #include "qgsqmlwidgetwrapper.h"
+#include "qgshtmlwidgetwrapper.h"
 #include "qgsapplication.h"
+#include "qgscolorbutton.h"
+#include "qgscodeeditorhtml.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -37,6 +40,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   availableWidgetsWidgetLayout->addWidget( mAvailableWidgetsTree );
   availableWidgetsWidgetLayout->setMargin( 0 );
   mAvailableWidgetsWidget->setLayout( availableWidgetsWidgetLayout );
+  mAvailableWidgetsTree->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mAvailableWidgetsTree->setHeaderLabels( QStringList() << tr( "Available Widgets" ) );
   mAvailableWidgetsTree->setType( DnDTree::Type::Drag );
 
@@ -64,6 +68,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addTabOrGroupButton );
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
+  connect( mInvertSelectionButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::onInvertSelectionButtonClicked );
   connect( mEditorLayoutComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged );
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
@@ -137,14 +142,17 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   }
   catitem->setExpanded( true );
 
-  // QML widget
+  // QML/HTML widget
   catItemData = DnDTreeItemData( DnDTreeItemData::Container, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, QStringLiteral( "QmlWidget" ), tr( "QML Widget" ) );
   itemData.setShowLabel( true );
-
   mAvailableWidgetsTree->addItem( catitem, itemData );
+
+  auto itemDataHtml { DnDTreeItemData( DnDTreeItemData::HtmlWidget, QStringLiteral( "HtmlWidget" ), tr( "HTML Widget" ) ) };
+  itemDataHtml.setShowLabel( true );
+  mAvailableWidgetsTree->addItem( catitem, itemDataHtml );
   catitem ->setExpanded( true );
 }
 
@@ -154,6 +162,7 @@ void QgsAttributesFormProperties::initFormLayoutTree()
   mFormLayoutTree->clear();
   mFormLayoutTree->setSortingEnabled( false );
   mFormLayoutTree->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mFormLayoutTree->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mFormLayoutTree->setAcceptDrops( true );
   mFormLayoutTree->setDragDropMode( QAbstractItemView::DragDrop );
 
@@ -239,16 +248,17 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     delete mAttributeTypeDialog;
     mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, index, mAttributeTypeFrame );
 
+    QgsFieldConstraints constraints = cfg.mFieldConstraints;
+
     mAttributeTypeDialog->setAlias( cfg.mAlias );
     mAttributeTypeDialog->setComment( cfg.mComment );
     mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
     mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
-    mAttributeTypeDialog->setNotNull( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull );
-    mAttributeTypeDialog->setNotNullEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
-    mAttributeTypeDialog->setUnique( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique );
-    mAttributeTypeDialog->setUniqueEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
+    mAttributeTypeDialog->setNotNull( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull );
+    mAttributeTypeDialog->setNotNullEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrengthHard );
+    mAttributeTypeDialog->setUnique( constraints.constraints() & QgsFieldConstraints::ConstraintUnique );
+    mAttributeTypeDialog->setUniqueEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrengthHard );
 
-    QgsFieldConstraints constraints = cfg.mFieldConstraints;
     QgsFieldConstraints::Constraints providerConstraints = nullptr;
     if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
       providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
@@ -258,9 +268,9 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
       providerConstraints |= QgsFieldConstraints::ConstraintExpression;
     mAttributeTypeDialog->setProviderConstraints( providerConstraints );
 
-    mAttributeTypeDialog->setConstraintExpression( cfg.mConstraint );
-    mAttributeTypeDialog->setConstraintExpressionDescription( cfg.mConstraintDescription );
-    mAttributeTypeDialog->setConstraintExpressionEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
+    mAttributeTypeDialog->setConstraintExpression( constraints.constraintExpression() );
+    mAttributeTypeDialog->setConstraintExpressionDescription( constraints.constraintDescription() );
+    mAttributeTypeDialog->setConstraintExpressionEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrengthHard );
     mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueDefinition( index ).expression() );
     mAttributeTypeDialog->setApplyDefaultValueOnUpdate( mLayer->defaultValueDefinition( index ).applyOnUpdate() );
 
@@ -277,7 +287,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
 void QgsAttributesFormProperties::storeAttributeTypeDialog()
 {
-  if ( mAttributeTypeDialog->fieldIdx() < 0 )
+  if ( mAttributeTypeDialog->fieldIdx() < 0 || mAttributeTypeDialog->fieldIdx() >= mLayer->fields().count() )
     return;
 
   FieldConfig cfg;
@@ -286,54 +296,54 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
   cfg.mAlias = mAttributeTypeDialog->alias();
 
-  //confustion (will be removed): wir laden teilweise sachen einfach beim store anstelle des applys auf die mLayer - eingie Sachen laden wir auch vom layer anstatt über das cfg. wieso
-  QgsFieldConstraints constraints = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).constraints();
-  QgsFieldConstraints::Constraints providerConstraints = nullptr;
-  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
-    providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
-  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintOriginProvider )
-    providerConstraints |= QgsFieldConstraints::ConstraintUnique;
-  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintOriginProvider )
-    providerConstraints |= QgsFieldConstraints::ConstraintExpression;
-  cfg.mConstraints = nullptr;
-  if ( mAttributeTypeDialog->notNull() && !( providerConstraints & QgsFieldConstraints::ConstraintNotNull ) )
+  QgsFieldConstraints constraints;
+  if ( mAttributeTypeDialog->notNull() )
   {
-    cfg.mConstraints |= QgsFieldConstraints::ConstraintNotNull;
+    constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull );
   }
-  if ( mAttributeTypeDialog->unique() && !( providerConstraints & QgsFieldConstraints::ConstraintUnique ) )
+  else if ( mAttributeTypeDialog->notNullFromProvider() )
   {
-    cfg.mConstraints |= QgsFieldConstraints::ConstraintUnique;
-  }
-  if ( !mAttributeTypeDialog->constraintExpression().isEmpty() && !( providerConstraints & QgsFieldConstraints::ConstraintExpression ) )
-  {
-    cfg.mConstraints |= QgsFieldConstraints::ConstraintExpression;
+    constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   }
 
-  cfg.mConstraintDescription = mAttributeTypeDialog->constraintExpressionDescription();
-  cfg.mConstraint = mAttributeTypeDialog->constraintExpression();
+  if ( mAttributeTypeDialog->unique() )
+  {
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+  }
+  else if ( mAttributeTypeDialog->uniqueFromProvider() )
+  {
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+  }
+
+  if ( !mAttributeTypeDialog->constraintExpression().isEmpty() )
+  {
+    constraints.setConstraint( QgsFieldConstraints::ConstraintExpression );
+  }
+
+  constraints.setConstraintExpression( mAttributeTypeDialog->constraintExpressionDescription(), mAttributeTypeDialog->constraintExpression() );
+
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, mAttributeTypeDialog->notNullEnforced() ?
+                                     QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, mAttributeTypeDialog->uniqueEnforced() ?
+                                     QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, mAttributeTypeDialog->constraintExpressionEnforced() ?
+                                     QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
+
+  cfg.mFieldConstraints = constraints;
+
   mLayer->setDefaultValueDefinition( mAttributeTypeDialog->fieldIdx(), QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
 
   cfg.mEditorWidgetType = mAttributeTypeDialog->editorWidgetType();
   cfg.mEditorWidgetConfig = mAttributeTypeDialog->editorWidgetConfig();
 
-  cfg.mConstraintStrength.insert( QgsFieldConstraints::ConstraintNotNull, mAttributeTypeDialog->notNullEnforced() ?
-                                  QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
-  cfg.mConstraintStrength.insert( QgsFieldConstraints::ConstraintUnique, mAttributeTypeDialog->uniqueEnforced() ?
-                                  QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
-  cfg.mConstraintStrength.insert( QgsFieldConstraints::ConstraintExpression, mAttributeTypeDialog->constraintExpressionEnforced() ?
-                                  QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
-
   QString fieldName = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).name();
 
-  QTreeWidgetItemIterator itemIt( mAvailableWidgetsTree );
-  while ( *itemIt )
+  for ( auto itemIt = QTreeWidgetItemIterator( mAvailableWidgetsTree ); *itemIt; ++itemIt )
   {
     QTreeWidgetItem *item = *itemIt;
     if ( item->data( 0, FieldNameRole ).toString() == fieldName )
       item->setData( 0, FieldConfigRole, QVariant::fromValue<FieldConfig>( cfg ) );
-    ++itemIt;
   }
-
 }
 
 
@@ -451,6 +461,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
       itemData.setColumnCount( container->columnCount() );
       itemData.setShowAsGroupBox( container->isGroupBox() );
+      itemData.setBackgroundColor( container->backgroundColor() );
       itemData.setVisibilityExpression( container->visibilityExpression() );
       newWidget = tree->addItem( parent, itemData );
 
@@ -473,6 +484,19 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       newWidget = tree->addItem( parent, itemData );
       break;
     }
+
+    case QgsAttributeEditorElement::AeTypeHtmlElement:
+    {
+      const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::HtmlWidget, widgetDef->name(), widgetDef->name() );
+      itemData.setShowLabel( widgetDef->showLabel() );
+      HtmlElementEditorConfiguration htmlEdConfig;
+      htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
+      itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
+      newWidget = tree->addItem( parent, itemData );
+      break;
+    }
+
     case QgsAttributeEditorElement::AeTypeInvalid:
     {
       QgsDebugMsg( QStringLiteral( "Not loading invalid attribute editor type..." ) );
@@ -514,10 +538,26 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
       mAttributeTypeDialog->setVisible( false );
       break;
     }
+    case DnDTreeItemData::HtmlWidget:
+    {
+      mAttributeRelationEdit->setVisible( false );
+      mAttributeTypeDialog->setVisible( false );
+      break;
+    }
 
   }
 }
 
+void QgsAttributesFormProperties::onInvertSelectionButtonClicked( bool checked )
+{
+  Q_UNUSED( checked );
+  const auto selectedItemList { mFormLayoutTree->selectedItems() };
+  const auto rootItem { mFormLayoutTree->invisibleRootItem() };
+  for ( int i = 0; i < rootItem->childCount(); ++i )
+  {
+    rootItem->child( i )->setSelected( ! selectedItemList.contains( rootItem->child( i ) ) );
+  }
+}
 
 void QgsAttributesFormProperties::addTabOrGroupButton()
 {
@@ -582,10 +622,11 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
     case DnDTreeItemData::Container:
     {
-      QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
+      QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent, itemData.backgroundColor() );
       container->setColumnCount( itemData.columnCount() );
       container->setIsGroupBox( forceGroup ? true : itemData.showAsGroupBox() );
       container->setVisibilityExpression( itemData.visibilityExpression() );
+      container->setBackgroundColor( itemData.backgroundColor( ) );
 
       for ( int t = 0; t < item->childCount(); t++ )
       {
@@ -603,6 +644,15 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       widgetDef = element;
       break;
     }
+
+    case DnDTreeItemData::HtmlWidget:
+    {
+      QgsAttributeEditorHtmlElement *element = new QgsAttributeEditorHtmlElement( item->text( 0 ), parent );
+      element->setHtmlCode( itemData.htmlElementEditorConfiguration().htmlCode );
+      widgetDef = element;
+      break;
+    }
+
   }
 
   widgetDef->setShowLabel( itemData.showLabel() );
@@ -619,6 +669,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mUiFileFrame->setVisible( false );
       mAddTabOrGroupButton->setVisible( false );
       mRemoveTabOrGroupButton->setVisible( false );
+      mInvertSelectionButton->setVisible( false );
       break;
 
     case 1:
@@ -626,6 +677,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mUiFileFrame->setVisible( false );
       mAddTabOrGroupButton->setVisible( true );
       mRemoveTabOrGroupButton->setVisible( true );
+      mInvertSelectionButton->setVisible( true );
       break;
 
     case 2:
@@ -633,6 +685,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mUiFileFrame->setVisible( true );
       mAddTabOrGroupButton->setVisible( false );
       mRemoveTabOrGroupButton->setVisible( false );
+      mInvertSelectionButton->setVisible( false );
       break;
   }
 }
@@ -693,28 +746,29 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
-    mLayer->setConstraintExpression( idx, cfg.mConstraint, cfg.mConstraintDescription );
     mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
-    if ( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull )
+    QgsFieldConstraints constraints = cfg.mFieldConstraints;
+    mLayer->setConstraintExpression( idx, constraints.constraintExpression(), constraints.constraintDescription() );
+    if ( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull, constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
     }
     else
     {
       mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull );
     }
-    if ( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique )
+    if ( constraints.constraints() & QgsFieldConstraints::ConstraintUnique )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique, constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
     }
     else
     {
       mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique );
     }
-    if ( cfg.mConstraints & QgsFieldConstraints::ConstraintExpression )
+    if ( constraints.constraints() & QgsFieldConstraints::ConstraintExpression )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression, constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
     }
     else
     {
@@ -777,12 +831,6 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
   mFieldConstraints = layer->fields().at( idx ).constraints();
-  mConstraints = mFieldConstraints.constraints();
-  mConstraint = mFieldConstraints.constraintExpression();
-  mConstraintStrength.insert( QgsFieldConstraints::ConstraintNotNull, mFieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
-  mConstraintStrength.insert( QgsFieldConstraints::ConstraintUnique, mFieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
-  mConstraintStrength.insert( QgsFieldConstraints::ConstraintExpression, mFieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
-  mConstraintDescription = mFieldConstraints.constraintDescription();
   const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
   mEditorWidgetConfig = setup.config();
@@ -859,6 +907,10 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
 
       case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
         //no icon for QmlWidget
+        break;
+
+      case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
+        //no icon for HtmlWidget
         break;
     }
   }
@@ -940,6 +992,11 @@ bool DnDTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData 
       {
         onItemDoubleClicked( newItem, 0 );
       }
+
+      if ( itemElement.type() == QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget )
+      {
+        onItemDoubleClicked( newItem, 0 );
+      }
     }
   }
 
@@ -1014,6 +1071,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     {
       QDialog dlg;
+      dlg.setObjectName( QLatin1Literal( "attributeFormPropertiesContainerDialog" ) );
       dlg.setWindowTitle( tr( "Configure Container" ) );
       QFormLayout *layout = new QFormLayout() ;
       dlg.setLayout( layout );
@@ -1046,6 +1104,17 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         layout->addRow( showAsGroupBox );
       }
 
+      QgsCollapsibleGroupBox *styleGroupBox = new QgsCollapsibleGroupBox( tr( "Style" ), layout->widget() );
+      styleGroupBox->setObjectName( QLatin1Literal( "attributeFormPropertiesContainerStyle" ) );
+      QFormLayout *customizeGroupBoxLayout = new QFormLayout( styleGroupBox ) ;
+      QgsColorButton *backgroundColorButton = new QgsColorButton( styleGroupBox, tr( "Container Background Color" ) );
+      backgroundColorButton->setShowNull( true );
+      backgroundColorButton->setColor( itemData.backgroundColor() );
+      customizeGroupBoxLayout->addRow( new QLabel( tr( "Background color" ), styleGroupBox ),
+                                       backgroundColorButton );
+      styleGroupBox->setLayout( customizeGroupBoxLayout );
+      layout->addRow( styleGroupBox );
+
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
           | QDialogButtonBox::Cancel );
 
@@ -1060,6 +1129,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
         itemData.setName( title->text() );
         itemData.setShowLabel( showLabelCheckbox->isChecked() );
+        itemData.setBackgroundColor( backgroundColorButton->color() );
 
         QgsOptionalExpression visibilityExpression;
         visibilityExpression.setData( QgsExpression( visibilityExpressionWidget->expression() ) );
@@ -1267,6 +1337,85 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     }
     break;
 
+    case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
+    {
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure HTML Widget" ) );
+
+      QVBoxLayout *mainLayout = new QVBoxLayout();
+      QHBoxLayout *htmlLayout = new QHBoxLayout();
+      QVBoxLayout *layout = new QVBoxLayout();
+      mainLayout->addLayout( htmlLayout );
+      htmlLayout->addLayout( layout );
+      dlg.setLayout( mainLayout );
+      layout->addWidget( baseWidget );
+
+      QLineEdit *title = new QLineEdit( itemData.name() );
+
+      //htmlCode
+      QgsCodeEditorHTML *htmlCode = new QgsCodeEditorHTML( );
+      htmlCode->setSizePolicy( QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding );
+      htmlCode->setText( itemData.htmlElementEditorConfiguration().htmlCode );
+
+      QgsHtmlWidgetWrapper *htmlWrapper = new QgsHtmlWidgetWrapper( mLayer, nullptr, this );
+      QgsFeature previewFeature;
+      mLayer->getFeatures().nextFeature( previewFeature );
+
+      //update preview on text change
+      connect( htmlCode, &QgsCodeEditorHTML::textChanged, this, [ = ]
+      {
+        htmlWrapper->setHtmlCode( htmlCode->text( ) );
+        htmlWrapper->reinitWidget();
+        htmlWrapper->setFeature( previewFeature );
+      } );
+
+      QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
+      expressionWidget->setLayer( mLayer );
+      QToolButton *addExpressionButton = new QToolButton();
+      addExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+
+      connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      {
+        htmlCode->insertText( QStringLiteral( "<script>document.write(expression.evaluate(\"%1\"));</script>" ).arg( expressionWidget->expression().replace( '"', QLatin1String( "\\\"" ) ) ) );
+      } );
+
+      layout->addWidget( new QLabel( tr( "Title" ) ) );
+      layout->addWidget( title );
+      QGroupBox *expressionWidgetBox = new QGroupBox( tr( "HTML Code" ) );
+      layout->addWidget( expressionWidgetBox );
+      expressionWidgetBox->setLayout( new QHBoxLayout );
+      expressionWidgetBox->layout()->addWidget( expressionWidget );
+      expressionWidgetBox->layout()->addWidget( addExpressionButton );
+      layout->addWidget( htmlCode );
+      QScrollArea *htmlPreviewBox = new QScrollArea();
+      htmlPreviewBox->setLayout( new QGridLayout );
+      htmlPreviewBox->setMinimumWidth( 400 );
+      htmlPreviewBox->layout()->addWidget( htmlWrapper->widget() );
+      //emit to load preview for the first time
+      emit htmlCode->textChanged();
+      htmlLayout->addWidget( htmlPreviewBox );
+
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      mainLayout->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        QgsAttributesFormProperties::HtmlElementEditorConfiguration htmlEdCfg;
+        htmlEdCfg.htmlCode = htmlCode->text();
+        itemData.setName( title->text() );
+        itemData.setHtmlElementEditorConfiguration( htmlEdCfg );
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+        item->setText( 0, title->text() );
+      }
+    }
+    break;
+
     case QgsAttributesFormProperties::DnDTreeItemData::Field:
     {
       QDialog dlg;
@@ -1377,5 +1526,26 @@ QgsAttributesFormProperties::QmlElementEditorConfiguration QgsAttributesFormProp
 void QgsAttributesFormProperties::DnDTreeItemData::setQmlElementEditorConfiguration( QgsAttributesFormProperties::QmlElementEditorConfiguration qmlElementEditorConfiguration )
 {
   mQmlElementEditorConfiguration = qmlElementEditorConfiguration;
+}
+
+
+QgsAttributesFormProperties::HtmlElementEditorConfiguration QgsAttributesFormProperties::DnDTreeItemData::htmlElementEditorConfiguration() const
+{
+  return mHtmlElementEditorConfiguration;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setHtmlElementEditorConfiguration( QgsAttributesFormProperties::HtmlElementEditorConfiguration htmlElementEditorConfiguration )
+{
+  mHtmlElementEditorConfiguration = htmlElementEditorConfiguration;
+}
+
+QColor QgsAttributesFormProperties::DnDTreeItemData::backgroundColor() const
+{
+  return mBackgroundColor;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setBackgroundColor( const QColor &backgroundColor )
+{
+  mBackgroundColor = backgroundColor;
 }
 

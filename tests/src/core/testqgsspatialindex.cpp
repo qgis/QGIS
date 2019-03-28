@@ -23,6 +23,7 @@
 #include <qgsspatialindex.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
+#include "qgslinestring.h"
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
@@ -231,6 +232,117 @@ class TestQgsSpatialIndex : public QObject
 
       delete indexBulk;
       delete indexInsert;
+    }
+
+    void testRetrieveGeometries()
+    {
+      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      int fid = 0;
+      for ( int x = 0; x < 10; ++x )
+      {
+        QgsFeatureList flist;
+        for ( int y = 100; y < 110; ++y )
+        {
+          QgsFeature f( fid++ );
+          f.setGeometry( qgis::make_unique< QgsLineString >( QgsPoint( x, y ), QgsPoint( x + 0.5, y - 0.5 ) ) );
+          flist << f;
+        }
+        vl->dataProvider()->addFeatures( flist );
+      }
+
+      // iterator based population
+
+      // not storing geometries
+      QgsSpatialIndex i1( vl->getFeatures() );
+      QVERIFY( i1.geometry( 1 ).isNull() );
+      QVERIFY( i1.geometry( 50 ).isNull() );
+
+      // storing geometries
+      QgsSpatialIndex i2( vl->getFeatures(), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      QCOMPARE( i2.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
+      QCOMPARE( i2.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+
+      // manual population
+
+      QgsSpatialIndex i3;
+      QgsFeatureIterator fi = vl->getFeatures();
+      QgsFeature f;
+      while ( fi.nextFeature( f ) )
+      {
+        i3.addFeature( f );
+      }
+      QVERIFY( i3.geometry( 1 ).isNull() );
+      QVERIFY( i3.geometry( 50 ).isNull() );
+
+
+      // storing geometries
+      QgsSpatialIndex i4( QgsSpatialIndex::FlagStoreFeatureGeometries );
+      fi = vl->getFeatures();
+      while ( fi.nextFeature( f ) )
+      {
+        i4.addFeature( f );
+      }
+      QCOMPARE( i4.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
+      QCOMPARE( i4.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+
+
+      // not storing geometries
+      QgsSpatialIndex i5( *vl );
+      QVERIFY( i5.geometry( 1 ).isNull() );
+      QVERIFY( i5.geometry( 50 ).isNull() );
+
+      // storing geometries
+      QgsSpatialIndex i6( *vl, nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      QCOMPARE( i6.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
+      QCOMPARE( i6.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+
+      f = vl->getFeature( 1 );
+      QVERIFY( i6.deleteFeature( f ) );
+      QVERIFY( i6.geometry( 1 ).isNull() );
+      QCOMPARE( i6.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+      f = vl->getFeature( 50 );
+
+      QVERIFY( i6.deleteFeature( f ) );
+      QVERIFY( i6.geometry( 50 ).isNull() );
+    }
+
+    void testNearestNeighbour()
+    {
+      QgsSpatialIndex i;
+      QgsSpatialIndex i2( QgsSpatialIndex::FlagStoreFeatureGeometries );
+
+      QgsFeature f1( 1 );
+      f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 3 1, 3 3)" ) ) );
+      QgsFeature f2( 2 );
+      f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 0 3)" ) ) );
+      QgsFeature f3( 3 );
+      f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(0 4, 1 5, 3 3)" ) ) );
+      i.addFeature( f1 );
+      i2.addFeature( f1 );
+      i.addFeature( f2 );
+      i2.addFeature( f2 );
+      i.addFeature( f3 );
+      i2.addFeature( f3 );
+
+      // i does not store feature geometries, so nearest neighbour search uses bounding box only
+      QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 2.9 ), 1 ), QList< QgsFeatureId >() << 1 );
+      QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2 ), QList< QgsFeatureId >() << 1 << 3 );
+      // i2 does store feature geometries, so nearest neighbour is exact
+      QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 1 ), QList< QgsFeatureId >() << 2 );
+      QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2 ), QList< QgsFeatureId >() << 2 << 3 );
+
+      // with maximum distance
+      QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 2.9 ), 1, 0.5 ), QList< QgsFeatureId >() << 1 );
+      QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 1, 0.5 ), QList< QgsFeatureId >() );
+      QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 0.5 ), QList< QgsFeatureId >() << 1 << 3 );
+      QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 0.5 ), QList< QgsFeatureId >() );
+      QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 2.9 ), 1, 1.1 ), QList< QgsFeatureId >() << 1 );
+      QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 1, 1.1 ), QList< QgsFeatureId >() << 2 );
+      QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 1.1 ), QList< QgsFeatureId >() << 1 << 3 );
+      QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 1.1 ), QList< QgsFeatureId >() << 2 );
+      QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 2 ), QList< QgsFeatureId >() << 1 << 3 );
+      QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 2 ), QList< QgsFeatureId >() << 2 << 3 );
+
     }
 
 };

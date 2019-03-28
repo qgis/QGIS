@@ -171,7 +171,7 @@ namespace QgsWms
         nameNode.appendChild( myDocument.createTextNode( name ) );
         namedLayerNode.appendChild( nameNode );
 
-        if ( layer->type() == QgsMapLayer::VectorLayer )
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
           if ( vlayer->isSpatial() )

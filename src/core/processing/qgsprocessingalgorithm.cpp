@@ -28,6 +28,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsmeshlayer.h"
+#include "qgsexpressioncontextutils.h"
+
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -38,6 +40,8 @@ QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 QgsProcessingAlgorithm *QgsProcessingAlgorithm::create( const QVariantMap &configuration ) const
 {
   std::unique_ptr< QgsProcessingAlgorithm > creation( createInstance() );
+  if ( ! creation )
+    throw QgsProcessingException( QObject::tr( "Error creating algorithm from createInstance()" ) );
   creation->setProvider( provider() );
   creation->initAlgorithm( configuration );
   return creation.release();
@@ -685,6 +689,16 @@ QList<double> QgsProcessingAlgorithm::parameterAsRange( const QVariantMap &param
 QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
+}
+
+QgsPrintLayout *QgsProcessingAlgorithm::parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsLayout( parameterDefinition( name ), parameters, context );
+}
+
+QgsLayoutItem *QgsProcessingAlgorithm::parameterAsLayoutItem( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsPrintLayout *layout )
+{
+  return QgsProcessingParameters::parameterAsLayoutItem( parameterDefinition( name ), parameters, context, layout );
 }
 
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )

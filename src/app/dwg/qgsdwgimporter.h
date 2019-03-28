@@ -17,22 +17,31 @@
 
 #include "drw_interface.h"
 
+#include <QCoreApplication>
 #include <QString>
+#include <QTime>
+
 #include <ogr_api.h>
 
 #include "qgsabstractgeometry.h"
 #include "qgsogrutils.h"
 
 class QgsCompoundCurve;
+class QgsLineString;
+class QgsCircularString;
 class QgsQgsCoordinateReferenceSystem;
+class QLabel;
+class QTextCodec;
 
 class QgsDwgImporter : public DRW_Interface
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsDwgImporter )
+
   public:
     QgsDwgImporter( const QString &database, const QgsCoordinateReferenceSystem &crs );
     ~QgsDwgImporter() override;
 
-    bool import( const QString &drawing, QString &error, bool expandInserts, bool useCurves );
+    bool import( const QString &drawing, QString &error, bool expandInserts, bool useCurves, QLabel *label );
 
     //! Called when header is parsed.
     void addHeader( const DRW_Header *data ) override;
@@ -172,18 +181,27 @@ class QgsDwgImporter : public DRW_Interface
     bool exec( const QString &sql, bool logError = true );
     OGRLayerH query( const QString &sql );
 
+    void progress( const QString &msg );
+    QString decode( const std::string &s ) const;
+    void cleanText( QString &s );
+
     void addEntity( OGRFeatureDefnH dfn, OGRFeatureH f, const DRW_Entity &data );
-    QString colorString( int color, int color24, int transparency, const std::string &layer ) const;
-    double lineWidth( int lWeight, const std::string &layer ) const;
-    QString linetypeString( const std::string &linetype, const std::string &layer ) const;
+    QString colorString( int color, int color24, int transparency, const QString &layer ) const;
+    double lineWidth( int lWeight, const QString &layer ) const;
+    QString linetypeString( const QString &linetype, const QString &layer ) const;
     void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const std::string &value ) const;
+    void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const QString &value ) const;
+    void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const char *value ) const;
     void setDouble( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, double value ) const;
     void setInteger( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, int value ) const;
     void setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const DRW_Coord &value ) const;
 
     bool curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoundCurve &cc );
+    bool circularStringFromArc( const DRW_Arc &data, QgsCircularString &c );
+    bool lineFromSpline( const DRW_Spline &data, QgsLineString &l );
 
     bool expandInserts( QString &error );
+    bool expandInserts( QString &error, int block, QTransform base );
 
     bool createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g ) const;
 
@@ -200,4 +218,10 @@ class QgsDwgImporter : public DRW_Interface
     QHash<QString, double> mLayerLinewidth;
     QHash<QString, QString> mLayerLinetype;
     QHash<QString, QString> mLinetype;
+    QHash<QString, int> mBlocks;
+
+    QLabel *mLabel = nullptr;
+    int mEntities = 0;
+    QTextCodec *mCodec = nullptr;
+    QTime mTime;
 };

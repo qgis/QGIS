@@ -28,7 +28,7 @@ class QgsFileDownloader;
  *
  * Internally, it uses QgsFileDownloader to handle the download,
  * while showing progress via a progress dialog and supporting
- * cancelation.
+ * cancellation.
  *
  * \note Until QGIS 3.0 this functionality was available via QgsFileDownloader.
  *

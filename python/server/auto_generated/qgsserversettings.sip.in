@@ -39,7 +39,7 @@ Load settings according to current environment variables.
 %Docstring
 Load setting for a specific environment variable name.
 
-:return: true if loading is successful, false in case of an invalid name.
+:return: ``True`` if loading is successful, ``False`` in case of an invalid name.
 %End
 
     void logSummary() const;
@@ -58,7 +58,7 @@ Returns the ini file loaded by QSetting.
 %Docstring
 Returns parallel rendering setting.
 
-:return: true if parallel rendering is activated, false otherwise.
+:return: ``True`` if parallel rendering is activated, ``False`` otherwise.
 %End
 
     int maxThreads() const;
@@ -100,7 +100,7 @@ Returns the log file.
 %Docstring
 Returns whether logging to stderr is activated.
 
-:return: true if logging to stderr is activated, false otherwise.
+:return: ``True`` if logging to stderr is activated, ``False`` otherwise.
 
 .. versionadded:: 3.4
 %End

@@ -26,8 +26,9 @@
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
 #include "qgssymbol.h"
+#include "qgsexpressioncontextutils.h"
 
-// helper function for checking for job cancelation within PAL
+// helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )
 {
   return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
@@ -84,12 +85,12 @@ QgsLabelingEngine::~QgsLabelingEngine()
 QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
 {
   QSet< QgsMapLayer * > layers;
-  Q_FOREACH ( QgsAbstractLabelProvider *provider, mProviders )
+  for ( QgsAbstractLabelProvider *provider : mProviders )
   {
     if ( provider->layer() )
       layers << provider->layer();
   }
-  Q_FOREACH ( QgsAbstractLabelProvider *provider, mSubProviders )
+  for ( QgsAbstractLabelProvider *provider : mSubProviders )
   {
     if ( provider->layer() )
       layers << provider->layer();
@@ -153,16 +154,13 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
     case QgsPalLayerSettings::ShowAll:
       upsdnlabels = pal::Layer::ShowAll;
       break;
-    default:
-      Q_ASSERT( "unsupported upside-down label setting" && false );
-      return;
   }
   l->setUpsidedownLabels( upsdnlabels );
 
 
-  QList<QgsLabelFeature *> features = provider->labelFeatures( context );
+  const QList<QgsLabelFeature *> features = provider->labelFeatures( context );
 
-  Q_FOREACH ( QgsLabelFeature *feature, features )
+  for ( QgsLabelFeature *feature : features )
   {
     try
     {
@@ -177,7 +175,8 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
   }
 
   // any sub-providers?
-  Q_FOREACH ( QgsAbstractLabelProvider *subProvider, provider->subProviders() )
+  const auto subproviders = provider->subProviders();
+  for ( QgsAbstractLabelProvider *subProvider : subproviders )
   {
     mSubProviders << subProvider;
     processProvider( subProvider, context, p );
@@ -193,7 +192,6 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   pal::SearchMethod s;
   switch ( settings.searchMethod() )
   {
-    default:
     case QgsLabelingEngineSettings::Chain:
       s = pal::CHAIN;
       break;
@@ -223,7 +221,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
 
 
   // for each provider: get labels and register them in PAL
-  Q_FOREACH ( QgsAbstractLabelProvider *provider, mProviders )
+  for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
   {
     bool appendedLayerScope = false;
     if ( QgsMapLayer *ml = provider->layer() )
@@ -282,8 +280,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
 
   QgsRectangle extent = extentGeom.boundingBox();
 
-
-  p.registerCancelationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
+  p.registerCancellationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
 
   QTime t;
   t.start();

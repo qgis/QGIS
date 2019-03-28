@@ -22,6 +22,8 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgsexpressioncontext.h"
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QLabel>
 #include <QHBoxLayout>
 
@@ -37,6 +39,16 @@ void QgsProcessingParameterWidgetContext::setMapCanvas( QgsMapCanvas *canvas )
 QgsMapCanvas *QgsProcessingParameterWidgetContext::mapCanvas() const
 {
   return mMapCanvas;
+}
+
+void QgsProcessingParameterWidgetContext::setProject( QgsProject *project )
+{
+  mProject = project;
+}
+
+QgsProject *QgsProcessingParameterWidgetContext::project() const
+{
+  return mProject;
 }
 
 QString QgsProcessingParameterWidgetContext::modelChildAlgorithmId() const
@@ -187,6 +199,13 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
   return nullptr;
 }
 
+const QgsVectorLayer *QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mPropertyButton )
+    return mPropertyButton->vectorLayer();
+  return nullptr;
+}
+
 void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
 {
   switch ( mType )
@@ -200,7 +219,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
         {
           if ( wrapper->parameterDefinition()->name() == parameterDefinition()->dynamicLayerParameterName() )
           {
-            setDynamicParentLayerParameter( wrapper->parameterValue() );
+            setDynamicParentLayerParameter( wrapper );
             connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged );
             break;
           }
@@ -216,54 +235,23 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
 
 QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressionContext() const
 {
-  // Get a processing context to start with
-  QgsProcessingContext *context = nullptr;
-  std::unique_ptr< QgsProcessingContext > tmpContext;
-  if ( mProcessingContextGenerator )
-    context = mProcessingContextGenerator->processingContext();
+  return QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
+}
 
-  if ( !context )
-  {
-    tmpContext = qgis::make_unique< QgsProcessingContext >();
-    context = tmpContext.get();
-  }
+void QgsAbstractProcessingParameterWidgetWrapper::setDialog( QDialog * )
+{
 
-  QgsExpressionContext c = context->expressionContext();
-
-  if ( mPropertyButton->vectorLayer() )
-    c << QgsExpressionContextUtils::layerScope( mPropertyButton->vectorLayer() );
-
-  if ( mWidgetContext.model() )
-  {
-    const QgsProcessingAlgorithm *alg = nullptr;
-    if ( mWidgetContext.model()->childAlgorithms().contains( mWidgetContext.modelChildAlgorithmId() ) )
-      alg = mWidgetContext.model()->childAlgorithm( mWidgetContext.modelChildAlgorithmId() ).algorithm();
-
-    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), *context );
-    c << algorithmScope;
-    QgsExpressionContextScope *childScope = mWidgetContext.model()->createExpressionContextScopeForChildAlgorithm( mWidgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
-    c << childScope;
-
-    QStringList highlightedVariables = childScope->variableNames();
-    QStringList highlightedFunctions = childScope->functionNames();
-    highlightedVariables += algorithmScope->variableNames();
-    highlightedFunctions += algorithmScope->functionNames();
-    c.setHighlightedVariables( highlightedVariables );
-    c.setHighlightedFunctions( highlightedFunctions );
-  }
-
-  return c;
 }
 
 void QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
   if ( wrapper )
   {
-    setDynamicParentLayerParameter( wrapper->parameterValue() );
+    setDynamicParentLayerParameter( wrapper );
   }
 }
 
-void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter( const QVariant &value )
+void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
 {
   if ( mPropertyButton )
   {
@@ -279,7 +267,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
       context = tmpContext.get();
     }
 
-    QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parameterDefinition(), value, *context );
+    QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), parentWrapper->parameterValue(), *context );
     if ( !layer )
     {
       mPropertyButton->setVectorLayer( nullptr );
@@ -289,7 +277,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
     // need to grab ownership of layer if required - otherwise layer may be deleted when context
     // goes out of scope
     std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-    if ( ownedLayer && ownedLayer->type() == QgsMapLayer::VectorLayer )
+    if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
     {
       mDynamicLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
       layer = mDynamicLayer.get();
@@ -316,3 +304,57 @@ QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatStr
   return QString();
 }
 
+//
+// QgsProcessingGuiUtils
+//
+
+///@cond PRIVATE
+QgsExpressionContext QgsProcessingGuiUtils::createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingAlgorithm *algorithm, const QgsVectorLayer *linkedLayer )
+{
+  // Get a processing context to start with
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( processingContextGenerator )
+    context = processingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QgsExpressionContext c = context->expressionContext();
+
+  if ( widgetContext.model() )
+  {
+    c << QgsExpressionContextUtils::processingModelAlgorithmScope( widgetContext.model(), QVariantMap(), *context );
+
+    const QgsProcessingAlgorithm *alg = nullptr;
+    if ( widgetContext.model()->childAlgorithms().contains( widgetContext.modelChildAlgorithmId() ) )
+      alg = widgetContext.model()->childAlgorithm( widgetContext.modelChildAlgorithmId() ).algorithm();
+
+    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg ? alg : algorithm, QVariantMap(), *context );
+    c << algorithmScope;
+    QgsExpressionContextScope *childScope = widgetContext.model()->createExpressionContextScopeForChildAlgorithm( widgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
+    c << childScope;
+
+    QStringList highlightedVariables = childScope->variableNames();
+    QStringList highlightedFunctions = childScope->functionNames();
+    highlightedVariables += algorithmScope->variableNames();
+    highlightedVariables += widgetContext.model()->variables().keys();
+    highlightedFunctions += algorithmScope->functionNames();
+    c.setHighlightedVariables( highlightedVariables );
+    c.setHighlightedFunctions( highlightedFunctions );
+  }
+  else
+  {
+    if ( algorithm )
+      c << QgsExpressionContextUtils::processingAlgorithmScope( algorithm, QVariantMap(), *context );
+  }
+
+  if ( linkedLayer )
+    c << QgsExpressionContextUtils::layerScope( linkedLayer );
+
+  return c;
+}
+///@endcond

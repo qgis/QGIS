@@ -135,7 +135,7 @@
         <string>Load fields from selected layer</string>
        </property>
        <property name="text">
-        <string>Load fields</string>
+        <string>Load Fields</string>
        </property>
       </widget>
      </item>

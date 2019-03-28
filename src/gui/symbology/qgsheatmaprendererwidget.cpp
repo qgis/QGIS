@@ -15,6 +15,7 @@
 #include "qgsheatmaprendererwidget.h"
 #include "qgsheatmaprenderer.h"
 #include "qgsrendererregistry.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgssymbol.h"
 

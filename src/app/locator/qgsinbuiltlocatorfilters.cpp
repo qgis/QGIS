@@ -29,6 +29,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsfeatureaction.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )

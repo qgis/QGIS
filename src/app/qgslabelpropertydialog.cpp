@@ -26,6 +26,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsproperty.h"
 #include "qgssettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QColorDialog>
 #include <QFontDatabase>

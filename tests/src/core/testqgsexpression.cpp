@@ -34,6 +34,7 @@
 #include "qgsproject.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsexpressioncontextutils.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -56,6 +57,7 @@ class TestQgsExpression: public QObject
   private:
 
     QgsVectorLayer *mPointsLayer = nullptr;
+    QgsVectorLayer *mPointsLayerMetadata = nullptr;
     QgsVectorLayer *mMemoryLayer = nullptr;
     QgsVectorLayer *mAggregatesLayer = nullptr;
     QgsVectorLayer *mChildLayer = nullptr;
@@ -90,6 +92,25 @@ class TestQgsExpression: public QObject
       mPointsLayer->setAttributionUrl( QStringLiteral( "attribution url" ) );
       mPointsLayer->setMinimumScale( 500 );
       mPointsLayer->setMaximumScale( 1000 );
+
+      mPointsLayerMetadata = new QgsVectorLayer( pointFileInfo.filePath(),
+          pointFileInfo.completeBaseName() + "_metadata", QStringLiteral( "ogr" ) );
+      QgsProject::instance()->addMapLayer( mPointsLayerMetadata );
+      QgsLayerMetadata metadata;
+      metadata.setTitle( QStringLiteral( "metadata title" ) );
+      metadata.setAbstract( QStringLiteral( "metadata abstract" ) );
+      QMap<QString, QStringList> keywords;
+      keywords.insert( QStringLiteral( "key1" ), QStringList() << QStringLiteral( "val1" ) << QStringLiteral( "val2" ) );
+      keywords.insert( QStringLiteral( "key2" ), QStringList() << QStringLiteral( "val3" ) );
+      metadata.setKeywords( keywords );
+      metadata.setRights( QStringList() << QStringLiteral( "right1" ) << QStringLiteral( "right2" ) );
+      mPointsLayerMetadata->setMetadata( metadata );
+      mPointsLayerMetadata->setTitle( QStringLiteral( "layer title" ) );
+      mPointsLayerMetadata->setAbstract( QStringLiteral( "layer abstract" ) );
+      mPointsLayerMetadata->setKeywordList( QStringLiteral( "layer,keywords" ) );
+      mPointsLayerMetadata->setDataUrl( QStringLiteral( "data url" ) );
+      mPointsLayerMetadata->setAttribution( QStringLiteral( "layer attribution" ) );
+      mPointsLayerMetadata->setAttributionUrl( QStringLiteral( "attribution url" ) );
 
       QString rasterFileName = testDataDir + "tenbytenraster.asc";
       QFileInfo rasterFileInfo( rasterFileName );
@@ -795,6 +816,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "point_n bad index" ) << "geom_to_wkt(point_n(geom_from_wkt('POINT(0 0)'),0))" << true << QVariant();
       QTest::newRow( "point_n bad index" ) << "geom_to_wkt(point_n(geom_from_wkt('POINT(0 0)'),2))" << true << QVariant();
       QTest::newRow( "point_n multipoint" ) << "geom_to_wkt(point_n(geom_from_wkt('MULTIPOINT((0 0), (1 1), (2 2))'),2))" << false << QVariant( "Point (1 1)" );
+      QTest::newRow( "point_n multipoint negative" ) << "geom_to_wkt(point_n(geom_from_wkt('MULTIPOINT((0 0), (1 1), (2 2))'),-1))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "point_n line" ) << "geom_to_wkt(point_n(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'),3))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "point_n polygon" ) << "geom_to_wkt(point_n(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'),3))" << false << QVariant( "Point (4 2)" );
       QTest::newRow( "interior_ring_n not geom" ) << "interior_ring_n('g', 1)" << true << QVariant();
@@ -1019,10 +1041,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "angle_at_vertex null" ) << "angle_at_vertex(NULL, 0)" << false << QVariant();
       QTest::newRow( "angle_at_vertex point" ) << "angle_at_vertex(geom_from_wkt('POINT(1 2)'),0)" << false << QVariant( 0.0 );
       QTest::newRow( "angle_at_vertex line" ) << "angle_at_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)" << false << QVariant( 45.0 );
+      QTest::newRow( "angle_at_vertex line negative" ) << "angle_at_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=-1)" << false << QVariant( 0.0 );
       QTest::newRow( "distance_to_vertex not geom" ) << "distance_to_vertex('g', 5)" << true << QVariant();
       QTest::newRow( "distance_to_vertex null" ) << "distance_to_vertex(NULL, 0)" << false << QVariant();
       QTest::newRow( "distance_to_vertex point" ) << "distance_to_vertex(geom_from_wkt('POINT(1 2)'),0)" << false << QVariant( 0.0 );
       QTest::newRow( "distance_to_vertex line" ) << "distance_to_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)" << false << QVariant( 10.0 );
+      QTest::newRow( "distance_to_vertex line negative" ) << "distance_to_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=-1)" << false << QVariant( 20.0 );
       QTest::newRow( "line_substring not geom" ) << "line_substring('g', 5, 6)" << true << QVariant();
       QTest::newRow( "line_substring null" ) << "line_substring(NULL, 5, 6)" << false << QVariant();
       QTest::newRow( "line_substring point" ) << "line_substring(geom_from_wkt('POINT(1 2)'),5,6)" << true << QVariant();
@@ -1156,6 +1180,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp match false" ) << "regexp_match('abc DEF','\\\\s[a-z]+')" << false << QVariant( 0 );
       QTest::newRow( "if true" ) << "if(1=1, 1, 0)" << false << QVariant( 1 );
       QTest::newRow( "if false" ) << "if(1=2, 1, 0)" << false << QVariant( 0 );
+      QTest::newRow( "try valid" ) << "try(to_int('1'),0)" << false << QVariant( 1 );
+      QTest::newRow( "try invalid with alternative" ) << "try(to_int('a'),0)" << false << QVariant( 0 );
+      QTest::newRow( "try invalid without alternative" ) << "try(to_int('a'))" << false << QVariant();
 
       // Datetime functions
       QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
@@ -1286,6 +1313,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "layer_property type" ) << QStringLiteral( "layer_property('%1','type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Vector" );
       QTest::newRow( "layer_property storage_type" ) << QStringLiteral( "layer_property('%1','storage_type')" ).arg( mPointsLayer->name() ) << false << QVariant( "ESRI Shapefile" );
       QTest::newRow( "layer_property geometry_type" ) << QStringLiteral( "layer_property('%1','geometry_type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Point" );
+
+      QTest::newRow( "layer_property title with metadata" ) << QStringLiteral( "layer_property('%1','title')" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "metadata title" );
+      QTest::newRow( "layer_property abstract with metadata" ) << QStringLiteral( "layer_property('%1','abstract')" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "metadata abstract" );
+      QTest::newRow( "layer_property keywords with metadata" ) << QStringLiteral( "array_to_string(layer_property('%1','keywords'),',')" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "val1,val2,val3" );
+      QTest::newRow( "layer_property attribution with metadata" ) << QStringLiteral( "array_to_string(layer_property('%1','attribution'))" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "right1,right2" );
 
       QTest::newRow( "decode_uri shp path" ) << QStringLiteral( "array_last(string_to_array(replace(decode_uri('%1', 'path'), '\\\\', '/'), '/'))" ).arg( mPointsLayer->name() ) << false << QVariant( "points.shp" );
 
@@ -1519,6 +1551,20 @@ class TestQgsExpression: public QObject
       QgsExpression exp2( QStringLiteral( "attribute($currentfeature,'second'||'_column')" ) );
       v = exp2.evaluate( &context );
       QCOMPARE( v.toInt(), 5 );
+
+      QgsExpression exp3( QStringLiteral( "attribute()" ) );
+      v = exp3.evaluate( &context );
+      QVERIFY( v.isNull() );
+      QVERIFY( exp3.hasEvalError() );
+
+      QgsExpression exp4( QStringLiteral( "attribute('a','b','c')" ) );
+      v = exp4.evaluate( &context );
+      QVERIFY( v.isNull() );
+      QVERIFY( exp4.hasEvalError() );
+
+      QgsExpression exp5( QStringLiteral( "attribute('col1')" ) );
+      v = exp5.evaluate( &context );
+      QCOMPARE( v.toString(), QString( "test value" ) );
     }
 
     void eval_get_feature_data()
@@ -3373,6 +3419,28 @@ class TestQgsExpression: public QObject
       zustaendigkeitskataster->commitChanges();
 
       QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 4l );
+    }
+
+    void testReplaceExpressionText_data()
+    {
+      QTest::addColumn<QString>( "input" );
+      QTest::addColumn<QString>( "expected" );
+      QTest::newRow( "no exp" ) << "some text" << "some text";
+      QTest::newRow( "simple exp" ) << "some text [% 1 + 2 %]" << "some text 3";
+      QTest::newRow( "multiple exp" ) << "some [% 3+ 7 %] text [% 1 + 2 %]" << "some 10 text 3";
+      QTest::newRow( "complex" ) << "some [%map('a', 1, 'b', 2)['a']%] text [%map('a', 1, 'b', 2)['b']%]" << "some 1 text 2";
+      QTest::newRow( "complex2" ) << "some [% 'my text]' %] text" << "some my text] text";
+      QTest::newRow( "newline 1" ) << "some \n [% 1 + 2 %] \n text" << "some \n 3 \n text";
+      QTest::newRow( "newline 2" ) << "some [% \n 1 \n + \n 2 %] \n text" << "some 3 \n text";
+    }
+
+    void testReplaceExpressionText()
+    {
+      QFETCH( QString, input );
+      QFETCH( QString, expected );
+
+      QgsExpressionContext context;
+      QCOMPARE( QgsExpression::replaceExpressionText( input, &context ), expected );
     }
 
 };

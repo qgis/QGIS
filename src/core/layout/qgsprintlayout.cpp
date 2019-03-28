@@ -17,6 +17,7 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 #include "qgsreadwritecontext.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsPrintLayout::QgsPrintLayout( QgsProject *project )
   : QgsLayout( project )

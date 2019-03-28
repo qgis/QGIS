@@ -51,10 +51,12 @@ class ModelerGraphicItem(QGraphicsItem):
 
     def __init__(self, element, model, controls, scene=None):
         super(ModelerGraphicItem, self).__init__(None)
+        self.setAcceptHoverEvents(True)
         self.controls = controls
         self.model = model
         self.scene = scene
         self.element = element
+        self.hover_over_item = False
         if isinstance(element, QgsProcessingModelParameter):
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'input.svg'))
             self.picture = QPicture()
@@ -175,6 +177,31 @@ class ModelerGraphicItem(QGraphicsItem):
     def mouseDoubleClickEvent(self, event):
         self.editElement()
 
+    def hoverEnterEvent(self, event):
+        self.updateToolTip(event)
+
+    def hoverMoveEvent(self, event):
+        self.updateToolTip(event)
+
+    def hoverLeaveEvent(self, event):
+        self.setToolTip('')
+        if self.hover_over_item:
+            self.hover_over_item = False
+            self.update()
+            self.repaintArrows()
+
+    def updateToolTip(self, event):
+        prev_status = self.hover_over_item
+        if self.itemRect().contains(event.pos()):
+            self.setToolTip(self.text)
+            self.hover_over_item = True
+        else:
+            self.setToolTip('')
+            self.hover_over_item = False
+        if self.hover_over_item != prev_status:
+            self.update()
+            self.repaintArrows()
+
     def contextMenuEvent(self, event):
         if isinstance(self.element, QgsProcessingModelOutput):
             return
@@ -291,11 +318,14 @@ class ModelerGraphicItem(QGraphicsItem):
             w = fm.width(text)
         return text
 
-    def paint(self, painter, option, widget=None):
-        rect = QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2.0,
+    def itemRect(self):
+        return QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2.0,
                       -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2.0,
                       ModelerGraphicItem.BOX_WIDTH + 2,
                       ModelerGraphicItem.BOX_HEIGHT + 2)
+
+    def paint(self, painter, option, widget=None):
+        rect = self.itemRect()
 
         if isinstance(self.element, QgsProcessingModelParameter):
             color = QColor(238, 242, 131)
@@ -312,6 +342,8 @@ class ModelerGraphicItem(QGraphicsItem):
         if self.isSelected():
             stroke = selected
             color = color.darker(110)
+        if self.hover_over_item:
+            color = color.darker(105)
         painter.setPen(QPen(stroke, 0))  # 0 width "cosmetic" pen
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
@@ -397,6 +429,10 @@ class ModelerGraphicItem(QGraphicsItem):
         else:
             return QPointF(0, 0)
 
+    def repaintArrows(self):
+        for arrow in self.arrows:
+            arrow.update()
+
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionHasChanged:
             for arrow in self.arrows:
@@ -410,8 +446,10 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.model.parameterComponent(self.element.parameterName()).setPosition(self.pos())
             elif isinstance(self.element, QgsProcessingModelOutput):
                 self.model.childAlgorithm(self.element.childId()).modelOutput(self.element.name()).setPosition(self.pos())
+        elif change == QGraphicsItem.ItemSelectedChange:
+            self.repaintArrows()
 
-        return value
+        return super().itemChange(change, value)
 
     def polygon(self):
         font = QFont('Verdana', 8)

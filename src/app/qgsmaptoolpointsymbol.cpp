@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgssnappingutils.h"
 #include "qgsmapmouseevent.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )

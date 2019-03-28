@@ -22,7 +22,9 @@
 #include <QStackedWidget>
 #include <QToolButton>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QPlainTextEdit>
+#include <QStandardItemModel>
 
 #include "qgstest.h"
 #include "qgsgui.h"
@@ -33,6 +35,7 @@
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingmodelerparameterwidget.h"
+#include "qgsprocessingparameters.h"
 #include "qgsnativealgorithms.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsxmlutils.h"
@@ -43,7 +46,18 @@
 #include "qgsmapcanvas.h"
 #include "qgsauthconfigselect.h"
 #include "qgsauthmanager.h"
+#include "qgsprocessingmatrixparameterdialog.h"
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsfilewidget.h"
+#include "qgsexpressionlineedit.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutcombobox.h"
+#include "qgslayoutitemcombobox.h"
+#include "qgslayoutitemlabel.h"
+#include "qgsscalewidget.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -148,12 +162,25 @@ class TestProcessingGui : public QObject
     void testModelerWrapper();
     void testBooleanWrapper();
     void testStringWrapper();
+    void testFileWrapper();
     void testAuthCfgWrapper();
     void testCrsWrapper();
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
     void testDistanceWrapper();
+    void testScaleWrapper();
     void testRangeWrapper();
+    void testMatrixDialog();
+    void testMatrixWrapper();
+    void testExpressionWrapper();
+    void testMultipleSelectionDialog();
+    void testEnumSelectionPanel();
+    void testEnumCheckboxPanel();
+    void testEnumWrapper();
+    void testLayoutWrapper();
+    void testLayoutItemWrapper();
+    void testPointPanel();
+    void testPointWrapper();
 
   private:
 
@@ -245,9 +272,9 @@ void TestProcessingGui::testSetGetConfig()
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
     std::unique_ptr<QgsProcessingAlgorithmConfigurationWidget> configWidget( QgsGui::instance()->processingGuiRegistry()->algorithmConfigurationWidget( algorithm ) );
-
     if ( configWidget )
     {
+      QCOMPARE( configWidget->algorithm(), algorithm );
       const QVariantMap defaultConfig = configWidget->configuration();
       configWidget->setConfiguration( defaultConfig );
       const QVariantMap defaultControlConfig = configWidget->configuration();
@@ -374,6 +401,9 @@ void TestProcessingGui::testWrapperGeneral()
   QgsProcessingParameterWidgetContext widgetContext;
   widgetContext.setMapCanvas( mc.get() );
   QCOMPARE( widgetContext.mapCanvas(), mc.get() );
+  QgsProject p;
+  widgetContext.setProject( &p );
+  QCOMPARE( widgetContext.project(), &p );
   std::unique_ptr< QgsProcessingModelAlgorithm > model = qgis::make_unique< QgsProcessingModelAlgorithm >();
   widgetContext.setModel( model.get() );
   QCOMPARE( widgetContext.model(), model.get() );
@@ -400,6 +430,20 @@ class TestProcessingContextGenerator : public QgsProcessingContextGenerator
     }
 
     QgsProcessingContext &mContext;
+};
+
+
+class TestLayerWrapper : public QgsAbstractProcessingParameterWidgetWrapper
+{
+  public:
+    TestLayerWrapper( const QgsProcessingParameterDefinition *parameter = nullptr )
+      : QgsAbstractProcessingParameterWidgetWrapper( parameter )
+    {}
+    QWidget *createWidget() override { return nullptr; }
+    void setWidgetValue( const QVariant &val, QgsProcessingContext & ) override { v = val;}
+    QVariant widgetValue() const override { return v; }
+
+    QVariant v;
 };
 
 void TestProcessingGui::testWrapperDynamic()
@@ -435,15 +479,20 @@ void TestProcessingGui::testWrapperDynamic()
   QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   p.addMapLayer( vl );
 
+  TestLayerWrapper layerWrapper( layerDef );
+
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
-  allPartsWrapper.setDynamicParentLayerParameter( QVariant::fromValue( vl ) );
+  layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer(), vl );
   // should not be owned by wrapper
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
-  allPartsWrapper.setDynamicParentLayerParameter( QVariant() );
+  layerWrapper.setWidgetValue( QVariant(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
 
-  allPartsWrapper.setDynamicParentLayerParameter( vl->id() );
+  layerWrapper.setWidgetValue( vl->id(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
 
@@ -452,13 +501,15 @@ void TestProcessingGui::testWrapperDynamic()
   TestProcessingContextGenerator generator( context );
   allPartsWrapper.registerProcessingContextGenerator( &generator );
 
-  allPartsWrapper.setDynamicParentLayerParameter( vl->id() );
+  layerWrapper.setWidgetValue( vl->id(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer(), vl );
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
 
   // non-project layer
   QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
-  allPartsWrapper.setDynamicParentLayerParameter( pointFileName );
+  layerWrapper.setWidgetValue( pointFileName, context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer()->publicSource(), pointFileName );
   // must be owned by wrapper, or layer may be deleted while still required by wrapper
   QCOMPARE( allPartsWrapper.mDynamicLayer->publicSource(), pointFileName );
@@ -820,6 +871,74 @@ void TestProcessingGui::testStringWrapper()
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
+}
+
+void TestProcessingGui::testFileWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterFile param( QStringLiteral( "file" ), QStringLiteral( "file" ) );
+
+    QgsProcessingFileWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFileWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
+    QVERIFY( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filter().isEmpty() );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->storageMode(),  QgsFileWidget::GetFile );
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath().isEmpty() );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "file" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->setFilePath( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ) );
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // with filter
+    QgsProcessingParameterFile param2( QStringLiteral( "file" ), QStringLiteral( "file" ), QgsProcessingParameterFile::File, QStringLiteral( "qml" ) );
+
+    QgsProcessingFileWidgetWrapper wrapper2( &param2, type );
+    w = wrapper2.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper2.wrappedWidget() )->filter(), QStringLiteral( "QML files (*.qml)" ) );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper2.wrappedWidget() )->storageMode(),  QgsFileWidget::GetFile );
+
+    // folder mode
+    QgsProcessingParameterFile param3( QStringLiteral( "folder" ), QStringLiteral( "folder" ), QgsProcessingParameterFile::Folder );
+
+    QgsProcessingFileWidgetWrapper wrapper3( &param3, type );
+    w = wrapper3.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper3.wrappedWidget() )->storageMode(),  QgsFileWidget::GetDirectory );
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::testAuthCfgWrapper()
@@ -1548,6 +1667,95 @@ void TestProcessingGui::testDistanceWrapper()
   delete l;
 }
 
+void TestProcessingGui::testScaleWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterScale param( QStringLiteral( "num" ), QStringLiteral( "num" ) );
+    QgsProcessingScaleWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    QSignalSpy spy( &wrapper, &QgsProcessingNumericWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 5, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 5.0 );
+    QCOMPARE( static_cast< QgsScaleWidget * >( wrapper.wrappedWidget() )->scale(), 5.0 );
+    wrapper.setWidgetValue( QStringLiteral( "28356" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 28356.0 );
+    QCOMPARE( static_cast< QgsScaleWidget * >( wrapper.wrappedWidget() )->scale(), 28356.0 );
+    wrapper.setWidgetValue( QVariant(), context ); // not optional, so shouldn't work
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 0.0 );
+    QCOMPARE( static_cast< QgsScaleWidget * >( wrapper.wrappedWidget() )->scale(), 0.0 );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "num" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsScaleWidget * >( wrapper.wrappedWidget() )->setScale( 37.0 );
+    QCOMPARE( spy.count(), 4 );
+
+    delete w;
+
+    // optional, no default
+    QgsProcessingParameterScale paramOptional( QStringLiteral( "num" ), QStringLiteral( "num" ), QVariant(), true );
+
+    QgsProcessingScaleWidgetWrapper wrapperOptional( &paramOptional, type );
+
+    w = wrapperOptional.createWrappedWidget( context );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+    wrapperOptional.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptional.parameterValue().toDouble(), 5.0 );
+    wrapperOptional.setParameterValue( QVariant(), context );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+    wrapperOptional.setParameterValue( 5, context );
+    static_cast< QgsScaleWidget * >( wrapperOptional.wrappedWidget() )->setScale( std::numeric_limits< double >::quiet_NaN() );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+
+    // optional, with default
+    paramOptional.setDefaultValue( 3 );
+    QgsProcessingScaleWidgetWrapper wrapperOptionalDefault( &paramOptional, type );
+
+    w = wrapperOptionalDefault.createWrappedWidget( context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 3.0 );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
+    wrapperOptionalDefault.setParameterValue( QVariant(), context );
+    QVERIFY( std::isnan( static_cast< QgsScaleWidget * >( wrapperOptionalDefault.wrappedWidget() )->scale() ) );
+    QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
+    static_cast< QgsScaleWidget * >( wrapperOptionalDefault.wrappedWidget() )->setScale( std::numeric_limits< double >::quiet_NaN() );
+    QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
 void TestProcessingGui::testRangeWrapper()
 {
   auto testWrapper = []( QgsProcessingGui::WidgetType type )
@@ -1645,6 +1853,1140 @@ void TestProcessingGui::testRangeWrapper()
     QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "50,50" ) );
     wrapper2.mMinSpinBox->setValue( 100.1 );
     QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "100,100" ) );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testMatrixDialog()
+{
+  QgsProcessingParameterMatrix matrixParam( QString(), QString(), 3, false, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  std::unique_ptr< QgsProcessingMatrixParameterDialog > dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog>( nullptr, nullptr, &matrixParam );
+  // variable length table
+  QVERIFY( dlg->mButtonAdd->isEnabled() );
+  QVERIFY( dlg->mButtonRemove->isEnabled() );
+  QVERIFY( dlg->mButtonRemoveAll->isEnabled() );
+
+  QCOMPARE( dlg->table(), QVariantList() );
+
+  dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog >( nullptr, nullptr, &matrixParam, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  QCOMPARE( dlg->table(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  dlg->addRow();
+  QCOMPARE( dlg->table(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) << QString() << QString() );
+  dlg->deleteAllRows();
+  QCOMPARE( dlg->table(), QVariantList() );
+
+  QgsProcessingParameterMatrix matrixParam2( QString(), QString(), 3, true, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog >( nullptr, nullptr, &matrixParam2, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  QVERIFY( !dlg->mButtonAdd->isEnabled() );
+  QVERIFY( !dlg->mButtonRemove->isEnabled() );
+  QVERIFY( !dlg->mButtonRemoveAll->isEnabled() );
+}
+
+void TestProcessingGui::testMatrixWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterMatrix param( QStringLiteral( "matrix" ), QStringLiteral( "matrix" ), 3, false, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+    param.setDefaultValue( QStringLiteral( "0.0,100.0,150.0,250.0" ) );
+    QgsProcessingMatrixWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    QVERIFY( w );
+
+    // initial value
+    QCOMPARE( wrapper.parameterValue().toList(), QVariantList() << QStringLiteral( "0.0" ) << QStringLiteral( "100.0" ) << QStringLiteral( "150.0" ) << QStringLiteral( "250.0" ) );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingMatrixWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QVariantList() << 5 << 7, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "5" ) << QStringLiteral( "7" ) );
+    QCOMPARE( wrapper.mMatrixWidget->value(), QVariantList() << QStringLiteral( "5" ) << QStringLiteral( "7" ) );
+    wrapper.setWidgetValue( QStringLiteral( "28.1,36.5,5.5,8.9" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "28.1" ) << QStringLiteral( "36.5" ) << QStringLiteral( "5.5" ) << QStringLiteral( "8.9" ) );
+    QCOMPARE( wrapper.mMatrixWidget->value(), QVariantList() << QStringLiteral( "28.1" ) << QStringLiteral( "36.5" ) << QStringLiteral( "5.5" ) << QStringLiteral( "8.9" ) );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "matrix" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    wrapper.mMatrixWidget->setValue( QVariantList() << QStringLiteral( "7" ) << QStringLiteral( "9" ) );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "7" ) << QStringLiteral( "9" ) );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testExpressionWrapper()
+{
+  const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
+  const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
+
+  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterExpression param( QStringLiteral( "expression" ), QStringLiteral( "expression" ) );
+
+    QgsProcessingExpressionWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingExpressionWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "1+2" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  QStringLiteral( "1+2" ) );
+    QCOMPARE( static_cast< QgsExpressionLineEdit * >( wrapper.wrappedWidget() )->expression(),  QStringLiteral( "1+2" ) );
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QgsExpressionLineEdit * >( wrapper.wrappedWidget() )->expression().isEmpty() );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "expression" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsExpressionLineEdit * >( wrapper.wrappedWidget() )->setExpression( QStringLiteral( "3+4" ) );
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // with layer
+    param.setParentLayerParameterName( QStringLiteral( "other" ) );
+    QgsProcessingExpressionWidgetWrapper wrapper2( &param, type );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingExpressionWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "11+12" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(),  QStringLiteral( "11+12" ) );
+    QCOMPARE( static_cast< QgsFieldExpressionWidget * >( wrapper2.wrappedWidget() )->expression(),  QStringLiteral( "11+12" ) );
+
+    wrapper2.setWidgetValue( QString(), context );
+    QCOMPARE( spy2.count(), 2 );
+    QVERIFY( wrapper2.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QgsFieldExpressionWidget * >( wrapper2.wrappedWidget() )->expression().isEmpty() );
+
+    static_cast< QgsFieldExpressionWidget * >( wrapper2.wrappedWidget() )->setExpression( QStringLiteral( "3+4" ) );
+    QCOMPARE( spy2.count(), 3 );
+
+    TestLayerWrapper layerWrapper( layerDef );
+    QgsProject p;
+    QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+    p.addMapLayer( vl );
+
+    QVERIFY( !wrapper2.mFieldExpWidget->layer() );
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mFieldExpWidget->layer(), vl );
+
+    // should not be owned by wrapper
+    QVERIFY( !wrapper2.mParentLayer.get() );
+    layerWrapper.setWidgetValue( QVariant(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QVERIFY( !wrapper2.mFieldExpWidget->layer() );
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QVERIFY( !wrapper2.mFieldExpWidget->layer() );
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // with project layer
+    context.setProject( &p );
+    TestProcessingContextGenerator generator( context );
+    wrapper2.registerProcessingContextGenerator( &generator );
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mFieldExpWidget->layer(), vl );
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // non-project layer
+    QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
+    layerWrapper.setWidgetValue( pointFileName, context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mFieldExpWidget->layer()->publicSource(), pointFileName );
+    // must be owned by wrapper, or layer may be deleted while still required by wrapper
+    QCOMPARE( wrapper2.mParentLayer->publicSource(), pointFileName );
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testMultipleSelectionDialog()
+{
+  QVariantList availableOptions;
+  QVariantList selectedOptions;
+  std::unique_ptr< QgsProcessingMultipleSelectionDialog > dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  QVERIFY( dlg->selectedOptions().isEmpty() );
+  QCOMPARE( dlg->mModel->rowCount(), 0 );
+
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  availableOptions << QVariant( "aa" ) << QVariant( 15 ) << QVariant::fromValue( vl.get() );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  QVERIFY( dlg->selectedOptions().isEmpty() );
+  QCOMPARE( dlg->mModel->rowCount(), 3 );
+  dlg->selectAll( true );
+  QCOMPARE( dlg->selectedOptions(), availableOptions );
+  dlg->mModel->item( 1 )->setCheckState( Qt::Unchecked );
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << "aa" << QVariant::fromValue( vl.get() ) );
+
+  // reorder rows
+  QList<QStandardItem *> itemList = dlg->mModel->takeRow( 2 );
+  dlg->mModel->insertRow( 0, itemList );
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << QVariant::fromValue( vl.get() ) << "aa" );
+
+  // additional options
+  availableOptions.clear();
+  selectedOptions << QVariant( "bb" ) << QVariant( 6.6 );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  QCOMPARE( dlg->mModel->rowCount(), 2 );
+  QCOMPARE( dlg->selectedOptions(), selectedOptions );
+  dlg->mModel->item( 1 )->setCheckState( Qt::Unchecked );
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << "bb" );
+
+  // mix of standard and additional options
+  availableOptions << QVariant( 6.6 ) << QVariant( "aa" );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  QCOMPARE( dlg->mModel->rowCount(), 3 );
+  QCOMPARE( dlg->selectedOptions(), selectedOptions ); // order must be maintained!
+  dlg->mModel->item( 2 )->setCheckState( Qt::Checked );
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << "bb" << QVariant( 6.6 ) << QVariant( "aa" ) );
+
+  // selection buttons
+  selectedOptions.clear();
+  availableOptions = QVariantList() << QVariant( "a" ) << QVariant( "b" ) << QVariant( "c" );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  QVERIFY( dlg->selectedOptions().isEmpty() );
+  dlg->mSelectionList->selectionModel()->select( dlg->mModel->index( 1, 0 ), QItemSelectionModel::ClearAndSelect );
+  // without a multi-selection, select all/toggle options should affect all items
+  dlg->selectAll( true );
+  QCOMPARE( dlg->selectedOptions(), availableOptions );
+  dlg->selectAll( false );
+  QVERIFY( dlg->selectedOptions().isEmpty() );
+  dlg->toggleSelection();
+  QCOMPARE( dlg->selectedOptions(), availableOptions );
+  dlg->toggleSelection();
+  QVERIFY( dlg->selectedOptions().isEmpty() );
+  // with multi-selection, actions should only affected selected rows
+  dlg->mSelectionList->selectionModel()->select( dlg->mModel->index( 2, 0 ), QItemSelectionModel::Select );
+  dlg->selectAll( true );
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << "b" << "c" );
+  dlg->selectAll( false );
+  QVERIFY( dlg->selectedOptions().isEmpty() );
+  dlg->selectAll( true );
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << "b" << "c" );
+  dlg->mModel->item( 0 )->setCheckState( Qt::Checked );
+  dlg->selectAll( false );
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << "a" );
+  dlg->toggleSelection();
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << "a" << "b" << "c" );
+  dlg->toggleSelection();
+  QCOMPARE( dlg->selectedOptions(), QVariantList() << "a" );
+
+  // text format
+  availableOptions = QVariantList() << QVariant( "a" ) << 6 << 6.2;
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  QCOMPARE( dlg->mModel->item( 0 )->text(), QStringLiteral( "a" ) );
+  QCOMPARE( dlg->mModel->item( 1 )->text(), QStringLiteral( "6" ) );
+  QCOMPARE( dlg->mModel->item( 2 )->text(), QStringLiteral( "6.2" ) );
+  dlg->setValueFormatter( []( const QVariant & v )-> QString
+  {
+    return v.toString() + '_';
+  } );
+  QCOMPARE( dlg->mModel->item( 0 )->text(), QStringLiteral( "a_" ) );
+  QCOMPARE( dlg->mModel->item( 1 )->text(), QStringLiteral( "6_" ) );
+  QCOMPARE( dlg->mModel->item( 2 )->text(), QStringLiteral( "6.2_" ) );
+
+}
+
+void TestProcessingGui::testEnumSelectionPanel()
+{
+  QgsProcessingParameterEnum enumParam( QString(), QString(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true );
+  QgsProcessingEnumPanelWidget w( nullptr, &enumParam );
+  QSignalSpy spy( &w, &QgsProcessingEnumPanelWidget::changed );
+
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+  w.setValue( 1 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( w.value().toList(), QVariantList() << 1 );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+
+  w.setValue( QVariantList() << 2 << 0 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( w.value().toList(), QVariantList() << 2 << 0 );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+
+  w.setValue( QVariant() );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( w.value().toList(), QVariantList() );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+}
+
+void TestProcessingGui::testEnumCheckboxPanel()
+{
+  //single value
+  QgsProcessingParameterEnum param( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), false );
+  QgsProcessingEnumCheckboxPanelWidget panel( nullptr, &param );
+  QSignalSpy spy( &panel, &QgsProcessingEnumCheckboxPanelWidget::changed );
+
+  QCOMPARE( panel.value(), QVariant() );
+  panel.setValue( 2 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( panel.value().toInt(), 2 );
+  QVERIFY( !panel.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel.mButtons[ 1 ]->isChecked() );
+  QVERIFY( panel.mButtons[ 2 ]->isChecked() );
+  panel.setValue( 0 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( panel.value().toInt(), 0 );
+  QVERIFY( panel.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel.mButtons[ 2 ]->isChecked() );
+  panel.mButtons[1]->setChecked( true );
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( panel.value().toInt(), 1 );
+  panel.setValue( QVariantList() << 2 );
+  QCOMPARE( spy.count(), 5 );
+  QCOMPARE( panel.value().toInt(), 2 );
+  QVERIFY( !panel.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel.mButtons[ 1 ]->isChecked() );
+  QVERIFY( panel.mButtons[ 2 ]->isChecked() );
+
+  // multiple value
+  QgsProcessingParameterEnum param2( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true );
+  QgsProcessingEnumCheckboxPanelWidget panel2( nullptr, &param2 );
+  QSignalSpy spy2( &panel2, &QgsProcessingEnumCheckboxPanelWidget::changed );
+
+  QCOMPARE( panel2.value().toList(), QVariantList() );
+  panel2.setValue( 2 );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( panel2.value().toList(), QVariantList() << 2 );
+  QVERIFY( !panel2.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel2.mButtons[ 1 ]->isChecked() );
+  QVERIFY( panel2.mButtons[ 2 ]->isChecked() );
+  panel2.setValue( QVariantList() << 0 << 1 );
+  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( panel2.value().toList(), QVariantList() << 0 << 1 );
+  QVERIFY( panel2.mButtons[ 0 ]->isChecked() );
+  QVERIFY( panel2.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel2.mButtons[ 2 ]->isChecked() );
+  panel2.mButtons[0]->setChecked( false );
+  QCOMPARE( spy2.count(), 3 );
+  QCOMPARE( panel2.value().toList(), QVariantList()  << 1 );
+  panel2.mButtons[2]->setChecked( true );
+  QCOMPARE( spy2.count(), 4 );
+  QCOMPARE( panel2.value().toList(), QVariantList()  << 1 << 2 );
+  panel2.deselectAll();
+  QCOMPARE( spy2.count(), 5 );
+  QCOMPARE( panel2.value().toList(), QVariantList() );
+  panel2.selectAll();
+  QCOMPARE( spy2.count(), 6 );
+  QCOMPARE( panel2.value().toList(), QVariantList() << 0 << 1 << 2 );
+
+  // multiple value optional
+  QgsProcessingParameterEnum param3( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), true );
+  QgsProcessingEnumCheckboxPanelWidget panel3( nullptr, &param3 );
+  QSignalSpy spy3( &panel3, &QgsProcessingEnumCheckboxPanelWidget::changed );
+
+  QCOMPARE( panel3.value().toList(), QVariantList() );
+  panel3.setValue( 2 );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( panel3.value().toList(), QVariantList() << 2 );
+  QVERIFY( !panel3.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel3.mButtons[ 1 ]->isChecked() );
+  QVERIFY( panel3.mButtons[ 2 ]->isChecked() );
+  panel3.setValue( QVariantList() << 0 << 1 );
+  QCOMPARE( spy3.count(), 2 );
+  QCOMPARE( panel3.value().toList(), QVariantList() << 0 << 1 );
+  QVERIFY( panel3.mButtons[ 0 ]->isChecked() );
+  QVERIFY( panel3.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel3.mButtons[ 2 ]->isChecked() );
+  panel3.mButtons[0]->setChecked( false );
+  QCOMPARE( spy3.count(), 3 );
+  QCOMPARE( panel3.value().toList(), QVariantList()  << 1 );
+  panel3.mButtons[2]->setChecked( true );
+  QCOMPARE( spy3.count(), 4 );
+  QCOMPARE( panel3.value().toList(), QVariantList()  << 1 << 2 );
+  panel3.deselectAll();
+  QCOMPARE( spy3.count(), 5 );
+  QCOMPARE( panel3.value().toList(), QVariantList() );
+  panel3.selectAll();
+  QCOMPARE( spy3.count(), 6 );
+  QCOMPARE( panel3.value().toList(), QVariantList() << 0 << 1 << 2 );
+  panel3.setValue( QVariantList() );
+  QCOMPARE( panel3.value().toList(), QVariantList() );
+  QVERIFY( !panel3.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel3.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel3.mButtons[ 2 ]->isChecked() );
+  QCOMPARE( spy3.count(), 7 );
+  panel3.selectAll();
+  QCOMPARE( spy3.count(), 8 );
+  panel3.setValue( QVariant() );
+  QCOMPARE( panel3.value().toList(), QVariantList() );
+  QVERIFY( !panel3.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel3.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel3.mButtons[ 2 ]->isChecked() );
+  QCOMPARE( spy3.count(), 9 );
+}
+
+void TestProcessingGui::testEnumWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type, bool checkboxStyle = false )
+  {
+    // non optional, single value
+    QgsProcessingParameterEnum param( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), false );
+    QVariantMap metadata;
+    QVariantMap wrapperMetadata;
+    wrapperMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
+    metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+    if ( checkboxStyle )
+      param.setMetadata( metadata );
+
+    QgsProcessingEnumWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 1, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toInt(),  1 );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentIndex(), 1 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper.wrappedWidget() )->value().toInt(), 1 );
+    }
+    wrapper.setWidgetValue( 0, context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toInt(),  0 );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentIndex(), 0 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper.wrappedWidget() )->value().toInt(), 0 );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "enum" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( !checkboxStyle )
+      static_cast< QComboBox * >( wrapper.wrappedWidget() )->setCurrentIndex( 2 );
+    else
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper.wrappedWidget() )->setValue( 2 );
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterEnum param2( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), false, QVariant(), true );
+    if ( checkboxStyle )
+      param2.setMetadata( metadata );
+
+    QgsProcessingEnumWidgetWrapper wrapper2( &param2, type );
+
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( 1, context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toInt(),  1 );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 2 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper2.wrappedWidget() )->value().toInt(), 1 );
+    }
+    wrapper2.setWidgetValue( 0, context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toInt(),  0 );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 1 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper2.wrappedWidget() )->value().toInt(), 0 );
+    }
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 3 );
+    if ( !checkboxStyle )
+    {
+      QVERIFY( !wrapper2.widgetValue().isValid() );
+      QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 0 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "[Not selected]" ) );
+    }
+
+    // check signal
+    if ( !checkboxStyle )
+      static_cast< QComboBox * >( wrapper2.wrappedWidget() )->setCurrentIndex( 2 );
+    else
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper2.wrappedWidget() )->setValue( 1 );
+    QCOMPARE( spy2.count(), 4 );
+
+    delete w;
+
+    // allow multiple
+    QgsProcessingParameterEnum param3( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), false );
+    if ( checkboxStyle )
+      param3.setMetadata( metadata );
+
+    QgsProcessingEnumWidgetWrapper wrapper3( &param3, type );
+
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( 1, context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toList(), QVariantList() << 1 );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper3.wrappedWidget() )->value().toList(), QVariantList() << 1 );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper3.wrappedWidget() )->value().toList(), QVariantList() << 1 );
+    wrapper3.setWidgetValue( 0, context );
+    QCOMPARE( spy3.count(), 2 );
+    QCOMPARE( wrapper3.widgetValue().toList(), QVariantList() << 0 );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper3.wrappedWidget() )->value().toList(), QVariantList() << 0 );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper3.wrappedWidget() )->value().toList(), QVariantList() << 0 );
+    wrapper3.setWidgetValue( QVariantList() << 2 << 1, context );
+    QCOMPARE( spy3.count(), 3 );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( wrapper3.widgetValue().toList(), QVariantList() << 2 << 1 );
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper3.wrappedWidget() )->value().toList(), QVariantList() << 2 << 1 );
+    }
+    else
+    {
+      // checkbox style isn't ordered
+      QCOMPARE( wrapper3.widgetValue().toList(), QVariantList() << 1 << 2 );
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper3.wrappedWidget() )->value().toList(), QVariantList() << 1 << 2 );
+    }
+    // check signal
+    if ( !checkboxStyle )
+      static_cast< QgsProcessingEnumPanelWidget * >( wrapper3.wrappedWidget() )->setValue( QVariantList() << 0 << 1 );
+    else
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper3.wrappedWidget() )->setValue( QVariantList() << 0 << 1 );
+
+    QCOMPARE( spy3.count(), 4 );
+
+    delete w;
+
+    // allow multiple, optional
+    QgsProcessingParameterEnum param4( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), false );
+    if ( checkboxStyle )
+      param4.setMetadata( metadata );
+
+    QgsProcessingEnumWidgetWrapper wrapper4( &param4, type );
+
+    w = wrapper4.createWrappedWidget( context );
+
+    QSignalSpy spy4( &wrapper4, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper4.setWidgetValue( 1, context );
+    QCOMPARE( spy4.count(), 1 );
+    QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() << 1 );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() << 1 );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() << 1 );
+    wrapper4.setWidgetValue( 0, context );
+    QCOMPARE( spy4.count(), 2 );
+    QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() << 0 );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() << 0 );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() << 0 );
+    wrapper4.setWidgetValue( QVariantList() << 2 << 1, context );
+    QCOMPARE( spy4.count(), 3 );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() << 2 << 1 );
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() << 2 << 1 );
+    }
+    else
+    {
+      // checkbox style isn't ordered
+      QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() << 1 << 2 );
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() << 1 << 2 );
+    }
+    wrapper4.setWidgetValue( QVariantList(), context );
+    QCOMPARE( spy4.count(), 4 );
+    QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() );
+
+    wrapper4.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy4.count(), 5 );
+    QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper4.wrappedWidget() )->value().toList(), QVariantList() );
+
+    // check signal
+    if ( !checkboxStyle )
+    {
+      static_cast< QgsProcessingEnumPanelWidget * >( wrapper4.wrappedWidget() )->setValue( QVariantList() << 0 << 1 );
+      QCOMPARE( spy4.count(), 6 );
+      static_cast< QgsProcessingEnumPanelWidget * >( wrapper4.wrappedWidget() )->setValue( QVariant() );
+      QCOMPARE( spy4.count(), 7 );
+    }
+    else
+    {
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper4.wrappedWidget() )->setValue( QVariantList() << 0 << 1 );
+      QCOMPARE( spy4.count(), 6 );
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper4.wrappedWidget() )->setValue( QVariant() );
+      QCOMPARE( spy4.count(), 7 );
+    }
+
+    delete w;
+
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // checkbox style (not for batch or model mode!)
+  testWrapper( QgsProcessingGui::Standard, true );
+
+}
+
+void TestProcessingGui::testLayoutWrapper()
+{
+  QgsProject p;
+  QgsPrintLayout *l1 = new QgsPrintLayout( &p );
+  l1->setName( "l1" );
+  p.layoutManager()->addLayout( l1 );
+  QgsPrintLayout *l2 = new QgsPrintLayout( &p );
+  l2->setName( "l2" );
+  p.layoutManager()->addLayout( l2 );
+
+  auto testWrapper = [&p]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterLayout param( QStringLiteral( "layout" ), QStringLiteral( "layout" ), false );
+
+    QgsProcessingLayoutWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    context.setProject( &p );
+    QgsProcessingParameterWidgetContext widgetContext;
+    widgetContext.setProject( &p );
+    wrapper.setWidgetContext( widgetContext );
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingLayoutWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "l2", context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  QStringLiteral( "l2" ) );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper.wrappedWidget() )->currentIndex(), 1 );
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "l2" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "l2" ) );
+    }
+    wrapper.setWidgetValue( "l1", context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toString(),  QStringLiteral( "l1" ) );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper.wrappedWidget() )->currentIndex(), 0 );
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "l1" ) );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "layout" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      static_cast< QComboBox * >( wrapper.wrappedWidget() )->setCurrentIndex( 1 );
+    }
+    else
+    {
+      static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "aaaa" ) );
+    }
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterLayout param2( QStringLiteral( "layout" ), QStringLiteral( "layout" ), QVariant(), true );
+
+    QgsProcessingLayoutWidgetWrapper wrapper2( &param2, type );
+    wrapper2.setWidgetContext( widgetContext );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "l2", context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "l2" ) );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 2 );
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l2" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "l2" ) );
+    }
+    wrapper2.setWidgetValue( "l1", context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "l1" ) );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 1 );
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "l1" ) );
+    }
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 3 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentIndex(), 0 );
+      QVERIFY( static_cast< QgsLayoutComboBox * >( wrapper2.wrappedWidget() )->currentText().isEmpty() );
+    }
+    else
+    {
+      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+      static_cast< QComboBox * >( wrapper2.wrappedWidget() )->setCurrentIndex( 2 );
+    else
+      static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "aaa" ) );
+    QCOMPARE( spy2.count(), 4 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+}
+
+void TestProcessingGui::testLayoutItemWrapper()
+{
+  QgsProject p;
+  QgsPrintLayout *l1 = new QgsPrintLayout( &p );
+  l1->setName( "l1" );
+  p.layoutManager()->addLayout( l1 );
+  QgsLayoutItemLabel *label1 = new QgsLayoutItemLabel( l1 );
+  label1->setId( "a" );
+  l1->addLayoutItem( label1 );
+  QgsLayoutItemLabel *label2 = new QgsLayoutItemLabel( l1 );
+  label2->setId( "b" );
+  l1->addLayoutItem( label2 );
+
+  auto testWrapper = [&p, l1, label1, label2]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterLayoutItem param( QStringLiteral( "layout" ), QStringLiteral( "layout" ), false );
+
+    QgsProcessingLayoutItemWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    context.setProject( &p );
+    QgsProcessingParameterWidgetContext widgetContext;
+    widgetContext.setProject( &p );
+    wrapper.setWidgetContext( widgetContext );
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    wrapper.setLayout( l1 );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "b", context );
+    QCOMPARE( spy.count(), 1 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), label2->uuid() );
+      QCOMPARE( static_cast< QgsLayoutItemComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "b" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "b" ) );
+    }
+    wrapper.setWidgetValue( "a", context );
+    QCOMPARE( spy.count(), 2 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), label1->uuid() );
+      QCOMPARE( static_cast< QgsLayoutItemComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "a" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "a" ) );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "layout" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      static_cast< QComboBox * >( wrapper.wrappedWidget() )->setCurrentIndex( 1 );
+    }
+    else
+    {
+      static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "aaaa" ) );
+    }
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterLayoutItem param2( QStringLiteral( "layout" ), QStringLiteral( "layout" ), QVariant(), QString(), -1, true );
+
+    QgsProcessingLayoutItemWidgetWrapper wrapper2( &param2, type );
+    wrapper2.setWidgetContext( widgetContext );
+    w = wrapper2.createWrappedWidget( context );
+    wrapper2.setLayout( l1 );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "b", context );
+    QCOMPARE( spy2.count(), 1 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), label2->uuid() );
+      QCOMPARE( static_cast< QgsLayoutItemComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "b" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "b" ) );
+    }
+    wrapper2.setWidgetValue( "a", context );
+    QCOMPARE( spy2.count(), 2 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), label1->uuid() );
+      QCOMPARE( static_cast< QgsLayoutItemComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "a" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "a" ) );
+    }
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 3 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QVERIFY( static_cast< QgsLayoutItemComboBox * >( wrapper2.wrappedWidget() )->currentText().isEmpty() );
+    }
+    else
+    {
+      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+      static_cast< QgsLayoutItemComboBox * >( wrapper2.wrappedWidget() )->setCurrentIndex( 1 );
+    else
+      static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "aaa" ) );
+    QCOMPARE( spy2.count(), 4 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+}
+
+void TestProcessingGui::testPointPanel()
+{
+  std::unique_ptr< QgsProcessingPointPanel > panel = qgis::make_unique< QgsProcessingPointPanel >( nullptr );
+  QSignalSpy spy( panel.get(), &QgsProcessingPointPanel::changed );
+
+  panel->setValue( QgsPointXY( 100, 150 ), QgsCoordinateReferenceSystem() );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "100,150" ) );
+  QCOMPARE( spy.count(), 1 );
+
+  panel->setValue( QgsPointXY( 200, 250 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "200,250 [EPSG:3111]" ) );
+  QCOMPARE( spy.count(), 2 );
+
+  QVERIFY( !panel->mLineEdit->showClearButton() );
+  panel->setAllowNull( true );
+  QVERIFY( panel->mLineEdit->showClearButton() );
+  panel->clear();
+  QVERIFY( !panel->value().isValid() );
+  QCOMPARE( spy.count(), 3 );
+
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  panel->setMapCanvas( &canvas );
+  panel->updatePoint( QgsPointXY( 1.5, -3.5 ) );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "1.5,-3.5 [EPSG:28356]" ) );
+  QCOMPARE( spy.count(), 4 );
+
+  panel.reset();
+}
+
+void TestProcessingGui::testPointWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterPoint param( QStringLiteral( "point" ), QStringLiteral( "point" ), false );
+
+    QgsProcessingPointWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "1,2", context );
+    QCOMPARE( spy.count(), 1 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "1,2" ) );
+    }
+    wrapper.setWidgetValue( "1,2 [EPSG:3111]", context );
+    QCOMPARE( spy.count(), 2 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+    }
+
+    // check signal
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->setText( QStringLiteral( "b" ) );
+    }
+    else
+    {
+      static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "aaaa" ) );
+    }
+    QCOMPARE( spy.count(), 3 );
+
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "point" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterPoint param2( QStringLiteral( "point" ), QStringLiteral( "point" ), QVariant(), true );
+
+    QgsProcessingPointWidgetWrapper wrapper2( &param2, type );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "1,2", context );
+    QCOMPARE( spy2.count(), 1 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2" ) );
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "1,2" ) );
+    }
+
+    wrapper2.setWidgetValue( "1,2 [EPSG:3111]", context );
+    QCOMPARE( spy2.count(), 2 );
+    if ( type != QgsProcessingGui::Modeler )
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+    }
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 3 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    if ( type == QgsProcessingGui::Modeler )
+    {
+      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+    }
+    else
+    {
+      QVERIFY( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text().isEmpty() );
+    }
+    wrapper2.setWidgetValue( "1,3", context );
+    QCOMPARE( spy2.count(), 4 );
+    wrapper2.setWidgetValue( "", context );
+    QCOMPARE( spy2.count(), 5 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    if ( type == QgsProcessingGui::Modeler )
+    {
+      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+    }
+    else
+    {
+      QVERIFY( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text().isEmpty() );
+    }
+
+    // check signals
+    wrapper2.setWidgetValue( "1,3", context );
+    QCOMPARE( spy2.count(), 6 );
+    if ( type == QgsProcessingGui::Modeler )
+    {
+      static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->clear();
+    }
+    else
+    {
+      static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->clear();
+    }
+    QCOMPARE( spy2.count(), 7 );
 
     delete w;
   };

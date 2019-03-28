@@ -33,6 +33,7 @@
 #include "qgsproject.h"
 #include "qgsogcutils.h"
 #include "qgsjsonutils.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgswfsgetfeature.h"
 
@@ -136,7 +137,7 @@ namespace QgsWfs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+      if ( layer->type() != QgsMapLayerType::VectorLayer )
       {
         continue;
       }

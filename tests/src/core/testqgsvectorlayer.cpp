@@ -211,15 +211,17 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   QList<QVariant> varList = QgsVectorLayerUtils::getValues( layer, QStringLiteral( "col1" ), ok );
   QVERIFY( ok );
   QCOMPARE( varList.length(), 4 );
-  QCOMPARE( varList.at( 0 ), QVariant( 1 ) );
-  QCOMPARE( varList.at( 1 ), QVariant( 2 ) );
-  QCOMPARE( varList.at( 2 ), QVariant( 3 ) );
-  QCOMPARE( varList.at( 3 ), QVariant() );
+  std::sort( varList.begin(), varList.end() );
+  QCOMPARE( varList.at( 0 ), QVariant() );
+  QCOMPARE( varList.at( 1 ), QVariant( 1 ) );
+  QCOMPARE( varList.at( 2 ), QVariant( 2 ) );
+  QCOMPARE( varList.at( 3 ), QVariant( 3 ) );
 
   //check with selected features
   varList = QgsVectorLayerUtils::getValues( layer, QStringLiteral( "col1" ), ok, true );
   QVERIFY( ok );
   QCOMPARE( varList.length(), 2 );
+  std::sort( varList.begin(), varList.end() );
   QCOMPARE( varList.at( 0 ), QVariant( 2 ) );
   QCOMPARE( varList.at( 1 ), QVariant( 3 ) );
 
@@ -227,6 +229,7 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   QList<double> doubleList = QgsVectorLayerUtils::getDoubleValues( layer, QStringLiteral( "col1" ), ok, false, &nulls );
   QVERIFY( ok );
   QCOMPARE( doubleList.length(), 3 );
+  std::sort( doubleList.begin(), doubleList.end() );
   QCOMPARE( doubleList.at( 0 ), 1.0 );
   QCOMPARE( doubleList.at( 1 ), 2.0 );
   QCOMPARE( doubleList.at( 2 ), 3.0 );
@@ -235,6 +238,7 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   //check with selected features
   doubleList = QgsVectorLayerUtils::getDoubleValues( layer, QStringLiteral( "col1" ), ok, true, &nulls );
   QVERIFY( ok );
+  std::sort( doubleList.begin(), doubleList.end() );
   QCOMPARE( doubleList.length(), 2 );
   QCOMPARE( doubleList.at( 0 ), 2.0 );
   QCOMPARE( doubleList.at( 1 ), 3.0 );
@@ -243,13 +247,15 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   QList<QVariant> expVarList = QgsVectorLayerUtils::getValues( layer, QStringLiteral( "tostring(col1) || ' '" ), ok );
   QVERIFY( ok );
   QCOMPARE( expVarList.length(), 4 );
-  QCOMPARE( expVarList.at( 0 ).toString(), QString( "1 " ) );
-  QCOMPARE( expVarList.at( 1 ).toString(), QString( "2 " ) );
-  QCOMPARE( expVarList.at( 2 ).toString(), QString( "3 " ) );
-  QCOMPARE( expVarList.at( 3 ), QVariant() );
+  std::sort( expVarList.begin(), expVarList.end() );
+  QCOMPARE( expVarList.at( 0 ), QVariant() );
+  QCOMPARE( expVarList.at( 1 ).toString(), QString( "1 " ) );
+  QCOMPARE( expVarList.at( 2 ).toString(), QString( "2 " ) );
+  QCOMPARE( expVarList.at( 3 ).toString(), QString( "3 " ) );
 
   QList<double> expDoubleList = QgsVectorLayerUtils::getDoubleValues( layer, QStringLiteral( "col1 * 2" ), ok, false, &nulls );
   QVERIFY( ok );
+  std::sort( expDoubleList.begin(), expDoubleList.end() );
   QCOMPARE( expDoubleList.length(), 3 );
   QCOMPARE( expDoubleList.at( 0 ), 2.0 );
   QCOMPARE( expDoubleList.at( 1 ), 4.0 );

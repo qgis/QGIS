@@ -252,7 +252,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
     bool mIsIndexing = false;
 
-    //! Disable or not the snapping on all features. By default is always true except for non visible features on map canvas.
+    //! Disable or not the snapping on all features. By default is always TRUE except for non visible features on map canvas.
     bool mEnableSnappingForInvisibleFeature = true;
 
 };

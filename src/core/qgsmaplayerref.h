@@ -71,7 +71,7 @@ struct _LayerRef
   }
 
   /**
-   * Returns true if the layer reference is resolved and contains a reference to an existing
+   * Returns TRUE if the layer reference is resolved and contains a reference to an existing
    * map layer.
    */
   operator bool() const
@@ -88,7 +88,7 @@ struct _LayerRef
   }
 
   /**
-   * Returns a pointer to the layer, or nullptr if the reference has not yet been matched
+   * Returns a pointer to the layer, or NULLPTR if the reference has not yet been matched
    * to a layer.
    */
   TYPE *get() const
@@ -110,7 +110,7 @@ struct _LayerRef
   QString provider;
 
   /**
-   * Returns true if a layer matches the weak references to layer public source,
+   * Returns TRUE if a layer matches the weak references to layer public source,
    * layer name and data provider contained in this layer reference.
    * \see resolveWeakly()
    */
@@ -130,7 +130,7 @@ struct _LayerRef
    * Resolves the map layer by attempting to find a layer with matching ID
    * within a \a project. If found, this reference will be updated to match
    * the found layer and the layer will be returned. If no matching layer is
-   * found, a nullptr is returned.
+   * found, NULLPTR is returned.
    * \see resolveWeakly()
    */
   TYPE *resolve( const QgsProject *project )
@@ -159,7 +159,7 @@ struct _LayerRef
    *
    * If a matching layer is found, this reference will be updated to match
    * the found layer and the layer will be returned. If no matching layer is
-   * found, a nullptr is returned.
+   * found, NULLPTR is returned.
    * \see resolve()
    * \see layerMatchesSource()
    */

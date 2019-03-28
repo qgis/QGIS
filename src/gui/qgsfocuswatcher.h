@@ -49,7 +49,7 @@ class GUI_EXPORT QgsFocusWatcher : public QObject
 
     /**
      * Emitted when parent object's focus changes.
-     * \param focused true if object gained focus, false if object lost focus
+     * \param focused TRUE if object gained focus, FALSE if object lost focus
      */
     void focusChanged( bool focused );
 

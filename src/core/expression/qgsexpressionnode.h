@@ -133,7 +133,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         int count() const { return mList.count(); }
 
         /**
-         * Returns true if list contains any named nodes
+         * Returns TRUE if list contains any named nodes
          * \since QGIS 2.16
          */
         bool hasNamedNodes() const { return mHasNamedNodes; }
@@ -242,15 +242,15 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      *
      * This needs to call `needsGeometry()` recursively on any child nodes.
      *
-     * \returns true if a geometry is required to evaluate this expression
+     * \returns TRUE if a geometry is required to evaluate this expression
      */
     virtual bool needsGeometry() const = 0;
 
     /**
-     * Returns true if this node can be evaluated for a static value. This is used during
-     * the prepare() step and in case it returns true, the value of this node will already
+     * Returns TRUE if this node can be evaluated for a static value. This is used during
+     * the prepare() step and in case it returns TRUE, the value of this node will already
      * be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
-     * to eval()). In case this returns true, prepareNode() will never be called.
+     * to eval()). In case this returns TRUE, prepareNode() will never be called.
      *
      * \since QGIS 3.0
      */

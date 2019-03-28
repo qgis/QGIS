@@ -63,6 +63,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsserverexception.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QImage>
 #include <QPainter>
@@ -112,28 +113,19 @@ namespace QgsWms
 
   } // namespace
 
-
-  QgsRenderer::QgsRenderer( QgsServerInterface *serverIface,
-                            const QgsProject *project,
-                            const QgsWmsParameters &parameters )
-    : mWmsParameters( parameters )
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    , mAccessControl( serverIface->accessControls() )
-#endif
-    , mSettings( *serverIface->serverSettings() )
-    , mProject( project )
+  QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
+    : mContext( context )
   {
-    mWmsParameters.dump();
+    mProject = mContext.project();
 
-    initRestrictedLayers();
-    initNicknameLayers();
+    mWmsParameters = mContext.parameters();
+    mWmsParameters.dump();
   }
 
   QgsRenderer::~QgsRenderer()
   {
     removeTemporaryLayers();
   }
-
 
   QImage *QgsRenderer::getLegendGraphics()
   {
@@ -146,41 +138,34 @@ namespace QgsWms
       throw QgsBadRequestException( QStringLiteral( "FormatNotSpecified" ),
                                     QStringLiteral( "FORMAT is mandatory for GetLegendGraphic operation" ) );
 
-    double scaleDenominator = -1;
-    if ( ! mWmsParameters.scale().isEmpty() )
-      scaleDenominator = mWmsParameters.scaleAsDouble();
-
-    QgsLegendSettings legendSettings = mWmsParameters.legendSettings();
-
     // get layers
     std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
 
-    QList<QgsMapLayer *> layers;
-    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
-
-    QString sld = mWmsParameters.sldBody();
-    if ( !sld.isEmpty() )
-      layers = sldStylizedLayers( sld );
-    else
-      layers = stylizedLayers( params );
-
-    removeUnwantedLayers( layers, scaleDenominator );
-    std::reverse( layers.begin(), layers.end() );
-
-    // check permissions
-    for ( QgsMapLayer *ml : layers )
-      checkLayerReadPermissions( ml );
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
 
     // build layer tree model for legend
     QgsLayerTree rootGroup;
+    QgsLegendSettings legendSettings = mContext.parameters().legendSettings();
     std::unique_ptr<QgsLayerTreeModel> legendModel;
-    legendModel.reset( buildLegendTreeModel( layers, scaleDenominator, rootGroup ) );
+    legendModel.reset( buildLegendTreeModel( layers, mContext.scaleDenominator(), rootGroup ) );
 
     // rendering step
-    qreal dpmm = dotsPerMm();
+    const qreal dpmm = mContext.dotsPerMm();
     std::unique_ptr<QImage> image;
     std::unique_ptr<QPainter> painter;
+
+    // getting scale from bbox
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      image.reset( createImage( width(), height(), false ) );
+      configureMapSettings( image.get(), mapSettings );
+      legendSettings.setMapScale( mapSettings.scale() );
+      legendSettings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+    }
 
     if ( !mWmsParameters.rule().isEmpty() )
     {
@@ -274,79 +259,21 @@ namespace QgsWms
   }
 
 
-  QByteArray QgsRenderer::getPrint( const QString &formatString )
+  QByteArray QgsRenderer::getPrint()
   {
-    //GetPrint request needs a template parameter
-    QString templateName = mWmsParameters.composerTemplate();
+    // init layer restorer before doing anything
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+
+    // GetPrint request needs a template parameter
+    const QString templateName = mWmsParameters.composerTemplate();
     if ( templateName.isEmpty() )
     {
       throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
                                     QStringLiteral( "The TEMPLATE parameter is required for the GetPrint request" ) );
     }
 
-    // get layers parameters
-    QList<QgsMapLayer *> layers;
-    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
-
-    // create the output image (this is not really used but configureMapSettings
-    // needs it)
-    std::unique_ptr<QImage> image( new QImage() );
-
-    // configure map settings (background, DPI, ...)
-    QgsMapSettings mapSettings;
-    configureMapSettings( image.get(), mapSettings );
-
-    // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
-
-    // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sldBody();
-    if ( !sld.isEmpty() )
-    {
-      layers = sldStylizedLayers( sld );
-    }
-    else
-    {
-      layers = stylizedLayers( params );
-    }
-
-    // remove unwanted layers (restricted layers, ...)
-    removeUnwantedLayers( layers );
-
-    // configure each layer with opacity, selection filter, ...
-    bool updateMapExtent = mWmsParameters.bbox().isEmpty();
-    for ( QgsMapLayer *layer : layers )
-    {
-      checkLayerReadPermissions( layer );
-
-      for ( const QgsWmsParametersLayer &param : params )
-      {
-        if ( param.mNickname == layerNickname( *layer ) )
-        {
-          setLayerOpacity( layer, param.mOpacity );
-
-          setLayerFilter( layer, param.mFilter );
-
-          setLayerSelection( layer, param.mSelection );
-
-          if ( updateMapExtent )
-            updateExtent( layer, mapSettings );
-
-          break;
-        }
-      }
-
-      setLayerAccessControlFilter( layer );
-    }
-
-    // add highlight layers above others
-    layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
-
-    // add layers to map settings (revert order for the rendering)
-    std::reverse( layers.begin(), layers.end() );
-    mapSettings.setLayers( layers );
-
+    // check template
     const QgsLayoutManager *lManager = mProject->layoutManager();
     QgsPrintLayout *sourceLayout( dynamic_cast<QgsPrintLayout *>( lManager->layoutByName( templateName ) ) );
     if ( !sourceLayout )
@@ -460,10 +387,26 @@ namespace QgsWms
       }
     }
 
+    // configure layers
+    QgsMapSettings mapSettings;
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers, &mapSettings );
+
+    // configure map settings (background, DPI, ...)
+    std::unique_ptr<QImage> image( new QImage() );
+    configureMapSettings( image.get(), mapSettings );
+
+    // add layers to map settings (revert order for the rendering)
+    mapSettings.setLayers( layers );
+
+    // configure layout
     configurePrintLayout( layout.get(), mapSettings, atlas );
 
     // Get the temporary output file
-    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
+    const QgsWmsParameters::Format format = mWmsParameters.format();
+    const QString extension = QgsWmsParameters::formatAsString( format ).toLower();
+
+    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( extension ) );
     if ( !tempOutputFile.open() )
     {
       throw QgsServerException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
@@ -471,7 +414,7 @@ namespace QgsWms
     }
 
     QString exportError;
-    if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    if ( format == QgsWmsParameters::SVG )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::SvgExportSettings exportSettings;
@@ -500,10 +443,11 @@ namespace QgsWms
         exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
       }
     }
-    else if ( formatString.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 || formatString.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format == QgsWmsParameters::PNG || format == QgsWmsParameters::JPG )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::ImageExportSettings exportSettings;
+
       // Get the dpi from input or use the default
       double dpi( layout->renderContext().dpi( ) );
       if ( !mWmsParameters.dpi().isEmpty() )
@@ -539,7 +483,7 @@ namespace QgsWms
         exporter.exportToImage( tempOutputFile.fileName(), exportSettings );
       }
     }
-    else if ( formatString.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format == QgsWmsParameters::PDF )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::PdfExportSettings exportSettings;
@@ -570,7 +514,7 @@ namespace QgsWms
     else //unknown format
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( formatString ) );
+                                    QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( mWmsParameters.formatAsString() ) );
     }
 
     if ( atlas )
@@ -638,13 +582,27 @@ namespace QgsWms
 
       if ( !map->keepLayerSet() )
       {
-        if ( cMapParams.mLayers.isEmpty() )
+        if ( cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty() )
         {
           map->setLayers( mapSettings.layers() );
         }
         else
         {
-          QList<QgsMapLayer *> layerSet = stylizedLayers( cMapParams.mLayers );
+          QList<QgsMapLayer *> layerSet;
+          for ( auto layer : cMapParams.mLayers )
+          {
+            QgsMapLayer *mlayer = mContext.layer( layer.mNickname );
+
+            if ( ! mlayer )
+            {
+              continue;
+            }
+
+            setLayerStyle( mlayer, layer.mStyle );
+            layerSet << mlayer;
+          }
+
+          layerSet << externalLayers( cMapParams.mExternalLayers );
           layerSet << highlightLayers( cMapParams.mHighlightLayers );
           std::reverse( layerSet.begin(), layerSet.end() );
           map->setLayers( layerSet );
@@ -793,56 +751,13 @@ namespace QgsWms
                                     QStringLiteral( "The requested map size is too large" ) );
     }
 
-    // get layers parameters
-    QList<QgsMapLayer *> layers;
-    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
-
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
 
-    // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sldBody();
-    if ( !sld.isEmpty() )
-    {
-      layers = sldStylizedLayers( sld );
-    }
-    else
-    {
-      layers = stylizedLayers( params );
-    }
-
-    // remove unwanted layers (restricted layers, ...)
-    removeUnwantedLayers( layers );
-
-    // configure each layer with opacity, selection filter, ...
-    bool updateMapExtent = mWmsParameters.bbox().isEmpty();
-    for ( QgsMapLayer *layer : layers )
-    {
-      checkLayerReadPermissions( layer );
-
-      for ( const QgsWmsParametersLayer &param : params )
-      {
-        if ( param.mNickname == layerNickname( *layer ) )
-        {
-          setLayerOpacity( layer, param.mOpacity );
-
-          setLayerFilter( layer, param.mFilter );
-
-          setLayerSelection( layer, param.mSelection );
-
-          if ( updateMapExtent )
-            updateExtent( layer, mapSettings );
-
-          break;
-        }
-      }
-
-      setLayerAccessControlFilter( layer );
-    }
-
-    // add highlight layers above others
-    layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers, &mapSettings );
 
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
@@ -852,7 +767,6 @@ namespace QgsWms
     configureMapSettings( image.get(), mapSettings );
 
     // add layers to map settings (revert order for the rendering)
-    std::reverse( layers.begin(), layers.end() );
     mapSettings.setLayers( layers );
 
     // rendering step for layers
@@ -873,119 +787,48 @@ namespace QgsWms
     return image.release();
   }
 
-  QgsDxfExport QgsRenderer::getDxf( const QMap<QString, QString> &options )
+  QgsDxfExport QgsRenderer::getDxf()
   {
-    QgsDxfExport dxf;
-
-    // set extent
-    QgsRectangle extent = mWmsParameters.bboxAsRectangle();
-    dxf.setExtent( extent );
-
-    // get layers parameters
-    QList<QgsMapLayer *> layers;
-    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
-
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
 
-    // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sldBody();
-    if ( !sld.isEmpty() )
-    {
-      layers = sldStylizedLayers( sld );
-    }
-    else
-    {
-      layers = stylizedLayers( params );
-    }
-
-    // layer attributes options
-    QStringList layerAttributes;
-    QMap<QString, QString>::const_iterator layerAttributesIt = options.find( QStringLiteral( "LAYERATTRIBUTES" ) );
-    if ( layerAttributesIt != options.constEnd() )
-    {
-      layerAttributes = options.value( QStringLiteral( "LAYERATTRIBUTES" ) ).split( ',' );
-    }
-
-    // only wfs layers are allowed to be published
-    QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *mProject );
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
 
     // get dxf layers
+    const QStringList attributes = mWmsParameters.dxfLayerAttributes();
     QList< QgsDxfExport::DxfLayer > dxfLayers;
     int layerIdx = -1;
     for ( QgsMapLayer *layer : layers )
     {
       layerIdx++;
-      if ( layer->type() != QgsMapLayer::VectorLayer )
+      if ( layer->type() != QgsMapLayerType::VectorLayer )
         continue;
-      if ( !wfsLayerIds.contains( layer->id() ) )
-        continue;
-
-      checkLayerReadPermissions( layer );
-
-      for ( const QgsWmsParametersLayer &param : params )
-      {
-        if ( param.mNickname == layerNickname( *layer ) )
-        {
-          setLayerOpacity( layer, param.mOpacity );
-
-          setLayerFilter( layer, param.mFilter );
-
-          break;
-        }
-      }
-
-      setLayerAccessControlFilter( layer );
 
       // cast for dxf layers
       QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
 
       // get the layer attribute used in dxf
       int layerAttribute = -1;
-      if ( layerAttributes.size() > layerIdx )
+      if ( attributes.size() > layerIdx )
       {
-        layerAttribute = vlayer->fields().indexFromName( layerAttributes.at( layerIdx ) );
+        layerAttribute = vlayer->fields().indexFromName( attributes[ layerIdx ] );
       }
 
       dxfLayers.append( QgsDxfExport::DxfLayer( vlayer, layerAttribute ) );
     }
 
     // add layers to dxf
+    QgsDxfExport dxf;
+    dxf.setExtent( mWmsParameters.bboxAsRectangle() );
     dxf.addLayers( dxfLayers );
-
-    dxf.setLayerTitleAsName( options.contains( QStringLiteral( "USE_TITLE_AS_LAYERNAME" ) ) );
-
-    //MODE
-    QMap<QString, QString>::const_iterator modeIt = options.find( QStringLiteral( "MODE" ) );
-
-    QgsDxfExport::SymbologyExport se;
-    if ( modeIt == options.constEnd() )
+    dxf.setLayerTitleAsName( mWmsParameters.dxfUseLayerTitleAsName() );
+    dxf.setSymbologyExport( mWmsParameters.dxfMode() );
+    if ( mWmsParameters.dxfFormatOptions().contains( QgsWmsParameters::DxfFormatOption::SCALE ) )
     {
-      se = QgsDxfExport::NoSymbology;
-    }
-    else
-    {
-      if ( modeIt->compare( QStringLiteral( "SymbolLayerSymbology" ), Qt::CaseInsensitive ) == 0 )
-      {
-        se = QgsDxfExport::SymbolLayerSymbology;
-      }
-      else if ( modeIt->compare( QStringLiteral( "FeatureSymbology" ), Qt::CaseInsensitive ) == 0 )
-      {
-        se = QgsDxfExport::FeatureSymbology;
-      }
-      else
-      {
-        se = QgsDxfExport::NoSymbology;
-      }
-    }
-    dxf.setSymbologyExport( se );
-
-    //SCALE
-    QMap<QString, QString>::const_iterator scaleIt = options.find( QStringLiteral( "SCALE" ) );
-    if ( scaleIt != options.constEnd() )
-    {
-      dxf.setSymbologyScale( scaleIt->toDouble() );
+      dxf.setSymbologyScale( mWmsParameters.dxfScale() );
     }
 
     return dxf;
@@ -1009,11 +852,10 @@ namespace QgsWms
   {
     // Verifying Mandatory parameters
     // The QUERY_LAYERS parameter is Mandatory
-    QStringList queryLayers = mWmsParameters.queryLayersNickname();
-    if ( queryLayers.isEmpty() )
+    if ( mWmsParameters.queryLayersNickname().isEmpty() )
     {
       QString msg = QObject::tr( "QUERY_LAYERS parameter is required for GetFeatureInfo" );
-      throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
+      throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
     }
 
     // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
@@ -1028,88 +870,53 @@ namespace QgsWms
                                     QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
     }
 
-    QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
+    const QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
     if ( infoFormat == QgsWmsParameters::Format::NONE )
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
                                     QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
     }
 
-    // get layers parameters
-    QList<QgsMapLayer *> layers;
-    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
-
-    // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
-
-    // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sldBody();
-    if ( !sld.isEmpty() )
-      layers = sldStylizedLayers( sld );
-    else
-      layers = stylizedLayers( params );
-
-    // add QUERY_LAYERS to list of available layers for more flexibility
-    for ( const QString &queryLayer : queryLayers )
-    {
-      if ( mNicknameLayers.contains( queryLayer )
-           && !layers.contains( mNicknameLayers[queryLayer] ) )
-      {
-        layers.append( mNicknameLayers[queryLayer] );
-      }
-    }
-
     // create the mapSettings and the output image
     int imageWidth = mWmsParameters.widthAsInt();
     int imageHeight = mWmsParameters.heightAsInt();
 
-    // Provide default image width/height values if format is not image
     if ( !( imageWidth && imageHeight ) &&  ! mWmsParameters.infoFormatIsImage() )
     {
       imageWidth = 10;
       imageHeight = 10;
     }
 
-    QgsMapSettings mapSettings;
     std::unique_ptr<QImage> outputImage( createImage( imageWidth, imageHeight ) );
 
-    // configure map settings (background, DPI, ...)
-    configureMapSettings( outputImage.get(), mapSettings );
+    // init layer restorer before doing anything
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
 
-    QgsMessageLog::logMessage( "mapSettings.destinationCrs(): " +  mapSettings.destinationCrs().authid() );
-    QgsMessageLog::logMessage( "mapSettings.extent(): " +  mapSettings.extent().toString() );
-    QgsMessageLog::logMessage( QStringLiteral( "mapSettings width = %1 height = %2" ).arg( mapSettings.outputSize().width() ).arg( mapSettings.outputSize().height() ) );
-    QgsMessageLog::logMessage( QStringLiteral( "mapSettings.mapUnitsPerPixel() = %1" ).arg( mapSettings.mapUnitsPerPixel() ) );
-
-    QgsScaleCalculator scaleCalc( ( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
-    QgsRectangle mapExtent = mapSettings.extent();
-    double scaleDenominator = scaleCalc.calculate( mapExtent, outputImage->width() );
-
-    // remove unwanted layers (restricted layers, ...)
-    removeUnwantedLayers( layers, scaleDenominator );
-    // remove non identifiable layers
-    //removeNonIdentifiableLayers( layers );
-
-    for ( QgsMapLayer *layer : layers )
+    // The CRS parameter is considered as mandatory in configureMapSettings
+    // but in the case of filter parameter, CRS parameter has not to be mandatory
+    bool mandatoryCrsParam = true;
+    if ( filtersDefined && !ijDefined && !xyDefined && mWmsParameters.crs().isEmpty() )
     {
-      checkLayerReadPermissions( layer );
-
-      for ( const QgsWmsParametersLayer &param : params )
-      {
-        if ( param.mNickname == layerNickname( *layer ) )
-        {
-          setLayerFilter( layer, param.mFilter );
-
-          break;
-        }
-      }
-
-      setLayerAccessControlFilter( layer );
+      mandatoryCrsParam = false;
     }
 
-    // add layers to map settings (revert order for the rendering)
-    std::reverse( layers.begin(), layers.end() );
+    // configure map settings (background, DPI, ...)
+    QgsMapSettings mapSettings;
+    configureMapSettings( outputImage.get(), mapSettings, mandatoryCrsParam );
+
+    // compute scale denominator
+    QgsScaleCalculator scaleCalc( ( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
+    const double scaleDenominator = scaleCalc.calculate( mWmsParameters.bboxAsRectangle(), outputImage->width() );
+
+    // configure layers
+    QgsWmsRenderContext context = mContext;
+    context.setScaleDenominator( scaleDenominator );
+
+    QList<QgsMapLayer *> layers = context.layersToRender();
+    configureLayers( layers, &mapSettings );
+
+    // add layers to map settings
     mapSettings.setLayers( layers );
 
     QDomDocument result = featureInfoDocument( layers, mapSettings, outputImage.get(), version );
@@ -1131,10 +938,10 @@ namespace QgsWms
   QImage *QgsRenderer::createImage( int width, int height, bool useBbox ) const
   {
     if ( width < 0 )
-      width = mWmsParameters.widthAsInt();
+      width = this->width();
 
     if ( height < 0 )
-      height = mWmsParameters.heightAsInt();
+      height = this->height();
 
     //Adapt width / height if the aspect ratio does not correspond with the BBOX.
     //Required by WMS spec. 1.3.
@@ -1200,19 +1007,14 @@ namespace QgsWms
       throw QgsException( QStringLiteral( "createImage: image could not be created, check for out of memory conditions" ) );
     }
 
-    //apply DPI parameter if present. This is an extension of Qgis Mapserver compared to WMS 1.3.
-    //Because of backwards compatibility, this parameter is optional
-    double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
-    int dpm = 1 / OGC_PX_M;
-    if ( !mWmsParameters.dpi().isEmpty() )
-      dpm = mWmsParameters.dpiAsDouble() / 0.0254;
-
+    const qreal dpm = mContext.dotsPerMm() * 1000.0;
     image->setDotsPerMeterX( dpm );
     image->setDotsPerMeterY( dpm );
+
     return image.release();
   }
 
-  void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const
+  void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings, bool mandatoryCrsParam ) const
   {
     if ( !paintDevice )
     {
@@ -1234,6 +1036,10 @@ namespace QgsWms
     {
       crs = QString( "EPSG:4326" );
       mapExtent.invert();
+    }
+    else if ( crs.isEmpty() && !mandatoryCrsParam )
+    {
+      crs = QString( "EPSG:4326" );
     }
 
     QgsCoordinateReferenceSystem outputCRS;
@@ -1402,7 +1208,7 @@ namespace QgsWms
       bool queryableLayer = true;
       for ( QgsMapLayer *layer : layers )
       {
-        if ( queryLayer == layerNickname( *layer ) )
+        if ( queryLayer == mContext.layerNickname( *layer ) )
         {
           validLayer = true;
           queryableLayer = layer->flags().testFlag( QgsMapLayer::Identifiable );
@@ -1436,7 +1242,7 @@ namespace QgsWms
             }
           }
 
-          if ( layer->type() == QgsMapLayer::VectorLayer )
+          if ( layer->type() == QgsMapLayerType::VectorLayer )
           {
             QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
             if ( vectorLayer )
@@ -1472,12 +1278,12 @@ namespace QgsWms
           break;
         }
       }
-      if ( !validLayer && !mNicknameLayers.contains( queryLayer ) && !mLayerGroups.contains( queryLayer ) )
+      if ( !validLayer && !mContext.isValidLayer( queryLayer ) && !mContext.isValidGroup( queryLayer ) )
       {
         QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
         throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
       }
-      else if ( ( validLayer && !queryableLayer ) || ( !validLayer && mLayerGroups.contains( queryLayer ) ) )
+      else if ( ( validLayer && !queryableLayer ) || ( !validLayer && mContext.isValidGroup( queryLayer ) ) )
       {
         QString msg = QObject::tr( "Layer '%1' is not queryable" ).arg( queryLayer );
         throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
@@ -1605,14 +1411,14 @@ namespace QgsWms
     }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    mAccessControl->filterFeatures( layer, fReq );
+    mContext.accessControl()->filterFeatures( layer, fReq );
 
     QStringList attributes;
     for ( const QgsField &field : fields )
     {
       attributes.append( field.name() );
     }
-    attributes = mAccessControl->layerAttributes( layer, attributes );
+    attributes = mContext.accessControl()->layerAttributes( layer, attributes );
     fReq.setSubsetOfAttributes( attributes, layer->fields() );
 #endif
 
@@ -1682,7 +1488,7 @@ namespace QgsWms
       {
         bool withGeom = layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry;
         int gmlVersion = mWmsParameters.infoFormatVersion();
-        QString typeName = layerNickname( *layer );
+        QString typeName = mContext.layerNickname( *layer );
         QDomElement elem = createFeatureGML(
                              &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, gmlVersion
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1748,10 +1554,10 @@ namespace QgsWms
         {
           QDomElement bBoxElem = infoDocument.createElement( QStringLiteral( "BoundingBox" ) );
           bBoxElem.setAttribute( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS", outputCrs.authid() );
-          bBoxElem.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( box.xMinimum(), getWMSPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( box.xMaximum(), getWMSPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( box.yMinimum(), getWMSPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( box.yMaximum(), getWMSPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( box.xMinimum(), mContext.precision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( box.xMaximum(), mContext.precision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( box.yMinimum(), mContext.precision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( box.yMaximum(), mContext.precision() ) );
           featureElement.appendChild( bBoxElem );
         }
 
@@ -1782,7 +1588,7 @@ namespace QgsWms
             }
             QDomElement geometryElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
             geometryElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
-            geometryElement.setAttribute( QStringLiteral( "value" ), geom.asWkt( getWMSPrecision() ) );
+            geometryElement.setAttribute( QStringLiteral( "value" ), geom.asWkt( mContext.precision() ) );
             geometryElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "derived" ) );
             featureElement.appendChild( geometryElement );
           }
@@ -1851,7 +1657,7 @@ namespace QgsWms
 
       QgsCoordinateReferenceSystem layerCrs = layer->crs();
       int gmlVersion = mWmsParameters.infoFormatVersion();
-      QString typeName = layerNickname( *layer );
+      QString typeName = mContext.layerNickname( *layer );
       QDomElement elem = createFeatureGML(
                            &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr );
       layerElement.appendChild( elem );
@@ -1998,14 +1804,14 @@ namespace QgsWms
   {
     //test if maxWidth / maxHeight set and WIDTH / HEIGHT parameter is in the range
     int wmsMaxWidth = QgsServerProjectUtils::wmsMaxWidth( *mProject );
-    int width = mWmsParameters.widthAsInt();
+    int width = this->width();
     if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
     {
       return false;
     }
 
     int wmsMaxHeight = QgsServerProjectUtils::wmsMaxHeight( *mProject );
-    int height = mWmsParameters.heightAsInt();
+    int height = this->height();
     if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
     {
       return false;
@@ -2292,19 +2098,19 @@ namespace QgsWms
       const QDomElement layerElem = layerList.at( i ).toElement();
       const QString layerName = layerElem.attribute( QStringLiteral( "name" ) );
 
-      QgsMapLayer *layer;
+      QgsMapLayer *layer = nullptr;
       for ( QgsMapLayer *l : layers )
       {
-        if ( layerNickname( *l ).compare( layerName ) == 0 )
+        if ( mContext.layerNickname( *l ).compare( layerName ) == 0 )
         {
           layer = l;
         }
       }
 
-      if ( ! layer )
+      if ( !layer )
         continue;
 
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      if ( layer->type() == QgsMapLayerType::VectorLayer )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
@@ -2454,11 +2260,11 @@ namespace QgsWms
       QDomElement boxElem;
       if ( version < 3 )
       {
-        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, getWMSPrecision() );
+        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, mContext.precision() );
       }
       else
       {
-        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, getWMSPrecision() );
+        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, mContext.precision() );
       }
 
       if ( crs.isValid() )
@@ -2482,11 +2288,11 @@ namespace QgsWms
       QDomElement gmlElem;
       if ( version < 3 )
       {
-        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, getWMSPrecision() );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, mContext.precision() );
       }
       else
       {
-        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), getWMSPrecision() );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), mContext.precision() );
       }
 
       if ( !gmlElem.isNull() )
@@ -2559,34 +2365,6 @@ namespace QgsWms
     return value;
   }
 
-  int QgsRenderer::getImageQuality() const
-  {
-    // First taken from QGIS project
-    int imageQuality = QgsServerProjectUtils::wmsImageQuality( *mProject );
-
-    // Then checks if a parameter is given, if so use it instead
-    if ( !mWmsParameters.imageQuality().isEmpty() )
-    {
-      imageQuality = mWmsParameters.imageQualityAsInt();
-    }
-
-    return imageQuality;
-  }
-
-  int QgsRenderer::getWMSPrecision() const
-  {
-    // First taken from QGIS project and the default value is 6
-    int WMSPrecision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );
-
-    // Then checks if a parameter is given, if so use it instead
-    int WMSPrecisionParameter = mWmsParameters.wmsPrecisionAsInt();
-
-    if ( WMSPrecisionParameter > -1 )
-      return WMSPrecisionParameter;
-    else
-      return WMSPrecision;
-  }
-
   QgsRectangle QgsRenderer::featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &mapSettings, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const
   {
     if ( !ml )
@@ -2635,114 +2413,6 @@ namespace QgsWms
     QgsRectangle mapRectangle( infoPoint.x() - mapUnitTolerance, infoPoint.y() - mapUnitTolerance,
                                infoPoint.x() + mapUnitTolerance, infoPoint.y() + mapUnitTolerance );
     return ( mapSettings.mapToLayerCoordinates( ml, mapRectangle ) );
-  }
-
-
-  void QgsRenderer::initRestrictedLayers()
-  {
-    mRestrictedLayers.clear();
-
-    // get name of restricted layers/groups in project
-    QStringList restricted = QgsServerProjectUtils::wmsRestrictedLayers( *mProject );
-
-    // extract restricted layers from excluded groups
-    QStringList restrictedLayersNames;
-    QgsLayerTreeGroup *root = mProject->layerTreeRoot();
-
-    for ( const QString &l : restricted )
-    {
-      QgsLayerTreeGroup *group = root->findGroup( l );
-      if ( group )
-      {
-        QList<QgsLayerTreeLayer *> groupLayers = group->findLayers();
-        for ( QgsLayerTreeLayer *treeLayer : groupLayers )
-        {
-          restrictedLayersNames.append( treeLayer->name() );
-        }
-      }
-      else
-      {
-        restrictedLayersNames.append( l );
-      }
-    }
-
-    // build output with names, ids or short name according to the configuration
-    QList<QgsLayerTreeLayer *> layers = root->findLayers();
-    for ( QgsLayerTreeLayer *layer : layers )
-    {
-      if ( restrictedLayersNames.contains( layer->name() ) )
-      {
-        mRestrictedLayers.append( layerNickname( *layer->layer() ) );
-      }
-    }
-  }
-
-  void QgsRenderer::initNicknameLayers()
-  {
-    for ( QgsMapLayer *ml : mProject->mapLayers() )
-    {
-      mNicknameLayers[ layerNickname( *ml ) ] = ml;
-    }
-
-    // init groups
-    const QString rootName { QgsServerProjectUtils::wmsRootName( *mProject ) };
-    const QgsLayerTreeGroup *root = mProject->layerTreeRoot();
-    initLayerGroupsRecursive( root, rootName.isEmpty() ? mProject->title() : rootName );
-  }
-
-  void QgsRenderer::initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName )
-  {
-    if ( !groupName.isEmpty() )
-    {
-      mLayerGroups[groupName] = QList<QgsMapLayer *>();
-      for ( QgsLayerTreeLayer *layer : group->findLayers() )
-      {
-        mLayerGroups[groupName].append( layer->layer() );
-      }
-    }
-
-    for ( const QgsLayerTreeNode *child : group->children() )
-    {
-      if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
-      {
-        QString name = child->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
-
-        if ( name.isEmpty() )
-          name = child->name();
-
-        initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), name );
-
-      }
-    }
-  }
-
-  QString QgsRenderer::layerNickname( const QgsMapLayer &layer ) const
-  {
-    QString name = layer.shortName();
-    if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject ) )
-    {
-      name = layer.id();
-    }
-    else if ( name.isEmpty() )
-    {
-      name = layer.name();
-    }
-
-    return name;
-  }
-
-  bool QgsRenderer::layerScaleVisibility( const QgsMapLayer &layer, double scaleDenominator ) const
-  {
-    bool visible = false;
-    bool scaleBasedVisibility = layer.hasScaleBasedVisibility();
-    bool useScaleConstraint = ( scaleDenominator > 0 && scaleBasedVisibility );
-
-    if ( !useScaleConstraint || layer.isInScaleRange( scaleDenominator ) )
-    {
-      visible = true;
-    }
-
-    return visible;
   }
 
   QList<QgsMapLayer *> QgsRenderer::highlightLayers( QList<QgsWmsParametersHighlightLayer> params )
@@ -2899,135 +2569,23 @@ namespace QgsWms
     return highlightLayers;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::sldStylizedLayers( const QString &sld ) const
+  QList<QgsMapLayer *> QgsRenderer::externalLayers( const QList<QgsWmsParametersExternalLayer> &params )
   {
     QList<QgsMapLayer *> layers;
 
-    if ( !sld.isEmpty() )
+    for ( const QgsWmsParametersExternalLayer &param : params )
     {
-      QDomDocument doc;
-      ( void )doc.setContent( sld, true );
-      QDomElement docEl = doc.documentElement();
+      std::unique_ptr<QgsMapLayer> layer = qgis::make_unique< QgsRasterLayer >( param.mUri, param.mName, QStringLiteral( "wms" ) );
 
-      QDomElement root = doc.firstChildElement( "StyledLayerDescriptor" );
-      QDomElement namedElem = root.firstChildElement( "NamedLayer" );
-
-      if ( !docEl.isNull() )
+      if ( layer->isValid() )
       {
-        QDomNodeList named = docEl.elementsByTagName( "NamedLayer" );
-        for ( int i = 0; i < named.size(); ++i )
-        {
-          QDomNodeList names = named.item( i ).toElement().elementsByTagName( "Name" );
-          if ( !names.isEmpty() )
-          {
-            QString lname = names.item( 0 ).toElement().text();
-            QString err;
-            if ( mNicknameLayers.contains( lname ) && !mRestrictedLayers.contains( lname ) )
-            {
-              mNicknameLayers[lname]->readSld( namedElem, err );
-              mNicknameLayers[lname]->setCustomProperty( "readSLD", true );
-              layers.append( mNicknameLayers[lname] );
-            }
-            else if ( mLayerGroups.contains( lname ) )
-            {
-              for ( QgsMapLayer *layer : mLayerGroups[lname] )
-              {
-                if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
-                {
-                  layer->readSld( namedElem, err );
-                  layer->setCustomProperty( "readSLD", true );
-                  layers.insert( 0, layer );
-                }
-              }
-            }
-            else
-            {
-              throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                            QStringLiteral( "Layer \"%1\" does not exist" ).arg( lname ) );
-            }
-          }
-        }
+        // to delete later
+        mTemporaryLayers.append( layer.release() );
+        layers << mTemporaryLayers.last();
       }
     }
 
     return layers;
-  }
-
-  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params )
-  {
-    QList<QgsMapLayer *> layers;
-
-    for ( const QgsWmsParametersLayer &param : params )
-    {
-      QString nickname = param.mNickname;
-      QString style = param.mStyle;
-      if ( nickname.startsWith( "EXTERNAL_WMS:" ) )
-      {
-        QString externalLayerId = nickname;
-        externalLayerId.remove( 0, 13 );
-        QgsMapLayer *externalWMSLayer = createExternalWMSLayer( externalLayerId );
-        if ( externalWMSLayer )
-        {
-          layers.append( externalWMSLayer );
-          mNicknameLayers[nickname] = externalWMSLayer; //might be used later in GetPrint request
-          mTemporaryLayers.append( externalWMSLayer );
-        }
-      }
-      else if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
-      {
-        if ( !style.isEmpty() )
-        {
-          bool rc = mNicknameLayers[nickname]->styleManager()->setCurrentStyle( style );
-          if ( ! rc )
-          {
-            throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, nickname ) );
-          }
-        }
-
-        layers.append( mNicknameLayers[nickname] );
-      }
-      else if ( mLayerGroups.contains( nickname ) )
-      {
-        // Reverse order of layers from a group
-        QList<QgsMapLayer *> layersFromGroup;
-        for ( QgsMapLayer *layer : mLayerGroups[nickname] )
-        {
-          if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
-          {
-            if ( !style.isEmpty() )
-            {
-              bool rc = layer->styleManager()->setCurrentStyle( style );
-              if ( ! rc )
-              {
-                throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layerNickname( *layer ) ) );
-              }
-            }
-            layersFromGroup.push_front( layer );
-          }
-        }
-        layers.append( layersFromGroup );
-      }
-      else
-      {
-        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                      QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
-      }
-    }
-
-    return layers;
-  }
-
-  QgsMapLayer *QgsRenderer::createExternalWMSLayer( const QString &externalLayerId ) const
-  {
-    QString wmsUri = mWmsParameters.externalWMSUri( externalLayerId.toUpper() );
-    QgsMapLayer *wmsLayer = new QgsRasterLayer( wmsUri, externalLayerId, QStringLiteral( "wms" ) );
-    if ( !wmsLayer->isValid() )
-    {
-      delete wmsLayer;
-      return nullptr;
-    }
-
-    return wmsLayer;
   }
 
   void QgsRenderer::removeTemporaryLayers()
@@ -3049,10 +2607,10 @@ namespace QgsWms
       QgsFeatureFilterProviderGroup filters;
       filters.addProvider( &mFeatureFilter );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      mAccessControl->resolveFilterFeatures( mapSettings.layers() );
-      filters.addProvider( mAccessControl );
+      mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
+      filters.addProvider( mContext.accessControl() );
 #endif
-      QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads(), &filters );
+      QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
       renderJob.render( mapSettings, &image );
       painter = renderJob.takePainter();
 
@@ -3063,7 +2621,7 @@ namespace QgsWms
         QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
         if ( errorLayer )
         {
-          layerWMSName = layerNickname( *errorLayer );
+          layerWMSName = mContext.layerNickname( *errorLayer );
         }
 
         //Log first error
@@ -3082,14 +2640,14 @@ namespace QgsWms
     {
       switch ( layer->type() )
       {
-        case QgsMapLayer::LayerType::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
           vl->setOpacity( opacity / 255. );
           break;
         }
 
-        case QgsMapLayer::LayerType::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
         {
           QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
           QgsRasterRenderer *rasterRenderer = rl->renderer();
@@ -3097,8 +2655,8 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayer::MeshLayer:
-        case QgsMapLayer::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::PluginLayer:
           break;
       }
     }
@@ -3106,7 +2664,7 @@ namespace QgsWms
 
   void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters )
   {
-    if ( layer->type() == QgsMapLayer::VectorLayer )
+    if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
       for ( const QgsWmsParametersFilter &filter : filters )
@@ -3161,7 +2719,7 @@ namespace QgsWms
 
   void QgsRenderer::setLayerSelection( QgsMapLayer *layer, const QStringList &fids ) const
   {
-    if ( layer->type() == QgsMapLayer::VectorLayer )
+    if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsFeatureIds selectedIds;
 
@@ -3178,7 +2736,7 @@ namespace QgsWms
   void QgsRenderer::setLayerAccessControlFilter( QgsMapLayer *layer ) const
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( mAccessControl, layer );
+    QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( mContext.accessControl(), layer );
 #else
     Q_UNUSED( layer );
 #endif
@@ -3216,56 +2774,14 @@ namespace QgsWms
     // WIDTH / HEIGHT parameters. If not, the image has to be scaled (required
     // by WMS spec)
     QImage *scaledImage = nullptr;
-    int width = mWmsParameters.widthAsInt();
-    int height = mWmsParameters.heightAsInt();
+    int width = this->width();
+    int height = this->height();
     if ( width != image->width() || height != image->height() )
     {
       scaledImage = new QImage( image->scaled( width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
     }
 
     return scaledImage;
-  }
-
-  void QgsRenderer::checkLayerReadPermissions( QgsMapLayer *layer ) const
-  {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    if ( !mAccessControl->layerReadPermission( layer ) )
-    {
-      throw QgsSecurityException( QStringLiteral( "You are not allowed to access to the layer: %1" ).arg( layer->name() ) );
-    }
-#else
-    Q_UNUSED( layer );
-#endif
-  }
-
-  void QgsRenderer::removeUnwantedLayers( QList<QgsMapLayer *> &layers, double scaleDenominator ) const
-  {
-    QList<QgsMapLayer *> wantedLayers;
-
-    for ( QgsMapLayer *layer : layers )
-    {
-      if ( !layerScaleVisibility( *layer, scaleDenominator ) )
-        continue;
-
-      if ( mRestrictedLayers.contains( layerNickname( *layer ) ) )
-        continue;
-
-      wantedLayers.append( layer );
-    }
-
-    layers = wantedLayers;
-  }
-
-  void QgsRenderer::removeNonIdentifiableLayers( QList<QgsMapLayer *> &layers ) const
-  {
-    QList<QgsMapLayer *>::iterator it = layers.begin();
-    while ( it != layers.end() )
-    {
-      if ( !( *it )->flags().testFlag( QgsMapLayer::Identifiable ) )
-        it = layers.erase( it );
-      else
-        ++it;
-    }
   }
 
   QgsLayerTreeModel *QgsRenderer::buildLegendTreeModel( const QList<QgsMapLayer *> &layers, double scaleDenominator, QgsLayerTree &rootGroup )
@@ -3305,7 +2821,7 @@ namespace QgsWms
       if ( !ml->title().isEmpty() )
         lt->setName( ml->title() );
 
-      if ( ml->type() != QgsMapLayer::VectorLayer || !showFeatureCount )
+      if ( ml->type() != QgsMapLayerType::VectorLayer || !showFeatureCount )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
@@ -3398,12 +2914,6 @@ namespace QgsWms
     return legendModel;
   }
 
-  qreal QgsRenderer::dotsPerMm() const
-  {
-    std::unique_ptr<QImage> tmpImage( createImage( 1, 1, false ) );
-    return tmpImage->dotsPerMeterX() / 1000.0;
-  }
-
   void QgsRenderer::handlePrintErrors( const QgsLayout *layout ) const
   {
     if ( !layout )
@@ -3428,4 +2938,102 @@ namespace QgsWms
     }
   }
 
+  int QgsRenderer::height() const
+  {
+    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
+           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
+         mWmsParameters.srcHeightAsInt() > 0 )
+      return mWmsParameters.srcHeightAsInt();
+    return mWmsParameters.heightAsInt();
+  }
+
+  int QgsRenderer::width() const
+  {
+    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
+           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
+         mWmsParameters.srcWidthAsInt() > 0 )
+      return mWmsParameters.srcWidthAsInt();
+    return mWmsParameters.widthAsInt();
+  }
+
+  void QgsRenderer::configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings )
+  {
+    const bool useSld = !mContext.parameters().sldBody().isEmpty();
+
+    for ( auto layer : layers )
+    {
+      const QgsWmsParametersLayer param = mContext.parameters( *layer );
+
+      if ( param.mNickname.isEmpty() )
+      {
+        continue;
+      }
+
+      if ( useSld )
+      {
+        setLayerSld( layer, mContext.sld( *layer ) );
+      }
+      else
+      {
+        setLayerStyle( layer, mContext.style( *layer ) );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::UseOpacity ) )
+      {
+        setLayerOpacity( layer, param.mOpacity );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::UseFilter ) )
+      {
+        setLayerFilter( layer, param.mFilter );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::UseSelection ) )
+      {
+        setLayerSelection( layer, param.mSelection );
+      }
+
+      if ( settings && mContext.updateExtent() )
+      {
+        updateExtent( layer, *settings );
+      }
+
+      if ( mContext.testFlag( QgsWmsRenderContext::SetAccessControl ) )
+      {
+        setLayerAccessControlFilter( layer );
+      }
+    }
+
+    if ( mContext.testFlag( QgsWmsRenderContext::AddHighlightLayers ) )
+    {
+      layers = highlightLayers( mWmsParameters.highlightLayersParameters() ) << layers;
+    }
+
+    if ( mContext.testFlag( QgsWmsRenderContext::AddExternalLayers ) )
+    {
+      layers = externalLayers( mWmsParameters.externalLayersParameters() ) << layers;
+    }
+  }
+
+  void QgsRenderer::setLayerStyle( QgsMapLayer *layer, const QString &style ) const
+  {
+    if ( style.isEmpty() )
+    {
+      return;
+    }
+
+    bool rc = layer->styleManager()->setCurrentStyle( style );
+    if ( ! rc )
+    {
+      throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ),
+                                    QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layer->name() ) );
+    }
+  }
+
+  void QgsRenderer::setLayerSld( QgsMapLayer *layer, const QDomElement &sld ) const
+  {
+    QString err;
+    layer->readSld( sld, err );
+    layer->setCustomProperty( "readSLD", true );
+  }
 } // namespace QgsWms

@@ -52,13 +52,13 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
     /**
      * Rollback command, release savepoint or set error status
      * save point must be set prior to call
-     * error satus should be false prior to call
+     * error satus should be FALSE prior to call
      */
     bool rollBackToSavePoint();
 
     /**
      * Set the command savepoint or set error status.
-     * Error satus should be false prior to call. If the savepoint given in
+     * Error satus should be FALSE prior to call. If the savepoint given in
      * parameter is empty, then a new one is created if none is currently
      * available in the transaction.
      */

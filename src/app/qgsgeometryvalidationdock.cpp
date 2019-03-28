@@ -50,7 +50,6 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
-  connect( mTopologyChecksPendingButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::triggerTopologyChecks );
 
   mFeatureRubberband = new QgsRubberBand( mMapCanvas );
   mErrorRubberband = new QgsRubberBand( mMapCanvas );
@@ -70,8 +69,10 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mErrorLocationRubberband->setColor( QColor( 50, 255, 50, 255 ) );
 
   mProblemDetailWidget->setVisible( false );
-}
 
+  // Problem resolution is unstable and therefore disabled by default
+  mResolutionWidget->setVisible( QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ) == QLatin1String( "true" ) );
+}
 
 QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel() const
 {
@@ -84,9 +85,15 @@ void QgsGeometryValidationDock::setGeometryValidationModel( QgsGeometryValidatio
   mErrorListView->setModel( mGeometryValidationModel );
 
   connect( mErrorListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsGeometryValidationDock::onCurrentErrorChanged );
+  connect( mErrorListView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this]() { updateMapCanvasExtent(); } );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::dataChanged, this, &QgsGeometryValidationDock::onDataChanged );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsRemoved, this, &QgsGeometryValidationDock::updateCurrentError );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsInserted, this, &QgsGeometryValidationDock::onRowsInserted );
+
+  // We cannot connect to the regular aboutToRemoveRows signal, because we need this to happen
+  // before the currentIndex is changed.
+  connect( mGeometryValidationModel, &QgsGeometryValidationModel::aboutToRemoveSingleGeometryCheck, this, [this]() { mPreventZoomToError = true; } );
+  connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsRemoved, this, [this]() { mPreventZoomToError = false; } );
 }
 
 void QgsGeometryValidationDock::gotoNextError()
@@ -124,13 +131,6 @@ void QgsGeometryValidationDock::zoomToFeature()
     QgsRectangle mapExtent = mLayerTransform.transform( featureExtent );
     mMapCanvas->zoomToFeatureExtent( mapExtent );
   }
-}
-
-void QgsGeometryValidationDock::triggerTopologyChecks()
-{
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if ( layer )
-    mGeometryValidationService->triggerTopologyChecks( layer );
 }
 
 void QgsGeometryValidationDock::updateLayerTransform()
@@ -244,16 +244,22 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
   bool hasFeature = !FID_IS_NULL( current.data( QgsGeometryValidationModel::ErrorFeatureIdRole ) );
   mZoomToFeatureButton->setEnabled( hasFeature );
+}
 
-  switch ( mLastZoomToAction )
+void QgsGeometryValidationDock::updateMapCanvasExtent()
+{
+  if ( !mPreventZoomToError )
   {
-    case  ZoomToProblem:
-      zoomToProblem();
-      break;
+    switch ( mLastZoomToAction )
+    {
+      case  ZoomToProblem:
+        zoomToProblem();
+        break;
 
-    case ZoomToFeature:
-      zoomToFeature();
-      break;
+      case ZoomToFeature:
+        zoomToFeature();
+        break;
+    }
   }
 }
 
@@ -283,7 +289,6 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
 
 void QgsGeometryValidationDock::onLayerEditingStatusChanged()
 {
-  bool enabled = false;
   if ( mCurrentLayer && mCurrentLayer->isSpatial() && mCurrentLayer->isEditable() )
   {
     const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mCurrentLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
@@ -291,13 +296,9 @@ void QgsGeometryValidationDock::onLayerEditingStatusChanged()
     for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
     {
       if ( activeChecks.contains( factory->id() ) )
-      {
-        enabled = true;
         break;
-      }
     }
   }
-  mTopologyChecksPendingButton->setEnabled( enabled );
 }
 
 void QgsGeometryValidationDock::onLayerDestroyed( QObject *layer )
@@ -335,7 +336,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
 
     QPropertyAnimation *errorAnimation = new QPropertyAnimation( mErrorRubberband, "fillColor" );
     errorAnimation->setEasingCurve( QEasingCurve::OutQuad );
-    connect( errorAnimation, &QPropertyAnimation::finished, featureAnimation, &QPropertyAnimation::deleteLater );
+    connect( errorAnimation, &QPropertyAnimation::finished, errorAnimation, &QPropertyAnimation::deleteLater );
     connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this]
     {
       mErrorRubberband->update();

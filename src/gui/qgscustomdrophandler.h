@@ -87,7 +87,7 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
     virtual void handleMimeData( const QMimeData *data );
 
     /**
-     * Called when the specified \a file has been dropped onto QGIS. If true
+     * Called when the specified \a file has been dropped onto QGIS. If TRUE
      * is returned, then the handler has accepted this file and it should not
      * be further processed (e.g. by other QgsCustomDropHandlers).
      *

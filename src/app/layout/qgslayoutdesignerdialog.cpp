@@ -411,9 +411,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   distributeToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
   distributeToolButton->addAction( mActionDistributeLeft );
   distributeToolButton->addAction( mActionDistributeHCenter );
+  distributeToolButton->addAction( mActionDistributeHSpace );
   distributeToolButton->addAction( mActionDistributeRight );
   distributeToolButton->addAction( mActionDistributeTop );
   distributeToolButton->addAction( mActionDistributeVCenter );
+  distributeToolButton->addAction( mActionDistributeVSpace );
   distributeToolButton->addAction( mActionDistributeBottom );
   distributeToolButton->setDefaultAction( mActionDistributeLeft );
   mActionsToolbar->addWidget( distributeToolButton );
@@ -582,6 +584,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeHCenter );
   } );
+  connect( mActionDistributeHSpace, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeHSpace );
+  } );
   connect( mActionDistributeRight, &QAction::triggered, this, [ = ]
   {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeRight );
@@ -593,6 +599,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionDistributeVCenter, &QAction::triggered, this, [ = ]
   {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeVCenter );
+  } );
+  connect( mActionDistributeVSpace, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeVSpace );
   } );
   connect( mActionDistributeBottom, &QAction::triggered, this, [ = ]
   {
@@ -3845,10 +3855,9 @@ void QgsLayoutDesignerDialog::showSvgExportWarning()
     m.setCheckBoxVisible( true );
     m.setCheckBoxQgsSettingsLabel( QStringLiteral( "/UI/displaySVGWarning" ) );
     m.setMessageAsHtml( tr( "<p>The SVG export function in QGIS has several "
-                            "problems due to bugs and deficiencies in the " )
-                        + tr( "underlying Qt SVG library. In particular, there are problems "
-                              "with layers not being clipped to the map "
-                              "bounding box.</p>" )
+                            "problems due to bugs and deficiencies in the "
+                            "underlying Qt SVG library. In particular, there are problems "
+                            "with layers not being clipped to the map bounding box.</p>" )
                         + tr( "If you require a vector-based output file from "
                               "QGIS it is suggested that you try exporting "
                               "to PDF if the SVG output is not "
@@ -3964,6 +3973,8 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   // Image size
   if ( mLayout )
   {
+    settings.flags = mLayout->renderContext().flags();
+
     maxPageSize = mLayout->pageCollection()->maximumPageSize();
     hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
     dpi = mLayout->renderContext().dpi();
@@ -4010,9 +4021,11 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     settings.imageSize = imageSize;
   }
   settings.generateWorldFile = imageDlg.generateWorldFile();
-  settings.flags = QgsLayoutRenderContext::FlagUseAdvancedEffects;
+  settings.flags |= QgsLayoutRenderContext::FlagUseAdvancedEffects;
   if ( imageDlg.antialiasing() )
     settings.flags |= QgsLayoutRenderContext::FlagAntialiasing;
+  else
+    settings.flags &= ~QgsLayoutRenderContext::FlagAntialiasing;
 
   return true;
 }
@@ -4037,6 +4050,8 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   bool disableRasterTiles = false;
   if ( mLayout )
   {
+    settings.flags = mLayout->renderContext().flags();
+
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
     layersAsGroup = mLayout->customProperty( QStringLiteral( "svgGroupLayers" ), false ).toBool();
     cropToContents = mLayout->customProperty( QStringLiteral( "svgCropToContents" ), false ).toBool();
@@ -4125,6 +4140,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool disableRasterTiles = false;
   if ( mLayout )
   {
+    settings.flags = mLayout->renderContext().flags();
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), 0 ).toBool();
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
@@ -4324,9 +4340,11 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   mActionAlignBottom->setEnabled( layoutAvailable );
   mActionDistributeLeft->setEnabled( layoutAvailable );
   mActionDistributeHCenter->setEnabled( layoutAvailable );
+  mActionDistributeHSpace->setEnabled( layoutAvailable );
   mActionDistributeRight->setEnabled( layoutAvailable );
   mActionDistributeTop->setEnabled( layoutAvailable );
   mActionDistributeVCenter->setEnabled( layoutAvailable );
+  mActionDistributeVSpace->setEnabled( layoutAvailable );
   mActionDistributeBottom->setEnabled( layoutAvailable );
   mActionResizeNarrowest->setEnabled( layoutAvailable );
   mActionResizeWidest->setEnabled( layoutAvailable );
@@ -4469,9 +4487,16 @@ void QgsLayoutDesignerDialog::setLastExportPath( const QString &path ) const
 
 bool QgsLayoutDesignerDialog::checkBeforeExport()
 {
-  QgsLayoutValidityCheckContext context( mLayout );
-  return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
-         tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
+  if ( mLayout )
+  {
+    QgsLayoutValidityCheckContext context( mLayout );
+    return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
+           tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
+  }
+  else
+  {
+    return true;
+  }
 }
 
 void QgsLayoutDesignerDialog::updateWindowTitle()

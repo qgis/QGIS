@@ -62,7 +62,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
-     * Returns true if the combo box allows the empty field ("not set") choice.
+     * Returns TRUE if the combo box allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
      * \since QGIS 3.0
      */
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     QgsVectorLayer *layer() const;
 
   signals:
-    //! the signal is emitted when the currently selected field changes
+    //! Emitted when the currently selected field changes.
     void fieldChanged( const QString &fieldName );
 
   public slots:

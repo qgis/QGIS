@@ -349,7 +349,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
 {
   switch ( ml->type() )
   {
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
       if ( vl->renderer() && vl->renderer()->forceRasterRender() )
@@ -367,7 +367,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
       }
       break;
     }
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
     {
       // preview of intermediate raster rendering results requires a temporary output image
       if ( mSettings.testFlag( QgsMapSettings::RenderPartialOutput ) )
@@ -375,8 +375,8 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
       break;
     }
 
-    case QgsMapLayer::MeshLayer:
-    case QgsMapLayer::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PluginLayer:
       break;
   }
 

@@ -101,6 +101,7 @@ SET(QGIS_CORE_SRCS
   annotations/qgstextannotation.cpp
 
   expression/qgsexpression.cpp
+  expression/qgsexpressioncontextutils.cpp
   expression/qgsexpressionnode.cpp
   expression/qgsexpressionnodeimpl.cpp
   expression/qgsexpressionfunction.cpp
@@ -283,6 +284,7 @@ SET(QGIS_CORE_SRCS
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
   qgsprojectversion.cpp
+  qgsprojutils.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
   qgspropertytransformer.cpp
@@ -483,6 +485,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshspatialindex.cpp
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
+  mesh/qgsmeshtimesettings.cpp
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
@@ -829,6 +832,7 @@ SET(QGIS_CORE_HDRS
   ../plugins/qgisplugin.h
 
   expression/qgsexpression.h
+  expression/qgsexpressioncontextutils.h
   expression/qgsexpressionnode.h
   expression/qgsexpressionnodeimpl.h
   expression/qgsexpressionfunction.h
@@ -937,6 +941,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectstorageregistry.h
   qgsprojecttranslator.h
   qgsprojectversion.h
+  qgsprojutils.h
   qgsproperty.h
   qgsproperty_p.h
   qgspropertycollection.h
@@ -1115,6 +1120,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshspatialindex.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
+  mesh/qgsmeshtimesettings.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h
@@ -1215,7 +1221,6 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${LIBZIP_INCLUDE_DIR}
   3d
   annotations
   auth
@@ -1248,11 +1253,11 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
+  ${PROJ_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}

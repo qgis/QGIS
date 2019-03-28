@@ -97,7 +97,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
  * \endcode
  *
- *  In order to automate redrawing of a raster layer, you should like it to a map canvas like this :
+ *  In order to automate redrawing of a raster layer, you should link it to a map canvas like this :
  *
  * \code{.cpp}
  *     QObject::connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
         : loadDefaultStyle( loadDefaultStyle )
       {}
 
-      //! Sets to true if the default layer style should be loaded
+      //! Sets to TRUE if the default layer style should be loaded
       bool loadDefaultStyle = true;
     };
 
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \param baseName base name of the layer
      * \param provider provider string
      * \param options provider options
-     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
      * data source
      * \see dataSourceChanged()
      * \since QGIS 3.6
@@ -413,6 +413,18 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setLayerOrder( const QStringList &layers ) override;
     void setSubLayerVisibility( const QString &name, bool vis ) override;
     QDateTime timestamp() const override;
+
+    /**
+     * Writes the symbology of the layer into the document provided in SLD 1.0.0 format
+     * \param node the node that will have the style element added to it.
+     * \param doc the document that will have the QDomNode added.
+     * \param errorMessage reference to string that will be updated with any error messages
+     * \param props a open ended set of properties that can drive/inform the SLD encoding
+     * \returns TRUE in case of success
+     * \since QGIS 3.6
+     */
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
+
 
   public slots:
     void showStatusMessage( const QString &message );

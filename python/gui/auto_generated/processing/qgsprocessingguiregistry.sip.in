@@ -54,7 +54,7 @@ widgets.
 %Docstring
 Gets the configuration widget for an ``algorithm``. This widget will be shown
 next to parameter widgets. Most algorithms do not have a configuration widget
-and in this case, None will be returned.
+and in this case, ``None`` will be returned.
 
 .. versionadded:: 3.2
 %End
@@ -66,7 +66,7 @@ type via createParameterWidgetWrapper() and createModelerParameterWidget().
 
 Ownership of ``factory`` is transferred to the registry.
 
-Returns true if the factory was successfully added, or false if the factory could not be added. Each
+Returns ``True`` if the factory was successfully added, or ``False`` if the factory could not be added. Each
 factory must return a unique value for QgsProcessingParameterWidgetFactoryInterface.parameterType(),
 and attempting to add a new factory with a duplicate type will result in failure.
 
@@ -94,7 +94,7 @@ Creates a new parameter widget wrapper for the given ``parameter``. The ``type``
 dictates the type of dialog the wrapper should be created for. The caller takes ownership
 of the returned wrapper.
 
-If no factory is registered which handles the given ``parameter``, a None will be returned.
+If no factory is registered which handles the given ``parameter``, ``None`` will be returned.
 
 .. seealso:: :py:func:`createModelerParameterWidget`
 
@@ -116,7 +116,7 @@ string, which uniquely identifies which child algorithm the parameter is associa
 with inside the given ``model``.
 
 The caller takes ownership of the returned widget. If no factory is registered which
-handles the given ``parameter``, a None will be returned.
+handles the given ``parameter``, ``None`` will be returned.
 
 .. seealso:: :py:func:`createParameterWidgetWrapper`
 

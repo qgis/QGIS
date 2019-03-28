@@ -23,6 +23,8 @@
 #include "qgsproject.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include <QButtonGroup>
 
@@ -77,6 +79,12 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mFormatNumChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mScaleBasedVisibilityChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mFontLimitPixelChkBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
+  connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
+  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
+  connect( mGeometryGeneratorExpressionButton, &QToolButton::clicked, this, &QgsLabelingGui::showGeometryGeneratorExpressionBuilder );
+  connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
+  connect( mGeometryGenerator, &QgsCodeEditorExpression::textChanged, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
+  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
@@ -85,70 +93,42 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mMaxScaleWidget->setMapCanvas( mapCanvas );
   mMaxScaleWidget->setShowCurrentScaleButton( true );
 
+  mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );
+  mGeometryGeneratorWarningLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  connect( mGeometryGeneratorWarningLabel, &QLabel::linkActivated, this, [this]( const QString & link )
+  {
+    if ( link == QLatin1String( "#determineGeometryGeneratorType" ) )
+      determineGeometryGeneratorType();
+  } );
+
   setLayer( layer );
 }
 
 void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 {
-  if ( !mapLayer || mapLayer->type() != QgsMapLayer::VectorLayer )
+  mPreviewFeature = QgsFeature();
+
+  if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
   {
     setEnabled( false );
     return;
   }
-  else
-  {
-    setEnabled( true );
-  }
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+  setEnabled( true );
+
+  QgsVectorLayer *layer = static_cast<QgsVectorLayer *>( mapLayer );
   mLayer = layer;
 
   // load labeling settings from layer
   const QgsPalLayerSettings &lyr = mSettings;
 
-  // show/hide options based upon geometry type
-  chkMergeLines->setVisible( mLayer->geometryType() == QgsWkbTypes::LineGeometry );
-  mDirectSymbolsFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::LineGeometry );
-  mMinSizeFrame->setVisible( mLayer->geometryType() != QgsWkbTypes::PointGeometry );
-  mPolygonObstacleTypeFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
-  mPolygonFeatureOptionsFrame->setVisible( mLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
+  updateGeometryTypeBasedWidgets();
 
   mFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea da;
   da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
-
-  // set placement methods page based on geometry type
-  switch ( mLayer->geometryType() )
-  {
-    case QgsWkbTypes::PointGeometry:
-      stackedPlacement->setCurrentWidget( pagePoint );
-      break;
-    case QgsWkbTypes::LineGeometry:
-      stackedPlacement->setCurrentWidget( pageLine );
-      break;
-    case QgsWkbTypes::PolygonGeometry:
-      stackedPlacement->setCurrentWidget( pagePolygon );
-      break;
-    case QgsWkbTypes::NullGeometry:
-      break;
-    case QgsWkbTypes::UnknownGeometry:
-      qFatal( "unknown geometry type unexpected" );
-  }
-
-  if ( mLayer->geometryType() == QgsWkbTypes::PointGeometry )
-  {
-    // follow placement alignment is only valid for point layers
-    if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )
-      mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
-  }
-  else
-  {
-    int idx = mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) );
-    if ( idx >= 0 )
-      mFontMultiLineAlignComboBox->removeItem( idx );
-  }
 
   mFieldExpressionWidget->setEnabled( mMode == Labels );
   mLabelingFrame->setEnabled( mMode == Labels );
@@ -249,7 +229,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   wrapCharacterEdit->setText( lyr.wrapChar );
   mAutoWrapLengthSpinBox->setValue( lyr.autoWrapLength );
   mAutoWrapTypeComboBox->setCurrentIndex( lyr.useMaxLineLengthForAutoWrap ? 0 : 1 );
-  mFontMultiLineAlignComboBox->setCurrentIndex( ( unsigned int ) lyr.multilineAlign );
+  mFontMultiLineAlignComboBox->setCurrentIndex( lyr.multilineAlign );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
   mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
@@ -272,6 +252,10 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
 
   mZIndexSpinBox->setValue( lyr.zIndex );
+
+  mGeometryGenerator->setText( lyr.geometryGenerator );
+  mGeometryGeneratorGroupBox->setChecked( lyr.geometryGeneratorEnabled );
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( lyr.geometryGeneratorType ) );
 
   mDataDefinedProperties = lyr.dataDefinedProperties();
 
@@ -441,6 +425,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
   lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineAlignComboBox->currentIndex();
   lyr.preserveRotation = chkPreserveRotation->isChecked();
+  lyr.geometryGenerator = mGeometryGenerator->text();
+  lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+  lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
 
   lyr.zIndex = mZIndexSpinBox->value();
 
@@ -666,4 +653,135 @@ void QgsLabelingGui::deactivateField( QgsPalLayerSettings::Property key )
     button->setToProperty( p );
     mDataDefinedProperties.setProperty( key, p );
   }
+}
+
+void QgsLabelingGui::updateGeometryTypeBasedWidgets()
+{
+  QgsWkbTypes::GeometryType geometryType;
+
+  if ( mGeometryGeneratorGroupBox->isChecked() )
+    geometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+  else
+    geometryType = mLayer->geometryType();
+
+  // show/hide options based upon geometry type
+  chkMergeLines->setVisible( geometryType == QgsWkbTypes::LineGeometry );
+  mDirectSymbolsFrame->setVisible( geometryType == QgsWkbTypes::LineGeometry );
+  mMinSizeFrame->setVisible( geometryType != QgsWkbTypes::PointGeometry );
+  mPolygonObstacleTypeFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
+  mPolygonFeatureOptionsFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
+
+
+  // set placement methods page based on geometry type
+  switch ( geometryType )
+  {
+    case QgsWkbTypes::PointGeometry:
+      stackedPlacement->setCurrentWidget( pagePoint );
+      break;
+    case QgsWkbTypes::LineGeometry:
+      stackedPlacement->setCurrentWidget( pageLine );
+      break;
+    case QgsWkbTypes::PolygonGeometry:
+      stackedPlacement->setCurrentWidget( pagePolygon );
+      break;
+    case QgsWkbTypes::NullGeometry:
+      break;
+    case QgsWkbTypes::UnknownGeometry:
+      qFatal( "unknown geometry type unexpected" );
+  }
+
+  if ( geometryType == QgsWkbTypes::PointGeometry )
+  {
+    // follow placement alignment is only valid for point layers
+    if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )
+      mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
+  }
+  else
+  {
+    int idx = mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) );
+    if ( idx >= 0 )
+      mFontMultiLineAlignComboBox->removeItem( idx );
+  }
+
+  updatePlacementWidgets();
+  updateLinePlacementOptions();
+}
+
+void QgsLabelingGui::showGeometryGeneratorExpressionBuilder()
+{
+  QgsExpressionBuilderDialog expressionBuilder( mLayer );
+
+  expressionBuilder.setExpressionText( mGeometryGenerator->text() );
+  expressionBuilder.setExpressionContext( createExpressionContext() );
+
+  if ( expressionBuilder.exec() )
+  {
+    mGeometryGenerator->setText( expressionBuilder.expressionText() );
+  }
+}
+
+void QgsLabelingGui::validateGeometryGeneratorExpression()
+{
+  bool valid = true;
+
+  if ( mGeometryGeneratorGroupBox->isChecked() )
+  {
+    if ( !mPreviewFeature.isValid() && mLayer )
+      mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
+
+    QgsExpression expression( mGeometryGenerator->text() );
+    QgsExpressionContext context = createExpressionContext();
+    context.setFeature( mPreviewFeature );
+
+    expression.prepare( &context );
+
+    if ( expression.hasParserError() )
+    {
+      mGeometryGeneratorWarningLabel->setText( expression.parserErrorString() );
+      valid = false;
+    }
+    else
+    {
+      const QVariant result = expression.evaluate( &context );
+      const QgsGeometry geometry = result.value<QgsGeometry>();
+      QgsWkbTypes::GeometryType configuredGeometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+      if ( geometry.isNull() )
+      {
+        mGeometryGeneratorWarningLabel->setText( tr( "Result of the expression is not a geometry" ) );
+        valid = false;
+      }
+      else if ( geometry.type() != configuredGeometryType )
+      {
+        mGeometryGeneratorWarningLabel->setText( QStringLiteral( "<p>%1</p><p><a href=\"#determineGeometryGeneratorType\">%2</a></p>" ).arg(
+              tr( "Result of the expression does not match configured geometry type." ),
+              tr( "Change to %1" ).arg( QgsWkbTypes::geometryDisplayString( geometry.type() ) ) ) );
+        valid = false;
+      }
+    }
+  }
+
+  // The collapsible groupbox internally changes the visibility of this
+  // Work around by setting the visibility deferred in the next event loop cycle.
+  QTimer *timer = new QTimer();
+  connect( timer, &QTimer::timeout, this, [this, valid]()
+  {
+    mGeometryGeneratorWarningLabel->setVisible( !valid );
+  } );
+  connect( timer, &QTimer::timeout, timer, &QTimer::deleteLater );
+  timer->start( 0 );
+}
+
+void QgsLabelingGui::determineGeometryGeneratorType()
+{
+  if ( !mPreviewFeature.isValid() && mLayer )
+    mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( mPreviewFeature );
+
+  QgsExpression expression( mGeometryGenerator->text() );
+  QgsExpressionContext context = createExpressionContext();
+  context.setFeature( mPreviewFeature );
+
+  expression.prepare( &context );
+  const QgsGeometry geometry = expression.evaluate( &context ).value<QgsGeometry>();
+
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( geometry.type() ) );
 }

@@ -65,7 +65,7 @@ Returns the potential error of the download
 %Docstring
 Start the download
 
-:param redownload: if set to true, it will restart any achieved or pending download.
+:param redownload: if set to ``True``, it will restart any achieved or pending download.
 %End
 
     void cancel();

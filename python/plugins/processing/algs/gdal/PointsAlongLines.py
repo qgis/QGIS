@@ -100,6 +100,7 @@ class PointsAlongLines(GdalAlgorithm):
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)

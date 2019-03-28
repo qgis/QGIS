@@ -78,7 +78,7 @@ the data after a short timeout).
 
     virtual bool handleFileDrop( const QString &file );
 %Docstring
-Called when the specified ``file`` has been dropped onto QGIS. If true
+Called when the specified ``file`` has been dropped onto QGIS. If ``True``
 is returned, then the handler has accepted this file and it should not
 be further processed (e.g. by other QgsCustomDropHandlers).
 

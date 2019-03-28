@@ -92,9 +92,13 @@ class AssignProjection(GdalAlgorithm):
 
         arguments.append(fileName)
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         self.setOutputValue(self.OUTPUT, fileName)
+
         return commands

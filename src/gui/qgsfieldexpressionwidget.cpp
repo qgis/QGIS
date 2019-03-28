@@ -26,6 +26,7 @@
 #include "qgsfieldmodel.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
@@ -80,6 +81,17 @@ void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString &title )
 void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
 {
   mFieldProxyModel->setFilters( filters );
+}
+
+void QgsFieldExpressionWidget::setAllowEmptyFieldName( bool allowEmpty )
+{
+  mCombo->lineEdit()->setClearButtonEnabled( allowEmpty );
+  mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName( allowEmpty );
+}
+
+bool QgsFieldExpressionWidget::allowEmptyFieldName() const
+{
+  return mFieldProxyModel->sourceFieldModel()->allowEmptyFieldName();
 }
 
 void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
@@ -177,6 +189,8 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
   if ( fieldName.isEmpty() )
   {
     setRow( -1 );
+    emit fieldChanged( QString() );
+    emit fieldChanged( QString(), true );
     return;
   }
 

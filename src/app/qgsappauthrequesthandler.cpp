@@ -20,10 +20,13 @@
 #include "qgsauthmanager.h"
 #include "qgisapp.h"
 #include "qgscredentials.h"
+
 #include <QAuthenticator>
 
 void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+
   QString username = auth->user();
   QString password = auth->password();
 
@@ -44,37 +47,29 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
 
   for ( ;; )
   {
-    bool ok;
-
-    {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
-      ok = QgsCredentials::instance()->get(
-             QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-             username, password,
-             QObject::tr( "Authentication required" ) );
-    }
+    bool ok = QgsCredentials::instance()->get(
+                QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+                username, password,
+                QObject::tr( "Authentication required" ) );
     if ( !ok )
       return;
 
     if ( auth->user() != username || ( password != auth->password() && !password.isNull() ) )
-      break;
-
-    // credentials didn't change - stored ones probably wrong? clear password and retry
     {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
+      // save credentials
+      QgsCredentials::instance()->put(
+        QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+        username, password
+      );
+      break;
+    }
+    else
+    {
+      // credentials didn't change - stored ones probably wrong? clear password and retry
       QgsCredentials::instance()->put(
         QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
         username, QString() );
     }
-  }
-
-  // save credentials
-  {
-    QMutexLocker lock( QgsCredentials::instance()->mutex() );
-    QgsCredentials::instance()->put(
-      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-      username, password
-    );
   }
 
   auth->setUser( username );

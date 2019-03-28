@@ -27,14 +27,17 @@ Drawer {
   property int iconSize: photoPanel.width/20
   property var fieldItem
 
-  property color bgColor: "white"
-  property real bgOpacity: 0.8
+  property color bgColor: "black"
+  property real bgOpacity: 1
   property color borderColor: "black"
 
   // icons:
   property var captureButtonIcon: QgsQuick.Utils.getThemeIcon("ic_camera_alt_border")
   property var okButtonIcon: QgsQuick.Utils.getThemeIcon("ic_check_black")
   property var cancelButtonIcon: QgsQuick.Utils.getThemeIcon("ic_clear_black")
+  property real imageButtonSize: 45 * QgsQuick.Utils.dp
+  property real buttonSize: imageButtonSize * 1.2
+  property var buttonsPosition
 
 
   id: photoPanel
@@ -42,8 +45,6 @@ Drawer {
   modal: true
   interactive: true
   dragMargin: 0 // prevents opening the drawer by dragging.
-
-
 
   background: Rectangle {
     color: photoPanel.bgColor
@@ -72,7 +73,7 @@ Drawer {
     Component.onDestruction: {
       if (!captureItem && camera.imageCapture.capturedImagePath != ""){
         captureItem.saveImage = false
-        QgsQuick.Utils.remove(camera.imageCapture.capturedImagePath)
+        QgsQuick.Utils.removeFile(camera.imageCapture.capturedImagePath)
       }
       captureItem.saveImage = false
     }
@@ -87,10 +88,13 @@ Drawer {
           photoPreview.source = preview
         }
       }
+
+      focus {
+          focusMode: Camera.FocusContinuous
+          focusPointMode: Camera.FocusPointAuto
+      }
     }
 
-    // Flipped VideoOutput on android - known ButtonGroup
-    // https://bugreports.qt.io/browse/QTBUG-64764
     VideoOutput {
       id: videoOutput
       source: camera
@@ -98,17 +102,12 @@ Drawer {
       anchors.fill: parent
       autoOrientation: true
 
-      Rectangle {
+      Item {
         id: captureButton
-        property int borderWidth: 10 * QgsQuick.Utils.dp
-        width: parent.width/20
-        height: parent.width/20
-        color: photoPanel.bgColor
-        border.color: photoPanel.borderColor
+        width: buttonSize
+        height: buttonSize
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        border.width: borderWidth
-        radius: width*0.5
         antialiasing: true
 
         MouseArea {
@@ -129,8 +128,9 @@ Drawer {
           id: captureButtonImage
           fillMode: Image.PreserveAspectFit
           anchors.centerIn: parent
-          sourceSize.height: captureButton.height/2
-          height: captureButton.height/2
+          sourceSize.height: imageButtonSize
+          sourceSize.width: imageButtonSize
+          height: imageButtonSize
           source: photoPanel.captureButtonIcon
         }
 
@@ -147,10 +147,10 @@ Drawer {
           id: cancelButton
           visible: camera.imageCapture.capturedImagePath != ""
 
-          property int borderWidth: 10 * QgsQuick.Utils.dp
-          width: parent.width/20
-          height: parent.width/20
-          color: photoPanel.bgColor
+          property int borderWidth: 5 * QgsQuick.Utils.dp
+          width: buttonSize
+          height: buttonSize
+          color: "white"
           border.color: photoPanel.borderColor
           anchors.right: parent.right
           anchors.top: confirmButton.bottom
@@ -164,7 +164,7 @@ Drawer {
               captureItem.saveImage = false
               photoPreview.visible = false
               if (camera.imageCapture.capturedImagePath != "") {
-                QgsQuick.Utils.remove(camera.imageCapture.capturedImagePath)
+                QgsQuick.Utils.removeFile(camera.imageCapture.capturedImagePath)
               }
             }
           }
@@ -172,8 +172,9 @@ Drawer {
           Image {
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
-            sourceSize.height: captureButton.height/2
-            height: captureButton.height/2
+            sourceSize.height: imageButtonSize
+            sourceSize.width: imageButtonSize
+            height: imageButtonSize
             source: photoPanel.cancelButtonIcon
           }
         }
@@ -183,10 +184,10 @@ Drawer {
           id: confirmButton
           visible: camera.imageCapture.capturedImagePath != ""
 
-          property int borderWidth: 10 * QgsQuick.Utils.dp
-          width: parent.width/20
-          height: parent.width/20
-          color: photoPanel.bgColor
+          property int borderWidth: 5 * QgsQuick.Utils.dp
+          width: buttonSize
+          height: buttonSize
+          color: "white"
           border.color: photoPanel.borderColor
           anchors.right: parent.right
           anchors.verticalCenter: parent.verticalCenter
@@ -199,7 +200,7 @@ Drawer {
             onClicked: {
               captureItem.saveImage = true
               photoPanel.visible = false
-              photoPanel.lastPhotoName = QgsQuick.Utils.getFileName(camera.imageCapture.capturedImagePath)
+              photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.targetDir)
               if (photoPanel.lastPhotoName !== "") {
                 fieldItem.image.source = photoPanel.targetDir + "/" + photoPanel.lastPhotoName
                 fieldItem.valueChanged(photoPanel.lastPhotoName, photoPanel.lastPhotoName === "" || photoPanel.lastPhotoName === null)
@@ -210,8 +211,10 @@ Drawer {
           Image {
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
-            sourceSize.height: captureButton.height/2
-            height: captureButton.height/2
+            sourceSize.height: imageButtonSize
+            sourceSize.width: imageButtonSize
+            height: imageButtonSize
+            width: imageButtonSize
             source: photoPanel.okButtonIcon
           }
         }

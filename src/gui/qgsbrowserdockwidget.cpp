@@ -305,11 +305,11 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
     QgsDataItem *item = mModel->dataItem( index );
     if ( item )
     {
-      QgsDebugMsg( "path = " + item->path() );
+      QgsDebugMsgLevel( "path = " + item->path(), 4 );
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "invalid item" ) );
+      QgsDebugMsgLevel( QStringLiteral( "invalid item" ), 4 );
     }
 
     if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )

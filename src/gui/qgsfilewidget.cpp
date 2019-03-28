@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsfileutils.h"
+#include "qgsmimedatautils.h"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
@@ -53,6 +54,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
 
   // otherwise, use the traditional QLineEdit subclass
   mLineEdit = new QgsFileDropEdit( this );
+  mLineEdit->setDragEnabled( true );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
   mLayout->addWidget( mLineEdit );
 
@@ -429,18 +431,61 @@ void QgsFileDropEdit::setFilters( const QString &filters )
 
 QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
 {
+  QStringList rawPaths;
   QStringList paths;
   if ( event->mimeData()->hasUrls() )
   {
-    Q_FOREACH ( const QUrl &url, event->mimeData()->urls() )
+    const QList< QUrl > urls = event->mimeData()->urls();
+    rawPaths.reserve( urls.count() );
+    for ( const QUrl &url : urls )
     {
-      QFileInfo file( url.toLocalFile() );
-      if ( ( mStorageMode != QgsFileWidget::GetDirectory && file.isFile() &&
-             ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
-           || ( mStorageMode == QgsFileWidget::GetDirectory && file.isDir() ) )
-        paths.append( file.filePath() );
+      const QString local =  url.toLocalFile();
+      if ( !rawPaths.contains( local ) )
+        rawPaths.append( local );
     }
   }
+
+  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+  for ( const QgsMimeDataUtils::Uri &u : lst )
+  {
+    if ( !rawPaths.contains( u.uri ) )
+      rawPaths.append( u.uri );
+  }
+
+  if ( !event->mimeData()->text().isEmpty() && !rawPaths.contains( event->mimeData()->text() ) )
+    rawPaths.append( event->mimeData()->text() );
+
+  paths.reserve( rawPaths.count() );
+  for ( const QString &path : qgis::as_const( rawPaths ) )
+  {
+    QFileInfo file( path );
+    switch ( mStorageMode )
+    {
+      case QgsFileWidget::GetFile:
+      case QgsFileWidget::GetMultipleFiles:
+      case QgsFileWidget::SaveFile:
+      {
+        if ( file.isFile() && ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
+          paths.append( file.filePath() );
+
+        break;
+      }
+
+      case QgsFileWidget::GetDirectory:
+      {
+        if ( file.isDir() )
+          paths.append( file.filePath() );
+        else if ( file.isFile() )
+        {
+          // folder mode, but a file dropped. So get folder name from file
+          paths.append( file.absolutePath() );
+        }
+
+        break;
+      }
+    }
+  }
+
   if ( paths.size() > 1 )
   {
     return QStringLiteral( "\"%1\"" ).arg( paths.join( QStringLiteral( "\" \"" ) ) );

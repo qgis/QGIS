@@ -184,7 +184,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="mHorizontalAlignementLabel">
                <property name="text">
-                <string>Coverage layer </string>
+                <string>Coverage layer</string>
                </property>
               </widget>
              </item>

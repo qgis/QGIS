@@ -1,10 +1,19 @@
 LoadModule fcgid_module modules/mod_fcgid.so
 
-DefaultInitEnv PATH "@osgeo4w@\bin;@osgeo4w@\apps\@package@\bin;@osgeo4w@\apps\grass\grass-@grassversion@\bin;@osgeo4w@\apps\grass\grass-@grassversion@\lib;@windir@\system32;@windir@;@windir@\System32\Wbem"
+DefaultInitEnv O4W_QT_PREFIX "@osgeo4w@/apps/Qt5"
+DefaultInitEnv O4W_QT_BINARIES "@osgeo4w@/apps/Qt5/bin"
+DefaultInitEnv O4W_QT_PLUGINS "@osgeo4w@/apps/Qt5/plugins"
+DefaultInitEnv O4W_QT_LIBRARIES "@osgeo4w@/apps/Qt5/lib"
+DefaultInitEnv O4W_QT_TRANSLATIONS "@osgeo4w@/apps/Qt5/translations"
+DefaultInitEnv O4W_QT_HEADERS "@osgeo4w@/apps/Qt5/include"
+DefaultInitEnv O4W_QT_DOC "@osgeo4w@/apps/Qt5/doc"
+
+DefaultInitEnv PATH "@osgeo4w@\apps\qt5\bin;@osgeo4w@\bin;@osgeo4w@\apps\@package@\bin;@osgeo4w@\apps\grass\@grasspath@\bin;@osgeo4w@\apps\grass\@grasspath@\lib;@windir@\system32;@windir@;@windir@\System32\Wbem"
 DefaultInitEnv QGIS_PREFIX_PATH "@osgeo4w@\apps\@package@"
-DefaultInitEnv QT_PLUGIN_PATH "@osgeo4w@\apps\@package@\qtplugins;@osgeo4w@\apps\qt4\plugins"
+DefaultInitEnv QT_PLUGIN_PATH "@osgeo4w@\apps\@package@\qtplugins;@osgeo4w@\apps\qt5\plugins"
 DefaultInitEnv TEMP "@temp@"
-DefaultInitEnv PYTHONHOME "@osgeo4w@\apps\Python27"
+DefaultInitEnv PYTHONHOME "@osgeo4w@\apps\Python37"
+DefaultInitEnv PYTHONPATH "@osgeo4w@\apps\Python37;@osgeo4w@\apps\Python37\Scripts"
 
 Alias /@package@/ @osgeo4w@/apps/@package@/bin/
 

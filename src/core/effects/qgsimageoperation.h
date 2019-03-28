@@ -117,14 +117,14 @@ class CORE_EXPORT QgsImageOperation
     {
 
       /**
-       * Set to true to perform the distance transform on transparent pixels
-       * in the source image, set to false to perform the distance transform
+       * Set to TRUE to perform the distance transform on transparent pixels
+       * in the source image, set to FALSE to perform the distance transform
        * on opaque pixels
        */
       bool shadeExterior = true;
 
       /**
-       * Set to true to automatically calculate the maximum distance in the
+       * Set to TRUE to automatically calculate the maximum distance in the
        * transform to use as the spread value
        */
       bool useMaxDistance = true;
@@ -155,9 +155,9 @@ class CORE_EXPORT QgsImageOperation
      * speed and blur quality.
      * \param image QImage to blur
      * \param radius blur radius in pixels, maximum value of 16
-     * \param alphaOnly set to true to blur only the alpha component of the image
+     * \param alphaOnly set to TRUE to blur only the alpha component of the image
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied if
-     * alphaOnly is set to false, or ARGB32 if alphaOnly is true
+     * alphaOnly is set to FALSE, or ARGB32 if alphaOnly is TRUE
      */
     static void stackBlur( QImage &image, int radius, bool alphaOnly = false );
 
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsImageOperation
      * \param minSize minimum size for returned region, if desired. If the
      * non-transparent region of the image is smaller than this minimum size,
      * it will be centered in the returned rectangle.
-     * \param center return rectangle will be centered on the center of the original image if set to true
+     * \param center return rectangle will be centered on the center of the original image if set to TRUE
      * \see cropTransparent
      * \since QGIS 2.9
      */
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsImageOperation
      * \param minSize minimum size for cropped image, if desired. If the
      * cropped image is smaller than the minimum size, it will be centered
      * in the returned image.
-     * \param center cropped image will be centered on the center of the original image if set to true
+     * \param center cropped image will be centered on the center of the original image if set to TRUE
      * \since QGIS 2.9
      */
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );

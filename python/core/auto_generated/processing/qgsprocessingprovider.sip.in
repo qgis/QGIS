@@ -91,7 +91,7 @@ The default implementation returns the same string as name().
 
     virtual bool canBeActivated() const;
 %Docstring
-Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
+Returns ``True`` if the provider can be activated, or ``False`` if it cannot be activated (e.g. due to
 missing external dependencies).
 
 .. seealso:: :py:func:`isActive`
@@ -99,7 +99,7 @@ missing external dependencies).
 
     virtual bool isActive() const;
 %Docstring
-Returns true if the provider is active and able to run algorithms.
+Returns ``True`` if the provider is active and able to run algorithms.
 %End
 
     virtual QStringList supportedOutputRasterLayerExtensions() const;
@@ -140,13 +140,22 @@ formats for geometry-less layers can override this method to return a different 
 .. versionadded:: 3.4.3
 %End
 
+    virtual bool isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context, QString &error /Out/ ) const;
+%Docstring
+Returns ``True`` if the specified ``outputValue`` is of a supported file format for the given destination ``parameter``.
+
+If the output value is not supported, ``error`` will be set to a descriptive message explaining why.
+
+.. versionadded:: 3.6
+%End
+
     virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
 %Docstring
 Returns the default file extension to use for vector outputs created by the
 provider.
 
-If ``hasGeometry`` is true then the output file format must have support for
-geometry. If ``hasGeometry`` is false then non-spatial formats can be used.
+If ``hasGeometry`` is ``True`` then the output file format must have support for
+geometry. If ``hasGeometry`` is ``False`` then non-spatial formats can be used.
 
 The default implementation returns the user's default Processing vector output format
 setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
@@ -173,10 +182,10 @@ Otherwise the first reported supported raster format will be used.
 
     virtual bool supportsNonFileBasedOutput() const;
 %Docstring
-Returns true if the provider supports non-file based outputs (such as memory layers
-or direct database outputs). If a provider returns false for this method than it
+Returns ``True`` if the provider supports non-file based outputs (such as memory layers
+or direct database outputs). If a provider returns ``False`` for this method than it
 indicates that none of the outputs from any of the provider's algorithms have
-support for non-file based outputs. Returning true indicates that the algorithm's
+support for non-file based outputs. Returning ``True`` indicates that the algorithm's
 parameters will each individually declare their non-file based support.
 
 The default behavior for providers is to support non-file based outputs, and most
@@ -194,7 +203,7 @@ Subclasses should not individually load any algorithms in their load() implement
 occur within the loadAlgorithms() method. Instead, subclasses should call refreshAlgorithms()
 from any overloaded load() method to trigger an initial load of the provider's algorithms.
 
-:return: true if provider could be successfully loaded
+:return: ``True`` if provider could be successfully loaded
 
 .. seealso:: :py:func:`unload`
 %End
@@ -220,7 +229,7 @@ Returns a list of algorithms supplied by this provider.
 
     const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
 %Docstring
-Returns the matching algorithm by ``name``, or a None if no matching
+Returns the matching algorithm by ``name``, or ``None`` if no matching
 algorithm is contained by this provider.
 
 .. seealso:: :py:func:`algorithms`

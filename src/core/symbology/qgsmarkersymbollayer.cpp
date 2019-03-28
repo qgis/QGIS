@@ -2356,9 +2356,6 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
 
 bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
-  Q_UNUSED( layerName );
-  Q_UNUSED( shift ); //todo...
-
   //size
   double size = mSize;
 
@@ -2388,8 +2385,6 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     size *= mmMapUnitScaleFactor;
   }
 
-  double halfSize = size / 2.0;
-
   //offset, angle
   QPointF offset = mOffset;
 
@@ -2411,7 +2406,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     context.setOriginalValueVariable( mAngle );
     angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle ) + mLineAngle;
   }
-  //angle = -angle; //rotation in Qt is counterclockwise
+
   if ( angle )
     outputOffset = _rotatedOffset( outputOffset, angle );
 
@@ -2450,17 +2445,15 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, strokeColor, strokeWidth,
                                  context.renderContext().scaleFactor(), mFixedAspectRatio );
 
-  //if current entry image is 0: cache image for entry
-  // checks to see if image will fit into cache
-  //update stats for memory usage
   QSvgRenderer r( svgContent );
   if ( !r.isValid() )
-  {
     return false;
-  }
 
   QgsDxfPaintDevice pd( &e );
   pd.setDrawingSize( QSizeF( r.defaultSize() ) );
+
+  QSizeF outSize( r.defaultSize() );
+  outSize.scale( size, size, Qt::KeepAspectRatio );
 
   QPainter p;
   p.begin( &pd );
@@ -2471,7 +2464,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     p.translate( -r.defaultSize().width() / 2.0, -r.defaultSize().height() / 2.0 );
   }
   pd.setShift( shift + QPointF( outputOffset.x(), -outputOffset.y() ) );
-  pd.setOutputSize( QRectF( -halfSize, -halfSize, size, size ) );
+  pd.setOutputSize( QRectF( -outSize.width() / 2.0, -outSize.height() / 2.0, outSize.width(), outSize.height() ) );
   pd.setLayer( layerName );
   r.render( &p );
   p.end();

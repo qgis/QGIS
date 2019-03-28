@@ -132,7 +132,7 @@ warning text message based upon where credentials are stored
 %Docstring
 convertButtonEnabled, mainly useful for unit tests
 
-:return: true if the convert button is enabled
+:return: ``True`` if the convert button is enabled
 %End
 
     void showStoreCheckboxes( bool enabled );
@@ -167,21 +167,21 @@ setStorePasswordCheched check the "Store" checkbox for the password
 %Docstring
 storePassword
 
-:return: true if "Store" checkbox for the password is checked
+:return: ``True`` if "Store" checkbox for the password is checked
 %End
 
     bool storeUsernameIsChecked( ) const;
 %Docstring
 storeUsername
 
-:return: true if "Store" checkbox for the username is checked
+:return: ``True`` if "Store" checkbox for the username is checked
 %End
 
     bool configurationTabIsSelected( );
 %Docstring
 configurationTabIsSelected
 
-:return: true if the configuration tab is the currently selected tab
+:return: ``True`` if the configuration tab is the currently selected tab
 %End
 
   public slots:
@@ -192,7 +192,7 @@ convertToEncrypted is called when the convert to encrypted button is
 clicked and it creates a Basic authentication configuration from
 username and password specified in the Basic tab
 
-:return: return true on success
+:return: return ``True`` on success
 %End
 
 

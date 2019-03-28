@@ -25,6 +25,8 @@
 #include "qgslogger.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsexpressioncontextutils.h"
+
 //////////////////
 // Filter Model //
 //////////////////

@@ -28,6 +28,8 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitempage.h"
 #include "qgsimageoperation.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>

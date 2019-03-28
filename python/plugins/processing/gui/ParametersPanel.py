@@ -41,7 +41,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
-                       QgsProject)
+                       QgsProject,
+                       QgsProcessingModelAlgorithm)
 from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParameterWidgetContext)
 from qgis.utils import iface
@@ -126,8 +127,11 @@ class ParametersPanel(BASE, WIDGET):
                 break
 
         widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
+        if isinstance(self.alg, QgsProcessingModelAlgorithm):
+            widget_context.setModel(self.alg)
 
         # Create widgets and put them in layouts
         for param in self.alg.parameterDefinitions():
@@ -138,6 +142,8 @@ class ParametersPanel(BASE, WIDGET):
                 continue
             else:
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent)
+                wrapper.setWidgetContext(widget_context)
+                wrapper.registerProcessingContextGenerator(self.context_generator)
                 self.wrappers[param.name()] = wrapper
 
                 # For compatibility with 3.x API, we need to check whether the wrapper is
@@ -146,9 +152,7 @@ class ParametersPanel(BASE, WIDGET):
                 # TODO QGIS 4.0 - remove
                 is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
                 if not is_python_wrapper:
-                    wrapper.setWidgetContext(widget_context)
                     widget = wrapper.createWrappedWidget(self.processing_context)
-                    wrapper.registerProcessingContextGenerator(self.context_generator)
                 else:
                     widget = wrapper.widget
 

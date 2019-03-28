@@ -214,11 +214,11 @@ The feature will be valid if it was successful.
 :param field: the index of the field to set
 :param attr: the value of the attribute
 
-:return: false, if the field index does not exist
+:return: ``False``, if the field index does not exist
 
 .. note::
 
-   For Python: raises a KeyError exception instead of returning false
+   For Python: raises a KeyError exception instead of returning ``False``
 
 .. note::
 
@@ -293,14 +293,14 @@ invalid or to indicate a null feature.
 %Docstring
 Sets the validity of the feature.
 
-:param validity: set to true if feature is valid
+:param validity: set to ``True`` if feature is valid
 
 .. seealso:: :py:func:`isValid`
 %End
 
     bool hasGeometry() const;
 %Docstring
-Returns true if the feature has an associated geometry.
+Returns ``True`` if the feature has an associated geometry.
 
 .. seealso:: :py:func:`geometry`
 
@@ -377,9 +377,9 @@ Removes any geometry associated with the feature.
 Assign a field map with the feature to allow attribute access by attribute name.
 
 :param fields: The attribute fields which this feature holds
-:param initAttributes: If true, attributes are initialized. Clears any data previously assigned.
-                       C++: Defaults to false
-                       Python: Defaults to true
+:param initAttributes: If ``True``, attributes are initialized. Clears any data previously assigned.
+                       C++: Defaults to ``False``
+                       Python: Defaults to ``True``
 
 .. seealso:: :py:func:`fields`
 
@@ -395,18 +395,18 @@ Returns the field map associated with the feature.
 
     void setAttribute( const QString &name, const QVariant &value /GetWrapper/ );
 %Docstring
-Insert a value into attribute. Returns false if attribute name could not be converted to index.
+Insert a value into attribute. Returns ``False`` if attribute name could not be converted to index.
 Field map must be associated using setFields() before this method can be used.
 The feature will be valid if it was successful
 
 :param name: The name of the field to set
 :param value: The value to set
 
-:return: false if attribute name could not be converted to index (C++ only)
+:return: ``False`` if attribute name could not be converted to index (C++ only)
 
 .. note::
 
-   For Python: raises a KeyError exception instead of returning false
+   For Python: raises a KeyError exception instead of returning ``False``
 
 .. note::
 
@@ -441,11 +441,11 @@ before this method can be used.
 
 :param name: The name of the field to delete
 
-:return: false if attribute name could not be converted to index (C++ only)
+:return: ``False`` if attribute name could not be converted to index (C++ only)
 
 .. note::
 
-   For Python: raises a KeyError exception instead of returning false
+   For Python: raises a KeyError exception instead of returning ``False``
 
 .. note::
 

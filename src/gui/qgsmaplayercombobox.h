@@ -81,7 +81,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setAllowEmptyLayer( bool allowEmpty );
 
     /**
-     * Returns true if the combo box allows the empty layer ("not set") choice.
+     * Returns TRUE if the combo box allows the empty layer ("not set") choice.
      * \see setAllowEmptyLayer()
      * \since QGIS 3.0
      */
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setShowCrs( bool showCrs );
 
     /**
-     * Returns true if the combo box shows the layer's CRS.
+     * Returns TRUE if the combo box shows the layer's CRS.
      * \see setShowCrs()
      * \since QGIS 3.0
      */
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setLayer( QgsMapLayer *layer );
 
   signals:
-    //! layerChanged this signal is emitted whenever the currently selected layer changes
+    //! Emitted whenever the currently selected layer changes.
     void layerChanged( QgsMapLayer *layer );
 
   protected slots:

@@ -127,7 +127,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     bool showFeatureActions() { return mShowFeatureActions;}
 
     /**
-     * \brief setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
+     * \brief setResultsIfExternalAction if set to FALSE (default) the menu will not return any results if an external action has been triggered
      * \note external action can be either custom actions or feature / map layer actions (\see setShowFeatureActions)
      */
     void setResultsIfExternalAction( bool resultsIfExternalAction ) {mResultsIfExternalAction = resultsIfExternalAction;}
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     /**
      * adds a vector layer and its results in the menu being built
-     * if singleLayer is true, results will be displayed on the top level item (not in QMenu with the layer name)
+     * if singleLayer is TRUE, results will be displayed on the top level item (not in QMenu with the layer name)
      */
     void addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapToolIdentify::IdentifyResult> &results, bool singleLayer = false );
 

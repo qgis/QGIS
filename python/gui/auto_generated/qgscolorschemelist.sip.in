@@ -127,14 +127,14 @@ Add a color to the list
 
 :param color: color to add
 :param label: label for color
-:param allowDuplicate: set to true to allow duplicate colors to be added (colors which are already present in the list)
+:param allowDuplicate: set to ``True`` to allow duplicate colors to be added (colors which are already present in the list)
 %End
 
     bool isDirty() const;
 %Docstring
 Returns whether the color scheme model has been modified
 
-:return: true if colors have been modified
+:return: ``True`` if colors have been modified
 %End
 
 };
@@ -196,7 +196,7 @@ Export colors to a GPL palette file from the list
 %Docstring
 Returns whether the color scheme list has been modified
 
-:return: true if colors have been modified
+:return: ``True`` if colors have been modified
 %End
 
     QgsColorScheme *scheme();
@@ -232,7 +232,7 @@ Adds a color to the list
 
 :param color: color to add
 :param label: optional label for color
-:param allowDuplicate: set to true to allow duplicate colors to be added, ie colors which already exist in the list
+:param allowDuplicate: set to ``True`` to allow duplicate colors to be added, ie colors which already exist in the list
 %End
 
     void pasteColors();

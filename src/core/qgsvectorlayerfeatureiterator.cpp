@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
@@ -188,9 +189,10 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     // and only modify the subset if we cannot.
     if ( !mProviderRequest.orderBy().isEmpty() )
     {
-      Q_FOREACH ( const QString &attr, mProviderRequest.orderBy().usedAttributes() )
+      const auto usedAttributeIndices = mProviderRequest.orderBy().usedAttributeIndices( mSource->mFields );
+      for ( int attrIndex : usedAttributeIndices )
       {
-        providerSubset << mSource->mFields.lookupField( attr );
+        providerSubset << attrIndex;
       }
     }
 
@@ -199,6 +201,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
   if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
+    const bool needsGeom = mProviderRequest.filterExpression()->needsGeometry();
     Q_FOREACH ( const QString &field, mProviderRequest.filterExpression()->referencedColumns() )
     {
       int idx = source->mFields.lookupField( field );
@@ -210,6 +213,12 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
         mProviderRequest.disableFilter();
         // can't limit at provider side
         mProviderRequest.setLimit( -1 );
+        if ( needsGeom )
+        {
+          // have to get geometry from provider in order to evaluate expression on client
+          mProviderRequest.setFlags( mProviderRequest.flags() & ~QgsFeatureRequest::NoGeometry );
+        }
+        break;
       }
     }
   }

@@ -23,6 +23,7 @@
 #include "qgis_gui.h"
 #include "qgslayoutmodel.h"
 
+
 /**
  * \class QgsLayoutItemComboBox
  * \ingroup gui
@@ -46,8 +47,17 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
 
     /**
      * Sets the \a layout containing the items to list in the combo box.
+     *
+     * \see currentLayout()
      */
     void setCurrentLayout( QgsLayout *layout );
+
+    /**
+      * Returns the current layout containing the items shown in the combo box.
+      *
+      * \see setCurrentLayout()
+      */
+    QgsLayout *currentLayout();
 
     /**
      * Sets a filter for the item type to show in the combo box.
@@ -74,6 +84,20 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
      * \see setExceptedItemList()
      */
     QList< QgsLayoutItem * > exceptedItemList() const;
+
+    /**
+     * Sets whether an optional empty layout item is present in the combobox.
+     * \see allowEmptyItem()
+     * \since QGIS 3.8
+     */
+    void setAllowEmptyItem( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the model includes the empty item choice.
+     * \see setAllowEmptyItem()
+     * \since QGIS 3.8
+     */
+    bool allowEmptyItem() const;
 
     /**
      * Returns the item currently shown at the specified \a index within the combo box.

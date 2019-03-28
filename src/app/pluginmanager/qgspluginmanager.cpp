@@ -862,13 +862,21 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<img src=\"%1\" style=\"float:right;max-width:64px;max-height:64px;\">" ).arg( iconPath );
   }
 
-  html += QStringLiteral( "<h1>%1</h1>" ).arg( metadata->value( QStringLiteral( "name" ) ) );
+  QRegularExpression stripHtml = QRegularExpression( QStringLiteral( "&lt;[^\\s].*?&gt;" ) );
 
-  html += QStringLiteral( "<h3>%1</h3>" ).arg( metadata->value( QStringLiteral( "description" ) ) );
+  QString name = metadata->value( QStringLiteral( "name" ) );
+  name = name.remove( stripHtml );
+  html += QStringLiteral( "<h1>%1</h1>" ).arg( name );
+
+  QString description = metadata->value( QStringLiteral( "description" ) );
+  description = description.remove( stripHtml );
+  html += QStringLiteral( "<h3>%1</h3>" ).arg( description );
 
   if ( ! metadata->value( QStringLiteral( "about" ) ).isEmpty() )
   {
     QString about = metadata->value( QStringLiteral( "about" ) );
+    // The regular expression insures that a new line will be present after the closure of a paragraph tag (i.e. </p>)
+    about = about.replace( QRegularExpression( QStringLiteral( "&lt;\\/p&gt;([^\\n])" ) ), QStringLiteral( "&lt;/p&gt;\n\\1" ) ).remove( stripHtml );
     html += about.replace( '\n', QLatin1String( "<br/>" ) );
     html += QLatin1String( "<br/><br/>" );
   }
@@ -891,11 +899,14 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
 
 #ifdef WITH_QTWEBKIT
-  html += QLatin1String( "<div id='stars_bg'/><div id='stars'/>" );
-  html += QLatin1String( "<div id='votes'>" );
-  html += votes;
-  html += QLatin1String( "</div>" );
-  html += QLatin1String( "<div><a id='send_vote_trigger'/></div>" );
+  if ( metadata->value( QStringLiteral( "readonly" ) ) == QLatin1String( "false" ) )
+  {
+    html += QLatin1String( "<div id='stars_bg'/><div id='stars'/>" );
+    html += QLatin1String( "<div id='votes'>" );
+    html += votes;
+    html += QLatin1String( "</div>" );
+    html += QLatin1String( "<div><a id='send_vote_trigger'/></div>" );
+  }
 #else
   voteRating->setText( votes );
 #endif
@@ -909,7 +920,12 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
   if ( ! metadata->value( QStringLiteral( "tags" ) ).isEmpty() )
   {
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Tags" ), metadata->value( QStringLiteral( "tags" ) ) );
+    QStringList tags = metadata->value( QStringLiteral( "tags" ) ).toLower().split( ',' );
+    for ( auto tag = tags.begin(); tag != tags.end(); ++tag )
+    {
+      *tag = QStringLiteral( "<a href='rpc2://search.tag/%1/'>%1</a>" ).arg( ( *tag ).trimmed() );
+    }
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Tags" ), tags.join( QStringLiteral( ", " ) ) );
   }
 
   if ( ! metadata->value( QStringLiteral( "homepage" ) ).isEmpty() || ! metadata->value( QStringLiteral( "tracker" ) ).isEmpty() || ! metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
@@ -979,7 +995,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Changelog" ), changelog );
   }
 
-  html += QLatin1String( "</td></tr></table>" );
+  html += QLatin1String( "</table>" );
 
   html += QLatin1String( "</body>" );
 
@@ -1305,8 +1321,14 @@ void QgsPluginManager::wvDetails_linkClicked( const QUrl &url )
   {
     if ( url.host() == QLatin1String( "plugin.vote" ) )
     {
-      QString params = url.path();
-      sendVote( params.split( '/' )[1].toInt(), params.split( '/' )[2].toInt() );
+      QStringList params = url.path().split( '/' );
+      sendVote( params[1].toInt(), params[2].toInt() );
+    }
+    else if ( url.host() == QLatin1String( "search.tag" ) )
+    {
+      QStringList params = url.path().split( '/' );
+      leFilter->setText( QStringLiteral( "tag:%1" ).arg( params[1] ) );
+      mOptionsListWidget->setCurrentRow( PLUGMAN_TAB_ALL );
     }
   }
   else

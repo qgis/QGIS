@@ -19,6 +19,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
+#include "qgsapplication.h"
 
 QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
@@ -35,14 +36,16 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
-    if ( feedback->isCanceled() )
+    if ( feedback && feedback->isCanceled() )
       break;
 
     // Ensure each pair of layers only gets compared once: remove the current layer from the layerIds, but add it to the layerList for layerFeaturesB
     layerIds.removeOne( layerFeatureA.layer()->id() );
 
-    QgsRectangle bboxA = layerFeatureA.geometry().constGet()->boundingBox();
-    std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry().constGet(), mContext->tolerance );
+    const QgsGeometry geomA = layerFeatureA.geometry();
+    QgsRectangle bboxA = geomA.boundingBox();
+    std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( geomA.constGet(), mContext->tolerance );
+    geomEngineA->prepareGeometry();
     if ( !geomEngineA->isValid() )
     {
       messages.append( tr( "Overlap check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
@@ -52,18 +55,21 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
     const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, bboxA, compatibleGeometryTypes(), mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
-      if ( feedback->isCanceled() )
+      if ( feedback && feedback->isCanceled() )
         break;
 
       // > : only report overlaps within same layer once
-      if ( layerFeatureA.layer()->id() == layerFeatureB.layer()->id() && layerFeatureB.feature().id() >= layerFeatureA.feature().id() )
+      if ( layerFeatureA.layerId() == layerFeatureB.layerId() && layerFeatureB.feature().id() >= layerFeatureA.feature().id() )
       {
         continue;
       }
+
       QString errMsg;
-      if ( geomEngineA->overlaps( layerFeatureB.geometry().constGet(), &errMsg ) )
+      const QgsGeometry geometryB = layerFeatureB.geometry();
+      const QgsAbstractGeometry *geomB = geometryB.constGet();
+      if ( geomEngineA->overlaps( geomB, &errMsg ) )
       {
-        std::unique_ptr<QgsAbstractGeometry> interGeom( geomEngineA->intersection( layerFeatureB.geometry().constGet() ) );
+        std::unique_ptr<QgsAbstractGeometry> interGeom( geomEngineA->intersection( geomB ) );
         if ( interGeom && !interGeom->isEmpty() )
         {
           QgsGeometryCheckerUtils::filter1DTypes( interGeom.get() );
@@ -105,14 +111,17 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
   // Check if error still applies
   QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, mContext, true );
   QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, mContext, true );
-  std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry().constGet(), mContext->reducedTolerance );
+  const QgsGeometry geometryA = layerFeatureA.geometry();
+  std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( geometryA.constGet(), mContext->reducedTolerance );
+  geomEngineA->prepareGeometry();
 
-  if ( !geomEngineA->overlaps( layerFeatureB.geometry().constGet() ) )
+  const QgsGeometry geometryB = layerFeatureB.geometry();
+  if ( !geomEngineA->overlaps( geometryB.constGet() ) )
   {
     error->setObsolete();
     return;
   }
-  std::unique_ptr< QgsAbstractGeometry > interGeom( geomEngineA->intersection( layerFeatureB.geometry().constGet(), &errMsg ) );
+  std::unique_ptr< QgsAbstractGeometry > interGeom( geomEngineA->intersection( geometryB.constGet(), &errMsg ) );
   if ( !interGeom )
   {
     error->setFixFailed( tr( "Failed to compute intersection between overlapping features: %1" ).arg( errMsg ) );
@@ -153,7 +162,8 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
     {
       QgsGeometryCheckerUtils::filter1DTypes( diff1.get() );
     }
-    std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry().constGet(), mContext->reducedTolerance );
+    std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( geometryB.constGet(), mContext->reducedTolerance );
+    geomEngineB->prepareGeometry();
     std::unique_ptr< QgsAbstractGeometry > diff2( geomEngineB->difference( interPart, &errMsg ) );
     if ( !diff2 || diff2->isEmpty() )
     {
@@ -261,7 +271,54 @@ QgsGeometryOverlapCheckError::QgsGeometryOverlapCheckError( const QgsGeometryChe
 
 }
 
+bool QgsGeometryOverlapCheckError::isEqual( QgsGeometryCheckError *other ) const
+{
+  QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
+  return err &&
+         other->layerId() == layerId() &&
+         other->featureId() == featureId() &&
+         err->overlappedFeature() == overlappedFeature() &&
+         QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->context()->reducedTolerance ) &&
+         std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->context()->reducedTolerance;
+}
+
+bool QgsGeometryOverlapCheckError::closeMatch( QgsGeometryCheckError *other ) const
+{
+  QgsGeometryOverlapCheckError *err = dynamic_cast<QgsGeometryOverlapCheckError *>( other );
+  return err && other->layerId() == layerId() && other->featureId() == featureId() && err->overlappedFeature() == overlappedFeature();
+}
+
+bool QgsGeometryOverlapCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )
+{
+  if ( !QgsGeometryCheckError::handleChanges( changes ) )
+  {
+    return false;
+  }
+  if ( changes.value( mOverlappedFeature.layerId() ).keys().contains( mOverlappedFeature.featureId() ) )
+  {
+    return false;
+  }
+  return true;
+}
+
 QString QgsGeometryOverlapCheckError::description() const
 {
   return QCoreApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1 at feature %2" ).arg( mOverlappedFeature.layerName(), QString::number( mOverlappedFeature.featureId() ) );
+}
+
+QMap<QString, QgsFeatureIds> QgsGeometryOverlapCheckError::involvedFeatures() const
+{
+  QMap<QString, QgsFeatureIds> features;
+  features[layerId()].insert( featureId() );
+  features[mOverlappedFeature.layerId()].insert( mOverlappedFeature.featureId() );
+  return features;
+}
+
+QIcon QgsGeometryOverlapCheckError::icon() const
+{
+
+  if ( status() == QgsGeometryCheckError::StatusFixed )
+    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+  else
+    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/Overlap.svg" ) );
 }
