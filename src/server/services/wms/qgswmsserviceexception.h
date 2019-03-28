@@ -217,10 +217,6 @@ namespace QgsWms
        * \param message Exception message to return to the client
        * \param locator Locator attribute according to OGC specifications
        */
-      QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
-        : QgsServiceException( code, message, locator, 400 )
-      {}
-
       QgsBadRequestException( ExceptionCode code, const QString &message )
         : QgsServiceException( code, message, 400 )
       {}
