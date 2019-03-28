@@ -1901,7 +1901,7 @@ class BandWidgetWrapper(WidgetWrapper):
 
                 for v in value:
                     for i, opt in enumerate(options):
-                        match = re.search('(?:\A|[^0-9]){}(?:\Z|[^0-9]|)'.format(v), opt)
+                        match = re.search('(?:\\A|[^0-9]){}(?:\\Z|[^0-9]|)'.format(v), opt)
                         if match:
                             selected.append(i)
 
@@ -1916,7 +1916,7 @@ class BandWidgetWrapper(WidgetWrapper):
             if self.parameterDefinition().allowMultiple():
                 bands = []
                 for i in self.widget.selectedoptions:
-                    match = re.search('(?:\A|[^0-9])([0-9]+)(?:\Z|[^0-9]|)', self.widget.options[i])
+                    match = re.search('(?:\\A|[^0-9])([0-9]+)(?:\\Z|[^0-9]|)', self.widget.options[i])
                     if match:
                         bands.append(match.group(1))
                 return bands

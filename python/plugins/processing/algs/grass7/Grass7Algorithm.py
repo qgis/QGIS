@@ -64,7 +64,11 @@ from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsProviderRegistry)
 from qgis.utils import iface
-from osgeo import ogr
+
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from osgeo import ogr
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
