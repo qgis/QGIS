@@ -23,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+
 #############################################################################
 #
 # Voronoi diagram calculator/ Delaunay triangulator
@@ -55,26 +56,20 @@ __revision__ = '$Format:%H$'
 #
 #############################################################################
 
-
 def usage():
     # fix_print_with_import
     print("""
 voronoi - compute Voronoi diagram or Delaunay triangulation
-
 voronoi [-t -p -d -f threshold]  [filename]
-
 Voronoi reads from filename (or standard input if no filename given) for a set
 of points in the plane and writes either the Voronoi diagram or the Delaunay
 triangulation to the standard output.  Each input line should consist of two
 real numbers, separated by white space.
-
 If option -t is present, the Delaunay triangulation is produced.
 Each output line is a triple i j k, which are the indices of the three points
 in a Delaunay triangle. Points are numbered starting at 0.
-
 If option -t is not present, the Voronoi diagram is produced.
 There are four output record types.
-
 s a b      indicates that an input point at coordinates a b was seen.
 l a b c    indicates a line with equation ax + by = c.
 v a b      indicates a vertex at a b.
@@ -85,11 +80,9 @@ Other options include:
 d    Print debugging info
 p    Produce output suitable for input to plot (1), rather than the forms
      described above.
-f    Filter input using spacial tree and threshold min distance between points
-
+f    Filter input using spatial tree and threshold min distance between points
 On unsorted data uniformly distributed in the unit square, voronoi uses about
 20n+140 bytes of storage.
-
 AUTHOR
 Steve J. Fortune (1987) A Sweepline Algorithm for Voronoi Diagrams,
 Algorithmica 2, 153-174.
@@ -111,7 +104,7 @@ Algorithmica 2, 153-174.
 #               lines in the Voronoi diagram: a*x + b*y = c
 #           (3) a list of 3-tuples, (l, v1, v2) representing edges of the
 #               Voronoi diagram.  l is the index of the line, v1 and v2 are
-#               the indices of the vetices at the end of the edge.  If
+#               the indices of the vertices at the end of the edge.  If
 #               v1 or v2 is -1, the line extends to infinity.
 #
 #   computeDelaunayTriangulation(points):
@@ -126,6 +119,7 @@ Algorithmica 2, 153-174.
 import math
 import sys
 import getopt
+
 TOLERANCE = 1e-9
 BIG_FLOAT = 1e38
 
@@ -398,9 +392,6 @@ class Site(object):
             return True
         else:
             return False
-
-    def __getitem__(self, item):
-        return [self.x, self.y][item]
 
     def distance(self, other):
         dx = self.x - other.x
@@ -913,24 +904,25 @@ if __name__ == "__main__":
 
         if filtering and threshold > 0:
 
-            # [Home Page](http://github.com/karimbahgat/Pyqtree)
             # filter input using spacial tree
-            from pyqtree import _QuadTree as Qtree
 
-            x, y = zip(*pts)
-            min_x, min_y, max_x, max_y = min(x), min(y), max(x), max(y)
-            cx, cy = 0.5 * (min_x + max_x),  0.5 * (min_y + max_y)
-            sx, sy = max_x - min_x, max_y - min_y
-            tree = Qtree(cx, cy, sx, sy, max_items=30, max_depth=5)
+            # import at runtime only if needed
+            from qgis.core import (QgsSpatialIndex,
+                                   QgsRectangle,
+                                   QgsFeatureId
+                                   )
+
+            tree = QgsSpatialIndex()
 
             filtered = []
-            for site in pts:
+            for i, site in enumerate(pts):
                 x, y = site
-                bounds = (x - threshold, y - threshold, x + threshold, y + threshold)
-                nodes = tree._intersect(bounds)
+                bounds = QgsRectangle(x - threshold, y - threshold, x + threshold, y + threshold)
+                nodes = tree.intersects(bounds)
                 if len(nodes) < 1:
+                    idx = QgsFeatureId(i)
                     # only insert boundary, not storing any other data on tree
-                    tree._insert(None, bounds)
+                    tree.addFeature(idx, bounds)
                     filtered.append(site)
             pts = filtered
 
