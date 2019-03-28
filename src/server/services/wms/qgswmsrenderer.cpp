@@ -132,11 +132,11 @@ namespace QgsWms
     // check parameters
     if ( mWmsParameters.allLayersNickname().isEmpty() )
       throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
-                                    QgsWmsParameter::LAYERS );
+                                    mWmsParameters[QgsWmsParameter::LAYERS] );
 
     if ( mWmsParameters.format() == QgsWmsParameters::Format::NONE )
       throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
-                                    QgsWmsParameter::FORMAT );
+                                    mWmsParameters[QgsWmsParameter::FORMAT] );
 
     // get layers
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -279,7 +279,7 @@ namespace QgsWms
     if ( !sourceLayout )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                    QgsWmsParameter::TEMPLATE );
+                                    mWmsParameters[QgsWmsParameter::TEMPLATE ] );
     }
 
     // Check that layout has at least one page
@@ -511,8 +511,8 @@ namespace QgsWms
     }
     else //unknown format
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( mWmsParameters.formatAsString() ) );
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                    mWmsParameters[QgsWmsParameter::FORMAT] );
     }
 
     if ( atlas )
@@ -853,7 +853,7 @@ namespace QgsWms
     if ( mWmsParameters.queryLayersNickname().isEmpty() )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
-                                    QgsWmsParameter::QUERY_LAYERS );
+                                    mWmsParameters[QgsWmsParameter::QUERY_LAYERS] );
     }
 
     // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
@@ -864,19 +864,19 @@ namespace QgsWms
 
     if ( !ijDefined && !xyDefined && !filtersDefined && !filterGeomDefined )
     {
-      QgsWmsParameter::Name name = QgsWmsParameter::I;
+      QgsWmsParameter parameter = mWmsParameters[QgsWmsParameter::I];
 
       if ( mWmsParameters.j().isEmpty() )
-        name = QgsWmsParameter::J;
+        parameter = mWmsParameters[QgsWmsParameter::J];
 
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE, name );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE, parameter );
     }
 
     const QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
     if ( infoFormat == QgsWmsParameters::Format::NONE )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                    mWmsParameters[QgsWmsParameter::INFO_FORMAT] );
     }
 
     // create the mapSettings and the output image
@@ -953,7 +953,7 @@ namespace QgsWms
       if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
       {
         throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                      QgsWmsParameter::BBOX );
+                                      mWmsParameters[QgsWmsParameter::BBOX] );
       }
 
       QString crs = mWmsParameters.crs();
@@ -984,12 +984,12 @@ namespace QgsWms
     if ( width <= 0 )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                    QgsWmsParameter::WIDTH );
+                                    mWmsParameters[QgsWmsParameter::WIDTH] );
     }
     else if ( height <= 0 )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                    QgsWmsParameter::HEIGHT );
+                                    mWmsParameters[QgsWmsParameter::HEIGHT] );
     }
 
     std::unique_ptr<QImage> image;
@@ -1037,7 +1037,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                    QgsWmsParameter::BBOX );
+                                    mWmsParameters[QgsWmsParameter::BBOX] );
     }
 
     QString crs = mWmsParameters.crs();
@@ -2808,7 +2808,7 @@ namespace QgsWms
       contentBasedLegendExtent = mWmsParameters.bboxAsRectangle();
       if ( contentBasedLegendExtent.isEmpty() )
         throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                      QgsWmsParameter::BBOX );
+                                      mWmsParameters[QgsWmsParameter::BBOX] );
 
       if ( !mWmsParameters.rule().isEmpty() )
         throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,

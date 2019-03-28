@@ -185,6 +185,11 @@ namespace QgsWms
     return val;
   }
 
+  QString QgsWmsParameter::name() const
+  {
+    return QgsWmsParameter::name( mName );
+  }
+
   QString QgsWmsParameter::name( const QgsWmsParameter::Name name )
   {
     const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWmsParameter::Name>() );
@@ -535,6 +540,11 @@ namespace QgsWms
         loadParameter( QgsWmsParameter::name( QgsWmsParameter::SLD_BODY ), sldBody );
       }
     }
+  }
+
+  QgsWmsParameter QgsWmsParameters::operator[]( QgsWmsParameter::Name name ) const
+  {
+    return mWmsParameters[name];
   }
 
   bool QgsWmsParameters::loadParameter( const QString &key, const QString &value )

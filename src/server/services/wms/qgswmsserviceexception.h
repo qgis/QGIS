@@ -90,16 +90,15 @@ namespace QgsWms
         : QgsServiceException( formatCode( code ), message, QString(), responseCode )
       {}
 
-      QgsServiceException( ExceptionCode code, QgsWmsParameter::Name name, int responseCode )
-        : QgsServiceException( formatCode( code ), formatMessage( code, name ), QString(), responseCode )
+      QgsServiceException( ExceptionCode code, const QgsWmsParameter &parameter, int responseCode )
+        : QgsServiceException( formatCode( code ), formatMessage( code, parameter ), QString(), responseCode )
       {}
 
     private:
-      static QString formatMessage( ExceptionCode code, QgsWmsParameter::Name parameter )
+      static QString formatMessage( ExceptionCode code, const QgsWmsParameter &parameter )
       {
+        const QString name = parameter.name();
         QString message;
-
-        const QString name = QgsWmsParameter::name( parameter );
 
         switch ( code )
         {
@@ -114,6 +113,10 @@ namespace QgsWms
             break;
           }
           case OGC_INVALID_FORMAT:
+          {
+            message = QStringLiteral( "The format %1 from %2 is not supported." ).arg( parameter.toString(), name );
+            break;
+          }
           case OGC_INVALID_SRS:
           case OGC_LAYER_NOT_DEFINED:
           case OGC_STYLE_NOT_DEFINED:
@@ -200,7 +203,7 @@ namespace QgsWms
         : QgsServiceException( code, message, 400 )
       {}
 
-      QgsBadRequestException( ExceptionCode code, QgsWmsParameter::Name parameter )
+      QgsBadRequestException( ExceptionCode code, const QgsWmsParameter &parameter )
         : QgsServiceException( code, parameter, 400 )
       {}
   };

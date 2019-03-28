@@ -283,6 +283,8 @@ namespace QgsWms
        */
       void raiseError() const;
 
+      QString name() const;
+
       /**
        * Converts a parameter's name into its string representation.
        */
@@ -349,6 +351,8 @@ namespace QgsWms
       QgsWmsParameters();
 
       virtual ~QgsWmsParameters() = default;
+
+      QgsWmsParameter operator[]( QgsWmsParameter::Name name ) const;
 
       /**
        * Dumps parameters.
