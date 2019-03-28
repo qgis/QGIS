@@ -50,8 +50,8 @@ namespace QgsWms
         contentType = QStringLiteral( "application/pdf" );
         break;
       default:
-        throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
-                                   QString( "Output format %1 is not supported by the GetPrint request" ).arg( wmsParameters.formatAsString() ) );
+        throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                      mWmsParameters[QgsWmsParameter::FORMAT] );
         break;
     }
 

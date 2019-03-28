@@ -66,8 +66,8 @@ namespace QgsWms
           saveFormat = "JPEG";
           break;
         default:
-          throw QgsServiceException( "InvalidFormat",
-                                     QString( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( format ) );
+          throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                        mWmsParameters[QgsWmsParameter::FORMAT] );
           break;
       }
 
