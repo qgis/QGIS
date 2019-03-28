@@ -1309,8 +1309,11 @@ namespace QgsWms
       }
       if ( !validLayer && !mContext.isValidLayer( queryLayer ) && !mContext.isValidGroup( queryLayer ) )
       {
-        QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
-        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
+        QgsWmsParameter param( QgsWmsParameter::LAYER );
+        param.mValue = queryLayer;
+        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+                                      param );
+
       }
       else if ( ( validLayer && !queryableLayer ) || ( !validLayer && mContext.isValidGroup( queryLayer ) ) )
       {

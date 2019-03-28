@@ -128,6 +128,10 @@ namespace QgsWms
             break;
           }
           case OGC_LAYER_NOT_DEFINED:
+          {
+            message = QStringLiteral( "The layer '%1' does not exist." ).arg( parameter.toString() );
+            break;
+          }
           case OGC_STYLE_NOT_DEFINED:
           case OGC_LAYER_NOT_QUERYABLE:
           case OGC_CURRENT_UPDATE_SEQUENCE:
