@@ -379,6 +379,11 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
 
 class QgsHashedLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring
+Widget for controlling the properties of a :py:class:`QgsHashedLineSymbolLayer`.
+
+.. versionadded:: 3.8
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
