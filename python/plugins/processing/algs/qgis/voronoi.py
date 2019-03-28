@@ -392,7 +392,10 @@ class Site(object):
             return True
         else:
             return False
-
+    
+    def __getitem__(self, item):
+        return [self.x, self.y][item]
+    
     def distance(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
@@ -904,7 +907,7 @@ if __name__ == "__main__":
 
         if filtering and threshold > 0:
 
-            # filter input using spacial tree
+            # filter input using spatial tree
 
             # import at runtime only if needed
             from qgis.core import (QgsSpatialIndex,
