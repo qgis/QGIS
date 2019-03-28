@@ -30,10 +30,10 @@ namespace QgsWms
                       QgsServerResponse &response )
   {
     // get wms parameters from query
-    const QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
+    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
     // GetPrint supports svg/png/pdf
-    const QgsWmsParameters::Format format = wmsParameters.format();
+    const QgsWmsParameters::Format format = parameters.format();
     QString contentType;
     switch ( format )
     {
@@ -51,7 +51,7 @@ namespace QgsWms
         break;
       default:
         throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
-                                      mWmsParameters[QgsWmsParameter::FORMAT] );
+                                      parameters[QgsWmsParameter::FORMAT] );
         break;
     }
 
@@ -64,7 +64,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
     context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
     context.setFlag( QgsWmsRenderContext::AddExternalLayers );
-    context.setParameters( wmsParameters );
+    context.setParameters( parameters );
 
     // rendering
     QgsRenderer renderer( context );

@@ -67,7 +67,7 @@ namespace QgsWms
           break;
         default:
           throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
-                                        mWmsParameters[QgsWmsParameter::FORMAT] );
+                                        parameters[QgsWmsParameter::FORMAT] );
           break;
       }
 

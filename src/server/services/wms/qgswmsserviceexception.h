@@ -56,6 +56,7 @@ namespace QgsWms
         OGC_INVALID_UPDATE_SEQUENCE,
         OGC_MISSING_DIMENSION_VALUE,
         OGC_INVALID_DIMENSION_VALUE,
+        OGC_INVALID_POINT, // new in WMS 1.3.0
         OGC_INVALID_CRS, // new in WMS 1.3.0
         OGC_OPERATION_NOT_SUPPORTED, // new in WMS 1.3.0
         QGIS_MISSING_PARAMETER_VALUE,
@@ -135,6 +136,11 @@ namespace QgsWms
           case OGC_LAYER_NOT_QUERYABLE:
           {
             message = QStringLiteral( "The layer '%1' is not queryable." ).arg( parameter.toString() );
+            break;
+          }
+          case OGC_INVALID_POINT:
+          {
+            message = QStringLiteral( "The point '%1' from '%2' is invalid." ).arg( parameter.toString(), name );
             break;
           }
           case OGC_STYLE_NOT_DEFINED:

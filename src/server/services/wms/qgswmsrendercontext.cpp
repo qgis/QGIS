@@ -18,6 +18,7 @@
 #include "qgslayertree.h"
 
 #include "qgswmsrendercontext.h"
+#include "qgswmsserviceexception.h"
 #include "qgsserverprojectutils.h"
 
 using namespace QgsWms;

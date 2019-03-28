@@ -161,8 +161,10 @@ namespace QgsWms
     }
     else
     {
+      QgsWmsParameter parameter( QgsWmsParameter::FORMAT );
+      parameter.mValue = formatStr;
       throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
-                                    mWmsParameters[QgsWmsParameter::FORMAT] );
+                                    parameter );
     }
   }
 } // namespace QgsWms

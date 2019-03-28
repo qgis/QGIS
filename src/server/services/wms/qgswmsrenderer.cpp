@@ -837,14 +837,18 @@ namespace QgsWms
     //check if i, j are in the pixel range of the image
     if ( i < 0 || i > mapSettings.outputSize().width() )
     {
-      throw QgsBadRequestException( QgsServiceException::INVALID_POINT,
-                                    mWmsParameters[QgsWmsParameter::I] );
+      QgsWmsParameter param( QgsWmsParameter::I );
+      param.mValue = i;
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_POINT,
+                                    param );
     }
 
     if ( j < 0 || j > mapSettings.outputSize().height() )
     {
-      throw QgsBadRequestException( QgsServiceException::INVALID_POINT,
-                                    mWmsParameters[QgsWmsParameter::J] );
+      QgsWmsParameter param( QgsWmsParameter::J );
+      param.mValue = j;
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_POINT,
+                                    param );
     }
 
     double xRes = mapSettings.extent().width() / mapSettings.outputSize().width();
