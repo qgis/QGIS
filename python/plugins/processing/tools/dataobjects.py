@@ -105,8 +105,15 @@ def createExpressionContext():
 
 
 def load(fileName, name=None, crs=None, style=None, isRaster=False):
-    """Loads a layer/table into the current project, given its file.
     """
+    Loads a layer/table into the current project, given its file.
+
+    .. deprecated:: 3.0
+    Do not use, will be removed in QGIS 4.0
+    """
+
+    from warnings import warn
+    warn("processing.load is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     if fileName is None:
         return
