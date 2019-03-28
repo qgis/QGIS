@@ -1064,7 +1064,21 @@ namespace QgsWms
     outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !outputCRS.isValid() )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidCRS" ), QStringLiteral( "Could not create output CRS" ) );
+      QgsServiceException::ExceptionCode code;
+      QgsWmsParameter parameter;
+
+      if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
+      {
+        code = QgsServiceException::OGC_INVALID_CRS;
+        parameter = mWmsParameters[ QgsWmsParameter::CRS ];
+      }
+      else
+      {
+        code = QgsServiceException::OGC_INVALID_SRS;
+        parameter = mWmsParameters[ QgsWmsParameter::SRS ];
+      }
+
+      throw QgsBadRequestException( code, parameter );
     }
 
     //then set destinationCrs

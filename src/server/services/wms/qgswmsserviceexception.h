@@ -118,6 +118,15 @@ namespace QgsWms
             break;
           }
           case OGC_INVALID_SRS:
+          {
+            message = QStringLiteral( "The SRS is not valid." );
+            break;
+          }
+          case OGC_INVALID_CRS:
+          {
+            message = QStringLiteral( "The CRS is not valid." );
+            break;
+          }
           case OGC_LAYER_NOT_DEFINED:
           case OGC_STYLE_NOT_DEFINED:
           case OGC_LAYER_NOT_QUERYABLE:
@@ -125,7 +134,6 @@ namespace QgsWms
           case OGC_INVALID_UPDATE_SEQUENCE:
           case OGC_MISSING_DIMENSION_VALUE:
           case OGC_INVALID_DIMENSION_VALUE:
-          case OGC_INVALID_CRS:
           case OGC_OPERATION_NOT_SUPPORTED:
           case QGIS_ERROR:
           {
