@@ -366,7 +366,6 @@ void QgsHandleBadLayers::apply()
   QHash<QString, QString> baseChange;
 
 
-
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
@@ -405,7 +404,7 @@ void QgsHandleBadLayers::apply()
       datasource = datasource.replace( basepath, baseChange[basepath] );
 
 
-    bool dataSourceChanged { false };
+    bool dataSourceFixed { false };
     const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
     const QString provider { node.namedItem( QStringLiteral( "provider" ) ).toElement().text() };
 
@@ -413,19 +412,19 @@ void QgsHandleBadLayers::apply()
     // maintain the current status (checked/unchecked) and group
     if ( QgsProject::instance()->mapLayer( layerId ) )
     {
-      QgsDataProvider::ProviderOptions options;
       QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
       if ( mapLayer )
       {
+        QgsDataProvider::ProviderOptions options;
         mapLayer->setDataSource( datasource, name, provider, options );
-        dataSourceChanged = mapLayer->isValid();
+        dataSourceFixed  = mapLayer->isValid();
       }
     }
 
     // If the data source was changed successfully, remove the bad layer from the dialog
     // otherwise, try to set the new datasource in the XML node and reload the layer,
     // finally marks with red all remaining bad layers.
-    if ( dataSourceChanged )
+    if ( dataSourceFixed )
     {
       mLayerList->removeRow( i-- );
     }
@@ -447,7 +446,8 @@ void QgsHandleBadLayers::apply()
     }
   }
 
-  // Final cleanup: remove any bad layer (it should not be any btw)
+  // Final cleanup: remove any remaining bad layer
+  // (there should not be any at this point)
   if ( mLayerList->rowCount() == 0 )
   {
     QList<QgsMapLayer *> toRemove;
