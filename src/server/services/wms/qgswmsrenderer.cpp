@@ -835,9 +835,16 @@ namespace QgsWms
   static void infoPointToMapCoordinates( int i, int j, QgsPointXY *infoPoint, const QgsMapSettings &mapSettings )
   {
     //check if i, j are in the pixel range of the image
-    if ( i < 0 || i > mapSettings.outputSize().width() || j < 0 || j > mapSettings.outputSize().height() )
+    if ( i < 0 || i > mapSettings.outputSize().width() )
     {
-      throw QgsBadRequestException( "InvalidPoint", "I/J parameters not within the pixel range" );
+      throw QgsBadRequestException( QgsServiceException::INVALID_POINT,
+                                    mWmsParameters[QgsWmsParameter::I] );
+    }
+
+    if ( j < 0 || j > mapSettings.outputSize().height() )
+    {
+      throw QgsBadRequestException( QgsServiceException::INVALID_POINT,
+                                    mWmsParameters[QgsWmsParameter::J] );
     }
 
     double xRes = mapSettings.extent().width() / mapSettings.outputSize().width();
