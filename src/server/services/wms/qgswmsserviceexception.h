@@ -114,7 +114,7 @@ namespace QgsWms
           }
           case OGC_INVALID_FORMAT:
           {
-            message = QStringLiteral( "The format %1 from %2 is not supported." ).arg( parameter.toString(), name );
+            message = QStringLiteral( "The format '%1' from %2 is not supported." ).arg( parameter.toString(), name );
             break;
           }
           case OGC_INVALID_SRS:
@@ -132,8 +132,12 @@ namespace QgsWms
             message = QStringLiteral( "The layer '%1' does not exist." ).arg( parameter.toString() );
             break;
           }
-          case OGC_STYLE_NOT_DEFINED:
           case OGC_LAYER_NOT_QUERYABLE:
+          {
+            message = QStringLiteral( "The layer '%1' is not queryable." ).arg( parameter.toString() );
+            break;
+          }
+          case OGC_STYLE_NOT_DEFINED:
           case OGC_CURRENT_UPDATE_SEQUENCE:
           case OGC_INVALID_UPDATE_SEQUENCE:
           case OGC_MISSING_DIMENSION_VALUE:

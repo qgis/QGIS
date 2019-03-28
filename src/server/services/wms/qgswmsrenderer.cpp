@@ -1313,12 +1313,13 @@ namespace QgsWms
         param.mValue = queryLayer;
         throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
                                       param );
-
       }
       else if ( ( validLayer && !queryableLayer ) || ( !validLayer && mContext.isValidGroup( queryLayer ) ) )
       {
-        QString msg = QObject::tr( "Layer '%1' is not queryable" ).arg( queryLayer );
-        throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
+        QgsWmsParameter param( QgsWmsParameter::LAYER );
+        param.mValue = queryLayer;
+        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_QUERYABLE,
+                                      param );
       }
     }
 
@@ -3050,8 +3051,8 @@ namespace QgsWms
     bool rc = layer->styleManager()->setCurrentStyle( style );
     if ( ! rc )
     {
-      throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ),
-                                    QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layer->name() ) );
+      throw QgsBadRequestException( QgsServiceException::OGC_STYLE_NOT_DEFINED,
+                                    QStringLiteral( "Style '%1' does not exist for layer '%2'" ).arg( style, layer->name() ) );
     }
   }
 
