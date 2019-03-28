@@ -98,7 +98,7 @@ void QgsCustomProjectionDialog::populateList()
     Q_ASSERT( result == SQLITE_OK );
   }
   QString sql = QStringLiteral( "select srs_id,description,parameters from tbl_srs" );
-  QgsDebugMsg( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ) );
+  QgsDebugMsgLevel( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ), 4 );
   preparedStatement = database.prepare( sql, result );
   if ( result == SQLITE_OK )
   {
@@ -143,7 +143,7 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
   sqlite3_database_unique_ptr database;
 
   QString sql = "delete from tbl_srs where srs_id=" + QgsSqliteUtils::quotedString( id );
-  QgsDebugMsg( sql );
+  QgsDebugMsgLevel( sql, 4 );
   //check the db is available
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( result != SQLITE_OK )
@@ -199,7 +199,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
     {
       if ( srsPreparedStatement.step() == SQLITE_ROW )
       {
-        QgsDebugMsg( QStringLiteral( "Trying to insert projection" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Trying to insert projection" ), 4 );
         // We have the result from system srs.db. Now insert into user db.
         sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
               + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
@@ -228,7 +228,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
   int returnId;
   QString projectionAcronym = parameters.projectionAcronym();
   QString ellipsoidAcronym = parameters.ellipsoidAcronym();
-  QgsDebugMsg( QStringLiteral( "Saving a CRS:%1, %2, %3" ).arg( name, parameters.toProj4() ).arg( newEntry ) );
+  QgsDebugMsgLevel( QStringLiteral( "Saving a CRS:%1, %2, %3" ).arg( name, parameters.toProj4() ).arg( newEntry ), 4 );
   if ( newEntry )
   {
     returnId = parameters.saveAsUserCrs( name );
@@ -247,7 +247,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
           + ",is_geo=0" // <--shamelessly hard coded for now
           + " where srs_id=" + QgsSqliteUtils::quotedString( id )
           ;
-    QgsDebugMsg( sql );
+    QgsDebugMsgLevel( sql, 4 );
     sqlite3_database_unique_ptr database;
     //check if the db is available
     int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
@@ -374,7 +374,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     mCustomCRSparameters[i] = teParameters->toPlainText();
   }
 
-  QgsDebugMsg( QStringLiteral( "We save the modified CRS." ) );
+  QgsDebugMsgLevel( QStringLiteral( "We save the modified CRS." ), 4 );
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem CRS;
@@ -410,7 +410,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
       QgsDebugMsg( QStringLiteral( "Error when saving CRS '%1'" ).arg( mCustomCRSnames[i] ) );
     }
   }
-  QgsDebugMsg( QStringLiteral( "We remove the deleted CRS." ) );
+  QgsDebugMsgLevel( QStringLiteral( "We remove the deleted CRS." ), 4 );
   for ( int i = 0; i < mDeletedCRSs.size(); ++i )
   {
     saveSuccess &= deleteCrs( mDeletedCRSs[i] );
@@ -447,11 +447,11 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *pContext = QgsProjContext::get();
   const QString projDef = teParameters->toPlainText();
-  QgsDebugMsg( QStringLiteral( "Proj: %1" ).arg( projDef ) );
+  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
 #else
   projCtx pContext = pj_ctx_alloc();
   projPJ proj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
-  QgsDebugMsg( QStringLiteral( "Proj: %1" ).arg( teParameters->toPlainText() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( teParameters->toPlainText() ), 3 );
 
   if ( !proj )
   {
