@@ -22,6 +22,7 @@
 
 #include "qgsserversettings.h"
 #include "qgswmsparameters.h"
+#include "qgswmsrendercontext.h"
 #include "qgsfeaturefilter.h"
 #include <QDomDocument>
 #include <QMap>
@@ -63,12 +64,15 @@ namespace QgsWms
     public:
 
       /**
-       * Constructor. Does _NOT_ take ownership of
-          QgsConfigParser and QgsCapabilitiesCache*/
-      QgsRenderer( QgsServerInterface *serverIface,
-                   const QgsProject *project,
-                   const QgsWmsParameters &parameters );
+       * Constructor for QgsRenderer.
+       * \param context The rendering context.
+       * \since QGIS 3.8
+       */
+      QgsRenderer( const QgsWmsRenderContext &context );
 
+      /**
+       * Destructor for QgsRenderer.
+       */
       ~QgsRenderer();
 
       /**
@@ -108,16 +112,7 @@ namespace QgsWms
        */
       QByteArray getFeatureInfo( const QString &version = "1.3.0" );
 
-      //! Returns the image quality to use for getMap request
-      int imageQuality() const;
-
-      //! Returns the precision to use for GetFeatureInfo request
-      int wmsPrecision() const;
-
     private:
-
-      // Init the restricted layers with nicknames
-      void initRestrictedLayers();
 
       // Build and returns highlight layers
       QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
@@ -125,36 +120,11 @@ namespace QgsWms
       // Build and returns external layers
       QList<QgsMapLayer *> externalLayers( const QList<QgsWmsParametersExternalLayer> &params );
 
-      // Init a map with nickname for layers' project
-      void initNicknameLayers();
-
-      void initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName );
-
-      // Return the nickname of the layer (short name, id or name according to
-      // the project configuration)
-      QString layerNickname( const QgsMapLayer &layer ) const;
-
-      // Return true if the layer has to be displayed according to he current
-      // scale
-      bool layerScaleVisibility( const QgsMapLayer &layer, double scaleDenominator ) const;
-
-      // Remove unwanted layers (restricted, not visible, etc)
-      void removeUnwantedLayers( QList<QgsMapLayer *> &layers, double scaleDenominator = -1 ) const;
-
-      // Remove non identifiable layers (restricted, not visible, etc)
-      void removeNonIdentifiableLayers( QList<QgsMapLayer *> &layers ) const;
-
       // Rendering step for layers
       QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest = nullptr ) const;
 
       // Rendering step for annotations
       void annotationsRendering( QPainter *painter ) const;
-
-      // Return a list of layers stylized with LAYERS/STYLES parameters
-      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params );
-
-      // Return a list of layers stylized with SLD parameter
-      QList<QgsMapLayer *> sldStylizedLayers( const QString &sld ) const;
 
       // Set layer opacity
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;
@@ -174,14 +144,8 @@ namespace QgsWms
       // Scale image with WIDTH/HEIGHT if necessary
       QImage *scaleImage( const QImage *image ) const;
 
-      // Check layer read permissions
-      void checkLayerReadPermissions( QgsMapLayer *layer ) const;
-
       // Build a layer tree model for legend
       QgsLayerTreeModel *buildLegendTreeModel( const QList<QgsMapLayer *> &layers, double scaleDenominator, QgsLayerTree &rootGroup );
-
-      // Returns default dots per mm
-      qreal dotsPerMm() const;
 
       /**
        * Creates a QImage from the HEIGHT and WIDTH parameters
@@ -311,20 +275,19 @@ namespace QgsWms
        */
       int width() const;
 
-      const QgsWmsParameters &mWmsParameters;
+      void configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings = nullptr );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      //! The access control helper
-      QgsAccessControl *mAccessControl = nullptr;
-#endif
+      void setLayerStyle( QgsMapLayer *layer, const QString &style ) const;
+
+      void setLayerSld( QgsMapLayer *layer, const QDomElement &sld ) const;
+
+      QgsWmsParameters mWmsParameters;
+
       QgsFeatureFilter mFeatureFilter;
 
-      const QgsServerSettings &mSettings;
       const QgsProject *mProject = nullptr;
-      QStringList mRestrictedLayers;
-      QMap<QString, QgsMapLayer *> mNicknameLayers;
-      QMap<QString, QList<QgsMapLayer *> > mLayerGroups;
       QList<QgsMapLayer *> mTemporaryLayers;
+      QgsWmsRenderContext mContext;
   };
 
 } // namespace QgsWms

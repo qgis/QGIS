@@ -24,26 +24,25 @@
 
 namespace QgsWms
 {
-
   void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project,
                             const QString &version, const QgsServerRequest &request,
                             QgsServerResponse &response )
   {
-    Q_UNUSED( version );
-    QgsServerRequest::Parameters params = request.parameters();
+    // get wms parameters from query
+    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
-    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
-    QgsRenderer renderer( serverIface, project, wmsParameters );
+    // prepare render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::AddQueryLayers );
+    context.setFlag( QgsWmsRenderContext::UseFilter );
+    context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
+    context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setParameters( parameters );
 
-    QString infoFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
-
+    const QString infoFormat = request.parameters().value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
     response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
+
+    QgsRenderer renderer( context );
     response.write( renderer.getFeatureInfo( version ) );
   }
-
-
 } // namespace QgsWms
-
-
-
-

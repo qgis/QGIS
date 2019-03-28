@@ -19,6 +19,7 @@
 #include "qgsserverinterfaceimpl.h"
 #include "qgswmsparameters.h"
 #include "qgswmsrenderer.h"
+#include "qgswmsrendercontext.h"
 
 /**
  * \ingroup UnitTests
@@ -76,9 +77,17 @@ void TestQgsServerWmsDxf::use_title_as_layername_true()
   QgsServiceRegistry registry;
   QgsServerSettings settings;
   QgsServerInterfaceImpl interface( &cache, &registry, &settings );
-  QgsWms::QgsRenderer renderer( &interface, &project, parameters );
 
+  QgsWms::QgsWmsRenderContext context( &project, &interface );
+  context.setFlag( QgsWms::QgsWmsRenderContext::UseWfsLayersOnly );
+  context.setFlag( QgsWms::QgsWmsRenderContext::UseOpacity );
+  context.setFlag( QgsWms::QgsWmsRenderContext::UseFilter );
+  context.setFlag( QgsWms::QgsWmsRenderContext::SetAccessControl );
+  context.setParameters( parameters );
+
+  QgsWms::QgsRenderer renderer( context );
   QgsDxfExport exporter = renderer.getDxf();
+
   const QString name = exporter.layerName( vl );
   QCOMPARE( exporter.layerName( vl ), QString( "testlayer \u00E8\u00E9" ) );
 
@@ -117,9 +126,17 @@ void TestQgsServerWmsDxf::use_title_as_layername_false()
   QgsServiceRegistry registry;
   QgsServerSettings settings;
   QgsServerInterfaceImpl interface( &cache, &registry, &settings );
-  QgsWms::QgsRenderer renderer( &interface, &project, parameters );
 
+  QgsWms::QgsWmsRenderContext context( &project, &interface );
+  context.setFlag( QgsWms::QgsWmsRenderContext::UseWfsLayersOnly );
+  context.setFlag( QgsWms::QgsWmsRenderContext::UseOpacity );
+  context.setFlag( QgsWms::QgsWmsRenderContext::UseFilter );
+  context.setFlag( QgsWms::QgsWmsRenderContext::SetAccessControl );
+  context.setParameters( parameters );
+
+  QgsWms::QgsRenderer renderer( context );
   QgsDxfExport exporter = renderer.getDxf();
+
   const QString name = exporter.layerName( vl );
   QCOMPARE( exporter.layerName( vl ), QString( "A test vector layer" ) );
 

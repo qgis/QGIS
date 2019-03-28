@@ -26,19 +26,20 @@
 
 namespace QgsWms
 {
-
   void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project,
-                               const QString &version, const QgsServerRequest &request,
+                               const QString &, const QgsServerRequest &request,
                                QgsServerResponse &response )
   {
-    Q_UNUSED( version );
+    // get parameters from query
+    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
-    QgsServerRequest::Parameters params = request.parameters();
-    QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
-
-    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
+    // init render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
+    context.setParameters( parameters );
 
     // Get cached image
+    const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
     QgsAccessControl *accessControl = nullptr;
     QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -79,13 +80,12 @@ namespace QgsWms
       }
     }
 
-    QgsRenderer renderer( serverIface, project, wmsParameters );
-
+    QgsRenderer renderer( context );
     std::unique_ptr<QImage> result( renderer.getLegendGraphics() );
 
     if ( result )
     {
-      writeImage( response, *result,  format, renderer.imageQuality() );
+      writeImage( response, *result,  format, context.imageQuality() );
       if ( cacheManager )
       {
         QByteArray content = response.data();
@@ -99,10 +99,4 @@ namespace QgsWms
                                  QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
     }
   }
-
-
 } // namespace QgsWms
-
-
-
-
