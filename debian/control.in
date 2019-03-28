@@ -491,3 +491,20 @@ Description: QGIS API documentation
 #oracle# display databases of geographic information.
 #oracle# .
 #oracle# This package contains the QGIS oracle provider.
+
+Package: python-qgis
+Depends: python3-qgis, ${misc:Depends}
+Architecture: all
+Priority: optional
+Section: oldlibs
+Description: transitional package
+ This is a transitional package. It can safely be removed.
+
+Package: python-qgis-common
+Depends: python3-qgis-common, ${misc:Depends}
+Architecture: all
+Priority: optional
+Section: oldlibs
+Description: transitional package
+ This is a transitional package. It can safely be removed.
+
