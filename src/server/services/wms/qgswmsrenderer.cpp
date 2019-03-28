@@ -327,8 +327,7 @@ namespace QgsWms
         QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
         if ( pkIndexes.size() < 1 )
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                        QStringLiteral( "An error occurred during the Atlas print" ) );
+          throw QgsException( QStringLiteral( "An error occurred during the Atlas print" ) );
         }
         QStringList pkAttributeNames;
         for ( int i = 0; i < pkIndexes.size(); ++i )
@@ -381,8 +380,7 @@ namespace QgsWms
         atlas->setFilterExpression( filterString, errorString );
         if ( !errorString.isEmpty() )
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                        QStringLiteral( "An error occurred during the Atlas print" ) );
+          throw QgsException( QStringLiteral( "An error occurred during the Atlas print" ) );
         }
       }
     }
@@ -409,7 +407,7 @@ namespace QgsWms
     QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( extension ) );
     if ( !tempOutputFile.open() )
     {
-      throw QgsServerException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
+      throw QgsException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
 
     }
 
@@ -1059,7 +1057,6 @@ namespace QgsWms
     outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !outputCRS.isValid() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error, could not create output CRS from EPSG" ) );
       throw QgsBadRequestException( QStringLiteral( "InvalidCRS" ), QStringLiteral( "Could not create output CRS" ) );
     }
 
@@ -2635,10 +2632,7 @@ namespace QgsWms
           layerWMSName = mContext.layerNickname( *errorLayer );
         }
 
-        //Log first error
-        QString errorMsg = QStringLiteral( "Map rendering error in layer '%1'" ).arg( firstErrorLayerId );
-        QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
-        throw QgsServerException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
+        throw QgsException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
       }
     }
 
@@ -2939,12 +2933,8 @@ namespace QgsWms
     {
       if ( !( *mapIt )->renderingErrors().isEmpty() )
       {
-        //Log first error
-        QgsMapRendererJob::Error e = ( *mapIt )->renderingErrors().at( 0 );
-        QString errorMsg = QString( "Rendering error : '%1' in layer %2" ).arg( e.message ).arg( e.layerID );
-        QgsMessageLog::logMessage( errorMsg, "Server", Qgis::Critical );
-
-        throw QgsServerException( QStringLiteral( "Print error" ) );
+        const QgsMapRendererJob::Error e = ( *mapIt )->renderingErrors().at( 0 );
+        throw QgsException( QStringLiteral( "Rendering error : '%1' in layer %2" ).arg( e.message ).arg( e.layerID ) );
       }
     }
   }
