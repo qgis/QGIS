@@ -18,7 +18,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
-import processing
+from qgis import processing
 
 
 class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
