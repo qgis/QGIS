@@ -2710,8 +2710,8 @@ namespace QgsWms
           QString errorMsg;
           if ( !filterXml.setContent( filter.mFilter, true, &errorMsg ) )
           {
-            throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
-                                          QStringLiteral( "error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
+            throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                          QStringLiteral( "Filter string rejected. Error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
           }
           QDomElement filterElem = filterXml.firstChildElement();
           std::unique_ptr<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer ) );
@@ -2726,15 +2726,14 @@ namespace QgsWms
           // QGIS (SQL) filter
           if ( !testFilterStringSafety( filter.mFilter ) )
           {
-            throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
-                                          QStringLiteral( "The filter string %1"
-                                              " has been rejected because of security reasons."
-                                              " Note: Text strings have to be enclosed in single or double quotes."
-                                              " A space between each word / special character is mandatory."
-                                              " Allowed Keywords and special characters are "
-                                              " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
-                                              " Not allowed are semicolons in the filter expression." ).arg(
-                                            filter.mFilter ) );
+            throw QgsSecurityException( QStringLiteral( "The filter string %1"
+                                        " has been rejected because of security reasons."
+                                        " Note: Text strings have to be enclosed in single or double quotes."
+                                        " A space between each word / special character is mandatory."
+                                        " Allowed Keywords and special characters are "
+                                        " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
+                                        " Not allowed are semicolons in the filter expression." ).arg(
+                                          filter.mFilter ) );
           }
 
           QString newSubsetString = filter.mFilter;
