@@ -29,6 +29,7 @@ class TestQgsProjUtils: public QObject
     void initTestCase();
     void cleanupTestCase();
     void threadSafeContext();
+    void usesAngularUnits();
 
 };
 
@@ -65,6 +66,15 @@ void TestQgsProjUtils::threadSafeContext()
   QVector< int > list;
   list.resize( 100 );
   QtConcurrent::blockingMap( list, ProjContextWrapper() );
+}
+
+void TestQgsProjUtils::usesAngularUnits()
+{
+  QVERIFY( !QgsProjUtils::usesAngularUnit( QString() ) );
+  QVERIFY( !QgsProjUtils::usesAngularUnit( QString( "" ) ) );
+  QVERIFY( !QgsProjUtils::usesAngularUnit( QStringLiteral( "x" ) ) );
+  QVERIFY( QgsProjUtils::usesAngularUnit( QStringLiteral( "+proj=longlat +ellps=WGS60 +no_defs" ) ) );
+  QVERIFY( !QgsProjUtils::usesAngularUnit( QStringLiteral( "+proj=tmerc +lat_0=0 +lon_0=147 +k_0=0.9996 +x_0=500000 +y_0=10000000 +ellps=GRS80 +units=m +no_defs" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsProjUtils )
