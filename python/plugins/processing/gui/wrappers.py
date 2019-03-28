@@ -273,6 +273,16 @@ class BasicWidgetWrapper(WidgetWrapper):
 
 class BooleanWidgetWrapper(WidgetWrapper):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("BooleanWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
     def createLabel(self):
         if self.dialogType == DIALOG_STANDARD:
             return None
@@ -312,6 +322,16 @@ class BooleanWidgetWrapper(WidgetWrapper):
 
 
 class CrsWidgetWrapper(WidgetWrapper):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("CrsWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     def createWidget(self):
         if self.dialogType == DIALOG_MODELER:
@@ -458,6 +478,16 @@ class ExtentWidgetWrapper(WidgetWrapper):
 
 class PointWidgetWrapper(WidgetWrapper):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("PointWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             return PointSelectionPanel(self.dialog, self.parameterDefinition().defaultValue())
@@ -505,6 +535,16 @@ class PointWidgetWrapper(WidgetWrapper):
 
 
 class FileWidgetWrapper(WidgetWrapper):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("FileWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
@@ -571,6 +611,16 @@ class FileWidgetWrapper(WidgetWrapper):
 
 
 class FixedTableWidgetWrapper(WidgetWrapper):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("FixedTableWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
@@ -768,6 +818,16 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
 
 class NumberWidgetWrapper(WidgetWrapper):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("NumberWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             widget = NumberInputPanel(self.parameterDefinition())
@@ -798,6 +858,16 @@ class NumberWidgetWrapper(WidgetWrapper):
 
 
 class DistanceWidgetWrapper(WidgetWrapper):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("DistanceWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
@@ -834,6 +904,16 @@ class DistanceWidgetWrapper(WidgetWrapper):
 
 
 class RangeWidgetWrapper(WidgetWrapper):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("RangeWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     def createWidget(self):
         widget = RangePanel(self.parameterDefinition())
@@ -1032,6 +1112,16 @@ class MeshWidgetWrapper(MapLayerWidgetWrapper):
 
 class EnumWidgetWrapper(WidgetWrapper):
     NOT_SELECTED = '[Not selected]'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("EnumWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     def createWidget(self, useCheckBoxes=False, columns=1):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
@@ -1271,6 +1361,16 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
 
 class StringWidgetWrapper(WidgetWrapper):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("StringWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
             if self.parameterDefinition().multiLine():
@@ -1367,6 +1467,14 @@ class StringWidgetWrapper(WidgetWrapper):
 class ExpressionWidgetWrapper(WidgetWrapper):
 
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("StringWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
         super().__init__(param, dialog, row, col, **kwargs)
         self.context = dataobjects.createContext()
 
@@ -1881,28 +1989,37 @@ class WidgetWrapperFactory:
     def create_wrapper_from_class(param, dialog, row=0, col=0):
         wrapper = None
         if param.type() == 'boolean':
+            # deprecated, moved to c++
             wrapper = BooleanWidgetWrapper
         elif param.type() == 'crs':
+            # deprecated, moved to c++
             wrapper = CrsWidgetWrapper
         elif param.type() == 'extent':
             wrapper = ExtentWidgetWrapper
         elif param.type() == 'point':
+            # deprecated, moved to c++
             wrapper = PointWidgetWrapper
         elif param.type() == 'file':
+            # deprecated, moved to c++
             wrapper = FileWidgetWrapper
         elif param.type() == 'multilayer':
             wrapper = MultipleLayerWidgetWrapper
         elif param.type() == 'number':
+            # deprecated, moved to c++
             wrapper = NumberWidgetWrapper
         elif param.type() == 'distance':
+            # deprecated, moved to c++
             wrapper = DistanceWidgetWrapper
         elif param.type() == 'raster':
             wrapper = RasterWidgetWrapper
         elif param.type() == 'enum':
+            # deprecated, moved to c++
             wrapper = EnumWidgetWrapper
         elif param.type() == 'string':
+            # deprecated, moved to c++
             wrapper = StringWidgetWrapper
         elif param.type() == 'expression':
+            # deprecated, moved to c++
             wrapper = ExpressionWidgetWrapper
         elif param.type() == 'vector':
             wrapper = VectorLayerWidgetWrapper
@@ -1915,8 +2032,10 @@ class WidgetWrapperFactory:
         elif param.type() == 'layer':
             wrapper = MapLayerWidgetWrapper
         elif param.type() == 'range':
+            # deprecated, moved to c++
             wrapper = RangeWidgetWrapper
         elif param.type() == 'matrix':
+            # deprecated, moved to c++
             wrapper = FixedTableWidgetWrapper
         elif param.type() == 'mesh':
             wrapper = MeshWidgetWrapper
