@@ -96,8 +96,7 @@ namespace QgsWms
     }
     else
     {
-      throw QgsServiceException( QStringLiteral( "UnknownError" ),
-                                 QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
+      throw QgsException( QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
     }
   }
 } // namespace QgsWms

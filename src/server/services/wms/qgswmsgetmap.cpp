@@ -57,8 +57,7 @@ namespace QgsWms
     }
     else
     {
-      throw QgsServiceException( QStringLiteral( "UnknownError" ),
-                                 QStringLiteral( "Failed to compute GetMap image" ) );
+      throw QgsException( QStringLiteral( "Failed to compute GetMap image" ) );
     }
   }
 } // namespace QgsWms
