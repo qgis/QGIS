@@ -72,7 +72,7 @@ class AlgorithmsTest(object):
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
         """
         with open(os.path.join(processingTestDataPath(), self.test_definition_file()), 'r') as stream:
-            algorithm_tests = yaml.load(stream)
+            algorithm_tests = yaml.load(stream, Loader=yaml.SafeLoader)
 
         if 'tests' in algorithm_tests and algorithm_tests['tests'] is not None:
             for idx, algtest in enumerate(algorithm_tests['tests']):
