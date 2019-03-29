@@ -31,13 +31,6 @@ namespace QgsWms
    * \ingroup server
    * \class  QgsWms::QgsServiceException
    * \brief Exception class for WMS service exceptions.
-   *
-   * The most important codes are:
-   *  * "InvalidFormat"
-   *  * "Invalid CRS"
-   *  * "LayerNotDefined" / "StyleNotDefined"
-   *  * "OperationNotSupported"
-   *
    * \since QGIS 3.0
    */
   class QgsServiceException : public QgsOgcServiceException
@@ -87,10 +80,24 @@ namespace QgsWms
         : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.3.0" ) )
       {}
 
+      /**
+       * Constructor for QgsServiceException (empty locator attribute).
+       * \param code Error code
+       * \param message Exception message to return to the client
+       * \param responseCode HTTP error code
+       * \since QGIS 3.8
+       */
       QgsServiceException( ExceptionCode code, const QString &message, int responseCode )
         : QgsServiceException( formatCode( code ), message, QString(), responseCode )
       {}
 
+      /**
+       * Constructor for QgsServiceException (empty locator attribute).
+       * \param code Error code
+       * \param parameter The WMS parameter on which an error has been detected
+       * \param responseCode HTTP error code
+       * \since QGIS 3.8
+       */
       QgsServiceException( ExceptionCode code, const QgsWmsParameter &parameter, int responseCode )
         : QgsServiceException( formatCode( code ), formatMessage( code, parameter ), QString(), responseCode )
       {}
@@ -213,14 +220,20 @@ namespace QgsWms
 
       /**
        * Constructor for QgsBadRequestException (HTTP error code 400).
-       * \param code Error code name
+       * \param code Error code
        * \param message Exception message to return to the client
-       * \param locator Locator attribute according to OGC specifications
+       * \since QGIS 3.8
        */
       QgsBadRequestException( ExceptionCode code, const QString &message )
         : QgsServiceException( code, message, 400 )
       {}
 
+      /**
+       * Constructor for QgsBadRequestException (HTTP error code 400).
+       * \param code Error code
+       * \param parameter The WMS parameter on which an error has been detected
+       * \since QGIS 3.8
+       */
       QgsBadRequestException( ExceptionCode code, const QgsWmsParameter &parameter )
         : QgsServiceException( code, parameter, 400 )
       {}

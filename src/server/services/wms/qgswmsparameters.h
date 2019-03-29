@@ -283,6 +283,10 @@ namespace QgsWms
        */
       void raiseError() const;
 
+      /**
+       * Returns the name of the parameter.
+       * \since QGIS 3.8
+       */
       QString name() const;
 
       /**
@@ -352,6 +356,10 @@ namespace QgsWms
 
       virtual ~QgsWmsParameters() = default;
 
+      /**
+       * Returns the parameter corresponding to \a name.
+       * \since QGIS 3.8
+       */
       QgsWmsParameter operator[]( QgsWmsParameter::Name name ) const;
 
       /**
