@@ -16383,6 +16383,22 @@ void TestQgsGeometry::comparePolygons()
 
 #if defined(__clang__) || defined(__GNUG__)
 #include <cxxabi.h>
+#include <ctime>
+
+QString generateSpacesString( int numberOfSpace )
+{
+  QStringList spaces;
+  spaces << QString( " " ) << QString( "\t" ) << QString( "\n" ) << QString( "\r" );
+
+  QString ret;
+  for ( int i = 0; i < numberOfSpace; ++i )
+  {
+    int r = rand() % ( spaces.count() );
+    ret += spaces.at( r );
+  }
+  return ret;
+}
+
 #endif
 // Helper function (in anonymous namespace to prevent possible link with the extirior)
 namespace
@@ -16394,6 +16410,8 @@ namespace
     std::unique_ptr<QgsAbstractGeometry> created { TestQgsGeometry::createEmpty( geom.get() ) };
     QVERIFY( created->isEmpty() );
 #if defined(__clang__) || defined(__GNUG__)
+    srand( ( unsigned )time( NULL ) );
+
     const std::type_info  &ti = typeid( T );
     int status;
     char *realname = abi::__cxa_demangle( ti.name(), 0, 0, &status );
@@ -16406,15 +16424,27 @@ namespace
     for ( QString ext : extensionZM )
     {
       QString wkt = type + ext;
+      QString result = wkt + QLatin1String( " EMPTY" );
 
-      wkt += + " EMPTY";
-      qDebug() << wkt << "\n";
+      QStringList emptyStringList;
+      emptyStringList << QString( "EMPTY" ) << QString( "Empty" ) << QString( "empty" ) << QString( "EmptY" ) << QString( "EmPtY" );
+      for ( int i = 0 ; i < 10 ; ++i )
+      {
+        QString spacesBefore = generateSpacesString( i );
+        QString spacesMiddle = i == 0 ? QStringLiteral( " " ) : generateSpacesString( i );
+        QString spacesAfter = generateSpacesString( i );
+        for ( int j = 0; j < emptyStringList.count() ; ++j )
+        {
+          QString generatedWkt = spacesBefore + wkt + spacesMiddle + emptyStringList.at( j ) + spacesAfter;
+          qDebug() << "Generated WKT:" << generatedWkt << " expected: " << result;
 
-      QgsGeometry gWkt = QgsGeometry().fromWkt( wkt );
-      QCOMPARE( wkt, gWkt.asWkt() );
+          QgsGeometry gWkt = QgsGeometry().fromWkt( generatedWkt );
+          QVERIFY( gWkt.asWkt().compare( result, Qt::CaseInsensitive ) == 0 );
 
-      QVERIFY( geom->fromWkt( wkt ) );
-      QCOMPARE( wkt, geom->asWkt() );
+          QVERIFY( geom->fromWkt( generatedWkt ) );
+          QVERIFY( geom->asWkt().compare( result, Qt::CaseInsensitive ) == 0 );
+        }
+      }
     }
     free( realname );
 #endif
