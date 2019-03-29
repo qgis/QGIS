@@ -231,7 +231,7 @@ QString QgsPoint::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QString( " EMPTY" );
+    wkt += QStringLiteral( " EMPTY" );
   else
   {
     wkt += QLatin1String( " (" );
