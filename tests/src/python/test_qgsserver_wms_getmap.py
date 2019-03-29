@@ -629,7 +629,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "WIDTH": "5000"
         }.items())])
 
-        expected = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Size error">The requested map size is too large</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="InvalidParameterValue">The requested map size is too large</ServiceException>\n</ServiceExceptionReport>\n')
         r, h = self._result(self._execute_request(qs))
 
         self.assertEqual(self.strip_version_xmlns(r), expected)

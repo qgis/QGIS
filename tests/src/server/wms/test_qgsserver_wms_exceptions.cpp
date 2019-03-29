@@ -50,9 +50,9 @@ void TestQgsServerWmsExceptions::exception_code()
   QgsWms::QgsServiceException exception0( code, QString(), 400 );
   QCOMPARE( exception0.code(), QString( "InvalidFormat" ) );
 
-  code = QgsWms::QgsServiceException::QGIS_ERROR;
+  code = QgsWms::QgsServiceException::QGIS_INVALID_PARAMETER_VALUE;
   QgsWms::QgsServiceException exception1( code, QString(), 400 );
-  QCOMPARE( exception1.code(), QString( "Error" ) );
+  QCOMPARE( exception1.code(), QString( "InvalidParameterValue" ) );
 }
 
 void TestQgsServerWmsExceptions::exception_message()
