@@ -38,6 +38,12 @@ namespace QgsWms
       Q_GADGET
 
     public:
+
+      /**
+       * Exception codes as defined in OGC scpecifications for WMS 1.1.1 and
+       * WMS 1.3.0. Some custom QGIS codes are defined too.
+       * \since QGIS 3.8
+       */
       enum ExceptionCode
       {
         OGC_INVALID_FORMAT,
@@ -53,8 +59,7 @@ namespace QgsWms
         OGC_INVALID_CRS, // new in WMS 1.3.0
         OGC_OPERATION_NOT_SUPPORTED, // new in WMS 1.3.0
         QGIS_MISSING_PARAMETER_VALUE,
-        QGIS_INVALID_PARAMETER_VALUE,
-        QGIS_ERROR
+        QGIS_INVALID_PARAMETER_VALUE
       };
       Q_ENUM( ExceptionCode )
 
@@ -156,7 +161,6 @@ namespace QgsWms
           case OGC_MISSING_DIMENSION_VALUE:
           case OGC_INVALID_DIMENSION_VALUE:
           case OGC_OPERATION_NOT_SUPPORTED:
-          case QGIS_ERROR:
           {
             break;
           }
