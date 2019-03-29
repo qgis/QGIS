@@ -215,7 +215,7 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
 
   mWkbType = parts.first;
 
-  if ( parts.second == QString( "EMPTY" ) )
+  if ( parts.second.compare( QLatin1String( "EMPTY" ) ) == 0 )
     return true;
 
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );

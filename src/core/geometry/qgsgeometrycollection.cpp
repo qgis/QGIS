@@ -643,7 +643,7 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   }
   mWkbType = parts.first;
 
-  if ( parts.second == QString( "EMPTY" ) )
+  if ( parts.second.compare( QLatin1String( "EMPTY" ) ) == 0 )
     return true;
 
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
