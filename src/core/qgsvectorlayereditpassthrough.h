@@ -22,12 +22,28 @@ class QgsVectorLayer;
 class QgsVectorLayerUndoPassthroughCommand;
 class QgsTransaction;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsvectorlayereditpassthrough.h>
+% End
+#endif
+
 /**
  * \ingroup core
  * \class QgsVectorLayerEditPassthrough
  */
 class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsVectorLayerEditPassthrough *>( sipCpp ) )
+      sipType = sipType_QgsVectorLayerEditPassthrough;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
     QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
