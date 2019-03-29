@@ -1237,11 +1237,13 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
   QString contents;
   if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
   {
-    QStringList parts = wkt.split( " " );
-    if ( ( parts.count() == 2 ) && ( parts[1].toUpper() == QString( "EMPTY" ) ) )
+    QRegularExpression wktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ) );
+    wktRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+    QRegularExpressionMatch match = wktRegEx.match( wkt );
+    if ( match.hasMatch() )
     {
-      wktParsed = parts[0];
-      contents = parts[1];
+      wktParsed = match.captured( 1 );
+      contents = match.captured( 2 ).toUpper();
     }
   }
   else
