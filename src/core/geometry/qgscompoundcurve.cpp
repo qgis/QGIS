@@ -253,11 +253,7 @@ QString QgsCompoundCurve::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr();
   if ( isEmpty() )
-<<<<<<< HEAD
     wkt += QStringLiteral( " EMPTY" );
-=======
-    wkt += QString( " EMPTY" );
->>>>>>> Fixes empty WKT. Fixes #20753, Fixes #19190, Fixes #20754
   else
   {
     wkt += QLatin1String( " (" );
