@@ -16383,7 +16383,6 @@ void TestQgsGeometry::comparePolygons()
 
 #if defined(__clang__) || defined(__GNUG__)
 #include <cxxabi.h>
-<<<<<<< HEAD
 #include <ctime>
 
 QString generateSpacesString( int numberOfSpace )
