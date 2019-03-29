@@ -33,6 +33,8 @@
 #include <QStringList>
 #include <QVariant>
 
+#include <functional>
+
 class QNetworkReply;
 class QgsNetworkAccessManager;
 class QgsFields;
