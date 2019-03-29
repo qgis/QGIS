@@ -1,0 +1,11 @@
+v.voronoi.skeleton
+Creates a Voronoi diagram (or compute the center line or the skeleton) from an input vector layer containing polygons.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input polygons layer|2|None|False
+QgsProcessingParameterNumber|smoothness|Factor for output smoothness|QgsProcessingParameterNumber.Double|0.25|True|None|None
+QgsProcessingParameterNumber|thin|Maximum dangle length of skeletons (-1 will extract the center line)|QgsProcessingParameterNumber.Double|-1.0|True|-1.0|None
+*QgsProcessingParameterBoolean|-a|Create Voronoi diagram for input areas|False
+*QgsProcessingParameterBoolean|-s|Extract skeletons for input areas|False
+*QgsProcessingParameterBoolean|-l|Output tessellation as a graph (lines), not areas|False
+*QgsProcessingParameterBoolean|-t|Do not create attribute table|False
+QgsProcessingParameterVectorDestination|output|Voronoi
