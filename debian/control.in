@@ -369,6 +369,7 @@ Architecture: any
 Section: python
 Depends:
  python3-qgis-common (= ${source:Version}),
+ qgis-providers (= ${binary:Version}),
  libqgispython{QGIS_ABI},
  libsqlite3-mod-spatialite,
  python3-dateutil,
