@@ -71,7 +71,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \endcode
      */
 #ifndef SIP_RUN
-    QgsPoint( double x =  std::numeric_limits<double>::quiet_NaN(), double y =  std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
+    QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
 #else
     QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
     % MethodCode
