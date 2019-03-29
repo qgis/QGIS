@@ -362,7 +362,6 @@ void QgsHandleBadLayers::editAuthCfg()
 void QgsHandleBadLayers::apply()
 {
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
-  buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
   QHash<QString, QString> baseChange;
 
 
