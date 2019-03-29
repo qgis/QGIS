@@ -259,7 +259,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        err = b"Output format \'pdf\' is not supported" in r
+        err = b"The format \'pdf\' from FORMAT is not supported." in r
         self.assertTrue(err)
 
         # height should be an int
