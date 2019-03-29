@@ -982,7 +982,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   // because if it was, the newly created layer will not be added to the store and it would leak.
   const QString layerId { layerElem.namedItem( QStringLiteral( "id" ) ).toElement().text() };
   Q_ASSERT( ! layerId.isEmpty() );
-  const bool layerWasStored { layerStore()->mapLayer( layerId ) };
+  const bool layerWasStored { layerStore()->mapLayer( layerId ) != nullptr };
 
   // have the layer restore state that is stored in Dom node
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid();
