@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsutils.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
 
@@ -65,8 +66,8 @@ namespace QgsWms
           saveFormat = "JPEG";
           break;
         default:
-          throw QgsServiceException( "InvalidFormat",
-                                     QString( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( format ) );
+          throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                        parameters[QgsWmsParameter::FORMAT] );
           break;
       }
 
@@ -95,8 +96,7 @@ namespace QgsWms
     }
     else
     {
-      throw QgsServiceException( QStringLiteral( "UnknownError" ),
-                                 QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
+      throw QgsException( QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
     }
   }
 } // namespace QgsWms

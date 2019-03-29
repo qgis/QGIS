@@ -23,7 +23,6 @@
 #include <QColor>
 
 #include "qgsrectangle.h"
-#include "qgswmsserviceexception.h"
 #include "qgslegendsettings.h"
 #include "qgsprojectversion.h"
 #include "qgsogcutils.h"
@@ -285,6 +284,12 @@ namespace QgsWms
       void raiseError() const;
 
       /**
+       * Returns the name of the parameter.
+       * \since QGIS 3.8
+       */
+      QString name() const;
+
+      /**
        * Converts a parameter's name into its string representation.
        */
       static QString name( const QgsWmsParameter::Name );
@@ -350,6 +355,12 @@ namespace QgsWms
       QgsWmsParameters();
 
       virtual ~QgsWmsParameters() = default;
+
+      /**
+       * Returns the parameter corresponding to \a name.
+       * \since QGIS 3.8
+       */
+      QgsWmsParameter operator[]( QgsWmsParameter::Name name ) const;
 
       /**
        * Dumps parameters.

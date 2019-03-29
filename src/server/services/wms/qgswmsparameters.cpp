@@ -18,6 +18,7 @@
 #include "qgswmsparameters.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
+#include "qgswmsserviceexception.h"
 
 const QString EXTERNAL_LAYER_PREFIX = QStringLiteral( "EXTERNAL_WMS:" );
 
@@ -182,6 +183,11 @@ namespace QgsWms
     }
 
     return val;
+  }
+
+  QString QgsWmsParameter::name() const
+  {
+    return QgsWmsParameter::name( mName );
   }
 
   QString QgsWmsParameter::name( const QgsWmsParameter::Name name )
@@ -534,6 +540,11 @@ namespace QgsWms
         loadParameter( QgsWmsParameter::name( QgsWmsParameter::SLD_BODY ), sldBody );
       }
     }
+  }
+
+  QgsWmsParameter QgsWmsParameters::operator[]( QgsWmsParameter::Name name ) const
+  {
+    return mWmsParameters[name];
   }
 
   bool QgsWmsParameters::loadParameter( const QString &key, const QString &value )
@@ -1820,7 +1831,7 @@ namespace QgsWms
 
   void QgsWmsParameters::raiseError( const QString &msg ) const
   {
-    throw QgsBadRequestException( QStringLiteral( "Invalid WMS Parameter" ), msg );
+    throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE, msg );
   }
 
   QgsWmsParameter QgsWmsParameters::idParameter( const QgsWmsParameter::Name name, const int id ) const

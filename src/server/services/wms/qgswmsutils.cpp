@@ -161,8 +161,10 @@ namespace QgsWms
     }
     else
     {
-      throw QgsServiceException( "InvalidFormat",
-                                 QString( "Output format '%1' is not supported in the GetMap request" ).arg( formatStr ) );
+      QgsWmsParameter parameter( QgsWmsParameter::FORMAT );
+      parameter.mValue = formatStr;
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                    parameter );
     }
   }
 } // namespace QgsWms

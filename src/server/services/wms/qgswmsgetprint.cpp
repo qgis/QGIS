@@ -21,6 +21,7 @@
 #include "qgswmsutils.h"
 #include "qgswmsgetprint.h"
 #include "qgswmsrenderer.h"
+#include "qgswmsserviceexception.h"
 
 namespace QgsWms
 {
@@ -29,10 +30,10 @@ namespace QgsWms
                       QgsServerResponse &response )
   {
     // get wms parameters from query
-    const QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
+    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
     // GetPrint supports svg/png/pdf
-    const QgsWmsParameters::Format format = wmsParameters.format();
+    const QgsWmsParameters::Format format = parameters.format();
     QString contentType;
     switch ( format )
     {
@@ -49,8 +50,8 @@ namespace QgsWms
         contentType = QStringLiteral( "application/pdf" );
         break;
       default:
-        throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
-                                   QString( "Output format %1 is not supported by the GetPrint request" ).arg( wmsParameters.formatAsString() ) );
+        throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                      parameters[QgsWmsParameter::FORMAT] );
         break;
     }
 
@@ -63,7 +64,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
     context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
     context.setFlag( QgsWmsRenderContext::AddExternalLayers );
-    context.setParameters( wmsParameters );
+    context.setParameters( parameters );
 
     // rendering
     QgsRenderer renderer( context );

@@ -18,6 +18,7 @@
 #include "qgslayertree.h"
 
 #include "qgswmsrendercontext.h"
+#include "qgswmsserviceexception.h"
 #include "qgsserverprojectutils.h"
 
 using namespace QgsWms;
@@ -395,8 +396,10 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
       }
       else
       {
-        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                      QStringLiteral( "Layer \"%1\" does not exist" ).arg( lname ) );
+        QgsWmsParameter param( QgsWmsParameter::LAYER );
+        param.mValue = lname;
+        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+                                      param );
       }
     }
   }
@@ -439,8 +442,10 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
     }
     else
     {
-      throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                    QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
+      QgsWmsParameter param( QgsWmsParameter::LAYER );
+      param.mValue = nickname;
+      throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+                                    param );
     }
   }
 }

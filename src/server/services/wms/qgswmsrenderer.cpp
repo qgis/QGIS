@@ -131,12 +131,12 @@ namespace QgsWms
   {
     // check parameters
     if ( mWmsParameters.allLayersNickname().isEmpty() )
-      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
-                                    QStringLiteral( "LAYER is mandatory for GetLegendGraphic operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    mWmsParameters[QgsWmsParameter::LAYERS] );
 
     if ( mWmsParameters.format() == QgsWmsParameters::Format::NONE )
-      throw QgsBadRequestException( QStringLiteral( "FormatNotSpecified" ),
-                                    QStringLiteral( "FORMAT is mandatory for GetLegendGraphic operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    mWmsParameters[QgsWmsParameter::FORMAT] );
 
     // get layers
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -269,8 +269,8 @@ namespace QgsWms
     const QString templateName = mWmsParameters.composerTemplate();
     if ( templateName.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
-                                    QStringLiteral( "The TEMPLATE parameter is required for the GetPrint request" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    QgsWmsParameter::TEMPLATE );
     }
 
     // check template
@@ -278,15 +278,15 @@ namespace QgsWms
     QgsPrintLayout *sourceLayout( dynamic_cast<QgsPrintLayout *>( lManager->layoutByName( templateName ) ) );
     if ( !sourceLayout )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidTemplate" ),
-                                    QStringLiteral( "Template '%1' is not known" ).arg( templateName ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    mWmsParameters[QgsWmsParameter::TEMPLATE ] );
     }
 
     // Check that layout has at least one page
     if ( sourceLayout->pageCollection()->pageCount() < 1 )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidTemplate" ),
-                                    QStringLiteral( "Template '%1' has no pages" ).arg( templateName ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QStringLiteral( "The template has no pages" ) );
     }
 
     std::unique_ptr<QgsPrintLayout> layout( sourceLayout->clone() );
@@ -300,14 +300,14 @@ namespace QgsWms
       if ( !atlas || !atlas->enabled() )
       {
         //error
-        throw QgsBadRequestException( QStringLiteral( "NoAtlas" ),
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                       QStringLiteral( "The template has no atlas enabled" ) );
       }
 
       QgsVectorLayer *cLayer = atlas->coverageLayer();
       if ( !cLayer )
       {
-        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                       QStringLiteral( "The atlas has no coverage layer" ) );
       }
 
@@ -318,7 +318,7 @@ namespace QgsWms
         atlas->updateFeatures();
         if ( atlas->count() > maxAtlasFeatures )
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+          throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                         QString( "The project configuration allows printing maximum %1 atlas features at a time" ).arg( maxAtlasFeatures ) );
         }
       }
@@ -327,8 +327,7 @@ namespace QgsWms
         QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
         if ( pkIndexes.size() < 1 )
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                        QStringLiteral( "An error occurred during the Atlas print" ) );
+          throw QgsException( QStringLiteral( "An error occurred during the Atlas print" ) );
         }
         QStringList pkAttributeNames;
         for ( int i = 0; i < pkIndexes.size(); ++i )
@@ -339,14 +338,14 @@ namespace QgsWms
         int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
         if ( nAtlasFeatures * pkIndexes.size() != atlasPk.size() ) //Test is atlasPk.size() is a multiple of pkIndexes.size(). Bail out if not
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+          throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                         QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
         }
 
         //number of atlas features might be restricted
         if ( nAtlasFeatures > maxAtlasFeatures )
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+          throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                         QString( "%1 atlas features have been requestet, but the project configuration only allows printing %2 atlas features at a time" )
                                         .arg( nAtlasFeatures ).arg( maxAtlasFeatures ) );
         }
@@ -381,8 +380,7 @@ namespace QgsWms
         atlas->setFilterExpression( filterString, errorString );
         if ( !errorString.isEmpty() )
         {
-          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                        QStringLiteral( "An error occurred during the Atlas print" ) );
+          throw QgsException( QStringLiteral( "An error occurred during the Atlas print" ) );
         }
       }
     }
@@ -409,7 +407,7 @@ namespace QgsWms
     QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( extension ) );
     if ( !tempOutputFile.open() )
     {
-      throw QgsServerException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
+      throw QgsException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
 
     }
 
@@ -513,8 +511,8 @@ namespace QgsWms
     }
     else //unknown format
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( mWmsParameters.formatAsString() ) );
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                    mWmsParameters[QgsWmsParameter::FORMAT] );
     }
 
     if ( atlas )
@@ -747,7 +745,7 @@ namespace QgsWms
     // check size
     if ( !checkMaximumWidthHeight() )
     {
-      throw QgsBadRequestException( QStringLiteral( "Size error" ),
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                     QStringLiteral( "The requested map size is too large" ) );
     }
 
@@ -837,9 +835,20 @@ namespace QgsWms
   static void infoPointToMapCoordinates( int i, int j, QgsPointXY *infoPoint, const QgsMapSettings &mapSettings )
   {
     //check if i, j are in the pixel range of the image
-    if ( i < 0 || i > mapSettings.outputSize().width() || j < 0 || j > mapSettings.outputSize().height() )
+    if ( i < 0 || i > mapSettings.outputSize().width() )
     {
-      throw QgsBadRequestException( "InvalidPoint", "I/J parameters not within the pixel range" );
+      QgsWmsParameter param( QgsWmsParameter::I );
+      param.mValue = i;
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_POINT,
+                                    param );
+    }
+
+    if ( j < 0 || j > mapSettings.outputSize().height() )
+    {
+      QgsWmsParameter param( QgsWmsParameter::J );
+      param.mValue = j;
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_POINT,
+                                    param );
     }
 
     double xRes = mapSettings.extent().width() / mapSettings.outputSize().width();
@@ -854,8 +863,8 @@ namespace QgsWms
     // The QUERY_LAYERS parameter is Mandatory
     if ( mWmsParameters.queryLayersNickname().isEmpty() )
     {
-      QString msg = QObject::tr( "QUERY_LAYERS parameter is required for GetFeatureInfo" );
-      throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    mWmsParameters[QgsWmsParameter::QUERY_LAYERS] );
     }
 
     // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
@@ -866,15 +875,19 @@ namespace QgsWms
 
     if ( !ijDefined && !xyDefined && !filtersDefined && !filterGeomDefined )
     {
-      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
-                                    QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
+      QgsWmsParameter parameter = mWmsParameters[QgsWmsParameter::I];
+
+      if ( mWmsParameters.j().isEmpty() )
+        parameter = mWmsParameters[QgsWmsParameter::J];
+
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE, parameter );
     }
 
     const QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
     if ( infoFormat == QgsWmsParameters::Format::NONE )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
+      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+                                    mWmsParameters[QgsWmsParameter::INFO_FORMAT] );
     }
 
     // create the mapSettings and the output image
@@ -950,8 +963,8 @@ namespace QgsWms
       QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
       if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
       {
-        throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ),
-                                      QStringLiteral( "Invalid BBOX parameter" ) );
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                      mWmsParameters[QgsWmsParameter::BBOX] );
       }
 
       QString crs = mWmsParameters.crs();
@@ -979,9 +992,15 @@ namespace QgsWms
       }
     }
 
-    if ( width <= 0 || height <= 0 )
+    if ( width <= 0 )
     {
-      throw QgsException( QStringLiteral( "createImage: Invalid width / height parameters" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    mWmsParameters[QgsWmsParameter::WIDTH] );
+    }
+    else if ( height <= 0 )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    mWmsParameters[QgsWmsParameter::HEIGHT] );
     }
 
     std::unique_ptr<QImage> image;
@@ -1028,7 +1047,8 @@ namespace QgsWms
     QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
     if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    mWmsParameters[QgsWmsParameter::BBOX] );
     }
 
     QString crs = mWmsParameters.crs();
@@ -1048,8 +1068,21 @@ namespace QgsWms
     outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !outputCRS.isValid() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error, could not create output CRS from EPSG" ) );
-      throw QgsBadRequestException( QStringLiteral( "InvalidCRS" ), QStringLiteral( "Could not create output CRS" ) );
+      QgsServiceException::ExceptionCode code;
+      QgsWmsParameter parameter;
+
+      if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
+      {
+        code = QgsServiceException::OGC_INVALID_CRS;
+        parameter = mWmsParameters[ QgsWmsParameter::CRS ];
+      }
+      else
+      {
+        code = QgsServiceException::OGC_INVALID_SRS;
+        parameter = mWmsParameters[ QgsWmsParameter::SRS ];
+      }
+
+      throw QgsBadRequestException( code, parameter );
     }
 
     //then set destinationCrs
@@ -1280,13 +1313,17 @@ namespace QgsWms
       }
       if ( !validLayer && !mContext.isValidLayer( queryLayer ) && !mContext.isValidGroup( queryLayer ) )
       {
-        QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
-        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
+        QgsWmsParameter param( QgsWmsParameter::LAYER );
+        param.mValue = queryLayer;
+        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+                                      param );
       }
       else if ( ( validLayer && !queryableLayer ) || ( !validLayer && mContext.isValidGroup( queryLayer ) ) )
       {
-        QString msg = QObject::tr( "Layer '%1' is not queryable" ).arg( queryLayer );
-        throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
+        QgsWmsParameter param( QgsWmsParameter::LAYER );
+        param.mValue = queryLayer;
+        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_QUERYABLE,
+                                      param );
       }
     }
 
@@ -2624,10 +2661,7 @@ namespace QgsWms
           layerWMSName = mContext.layerNickname( *errorLayer );
         }
 
-        //Log first error
-        QString errorMsg = QStringLiteral( "Map rendering error in layer '%1'" ).arg( firstErrorLayerId );
-        QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
-        throw QgsServerException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
+        throw QgsException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
       }
     }
 
@@ -2676,8 +2710,8 @@ namespace QgsWms
           QString errorMsg;
           if ( !filterXml.setContent( filter.mFilter, true, &errorMsg ) )
           {
-            throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
-                                          QStringLiteral( "error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
+            throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                          QStringLiteral( "Filter string rejected. Error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
           }
           QDomElement filterElem = filterXml.firstChildElement();
           std::unique_ptr<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer ) );
@@ -2692,15 +2726,14 @@ namespace QgsWms
           // QGIS (SQL) filter
           if ( !testFilterStringSafety( filter.mFilter ) )
           {
-            throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
-                                          QStringLiteral( "The filter string %1"
-                                              " has been rejected because of security reasons."
-                                              " Note: Text strings have to be enclosed in single or double quotes."
-                                              " A space between each word / special character is mandatory."
-                                              " Allowed Keywords and special characters are "
-                                              " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
-                                              " Not allowed are semicolons in the filter expression." ).arg(
-                                            filter.mFilter ) );
+            throw QgsSecurityException( QStringLiteral( "The filter string %1"
+                                        " has been rejected because of security reasons."
+                                        " Note: Text strings have to be enclosed in single or double quotes."
+                                        " A space between each word / special character is mandatory."
+                                        " Allowed Keywords and special characters are "
+                                        " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
+                                        " Not allowed are semicolons in the filter expression." ).arg(
+                                          filter.mFilter ) );
           }
 
           QString newSubsetString = filter.mFilter;
@@ -2802,12 +2835,12 @@ namespace QgsWms
       contentBasedLegend = true;
       contentBasedLegendExtent = mWmsParameters.bboxAsRectangle();
       if ( contentBasedLegendExtent.isEmpty() )
-        throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ),
-                                      QStringLiteral( "Invalid BBOX parameter" ) );
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                      mWmsParameters[QgsWmsParameter::BBOX] );
 
       if ( !mWmsParameters.rule().isEmpty() )
-        throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ),
-                                      QStringLiteral( "BBOX parameter cannot be combined with RULE" ) );
+        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                      QStringLiteral( "BBOX parameter cannot be combined with RULE." ) );
     }
 
     // build layer tree
@@ -2928,12 +2961,8 @@ namespace QgsWms
     {
       if ( !( *mapIt )->renderingErrors().isEmpty() )
       {
-        //Log first error
-        QgsMapRendererJob::Error e = ( *mapIt )->renderingErrors().at( 0 );
-        QString errorMsg = QString( "Rendering error : '%1' in layer %2" ).arg( e.message ).arg( e.layerID );
-        QgsMessageLog::logMessage( errorMsg, "Server", Qgis::Critical );
-
-        throw QgsServerException( QStringLiteral( "Print error" ) );
+        const QgsMapRendererJob::Error e = ( *mapIt )->renderingErrors().at( 0 );
+        throw QgsException( QStringLiteral( "Rendering error : '%1' in layer %2" ).arg( e.message ).arg( e.layerID ) );
       }
     }
   }
@@ -3025,8 +3054,8 @@ namespace QgsWms
     bool rc = layer->styleManager()->setCurrentStyle( style );
     if ( ! rc )
     {
-      throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ),
-                                    QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layer->name() ) );
+      throw QgsBadRequestException( QgsServiceException::OGC_STYLE_NOT_DEFINED,
+                                    QStringLiteral( "Style '%1' does not exist for layer '%2'" ).arg( style, layer->name() ) );
     }
   }
 
