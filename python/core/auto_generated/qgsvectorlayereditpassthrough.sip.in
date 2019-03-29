@@ -8,11 +8,21 @@
 
 
 
+%ModuleHeaderCode
+#include <qgsvectorlayereditpassthrough.h>
+%End
+
 class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
 {
 
 %TypeHeaderCode
 #include "qgsvectorlayereditpassthrough.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsVectorLayerEditPassthrough *>( sipCpp ) )
+      sipType = sipType_QgsVectorLayerEditPassthrough;
+    else
+      sipType = nullptr;
 %End
   public:
     QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
