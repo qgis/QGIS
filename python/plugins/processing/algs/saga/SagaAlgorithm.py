@@ -180,7 +180,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 if isinstance(parameters[param.name()], str):
                     if parameters[param.name()].lower().endswith('sdat'):
                         self.exportedLayers[param.name()] = parameters[param.name()][:-4] + 'sgrd'
-                    if parameters[param.name()].lower().endswith('sgrd'):
+                    elif parameters[param.name()].lower().endswith('sgrd'):
                         self.exportedLayers[param.name()] = parameters[param.name()]
                     else:
                         layer = self.parameterAsRasterLayer(parameters, param.name(), context)
