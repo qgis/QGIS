@@ -343,6 +343,42 @@ class TestQgsSpatialIndex : public QObject
       QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 2 ), QList< QgsFeatureId >() << 1 << 3 );
       QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 2 ), QList< QgsFeatureId >() << 2 << 3 );
 
+      // using geometries as input, not points
+      QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LineString (1 0, 1 -1, -2 -1, -2 7, 5 4, 5 0)" ) );
+      QCOMPARE( i2.nearestNeighbor( g, 1 ), QList< QgsFeatureId >() << 3 );
+      QCOMPARE( i2.nearestNeighbor( g, 2 ), QList< QgsFeatureId >() << 3 << 1 );
+      QCOMPARE( i2.nearestNeighbor( g, 2, 1.1 ), QList< QgsFeatureId >() << 3 << 1 );
+      QCOMPARE( i2.nearestNeighbor( g, 2, 0.2 ), QList< QgsFeatureId >() );
+
+      g = QgsGeometry::fromWkt( QStringLiteral( "LineString (3 7, 3 6, 5 6, 4 2)" ) );
+      QCOMPARE( i.nearestNeighbor( g, 1 ), QList< QgsFeatureId >() << 1 << 3 ); // bounding box search only
+      QCOMPARE( i.nearestNeighbor( g, 2 ), QList< QgsFeatureId >() << 1 << 3 );
+      QCOMPARE( i.nearestNeighbor( g, 2, 1.1 ), QList< QgsFeatureId >() << 1 << 3 );
+      QCOMPARE( i.nearestNeighbor( g, 2, 0.2 ), QList< QgsFeatureId >() << 1 << 3 );
+      QCOMPARE( i2.nearestNeighbor( g, 1 ), QList< QgsFeatureId >() << 1 );
+      QCOMPARE( i2.nearestNeighbor( g, 2 ), QList< QgsFeatureId >() << 1 << 3 );
+      QCOMPARE( i2.nearestNeighbor( g, 2, 1.1 ), QList< QgsFeatureId >() << 1 );
+      QCOMPARE( i2.nearestNeighbor( g, 2, 0.2 ), QList< QgsFeatureId >() );
+
+      g = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((2 3, -3 4, 1 7, 6 6, 6 1, 3 4, 2 3))" ) );
+      QCOMPARE( i.nearestNeighbor( g, 1 ), QList< QgsFeatureId >() << 1 << 2 << 3 ); // bounding box search only
+      QCOMPARE( i.nearestNeighbor( g, 2 ), QList< QgsFeatureId >() << 1 << 2 << 3 );
+      QCOMPARE( i.nearestNeighbor( g, 2, 1.1 ), QList< QgsFeatureId >() << 1 << 2 << 3 );
+      QCOMPARE( i.nearestNeighbor( g, 2, 0.2 ), QList< QgsFeatureId >() << 1 << 2 << 3 );
+      QCOMPARE( i2.nearestNeighbor( g, 1 ), QList< QgsFeatureId >() << 3 );
+      QCOMPARE( i2.nearestNeighbor( g, 2 ), QList< QgsFeatureId >() << 3 << 2 );
+      QCOMPARE( i2.nearestNeighbor( g, 2, 1.1 ), QList< QgsFeatureId >() << 3 << 2 );
+      QCOMPARE( i2.nearestNeighbor( g, 2, 0.2 ), QList< QgsFeatureId >() << 3 );
+
+      g = QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (1.5 2.5, 3 4.5)" ) );
+      QCOMPARE( i.nearestNeighbor( g, 1 ), QList< QgsFeatureId >() << 1 << 3 ); // bounding box search only
+      QCOMPARE( i.nearestNeighbor( g, 2 ), QList< QgsFeatureId >() << 1 << 3 );
+      QCOMPARE( i.nearestNeighbor( g, 2, 1.1 ), QList< QgsFeatureId >() <<  1 << 3 );
+      QCOMPARE( i.nearestNeighbor( g, 2, 0.2 ), QList< QgsFeatureId >() <<  1 << 3 );
+      QCOMPARE( i2.nearestNeighbor( g, 1 ), QList< QgsFeatureId >() << 3 );
+      QCOMPARE( i2.nearestNeighbor( g, 2 ), QList< QgsFeatureId >() << 3 << 2 << 1 );
+      QCOMPARE( i2.nearestNeighbor( g, 2, 1.1 ), QList< QgsFeatureId >() << 3 );
+      QCOMPARE( i2.nearestNeighbor( g, 2, 0.2 ), QList< QgsFeatureId >() );
     }
 
 };
