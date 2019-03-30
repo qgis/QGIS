@@ -7313,5 +7313,175 @@ tests:
         name: expected/add_xy_3857.gml
         type: vector
 
+  - algorithm: native:joinbynearest
+    name: Join by nearest polys to points
+    params:
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_polys.gml|layername=snap_polys
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_polys_to_points.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest polys to points, with options
+    params:
+      FIELDS_TO_COPY:
+      - fid
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_polys.gml|layername=snap_polys
+        type: vector
+      MAX_DISTANCE: 3.5
+      NEIGHBORS: 2
+      PREFIX: j_
+    results:
+      OUTPUT:
+        name: expected/nearest_polys_to_points_options.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest lines to polys
+    params:
+      INPUT:
+        name: snap_polys.gml|layername=snap_polys
+        type: vector
+      INPUT_2:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_lines_to_polys.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest points to lines, with max distance
+    params:
+      INPUT:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      INPUT_2:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      MAX_DISTANCE: 1.5
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_points_to_lines.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest points to lines, reprojected
+    params:
+      INPUT:
+        name: custom/snap_lines_3857.gml|layername=snap_lines_3857
+        type: vector
+      INPUT_2:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_points_to_reproj_lines.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Nearest lines to points, reprojected
+    params:
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: custom/snap_lines_3857.gml|layername=snap_lines_3857
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_lines_to_points_reprojected.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Join to nearest, self join
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_to_nearest_self.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Join to nearest 2, self join
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      NEIGHBORS: 2
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_to_nearest_self_2.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Join to nearest, discard no matching
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      MAX_DISTANCE: 1.0
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_points_to_layers_discard.gml
+        type: vector
+
+  - algorithm: native:joinbynearest
+    name: Join by nearest, no matching sink
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: snap_points.gml|layername=snap_points
+        type: vector
+      INPUT_2:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      MAX_DISTANCE: 1.0
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      NON_MATCHING:
+        name: expected/join_to_nearest_no_matches.gml
+        type: vector
+
 
 # See ../README.md for a description of the file format
