@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmjoinbyattribute.cpp
+                         qgsalgorithmjoinbynearest.cpp
                          ---------------------
     begin                : April 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -15,66 +15,60 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmjoinbyattribute.h"
+#include "qgsalgorithmjoinbynearest.h"
 #include "qgsprocessingoutputs.h"
 
 ///@cond PRIVATE
 
-QString QgsJoinByAttributeAlgorithm::name() const
+QString QgsJoinByNearestAlgorithm::name() const
 {
-  return QStringLiteral( "joinattributestable" );
+  return QStringLiteral( "joinbynearest" );
 }
 
-QString QgsJoinByAttributeAlgorithm::displayName() const
+QString QgsJoinByNearestAlgorithm::displayName() const
 {
-  return QObject::tr( "Join attributes by field value" );
+  return QObject::tr( "Join attributes by nearest" );
 }
 
-QStringList QgsJoinByAttributeAlgorithm::tags() const
+QStringList QgsJoinByNearestAlgorithm::tags() const
 {
-  return QObject::tr( "join,connect,attributes,values,fields,tables" ).split( ',' );
+  return QObject::tr( "join,connect,attributes,values,fields,tables,proximity,closest,neighbour,neighbor,n-nearest" ).split( ',' );
 }
 
-QString QgsJoinByAttributeAlgorithm::group() const
+QString QgsJoinByNearestAlgorithm::group() const
 {
   return QObject::tr( "Vector general" );
 }
 
-QString QgsJoinByAttributeAlgorithm::groupId() const
+QString QgsJoinByNearestAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorgeneral" );
 }
 
-void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsJoinByNearestAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  QStringList methods;
-  methods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
-          << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" );
-
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ),
-                QObject::tr( "Table field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-
+                QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_2" ),
-                QObject::tr( "Input layer 2" ), QList< int>() << QgsProcessing::TypeVector ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_2" ),
-                QObject::tr( "Table field 2" ), QVariant(), QStringLiteral( "INPUT_2" ) ) );
+                QObject::tr( "Input layer 2" ) ) );
 
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELDS_TO_COPY" ),
                 QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ),
                 QVariant(), QStringLiteral( "INPUT_2" ), QgsProcessingParameterField::Any,
                 true, true ) );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
-                QObject::tr( "Join type" ),
-                methods, false, 1 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ),
                 QObject::tr( "Discard records which could not be joined" ),
                 false ) );
 
   addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ),
                 QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
+
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ),
+                QObject::tr( "Maximum nearest neighbors" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "MAX_DISTANCE" ),
+                QObject::tr( "Maximum distance" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
 
@@ -88,24 +82,32 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "UNJOINABLE_COUNT" ), QObject::tr( "Number of unjoinable features from input table" ) ) );
 }
 
-QString QgsJoinByAttributeAlgorithm::shortHelpString() const
+QString QgsJoinByNearestAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the "
                       "input one, with additional attributes in its attribute table.\n\n"
-                      "The additional attributes and their values are taken from a second vector layer. An attribute is selected "
-                      "in each of them to define the join criteria." );
+                      "The additional attributes and their values are taken from a second vector layer, where features are joined "
+                      "by finding the closest features from each layer. By default only the single nearest feature is joined,"
+                      "but optionally the join can use the n-nearest neighboring features instead.\n\n"
+                      "If a maximum distance is specified, then only features which are closer than this distance "
+                      "will be matched." );
 }
 
-QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
+QString QgsJoinByNearestAlgorithm::shortDescription() const
 {
-  return new QgsJoinByAttributeAlgorithm();
+  return QObject::tr( "Joins a layer to another layer, using the closest features (nearest neighbors)." );
 }
 
-QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QgsJoinByNearestAlgorithm *QgsJoinByNearestAlgorithm::createInstance() const
 {
-  int joinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
-  bool discardNonMatching = parameterAsBool( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
+  return new QgsJoinByNearestAlgorithm();
+}
 
+QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  const int neighbors = parameterAsInt( parameters, QStringLiteral( "NEIGHBORS" ), context );
+  const bool discardNonMatching = parameterAsBool( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
+  const double maxDistance = parameters.value( QStringLiteral( "MAX_DISTANCE" ) ).isValid() ? parameterAsDouble( parameters, QStringLiteral( "MAX_DISTANCE" ), context ) : std::numeric_limits< double >::quiet_NaN();
   std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
@@ -114,16 +116,10 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( !input2 )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_2" ) ) );
 
+  const bool sameSourceAndTarget = parameters.value( QStringLiteral( "INPUT" ) ) == parameters.value( QStringLiteral( "INPUT_2" ) );
+
   QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
-
-  QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
   const QStringList fieldsToCopy = parameterAsFields( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
-
-  int joinField1Index = input->fields().lookupField( field1Name );
-  int joinField2Index = input2->fields().lookupField( field2Name );
-  if ( joinField1Index < 0 || joinField2Index < 0 )
-    throw QgsProcessingException( QObject::tr( "Invalid join fields" ) );
 
   QgsFields outFields2;
   QgsAttributeList fields2Indices;
@@ -159,9 +155,10 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   QgsAttributeList fields2Fetch = fields2Indices;
-  fields2Fetch << joinField2Index;
 
   QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), outFields2 );
+  outFields.append( QgsField( QStringLiteral( "n" ), QVariant::Int ) );
+  outFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
@@ -175,44 +172,49 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !sinkNonMatching1 )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
 
-  // cache attributes of input2
-  QMultiHash< QVariant, QgsAttributes > input2AttributeCache;
-  QgsFeatureIterator features = input2->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fields2Fetch ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  // make spatial index
+  QgsFeatureIterator f2 = input2->getFeatures( QgsFeatureRequest().setDestinationCrs( input->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( fields2Fetch ) );
+  QgsSpatialIndex index( QgsSpatialIndex::FlagStoreFeatureGeometries );
+  QHash< QgsFeatureId, QgsAttributes > input2AttributeCache;
+  QgsFeature f;
   double step = input2->featureCount() > 0 ? 50.0 / input2->featureCount() : 1;
   int i = 0;
-  QgsFeature feat;
-  while ( features.nextFeature( feat ) )
+  while ( f2.nextFeature( f ) )
   {
     i++;
     if ( feedback->isCanceled() )
-    {
       break;
-    }
 
     feedback->setProgress( i * step );
 
-    if ( joinMethod == 1 && input2AttributeCache.contains( feat.attribute( joinField2Index ) ) )
+    if ( !f.hasGeometry() )
       continue;
 
+    index.addFeature( f );
     // only keep selected attributes
     QgsAttributes attributes;
-    for ( int j = 0; j < feat.attributes().count(); ++j )
+    for ( int j = 0; j < f.attributes().count(); ++j )
     {
       if ( ! fields2Indices.contains( j ) )
         continue;
-      attributes << feat.attribute( j );
+      attributes << f.attribute( j );
     }
-
-    input2AttributeCache.insert( feat.attribute( joinField2Index ), attributes );
+    input2AttributeCache.insert( f.id(), attributes );
   }
 
-  // Create output vector layer with additional attribute
-  step = input->featureCount() > 0 ? 50.0 / input->featureCount() : 1;
-  features = input->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
-  i = 0;
+  // create extra null attributes for non-matched records (the +2 is for the "n" and "distance" fields)
+  QgsAttributes nullMatch;
+  for ( int i = 0; i < fields2Indices.count() + 2; ++i )
+    nullMatch << QVariant();
+
   long long joinedCount = 0;
   long long unjoinedCount = 0;
-  while ( features.nextFeature( feat ) )
+
+  // Create output vector layer with additional attributes
+  step = input->featureCount() > 0 ? 50.0 / input->featureCount() : 1;
+  QgsFeatureIterator features = input->getFeatures();
+  i = 0;
+  while ( features.nextFeature( f ) )
   {
     i++;
     if ( feedback->isCanceled() )
@@ -222,48 +224,69 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
     feedback->setProgress( 50 + i * step );
 
-    if ( input2AttributeCache.count( feat.attribute( joinField1Index ) ) > 0 )
+    if ( !f.hasGeometry() )
     {
-      joinedCount++;
-      if ( sink )
+      unjoinedCount++;
+      if ( sinkNonMatching1 )
       {
-        QgsAttributes attrs = feat.attributes();
-
-        QList< QgsAttributes > attributes = input2AttributeCache.values( feat.attribute( joinField1Index ) );
-        QList< QgsAttributes >::iterator attrsIt = attributes.begin();
-        for ( ; attrsIt != attributes.end(); ++attrsIt )
-        {
-          QgsAttributes newAttrs = attrs;
-          newAttrs.append( *attrsIt );
-          feat.setAttributes( newAttrs );
-          sink->addFeature( feat, QgsFeatureSink::FastInsert );
-        }
+        sinkNonMatching1->addFeature( f, QgsFeatureSink::FastInsert );
+      }
+      if ( sink && !discardNonMatching )
+      {
+        QgsAttributes attr = f.attributes();
+        attr.append( nullMatch );
+        f.setAttributes( attr );
+        sink->addFeature( f, QgsFeatureSink::FastInsert );
       }
     }
     else
     {
-      // no matching for input feature
-      if ( sink && !discardNonMatching )
+      // note - if using same source as target, we have to get one extra neighbor, since the first match will be the input feature
+      const QList< QgsFeatureId > nearest = index.nearestNeighbor( f.geometry(), neighbors + ( sameSourceAndTarget ? 1 : 0 ), std::isnan( maxDistance ) ? 0 : maxDistance );
+      QgsFeature out;
+      out.setGeometry( f.geometry() );
+      int j = 0;
+      for ( QgsFeatureId id : nearest )
       {
-        sink->addFeature( feat, QgsFeatureSink::FastInsert );
+        if ( sameSourceAndTarget && id == f.id() )
+          continue; // don't match to same feature if using a single input table
+        j++;
+        if ( sink )
+        {
+          QgsAttributes attr = f.attributes();
+          attr.append( input2AttributeCache.value( id ) );
+          attr.append( j );
+          const double distance = index.geometry( id ).distance( f.geometry() );
+          attr.append( distance );
+          out.setAttributes( attr );
+          sink->addFeature( out, QgsFeatureSink::FastInsert );
+        }
       }
-      if ( sinkNonMatching1 )
+      if ( j > 0 )
+        joinedCount++;
+      else
       {
-        sinkNonMatching1->addFeature( feat, QgsFeatureSink::FastInsert );
+        if ( sinkNonMatching1 )
+        {
+          sinkNonMatching1->addFeature( f, QgsFeatureSink::FastInsert );
+        }
+        if ( !discardNonMatching && sink )
+        {
+          QgsAttributes attr = f.attributes();
+          attr.append( nullMatch );
+          f.setAttributes( attr );
+          sink->addFeature( f, QgsFeatureSink::FastInsert );
+        }
+        unjoinedCount++;
       }
-      unjoinedCount++;
     }
   }
 
-  feedback->pushInfo( QObject::tr( "%1 feature(s) from input layer were successfully matched" ).arg( joinedCount ) );
-  if ( unjoinedCount > 0 )
-    feedback->reportError( QObject::tr( "%1 feature(s) from input layer could not be matched" ).arg( unjoinedCount ) );
-
   QVariantMap outputs;
-  if ( sink )
-    outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   outputs.insert( QStringLiteral( "JOINED_COUNT" ), joinedCount );
   outputs.insert( QStringLiteral( "UNJOINABLE_COUNT" ), unjoinedCount );
+  if ( sink )
+    outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   if ( sinkNonMatching1 )
     outputs.insert( QStringLiteral( "NON_MATCHING" ), destNonMatching1 );
   return outputs;
