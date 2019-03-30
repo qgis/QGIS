@@ -717,7 +717,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     ~QgsVectorFileWriter() override;
 
     /**
-     * Delete a shapefile (and its accompanying shx / dbf / prf)
+     * Delete a shapefile (and its accompanying shx / dbf / prj / qix / qpj / cpg / sbn / sbx / idm / ind)
      * \param fileName /path/to/file.shp
      * \returns bool true if the file was deleted successfully
      */
