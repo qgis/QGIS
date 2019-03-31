@@ -21,7 +21,6 @@
 #include <cmath>
 
 #include <QDir>
-#include <QTemporaryFile>
 #include <QDomNode>
 #include <QDomElement>
 #include <QFileInfo>

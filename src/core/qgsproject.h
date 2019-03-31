@@ -1385,7 +1385,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
   private:
 
-    static QgsProject *sProject;
+    static std::unique_ptr<QgsProject> sProject;
 
     /**
      * Set the current project instance to \a project
