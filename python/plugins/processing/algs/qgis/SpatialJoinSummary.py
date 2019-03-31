@@ -26,6 +26,7 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 import os
+import math
 
 from collections import defaultdict
 
@@ -339,7 +340,8 @@ class SpatialJoinSummary(QgisAlgorithm):
                         stat.finalize()
                         for s in numeric_fields:
                             if s[0] in summaries:
-                                attrs.append(getattr(stat, s[2])())
+                                val = getattr(stat, s[2])()
+                                attrs.append(val if not math.isnan(val) else NULL)
                     elif field_type == 'datetime':
                         stat = QgsDateTimeStatisticalSummary()
                         stat.calculate(attribute_values)
