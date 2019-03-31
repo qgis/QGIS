@@ -367,7 +367,6 @@ bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
 {
-  // only gdal file-based layers
   return layer && layer->isValid();
 }
 
