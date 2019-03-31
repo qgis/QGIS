@@ -20,6 +20,10 @@
       <ogr:fid_2>lines.1</ogr:fid_2>
       <ogr:n>1</ogr:n>
       <ogr:distance>0</ogr:distance>
+      <ogr:feature_x>-1</ogr:feature_x>
+      <ogr:feature_y>-1</ogr:feature_y>
+      <ogr:nearest_x>-1</ogr:nearest_x>
+      <ogr:nearest_y>-1</ogr:nearest_y>
     </ogr:nearest_lines_to_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -31,6 +35,10 @@
       <ogr:fid_2>lines.0</ogr:fid_2>
       <ogr:n>1</ogr:n>
       <ogr:distance>1.6994495412844</ogr:distance>
+      <ogr:feature_x>5.96532110091743</ogr:feature_x>
+      <ogr:feature_y>4</ogr:feature_y>
+      <ogr:nearest_x>5.96532110091743</ogr:nearest_x>
+      <ogr:nearest_y>2.3005504587156</ogr:nearest_y>
     </ogr:nearest_lines_to_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -42,6 +50,10 @@
       <ogr:fid_2>lines.4</ogr:fid_2>
       <ogr:n>1</ogr:n>
       <ogr:distance>0</ogr:distance>
+      <ogr:feature_x>7</ogr:feature_x>
+      <ogr:feature_y>-3</ogr:feature_y>
+      <ogr:nearest_x>7</ogr:nearest_x>
+      <ogr:nearest_y>-3</ogr:nearest_y>
     </ogr:nearest_lines_to_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -53,6 +65,10 @@
       <ogr:fid_2>lines.5</ogr:fid_2>
       <ogr:n>2</ogr:n>
       <ogr:distance>0</ogr:distance>
+      <ogr:feature_x>10</ogr:feature_x>
+      <ogr:feature_y>0.751595020683033</ogr:feature_y>
+      <ogr:nearest_x>10</ogr:nearest_x>
+      <ogr:nearest_y>0.751595020683033</ogr:nearest_y>
     </ogr:nearest_lines_to_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -60,59 +76,13 @@
       <ogr:name xsi:nil="true"/>
       <ogr:intval>120</ogr:intval>
       <ogr:floatval>-100291.43213</ogr:floatval>
-      <ogr:fid_2>lines.0</ogr:fid_2>
-      <ogr:n>1</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_lines_to_polys>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_lines_to_polys fid="polys.4">
-      <ogr:name xsi:nil="true"/>
-      <ogr:intval>120</ogr:intval>
-      <ogr:floatval>-100291.43213</ogr:floatval>
-      <ogr:fid_2>lines.2</ogr:fid_2>
-      <ogr:n>2</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_lines_to_polys>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_lines_to_polys fid="polys.4">
-      <ogr:name xsi:nil="true"/>
-      <ogr:intval>120</ogr:intval>
-      <ogr:floatval>-100291.43213</ogr:floatval>
-      <ogr:fid_2>lines.5</ogr:fid_2>
-      <ogr:n>3</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_lines_to_polys>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_lines_to_polys fid="polys.4">
-      <ogr:name xsi:nil="true"/>
-      <ogr:intval>120</ogr:intval>
-      <ogr:floatval>-100291.43213</ogr:floatval>
-      <ogr:fid_2>lines.4</ogr:fid_2>
-      <ogr:n>4</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_lines_to_polys>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_lines_to_polys fid="polys.4">
-      <ogr:name xsi:nil="true"/>
-      <ogr:intval>120</ogr:intval>
-      <ogr:floatval>-100291.43213</ogr:floatval>
-      <ogr:fid_2>lines.1</ogr:fid_2>
-      <ogr:n>5</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_lines_to_polys>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_lines_to_polys fid="polys.4">
-      <ogr:name xsi:nil="true"/>
-      <ogr:intval>120</ogr:intval>
-      <ogr:floatval>-100291.43213</ogr:floatval>
-      <ogr:fid_2>lines.3</ogr:fid_2>
-      <ogr:n>6</ogr:n>
-      <ogr:distance>-1</ogr:distance>
+      <ogr:fid_2 xsi:nil="true"/>
+      <ogr:n xsi:nil="true"/>
+      <ogr:distance xsi:nil="true"/>
+      <ogr:feature_x xsi:nil="true"/>
+      <ogr:feature_y xsi:nil="true"/>
+      <ogr:nearest_x xsi:nil="true"/>
+      <ogr:nearest_y xsi:nil="true"/>
     </ogr:nearest_lines_to_polys>
   </gml:featureMember>
 </ogr:FeatureCollection>

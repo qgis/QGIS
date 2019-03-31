@@ -6,7 +6,7 @@
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
     <gml:Box>
-      <gml:coord><gml:X>0.220296465222349</gml:X><gml:Y>-1.268187001140251</gml:Y></gml:coord>
+      <gml:coord><gml:X>0.201140250855188</gml:X><gml:Y>-4.827594070695552</gml:Y></gml:coord>
       <gml:coord><gml:X>7.971265678449257</gml:X><gml:Y>2.74139110604333</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
@@ -17,6 +17,10 @@
       <ogr:j_fid>polys.0</ogr:j_fid>
       <ogr:n>1</ogr:n>
       <ogr:distance>0</ogr:distance>
+      <ogr:feature_x>1</ogr:feature_x>
+      <ogr:feature_y>1</ogr:feature_y>
+      <ogr:nearest_x>1</ogr:nearest_x>
+      <ogr:nearest_y>1</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -25,6 +29,10 @@
       <ogr:j_fid>polys.0</ogr:j_fid>
       <ogr:n>1</ogr:n>
       <ogr:distance>0.275722442001178</ogr:distance>
+      <ogr:feature_x>3.13409350057012</ogr:feature_x>
+      <ogr:feature_y>2.74139110604333</ogr:feature_y>
+      <ogr:nearest_x>2.86214262481148</ogr:nearest_x>
+      <ogr:nearest_y>2.69594238552011</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -33,6 +41,10 @@
       <ogr:j_fid>polys.1</ogr:j_fid>
       <ogr:n>2</ogr:n>
       <ogr:distance>1.52770756812347</ogr:distance>
+      <ogr:feature_x>3.13409350057012</ogr:feature_x>
+      <ogr:feature_y>2.74139110604333</ogr:feature_y>
+      <ogr:nearest_x>4</ogr:nearest_x>
+      <ogr:nearest_y>4</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -40,7 +52,11 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2,2</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:j_fid>polys.0</ogr:j_fid>
       <ogr:n>1</ogr:n>
-      <ogr:distance>0.238190632373467</ogr:distance>
+      <ogr:distance>0.238190632373466</ogr:distance>
+      <ogr:feature_x>2</ogr:feature_x>
+      <ogr:feature_y>2</ogr:feature_y>
+      <ogr:nearest_x>1.94735486746645</ogr:nearest_x>
+      <ogr:nearest_y>2.23229995129357</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -49,6 +65,10 @@
       <ogr:j_fid>polys.1</ogr:j_fid>
       <ogr:n>2</ogr:n>
       <ogr:distance>2.82842712474619</ogr:distance>
+      <ogr:feature_x>2</ogr:feature_x>
+      <ogr:feature_y>2</ogr:feature_y>
+      <ogr:nearest_x>4</ogr:nearest_x>
+      <ogr:nearest_y>4</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -57,6 +77,10 @@
       <ogr:j_fid>polys.3</ogr:j_fid>
       <ogr:n>1</ogr:n>
       <ogr:distance>0.940423439533116</ogr:distance>
+      <ogr:feature_x>5.25860889395667</ogr:feature_x>
+      <ogr:feature_y>1.57856328392246</ogr:feature_y>
+      <ogr:nearest_x>6</ogr:nearest_x>
+      <ogr:nearest_y>1</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -65,6 +89,10 @@
       <ogr:j_fid>polys.0</ogr:j_fid>
       <ogr:n>2</ogr:n>
       <ogr:distance>2.31877917605095</ogr:distance>
+      <ogr:feature_x>5.25860889395667</ogr:feature_x>
+      <ogr:feature_y>1.57856328392246</ogr:feature_y>
+      <ogr:nearest_x>2.97844925883694</ogr:nearest_x>
+      <ogr:nearest_y>2</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -73,6 +101,10 @@
       <ogr:j_fid>polys.0</ogr:j_fid>
       <ogr:n>1</ogr:n>
       <ogr:distance>1.2553028086379</ogr:distance>
+      <ogr:feature_x>3.68392246294185</ogr:feature_x>
+      <ogr:feature_y>0.961687571265678</ogr:feature_y>
+      <ogr:nearest_x>2.97844925883694</ogr:nearest_x>
+      <ogr:nearest_y>2</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -81,6 +113,22 @@
       <ogr:j_fid>polys.3</ogr:j_fid>
       <ogr:n>2</ogr:n>
       <ogr:distance>2.31607753705815</ogr:distance>
+      <ogr:feature_x>3.68392246294185</ogr:feature_x>
+      <ogr:feature_y>0.961687571265678</ogr:feature_y>
+      <ogr:nearest_x>6</ogr:nearest_x>
+      <ogr:nearest_y>0.961687571265678</ogr:nearest_y>
+    </ogr:nearest_polys_to_points_options>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:nearest_polys_to_points_options fid="points.5">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.201140250855188,-4.82759407069555</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:j_fid xsi:nil="true"/>
+      <ogr:n xsi:nil="true"/>
+      <ogr:distance xsi:nil="true"/>
+      <ogr:feature_x xsi:nil="true"/>
+      <ogr:feature_y xsi:nil="true"/>
+      <ogr:nearest_x xsi:nil="true"/>
+      <ogr:nearest_y xsi:nil="true"/>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -89,6 +137,10 @@
       <ogr:j_fid>polys.3</ogr:j_fid>
       <ogr:n>1</ogr:n>
       <ogr:distance>0</ogr:distance>
+      <ogr:feature_x>7.97126567844926</ogr:feature_x>
+      <ogr:feature_y>0.609122006841505</ogr:feature_y>
+      <ogr:nearest_x>7.97126567844926</ogr:nearest_x>
+      <ogr:nearest_y>0.609122006841505</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -96,7 +148,11 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.18198403648803,-1.26818700114025</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:j_fid>polys.3</ogr:j_fid>
       <ogr:n>1</ogr:n>
-      <ogr:distance>0.00190871021403088</ogr:distance>
+      <ogr:distance>0.00190871021403121</ogr:distance>
+      <ogr:feature_x>7.18198403648803</ogr:feature_x>
+      <ogr:feature_y>-1.26818700114025</ogr:feature_y>
+      <ogr:nearest_x>7.18013057986168</ogr:nearest_x>
+      <ogr:nearest_y>-1.26773106998823</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
   <gml:featureMember>
@@ -105,6 +161,10 @@
       <ogr:j_fid>polys.0</ogr:j_fid>
       <ogr:n>1</ogr:n>
       <ogr:distance>0.210718358038768</ogr:distance>
+      <ogr:feature_x>0.220296465222349</ogr:feature_x>
+      <ogr:feature_y>-1.21071835803877</ogr:feature_y>
+      <ogr:nearest_x>0.220296465222349</ogr:nearest_x>
+      <ogr:nearest_y>-1</ogr:nearest_y>
     </ogr:nearest_polys_to_points_options>
   </gml:featureMember>
 </ogr:FeatureCollection>
