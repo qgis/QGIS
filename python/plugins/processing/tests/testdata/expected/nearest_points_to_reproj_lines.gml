@@ -17,6 +17,10 @@
       <ogr:fid_2>points.3</ogr:fid_2>
       <ogr:n>1</ogr:n>
       <ogr:distance>112499.476187911</ogr:distance>
+      <ogr:feature_x>664056.507372498</ogr:feature_x>
+      <ogr:feature_y>256164.946276216</ogr:feature_y>
+      <ogr:nearest_x>585385.664356236</ogr:nearest_x>
+      <ogr:nearest_y>175747.0962573</ogr:nearest_y>
     </ogr:nearest_points_to_reproj_lines>
   </gml:featureMember>
   <gml:featureMember>
@@ -25,6 +29,10 @@
       <ogr:fid_2>points.8</ogr:fid_2>
       <ogr:n>1</ogr:n>
       <ogr:distance>23461.4394370127</ogr:distance>
+      <ogr:feature_x>24523.290332109</ogr:feature_x>
+      <ogr:feature_y>-111325.142866386</ogr:feature_y>
+      <ogr:nearest_x>24523.290332109</ogr:nearest_x>
+      <ogr:nearest_y>-134786.582303399</ogr:nearest_y>
     </ogr:nearest_points_to_reproj_lines>
   </gml:featureMember>
   <gml:featureMember>
@@ -33,6 +41,10 @@
       <ogr:fid_2>points.2</ogr:fid_2>
       <ogr:n>1</ogr:n>
       <ogr:distance>13077.233475669</ogr:distance>
+      <ogr:feature_x>224175.279992148</ogr:feature_x>
+      <ogr:feature_y>235670.887164313</ogr:feature_y>
+      <ogr:nearest_x>222638.981586547</ogr:nearest_x>
+      <ogr:nearest_y>222684.208505545</ogr:nearest_y>
     </ogr:nearest_points_to_reproj_lines>
   </gml:featureMember>
   <gml:featureMember>
@@ -41,6 +53,10 @@
       <ogr:fid_2>points.5</ogr:fid_2>
       <ogr:n>1</ogr:n>
       <ogr:distance>311567.642076588</ogr:distance>
+      <ogr:feature_x>333958.47237982</ogr:feature_x>
+      <ogr:feature_y>-538042.312539197</ogr:feature_y>
+      <ogr:nearest_x>22390.8303032321</ogr:nearest_x>
+      <ogr:nearest_y>-538042.312539197</ogr:nearest_y>
     </ogr:nearest_points_to_reproj_lines>
   </gml:featureMember>
   <gml:featureMember>
@@ -49,6 +65,10 @@
       <ogr:fid_2>points.7</ogr:fid_2>
       <ogr:n>1</ogr:n>
       <ogr:distance>192925.711572174</ogr:distance>
+      <ogr:feature_x>799494.805827267</ogr:feature_x>
+      <ogr:feature_y>-334111.171401961</ogr:feature_y>
+      <ogr:nearest_x>799494.805827267</ogr:nearest_x>
+      <ogr:nearest_y>-141185.459829787</ogr:nearest_y>
     </ogr:nearest_points_to_reproj_lines>
   </gml:featureMember>
   <gml:featureMember>
@@ -56,70 +76,22 @@
       <ogr:geometryProperty><gml:LineString srsName="EPSG:3857"><gml:coordinates>648614.757823928,-318649.196224542 862884.352006337,-182767.696351667 1012154.59764253,36015.6211455719 1136357.53225559,94594.3964176019</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:fid_2>points.7</ogr:fid_2>
       <ogr:n>1</ogr:n>
-      <ogr:distance>69064.6565403916</ogr:distance>
+      <ogr:distance>69064.6565403917</ogr:distance>
+      <ogr:feature_x>836482.457108512</ogr:feature_x>
+      <ogr:feature_y>-199510.75824942</ogr:feature_y>
+      <ogr:nearest_x>799494.805827267</ogr:nearest_x>
+      <ogr:nearest_y>-141185.459829787</ogr:nearest_y>
     </ogr:nearest_points_to_reproj_lines>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.0</ogr:fid_2>
-      <ogr:n>1</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_points_to_reproj_lines>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.2</ogr:fid_2>
-      <ogr:n>2</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_points_to_reproj_lines>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.6</ogr:fid_2>
-      <ogr:n>3</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_points_to_reproj_lines>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.8</ogr:fid_2>
-      <ogr:n>4</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_points_to_reproj_lines>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.5</ogr:fid_2>
-      <ogr:n>5</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_points_to_reproj_lines>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.7</ogr:fid_2>
-      <ogr:n>6</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_points_to_reproj_lines>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.4</ogr:fid_2>
-      <ogr:n>7</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_points_to_reproj_lines>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.1</ogr:fid_2>
-      <ogr:n>8</ogr:n>
-      <ogr:distance>-1</ogr:distance>
-    </ogr:nearest_points_to_reproj_lines>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:nearest_points_to_reproj_lines fid="lines.6">
-      <ogr:fid_2>points.3</ogr:fid_2>
-      <ogr:n>9</ogr:n>
-      <ogr:distance>-1</ogr:distance>
+      <ogr:fid_2 xsi:nil="true"/>
+      <ogr:n xsi:nil="true"/>
+      <ogr:distance xsi:nil="true"/>
+      <ogr:feature_x xsi:nil="true"/>
+      <ogr:feature_y xsi:nil="true"/>
+      <ogr:nearest_x xsi:nil="true"/>
+      <ogr:nearest_y xsi:nil="true"/>
     </ogr:nearest_points_to_reproj_lines>
   </gml:featureMember>
 </ogr:FeatureCollection>

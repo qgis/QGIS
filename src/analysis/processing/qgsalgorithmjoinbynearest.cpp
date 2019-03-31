@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmjoinbynearest.h"
 #include "qgsprocessingoutputs.h"
+#include "qgslinestring.h"
 
 ///@cond PRIVATE
 
@@ -90,7 +91,14 @@ QString QgsJoinByNearestAlgorithm::shortHelpString() const
                       "by finding the closest features from each layer. By default only the single nearest feature is joined,"
                       "but optionally the join can use the n-nearest neighboring features instead.\n\n"
                       "If a maximum distance is specified, then only features which are closer than this distance "
-                      "will be matched." );
+                      "will be matched.\n\n"
+                      "The output features will contain the selected attributes from the nearest feature, "
+                      "along with new attributes for the distance to the near feature, the index of the feature, "
+                      "and the coordinates of the closest point on the input feature (feature_x, feature_y) "
+                      "to the matched nearest feature, and the coordinates of the closet point on the matched feature "
+                      "(nearest_x, nearest_y).\n\n"
+                      "This algorithm uses purely Cartesian calculations for distance, and does not consider "
+                      "geodetic or ellipsoid properties when determining feature proximity." );
 }
 
 QString QgsJoinByNearestAlgorithm::shortDescription() const
@@ -159,6 +167,10 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
   QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), outFields2 );
   outFields.append( QgsField( QStringLiteral( "n" ), QVariant::Int ) );
   outFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
+  outFields.append( QgsField( QStringLiteral( "feature_x" ), QVariant::Double ) );
+  outFields.append( QgsField( QStringLiteral( "feature_y" ), QVariant::Double ) );
+  outFields.append( QgsField( QStringLiteral( "nearest_x" ), QVariant::Double ) );
+  outFields.append( QgsField( QStringLiteral( "nearest_y" ), QVariant::Double ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
@@ -202,9 +214,9 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
     input2AttributeCache.insert( f.id(), attributes );
   }
 
-  // create extra null attributes for non-matched records (the +2 is for the "n" and "distance" fields)
+  // create extra null attributes for non-matched records (the +2 is for the "n" and "distance", and start/end x/y fields)
   QgsAttributes nullMatch;
-  for ( int i = 0; i < fields2Indices.count() + 2; ++i )
+  for ( int i = 0; i < fields2Indices.count() + 6; ++i )
     nullMatch << QVariant();
 
   long long joinedCount = 0;
@@ -256,8 +268,24 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
           QgsAttributes attr = f.attributes();
           attr.append( input2AttributeCache.value( id ) );
           attr.append( j );
-          const double distance = index.geometry( id ).distance( f.geometry() );
-          attr.append( distance );
+
+          const QgsGeometry closestLine = f.geometry().shortestLine( index.geometry( id ) );
+          if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString *>( closestLine.constGet() ) )
+          {
+            attr.append( line->length() );
+            attr.append( line->startPoint().x() );
+            attr.append( line->startPoint().y() );
+            attr.append( line->endPoint().x() );
+            attr.append( line->endPoint().y() );
+          }
+          else
+          {
+            attr.append( QVariant() ); //distance
+            attr.append( QVariant() ); //start x
+            attr.append( QVariant() ); //start y
+            attr.append( QVariant() ); //end x
+            attr.append( QVariant() ); //end y
+          }
           out.setAttributes( attr );
           sink->addFeature( out, QgsFeatureSink::FastInsert );
         }
