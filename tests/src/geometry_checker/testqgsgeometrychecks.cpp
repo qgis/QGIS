@@ -421,14 +421,14 @@ void TestQgsGeometryChecks::testDuplicateCheck()
 
   QCOMPARE( checkErrors.size(), 3 );
   QVERIFY(
-    searchCheckErrors( checkErrors, layers["point_layer.shp"], 6, QgsPoint(), QgsVertexId(), QVariant( "point_layer.shp:2" ) ).size() == 1
-    || searchCheckErrors( checkErrors, layers["point_layer.shp"], 2, QgsPoint(), QgsVertexId(), QVariant( "point_layer.shp:6" ) ).size() == 1 );
+    searchCheckErrors( checkErrors, layers["point_layer.shp"], 6, QgsPoint( 0, 0 ), QgsVertexId(), QVariant( "point_layer.shp:2" ) ).size() == 1
+    || searchCheckErrors( checkErrors, layers["point_layer.shp"], 2, QgsPoint( 0, 0 ), QgsVertexId(), QVariant( "point_layer.shp:6" ) ).size() == 1 );
   QVERIFY(
-    searchCheckErrors( checkErrors, layers["line_layer.shp"], 4, QgsPoint(), QgsVertexId(), QVariant( "line_layer.shp:7" ) ).size() == 1
-    || searchCheckErrors( checkErrors, layers["line_layer.shp"], 7, QgsPoint(), QgsVertexId(), QVariant( "line_layer.shp:4" ) ).size() == 1 );
+    searchCheckErrors( checkErrors, layers["line_layer.shp"], 4, QgsPoint( 0, 0 ), QgsVertexId(), QVariant( "line_layer.shp:7" ) ).size() == 1
+    || searchCheckErrors( checkErrors, layers["line_layer.shp"], 7, QgsPoint( 0, 0 ), QgsVertexId(), QVariant( "line_layer.shp:4" ) ).size() == 1 );
   QVERIFY(
-    ( errs1 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 8, QgsPoint(), QgsVertexId(), QVariant( "polygon_layer.shp:7" ) ) ).size() == 1
-    || ( errs1 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 7, QgsPoint(), QgsVertexId(), QVariant( "polygon_layer.shp:8" ) ) ).size() == 1 );
+    ( errs1 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 8, QgsPoint( 0, 0 ), QgsVertexId(), QVariant( "polygon_layer.shp:7" ) ) ).size() == 1
+    || ( errs1 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 7, QgsPoint( 0, 0 ), QgsVertexId(), QVariant( "polygon_layer.shp:8" ) ) ).size() == 1 );
 
   // Test fixes
   QgsGeometryDuplicateCheckError *dupErr = static_cast<QgsGeometryDuplicateCheckError *>( errs1[0] );
