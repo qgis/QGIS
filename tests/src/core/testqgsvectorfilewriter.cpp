@@ -523,7 +523,7 @@ void TestQgsVectorFileWriter::testTextFieldLength()
   QCOMPARE( errorMessage, fileName );
   QgsVectorLayer vl2( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl2.isValid() );
-  QCOMPARE( vl2.featureCount(), 1 );
+  QCOMPARE( vl2.featureCount(), 1L );
   QCOMPARE( vl2.fields().at( 1 ).length(), 1024 );
   QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toString(), QString( 1024, 'x' ) );
 
