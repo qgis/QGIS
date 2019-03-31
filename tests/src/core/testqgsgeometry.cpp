@@ -17560,7 +17560,6 @@ void TestQgsGeometry::convertGeometryCollectionToSubclass()
 void TestQgsGeometry::emptyJson()
 {
   QString expected;
-// TODO: harmonize Json output. Should be ... [] }
   expected = QStringLiteral( "{\"coordinates\":[],\"type\":\"LineString\"}" );
   QCOMPARE( QgsCircularString().asJson(), expected );
   QCOMPARE( QgsCompoundCurve().asJson(), expected );
