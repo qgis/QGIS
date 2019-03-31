@@ -73,7 +73,7 @@
 #endif
 
 // canonical project instance
-std::unique_ptr<QgsProject> QgsProject::sProject;
+QgsProject *QgsProject::sProject = nullptr;
 
 /**
     Take the given scope and key and convert them to a string list of key
@@ -410,33 +410,30 @@ QgsProject::~QgsProject()
 {
   mIsBeingDeleted = true;
 
-  if ( this != sProject.get() )
-    clear();
-
+  clear();
   delete mBadLayerHandler;
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
   delete mRootGroup;
-
-  if ( this == sProject.get() )
+  if ( this == sProject )
   {
-    sProject.release();
+    sProject = nullptr;
   }
 }
 
 void QgsProject::setInstance( QgsProject *project )
 {
-  sProject.reset( project );
+  sProject = project;
 }
 
 
 QgsProject *QgsProject::instance()
 {
-  if ( !sProject.get() )
+  if ( !sProject )
   {
-    sProject.reset( new QgsProject );
+    sProject = new QgsProject;
   }
-  return sProject.get();
+  return sProject;
 }
 
 void QgsProject::setTitle( const QString &title )

@@ -20,6 +20,7 @@
 #include "qgsziputils.h"
 #include "qgsmessagelog.h"
 #include "qgsauxiliarystorage.h"
+#include <iostream>
 
 #include <QStandardPaths>
 #include <QUuid>
@@ -31,7 +32,7 @@ QgsArchive::QgsArchive()
 
 QgsArchive::QgsArchive( const QgsArchive &other )
   : mFiles( other.mFiles )
-  , mDir( new QTemporaryDir() )
+  ,  mDir( new QTemporaryDir() )
 {
 }
 

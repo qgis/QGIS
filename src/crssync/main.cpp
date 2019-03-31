@@ -84,5 +84,5 @@ int main( int argc, char **argv )
     std::cout << -res << " CRSs could not be updated." << std::endl;
   }
 
-  return 0;
+  exit( 0 );
 }

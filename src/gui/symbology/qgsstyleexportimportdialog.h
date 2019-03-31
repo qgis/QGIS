@@ -19,6 +19,11 @@
 
 #include <QDialog>
 #include <QUrl>
+#include <QProgressDialog>
+#include <QTemporaryFile>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QStandardItem>
 
 #include "ui_qgsstyleexportimportdialogbase.h"
 #include "qgis_gui.h"
@@ -31,10 +36,6 @@ class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 class QgsTemporaryCursorOverride;
 class QgsStyleModel;
-class QTemporaryFile;
-class QProgressDialog;
-class QNetworkAccessManager;
-class QNetworkReply;
 
 /**
  * \ingroup gui

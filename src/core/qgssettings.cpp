@@ -15,11 +15,9 @@
 
 
 #include <cstdlib>
-
 #include <QFileInfo>
 #include <QSettings>
 #include <QDir>
-#include <QCoreApplication>
 
 #include "qgssettings.h"
 #include "qgslogger.h"
