@@ -314,7 +314,6 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
 {
-  // only gdal file-based layers
   return layer && layer->isValid();
 }
 
