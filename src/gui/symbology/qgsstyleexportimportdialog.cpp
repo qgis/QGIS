@@ -33,8 +33,11 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
