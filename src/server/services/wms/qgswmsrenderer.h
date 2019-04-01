@@ -283,6 +283,8 @@ namespace QgsWms
 
       QgsWmsParameters mWmsParameters;
 
+      QgsServerSettings mServerSettings;
+
       QgsFeatureFilter mFeatureFilter;
 
       const QgsProject *mProject = nullptr;

@@ -162,6 +162,27 @@ void QgsServerSettings::initSettings()
                                       };
   mSettings[ sShowGroupSeparator.envVar ] = sShowGroupSeparator;
 
+  // max height
+  const Setting sMaxHeight = { QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_HEIGHT,
+                               QgsServerSettingsEnv::DEFAULT_VALUE,
+                               "Maximum height for a WMS request. The most conservative between this and the project one is used",
+                               "/qgis/max_wms_height",
+                               QVariant::LongLong,
+                               QVariant( -1 ),
+                               QVariant()
+                             };
+  mSettings[ sMaxHeight.envVar ] = sMaxHeight;
+
+  // max width
+  const Setting sMaxWidth = { QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_WIDTH,
+                              QgsServerSettingsEnv::DEFAULT_VALUE,
+                              "Maximum width for a WMS request. The most conservative between this and the project one is used",
+                              "/qgis/max_wms_width",
+                              QVariant::LongLong,
+                              QVariant( -1 ),
+                              QVariant()
+                            };
+  mSettings[ sMaxWidth.envVar ] = sMaxWidth;
 }
 
 void QgsServerSettings::load()
@@ -342,14 +363,3 @@ QString QgsServerSettings::cacheDirectory() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_CACHE_DIRECTORY ).toString();
 }
-
-QString QgsServerSettings::overrideSystemLocale() const
-{
-  return value( QgsServerSettingsEnv::QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE ).toString();
-}
-
-bool QgsServerSettings::showGroupSeparator() const
-{
-  return value( QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR ).toBool();
-}
-

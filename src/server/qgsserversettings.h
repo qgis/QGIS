@@ -63,6 +63,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_CACHE_SIZE,
       QGIS_SERVER_SHOW_GROUP_SEPARATOR,  //! Show group (thousands) separator when formatting numeric values, defaults to FALSE (since QGIS 3.8)
       QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,  //! Override system locale (since QGIS 3.8)
+      QGIS_SERVER_WMS_MAX_HEIGHT, //! Maximum height for a WMS request. The most conservative between this and the project one is used (since QGIS 3.8)
+      QGIS_SERVER_WMS_MAX_WIDTH //! Maximum width for a WMS request. The most conservative between this and the project one is used (since QGIS 3.8)
     };
     Q_ENUM( EnvVar )
 };
@@ -183,6 +185,20 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.8
      */
     bool showGroupSeparator() const;
+  
+    /**
+     * Returns the max height of a WMS GetMap request.
+     * \returns Returns the max height of a WMS GetMap request.
+     * \since QGIS 3.8
+     */
+    int wmsMaxHeight() const;
+
+    /**
+     * Returns the max width of a WMS GetMap request.
+     * \returns the max width of a WMS GetMap request.
+     * \since QGIS 3.8
+     */
+    int wmsMaxWidth() const;
 
   private:
     void initSettings();
