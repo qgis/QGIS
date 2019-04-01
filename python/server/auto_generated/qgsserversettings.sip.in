@@ -119,6 +119,20 @@ Returns the cache directory.
 :return: the directory.
 %End
 
+    QString overrideSystemLocale() const;
+%Docstring
+Overrides system locale
+
+:return: the optional override for system locale.
+%End
+
+    bool showGroupSeparator() const;
+%Docstring
+Show group (thousand) separator
+
+:return: if group separator must be shown, default to ``False``.
+%End
+
 };
 
 /************************************************************************

@@ -60,7 +60,9 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_PROJECT_FILE,
       MAX_CACHE_LAYERS,
       QGIS_SERVER_CACHE_DIRECTORY,
-      QGIS_SERVER_CACHE_SIZE
+      QGIS_SERVER_CACHE_SIZE,
+      QGIS_SERVER_SHOW_GROUP_SEPARATOR,  //! Show group (thousands) separator when formatting numeric values, defaults to FALSE
+      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,  //! Override system locale
     };
     Q_ENUM( EnvVar )
 };
@@ -88,41 +90,41 @@ class SERVER_EXPORT QgsServerSettings
 
     /**
      * Constructor.
-      */
+     */
     QgsServerSettings();
 
     /**
      * Load settings according to current environment variables.
-      */
+     */
     void load();
 
     /**
      * Load setting for a specific environment variable name.
-      * \returns TRUE if loading is successful, FALSE in case of an invalid name.
-      */
+     * \returns TRUE if loading is successful, FALSE in case of an invalid name.
+     */
     bool load( const QString &envVarName );
 
     /**
      * Log a summary of settings currently loaded.
-      */
+     */
     void logSummary() const;
 
     /**
      * Returns the ini file loaded by QSetting.
-      * \returns the path of the ini file or an empty string if none is loaded.
-      */
+     * \returns the path of the ini file or an empty string if none is loaded.
+     */
     QString iniFile() const;
 
     /**
      * Returns parallel rendering setting.
-      * \returns TRUE if parallel rendering is activated, FALSE otherwise.
-      */
+     * \returns TRUE if parallel rendering is activated, FALSE otherwise.
+     */
     bool parallelRendering() const;
 
     /**
      * Returns the maximum number of threads to use.
-      * \returns the number of threads.
-      */
+     * \returns the number of threads.
+     */
     int maxThreads() const;
 
     /**
@@ -133,20 +135,20 @@ class SERVER_EXPORT QgsServerSettings
 
     /**
      * Returns the log level.
-      * \returns the log level.
-      */
+     * \returns the log level.
+     */
     Qgis::MessageLevel logLevel() const;
 
     /**
      * Returns the QGS project file to use.
-      * \returns the path of the QGS project or an empty string if none is defined.
-      */
+     * \returns the path of the QGS project or an empty string if none is defined.
+     */
     QString projectFile() const;
 
     /**
      * Returns the log file.
-      * \returns the path of the log file or an empty string if none is defined.
-      */
+     * \returns the path of the log file or an empty string if none is defined.
+     */
     QString logFile() const;
 
     /**
@@ -158,15 +160,27 @@ class SERVER_EXPORT QgsServerSettings
 
     /**
      * Returns the cache size.
-      * \returns the cache size.
-      */
+     * \returns the cache size.
+     */
     qint64 cacheSize() const;
 
     /**
      * Returns the cache directory.
-      * \returns the directory.
-      */
+     * \returns the directory.
+     */
     QString cacheDirectory() const;
+
+    /**
+     * Overrides system locale
+     * \returns the optional override for system locale.
+     */
+    QString overrideSystemLocale() const;
+
+    /**
+     * Show group (thousand) separator
+     * \returns if group separator must be shown, default to FALSE.
+     */
+    bool showGroupSeparator() const;
 
   private:
     void initSettings();
