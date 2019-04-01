@@ -314,13 +314,12 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
 {
-  // only gdal file-based layers
-  return layer && layer->providerType() == QStringLiteral( "gdal" );
+  return layer && layer->isValid();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<int> &sourceTypes )
 {
-  return layer &&
+  return layer && layer->isValid() &&
          ( sourceTypes.isEmpty()
            || ( sourceTypes.contains( QgsProcessing::TypeVectorPoint ) && layer->geometryType() == QgsWkbTypes::PointGeometry )
            || ( sourceTypes.contains( QgsProcessing::TypeVectorLine ) && layer->geometryType() == QgsWkbTypes::LineGeometry )
