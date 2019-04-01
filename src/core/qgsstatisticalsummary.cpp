@@ -30,6 +30,12 @@ QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
   reset();
 }
 
+void QgsStatisticalSummary::setStatistics( QgsStatisticalSummary::Statistics stats )
+{
+  mStatistics = stats;
+  reset();
+}
+
 void QgsStatisticalSummary::reset()
 {
   mFirst = std::numeric_limits<double>::quiet_NaN();
