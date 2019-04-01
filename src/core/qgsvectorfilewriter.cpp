@@ -542,7 +542,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
           case QVariant::String:
             ogrType = OFTString;
-            if ( ogrWidth <= 0 || ogrWidth > 255 )
+            if ( ( ogrWidth <= 0 || ogrWidth > 255 ) && mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
               ogrWidth = 255;
             break;
 
