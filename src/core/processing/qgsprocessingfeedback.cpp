@@ -16,6 +16,63 @@
  ***************************************************************************/
 
 #include "qgsprocessingfeedback.h"
+#include "qgsgeos.h"
+#include <ogr_api.h>
+#include <gdal_version.h>
+#if PROJ_VERSION_MAJOR > 4
+#include <proj.h>
+#else
+#include <proj_api.h>
+#endif
+
+void QgsProcessingFeedback::setProgressText( const QString & )
+{
+}
+
+void QgsProcessingFeedback::reportError( const QString &error, bool )
+{
+  QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical );
+}
+
+void QgsProcessingFeedback::pushInfo( const QString &info )
+{
+  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+}
+
+void QgsProcessingFeedback::pushCommandInfo( const QString &info )
+{
+  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+}
+
+void QgsProcessingFeedback::pushDebugInfo( const QString &info )
+{
+  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+}
+
+void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
+{
+  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+}
+
+void QgsProcessingFeedback::pushVersionInfo()
+{
+  pushDebugInfo( tr( "QGIS version: %1" ).arg( Qgis::QGIS_VERSION ) );
+  if ( QString( Qgis::QGIS_DEV_VERSION ) != QLatin1String( "exported" ) )
+  {
+    pushDebugInfo( tr( "QGIS code revision: %1" ).arg( Qgis::QGIS_DEV_VERSION ) );
+  }
+  pushDebugInfo( tr( "Qt version: %1" ).arg( qVersion() ) );
+  pushDebugInfo( tr( "GDAL version: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
+  pushDebugInfo( tr( "GEOS version: %1" ).arg( GEOSversion() ) );
+
+#if PROJ_VERSION_MAJOR > 4
+  PJ_INFO info = proj_info();
+  pushDebugInfo( tr( "PROJ version: %1.%2.%3" ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH );
+#else
+  pushDebugInfo( tr( "PROJ version: %1" ).arg( PJ_VERSION ) );
+#endif
+}
+
 
 QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
   : mChildSteps( childAlgorithmCount )
@@ -67,5 +124,4 @@ void QgsProcessingMultiStepFeedback::updateOverallProgress( double progress )
   double currentAlgorithmProgress = progress / mChildSteps;
   mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
 }
-
 
