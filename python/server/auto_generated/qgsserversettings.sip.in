@@ -39,7 +39,7 @@ Load settings according to current environment variables.
 %Docstring
 Load setting for a specific environment variable name.
 
-:return: true if loading is successful, false in case of an invalid name.
+:return: TRUE if loading is successful, FALSE in case of an invalid name.
 %End
 
     void logSummary() const;
@@ -58,7 +58,7 @@ Returns the ini file loaded by QSetting.
 %Docstring
 Returns parallel rendering setting.
 
-:return: true if parallel rendering is activated, false otherwise.
+:return: TRUE if parallel rendering is activated, FALSE otherwise.
 %End
 
     int maxThreads() const;
@@ -117,6 +117,24 @@ Returns the cache size.
 Returns the cache directory.
 
 :return: the directory.
+%End
+
+    QString overrideSystemLocale() const;
+%Docstring
+Overrides system locale
+
+:return: the optional override for system locale.
+
+.. versionadded:: 3.8
+%End
+
+    bool showGroupSeparator() const;
+%Docstring
+Show group (thousand) separator
+
+:return: if group separator must be shown, default to FALSE.
+
+.. versionadded:: 3.8
 %End
 
 };
