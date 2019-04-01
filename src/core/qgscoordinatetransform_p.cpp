@@ -84,6 +84,8 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mDestCRS( other.mDestCRS )
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
+  , mSourceAxisOrderSwapped( other.mSourceAxisOrderSwapped )
+  , mDestAxisOrderSwapped( other.mDestAxisOrderSwapped )
 {
   //must reinitialize to setup mSourceProjection and mDestinationProjection
   initialize();
@@ -167,6 +169,16 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   // create proj projections for current thread
   ProjData res = threadLocalProjData();
+
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr sourceCrs( proj_get_source_crs( context, res ) );
+  if ( sourceCrs )
+    mSourceAxisOrderSwapped = QgsProjUtils::axisOrderIsSwapped( sourceCrs.get() );
+  QgsProjUtils::proj_pj_unique_ptr destCrs( proj_get_target_crs( context, res ) );
+  if ( destCrs )
+    mDestAxisOrderSwapped = QgsProjUtils::axisOrderIsSwapped( destCrs.get() );
+#endif
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );

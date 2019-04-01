@@ -79,7 +79,13 @@ class CORE_EXPORT QgsProjUtils
      */
     static bool usesAngularUnit( const QString &projDef );
 
+    //TODO - remove when proj 6.1 is minimum supported version, and replace with proj_normalize_for_visualization
 
+    /**
+     * Returns true if the given proj coordinate system uses requires y/x coordinate
+     * order instead of x/y.
+     */
+    static bool axisOrderIsSwapped( const PJ *crs );
 
 #endif
 #endif

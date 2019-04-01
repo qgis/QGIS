@@ -648,12 +648,24 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   int projResult = 0;
 #if PROJ_VERSION_MAJOR>=6
+  const bool sourceAxisOrderSwapped = d->mSourceAxisOrderSwapped;
+  const bool destinationAxisOrderSwapped = d->mDestAxisOrderSwapped;
+
   proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
-                      x, sizeof( double ), numPoints,
-                      y, sizeof( double ), numPoints,
+                      !sourceAxisOrderSwapped ? x : y, sizeof( double ), numPoints,
+                      !sourceAxisOrderSwapped ? y : x, sizeof( double ), numPoints,
                       z, sizeof( double ), numPoints,
                       nullptr, sizeof( double ), 0 );
   projResult = proj_errno( projData );
+  if ( projResult == 0 && destinationAxisOrderSwapped )
+  {
+    size_t size = sizeof( double ) * numPoints;
+    void *tmp = malloc( size );
+    memcpy( tmp, x, size );
+    memcpy( x, y, size );
+    memcpy( y, tmp, size );
+    free( tmp );
+  }
 #else
   if ( direction == ReverseTransform )
   {

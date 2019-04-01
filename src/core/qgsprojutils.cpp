@@ -112,4 +112,36 @@ bool QgsProjUtils::usesAngularUnit( const QString &projDef )
   return false;
 }
 
+bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
+{
+  //ported from https://github.com/pramsey/postgis/blob/7ecf6839c57a838e2c8540001a3cd35b78a730db/liblwgeom/lwgeom_transform.c#L299
+  if ( !crs )
+    return false;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr pjCrs( proj_crs_get_coordinate_system( context, crs ) );
+  if ( !pjCrs )
+    return false;
+
+  const int axisCount = proj_cs_get_axis_count( context, pjCrs.get() );
+  if ( axisCount > 0 )
+  {
+    const char *outDirection = nullptr;
+    // Read only first axis, see if it is degrees / north
+
+    proj_cs_get_axis_info( context, pjCrs.get(), 0,
+                           nullptr,
+                           nullptr,
+                           &outDirection,
+                           nullptr,
+                           nullptr,
+                           nullptr,
+                           nullptr
+                         );
+    return QString( outDirection ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0;
+  }
+  return false;
+}
+
 #endif
+

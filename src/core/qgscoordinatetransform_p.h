@@ -126,6 +126,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
     int mSourceDatumTransform = -1;
     int mDestinationDatumTransform = -1;
 
+    bool mSourceAxisOrderSwapped = false;
+    bool mDestAxisOrderSwapped = false;
+
 #if PROJ_VERSION_MAJOR<6
 
     /**
