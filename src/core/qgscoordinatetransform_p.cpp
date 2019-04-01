@@ -171,6 +171,8 @@ bool QgsCoordinateTransformPrivate::initialize()
   ProjData res = threadLocalProjData();
 
 #if PROJ_VERSION_MAJOR>=6
+#if PROJ_VERSION_MINOR<1
+  // because proj 6.0 does not have proj_normalize_for_visualization - we have to handle this manually and inefficiently!
   PJ_CONTEXT *context = QgsProjContext::get();
   QgsProjUtils::proj_pj_unique_ptr sourceCrs( proj_get_source_crs( context, res ) );
   if ( sourceCrs )
@@ -178,6 +180,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   QgsProjUtils::proj_pj_unique_ptr destCrs( proj_get_target_crs( context, res ) );
   if ( destCrs )
     mDestAxisOrderSwapped = QgsProjUtils::axisOrderIsSwapped( destCrs.get() );
+#endif
 #endif
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
@@ -279,8 +282,16 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   locker.changeMode( QgsReadWriteLocker::Write );
 
 #if PROJ_VERSION_MAJOR>=6
+#if PROJ_VERSION_MINOR>=1
+  QgsProjUtils::proj_pj_unique_ptr transform( proj_create_crs_to_crs( context, mSourceProjString.toUtf8().constData(), mDestProjString.toUtf8().constData(), nullptr ) );
+  // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
+  ProjData res = proj_normalize_for_visualization( context, transform.get() );
+  mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
+#else
+  // proj 6.0 does not have proj_normalize_for_visualization - we have to handle this manually and inefficiently!
   ProjData res = proj_create_crs_to_crs( context, mSourceProjString.toUtf8().constData(), mDestProjString.toUtf8().constData(), nullptr );
   mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
+#endif
 #else
 #ifdef USE_THREAD_LOCAL
   QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
