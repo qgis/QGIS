@@ -90,7 +90,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \param stats flags for statistics to calculate
      * \see statistics
      */
-    void setStatistics( QgsStatisticalSummary::Statistics stats ) { mStatistics = stats; }
+    void setStatistics( QgsStatisticalSummary::Statistics stats );
 
     /**
      * Resets the calculated values
