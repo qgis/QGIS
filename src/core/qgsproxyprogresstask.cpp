@@ -25,6 +25,9 @@ QgsProxyProgressTask::QgsProxyProgressTask( const QString &description )
 
 void QgsProxyProgressTask::finalize( bool result )
 {
+  QMutexLocker lock( &mNotFinishedMutex );
+  mAlreadyFinished = true;
+
   mResult = result;
   mNotFinishedWaitCondition.wakeAll();
 }
@@ -32,7 +35,10 @@ void QgsProxyProgressTask::finalize( bool result )
 bool QgsProxyProgressTask::run()
 {
   mNotFinishedMutex.lock();
-  mNotFinishedWaitCondition.wait( &mNotFinishedMutex );
+  if ( !mAlreadyFinished )
+  {
+    mNotFinishedWaitCondition.wait( &mNotFinishedMutex );
+  }
   mNotFinishedMutex.unlock();
 
   return mResult;
