@@ -139,6 +139,29 @@ void QgsServerSettings::initSettings()
                                QVariant()
                              };
   mSettings[ sCacheSize.envVar ] = sCacheSize;
+
+  // system locale override
+  const Setting sOverrideSystemLocale = { QgsServerSettingsEnv::QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,
+                                          QgsServerSettingsEnv::DEFAULT_VALUE,
+                                          QStringLiteral( "Override system locale" ),
+                                          QStringLiteral( "/locale/userLocale" ),
+                                          QVariant::String,
+                                          QVariant( "" ),
+                                          QVariant()
+                                        };
+  mSettings[ sOverrideSystemLocale.envVar ] = sOverrideSystemLocale;
+
+  // show group separator
+  const Setting sShowGroupSeparator = { QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR,
+                                        QgsServerSettingsEnv::DEFAULT_VALUE,
+                                        QStringLiteral( "Show group (thousands) separator" ),
+                                        QStringLiteral( "/locale/showGroupSeparator" ),
+                                        QVariant::String,
+                                        QVariant( false ),
+                                        QVariant()
+                                      };
+  mSettings[ sShowGroupSeparator.envVar ] = sShowGroupSeparator;
+
 }
 
 void QgsServerSettings::load()
@@ -319,3 +342,14 @@ QString QgsServerSettings::cacheDirectory() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_CACHE_DIRECTORY ).toString();
 }
+
+QString QgsServerSettings::overrideSystemLocale() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE ).toString();
+}
+
+bool QgsServerSettings::showGroupSeparator() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR ).toBool();
+}
+
