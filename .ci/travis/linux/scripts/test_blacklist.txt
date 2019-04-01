@@ -18,8 +18,6 @@ qgis_openstreetmaptest
 qgis_wcsprovidertest
 PyQgsWFSProviderGUI
 qgis_ziplayertest
-qgis_fieldcalculatortest
-qgis_attributetabletest
 
 # Flaky, see https://dash.orfeo-toolbox.org/testDetails.php?test=63061783&build=297405
 PyQgsSpatialiteProvider
