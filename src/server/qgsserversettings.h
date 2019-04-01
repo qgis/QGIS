@@ -61,8 +61,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       MAX_CACHE_LAYERS,
       QGIS_SERVER_CACHE_DIRECTORY,
       QGIS_SERVER_CACHE_SIZE,
-      QGIS_SERVER_SHOW_GROUP_SEPARATOR,  //! Show group (thousands) separator when formatting numeric values, defaults to FALSE
-      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,  //! Override system locale
+      QGIS_SERVER_SHOW_GROUP_SEPARATOR,  //! Show group (thousands) separator when formatting numeric values, defaults to FALSE (since QGIS 3.8)
+      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,  //! Override system locale (since QGIS 3.8)
     };
     Q_ENUM( EnvVar )
 };
@@ -173,12 +173,14 @@ class SERVER_EXPORT QgsServerSettings
     /**
      * Overrides system locale
      * \returns the optional override for system locale.
+     * \since QGIS 3.8
      */
     QString overrideSystemLocale() const;
 
     /**
      * Show group (thousand) separator
      * \returns if group separator must be shown, default to FALSE.
+     * \since QGIS 3.8
      */
     bool showGroupSeparator() const;
 

@@ -124,6 +124,8 @@ Returns the cache directory.
 Overrides system locale
 
 :return: the optional override for system locale.
+
+.. versionadded:: 3.8
 %End
 
     bool showGroupSeparator() const;
@@ -131,6 +133,8 @@ Overrides system locale
 Show group (thousand) separator
 
 :return: if group separator must be shown, default to ``False``.
+
+.. versionadded:: 3.8
 %End
 
 };
