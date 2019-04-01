@@ -38,6 +38,8 @@ class TestQgsCoordinateTransform: public QObject
     void contextShared();
     void scaleFactor();
     void scaleFactor_data();
+    void transform_data();
+    void transform();
 
   private:
 
@@ -250,6 +252,44 @@ void TestQgsCoordinateTransform::scaleFactor_data()
       << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
       << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
       << 1.0;
+}
+
+void TestQgsCoordinateTransform::transform_data()
+{
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "sourceCrs" );
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "destCrs" );
+  QTest::addColumn<double>( "x" );
+  QTest::addColumn<double>( "y" );
+  QTest::addColumn<double>( "outX" );
+  QTest::addColumn<double>( "outY" );
+  QTest::addColumn<double>( "precision" );
+
+  QTest::newRow( "To geographic" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 2545059.0 << 2393190.0 << 145.512750 << -37.961375 << 0.000001;
+  QTest::newRow( "From geographic" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << 145.512750 <<  -37.961375 << 2545059.0 << 2393190.0 << 0.1;
+}
+
+void TestQgsCoordinateTransform::transform()
+{
+  QFETCH( QgsCoordinateReferenceSystem, sourceCrs );
+  QFETCH( QgsCoordinateReferenceSystem, destCrs );
+  QFETCH( double, x );
+  QFETCH( double, y );
+  QFETCH( double, outX );
+  QFETCH( double, outY );
+  QFETCH( double, precision );
+
+  double z = 0;
+  QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
+
+  ct.transformInPlace( x, y, z );
+  QGSCOMPARENEAR( x, outX, precision );
+  QGSCOMPARENEAR( y, outY, precision );
 }
 
 void TestQgsCoordinateTransform::transformBoundingBox()
