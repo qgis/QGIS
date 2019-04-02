@@ -218,7 +218,7 @@ namespace QgsWms
       /**
        * Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
         \returns true if width/height values are okay*/
-      bool checkMaximumWidthHeight() const;
+      void checkMaximumWidthHeight() const;
 
       //! Converts a feature info xml document to SIA2045 norm
       void convertFeatureInfoToSia2045( QDomDocument &doc ) const;

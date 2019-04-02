@@ -734,11 +734,7 @@ namespace QgsWms
   QImage *QgsRenderer::getMap( QgsMapSettings &mapSettings, HitTest *hitTest )
   {
     // check size
-    if ( !checkMaximumWidthHeight() )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                    QStringLiteral( "The requested map size is too large" ) );
-    }
+    checkMaximumWidthHeight();
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -1859,7 +1855,7 @@ namespace QgsWms
     }
   }
 
-  bool QgsRenderer::checkMaximumWidthHeight() const
+  void QgsRenderer::checkMaximumWidthHeight() const
   {
     //test if maxWidth / maxHeight are set in the project or as an env variable
     //and WIDTH / HEIGHT parameter is in the range allowed range
@@ -1881,7 +1877,8 @@ namespace QgsWms
     int width = this->width();
     if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
     {
-      return false;
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QStringLiteral( "The requested map width is too large" ) );
     }
 
     //HEIGHT
@@ -1902,7 +1899,8 @@ namespace QgsWms
     int height = this->height();
     if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
     {
-      return false;
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QStringLiteral( "The requested map height is too large" ) );
     }
 
 
@@ -1929,9 +1927,10 @@ namespace QgsWms
          || height <= 0
          || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height )
          || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
-      return false;
-
-    return true;
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QStringLiteral( "The requested map size is too large" ) );
+    }
   }
 
   void QgsRenderer::convertFeatureInfoToSia2045( QDomDocument &doc ) const
