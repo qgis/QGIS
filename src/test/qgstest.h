@@ -83,11 +83,6 @@ namespace QgsTest
   {
     return qgetenv( "TRAVIS" ) == QStringLiteral( "true" );
   }
-
-  bool runFlakyTests()
-  {
-    return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
-  }
 }
 
 #endif // QGSTEST_H
