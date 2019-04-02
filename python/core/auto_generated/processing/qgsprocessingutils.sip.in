@@ -177,11 +177,11 @@ temporary layer store.
 %End
 
 
-    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
+    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context );
 %Docstring
 Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system
-using the specified ``transformContext``.
+using the specified ``context``.
 
 .. versionadded:: 3.10
 %End

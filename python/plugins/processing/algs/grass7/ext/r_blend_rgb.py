@@ -37,7 +37,7 @@ def processInputs(alg, parameters, context, feedback):
     # Use v.in.ogr
     for name in ['first', 'second']:
         alg.loadRasterLayerFromParameter(name, parameters, context, False, None)
-    alg.postInputs()
+    alg.postInputs(context)
 
 
 def processCommand(alg, parameters, context, feedback):
