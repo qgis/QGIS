@@ -27,6 +27,7 @@
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsRasterLayer;
+class QgsCoordinateTransformContext;
 
 /**
  * \ingroup 3d
@@ -43,7 +44,7 @@ class _3D_EXPORT QgsTerrainDownloader
 {
 
   public:
-    QgsTerrainDownloader();
+    QgsTerrainDownloader( const QgsCoordinateTransformContext  &transformContext );
     ~QgsTerrainDownloader();
 
     //! Definition of data source for terrain tiles (assuming "terrarium" data encoding with usual XYZ tiling scheme)

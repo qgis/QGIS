@@ -27,7 +27,7 @@ QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
 {
   mLayer = QgsMapLayerRef( layer );
-  updateGenerator();
+  updateGenerator( mTransformContext );
 }
 
 QgsRasterLayer *QgsDemTerrainGenerator::layer() const
@@ -39,7 +39,7 @@ void QgsDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, co
 {
   mCrs = crs;
   mTransformContext = context;
-  updateGenerator();
+  updateGenerator( context );
 }
 
 QgsTerrainGenerator *QgsDemTerrainGenerator::clone() const
@@ -49,7 +49,7 @@ QgsTerrainGenerator *QgsDemTerrainGenerator::clone() const
   cloned->mLayer = mLayer;
   cloned->mResolution = mResolution;
   cloned->mSkirtHeight = mSkirtHeight;
-  cloned->updateGenerator();
+  cloned->updateGenerator( mTransformContext );
   return cloned;
 }
 
@@ -93,7 +93,7 @@ void QgsDemTerrainGenerator::readXml( const QDomElement &elem )
 void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
 {
   mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
-  updateGenerator();
+  updateGenerator( project.transformContext() );
 }
 
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
@@ -101,7 +101,7 @@ QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) 
   return new QgsDemTerrainTileLoader( mTerrain, node );
 }
 
-void QgsDemTerrainGenerator::updateGenerator()
+void QgsDemTerrainGenerator::updateGenerator( const QgsCoordinateTransformContext &transformContext )
 {
   QgsRasterLayer *dem = layer();
   if ( dem )
@@ -112,7 +112,7 @@ void QgsDemTerrainGenerator::updateGenerator()
 
     mTerrainTilingScheme = QgsTilingScheme( te, mCrs );
     delete mHeightMapGenerator;
-    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution );
+    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, transformContext );
   }
   else
   {
