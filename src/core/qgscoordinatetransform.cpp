@@ -648,8 +648,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   int projResult = 0;
 #if PROJ_VERSION_MAJOR>=6
-  const bool sourceAxisOrderSwapped = d->mSourceAxisOrderSwapped;
-  const bool destinationAxisOrderSwapped = d->mDestAxisOrderSwapped;
+  const bool sourceAxisOrderSwapped =  direction == ForwardTransform ? d->mSourceAxisOrderSwapped : d->mDestAxisOrderSwapped;
 
   proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
                       !sourceAxisOrderSwapped ? x : y, sizeof( double ), numPoints,
@@ -657,7 +656,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                       z, sizeof( double ), numPoints,
                       nullptr, sizeof( double ), 0 );
   projResult = proj_errno( projData );
-  if ( projResult == 0 && destinationAxisOrderSwapped )
+  // ewww - this logic is gross. We should drop support for PROJ 6.0 as quickly as possible and dump this code (in favour of built in methods used for >=6.1 builds)
+  if ( projResult == 0 && ( d->mSourceAxisOrderSwapped != d->mDestAxisOrderSwapped ) )
   {
     size_t size = sizeof( double ) * numPoints;
     void *tmp = malloc( size );

@@ -260,6 +260,7 @@ void TestQgsCoordinateTransform::transform_data()
   QTest::addColumn<QgsCoordinateReferenceSystem>( "destCrs" );
   QTest::addColumn<double>( "x" );
   QTest::addColumn<double>( "y" );
+  QTest::addColumn<int>( "direction" );
   QTest::addColumn<double>( "outX" );
   QTest::addColumn<double>( "outY" );
   QTest::addColumn<double>( "precision" );
@@ -267,11 +268,19 @@ void TestQgsCoordinateTransform::transform_data()
   QTest::newRow( "To geographic" )
       << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
       << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
-      << 2545059.0 << 2393190.0 << 145.512750 << -37.961375 << 0.000001;
+      << 2545059.0 << 2393190.0 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 145.512750 << -37.961375 << 0.000001;
   QTest::newRow( "From geographic" )
       << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
       << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
-      << 145.512750 <<  -37.961375 << 2545059.0 << 2393190.0 << 0.1;
+      << 145.512750 <<  -37.961375 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 2545059.0 << 2393190.0 << 0.1;
+  QTest::newRow( "To geographic (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 145.512750 <<  -37.961375 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 2545059.0 << 2393190.0 << 0.1;
+  QTest::newRow( "From geographic (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << 2545058.9675128171 << 2393190.0509782173 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 145.512750 << -37.961375 << 0.000001;
 }
 
 void TestQgsCoordinateTransform::transform()
@@ -280,6 +289,7 @@ void TestQgsCoordinateTransform::transform()
   QFETCH( QgsCoordinateReferenceSystem, destCrs );
   QFETCH( double, x );
   QFETCH( double, y );
+  QFETCH( int, direction );
   QFETCH( double, outX );
   QFETCH( double, outY );
   QFETCH( double, precision );
@@ -287,7 +297,7 @@ void TestQgsCoordinateTransform::transform()
   double z = 0;
   QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
 
-  ct.transformInPlace( x, y, z );
+  ct.transformInPlace( x, y, z, static_cast<  QgsCoordinateTransform::TransformDirection >( direction ) );
   QGSCOMPARENEAR( x, outX, precision );
   QGSCOMPARENEAR( y, outY, precision );
 }
