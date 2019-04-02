@@ -57,7 +57,13 @@ QString QgsPointXY::toString( int precision ) const
 
 QString QgsPointXY::asWkt() const
 {
-  return QStringLiteral( "POINT(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
+  QString wkt = QStringLiteral( "POINT" );
+  if ( isEmpty() )
+    wkt += QStringLiteral( " EMPTY" );
+  else
+    wkt += QStringLiteral( "(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
+
+  return wkt;
 }
 
 double QgsPointXY::azimuth( const QgsPointXY &other ) const
@@ -110,4 +116,9 @@ double QgsPointXY::sqrDistToSegment( double x1, double y1, double x2, double y2,
     return 0.0;
   }
   return dist;
+}
+
+bool QgsPointXY::isEmpty() const
+{
+  return std::isnan( mX ) || std::isnan( mY );
 }

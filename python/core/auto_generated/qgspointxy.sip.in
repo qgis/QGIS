@@ -186,6 +186,13 @@ in a specified bearing.
 .. versionadded:: 2.16
 %End
 
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the geometry is empty (x and y are NaN).
+
+.. versionadded:: 3.4.6
+%End
+
     bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const;
 %Docstring
 Compares this point with another point with a fuzzy tolerance

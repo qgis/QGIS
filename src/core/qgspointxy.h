@@ -147,6 +147,9 @@ class CORE_EXPORT QgsPointXY
      */
     QPointF toQPointF() const
     {
+      if ( isEmpty() ) // special case
+        return QPointF();
+
       return QPointF( mX, mY );
     }
 
@@ -219,6 +222,12 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY project( double distance, double bearing ) const;
 
     /**
+     * Returns TRUE if the geometry is empty (x and y are NaN).
+     * \since QGIS 3.4.6
+     */
+    bool isEmpty() const;
+
+    /**
      * Compares this point with another point with a fuzzy tolerance
      * \param other point to compare with
      * \param epsilon maximum difference for coordinates between the points
@@ -233,13 +242,35 @@ class CORE_EXPORT QgsPointXY
     //! equality operator
     bool operator==( const QgsPointXY &other )
     {
-      return ( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
+      bool equal = true;
+      if ( std::isnan( other.x() ) || std::isnan( mX ) )
+        equal &= std::isnan( other.x() ) && std::isnan( mX ) ;
+      else
+        equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+
+      if ( std::isnan( other.y() ) || std::isnan( mY ) )
+        equal &= std::isnan( other.y() ) && std::isnan( mY ) ;
+      else
+        equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
+
+      return equal;
     }
 
     //! Inequality operator
     bool operator!=( const QgsPointXY &other ) const
     {
-      return !( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
+      bool equal = true;
+      if ( std::isnan( other.x() ) || std::isnan( mX ) )
+        equal &= std::isnan( other.x() ) && std::isnan( mX ) ;
+      else
+        equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
+
+      if ( std::isnan( other.y() ) || std::isnan( mY ) )
+        equal &= std::isnan( other.y() ) && std::isnan( mY ) ;
+      else
+        equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
+
+      return !equal;
     }
 
     //! Multiply x and y by the given value
@@ -333,10 +364,10 @@ class CORE_EXPORT QgsPointXY
   private:
 
     //! x coordinate
-    double mX = 0.0;
+    double mX = std::numeric_limits<double>::quiet_NaN();
 
     //! y coordinate
-    double mY = 0.0;
+    double mY = std::numeric_limits<double>::quiet_NaN();
 
     friend uint qHash( const QgsPointXY &pnt );
 
@@ -346,10 +377,18 @@ Q_DECLARE_METATYPE( QgsPointXY )
 
 inline bool operator==( const QgsPointXY &p1, const QgsPointXY &p2 ) SIP_SKIP
 {
-  if ( qgsDoubleNear( p1.x(), p2.x() ) && qgsDoubleNear( p1.y(), p2.y() ) )
-  { return true; }
+  bool equal = true;
+  if ( std::isnan( p1.x() ) || std::isnan( p2.x() ) )
+    equal &= std::isnan( p1.x() ) && std::isnan( p2.x() ) ;
   else
-  { return false; }
+    equal &= qgsDoubleNear( p1.x(), p2.x(), 1E-8 );
+
+  if ( std::isnan( p1.y() ) || std::isnan( p2.y() ) )
+    equal &= std::isnan( p1.y() ) && std::isnan( p2.y() ) ;
+  else
+    equal &= qgsDoubleNear( p1.y(), p2.y(), 1E-8 );
+
+  return equal;
 }
 
 inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_SKIP

@@ -1065,7 +1065,7 @@ static QgsCircle __recMinimalEnclosingCircle( QgsMultiPointXY points, QgsMultiPo
 
 QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &radius, unsigned int segments ) const
 {
-  center = QgsPointXY( );
+  center = QgsPointXY();
   radius = 0;
 
   if ( !d->geometry )
