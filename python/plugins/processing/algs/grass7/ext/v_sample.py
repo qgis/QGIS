@@ -34,4 +34,4 @@ def processInputs(alg, parameters, context, feedback):
     # and we can use r.external for the raster
     alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
     alg.loadRasterLayerFromParameter('raster', parameters, context, True)
-    alg.postInputs()
+    alg.postInputs(context)

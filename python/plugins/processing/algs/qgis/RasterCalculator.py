@@ -127,7 +127,7 @@ class RasterCalculator(QgisAlgorithm):
                 bbox = transform.transformBoundingBox(bbox)
 
         if bbox.isNull() and layers:
-            bbox = QgsProcessingUtils.combineLayerExtents(layers, crs)
+            bbox = QgsProcessingUtils.combineLayerExtents(layers, crs, context)
 
         cellsize = self.parameterAsDouble(parameters, self.CELLSIZE, context)
         if cellsize == 0 and not layers:

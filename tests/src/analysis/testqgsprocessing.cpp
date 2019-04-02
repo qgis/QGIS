@@ -6269,7 +6269,8 @@ void TestQgsProcessing::checkParamValues()
 
 void TestQgsProcessing::combineLayerExtent()
 {
-  QgsRectangle ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() );
+  QgsProcessingContext context;
+  QgsRectangle ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>(), context );
   QVERIFY( ext.isNull() );
 
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
@@ -6281,20 +6282,20 @@ void TestQgsProcessing::combineLayerExtent()
   QFileInfo fi2( raster2 );
   std::unique_ptr< QgsRasterLayer > r2( new QgsRasterLayer( fi2.filePath(), "R2" ) );
 
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get(), context );
   QGSCOMPARENEAR( ext.xMinimum(), 1535375.000000, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 1535475, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 5083255, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get() );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), context );
   QGSCOMPARENEAR( ext.xMinimum(), 781662, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 1535475, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3339523, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 
   // with reprojection
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), QgsCoordinateReferenceSystem::fromEpsgId( 3785 ) );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), QgsCoordinateReferenceSystem::fromEpsgId( 3785 ), context );
   QGSCOMPARENEAR( ext.xMinimum(), 1995320, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 2008833, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3523084, 10 );

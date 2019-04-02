@@ -627,7 +627,7 @@ void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString
 }
 
 
-QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext )
+QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
 {
   QgsRectangle extent;
   for ( const QgsMapLayer *layer : layers )
@@ -638,7 +638,7 @@ QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *>
     if ( crs.isValid() )
     {
       //transform layer extent to target CRS
-      QgsCoordinateTransform ct( layer->crs(), crs, transformContext );
+      QgsCoordinateTransform ct( layer->crs(), crs, context.transformContext() );
       try
       {
         QgsRectangle reprojExtent = ct.transformBoundingBox( layer->extent() );
@@ -662,7 +662,8 @@ QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *>
 // Deprecated
 QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs )
 {
-  return QgsProcessingUtils::combineLayerExtents( layers, crs, QgsCoordinateTransformContext( ) );
+  QgsProcessingContext context;
+  return QgsProcessingUtils::combineLayerExtents( layers, crs, context );
 }
 
 QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context )
