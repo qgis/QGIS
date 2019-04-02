@@ -18,6 +18,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgslayertree.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeaturecounter.h"
+
 #include "qgswmsutils.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsgetlegendgraphics.h"
@@ -123,6 +127,51 @@ namespace QgsWms
       throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                     QStringLiteral( "BBOX parameter cannot be combined with RULE." ) );
     }
+  }
+
+  QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree )
+  {
+    const QgsWmsParameters parameters = context.parameters();
+
+    std::unique_ptr<QgsLayerTreeModel> model( new QgsLayerTreeModel( &tree ) );
+    return model.release();
+  }
+
+  QgsLayerTree *layerTree( const QgsWmsRenderContext &context )
+  {
+    std::unique_ptr<QgsLayerTree> tree;
+
+    QList<QgsVectorLayerFeatureCounter *> counters;
+    for ( QgsMapLayer *ml : context.layersToRender() )
+    {
+      QgsLayerTreeLayer *lt = tree->addLayer( ml );
+
+      // name
+      if ( !ml->title().isEmpty() )
+        lt->setName( ml->title() );
+
+      //show feature count
+      const bool showFeatureCount = context.parameters().showFeatureCountAsBool();
+      const QString property = QStringLiteral( "showFeatureCount" );
+      lt->setCustomProperty( property, showFeatureCount );
+
+      if ( ml->type() != QgsMapLayerType::VectorLayer || !showFeatureCount )
+        continue;
+
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures();
+      if ( !counter )
+        continue;
+
+      counters.append( counter );
+    }
+
+    for ( QgsVectorLayerFeatureCounter *counter : counters )
+    {
+      counter->waitForFinished();
+    }
+
+    return tree.release();
   }
 } // namespace QgsWms
 

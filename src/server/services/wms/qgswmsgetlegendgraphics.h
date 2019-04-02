@@ -18,6 +18,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgslayertreemodel.h"
+
+#include "qgswmsrendercontext.h"
 
 namespace QgsWms
 {
@@ -30,8 +33,8 @@ namespace QgsWms
                                QgsServerResponse &response );
 
   void checkParameters( const QgsWmsParameters &parameters );
+
+  QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree );
+
+  QgsLayerTree *layerTree( const QgsWmsRenderContext &context );
 } // namespace QgsWms
-
-
-
-
