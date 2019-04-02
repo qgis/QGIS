@@ -1135,7 +1135,7 @@ namespace QgsWms
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
       const QImage *outputImage, const QString &version ) const
   {
-    QStringList queryLayers = mWmsParameters.queryLayersNickname();
+    const QStringList queryLayers = mContext.flattenedQueryLayers( );
 
     bool ijDefined = ( !mWmsParameters.i().isEmpty() && !mWmsParameters.j().isEmpty() );
 
@@ -1322,8 +1322,39 @@ namespace QgsWms
       {
         QgsWmsParameter param( QgsWmsParameter::LAYER );
         param.mValue = queryLayer;
-        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_QUERYABLE,
-                                      param );
+        // Check if this layer belongs to a group and the group has any queryable layers
+        bool hasGroupAndQueryable { false };
+        if ( ! mContext.parameters().queryLayersNickname().contains( queryLayer ) )
+        {
+          // Find which group this layer belongs to
+          const auto &constNicks { mContext.parameters().queryLayersNickname() };
+          for ( const auto &ql : constNicks )
+          {
+            if ( mContext.layerGroups().contains( ql ) )
+            {
+              const auto &constLayers { mContext.layerGroups()[ql] };
+              for ( const auto &ml : constLayers )
+              {
+                if ( ( ! ml->shortName().isEmpty() &&  ml->shortName() == queryLayer ) || ( ml->name() == queryLayer ) )
+                {
+                  param.mValue = ql;
+                }
+                if ( ml->flags().testFlag( QgsMapLayer::Identifiable ) )
+                {
+                  hasGroupAndQueryable = true;
+                  break;
+                }
+              }
+              break;
+            }
+          }
+        }
+        // Only throw if it's not a group or the group has no queryable children
+        if ( ! hasGroupAndQueryable )
+        {
+          throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_QUERYABLE,
+                                        param );
+        }
       }
     }
 
@@ -2206,7 +2237,7 @@ namespace QgsWms
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
 
-        for ( const auto feature : features )
+        for ( const auto &feature : qgis::as_const( features ) )
         {
           if ( json.right( 1 ).compare( QStringLiteral( "}" ) ) == 0 )
           {
@@ -2219,6 +2250,10 @@ namespace QgsWms
       }
       else // raster layer
       {
+        if ( json.right( 1 ).compare( QStringLiteral( "}" ) ) == 0 )
+        {
+          json.append( QStringLiteral( "," ) );
+        }
         json.append( QStringLiteral( "{" ) );
         json.append( QStringLiteral( "\"type\":\"Feature\",\n" ) );
         json.append( QStringLiteral( "\"id\":\"%1\",\n" ).arg( layer->name() ) );
