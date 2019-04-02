@@ -1,5 +1,4 @@
 # black list
-PyQgsJsonUtils
 PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composermapgridtest
