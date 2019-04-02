@@ -2022,6 +2022,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     }
   }
 
+  updateLockedFeatureVertices();
   if ( mVertexEditor )
     mVertexEditor->updateEditor( mLockedFeature.get() );
 
