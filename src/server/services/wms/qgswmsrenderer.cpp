@@ -129,15 +129,6 @@ namespace QgsWms
 
   QImage *QgsRenderer::getLegendGraphics()
   {
-    // check parameters
-    if ( mWmsParameters.allLayersNickname().isEmpty() )
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
-                                    mWmsParameters[QgsWmsParameter::LAYERS] );
-
-    if ( mWmsParameters.format() == QgsWmsParameters::Format::NONE )
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
-                                    mWmsParameters[QgsWmsParameter::FORMAT] );
-
     // get layers
     std::unique_ptr<QgsLayerRestorer> restorer;
     restorer.reset( new QgsLayerRestorer( mContext.layers() ) );

@@ -34,6 +34,9 @@ namespace QgsWms
     // get parameters from query
     QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
+    // check parameters validity
+    checkParameters( parameters );
+
     // init render context
     QgsWmsRenderContext context( project, serverIface );
     context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
@@ -98,6 +101,27 @@ namespace QgsWms
     else
     {
       throw QgsException( QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
+    }
+  }
+
+  void checkParameters( const QgsWmsParameters &parameters )
+  {
+    if ( parameters.allLayersNickname().isEmpty() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    parameters[QgsWmsParameter::LAYERS] );
+    }
+
+    if ( parameters.format() == QgsWmsParameters::Format::NONE )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+                                    parameters[QgsWmsParameter::FORMAT] );
+    }
+
+    if ( ! parameters.bbox().isEmpty() && !parameters.rule().isEmpty() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QStringLiteral( "BBOX parameter cannot be combined with RULE." ) );
     }
   }
 } // namespace QgsWms

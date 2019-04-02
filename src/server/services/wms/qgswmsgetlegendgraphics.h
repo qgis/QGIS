@@ -29,6 +29,7 @@ namespace QgsWms
                                const QString &version, const QgsServerRequest &request,
                                QgsServerResponse &response );
 
+  void checkParameters( const QgsWmsParameters &parameters );
 } // namespace QgsWms
 
 
