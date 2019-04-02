@@ -472,7 +472,7 @@ void TestQgsNetworkAccessManager::fetchPost()
   {
     QCOMPARE( reply.error(), QNetworkReply::NoError );
     QCOMPARE( reply.requestId(), requestId );
-    QVERIFY( reply.rawHeaderList().contains( "Content-Length" ) );
+    QVERIFY( reply.rawHeaderList().contains( "Content-Type" ) );
     QCOMPARE( reply.request().url(), u );
     loaded = true;
   } );
