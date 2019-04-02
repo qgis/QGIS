@@ -1875,17 +1875,17 @@ namespace QgsWms
     //and WIDTH / HEIGHT parameter is in the range allowed range
     //WIDTH
     int wmsMaxWidthProj = QgsServerProjectUtils::wmsMaxWidth( *mProject );
-    int wmsMaxWidthEnv = mServerSettings.wmsMaxWidth();
+    int wmsMaxWidthEnv = mContext.settings().wmsMaxWidth();
     int wmsMaxWidth;
     if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
     {
       // both are set, so we take the more conservative one
-      wmsMaxWidth = qMin( wmsMaxWidthProj, wmsMaxWidthEnv );
+      wmsMaxWidth = std::min( wmsMaxWidthProj, wmsMaxWidthEnv );
     }
     else
     {
       // none or one are set, so we take the bigger one which is the one set or -1
-      wmsMaxWidth = qMax( wmsMaxWidthProj, wmsMaxWidthEnv );
+      wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
     }
 
     int width = this->width();
@@ -1896,17 +1896,17 @@ namespace QgsWms
 
     //HEIGHT
     int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
-    int wmsMaxHeightEnv = mServerSettings.wmsMaxHeight();
+    int wmsMaxHeightEnv = mContext.settings().wmsMaxHeight();
     int wmsMaxHeight;
     if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
     {
       // both are set, so we take the more conservative one
-      wmsMaxHeight = qMin( wmsMaxHeightProj, wmsMaxHeightEnv );
+      wmsMaxHeight = std::min( wmsMaxHeightProj, wmsMaxHeightEnv );
     }
     else
     {
       // none or one are set, so we take the bigger one which is the one set or -1
-      wmsMaxHeight = qMax( wmsMaxHeightProj, wmsMaxHeightEnv );
+      wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
     }
 
     int height = this->height();

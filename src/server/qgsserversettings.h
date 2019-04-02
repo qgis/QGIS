@@ -185,16 +185,16 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.8
      */
     bool showGroupSeparator() const;
-  
+
     /**
-     * Returns the max height of a WMS GetMap request.
-     * \returns Returns the max height of a WMS GetMap request.
+     * Returns the server-wide max height of a WMS GetMap request. The lower one of this and the project configuration is used.
+     * \returns the max height of a WMS GetMap request.
      * \since QGIS 3.8
      */
     int wmsMaxHeight() const;
 
     /**
-     * Returns the max width of a WMS GetMap request.
+     * Returns the server-wide max width of a WMS GetMap request. The lower one of this and the project configuration is used.
      * \returns the max width of a WMS GetMap request.
      * \since QGIS 3.8
      */

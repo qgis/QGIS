@@ -165,7 +165,7 @@ void QgsServerSettings::initSettings()
   // max height
   const Setting sMaxHeight = { QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_HEIGHT,
                                QgsServerSettingsEnv::DEFAULT_VALUE,
-                               "Maximum height for a WMS request. The most conservative between this and the project one is used",
+                               "Maximum height for a WMS request. The lower one of this and the project configuration is used.",
                                "/qgis/max_wms_height",
                                QVariant::LongLong,
                                QVariant( -1 ),
@@ -362,4 +362,24 @@ qint64 QgsServerSettings::cacheSize() const
 QString QgsServerSettings::cacheDirectory() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_CACHE_DIRECTORY ).toString();
+}
+
+QString QgsServerSettings::overrideSystemLocale() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE ).toString();
+}
+
+bool QgsServerSettings::showGroupSeparator() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR ).toBool();
+}
+
+int QgsServerSettings::wmsMaxHeight() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_HEIGHT ).toInt();
+}
+
+int QgsServerSettings::wmsMaxWidth() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_WIDTH ).toInt();
 }
