@@ -1412,6 +1412,7 @@ void QgsVertexTool::cleanupVertexEditor()
 {
   mLockedFeature.reset();
   mVertexEditor.reset();
+  updateLockedFeatureVertices();
 }
 
 void QgsVertexTool::cleanupLockedFeature()
