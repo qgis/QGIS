@@ -115,6 +115,7 @@ class TestQgsColorScheme(unittest.TestCase):
 
     def testRecentColors(self):
         """ test retrieving recent colors """
+        QgsSettings().clear()
 
         # no colors
         self.assertFalse(QgsRecentColorScheme().lastUsedColor().isValid())
