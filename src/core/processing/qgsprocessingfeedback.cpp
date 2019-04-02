@@ -67,7 +67,7 @@ void QgsProcessingFeedback::pushVersionInfo()
 
 #if PROJ_VERSION_MAJOR > 4
   PJ_INFO info = proj_info();
-  pushDebugInfo( tr( "PROJ version: %1.%2.%3" ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH );
+  pushDebugInfo( tr( "PROJ version: %1.%2.%3" ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH ) );
 #else
   pushDebugInfo( tr( "PROJ version: %1" ).arg( PJ_VERSION ) );
 #endif
