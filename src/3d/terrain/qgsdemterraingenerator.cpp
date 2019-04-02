@@ -27,7 +27,7 @@ QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
 {
   mLayer = QgsMapLayerRef( layer );
-  updateGenerator( mTransformContext );
+  updateGenerator();
 }
 
 QgsRasterLayer *QgsDemTerrainGenerator::layer() const
@@ -39,7 +39,7 @@ void QgsDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, co
 {
   mCrs = crs;
   mTransformContext = context;
-  updateGenerator( context );
+  updateGenerator();
 }
 
 QgsTerrainGenerator *QgsDemTerrainGenerator::clone() const
@@ -49,7 +49,7 @@ QgsTerrainGenerator *QgsDemTerrainGenerator::clone() const
   cloned->mLayer = mLayer;
   cloned->mResolution = mResolution;
   cloned->mSkirtHeight = mSkirtHeight;
-  cloned->updateGenerator( mTransformContext );
+  cloned->updateGenerator();
   return cloned;
 }
 
@@ -93,7 +93,7 @@ void QgsDemTerrainGenerator::readXml( const QDomElement &elem )
 void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
 {
   mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
-  updateGenerator( project.transformContext() );
+  updateGenerator();
 }
 
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
@@ -101,7 +101,7 @@ QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) 
   return new QgsDemTerrainTileLoader( mTerrain, node );
 }
 
-void QgsDemTerrainGenerator::updateGenerator( const QgsCoordinateTransformContext &transformContext )
+void QgsDemTerrainGenerator::updateGenerator()
 {
   QgsRasterLayer *dem = layer();
   if ( dem )
@@ -112,7 +112,7 @@ void QgsDemTerrainGenerator::updateGenerator( const QgsCoordinateTransformContex
 
     mTerrainTilingScheme = QgsTilingScheme( te, mCrs );
     delete mHeightMapGenerator;
-    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, transformContext );
+    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
   }
   else
   {
