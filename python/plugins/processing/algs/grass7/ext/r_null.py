@@ -42,7 +42,7 @@ def processInputs(alg, parameters, context, feedback):
 
     # We need to import without r.external
     alg.loadRasterLayerFromParameter('map', parameters, context, False)
-    alg.postInputs()
+    alg.postInputs(context)
 
 
 def processCommand(alg, parameters, context, feedback):

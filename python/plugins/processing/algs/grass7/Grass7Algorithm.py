@@ -489,9 +489,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     elif layer.type() == QgsMapLayerType.VectorLayer:
                         self.loadVectorLayer(layerName, layer, external=None, feedback=feedback)
 
-        self.postInputs()
+        self.postInputs(context)
 
-    def postInputs(self):
+    def postInputs(self, context):
         """
         After layer imports, we need to update some internal parameters
         """
@@ -500,7 +500,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         # Build GRASS region
         if self.region.isEmpty():
-            self.region = QgsProcessingUtils.combineLayerExtents(self.inputLayers)
+            self.region = QgsProcessingUtils.combineLayerExtents(self.inputLayers, context)
         command = 'g.region n={} s={} e={} w={}'.format(
             self.region.yMaximum(), self.region.yMinimum(),
             self.region.xMaximum(), self.region.xMinimum()

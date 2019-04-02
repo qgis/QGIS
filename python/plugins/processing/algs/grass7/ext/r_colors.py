@@ -54,7 +54,7 @@ def processInputs(alg, parameters, context, feedback):
     if raster:
         alg.loadRasterLayerFromParameter('raster', parameters, context, False, None)
 
-    alg.postInputs()
+    alg.postInputs(context)
 
 
 def processCommand(alg, parameters, context, feedback):
