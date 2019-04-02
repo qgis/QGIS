@@ -155,6 +155,13 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT int wmsMaxAtlasFeatures( const QgsProject &project );
 
   /**
+   * Returns the denominator of the default scale used in case of the scale is not given
+   * \param project the QGIS project
+   * \return the denominator of the scale
+   */
+  SERVER_EXPORT double wmsDefaultMapUnitsPerMm( const QgsProject &project );
+
+  /**
    * Returns if layer ids are used as name in WMS.
    * \param project the QGIS project
    * \returns if layer ids are used as name.
