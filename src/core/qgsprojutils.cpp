@@ -119,17 +119,17 @@ bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
     return false;
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr pjCrs( proj_crs_get_coordinate_system( context, crs ) );
-  if ( !pjCrs )
+  QgsProjUtils::proj_pj_unique_ptr pjCs( proj_crs_get_coordinate_system( context, crs ) );
+  if ( !pjCs )
     return false;
 
-  const int axisCount = proj_cs_get_axis_count( context, pjCrs.get() );
+  const int axisCount = proj_cs_get_axis_count( context, pjCs.get() );
   if ( axisCount > 0 )
   {
     const char *outDirection = nullptr;
     // Read only first axis, see if it is degrees / north
 
-    proj_cs_get_axis_info( context, pjCrs.get(), 0,
+    proj_cs_get_axis_info( context, pjCs.get(), 0,
                            nullptr,
                            nullptr,
                            &outDirection,
