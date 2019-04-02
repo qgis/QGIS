@@ -193,14 +193,19 @@ namespace QgsWms
     std::unique_ptr<QImage> image;
     std::unique_ptr<QPainter> painter;
 
-    // getting scale from bbox
+    // getting scale from bbox or default size
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      image.reset( createImage( width(), height(), false ) );
-      configureMapSettings( image.get(), mapSettings );
+      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
+      configureMapSettings( tmp.get(), mapSettings );
       legendSettings.setMapScale( mapSettings.scale() );
       legendSettings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+    }
+    else
+    {
+      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      legendSettings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
     }
 
     if ( !mWmsParameters.rule().isEmpty() )
@@ -240,6 +245,11 @@ namespace QgsWms
 
       legendRendererNew.drawLegend( painter.get() );
       painter->end();
+    }
+    else
+    {
+      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
     }
 
     rootGroup.clear();
