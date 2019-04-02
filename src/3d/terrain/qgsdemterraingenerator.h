@@ -72,7 +72,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
   private:
-    void updateGenerator( const QgsCoordinateTransformContext &transformContext );
+    void updateGenerator();
 
     QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
 
