@@ -1,7 +1,6 @@
 # black list
 PyQgsLocalServer
 PyQgsPalLabelingServer
-qgis_composermapgridtest
 qgis_composerutils
 PyQgsAppStartup
 
