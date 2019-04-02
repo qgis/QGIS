@@ -745,6 +745,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         source.setFieldAlias(1, "alias_fldint")
 
         exporter = QgsJsonExporter()
+        exporter.setAttributeDisplayName(True)
         exporter.setVectorLayer(source)
 
         expected = """{
