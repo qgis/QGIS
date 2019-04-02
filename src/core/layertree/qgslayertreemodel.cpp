@@ -325,7 +325,13 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           parts << QString();
         }
 
-        parts << "<i>" + layer->publicSource().toHtmlEscaped() + "</i>";
+        QString source( layer->publicSource() );
+        if ( source.size() > 1024 )
+        {
+          source = source.left( 1023 ) + QStringLiteral( "…" );
+        }
+
+        parts << "<i>" + source.toHtmlEscaped() + "</i>";
 
         return parts.join( QStringLiteral( "<br/>" ) );
       }

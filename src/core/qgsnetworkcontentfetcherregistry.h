@@ -23,15 +23,12 @@
 #include <QMap>
 #include <QMutex>
 #include <QNetworkReply>
-#include <QTemporaryFile>
 
 #include "qgis_core.h"
-
-class QTemporaryFile;
-
 #include "qgstaskmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
 
+class QTemporaryFile;
 
 /**
  * \class QgsFetchedContent
