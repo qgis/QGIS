@@ -1,6 +1,5 @@
 # flaky
 qgis_filedownloader
-qgis_openstreetmaptest
 qgis_wcsprovidertest
 PyQgsWFSProviderGUI
 qgis_ziplayertest
