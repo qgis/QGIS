@@ -8,6 +8,9 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 CMAKE_POLICY (SET CMP0048 NEW)
 CMAKE_POLICY (SET CMP0053 NEW)
 
+# don't relink it only the shared object changes
+SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
+
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
