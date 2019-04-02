@@ -42,15 +42,6 @@ QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,
   // signal changing of current layer
   connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsLockedFeature::currentLayerChanged );
 
-  // feature was deleted
-  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsLockedFeature::featureDeleted );
-
-  // rolling back
-  connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsLockedFeature::beforeRollBack );
-
-  // geometry was changed
-  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
-
   replaceVertexMap();
 }
 
