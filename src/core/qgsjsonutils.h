@@ -108,7 +108,7 @@ class CORE_EXPORT QgsJsonExporter
      * defined.
      * \since QGIS 3.6
      */
-    void setAttributeDisplayName( bool displayName ) { mAttributeDisplayName = displayName; };
+    void setAttributeDisplayName( bool displayName ) { mAttributeDisplayName = displayName; }
 
     /**
      * Returns whether original names of attributes or aliases are printed.
