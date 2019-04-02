@@ -3234,7 +3234,7 @@ QgsRectangle QgsPostgresProvider::extent() const
     QString ext;
 
     // get the extents
-    if ( !mIsQuery && ( mUseEstimatedMetadata || mSqlWhereClause.isEmpty() ) )
+    if ( !mIsQuery && mUseEstimatedMetadata )
     {
       // do stats exists?
       sql = QStringLiteral( "SELECT count(*) FROM pg_stats WHERE schemaname=%1 AND tablename=%2 AND attname=%3" )

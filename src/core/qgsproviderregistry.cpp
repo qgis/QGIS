@@ -246,7 +246,9 @@ typedef void cleanupProviderFunction_t();
 
 void QgsProviderRegistry::clean()
 {
-  QgsProject::instance()->removeAllMapLayers();
+  // avoid recreating a new project just to clean it
+  if ( QgsProject::sProject )
+    QgsProject::instance()->removeAllMapLayers();
 
   Providers::const_iterator it = mProviders.begin();
 

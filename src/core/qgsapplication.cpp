@@ -126,6 +126,7 @@ const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
 const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
+QgsAuthManager *QgsApplication::sAuthManager = nullptr;
 
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
@@ -1159,7 +1160,6 @@ QgsAuthManager *QgsApplication::authManager()
   else
   {
     // no QgsApplication instance
-    static QgsAuthManager *sAuthManager = nullptr;
     if ( !sAuthManager )
       sAuthManager = QgsAuthManager::instance();
     return sAuthManager;
@@ -1169,7 +1169,11 @@ QgsAuthManager *QgsApplication::authManager()
 
 void QgsApplication::exitQgis()
 {
-  delete QgsApplication::authManager();
+  // don't create to delete
+  if ( instance() )
+    delete instance()->mAuthManager;
+  else
+    delete sAuthManager;
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of

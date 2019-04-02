@@ -24,7 +24,6 @@
 #include "qgssettings.h"
 
 #include <QPainter>
-#include <QTemporaryFile>
 #include <QMouseEvent>
 #include <QMenu>
 #include <QClipboard>

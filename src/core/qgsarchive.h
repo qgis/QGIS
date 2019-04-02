@@ -20,6 +20,7 @@
 #define QGSARCHIVE_H
 
 #include "qgis_core.h"
+
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QTemporaryDir>

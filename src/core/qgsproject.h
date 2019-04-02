@@ -1458,6 +1458,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     friend class QgsProjectDirtyBlocker;
 
+    // Required to avoid creating a new project in it's destructor
+    friend class QgsProviderRegistry;
+
     // Required by QGIS Server for switching the current project instance
     friend class QgsConfigCache;
 };
