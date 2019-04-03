@@ -160,6 +160,26 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
   return cfPath;
 }
 
+void QgsServer::initLocale()
+{
+  // System locale override
+  if ( ! sSettings.overrideSystemLocale().isEmpty() )
+  {
+    QLocale::setDefault( QLocale( sSettings.overrideSystemLocale() ) );
+  }
+  // Number group separator settings
+  QLocale currentLocale;
+  if ( sSettings.showGroupSeparator() )
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  }
+  else
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+  }
+  QLocale::setDefault( currentLocale );
+}
+
 bool QgsServer::init()
 {
   if ( sInitialized )
@@ -194,6 +214,9 @@ bool QgsServer::init()
   {
     QgsServerLogger::instance()->setLogStderr();
   }
+
+  // Configure locale
+  initLocale();
 
   // log settings currently used
   sSettings.logSummary();
