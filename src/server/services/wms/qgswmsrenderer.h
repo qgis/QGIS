@@ -79,11 +79,9 @@ namespace QgsWms
       /**
        * Returns the map legend as an image (or NULLPTR in case of error). The caller takes ownership
       of the image object*/
-      QImage *getLegendGraphics();
-
       QImage *getLegendGraphics( QgsLayerTreeModel &model );
 
-      QImage *getLegendGraphics( QgsLayerTreeModelLegendNode &node );
+      QImage *getLegendGraphics( QgsLayerTreeModelLegendNode &nodeModel );
 
       typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
@@ -150,9 +148,6 @@ namespace QgsWms
 
       // Scale image with WIDTH/HEIGHT if necessary
       QImage *scaleImage( const QImage *image ) const;
-
-      // Build a layer tree model for legend
-      QgsLayerTreeModel *buildLegendTreeModel( const QList<QgsMapLayer *> &layers, double scaleDenominator, QgsLayerTree &rootGroup );
 
       /**
        * Creates a QImage from the HEIGHT and WIDTH parameters
