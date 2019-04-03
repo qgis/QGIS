@@ -18,6 +18,8 @@
 #include <QObject>
 #include <QKeyEvent>
 
+#include "qgsgui.h"
+#include "qgsnative.h"
 #include "qgsapplication.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -364,7 +366,10 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
     }
     else
     {
-      palette.setColor( QPalette::Text, Qt::black );
+      if ( QgsGui::instance()->nativePlatformInterface()->hasDarkTheme() )
+        palette.setColor( QPalette::Text, Qt::white );
+      else
+        palette.setColor( QPalette::Text, Qt::black );
     }
   }
   mCombo->lineEdit()->setPalette( palette );
