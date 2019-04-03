@@ -184,8 +184,11 @@ void failOnWarning( QtMsgType type, const QMessageLogContext &context, const QSt
 
 void TestQgsOgrProvider::testThread()
 {
+  // Disabled by @m-kuhn
   // This test is flaky
   // See https://travis-ci.org/qgis/QGIS/jobs/505008602#L6464-L7108
+  if ( !QgsTest::runFlakyTests() )
+    QSKIP( "This test is disabled on Travis CI environment" );
 
   // After reading a QgsVectorLayer (getFeatures) from another thread the QgsOgrConnPoolGroup starts
   // an expiration timer. The timer belongs to the main thread in order to listening the event
