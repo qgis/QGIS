@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayertree.h"
+#include "qgslegendrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeaturecounter.h"
 
@@ -152,6 +153,40 @@ namespace QgsWms
       const QgsRenderer::HitTest symbols = renderer.symbols();
 
       // TODO
+    }
+
+    // if legend is not based on rendering rules
+    if ( parameters.rule().isEmpty() )
+    {
+      QList<QgsLayerTreeNode *> children = tree.children();
+      for ( QgsLayerTreeNode *node : children )
+      {
+        if ( ! QgsLayerTree::isLayer( node ) )
+          continue;
+
+        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+
+        // layer titles - hidden or not
+        QgsLegendRenderer::setNodeLegendStyle( nodeLayer, parameters.layerTitleAsBool() ? QgsLegendStyle::Subgroup : QgsLegendStyle::Hidden );
+
+        // rule item titles
+        if ( !parameters.ruleLabelAsBool() )
+        {
+          for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
+          {
+            // empty string = no override, so let's use one space
+            legendNode->setUserLabel( QStringLiteral( " " ) );
+          }
+        }
+        else if ( !parameters.layerTitleAsBool() )
+        {
+          for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
+          {
+            if ( legendNode->isEmbeddedInParent() )
+              legendNode->setEmbeddedInParent( false );
+          }
+        }
+      }
     }
 
     return model.release();
