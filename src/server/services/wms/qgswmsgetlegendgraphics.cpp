@@ -127,13 +127,33 @@ namespace QgsWms
       throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
                                     QStringLiteral( "BBOX parameter cannot be combined with RULE." ) );
     }
+
+    if ( ! parameters.bbox().isEmpty() && parameters.bboxAsRectangle().isEmpty() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    parameters[QgsWmsParameter::BBOX] );
+    }
   }
 
   QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree )
   {
     const QgsWmsParameters parameters = context.parameters();
-
     std::unique_ptr<QgsLayerTreeModel> model( new QgsLayerTreeModel( &tree ) );
+
+    if ( context.scaleDenominator() > 0 )
+    {
+      model->setLegendFilterByScale( context.scaleDenominator() );
+    }
+
+    // content based legend
+    if ( ! parameters.bbox().isEmpty() )
+    {
+      QgsRenderer renderer( context );
+      const QgsRenderer::HitTest symbols = renderer.symbols();
+
+      // TODO
+    }
+
     return model.release();
   }
 

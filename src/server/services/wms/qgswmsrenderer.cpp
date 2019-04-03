@@ -249,6 +249,36 @@ namespace QgsWms
     r->stopRender( context );
   }
 
+  QgsRenderer::HitTest QgsRenderer::symbols()
+  {
+    // check size
+    checkMaximumWidthHeight();
+
+    // init layer restorer before doing anything
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+
+    // configure layers
+    QgsMapSettings mapSettings;
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers, &mapSettings );
+
+    // create the output image and the painter
+    std::unique_ptr<QPainter> painter;
+    std::unique_ptr<QImage> image( createImage() );
+
+    // configure map settings (background, DPI, ...)
+    configureMapSettings( image.get(), mapSettings );
+
+    // add layers to map settings
+    mapSettings.setLayers( layers );
+
+    // run hit tests
+    HitTest symbols;
+    runHitTest( mapSettings, symbols );
+
+    return symbols;
+  }
 
   QByteArray QgsRenderer::getPrint()
   {
@@ -385,7 +415,7 @@ namespace QgsWms
     std::unique_ptr<QImage> image( new QImage() );
     configureMapSettings( image.get(), mapSettings );
 
-    // add layers to map settings (revert order for the rendering)
+    // add layers to map settings
     mapSettings.setLayers( layers );
 
     // configure layout
@@ -751,7 +781,7 @@ namespace QgsWms
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
 
-    // add layers to map settings (revert order for the rendering)
+    // add layers to map settings
     mapSettings.setLayers( layers );
 
     // rendering step for layers
