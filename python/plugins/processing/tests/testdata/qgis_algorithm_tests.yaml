@@ -5084,6 +5084,47 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by summary polys to points, reprojected
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      JOIN:
+        name: custom/points_3857.gml|layername=points_3857
+        type: vector
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_reproject.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location, lines to reprojected polygons
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: custom/line_3857.gml|layername=line_3857
+        type: vector
+      JOIN:
+        name: polys.gml|layername=polys2
+        type: vector
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_line_to_polys_reproj.gml
+        type: vector
+
   - algorithm: native:extractbyextent
     name: Extract by extent
     params:
