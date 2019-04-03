@@ -41,6 +41,7 @@ class TestQgsPointXY: public QObject
     void toQPointF();
     void operators();
     void toString();
+    void asWkt();
     void sqrDist();
     void distance();
     void compare();
@@ -187,6 +188,13 @@ void TestQgsPointXY::toString()
   mReport += "<p>" + mPoint3.toString( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toString( 2 )  +  "</p>";
   QCOMPARE( mPoint1.toString( 2 ), QString( "20.00,-20.00" ) );
+  QCOMPARE( QgsPointXY().toString( 2 ), QString( "infinite,infinite" ) );
+}
+
+void TestQgsPointXY::asWkt()
+{
+  QCOMPARE( QgsPointXY().asWkt(), QString( "POINT EMPTY" ) );
+  QCOMPARE( mPoint1.asWkt(), QString( "POINT(20 -20)" ) );
 }
 
 void TestQgsPointXY::sqrDist()
