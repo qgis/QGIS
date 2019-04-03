@@ -48,6 +48,7 @@ class TestQgsPointXY: public QObject
     void vector(); //tests for QgsVector
     void asVariant();
     void referenced();
+    void isEmpty();
 
   private:
     QgsPointXY mPoint1;
@@ -363,5 +364,20 @@ void TestQgsPointXY::referenced()
   QCOMPARE( p2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
 }
 
+void TestQgsPointXY::isEmpty()
+{
+  QgsPointXY pointEmpty;
+  QVERIFY( pointEmpty.isEmpty() );
+  QVERIFY( std::isnan( pointEmpty.x() ) );
+  QVERIFY( std::isnan( pointEmpty.y() ) );
+  pointEmpty.setX( 7 );
+  QVERIFY( pointEmpty.isEmpty() );
+  QVERIFY( ! std::isnan( pointEmpty.x() ) );
+  QVERIFY( std::isnan( pointEmpty.y() ) );
+  pointEmpty.setY( 4 );
+  QVERIFY( ! pointEmpty.isEmpty() );
+  QVERIFY( ! std::isnan( pointEmpty.x() ) );
+  QVERIFY( ! std::isnan( pointEmpty.y() ) );
+}
 QGSTEST_MAIN( TestQgsPointXY )
 #include "testqgspoint.moc"
