@@ -128,10 +128,14 @@ IF(WITH_CORE)
   IF(WITH_SERVER)
     SET (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
 
-    SET (WITH_SERVER_PLUGINS TRUE CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    SET (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    IF(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
+      MESSAGE(FATAL_ERROR "Server plugins are not supported without python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
+    ENDIF(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
     IF(WITH_SERVER_PLUGINS)
       SET(HAVE_SERVER_PYTHON_PLUGINS TRUE)
     ENDIF(WITH_SERVER_PLUGINS)
+
   ENDIF(WITH_SERVER)
 
   # Custom widgets

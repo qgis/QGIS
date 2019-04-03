@@ -92,7 +92,7 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
     QgsAccessControl *mAccessControls = nullptr;
-    std::unique_ptr<QgsServerCacheManager> mCacheManager = nullptr;
+    QgsServerCacheManager *mCacheManager = nullptr;
     QgsCapabilitiesCache *mCapabilitiesCache = nullptr;
     QgsRequestHandler *mRequestHandler = nullptr;
     QgsServiceRegistry *mServiceRegistry = nullptr;

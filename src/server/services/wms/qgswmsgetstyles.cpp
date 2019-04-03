@@ -156,12 +156,12 @@ namespace QgsWms
         {
           throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
         }
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerReadPermission( layer ) )
         {
           throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
         }
-
+#endif
         // Create the NamedLayer element
         QDomElement namedLayerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
         root.appendChild( namedLayerNode );
