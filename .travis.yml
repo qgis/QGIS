@@ -11,7 +11,7 @@ cache:
     - ${HOME}/.ccache_docker_build_cosmic
     - ${HOME}/.ccache_docker_build_bionic
   timeout: 1000
-if: NOT branch =~ /^(cherry-pick-)?backport-\d+-on-/
+if: NOT branch =~ /^(cherry-pick-)?backport-\d+-to-/
 
 env:
   global:
