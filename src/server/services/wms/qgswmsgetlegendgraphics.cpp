@@ -96,8 +96,6 @@ namespace QgsWms
     std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
 
     // rendering
-    QgsRenderer renderer( context );
-
     std::unique_ptr<QImage> result;
     if ( !parameters.rule().isEmpty() )
     {
