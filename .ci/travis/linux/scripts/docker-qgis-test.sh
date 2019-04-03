@@ -68,7 +68,7 @@ echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_T
 EXCLUDE_TESTS=$(cat /root/QGIS/.ci/travis/linux/scripts/test_blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
 if ! [[ ${RUN_FLAKY_TESTS} =~ ^true$ ]]; then
   echo "Flaky tests are skipped!"
-  EXCLUDE_TESTS=${EXCLUDE_TESTS}$(cat /root/QGIS/.ci/travis/linux/scripts/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+  EXCLUDE_TESTS=${EXCLUDE_TESTS}"|"$(cat /root/QGIS/.ci/travis/linux/scripts/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
 else
   echo "Flaky tests are run!"
 fi
