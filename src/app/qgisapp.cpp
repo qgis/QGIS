@@ -3283,17 +3283,6 @@ void QgisApp::setTheme( const QString &themeName )
   */
 
   QString theme = themeName;
-#ifdef Q_OS_MAC
-#if QT_VERSION < QT_VERSION_CHECK( 5, 12, 0 )
-  if ( theme == QStringLiteral( "default" ) &&
-       QgsGui::instance()->nativePlatformInterface()->hasDarkTheme() )
-  {
-    QString darkTheme = QStringLiteral( "Night Mapping" );
-    if ( QgsApplication::uiThemes().contains( darkTheme ) )
-      theme = darkTheme;
-  }
-#endif
-#endif
 
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetBuilder->defaultOptions() );
   QgsApplication::setUITheme( theme );
