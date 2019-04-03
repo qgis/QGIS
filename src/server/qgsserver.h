@@ -144,5 +144,8 @@ class SERVER_EXPORT QgsServer
 
     //! cache
     QgsConfigCache *mConfigCache = nullptr;
+
+    //! Initialize locale
+    static void initLocale();
 };
 #endif // QGSSERVER_H
