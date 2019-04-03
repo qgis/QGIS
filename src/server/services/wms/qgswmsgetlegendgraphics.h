@@ -37,4 +37,6 @@ namespace QgsWms
   QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree );
 
   QgsLayerTree *layerTree( const QgsWmsRenderContext &context );
+
+  QgsLayerTreeModelLegendNode *legendNode( const QgsLayerTreeModel &model, const QString &rule );
 } // namespace QgsWms

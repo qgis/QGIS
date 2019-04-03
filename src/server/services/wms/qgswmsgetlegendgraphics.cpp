@@ -228,5 +228,18 @@ namespace QgsWms
 
     return tree.release();
   }
+
+  QgsLayerTreeModelLegendNode *legendNode( const QgsLayerTreeModel &model, const QString &rule )
+  {
+    for ( QgsLayerTreeLayer *layer : model->rootGroup()->findLayers() )
+    {
+      for ( QgsLayerTreeModelLegendNode *node : model->layerLegendNodes( layer ) )
+      {
+        if ( node->data( Qt::DisplayRole ).toString().compare( rule ) == 0 )
+          return node;
+      }
+    }
+    return nullptr;
+  }
 } // namespace QgsWms
 
