@@ -31,7 +31,6 @@
 #include "qgsmapserviceexception.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
-#include "qgslayertreemodellegendnode.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
@@ -201,6 +200,93 @@ namespace QgsWms
     return image.release();
   }
 
+  QImage *QgsRenderer::getLegendGraphics( QgsLayerTreeModel &model )
+  {
+    // get layers
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
+
+    // getting scale from bbox
+    QgsLegendSettings settings = mWmsParameters.legendSettings();
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      settings.setMapScale( mapSettings.scale() );
+      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+    }
+
+    // init renderer
+    QgsLegendRenderer renderer( &model, settings );
+
+    // create image
+    std::unique_ptr<QImage> image;
+    const qreal dpmm = mContext.dotsPerMm();
+    const QSizeF minSize = renderer.minimumSize();
+    const QSize size( minSize.width() * dpmm, minSize.height() * dpmm );
+    image.reset( createImage( size.width(), size.height(), false ) );
+
+    // configure painter
+    std::unique_ptr<QPainter> painter;
+    painter.reset( new QPainter( image.get() ) );
+    painter->setRenderHint( QPainter::Antialiasing, true );
+    painter->scale( dpmm, dpmm );
+
+    // rendering
+    renderer.drawLegend( painter.get() );
+    painter->end();
+
+    return image.release();
+  }
+
+  QImage *QgsRenderer::getLegendGraphics( QgsLayerTreeModelLegendNode &node )
+  {
+    // get layers
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
+
+    // getting scale from bbox
+    QgsLegendSettings settings = mWmsParameters.legendSettings();
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      settings.setMapScale( mapSettings.scale() );
+      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+    }
+
+    // create image
+    const int width = mWmsParameters.widthAsInt();
+    const int height = mWmsParameters.heightAsInt();
+    std::unique_ptr<QImage> image( createImage( width, height, false ) );
+
+    // configure painter
+    const qreal dpmm = mContext.dotsPerMm();
+    std::unique_ptr<QPainter> painter;
+    painter.reset( new QPainter( image.get() ) );
+    painter->setRenderHint( QPainter::Antialiasing, true );
+    painter->scale( dpmm, dpmm );
+
+    // rendering
+    QgsLayerTreeModelLegendNode::ItemContext ctx;
+    ctx.painter = painter.get();
+    ctx.labelXOffset = 0;
+    ctx.point = QPointF();
+    node.drawSymbol( settings, &ctx, height / dpmm );
+    painter->end();
+
+    return image.release();
+  }
   void QgsRenderer::runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const
   {
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );

@@ -22,6 +22,8 @@
 #include "qgslegendrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeaturecounter.h"
+#include "qgssymbollayerutils.h"
+#include "qgsmaplayerlegend.h"
 
 #include "qgswmsutils.h"
 #include "qgswmsserviceexception.h"
@@ -89,7 +91,25 @@ namespace QgsWms
 #endif
     QgsRenderer renderer( context );
 
-    std::unique_ptr<QImage> result( renderer.getLegendGraphics() );
+    // retrieve legend settings and model
+    std::unique_ptr<QgsLayerTree> tree( layerTree( context ) );
+    std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
+
+    // rendering
+    QgsRenderer renderer( context );
+
+    std::unique_ptr<QImage> result;
+    if ( !parameters.rule().isEmpty() )
+    {
+      QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
+      result.reset( renderer.getLegendGraphics( *node ) );
+    }
+    else
+    {
+      result.reset( renderer.getLegendGraphics( *model.get() ) );
+    }
+
+    tree->clear();
 
     if ( result )
     {
@@ -152,7 +172,38 @@ namespace QgsWms
       QgsRenderer renderer( context );
       const QgsRenderer::HitTest symbols = renderer.symbols();
 
-      // TODO
+      for ( QgsLayerTreeNode *node : tree.children() )
+      {
+        QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( node );
+
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer->layer() );
+        if ( !vl || !vl->renderer() )
+          continue;
+
+        QList<int> order;
+        int i = 0;
+
+        for ( const QgsLegendSymbolItem &item : vl->renderer()->legendSymbolItems() )
+        {
+          const QString prop = QgsSymbolLayerUtils::symbolProperties( item.legacyRuleKey() );
+          if ( symbols[vl].contains( prop ) )
+          {
+            order.append( i );
+          }
+          ++i;
+        }
+
+        // either remove the whole layer or just filter out some items
+        if ( order.isEmpty() )
+        {
+          tree.removeChildNode( layer );
+        }
+        else
+        {
+          QgsMapLayerLegendUtils::setLegendNodeOrder( layer, order );
+          model->refreshLayerLegend( layer );
+        }
+      }
     }
 
     // if legend is not based on rendering rules
@@ -194,18 +245,19 @@ namespace QgsWms
 
   QgsLayerTree *layerTree( const QgsWmsRenderContext &context )
   {
-    std::unique_ptr<QgsLayerTree> tree;
+    std::unique_ptr<QgsLayerTree> tree( new QgsLayerTree() );
 
     QList<QgsVectorLayerFeatureCounter *> counters;
     for ( QgsMapLayer *ml : context.layersToRender() )
     {
       QgsLayerTreeLayer *lt = tree->addLayer( ml );
+      lt->setUseLayerName( false ); // do not modify underlying layer
 
       // name
       if ( !ml->title().isEmpty() )
         lt->setName( ml->title() );
 
-      //show feature count
+      // show feature count
       const bool showFeatureCount = context.parameters().showFeatureCountAsBool();
       const QString property = QStringLiteral( "showFeatureCount" );
       lt->setCustomProperty( property, showFeatureCount );
@@ -229,11 +281,11 @@ namespace QgsWms
     return tree.release();
   }
 
-  QgsLayerTreeModelLegendNode *legendNode( const QgsLayerTreeModel &model, const QString &rule )
+  QgsLayerTreeModelLegendNode *legendNode( const QString &rule,  QgsLayerTreeModel &model )
   {
-    for ( QgsLayerTreeLayer *layer : model->rootGroup()->findLayers() )
+    for ( QgsLayerTreeLayer *layer : model.rootGroup()->findLayers() )
     {
-      for ( QgsLayerTreeModelLegendNode *node : model->layerLegendNodes( layer ) )
+      for ( QgsLayerTreeModelLegendNode *node : model.layerLegendNodes( layer ) )
       {
         if ( node->data( Qt::DisplayRole ).toString().compare( rule ) == 0 )
           return node;

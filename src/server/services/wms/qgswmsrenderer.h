@@ -24,6 +24,7 @@
 #include "qgswmsparameters.h"
 #include "qgswmsrendercontext.h"
 #include "qgsfeaturefilter.h"
+#include "qgslayertreemodellegendnode.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QString>
@@ -79,6 +80,10 @@ namespace QgsWms
        * Returns the map legend as an image (or NULLPTR in case of error). The caller takes ownership
       of the image object*/
       QImage *getLegendGraphics();
+
+      QImage *getLegendGraphics( QgsLayerTreeModel &model );
+
+      QImage *getLegendGraphics( QgsLayerTreeModelLegendNode &node );
 
       typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
