@@ -120,7 +120,6 @@ namespace QgsWms
 
     mWmsParameters = mContext.parameters();
     mWmsParameters.dump();
-    mServerSettings = mContext.settings();
   }
 
   QgsRenderer::~QgsRenderer()

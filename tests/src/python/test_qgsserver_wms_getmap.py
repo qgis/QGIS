@@ -619,9 +619,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         project = os.path.join(self.testdata_path, "test_project_with_size.qgs")
         expected = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="InvalidParameterValue">The requested map size is too large</ServiceException>\n</ServiceExceptionReport>\n')
 
-        os.environ['QGIS_SERVER_WMS_MAX_WIDTH'] = 6000
-        os.environ['QGIS_SERVER_WMS_MAX_HEIGHT'] = 6000
-        # test the 6000 limit from server is overriden by the more conservative 5000 in the project
+        os.environ['QGIS_SERVER_WMS_MAX_WIDTH'] = '6000'
+        os.environ['QGIS_SERVER_WMS_MAX_HEIGHT'] = '6000'
+        # test the 6000 limit from server is overridden by the more conservative 5000 in the project
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WMS",
@@ -637,8 +637,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertEqual(self.strip_version_xmlns(r), expected)
 
         # test the QGIS_SERVER_WMS_MAX_XXX env vars
-        os.environ['QGIS_SERVER_WMS_MAX_WIDTH'] = 3000
-        os.environ['QGIS_SERVER_WMS_MAX_HEIGHT'] = 3000
+        os.environ['QGIS_SERVER_WMS_MAX_WIDTH'] = '3000'
+        os.environ['QGIS_SERVER_WMS_MAX_HEIGHT'] = '3000'
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WMS",
