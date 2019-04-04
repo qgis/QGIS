@@ -1610,6 +1610,9 @@ QgisApp::~QgisApp()
   delete mBrowserWidget2;
   mBrowserWidget2 = nullptr;
   delete mBrowserModel;
+  mBrowserModel = nullptr;
+  delete mGeometryValidationDock;
+  mGeometryValidationDock = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
