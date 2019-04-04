@@ -1304,8 +1304,13 @@ void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry
   // re-run validation for the feature
   validateGeometry( layer, fid );
 
-  if ( mVertexEditor && mLockedFeature && mLockedFeature->featureId() == fid && mLockedFeature->layer() == layer )
-    mVertexEditor->updateEditor( mLockedFeature.get() );
+  if ( mLockedFeature && mLockedFeature->featureId() == fid && mLockedFeature->layer() == layer )
+  {
+    mLockedFeature->geometryChanged( fid, geom );
+    if ( mVertexEditor )
+      mVertexEditor->updateEditor( mLockedFeature.get() );
+    updateLockedFeatureVertices();
+  }
 }
 
 void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
@@ -1318,6 +1323,12 @@ void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
 
   // refresh highlighted vertices - some may have been deleted
   setHighlightedVertices( mSelectedVertices );
+
+  if ( mLockedFeature && mLockedFeature->featureId() == fid && mLockedFeature->layer() == layer )
+  {
+    mLockedFeature->featureDeleted( fid );
+    updateLockedFeatureVertices();
+  }
 }
 
 void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid )
@@ -1401,6 +1412,7 @@ void QgsVertexTool::cleanupVertexEditor()
 {
   mLockedFeature.reset();
   mVertexEditor.reset();
+  updateLockedFeatureVertices();
 }
 
 void QgsVertexTool::cleanupLockedFeature()
@@ -2022,6 +2034,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     }
   }
 
+  updateLockedFeatureVertices();
   if ( mVertexEditor )
     mVertexEditor->updateEditor( mLockedFeature.get() );
 
