@@ -18,8 +18,6 @@
 #include <QObject>
 #include <QKeyEvent>
 
-#include "qgsgui.h"
-#include "qgsnative.h"
 #include "qgsapplication.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsexpressionbuilderdialog.h"
