@@ -103,6 +103,7 @@ class CORE_EXPORT QgsUnitTypes
       AngleMinutesOfArc, //!< Minutes of arc
       AngleSecondsOfArc, //!< Seconds of arc
       AngleTurn, //!< Turn/revolutions
+      AngleMil, //!< Angular mil
       AngleUnknownUnit, //!< Unknown angle unit
     };
     Q_ENUM( AngleUnit )
