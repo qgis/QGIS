@@ -29,6 +29,7 @@
 
 class QgsVectorLayer;
 class QPaintEvent;
+class QSvgRenderer;
 
 /**
  * \ingroup gui
@@ -93,6 +94,12 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
        * \since QGIS 3.0
        */
       ICON_FULL_DIAMOND,
+
+      /**
+       * An svg image is used to highlight points
+       * \since QGIS 3.10
+       */
+      ICON_SVG
     };
 
     /**
@@ -104,6 +111,8 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+
+    ~QgsRubberBand();
 
     /**
      * Sets the color for the rubberband.
@@ -165,6 +174,15 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      *  \param icon The icon to visualize point geometries
      */
     void setIcon( IconType icon );
+
+    /**
+     * Set the path to the svg file to use to draw points.
+     * Calling this function automatically calls setIcon(ICON_SVG)
+     * \param path The path to the svg
+     * \param drawOffset The offset where to draw the image origin
+     * \since QGIS 3.10
+     */
+    void setSvgIcon( const QString &path, const QPoint &drawOffset );
 
 
     /**
@@ -362,6 +380,8 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 
     //! Icon to be shown.
     IconType mIconType = ICON_CIRCLE;
+    QSvgRenderer *mSvgRenderer = nullptr;
+    QPoint mSvgOffset;
 
     /**
      * Nested lists used for multitypes

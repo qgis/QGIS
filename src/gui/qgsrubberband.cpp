@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include <QPainter>
+#include <QSvgRenderer>
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
   : QObject( nullptr )
@@ -41,6 +42,11 @@ QgsRubberBand::QgsRubberBand()
   : QObject( nullptr )
   , QgsMapCanvasItem( nullptr )
 {
+}
+
+QgsRubberBand::~QgsRubberBand()
+{
+  delete mSvgRenderer;
 }
 
 void QgsRubberBand::setColor( const QColor &color )
@@ -74,7 +80,16 @@ void QgsRubberBand::setWidth( int width )
 
 void QgsRubberBand::setIcon( IconType icon )
 {
+  delete mSvgRenderer;
+  mSvgRenderer = 0;
   mIconType = icon;
+}
+
+void QgsRubberBand::setSvgIcon( const QString &path, const QPoint &drawOffset )
+{
+  setIcon( ICON_SVG );
+  mSvgRenderer = new QSvgRenderer( path );;
+  mSvgOffset = drawOffset;
 }
 
 void QgsRubberBand::setIconSize( int iconSize )
@@ -489,6 +504,14 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
             else
               p->drawPolyline( pts, 4 );
           }
+          case ICON_SVG:
+            QRectF viewBox = mSvgRenderer->viewBoxF();
+            QRectF r( mSvgOffset.x(), mSvgOffset.y(), viewBox.width(), viewBox.height() );
+            p->save();
+            p->translate( pt );
+            mSvgRenderer->render( p, r );
+            p->restore();
+            break;
         }
       }
     }
@@ -513,6 +536,13 @@ void QgsRubberBand::updateRect()
   }
 
   const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
+
+  double iconSize = ( mIconSize + 1 ) / 2.;
+  if ( mSvgRenderer )
+  {
+    QRectF viewBox = mSvgRenderer->viewBoxF();
+    iconSize = qMax( qAbs( mSvgOffset.x() ) + .5 * viewBox.width(), qAbs( mSvgOffset.y() ) + .5 * viewBox.height() );
+  }
 
   qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
