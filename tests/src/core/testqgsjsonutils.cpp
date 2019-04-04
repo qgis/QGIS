@@ -15,6 +15,9 @@
 
 #include "qgstest.h"
 #include <qgsjsonutils.h>
+#include "qgsvectorlayer.h"
+#include "qgsfeature.h"
+
 
 class TestQgsJsonUtils : public QObject
 {
@@ -70,6 +73,86 @@ class TestQgsJsonUtils : public QObject
       const QVariantList back = QgsJsonUtils::parseArray( json, QVariant::Double );
       QCOMPARE( back, list );
       QCOMPARE( back.at( 0 ).type(), QVariant::Double );
+    }
+
+    void testV2ExportAttributes_data()
+    {
+      QTest::addColumn<bool>( "useQJson" );
+      QTest::newRow( "Use V2 (QJson)" ) << true;
+      QTest::newRow( "Use old string concat" ) << false;
+    }
+
+    void testV2ExportAttributes()
+    {
+
+      QFETCH( bool, useQJson );
+
+      QgsVectorLayer vl { QStringLiteral( "Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
+      QgsFeature feature { vl.fields() };
+      feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
+
+      if ( useQJson )  // average: 0.0048 msecs per iteration
+      {
+        QBENCHMARK
+        {
+          const auto json { QgsJsonUtils::exportAttributesV2( feature, &vl ) };
+          QCOMPARE( QJsonDocument( json ).toJson( QJsonDocument::JsonFormat::Compact ), QStringLiteral( "{\"flddbl\":2,\"fldint\":1,\"fldtxt\":\"a value\"}" ) );
+        }
+      }
+      else // average: 0.0070 msecs per iteration
+      {
+        QBENCHMARK
+        {
+          const auto json { QgsJsonUtils::exportAttributes( feature, &vl ) };
+          QCOMPARE( json, QStringLiteral( "{\"fldtxt\":\"a value\",\n\"fldint\":1,\n\"flddbl\":2}" ) );
+        }
+      }
+    }
+
+    void testV2ExportFeature_data()
+    {
+      QTest::addColumn<bool>( "useQJson" );
+      QTest::newRow( "Use V2 (QJson)" ) << true;
+      QTest::newRow( "Use old string concat" ) << false;
+    }
+
+    void testV2ExportFeature()
+    {
+
+      QFETCH( bool, useQJson );
+
+      QgsVectorLayer vl { QStringLiteral( "Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
+      QgsFeature feature { vl.fields() };
+      feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))" ) ) );
+      feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
+
+      QgsJsonExporter exporter { &vl };
+
+      if ( useQJson )  // average: 0.063 msecs per iteration
+      {
+        QBENCHMARK
+        {
+          const auto json { exporter.exportFeatureV2( feature ) };
+          QCOMPARE( QJsonDocument( json ).toJson( QJsonDocument::JsonFormat::Compact ),
+                    QStringLiteral( "{\"bbox\":[\"1\",\"1\",\"5\",\"5\"],\"geometry\":{\"coordinates\""
+                                    ":[[[1,1],[5,1],[5,5],[1,5],[1,1]],[[2,2],[3,2],[3,3],[2,3],[2,2]]],"
+                                    "\"type\":\"Polygon\"},\"id\":0,\"properties\":{\"flddbl\":2,\"fldint\":"
+                                    "1,\"fldtxt\":\"a value\"},\"type\":\"Feature\"}"
+                                  ) );
+        }
+      }
+      else // average: 0.047 msecs per iteration
+      {
+        QBENCHMARK
+        {
+          const auto json { exporter.exportFeature( feature ) };
+          QCOMPARE( json, QStringLiteral( "{\n   \"type\":\"Feature\",\n   \"id\":0,\n   \"bbox\":[1, 1, 5, 5],\n   "
+                                          "\"geometry\":\n   {\"type\": \"Polygon\", "
+                                          "\"coordinates\": [[ [1, 1], [5, 1], [5, 5], [1, 5], [1, 1]], [ [2, 2], "
+                                          "[3, 2], [3, 3], [2, 3], [2, 2]]] },\n   "
+                                          "\"properties\":{\n      \"fldtxt\":\"a value\",\n      \"fldint\":1,\n      \"flddbl\":2\n   }\n}" ) );
+        }
+      }
     }
 };
 

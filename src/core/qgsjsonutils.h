@@ -23,6 +23,7 @@
 #include "qgsfields.h"
 
 #include <QPointer>
+#include <QJsonValue>
 
 class QTextCodec;
 
@@ -198,6 +199,19 @@ class CORE_EXPORT QgsJsonExporter
                            const QVariantMap &extraProperties = QVariantMap(),
                            const QVariant &id = QVariant() ) const;
 
+    /**
+     * Returns a GeoJSON string representation of a feature.
+     * \param feature feature to convert
+     * \param extraProperties map of extra attributes to include in feature's properties
+     * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
+     * ID is used.
+     * \returns GeoJSON string
+     * \see exportFeatures()
+     */
+    QJsonObject exportFeatureV2( const QgsFeature &feature,
+                                 const QVariantMap &extraProperties = QVariantMap(),
+                                 const QVariant &id = QVariant() ) const;
+
 
     /**
      * Returns a GeoJSON string representation of a list of features (feature collection).
@@ -290,6 +304,18 @@ class CORE_EXPORT QgsJsonUtils
      */
     static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
                                      const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
+
+    /**
+     * Exports all attributes from a QgsFeature as a JSON map type.
+     * \param feature feature to export
+     * \param layer optional associated vector layer. If specified, this allows
+     * richer export utilising settings like the layer's fields widget configuration.
+     * \param attributeWidgetCaches optional widget configuration cache. Can be used
+     * to speed up exporting the attributes for multiple features from the same layer.
+     */
+    static QJsonObject exportAttributesV2( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
+                                           const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
+
 
     /**
      * Parse a simple array (depth=1).

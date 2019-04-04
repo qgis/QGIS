@@ -236,6 +236,136 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
   return s;
 }
 
+QJsonObject QgsJsonExporter::exportFeatureV2( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
+{
+  QJsonObject featureJson
+  {
+    { QStringLiteral( "type" ), QStringLiteral( "Feature" ) },
+    { QStringLiteral( "id" ), ( ! id.isValid() ? QJsonValue( feature.id() ) : QJsonValue::fromVariant( id ) )  },
+  };
+
+  QgsGeometry geom = feature.geometry();
+  if ( !geom.isNull() && mIncludeGeometry )
+  {
+    if ( mCrs.isValid() )
+    {
+      try
+      {
+        QgsGeometry transformed = geom;
+        if ( transformed.transform( mTransform ) == 0 )
+          geom = transformed;
+      }
+      catch ( QgsCsException &cse )
+      {
+        Q_UNUSED( cse );
+      }
+    }
+    QgsRectangle box = geom.boundingBox();
+
+    if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
+    {
+      featureJson[ QStringLiteral( "bbox" ) ] = QJsonArray( { qgsDoubleToString( box.xMinimum(), mPrecision ),
+          qgsDoubleToString( box.yMinimum(), mPrecision ),
+          qgsDoubleToString( box.xMaximum(), mPrecision ),
+          qgsDoubleToString( box.yMaximum(), mPrecision ) } );
+    }
+    featureJson[ QStringLiteral( "geometry" ) ] =  QJsonDocument::fromJson( geom.asJson( mPrecision ).toLocal8Bit() ).object();
+  }
+  else
+  {
+    featureJson[ QStringLiteral( "geometry" ) ] = QJsonValue();
+  }
+
+  // build up properties element
+  int attributeCounter { 0 };
+  QJsonObject properties;
+  if ( mIncludeAttributes || !extraProperties.isEmpty() )
+  {
+    //read all attribute values from the feature
+    if ( mIncludeAttributes )
+    {
+      QgsFields fields = mLayer ? mLayer->fields() : feature.fields();
+      // List of formatters through we want to pass the values
+      QStringList formattersWhiteList;
+      formattersWhiteList << QStringLiteral( "KeyValue" )
+                          << QStringLiteral( "List" )
+                          << QStringLiteral( "ValueRelation" )
+                          << QStringLiteral( "ValueMap" );
+
+      for ( int i = 0; i < fields.count(); ++i )
+      {
+        if ( ( !mAttributeIndexes.isEmpty() && !mAttributeIndexes.contains( i ) ) || mExcludedAttributeIndexes.contains( i ) )
+          continue;
+
+        QVariant val = feature.attributes().at( i );
+
+        if ( mLayer )
+        {
+          QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
+          QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+          if ( formattersWhiteList.contains( fieldFormatter->id() ) )
+            val = fieldFormatter->representValue( mLayer.data(), i, setup.config(), QVariant(), val );
+        }
+
+        QString name = fields.at( i ).name();
+        if ( mAttributeDisplayName )
+        {
+          name = mLayer->attributeDisplayName( i );
+        }
+        properties[ name ] = QJsonValue::fromVariant( val );
+        attributeCounter++;
+      }
+    }
+
+    if ( !extraProperties.isEmpty() )
+    {
+      QVariantMap::const_iterator it = extraProperties.constBegin();
+      for ( ; it != extraProperties.constEnd(); ++it )
+      {
+        properties[ it.key() ] = QJsonValue::fromVariant( it.value() );
+        attributeCounter++;
+      }
+    }
+
+    // related attributes
+    if ( mLayer && mIncludeRelatedAttributes )
+    {
+      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
+      for ( const auto &relation : qgis::as_const( relations ) )
+      {
+        QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
+        req.setFlags( QgsFeatureRequest::NoGeometry );
+        QgsVectorLayer *childLayer = relation.referencingLayer();
+        QJsonArray relatedFeatureAttributes;
+        if ( childLayer )
+        {
+          QgsFeatureIterator it = childLayer->getFeatures( req );
+          QVector<QVariant> attributeWidgetCaches;
+          int fieldIndex = 0;
+          const QgsFields fields { childLayer->fields() };
+          for ( const QgsField &field : fields )
+          {
+            QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+            QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+            attributeWidgetCaches.append( fieldFormatter->createCache( childLayer, fieldIndex, setup.config() ) );
+            fieldIndex++;
+          }
+          QgsFeature relatedFet;
+          while ( it.nextFeature( relatedFet ) )
+          {
+            relatedFeatureAttributes += QgsJsonUtils::exportAttributes( relatedFet, childLayer, attributeWidgetCaches );
+          }
+        }
+        properties[ relation.name() ] = relatedFeatureAttributes;
+        attributeCounter++;
+      }
+    }
+  }
+  // bool hasProperties = attributeCounter > 0;
+  featureJson[ QStringLiteral( "properties" ) ] = properties;
+  return featureJson;
+}
+
 QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features ) const
 {
   QStringList featureJSON;
@@ -244,7 +374,6 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features ) const
   {
     featureJSON << exportFeature( feature );
   }
-
   return QStringLiteral( "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n%1\n]}" ).arg( featureJSON.join( QStringLiteral( ",\n" ) ) );
 }
 
@@ -350,4 +479,26 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
       QgsLogger::warning( QStringLiteral( "Cannot convert json array element: %1" ).arg( cur.toString() ) );
   }
   return result;
+}
+
+
+QJsonObject QgsJsonUtils::exportAttributesV2( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
+{
+  QgsFields fields = feature.fields();
+  QJsonObject attrs;
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    QVariant val = feature.attributes().at( i );
+
+    if ( layer )
+    {
+      QgsEditorWidgetSetup setup = layer->fields().at( i ).editorWidgetSetup();
+      QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      if ( fieldFormatter != QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter() )
+        val = fieldFormatter->representValue( layer, i, setup.config(), attributeWidgetCaches.count() >= i ? attributeWidgetCaches.at( i ) : QVariant(), val );
+    }
+
+    attrs.insert( fields.at( i ).name(), QJsonValue::fromVariant( val ) );
+  }
+  return attrs;
 }
