@@ -2,9 +2,7 @@ ADD_EXECUTABLE(crssync main.cpp)
 
 INCLUDE_DIRECTORIES(
   ../core
-  ../core/expression
   ../core/geometry
-  ../core/metadata
   ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
