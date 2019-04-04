@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressioncontextgenerator.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
@@ -73,6 +74,11 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   mCombo->installEventFilter( this );
+}
+
+QgsFieldExpressionWidget::~QgsFieldExpressionWidget()
+{
+  delete mComboPalette;
 }
 
 void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString &title )
@@ -339,7 +345,10 @@ void QgsFieldExpressionWidget::currentFieldChanged()
 
 void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 {
-  QPalette palette = mCombo->lineEdit()->palette();
+  if ( !mComboPalette )
+    mComboPalette = new QPalette( mCombo->lineEdit()->palette() );
+
+  QPalette palette = QPalette( *mComboPalette );
   if ( !isEnabled() )
   {
     palette.setColor( QPalette::Text, Qt::gray );
@@ -363,13 +372,6 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
     if ( isExpression && !isValid )
     {
       palette.setColor( QPalette::Text, Qt::red );
-    }
-    else
-    {
-      if ( QgsGui::instance()->nativePlatformInterface()->hasDarkTheme() )
-        palette.setColor( QPalette::Text, Qt::white );
-      else
-        palette.setColor( QPalette::Text, Qt::black );
     }
   }
   mCombo->lineEdit()->setPalette( palette );

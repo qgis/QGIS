@@ -25,13 +25,13 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsdistancearea.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfieldproxymodel.h"
 
 
 class QgsMapLayer;
 class QgsVectorLayer;
+class QgsExpressionContextGenerator;
 
 
 /**
@@ -57,6 +57,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * \brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */
     explicit QgsFieldExpressionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsFieldExpressionWidget() override;
 
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( const QString &title );
@@ -249,6 +250,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;
     bool mAllowEvalErrors = false;
+    QPalette *mComboPalette = nullptr;
 
     friend class TestQgsFieldExpressionWidget;
 };
