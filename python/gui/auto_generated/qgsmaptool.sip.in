@@ -156,7 +156,7 @@ called when map tool is being deactivated
 convenient method to clean members
 %End
 
-    QgsMapCanvas *canvas();
+    QgsMapCanvas *canvas() const;
 %Docstring
 returns pointer to the tool's map canvas
 %End
@@ -255,7 +255,7 @@ transformation from layer's coordinates to map coordinates (which is different i
 trnasformation of the rect from map coordinates to layer's coordinates
 %End
 
-    QPoint toCanvasCoordinates( const QgsPointXY &point );
+    QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 %Docstring
 transformation from map coordinates to screen coordinates
 %End
