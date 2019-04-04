@@ -57,7 +57,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * \brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */
     explicit QgsFieldExpressionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsFieldExpressionWidget() override;
 
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( const QString &title );
@@ -250,7 +249,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;
     bool mAllowEvalErrors = false;
-    QPalette *mComboPalette = nullptr;
+    QPalette mComboPalette;
 
     friend class TestQgsFieldExpressionWidget;
 };
