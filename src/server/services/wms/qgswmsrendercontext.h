@@ -180,7 +180,7 @@ namespace QgsWms
       qreal dotsPerMm() const;
 
       /**
-       * Return a list of query layer names where group names are replaced by the names of their layer components.
+       * Returns a list of query layer names where group names are replaced by the names of their layer components.
        * \since QGIS 3.8
        */
       QStringList flattenedQueryLayers() const;
