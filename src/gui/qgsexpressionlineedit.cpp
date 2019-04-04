@@ -46,6 +46,8 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
 
+QgsExpressionLineEdit::~QgsExpressionLineEdit() = default;
+
 void QgsExpressionLineEdit::setExpressionDialogTitle( const QString &title )
 {
   mExpressionDialogTitle = title;
