@@ -161,6 +161,8 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
+  gps/qgsgpsmarker.cpp
+
   labeling/qgslabelinggui.cpp
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
@@ -752,6 +754,8 @@ SET(QGIS_GUI_HDRS
   effects/qgseffectstackpropertieswidget.h
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
+
+  gps/qgsgpsmarker.h
 
   labeling/qgslabelinggui.h
   labeling/qgslabelobstaclesettingswidget.h

@@ -24,10 +24,10 @@
 class QPainter;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * A class for marking the position of a gps pointer.
  */
-class QgsGpsMarker : public QgsMapCanvasItem
+class GUI_EXPORT QgsGpsMarker : public QgsMapCanvasItem
 {
   public:
     explicit QgsGpsMarker( QgsMapCanvas *mapCanvas );
