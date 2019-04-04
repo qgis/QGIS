@@ -275,6 +275,52 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('markerline_ring_no_dupes', 'markerline_ring_no_dupes', rendered_image)
 
+    def testSinglePoint(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setInterval(1000)
+        marker_line.setIntervalUnit(QgsUnitTypes.RenderMapUnits)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_single', 'markerline_single', rendered_image)
+
+    def testNoPoint(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setOffsetAlongLine(1000)
+        marker_line.setIntervalUnit(QgsUnitTypes.RenderMapUnits)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_none', 'markerline_none', rendered_image)
+
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)

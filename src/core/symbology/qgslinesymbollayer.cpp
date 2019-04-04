@@ -1119,7 +1119,13 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     // (or trace past the final point)
     collectOffsetPoints( points, symbolPoints, painterUnitInterval, lengthLeft );
 
-    if ( symbolPoints.constFirst() == symbolPoints.constLast() )
+    if ( symbolPoints.empty() )
+    {
+      // no symbols to draw, shortcut out early
+      return;
+    }
+
+    if ( symbolPoints.count() > 1 && symbolPoints.constFirst() == symbolPoints.constLast() )
     {
       // avoid duplicate points at start and end of closed rings
       symbolPoints.pop_back();
