@@ -63,6 +63,11 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
   setPos( pt );
 }
 
+void QgsGpsMarker::setDirection( double direction )
+{
+  mDirection = direction;
+}
+
 void QgsGpsMarker::paint( QPainter *p )
 {
   if ( ! mSvg.isValid() )
@@ -75,8 +80,11 @@ void QgsGpsMarker::paint( QPainter *p )
   QPointF pt = toCanvasCoordinates( mCenter );
   setPos( pt );
 
+  p->save();
+  p->rotate( mDirection );
   double halfSize = mSize / 2.0;
   mSvg.render( p, QRectF( 0 - halfSize, 0 - halfSize, mSize, mSize ) );
+  p->restore();
 }
 
 

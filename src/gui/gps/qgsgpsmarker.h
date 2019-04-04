@@ -37,6 +37,12 @@ class GUI_EXPORT QgsGpsMarker : public QgsMapCanvasItem
      */
     void setGpsPosition( const QgsPointXY &position );
 
+    /**
+     * Sets the current GPS heading \a direction (in degrees). Rotates the marker accordingly.
+     * \since QGIS 3.12
+     */
+    void setDirection( double direction );
+
     void paint( QPainter *p ) override;
 
     QRectF boundingRect() const override;
@@ -51,6 +57,7 @@ class GUI_EXPORT QgsGpsMarker : public QgsMapCanvasItem
     QgsPointXY mCenter;
     //! Size of the marker - e.g. 8 will draw it as 8x8
     int mSize;
+    double mDirection = 0;
 
   private:
     QgsCoordinateReferenceSystem mWgs84CRS;
