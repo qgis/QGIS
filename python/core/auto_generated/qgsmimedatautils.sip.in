@@ -23,7 +23,7 @@ class QgsMimeDataUtils
 %Docstring
 Constructs invalid URI
 %End
-      explicit Uri( QString &encData );
+      explicit Uri( const QString &encData );
 %Docstring
 Constructs URI from encoded data
 %End
