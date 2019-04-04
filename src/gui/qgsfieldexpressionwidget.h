@@ -249,6 +249,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;
     bool mAllowEvalErrors = false;
+    QPalette mComboPalette;
 
     friend class TestQgsFieldExpressionWidget;
 };
