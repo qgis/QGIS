@@ -194,7 +194,7 @@ namespace QgsWms
 #endif
 
       /**
-       * Returns a map having layer group names as keys and a list of layer instances as values.
+       * Returns a map having layer group names as keys and a list of layers as values.
        * \since QGIS 3.8
        */
       QMap<QString, QList<QgsMapLayer *> > layerGroups() const;

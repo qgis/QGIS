@@ -366,7 +366,8 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
-    for ( const QString &layer : flattenedQueryLayers() )
+    const auto constLayers { flattenedQueryLayers() };
+    for ( const QString &layer : constLayers )
     {
       if ( mNicknameLayers.contains( layer )
            && !mLayersToRender.contains( mNicknameLayers[layer] ) )
