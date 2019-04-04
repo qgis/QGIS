@@ -28,8 +28,11 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "qgsvectorlayer.h"
+#include "qgslinestring.h"
 #include "qgsmultipolygon.h"
 
+#include "qgslinevertexdata_p.h"
+#include "qgslinematerial_p.h"
 
 /// @cond PRIVATE
 
@@ -66,11 +69,19 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     // outputs
     PolygonData outNormal;  //!< Features that are not selected
     PolygonData outSelected;  //!< Features that are selected
+
+    bool addEdges = true;   //!< TODO: should go to polygon symbol
+    QColor edgeColor = QColor( 0, 0, 0 ); //!< TODO: go to polygon symbol
+    float edgeWidth = 2;  //!< TODO: go to polygon symbol
+    QgsLineVertexData outEdges;  //!< When highlighting edges, this holds data for vertex/index buffer
 };
 
 
 bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
+  outEdges.withAdjacency = true;
+  outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
+
   QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   return true;
@@ -78,6 +89,16 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
 
 void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, bool hasDDExtrusion, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
 {
+  if ( addEdges )
+  {
+    // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
+    outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ) );
+    for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
+      outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ) );
+
+    // TODO: if has extrusion: also add vertical edges for each vertex
+  }
+
   Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
   out.polygons.append( polyClone );
   out.fids.append( fid );
@@ -148,6 +169,29 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   // create entity for selected and not selected
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  // add entity for edges
+  if ( addEdges && !outEdges.indexes.isEmpty() )
+  {
+    QgsLineMaterial *mat = new QgsLineMaterial;
+    mat->setLineColor( edgeColor );
+    mat->setLineWidth( edgeWidth );
+
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+
+    // geometry renderer
+    Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+    renderer->setGeometry( outEdges.createGeometry( entity ) );
+    renderer->setVertexCount( outEdges.indexes.count() );
+    renderer->setPrimitiveRestartEnabled( true );
+    renderer->setRestartIndexValue( 0 );
+
+    // make entity
+    entity->addComponent( renderer );
+    entity->addComponent( mat );
+    entity->setParent( parent );
+  }
 }
 
 
