@@ -423,6 +423,35 @@ QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer 
   return QgsCoordinateTransform( layer->crs(), mDestCRS, mTransformContext );
 }
 
+QgsRectangle QgsMapSettings::computeExtentForScale( const QgsPointXY &center, double scale ) const
+{
+  // Output width in inches
+  double outWIn = outputSize().width() / double( outputDpi() );
+
+  // Desired visible width (honouring scale)
+  double scaledWIn = outWIn * scale;
+
+  if ( mapUnits() == QgsUnitTypes::DistanceDegrees )
+  {
+    // Start with an 1x1 extent around the center
+    QgsRectangle ext( center.x() - 0.5, center.y() - 0.5, center.x() + 0.5, center.y() + 0.5 );
+    // Get scale at extent, and then scale extent to the desired scale
+    double testScale = mScaleCalculator.calculate( ext, outputSize().width() );
+    ext.scale( scale / testScale );
+    return ext;
+  }
+  // Conversion from inches to mapUnits
+  double conversionFactor = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, mapUnits() ) / 12;
+
+  double delta = 0.5 * scaledWIn * conversionFactor;
+  return QgsRectangle( center.x() - delta, center.y() - delta, center.x() + delta, center.y() + delta );
+}
+
+double QgsMapSettings::computeScaleForExtent( const QgsRectangle &extent ) const
+{
+  return mScaleCalculator.calculate( extent, outputSize().width() );
+}
+
 double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
 {
   return layerTransform( layer ).scaleFactor( referenceExtent );

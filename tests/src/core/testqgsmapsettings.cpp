@@ -60,6 +60,8 @@ class TestQgsMapSettings: public QObject
     void testLabelBoundary();
     void testExpressionContext();
     void testRenderedFeatureHandlers();
+    void testComputeExtentForScale();
+    void testComputeScaleForExtent();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -546,6 +548,38 @@ void TestQgsMapSettings::testRenderedFeatureHandlers()
   //ownership should NOT be transferred, i.e. it won't delete the registered handlers upon QgsMapSettings destruction
   mapSettings.reset();
   // should be no double-delete here
+}
+
+void TestQgsMapSettings::testComputeExtentForScale()
+{
+  QgsMapSettings settings;
+  settings.setExtent( QgsRectangle( -500., -500., 500., 500. ) ); // Just to ensure settings are valid
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+  settings.setOutputSize( QSize( 1000, 1000 ) );
+
+  QgsRectangle rect = settings.computeExtentForScale( QgsPoint( 0, 0 ), 500 );
+
+  //                   [                   output width in inches                   ] * [scale]
+  double widthInches = settings.outputSize().width() / double( settings.outputDpi() ) * 500;
+  double widthMapUnits = widthInches * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, settings.mapUnits() ) / 12;
+  QGSCOMPARENEARRECTANGLE( rect, QgsRectangle( - 0.5 * widthMapUnits, - 0.5 * widthMapUnits, 0.5 * widthMapUnits, 0.5 * widthMapUnits ), 0.0001 );
+
+}
+
+void TestQgsMapSettings::testComputeScaleForExtent()
+{
+  QgsMapSettings settings;
+  settings.setExtent( QgsRectangle( -500., -500., 500., 500. ) ); // Just to ensure settings are valid
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+  settings.setOutputSize( QSize( 1000, 1000 ) );
+
+  double scale = settings.computeScaleForExtent( QgsRectangle( -500., -500., 500., 500. ) );
+
+  double widthInches = 1000 * QgsUnitTypes::fromUnitToUnitFactor( settings.mapUnits(), QgsUnitTypes::DistanceFeet ) * 12;
+  double testScale = widthInches * settings.outputDpi() / double( settings.outputSize().width() );
+  QGSCOMPARENEAR( scale, testScale, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
