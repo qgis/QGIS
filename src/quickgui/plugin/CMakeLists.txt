@@ -15,6 +15,7 @@ SET(QGIS_QUICK_PLUGIN_RESOURCES
   editor/qgsquickexternalresource.qml
   editor/qgsquicktextedit.qml
   editor/qgsquickvaluemap.qml
+  editor/qgsquickvaluerelation.qml
   qgsquickfeatureform.qml
   qgsquickfeatureformstyling.qml
   qgsquickmapcanvas.qml
