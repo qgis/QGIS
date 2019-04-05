@@ -56,7 +56,8 @@ to a data provider for remote calculation.
       StringMaximumLength,
       StringConcatenate,
       GeometryCollect,
-      ArrayAggregate
+      ArrayAggregate,
+      StringConcatenateUnique
     };
 
     struct AggregateParameters
