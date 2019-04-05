@@ -321,12 +321,11 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
     return scope;
 
   //add variables defined in layer properties
-  QStringList variableNames = layer->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
-  QStringList variableValues = layer->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+  const QStringList variableNames = layer->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  const QStringList variableValues = layer->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
 
   int varIndex = 0;
-  const auto constVariableNames = variableNames;
-  for ( const QString &variableName : constVariableNames )
+  for ( const QString &variableName : variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -526,12 +525,12 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
     return scope.release();
 
   //add variables defined in layout properties
-  QStringList variableNames = layout->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
-  QStringList variableValues = layout->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+  const QStringList variableNames = layout->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  const QStringList variableValues = layout->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
 
   int varIndex = 0;
-  const auto constVariableNames = variableNames;
-  for ( const QString &variableName : constVariableNames )
+
+  for ( const QString &variableName : variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {

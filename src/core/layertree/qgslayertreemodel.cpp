@@ -474,8 +474,7 @@ static bool _isChildOfNode( QgsLayerTreeNode *child, QgsLayerTreeNode *node )
 
 static bool _isChildOfNodes( QgsLayerTreeNode *child, const QList<QgsLayerTreeNode *> &nodes )
 {
-  const auto constNodes = nodes;
-  for ( QgsLayerTreeNode *n : constNodes )
+  for ( QgsLayerTreeNode *n : nodes )
   {
     if ( _isChildOfNode( child, n ) )
       return true;
@@ -503,8 +502,7 @@ QList<QgsLayerTreeNode *> QgsLayerTreeModel::indexes2nodes( const QModelIndexLis
 
   // remove any children of nodes if both parent node and children are selected
   QList<QgsLayerTreeNode *> nodesFinal;
-  const auto constNodes = nodes;
-  for ( QgsLayerTreeNode *node : constNodes )
+  for ( QgsLayerTreeNode *node : qgis::as_const( nodes ) )
   {
     if ( !_isChildOfNodes( node, nodes ) )
       nodesFinal << node;
@@ -614,8 +612,8 @@ void QgsLayerTreeModel::setLegendFilterByScale( double scale )
 
   // this could be later done in more efficient way
   // by just updating active legend nodes, without refreshing original legend nodes
-  const auto constFindLayers = mRootNode->findLayers();
-  for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
+  const auto layers = mRootNode->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : layers )
     refreshLayerLegend( nodeLayer );
 }
 
@@ -635,8 +633,8 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
     // collect expression filters
     if ( useExpressions )
     {
-      const auto constFindLayers = mRootNode->findLayers();
-      for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
+      const auto layers = mRootNode->findLayers();
+      for ( QgsLayerTreeLayer *nodeLayer : layers )
       {
         bool enabled;
         QString expr = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
@@ -672,8 +670,8 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
 
   // this could be later done in more efficient way
   // by just updating active legend nodes, without refreshing original legend nodes
-  const auto constFindLayers = mRootNode->findLayers();
-  for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
+  const auto layers = mRootNode->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : layers )
     refreshLayerLegend( nodeLayer );
 
   setAutoCollapseLegendNodes( bkAutoCollapse );
@@ -1050,8 +1048,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( QStringLiteral( "layer_tree_model_data" ) );
-  const auto constNodesFinal = nodesFinal;
-  for ( QgsLayerTreeNode *node : constNodesFinal )
+  for ( QgsLayerTreeNode *node : qgis::as_const( nodesFinal ) )
     node->writeXml( rootElem, QgsReadWriteContext() );
   doc.appendChild( rootElem );
   QString txt = doc.toString();
@@ -1156,8 +1153,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
 
   if ( mLegendFilterByScale > 0 )
   {
-    const auto constNodes = nodes;
-    for ( QgsLayerTreeModelLegendNode *node : constNodes )
+    for ( QgsLayerTreeModelLegendNode *node : qgis::as_const( nodes ) )
     {
       if ( node->isScaleOK( mLegendFilterByScale ) )
         filtered << node;
@@ -1167,8 +1163,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
   {
     if ( !nodes.isEmpty() && mLegendFilterMapSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
     {
-      const auto constNodes = nodes;
-      for ( QgsLayerTreeModelLegendNode *node : constNodes )
+      for ( QgsLayerTreeModelLegendNode *node : qgis::as_const( nodes ) )
       {
         QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
         bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
