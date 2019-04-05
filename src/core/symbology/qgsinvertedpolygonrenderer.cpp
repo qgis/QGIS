@@ -288,7 +288,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
       // operations do not need geometries to be valid
 
       finalMulti.append( mExtentPolygon );
-      Q_FOREACH ( const QgsGeometry &geom, cit.geometries )
+      for ( const QgsGeometry &geom : qgis::as_const( cit.geometries ) )
       {
         QgsMultiPolygonXY multi;
         QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );

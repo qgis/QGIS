@@ -745,7 +745,8 @@ void QgsLayerTreeModel::nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom
 
   endInsertRows();
 
-  Q_FOREACH ( QgsLayerTreeLayer *newLayerNode, _layerNodesInSubtree( node, indexFrom, indexTo ) )
+  const auto subNodes = _layerNodesInSubtree( node, indexFrom, indexTo );
+  for ( QgsLayerTreeLayer *newLayerNode : subNodes )
     connectToLayer( newLayerNode );
 }
 
@@ -756,7 +757,8 @@ void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode *node, int inde
   beginRemoveRows( node2index( node ), indexFrom, indexTo );
 
   // disconnect from layers and remove their legend
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, _layerNodesInSubtree( node, indexFrom, indexTo ) )
+  const auto subNodes = _layerNodesInSubtree( node, indexFrom, indexTo );
+  for ( QgsLayerTreeLayer *nodeLayer : subNodes )
     disconnectFromLayer( nodeLayer );
 }
 
@@ -1522,7 +1524,8 @@ QgsLayerTreeModelLegendNode *QgsLayerTreeModel::findLegendNode( const QString &l
     QgsLayerTreeLayer *layer = it.key();
     if ( layer->layerId() == layerId )
     {
-      Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, mLegend.value( layer ).activeNodes )
+      const auto activeNodes = mLegend.value( layer ).activeNodes;
+      for ( QgsLayerTreeModelLegendNode *legendNode : activeNodes )
       {
         if ( legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() == ruleKey )
         {
@@ -1561,7 +1564,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
   {
     QList<QgsSymbolLegendNode *> symbolNodes;
     QMap<QString, int> widthMax;
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, data.originalNodes )
+    for ( QgsLayerTreeModelLegendNode *legendNode : qgis::as_const( data.originalNodes ) )
     {
       QgsSymbolLegendNode *n = qobject_cast<QgsSymbolLegendNode *>( legendNode );
       if ( n )
@@ -1581,7 +1584,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
       const int twiceMarginWidth = 2; // a one pixel margin avoids hugly rendering of icon
       n->setIconSize( QSize( widthMax[parentKey] + twiceMarginWidth, n->iconSize().rheight() + twiceMarginWidth ) );
     }
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, data.originalNodes )
+    for ( QgsLayerTreeModelLegendNode *legendNode : qgis::as_const( data.originalNodes ) )
       legendNode->invalidateMapBasedData();
   }
 

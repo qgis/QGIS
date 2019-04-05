@@ -239,7 +239,7 @@ QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScop
 
 QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other )
 {
-  Q_FOREACH ( const QgsExpressionContextScope *scope, other.mStack )
+  for ( const QgsExpressionContextScope *scope : qgis::as_const( other.mStack ) )
   {
     mStack << new QgsExpressionContextScope( *scope );
   }
@@ -268,7 +268,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
 {
   qDeleteAll( mStack );
   mStack.clear();
-  Q_FOREACH ( const QgsExpressionContextScope *scope, other.mStack )
+  for ( const QgsExpressionContextScope *scope : qgis::as_const( other.mStack ) )
   {
     mStack << new QgsExpressionContextScope( *scope );
   }

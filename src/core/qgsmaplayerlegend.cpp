@@ -112,7 +112,8 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer *nodeLayer
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> lst;
-  Q_FOREACH ( const QString &item, orderStr.split( ',' ) )
+  const auto constSplit = orderStr.split( ',' );
+  for ( const QString &item : constSplit )
   {
     bool ok;
     int id = item.toInt( &ok );
@@ -239,7 +240,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
 
   if ( mLayer->diagramsEnabled() )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
+    const auto constLegendItems = mLayer->diagramRenderer()->legendItems( nodeLayer );
+    for ( QgsLayerTreeModelLegendNode *i : constLegendItems )
     {
       nodes.append( i );
     }

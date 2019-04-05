@@ -102,7 +102,8 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add drives
-  Q_FOREACH ( const QFileInfo &drive, QDir::drives() )
+  const auto drives { QDir::drives() };
+  for ( const QFileInfo &drive : drives )
   {
     const QString path = drive.absolutePath();
 

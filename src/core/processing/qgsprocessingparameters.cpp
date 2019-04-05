@@ -293,7 +293,8 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   }
   else if ( val.type() == QVariant::String )
   {
-    Q_FOREACH ( const QString &var, val.toString().split( ',' ) )
+    const auto constSplit = val.toString().split( ',' );
+    for ( const QString &var : constSplit )
       resultList << var;
   }
   else
@@ -314,7 +315,8 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
     }
     else if ( definition->defaultValue().type() == QVariant::String )
     {
-      Q_FOREACH ( const QString &var, definition->defaultValue().toString().split( ',' ) )
+      const auto constSplit = definition->defaultValue().toString().split( ',' );
+      for ( const QString &var : constSplit )
         resultList << var;
     }
     else
@@ -1283,7 +1285,8 @@ QVariantList QgsProcessingParameters::parameterAsMatrix( const QgsProcessingPara
   }
 
   QVariantList result;
-  Q_FOREACH ( const QString &s, resultString.split( ',' ) )
+  const auto constSplit = resultString.split( ',' );
+  for ( const QString &s : constSplit )
     result << s;
 
   return result;

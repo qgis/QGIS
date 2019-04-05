@@ -87,7 +87,8 @@ void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbo
   if ( sizeTransformer && mSizeClasses.isEmpty() )
   {
     mSizeClasses.clear();
-    Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
+    const auto prettyBreaks { QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) };
+    for ( double v : prettyBreaks )
     {
       mSizeClasses << SizeClass( v, QString::number( v ) );
     }

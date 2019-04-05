@@ -268,7 +268,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         continue;
 
       bool canExecute = true;
-      Q_FOREACH ( const QString &dependency, dependsOnChildAlgorithms( childId ) )
+      const auto constDependsOnChildAlgorithms = dependsOnChildAlgorithms( childId );
+      for ( const QString &dependency : constDependsOnChildAlgorithms )
       {
         if ( !executed.contains( dependency ) )
         {
@@ -510,7 +511,8 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         continue;
 
       bool canExecute = true;
-      Q_FOREACH ( const QString &dependency, dependsOnChildAlgorithms( childId ) )
+      const auto constDependsOnChildAlgorithms = dependsOnChildAlgorithms( childId );
+      for ( const QString &dependency : constDependsOnChildAlgorithms )
       {
         if ( !executed.contains( dependency ) )
         {
@@ -1239,7 +1241,8 @@ bool QgsProcessingModelAlgorithm::removeChildAlgorithm( const QString &id )
 
 void QgsProcessingModelAlgorithm::deactivateChildAlgorithm( const QString &id )
 {
-  Q_FOREACH ( const QString &child, dependentChildAlgorithms( id ) )
+  const auto constDependentChildAlgorithms = dependentChildAlgorithms( id );
+  for ( const QString &child : constDependentChildAlgorithms )
   {
     childAlgorithm( child ).setActive( false );
   }
@@ -1249,7 +1252,8 @@ void QgsProcessingModelAlgorithm::deactivateChildAlgorithm( const QString &id )
 
 bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id )
 {
-  Q_FOREACH ( const QString &child, dependsOnChildAlgorithms( id ) )
+  const auto constDependsOnChildAlgorithms = dependsOnChildAlgorithms( id );
+  for ( const QString &child : constDependsOnChildAlgorithms )
   {
     if ( !childAlgorithm( child ).isActive() )
       return false;

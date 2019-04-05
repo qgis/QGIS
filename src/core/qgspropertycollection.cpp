@@ -366,7 +366,7 @@ QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollect
 {
   clear();
 
-  Q_FOREACH ( QgsPropertyCollection *collection, other.mStack )
+  for ( QgsPropertyCollection *collection : qgis::as_const( other.mStack ) )
   {
     mStack << new QgsPropertyCollection( *collection );
   }
@@ -377,7 +377,7 @@ QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsProp
   setName( other.name() );
   clear();
 
-  Q_FOREACH ( QgsPropertyCollection *collection, other.mStack )
+  for ( QgsPropertyCollection *collection : qgis::as_const( other.mStack ) )
   {
     mStack << new QgsPropertyCollection( *collection );
   }

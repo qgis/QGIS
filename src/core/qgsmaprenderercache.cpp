@@ -71,7 +71,8 @@ QSet<QgsWeakMapLayerPointer > QgsMapRendererCache::dependentLayers() const
   QMap<QString, CacheParameters>::const_iterator it = mCachedImages.constBegin();
   for ( ; it != mCachedImages.constEnd(); ++it )
   {
-    Q_FOREACH ( const QgsWeakMapLayerPointer &l, it.value().dependentLayers )
+    const auto dependentLayers { it.value().dependentLayers };
+    for ( const QgsWeakMapLayerPointer &l : dependentLayers )
     {
       if ( l.data() )
         result << l;

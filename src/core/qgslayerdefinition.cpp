@@ -385,7 +385,8 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
       QDomNode node = it->second;
       mHasCycle = true;
       bool resolved = true;
-      Q_FOREACH ( const QString &dep, dependencies[idToSort] )
+      const auto deps { dependencies.value( idToSort ) };
+      for ( const QString &dep : deps )
       {
         if ( !sortedLayers.contains( dep ) )
         {

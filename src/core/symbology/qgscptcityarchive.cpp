@@ -51,7 +51,8 @@ QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString 
 
   // make Author items
   QgsCptCityDirectoryItem *dirItem = nullptr;
-  Q_FOREACH ( const QString &path, QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ) )
+  const auto constEntryList = QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
+  for ( const QString &path : constEntryList )
   {
     if ( path == QLatin1String( "selections" ) )
       continue;

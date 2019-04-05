@@ -387,7 +387,7 @@ void resetGraph( QgsTracerGraph &g )
   g.joinedVertices = 0;
 
   // fix vertices of deactivated edges
-  Q_FOREACH ( int eIdx, g.inactiveEdges )
+  for ( int eIdx : qgis::as_const( g.inactiveEdges ) )
   {
     if ( eIdx >= g.e.count() )
       continue;

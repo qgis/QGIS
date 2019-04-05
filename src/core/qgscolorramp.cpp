@@ -64,7 +64,8 @@ QgsColorRamp *QgsGradientColorRamp::create( const QgsStringMap &props )
   QgsGradientStopsList stops;
   if ( props.contains( QStringLiteral( "stops" ) ) )
   {
-    Q_FOREACH ( const QString &stop, props["stops"].split( ':' ) )
+    const auto constSplit = props["stops"].split( ':' );
+    for ( const QString &stop : constSplit )
     {
       int i = stop.indexOf( ';' );
       if ( i == -1 )

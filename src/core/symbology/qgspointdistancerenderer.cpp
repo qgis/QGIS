@@ -364,7 +364,8 @@ void QgsPointDistanceRenderer::printGroupInfo() const
   for ( int i = 0; i < nGroups; ++i )
   {
     QgsDebugMsg( "***************displacement group " + QString::number( i ) );
-    Q_FOREACH ( const GroupedFeature &feature, mClusteredGroups.at( i ) )
+    const auto constAt = mClusteredGroups.at( i );
+    for ( const GroupedFeature &feature : constAt )
     {
       QgsDebugMsg( FID_TO_STRING( feature.feature.id() ) );
     }

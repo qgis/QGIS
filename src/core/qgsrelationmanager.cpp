@@ -255,7 +255,8 @@ QList<QgsRelation> QgsRelationManager::discoverRelations( const QList<QgsRelatio
   const auto constLayers = layers;
   for ( const QgsVectorLayer *layer : constLayers )
   {
-    Q_FOREACH ( const QgsRelation &relation, layer->dataProvider()->discoverRelations( layer, layers ) )
+    const auto constDiscoverRelations = layer->dataProvider()->discoverRelations( layer, layers );
+    for ( const QgsRelation &relation : constDiscoverRelations )
     {
       if ( !hasRelationWithEqualDefinition( existingRelations, relation ) )
       {

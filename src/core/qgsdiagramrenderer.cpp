@@ -780,7 +780,8 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     if ( ddSizeLegend.classes().isEmpty() )
     {
       // automatic class creation if the classes are not defined manually
-      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
+      const auto prettyBreaks { QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) };
+      for ( double v : prettyBreaks )
       {
         double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
         sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( v ) );

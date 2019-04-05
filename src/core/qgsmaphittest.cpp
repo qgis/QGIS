@@ -173,14 +173,16 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
 
     //make sure we store string representation of symbol, not pointer
     //otherwise layer style override changes will delete original symbols and leave hanging pointers
-    Q_FOREACH ( const QString &legendKey, r->legendKeysForFeature( f, context ) )
+    const auto constLegendKeysForFeature = r->legendKeysForFeature( f, context );
+    for ( const QString &legendKey : constLegendKeysForFeature )
     {
       lUsedSymbolsRuleKey.insert( legendKey );
     }
 
     if ( moreSymbolsPerFeature )
     {
-      Q_FOREACH ( QgsSymbol *s, r->originalSymbolsForFeature( f, context ) )
+      const auto constOriginalSymbolsForFeature = r->originalSymbolsForFeature( f, context );
+      for ( QgsSymbol *s : constOriginalSymbolsForFeature )
       {
         if ( s )
           lUsedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );

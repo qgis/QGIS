@@ -67,7 +67,7 @@ FeaturePart::FeaturePart( const FeaturePart &other )
   : PointSet( other )
   , mLF( other.mLF )
 {
-  Q_FOREACH ( const FeaturePart *hole, other.mHoles )
+  for ( const FeaturePart *hole : qgis::as_const( other.mHoles ) )
   {
     mHoles << new FeaturePart( *hole );
     mHoles.last()->holeOf = this;

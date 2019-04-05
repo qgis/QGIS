@@ -518,7 +518,8 @@ void QgsLayoutGuideCollection::setVisible( bool visible )
 void QgsLayoutGuideCollection::pageAboutToBeRemoved( int pageNumber )
 {
   mBlockUndoCommands = true;
-  Q_FOREACH ( QgsLayoutGuide *guide, guidesOnPage( pageNumber ) )
+  const auto constGuidesOnPage = guidesOnPage( pageNumber );
+  for ( QgsLayoutGuide *guide : constGuidesOnPage )
   {
     removeGuide( guide );
   }

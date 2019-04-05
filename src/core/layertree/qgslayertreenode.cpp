@@ -37,7 +37,8 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
   , mProperties( other.mProperties )
 {
   QList<QgsLayerTreeNode *> clonedChildren;
-  Q_FOREACH ( QgsLayerTreeNode *child, other.mChildren )
+
+  for ( QgsLayerTreeNode *child : qgis::as_const( other.mChildren ) )
     clonedChildren << child->clone();
   insertChildrenPrivate( -1, clonedChildren );
 }

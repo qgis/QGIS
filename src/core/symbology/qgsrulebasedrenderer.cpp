@@ -954,7 +954,7 @@ void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )
   {
     //QgsDebugMsg(QString("level %1").arg(level.zIndex));
     // go through all jobs at the level
-    Q_FOREACH ( const RenderJob *job, level.jobs )
+    for ( const RenderJob *job : qgis::as_const( level.jobs ) )
     {
       context.expressionContext().setFeature( job->ftr.feat );
       //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));

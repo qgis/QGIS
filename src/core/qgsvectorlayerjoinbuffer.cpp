@@ -49,7 +49,8 @@ static bool _hasCycleDFS( QgsVectorLayer *n, QHash<QgsVectorLayer *, int> &mark 
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( QgsVectorLayer *m, _outEdges( n ) )
+    const auto outEdges { _outEdges( n ) };
+    for ( QgsVectorLayer *m : outEdges )
     {
       if ( _hasCycleDFS( m, mark ) )
         return true;

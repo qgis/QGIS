@@ -610,7 +610,8 @@ QStringList QgsVectorDataProvider::availableEncodings()
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]
   {
-    Q_FOREACH ( const QString &codec, QTextCodec::availableCodecs() )
+    const auto codecs { QTextCodec::availableCodecs() };
+    for ( const QString &codec : codecs )
     {
       sEncodings << codec;
     }

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgssqlstatement.h"
+#include "qgis.h"
 
 #include <cmath>
 #include <limits>
@@ -239,7 +240,7 @@ bool QgsSQLStatement::doBasicValidationChecks( QString &errorMsgOut ) const
   QgsSQLStatementCollectTableNames v;
   mRootNode->accept( v );
 
-  Q_FOREACH ( const QgsSQLStatementCollectTableNames::TableColumnPair &pair, v.tableNamesReferenced )
+  for ( const QgsSQLStatementCollectTableNames::TableColumnPair &pair : qgis::as_const( v.tableNamesReferenced ) )
   {
     if ( !v.tableNamesDeclared.contains( pair.first ) )
     {

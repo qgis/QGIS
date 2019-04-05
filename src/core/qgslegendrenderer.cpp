@@ -555,7 +555,7 @@ QSizeF QgsLegendRenderer::drawAtomInternal( const Atom &atom, QgsRenderContext *
 {
   bool first = true;
   QSizeF size = QSizeF( atom.size );
-  Q_FOREACH ( const Nucleon &nucleon, atom.nucleons )
+  for ( const Nucleon &nucleon : qgis::as_const( atom.nucleons ) )
   {
     if ( QgsLayerTreeGroup *groupItem = qobject_cast<QgsLayerTreeGroup *>( nucleon.item ) )
     {

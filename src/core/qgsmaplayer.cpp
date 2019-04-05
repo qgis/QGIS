@@ -1848,7 +1848,8 @@ static bool _depHasCycleDFS( const QgsMapLayer *n, QHash<const QgsMapLayer *, in
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( const QgsMapLayer *m, _depOutEdges( n, that, layers ) )
+    const auto depOutEdges { _depOutEdges( n, that, layers ) };
+    for ( const QgsMapLayer *m : depOutEdges )
     {
       if ( _depHasCycleDFS( m, mark, that, layers ) )
         return true;

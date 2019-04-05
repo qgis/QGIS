@@ -371,7 +371,8 @@ void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF &pts, QList<QPolyg
 
   if ( rings )
   {
-    Q_FOREACH ( const QPolygonF &ring, *rings )
+    const auto constRings = *rings;
+    for ( const QPolygonF &ring : constRings )
     {
       const auto constRing = ring;
       for ( QPointF pt : constRing )

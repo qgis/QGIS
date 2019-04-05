@@ -1121,7 +1121,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    Q_FOREACH ( const QgsRendererRange &range, r->mRanges )
+    for ( const QgsRendererRange &range : qgis::as_const( r->mRanges ) )
     {
       convertSymbolRotation( range.symbol(), rotationElem.attribute( QStringLiteral( "field" ) ) );
     }
@@ -1133,7 +1133,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QDomElement sizeScaleElem = element.firstChildElement( QStringLiteral( "sizescale" ) );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    Q_FOREACH ( const QgsRendererRange &range, r->mRanges )
+    for ( const QgsRendererRange &range : qgis:: as_const( r->mRanges ) )
     {
       convertSymbolSizeScale( range.symbol(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),

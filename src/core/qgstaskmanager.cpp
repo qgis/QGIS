@@ -436,7 +436,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
   }
 
   // add all subtasks, must be done before dependency resolution
-  Q_FOREACH ( const QgsTask::SubTask &subTask, task->mSubTasks )
+  for ( const QgsTask::SubTask &subTask : qgis::as_const( task->mSubTasks ) )
   {
     switch ( subTask.dependency )
     {
@@ -533,7 +533,8 @@ bool QgsTaskManager::dependenciesSatisfied( long taskId ) const
   if ( !dependencies.contains( taskId ) )
     return true;
 
-  Q_FOREACH ( QgsTask *task, dependencies.value( taskId ) )
+  const auto constValue = dependencies.value( taskId );
+  for ( QgsTask *task : constValue )
   {
     if ( task->status() != QgsTask::Complete )
       return false;
@@ -561,7 +562,8 @@ bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, 
   if ( !dependencies.contains( currentTaskId ) )
     return true;
 
-  Q_FOREACH ( QgsTask *task, dependencies.value( currentTaskId ) )
+  const auto constValue = dependencies.value( currentTaskId );
+  for ( QgsTask *task : constValue )
   {
     long dependentTaskId = taskId( task );
     if ( dependentTaskId >= 0 )
