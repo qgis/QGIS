@@ -229,6 +229,8 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     //! Returns a string with information about screen size and resolution - useful for debugging
     QString dumpScreenInfo() const;
 
+    Q_INVOKABLE static QVariantMap createValueRelationCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature() );
+
   private:
     static void formatToMetricDistance( double srcDistance,
                                         QgsUnitTypes::DistanceUnit srcUnits,
