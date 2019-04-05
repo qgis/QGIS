@@ -70,9 +70,6 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     PolygonData outNormal;  //!< Features that are not selected
     PolygonData outSelected;  //!< Features that are selected
 
-    bool addEdges = true;   //!< TODO: should go to polygon symbol
-    QColor edgeColor = QColor( 0, 0, 0 ); //!< TODO: go to polygon symbol
-    float edgeWidth = 2;  //!< TODO: go to polygon symbol
     QgsLineVertexData outEdges;  //!< When highlighting edges, this holds data for vertex/index buffer
 };
 
@@ -89,7 +86,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
 
 void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, bool hasDDExtrusion, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
 {
-  if ( addEdges )
+  if ( mSymbol.edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
     outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ) );
@@ -171,11 +168,11 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   makeEntity( parent, context, outSelected, true );
 
   // add entity for edges
-  if ( addEdges && !outEdges.indexes.isEmpty() )
+  if ( mSymbol.edgesEnabled() && !outEdges.indexes.isEmpty() )
   {
     QgsLineMaterial *mat = new QgsLineMaterial;
-    mat->setLineColor( edgeColor );
-    mat->setLineWidth( edgeWidth );
+    mat->setLineColor( mSymbol.edgeColor() );
+    mat->setLineWidth( mSymbol.edgeWidth() );
 
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
