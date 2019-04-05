@@ -525,9 +525,14 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     }
     else if ( d->mAuthId.startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) )
     {
+#if PROJ_VERSION_MAJOR>=6
+      d->mPj.reset( proj_create_from_database( QgsProjContext::get(), "EPSG", d->mAuthId.mid( 5 ).toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
+      d->mIsValid = static_cast< bool >( d->mPj );
+#else
       OSRDestroySpatialReference( d->mCRS );
       d->mCRS = OSRNewSpatialReference( nullptr );
       d->mIsValid = OSRSetFromUserInput( d->mCRS, d->mAuthId.toLower().toLatin1() ) == OGRERR_NONE;
+#endif
       setMapUnits();
     }
 
@@ -547,6 +552,9 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 {
   if ( d->mAxisInvertedDirty )
   {
+#if PROJ_VERSION_MAJOR>=6
+    d->mAxisInverted = QgsProjUtils::axisOrderIsSwapped( d->mPj.get() );
+#else
     OGRAxisOrientation orientation;
     OSRGetAxis( d->mCRS, OSRIsGeographic( d->mCRS ) ? "GEOGCS" : "PROJCS", 0, &orientation );
 
@@ -564,6 +572,7 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
     }
 
     d->mAxisInverted = orientation == OAO_North;
+#endif
     d->mAxisInvertedDirty = false;
   }
 
@@ -588,25 +597,48 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   d->mIsValid = false;
   d->mWkt.clear();
   d->mProj4.clear();
-
   if ( wkt.isEmpty() )
   {
     QgsDebugMsgLevel( QStringLiteral( "theWkt is uninitialized, operation failed" ), 4 );
     return d->mIsValid;
   }
+
+  bool res = false;
+#if PROJ_VERSION_MAJOR>=6
+  PROJ_STRING_LIST warnings = nullptr;
+  PROJ_STRING_LIST grammerErrors = nullptr;
+  d->mPj.reset( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+  res = static_cast< bool >( d->mPj );
+  if ( !res )
+  {
+    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
+    QgsDebugMsg( "INPUT: " + wkt );
+    for ( auto iter = warnings; iter && *iter; ++iter )
+      QgsDebugMsg( *iter );
+    for ( auto iter = grammerErrors; iter && *iter; ++iter )
+      QgsDebugMsg( *iter );
+    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
+  }
+  proj_string_list_destroy( warnings );
+  proj_string_list_destroy( grammerErrors );
+#else
   QByteArray ba = wkt.toLatin1();
   const char *pWkt = ba.data();
 
   OGRErr myInputResult = OSRImportFromWkt( d->mCRS, const_cast< char ** >( & pWkt ) );
-
-  if ( myInputResult != OGRERR_NONE )
+  res = myInputResult != OGRERR_NONE;
+  if ( !res )
   {
     QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
     QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
     QgsDebugMsg( "INPUT: " + wkt );
     QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
-
+  }
+#endif
+  if ( !res )
+  {
     sCRSWktLock.lockForWrite();
     sWktCache.insert( wkt, *this );
     sCRSWktLock.unlock();
@@ -1129,16 +1161,22 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
 
   OSRDestroySpatialReference( d->mCRS );
   d->mCRS = OSRNewSpatialReference( nullptr );
+
   const QString trimmed = proj4String.trimmed();
   d->mIsValid = OSRImportFromProj4( d->mCRS, trimmed.toLatin1().constData() ) == OGRERR_NONE;
+
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *ctx = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr proj( proj_create( ctx, trimmed.toLatin1().constData() ) );
-  if ( !proj )
+  d->mPj.reset( proj_create( ctx, trimmed.toLatin1().constData() ) );
+  if ( !d->mPj )
   {
     const int errNo = proj_context_errno( ctx );
     QgsDebugMsg( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
     d->mIsValid = false;
+  }
+  else
+  {
+    d->mIsValid = true;
   }
 #else
   // OSRImportFromProj4() may accept strings that are not valid proj.4 strings,
@@ -1870,6 +1908,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
 int QgsCoordinateReferenceSystem::syncDatabase()
 {
+#if 1
   setlocale( LC_ALL, "C" );
   QString dbFilePath = QgsApplication::srsDatabaseFilePath();
   syncDatumTransform( dbFilePath );
@@ -2370,6 +2409,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
     return false;
   }
 
+#endif
   return true;
 }
 
