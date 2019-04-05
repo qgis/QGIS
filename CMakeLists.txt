@@ -123,6 +123,25 @@ IF(WITH_CORE)
 
   SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
+  # try to configure and build python bindings by default
+  SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+  IF (WITH_BINDINGS)
+    # By default bindings will be installed only to QGIS directory
+    # Someone might want to install it to python site-packages directory
+    # as otherwise user has to use PYTHONPATH environment variable to add
+    # QGIS bindings to package search path
+    SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+    SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
+    SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
+    # concatenate QScintilla2 API files
+    IF (WITH_GUI)
+      SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
+      # keep casual users from updating their source tree via WITH_QSCIAPI
+      MARK_AS_ADVANCED (WITH_QSCIAPI)
+    ENDIF (WITH_GUI)
+    ADD_DEFINITIONS(-DWITH_BINDINGS)
+  ENDIF (WITH_BINDINGS)
+
   # server disabled default because it needs FastCGI (which is optional dependency)
   SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
   IF(WITH_SERVER)
@@ -135,7 +154,6 @@ IF(WITH_CORE)
     IF(WITH_SERVER_PLUGINS)
       SET(HAVE_SERVER_PYTHON_PLUGINS TRUE)
     ENDIF(WITH_SERVER_PLUGINS)
-
   ENDIF(WITH_SERVER)
 
   # Custom widgets
@@ -178,26 +196,6 @@ IF(WITH_CORE)
     SET(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
     SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
   ENDIF(WITH_ORACLE)
-
-
-  # try to configure and build python bindings by default
-  SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
-  IF (WITH_BINDINGS)
-    # By default bindings will be installed only to QGIS directory
-    # Someone might want to install it to python site-packages directory
-    # as otherwise user has to use PYTHONPATH environment variable to add
-    # QGIS bindings to package search path
-    SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
-    SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
-    SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
-    # concatenate QScintilla2 API files
-    IF (WITH_GUI)
-      SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
-      # keep casual users from updating their source tree via WITH_QSCIAPI
-      MARK_AS_ADVANCED (WITH_QSCIAPI)
-    ENDIF (WITH_GUI)
-    ADD_DEFINITIONS(-DWITH_BINDINGS)
-  ENDIF (WITH_BINDINGS)
 
   #BUILD WITH QtMobility by default on android only. Other platform can force it
   IF (ANDROID)
