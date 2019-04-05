@@ -1441,6 +1441,11 @@ Exports the geometry to WKT
 Exports the geometry to a GeoJSON string.
 %End
 
+    QJsonObject asJsonV2( ) const;
+%Docstring
+Exports the geometry to a GeoJSON object.
+%End
+
     QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;
 %Docstring
 Try to convert the geometry to the requested type

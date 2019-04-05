@@ -29,6 +29,7 @@
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
+#include <QJsonObject>
 
 
 /***************************************************************************
@@ -416,6 +417,17 @@ QString QgsLineString::asJson( int precision ) const
   points( pts );
 
   return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
+}
+
+QJsonObject QgsLineString::asJsonV2() const
+{
+  QgsPointSequence pts;
+  points( pts );
+  return
+  {
+    { QLatin1String( "type" ), QLatin1String( "LineString" ) },
+    { QLatin1String( "coordinates" ),  QgsGeometryUtils::pointsToJsonV2( pts ) }
+  };
 }
 
 /***************************************************************************

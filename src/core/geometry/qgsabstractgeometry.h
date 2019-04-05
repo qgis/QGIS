@@ -280,6 +280,15 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QString asJson( int precision = 17 ) const = 0;
 
+    /**
+     * Returns a GeoJSON object of the geometry.
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml2()
+     * \see asGml3()
+     */
+    virtual QJsonObject asJsonV2( ) const = 0;
+
     //render pipeline
 
     /**

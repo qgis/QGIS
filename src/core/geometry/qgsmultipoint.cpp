@@ -19,6 +19,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 
+#include <QJsonArray>
+#include <QJsonObject>
+
 QgsMultiPoint::QgsMultiPoint()
 {
   mWkbType = QgsWkbTypes::MultiPoint;
@@ -123,6 +126,24 @@ QString QgsMultiPoint::asJson( int precision ) const
   json += QgsGeometryUtils::pointsToJSON( pts, precision );
   json += QLatin1String( " }" );
   return json;
+}
+
+QJsonObject QgsMultiPoint::asJsonV2() const
+{
+  QJsonArray coordinates;
+  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
+    {
+      const QgsPoint *point = static_cast<const QgsPoint *>( geom );
+      coordinates.append( QJsonArray( { point->x(), point->y() } ) );
+    }
+  }
+  return
+  {
+    { QLatin1String( "type" ), QLatin1String( "MultiPoint" ) },
+    { QLatin1String( "coordinates" ), coordinates }
+  };
 }
 
 int QgsMultiPoint::nCoordinates() const

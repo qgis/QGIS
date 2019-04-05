@@ -1268,6 +1268,15 @@ QString QgsGeometry::asJson( int precision ) const
   return d->geometry->asJson( precision );
 }
 
+QJsonObject QgsGeometry::asJsonV2() const
+{
+  if ( !d->geometry )
+  {
+    return QJsonObject( );
+  }
+  return d->geometry->asJsonV2( );
+}
+
 QgsGeometry QgsGeometry::convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart ) const
 {
   switch ( destType )

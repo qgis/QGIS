@@ -56,6 +56,8 @@ Curve polygon geometry type
 
     virtual QString asJson( int precision = 17 ) const;
 
+    virtual QJsonObject asJsonV2() const;
+
 
     virtual double area() const;
 

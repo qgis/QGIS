@@ -26,6 +26,8 @@
 #include <cmath>
 #include <QPainter>
 #include <QRegularExpression>
+#include <QJsonObject>
+#include <QJsonArray>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -284,6 +286,15 @@ QString QgsPoint::asJson( int precision ) const
   return "{\"type\": \"Point\", \"coordinates\": ["
          + qgsDoubleToString( mX, precision ) + QLatin1String( ", " ) + qgsDoubleToString( mY, precision )
          + QLatin1String( "]}" );
+}
+
+QJsonObject QgsPoint::asJsonV2() const
+{
+  return
+  {
+    { QLatin1String( "type" ), QLatin1String( "Point" ) },
+    { QLatin1String( "coordinates" ), QJsonArray( { mX, mY } ) }
+  };
 }
 
 void QgsPoint::draw( QPainter &p ) const

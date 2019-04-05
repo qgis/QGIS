@@ -24,6 +24,7 @@
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 #include "qgslogger.h"
+#include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
@@ -372,6 +373,13 @@ QString QgsCircularString::asJson( int precision ) const
   std::unique_ptr< QgsLineString > line( curveToLine() );
   QString json = line->asJson( precision );
   return json;
+}
+
+QJsonObject QgsCircularString::asJsonV2() const
+{
+  // GeoJSON does not support curves
+  std::unique_ptr< QgsLineString > line( curveToLine() );
+  return line->asJsonV2( );
 }
 
 bool QgsCircularString::isEmpty() const

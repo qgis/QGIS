@@ -123,21 +123,20 @@ class TestQgsJsonUtils : public QObject
 
       QgsVectorLayer vl { QStringLiteral( "Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
       QgsFeature feature { vl.fields() };
-      feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))" ) ) );
+      feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1.12 1.34,5.45 1.12,5.34 5.33,1.56 5.2,1.12 1.34),(2 2, 3 2, 3 3, 2 3,2 2))" ) ) );
       feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
 
       QgsJsonExporter exporter { &vl };
 
-      if ( useQJson )  // average: 0.063 msecs per iteration
+      if ( useQJson )  // average: 0.038 msecs per iteration
       {
         QBENCHMARK
         {
           const auto json { exporter.exportFeatureV2( feature ) };
           QCOMPARE( QJsonDocument( json ).toJson( QJsonDocument::JsonFormat::Compact ),
-                    QStringLiteral( "{\"bbox\":[\"1\",\"1\",\"5\",\"5\"],\"geometry\":{\"coordinates\""
-                                    ":[[[1,1],[5,1],[5,5],[1,5],[1,1]],[[2,2],[3,2],[3,3],[2,3],[2,2]]],"
-                                    "\"type\":\"Polygon\"},\"id\":0,\"properties\":{\"flddbl\":2,\"fldint\":"
-                                    "1,\"fldtxt\":\"a value\"},\"type\":\"Feature\"}"
+                    QStringLiteral( "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":[[[1.12,1.34]"
+                                    ",[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],[[2,2],[3,2],[3,3],[2,3],[2,2]]],"
+                                    "\"type\":\"Point\"},\"id\":0,\"properties\":{\"flddbl\":2,\"fldint\":1,\"fldtxt\":\"a value\"},\"type\":\"Feature\"}"
                                   ) );
         }
       }
@@ -146,10 +145,9 @@ class TestQgsJsonUtils : public QObject
         QBENCHMARK
         {
           const auto json { exporter.exportFeature( feature ) };
-          QCOMPARE( json, QStringLiteral( "{\n   \"type\":\"Feature\",\n   \"id\":0,\n   \"bbox\":[1, 1, 5, 5],\n   "
-                                          "\"geometry\":\n   {\"type\": \"Polygon\", "
-                                          "\"coordinates\": [[ [1, 1], [5, 1], [5, 5], [1, 5], [1, 1]], [ [2, 2], "
-                                          "[3, 2], [3, 3], [2, 3], [2, 2]]] },\n   "
+          QCOMPARE( json, QStringLiteral( "{\n   \"type\":\"Feature\",\n   \"id\":0,\n   \"bbox\":[1.12, 1.12, 5.45, 5.33],\n   \"geometry\":\n   "
+                                          "{\"type\": \"Polygon\", \"coordinates\": [[ [1.12, 1.34], [5.45, 1.12], [5.34, 5.33], [1.56, 5.2], [1.12, 1.34]], "
+                                          "[ [2, 2], [3, 2], [3, 3], [2, 3], [2, 2]]] },\n   "
                                           "\"properties\":{\n      \"fldtxt\":\"a value\",\n      \"fldint\":1,\n      \"flddbl\":2\n   }\n}" ) );
         }
       }

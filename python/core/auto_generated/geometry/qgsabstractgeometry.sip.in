@@ -259,6 +259,19 @@ Returns a GeoJSON representation of the geometry.
 .. seealso:: :py:func:`asGml3`
 %End
 
+    virtual QJsonObject asJsonV2( ) const = 0;
+%Docstring
+Returns a GeoJSON object of the geometry.
+
+.. seealso:: :py:func:`asWkb`
+
+.. seealso:: :py:func:`asWkt`
+
+.. seealso:: :py:func:`asGml2`
+
+.. seealso:: :py:func:`asGml3`
+%End
+
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException ) = 0;
 %Docstring

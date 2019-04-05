@@ -19,6 +19,7 @@ email                : morb at ozemail dot com dot au
 #include <functional>
 
 #include <QDomDocument>
+#include <QJsonObject>
 #include <QSet>
 #include <QString>
 #include <QVector>
@@ -1428,6 +1429,11 @@ class CORE_EXPORT QgsGeometry
      * Exports the geometry to a GeoJSON string.
      */
     QString asJson( int precision = 17 ) const;
+
+    /**
+     * Exports the geometry to a GeoJSON object.
+     */
+    QJsonObject asJsonV2( ) const;
 
     /**
      * Try to convert the geometry to the requested type

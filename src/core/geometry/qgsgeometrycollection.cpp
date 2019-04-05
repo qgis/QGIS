@@ -431,6 +431,20 @@ QString QgsGeometryCollection::asJson( int precision ) const
   return json;
 }
 
+QJsonObject QgsGeometryCollection::asJsonV2() const
+{
+  QJsonArray coordinates;
+  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    coordinates.append( geom->asJsonV2() );
+  }
+  return
+  {
+    { QLatin1String( "type" ), QLatin1String( "GeometryCollection" ) },
+    { QLatin1String( "coordinates" ), coordinates }
+  };
+}
+
 QgsRectangle QgsGeometryCollection::boundingBox() const
 {
   if ( mBoundingBox.isNull() )

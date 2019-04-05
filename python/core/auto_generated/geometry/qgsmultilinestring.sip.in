@@ -36,6 +36,8 @@ Multi line string geometry collection.
 
     virtual QString asJson( int precision = 17 ) const;
 
+    virtual QJsonObject asJsonV2( ) const;
+
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );

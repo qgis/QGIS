@@ -264,12 +264,12 @@ QJsonObject QgsJsonExporter::exportFeatureV2( const QgsFeature &feature, const Q
 
     if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
     {
-      featureJson[ QStringLiteral( "bbox" ) ] = QJsonArray( { qgsDoubleToString( box.xMinimum(), mPrecision ),
-          qgsDoubleToString( box.yMinimum(), mPrecision ),
-          qgsDoubleToString( box.xMaximum(), mPrecision ),
-          qgsDoubleToString( box.yMaximum(), mPrecision ) } );
+      featureJson[ QStringLiteral( "bbox" ) ] = QJsonArray( { box.xMinimum(),
+          box.yMinimum(),
+          box.xMaximum(),
+          box.yMaximum() } );
     }
-    featureJson[ QStringLiteral( "geometry" ) ] =  QJsonDocument::fromJson( geom.asJson( mPrecision ).toLocal8Bit() ).object();
+    featureJson[ QStringLiteral( "geometry" ) ] =  geom.asJsonV2( );
   }
   else
   {

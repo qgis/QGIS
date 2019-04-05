@@ -23,6 +23,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscurvepolygon.h"
 #include "qgsmulticurve.h"
 
+#include <QJsonObject>
+
 QgsMultiSurface::QgsMultiSurface()
 {
   mWkbType = QgsWkbTypes::MultiSurface;
@@ -145,6 +147,36 @@ QString QgsMultiSurface::asJson( int precision ) const
   }
   json += QLatin1String( "] }" );
   return json;
+}
+
+QJsonObject QgsMultiSurface::asJsonV2() const
+{
+  QJsonArray coordinates;
+  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
+    {
+      std::unique_ptr< QgsPolygon >polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
+      std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
+      QgsPointSequence exteriorPts;
+      exteriorLineString->points( exteriorPts );
+      coordinates.append( QgsGeometryUtils::pointsToJsonV2( exteriorPts ) );
+
+      std::unique_ptr< QgsLineString > interiorLineString;
+      for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
+      {
+        interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
+        QgsPointSequence interiorPts;
+        interiorLineString->points( interiorPts );
+        coordinates.append( QgsGeometryUtils::pointsToJsonV2( interiorPts ) );
+      }
+    }
+  }
+  return
+  {
+    { QLatin1String( "type" ), QLatin1String( "MultiPolygon" ) },
+    { QLatin1String( "coordinates" ), coordinates }
+  };
 }
 
 bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )

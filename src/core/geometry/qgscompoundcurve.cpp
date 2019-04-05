@@ -21,6 +21,7 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+#include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
@@ -296,6 +297,13 @@ QString QgsCompoundCurve::asJson( int precision ) const
   std::unique_ptr< QgsLineString > line( curveToLine() );
   QString json = line->asJson( precision );
   return json;
+}
+
+QJsonObject QgsCompoundCurve::asJsonV2() const
+{
+  // GeoJSON does not support curves
+  std::unique_ptr< QgsLineString > line( curveToLine() );
+  return line->asJsonV2();
 }
 
 double QgsCompoundCurve::length() const

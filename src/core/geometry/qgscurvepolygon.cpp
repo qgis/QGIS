@@ -24,6 +24,8 @@
 #include "qgspolygon.h"
 #include "qgswkbptr.h"
 #include "qgsmulticurve.h"
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
@@ -424,6 +426,32 @@ QString QgsCurvePolygon::asJson( int precision ) const
   }
   json += QLatin1String( "] }" );
   return json;
+}
+
+QJsonObject QgsCurvePolygon::asJsonV2() const
+{
+  QJsonArray coordinates;
+  if ( exteriorRing() )
+  {
+    std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
+    QgsPointSequence exteriorPts;
+    exteriorLineString->points( exteriorPts );
+    coordinates.append( QgsGeometryUtils::pointsToJsonV2( exteriorPts ) );
+
+    std::unique_ptr< QgsLineString > interiorLineString;
+    for ( int i = 0, n = numInteriorRings(); i < n; ++i )
+    {
+      interiorLineString.reset( interiorRing( i )->curveToLine() );
+      QgsPointSequence interiorPts;
+      interiorLineString->points( interiorPts );
+      coordinates.append( QgsGeometryUtils::pointsToJsonV2( interiorPts ) );
+    }
+  }
+  return
+  {
+    { QLatin1String( "type" ), QLatin1String( "Point" ) },
+    { QLatin1String( "coordinates" ), coordinates }
+  };
 }
 
 double QgsCurvePolygon::area() const
