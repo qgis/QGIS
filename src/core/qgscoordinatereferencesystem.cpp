@@ -37,10 +37,12 @@
 #include "qgssettings.h"
 
 #include <sqlite3.h>
-#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
+#if PROJ_VERSION_MAJOR>=6
+#include "qgsprojutils.h"
+#include <proj.h>
+#else
 #include <proj_api.h>
+#endif
 
 //gdal and ogr includes (needed for == operator)
 #include <ogr_srs_api.h>
@@ -1127,7 +1129,18 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
 
   OSRDestroySpatialReference( d->mCRS );
   d->mCRS = OSRNewSpatialReference( nullptr );
-  d->mIsValid = OSRImportFromProj4( d->mCRS, proj4String.trimmed().toLatin1().constData() ) == OGRERR_NONE;
+  const QString trimmed = proj4String.trimmed();
+  d->mIsValid = OSRImportFromProj4( d->mCRS, trimmed.toLatin1().constData() ) == OGRERR_NONE;
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *ctx = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr proj( proj_create( ctx, trimmed.toLatin1().constData() ) );
+  if ( !proj )
+  {
+    const int errNo = proj_context_errno( ctx );
+    QgsDebugMsg( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
+    d->mIsValid = false;
+  }
+#else
   // OSRImportFromProj4() may accept strings that are not valid proj.4 strings,
   // e.g if they lack a +ellps parameter, it will automatically add +ellps=WGS84, but as
   // we use the original mProj4 with QgsCoordinateTransform, it will fail to initialize
@@ -1144,6 +1157,8 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
     pj_free( proj );
   }
   pj_ctx_free( pContext );
+#endif
+
   d->mWkt.clear();
   setMapUnits();
 }
