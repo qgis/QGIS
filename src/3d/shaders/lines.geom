@@ -4,19 +4,13 @@ uniform float	THICKNESS;		// the thickness of the line in pixels
 uniform float	MITER_LIMIT;	// 1.0: always miter, -1.0: never miter, 0.75: default
 uniform vec2	WIN_SCALE;		// the size of the viewport in pixels
 
-uniform mat4 modelViewProjection;
-
-uniform vec3 camNearPlanePoint;
-uniform vec3 camNearPlaneNormal;
-
 layout( lines_adjacency ) in;
 layout( triangle_strip, max_vertices = 7 ) out;
 
 
-in VertexData{
-  vec3 worldPosition;
+//in VertexData{
 //	vec3 mColor;
-} VertexIn[4];
+//} VertexIn[4];
 
 out VertexData{
     vec2 mTexCoord;
@@ -28,66 +22,61 @@ vec2 toScreenSpace( vec4 vertex )
     return vec2( vertex.xy / vertex.w ) * WIN_SCALE;
 }
 
-vec4 clip_line_point(vec3 pt0, vec3 pt1, vec4 projected)
+vec4 clip_near_plane(vec4 pt1, vec4 pt2)
 {
-    // we have line segment given by pt0 and pt1 (in world coordinates) and 'projected' point
-    // (in clip coordinates) that is one of the endpoints. If the projected point's w >= 1
-    // then everything is fine because the point is in front of the camera's near plane and
-    // it is projected correctly. If not, the projected point is wrong and needs to be adjusted.
-    // we place it at the intersection of the line and near plane to fix its position.
+  // Figure out intersection point of line pt1-pt2 and near plane in homogenous coordinates.
+  // Near plane is z=-1 in NDC, that means in homogenous coordinates that's z/w=-1
+  // Going from line equation P = P1 + u * (P2 - P1) we need to figure out "u"
+  // In the above equation P, P1, P2 are vectors, so individual coordinate values are
+  // x = x1 + u * (x2 - x1) and so on for y,z,w as well. Now combining near plane equation z/w=-1
+  // with line equation gives us the following equation for "u" (it's easy to do the math on paper)
 
-    if (projected.w < 1)
-    {
-        vec3 lineDir = pt1 - pt0;
-        float d = dot(camNearPlaneNormal, camNearPlanePoint - pt0) / dot(lineDir, camNearPlaneNormal);
-        if (d > 0 && d < 1)
-        {
-            // figure out the intersection point of line and near plane
-            vec3 wpIntersect = pt0 + lineDir * d;
-            vec4 wpIntersectProj = modelViewProjection * vec4( wpIntersect, 1.0 );
-            return wpIntersectProj;
-        }
-    }
-    return projected;
+  float u = (-pt1.z - pt1.w) / ((pt2.z-pt1.z) + (pt2.w - pt1.w));
+  return pt1 + (pt2-pt1)*u;
 }
 
 void main( void )
 {
-    // these are original positions in world coordinates
-    vec3 wp0 = VertexIn[0].worldPosition;
-    vec3 wp1 = VertexIn[1].worldPosition;
-    vec3 wp2 = VertexIn[2].worldPosition;
-    vec3 wp3 = VertexIn[3].worldPosition;
+    vec4 px0 = gl_in[0].gl_Position;
+    vec4 px1 = gl_in[1].gl_Position;
+    vec4 px2 = gl_in[2].gl_Position;
+    vec4 px3 = gl_in[3].gl_Position;
 
     // This implements rejection of lines from Cohen-Sutherland line clipping algorithm.
     // Thanks to that we filter out majority of lines that may otherwise cause issues.
-    // Lines that can't be trivially rejected, should be further clipped - the clipping
-    // in the next step is a bit half-baked but seems to work relatively well.
-    vec4 px1 = gl_in[1].gl_Position;
-    vec4 px2 = gl_in[2].gl_Position;
+    // Lines that can't be trivially rejected, should be further clipped
     int px1c = int(px1.w+px1.x<0) << 0 | int(px1.w-px1.x<0) << 1 | int(px1.w+px1.y<0) << 2 | int(px1.w-px1.y<0) << 3 | int(px1.w+px1.z<0) << 4 | int(px1.w-px1.z<0) << 5;
     int px2c = int(px2.w+px2.x<0) << 0 | int(px2.w-px2.x<0) << 1 | int(px2.w+px2.y<0) << 2 | int(px2.w-px2.y<0) << 3 | int(px2.w+px2.z<0) << 4 | int(px2.w-px2.z<0) << 5;
     if ((px1c & px2c) != 0)
       return;  // trivial reject
 
-    // Perform line clipping first. we search for intersection between the line and the near plane.
+    // Perform line clipping with near plane if needed. We search for intersection between the line and the near plane.
     // In case the near plane intersects line between segment's endpoints, we need to adjust the line
     // otherwise we would use completely non-sense points when points get 'behind' the camera.
-    // We do this also for the 'previous' and 'next' segments to get the miters right.
-    vec4 projp0 = clip_line_point(wp0, wp1, gl_in[0].gl_Position);
-    vec4 projp1 = clip_line_point(wp1, wp2, gl_in[1].gl_Position);
-    vec4 projp2 = clip_line_point(wp1, wp2, gl_in[2].gl_Position);
-    vec4 projp3 = clip_line_point(wp2, wp3, gl_in[3].gl_Position);
+    // It seems we don't need to clip against other five planes - only the near plane is critical because
+    // that turns the coordinates after perspective division in toScreenSpace() into a mess because of w < 1
+    if ((px1c & 16) != 0)
+    {
+      // first point is in front of the near plane - need to clip it
+      px1 = clip_near_plane(px1, px2);
+      px0 = px1;
+    }
+    if ((px2c & 16) != 0)
+    {
+      // second point is in front of the near plane - need to clip it
+      px2 = clip_near_plane(px1, px2);
+      px3 = px2;
+    }
 
     // get the four vertices passed to the shader:
-    vec2 p0 = toScreenSpace( projp0 );	// start of previous segment
-    vec2 p1 = toScreenSpace( projp1 );	// end of previous segment, start of current segment
-    vec2 p2 = toScreenSpace( projp2 );	// end of current segment, start of next segment
-    vec2 p3 = toScreenSpace( projp3 );	// end of next segment
+    vec2 p0 = toScreenSpace( px0 );	// start of previous segment
+    vec2 p1 = toScreenSpace( px1 );	// end of previous segment, start of current segment
+    vec2 p2 = toScreenSpace( px2 );	// end of current segment, start of next segment
+    vec2 p3 = toScreenSpace( px3 );	// end of next segment
 
     // these are already 'final' depths in range [0,1] so we don't need to further transform them
-    float p1z = projp1.z / projp1.w;
-    float p2z = projp2.z / projp2.w;
+    float p1z = px1.z / px1.w;
+    float p2z = px2.z / px2.w;
 
     // determine the direction of each of the 3 segments (previous, current, next)
     vec2 v0 = normalize( p1 - p0 );

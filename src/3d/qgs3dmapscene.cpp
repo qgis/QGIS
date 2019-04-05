@@ -578,17 +578,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       QgsLineMaterial *lm = newEntity->findChild<QgsLineMaterial *>();
       if ( lm )
       {
-        connect( mCameraController, &QgsCameraController::cameraChanged, lm, [lm, this]
-        {
-          Qt3DRender::QCamera *cam = mCameraController->camera();
-          lm->setCameraParameters( cam->position(), cam->viewVector(), cam->nearPlane() );
-        } );
         connect( mCameraController, &QgsCameraController::viewportChanged, lm, [lm, this]
         {
           lm->setViewportSize( mCameraController->viewport().size() );
         } );
 
-        lm->setCameraParameters( cameraController()->camera()->position(), cameraController()->camera()->viewVector(), cameraController()->camera()->nearPlane() );
         lm->setViewportSize( cameraController()->viewport().size() );
       }
     }
