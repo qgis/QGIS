@@ -3497,9 +3497,19 @@ namespace QgsWms
       QStringList _result;
       if ( mLayerGroups.contains( name ) )
       {
-        for ( const auto &l : mLayerGroups[ name ] )
+        const auto &layers  { mLayerGroups[ name ] };
+        for ( const auto &l : layers )
         {
-          _result.append( findLeaves( l->shortName().isEmpty() ? l->name() : l->shortName() ) );
+          const auto nick { layerNickname( *l ) };
+          // This handles the case for root (fake) group
+          if ( mLayerGroups.contains( nick ) )
+          {
+            _result.append( name );
+          }
+          else
+          {
+            _result.append( findLeaves( nick ) );
+          }
         }
       }
       else
@@ -3508,7 +3518,8 @@ namespace QgsWms
       }
       return _result;
     };
-    for ( const auto &name : mWmsParameters.queryLayersNickname() )
+    const auto constNicks { mWmsParameters.queryLayersNickname() };
+    for ( const auto &name : constNicks )
     {
       result.append( findLeaves( name ) );
     }
