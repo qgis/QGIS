@@ -1,4 +1,6 @@
+Response:
 *****
+
 Content-Type: text/xml; charset=utf-8
 <?xml version="1.0" encoding="utf-8"?>
 <WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qgs="http://www.qgis.org/wms" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd https://www.qgis.org/?*****" version="1.3.0" xmlns:sld="http://www.opengis.net/sld">
@@ -292,3 +294,4 @@ Content-Type: text/xml; charset=utf-8
   <LayerDrawingOrder>testlayer3,testlayer2,testlayer èé,layer_with_short_name</LayerDrawingOrder>
  </Capability>
 </WMS_Capabilities>
+
