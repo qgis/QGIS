@@ -32,6 +32,11 @@
 #include "qgscoordinatereferencesystem.h"
 #include <ogr_srs_api.h>
 
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#include "qgsprojutils.h"
+#endif
+
 #ifdef DEBUG
 typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
 #else
@@ -73,6 +78,10 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       {
         mCRS = OSRNewSpatialReference( nullptr );
       }
+#if PROJ_VERSION_MAJOR>=6
+      if ( mIsValid && mPj.get() )
+        mPj.reset( proj_clone( QgsProjContext::get(), mPj.get() ) );
+#endif
     }
 
     ~QgsCoordinateReferenceSystemPrivate()
@@ -107,6 +116,9 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     //! Whether this CRS is properly defined and valid
     bool mIsValid = false;
 
+#if PROJ_VERSION_MAJOR>=6
+    QgsProjUtils::proj_pj_unique_ptr mPj;
+#endif
     OGRSpatialReferenceH mCRS;
 
     QString mValidationHint;
