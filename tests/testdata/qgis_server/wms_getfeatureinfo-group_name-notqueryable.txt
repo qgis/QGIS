@@ -1,6 +1,12 @@
-*****
+Content-Length: 254
 Content-Type: text/xml; charset=utf-8
 
-<ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.3.0">
- <ServiceException code="LayerNotQueryable">Layer 'group_name' is not queryable</ServiceException>
-</ServiceExceptionReport>
+<GetFeatureInfoResponse>
+ <Layer name="testlayer2">
+  <Feature id="2">
+   <Attribute value="3" name="id"/>
+   <Attribute value="three" name="name"/>
+   <Attribute value="three èé↓" name="utf8nameè"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>
