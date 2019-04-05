@@ -474,7 +474,8 @@ QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &
   Q_FOREACH ( const QString &att, diagramAttributes() )
   {
     QgsExpression *expression = mDiagram->getExpression( att, context );
-    Q_FOREACH ( const QString &field, expression->referencedColumns() )
+    const auto constReferencedColumns = expression->referencedColumns();
+    for ( const QString &field : constReferencedColumns )
     {
       referenced << field;
     }
@@ -632,7 +633,8 @@ QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const Qg
   if ( mInterpolationSettings.classificationAttributeIsExpression )
   {
     QgsExpression *expression = mDiagram->getExpression( mInterpolationSettings.classificationAttributeExpression, context );
-    Q_FOREACH ( const QString &field, expression->referencedColumns() )
+    const auto constReferencedColumns = expression->referencedColumns();
+    for ( const QString &field : constReferencedColumns )
     {
       referenced << field;
     }
@@ -786,7 +788,8 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     else
     {
       // manual classes need to get size scaled because the QgsSizeScaleTransformer is not used in diagrams :-(
-      Q_FOREACH ( const QgsDataDefinedSizeLegend::SizeClass &sc, ddSizeLegend.classes() )
+      const auto constClasses = ddSizeLegend.classes();
+      for ( const QgsDataDefinedSizeLegend::SizeClass &sc : constClasses )
       {
         double size = mDiagram->legendSize( sc.size, mSettings, mInterpolationSettings );
         sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, sc.label );
@@ -794,7 +797,8 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     }
     ddSizeLegend.setClasses( sizeClasses );
 
-    Q_FOREACH ( const QgsLegendSymbolItem &si, ddSizeLegend.legendSymbolList() )
+    const auto constLegendSymbolList = ddSizeLegend.legendSymbolList();
+    for ( const QgsLegendSymbolItem &si : constLegendSymbolList )
     {
       if ( si.dataDefinedSizeLegendSettings() )
         nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *si.dataDefinedSizeLegendSettings() );

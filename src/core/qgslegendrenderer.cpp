@@ -236,7 +236,8 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 
   if ( !parentGroup ) return atoms;
 
-  Q_FOREACH ( QgsLayerTreeNode *node, parentGroup->children() )
+  const auto constChildren = parentGroup->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {

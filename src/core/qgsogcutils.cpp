@@ -2112,7 +2112,8 @@ QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsE
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
   QDomElement leftNode = expressionNodeToOgcFilter( node->node(), expression, context );
 
-  Q_FOREACH ( QgsExpressionNode *n, node->list()->list() )
+  const auto constList = node->list()->list();
+  for ( QgsExpressionNode *n : constList )
   {
     QDomElement listNode = expressionNodeToOgcFilter( n, expression, context );
     if ( !mErrorMessage.isEmpty() )
@@ -2317,7 +2318,8 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
   // this is somehow wrong - we are just hoping that the other side supports the same functions as we do...
   QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
   funcElem.setAttribute( QStringLiteral( "name" ), fd->name() );
-  Q_FOREACH ( QgsExpressionNode *n, node->args()->list() )
+  const auto constList = node->args()->list();
+  for ( QgsExpressionNode *n : constList )
   {
     QDomElement childElem = expressionNodeToOgcFilter( n, expression, context );
     if ( !mErrorMessage.isEmpty() )
@@ -2563,7 +2565,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
   QDomElement leftNode = toOgcFilter( node->node() );
 
-  Q_FOREACH ( QgsSQLStatement::Node *n, node->list()->list() )
+  const auto constList = node->list()->list();
+  for ( QgsSQLStatement::Node *n : constList )
   {
     QDomElement listNode = toOgcFilter( n );
     if ( !mErrorMessage.isEmpty() )
@@ -2975,7 +2978,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   // Other function
   QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
   funcElem.setAttribute( QStringLiteral( "name" ), node->name() );
-  Q_FOREACH ( QgsSQLStatement::Node *n, node->args()->list() )
+  const auto constList = node->args()->list();
+  for ( QgsSQLStatement::Node *n : constList )
   {
     QDomElement childElem = toOgcFilter( n );
     if ( !mErrorMessage.isEmpty() )
@@ -2996,7 +3000,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   QList<QDomElement> listElem;
-  Q_FOREACH ( const QString &columnName, node->usingColumns() )
+  const auto constUsingColumns = node->usingColumns();
+  for ( const QString &columnName : constUsingColumns )
   {
     QDomElement eqElem = mDoc.createElement( mFilterPrefix + ":PropertyIsEqualTo" );
     QDomElement propElem1 = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
@@ -3050,11 +3055,13 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   // Register all table name aliases
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef *table, node->tables() )
+  const auto constTables = node->tables();
+  for ( QgsSQLStatement::NodeTableDef *table : constTables )
   {
     visit( table );
   }
-  Q_FOREACH ( QgsSQLStatement::NodeJoin *join, node->joins() )
+  const auto constJoins = node->joins();
+  for ( QgsSQLStatement::NodeJoin *join : constJoins )
   {
     visit( join->tableDef() );
   }
@@ -3062,7 +3069,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   // Process JOIN conditions
   QList< QgsSQLStatement::NodeTableDef *> nodeTables = node->tables();
   QString leftTable = nodeTables.at( nodeTables.length() - 1 )->name();
-  Q_FOREACH ( QgsSQLStatement::NodeJoin *join, node->joins() )
+  for ( QgsSQLStatement::NodeJoin *join : constJoins )
   {
     QDomElement joinElem = toOgcFilter( join, leftTable );
     if ( !mErrorMessage.isEmpty() )

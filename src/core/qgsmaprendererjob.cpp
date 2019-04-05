@@ -419,7 +419,8 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
 
     if ( job.renderer )
     {
-      Q_FOREACH ( const QString &message, job.renderer->errors() )
+      const auto constErrors = job.renderer->errors();
+      for ( const QString &message : constErrors )
         mErrors.append( Error( job.renderer->layerId(), message ) );
 
       delete job.renderer;

@@ -340,7 +340,8 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
     QgsLogger::warning( QStringLiteral( "Cannot parse json (%1) as array: %2" ).arg( error.errorString(), json ) );
     return result;
   }
-  Q_FOREACH ( const QJsonValue &cur, jsonDoc.array() )
+  const auto constArray = jsonDoc.array();
+  for ( const QJsonValue &cur : constArray )
   {
     QVariant curVariant = cur.toVariant();
     if ( curVariant.convert( type ) )

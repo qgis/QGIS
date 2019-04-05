@@ -287,7 +287,8 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
     resultList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
   {
-    Q_FOREACH ( const QVariant &var, val.toList() )
+    const auto constToList = val.toList();
+    for ( const QVariant &var : constToList )
       resultList << var;
   }
   else if ( val.type() == QVariant::String )
@@ -307,7 +308,8 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
     // check default
     if ( definition->defaultValue().type() == QVariant::List )
     {
-      Q_FOREACH ( const QVariant &var, definition->defaultValue().toList() )
+      const auto constToList = definition->defaultValue().toList();
+      for ( const QVariant &var : constToList )
         resultList << var;
     }
     else if ( definition->defaultValue().type() == QVariant::String )
@@ -1313,14 +1315,16 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   {
     if ( var.type() == QVariant::List )
     {
-      Q_FOREACH ( const QVariant &listVar, var.toList() )
+      const auto constToList = var.toList();
+      for ( const QVariant &listVar : constToList )
       {
         processVariant( listVar );
       }
     }
     else if ( var.type() == QVariant::StringList )
     {
-      Q_FOREACH ( const QString &s, var.toStringList() )
+      const auto constToStringList = var.toStringList();
+      for ( const QString &s : constToStringList )
       {
         processVariant( s );
       }
@@ -1360,7 +1364,8 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
     }
     else if ( definition->defaultValue().type() == QVariant::List )
     {
-      Q_FOREACH ( const QVariant &var, definition->defaultValue().toList() )
+      const auto constToList = definition->defaultValue().toList();
+      for ( const QVariant &var : constToList )
       {
         if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
         {
@@ -1398,7 +1403,8 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
     resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
   {
-    Q_FOREACH ( const QVariant &var, val.toList() )
+    const auto constToList = val.toList();
+    for ( const QVariant &var : constToList )
       resultStringList << var.toString();
   }
   else
@@ -1410,7 +1416,8 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
     // check default
     if ( definition->defaultValue().type() == QVariant::List )
     {
-      Q_FOREACH ( const QVariant &var, definition->defaultValue().toList() )
+      const auto constToList = definition->defaultValue().toList();
+      for ( const QVariant &var : constToList )
         resultStringList << var.toString();
     }
     else
@@ -1450,7 +1457,8 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
       resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
     else if ( val.type() == QVariant::List )
     {
-      Q_FOREACH ( const QVariant &var, val.toList() )
+      const auto constToList = val.toList();
+      for ( const QVariant &var : constToList )
         resultStringList << var.toString();
     }
     else
@@ -1465,7 +1473,8 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
     {
       if ( definition->defaultValue().type() == QVariant::List )
       {
-        Q_FOREACH ( const QVariant &var, definition->defaultValue().toList() )
+        const auto constToList = definition->defaultValue().toList();
+        for ( const QVariant &var : constToList )
           resultStringList << var.toString();
       }
       else
@@ -2353,7 +2362,8 @@ QString QgsProcessingParameterMatrix::valueAsPythonString( const QVariant &value
     if ( v.type() == QVariant::List )
     {
       QStringList parts2;
-      Q_FOREACH ( const QVariant &v2, v.toList() )
+      const auto constToList = v.toList();
+      for ( const QVariant &v2 : constToList )
       {
         if ( v2.isNull() || !v2.isValid() )
           parts2 << QStringLiteral( "None" );
@@ -2503,7 +2513,8 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    Q_FOREACH ( const QVariant &v, input.toList() )
+    const auto constToList = input.toList();
+    for ( const QVariant &v : constToList )
     {
       if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( v ) ) )
         continue;
@@ -2524,7 +2535,8 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    Q_FOREACH ( const QString &v, input.toStringList() )
+    const auto constToStringList = input.toStringList();
+    for ( const QString &v : constToStringList )
     {
       if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
         return false;
@@ -2582,7 +2594,8 @@ QString QgsProcessingParameterMultipleLayers::asScriptCode() const
   if ( mDefault.type() == QVariant::List )
   {
     QStringList parts;
-    Q_FOREACH ( const QVariant &var, mDefault.toList() )
+    const auto constToList = mDefault.toList();
+    for ( const QVariant &var : constToList )
     {
       parts << var.toString();
     }
@@ -3097,7 +3110,8 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
   if ( value.type() == QVariant::List )
   {
     QStringList parts;
-    Q_FOREACH ( const QVariant &val, value.toList() )
+    const auto constToList = value.toList();
+    for ( const QVariant &val : constToList )
     {
       parts << QString::number( static_cast< int >( val.toDouble() ) );
     }
@@ -3723,7 +3737,8 @@ QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value,
   if ( value.type() == QVariant::List )
   {
     QStringList parts;
-    Q_FOREACH ( const QVariant &val, value.toList() )
+    const auto constToList = value.toList();
+    for ( const QVariant &val : constToList )
     {
       parts << QgsProcessingUtils::stringToPythonLiteral( val.toString() );
     }
@@ -3732,7 +3747,8 @@ QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value,
   else if ( value.type() == QVariant::StringList )
   {
     QStringList parts;
-    Q_FOREACH ( QString s, value.toStringList() )
+    const auto constToStringList = value.toStringList();
+    for ( QString s : constToStringList )
     {
       parts << QgsProcessingUtils::stringToPythonLiteral( s );
     }

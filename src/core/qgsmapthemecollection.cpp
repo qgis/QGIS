@@ -78,7 +78,8 @@ static QString _groupId( QgsLayerTreeNode *node )
 
 void QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *parent, QgsLayerTreeModel *model, QgsMapThemeCollection::MapThemeRecord &rec )
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, parent->children() )
+  const auto constChildren = parent->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -170,7 +171,8 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
 
 void QgsMapThemeCollection::applyThemeToGroup( QgsLayerTreeGroup *parent, QgsLayerTreeModel *model, const QgsMapThemeCollection::MapThemeRecord &rec )
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, parent->children() )
+  const auto constChildren = parent->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -344,7 +346,8 @@ void QgsMapThemeCollection::applyMapThemeCheckedLegendNodesToLayer( const MapThe
 
   bool someNodesUnchecked = layerRec.usingLegendItems;
 
-  Q_FOREACH ( const QgsLegendSymbolItem &item, vlayer->renderer()->legendSymbolItems() )
+  const auto constLegendSymbolItems = vlayer->renderer()->legendSymbolItems();
+  for ( const QgsLegendSymbolItem &item : constLegendSymbolItems )
   {
     bool checked = renderer->legendSymbolItemChecked( item.ruleKey() );
     bool shouldBeChecked = someNodesUnchecked ? layerRec.checkedLegendItems.contains( item.ruleKey() ) : true;

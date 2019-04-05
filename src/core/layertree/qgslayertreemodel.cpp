@@ -614,7 +614,8 @@ void QgsLayerTreeModel::setLegendFilterByScale( double scale )
 
   // this could be later done in more efficient way
   // by just updating active legend nodes, without refreshing original legend nodes
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mRootNode->findLayers() )
+  const auto constFindLayers = mRootNode->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
     refreshLayerLegend( nodeLayer );
 }
 
@@ -634,7 +635,8 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
     // collect expression filters
     if ( useExpressions )
     {
-      Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mRootNode->findLayers() )
+      const auto constFindLayers = mRootNode->findLayers();
+      for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
       {
         bool enabled;
         QString expr = QgsLayerTreeUtils::legendFilterByExpression( *nodeLayer, &enabled );
@@ -670,7 +672,8 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
 
   // this could be later done in more efficient way
   // by just updating active legend nodes, without refreshing original legend nodes
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mRootNode->findLayers() )
+  const auto constFindLayers = mRootNode->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
     refreshLayerLegend( nodeLayer );
 
   setAutoCollapseLegendNodes( bkAutoCollapse );
@@ -902,7 +905,8 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
 static int _numLayerCount( QgsLayerTreeGroup *group, const QString &layerId )
 {
   int count = 0;
-  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
+  const auto constChildren = group->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     if ( QgsLayerTree::isLayer( child ) )
     {
@@ -938,7 +942,8 @@ void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer *nodeLayer )
 
 void QgsLayerTreeModel::connectToLayers( QgsLayerTreeGroup *parentGroup )
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, parentGroup->children() )
+  const auto constChildren = parentGroup->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
       connectToLayers( QgsLayerTree::toGroup( node ) );
@@ -949,7 +954,8 @@ void QgsLayerTreeModel::connectToLayers( QgsLayerTreeGroup *parentGroup )
 
 void QgsLayerTreeModel::disconnectFromLayers( QgsLayerTreeGroup *parentGroup )
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, parentGroup->children() )
+  const auto constChildren = parentGroup->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
       disconnectFromLayers( QgsLayerTree::toGroup( node ) );

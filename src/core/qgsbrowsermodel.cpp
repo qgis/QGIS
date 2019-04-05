@@ -147,7 +147,8 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add as sorted groups by QgsDataProvider::DataCapability enum
-  Q_FOREACH ( int key, providerMap.uniqueKeys() )
+  const auto constUniqueKeys = providerMap.uniqueKeys();
+  for ( int key : constUniqueKeys )
   {
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )

@@ -110,7 +110,8 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 {
   layer->setBlendMode( blendMode() );
 
-  Q_FOREACH ( const QString &s, styleManager()->styles() )
+  const auto constStyles = styleManager()->styles();
+  for ( const QString &s : constStyles )
   {
     layer->styleManager()->addStyle( s, styleManager()->style( s ) );
   }
@@ -1830,7 +1831,8 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   }
   else
   {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, vl->dependencies() )
+    const auto constDependencies = vl->dependencies();
+    for ( const QgsMapLayerDependency &dep : constDependencies )
     {
       if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;

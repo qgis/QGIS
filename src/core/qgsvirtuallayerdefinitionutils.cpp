@@ -59,7 +59,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
   }
 
   int joinIdx = 0;
-  Q_FOREACH ( const QgsVectorLayerJoinInfo &join, layer->vectorJoins() )
+  const auto constVectorJoins = layer->vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &join : constVectorJoins )
   {
     QString joinName = QStringLiteral( "j%1" ).arg( ++joinIdx );
     QgsVectorLayer *joinedLayer = join.joinLayer();

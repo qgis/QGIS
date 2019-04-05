@@ -1163,7 +1163,8 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
     attr = QgsExpression::quotedColumnRef( attr );
   }
 
-  Q_FOREACH ( const QgsRendererCategory &cat, r->categories() )
+  const auto constCategories = r->categories();
+  for ( const QgsRendererCategory &cat : constCategories )
   {
     QString value;
     // not quoting numbers saves a type cast
@@ -1199,7 +1200,8 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule *initial
   }
 
   bool firstRange = true;
-  Q_FOREACH ( const QgsRendererRange &rng, r->ranges() )
+  const auto constRanges = r->ranges();
+  for ( const QgsRendererRange &rng : constRanges )
   {
     // due to the loss of precision in double->string conversion we may miss out values at the limit of the range
     // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision

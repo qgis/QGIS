@@ -33,7 +33,8 @@ QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer *layer )
 static QList<QgsVectorLayer *> _outEdges( QgsVectorLayer *vl )
 {
   QList<QgsVectorLayer *> lst;
-  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vl->vectorJoins() )
+  const auto constVectorJoins = vl->vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
   {
     if ( QgsVectorLayer *joinVl = info.joinLayer() )
       lst << joinVl;

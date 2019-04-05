@@ -233,7 +233,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->setOpacity( opacity() );
   layer->setReadExtentFromXml( readExtentFromXml() );
 
-  Q_FOREACH ( const QgsAction &action, actions()->actions() )
+  const auto constActions = actions()->actions();
+  for ( const QgsAction &action : constActions )
   {
     layer->actions()->addAction( action );
   }

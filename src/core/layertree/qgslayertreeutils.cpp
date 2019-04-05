@@ -154,7 +154,8 @@ static QDomElement _writeOldLegendGroup( QDomDocument &doc, QgsLayerTreeGroup *n
 
 static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupElem, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QList<QgsMapLayer *> &order )
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, nodeGroup->children() )
+  const auto constChildren = nodeGroup->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -294,7 +295,8 @@ bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer *> &layerN
 void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
 {
   QList<QgsLayerTreeNode *> nodesToRemove;
-  Q_FOREACH ( QgsLayerTreeNode *node, group->children() )
+  const auto constChildren = group->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
       removeInvalidLayers( QgsLayerTree::toGroup( node ) );
@@ -382,7 +384,8 @@ QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode *node )
 
 void QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group )
 {
-  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
+  const auto constChildren = group->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -402,7 +405,8 @@ void QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *grou
 
 void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *group, const QgsProject *project )
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, group->children() )
+  const auto constChildren = group->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( !node->customProperty( QStringLiteral( "embedded_project" ) ).toString().isEmpty() )
     {
@@ -433,7 +437,8 @@ QString QgsLayerTreeUtils::legendFilterByExpression( const QgsLayerTreeLayer &la
 
 bool QgsLayerTreeUtils::hasLegendFilterExpression( const QgsLayerTreeGroup &group )
 {
-  Q_FOREACH ( QgsLayerTreeLayer *l, group.findLayers() )
+  const auto constFindLayers = group.findLayers();
+  for ( QgsLayerTreeLayer *l : constFindLayers )
   {
     bool exprEnabled;
     QString expr = legendFilterByExpression( *l, &exprEnabled );
@@ -453,7 +458,8 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerBelow( QgsLayerTreeGroup *group
     return nullptr;
 
   int idx = 0;
-  Q_FOREACH ( QgsLayerTreeNode *vl, inTree->parent()->children() )
+  const auto constChildren = inTree->parent()->children();
+  for ( QgsLayerTreeNode *vl : constChildren )
   {
     if ( vl->nodeType() == QgsLayerTreeNode::NodeLayer && static_cast<QgsLayerTreeLayer *>( vl )->layer() == refLayer )
     {

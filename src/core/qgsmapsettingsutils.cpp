@@ -28,7 +28,8 @@ const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSett
   QSet< QString > layers;
 
   QgsTextFormat layerFormat;
-  Q_FOREACH ( QgsMapLayer *layer, mapSettings.layers() )
+  const auto constLayers = mapSettings.layers();
+  for ( QgsMapLayer *layer : constLayers )
   {
     if ( layer )
     {

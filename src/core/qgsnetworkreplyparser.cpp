@@ -38,7 +38,8 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   {
     // reply is not multipart, copy body and headers
     QMap<QByteArray, QByteArray> headers;
-    Q_FOREACH ( QByteArray h, mReply->rawHeaderList() )
+    const auto constRawHeaderList = mReply->rawHeaderList();
+    for ( QByteArray h : constRawHeaderList )
     {
       headers.insert( h, mReply->rawHeader( h ) );
     }

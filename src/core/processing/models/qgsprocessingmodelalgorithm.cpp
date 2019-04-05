@@ -99,7 +99,8 @@ QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
 {
   QVariantMap childParams;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, child.algorithm()->parameterDefinitions() )
+  const auto constParameterDefinitions = child.algorithm()->parameterDefinitions();
+  for ( const QgsProcessingParameterDefinition *def : constParameterDefinitions )
   {
     if ( !def->isDestination() )
     {
@@ -219,7 +220,8 @@ bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId,
     QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator childParamIt = candidateChildParams.constBegin();
     for ( ; childParamIt != candidateChildParams.constEnd(); ++childParamIt )
     {
-      Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, childParamIt.value() )
+      const auto constValue = childParamIt.value();
+      for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
         if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput
              && source.outputChildId() == childId
@@ -869,7 +871,8 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
             continue;
 
           bool ok = sourceDef->dataTypes().isEmpty();
-          Q_FOREACH ( int type, sourceDef->dataTypes() )
+          const auto constDataTypes = sourceDef->dataTypes();
+          for ( int type : constDataTypes )
           {
             if ( dataTypes.contains( type ) || type == QgsProcessing::TypeMapLayer || type == QgsProcessing::TypeVector || type == QgsProcessing::TypeVectorAnyGeometry )
             {
@@ -905,7 +908,8 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
     if ( !alg )
       continue;
 
-    Q_FOREACH ( const QgsProcessingOutputDefinition *out, alg->outputDefinitions() )
+    const auto constOutputDefinitions = alg->outputDefinitions();
+    for ( const QgsProcessingOutputDefinition *out : constOutputDefinitions )
     {
       if ( outputTypes.contains( out->type() ) )
       {
@@ -1283,7 +1287,8 @@ bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QStrin
     QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = childParams.constBegin();
     for ( ; paramIt != childParams.constEnd(); ++paramIt )
     {
-      Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramIt.value() )
+      const auto constValue = paramIt.value();
+      for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
         if ( source.source() == QgsProcessingModelChildParameterSource::ModelParameter
              && source.parameterName() == name )
@@ -1336,7 +1341,8 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
     QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = childParams.constBegin();
     for ( ; paramIt != childParams.constEnd(); ++paramIt )
     {
-      Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramIt.value() )
+      const auto constValue = paramIt.value();
+      for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
         if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput
              && source.outputChildId() == childId )
@@ -1372,7 +1378,8 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
   const QgsProcessingModelChildAlgorithm &alg = mChildAlgorithms.value( childId );
 
   // add direct dependencies
-  Q_FOREACH ( const QString &c, alg.dependencies() )
+  const auto constDependencies = alg.dependencies();
+  for ( const QString &c : constDependencies )
   {
     if ( !depends.contains( c ) )
     {
@@ -1386,7 +1393,8 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
   QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = childParams.constBegin();
   for ( ; paramIt != childParams.constEnd(); ++paramIt )
   {
-    Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramIt.value() )
+    const auto constValue = paramIt.value();
+    for ( const QgsProcessingModelChildParameterSource &source : constValue )
     {
       if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput && !depends.contains( source.outputChildId() ) )
       {

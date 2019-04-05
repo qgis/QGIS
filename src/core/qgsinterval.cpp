@@ -81,7 +81,8 @@ QgsInterval QgsInterval::fromString( const QString &string )
     for ( ; it != map.constEnd(); ++it )
     {
       int duration = it.key();
-      Q_FOREACH ( const QString &name, it.value() )
+      const auto constValue = it.value();
+      for ( const QString &name : constValue )
       {
         if ( match.contains( name, Qt::CaseInsensitive ) )
         {

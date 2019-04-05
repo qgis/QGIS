@@ -142,7 +142,8 @@ void fetchCheckedLayers( const QgsLayerTreeNode *node, QList<QgsMapLayer *> &lay
       layers << nodeLayer->layer();
   }
 
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
     fetchCheckedLayers( child, layers );
 }
 

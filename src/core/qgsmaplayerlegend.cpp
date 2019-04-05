@@ -216,7 +216,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  Q_FOREACH ( const QgsLegendSymbolItem &i, r->legendSymbolItems() )
+  const auto constLegendSymbolItems = r->legendSymbolItems();
+  for ( const QgsLegendSymbolItem &i : constLegendSymbolItems )
   {
     if ( i.dataDefinedSizeLegendSettings() )
       nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *i.dataDefinedSizeLegendSettings() );

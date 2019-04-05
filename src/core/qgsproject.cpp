@@ -1435,7 +1435,8 @@ bool QgsProject::readProjectFile( const QString &filename )
 void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
 {
 
-  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
+  const auto constChildren = group->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -1449,7 +1450,8 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
         if ( newGroup )
         {
           QList<QgsLayerTreeNode *> clonedChildren;
-          Q_FOREACH ( QgsLayerTreeNode *newGroupChild, newGroup->children() )
+          const auto constChildren = newGroup->children();
+          for ( QgsLayerTreeNode *newGroupChild : constChildren )
             clonedChildren << newGroupChild->clone();
           delete newGroup;
 
@@ -1865,7 +1867,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( projectLayersNode );
 
   QDomElement layerOrderNode = doc->createElement( QStringLiteral( "layerorder" ) );
-  Q_FOREACH ( QgsMapLayer *layer, mRootGroup->customLayerOrder() )
+  const auto constCustomLayerOrder = mRootGroup->customLayerOrder();
+  for ( QgsMapLayer *layer : constCustomLayerOrder )
   {
     QDomElement mapLayerElem = doc->createElement( QStringLiteral( "layer" ) );
     mapLayerElem.setAttribute( QStringLiteral( "id" ), layer->id() );
@@ -2393,7 +2396,8 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // consider the layers might be identify disabled in its project
-  Q_FOREACH ( const QString &layerId, newGroup->findLayerIds() )
+  const auto constFindLayerIds = newGroup->findLayerIds();
+  for ( const QString &layerId : constFindLayerIds )
   {
     QgsLayerTreeLayer *layer = newGroup->findLayer( layerId );
     if ( layer )
@@ -2408,7 +2412,8 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
 
 void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group )
 {
-  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
+  const auto constChildren = group->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     // all nodes in the subtree will have "embedded" custom property set
     child->setCustomProperty( QStringLiteral( "embedded" ), 1 );

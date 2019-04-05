@@ -588,8 +588,9 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
   mParams.clear();
   QUrl url;
   url.setEncodedQuery( uri );
-  QPair<QString, QString> item;
-  Q_FOREACH ( item, url.queryItems() )
+
+  const auto constQueryItems = url.queryItems();
+  for ( const QPair<QString, QString> &item : constQueryItems )
   {
     mParams.insertMulti( item.first, item.second );
   }

@@ -549,10 +549,12 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
           commitErrors << tr( "ERROR: %n attribute value change(s) not applied.", "not changed attribute values count", mChangedAttributeValues.size() );
 #if 0
           QString list = "ERROR: pending changes:";
-          Q_FOREACH ( QgsFeatureId id, mChangedAttributeValues.keys() )
+          const auto constKeys = mChangedAttributeValues.keys();
+          for ( QgsFeatureId id : constKeys )
           {
             list.append( "\n  " + FID_TO_STRING( id ) + '[' );
-            Q_FOREACH ( int idx, mChangedAttributeValues[ id ].keys() )
+            const auto constKeys = mChangedAttributeValues[ id ].keys();
+            for ( int idx : constKeys )
             {
               list.append( QString( " %1:%2" ).arg( L->fields().at( idx ).name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
             }
@@ -680,7 +682,8 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   if ( !success && provider->hasErrors() )
   {
     commitErrors << tr( "\n  Provider errors:" );
-    Q_FOREACH ( QString e, provider->errors() )
+    const auto constErrors = provider->errors();
+    for ( QString e : constErrors )
     {
       commitErrors << "    " + e.replace( '\n', QLatin1String( "\n    " ) );
     }

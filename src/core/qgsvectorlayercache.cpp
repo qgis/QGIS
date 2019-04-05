@@ -243,7 +243,8 @@ void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int fie
 {
   const QgsVectorLayer *joinLayer = qobject_cast<const QgsVectorLayer *>( sender() );
 
-  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mLayer->vectorJoins() )
+  const auto constVectorJoins = mLayer->vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
   {
     if ( joinLayer == info.joinLayer() )
     {
@@ -455,7 +456,8 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest &feat
 
 void QgsVectorLayerCache::connectJoinedLayers() const
 {
-  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mLayer->vectorJoins() )
+  const auto constVectorJoins = mLayer->vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
   {
     const QgsVectorLayer *vl = info.joinLayer();
     if ( vl )

@@ -124,7 +124,8 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   QList<QgsPointXY> newPoints;
   if ( g.wkbType() == QgsWkbTypes::LineString )
   {
-    Q_FOREACH ( const QgsPointXY &p, g.asPolyline() )
+    const auto constAsPolyline = g.asPolyline();
+    for ( const QgsPointXY &p : constAsPolyline )
     {
       if ( !endpoints.contains( p ) )
         newPoints << p;
@@ -132,7 +133,8 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   }
   if ( g.wkbType() == QgsWkbTypes::MultiLineString )
   {
-    Q_FOREACH ( const QgsPolylineXY &pl, g.asMultiPolyline() )
+    const auto constAsMultiPolyline = g.asMultiPolyline();
+    for ( const QgsPolylineXY &pl : constAsMultiPolyline )
     {
       const auto constPl = pl;
       for ( const QgsPointXY &p : constPl )
@@ -306,7 +308,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QgsRectangle aoi = _areaOfInterest( pointMap, tolerance );
 
     QList<LayerAndAreaOfInterest> layers;
-    Q_FOREACH ( QgsMapLayer *layer, mMapSettings.layers() )
+    const auto constLayers = mMapSettings.layers();
+    for ( QgsMapLayer *layer : constLayers )
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
         layers << qMakePair( vl, aoi );
     prepareIndex( layers );
@@ -314,8 +317,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QgsPointLocator::MatchList edges; // for snap on intersection
     QgsPointLocator::Match bestMatch;
 
-    const auto constLayers = layers;
-    for ( const LayerAndAreaOfInterest &entry : constLayers )
+    for ( const LayerAndAreaOfInterest &entry : qgis::as_const( layers ) )
     {
       QgsVectorLayer *vl = entry.first;
       if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance ) )
@@ -525,7 +527,8 @@ QString QgsSnappingUtils::dump()
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AllLayers )
   {
-    Q_FOREACH ( QgsMapLayer *layer, mMapSettings.layers() )
+    const auto constLayers = mMapSettings.layers();
+    for ( QgsMapLayer *layer : constLayers )
     {
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
         layers << LayerConfig( vl, _snappingTypeToPointLocatorType( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );

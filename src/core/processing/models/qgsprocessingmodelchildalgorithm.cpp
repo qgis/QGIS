@@ -98,7 +98,8 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   for ( ; paramIt != mParams.constEnd(); ++paramIt )
   {
     QVariantList sources;
-    Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramIt.value() )
+    const auto constValue = paramIt.value();
+    for ( const QgsProcessingModelChildParameterSource &source : constValue )
     {
       sources << source.toVariant();
     }
@@ -137,7 +138,8 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   for ( ; paramIt != paramMap.constEnd(); ++paramIt )
   {
     QgsProcessingModelChildParameterSources sources;
-    Q_FOREACH ( const QVariant &sourceVar, paramIt->toList() )
+    const auto constToList = paramIt->toList();
+    for ( const QVariant &sourceVar : constToList )
     {
       QgsProcessingModelChildParameterSource param;
       if ( !param.loadVariant( sourceVar.toMap() ) )

@@ -1504,10 +1504,11 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString &path )
       // if we are using a selection collection, search for target in the mapping in this group
       if ( item->type() == QgsCptCityDataItem::Selection )
       {
-        const QgsCptCitySelectionItem *selItem = dynamic_cast<const QgsCptCitySelectionItem *>( item );
+        const QgsCptCitySelectionItem *selItem = qobject_cast<const QgsCptCitySelectionItem *>( item );
         if ( selItem )
         {
-          Q_FOREACH ( QString childPath, selItem->selectionsList() )
+          const auto constSelectionsList = selItem->selectionsList();
+          for ( QString childPath : constSelectionsList )
           {
             if ( childPath.endsWith( '/' ) )
               childPath.chop( 1 );

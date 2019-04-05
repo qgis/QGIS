@@ -125,7 +125,8 @@ void QgsProviderRegistry::init()
     fileRegexp.setPattern( filePattern );
   }
 
-  Q_FOREACH ( const QFileInfo &fi, mLibraryDirectory.entryInfoList() )
+  const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
+  for ( const QFileInfo &fi : constEntryInfoList )
   {
     if ( !fileRegexp.isEmpty() )
     {

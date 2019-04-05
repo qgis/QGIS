@@ -148,7 +148,8 @@ void QgsSnappingConfig::reset()
 
   // set advanced config
   mIndividualLayerSettings = QHash<QgsVectorLayer *, IndividualLayerSettings>();
-  Q_FOREACH ( QgsMapLayer *ml, mProject->mapLayers() )
+  const auto constMapLayers = mProject->mapLayers();
+  for ( QgsMapLayer *ml : constMapLayers )
   {
     QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( ml );
     if ( vl )

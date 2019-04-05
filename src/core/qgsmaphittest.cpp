@@ -56,7 +56,8 @@ void QgsMapHitTest::run()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
-  Q_FOREACH ( QgsMapLayer *layer, mSettings.layers() )
+  const auto constLayers = mSettings.layers();
+  for ( QgsMapLayer *layer : constLayers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl || !vl->renderer() )

@@ -160,22 +160,26 @@ const QgsSQLStatement::Node *QgsSQLStatement::rootNode() const
 
 void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeSelect &n )
 {
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef *table, n.tables() )
+  const auto constTables = n.tables();
+  for ( QgsSQLStatement::NodeTableDef *table : constTables )
   {
     table->accept( *this );
   }
-  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn *column, n.columns() )
+  const auto constColumns = n.columns();
+  for ( QgsSQLStatement::NodeSelectedColumn *column : constColumns )
   {
     column->accept( *this );
   }
-  Q_FOREACH ( QgsSQLStatement::NodeJoin *join, n.joins() )
+  const auto constJoins = n.joins();
+  for ( QgsSQLStatement::NodeJoin *join : constJoins )
   {
     join->accept( *this );
   }
   QgsSQLStatement::Node *where = n.where();
   if ( where )
     where->accept( *this );
-  Q_FOREACH ( QgsSQLStatement::NodeColumnSorted *column, n.orderBy() )
+  const auto constOrderBy = n.orderBy();
+  for ( QgsSQLStatement::NodeColumnSorted *column : constOrderBy )
   {
     column->accept( *this );
   }
