@@ -648,7 +648,6 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
       return;
     }
   }
-  mExpressionFieldInfo.insert( fieldIdx, exp.release() );
 
   for ( const QString &col : referencedColumns )
   {
@@ -666,6 +665,8 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   {
     mRequest.setFlags( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
   }
+
+  mExpressionFieldInfo.insert( fieldIdx, exp.release() );
 }
 
 void QgsVectorLayerFeatureIterator::prepareFields()
