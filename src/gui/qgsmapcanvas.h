@@ -75,10 +75,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
+    if ( qobject_cast<QgsMapCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMapCanvas;
     else
-      sipType = NULL;
+      sipType = nullptr;
     SIP_END
 #endif
 
