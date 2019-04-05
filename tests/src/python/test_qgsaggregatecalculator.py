@@ -188,6 +188,9 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
         self.assertTrue(ok)
         self.assertEqual(val, 'cc,aaaa,bbbbbbbb,aaaa,eeee,,eeee,,dddd')
+        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenateUnique, 'fldstring')
+        self.assertTrue(ok)
+        self.assertEqual(val, 'cc,aaaa,bbbbbbbb,eeee,,dddd')
 
         # bad tests - the following stats should not be calculatable for string fields
         for t in [QgsAggregateCalculator.Sum,
@@ -458,6 +461,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.StringMinimumLength, 'min_length'],
                  [QgsAggregateCalculator.StringMaximumLength, 'max_length'],
                  [QgsAggregateCalculator.StringConcatenate, 'concatenate'],
+                 [QgsAggregateCalculator.StringConcatenateUnique, 'concatenate_unique'],
                  [QgsAggregateCalculator.GeometryCollect, 'collect']]
 
         for t in tests:

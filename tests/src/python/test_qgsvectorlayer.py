@@ -2074,7 +2074,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
         pr = layer.dataProvider()
 
-        string_values = ['this', 'is', 'a', 'test']
+        string_values = ['this', 'is', 'a', 'test', 'a', 'nice', 'test']
         features = []
         for s in string_values:
             f = QgsFeature()
@@ -2086,7 +2086,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         params.delimiter = ' '
         val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenate, 'fldstring', params)
         self.assertTrue(ok)
-        self.assertEqual(val, 'this is a test')
+        self.assertEqual(val, 'this is a test a nice test')
+        val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenateUnique, 'fldstring', params)
+        self.assertTrue(ok)
+        self.assertEqual(val, 'this is a test nice')
 
     def testAggregateInVirtualField(self):
         """
