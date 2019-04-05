@@ -37,15 +37,11 @@ QgsLineMaterial::QgsLineMaterial()
   , mParameterMiterLimit( new Qt3DRender::QParameter( "MITER_LIMIT", -1, this ) )  // 0.75
   , mParameterLineColor( new Qt3DRender::QParameter( "lineColor", QColor( 0, 255, 0 ), this ) )
   , mParameterWindowScale( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF(), this ) )
-  , mParameterCameraNearPlanePoint( new Qt3DRender::QParameter( "camNearPlanePoint", QVector3D(), this ) )
-  , mParameterCameraNearPlaneNormal( new Qt3DRender::QParameter( "camNearPlaneNormal", QVector3D(), this ) )
 {
   addParameter( mParameterThickness );
   addParameter( mParameterMiterLimit );
   addParameter( mParameterLineColor );
   addParameter( mParameterWindowScale );
-  addParameter( mParameterCameraNearPlanePoint );
-  addParameter( mParameterCameraNearPlaneNormal );
 
   //Parameter { name: "tex0"; value: txt },
   //Parameter { name: "useTex"; value: false },
@@ -104,12 +100,6 @@ void QgsLineMaterial::setLineWidth( float width )
 float QgsLineMaterial::lineWidth() const
 {
   return mParameterThickness->value().toFloat();
-}
-
-void QgsLineMaterial::setCameraParameters( const QVector3D &position, const QVector3D &viewVector, float nearPlane )
-{
-  mParameterCameraNearPlanePoint->setValue( position + viewVector * nearPlane );
-  mParameterCameraNearPlaneNormal->setValue( viewVector );
 }
 
 void QgsLineMaterial::setViewportSize( const QSizeF &viewportSize )

@@ -64,7 +64,6 @@ class QgsLineMaterial : public Qt3DRender::QMaterial
     void setLineWidth( float width );
     float lineWidth() const;
 
-    Q_INVOKABLE void setCameraParameters( const QVector3D &position, const QVector3D &viewVector, float nearPlane );
     Q_INVOKABLE void setViewportSize( const QSizeF &viewportSize );
 
   private:
@@ -73,8 +72,6 @@ class QgsLineMaterial : public Qt3DRender::QMaterial
     Qt3DRender::QParameter *mParameterLineColor = nullptr;
 
     Qt3DRender::QParameter *mParameterWindowScale = nullptr;
-    Qt3DRender::QParameter *mParameterCameraNearPlanePoint = nullptr;
-    Qt3DRender::QParameter *mParameterCameraNearPlaneNormal = nullptr;
 
 };
 
