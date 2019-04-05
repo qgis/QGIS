@@ -93,7 +93,19 @@ void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatur
     for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ) );
 
-    // TODO: if has extrusion: also add vertical edges for each vertex
+    if ( extrusionHeight )
+    {
+      // add roof and wall edges
+      const QgsLineString *exterior = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
+      outEdges.addLineString( *exterior, extrusionHeight );
+      outEdges.addVerticalLines( *exterior, extrusionHeight );
+      for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
+      {
+        const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
+        outEdges.addLineString( *interior, extrusionHeight );
+        outEdges.addVerticalLines( *interior, extrusionHeight );
+      }
+    }
   }
 
   Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );

@@ -78,7 +78,8 @@ struct QgsLineVertexData
   QByteArray createIndexBuffer();
   Qt3DRender::QGeometry *createGeometry( Qt3DCore::QNode *parent );
 
-  void addLineString( const QgsLineString &lineString );
+  void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
+  void addVerticalLines( const QgsLineString &lineString, float verticalLength );
 };
 
 /// @endcond
