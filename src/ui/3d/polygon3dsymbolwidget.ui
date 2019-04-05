@@ -7,17 +7,27 @@
     <x>0</x>
     <y>0</y>
     <width>561</width>
-    <height>452</height>
+    <height>653</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="0" colspan="2">
-    <widget class="QCheckBox" name="chkInvertNormals">
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Invert normals (experimental)</string>
+      <string>Height</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsDoubleSpinBox" name="spinHeight">
+     <property name="minimum">
+      <double>-99999.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>99999.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -26,6 +36,53 @@
      <property name="text">
       <string>…</string>
      </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Extrusion</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsDoubleSpinBox" name="spinExtrusion">
+     <property name="maximum">
+      <double>99999.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QgsPropertyOverrideButton" name="btnExtrusionDD">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Altitude clamping</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="cboAltClamping">
+     <item>
+      <property name="text">
+       <string>Absolute</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Relative</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Terrain</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="3" column="0">
@@ -49,57 +106,10 @@
      </item>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="cboAltClamping">
-     <item>
-      <property name="text">
-       <string>Absolute</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Relative</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Terrain</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Height</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QgsDoubleSpinBox" name="spinExtrusion">
-     <property name="maximum">
-      <double>99999.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Extrusion</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Altitude clamping</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QgsPropertyOverrideButton" name="btnExtrusionDD">
-     <property name="text">
-      <string>…</string>
+      <string>Culling mode</string>
      </property>
     </widget>
    </item>
@@ -122,10 +132,17 @@
      </item>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_5">
+   <item row="5" column="0">
+    <widget class="QCheckBox" name="chkAddBackFaces">
      <property name="text">
-      <string>Culling mode</string>
+      <string>Add back faces</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QCheckBox" name="chkInvertNormals">
+     <property name="text">
+      <string>Invert normals (experimental)</string>
      </property>
     </widget>
    </item>
@@ -139,21 +156,65 @@
    <item row="8" column="0" colspan="3">
     <widget class="QgsPhongMaterialWidget" name="widgetMaterial" native="true"/>
    </item>
-   <item row="0" column="1">
-    <widget class="QgsDoubleSpinBox" name="spinHeight">
-     <property name="minimum">
-      <double>-99999.000000000000000</double>
+   <item row="9" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupEdges">
+     <property name="title">
+      <string>Edges</string>
      </property>
-     <property name="maximum">
-      <double>99999.000000000000000</double>
+     <property name="checkable">
+      <bool>true</bool>
      </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QCheckBox" name="chkAddBackFaces">
-     <property name="text">
-      <string>Add back faces</string>
-     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Width</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="spinEdgeWidth">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="suffix">
+         <string> px</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Color</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsColorButton" name="btnEdgeColor">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -173,6 +234,12 @@
    <class>QgsPhongMaterialWidget</class>
    <extends>QWidget</extends>
    <header>qgsphongmaterialwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
