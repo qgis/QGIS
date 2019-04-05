@@ -96,7 +96,7 @@ Qt3DRender::QGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *paren
   return geom;
 }
 
-void QgsLineVertexData::addLineString( const QgsLineString &lineString )
+void QgsLineVertexData::addLineString( const QgsLineString &lineString, float extraHeightOffset )
 {
   if ( withAdjacency )
     indexes << vertices.count();  // add the following vertex (for adjacency)
@@ -108,7 +108,7 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString )
   for ( int i = 0; i < lineString.vertexCount(); ++i )
   {
     QgsPoint p = lineString.pointN( i );
-    float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight, centroid, *mapSettings );
+    float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, *mapSettings );
 
     vertices << QVector3D( p.x() - mapSettings->origin().x(), z, -( p.y() - mapSettings->origin().y() ) );
     indexes << vertices.count() - 1;
@@ -119,5 +119,34 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString )
 
   indexes << 0;  // add primitive restart
 }
+
+
+void QgsLineVertexData::addVerticalLines( const QgsLineString &lineString, float verticalLength )
+{
+  QgsPoint centroid;
+  if ( altBinding == Qgs3DTypes::AltBindCentroid )
+    centroid = lineString.centroid();
+
+  for ( int i = 0; i < lineString.vertexCount(); ++i )
+  {
+    QgsPoint p = lineString.pointN( i );
+    float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight, centroid, *mapSettings );
+    float z2 = z + verticalLength;
+
+    if ( withAdjacency )
+      indexes << vertices.count();  // add the following vertex (for adjacency)
+
+    vertices << QVector3D( p.x() - mapSettings->origin().x(), z, -( p.y() - mapSettings->origin().y() ) );
+    indexes << vertices.count() - 1;
+    vertices << QVector3D( p.x() - mapSettings->origin().x(), z2, -( p.y() - mapSettings->origin().y() ) );
+    indexes << vertices.count() - 1;
+
+    if ( withAdjacency )
+      indexes << vertices.count() - 1;  // add the last vertex (for adjacency)
+
+    indexes << 0;  // add primitive restart
+  }
+}
+
 
 /// @endcond
