@@ -283,7 +283,7 @@ Content-Type: text/xml; charset=utf-8
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
-   <Layer mutuallyExclusive="0" visible="1">
+   <Layer mutuallyExclusive="0" visible="1" queryable="1">
     <Name>group_name</Name>
     <Title>Group title</Title>
     <Abstract>Group abstract</Abstract>
@@ -329,7 +329,7 @@ Content-Type: text/xml; charset=utf-8
      </Attributes>
     </Layer>
    </Layer>
-   <Layer mutuallyExclusive="0" visible="1">
+   <Layer mutuallyExclusive="0" queryable="0" visible="1">
     <Name>groupwithoutshortname</Name>
     <Title>groupwithoutshortname</Title>
     <CRS>CRS:84</CRS>

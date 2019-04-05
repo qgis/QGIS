@@ -159,6 +159,32 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   return dpm / 1000.0;
 }
 
+QStringList QgsWmsRenderContext::flattenedQueryLayers() const
+{
+  QStringList result;
+  std::function <QStringList( const QString &name )> findLeaves = [ & ]( const QString & name ) -> QStringList
+  {
+    QStringList _result;
+    if ( mLayerGroups.contains( name ) )
+    {
+      for ( const auto &l : mLayerGroups[ name ] )
+      {
+        _result.append( findLeaves( l->shortName().isEmpty() ? l->name() : l->shortName() ) );
+      }
+    }
+    else
+    {
+      _result.append( name );
+    }
+    return _result;
+  };
+  for ( const auto &name : mParameters.queryLayersNickname() )
+  {
+    result.append( findLeaves( name ) );
+  }
+  return result;
+}
+
 QList<QgsMapLayer *> QgsWmsRenderContext::layersToRender() const
 {
   return mLayersToRender;
@@ -340,7 +366,8 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
-    for ( const QString &layer : mParameters.queryLayersNickname() )
+    const auto constLayers { flattenedQueryLayers() };
+    for ( const QString &layer : constLayers )
     {
       if ( mNicknameLayers.contains( layer )
            && !mLayersToRender.contains( mNicknameLayers[layer] ) )
@@ -469,6 +496,11 @@ bool QgsWmsRenderContext::layerScaleVisibility( const QString &name ) const
   }
 
   return visible;
+}
+
+QMap<QString, QList<QgsMapLayer *> > QgsWmsRenderContext::layerGroups() const
+{
+  return mLayerGroups;
 }
 
 void QgsWmsRenderContext::removeUnwantedLayers()
