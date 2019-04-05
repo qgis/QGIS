@@ -467,7 +467,8 @@ void QgsOracleSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
-  Q_FOREACH ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  const auto constIndexes = mTablesTreeView->selectionModel()->selection().indexes();
+  for ( QModelIndex idx : constIndexes )
   {
     if ( idx.column() != QgsOracleTableModel::DbtmTable )
       continue;
@@ -662,7 +663,8 @@ void QgsOracleSourceSelect::loadTableFromCache()
   if ( !QgsOracleTableCache::loadFromCache( connName, _currentFlags( connName, uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() ), layers ) )
     return;
 
-  Q_FOREACH ( const QgsOracleLayerProperty &layerProperty, layers )
+  const auto constLayers = layers;
+  for ( const QgsOracleLayerProperty &layerProperty : constLayers )
     mTableModel.addTableEntry( layerProperty );
 
   QApplication::setOverrideCursor( Qt::BusyCursor );

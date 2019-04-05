@@ -137,7 +137,8 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     childItemList << selItem;
     childItemList << sqlItem;
 
-    Q_FOREACH ( QStandardItem *item, childItemList )
+    const auto constChildItemList = childItemList;
+    for ( QStandardItem *item : constChildItemList )
     {
       if ( tip.isEmpty() || withTipButSelectable )
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
@@ -378,7 +379,8 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   QgsDataSourceUri uri( connInfo );
 
   QStringList cols;
-  Q_FOREACH ( const QString &col, s1 )
+  const auto constS1 = s1;
+  for ( const QString &col : constS1 )
   {
     cols << QgsPostgresConn::quotedIdentifier( col );
   }

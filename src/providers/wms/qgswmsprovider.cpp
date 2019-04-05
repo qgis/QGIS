@@ -259,7 +259,8 @@ static QString pickLegend( const QgsWmsStyleProperty &s )
 
 static const QgsWmsStyleProperty *searchStyle( const QVector<QgsWmsStyleProperty> &styles, const QString &name )
 {
-  Q_FOREACH ( const QgsWmsStyleProperty &s, styles )
+  const auto constStyles = styles;
+  for ( const QgsWmsStyleProperty &s : constStyles )
     if ( s.name == name )
       return &s;
   return nullptr;
@@ -320,7 +321,7 @@ bool QgsWmsProvider::addLayers()
   }
 
   // Set the visibility of these new layers on by default
-  Q_FOREACH ( const QString &layer, mSettings.mActiveSubLayers )
+  for ( const QString &layer : qgis::as_const( mSettings.mActiveSubLayers ) )
   {
     mActiveSubLayerVisibility[ layer ] = true;
     QgsDebugMsg( QStringLiteral( "set visibility of layer '%1' to true." ).arg( layer ) );
@@ -452,7 +453,8 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
       QList<double> keys = mTileMatrixSet->tileMatrices.keys();
       std::sort( keys.begin(), keys.end() );
-      Q_FOREACH ( double key, keys )
+      const auto constKeys = keys;
+      for ( double key : constKeys )
       {
         resolutions << key;
       }
@@ -519,7 +521,8 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
     return;
 
   QSet<TilePosition> tilesSet;
-  Q_FOREACH ( const QRectF &missingTileRect, missingRects )
+  const auto constMissingRects = missingRects;
+  for ( const QRectF &missingTileRect : constMissingRects )
   {
     int c0, r0, c1, r1;
     tmOther->viewExtentIntersection( QgsRectangle( missingTileRect ), nullptr, c0, r0, c1, r1 );
@@ -552,7 +555,8 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
   }
 
   QList<QRectF> missingRectsToDelete;
-  Q_FOREACH ( const TileRequest &r, requests )
+  const auto constRequests = requests;
+  for ( const TileRequest &r : constRequests )
   {
     QImage localImage;
     if ( ! QgsTileCache::tile( r.url, localImage ) )
@@ -566,7 +570,8 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
     otherResTiles << TileImage( dst, localImage );
 
     // see if there are any missing rects that are completely covered by this tile
-    Q_FOREACH ( const QRectF &missingRect, missingRects )
+    const auto constMissingRects = missingRects;
+    for ( const QRectF &missingRect : constMissingRects )
     {
       // we need to do a fuzzy "contains" check because the coordinates may not align perfectly
       // due to numerical errors and/or transform of coords from double to floats
@@ -579,7 +584,8 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
 
   // remove all the rectangles we have completely covered by tiles from this resolution
   // so we will not use tiles from multiple resolutions for one missing tile (to save time)
-  Q_FOREACH ( const QRectF &rectToDelete, missingRectsToDelete )
+  const auto constMissingRectsToDelete = missingRectsToDelete;
+  for ( const QRectF &rectToDelete : constMissingRectsToDelete )
   {
     missingRects.removeOne( rectToDelete );
   }
@@ -771,7 +777,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     QTime t;
     t.start();
     TileRequests requestsFinal;
-    Q_FOREACH ( const TileRequest &r, requests )
+    const auto constRequests = requests;
+    for ( const TileRequest &r : constRequests )
     {
       QImage localImage;
       if ( QgsTileCache::tile( r.url, localImage ) )
@@ -818,17 +825,20 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       fetchOtherResTiles( tileMode, viewExtent, image->width(), missing, tm->tres, -1, higherResTiles );
 
       // draw the cached tiles lowest to highest resolution
-      Q_FOREACH ( const TileImage &ti, lowerResTiles2 )
+      const auto constLowerResTiles2 = lowerResTiles2;
+      for ( const TileImage &ti : constLowerResTiles2 )
       {
         p.drawImage( ti.rect, ti.img );
         _drawDebugRect( p, ti.rect, Qt::blue );
       }
-      Q_FOREACH ( const TileImage &ti, lowerResTiles )
+      const auto constLowerResTiles = lowerResTiles;
+      for ( const TileImage &ti : constLowerResTiles )
       {
         p.drawImage( ti.rect, ti.img );
         _drawDebugRect( p, ti.rect, Qt::yellow );
       }
-      Q_FOREACH ( const TileImage &ti, higherResTiles )
+      const auto constHigherResTiles = higherResTiles;
+      for ( const TileImage &ti : constHigherResTiles )
       {
         p.drawImage( ti.rect, ti.img );
         _drawDebugRect( p, ti.rect, Qt::red );
@@ -838,7 +848,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     int t1 = t.elapsed() - t0;
 
     // draw composite in this resolution
-    Q_FOREACH ( const TileImage &ti, tileImages )
+    const auto constTileImages = tileImages;
+    for ( const TileImage &ti : constTileImages )
     {
       if ( mSettings.mSmoothPixmapTransform )
         p.setRenderHint( QPainter::SmoothPixmapTransform, true );
@@ -1029,7 +1040,8 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const 
   }
 
   int i = 0;
-  Q_FOREACH ( const TilePosition &tile, tiles )
+  const auto constTiles = tiles;
+  for ( const TilePosition &tile : constTiles )
   {
     QgsRectangle bbox( tm->tileBBox( tile.col, tile.row ) );
     QString turl;
@@ -1073,7 +1085,8 @@ void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const 
     url.removeQueryItem( QStringLiteral( "TILECOL" ) );
 
     int i = 0;
-    Q_FOREACH ( const TilePosition &tile, tiles )
+    const auto constTiles = tiles;
+    for ( const TilePosition &tile : constTiles )
     {
       QString turl;
       turl += url.toString();
@@ -1100,7 +1113,8 @@ void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const 
     }
 
     int i = 0;
-    Q_FOREACH ( const TilePosition &tile, tiles )
+    const auto constTiles = tiles;
+    for ( const TilePosition &tile : constTiles )
     {
       QString turl( url );
       turl.replace( QLatin1String( "{tilerow}" ), QString::number( tile.row ), Qt::CaseInsensitive );
@@ -1138,7 +1152,8 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
   int z = tm->identifier.toInt();
   QString url = mSettings.mBaseUrl;
   int i = 0;
-  Q_FOREACH ( const TilePosition &tile, tiles )
+  const auto constTiles = tiles;
+  for ( const TilePosition &tile : constTiles )
   {
     ++i;
     QString turl( url );
@@ -1291,7 +1306,7 @@ static const QgsWmsLayerProperty *_findNestedLayerProperty( const QString &layer
   if ( prop->name == layerName )
     return prop;
 
-  Q_FOREACH ( const QgsWmsLayerProperty &child, prop->layer )
+  for ( const QgsWmsLayerProperty &child : qgis::as_const( prop->layer ) )
   {
     if ( const QgsWmsLayerProperty *res = _findNestedLayerProperty( layerName, &child ) )
       return res;
@@ -1304,7 +1319,7 @@ static const QgsWmsLayerProperty *_findNestedLayerProperty( const QString &layer
 bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QString &crs, QgsRectangle &extent ) const
 {
   const QgsWmsLayerProperty *layerProperty = nullptr;
-  Q_FOREACH ( const QgsWmsLayerProperty &toplevelLayer, mCaps.mCapabilities.capability.layers )
+  for ( const QgsWmsLayerProperty &toplevelLayer : qgis::as_const( mCaps.mCapabilities.capability.layers ) )
   {
     layerProperty = _findNestedLayerProperty( layerName, &toplevelLayer );
     if ( layerProperty )
@@ -2154,7 +2169,7 @@ QString QgsWmsProvider::htmlMetadata()
 
     metadata += QLatin1String( "<table width=\"100%\" class=\"tabular-view\">" );  // Nested table 3
 
-    Q_FOREACH ( const QgsWmtsTileLayer &l, mCaps.mTileLayersSupported )
+    for ( const QgsWmtsTileLayer &l : qgis::as_const( mCaps.mTileLayersSupported ) )
     {
       metadata += QLatin1String( "<tr><th class=\"strong\">" );
       metadata += tr( "Identifier" );
@@ -2207,7 +2222,7 @@ QString QgsWmsProvider::htmlMetadata()
         metadata += QLatin1String( "</td>" );
         metadata += QLatin1String( "<td class=\"strong\">" );
         QStringList styles;
-        Q_FOREACH ( const QgsWmtsStyle &style, l.styles )
+        for ( const QgsWmtsStyle &style : qgis::as_const( l.styles ) )
         {
           styles << style.identifier;
         }
@@ -2240,7 +2255,7 @@ QString QgsWmsProvider::htmlMetadata()
       metadata += tr( "Available Tilesets" );
       metadata += QLatin1String( "</td><td class=\"strong\">" );
 
-      Q_FOREACH ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
+      for ( const QgsWmtsTileMatrixSetLink &setLink : qgis::as_const( l.setLinks ) )
       {
         metadata += setLink.tileMatrixSet + "<br>";
       }
@@ -2288,7 +2303,8 @@ QString QgsWmsProvider::htmlMetadata()
                         tr( "Bottom" ),
                         tr( "Right" ) );
 
-      Q_FOREACH ( const QVariant &res, property( "resolutions" ).toList() )
+      const auto constToList = property( "resolutions" ).toList();
+      for ( const QVariant &res : constToList )
       {
         double key = res.toDouble();
 
@@ -2909,7 +2925,8 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
         // GetMap and GetFeatureInfo will return data for the group of the same name.
         // https://github.com/mapserver/mapserver/issues/318#issuecomment-4923208
         QgsFeatureStoreList featureStoreList;
-        Q_FOREACH ( const QString &featureTypeName, featureTypeNames )
+        const auto constFeatureTypeNames = featureTypeNames;
+        for ( const QString &featureTypeName : constFeatureTypeNames )
         {
           QgsDebugMsg( QStringLiteral( "featureTypeName = %1" ).arg( featureTypeName ) );
 
@@ -3743,7 +3760,8 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
       return;
   }
 
-  Q_FOREACH ( const QgsWmsProvider::TileRequest &r, requests )
+  const auto constRequests = requests;
+  for ( const QgsWmsProvider::TileRequest &r : constRequests )
   {
     QNetworkRequest request( r.url );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsTiledImageDownloadHandler" ) );
@@ -3792,7 +3810,8 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 #endif
 #if defined(QGISDEBUG)
   QgsDebugMsgLevel( QStringLiteral( "raw headers:" ), 3 );
-  Q_FOREACH ( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
+  const auto constRawHeaderPairs = reply->rawHeaderPairs();
+  for ( const QNetworkReply::RawHeaderPair &pair : constRawHeaderPairs )
   {
     QgsDebugMsgLevel( QStringLiteral( " %1:%2" )
                       .arg( QString::fromUtf8( pair.first ),
@@ -3805,7 +3824,8 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     QNetworkCacheMetaData cmd = QgsNetworkAccessManager::instance()->cache()->metaData( reply->request().url() );
 
     QNetworkCacheMetaData::RawHeaderList hl;
-    Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+    const auto constRawHeaders = cmd.rawHeaders();
+    for ( const QNetworkCacheMetaData::RawHeader &h : constRawHeaders )
     {
       if ( h.first != "Cache-Control" )
         hl.append( h );
@@ -4008,7 +4028,8 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 void QgsWmsTiledImageDownloadHandler::canceled()
 {
   QgsDebugMsg( QStringLiteral( "Caught canceled() signal" ) );
-  Q_FOREACH ( QNetworkReply *reply, mReplies )
+  const auto constMReplies = mReplies;
+  for ( QNetworkReply *reply : constMReplies )
   {
     QgsDebugMsg( QStringLiteral( "Aborting tiled network request" ) );
     reply->abort();

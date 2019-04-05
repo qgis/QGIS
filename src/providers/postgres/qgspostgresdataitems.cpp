@@ -74,7 +74,8 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  Q_FOREACH ( const QgsPostgresSchemaProperty &schema, schemas )
+  const auto constSchemas = schemas;
+  for ( const QgsPostgresSchemaProperty &schema : constSchemas )
   {
     QgsPGSchemaItem *schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + '/' + schema.name );
     if ( !schema.description.isEmpty() )
@@ -198,7 +199,8 @@ void QgsPGConnectionItem::createSchema()
 
 void QgsPGConnectionItem::refreshSchema( const QString &schema )
 {
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     if ( child->name() == schema || schema.isEmpty() )
     {
@@ -224,7 +226,8 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     // open the source layer
     bool owner;
@@ -558,7 +561,8 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
-  Q_FOREACH ( QgsPostgresLayerProperty layerProperty, layerProperties )
+  const auto constLayerProperties = layerProperties;
+  for ( QgsPostgresLayerProperty layerProperty : constLayerProperties )
   {
     if ( layerProperty.schemaName != mName )
       continue;

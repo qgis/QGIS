@@ -482,7 +482,8 @@ void QgsSpatiaLiteSourceSelect::btnConnect_clicked()
   mTableModel.setSqliteDb( subKey );
 
   QList<QgsSpatiaLiteConnection::TableEntry> tables = conn.tables();
-  Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry &table, tables )
+  const auto constTables = tables;
+  for ( const QgsSpatiaLiteConnection::TableEntry &table : constTables )
   {
     mTableModel.addTableEntry( table.type, table.tableName, table.column, QString() );
   }

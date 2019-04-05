@@ -156,7 +156,8 @@ bool QgsOracleTableCache::saveToCache( const QString &connName, CacheFlags flags
   }
 
   bool insertOk = true;
-  Q_FOREACH ( const QgsOracleLayerProperty &item, layers )
+  const auto constLayers = layers;
+  for ( const QgsOracleLayerProperty &item : constLayers )
   {
     sqlite3_bind_text( stmtInsert, 1, item.ownerName.toUtf8().constData(), -1, SQLITE_TRANSIENT );
     sqlite3_bind_text( stmtInsert, 2, item.tableName.toUtf8().constData(), -1, SQLITE_TRANSIENT );
@@ -302,10 +303,12 @@ void _testTableCache()
 
   // compare
 
-  Q_FOREACH ( const QgsOracleLayerProperty &item, layers )
+  const auto constLayers = layers;
+  for ( const QgsOracleLayerProperty &item : constLayers )
     qDebug( "== %s %s", item.tableName.toLatin1().data(), item.geometryColName.toLatin1().data() );
 
-  Q_FOREACH ( const QgsOracleLayerProperty &item, layersLoaded )
+  const auto constLayersLoaded = layersLoaded;
+  for ( const QgsOracleLayerProperty &item : constLayersLoaded )
     qDebug( "++ %s %s", item.tableName.toLatin1().data(), item.geometryColName.toLatin1().data() );
 
   Q_ASSERT( layers == layersLoaded );

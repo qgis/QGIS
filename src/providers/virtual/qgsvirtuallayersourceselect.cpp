@@ -51,7 +51,8 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
 
   // prepare provider list
-  Q_FOREACH ( const QString &pk, QgsProviderRegistry::instance()->providerList() )
+  const auto constProviderList = QgsProviderRegistry::instance()->providerList();
+  for ( const QString &pk : constProviderList )
   {
     // we cannot know before trying to actually load a dataset
     // if the provider is raster or vector
@@ -136,7 +137,8 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
   // Clear embedded layers table
   mLayersTable->model()->removeRows( 0, mLayersTable->model()->rowCount() );
   // Add embedded layers
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, def.sourceLayers() )
+  const auto constSourceLayers = def.sourceLayers();
+  for ( const QgsVirtualLayerDefinition::SourceLayer &l : constSourceLayers )
   {
     if ( ! l.isReferenced() )
     {
@@ -254,7 +256,8 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   if ( mTreeView )
   {
     QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mTreeView->model() );
-    Q_FOREACH ( QgsLayerTreeLayer *layer, model->rootGroup()->findLayers() )
+    const auto constFindLayers = model->rootGroup()->findLayers();
+    for ( QgsLayerTreeLayer *layer : constFindLayers )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer->layer() );
       if ( vl && vl->providerType() == QLatin1String( "virtual" ) )
@@ -294,7 +297,8 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   }
 
   // configure auto completion with table and column names
-  Q_FOREACH ( QgsMapLayer *l, QgsProject::instance()->mapLayers() )
+  const auto constMapLayers = QgsProject::instance()->mapLayers();
+  for ( QgsMapLayer *l : constMapLayers )
   {
     if ( l->type() == QgsMapLayerType::VectorLayer )
     {
@@ -341,7 +345,8 @@ void QgsVirtualLayerSourceSelect::importLayer()
   if ( mEmbeddedSelectionDialog && mEmbeddedSelectionDialog->exec() == QDialog::Accepted )
   {
     QStringList ids = mEmbeddedSelectionDialog->layers();
-    Q_FOREACH ( const QString &id, ids )
+    const auto constIds = ids;
+    for ( const QString &id : constIds )
     {
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
       addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );
