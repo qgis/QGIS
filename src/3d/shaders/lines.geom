@@ -59,6 +59,17 @@ void main( void )
     vec3 wp2 = VertexIn[2].worldPosition;
     vec3 wp3 = VertexIn[3].worldPosition;
 
+    // This implements rejection of lines from Cohen-Sutherland line clipping algorithm.
+    // Thanks to that we filter out majority of lines that may otherwise cause issues.
+    // Lines that can't be trivially rejected, should be further clipped - the clipping
+    // in the next step is a bit half-baked but seems to work relatively well.
+    vec4 px1 = gl_in[1].gl_Position;
+    vec4 px2 = gl_in[2].gl_Position;
+    int px1c = int(px1.w+px1.x<0) << 0 | int(px1.w-px1.x<0) << 1 | int(px1.w+px1.y<0) << 2 | int(px1.w-px1.y<0) << 3 | int(px1.w+px1.z<0) << 4 | int(px1.w-px1.z<0) << 5;
+    int px2c = int(px2.w+px2.x<0) << 0 | int(px2.w-px2.x<0) << 1 | int(px2.w+px2.y<0) << 2 | int(px2.w-px2.y<0) << 3 | int(px2.w+px2.z<0) << 4 | int(px2.w-px2.z<0) << 5;
+    if ((px1c & px2c) != 0)
+      return;  // trivial reject
+
     // Perform line clipping first. we search for intersection between the line and the near plane.
     // In case the near plane intersects line between segment's endpoints, we need to adjust the line
     // otherwise we would use completely non-sense points when points get 'behind' the camera.
