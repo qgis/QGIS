@@ -174,7 +174,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     QSet<int> providerSubset;
     QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
     int nPendingFields = mSource->mFields.count();
-    Q_FOREACH ( int attrIndex, subset )
+    const auto constSubset = subset;
+    for ( int attrIndex : constSubset )
     {
       if ( attrIndex < 0 || attrIndex >= nPendingFields )
         continue;

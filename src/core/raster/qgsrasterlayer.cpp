@@ -975,7 +975,8 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     return;
   }
 
-  Q_FOREACH ( int myBand, myBands )
+  const auto constMyBands = myBands;
+  for ( int myBand : constMyBands )
   {
     if ( myBand != -1 )
     {

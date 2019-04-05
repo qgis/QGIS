@@ -182,7 +182,8 @@ bool QgsInvertedPolygonRenderer::renderFeature( const QgsFeature &feature, QgsRe
   if ( capabilities() & MoreSymbolsPerFeature )
   {
     QgsSymbolList syms( mSubRenderer->symbolsForFeature( feature, context ) );
-    Q_FOREACH ( QgsSymbol *sym, syms )
+    const auto constSyms = syms;
+    for ( QgsSymbol *sym : constSyms )
     {
       // append the memory address
       catId.append( reinterpret_cast<const char *>( &sym ), sizeof( sym ) );
@@ -259,7 +260,8 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
   QgsMultiPolygonXY finalMulti; //avoid expensive allocation for list for every feature
   QgsPolygonXY newPoly;
 
-  Q_FOREACH ( const CombinedFeature &cit, mFeaturesCategories )
+  const auto constMFeaturesCategories = mFeaturesCategories;
+  for ( const CombinedFeature &cit : constMFeaturesCategories )
   {
     finalMulti.resize( 0 ); //preserve capacity - don't use clear!
     QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
@@ -341,7 +343,8 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
   }
 
   // draw feature decorations
-  Q_FOREACH ( FeatureDecoration deco, mFeatureDecorations )
+  const auto constMFeatureDecorations = mFeatureDecorations;
+  for ( FeatureDecoration deco : constMFeatureDecorations )
   {
     mSubRenderer->renderFeature( deco.feature, mContext, deco.layer, deco.selected, deco.drawMarkers );
   }

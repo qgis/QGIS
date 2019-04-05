@@ -155,7 +155,8 @@ void QgsBrowserModel::addRootItems()
       std::sort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
     }
 
-    Q_FOREACH ( QgsDataItem *ditem, providerGroup )
+    const auto constProviderGroup = providerGroup;
+    for ( QgsDataItem *ditem : constProviderGroup )
     {
       mRootItems << ditem;
     }
@@ -164,7 +165,8 @@ void QgsBrowserModel::addRootItems()
 
 void QgsBrowserModel::removeRootItems()
 {
-  Q_FOREACH ( QgsDataItem *item, mRootItems )
+  const auto constMRootItems = mRootItems;
+  for ( QgsDataItem *item : constMRootItems )
   {
     delete item;
   }
@@ -574,7 +576,8 @@ QStringList QgsBrowserModel::mimeTypes() const
 QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( index.isValid() )
     {

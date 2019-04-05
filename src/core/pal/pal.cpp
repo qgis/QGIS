@@ -267,7 +267,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   QStringList layersWithFeaturesInBBox;
 
   mMutex.lock();
-  Q_FOREACH ( Layer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( Layer *layer : constMLayers )
   {
     if ( !layer )
     {

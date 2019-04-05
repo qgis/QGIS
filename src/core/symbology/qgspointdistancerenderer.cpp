@@ -140,7 +140,8 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRender
 {
   //calculate centroid of all points, this will be center of group
   QgsMultiPoint *groupMultiPoint = new QgsMultiPoint();
-  Q_FOREACH ( const GroupedFeature &f, group )
+  const auto constGroup = group;
+  for ( const GroupedFeature &f : constGroup )
   {
     groupMultiPoint->addGeometry( f.feature.geometry().constGet()->clone() );
   }
@@ -326,7 +327,8 @@ void QgsPointDistanceRenderer::stopRender( QgsRenderContext &context )
 
   //printInfoDisplacementGroups(); //just for debugging
 
-  Q_FOREACH ( const ClusteredGroup &group, mClusteredGroups )
+  const auto constMClusteredGroups = mClusteredGroups;
+  for ( const ClusteredGroup &group : constMClusteredGroups )
   {
     drawGroup( group, context );
   }

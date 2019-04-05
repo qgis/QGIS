@@ -55,7 +55,8 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
 {
-  Q_FOREACH ( QgsProcessingProvider *p, mProviders )
+  const auto constMProviders = mProviders;
+  for ( QgsProcessingProvider *p : constMProviders )
   {
     removeProvider( p );
   }

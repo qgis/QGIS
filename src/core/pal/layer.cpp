@@ -334,7 +334,8 @@ void Layer::joinConnectedFeatures()
 {
   // go through all label texts
   int connectedFeaturesId = 0;
-  Q_FOREACH ( const QString &labelText, mConnectedTexts )
+  const auto constMConnectedTexts = mConnectedTexts;
+  for ( const QString &labelText : constMConnectedTexts )
   {
     if ( !mConnectedHashtable.contains( labelText ) )
       continue; // shouldn't happen

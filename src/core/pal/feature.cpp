@@ -313,7 +313,8 @@ int FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y
 
   double cost = 0.0001;
   int i = 0;
-  Q_FOREACH ( QgsPalLayerSettings::PredefinedPointPosition position, positions )
+  const auto constPositions = positions;
+  for ( QgsPalLayerSettings::PredefinedPointPosition position : constPositions )
   {
     double alpha = 0.0;
     double deltaX = 0;

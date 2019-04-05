@@ -474,7 +474,8 @@ static bool _isChildOfNode( QgsLayerTreeNode *child, QgsLayerTreeNode *node )
 
 static bool _isChildOfNodes( QgsLayerTreeNode *child, const QList<QgsLayerTreeNode *> &nodes )
 {
-  Q_FOREACH ( QgsLayerTreeNode *n, nodes )
+  const auto constNodes = nodes;
+  for ( QgsLayerTreeNode *n : constNodes )
   {
     if ( _isChildOfNode( child, n ) )
       return true;
@@ -487,7 +488,8 @@ static bool _isChildOfNodes( QgsLayerTreeNode *child, const QList<QgsLayerTreeNo
 QList<QgsLayerTreeNode *> QgsLayerTreeModel::indexes2nodes( const QModelIndexList &list, bool skipInternal ) const
 {
   QList<QgsLayerTreeNode *> nodes;
-  Q_FOREACH ( const QModelIndex &index, list )
+  const auto constList = list;
+  for ( const QModelIndex &index : constList )
   {
     QgsLayerTreeNode *node = index2node( index );
     if ( !node )
@@ -501,7 +503,8 @@ QList<QgsLayerTreeNode *> QgsLayerTreeModel::indexes2nodes( const QModelIndexLis
 
   // remove any children of nodes if both parent node and children are selected
   QList<QgsLayerTreeNode *> nodesFinal;
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+  const auto constNodes = nodes;
+  for ( QgsLayerTreeNode *node : constNodes )
   {
     if ( !_isChildOfNodes( node, nodes ) )
       nodesFinal << node;
@@ -1039,7 +1042,8 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( QStringLiteral( "layer_tree_model_data" ) );
-  Q_FOREACH ( QgsLayerTreeNode *node, nodesFinal )
+  const auto constNodesFinal = nodesFinal;
+  for ( QgsLayerTreeNode *node : constNodesFinal )
     node->writeXml( rootElem, QgsReadWriteContext() );
   doc.appendChild( rootElem );
   QString txt = doc.toString();
@@ -1144,7 +1148,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
 
   if ( mLegendFilterByScale > 0 )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *node, nodes )
+    const auto constNodes = nodes;
+    for ( QgsLayerTreeModelLegendNode *node : constNodes )
     {
       if ( node->isScaleOK( mLegendFilterByScale ) )
         filtered << node;
@@ -1154,7 +1159,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
   {
     if ( !nodes.isEmpty() && mLegendFilterMapSettings->layers().contains( nodes.at( 0 )->layerNode()->layer() ) )
     {
-      Q_FOREACH ( QgsLayerTreeModelLegendNode *node, nodes )
+      const auto constNodes = nodes;
+      for ( QgsLayerTreeModelLegendNode *node : constNodes )
       {
         QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
         bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
@@ -1190,7 +1196,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
 
 void QgsLayerTreeModel::legendCleanup()
 {
-  Q_FOREACH ( const LayerLegendData &data, mLegend )
+  const auto constMLegend = mLegend;
+  for ( const LayerLegendData &data : constMLegend )
   {
     qDeleteAll( data.originalNodes );
     delete data.tree;
@@ -1242,7 +1249,8 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
 
   QList<QgsLayerTreeModelLegendNode *> filteredLstNew = filterLegendNodes( lstNew );
 
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *n, lstNew )
+  const auto constLstNew = lstNew;
+  for ( QgsLayerTreeModelLegendNode *n : constLstNew )
   {
     n->setParent( this );
     connect( n, &QgsLayerTreeModelLegendNode::dataChanged, this, &QgsLayerTreeModel::legendNodeDataChanged );
@@ -1252,7 +1260,8 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   // Legend node embedded in parent does not have to be the first one,
   // there can be also nodes generated for embedded widgets
   QgsLayerTreeModelLegendNode *embeddedNode = nullptr;
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, filteredLstNew )
+  const auto constFilteredLstNew = filteredLstNew;
+  for ( QgsLayerTreeModelLegendNode *legendNode : constFilteredLstNew )
   {
     if ( legendNode->isEmbeddedInParent() )
     {
@@ -1292,7 +1301,7 @@ QgsLayerTreeModel::LayerLegendTree *QgsLayerTreeModel::tryBuildLegendTree( const
 {
   // first check whether there are any legend nodes that are not top-level
   bool hasParentKeys = false;
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *n, nodes )
+  for ( QgsLayerTreeModelLegendNode *n : nodes )
   {
     if ( !n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString().isEmpty() )
     {
@@ -1306,7 +1315,7 @@ QgsLayerTreeModel::LayerLegendTree *QgsLayerTreeModel::tryBuildLegendTree( const
   // make mapping from rules to nodes and do some sanity checks
   QHash<QString, QgsLayerTreeModelLegendNode *> rule2node;
   rule2node[QString()] = nullptr;
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *n, nodes )
+  for ( QgsLayerTreeModelLegendNode *n : nodes )
   {
     QString ruleKey = n->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
     if ( ruleKey.isEmpty() ) // in tree all nodes must have key
@@ -1318,7 +1327,7 @@ QgsLayerTreeModel::LayerLegendTree *QgsLayerTreeModel::tryBuildLegendTree( const
 
   // create the tree structure
   LayerLegendTree *tree = new LayerLegendTree;
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *n, nodes )
+  for ( QgsLayerTreeModelLegendNode *n : nodes )
   {
     QString parentRuleKey = n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
     QgsLayerTreeModelLegendNode *parent = rule2node.value( parentRuleKey, nullptr );
@@ -1541,7 +1550,8 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
 
   std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
 
-  Q_FOREACH ( const LayerLegendData &data, mLegend )
+  const auto constMLegend = mLegend;
+  for ( const LayerLegendData &data : constMLegend )
   {
     QList<QgsSymbolLegendNode *> symbolNodes;
     QMap<QString, int> widthMax;
@@ -1557,7 +1567,8 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
         symbolNodes.append( n );
       }
     }
-    Q_FOREACH ( QgsSymbolLegendNode *n, symbolNodes )
+    const auto constSymbolNodes = symbolNodes;
+    for ( QgsSymbolLegendNode *n : constSymbolNodes )
     {
       const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
       Q_ASSERT( widthMax[parentKey] > 0 );

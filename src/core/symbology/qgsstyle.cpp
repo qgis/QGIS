@@ -905,7 +905,8 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
   }
 
   QString tag;
-  Q_FOREACH ( const QString &t, tags )
+  const auto constTags = tags;
+  for ( const QString &t : constTags )
   {
     tag = t.trimmed();
     if ( !tag.isEmpty() )
@@ -966,7 +967,8 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStri
     return false;
   }
 
-  Q_FOREACH ( const QString &tag, tags )
+  const auto constTags = tags;
+  for ( const QString &tag : constTags )
   {
     query = QgsSqlite3Mprintf( "SELECT id FROM tag WHERE name='%q'", tag.toUtf8().constData() );
 

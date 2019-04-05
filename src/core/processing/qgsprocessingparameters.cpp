@@ -321,7 +321,8 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
 
   QList< int > result;
   const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
-  Q_FOREACH ( const QVariant &var, resultList )
+  const auto constResultList = resultList;
+  for ( const QVariant &var : constResultList )
   {
     int resInt = var.toInt();
     if ( !enumDef || resInt < enumDef->options().size() )
@@ -2346,7 +2347,8 @@ QString QgsProcessingParameterMatrix::valueAsPythonString( const QVariant &value
   QVariantList list = QgsProcessingParameters::parameterAsMatrix( this, p, context );
 
   QStringList parts;
-  Q_FOREACH ( const QVariant &v, list )
+  const auto constList = list;
+  for ( const QVariant &v : constList )
   {
     if ( v.type() == QVariant::List )
     {
@@ -2546,7 +2548,8 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
   if ( !list.isEmpty() )
   {
     QStringList parts;
-    Q_FOREACH ( const QgsMapLayer *layer, list )
+    const auto constList = list;
+    for ( const QgsMapLayer *layer : constList )
     {
       parts << QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
     }
@@ -2886,7 +2889,8 @@ QString QgsProcessingParameterRange::valueAsPythonString( const QVariant &value,
   QList< double > parts = QgsProcessingParameters::parameterAsRange( this, p, context );
 
   QStringList stringParts;
-  Q_FOREACH ( double v, parts )
+  const auto constParts = parts;
+  for ( double v : constParts )
   {
     stringParts << QString::number( v );
   }
@@ -3058,7 +3062,8 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, 
     if ( parts.count() > 1 && !mAllowMultiple )
       return false;
 
-    Q_FOREACH ( const QString &part, parts )
+    const auto constParts = parts;
+    for ( const QString &part : constParts )
     {
       bool ok = false;
       int res = part.toInt( &ok );
@@ -3557,7 +3562,8 @@ QVariantMap QgsProcessingParameterVectorLayer::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  Q_FOREACH ( int type, mDataTypes )
+  const auto constMDataTypes = mDataTypes;
+  for ( int type : constMDataTypes )
   {
     types << type;
   }
@@ -3570,7 +3576,8 @@ bool QgsProcessingParameterVectorLayer::fromVariantMap( const QVariantMap &map )
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
   QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  Q_FOREACH ( const QVariant &val, values )
+  const auto constValues = values;
+  for ( const QVariant &val : constValues )
   {
     mDataTypes << val.toInt();
   }
@@ -4034,7 +4041,8 @@ QString QgsProcessingParameterFeatureSource::asScriptCode() const
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "source " );
 
-  Q_FOREACH ( int type, mDataTypes )
+  const auto constMDataTypes = mDataTypes;
+  for ( int type : constMDataTypes )
   {
     switch ( type )
     {
@@ -4094,7 +4102,8 @@ QVariantMap QgsProcessingParameterFeatureSource::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  Q_FOREACH ( int type, mDataTypes )
+  const auto constMDataTypes = mDataTypes;
+  for ( int type : constMDataTypes )
   {
     types << type;
   }
@@ -4107,7 +4116,8 @@ bool QgsProcessingParameterFeatureSource::fromVariantMap( const QVariantMap &map
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
   QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  Q_FOREACH ( const QVariant &val, values )
+  const auto constValues = values;
+  for ( const QVariant &val : constValues )
   {
     mDataTypes << val.toInt();
   }

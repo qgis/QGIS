@@ -229,7 +229,8 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
   else
   {
     QList< QgsMapLayer * > orderedVisibleLayers;
-    Q_FOREACH ( QgsMapLayer *layer, allLayers )
+    const auto constAllLayers = allLayers;
+    for ( QgsMapLayer *layer : constAllLayers )
     {
       if ( visibleLayers.contains( layer ) )
         orderedVisibleLayers << layer;
@@ -315,9 +316,11 @@ QList<QgsMapLayer *> QgsMapThemeCollection::mapThemeVisibleLayers( const QString
   }
   else
   {
-    Q_FOREACH ( QgsMapLayer *layer, layerOrder )
+    const auto constLayerOrder = layerOrder;
+    for ( QgsMapLayer *layer : constLayerOrder )
     {
-      Q_FOREACH ( const MapThemeLayerRecord &layerRec, recs )
+      const auto constRecs = recs;
+      for ( const MapThemeLayerRecord &layerRec : constRecs )
       {
         if ( layerRec.layer() == layer )
           layers << layerRec.layer();
@@ -385,7 +388,8 @@ void QgsMapThemeCollection::reconnectToLayersStyleManager()
   // disconnect( 0, 0, this, SLOT( layerStyleRenamed( QString, QString ) ) );
 
   QSet<QgsMapLayer *> layers;
-  Q_FOREACH ( const MapThemeRecord &rec, mMapThemes )
+  const auto constMMapThemes = mMapThemes;
+  for ( const MapThemeRecord &rec : constMMapThemes )
   {
     Q_FOREACH ( const MapThemeLayerRecord &layerRec, rec.mLayerRecords )
     {
@@ -394,7 +398,8 @@ void QgsMapThemeCollection::reconnectToLayersStyleManager()
     }
   }
 
-  Q_FOREACH ( QgsMapLayer *ml, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *ml : constLayers )
   {
     connect( ml->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsMapThemeCollection::layerStyleRenamed );
   }
@@ -601,7 +606,8 @@ void QgsMapThemeCollection::registryLayersRemoved( const QStringList &layerIDs )
     }
   }
 
-  Q_FOREACH ( const QString &theme, changedThemes )
+  const auto constChangedThemes = changedThemes;
+  for ( const QString &theme : constChangedThemes )
   {
     emit mapThemeChanged( theme );
   }
@@ -633,7 +639,8 @@ void QgsMapThemeCollection::layerStyleRenamed( const QString &oldName, const QSt
       }
     }
   }
-  Q_FOREACH ( const QString &theme, changedThemes )
+  const auto constChangedThemes = changedThemes;
+  for ( const QString &theme : constChangedThemes )
   {
     emit mapThemeChanged( theme );
   }
@@ -657,7 +664,8 @@ void QgsMapThemeCollection::MapThemeRecord::addLayerRecord( const QgsMapThemeCol
 QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeCollection::MapThemeRecord::validLayerRecords() const
 {
   QHash<QgsMapLayer *, MapThemeLayerRecord> validSet;
-  Q_FOREACH ( const MapThemeLayerRecord &layerRec, mLayerRecords )
+  const auto constMLayerRecords = mLayerRecords;
+  for ( const MapThemeLayerRecord &layerRec : constMLayerRecords )
   {
     if ( layerRec.layer() )
       validSet.insert( layerRec.layer(), layerRec );

@@ -132,7 +132,8 @@ QgsTracerGraph *makeGraph( const QVector<QgsPolylineXY> &edges )
   g->joinedVertices = 0;
   QHash<QgsPointXY, int> point2vertex;
 
-  Q_FOREACH ( const QgsPolylineXY &line, edges )
+  const auto constEdges = edges;
+  for ( const QgsPolylineXY &line : constEdges )
   {
     QgsPointXY p1( line[0] );
     QgsPointXY p2( line[line.count() - 1] );
@@ -444,8 +445,10 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolylineXY &mpl )
 
     case QgsWkbTypes::MultiPolygon:
       Q_FOREACH ( const QgsPolygonXY &polygon, geom.asMultiPolygon() )
-        Q_FOREACH ( const QgsPolylineXY &ring, polygon )
+      {
+        for ( const QgsPolylineXY &ring : polygon )
           mpl << ring;
+      }
       break;
 
     default:
@@ -595,7 +598,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
   if ( mLayers == layers )
     return;
 
-  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
+  for ( QgsVectorLayer *layer : qgis::as_const( mLayers ) )
   {
     disconnect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     disconnect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );
@@ -608,7 +611,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
 
   mLayers = layers;
 
-  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
+  for ( QgsVectorLayer *layer : layers )
   {
     connect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );

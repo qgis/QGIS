@@ -118,7 +118,8 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( "headers:\n" + headers );
 
       QStringList headerRows = QString( headers ).split( QRegExp( "[\n\r]+" ) );
-      Q_FOREACH ( const QString &row, headerRows )
+      const auto constHeaderRows = headerRows;
+      for ( const QString &row : constHeaderRows )
       {
         QgsDebugMsg( "row = " + row );
         QStringList kv = row.split( QStringLiteral( ": " ) );

@@ -726,7 +726,8 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
 
 void QgsDataSourceUri::setParam( const QString &key, const QStringList &value )
 {
-  Q_FOREACH ( const QString &val, value )
+  const auto constValue = value;
+  for ( const QString &val : constValue )
   {
     mParams.insertMulti( key, val );
   }

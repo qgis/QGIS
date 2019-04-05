@@ -106,7 +106,8 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
 
   // make a geometry
   QVector<QgsGeometry> geoms;
-  Q_FOREACH ( const QgsPointLocator::Match &m, segments )
+  const auto constSegments = segments;
+  for ( const QgsPointLocator::Match &m : constSegments )
   {
     if ( m.hasEdge() )
     {
@@ -133,7 +134,8 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   {
     Q_FOREACH ( const QgsPolylineXY &pl, g.asMultiPolyline() )
     {
-      Q_FOREACH ( const QgsPointXY &p, pl )
+      const auto constPl = pl;
+      for ( const QgsPointXY &p : constPl )
       {
         if ( !endpoints.contains( p ) )
           newPoints << p;
@@ -147,7 +149,8 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   // find the closest points
   QgsPointXY minP;
   double minSqrDist = 1e20;  // "infinity"
-  Q_FOREACH ( const QgsPointXY &p, newPoints )
+  const auto constNewPoints = newPoints;
+  for ( const QgsPointXY &p : constNewPoints )
   {
     double sqrDist = pt.sqrDist( p.x(), p.y() );
     if ( sqrDist < minSqrDist )
@@ -264,7 +267,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AdvancedConfiguration )
   {
     QList<LayerAndAreaOfInterest> layers;
-    Q_FOREACH ( const LayerConfig &layerConfig, mLayers )
+    for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
     {
       double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
       layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
@@ -275,7 +278,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QgsPointLocator::MatchList edges; // for snap on intersection
     double maxSnapIntTolerance = 0;
 
-    Q_FOREACH ( const LayerConfig &layerConfig, mLayers )
+    for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
     {
       double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
       if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
@@ -311,7 +314,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QgsPointLocator::MatchList edges; // for snap on intersection
     QgsPointLocator::Match bestMatch;
 
-    Q_FOREACH ( const LayerAndAreaOfInterest &entry, layers )
+    const auto constLayers = layers;
+    for ( const LayerAndAreaOfInterest &entry : constLayers )
     {
       QgsVectorLayer *vl = entry.first;
       if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance ) )
@@ -340,7 +344,8 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
 
   // check if we need to build any index
   QList<LayerAndAreaOfInterest> layersToIndex;
-  Q_FOREACH ( const LayerAndAreaOfInterest &entry, layers )
+  const auto constLayers = layers;
+  for ( const LayerAndAreaOfInterest &entry : constLayers )
   {
     QgsVectorLayer *vl = entry.first;
 
@@ -357,7 +362,8 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
     t.start();
     int i = 0;
     prepareIndexStarting( layersToIndex.count() );
-    Q_FOREACH ( const LayerAndAreaOfInterest &entry, layersToIndex )
+    const auto constLayersToIndex = layersToIndex;
+    for ( const LayerAndAreaOfInterest &entry : constLayersToIndex )
     {
       QgsVectorLayer *vl = entry.first;
       QTime tt;
@@ -530,7 +536,8 @@ QString QgsSnappingUtils::dump()
     layers = mLayers;
   }
 
-  Q_FOREACH ( const LayerConfig &layer, layers )
+  const auto constLayers = layers;
+  for ( const LayerConfig &layer : constLayers )
   {
     msg += QString( "layer : %1\n"
                     "config: %2   tolerance %3 %4\n" )

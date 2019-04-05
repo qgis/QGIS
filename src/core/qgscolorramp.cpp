@@ -809,7 +809,8 @@ bool QgsCptCityColorRamp::loadFile()
 
 QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QList<QColor> &colors )
 {
-  Q_FOREACH ( const QColor &color, colors )
+  const auto constColors = colors;
+  for ( const QColor &color : constColors )
   {
     mColors << qMakePair( color, color.name() );
   }

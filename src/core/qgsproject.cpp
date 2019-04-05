@@ -1527,7 +1527,8 @@ QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
 {
   QList<QgsVectorLayer *> layers;
   QStringList layerIds = readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), QStringList() );
-  Q_FOREACH ( const QString &layerId, layerIds )
+  const auto constLayerIds = layerIds;
+  for ( const QString &layerId : constLayerIds )
   {
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer( layerId ) ) )
       layers << vlayer;
@@ -1538,7 +1539,8 @@ QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
 void QgsProject::setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers )
 {
   QStringList list;
-  Q_FOREACH ( QgsVectorLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsVectorLayer *layer : constLayers )
     list << layer->id();
   writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), list );
   emit avoidIntersectionsLayersChanged();
@@ -1560,7 +1562,8 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
 
   bool tgChanged = false;
 
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
     if ( layer->isValid() )
     {
@@ -1647,7 +1650,8 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
     QVector<QgsVectorLayer *> vectorLayers = layers<QgsVectorLayer *>();
-    Q_FOREACH ( QgsVectorLayer *layer, vectorLayers )
+    const auto constVectorLayers = vectorLayers;
+    for ( QgsVectorLayer *layer : constVectorLayers )
     {
       // TODO: should be only done later - and with all layers (other layers may have referenced this layer)
       layer->resolveReferences( this );

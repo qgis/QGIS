@@ -325,7 +325,8 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
   QStringList variableValues = layer->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
 
   int varIndex = 0;
-  Q_FOREACH ( const QString &variableName, variableNames )
+  const auto constVariableNames = variableNames;
+  for ( const QString &variableName : constVariableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -529,7 +530,8 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
   QStringList variableValues = layout->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
 
   int varIndex = 0;
-  Q_FOREACH ( const QString &variableName, variableNames )
+  const auto constVariableNames = variableNames;
+  for ( const QString &variableName : constVariableNames )
   {
     if ( varIndex >= variableValues.length() )
     {

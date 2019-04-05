@@ -420,7 +420,8 @@ static QMap<QString, QString> createTranslatedStyleMap()
                       << QStringLiteral( "Demi" )
                       << QStringLiteral( "Italic" )
                       << QStringLiteral( "Oblique" );
-  Q_FOREACH ( const QString &word, words )
+  const auto constWords = words;
+  for ( const QString &word : constWords )
   {
     translatedStyleMap.insert( QCoreApplication::translate( "QFontDatabase", qPrintable( word ) ), word );
   }

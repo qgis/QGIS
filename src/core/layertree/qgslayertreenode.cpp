@@ -109,7 +109,8 @@ bool QgsLayerTreeNode::isItemVisibilityCheckedRecursive() const
 {
   if ( !mChecked )
     return false;
-  Q_FOREACH ( QgsLayerTreeNode *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsLayerTreeNode *child : constMChildren )
   {
     if ( !child->isItemVisibilityCheckedRecursive() )
       return false;
@@ -122,7 +123,8 @@ bool QgsLayerTreeNode::isItemVisibilityUncheckedRecursive() const
 {
   if ( mChecked )
     return false;
-  Q_FOREACH ( QgsLayerTreeNode *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsLayerTreeNode *child : constMChildren )
   {
     if ( !child->isItemVisibilityUncheckedRecursive() )
       return false;
@@ -199,7 +201,8 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode 
   if ( nodes.isEmpty() )
     return;
 
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+  const auto constNodes = nodes;
+  for ( QgsLayerTreeNode *node : constNodes )
   {
     Q_ASSERT( !node->mParent );
     node->mParent = this;

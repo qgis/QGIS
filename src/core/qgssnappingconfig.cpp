@@ -373,7 +373,8 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
   double tolerance = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
   QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
 
-  Q_FOREACH ( QgsMapLayer *ml, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *ml : constLayers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl && vl->isSpatial() )
@@ -388,7 +389,8 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
 bool QgsSnappingConfig::removeLayers( const QList<QgsMapLayer *> &layers )
 {
   bool changed = false;
-  Q_FOREACH ( QgsMapLayer *ml, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *ml : constLayers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl )

@@ -220,7 +220,8 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
 
 void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 {
-  Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+  const auto constMCacheIndices = mCacheIndices;
+  for ( QgsAbstractCacheIndex *idx : constMCacheIndices )
   {
     idx->flushFeature( fid );
   }
@@ -292,7 +293,8 @@ void QgsVectorLayerCache::attributeDeleted( int field )
   QgsAttributeList attrs = mCachedAttributes;
   mCachedAttributes.clear();
 
-  Q_FOREACH ( int attr, attrs )
+  const auto constAttrs = attrs;
+  for ( int attr : constAttrs )
   {
     if ( attr < field )
       mCachedAttributes << attr;
@@ -327,7 +329,8 @@ void QgsVectorLayerCache::invalidate()
 bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featureRequest, QgsFeatureIterator &it )
 {
   // check first for available indices
-  Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+  const auto constMCacheIndices = mCacheIndices;
+  for ( QgsAbstractCacheIndex *idx : constMCacheIndices )
   {
     if ( idx->getCacheIterator( it, featureRequest ) )
     {
@@ -436,7 +439,8 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest &feat
   }
 
   // Check if we even cache the information requested
-  Q_FOREACH ( int attr, requestedAttributes )
+  const auto constRequestedAttributes = requestedAttributes;
+  for ( int attr : constRequestedAttributes )
   {
     if ( !mCachedAttributes.contains( attr ) )
     {

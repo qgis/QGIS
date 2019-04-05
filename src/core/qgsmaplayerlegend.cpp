@@ -65,7 +65,8 @@ QgsMapLayerLegend *QgsMapLayerLegend::defaultMeshLegend( QgsMeshLayer *ml )
 void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, const QList<int> &order )
 {
   QStringList orderStr;
-  Q_FOREACH ( int id, order )
+  const auto constOrder = order;
+  for ( int id : constOrder )
     orderStr << QString::number( id );
   QString str = orderStr.isEmpty() ? QStringLiteral( "empty" ) : orderStr.join( QStringLiteral( "," ) );
 
@@ -149,7 +150,8 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
 {
   // handle user labels
   int i = 0;
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, nodes )
+  const auto constNodes = nodes;
+  for ( QgsLayerTreeModelLegendNode *legendNode : constNodes )
   {
     QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i++ );
     if ( !userLabel.isNull() )
@@ -163,7 +165,8 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
 
     QList<QgsLayerTreeModelLegendNode *> newOrder;
     QSet<int> usedIndices;
-    Q_FOREACH ( int idx, order )
+    const auto constOrder = order;
+    for ( int idx : constOrder )
     {
       if ( usedIndices.contains( idx ) )
       {

@@ -1821,7 +1821,8 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   QList<const QgsMapLayer *> lst;
   if ( vl == that )
   {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, layers )
+    const auto constLayers = layers;
+    for ( const QgsMapLayerDependency &dep : constLayers )
     {
       if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1889,7 +1890,8 @@ QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
 bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsMapLayerDependency &dep, oDeps )
+  const auto constODeps = oDeps;
+  for ( const QgsMapLayerDependency &dep : constODeps )
   {
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;

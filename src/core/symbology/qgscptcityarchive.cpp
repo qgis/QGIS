@@ -92,9 +92,11 @@ QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString 
 
 QgsCptCityArchive::~QgsCptCityArchive()
 {
-  Q_FOREACH ( QgsCptCityDataItem *item, mRootItems )
+  const auto constMRootItems = mRootItems;
+  for ( QgsCptCityDataItem *item : constMRootItems )
     delete item;
-  Q_FOREACH ( QgsCptCityDataItem *item, mSelectionItems )
+  const auto constMSelectionItems = mSelectionItems;
+  for ( QgsCptCityDataItem *item : constMSelectionItems )
     delete item;
   mRootItems.clear();
   mSelectionItems.clear();
@@ -523,7 +525,8 @@ void QgsCptCityDataItem::populate()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QVector<QgsCptCityDataItem *> children = createChildren();
-  Q_FOREACH ( QgsCptCityDataItem *child, children )
+  const auto constChildren = children;
+  for ( QgsCptCityDataItem *child : constChildren )
   {
     // initialization, do not refresh! That would result in infinite loop (beginInsertItems->rowCount->populate)
     addChildItem( child );
@@ -546,7 +549,8 @@ int QgsCptCityDataItem::leafCount() const
     return 0;
 
   int count = 0;
-  Q_FOREACH ( QgsCptCityDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsCptCityDataItem *child : constMChildren )
   {
     if ( child )
       count += child->leafCount();
@@ -645,19 +649,22 @@ void QgsCptCityDataItem::refresh()
 
   // Remove no more present items
   QVector<QgsCptCityDataItem *> remove;
-  Q_FOREACH ( QgsCptCityDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsCptCityDataItem *child : constMChildren )
   {
     if ( findItem( items, child ) >= 0 )
       continue;
     remove.append( child );
   }
-  Q_FOREACH ( QgsCptCityDataItem *child, remove )
+  const auto constRemove = remove;
+  for ( QgsCptCityDataItem *child : constRemove )
   {
     deleteChildItem( child );
   }
 
   // Add new items
-  Q_FOREACH ( QgsCptCityDataItem *item, items )
+  const auto constItems = items;
+  for ( QgsCptCityDataItem *item : constItems )
   {
     // Is it present in children?
     if ( findItem( mChildren, item ) >= 0 )
@@ -781,7 +788,8 @@ QIcon QgsCptCityColorRampItem::icon()
 
 QIcon QgsCptCityColorRampItem::icon( QSize size )
 {
-  Q_FOREACH ( const QIcon &icon, mIcons )
+  const auto constMIcons = mIcons;
+  for ( const QIcon &icon : constMIcons )
   {
     if ( icon.availableSizes().contains( size ) )
       return icon;
@@ -854,7 +862,8 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   }
 
   // delete invalid items - this is not efficient, but should only happens once
-  Q_FOREACH ( QgsCptCityDataItem *deleteItem, deleteItems )
+  const auto constDeleteItems = deleteItems;
+  for ( QgsCptCityDataItem *deleteItem : constDeleteItems )
   {
     QgsDebugMsg( QStringLiteral( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
     int i = mChildren.indexOf( deleteItem );
@@ -1148,7 +1157,8 @@ QVector<QgsCptCityDataItem *> QgsCptCitySelectionItem::createChildren()
   QgsDebugMsg( "name= " + mName + " path= " + mPath );
 
   // add children archives
-  Q_FOREACH ( QString childPath, mSelectionsList )
+  const auto constMSelectionsList = mSelectionsList;
+  for ( QString childPath : constMSelectionsList )
   {
     QgsDebugMsg( "childPath = " + childPath + " name= " + QFileInfo( childPath ).baseName() );
     if ( childPath.endsWith( '/' ) )
@@ -1272,7 +1282,8 @@ QVector<QgsCptCityDataItem *> QgsCptCityAllRampsItem::createChildren()
   QVector<QgsCptCityDataItem *> children;
 
   // add children ramps of each item
-  Q_FOREACH ( QgsCptCityDataItem *item, mItems )
+  const auto constMItems = mItems;
+  for ( QgsCptCityDataItem *item : constMItems )
   {
     QgsCptCityCollectionItem *colItem = dynamic_cast< QgsCptCityCollectionItem * >( item );
     if ( colItem )
@@ -1672,7 +1683,8 @@ QStringList QgsCptCityBrowserModel::mimeTypes() const
 QMimeData *QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( index.isValid() )
     {

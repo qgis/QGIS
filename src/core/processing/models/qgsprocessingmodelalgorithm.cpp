@@ -110,7 +110,8 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
 
       QString expressionText;
       QVariantList paramParts;
-      Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramSources )
+      const auto constParamSources = paramSources;
+      for ( const QgsProcessingModelChildParameterSource &source : constParamSources )
       {
         switch ( source.source() )
         {
@@ -255,7 +256,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   while ( executedAlg && executed.count() < toExecute.count() )
   {
     executedAlg = false;
-    Q_FOREACH ( const QString &childId, toExecute )
+    const auto constToExecute = toExecute;
+    for ( const QString &childId : constToExecute )
     {
       if ( feedback && feedback->isCanceled() )
         break;
@@ -499,7 +501,8 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   while ( executedAlg && executed.count() < toExecute.count() )
   {
     executedAlg = false;
-    Q_FOREACH ( const QString &childId, toExecute )
+    const auto constToExecute = toExecute;
+    for ( const QString &childId : constToExecute )
     {
       if ( executed.contains( childId ) )
         continue;
@@ -649,7 +652,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterAuthConfig::typeName(),
       QStringList() << QgsProcessingOutputNumber::typeName()
       << QgsProcessingOutputString::typeName() );
-  Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )
+
+  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -693,7 +697,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
                                       << QgsProcessingOutputRasterLayer::typeName()
                                       << QgsProcessingOutputMapLayer::typeName() );
 
-  Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )
+  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -751,7 +755,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
   sources = availableSourcesForChild( childId, QStringList()
                                       << QgsProcessingParameterFeatureSource::typeName() );
-  Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )
+  for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
   {
     QString name;
     QVariant value;
@@ -1054,7 +1058,8 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   map.insert( QStringLiteral( "parameters" ), paramMap );
 
   QVariantMap paramDefMap;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  const auto constMParameters = mParameters;
+  for ( const QgsProcessingParameterDefinition *def : constMParameters )
   {
     paramDefMap.insert( def->name(), def->toVariantMap() );
   }
@@ -1293,7 +1298,8 @@ bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QStrin
 
 bool QgsProcessingModelAlgorithm::otherParametersDependOnParameter( const QString &name ) const
 {
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  const auto constMParameters = mParameters;
+  for ( const QgsProcessingParameterDefinition *def : constMParameters )
   {
     if ( def->name() == name )
       continue;

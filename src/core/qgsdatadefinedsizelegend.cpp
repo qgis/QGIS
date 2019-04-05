@@ -112,7 +112,8 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
   }
   else if ( mType == LegendSeparated )
   {
-    Q_FOREACH ( const SizeClass &cl, mSizeClasses )
+    const auto constMSizeClasses = mSizeClasses;
+    for ( const SizeClass &cl : constMSizeClasses )
     {
       QgsLegendSymbolItem si( mSymbol.get(), cl.label, QString() );
       QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
@@ -172,7 +173,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   // find out how wide the text will be
   int maxTextWidth = 0;
-  Q_FOREACH ( const SizeClass &c, classes )
+  for ( const SizeClass &c : qgis::as_const( mSizeClasses ) )
   {
     int w = fm.width( c.label );
     if ( w > maxTextWidth )
@@ -187,7 +188,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   // find out top Y coordinate for individual symbol sizes
   QList<int> symbolTopY;
-  Q_FOREACH ( const SizeClass &c, classes )
+  for ( const SizeClass &c : qgis::as_const( mSizeClasses ) )
   {
     int outputSymbolSize = std::round( context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() ) );
     switch ( mVAlign )
@@ -241,7 +242,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   p->translate( 0, -textTopY );
 
   // draw symbols first so that they do not cover
-  Q_FOREACH ( const SizeClass &c, classes )
+  for ( const SizeClass &c : qgis::as_const( mSizeClasses ) )
   {
     s->setSize( c.size );
 
@@ -266,7 +267,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   p->setFont( mFont );
 
   int i = 0;
-  Q_FOREACH ( const SizeClass &c, classes )
+  for ( const SizeClass &c : qgis::as_const( mSizeClasses ) )
   {
     // line from symbol to the text
     p->drawLine( outputLargestSize / 2, symbolTopY[i], outputLargestSize + hLengthLine, textCenterY[i] );
@@ -403,7 +404,8 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
   if ( !mSizeClasses.isEmpty() )
   {
     QDomElement elemClasses = doc.createElement( QStringLiteral( "classes" ) );
-    Q_FOREACH ( const SizeClass &sc, mSizeClasses )
+    const auto constMSizeClasses = mSizeClasses;
+    for ( const SizeClass &sc : constMSizeClasses )
     {
       QDomElement elemClass = doc.createElement( QStringLiteral( "class" ) );
       elemClass.setAttribute( QStringLiteral( "size" ), sc.size );

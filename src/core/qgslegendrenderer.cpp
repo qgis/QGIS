@@ -136,7 +136,8 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   qreal maxColumnWidth = 0;
   if ( mSettings.equalColumnWidth() )
   {
-    Q_FOREACH ( const Atom &atom, atomList )
+    const auto constAtomList = atomList;
+    for ( const Atom &atom : constAtomList )
     {
       maxColumnWidth = std::max( atom.size.width(), maxColumnWidth );
     }
@@ -153,7 +154,8 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   double columnMaxHeight = 0;
   qreal columnWidth = 0;
   int column = 0;
-  Q_FOREACH ( const Atom &atom, atomList )
+  const auto constAtomList = atomList;
+  for ( const Atom &atom : constAtomList )
   {
     if ( atom.column > column )
     {
@@ -348,7 +350,8 @@ void QgsLegendRenderer::setColumns( QList<Atom> &atomList )
   // Divide atoms to columns
   double totalHeight = 0;
   qreal maxAtomHeight = 0;
-  Q_FOREACH ( const Atom &atom, atomList )
+  const auto constAtomList = atomList;
+  for ( const Atom &atom : constAtomList )
   {
     totalHeight += spaceAboveAtom( atom );
     totalHeight += atom.size.height();

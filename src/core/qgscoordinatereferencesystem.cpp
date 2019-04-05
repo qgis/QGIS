@@ -103,7 +103,8 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
   // check both standard & user defined projection databases
   QStringList dbs = QStringList() <<  QgsApplication::srsDatabaseFilePath() << QgsApplication::qgisUserDatabaseFilePath();
 
-  Q_FOREACH ( const QString &db, dbs )
+  const auto constDbs = dbs;
+  for ( const QString &db : constDbs )
   {
     QFileInfo myInfo( db );
     if ( !myInfo.exists() )

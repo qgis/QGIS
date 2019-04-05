@@ -93,7 +93,8 @@ bool QgsLayerTreeUtils::readOldLegendLayerOrder( const QDomElement &legendElem, 
   if ( !res && hasCustomOrder )
     return false; // invalid state
 
-  Q_FOREACH ( const QString &layerId, layerIndexes )
+  const auto constLayerIndexes = layerIndexes;
+  for ( const QString &layerId : constLayerIndexes )
   {
     QgsDebugMsg( layerId );
     order.append( layerId );
@@ -262,7 +263,8 @@ static void _readOldLegendLayer( const QDomElement &layerElem, QgsLayerTreeGroup
 
 bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes )
 {
-  Q_FOREACH ( QgsLayerTreeLayer *layerNode, layerNodes )
+  const auto constLayerNodes = layerNodes;
+  for ( QgsLayerTreeLayer *layerNode : constLayerNodes )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerNode->layer() );
     if ( !vl )
@@ -276,7 +278,8 @@ bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerN
 
 bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer *> &layerNodes )
 {
-  Q_FOREACH ( QgsLayerTreeLayer *layerNode, layerNodes )
+  const auto constLayerNodes = layerNodes;
+  for ( QgsLayerTreeLayer *layerNode : constLayerNodes )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerNode->layer() );
     if ( !vl )
@@ -302,7 +305,8 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
     }
   }
 
-  Q_FOREACH ( QgsLayerTreeNode *node, nodesToRemove )
+  const auto constNodesToRemove = nodesToRemove;
+  for ( QgsLayerTreeNode *node : constNodesToRemove )
     group->removeChildNode( node );
 }
 

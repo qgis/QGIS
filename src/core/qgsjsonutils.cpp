@@ -175,7 +175,8 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
     if ( mLayer && mIncludeRelatedAttributes )
     {
       QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
-      Q_FOREACH ( const QgsRelation &relation, relations )
+      const auto constRelations = relations;
+      for ( const QgsRelation &relation : constRelations )
       {
         if ( attributeCounter > 0 )
           properties += QLatin1String( ",\n" );
@@ -238,7 +239,8 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
 QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features ) const
 {
   QStringList featureJSON;
-  Q_FOREACH ( const QgsFeature &feature, features )
+  const auto constFeatures = features;
+  for ( const QgsFeature &feature : constFeatures )
   {
     featureJSON << exportFeature( feature );
   }

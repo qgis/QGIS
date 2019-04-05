@@ -816,11 +816,13 @@ QHash<QString, QString> QgsApplication::uiThemes()
   QStringList paths = QStringList() << userThemesFolder() << defaultThemesFolder();
   QHash<QString, QString> mapping;
   mapping.insert( QStringLiteral( "default" ), QString() );
-  Q_FOREACH ( const QString &path, paths )
+  const auto constPaths = paths;
+  for ( const QString &path : constPaths )
   {
     QDir folder( path );
     QFileInfoList styleFiles = folder.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
-    Q_FOREACH ( const QFileInfo &info, styleFiles )
+    const auto constStyleFiles = styleFiles;
+    for ( const QFileInfo &info : constStyleFiles )
     {
       QFileInfo styleFile( info.absoluteFilePath() + "/style.qss" );
       if ( !styleFile.exists() )
@@ -943,7 +945,8 @@ QStringList QgsApplication::svgPaths()
 
   // maintain user set order while stripping duplicates
   QStringList paths;
-  Q_FOREACH ( const QString &path, pathList )
+  const auto constPathList = pathList;
+  for ( const QString &path : constPathList )
   {
     if ( !paths.contains( path ) )
       paths.append( path );

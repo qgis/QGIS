@@ -635,7 +635,8 @@ void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem ) const
   elem.setAttribute( QStringLiteral( "visibilityExpression" ), mVisibilityExpression->expression() );
   if ( mBackgroundColor.isValid() )
     elem.setAttribute( QStringLiteral( "backgroundColor" ), mBackgroundColor.name( ) );
-  Q_FOREACH ( QgsAttributeEditorElement *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsAttributeEditorElement *child : constMChildren )
   {
     QDomDocument doc = elem.ownerDocument();
     elem.appendChild( child->toDomElement( doc ) );
