@@ -841,6 +841,15 @@ namespace QgsWms
       layerParentElem.appendChild( treeNameElem );
     }
 
+    if ( hasQueryableChildren( projectLayerTreeRoot, QgsServerProjectUtils::wmsRestrictedLayers( *project ) ) )
+    {
+      layerParentElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "1" ) );
+    }
+    else
+    {
+      layerParentElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "0" ) );
+    }
+
     appendLayersFromTreeGroup( doc, layerParentElem, serverIface, project, version, request, projectLayerTreeRoot, projectSettings );
 
     combineExtentAndCrsOfGroupChildren( doc, layerParentElem, project, true );
@@ -862,7 +871,7 @@ namespace QgsWms
     {
       bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
       bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
-      QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
+      const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
       QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
@@ -927,6 +936,16 @@ namespace QgsWms
             QDomText treeNameText = doc.createTextNode( name );
             treeNameElem.appendChild( treeNameText );
             layerElem.appendChild( treeNameElem );
+          }
+
+          // Set queryable if any of the children are
+          if ( hasQueryableChildren( treeNode, restrictedLayers ) )
+          {
+            layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "1" ) );
+          }
+          else
+          {
+            layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "0" ) );
           }
 
           appendLayersFromTreeGroup( doc, layerElem, serverIface, project, version, request, treeGroupChild, projectSettings );
@@ -1855,6 +1874,26 @@ namespace QgsWms
       }
       parent.appendChild( keywordsElem );
     }
+  }
+
+  bool hasQueryableChildren( const QgsLayerTreeNode *childNode, const QStringList &wmsRestrictedLayers )
+  {
+    if ( childNode->nodeType() == QgsLayerTreeNode::NodeGroup )
+    {
+      for ( int j = 0; j < childNode->children().size(); ++j )
+      {
+        if ( hasQueryableChildren( childNode->children().at( j ), wmsRestrictedLayers ) )
+          return  true;
+      }
+      return false;
+    }
+    else if ( childNode->nodeType() == QgsLayerTreeNode::NodeLayer )
+    {
+      const auto treeLayer { static_cast<const QgsLayerTreeLayer *>( childNode ) };
+      const auto l { treeLayer->layer() };
+      return ! wmsRestrictedLayers.contains( l->name() ) && l->flags().testFlag( QgsMapLayer::Identifiable );
+    }
+    return false;
   }
 
 
