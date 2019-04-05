@@ -1331,7 +1331,8 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir, 
 {
   QVector<QgsDataItem *> children;
   QString pathName = pathComponent( favDir );
-  Q_FOREACH ( QgsDataItemProvider *provider, QgsApplication::dataItemProviderRegistry()->providers() )
+  const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
+  for ( QgsDataItemProvider *provider : constProviders )
   {
     int capabilities = provider->capabilities();
 

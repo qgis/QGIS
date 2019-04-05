@@ -533,7 +533,8 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
     return false;
 
   // try to add/update a feature in each joined layer
-  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vectorJoins() )
+  const auto constVectorJoins = vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
   {
     QgsVectorLayer *joinLayer = info.joinLayer();
 
@@ -674,7 +675,8 @@ bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids ) const
   const auto constFids = fids;
   for ( const QgsFeatureId &fid : constFids )
   {
-    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, vectorJoins() )
+    const auto constVectorJoins = vectorJoins();
+    for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
     {
       if ( info.isEditable() && info.hasCascadedDelete() )
       {

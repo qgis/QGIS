@@ -174,7 +174,8 @@ void QgsLayerTreeGroup::removeChildren( int from, int count )
 void QgsLayerTreeGroup::removeChildrenGroupWithoutLayers()
 {
   // clean the layer tree by removing empty group
-  Q_FOREACH ( QgsLayerTreeNode *treeNode, children() )
+  const auto constChildren = children();
+  for ( QgsLayerTreeNode *treeNode : constChildren )
   {
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {

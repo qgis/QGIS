@@ -183,7 +183,8 @@ void QgsLayerTree::nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int
     }
     else if ( QgsLayerTree::isGroup( child ) )
     {
-      Q_FOREACH ( QgsLayerTreeLayer *nodeL, QgsLayerTree::toGroup( child )->findLayers() )
+      const auto constFindLayers = QgsLayerTree::toGroup( child )->findLayers();
+      for ( QgsLayerTreeLayer *nodeL : constFindLayers )
         layers << nodeL->layer();
     }
   }

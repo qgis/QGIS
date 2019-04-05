@@ -452,7 +452,8 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
 QStringList QgsEllipsoidUtils::acronyms()
 {
   QStringList result;
-  Q_FOREACH ( const QgsEllipsoidUtils::EllipsoidDefinition &def, definitions() )
+  const auto constDefinitions = definitions();
+  for ( const QgsEllipsoidUtils::EllipsoidDefinition &def : constDefinitions )
   {
     result << def.acronym;
   }

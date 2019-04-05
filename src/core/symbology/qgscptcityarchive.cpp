@@ -836,7 +836,8 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   populate();
 
   // recursively add children
-  Q_FOREACH ( QgsCptCityDataItem *childItem, children() )
+  const auto constChildren = children();
+  for ( QgsCptCityDataItem *childItem : constChildren )
   {
     QgsCptCityCollectionItem *collectionItem = dynamic_cast<QgsCptCityCollectionItem *>( childItem );
     QgsCptCityColorRampItem *rampItem = dynamic_cast<QgsCptCityColorRampItem *>( childItem );
@@ -921,7 +922,8 @@ QVector<QgsCptCityDataItem *> QgsCptCityDirectoryItem::createChildren()
   }
 
   // add children dirs
-  Q_FOREACH ( const QString &childPath, dirEntries() )
+  const auto constDirEntries = dirEntries();
+  for ( const QString &childPath : constDirEntries )
   {
     QgsCptCityDataItem *childItem =
       QgsCptCityDirectoryItem::dataItem( this, childPath, mPath + '/' + childPath );

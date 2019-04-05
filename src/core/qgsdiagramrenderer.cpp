@@ -471,7 +471,8 @@ QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &
   if ( !mDiagram )
     return referenced;
 
-  Q_FOREACH ( const QString &att, diagramAttributes() )
+  const auto constDiagramAttributes = diagramAttributes();
+  for ( const QString &att : constDiagramAttributes )
   {
     QgsExpression *expression = mDiagram->getExpression( att, context );
     const auto constReferencedColumns = expression->referencedColumns();
