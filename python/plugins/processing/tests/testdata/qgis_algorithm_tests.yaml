@@ -48,7 +48,7 @@ tests:
           precision: 0
         }, {
           input: 'name',
-          aggregate: 'concatenate',
+          aggregate: 'concatenate_unique',
           delimiter: ',',
           name: 'name',
           type: 10,
