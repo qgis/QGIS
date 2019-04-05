@@ -3172,7 +3172,7 @@ namespace QgsWms
   {
     std::unique_ptr<QImage> tmpImage( createImage( 1, 1, false ) );
     return tmpImage->dotsPerMeterX() / 1000.0;
-  }  
+  }
 
   QStringList QgsRenderer::flattenedQueryLayers() const
   {

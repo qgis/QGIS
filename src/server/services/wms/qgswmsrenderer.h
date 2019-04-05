@@ -306,7 +306,7 @@ namespace QgsWms
       QStringList mRestrictedLayers;
       QMap<QString, QgsMapLayer *> mNicknameLayers;
       QMap<QString, QList<QgsMapLayer *> > mLayerGroups;
-      QList<QgsMapLayer *> mTemporaryLayers;      
+      QList<QgsMapLayer *> mTemporaryLayers;
       QStringList flattenedQueryLayers() const;
 
     public:
