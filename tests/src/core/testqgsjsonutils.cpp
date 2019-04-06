@@ -95,7 +95,7 @@ class TestQgsJsonUtils : public QObject
       {
         QBENCHMARK
         {
-          const auto json { QgsJsonUtils::exportAttributesV2( feature, &vl ) };
+          const auto json { QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) };
           QCOMPARE( QJsonDocument( json ).toJson( QJsonDocument::JsonFormat::Compact ), QStringLiteral( "{\"flddbl\":2,\"fldint\":1,\"fldtxt\":\"a value\"}" ) );
         }
       }
@@ -132,7 +132,7 @@ class TestQgsJsonUtils : public QObject
       {
         QBENCHMARK
         {
-          const auto json { exporter.exportFeatureV2( feature ) };
+          const auto json { exporter.exportFeatureToJsonObject( feature ) };
           QCOMPARE( QJsonDocument( json ).toJson( QJsonDocument::JsonFormat::Compact ),
                     QStringLiteral( "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":[[[1.12,1.34]"
                                     ",[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],[[2,2],[3,2],[3,3],[2,3],[2,2]]],"

@@ -1195,12 +1195,19 @@ QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int prec
   return json;
 }
 
-QJsonArray QgsGeometryUtils::pointsToJsonV2( const QgsPointSequence &points )
+QJsonArray QgsGeometryUtils::pointsToJsonObject( const QgsPointSequence &points, int precision )
 {
   QJsonArray coordinates;
   for ( const QgsPoint &p : points )
   {
-    coordinates.append( QJsonArray( { p.x(), p.y() } ) );
+    if ( p.is3D() )
+    {
+      coordinates.append( QJsonArray( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ), qgsRound( p.z(), precision ) } ) );
+    }
+    else
+    {
+      coordinates.append( QJsonArray( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ) } ) );
+    }
   }
   return coordinates;
 }

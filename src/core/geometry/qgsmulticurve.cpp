@@ -131,7 +131,7 @@ QString QgsMultiCurve::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsMultiCurve::asJsonV2() const
+QJsonObject QgsMultiCurve::asJsonObject( int precision ) const
 {
   QJsonArray coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
@@ -141,7 +141,7 @@ QJsonObject QgsMultiCurve::asJsonV2() const
       std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
       QgsPointSequence pts;
       lineString->points( pts );
-      coordinates.append( QgsGeometryUtils::pointsToJsonV2( pts ) );
+      coordinates.append( QgsGeometryUtils::pointsToJsonObject( pts, precision ) );
     }
   }
   return

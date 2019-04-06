@@ -236,7 +236,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
   return s;
 }
 
-QJsonObject QgsJsonExporter::exportFeatureV2( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
+QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
 {
   QJsonObject featureJson
   {
@@ -269,7 +269,7 @@ QJsonObject QgsJsonExporter::exportFeatureV2( const QgsFeature &feature, const Q
           box.xMaximum(),
           box.yMaximum() } );
     }
-    featureJson[ QStringLiteral( "geometry" ) ] =  geom.asJsonV2( );
+    featureJson[ QStringLiteral( "geometry" ) ] =  geom.asJsonObject( mPrecision );
   }
   else
   {
@@ -482,7 +482,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
 }
 
 
-QJsonObject QgsJsonUtils::exportAttributesV2( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
+QJsonObject QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
 {
   QgsFields fields = feature.fields();
   QJsonObject attrs;

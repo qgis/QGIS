@@ -288,12 +288,17 @@ QString QgsPoint::asJson( int precision ) const
          + QLatin1String( "]}" );
 }
 
-QJsonObject QgsPoint::asJsonV2() const
+QJsonObject QgsPoint::asJsonObject( int precision ) const
 {
+  QJsonArray coordinates { { qgsRound( mX, precision ), qgsRound( mY, precision ) } };
+  if ( is3D() )
+  {
+    coordinates.append( qgsRound( mZ, precision ) );
+  }
   return
   {
     { QLatin1String( "type" ), QLatin1String( "Point" ) },
-    { QLatin1String( "coordinates" ), QJsonArray( { mX, mY } ) }
+    { QLatin1String( "coordinates" ), coordinates }
   };
 }
 

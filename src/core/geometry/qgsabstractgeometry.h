@@ -287,7 +287,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asGml2()
      * \see asGml3()
      */
-    virtual QJsonObject asJsonV2( ) const = 0;
+    virtual QJsonObject asJsonObject( int precision = 17 ) const = 0;
 
     //render pipeline
 

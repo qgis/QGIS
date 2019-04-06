@@ -431,12 +431,12 @@ QString QgsGeometryCollection::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsGeometryCollection::asJsonV2() const
+QJsonObject QgsGeometryCollection::asJsonObject( int precision ) const
 {
   QJsonArray coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    coordinates.append( geom->asJsonV2() );
+    coordinates.append( geom->asJsonObject() );
   }
   return
   {

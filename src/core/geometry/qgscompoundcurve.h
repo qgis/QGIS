@@ -51,7 +51,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
-    QJsonObject asJsonV2( ) const override;
+    QJsonObject asJsonObject( int precision ) const override;
 
     //curve interface
     double length() const override;

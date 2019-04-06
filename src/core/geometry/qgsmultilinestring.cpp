@@ -118,7 +118,7 @@ QString QgsMultiLineString::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsMultiLineString::asJsonV2() const
+QJsonObject QgsMultiLineString::asJsonObject( int precision ) const
 {
   QJsonArray coordinates;
   for ( const QgsAbstractGeometry *geom : mGeometries )
@@ -128,7 +128,7 @@ QJsonObject QgsMultiLineString::asJsonV2() const
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
       QgsPointSequence pts;
       lineString->points( pts );
-      coordinates.append( QgsGeometryUtils::pointsToJsonV2( pts ) );
+      coordinates.append( QgsGeometryUtils::pointsToJsonObject( pts, precision ) );
     }
   }
   return

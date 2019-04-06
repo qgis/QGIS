@@ -1441,7 +1441,7 @@ Exports the geometry to WKT
 Exports the geometry to a GeoJSON string.
 %End
 
-    QJsonObject asJsonV2( ) const;
+    QJsonObject asJsonObject( int precision = 17 ) const;
 %Docstring
 Exports the geometry to a GeoJSON object.
 %End

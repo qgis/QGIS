@@ -259,7 +259,7 @@ Returns a GeoJSON representation of the geometry.
 .. seealso:: :py:func:`asGml3`
 %End
 
-    virtual QJsonObject asJsonV2( ) const = 0;
+    virtual QJsonObject asJsonObject( int precision = 17 ) const = 0;
 %Docstring
 Returns a GeoJSON object of the geometry.
 

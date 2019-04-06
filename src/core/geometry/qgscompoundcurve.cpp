@@ -299,11 +299,11 @@ QString QgsCompoundCurve::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsCompoundCurve::asJsonV2() const
+QJsonObject QgsCompoundCurve::asJsonObject( int precision ) const
 {
   // GeoJSON does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  return line->asJsonV2();
+  return line->asJsonObject( precision );
 }
 
 double QgsCompoundCurve::length() const

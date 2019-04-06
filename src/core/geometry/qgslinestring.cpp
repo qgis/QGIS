@@ -419,14 +419,14 @@ QString QgsLineString::asJson( int precision ) const
   return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
 }
 
-QJsonObject QgsLineString::asJsonV2() const
+QJsonObject QgsLineString::asJsonObject( int precision ) const
 {
   QgsPointSequence pts;
   points( pts );
   return
   {
     { QLatin1String( "type" ), QLatin1String( "LineString" ) },
-    { QLatin1String( "coordinates" ),  QgsGeometryUtils::pointsToJsonV2( pts ) }
+    { QLatin1String( "coordinates" ),  QgsGeometryUtils::pointsToJsonObject( pts, precision ) }
   };
 }
 

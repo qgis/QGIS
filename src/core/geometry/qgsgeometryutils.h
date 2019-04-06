@@ -425,7 +425,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns a geoJSON coordinates object.
      * \note not available in Python bindings
      */
-    static QJsonArray pointsToJsonV2( const QgsPointSequence &points ) SIP_SKIP;
+    static QJsonArray pointsToJsonObject( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /**
      * Ensures that an angle is in the range 0 <= angle < 2 pi.

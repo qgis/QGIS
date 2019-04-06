@@ -1433,7 +1433,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Exports the geometry to a GeoJSON object.
      */
-    QJsonObject asJsonV2( ) const;
+    QJsonObject asJsonObject( int precision = 17 ) const;
 
     /**
      * Try to convert the geometry to the requested type

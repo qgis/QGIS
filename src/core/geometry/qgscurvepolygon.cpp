@@ -428,7 +428,7 @@ QString QgsCurvePolygon::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsCurvePolygon::asJsonV2() const
+QJsonObject QgsCurvePolygon::asJsonObject( int precision ) const
 {
   QJsonArray coordinates;
   if ( exteriorRing() )
@@ -436,7 +436,7 @@ QJsonObject QgsCurvePolygon::asJsonV2() const
     std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
     QgsPointSequence exteriorPts;
     exteriorLineString->points( exteriorPts );
-    coordinates.append( QgsGeometryUtils::pointsToJsonV2( exteriorPts ) );
+    coordinates.append( QgsGeometryUtils::pointsToJsonObject( exteriorPts, precision ) );
 
     std::unique_ptr< QgsLineString > interiorLineString;
     for ( int i = 0, n = numInteriorRings(); i < n; ++i )
@@ -444,7 +444,7 @@ QJsonObject QgsCurvePolygon::asJsonV2() const
       interiorLineString.reset( interiorRing( i )->curveToLine() );
       QgsPointSequence interiorPts;
       interiorLineString->points( interiorPts );
-      coordinates.append( QgsGeometryUtils::pointsToJsonV2( interiorPts ) );
+      coordinates.append( QgsGeometryUtils::pointsToJsonObject( interiorPts, precision ) );
     }
   }
   return

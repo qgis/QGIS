@@ -128,7 +128,7 @@ QString QgsMultiPoint::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsMultiPoint::asJsonV2() const
+QJsonObject QgsMultiPoint::asJsonObject( int precision ) const
 {
   QJsonArray coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )

@@ -208,9 +208,9 @@ class CORE_EXPORT QgsJsonExporter
      * \returns GeoJSON string
      * \see exportFeatures()
      */
-    QJsonObject exportFeatureV2( const QgsFeature &feature,
-                                 const QVariantMap &extraProperties = QVariantMap(),
-                                 const QVariant &id = QVariant() ) const;
+    QJsonObject exportFeatureToJsonObject( const QgsFeature &feature,
+                                           const QVariantMap &extraProperties = QVariantMap(),
+                                           const QVariant &id = QVariant() ) const;
 
 
     /**
@@ -313,8 +313,8 @@ class CORE_EXPORT QgsJsonUtils
      * \param attributeWidgetCaches optional widget configuration cache. Can be used
      * to speed up exporting the attributes for multiple features from the same layer.
      */
-    static QJsonObject exportAttributesV2( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
-                                           const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
+    static QJsonObject exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
+        const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 
 
     /**
