@@ -66,9 +66,21 @@ QString QgsServerParameterDefinition::toString() const
   return mValue.toString();
 }
 
-QStringList QgsServerParameterDefinition::toStringList( const char delimiter ) const
+QStringList QgsServerParameterDefinition::toStringList( const char delimiter, const bool skipEmptyParts ) const
 {
-  return toString().split( delimiter, QString::SkipEmptyParts );
+  if ( skipEmptyParts )
+  {
+    return toString().split( delimiter, QString::SkipEmptyParts );
+  }
+  else
+  {
+    QStringList list;
+    if ( !toString().isEmpty() )
+    {
+      list = toString().split( delimiter, QString::KeepEmptyParts );
+    }
+    return list;
+  }
 }
 
 QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const char delimiter ) const
