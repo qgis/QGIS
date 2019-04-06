@@ -192,6 +192,15 @@ namespace QgsWms
       bool isValid() const override;
 
       /**
+       * Converts the parameter into a list of strings and keeps empty parts
+       * Default style value is an empty string
+       * \param delimiter The character used for delimiting
+       * \returns A list of strings
+       * \since QGIS 3.8
+       */
+      QStringList toStyleList( const char delimiter = ',' ) const;
+
+      /**
        * Converts the parameter into a list of geometries.
        * \param delimiter The character delimiting string geometries
        * \returns A list of geometries

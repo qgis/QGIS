@@ -43,6 +43,11 @@ namespace QgsWms
     QgsServerParameterDefinition::raiseError( msg );
   }
 
+  QStringList QgsWmsParameter::toStyleList( const char delimiter ) const
+  {
+    return QgsServerParameterDefinition::toStringList( delimiter, false );
+  }
+
   QList<QgsGeometry> QgsWmsParameter::toGeomList( const char delimiter ) const
   {
     bool ok = true;
@@ -1298,8 +1303,8 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::allStyles() const
   {
-    QStringList style = mWmsParameters[ QgsWmsParameter::STYLE ].toStringList();
-    const QStringList styles = mWmsParameters[ QgsWmsParameter::STYLES ].toStringList();
+    QStringList style = mWmsParameters[ QgsWmsParameter::STYLE ].toStyleList();
+    const QStringList styles = mWmsParameters[ QgsWmsParameter::STYLES ].toStyleList();
     return style << styles;
   }
 
@@ -1561,7 +1566,7 @@ namespace QgsWms
     wmsParam = idParameter( QgsWmsParameter::STYLES, mapId );
     if ( wmsParam.isValid() )
     {
-      styles = wmsParam.toStringList();
+      styles = wmsParam.toStyleList();
     }
 
     QList<QgsWmsParametersLayer> lParams;
