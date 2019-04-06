@@ -10,6 +10,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgis.h>
 %End
@@ -19,68 +20,60 @@ int QgisEvent = QEvent::User + 1;
 %End
 
 
-class Qgis
+namespace Qgis
 {
-%Docstring
-The Qgis class provides global constants for use throughout the application.
-%End
-
-%TypeHeaderCode
-#include "qgis.h"
-%End
-  public:
-    static const QString QGIS_VERSION;
-    static const int QGIS_VERSION_INT;
-    static const QString QGIS_RELEASE_NAME;
-    static const char *QGIS_DEV_VERSION;
+  const QString QGIS_VERSION;
+  const int QGIS_VERSION_INT;
+  const QString QGIS_RELEASE_NAME;
+  const QString QGIS_DEV_VERSION;
 
 
-    enum MessageLevel
-    {
-      Info,
-      Warning,
-      Critical,
-      Success,
-      None
-    };
+  enum MessageLevel
+  {
+    Info,
+    Warning,
+    Critical,
+    Success,
+    None
+  };
 
-    enum DataType
-    {
-      UnknownDataType,
-      Byte,
-      UInt16,
-      Int16,
-      UInt32,
-      Int32,
-      Float32,
-      Float64,
-      CInt16,
-      CInt32,
-      CFloat32,
-      CFloat64,
-      ARGB32,
-      ARGB32_Premultiplied
-    };
+  enum DataType
+  {
+    UnknownDataType,
+    Byte,
+    UInt16,
+    Int16,
+    UInt32,
+    Int32,
+    Float32,
+    Float64,
+    CInt16,
+    CInt32,
+    CFloat32,
+    CFloat64,
+    ARGB32,
+    ARGB32_Premultiplied
+  };
 
-    static const double DEFAULT_SEARCH_RADIUS_MM;
+  const double DEFAULT_SEARCH_RADIUS_MM;
 
-    static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
+  const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 
-    static const QColor DEFAULT_HIGHLIGHT_COLOR;
+  const QColor DEFAULT_HIGHLIGHT_COLOR;
 
-    static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
+  const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
-    static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+  const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
-    static const double SCALE_PRECISION;
+  const double SCALE_PRECISION;
 
-    static const double DEFAULT_Z_COORDINATE;
+  const double DEFAULT_Z_COORDINATE;
 
-    static const double UI_SCALE_FACTOR;
+  const double UI_SCALE_FACTOR;
 
-    static const double DEFAULT_SNAP_TOLERANCE;
+  const double DEFAULT_SNAP_TOLERANCE;
 
-    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+  const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
 };
 
 

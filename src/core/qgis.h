@@ -19,6 +19,7 @@
 #define QGIS_H
 
 #include <QMetaEnum>
+#include <QColor>
 #include <cfloat>
 #include <memory>
 #include <cmath>
@@ -26,6 +27,11 @@
 #include "qgstolerance.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#ifndef QGSVERSION
+#include "qgsversion.h"
+#endif
+#include "qgsconfig.h"
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -42,113 +48,116 @@ int QgisEvent = QEvent::User + 1;
  * \ingroup core
  * The Qgis class provides global constants for use throughout the application.
  */
-class CORE_EXPORT Qgis
+namespace Qgis
 {
-  public:
-    // Version constants
-    //
-    //! Version string
-    static const QString QGIS_VERSION;
-    //! Version number used for comparing versions using the "Check QGIS Version" function
-    static const int QGIS_VERSION_INT;
-    //! Release name
-    static const QString QGIS_RELEASE_NAME;
-    //! The development version
-    static const char *QGIS_DEV_VERSION;
+  // Version constants
+  //
+  //! Version string
+  const QString QGIS_VERSION = QStringLiteral( VERSION );
+  //! Version number used for comparing versions using the "Check QGIS Version" function
+  const int QGIS_VERSION_INT = VERSION_INT;
+  //! Release name
+  const QString QGIS_RELEASE_NAME = QStringLiteral( RELEASE_NAME );
+  //! The development version
+  const QString QGIS_DEV_VERSION = QStringLiteral( QGSVERSION );
 
-    // Enumerations
-    //
+  // Enumerations
+  //
 
-    /**
-     * \brief Level for messages
-     * This will be used both for message log and message bar in application.
-     */
-    enum MessageLevel
-    {
-      Info = 0,
-      Warning = 1,
-      Critical = 2,
-      Success = 3,
-      None = 4
-    };
+  /**
+   * \brief Level for messages
+   * This will be used both for message log and message bar in application.
+   */
+  enum MessageLevel
+  {
+    Info = 0,
+    Warning = 1,
+    Critical = 2,
+    Success = 3,
+    None = 4
+  };
 
-    /**
-     * Raster data types.
-     *  This is modified and extended copy of GDALDataType.
-     */
-    enum DataType
-    {
-      UnknownDataType = 0, //!< Unknown or unspecified type
-      Byte = 1, //!< Eight bit unsigned integer (quint8)
-      UInt16 = 2, //!< Sixteen bit unsigned integer (quint16)
-      Int16 = 3, //!< Sixteen bit signed integer (qint16)
-      UInt32 = 4, //!< Thirty two bit unsigned integer (quint32)
-      Int32 = 5, //!< Thirty two bit signed integer (qint32)
-      Float32 = 6, //!< Thirty two bit floating point (float)
-      Float64 = 7, //!< Sixty four bit floating point (double)
-      CInt16 = 8, //!< Complex Int16
-      CInt32 = 9, //!< Complex Int32
-      CFloat32 = 10, //!< Complex Float32
-      CFloat64 = 11, //!< Complex Float64
-      ARGB32 = 12, //!< Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32
-      ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
-    };
+  /**
+   * Raster data types.
+   *  This is modified and extended copy of GDALDataType.
+   */
+  enum DataType
+  {
+    UnknownDataType = 0, //!< Unknown or unspecified type
+    Byte = 1, //!< Eight bit unsigned integer (quint8)
+    UInt16 = 2, //!< Sixteen bit unsigned integer (quint16)
+    Int16 = 3, //!< Sixteen bit signed integer (qint16)
+    UInt32 = 4, //!< Thirty two bit unsigned integer (quint32)
+    Int32 = 5, //!< Thirty two bit signed integer (qint32)
+    Float32 = 6, //!< Thirty two bit floating point (float)
+    Float64 = 7, //!< Sixty four bit floating point (double)
+    CInt16 = 8, //!< Complex Int16
+    CInt32 = 9, //!< Complex Int32
+    CFloat32 = 10, //!< Complex Float32
+    CFloat64 = 11, //!< Complex Float64
+    ARGB32 = 12, //!< Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32
+    ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
+  };
 
-    /**
-     * Identify search radius in mm
-     *  \since QGIS 2.3 */
-    static const double DEFAULT_SEARCH_RADIUS_MM;
+  /**
+   * Identify search radius in mm
+   *  \since QGIS 2.3 */
+  const double DEFAULT_SEARCH_RADIUS_MM = 2.0;
 
-    //! Default threshold between map coordinates and device coordinates for map2pixel simplification
-    static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
+  //! Default threshold between map coordinates and device coordinates for map2pixel simplification
+  const float DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
 
-    /**
-     * Default highlight color.  The transparency is expected to only be applied to polygon
-     *  fill. Lines and outlines are rendered opaque.
-     *  \since QGIS 2.3 */
-    static const QColor DEFAULT_HIGHLIGHT_COLOR;
+  /**
+   * Default highlight color.  The transparency is expected to only be applied to polygon
+   *  fill. Lines and outlines are rendered opaque.
+   *  \since QGIS 2.3 */
+  const QColor DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
 
-    /**
-     * Default highlight buffer in mm.
-     *  \since QGIS 2.3 */
-    static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
+  /**
+   * Default highlight buffer in mm.
+   *  \since QGIS 2.3 */
+  const double DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
 
-    /**
-     * Default highlight line/stroke minimum width in mm.
-     *  \since QGIS 2.3 */
-    static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+  /**
+   * Default highlight line/stroke minimum width in mm.
+   *  \since QGIS 2.3 */
+  const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 
-    /**
-     * Fudge factor used to compare two scales. The code is often going from scale to scale
-     *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
-     *  To avoid that, use this factor instead of using <= or >=.
-     * \since QGIS 2.15*/
-    static const double SCALE_PRECISION;
+  /**
+   * Fudge factor used to compare two scales. The code is often going from scale to scale
+   *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
+   *  To avoid that, use this factor instead of using <= or >=.
+   * \since QGIS 2.15*/
+  const double SCALE_PRECISION = 0.9999999999;
 
-    /**
-     * Default Z coordinate value for 2.5d geometry
-     *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
-     *  \since QGIS 3.0 */
-    static const double DEFAULT_Z_COORDINATE;
+  /**
+   * Default Z coordinate value for 2.5d geometry
+   *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
+   *  \since QGIS 3.0 */
+  const double DEFAULT_Z_COORDINATE = 0.0;
 
-    /**
-     * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
-     * to account for differences in the default font sizes across different platforms.
-     *  \since QGIS 3.0
-    */
-    static const double UI_SCALE_FACTOR;
+  /**
+   * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
+   * to account for differences in the default font sizes across different platforms.
+   *  \since QGIS 3.0
+  */
+#ifdef Q_OS_WIN
+  const double UI_SCALE_FACTOR = 1.5 SIP_SKIP;
+#else
+  const double UI_SCALE_FACTOR = 1;
+#endif
 
-    /**
-     * Default snapping distance tolerance.
-     *  \since QGIS 3.0
-    */
-    static const double DEFAULT_SNAP_TOLERANCE;
+  /**
+   * Default snapping distance tolerance.
+   *  \since QGIS 3.0
+  */
+  const double DEFAULT_SNAP_TOLERANCE = 12.0;
 
-    /**
-     * Default snapping distance units.
-     *  \since QGIS 3.0
-    */
-    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+  /**
+   * Default snapping distance units.
+   *  \since QGIS 3.0
+  */
+  const QgsTolerance::UnitType DEFAULT_SNAP_UNITS = QgsTolerance::Pixels;
 };
 
 // hack to workaround warnings when casting void pointers

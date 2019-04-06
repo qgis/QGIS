@@ -5,7 +5,8 @@ INCLUDE_DIRECTORIES(
         ${CMAKE_BINARY_DIR}/src/core
         ${CMAKE_BINARY_DIR}/src/core/geometry
 
-	${Qt5Core_INCLUDE_DIRS}
+        ${Qt5Core_INCLUDE_DIRS}
+        ${Qt5Gui_INCLUDE_DIRS}
 )
 
 ADD_LIBRARY(libdxfrw STATIC

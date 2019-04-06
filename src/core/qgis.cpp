@@ -19,6 +19,7 @@
 #ifndef QGSVERSION
 #include "qgsversion.h"
 #endif
+
 #include <QCoreApplication>
 #include <QColor>
 #include <QDate>
@@ -30,22 +31,6 @@
 #include "qgswkbtypes.h"
 
 #include <ogr_api.h>
-
-// Version constants
-//
-
-// Version string
-const QString Qgis::QGIS_VERSION( QStringLiteral( VERSION ) );
-
-// development version
-const char *Qgis::QGIS_DEV_VERSION = QGSVERSION;
-
-// Version number used for comparing versions using the
-// "Check QGIS Version" function
-const int Qgis::QGIS_VERSION_INT = VERSION_INT;
-
-// Release name
-const QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
 
 const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
 
@@ -69,30 +54,6 @@ const QString PROJECT_SCALES =
 const QString GEO_EPSG_CRS_AUTHID = QStringLiteral( "EPSG:4326" );
 
 const QString GEO_NONE = QStringLiteral( "NONE" );
-
-const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
-
-const float Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
-
-const QColor Qgis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
-
-const double Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
-
-const double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
-
-const double Qgis::SCALE_PRECISION = 0.9999999999;
-
-const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
-
-const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
-
-const QgsTolerance::UnitType Qgis::DEFAULT_SNAP_UNITS = QgsTolerance::Pixels;
-
-#ifdef Q_OS_WIN
-const double Qgis::UI_SCALE_FACTOR = 1.5;
-#else
-const double Qgis::UI_SCALE_FACTOR = 1;
-#endif
 
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
