@@ -75,7 +75,8 @@ bool QgsColorSchemeList::saveColorsToScheme()
 void QgsColorSchemeList::removeSelection()
 {
   QList<int> rows;
-  Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+  const auto constSelectedIndexes = selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     rows << index.row();
   }
@@ -84,7 +85,8 @@ void QgsColorSchemeList::removeSelection()
 
   //remove rows in descending order
   std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
-  Q_FOREACH ( int row, rowsToRemove )
+  const auto constRowsToRemove = rowsToRemove;
+  for ( int row : constRowsToRemove )
   {
     mModel->removeRow( row );
   }
@@ -116,7 +118,8 @@ void QgsColorSchemeList::pasteColors()
 void QgsColorSchemeList::copyColors()
 {
   QList<int> rows;
-  Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+  const auto constSelectedIndexes = selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     rows << index.row();
   }
@@ -124,7 +127,8 @@ void QgsColorSchemeList::copyColors()
   QList<int> rowsToCopy = QList<int>::fromSet( rows.toSet() );
 
   QgsNamedColorList colorsToCopy;
-  Q_FOREACH ( int row, rowsToCopy )
+  const auto constRowsToCopy = rowsToCopy;
+  for ( int row : constRowsToCopy )
   {
     colorsToCopy << mModel->colors().at( row );
   }
@@ -198,7 +202,8 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
   if ( ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
   {
     QList<int> rows;
-    Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+    const auto constSelectedIndexes = selectedIndexes();
+    for ( const QModelIndex &index : constSelectedIndexes )
     {
       rows << index.row();
     }
@@ -207,7 +212,8 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
 
     //remove rows in descending order
     std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
-    Q_FOREACH ( int row, rowsToRemove )
+    const auto constRowsToRemove = rowsToRemove;
+    for ( int row : constRowsToRemove )
     {
       mModel->removeRow( row );
     }

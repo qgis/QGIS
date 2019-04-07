@@ -77,7 +77,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnLoadAll, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::loadAllValues );
   connect( btnLoadSample, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::loadSampleValues );
 
-  Q_FOREACH ( QPushButton *button, mOperatorsGroupBox->findChildren<QPushButton *>() )
+  const auto pushButtons { mOperatorsGroupBox->findChildren<QPushButton *>() };
+  for ( QPushButton *button : pushButtons )
   {
     connect( button, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::operatorButtonClicked );
   }
@@ -309,7 +310,8 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   dir.setNameFilters( QStringList() << QStringLiteral( "*.py" ) );
   QStringList files = dir.entryList( QDir::Files );
   cmbFileNames->clear();
-  Q_FOREACH ( const QString &name, files )
+  const auto constFiles = files;
+  for ( const QString &name : constFiles )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
     if ( info.baseName() == QLatin1String( "__init__" ) ) continue;
@@ -458,7 +460,8 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   QStringList strValues;
   QList<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
   std::sort( values.begin(), values.end() );
-  Q_FOREACH ( const QVariant &value, values )
+  const auto constValues = values;
+  for ( const QVariant &value : constValues )
   {
     QString strValue;
     if ( value.isNull() )
@@ -565,7 +568,8 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
   QString location = QStringLiteral( "/expressions/recent/%1" ).arg( collection );
   QStringList expressions = settings.value( location ).toStringList();
   int i = 0;
-  Q_FOREACH ( const QString &expression, expressions )
+  const auto constExpressions = expressions;
+  for ( const QString &expression : constExpressions )
   {
     this->registerItem( name, expression, expression, expression, QgsExpressionItem::ExpressionNode, false, i );
     i++;
@@ -777,7 +781,8 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
 {
   txtExpressionString->setExpressionContext( mExpressionContext );
   QStringList variableNames = mExpressionContext.filteredVariableNames();
-  Q_FOREACH ( const QString &variable, variableNames )
+  const auto constVariableNames = variableNames;
+  for ( const QString &variable : constVariableNames )
   {
     registerItem( QStringLiteral( "Variables" ), variable, " @" + variable + ' ',
                   QgsExpression::formatVariableHelp( mExpressionContext.description( variable ), true, mExpressionContext.variable( variable ) ),
@@ -787,7 +792,8 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
 
   // Load the functions from the expression context
   QStringList contextFunctions = mExpressionContext.functionNames();
-  Q_FOREACH ( const QString &functionName, contextFunctions )
+  const auto constContextFunctions = contextFunctions;
+  for ( const QString &functionName : constContextFunctions )
   {
     QgsExpressionFunction *func = mExpressionContext.function( functionName );
     QString name = func->name();
@@ -801,7 +807,8 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
 
 void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder )
 {
-  Q_FOREACH ( const QString &group, groups )
+  const auto constGroups = groups;
+  for ( const QString &group : constGroups )
   {
     registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder );
   }

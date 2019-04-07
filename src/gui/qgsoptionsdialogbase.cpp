@@ -256,7 +256,8 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
 
   for ( int i = 0; i < mOptStackedWidget->count(); i++ )
   {
-    Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
+    const auto constWidget = mOptStackedWidget->widget( i )->findChildren<QWidget *>();
+    for ( QWidget *w : constWidget )
     {
 
       // get custom highlight widget in user added pages

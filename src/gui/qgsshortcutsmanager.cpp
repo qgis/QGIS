@@ -36,14 +36,16 @@ void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursi
   if ( recursive )
   {
     QList< QAction * > actions = object->findChildren< QAction * >();
-    Q_FOREACH ( QAction *a, actions )
+    const auto constActions = actions;
+    for ( QAction *a : constActions )
     {
       registerAction( a, a->shortcut().toString( QKeySequence::NativeText ) );
     }
   }
   else
   {
-    Q_FOREACH ( QObject *child, object->children() )
+    const auto constChildren = object->children();
+    for ( QObject *child : constChildren )
     {
       if ( QAction *a = qobject_cast<QAction *>( child ) )
       {
@@ -58,14 +60,16 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
   if ( recursive )
   {
     QList< QShortcut * > shortcuts = object->findChildren< QShortcut * >();
-    Q_FOREACH ( QShortcut *s, shortcuts )
+    const auto constShortcuts = shortcuts;
+    for ( QShortcut *s : constShortcuts )
     {
       registerShortcut( s, s->key().toString( QKeySequence::NativeText ) );
     }
   }
   else
   {
-    Q_FOREACH ( QObject *child, object->children() )
+    const auto constChildren = object->children();
+    for ( QObject *child : constChildren )
     {
       if ( QShortcut *s = qobject_cast<QShortcut *>( child ) )
       {

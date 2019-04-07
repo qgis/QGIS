@@ -334,7 +334,8 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
   if ( layers == oldLayers )
     return;
 
-  Q_FOREACH ( QgsMapLayer *layer, oldLayers )
+  const auto constOldLayers = oldLayers;
+  for ( QgsMapLayer *layer : constOldLayers )
   {
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     disconnect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
@@ -346,7 +347,8 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 
   mSettings.setLayers( layers );
 
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
     if ( !layer )
       continue;
@@ -598,7 +600,8 @@ void QgsMapCanvas::rendererJobFinished()
   mMapUpdateTimer.stop();
 
   // TODO: would be better to show the errors in message bar
-  Q_FOREACH ( const QgsMapRendererJob::Error &error, mJob->errors() )
+  const auto constErrors = mJob->errors();
+  for ( const QgsMapRendererJob::Error &error : constErrors )
   {
     QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
   }

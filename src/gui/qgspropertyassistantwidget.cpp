@@ -223,7 +223,8 @@ void QgsPropertyAssistantWidget::updatePreview()
 
   int widthMax = 0;
   int i = 0;
-  Q_FOREACH ( QgsSymbolLegendNode *node, nodes )
+  const auto constNodes = nodes;
+  for ( QgsSymbolLegendNode *node : constNodes )
   {
     const QSize minSize( node->minimumIconSize() );
     node->setIconSize( minSize );

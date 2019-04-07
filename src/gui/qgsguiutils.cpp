@@ -90,7 +90,8 @@ namespace QgsGuiUtils
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
-    Q_FOREACH ( const QByteArray &format, QImageWriter::supportedImageFormats() )
+    const auto supportedImageFormats { QImageWriter::supportedImageFormats() };
+    for ( const QByteArray &format : supportedImageFormats )
     {
       //svg doesn't work so skip it
       if ( format == "svg" )

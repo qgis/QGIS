@@ -73,7 +73,8 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   mShapeListWidget->setIconSize( QSize( size, size ) );
 
   double markerSize = size * 0.8;
-  Q_FOREACH ( const QString &name, names )
+  const auto constNames = names;
+  for ( const QString &name : constNames )
   {
     QgsEllipseSymbolLayer *lyr = new QgsEllipseSymbolLayer();
     lyr->setSymbolWidthUnit( QgsUnitTypes::RenderPixels );

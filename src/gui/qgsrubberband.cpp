@@ -436,7 +436,8 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
 
     case QgsWkbTypes::PointGeometry:
     {
-      Q_FOREACH ( QPointF pt, pts )
+      const auto constPts = pts;
+      for ( QPointF pt : constPts )
       {
         double x = pt.x();
         double y = pt.y();
