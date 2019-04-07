@@ -78,8 +78,8 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         size_t len = stat.size;
 
         struct zip_file *file = zip_fopen_index( z, i, 0 );
-        char *buf = new char[len];
-        if ( zip_fread( file, buf, len ) != -1 )
+        std::unique_ptr< char[] > buf( new char[len] );
+        if ( zip_fread( file, buf.get(), len ) != -1 )
         {
           QString fileName( stat.name );
           QFileInfo newFile( QDir( dir ), fileName );
@@ -98,7 +98,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
           }
           else
           {
-            outFile.write( buf, len );
+            outFile.write( buf.get(), len );
           }
           zip_fclose( file );
           files.append( newFile.absoluteFilePath() );

@@ -1610,6 +1610,9 @@ QgisApp::~QgisApp()
   delete mBrowserWidget2;
   mBrowserWidget2 = nullptr;
   delete mBrowserModel;
+  mBrowserModel = nullptr;
+  delete mGeometryValidationDock;
+  mGeometryValidationDock = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
@@ -3283,17 +3286,6 @@ void QgisApp::setTheme( const QString &themeName )
   */
 
   QString theme = themeName;
-#ifdef Q_OS_MAC
-#if QT_VERSION < QT_VERSION_CHECK( 5, 12, 0 )
-  if ( theme == QStringLiteral( "default" ) &&
-       QgsGui::instance()->nativePlatformInterface()->hasDarkTheme() )
-  {
-    QString darkTheme = QStringLiteral( "Night Mapping" );
-    if ( QgsApplication::uiThemes().contains( darkTheme ) )
-      theme = darkTheme;
-  }
-#endif
-#endif
 
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetBuilder->defaultOptions() );
   QgsApplication::setUITheme( theme );
@@ -4510,7 +4502,7 @@ void QgisApp::about()
 #if PROJ_VERSION_MAJOR > 4
     PJ_INFO info = proj_info();
     versionString += "<td>" + tr( "Compiled against PROJ" ) + QStringLiteral( "</td><td>%1.%2.%3</td>" ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH );
-    versionString += "<td>" + tr( "Running against PROJ" ) + QStringLiteral( "</td><td>%1.%2.%3</td>" ).arg( info.major ).arg( info.minor ).arg( info.patch );
+    versionString += "<td>" + tr( "Running against PROJ" ) + QStringLiteral( "</td><td>%1</td>" ).arg( info.release );
 #else
     versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td colspan=3>" + QString::number( PJ_VERSION ) + "</td>";
 #endif

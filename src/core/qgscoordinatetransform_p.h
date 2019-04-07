@@ -33,14 +33,23 @@
 
 #include <QSharedData>
 
+#if PROJ_VERSION_MAJOR<6
+typedef void *projPJ;
 #ifndef USE_THREAD_LOCAL
 #include <QThreadStorage>
+#endif
+typedef QPair< projPJ, projPJ > ProjData;
+#else
+struct PJconsts;
+typedef struct PJconsts PJ;
+typedef PJ *ProjData;
 #endif
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 
-typedef void *projPJ;
+#if PROJ_VERSION_MAJOR<6
+
 typedef void *projCtx;
 
 /**
@@ -60,6 +69,8 @@ class QgsProjContextStore
   private:
     projCtx context;
 };
+
+#endif
 
 class QgsCoordinateTransformPrivate : public QSharedData
 {
@@ -89,7 +100,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     void calculateTransforms( const QgsCoordinateTransformContext &context );
 
-    QPair< projPJ, projPJ > threadLocalProjData();
+    ProjData threadLocalProjData();
 
     /**
      * Flag to indicate whether the transform is valid (ie has a valid
@@ -115,6 +126,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
     int mSourceDatumTransform = -1;
     int mDestinationDatumTransform = -1;
 
+    bool mSourceAxisOrderSwapped = false;
+    bool mDestAxisOrderSwapped = false;
+
+#if PROJ_VERSION_MAJOR<6
+
     /**
      * Thread local proj context storage. A new proj context will be created
      * for every thread.
@@ -124,9 +140,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
 #else
     static QThreadStorage< QgsProjContextStore * > mProjContext;
 #endif
+#endif
+
 
     QReadWriteLock mProjLock;
-    QMap < uintptr_t, QPair< projPJ, projPJ > > mProjProjections;
+    QMap < uintptr_t, ProjData > mProjProjections;
 
   private:
 

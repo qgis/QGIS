@@ -179,6 +179,12 @@ namespace QgsWms
        */
       qreal dotsPerMm() const;
 
+      /**
+       * Returns a list of query layer names where group names are replaced by the names of their layer components.
+       * \since QGIS 3.8
+       */
+      QStringList flattenedQueryLayers() const;
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
       /**
@@ -186,6 +192,12 @@ namespace QgsWms
        */
       QgsAccessControl *accessControl() const;
 #endif
+
+      /**
+       * Returns a map having layer group names as keys and a list of layers as values.
+       * \since QGIS 3.8
+       */
+      QMap<QString, QList<QgsMapLayer *> > layerGroups() const;
 
     private:
       void initNicknameLayers();

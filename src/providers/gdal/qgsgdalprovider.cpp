@@ -1491,7 +1491,8 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   initHistogram( myHistogram, bandNo, binCount, minimum, maximum, boundingBox, sampleSize, includeOutOfRange );
 
   // Find cached
-  Q_FOREACH ( const QgsRasterHistogram &histogram, mHistograms )
+  const auto constMHistograms = mHistograms;
+  for ( const QgsRasterHistogram &histogram : constMHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -1709,7 +1710,8 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
   // add any driver-specific configuration options, save values to be restored later
   if ( format != QgsRaster::PyramidsErdas && ! configOptions.isEmpty() )
   {
-    Q_FOREACH ( const QString &option, configOptions )
+    const auto constConfigOptions = configOptions;
+    for ( const QString &option : constConfigOptions )
     {
       QStringList opt = option.split( '=' );
       if ( opt.size() == 2 )
@@ -1956,7 +1958,8 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewLi
   }
 
   // loop over pyramid list
-  Q_FOREACH ( int myDivisor, overviewList )
+  const auto constOverviewList = overviewList;
+  for ( int myDivisor : constOverviewList )
   {
     //
     // First we build up a list of potential pyramid layers
@@ -2439,7 +2442,8 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, bandNo, stats, boundingBox, sampleSize );
 
-  Q_FOREACH ( const QgsRasterBandStats &stats, mStatistics )
+  const auto constMStatistics = mStatistics;
+  for ( const QgsRasterBandStats &stats : constMStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -2891,7 +2895,8 @@ void QgsGdalProvider::initBaseDataset()
 char **papszFromStringList( const QStringList &list )
 {
   char **papszRetList = nullptr;
-  Q_FOREACH ( const QString &elem, list )
+  const auto constList = list;
+  for ( const QString &elem : constList )
   {
     papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
   }
@@ -3102,7 +3107,8 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList &createOptio
 
   // prepare a map for easier lookup
   QMap< QString, QString > optionsMap;
-  Q_FOREACH ( const QString &option, createOptions )
+  const auto constCreateOptions = createOptions;
+  for ( const QString &option : constCreateOptions )
   {
     QStringList opt = option.split( '=' );
     optionsMap[ opt[0].toUpper()] = opt[1];

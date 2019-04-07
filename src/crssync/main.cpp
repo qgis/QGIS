@@ -84,5 +84,7 @@ int main( int argc, char **argv )
     std::cout << -res << " CRSs could not be updated." << std::endl;
   }
 
-  exit( 0 );
+  QgsApplication::exitQgis();
+
+  return 0;
 }

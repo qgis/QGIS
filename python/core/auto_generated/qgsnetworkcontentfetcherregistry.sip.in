@@ -11,8 +11,6 @@
 
 
 
-
-
 class QgsFetchedContent : QObject
 {
 %Docstring

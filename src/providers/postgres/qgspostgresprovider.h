@@ -323,6 +323,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsAttrPalIndexNameHash mAttrPalIndexName;
 
     QgsFields mAttributeFields;
+    QHash<int, char> mIdentityFields;
     QString mDataComment;
 
     //! Data source URI struct for this layer

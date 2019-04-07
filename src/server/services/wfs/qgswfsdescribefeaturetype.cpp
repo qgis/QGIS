@@ -44,7 +44,6 @@ namespace QgsWfs
     QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     cacheManager = serverIface->cacheManager();
-#endif
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       describeDocument = &doc;
@@ -59,7 +58,9 @@ namespace QgsWfs
       }
       describeDocument = &doc;
     }
-
+#else
+    doc = createDescribeFeatureTypeDocument( serverIface, project, version, request );
+#endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( describeDocument->toByteArray() );
   }
@@ -152,7 +153,7 @@ namespace QgsWfs
       {
         continue;
       }
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerReadPermission( layer ) )
       {
         if ( !typeNameList.isEmpty() )
@@ -164,7 +165,7 @@ namespace QgsWfs
           continue;
         }
       }
-
+#endif
       QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsVectorDataProvider *provider = vLayer->dataProvider();
       if ( !provider )

@@ -110,7 +110,8 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 {
   layer->setBlendMode( blendMode() );
 
-  Q_FOREACH ( const QString &s, styleManager()->styles() )
+  const auto constStyles = styleManager()->styles();
+  for ( const QString &s : constStyles )
   {
     layer->styleManager()->addStyle( s, styleManager()->style( s ) );
   }
@@ -1821,7 +1822,8 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   QList<const QgsMapLayer *> lst;
   if ( vl == that )
   {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, layers )
+    const auto constLayers = layers;
+    for ( const QgsMapLayerDependency &dep : constLayers )
     {
       if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1829,7 +1831,8 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   }
   else
   {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, vl->dependencies() )
+    const auto constDependencies = vl->dependencies();
+    for ( const QgsMapLayerDependency &dep : constDependencies )
     {
       if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1845,7 +1848,8 @@ static bool _depHasCycleDFS( const QgsMapLayer *n, QHash<const QgsMapLayer *, in
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( const QgsMapLayer *m, _depOutEdges( n, that, layers ) )
+    const auto depOutEdges { _depOutEdges( n, that, layers ) };
+    for ( const QgsMapLayer *m : depOutEdges )
     {
       if ( _depHasCycleDFS( m, mark, that, layers ) )
         return true;
@@ -1889,7 +1893,8 @@ QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
 bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsMapLayerDependency &dep, oDeps )
+  const auto constODeps = oDeps;
+  for ( const QgsMapLayerDependency &dep : constODeps )
   {
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;

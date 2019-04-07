@@ -45,7 +45,8 @@ void QgsMapRendererTask::addAnnotations( QList< QgsAnnotation * > annotations )
   qDeleteAll( mAnnotations );
   mAnnotations.clear();
 
-  Q_FOREACH ( const QgsAnnotation *a, annotations )
+  const auto constAnnotations = annotations;
+  for ( const QgsAnnotation *a : constAnnotations )
   {
     mAnnotations << a->clone();
   }
@@ -135,12 +136,14 @@ bool QgsMapRendererTask::run()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mMapSettings );
   context.setPainter( destPainter );
 
-  Q_FOREACH ( QgsMapDecoration *decoration, mDecorations )
+  const auto constMDecorations = mDecorations;
+  for ( QgsMapDecoration *decoration : constMDecorations )
   {
     decoration->render( mMapSettings, context );
   }
 
-  Q_FOREACH ( QgsAnnotation *annotation, mAnnotations )
+  const auto constMAnnotations = mAnnotations;
+  for ( QgsAnnotation *annotation : constMAnnotations )
   {
     if ( isCanceled() )
       return false;

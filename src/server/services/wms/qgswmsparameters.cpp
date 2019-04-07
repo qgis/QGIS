@@ -18,6 +18,7 @@
 #include "qgswmsparameters.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
+#include "qgswmsserviceexception.h"
 
 const QString EXTERNAL_LAYER_PREFIX = QStringLiteral( "EXTERNAL_WMS:" );
 
@@ -43,6 +44,11 @@ namespace QgsWms
   {
     const QString msg = QString( "%1 ('%2') cannot be converted into %3" ).arg( name( mName ), toString(), typeName() );
     QgsServerParameterDefinition::raiseError( msg );
+  }
+
+  QStringList QgsWmsParameter::toStyleList( const char delimiter ) const
+  {
+    return QgsServerParameterDefinition::toStringList( delimiter, false );
   }
 
   QList<QgsGeometry> QgsWmsParameter::toGeomList( const char delimiter ) const
@@ -182,6 +188,11 @@ namespace QgsWms
     }
 
     return val;
+  }
+
+  QString QgsWmsParameter::name() const
+  {
+    return QgsWmsParameter::name( mName );
   }
 
   QString QgsWmsParameter::name( const QgsWmsParameter::Name name )
@@ -534,6 +545,11 @@ namespace QgsWms
         loadParameter( QgsWmsParameter::name( QgsWmsParameter::SLD_BODY ), sldBody );
       }
     }
+  }
+
+  QgsWmsParameter QgsWmsParameters::operator[]( QgsWmsParameter::Name name ) const
+  {
+    return mWmsParameters[name];
   }
 
   bool QgsWmsParameters::loadParameter( const QString &key, const QString &value )
@@ -1357,8 +1373,8 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::allStyles() const
   {
-    QStringList style = mWmsParameters[ QgsWmsParameter::STYLE ].toStringList();
-    const QStringList styles = mWmsParameters[ QgsWmsParameter::STYLES ].toStringList();
+    QStringList style = mWmsParameters[ QgsWmsParameter::STYLE ].toStyleList();
+    const QStringList styles = mWmsParameters[ QgsWmsParameter::STYLES ].toStyleList();
     return style << styles;
   }
 
@@ -1662,7 +1678,7 @@ namespace QgsWms
     wmsParam = idParameter( QgsWmsParameter::STYLES, mapId );
     if ( wmsParam.isValid() )
     {
-      styles = wmsParam.toStringList();
+      styles = wmsParam.toStyleList();
     }
 
     QList<QgsWmsParametersLayer> lParams;
@@ -1820,7 +1836,7 @@ namespace QgsWms
 
   void QgsWmsParameters::raiseError( const QString &msg ) const
   {
-    throw QgsBadRequestException( QStringLiteral( "Invalid WMS Parameter" ), msg );
+    throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE, msg );
   }
 
   QgsWmsParameter QgsWmsParameters::idParameter( const QgsWmsParameter::Name name, const int id ) const

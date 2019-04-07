@@ -69,6 +69,7 @@ bool QgsVectorLayerFeatureCounter::run()
     while ( fit.nextFeature( f ) )
     {
       renderContext.expressionContext().setFeature( f );
+
       const QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
       for ( const QString &key : featureKeyList )
       {

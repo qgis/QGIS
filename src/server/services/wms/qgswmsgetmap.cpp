@@ -21,6 +21,7 @@
 #include "qgswmsutils.h"
 #include "qgswmsgetmap.h"
 #include "qgswmsrenderer.h"
+#include "qgswmsserviceexception.h"
 
 #include <QImage>
 
@@ -56,8 +57,7 @@ namespace QgsWms
     }
     else
     {
-      throw QgsServiceException( QStringLiteral( "UnknownError" ),
-                                 QStringLiteral( "Failed to compute GetMap image" ) );
+      throw QgsException( QStringLiteral( "Failed to compute GetMap image" ) );
     }
   }
 } // namespace QgsWms

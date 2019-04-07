@@ -33,8 +33,8 @@ void QgsServerSettings::initSettings()
   // options path
   const Setting sOptPath = { QgsServerSettingsEnv::QGIS_OPTIONS_PATH,
                              QgsServerSettingsEnv::DEFAULT_VALUE,
-                             "Override the default path for user configuration",
-                             "",
+                             QStringLiteral( "Override the default path for user configuration" ),
+                             QString(),
                              QVariant::String,
                              QVariant( "" ),
                              QVariant()
@@ -44,8 +44,8 @@ void QgsServerSettings::initSettings()
   // parallel rendering
   const Setting sParRend = { QgsServerSettingsEnv::QGIS_SERVER_PARALLEL_RENDERING,
                              QgsServerSettingsEnv::DEFAULT_VALUE,
-                             "Activate/Deactivate parallel rendering for WMS getMap request",
-                             "/qgis/parallel_rendering",
+                             QStringLiteral( "Activate/Deactivate parallel rendering for WMS getMap request" ),
+                             QStringLiteral( "/qgis/parallel_rendering" ),
                              QVariant::Bool,
                              QVariant( false ),
                              QVariant()
@@ -55,8 +55,8 @@ void QgsServerSettings::initSettings()
   // max threads
   const Setting sMaxThreads = { QgsServerSettingsEnv::QGIS_SERVER_MAX_THREADS,
                                 QgsServerSettingsEnv::DEFAULT_VALUE,
-                                "Number of threads to use when parallel rendering is activated",
-                                "/qgis/max_threads",
+                                QStringLiteral( "Number of threads to use when parallel rendering is activated" ),
+                                QStringLiteral( "/qgis/max_threads" ),
                                 QVariant::Int,
                                 QVariant( -1 ),
                                 QVariant()
@@ -66,8 +66,8 @@ void QgsServerSettings::initSettings()
   // log level
   const Setting sLogLevel = { QgsServerSettingsEnv::QGIS_SERVER_LOG_LEVEL,
                               QgsServerSettingsEnv::DEFAULT_VALUE,
-                              "Log level",
-                              "",
+                              QStringLiteral( "Log level" ),
+                              QString(),
                               QVariant::Int,
                               QVariant( Qgis::None ),
                               QVariant()
@@ -77,8 +77,8 @@ void QgsServerSettings::initSettings()
   // log file
   const Setting sLogFile = { QgsServerSettingsEnv::QGIS_SERVER_LOG_FILE,
                              QgsServerSettingsEnv::DEFAULT_VALUE,
-                             "Log file",
-                             "",
+                             QStringLiteral( "Log file" ),
+                             QString(),
                              QVariant::String,
                              QVariant( "" ),
                              QVariant()
@@ -88,8 +88,8 @@ void QgsServerSettings::initSettings()
   // log to stderr
   const Setting sLogStderr = { QgsServerSettingsEnv::QGIS_SERVER_LOG_STDERR,
                                QgsServerSettingsEnv::DEFAULT_VALUE,
-                               "Activate/Deactivate logging to stderr",
-                               "",
+                               QStringLiteral( "Activate/Deactivate logging to stderr" ),
+                               QString(),
                                QVariant::Bool,
                                QVariant( false ),
                                QVariant()
@@ -99,8 +99,8 @@ void QgsServerSettings::initSettings()
   // project file
   const Setting sProject = { QgsServerSettingsEnv::QGIS_PROJECT_FILE,
                              QgsServerSettingsEnv::DEFAULT_VALUE,
-                             "QGIS project file",
-                             "",
+                             QStringLiteral( "QGIS project file" ),
+                             QString(),
                              QVariant::String,
                              QVariant( "" ),
                              QVariant()
@@ -110,8 +110,8 @@ void QgsServerSettings::initSettings()
   // max cache layers
   const Setting sMaxCacheLayers = { QgsServerSettingsEnv::MAX_CACHE_LAYERS,
                                     QgsServerSettingsEnv::DEFAULT_VALUE,
-                                    "Specify the maximum number of cached layers",
-                                    "",
+                                    QStringLiteral( "Specify the maximum number of cached layers" ),
+                                    QString(),
                                     QVariant::Int,
                                     QVariant( 100 ),
                                     QVariant()
@@ -121,8 +121,8 @@ void QgsServerSettings::initSettings()
   // cache directory
   const Setting sCacheDir = { QgsServerSettingsEnv::QGIS_SERVER_CACHE_DIRECTORY,
                               QgsServerSettingsEnv::DEFAULT_VALUE,
-                              "Specify the cache directory",
-                              "/cache/directory",
+                              QStringLiteral( "Specify the cache directory" ),
+                              QStringLiteral( "/cache/directory" ),
                               QVariant::String,
                               QVariant( QgsApplication::qgisSettingsDirPath() + "cache" ),
                               QVariant()
@@ -132,13 +132,57 @@ void QgsServerSettings::initSettings()
   // cache size
   const Setting sCacheSize = { QgsServerSettingsEnv::QGIS_SERVER_CACHE_SIZE,
                                QgsServerSettingsEnv::DEFAULT_VALUE,
-                               "Specify the cache size",
-                               "/cache/size",
+                               QStringLiteral( "Specify the cache size" ),
+                               QStringLiteral( "/cache/size" ),
                                QVariant::LongLong,
                                QVariant( 50 * 1024 * 1024 ),
                                QVariant()
                              };
   mSettings[ sCacheSize.envVar ] = sCacheSize;
+
+  // system locale override
+  const Setting sOverrideSystemLocale = { QgsServerSettingsEnv::QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,
+                                          QgsServerSettingsEnv::DEFAULT_VALUE,
+                                          QStringLiteral( "Override system locale" ),
+                                          QStringLiteral( "/locale/userLocale" ),
+                                          QVariant::String,
+                                          QVariant( "" ),
+                                          QVariant()
+                                        };
+  mSettings[ sOverrideSystemLocale.envVar ] = sOverrideSystemLocale;
+
+  // show group separator
+  const Setting sShowGroupSeparator = { QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR,
+                                        QgsServerSettingsEnv::DEFAULT_VALUE,
+                                        QStringLiteral( "Show group (thousands) separator" ),
+                                        QStringLiteral( "/locale/showGroupSeparator" ),
+                                        QVariant::String,
+                                        QVariant( false ),
+                                        QVariant()
+                                      };
+  mSettings[ sShowGroupSeparator.envVar ] = sShowGroupSeparator;
+
+  // max height
+  const Setting sMaxHeight = { QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_HEIGHT,
+                               QgsServerSettingsEnv::DEFAULT_VALUE,
+                               QStringLiteral( "Maximum height for a WMS request. The lower one of this and the project configuration is used." ),
+                               QStringLiteral( "/qgis/max_wms_height" ),
+                               QVariant::LongLong,
+                               QVariant( -1 ),
+                               QVariant()
+                             };
+  mSettings[ sMaxHeight.envVar ] = sMaxHeight;
+
+  // max width
+  const Setting sMaxWidth = { QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_WIDTH,
+                              QgsServerSettingsEnv::DEFAULT_VALUE,
+                              QStringLiteral( "Maximum width for a WMS request. The most conservative between this and the project one is used" ),
+                              QStringLiteral( "/qgis/max_wms_width" ),
+                              QVariant::LongLong,
+                              QVariant( -1 ),
+                              QVariant()
+                            };
+  mSettings[ sMaxWidth.envVar ] = sMaxWidth;
 }
 
 void QgsServerSettings::load()
@@ -318,4 +362,24 @@ qint64 QgsServerSettings::cacheSize() const
 QString QgsServerSettings::cacheDirectory() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_CACHE_DIRECTORY ).toString();
+}
+
+QString QgsServerSettings::overrideSystemLocale() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE ).toString();
+}
+
+bool QgsServerSettings::showGroupSeparator() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR ).toBool();
+}
+
+int QgsServerSettings::wmsMaxHeight() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_HEIGHT ).toInt();
+}
+
+int QgsServerSettings::wmsMaxWidth() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_WIDTH ).toInt();
 }

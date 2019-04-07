@@ -133,7 +133,18 @@ elif [ $action = pull ]; then
 	else
 		o="-a"
 	fi
-	tx pull $o -s --minimum-perc=35
+
+	fail=1
+	for i in $(seq 10); do
+		tx pull $o -s --minimum-perc=35 && fail=0 && break
+		echo Retrying...
+		sleep 10
+	done
+
+	if (( fail )); then
+		echo "Could not pull translations"
+		exit 1
+	fi
 fi
 
 echo Updating python translations

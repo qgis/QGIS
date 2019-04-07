@@ -17,6 +17,7 @@
 #define QGSATTRIBUTEACTIONPROPERTIESDIALOG_H
 
 #include "ui_qgsattributeactionpropertiesdialogbase.h"
+#include "qgsexpressioncontextgenerator.h"
 
 #include "qgsaction.h"
 #include "qgshelp.h"

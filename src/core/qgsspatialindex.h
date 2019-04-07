@@ -192,6 +192,26 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors = 1, double maxDistance = 0 ) const;
 
+    /**
+     * Returns nearest neighbors to a \a geometry. The number of neighbors returned is specified
+     * by the \a neighbors argument.
+     *
+     * If the \a maxDistance argument is greater than 0, then only features within the specified
+     * distance of \a point will be considered.
+     *
+     * Note that in some cases the number of returned features may differ from the requested
+     * number of \a neighbors. E.g. if not enough features exist within the \a maxDistance of the
+     * search point. If multiple features are equidistant from the search \a point then the
+     * number of returned feature IDs may exceed \a neighbors.
+     *
+     * \warning If this QgsSpatialIndex object was not constructed with the FlagStoreFeatureGeometries flag,
+     * then the nearest neighbor test is performed based on the feature bounding boxes ONLY, so for non-point
+     * geometry features this method is not guaranteed to return the actual closest neighbors.
+     *
+     * \since QGIS 3.8
+     */
+    QList<QgsFeatureId> nearestNeighbor( const QgsGeometry &geometry, int neighbors = 1, double maxDistance = 0 ) const;
+
 #ifndef SIP_RUN
 
     /**

@@ -382,7 +382,8 @@ QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
   if ( mDisplayExpression.isField() )
   {
     QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
-    Q_FOREACH ( const QgsConditionalStyle &style, mSourceLayer->conditionalStyles()->fieldStyles( fieldName ) )
+    const auto constFieldStyles = mSourceLayer->conditionalStyles()->fieldStyles( fieldName );
+    for ( const QgsConditionalStyle &style : constFieldStyles )
     {
       QgsExpression exp( style.rule() );
       requestedAttrs += exp.referencedColumns();

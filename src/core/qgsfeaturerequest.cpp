@@ -206,7 +206,8 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  Q_FOREACH ( const QString &attrName, attrNames )
+  const auto constAttrNames = attrNames;
+  for ( const QString &attrName : constAttrNames )
   {
     int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -227,7 +228,8 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  Q_FOREACH ( const QString &attrName, attrNames )
+  const auto constAttrNames = attrNames;
+  for ( const QString &attrName : constAttrNames )
   {
     int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -426,7 +428,8 @@ QgsFeatureRequest::OrderBy::OrderBy() = default;
 
 QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other )
 {
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, other )
+  const auto constOther = other;
+  for ( const QgsFeatureRequest::OrderByClause &clause : constOther )
   {
     append( clause );
   }

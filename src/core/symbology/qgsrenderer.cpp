@@ -358,20 +358,24 @@ void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &conte
 
 void QgsFeatureRenderer::renderVertexMarkerPolyline( QPolygonF &pts, QgsRenderContext &context )
 {
-  Q_FOREACH ( QPointF pt, pts )
+  const auto constPts = pts;
+  for ( QPointF pt : constPts )
     renderVertexMarker( pt, context );
 }
 
 void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF &pts, QList<QPolygonF> *rings, QgsRenderContext &context )
 {
-  Q_FOREACH ( QPointF pt, pts )
+  const auto constPts = pts;
+  for ( QPointF pt : constPts )
     renderVertexMarker( pt, context );
 
   if ( rings )
   {
-    Q_FOREACH ( const QPolygonF &ring, *rings )
+    const auto constRings = *rings;
+    for ( const QPolygonF &ring : constRings )
     {
-      Q_FOREACH ( QPointF pt, ring )
+      const auto constRing = ring;
+      for ( QPointF pt : constRing )
         renderVertexMarker( pt, context );
     }
   }

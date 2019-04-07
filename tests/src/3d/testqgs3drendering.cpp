@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapthemecollection.h"
@@ -398,12 +398,12 @@ bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, in
   QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "3d" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
   myChecker.setColorTolerance( 2 );  // color tolerance < 2 was failing polygon3d_extrusion test
-  bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
+  bool myResultFlag = myChecker.runTest( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
 }

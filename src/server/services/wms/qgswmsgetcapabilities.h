@@ -82,6 +82,8 @@ namespace QgsWms
   QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
                                 const QString &version, const QgsServerRequest &request,
                                 bool projectSettings );
+
+  bool hasQueryableChildren( const QgsLayerTreeNode *childNode, const QStringList &wmsRestrictedLayers );
 } // namespace QgsWms
 
 #endif

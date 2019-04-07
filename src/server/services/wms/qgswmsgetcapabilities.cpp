@@ -105,19 +105,21 @@ namespace QgsWms
     cacheKeyList << ( projectSettings ? QStringLiteral( "projectSettings" ) : version );
     cacheKeyList << request.url().host();
     bool cache = true;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     if ( accessControl )
       cache = accessControl->fillCacheKey( cacheKeyList );
+#endif
     QString cacheKey = cacheKeyList.join( '-' );
 
     QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     cacheManager = serverIface->cacheManager();
-#endif
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       capabilitiesDocument = &doc;
     }
-
+#endif
     if ( !capabilitiesDocument && cache ) //capabilities xml not in cache plugins
     {
       capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
@@ -129,12 +131,15 @@ namespace QgsWms
 
       doc = getCapabilities( serverIface, project, version, request, projectSettings );
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( cacheManager &&
            cacheManager->setCachedDocument( &doc, project, request, accessControl ) )
       {
         capabilitiesDocument = &doc;
       }
-      else if ( cache )
+#endif
+
+      if ( !capabilitiesDocument )
       {
         capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );
         capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
@@ -841,6 +846,15 @@ namespace QgsWms
       layerParentElem.appendChild( treeNameElem );
     }
 
+    if ( hasQueryableChildren( projectLayerTreeRoot, QgsServerProjectUtils::wmsRestrictedLayers( *project ) ) )
+    {
+      layerParentElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "1" ) );
+    }
+    else
+    {
+      layerParentElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "0" ) );
+    }
+
     appendLayersFromTreeGroup( doc, layerParentElem, serverIface, project, version, request, projectLayerTreeRoot, projectSettings );
 
     combineExtentAndCrsOfGroupChildren( doc, layerParentElem, project, true );
@@ -862,7 +876,7 @@ namespace QgsWms
     {
       bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
       bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
-      QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
+      const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
       QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
@@ -929,6 +943,16 @@ namespace QgsWms
             layerElem.appendChild( treeNameElem );
           }
 
+          // Set queryable if any of the children are
+          if ( hasQueryableChildren( treeNode, restrictedLayers ) )
+          {
+            layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "1" ) );
+          }
+          else
+          {
+            layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "0" ) );
+          }
+
           appendLayersFromTreeGroup( doc, layerElem, serverIface, project, version, request, treeGroupChild, projectSettings );
 
           combineExtentAndCrsOfGroupChildren( doc, layerElem, project );
@@ -942,12 +966,13 @@ namespace QgsWms
             continue;
           }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
           QgsAccessControl *accessControl = serverIface->accessControls();
           if ( accessControl && !accessControl->layerReadPermission( l ) )
           {
             continue;
           }
-
+#endif
           QString wmsName = l->name();
           if ( useLayerIds )
           {
@@ -1662,12 +1687,12 @@ namespace QgsWms
         {
           continue;
         }
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerReadPermission( l ) )
         {
           continue;
         }
-
+#endif
         QString wmsName = l->name();
         if ( useLayerIds )
         {
@@ -1855,6 +1880,26 @@ namespace QgsWms
       }
       parent.appendChild( keywordsElem );
     }
+  }
+
+  bool hasQueryableChildren( const QgsLayerTreeNode *childNode, const QStringList &wmsRestrictedLayers )
+  {
+    if ( childNode->nodeType() == QgsLayerTreeNode::NodeGroup )
+    {
+      for ( int j = 0; j < childNode->children().size(); ++j )
+      {
+        if ( hasQueryableChildren( childNode->children().at( j ), wmsRestrictedLayers ) )
+          return  true;
+      }
+      return false;
+    }
+    else if ( childNode->nodeType() == QgsLayerTreeNode::NodeLayer )
+    {
+      const auto treeLayer { static_cast<const QgsLayerTreeLayer *>( childNode ) };
+      const auto l { treeLayer->layer() };
+      return ! wmsRestrictedLayers.contains( l->name() ) && l->flags().testFlag( QgsMapLayer::Identifiable );
+    }
+    return false;
   }
 
 

@@ -25,6 +25,7 @@ SET (wms_SRCS
 
 SET (wms_MOC_HDRS
   qgswmsparameters.h
+  qgswmsserviceexception.h
 )
 
 ########################################################

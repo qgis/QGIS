@@ -82,6 +82,8 @@ class TestQgsVectorFileWriter: public QObject
     void regression1141();
     //! Test prepareWriteAsVectorFormat
     void prepareWriteAsVectorFormat();
+    //! Test regression #21714 (Exported GeoPackages have wrong field definitions)
+    void testTextFieldLength();
 
   private:
     // a little util fn used by all tests
@@ -489,6 +491,42 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
   QgsVectorFileWriter::prepareWriteAsVectorFormat( &vl, options, details );
   QCOMPARE( details.providerUriParams.value( "layerName" ).toString(), QStringLiteral( "test" ) );
   QCOMPARE( details.providerUriParams.value( "path" ).toString(), fileName );
+}
+
+void TestQgsVectorFileWriter::testTextFieldLength()
+{
+  QTemporaryFile tmpFile( QDir::tempPath() +  "/test_qgsvectorfilewriter2_XXXXXX.gpkg" );
+  tmpFile.open();
+  QString fileName( tmpFile.fileName( ) );
+  QgsVectorLayer vl( "Point?field=firstfield:string(1024)", "test", "memory" );
+  QCOMPARE( vl.fields().at( 0 ).length(), 1024 );
+  QgsVectorFileWriter w( fileName,
+                         QStringLiteral( "UTF-8" ),
+                         vl.fields(),
+                         QgsWkbTypes::Point,
+                         vl.crs() );
+  QgsFeature f { vl.fields() };
+  f.setAttribute( 0, QString( 1024, 'x' ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(9 45)" ) ) );
+  QVERIFY( vl.startEditing() );
+  QVERIFY( vl.addFeature( f ) );
+  QgsVectorFileWriter::SaveVectorOptions options;
+  options.driverName = "GPKG";
+  options.layerName = "test";
+  QString errorMessage;
+  QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormat(
+      &vl,
+      fileName,
+      options,
+      &errorMessage ) );
+  QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
+  QCOMPARE( errorMessage, fileName );
+  QgsVectorLayer vl2( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
+  QVERIFY( vl2.isValid() );
+  QCOMPARE( vl2.featureCount(), 1L );
+  QCOMPARE( vl2.fields().at( 1 ).length(), 1024 );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toString(), QString( 1024, 'x' ) );
+
 }
 
 QGSTEST_MAIN( TestQgsVectorFileWriter )

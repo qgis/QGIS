@@ -969,7 +969,8 @@ QString QgsRasterFileWriter::driverForExtension( const QString &extension )
         QString drvName = GDALGetDriverShortName( drv );
         QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
 
-        Q_FOREACH ( const QString &driver, driverExtensions )
+        const auto constDriverExtensions = driverExtensions;
+        for ( const QString &driver : constDriverExtensions )
         {
           if ( driver.compare( ext, Qt::CaseInsensitive ) == 0 )
             return drvName;

@@ -35,7 +35,7 @@ import qgis
 from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsNetworkRequestParameters
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
-                        reloadPlugin, updateAvailablePlugins)
+                        reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
 from .installer_data import (repositories, plugins, officialRepo,
                              settingsGroup, reposGroup, removeDir)
 from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
@@ -43,6 +43,8 @@ from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDi
 from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
 from .qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
 from .unzip import unzip
+from .plugindependencies import find_dependencies
+from .qgsplugindependenciesdialog import QgsPluginDependenciesDialog
 
 
 # public instances:
@@ -128,7 +130,7 @@ class QgsPluginInstaller(QObject):
 
         QApplication.restoreOverrideCursor()
 
-        # display error messages for every unavailable reposioty, unless Shift pressed nor all repositories are unavailable
+        # display error messages for every unavailable repository, unless Shift pressed nor all repositories are unavailable
         keepQuiet = QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier)
         if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
             for key in repositories.allUnavailable():
@@ -230,6 +232,7 @@ class QgsPluginInstaller(QObject):
                 "downloads": plugin["downloads"],
                 "average_vote": plugin["average_vote"],
                 "rating_votes": plugin["rating_votes"],
+                "plugin_dependencies": plugin.get("plugin_dependencies", None),
                 "pythonic": "true"
             })
         iface.pluginManagerInterface().reloadModel()
@@ -309,6 +312,7 @@ class QgsPluginInstaller(QObject):
             QApplication.setOverrideCursor(Qt.WaitCursor)
             # update the list of plugins in plugin handling routines
             updateAvailablePlugins()
+            self.processDependencies(plugin["id"])
             # try to load the plugin
             loadPlugin(plugin["id"])
             plugins.getAllInstalled()
@@ -417,6 +421,11 @@ class QgsPluginInstaller(QObject):
                 exec("del sys.modules[%s]" % plugin["id"])
             except:
                 pass
+            try:
+                exec("del plugins_metadata_parser[%s]" % plugin["id"])
+            except:
+                pass
+
             plugins.getAllInstalled()
             plugins.rebuild()
             self.exportPluginsToManager()
@@ -599,6 +608,7 @@ class QgsPluginInstaller(QObject):
 
         if success:
             updateAvailablePlugins()
+            self.processDependencies(pluginName)
             loadPlugin(pluginName)
             plugins.getAllInstalled()
             plugins.rebuild()
@@ -621,3 +631,32 @@ class QgsPluginInstaller(QObject):
 
         level = Qgis.Info if success else Qgis.Critical
         iface.pluginManagerInterface().pushMessage(msg, level)
+
+    def processDependencies(self, plugin_id):
+        """Processes plugin dependencies
+
+        :param plugin_id: plugin id
+        :type plugin_id: str
+        """
+
+        to_install, to_upgrade, not_found = find_dependencies(plugin_id)
+        if to_install or to_upgrade or not_found:
+            dlg = QgsPluginDependenciesDialog(plugin_id, to_install, to_upgrade, not_found)
+            if dlg.exec_() == QgsPluginDependenciesDialog.Accepted:
+                actions = dlg.actions()
+                for dependency_plugin_id, action in actions.items():
+                    try:
+                        self.installPlugin(dependency_plugin_id)
+                        if action == 'install':
+                            iface.pluginManagerInterface().pushMessage(self.tr("Plugin dependency <b>%s</b> successfully installed") %
+                                                                       dependency_plugin_id, Qgis.Info)
+                        else:
+                            iface.pluginManagerInterface().pushMessage(self.tr("Plugin dependency <b>%s</b> successfully upgraded") %
+                                                                       dependency_plugin_id, Qgis.Info)
+                    except Exception as ex:
+                        if action == 'install':
+                            iface.pluginManagerInterface().pushMessage(self.tr("Error installing plugin dependency <b>%s</b>: %s") %
+                                                                       (dependency_plugin_id, ex), Qgis.Warning)
+                        else:
+                            iface.pluginManagerInterface().pushMessage(self.tr("Error upgrading plugin dependency <b>%s</b>: %s") %
+                                                                       (dependency_plugin_id, ex), Qgis.Warning)

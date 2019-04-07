@@ -296,7 +296,8 @@ QgsRectangle QgsMemoryProvider::extent() const
     if ( mSubsetString.isEmpty() )
     {
       // fast way - iterate through all features
-      Q_FOREACH ( const QgsFeature &feat, mFeatures )
+      const auto constMFeatures = mFeatures;
+      for ( const QgsFeature &feat : constMFeatures )
       {
         if ( feat.hasGeometry() )
           mExtent.combineExtentWith( feat.geometry().boundingBox() );

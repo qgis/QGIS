@@ -128,7 +128,8 @@ QList<double> QgsVectorLayerUtils::getDoubleValues( const QgsVectorLayer *layer,
     return values;
 
   bool convertOk;
-  Q_FOREACH ( const QVariant &value, variantValues )
+  const auto constVariantValues = variantValues;
+  for ( const QVariant &value : constVariantValues )
   {
     double val = value.toDouble( &convertOk );
     if ( convertOk )

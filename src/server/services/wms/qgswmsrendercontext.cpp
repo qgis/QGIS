@@ -18,6 +18,7 @@
 #include "qgslayertree.h"
 
 #include "qgswmsrendercontext.h"
+#include "qgswmsserviceexception.h"
 #include "qgsserverprojectutils.h"
 
 using namespace QgsWms;
@@ -156,6 +157,43 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   }
 
   return dpm / 1000.0;
+}
+
+QStringList QgsWmsRenderContext::flattenedQueryLayers() const
+{
+  QStringList result;
+  std::function <QStringList( const QString &name )> findLeaves = [ & ]( const QString & name ) -> QStringList
+  {
+    QStringList _result;
+    if ( mLayerGroups.contains( name ) )
+    {
+      const auto &layers  { mLayerGroups[ name ] };
+      for ( const auto &l : layers )
+      {
+        const auto nick { layerNickname( *l ) };
+        // This handles the case for root (fake) group
+        if ( mLayerGroups.contains( nick ) )
+        {
+          _result.append( name );
+        }
+        else
+        {
+          _result.append( findLeaves( nick ) );
+        }
+      }
+    }
+    else
+    {
+      _result.append( name );
+    }
+    return _result;
+  };
+  const auto constNicks { mParameters.queryLayersNickname() };
+  for ( const auto &name : constNicks )
+  {
+    result.append( findLeaves( name ) );
+  }
+  return result;
 }
 
 QList<QgsMapLayer *> QgsWmsRenderContext::layersToRender() const
@@ -339,7 +377,8 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
-    for ( const QString &layer : mParameters.queryLayersNickname() )
+    const auto constLayers { flattenedQueryLayers() };
+    for ( const QString &layer : constLayers )
     {
       if ( mNicknameLayers.contains( layer )
            && !mLayersToRender.contains( mNicknameLayers[layer] ) )
@@ -395,8 +434,10 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
       }
       else
       {
-        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                      QStringLiteral( "Layer \"%1\" does not exist" ).arg( lname ) );
+        QgsWmsParameter param( QgsWmsParameter::LAYER );
+        param.mValue = lname;
+        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+                                      param );
       }
     }
   }
@@ -439,8 +480,10 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
     }
     else
     {
-      throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                    QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
+      QgsWmsParameter param( QgsWmsParameter::LAYER );
+      param.mValue = nickname;
+      throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+                                    param );
     }
   }
 }
@@ -464,6 +507,11 @@ bool QgsWmsRenderContext::layerScaleVisibility( const QString &name ) const
   }
 
   return visible;
+}
+
+QMap<QString, QList<QgsMapLayer *> > QgsWmsRenderContext::layerGroups() const
+{
+  return mLayerGroups;
 }
 
 void QgsWmsRenderContext::removeUnwantedLayers()

@@ -249,7 +249,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
       }
       if ( sinkNonMatching1 )
       {
-        sinkNonMatching1->addFeature( feat );
+        sinkNonMatching1->addFeature( feat, QgsFeatureSink::FastInsert );
       }
       unjoinedCount++;
     }

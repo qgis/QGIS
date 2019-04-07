@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsutils.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
 
@@ -38,38 +39,38 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
     context.setParameters( parameters );
 
-    // Get cached image
     const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
+    ImageOutputFormat outputFormat = parseImageFormat( format );
+
+    QString saveFormat;
+    QString contentType;
+    switch ( outputFormat )
+    {
+      case PNG:
+      case PNG8:
+      case PNG16:
+      case PNG1:
+        contentType = "image/png";
+        saveFormat = "PNG";
+        break;
+      case JPEG:
+        contentType = "image/jpeg";
+        saveFormat = "JPEG";
+        break;
+      default:
+        throw QgsServiceException( "InvalidFormat",
+                                   QStringLiteral( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( format ) );
+        break;
+    }
+
+    // Get cached image
     QgsAccessControl *accessControl = nullptr;
     QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     accessControl = serverIface->accessControls();
     cacheManager = serverIface->cacheManager();
-#endif
     if ( cacheManager )
     {
-      ImageOutputFormat outputFormat = parseImageFormat( format );
-      QString saveFormat;
-      QString contentType;
-      switch ( outputFormat )
-      {
-        case PNG:
-        case PNG8:
-        case PNG16:
-        case PNG1:
-          contentType = "image/png";
-          saveFormat = "PNG";
-          break;
-        case JPEG:
-          contentType = "image/jpeg";
-          saveFormat = "JPEG";
-          break;
-        default:
-          throw QgsServiceException( "InvalidFormat",
-                                     QString( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( format ) );
-          break;
-      }
-
       QImage image;
       QByteArray content = cacheManager->getCachedImage( project, request, accessControl );
       if ( !content.isEmpty() && image.loadFromData( content ) )
@@ -79,8 +80,9 @@ namespace QgsWms
         return;
       }
     }
-
+#endif
     QgsRenderer renderer( context );
+
     std::unique_ptr<QImage> result( renderer.getLegendGraphics() );
 
     if ( result )
@@ -89,14 +91,16 @@ namespace QgsWms
       if ( cacheManager )
       {
         QByteArray content = response.data();
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( !content.isEmpty() )
           cacheManager->setCachedImage( &content, project, request, accessControl );
+#endif
       }
     }
     else
     {
-      throw QgsServiceException( QStringLiteral( "UnknownError" ),
-                                 QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
+      throw QgsException( QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
     }
   }
 } // namespace QgsWms
+

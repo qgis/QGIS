@@ -127,7 +127,8 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   if ( uri.hasParam( QStringLiteral( "tileDimensions" ) ) )
   {
     mTiled = true;
-    Q_FOREACH ( const QString &param, uri.param( "tileDimensions" ).split( ';' ) )
+    const auto tileDimensions = uri.param( "tileDimensions" ).split( ';' );
+    for ( const QString &param : tileDimensions )
     {
       QStringList kv = param.split( '=' );
       if ( kv.size() == 1 )
@@ -203,7 +204,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
   }
 
   // get identify formats
-  Q_FOREACH ( const QString &f, mCapabilities.capability.request.getFeatureInfo.format )
+  for ( const QString &f : qgis::as_const( mCapabilities.capability.request.getFeatureInfo.format ) )
   {
     // Don't use mSupportedGetFeatureFormats, there are too many possibilities
     QgsDebugMsg( "supported format = " + f );
@@ -807,7 +808,8 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
-        Q_FOREACH ( const QString &srs, e1.text().split( QRegExp( "\\s+" ) ) )
+        const QStringList crsList = e1.text().split( QRegExp( "\\s+" ) );
+        for ( const QString &srs : crsList )
         {
           layerProperty.crs.push_back( srs );
         }
@@ -1286,7 +1288,8 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
   mTileLayersSupported.append( l );
 
   int i = 0;
-  Q_FOREACH ( const QString &rS, resolutions )
+  const auto constResolutions = resolutions;
+  for ( const QString &rS : constResolutions )
   {
     double r = rS.toDouble();
     m.identifier = QString::number( i );
@@ -1612,7 +1615,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
           bool isValid = false;
           int matrixWidth = -1, matrixHeight = -1;
-          Q_FOREACH ( const QgsWmtsTileMatrix &m, tms.tileMatrices )
+          for ( const QgsWmtsTileMatrix &m : tms.tileMatrices )
           {
             isValid = m.identifier == id;
             if ( isValid )
@@ -2060,7 +2063,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mCapabilitiesReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
-          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+          const auto constRawHeaders = cmd.rawHeaders();
+          for ( const QNetworkCacheMetaData::RawHeader &h : constRawHeaders )
           {
             if ( h.first != "Cache-Control" )
               hl.append( h );

@@ -65,11 +65,12 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QString toString( bool defaultValue = false ) const;
 
     /**
-     * Converts the parameter into a list of strings.
+     * Converts the parameter into a list of strings
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts To use QString::SkipEmptyParts for splitting
      * \returns A list of strings
      */
-    QStringList toStringList( char delimiter = ',' ) const;
+    QStringList toStringList( char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of integers.

@@ -369,6 +369,7 @@ Architecture: any
 Section: python
 Depends:
  python3-qgis-common (= ${source:Version}),
+ qgis-providers (= ${binary:Version}),
  libqgispython{QGIS_ABI},
  libsqlite3-mod-spatialite,
  python3-dateutil,
@@ -395,8 +396,8 @@ Depends:
  ${shlibs:Depends},
  ${sip3:Depends},
  ${misc:Depends}
-Breaks: python-qgis (<< 1:3.7.1)
-Replaces: python-qgis (<< 1:3.7.1)
+Breaks: python-qgis (<< ${binary:Version})
+Replaces: python-qgis (<< ${binary:Version})
 Description: Python bindings to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -414,8 +415,8 @@ Depends:
  libqgis-customwidgets (>= ${source:Version}),
  ${python3:Depends},
  ${misc:Depends}
-Breaks: python-qgis-common (<< 1:3.7.1)
-Replaces: python-qgis-common (<< 1:3.7.1)
+Breaks: python-qgis-common (<< ${source:Version})
+Replaces: python-qgis-common (<< ${source:Version})
 Suggests: saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -491,3 +492,20 @@ Description: QGIS API documentation
 #oracle# display databases of geographic information.
 #oracle# .
 #oracle# This package contains the QGIS oracle provider.
+
+Package: python-qgis
+Depends: python3-qgis, ${misc:Depends}
+Architecture: all
+Priority: optional
+Section: oldlibs
+Description: transitional package
+ This is a transitional package. It can safely be removed.
+
+Package: python-qgis-common
+Depends: python3-qgis-common, ${misc:Depends}
+Architecture: all
+Priority: optional
+Section: oldlibs
+Description: transitional package
+ This is a transitional package. It can safely be removed.
+

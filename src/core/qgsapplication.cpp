@@ -130,6 +130,7 @@ const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
 const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
+QgsAuthManager *QgsApplication::sAuthManager = nullptr;
 
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
@@ -658,7 +659,8 @@ QString QgsApplication::resolvePkgPath()
     // check if QGIS is run from build directory (not the install directory)
     QFile f;
     // "/../../.." is for Mac bundled app in build directory
-    Q_FOREACH ( const QString &path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
+    static const QStringList paths { QStringList() << QString() << QStringLiteral( "/.." ) << QStringLiteral( "/bin" ) << QStringLiteral( "/../../.." ) };
+    for ( const QString &path : paths )
     {
       f.setFileName( prefix + path + "/qgisbuildpath.txt" );
       if ( f.exists() )
@@ -815,11 +817,13 @@ QHash<QString, QString> QgsApplication::uiThemes()
   QStringList paths = QStringList() << userThemesFolder() << defaultThemesFolder();
   QHash<QString, QString> mapping;
   mapping.insert( QStringLiteral( "default" ), QString() );
-  Q_FOREACH ( const QString &path, paths )
+  const auto constPaths = paths;
+  for ( const QString &path : constPaths )
   {
     QDir folder( path );
     QFileInfoList styleFiles = folder.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
-    Q_FOREACH ( const QFileInfo &info, styleFiles )
+    const auto constStyleFiles = styleFiles;
+    for ( const QFileInfo &info : constStyleFiles )
     {
       QFileInfo styleFile( info.absoluteFilePath() + "/style.qss" );
       if ( !styleFile.exists() )
@@ -942,12 +946,13 @@ QStringList QgsApplication::svgPaths()
 
   // maintain user set order while stripping duplicates
   QStringList paths;
-  Q_FOREACH ( const QString &path, pathList )
+  const auto constPathList = pathList;
+  for ( const QString &path : constPathList )
   {
     if ( !paths.contains( path ) )
       paths.append( path );
   }
-  Q_FOREACH ( const QString &path, ABISYM( mDefaultSvgPaths ) )
+  for ( const QString &path : qgis::as_const( ABISYM( mDefaultSvgPaths ) ) )
   {
     if ( !paths.contains( path ) )
       paths.append( path );
@@ -1167,7 +1172,6 @@ QgsAuthManager *QgsApplication::authManager()
   else
   {
     // no QgsApplication instance
-    static QgsAuthManager *sAuthManager = nullptr;
     if ( !sAuthManager )
       sAuthManager = QgsAuthManager::instance();
     return sAuthManager;
@@ -1177,7 +1181,11 @@ QgsAuthManager *QgsApplication::authManager()
 
 void QgsApplication::exitQgis()
 {
-  delete QgsApplication::authManager();
+  // don't create to delete
+  if ( instance() )
+    delete instance()->mAuthManager;
+  else
+    delete sAuthManager;
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
@@ -1505,14 +1513,16 @@ void QgsApplication::copyPath( const QString &src, const QString &dst )
   if ( ! dir.exists() )
     return;
 
-  Q_FOREACH ( const QString &d, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  const auto subDirectories = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+  for ( const QString &d : subDirectories )
   {
     QString dst_path = dst + QDir::separator() + d;
     dir.mkpath( dst_path );
     copyPath( src + QDir::separator() + d, dst_path );
   }
 
-  Q_FOREACH ( const QString &f, dir.entryList( QDir::Files ) )
+  const auto files = dir.entryList( QDir::Files );
+  for ( const QString &f : files )
   {
     QFile::copy( src + QDir::separator() + f, dst + QDir::separator() + f );
   }
