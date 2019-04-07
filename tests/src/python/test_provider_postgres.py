@@ -441,7 +441,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         ft1 = vl.getFeatures('pk=1')
         self.assertFalse(ft1.nextFeature(f))
 
-    def testTransactionConstrains(self):
+    def testTransactionConstraints(self):
         # create a vector layer based on postgres
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."check_constraints" sql=', 'test', 'postgres')
         self.assertTrue(vl.isValid())
@@ -626,7 +626,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         fi = vl.getFeatures(QgsFeatureRequest())
         f = QgsFeature()
 
-        #test list
+        # test list
         fi.nextFeature(f)
         value_idx = vl.fields().lookupField('jvalue')
         self.assertIsInstance(f.attributes()[value_idx], list)
@@ -638,7 +638,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[value_idx], [4, 5, 6])
         self.assertEqual(f.attributes()[value_idx], [4.0, 5.0, 6.0])
 
-        #test dict
+        # test dict
         fi.nextFeature(f)
         value_idx = vl.fields().lookupField('jvalue')
         self.assertIsInstance(f.attributes()[value_idx], dict)
@@ -1213,6 +1213,12 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
     def partiallyCompiledFilters(self):
         return set([])
+
+    def testConstraints(self):
+        for key in ["key1", "key2"]:
+            idx = self.vl.dataProvider().fieldNameIndex(key)
+            self.assertTrue(idx >= 0)
+            self.assertFalse(self.vl.dataProvider().fieldConstraints(idx) & QgsFieldConstraints.ConstraintUnique)
 
 
 if __name__ == '__main__':
