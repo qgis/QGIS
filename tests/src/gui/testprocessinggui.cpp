@@ -360,8 +360,14 @@ void TestProcessingGui::testWrapperFactoryRegistry()
 void TestProcessingGui::testWrapperGeneral()
 {
   TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+  param.setAdditionalExpressionContextVariables( QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
   QgsProcessingBooleanWidgetWrapper wrapper( &param );
   QCOMPARE( wrapper.type(), QgsProcessingGui::Standard );
+
+  QgsExpressionContext expContext = wrapper.createExpressionContext();
+  QVERIFY( expContext.hasVariable( QStringLiteral( "a" ) ) );
+  QVERIFY( expContext.hasVariable( QStringLiteral( "b" ) ) );
+  QCOMPARE( expContext.highlightedVariables(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
 
   QgsProcessingBooleanWidgetWrapper wrapper2( &param, QgsProcessingGui::Batch );
   QCOMPARE( wrapper2.type(), QgsProcessingGui::Batch );
