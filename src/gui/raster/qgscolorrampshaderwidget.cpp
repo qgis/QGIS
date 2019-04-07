@@ -287,7 +287,8 @@ void QgsColorRampShaderWidget::mDeleteEntryButton_clicked()
     return;
   }
 
-  Q_FOREACH ( QTreeWidgetItem *item, itemList )
+  const auto constItemList = itemList;
+  for ( QTreeWidgetItem *item : constItemList )
   {
     delete item;
   }
@@ -758,7 +759,8 @@ void QgsColorRampShaderWidget::changeColor()
   QColor newColor = QgsColorDialog::getColor( firstItem->data( ColorColumn, Qt::EditRole ).value<QColor>(), this, QStringLiteral( "Change Color" ), true );
   if ( newColor.isValid() )
   {
-    Q_FOREACH ( QTreeWidgetItem *item, itemList )
+    const auto constItemList = itemList;
+    for ( QTreeWidgetItem *item : constItemList )
     {
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       item->setData( ColorColumn, Qt::EditRole, newColor );
@@ -785,7 +787,8 @@ void QgsColorRampShaderWidget::changeOpacity()
   if ( ok )
   {
     int newOpacity = static_cast<int>( opacity / 100 * 255 );
-    Q_FOREACH ( QTreeWidgetItem *item, itemList )
+    const auto constItemList = itemList;
+    for ( QTreeWidgetItem *item : constItemList )
     {
       QColor newColor = item->data( ColorColumn, Qt::EditRole ).value<QColor>();
       newColor.setAlpha( newOpacity );

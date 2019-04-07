@@ -389,7 +389,8 @@ void QgsBrowserDockWidget::addSelectedLayers()
   std::sort( list.begin(), list.end() );
 
   // If any of the layer items are QGIS we just open and exit the loop
-  Q_FOREACH ( const QModelIndex &index, list )
+  const auto constList = list;
+  for ( const QModelIndex &index : constList )
   {
     QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
     if ( item && item->type() == QgsDataItem::Project )

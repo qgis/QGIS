@@ -122,7 +122,8 @@ QgsTaskManagerModel::QgsTaskManagerModel( QgsTaskManager *manager, QObject *pare
   Q_ASSERT( mManager );
 
   //populate row to id map
-  Q_FOREACH ( QgsTask *task, mManager->tasks() )
+  const auto constTasks = mManager->tasks();
+  for ( QgsTask *task : constTasks )
   {
     mRowToTaskIdList << mManager->taskId( task );
   }

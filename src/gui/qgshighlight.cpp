@@ -117,7 +117,8 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
   }
   if ( renderer )
   {
-    Q_FOREACH ( QgsSymbol *symbol, renderer->symbols( context ) )
+    const auto constSymbols = renderer->symbols( context );
+    for ( QgsSymbol *symbol : constSymbols )
     {
       if ( !symbol ) continue;
       setSymbol( symbol, context, color, fillColor );

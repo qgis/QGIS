@@ -105,7 +105,8 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
 {
   QList<int> rows;
 
-  Q_FOREACH ( QgsFeatureId fid, fids )
+  const auto constFids = fids;
+  for ( QgsFeatureId fid : constFids )
   {
     QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1, size: %3" ).arg( fid ).arg( mFeatureRequest.filterType() ).arg( mIdRowMap.size() ), 4 );
 
@@ -122,7 +123,8 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
   int removedRows = 0;
   bool reset = false;
 
-  Q_FOREACH ( int row, rows )
+  const auto constRows = rows;
+  for ( int row : constRows )
   {
 #if 0
     qDebug() << "Row: " << row << ", begin " << beginRow << ", last " << lastRow << ", current " << currentRowCount << ", removed " << removedRows;

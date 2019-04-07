@@ -126,10 +126,12 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   if ( ( type == Table ) || ( type == LineEdit ) )
   {
     // hide all controls, except stacked widget
-    Q_FOREACH ( QWidget *widget, widgets )
+    const auto constWidgets = widgets;
+    for ( QWidget *widget : constWidgets )
       widget->setVisible( false );
     mOptionsStackedWidget->setVisible( true );
-    Q_FOREACH ( QWidget *widget, mOptionsStackedWidget->findChildren<QWidget *>() )
+    const auto children { mOptionsStackedWidget->findChildren<QWidget *>() };
+    for ( QWidget *widget : children )
       widget->setVisible( true );
 
     // show relevant page
@@ -141,7 +143,8 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   else
   {
     // show all widgets, except profile buttons (unless Full)
-    Q_FOREACH ( QWidget *widget, widgets )
+    const auto constWidgets = widgets;
+    for ( QWidget *widget : constWidgets )
       widget->setVisible( true );
     if ( type != Full )
       mProfileButtons->setVisible( false );
@@ -182,7 +185,8 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   mOptionsMap.clear();
   mProfileComboBox->blockSignals( true );
   mProfileComboBox->clear();
-  Q_FOREACH ( const QString &profileKey, profileKeys )
+  const auto constProfileKeys = profileKeys;
+  for ( const QString &profileKey : constProfileKeys )
   {
     QString profileName, profileOptions;
     profileOptions = createOptions( profileKey );
@@ -638,7 +642,8 @@ void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )
 
   QStringList values;
   QStringList optionsList = options.trimmed().split( ' ', QString::SkipEmptyParts );
-  Q_FOREACH ( const QString &opt, optionsList )
+  const auto constOptionsList = optionsList;
+  for ( const QString &opt : constOptionsList )
   {
     int rowCount = mOptionsTable->rowCount();
     mOptionsTable->insertRow( rowCount );

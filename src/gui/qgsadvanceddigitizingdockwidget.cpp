@@ -781,7 +781,8 @@ void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
 void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points )
 {
   clearPoints();
-  Q_FOREACH ( const QgsPointXY &pt, points )
+  const auto constPoints = points;
+  for ( const QgsPointXY &pt : constPoints )
   {
     addPoint( pt );
   }

@@ -292,7 +292,8 @@ void QgsSymbolsListWidget::createAuxiliaryField()
 void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
-  Q_FOREACH ( QgsUnitSelectionWidget *unitWidget, findChildren<QgsUnitSelectionWidget *>() )
+  const auto unitSelectionWidgets { findChildren<QgsUnitSelectionWidget *>() };
+  for ( QgsUnitSelectionWidget *unitWidget : unitSelectionWidgets )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
@@ -325,7 +326,8 @@ void QgsSymbolsListWidget::populateGroups()
   {
     tags.sort();
     groupsCombo->insertSeparator( index );
-    Q_FOREACH ( const QString &tag, tags )
+    const auto constTags = tags;
+    for ( const QString &tag : constTags )
     {
       groupsCombo->addItem( tag, QVariant( "tag" ) );
       index++;
@@ -337,7 +339,8 @@ void QgsSymbolsListWidget::populateGroups()
   {
     groups.sort();
     groupsCombo->insertSeparator( index + 1 );
-    Q_FOREACH ( const QString &group, groups )
+    const auto constGroups = groups;
+    for ( const QString &group : constGroups )
     {
       groupsCombo->addItem( group, QVariant( "smartgroup" ) );
     }
@@ -633,7 +636,8 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
   QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( layer() ) );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -650,7 +654,8 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 {
   updateSymbolColor();
 
-  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
+  const auto overrideButtons {findChildren< QgsPropertyOverrideButton * >()};
+  for ( QgsPropertyOverrideButton *button : overrideButtons )
   {
     button->registerExpressionContextGenerator( this );
   }

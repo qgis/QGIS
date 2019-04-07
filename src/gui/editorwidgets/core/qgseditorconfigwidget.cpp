@@ -51,7 +51,8 @@ void QgsEditorConfigWidget::initializeDataDefinedButton( QgsPropertyOverrideButt
 
 void QgsEditorConfigWidget::updateDataDefinedButtons()
 {
-  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
+  const auto propertyOverrideButtons { findChildren< QgsPropertyOverrideButton * >() };
+  for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );
   }

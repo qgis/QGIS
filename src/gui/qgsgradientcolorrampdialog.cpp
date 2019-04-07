@@ -488,7 +488,8 @@ void QgsGradientColorRampDialog::addMarkersForColor( double x, const QColor &col
 void QgsGradientColorRampDialog::updatePlot()
 {
   // remove existing markers
-  Q_FOREACH ( QwtPlotMarker *marker, mMarkers )
+  const auto constMMarkers = mMarkers;
+  for ( QwtPlotMarker *marker : constMMarkers )
   {
     marker->detach();
     delete marker;
@@ -506,7 +507,8 @@ void QgsGradientColorRampDialog::updatePlot()
   addMarkersForColor( 0, mRamp.color1(), mCurrentPlotMarkerIndex == 0 );
 
   int i = 1;
-  Q_FOREACH ( const QgsGradientStop &stop, mRamp.stops() )
+  const auto constStops = mRamp.stops();
+  for ( const QgsGradientStop &stop : constStops )
   {
     lightnessPoints << QPointF( stop.offset, stop.color.lightnessF() );
     huePoints << QPointF( stop.offset, stop.color.hslHueF() );

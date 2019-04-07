@@ -103,7 +103,8 @@ void ScrollAreaFilter::addChild( QObject *child )
     child->installEventFilter( this );
 
     // also install filter on existing children
-    Q_FOREACH ( QObject *c, child->children() )
+    const auto constChildren = child->children();
+    for ( QObject *c : constChildren )
     {
       addChild( c );
     }
@@ -117,7 +118,8 @@ void ScrollAreaFilter::removeChild( QObject *child )
     child->removeEventFilter( this );
 
     // also remove filter on existing children
-    Q_FOREACH ( QObject *c, child->children() )
+    const auto constChildren = child->children();
+    for ( QObject *c : constChildren )
     {
       removeChild( c );
     }
