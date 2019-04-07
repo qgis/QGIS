@@ -23,7 +23,9 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 
 DROP SCHEMA IF EXISTS qgis_test CASCADE;
 CREATE SCHEMA qgis_test;
-
+GRANT ALL ON SCHEMA qgis_test TO public;
+ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON TABLES TO public;
+ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON SEQUENCES TO public;
 
 SET default_tablespace = '';
 
@@ -466,6 +468,8 @@ INSERT INTO qgis_test.rename_table (field1,field2) VALUES ('a','b');
 --------------------------------------
 -- Table for editor widget types
 --
+
+DROP TABLE IF EXISTS qgis_editor_widget_styles;
 
 CREATE TABLE qgis_editor_widget_styles
 (
