@@ -1972,6 +1972,12 @@ void TestQgsProcessing::parameterGeneral()
   param.metadata().insert( "p3", 9 );
   QCOMPARE( param.metadata().value( "p3" ).toInt(), 9 );
 
+  QVERIFY( param.additionalExpressionContextVariables().isEmpty() );
+  param.setAdditionalExpressionContextVariables( QStringList() << "a" << "b" );
+  QCOMPARE( param.additionalExpressionContextVariables(), QStringList() << "a" << "b" );
+  std::unique_ptr< QgsProcessingParameterDefinition > param2( param.clone() );
+  QCOMPARE( param2->additionalExpressionContextVariables(), QStringList() << "a" << "b" );
+
   QVariantMap map = param.toVariantMap();
   QgsProcessingParameterBoolean fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
