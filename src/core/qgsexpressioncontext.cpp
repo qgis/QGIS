@@ -318,6 +318,11 @@ bool QgsExpressionContext::isHighlightedVariable( const QString &name ) const
   return mHighlightedVariables.contains( name );
 }
 
+QStringList QgsExpressionContext::highlightedVariables() const
+{
+  return mHighlightedVariables;
+}
+
 void QgsExpressionContext::setHighlightedVariables( const QStringList &variableNames )
 {
   mHighlightedVariables = variableNames;
