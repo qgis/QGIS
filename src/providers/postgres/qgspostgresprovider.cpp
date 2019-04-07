@@ -270,7 +270,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     case PktFidMap:
     {
       QString delim;
-      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+      const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
+      for ( int idx : constMPrimaryKeyAttrs )
       {
         key += delim + mAttributeFields.at( idx ).name();
         delim = ',';
@@ -577,7 +578,8 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         QString delim;
         expr = QStringLiteral( "%1 IN (" ).arg( ( pkType == PktOid ? QStringLiteral( "oid" ) : QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ) );
 
-        Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+        const auto constFeatureIds = featureIds;
+        for ( const QgsFeatureId featureId : constFeatureIds )
         {
           expr += delim + FID_TO_STRING( ( pkType == PktOid ? featureId : pkType == PktUint64 ? featureId : FID2PKINT( featureId ) ) );
           delim = ',';
@@ -593,7 +595,8 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     {
       //complex primary key, need to build up where string
       QStringList whereClauses;
-      Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+      const auto constFeatureIds = featureIds;
+      for ( const QgsFeatureId featureId : constFeatureIds )
       {
         whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
       }
@@ -777,7 +780,8 @@ bool QgsPostgresProvider::loadFields()
     if ( !tableoids.isEmpty() )
     {
       QStringList tableoidsList;
-      Q_FOREACH ( int tableoid, tableoids )
+      const auto constTableoids = tableoids;
+      for ( int tableoid : constTableoids )
       {
         tableoidsList.append( QString::number( tableoid ) );
       }
@@ -1526,17 +1530,17 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
 
   if ( !primaryKey.isEmpty() )
   {
-    QStringList cols = parseUriKey( primaryKey );
+    const QStringList cols = parseUriKey( primaryKey );
 
     primaryKey.clear();
     QString del;
-    Q_FOREACH ( const QString &col, cols )
+    for ( const QString &col : cols )
     {
       primaryKey += del + quotedIdentifier( col );
       del = QStringLiteral( "," );
     }
 
-    Q_FOREACH ( const QString &col, cols )
+    for ( const QString &col : cols )
     {
       int idx = fieldNameIndex( col );
       if ( idx < 0 )
@@ -2226,7 +2230,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         insert += QLatin1String( " RETURNING " );
 
         QString delim;
-        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+        const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
+        for ( int idx : constMPrimaryKeyAttrs )
         {
           insert += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
           delim = ',';
@@ -2319,7 +2324,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           {
             QVariantList primaryKeyVals;
 
-            Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+            const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
+            for ( int idx : constMPrimaryKeyAttrs )
             {
               primaryKeyVals << attrs.at( idx );
             }
@@ -3019,7 +3025,8 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
     ids |= geometry_map.keys().toSet();
 
     // cycle through the features
-    Q_FOREACH ( QgsFeatureId fid, ids )
+    const auto constIds = ids;
+    for ( QgsFeatureId fid : constIds )
     {
       // skip added features
       if ( FID_IS_NEW( fid ) )
@@ -3918,7 +3925,8 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
   else
   {
     pkList = parseUriKey( primaryKey );
-    Q_FOREACH ( const QString &col, pkList )
+    const auto constPkList = pkList;
+    for ( const QString &col : constPkList )
     {
       // search for the passed field
       QString type;
@@ -4440,7 +4448,8 @@ QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type 
 QList<QgsVectorLayer *> QgsPostgresProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &schema, const QString &tableName )
 {
   QList<QgsVectorLayer *> result;
-  Q_FOREACH ( QgsVectorLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsVectorLayer *layer : constLayers )
   {
     const QgsPostgresProvider *pgProvider = qobject_cast<QgsPostgresProvider *>( layer->dataProvider() );
     if ( pgProvider &&
@@ -4487,7 +4496,8 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     {
       // first reference field => try to find if we have layers for the referenced table
       const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
-      Q_FOREACH ( const QgsVectorLayer *foundLayer, foundLayers )
+      const auto constFoundLayers = foundLayers;
+      for ( const QgsVectorLayer *foundLayer : constFoundLayers )
       {
         QgsRelation relation;
         relation.setName( name );

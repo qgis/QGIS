@@ -199,7 +199,8 @@ QgsGrassVector::QgsGrassVector( const QgsGrassObject &grassObject, QObject *pare
 
 bool QgsGrassVector::openHead()
 {
-  Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorLayer *layer : constMLayers )
   {
     layer->deleteLater();
   }
@@ -347,7 +348,8 @@ int QgsGrassVector::typeCount( int type ) const
 int QgsGrassVector::maxLayerNumber() const
 {
   int max = 0;
-  Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorLayer *layer : constMLayers )
   {
     max = std::max( max, layer->number() );
   }

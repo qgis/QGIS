@@ -134,7 +134,8 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
       return false;
     }
     QList<QgsSQLStatement::NodeColumnSorted *> orderBy = select->orderBy();
-    Q_FOREACH ( QgsSQLStatement::NodeColumnSorted *columnSorted, orderBy )
+    const auto constOrderBy = orderBy;
+    for ( QgsSQLStatement::NodeColumnSorted *columnSorted : constOrderBy )
     {
       if ( !mSortBy.isEmpty() )
         mSortBy += QLatin1String( "," );
@@ -540,7 +541,8 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, int limi
   {
     QList<QgsFeatureId> intersectingRequests = mCachedRegions.intersects( rect );
     newDownloadNeeded = true;
-    Q_FOREACH ( QgsFeatureId id, intersectingRequests )
+    const auto constIntersectingRequests = intersectingRequests;
+    for ( QgsFeatureId id : constIntersectingRequests )
     {
       Q_ASSERT( id >= 0 && id < mRegions.size() ); // by construction, but doesn't hurt to be checked
 
@@ -921,7 +923,8 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
   QVector<QgsWFSFeatureGmlIdPair> updatedFeatureList;
 
   QgsRectangle localComputedExtent( mComputedExtent );
-  Q_FOREACH ( const QgsWFSFeatureGmlIdPair &featPair, featureList )
+  const auto constFeatureList = featureList;
+  for ( const QgsWFSFeatureGmlIdPair &featPair : constFeatureList )
   {
     const QgsFeature &gmlFeature = featPair.first;
 
@@ -1309,7 +1312,8 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser()
   if ( !mLayerPropertiesList.isEmpty() )
   {
     QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
-    Q_FOREACH ( QgsOgcUtils::LayerProperties layerProperties, mLayerPropertiesList )
+    const auto constMLayerPropertiesList = mLayerPropertiesList;
+    for ( QgsOgcUtils::LayerProperties layerProperties : constMLayerPropertiesList )
     {
       QgsGmlStreamingParser::LayerProperties layerPropertiesOut;
       layerPropertiesOut.mName = layerProperties.mName;

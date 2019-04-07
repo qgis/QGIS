@@ -93,7 +93,8 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         QString values = quotedColumn( mSource->mDefinition.uid() ) + " IN (";
         bool first = true;
-        Q_FOREACH ( QgsFeatureId v, request.filterFids() )
+        const auto constFilterFids = request.filterFids();
+        for ( QgsFeatureId v : constFilterFids )
         {
           if ( !first )
           {
@@ -137,7 +138,8 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       // ensure that all attributes required for expression filter are being fetched
       if ( request.filterType() == QgsFeatureRequest::FilterExpression )
       {
-        Q_FOREACH ( const QString &field, request.filterExpression()->referencedColumns() )
+        const auto constReferencedColumns = request.filterExpression()->referencedColumns();
+        for ( const QString &field : constReferencedColumns )
         {
           int attrIdx = mSource->mFields.lookupField( field );
           if ( !mAttributes.contains( attrIdx ) )
@@ -179,7 +181,8 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
           columns = QStringLiteral( "0" );
         }
       }
-      Q_FOREACH ( int i, mAttributes )
+      const auto constMAttributes = mAttributes;
+      for ( int i : constMAttributes )
       {
         columns += QLatin1String( "," );
         QString cname = mSource->mFields.at( i ).name().toLower();
@@ -281,7 +284,8 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
 
     int n = mQuery->columnCount();
     int i = 0;
-    Q_FOREACH ( int idx, mAttributes )
+    const auto constMAttributes = mAttributes;
+    for ( int idx : constMAttributes )
     {
       int type = mQuery->columnType( i + 1 );
       switch ( type )

@@ -548,7 +548,8 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
 
-      Q_FOREACH ( const QgsPointLocator::Match &m, _geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id ) )
+      const auto segmentsInRect {_geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id )};
+      for ( const QgsPointLocator::Match &m : segmentsInRect )
       {
         // in range queries the filter may reject some matches
         if ( mFilter && !mFilter->acceptMatch( m ) )

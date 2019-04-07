@@ -744,7 +744,8 @@ void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
   {
     mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
 
-    Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLegendModel->rootGroup()->findLayers() )
+    const auto constFindLayers = mLegendModel->rootGroup()->findLayers();
+    for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
       mLegendModel->refreshLayerLegend( nodeLayer );
   }
 

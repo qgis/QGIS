@@ -125,7 +125,8 @@ void QgsProviderRegistry::init()
     fileRegexp.setPattern( filePattern );
   }
 
-  Q_FOREACH ( const QFileInfo &fi, mLibraryDirectory.entryInfoList() )
+  const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
+  for ( const QFileInfo &fi : constEntryInfoList )
   {
     if ( !fileRegexp.isEmpty() )
     {
@@ -552,7 +553,8 @@ void QgsProviderRegistry::registerGuis( QWidget *parent )
 {
   typedef void registerGui_function( QWidget * parent );
 
-  Q_FOREACH ( const QString &provider, providerList() )
+  const auto constProviderList = providerList();
+  for ( const QString &provider : constProviderList )
   {
     registerGui_function *registerGui = reinterpret_cast< registerGui_function * >( cast_to_fptr( function( provider, "registerGui" ) ) );
 

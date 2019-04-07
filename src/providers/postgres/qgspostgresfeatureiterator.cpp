@@ -153,7 +153,8 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 #if 0
     if ( QgsSettings().value( "qgis/compileExpressions", true ).toBool() )
     {
-      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+      const auto constOrderBy = request.orderBy();
+      for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
       {
         QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
         QgsExpression expression = clause.expression();
@@ -629,7 +630,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
   }
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-  Q_FOREACH ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList() )
+  const auto constAllAttributesList = subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
+  for ( int idx : constAllAttributesList )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;
@@ -790,7 +792,8 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
   // iterate attributes
   if ( subsetOfAttributes )
   {
-    Q_FOREACH ( int idx, fetchAttributes )
+    const auto constFetchAttributes = fetchAttributes;
+    for ( int idx : constFetchAttributes )
       getFeatureAttribute( idx, queryResult, row, col, feature );
   }
   else

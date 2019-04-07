@@ -1828,7 +1828,8 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   QList<int> attrsLst = attributes.toList();
   // sort in descending order
   std::sort( attrsLst.begin(), attrsLst.end(), std::greater<int>() );
-  Q_FOREACH ( int attr, attrsLst )
+  const auto constAttrsLst = attrsLst;
+  for ( int attr : constAttrsLst )
   {
     if ( mFirstFieldIsFid )
     {
@@ -4576,7 +4577,8 @@ static GDALDatasetH OpenHelper( const QString &dsName,
                                 const QStringList &options )
 {
   char **papszOpenOptions = nullptr;
-  Q_FOREACH ( QString option, options )
+  const auto constOptions = options;
+  for ( QString option : constOptions )
   {
     papszOpenOptions = CSLAddString( papszOpenOptions,
                                      option.toUtf8().constData() );
@@ -4642,7 +4644,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
       // Browse through this list, to look for a DatasetWithLayers*
       // instance that don't use yet our layer of interest
       auto &datasetList = iter.value();
-      Q_FOREACH ( QgsOgrProviderUtils::DatasetWithLayers *ds, datasetList )
+      const auto constDatasetList = datasetList;
+      for ( QgsOgrProviderUtils::DatasetWithLayers *ds : constDatasetList )
       {
         if ( !ds->canBeShared )
           continue;
@@ -4698,7 +4701,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     // Browse through this list, to look for a DatasetWithLayers*
     // instance that don't use yet our layer of interest
     auto datasetList = iter.value();
-    Q_FOREACH ( QgsOgrProviderUtils::DatasetWithLayers *ds, datasetList )
+    const auto constDatasetList = datasetList;
+    for ( QgsOgrProviderUtils::DatasetWithLayers *ds : constDatasetList )
     {
       if ( !ds->canBeShared )
         continue;
@@ -4775,7 +4779,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
       // Browse through this list, to look for a DatasetWithLayers*
       // instance that don't use yet our layer of interest
       auto &datasetList = iter.value();
-      Q_FOREACH ( QgsOgrProviderUtils::DatasetWithLayers *ds, datasetList )
+      const auto constDatasetList = datasetList;
+      for ( QgsOgrProviderUtils::DatasetWithLayers *ds : constDatasetList )
       {
         if ( !ds->canBeShared )
           continue;
@@ -5219,7 +5224,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     // Browse through this list, to look for a DatasetWithLayers*
     // instance that don't use yet our layer of interest
     auto &datasetList = iter.value();
-    Q_FOREACH ( QgsOgrProviderUtils::DatasetWithLayers *ds, datasetList )
+    const auto constDatasetList = datasetList;
+    for ( QgsOgrProviderUtils::DatasetWithLayers *ds : constDatasetList )
     {
       if ( !ds->canBeShared )
         continue;
@@ -5306,7 +5312,8 @@ void QgsOgrProviderUtils::releaseInternal( const DatasetIdentification &ident,
 
         // Normally there should be a match, except for datasets that
         // have been invalidated
-        Q_FOREACH ( QgsOgrProviderUtils::DatasetWithLayers *dsIter, datasetList )
+        const auto constDatasetList = datasetList;
+        for ( QgsOgrProviderUtils::DatasetWithLayers *dsIter : constDatasetList )
         {
           if ( dsIter == ds )
           {

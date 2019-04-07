@@ -470,7 +470,8 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
   QRectF bounds;
 
   //add all layout items and pages which are in the layout
-  Q_FOREACH ( const QGraphicsItem *item, items() )
+  const auto constItems = items();
+  for ( const QGraphicsItem *item : constItems )
   {
     const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
     if ( !layoutItem )

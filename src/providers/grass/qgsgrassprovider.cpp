@@ -1197,7 +1197,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 #ifdef QGISDEBUG
       QgsDebugMsg( "the feature is missing in buffer addedFeatures :" );
 
-      Q_FOREACH ( QgsFeatureId id, mEditBuffer->addedFeatures().keys() )
+      const auto constKeys = mEditBuffer->addedFeatures().keys();
+      for ( QgsFeatureId id : constKeys )
       {
         QgsDebugMsg( QString( "addedFeatures : id = %1" ).arg( id ) );
       }
@@ -1272,7 +1273,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       // Currently neither entering new cat nor changing existing cat is allowed
 #if 0
       // There may be other new features with the same cat which we have to update
-      Q_FOREACH ( QgsFeatureId addedFid, addedFeatures.keys() )
+      const auto constKeys = addedFeatures.keys();
+      for ( QgsFeatureId addedFid : constKeys )
       {
         if ( addedFid == fid )
         {
@@ -1302,7 +1304,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
       // Update all changed attributes
       QgsChangedAttributesMap &changedAttributes = const_cast<QgsChangedAttributesMap &>( mEditBuffer->changedAttributeValues() );
-      Q_FOREACH ( QgsFeatureId changedFid, changedAttributes.keys() )
+      const auto constKeys = changedAttributes.keys();
+      for ( QgsFeatureId changedFid : constKeys )
       {
         int changedCat = QgsGrassFeatureIterator::catFromFid( changedFid );
         int realChangedCat = changedCat;
@@ -1315,7 +1318,8 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
         if ( realChangedCat == newCat )
         {
           QgsAttributeMap attributeMap = changedAttributes[changedFid];
-          Q_FOREACH ( int index, attributeMap.keys() )
+          const auto constKeys = attributeMap.keys();
+          for ( int index : constKeys )
           {
             attributeMap[index] = feature.attributes().value( index );
           }
@@ -2047,7 +2051,8 @@ void QgsGrassProvider::setMapset()
 
 QgsGrassVectorMapLayer *QgsGrassProvider::otherEditLayer( int layerField )
 {
-  Q_FOREACH ( QgsGrassVectorMapLayer *layer, mOtherEditLayers )
+  const auto constMOtherEditLayers = mOtherEditLayers;
+  for ( QgsGrassVectorMapLayer *layer : constMOtherEditLayers )
   {
     if ( layer->field() == layerField )
     {

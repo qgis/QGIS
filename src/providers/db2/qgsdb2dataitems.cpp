@@ -137,7 +137,8 @@ void QgsDb2ConnectionItem::refresh()
   QVector<QgsDataItem *> items = createChildren();
 
   // Add new items
-  Q_FOREACH ( QgsDataItem *item, items )
+  const auto constItems = items;
+  for ( QgsDataItem *item : constItems )
   {
     // Is it present in children?
     int index = findItem( mChildren, item );
@@ -202,7 +203,8 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   while ( db2GC.populateLayerProperty( layer ) )
   {
     QgsDb2SchemaItem *schemaItem = nullptr;
-    Q_FOREACH ( QgsDataItem *child, children )
+    const auto constChildren = children;
+    for ( QgsDataItem *child : constChildren )
     {
       if ( child->name() == layer.schemaName )
       {
@@ -325,7 +327,8 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     if ( u.layerType != QLatin1String( "vector" ) )
     {
@@ -415,7 +418,8 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
   QVector<QgsDataItem *> connections;
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
-  Q_FOREACH ( const QString &connName, settings.childGroups() )
+  const auto constChildGroups = settings.childGroups();
+  for ( const QString &connName : constChildGroups )
   {
     connections << new QgsDb2ConnectionItem( this, connName, mPath + "/" + connName );
   }
@@ -498,7 +502,8 @@ QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
 
   QVector<QgsDataItem *>items;
 
-  Q_FOREACH ( QgsDataItem *child, this->children() )
+  const auto constChildren = this->children();
+  for ( QgsDataItem *child : constChildren )
   {
     items.append( ( ( QgsDb2LayerItem * )child )->createClone() );
   }
@@ -508,7 +513,8 @@ QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
 void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )
 {
   // Add new items
-  Q_FOREACH ( QgsDataItem *child, newLayers->children() )
+  const auto constChildren = newLayers->children();
+  for ( QgsDataItem *child : constChildren )
   {
     // Is it present in children?
     if ( findItem( mChildren, child ) >= 0 )

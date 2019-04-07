@@ -156,7 +156,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
-      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+      const auto constOrderBy = request.orderBy();
+      for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
       {
         QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
         QgsExpression expression = clause.expression();
@@ -390,7 +391,8 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseFids()
     return QString();
 
   QString expr = QStringLiteral( "%1 IN (" ).arg( quotedPrimaryKey() ), delim;
-  Q_FOREACH ( const QgsFeatureId featureId, mRequest.filterFids() )
+  const auto constFilterFids = mRequest.filterFids();
+  for ( const QgsFeatureId featureId : constFilterFids )
   {
     expr += delim + QString::number( featureId );
     delim = ',';

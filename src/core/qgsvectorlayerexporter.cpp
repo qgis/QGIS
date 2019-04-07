@@ -86,7 +86,8 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     return;
   }
 
-  Q_FOREACH ( int idx, mOldToNewAttrIdx )
+  const auto constMOldToNewAttrIdx = mOldToNewAttrIdx;
+  for ( int idx : constMOldToNewAttrIdx )
   {
     if ( idx > mAttributeCount )
       mAttributeCount = idx;

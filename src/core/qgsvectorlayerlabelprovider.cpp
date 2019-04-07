@@ -198,7 +198,8 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     context.mapToPixel().transformInPlace( x, y );
 
     QPointF pt( x, y );
-    Q_FOREACH ( QgsSymbol *symbol, symbols )
+    const auto constSymbols = symbols;
+    for ( QgsSymbol *symbol : constSymbols )
     {
       if ( symbol->type() == QgsSymbol::Marker )
       {

@@ -54,7 +54,8 @@ QgsMapLayer *QgsMapLayerStore::mapLayer( const QString &layerId ) const
 QList<QgsMapLayer *> QgsMapLayerStore::mapLayersByName( const QString &layerName ) const
 {
   QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer *layer, mMapLayers )
+  const auto constMMapLayers = mMapLayers;
+  for ( QgsMapLayer *layer : constMMapLayers )
   {
     if ( layer->name() == layerName )
     {
@@ -67,7 +68,8 @@ QList<QgsMapLayer *> QgsMapLayerStore::mapLayersByName( const QString &layerName
 QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> &layers, bool takeOwnership )
 {
   QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer *myLayer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *myLayer : constLayers )
   {
     if ( !myLayer )
     {
@@ -110,7 +112,8 @@ QgsMapLayerStore::addMapLayer( QgsMapLayer *layer, bool takeOwnership )
 void QgsMapLayerStore::removeMapLayers( const QStringList &layerIds )
 {
   QList<QgsMapLayer *> layers;
-  Q_FOREACH ( const QString &myId, layerIds )
+  const auto constLayerIds = layerIds;
+  for ( const QString &myId : constLayerIds )
   {
     layers << mMapLayers.value( myId );
   }
@@ -126,7 +129,8 @@ void QgsMapLayerStore::removeMapLayers( const QList<QgsMapLayer *> &layers )
   QStringList layerIds;
   QList<QgsMapLayer *> layerList;
 
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
     // check layer and the store contains it
     if ( layer && mMapLayers.contains( layer->id() ) )
@@ -142,7 +146,8 @@ void QgsMapLayerStore::removeMapLayers( const QList<QgsMapLayer *> &layers )
   emit layersWillBeRemoved( layerIds );
   emit layersWillBeRemoved( layerList );
 
-  Q_FOREACH ( QgsMapLayer *lyr, layerList )
+  const auto constLayerList = layerList;
+  for ( QgsMapLayer *lyr : constLayerList )
   {
     QString myId( lyr->id() );
     emit layerWillBeRemoved( myId );

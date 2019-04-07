@@ -113,7 +113,8 @@ QStringList QgsArchive::files() const
 
 QString QgsProjectArchive::projectFile() const
 {
-  Q_FOREACH ( const QString &file, files() )
+  const auto constFiles = files();
+  for ( const QString &file : constFiles )
   {
     QFileInfo fileInfo( file );
     if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 )
