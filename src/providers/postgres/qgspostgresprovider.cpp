@@ -761,7 +761,7 @@ bool QgsPostgresProvider::loadFields()
   }
 
 
-  QMap<int, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap;
+  QMap<int, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap;
   QMap<int, QMap<int, int> > attTypeIdMap;
   QMap<int, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
@@ -789,14 +789,17 @@ bool QgsPostgresProvider::loadFields()
       QString tableoidsFilter = '(' + tableoidsList.join( QStringLiteral( "," ) ) + ')';
 
       // Collect formatted field types
-      sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid), atttypid, attnotnull::int, indisunique::int"
-            " FROM pg_attribute"
-            " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
+      sql = QStringLiteral(
+              "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid), atttypid, attnotnull::int, indisunique::int%1"
+              " FROM pg_attribute"
+              " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
 
-            // find unique constraints if present. Text cast required to handle int2vector comparison. Distinct required as multiple unique constraints may exist
-            " LEFT OUTER JOIN ( SELECT DISTINCT indrelid, indkey, indisunique FROM pg_index WHERE indisunique ) uniq ON attrelid=indrelid AND attnum::text=indkey::text "
+              // find unique constraints if present. Text cast required to handle int2vector comparison. Distinct required as multiple unique constraints may exist
+              " LEFT OUTER JOIN ( SELECT DISTINCT indrelid, indkey, indisunique FROM pg_index WHERE indisunique ) uniq ON attrelid=indrelid AND attnum::text=indkey::text "
 
-            " WHERE attrelid IN " + tableoidsFilter;
+              " WHERE attrelid IN %2"
+            ).arg( connectionRO()->pgVersion() >= 100000 ? QStringLiteral( ", attidentity" ) : QString() ).arg( tableoidsFilter );
+
       QgsPostgresResult fmtFieldTypeResult( connectionRO()->PQexec( sql ) );
       for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
       {
@@ -808,18 +811,21 @@ bool QgsPostgresProvider::loadFields()
         int attType = fmtFieldTypeResult.PQgetvalue( i, 5 ).toInt();
         bool attNotNull = fmtFieldTypeResult.PQgetvalue( i, 6 ).toInt();
         bool uniqueConstraint = fmtFieldTypeResult.PQgetvalue( i, 7 ).toInt();
+        QString attIdentity = connectionRO()->pgVersion() >= 100000 ? fmtFieldTypeResult.PQgetvalue( i, 8 ) : " ";
         fmtFieldTypeMap[attrelid][attnum] = formatType;
         descrMap[attrelid][attnum] = descr;
         defValMap[attrelid][attnum] = defVal;
         attTypeIdMap[attrelid][attnum] = attType;
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
+        identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
       }
     }
   }
 
   QSet<QString> fields;
   mAttributeFields.clear();
+  mIdentityFields.clear();
   for ( int i = 0; i < result.PQnfields(); i++ )
   {
     QString fieldName = result.PQfname( i );
@@ -1052,12 +1058,13 @@ bool QgsPostgresProvider::loadFields()
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
 
     QgsFieldConstraints constraints;
-    if ( notNullMap[tableoid][attnum] || mPrimaryKeyAttrs.contains( i ) )
+    if ( notNullMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == i ) || identityMap[tableoid][attnum] != ' ' )
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-    if ( uniqueMap[tableoid][attnum] || mPrimaryKeyAttrs.contains( i ) )
+    if ( uniqueMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == i ) || identityMap[tableoid][attnum] != ' ' )
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     newField.setConstraints( constraints );
 
+    mIdentityFields.insert( mAttributeFields.size(), identityMap[tableoid][attnum][0].toLatin1() );
     mAttributeFields.append( newField );
   }
 
@@ -1333,19 +1340,40 @@ bool QgsPostgresProvider::determinePrimaryKey()
         QgsDebugMsg( QStringLiteral( "Relation is a table. Checking to see if it has an oid column." ) );
 
         mPrimaryKeyAttrs.clear();
+        mPrimaryKeyType = PktUnknown;
 
-        // If there is an oid on the table, use that instead,
-        sql = QStringLiteral( "SELECT attname FROM pg_attribute WHERE attname='oid' AND attrelid=regclass(%1)" ).arg( quotedValue( mQuery ) );
-
-        res = connectionRO()->PQexec( sql );
-        if ( res.PQntuples() == 1 )
+        if ( connectionRO()->pgVersion() >= 100000 )
         {
-          // Could warn the user here that performance will suffer if
-          // oid isn't indexed (and that they may want to add a
-          // primary key to the table)
-          mPrimaryKeyType = PktOid;
+          // If there is an generated id on the table, use that instead,
+          sql = QStringLiteral( "SELECT attname FROM pg_attribute WHERE attidentity IN ('a','d') AND attrelid=regclass(%1) LIMIT 1" ).arg( quotedValue( mQuery ) );
+          res = connectionRO()->PQexec( sql );
+          if ( res.PQntuples() == 1 )
+          {
+            // Could warn the user here that performance will suffer if
+            // attribute isn't indexed (and that they may want to add a
+            // primary key to the table)
+            int idx = fieldNameIndex( res.PQgetvalue( 0, 0 ) );
+            mPrimaryKeyType = pkType( mAttributeFields.at( idx ) );
+            mPrimaryKeyAttrs << idx;
+          }
         }
-        else
+
+        if ( mPrimaryKeyType == PktUnknown )
+        {
+          // If there is an oid on the table, use that instead,
+          sql = QStringLiteral( "SELECT attname FROM pg_attribute WHERE attname='oid' AND attrelid=regclass(%1)" ).arg( quotedValue( mQuery ) );
+
+          res = connectionRO()->PQexec( sql );
+          if ( res.PQntuples() == 1 )
+          {
+            // Could warn the user here that performance will suffer if
+            // oid isn't indexed (and that they may want to add a
+            // primary key to the table)
+            mPrimaryKeyType = PktOid;
+          }
+        }
+
+        if ( mPrimaryKeyType == PktUnknown )
         {
           sql = QStringLiteral( "SELECT attname FROM pg_attribute WHERE attname='ctid' AND attrelid=regclass(%1)" ).arg( quotedValue( mQuery ) );
 
@@ -1357,10 +1385,11 @@ bool QgsPostgresProvider::determinePrimaryKey()
             QgsMessageLog::logMessage( tr( "Primary key is ctid - changing of existing features disabled (%1; %2)" ).arg( mGeometryColumn, mQuery ) );
             mEnabledCapabilities &= ~( QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::ChangeFeatures );
           }
-          else
-          {
-            QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
-          }
+        }
+
+        if ( mPrimaryKeyType == PktUnknown )
+        {
+          QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
         }
       }
       else if ( type == Relkind::View || type == Relkind::MaterializedView )
@@ -1428,14 +1457,13 @@ bool QgsPostgresProvider::determinePrimaryKey()
     determinePrimaryKeyFromUriKeyColumn();
   }
 
-  const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
-  for ( int fieldIdx : constMPrimaryKeyAttrs )
+  if ( mPrimaryKeyAttrs.size() == 1 )
   {
     //primary keys are unique, not null
-    QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
+    QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs[0] ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-    mAttributeFields[ fieldIdx ].setConstraints( constraints );
+    mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
   }
 
   mValid = mPrimaryKeyType != PktUnknown;
@@ -2031,7 +2059,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     // Prepare the INSERT statement
     QString insert = QStringLiteral( "INSERT INTO %1(" ).arg( mQuery );
-    QString values = QStringLiteral( ") VALUES (" );
+    QString values;
     QString delim;
     int offset = 1;
 
@@ -2051,6 +2079,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // is a sequence, and that none of the features have a value set for that
     // column, then we can completely omit inserting it.
     bool skipSinglePKField = false;
+    bool overrideIdentity = false;
 
     if ( ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 ) )
     {
@@ -2079,6 +2108,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         for ( int idx : mPrimaryKeyAttrs )
         {
+          if ( mIdentityFields[idx] == 'a' )
+            overrideIdentity = true;
           insert += delim + quotedIdentifier( field( idx ).name() );
           values += delim + QStringLiteral( "$%1" ).arg( defaultValues.size() + offset );
           delim = ',';
@@ -2122,6 +2153,9 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       }
 
       insert += delim + quotedIdentifier( fieldname );
+
+      if ( mIdentityFields[idx] == 'a' )
+        overrideIdentity = true;
 
       QString defVal = defaultValueClause( idx );
 
@@ -2187,7 +2221,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       delim = ',';
     }
 
-    insert += values + ')';
+    insert += QStringLiteral( ") %1VALUES (%2)" ).arg( overrideIdentity ? "OVERRIDING SYSTEM VALUE " : "" ).arg( values );
 
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {

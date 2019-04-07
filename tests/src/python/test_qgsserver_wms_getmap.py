@@ -615,25 +615,6 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Background_Hex")
 
-    def test_wms_getmap_invalid_size(self):
-        project = os.path.join(self.testdata_path, "test_project_with_size.qgs")
-        qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(project),
-            "SERVICE": "WMS",
-            "VERSION": "1.3.0",
-            "REQUEST": "GetMap",
-            "LAYERS": "",
-            "STYLES": "",
-            "FORMAT": "image/png",
-            "HEIGHT": "5001",
-            "WIDTH": "5000"
-        }.items())])
-
-        expected = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="InvalidParameterValue">The requested map size is too large</ServiceException>\n</ServiceExceptionReport>\n')
-        r, h = self._result(self._execute_request(qs))
-
-        self.assertEqual(self.strip_version_xmlns(r), expected)
-
     def test_wms_getmap_order(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -741,6 +722,58 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_StyleCustom")
+
+        # mixed custom and default style with STYLES parameter
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels,Hello",
+            "STYLES": "custom,",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_StyleMixed")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello,Country_Labels",
+            "STYLES": "default,custom",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_StyleMixed_LayerOrder")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello,Country_Labels",
+            "STYLES": ",custom",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_StyleMixed_LayerOrder")
 
     def test_wms_getmap_filter(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
