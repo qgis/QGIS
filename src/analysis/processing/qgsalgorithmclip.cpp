@@ -144,7 +144,8 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   QgsFeatureIds testedFeatureIds;
 
   int i = -1;
-  Q_FOREACH ( const QgsGeometry &clipGeom, clipGeoms )
+  const auto constClipGeoms = clipGeoms;
+  for ( const QgsGeometry &clipGeom : constClipGeoms )
   {
     i++;
     if ( feedback->isCanceled() )
@@ -165,7 +166,8 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       step = 100.0 / inputFeatures.length();
 
     int current = 0;
-    Q_FOREACH ( const QgsFeature &inputFeature, inputFeatures )
+    const auto constInputFeatures = inputFeatures;
+    for ( const QgsFeature &inputFeature : constInputFeatures )
     {
       if ( feedback->isCanceled() )
       {
