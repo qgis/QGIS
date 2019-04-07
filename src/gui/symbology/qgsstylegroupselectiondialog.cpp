@@ -86,7 +86,6 @@ void QgsStyleGroupSelectionDialog::setBold( QStandardItem *item )
 
 void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  QModelIndex index;
   const QModelIndexList selectedItems = selected.indexes();
   const QModelIndexList deselectedItems = deselected.indexes();
 
