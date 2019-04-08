@@ -265,8 +265,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>781</height>
+                <width>590</width>
+                <height>777</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1514,8 +1514,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>781</height>
+                <width>178</width>
+                <height>54</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1575,9 +1575,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-1101</y>
+                <y>-975</y>
                 <width>671</width>
-                <height>2691</height>
+                <height>2682</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2071,19 +2071,6 @@
                      <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
                       <property name="text">
                        <string>Default map units per mm in legend</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QDoubleSpinBox" name="mWMSDefaultMapUnitsPerMm">
-                      <property name="minimum">
-                       <double>0.010000000000000</double>
-                      </property>
-                      <property name="singleStep">
-                       <double>0.010000000000000</double>
-                      </property>
-                      <property name="value">
-                       <double>1.000000000000000</double>
                       </property>
                      </widget>
                     </item>
