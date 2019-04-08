@@ -130,6 +130,9 @@ class QgsServerTestBase(unittest.TestCase):
         self.projectUseLayerIdsPath = os.path.join(d, "project_use_layerids.qgs")
         self.projectGroupsPath = os.path.join(d, "project_groups.qgs")
 
+        os.environ['QGIS_SERVER_SHOW_GROUP_SEPARATOR'] = '0'
+        os.environ['QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE'] = 'en'
+
         # Clean env just to be sure
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
         for ev in env_vars:

@@ -516,6 +516,117 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                         attribute.get('value')), {
                         'c': 4.0, 'd': 5.0})
 
+    def testGetFeatureInfoGroupedLayers(self):
+        """Test that we can get feature info from the top and group layers"""
+
+        # areas+and+symbols (not nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=areas+and+symbols' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_areas',
+                                 'test_project_wms_grouped_layers.qgs')
+
+        # areas+and+symbols (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=areas+and+symbols' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_areas_nested',
+                                 'test_project_wms_grouped_nested_layers.qgs')
+
+        # as-areas-short-name
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=as-areas-short-name' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_areas_nested_shortname',
+                                 'test_project_wms_grouped_nested_layers.qgs')
+
+        # Top level:  QGIS Server - Grouped Layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=QGIS+Server+-+Grouped Nested Layer' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_top',
+                                 'test_project_wms_grouped_nested_layers.qgs')
+
+        # Multiple matches from 2 layer groups
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=areas+and+symbols,city+and+district+boundaries' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_areas_cities',
+                                 'test_project_wms_grouped_nested_layers.qgs')
+
+        # no_query group (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=no_query' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_no_query',
+                                 'test_project_wms_grouped_nested_layers.qgs')
+
+        # query_child group (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=query_child' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_query_child',
+                                 'test_project_wms_grouped_nested_layers.qgs')
+
+        # child_ok group (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=child_ok' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_query_child',
+                                 'test_project_wms_grouped_nested_layers.qgs')
+
+        # as_areas_query_copy == as-areas-short-name-query-copy (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=as-areas-short-name-query-copy' +
+                                 '&INFO_FORMAT=text/plain' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_query_child',
+                                 'test_project_wms_grouped_nested_layers.qgs')
+
 
 if __name__ == '__main__':
     unittest.main()

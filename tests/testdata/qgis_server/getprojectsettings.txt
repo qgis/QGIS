@@ -1,4 +1,4 @@
-Content-Length: 6939
+*****
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
@@ -119,7 +119,7 @@ Content-Type: text/xml; charset=utf-8
   <WFSLayers>
    <WFSLayer name="testlayer èé"/>
   </WFSLayers>
-  <Layer>
+  <Layer queryable="1">
    <Title>QGIS Test Project</Title>
    <Abstract>QGIS Test Project</Abstract>
    <CRS>CRS:84</CRS>
@@ -198,7 +198,7 @@ Content-Type: text/xml; charset=utf-8
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
-   <Layer mutuallyExclusive="0" visible="1">
+   <Layer queryable="1" mutuallyExclusive="0" visible="1">
     <Name>group_name</Name>
     <Title>Group title</Title>
     <Abstract>Group abstract</Abstract>
@@ -244,7 +244,7 @@ Content-Type: text/xml; charset=utf-8
      </Attributes>
     </Layer>
    </Layer>
-   <Layer mutuallyExclusive="0" visible="1">
+   <Layer queryable="0" mutuallyExclusive="0" visible="1">
     <Name>groupwithoutshortname</Name>
     <Title>groupwithoutshortname</Title>
     <CRS>CRS:84</CRS>

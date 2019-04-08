@@ -886,7 +886,8 @@ namespace QgsWms
   {
     // Verifying Mandatory parameters
     // The QUERY_LAYERS parameter is Mandatory
-    QStringList queryLayers = mWmsParameters.queryLayersNickname();
+    QStringList queryLayers = flattenedQueryLayers();
+
     if ( queryLayers.isEmpty() )
     {
       QString msg = QObject::tr( "QUERY_LAYERS parameter is required for GetFeatureInfo" );
@@ -1183,7 +1184,8 @@ namespace QgsWms
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
       const QImage *outputImage, const QString &version ) const
   {
-    QStringList queryLayers = mWmsParameters.queryLayersNickname();
+
+    const QStringList queryLayers = flattenedQueryLayers( );
 
     bool ijDefined = ( !mWmsParameters.i().isEmpty() && !mWmsParameters.j().isEmpty() );
 
@@ -1366,8 +1368,40 @@ namespace QgsWms
       }
       else if ( ( validLayer && !queryableLayer ) || ( !validLayer && mLayerGroups.contains( queryLayer ) ) )
       {
-        QString msg = QObject::tr( "Layer '%1' is not queryable" ).arg( queryLayer );
-        throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
+        auto queryLayerName { queryLayer };
+        // Check if this layer belongs to a group and the group has any queryable layers
+        bool hasGroupAndQueryable { false };
+        if ( ! mWmsParameters.queryLayersNickname().contains( queryLayer ) )
+        {
+          // Find which group this layer belongs to
+          const auto &constNicks { mWmsParameters.queryLayersNickname() };
+          for ( const auto &ql : constNicks )
+          {
+            if ( mLayerGroups.contains( ql ) )
+            {
+              const auto &constLayers { mLayerGroups[ql] };
+              for ( const auto &ml : constLayers )
+              {
+                if ( ( ! ml->shortName().isEmpty() &&  ml->shortName() == queryLayer ) || ( ml->name() == queryLayer ) )
+                {
+                  queryLayerName = ql;
+                }
+                if ( ml->flags().testFlag( QgsMapLayer::Identifiable ) )
+                {
+                  hasGroupAndQueryable = true;
+                  break;
+                }
+              }
+              break;
+            }
+          }
+        }
+        // Only throw if it's not a group or the group has no queryable children
+        if ( ! hasGroupAndQueryable )
+        {
+          const QString msg { QObject::tr( "The layer '%1' is not queryable." ).arg( queryLayerName ) };
+          throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
+        }
       }
     }
 
@@ -3139,4 +3173,41 @@ namespace QgsWms
     std::unique_ptr<QImage> tmpImage( createImage( 1, 1, false ) );
     return tmpImage->dotsPerMeterX() / 1000.0;
   }
+
+  QStringList QgsRenderer::flattenedQueryLayers() const
+  {
+    QStringList result;
+    std::function <QStringList( const QString &name )> findLeaves = [ & ]( const QString & name ) -> QStringList
+    {
+      QStringList _result;
+      if ( mLayerGroups.contains( name ) )
+      {
+        const auto &layers  { mLayerGroups[ name ] };
+        for ( const auto &l : layers )
+        {
+          const auto nick { layerNickname( *l ) };
+          if ( mLayerGroups.contains( nick ) )
+          {
+            _result.append( name );
+          }
+          else
+          {
+            _result.append( findLeaves( nick ) );
+          }
+        }
+      }
+      else
+      {
+        _result.append( name );
+      }
+      return _result;
+    };
+    const auto constNicks { mWmsParameters.queryLayersNickname() };
+    for ( const auto &name : constNicks )
+    {
+      result.append( findLeaves( name ) );
+    }
+    return result;
+  }
+
 } // namespace QgsWms
