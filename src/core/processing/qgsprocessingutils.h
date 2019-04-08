@@ -330,7 +330,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \since QGIS 3.8
      */
-    static QgsMapLayer *loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint = LayerHint::UnknownType );
 
     /**
      * Interprets a string as a map layer. The method will attempt to
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \deprecated use mapLayerFromString() that takes QgsCoordinateTransformContext as an argument instead
      */
-    Q_DECL_DEPRECATED static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = UnknownType ) SIP_DEPRECATED ;
+    Q_DECL_DEPRECATED static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = LayerHint::UnknownType ) SIP_DEPRECATED ;
 
     static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension );
 
