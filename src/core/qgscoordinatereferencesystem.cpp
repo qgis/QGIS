@@ -1064,10 +1064,17 @@ QString QgsCoordinateReferenceSystem::toProj4() const
 
   if ( d->mProj4.isEmpty() )
   {
+#if PROJ_VERSION_MAJOR>=6
+    if ( d->mPj )
+    {
+      d->mProj4 = QString( proj_as_proj_string( QgsProjContext::get(), d->mPj.get(), PJ_PROJ_4, nullptr ) );
+    }
+#else
     char *proj4src = nullptr;
     OSRExportToProj4( d->mCRS, &proj4src );
     d->mProj4 = proj4src;
     CPLFree( proj4src );
+#endif
   }
   // Stray spaces at the end?
   return d->mProj4.trimmed();
@@ -1231,8 +1238,6 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     return;
   }
 
-  char *unitName = nullptr;
-
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
   // Of interest to us is that this call adds in a unit parameter if
   // one doesn't already exist.
@@ -1287,6 +1292,8 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   }
 
 #else
+  char *unitName = nullptr;
+
   if ( OSRIsProjected( d->mCRS ) )
   {
     double toMeter = OSRGetLinearUnits( d->mCRS, &unitName );
@@ -1966,7 +1973,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
 int QgsCoordinateReferenceSystem::syncDatabase()
 {
-#if 1
+#if 0
   setlocale( LC_ALL, "C" );
   QString dbFilePath = QgsApplication::srsDatabaseFilePath();
   syncDatumTransform( dbFilePath );
