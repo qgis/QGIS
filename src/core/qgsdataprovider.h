@@ -526,9 +526,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Returns data provider coordinate transform context
      *
      * \see setTransformContext()
-     *
-     * \since QGIS 3.8
      * \note not available in Python bindings
+     * \since QGIS 3.8
      */
     QgsCoordinateTransformContext transformContext() const SIP_SKIP;
 
@@ -539,9 +538,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * additional actions required by a change of coordinate transform context.
      *
      * \see transformContext()
-     *
-     * \since QGIS 3.8
      * \note not available in Python bindings
+     * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
 
