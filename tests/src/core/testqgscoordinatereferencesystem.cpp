@@ -721,6 +721,8 @@ void TestQgsCoordinateReferenceSystem::mapUnits()
   debugPrint( myCrs );
   myCrs.createFromString( QStringLiteral( "EPSG:26812" ) );
   QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceFeet );
+  myCrs.createFromString( QStringLiteral( "EPSG:4619" ) );
+  QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceDegrees );
 
   // an invalid crs should return unknown unit
   QCOMPARE( QgsCoordinateReferenceSystem().mapUnits(), QgsUnitTypes::DistanceUnknownUnit );
