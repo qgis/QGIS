@@ -634,9 +634,10 @@ class GPKGDBConnector(DBConnector):
             return False
 
         # also rename any styles referring to this table
-        self.gdal_ds.ExecuteSQL('UPDATE layer_styles SET f_table_name = %s WHERE f_table_name = %s' % (quoted_table_new, quoted_table))
-        if gdal.GetLastErrorMsg() != '':
-            return False
+        if self.gdal_ds.GetLayerByName('layer_styles'):
+            self.gdal_ds.ExecuteSQL('UPDATE layer_styles SET f_table_name = %s WHERE f_table_name = %s' % (quoted_table_new, quoted_table))
+            if gdal.GetLastErrorMsg() != '':
+                return False
 
         # we need to reopen after renaming since OGR doesn't update its
         # internal state
