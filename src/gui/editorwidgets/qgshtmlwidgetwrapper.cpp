@@ -19,7 +19,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsapplication.h"
 
-#include <QWebFrame>
+#include "qgswebframe.h"
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
