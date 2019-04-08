@@ -615,7 +615,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the layer data provider coordinate transform context
      * or a default transform context if the layer does not have a valid data provider.
-    \since QGIS 3.10
+    \since QGIS 3.8
      */
     QgsCoordinateTransformContext transformContext( ) const;
 
@@ -1209,9 +1209,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setRefreshOnNofifyMessage( const QString &message ) { mRefreshOnNofifyMessage = message; }
 
     /**
-     * Triggered when the coordinate transform context has changed \a transformContext
+     * Sets the coordinate transform context to \a transformContext
      *
-     * \since QGIS 3.10
+     * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
 

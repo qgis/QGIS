@@ -93,7 +93,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Setting options for creating vector data providers.
      *
-     * \note coordinateTransformContext was added in QGIS 3.10
+     * \note coordinateTransformContext was added in QGIS 3.8
      *
      * \since QGIS 3.2
      */
