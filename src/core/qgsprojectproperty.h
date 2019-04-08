@@ -25,6 +25,7 @@
 #include <QHash>
 #include <QVariant>
 #include <QStringList>
+#include <QCoreApplication>
 
 #include "qgis_core.h"
 
@@ -181,6 +182,8 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 */
 class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsProjectPropertyKey )
+
   public:
 
     /**
