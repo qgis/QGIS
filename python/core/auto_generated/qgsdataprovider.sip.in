@@ -387,26 +387,7 @@ Returns ``True`` if metadata was successfully written to the data provider.
 .. versionadded:: 3.0
 %End
 
-    QgsCoordinateTransformContext transformContext() const;
-%Docstring
-Returns data provider coordinate transform context
 
-.. seealso:: :py:func:`setTransformContext`
-
-.. versionadded:: 3.10
-%End
-
-    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
-%Docstring
-Sets data coordinate transform context to ``transformContext``
-
-The default implementation is a simple setter, subclasses may override to perform
-additional actions required by a change of coordinate transform context.
-
-.. seealso:: :py:func:`transformContext`
-
-.. versionadded:: 3.10
-%End
 
   signals:
 

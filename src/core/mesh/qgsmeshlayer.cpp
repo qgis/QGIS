@@ -41,7 +41,6 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
-  , mOptions( options )
 {
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
@@ -89,7 +88,12 @@ const QgsMeshDataProvider *QgsMeshLayer::dataProvider() const
 
 QgsMeshLayer *QgsMeshLayer::clone() const
 {
-  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey, mOptions );
+  QgsMeshLayer::LayerOptions options;
+  if ( mDataProvider )
+  {
+    options.transformContext = mDataProvider->transformContext();
+  }
+  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey,  options );
   QgsMapLayer::clone( layer );
   return layer;
 }

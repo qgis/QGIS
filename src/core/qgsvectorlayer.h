@@ -2161,9 +2161,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool startEditing();
 
     /**
-     * Triggered when the coordinate transform context has changed \a transformContext
+     * Sets the coordinate transform context to \a transformContext
      *
-     * \since QGIS 3.10
+     * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
@@ -2592,8 +2592,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     std::unique_ptr<QgsGeometryOptions> mGeometryOptions;
 
     bool mAllowCommit = true;
-
-    QgsVectorLayer::LayerOptions mOptions;
 
     friend class QgsVectorLayerFeatureSource;
 };
