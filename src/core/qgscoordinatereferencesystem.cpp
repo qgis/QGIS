@@ -628,7 +628,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   const char *pWkt = ba.data();
 
   OGRErr myInputResult = OSRImportFromWkt( d->mCRS, const_cast< char ** >( & pWkt ) );
-  res = myInputResult != OGRERR_NONE;
+  res = myInputResult == OGRERR_NONE;
   if ( !res )
   {
     QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
