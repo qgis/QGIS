@@ -51,6 +51,7 @@
 #include <cpl_csv.h>
 
 
+
 //! The length of the string "+lat_1="
 const int LAT_PREFIX_LEN = 7;
 
@@ -1276,10 +1277,12 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     return;
   }
 
+#if PROJ_VERSION_MAJOR<6
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
   // Of interest to us is that this call adds in a unit parameter if
   // one doesn't already exist.
   OSRFixup( d->mCRS );
+#endif
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
@@ -2011,7 +2014,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
 int QgsCoordinateReferenceSystem::syncDatabase()
 {
-#if 0
+#if 1
   setlocale( LC_ALL, "C" );
   QString dbFilePath = QgsApplication::srsDatabaseFilePath();
   syncDatumTransform( dbFilePath );
