@@ -176,7 +176,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         if ( uniqueRasterEntries[layerRef.first].raster->crs() != mOutputCrs )
         {
           QgsRasterProjector proj;
-          proj.setCrs( ref.raster->crs(), mOutputCrs );
+          proj.setCrs( ref.raster->crs(), mOutputCrs, ref.raster->dataProvider()->transformContext() );
           proj.setInput( ref.raster->dataProvider() );
           proj.setPrecision( QgsRasterProjector::Exact );
           layerRef.second.reset( proj.block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
@@ -227,7 +227,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       if ( it->raster->crs() != mOutputCrs )
       {
         QgsRasterProjector proj;
-        proj.setCrs( it->raster->crs(), mOutputCrs );
+        proj.setCrs( it->raster->crs(), mOutputCrs, it->raster->dataProvider()->transformContext() );
         proj.setInput( it->raster->dataProvider() );
         proj.setPrecision( QgsRasterProjector::Exact );
 
@@ -516,7 +516,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       if ( ref.layer->crs() != mOutputCrs )
       {
         QgsRasterProjector proj;
-        proj.setCrs( ref.layer->crs(), mOutputCrs );
+        proj.setCrs( ref.layer->crs(), mOutputCrs, ref.layer->dataProvider()->transformContext() );
         proj.setInput( ref.layer->dataProvider() );
         proj.setPrecision( QgsRasterProjector::Exact );
         block.reset( proj.block( ref.band, rect, mNumOutputColumns, 1 ) );

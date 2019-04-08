@@ -272,7 +272,7 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCrs( rasterViewPort->mSrcCRS, rasterViewPort->mDestCRS, rasterViewPort->mSrcDatumTransform, rasterViewPort->mDestDatumTransform );
+    projector->setCrs( rasterViewPort->mSrcCRS, rasterViewPort->mDestCRS, rasterViewPort->mTransformContext );
   }
 
   // Drawer to pipe?
