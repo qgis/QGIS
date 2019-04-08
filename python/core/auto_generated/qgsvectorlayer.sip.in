@@ -326,18 +326,16 @@ TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
     struct LayerOptions
     {
 
- explicit LayerOptions( bool loadDefaultStyle = true,
-          bool readExtentFromXml = false );
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false );
 %Docstring
 Constructor for LayerOptions.
-
-.. deprecated:: Use version with transformContext argument instead
 %End
 
-          explicit LayerOptions( const QgsCoordinateTransformContext & transformContext,
-                                 bool loadDefaultStyle = true,
-                                 bool readExtentFromXml = false
-                               );
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext,
+                             bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false
+                           );
 %Docstring
 Constructor for LayerOptions.
 
@@ -353,8 +351,8 @@ Constructor for LayerOptions.
     };
 
 
- explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-        const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() ) /Deprecated/;
+    explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
+                             const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 %Docstring
 Constructor - creates a vector layer
 
@@ -370,26 +368,6 @@ data.
 
 .. deprecated:: Use version with options as mandatory argument instead
 %End
-
-
-    explicit QgsVectorLayer( const QgsVectorLayer::LayerOptions &options, const QString &path = QString(), const QString &baseName = QString(),
-                             const QString &providerLib = "ogr" );
-%Docstring
-Constructor - creates a vector layer
-
-The QgsVectorLayer is constructed by instantiating a data provider.  The provider
-interprets the supplied path (url) of the data source to connect to and access the
-data.
-
-:param options: layer load options
-:param path: The path or url of the parameter.  Typically this encodes
-             parameters used by the data provider as url query items.
-:param baseName: The name used to represent the layer in the legend
-:param providerLib: The name of the data provider, e.g., "memory", "postgres"
-
-.. versionadded:: 3.10
-%End
-
 
     ~QgsVectorLayer();
 

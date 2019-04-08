@@ -111,7 +111,7 @@ QgsMapLayer *TestZipLayer::getLayer( const QString &myPath, const QString &myNam
   if ( myProviderKey == QLatin1String( "ogr" ) )
   {
     QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
-    myLayer = new QgsVectorLayer( options, myPath, fullName, QStringLiteral( "ogr" ) );
+    myLayer = new QgsVectorLayer( myPath, fullName, QStringLiteral( "ogr" ), options );
   }
   else if ( myProviderKey == QLatin1String( "gdal" ) )
   {

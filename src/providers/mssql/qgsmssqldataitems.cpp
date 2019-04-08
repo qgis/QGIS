@@ -501,7 +501,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
 
     // open the source layer
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( options, u.uri, u.name, u.providerKey );
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey, options );
 
     if ( srcLayer->isValid() )
     {

@@ -39,7 +39,7 @@
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
-                            const LayerOptions &options )
+                            const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
   , mOptions( options )
 {
@@ -55,13 +55,6 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   setDefaultRendererSettings();
 } // QgsMeshLayer ctor
 
-QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
-                            const QString &baseName,
-                            const QString &providerKey,
-                            const LayerOptions &options )
-  : QgsMeshLayer( options, meshLayerPath, baseName, providerKey )
-{
-}
 
 void QgsMeshLayer::setDefaultRendererSettings()
 {
@@ -96,7 +89,7 @@ const QgsMeshDataProvider *QgsMeshLayer::dataProvider() const
 
 QgsMeshLayer *QgsMeshLayer::clone() const
 {
-  QgsMeshLayer *layer = new QgsMeshLayer( mOptions, source(), name(), mProviderKey );
+  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey, mOptions );
   QgsMapLayer::clone( layer );
   return layer;
 }

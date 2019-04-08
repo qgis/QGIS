@@ -400,23 +400,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
       /**
        * Constructor for LayerOptions.
-       * \deprecated Use version with transformContext argument instead
        */
-      Q_DECL_DEPRECATED explicit LayerOptions( bool loadDefaultStyle = true,
-          bool readExtentFromXml = false )
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false )
         : loadDefaultStyle( loadDefaultStyle )
-        , readExtentFromXml( readExtentFromXml ) SIP_DEPRECATED
-          {}
+        , readExtentFromXml( readExtentFromXml )
+      {}
 
-          /**
-           * Constructor for LayerOptions.
-           * \since QGIS 3.10
-           */
-          explicit LayerOptions( const QgsCoordinateTransformContext & transformContext,
-                                 bool loadDefaultStyle = true,
-                                 bool readExtentFromXml = false
-                               )
-            : loadDefaultStyle( loadDefaultStyle )
+      /**
+       * Constructor for LayerOptions.
+       * \since QGIS 3.10
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext,
+                             bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false
+                           )
+        : loadDefaultStyle( loadDefaultStyle )
         , readExtentFromXml( readExtentFromXml )
         , transformContext( transformContext )
       {}
@@ -453,27 +452,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param options layer load options
      * \deprecated Use version with options as mandatory argument instead
      */
-    Q_DECL_DEPRECATED explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-        const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() ) SIP_DEPRECATED;
-
-
-    /**
-     * Constructor - creates a vector layer
-     *
-     * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
-     * interprets the supplied path (url) of the data source to connect to and access the
-     * data.
-     *
-     * \param options layer load options
-     * \param path  The path or url of the parameter.  Typically this encodes
-     *               parameters used by the data provider as url query items.
-     * \param baseName The name used to represent the layer in the legend
-     * \param providerLib  The name of the data provider, e.g., "memory", "postgres"
-     * \since QGIS 3.10
-     */
-    explicit QgsVectorLayer( const QgsVectorLayer::LayerOptions &options, const QString &path = QString(), const QString &baseName = QString(),
-                             const QString &providerLib = "ogr" );
-
+    explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
+                             const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 
     ~QgsVectorLayer() override;
 

@@ -633,7 +633,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   }
 
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *vlayer = new QgsVectorLayer( options, uri, tableName, QStringLiteral( "postgres" ) );
+  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, QStringLiteral( "postgres" ), options );
   if ( !vlayer->isValid() )
   {
     delete vlayer;
