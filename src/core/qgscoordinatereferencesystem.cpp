@@ -1369,12 +1369,21 @@ QString QgsCoordinateReferenceSystem::toWkt() const
 {
   if ( d->mWkt.isEmpty() )
   {
+#if PROJ_VERSION_MAJOR>=6
+    // TODO QGIS 4.0 - upgrade to wkt2 (this would be an API break).
+    if ( d->mPj )
+    {
+      const char *const options[] = {"MULTILINE=NO", "INDENTATION_WIDTH=0", nullptr};
+      d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), PJ_WKT1_GDAL, options ) );
+    }
+#else
     char *wkt = nullptr;
     if ( OSRExportToWkt( d->mCRS, &wkt ) == OGRERR_NONE )
     {
       d->mWkt = wkt;
       CPLFree( wkt );
     }
+#endif
   }
   return d->mWkt;
 }
