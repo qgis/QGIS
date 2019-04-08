@@ -99,6 +99,16 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QString longName() const;
 
     /**
+     * Returns a version information string for the provider, or an empty string if this
+     * is not applicable (e.g. for inbuilt Processing providers).
+     *
+     * For plugin based providers, this should return the plugin's version identifier.
+     *
+     * \since QGIS 3.8
+     */
+    virtual QString versionInfo() const;
+
+    /**
      * Returns TRUE if the provider can be activated, or FALSE if it cannot be activated (e.g. due to
      * missing external dependencies).
      * \see isActive()
