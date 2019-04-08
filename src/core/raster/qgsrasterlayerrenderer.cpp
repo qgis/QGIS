@@ -163,6 +163,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     mRasterViewPort->mDestCRS = rendererContext.coordinateTransform().destinationCrs();
     mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform().sourceDatumTransformId();
     mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform().destinationDatumTransformId();
+    mRasterViewPort->mTransformContext = rendererContext.transformContext();
   }
   else
   {
@@ -263,7 +264,7 @@ bool QgsRasterLayerRenderer::render()
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mSrcDatumTransform, mRasterViewPort->mDestDatumTransform );
+    projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mTransformContext );
   }
 
   // Drawer to pipe?

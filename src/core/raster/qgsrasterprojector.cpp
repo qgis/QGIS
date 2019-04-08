@@ -39,7 +39,6 @@ QgsRasterProjector *QgsRasterProjector::clone() const
   projector->mSrcDatumTransform = mSrcDatumTransform;
   projector->mDestDatumTransform = mDestDatumTransform;
   projector->mPrecision = mPrecision;
-  projector->mTransformContext = mTransformContext;
   return projector;
 }
 
@@ -70,15 +69,15 @@ void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS,
   mDestCRS = destCRS;
   mSrcDatumTransform = srcDatumTransform;
   mDestDatumTransform = destDatumTransform;
-  mTransformContext = QgsCoordinateTransformContext();
-  mTransformContext.addSourceDestinationDatumTransform( srcCRS, destCRS, srcDatumTransform, destDatumTransform );
 }
 
 void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, QgsCoordinateTransformContext transformContext )
 {
   mSrcCRS = srcCRS;
   mDestCRS = destCRS;
-  mTransformContext = transformContext;
+  const auto ctPair { transformContext.calculateDatumTransforms( srcCRS, destCRS ) };
+  mSrcDatumTransform = ctPair.sourceTransformId;
+  mDestDatumTransform = ctPair.destinationTransformId;
 }
 
 
@@ -767,17 +766,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
-  QgsCoordinateTransform inverseCt;
-
-  if ( mSrcDatumTransform != -1 && mDestDatumTransform != -1 )
-  {
-    inverseCt = QgsCoordinateTransform( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform );
-  }
-  else
-  {
-    inverseCt = QgsCoordinateTransform( mDestCRS, mSrcCRS, mTransformContext );
-  }
-
+  const QgsCoordinateTransform inverseCt { mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform };
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 
   QgsDebugMsgLevel( QStringLiteral( "srcExtent:\n%1" ).arg( pd.srcExtent().toString() ), 4 );
@@ -874,15 +863,7 @@ bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcX
   {
     return false;
   }
-  QgsCoordinateTransform ct;
-  if ( mSrcDatumTransform != -1 && mDestDatumTransform != -1 )
-  {
-    ct = QgsCoordinateTransform( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform );
-  }
-  else
-  {
-    ct = QgsCoordinateTransform( mSrcCRS, mDestCRS, mTransformContext );
-  }
+  const QgsCoordinateTransform ct { mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform };
   return extentSize( ct, srcExtent, srcXSize, srcYSize, destExtent, destXSize, destYSize );
 }
 
