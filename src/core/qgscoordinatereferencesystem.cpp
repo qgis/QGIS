@@ -645,6 +645,22 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     return d->mIsValid;
   }
 
+#if PROJ_VERSION_MAJOR>=6
+  if ( d->mPj )
+  {
+    const QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
+    const QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
+    if ( !authName.isEmpty() && !authCode.isEmpty() )
+    {
+      const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
+      bool result = createFromOgcWmsCrs( authid );
+      sCRSWktLock.lockForWrite();
+      sWktCache.insert( wkt, *this );
+      sCRSWktLock.unlock();
+      return result;
+    }
+  }
+#else
   if ( OSRAutoIdentifyEPSG( d->mCRS ) == OGRERR_NONE )
   {
     QString authid = QStringLiteral( "%1:%2" )
@@ -656,11 +672,30 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     sCRSWktLock.unlock();
     return result;
   }
+#endif
 
   // always morph from esri as it doesn't hurt anything
   // FW: Hey, that's not right!  It can screw stuff up! Disable
   //myOgrSpatialRef.morphFromESRI();
 
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // WARNING - wkt to proj conversion is lossy -- we should reevaluate all this logic!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#if PROJ_VERSION_MAJOR>=6
+  // create the proj4 structs needed for transforming
+  if ( d->mPj )
+  {
+    if ( const char *proj4src = proj_as_proj_string( QgsProjContext::get(), d->mPj.get(), PJ_PROJ_4, nullptr ) )
+    {
+      //now that we have the proj4string, delegate to createFromProj4 so
+      // that we can try to fill in the remaining class members...
+      //create from Proj will set the isValidFlag
+      createFromProj4( proj4src );
+    }
+  }
+#else
   // create the proj4 structs needed for transforming
   char *proj4src = nullptr;
   OSRExportToProj4( d->mCRS, &proj4src );
@@ -681,6 +716,8 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 
     createFromProj4( proj4src );
   }
+#endif
+
   //TODO: createFromProj4 used to save to the user database any new CRS
   // this behavior was changed in order to separate creation and saving.
   // Not sure if it necessary to save it here, should be checked by someone
@@ -693,7 +730,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     saveAsUserCrs( myName );
   }
 
+#if PROJ_VERSION_MAJOR<6
   CPLFree( proj4src );
+#endif
 
   sCRSWktLock.lockForWrite();
   sWktCache.insert( wkt, *this );
@@ -1165,12 +1204,7 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   d->mProj4 = proj4String;
 
   QgsLocaleNumC l;
-
-  OSRDestroySpatialReference( d->mCRS );
-  d->mCRS = OSRNewSpatialReference( nullptr );
-
   const QString trimmed = proj4String.trimmed();
-  d->mIsValid = OSRImportFromProj4( d->mCRS, trimmed.toLatin1().constData() ) == OGRERR_NONE;
 
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *ctx = QgsProjContext::get();
@@ -1186,6 +1220,10 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
     d->mIsValid = true;
   }
 #else
+  OSRDestroySpatialReference( d->mCRS );
+  d->mCRS = OSRNewSpatialReference( nullptr );
+  d->mIsValid = OSRImportFromProj4( d->mCRS, trimmed.toLatin1().constData() ) == OGRERR_NONE;
+
   // OSRImportFromProj4() may accept strings that are not valid proj.4 strings,
   // e.g if they lack a +ellps parameter, it will automatically add +ellps=WGS84, but as
   // we use the original mProj4 with QgsCoordinateTransform, it will fail to initialize
