@@ -16,15 +16,16 @@
 #include "qgstest.h"
 #include "qgsmultirenderchecker.h"
 
+#include "qgslinestring.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapthemecollection.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshrenderersettings.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastershader.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshrenderersettings.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -33,6 +34,7 @@
 #include "qgschunknode_p.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsline3dsymbol.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
@@ -53,6 +55,7 @@ class TestQgs3DRendering : public QObject
     void testFlatTerrain();
     void testDemTerrain();
     void testExtrudedPolygons();
+    void testLineRendering();
     void testMapTheme();
     void testMesh();
     void testRuleBasedRenderer();
@@ -276,6 +279,64 @@ void TestQgs3DRendering::testExtrudedPolygons()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
+}
+
+
+void TestQgs3DRendering::testLineRendering()
+{
+  QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+
+  QgsVectorLayer *layerLines = new QgsVectorLayer( "LineString?crs=EPSG:27700", "lines", "memory" );
+
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setRenderAsSimpleLines( true );
+  lineSymbol->setWidth( 10 );
+  QgsPhongMaterialSettings mat;
+  mat.setAmbient( Qt::red );
+  lineSymbol->setMaterial( mat );
+  layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+
+  QVector<QgsPoint> pts;
+  pts << QgsPoint( 0, 0, 10 ) << QgsPoint( 0, 1000, 10 ) << QgsPoint( 1000, 1000, 10 ) << QgsPoint( 1000, 0, 10 );
+  pts << QgsPoint( 1000, 0, 500 ) << QgsPoint( 1000, 1000, 500 ) << QgsPoint( 0, 1000, 500 ) << QgsPoint( 0, 0, 500 );
+  QgsFeature f1( layerLines->fields() );
+  f1.setGeometry( QgsGeometry( new QgsLineString( pts ) ) );
+  QgsFeatureList flist;
+  flist << f1;
+  layerLines->dataProvider()->addFeatures( flist );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layerLines );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "line_rendering_1", img, 40 ) );
+
+  // more perspective look
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "line_rendering_2", img2, 40 ) );
+
+  delete layerLines;
 }
 
 void TestQgs3DRendering::testMapTheme()
