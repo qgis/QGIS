@@ -622,7 +622,7 @@ Sets layer's spatial reference system
 Returns the layer data provider coordinate transform context
 or a default transform context if the layer does not have a valid data provider.
 
-.. versionadded:: 3.10
+.. versionadded:: 3.8
 %End
 
 
@@ -1359,9 +1359,9 @@ if the notification message is equal to:param message:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
 %Docstring
-Triggered when the coordinate transform context has changed ``transformContext``
+Sets the coordinate transform context to ``transformContext``
 
-.. versionadded:: 3.10
+.. versionadded:: 3.8
 %End
 
   signals:
