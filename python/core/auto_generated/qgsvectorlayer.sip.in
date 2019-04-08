@@ -365,8 +365,6 @@ data.
 :param baseName: The name used to represent the layer in the legend
 :param providerLib: The name of the data provider, e.g., "memory", "postgres"
 :param options: layer load options
-
-.. deprecated:: Use version with options as mandatory argument instead
 %End
 
     ~QgsVectorLayer();
