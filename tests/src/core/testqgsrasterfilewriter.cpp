@@ -159,7 +159,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 
   // Reprojection not really done
   QgsRasterProjector *projector = new QgsRasterProjector;
-  projector->setCrs( provider->crs(), provider->crs() );
+  projector->setCrs( provider->crs(), provider->crs(), provider->transformContext() );
   if ( !pipe->insert( 2, projector ) )
   {
     logError( QStringLiteral( "Cannot set pipe projector" ) );

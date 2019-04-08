@@ -199,7 +199,7 @@ namespace QgsWcs
     if ( responseCRS != rLayer->crs() )
     {
       QgsRasterProjector *projector = new QgsRasterProjector;
-      projector->setCrs( rLayer->crs(), responseCRS );
+      projector->setCrs( rLayer->crs(), responseCRS, rLayer->dataProvider()->transformContext() );
       if ( !pipe.insert( 2, projector ) )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot set pipe projector" ) );

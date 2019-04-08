@@ -122,9 +122,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     //! Requested precision
     Precision mPrecision = Approximate;
 
-    //! Transform context
-    QgsCoordinateTransformContext mTransformContext;
-
 };
 
 
