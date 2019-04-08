@@ -84,6 +84,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void projectWithCustomCrs();
     void projectEPSG25833();
     void geoCcsDescription();
+    void geographicCrsAuthId();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -921,6 +922,17 @@ void TestQgsCoordinateReferenceSystem::geoCcsDescription()
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4348" ) );
   QCOMPARE( crs.description(), QStringLiteral( "GDA94 (geocentric)" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::geographicCrsAuthId()
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:4326" ) );
+  crs.createFromString( QStringLiteral( "EPSG:3825" ) );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3825" ) );
+  QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:3824" ) );
 }
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"
