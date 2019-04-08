@@ -2057,7 +2057,7 @@ namespace QgsWms
     //and WIDTH / HEIGHT parameter is in the range allowed range
     //WIDTH
     int wmsMaxWidthProj = QgsServerProjectUtils::wmsMaxWidth( *mProject );
-    int wmsMaxWidthEnv = mContext.settings().wmsMaxWidth();
+    int wmsMaxWidthEnv = mSettings.wmsMaxWidth();
     int wmsMaxWidth;
     if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
     {
@@ -2078,7 +2078,7 @@ namespace QgsWms
 
     //HEIGHT
     int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
-    int wmsMaxHeightEnv = mContext.settings().wmsMaxHeight();
+    int wmsMaxHeightEnv = mSettings.wmsMaxHeight();
     int wmsMaxHeight;
     if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
     {
