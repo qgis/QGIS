@@ -596,6 +596,28 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             ogrType = OFTBinary;
             break;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+          case QVariant::List:
+            // only string list supported at the moment, fall through to default for other types
+            if ( attrField.subType() == QVariant::String )
+            {
+              const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+              if ( pszDataTypes && strstr( pszDataTypes, "StringList" ) )
+              {
+                ogrType = OFTStringList;
+                supportsStringList = true;
+              }
+              else
+              {
+                ogrType = OFTString;
+                ogrWidth = 255;
+              }
+              break;
+            }
+            //intentional fall-through
+            FALLTHROUGH
+#endif
+
           default:
             //assert(0 && "invalid variant type!");
             mErrorMessage = QObject::tr( "Unsupported type for field %1" )
@@ -2253,6 +2275,39 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
       case QVariant::Invalid:
         break;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+      case QVariant::List:
+        // only string list supported at the moment, fall through to default for other types
+        if ( field.subType() == QVariant::String )
+        {
+          QStringList list = attrValue.toStringList();
+          if ( supportsStringList )
+          {
+            int count = list.count();
+            char **lst = new char *[count + 1];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( QString string : list )
+              {
+                lst[pos] = mCodec->fromUnicode( string ).data();
+                pos++;
+              }
+            }
+            lst[count] = nullptr;
+            OGR_F_SetFieldStringList( poFeature.get(), ogrField, lst );
+          }
+          else
+          {
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( list.join( ',' ) ).constData() );
+          }
+          break;
+        }
+        //intentional fall-through
+        FALLTHROUGH
+#endif
+
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
                         .arg( mFields.at( fldIdx ).name() )

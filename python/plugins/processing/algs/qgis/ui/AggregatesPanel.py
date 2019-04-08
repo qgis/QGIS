@@ -125,7 +125,7 @@ class AggregatesModel(FieldsMappingModel):
             default_aggregate = 'sum'
         if field.type() == QVariant.DateTime:
             default_aggregate = ''
-        if field.type() == QVariant.String:
+        if field.type() == QVariant.String or (field.type() == QVariant.List and field.subType() == QVariant.String):
             default_aggregate = 'concatenate'
 
         return {
