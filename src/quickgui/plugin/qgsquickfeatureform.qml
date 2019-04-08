@@ -253,6 +253,7 @@ Item {
             id: content
             anchors.fill: parent
             clip: true
+            spacing: form.style.group.spacing
             section.property: "Group"
             section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
             section.delegate: Component {
@@ -265,7 +266,9 @@ Item {
                 Text {
                   anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
                   font.bold: true
+                  font.pixelSize: form.style.group.fontPixelSize
                   text: section
+                  color: form.style.group.fontColor
                 }
               }
             }
