@@ -40,7 +40,7 @@ Item {
 
     property var reverseConfig: ({})
     property var currentValue: value
-    property var currentMap
+    property var currentMap: ({})
     property var currentKey
     height: parent.height
     anchors { left: parent.left; right: parent.right }
