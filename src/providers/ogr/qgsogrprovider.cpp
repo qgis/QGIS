@@ -158,6 +158,20 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       break;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+    case QVariant::List:
+      if ( field.subType() == QVariant::String )
+      {
+        ogrType = OFTStringList;
+      }
+      else
+      {
+        // only string lists are supported at this moment
+        return false;
+      }
+      break;
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
     case QVariant::Map:
       ogrType = OFTString;
       ogrSubType = OFSTJSON;
@@ -487,6 +501,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
   bool supportsDateTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" );
   bool supportsBinary = false;
+  bool supportsStringList = false;
   const char *pszDataTypes = nullptr;
   if ( mOgrOrigLayer )
   {
@@ -501,6 +516,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
     supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
     supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+    supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
+#endif
     CSLDestroy( papszTokens );
   }
 
@@ -523,6 +541,11 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   {
     nativeTypes
         << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray );
+  }
+  if ( supportsStringList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( tr( "String List" ), QStringLiteral( "stringlist" ), QVariant::List, 0, 0, 0, 0, QVariant::String );
   }
 
   bool supportsBoolean = false;
@@ -1086,6 +1109,14 @@ void QgsOgrProvider::loadFields()
         }
         break;
 #endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+      case OFTStringList:
+        varType = QVariant::List;
+        varSubType = QVariant::String;
+        break;
+#endif
+
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -1592,6 +1623,27 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
         }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+        case OFTStringList:
+        {
+          QStringList list = attrVal.toStringList();
+          int count = list.count();
+          char **lst = new char *[count + 1];
+          if ( count > 0 )
+          {
+            int pos = 0;
+            for ( QString string : list )
+            {
+              lst[pos] = textEncoding()->fromUnicode( string ).data();
+              pos++;
+            }
+          }
+          lst[count] = nullptr;
+          OGR_F_SetFieldStringList( feature.get(), ogrAttId, lst );
+          break;
+        }
+#endif
+
         default:
           QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( qgisAttId ), tr( "OGR" ) );
           break;
@@ -1705,6 +1757,17 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::Map:
       type = OFTString;
       break;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+    case QVariant::List:
+      // only string list supported at the moment, fall through to default for other types
+      if ( field.subType() == QVariant::String )
+      {
+        type = OFTStringList;
+        break;
+      }
+      //intentional fall-through
+      FALLTHROUGH
+#endif
     default:
       pushError( tr( "type %1 for field %2 not found" ).arg( field.typeName(), field.name() ) );
       ignoreErrorOut = true;
@@ -2176,6 +2239,27 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             OGR_F_SetFieldBinary( of.get(), f, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
             break;
           }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+          case OFTStringList:
+          {
+            QStringList list = it2->toStringList();
+            int count = list.count();
+            char **lst = new char *[count + 1];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( QString string : list )
+              {
+                lst[pos] = textEncoding()->fromUnicode( string ).data();
+                pos++;
+              }
+            }
+            lst[count] = nullptr;
+            OGR_F_SetFieldStringList( of.get(), f, lst );
+            break;
+          }
+#endif
 
           default:
             pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
