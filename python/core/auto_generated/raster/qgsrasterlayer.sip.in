@@ -386,9 +386,9 @@ Writes the symbology of the layer into the document provided in SLD 1.0.0 format
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 %Docstring
-Triggered when the coordinate transform context has changed ``transformContext``
+Sets the coordinate transform context to ``transformContext``
 
-.. versionadded:: 3.10
+.. versionadded:: 3.8
 %End
 
   protected:

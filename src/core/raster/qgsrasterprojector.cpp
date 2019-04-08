@@ -39,6 +39,7 @@ QgsRasterProjector *QgsRasterProjector::clone() const
   projector->mSrcDatumTransform = mSrcDatumTransform;
   projector->mDestDatumTransform = mDestDatumTransform;
   projector->mPrecision = mPrecision;
+  projector->mTransformContext = mTransformContext;
   return projector;
 }
 
@@ -60,12 +61,24 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 /// @cond PRIVATE
 
 
-void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, int srcDatumTransform, int destDatumTransform )
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS,
+                                 const QgsCoordinateReferenceSystem &destCRS,
+                                 int srcDatumTransform,
+                                 int destDatumTransform )
 {
   mSrcCRS = srcCRS;
   mDestCRS = destCRS;
   mSrcDatumTransform = srcDatumTransform;
   mDestDatumTransform = destDatumTransform;
+  mTransformContext = QgsCoordinateTransformContext();
+  mTransformContext.addSourceDestinationDatumTransform( srcCRS, destCRS, srcDatumTransform, destDatumTransform );
+}
+
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, QgsCoordinateTransformContext transformContext )
+{
+  mSrcCRS = srcCRS;
+  mDestCRS = destCRS;
+  mTransformContext = transformContext;
 }
 
 
@@ -747,13 +760,23 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   if ( feedback && feedback->isCanceled() )
     return new QgsRasterBlock();
 
+  // TODO: check if the last condition always apply to context
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsgLevel( QStringLiteral( "No projection necessary" ), 4 );
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
-  QgsCoordinateTransform inverseCt( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform );
+  QgsCoordinateTransform inverseCt;
+
+  if ( mSrcDatumTransform != -1 && mDestDatumTransform != -1 )
+  {
+    inverseCt = QgsCoordinateTransform( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform );
+  }
+  else
+  {
+    inverseCt = QgsCoordinateTransform( mDestCRS, mSrcCRS, mTransformContext );
+  }
 
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 
@@ -774,7 +797,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return new QgsRasterBlock();
   }
 
-  qgssize pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
+  qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( inputBlock->dataType(), width, height ) );
   if ( inputBlock->hasNoDataValue() )
@@ -814,7 +837,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
       if ( !inside ) continue; // we have everything set to no data
 
-      qgssize srcIndex = static_cast< qgssize >( srcRow ) * pd.srcCols() + srcCol;
+      qgssize srcIndex = static_cast< qgssize >( srcRow * pd.srcCols() + srcCol );
 
       // isNoData() may be slow so we check doNoData first
       if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
@@ -823,7 +846,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
         continue;
       }
 
-      qgssize destIndex = static_cast< qgssize >( i ) * width + j;
+      qgssize destIndex = static_cast< qgssize >( i * width + j );
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
@@ -851,8 +874,15 @@ bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcX
   {
     return false;
   }
-  QgsCoordinateTransform ct( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform );
-
+  QgsCoordinateTransform ct;
+  if ( mSrcDatumTransform != -1 && mDestDatumTransform != -1 )
+  {
+    ct = QgsCoordinateTransform( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform );
+  }
+  else
+  {
+    ct = QgsCoordinateTransform( mSrcCRS, mDestCRS, mTransformContext );
+  }
   return extentSize( ct, srcExtent, srcXSize, srcYSize, destExtent, destXSize, destYSize );
 }
 
