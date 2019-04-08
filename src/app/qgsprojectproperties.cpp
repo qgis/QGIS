@@ -643,17 +643,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mWMSMaxAtlasFeaturesSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 ) );
 
+  mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
+  mWMSDefaultMapUnitsPerMm->setDecimals( 3 );
+  mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
+
+  //care for map units mm, km, inches etc...
+  mWMSDefaultMapUnitScale = new QgsScaleWidget();
+  mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * 1000 );
+
   if ( QgsProject::instance()->crs().isGeographic() )
   {
-    mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
-    mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
     mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitsPerMm );
   }
   else
   {
-    //care for map units mm, km, inches etc...
-    mWMSDefaultMapUnitScale = new QgsScaleWidget();
-    mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * 10000 );
     mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitScale );
   }
 
@@ -1321,8 +1324,9 @@ void QgsProjectProperties::apply()
   }
   else
   {
-    defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / 10000;
+    defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / 1000;
   }
+
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), mWMTSUrlLineEdit->text() );
