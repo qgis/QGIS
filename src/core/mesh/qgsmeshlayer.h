@@ -100,7 +100,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
       /**
        * Constructor for LayerOptions with optional \a transformContext.
-       * \note transformContext argument was added in QGIS 3.10
+       * \note transformContext argument was added in QGIS 3.8
        */
       explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
         : transformContext( transformContext )
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
      * \param options general mesh layer options
      */
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ),
                            const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
 
     ~QgsMeshLayer() override;

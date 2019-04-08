@@ -218,14 +218,14 @@ class CORE_EXPORT QgsProcessingUtils
      * Combines the extent of several map \a layers. If specified, the target \a crs
      * will be used to transform the layer's extent to the desired output reference system
      * using the specified \a context.
-     * \since QGIS 3.10
+     * \since QGIS 3.8
      */
     static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context );
 
     /**
      * Combines the extent of several map \a layers. If specified, the target \a crs
      * will be used to transform the layer's extent to the desired output reference system.
-     * \deprecated Use version with transformContext argument instead
+     * \deprecated Use version with QgsProcessingContext argument instead
      */
     Q_DECL_DEPRECATED static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) SIP_DEPRECATED;
 
