@@ -2428,10 +2428,18 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
   {
     return d->mAuthId;
   }
+#if PROJ_VERSION_MAJOR>=6
+  else if ( d->mPj )
+  {
+    QgsProjUtils::proj_pj_unique_ptr geoCrs( proj_crs_get_geodetic_crs( QgsProjContext::get(), d->mPj.get() ) );
+    return geoCrs ? QStringLiteral( "%1:%2" ).arg( proj_get_id_auth_name( geoCrs.get(), 0 ), proj_get_id_code( geoCrs.get(), 0 ) ) : QString();
+  }
+#else
   else if ( d->mCRS )
   {
     return OSRGetAuthorityName( d->mCRS, "GEOGCS" ) + QStringLiteral( ":" ) + OSRGetAuthorityCode( d->mCRS, "GEOGCS" );
   }
+#endif
   else
   {
     return QString();
