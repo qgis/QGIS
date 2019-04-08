@@ -341,7 +341,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
     QgsDebugMsg( QStringLiteral( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
     // open the source layer
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( options, u.uri, u.name, u.providerKey );
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey, options );
 
     if ( srcLayer->isValid() )
     {

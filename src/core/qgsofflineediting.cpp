@@ -236,7 +236,7 @@ void QgsOfflineEditing::synchronize()
     QString remoteName = layer->name();
     remoteName.remove( QRegExp( " \\(offline\\)$" ) );
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-    QgsVectorLayer *remoteLayer = new QgsVectorLayer( options, remoteSource, remoteName, remoteProvider );
+    QgsVectorLayer *remoteLayer = new QgsVectorLayer( remoteSource, remoteName, remoteProvider, options );
     if ( remoteLayer->isValid() )
     {
       // Rebuild WFS cache to get feature id<->GML fid mapping
@@ -634,8 +634,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
                                  .arg( offlineDbPath,
                                        tableName, layer->isSpatial() ? "(Geometry)" : "" );
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      newLayer = new QgsVectorLayer( options, connectionString,
-                                     layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
+      newLayer = new QgsVectorLayer( connectionString,
+                                     layer->name() + " (offline)", QStringLiteral( "spatialite" ), options );
       break;
     }
     case GPKG:
@@ -731,7 +731,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
       QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  tableName );
       QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
-      newLayer = new QgsVectorLayer( layerOptions, uri, layer->name() + " (offline)", QStringLiteral( "ogr" ) );
+      newLayer = new QgsVectorLayer( uri, layer->name() + " (offline)", QStringLiteral( "ogr" ), layerOptions );
       break;
     }
   }

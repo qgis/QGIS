@@ -105,7 +105,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 
   // prepare layer and model to preview legend
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  mPreviewLayer = new QgsVectorLayer( options, QStringLiteral( "Point?crs=EPSG:4326" ), QStringLiteral( "Preview" ), QStringLiteral( "memory" ) );
+  mPreviewLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326" ), QStringLiteral( "Preview" ), QStringLiteral( "memory" ), options );
   mPreviewTree = new QgsLayerTree;
   mPreviewLayerNode = mPreviewTree->addLayer( mPreviewLayer );  // node owned by the tree
   mPreviewModel = new QgsLayerTreeModel( mPreviewTree );
@@ -188,7 +188,10 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
 
   QString crsAuthId = mMapCanvas ? mMapCanvas->mapSettings().destinationCrs().authid() : QString();
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( options, "Point?crs=" + crsAuthId, QStringLiteral( "tmp" ), QStringLiteral( "memory" ) ) ;
+  std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=%1" ).arg( crsAuthId ),
+                                          QStringLiteral( "tmp" ),
+                                          QStringLiteral( "memory" ),
+                                          options ) ;
 
   QgsSymbolSelectorDialog d( newSymbol.get(), QgsStyle::defaultStyle(), layer.get(), this );
   d.setContext( context );
