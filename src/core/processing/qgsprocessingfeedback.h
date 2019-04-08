@@ -22,6 +22,8 @@
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
 
+class QgsProcessingProvider;
+
 /**
  * \class QgsProcessingFeedback
  * \ingroup core
@@ -95,7 +97,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * Pushes a summary of the QGIS (and underlying library) version information to the log.
      * \since QGIS 3.4.7
      */
-    void pushVersionInfo();
+    void pushVersionInfo( const QgsProcessingProvider *provider = nullptr );
 
 };
 
