@@ -1239,6 +1239,54 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   OSRFixup( d->mCRS );
 #endif
 
+#if PROJ_VERSION_MAJOR>=6
+  if ( !d->mPj )
+  {
+    d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    return;
+  }
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( context, d->mPj.get() ) );
+  if ( !coordinateSystem )
+  {
+    d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    return;
+  }
+
+  const int axisCount = proj_cs_get_axis_count( context, coordinateSystem.get() );
+  if ( axisCount > 0 )
+  {
+    const char *outUnitName = nullptr;
+    // Read only first axis
+    proj_cs_get_axis_info( context, coordinateSystem.get(), 0,
+                           nullptr,
+                           nullptr,
+                           nullptr,
+                           nullptr,
+                           &outUnitName,
+                           nullptr,
+                           nullptr );
+
+    const QString unitName( outUnitName );
+    if ( unitName.compare( QLatin1String( "degree" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceDegrees;
+    else if ( unitName.compare( QLatin1String( "metre" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceMeters;
+    else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceFeet;
+    // TODO - maybe more values to handle here?
+    else
+      d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    return;
+  }
+  else
+  {
+    d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    return;
+  }
+
+#else
   if ( OSRIsProjected( d->mCRS ) )
   {
     double toMeter = OSRGetLinearUnits( d->mCRS, &unitName );
@@ -1275,6 +1323,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     }
   }
+#endif
 }
 
 

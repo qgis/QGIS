@@ -713,9 +713,14 @@ void TestQgsCoordinateReferenceSystem::isGeographic()
 void TestQgsCoordinateReferenceSystem::mapUnits()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QVERIFY( myCrs.mapUnits() == QgsUnitTypes::DistanceDegrees );
+  myCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceDegrees );
   debugPrint( myCrs );
+  myCrs.createFromString( QStringLiteral( "EPSG:28355" ) );
+  QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceMeters );
+  debugPrint( myCrs );
+  myCrs.createFromString( QStringLiteral( "EPSG:26812" ) );
+  QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceFeet );
 
   // an invalid crs should return unknown unit
   QCOMPARE( QgsCoordinateReferenceSystem().mapUnits(), QgsUnitTypes::DistanceUnknownUnit );
