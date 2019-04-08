@@ -77,15 +77,30 @@ namespace QgsWms
       ~QgsRenderer();
 
       /**
-       * Returns the map legend as an image (or NULLPTR in case of error). The caller takes ownership
-      of the image object*/
+       * Returns the map legend as an image (or NULLPTR in case of error). The
+       * caller takes ownership of the image object.
+       * \param model The layer tree model to use for building the legend
+       * \returns the legend as an image
+       * \since QGIS 3.8
+       */
       QImage *getLegendGraphics( QgsLayerTreeModel &model );
 
+      /**
+       * Returns the map legend as an image (or NULLPTR in case of error). The
+       * caller takes ownership of the image object.
+       * \param nodeModel The node model to use for building the legend
+       * \returns the legend as an image
+       * \since QGIS 3.8
+       */
       QImage *getLegendGraphics( QgsLayerTreeModelLegendNode &nodeModel );
 
       typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
 
+      /**
+       * Returns the hit test according to the current context.
+       * \since QGIS 3.8
+       */
       HitTest symbols();
 
       /**
