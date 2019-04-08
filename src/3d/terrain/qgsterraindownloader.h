@@ -44,7 +44,13 @@ class _3D_EXPORT QgsTerrainDownloader
 {
 
   public:
+
+    /**
+     * Constructs a QgsTerrainDownloader object
+     * \param transformContext coordinate transform context
+     */
     QgsTerrainDownloader( const QgsCoordinateTransformContext  &transformContext );
+
     ~QgsTerrainDownloader();
 
     //! Definition of data source for terrain tiles (assuming "terrarium" data encoding with usual XYZ tiling scheme)
