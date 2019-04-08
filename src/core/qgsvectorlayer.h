@@ -450,7 +450,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param baseName The name used to represent the layer in the legend
      * \param providerLib  The name of the data provider, e.g., "memory", "postgres"
      * \param options layer load options
-     * \deprecated Use version with options as mandatory argument instead
      */
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
