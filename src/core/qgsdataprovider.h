@@ -527,9 +527,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \see setTransformContext()
      *
-     * \since QGIS 3.10
+     * \since QGIS 3.8
+     * \note not available in Python bindings
      */
-    QgsCoordinateTransformContext transformContext() const;
+    QgsCoordinateTransformContext transformContext() const SIP_SKIP;
 
     /**
      * Sets data coordinate transform context to \a transformContext
@@ -539,9 +540,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \see transformContext()
      *
-     * \since QGIS 3.10
+     * \since QGIS 3.8
+     * \note not available in Python bindings
      */
-    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
 
   signals:
 

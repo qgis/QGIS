@@ -137,7 +137,12 @@ QgsRasterLayer::~QgsRasterLayer()
 
 QgsRasterLayer *QgsRasterLayer::clone() const
 {
-  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey );
+  QgsRasterLayer::LayerOptions options;
+  if ( mDataProvider )
+  {
+    options.transformContext = mDataProvider->transformContext();
+  }
+  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
 
   // do not clone data provider which is the first element in pipe

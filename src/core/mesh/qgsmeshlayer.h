@@ -231,9 +231,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
   public slots:
 
     /**
-     * Triggered when the coordinate transform context has changed \a transformContext
+     * Sets the coordinate transform context to \a transformContext.
      *
-     * \since QGIS 3.10
+     * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
@@ -306,8 +306,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Time format configuration
     QgsMeshTimeSettings mTimeSettings;
 
-    //! Layer options
-    QgsMeshLayer::LayerOptions mOptions;
 };
 
 #endif //QGSMESHLAYER_H

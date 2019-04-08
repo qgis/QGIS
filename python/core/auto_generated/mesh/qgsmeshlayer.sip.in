@@ -202,9 +202,9 @@ Interpolates the value on the given point from given dataset.
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 %Docstring
-Triggered when the coordinate transform context has changed ``transformContext``
+Sets the coordinate transform context to ``transformContext``.
 
-.. versionadded:: 3.10
+.. versionadded:: 3.8
 %End
 
 

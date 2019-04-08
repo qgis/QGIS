@@ -185,7 +185,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
       /**
        * Coordinate transform context
-       * \since QGIS 3.10
+       * \since QGIS 3.8
        */
       QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
 
@@ -439,9 +439,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void showStatusMessage( const QString &message );
 
     /**
-     * Triggered when the coordinate transform context has changed \a transformContext
+     * Sets the coordinate transform context to \a transformContext
      *
-     * \since QGIS 3.10
+     * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
