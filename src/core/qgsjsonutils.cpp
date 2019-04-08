@@ -301,8 +301,8 @@ QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &featur
 
         if ( mLayer )
         {
-          QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
-          QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+          const QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
+          const QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
           if ( formattersWhiteList.contains( fieldFormatter->id() ) )
             val = fieldFormatter->representValue( mLayer.data(), i, setup.config(), QVariant(), val );
         }
@@ -353,7 +353,7 @@ QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &featur
           QgsFeature relatedFet;
           while ( it.nextFeature( relatedFet ) )
           {
-            relatedFeatureAttributes += QgsJsonUtils::exportAttributes( relatedFet, childLayer, attributeWidgetCaches );
+            relatedFeatureAttributes += QgsJsonUtils::exportAttributesToJsonObject( relatedFet, childLayer, attributeWidgetCaches );
           }
         }
         properties[ relation.name() ] = relatedFeatureAttributes;

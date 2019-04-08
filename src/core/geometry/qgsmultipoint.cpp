@@ -136,7 +136,10 @@ QJsonObject QgsMultiPoint::asJsonObject( int precision ) const
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       const QgsPoint *point = static_cast<const QgsPoint *>( geom );
-      coordinates.append( QJsonArray( { point->x(), point->y() } ) );
+      if ( point->is3D() )
+        coordinates.append( QJsonArray( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ), qgsRound( point->z(), precision ) } ) );
+      else
+        coordinates.append( QJsonArray( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ) } ) );
     }
   }
   return
