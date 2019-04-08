@@ -936,7 +936,7 @@ bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
 
   std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr< QgsVectorLayer > vectLayer( new QgsVectorLayer( options, uri, "", QStringLiteral( "ogr" ) ) );
+  std::unique_ptr< QgsVectorLayer > vectLayer = qgis::make_unique<QgsVectorLayer>( uri, QString(), QStringLiteral( "ogr" ),  options );
   return ( rastLayer->isValid() || vectLayer->isValid() );
 }
 

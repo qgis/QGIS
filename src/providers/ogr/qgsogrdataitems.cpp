@@ -106,7 +106,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
 
   // Vector layers
   const QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
-  QgsVectorLayer layer( layerOptions, path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ), layerOptions );
   if ( ! layer.isValid( ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Layer is not a valid %1 Vector layer %2" ).arg( path ), 3 );

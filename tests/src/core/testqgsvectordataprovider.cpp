@@ -66,11 +66,11 @@ void TestQgsVectorDataProvider::initTestCase()
 
   // load layers
   const QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
-  vlayerPoints = new QgsVectorLayer( options, layerPointsUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ) );
+  vlayerPoints = new QgsVectorLayer( layerPointsUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
   QVERIFY( vlayerPoints );
   QVERIFY( vlayerPoints->isValid() );
 
-  vlayerLines = new QgsVectorLayer( options, layerLinesUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ) );
+  vlayerLines = new QgsVectorLayer( layerLinesUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
   QVERIFY( vlayerLines );
   QVERIFY( vlayerLines->isValid() );
 }

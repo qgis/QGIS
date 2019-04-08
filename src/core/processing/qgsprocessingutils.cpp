@@ -239,7 +239,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
-    std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( options, string, name, QStringLiteral( "ogr" ) );
+    std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( string, name, QStringLiteral( "ogr" ), options );
     if ( layer->isValid() )
     {
       return layer.release();
@@ -611,7 +611,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       // use destination string as layer name (eg "postgis:..." )
       if ( !layerName.isEmpty() )
         uri += QStringLiteral( "|layername=%1" ).arg( layerName );
-      std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( layerOptions, uri, destination, providerKey );
+      std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
       // update destination to layer ID
       destination = layer->id();
 
