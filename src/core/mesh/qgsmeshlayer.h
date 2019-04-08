@@ -99,20 +99,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     {
 
       /**
-       * Constructor for LayerOptions.
-       * \deprecated Use version with transformContext argument instead
-       *
+       * Constructor for LayerOptions with optional \a transformContext.
+       * \note transformContext argument was added in QGIS 3.10
        */
-      Q_DECL_DEPRECATED explicit LayerOptions( ) SIP_DEPRECATED
-    : transformContext( QgsCoordinateTransformContext() )
-      {}
-
-
-      /**
-       * Constructor for LayerOptions.
-       * \since QGIS 3.10
-       */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
         : transformContext( transformContext )
       {}
 
@@ -131,28 +121,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \param baseName The name used to represent the layer in the legend
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
      * \param options general mesh layer options
-     * \deprecated Use version with layer options as a first argument instead
      */
-    Q_DECL_DEPRECATED explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
-        const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() ) SIP_DEPRECATED;
-
-    /**
-     * Constructor - creates a mesh layer
-     *
-     * The QgsMeshLayer is constructed by instantiating a data provider.  The provider
-     * interprets the supplied path (url) of the data source to connect to and access the
-     * data.
-     *
-     * \param options general mesh layer options
-     * \param path  The path or url of the parameter.  Typically this encodes
-     *               parameters used by the data provider as url query items.
-     * \param baseName The name used to represent the layer in the legend
-     * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
-     * \since QGIS 3.10
-     */
-    explicit QgsMeshLayer( const QgsMeshLayer::LayerOptions &options, const QString &path = QString(),
-                           const QString &baseName = QString(), const QString &providerLib = "mesh_memory" );
-
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
+                           const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
 
     ~QgsMeshLayer() override;
 

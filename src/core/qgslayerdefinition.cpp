@@ -265,8 +265,7 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument
 
     if ( type == QLatin1String( "vector" ) )
     {
-      const QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
-      layer = new QgsVectorLayer( options );
+      layer = new QgsVectorLayer( );
     }
     else if ( type == QLatin1String( "raster" ) )
     {

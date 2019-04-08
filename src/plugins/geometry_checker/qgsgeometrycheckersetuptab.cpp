@@ -323,7 +323,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
         continue;
       }
       const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      QgsVectorLayer *newlayer = new QgsVectorLayer( options, outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ) );
+      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ), options );
       if ( selectedOnly )
       {
         QgsFeature feature;

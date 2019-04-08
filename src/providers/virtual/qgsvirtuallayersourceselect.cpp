@@ -207,7 +207,7 @@ void QgsVirtualLayerSourceSelect::testQuery()
   if ( ! def.toString().isEmpty() )
   {
     QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-    std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( options, def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ) ) );
+    std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ), options ) );
     if ( vl->isValid() )
     {
       QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );

@@ -2573,7 +2573,7 @@ namespace QgsWms
 
       // create vector layer
       const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( options, url, param.mName, QLatin1Literal( "memory" ) );
+      std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( url, param.mName, QLatin1Literal( "memory" ), options );
       if ( !layer->isValid() )
       {
         continue;
