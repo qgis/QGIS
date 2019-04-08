@@ -331,16 +331,16 @@ QString QgsQuickUtils::dumpScreenInfo() const
   return msg;
 }
 
-QVariantMap QgsQuickUtils::createValueRelationCache(const QVariantMap &config, const QgsFeature &formFeature)
+QVariantMap QgsQuickUtils::createValueRelationCache( const QVariantMap &config, const QgsFeature &formFeature )
 {
-    QVariantMap valueMap;
-    QgsValueRelationFieldFormatter::ValueRelationCache cache = QgsValueRelationFieldFormatter::createCache(config, formFeature);
+  QVariantMap valueMap;
+  QgsValueRelationFieldFormatter::ValueRelationCache cache = QgsValueRelationFieldFormatter::createCache( config, formFeature );
 
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( cache ) )
-    {
-        valueMap.insert(item.key.toString(), item.value);
-    }
-    return valueMap;
+  for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( cache ) )
+  {
+    valueMap.insert( item.key.toString(), item.value );
+  }
+  return valueMap;
 }
 
 qreal QgsQuickUtils::screenDensity() const
