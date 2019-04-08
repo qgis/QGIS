@@ -7546,7 +7546,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
     if ( d.outputCrs() != rasterLayer->crs() )
     {
       QgsRasterProjector *projector = new QgsRasterProjector;
-      projector->setCrs( rasterLayer->crs(), d.outputCrs() );
+      projector->setCrs( rasterLayer->crs(), d.outputCrs(), rasterLayer->dataProvider()->transformContext() );
       if ( !pipe->insert( 2, projector ) )
       {
         QgsDebugMsg( QStringLiteral( "Cannot set pipe projector" ) );
@@ -7565,7 +7565,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
       QgsDebugMsg( QStringLiteral( "Cannot get pipe projector" ) );
       return QString();
     }
-    projector->setCrs( rasterLayer->crs(), d.outputCrs() );
+    projector->setCrs( rasterLayer->crs(), d.outputCrs(), rasterLayer->dataProvider()->transformContext() );
   }
 
   if ( !pipe->last() )

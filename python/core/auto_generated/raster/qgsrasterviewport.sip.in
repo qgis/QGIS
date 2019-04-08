@@ -31,6 +31,8 @@ struct QgsRasterViewPort
 
   int mSrcDatumTransform;
   int mDestDatumTransform;
+
+  QgsCoordinateTransformContext mTransformContext;
 };
 
 /************************************************************************

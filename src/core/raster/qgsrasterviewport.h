@@ -19,6 +19,7 @@
 
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
 
 /**
@@ -68,6 +69,11 @@ struct CORE_EXPORT QgsRasterViewPort
 
   int mSrcDatumTransform;
   int mDestDatumTransform;
+
+  /**
+   * Coordinate transform context
+   */
+  QgsCoordinateTransformContext mTransformContext;
 };
 
 #endif //QGSRASTERVIEWPORT_H

@@ -103,7 +103,7 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
       {
         input.projector = qgis::make_unique< QgsRasterProjector >();
         input.projector->setInput( input.sourceDataProvider.get() );
-        input.projector->setCrs( layer->crs(), mCrs );
+        input.projector->setCrs( layer->crs(), mCrs, context.transformContext() );
         input.interface = input.projector.get();
       }
       mInputs.emplace_back( std::move( input ) );
