@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProcessingFeedback : QgsFeedback
 {
 %Docstring
@@ -92,7 +93,7 @@ report the output from executing an external command or subprocess.
 .. seealso:: :py:func:`pushCommandInfo`
 %End
 
-    void pushVersionInfo();
+    void pushVersionInfo( const QgsProcessingProvider *provider = 0 );
 %Docstring
 Pushes a summary of the QGIS (and underlying library) version information to the log.
 

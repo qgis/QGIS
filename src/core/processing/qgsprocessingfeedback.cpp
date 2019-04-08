@@ -17,6 +17,7 @@
 
 #include "qgsprocessingfeedback.h"
 #include "qgsgeos.h"
+#include "qgsprocessingprovider.h"
 #include <ogr_api.h>
 #include <gdal_version.h>
 #if PROJ_VERSION_MAJOR > 4
@@ -54,7 +55,7 @@ void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
   QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 }
 
-void QgsProcessingFeedback::pushVersionInfo()
+void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provider )
 {
   pushDebugInfo( tr( "QGIS version: %1" ).arg( Qgis::QGIS_VERSION ) );
   if ( QString( Qgis::QGIS_DEV_VERSION ) != QLatin1String( "exported" ) )
@@ -71,6 +72,10 @@ void QgsProcessingFeedback::pushVersionInfo()
 #else
   pushDebugInfo( tr( "PROJ version: %1" ).arg( PJ_VERSION ) );
 #endif
+  if ( provider && !provider->versionInfo().isEmpty() )
+  {
+    pushDebugInfo( tr( "%1 version: %2" ).arg( provider->name(), provider->versionInfo() ) );
+  }
 }
 
 
