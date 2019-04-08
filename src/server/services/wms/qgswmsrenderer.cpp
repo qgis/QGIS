@@ -2053,20 +2053,50 @@ namespace QgsWms
 
   bool QgsRenderer::checkMaximumWidthHeight() const
   {
-    //test if maxWidth / maxHeight set and WIDTH / HEIGHT parameter is in the range
-    int wmsMaxWidth = QgsServerProjectUtils::wmsMaxWidth( *mProject );
-    int width = mWmsParameters.widthAsInt();
+    //test if maxWidth / maxHeight are set in the project or as an env variable
+    //and WIDTH / HEIGHT parameter is in the range allowed range
+    //WIDTH
+    int wmsMaxWidthProj = QgsServerProjectUtils::wmsMaxWidth( *mProject );
+    int wmsMaxWidthEnv = mContext.settings().wmsMaxWidth();
+    int wmsMaxWidth;
+    if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
+    {
+      // both are set, so we take the more conservative one
+      wmsMaxWidth = std::min( wmsMaxWidthProj, wmsMaxWidthEnv );
+    }
+    else
+    {
+      // none or one are set, so we take the bigger one which is the one set or -1
+      wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
+    }
+
+    int width = this->width();
     if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
     {
       return false;
     }
 
-    int wmsMaxHeight = QgsServerProjectUtils::wmsMaxHeight( *mProject );
-    int height = mWmsParameters.heightAsInt();
+    //HEIGHT
+    int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
+    int wmsMaxHeightEnv = mContext.settings().wmsMaxHeight();
+    int wmsMaxHeight;
+    if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
+    {
+      // both are set, so we take the more conservative one
+      wmsMaxHeight = std::min( wmsMaxHeightProj, wmsMaxHeightEnv );
+    }
+    else
+    {
+      // none or one are set, so we take the bigger one which is the one set or -1
+      wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
+    }
+
+    int height = this->height();
     if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
     {
       return false;
     }
+
 
     // Sanity check from internal QImage checks (see qimage.cpp)
     // this is to report a meaningful error message in case of
