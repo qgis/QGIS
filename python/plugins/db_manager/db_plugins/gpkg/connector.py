@@ -620,6 +620,9 @@ class GPKGDBConnector(DBConnector):
         if new_table == tablename:
             return True
 
+        quoted_table = self.quoteString(tablename)
+        quoted_table_new = self.quoteString(new_table)
+
         if tablename.find('"') >= 0:
             tablename = self.quoteId(tablename)
         if new_table.find('"') >= 0:
@@ -629,6 +632,12 @@ class GPKGDBConnector(DBConnector):
         self.gdal_ds.ExecuteSQL('ALTER TABLE %s RENAME TO %s' % (tablename, new_table))
         if gdal.GetLastErrorMsg() != '':
             return False
+
+        # also rename any styles referring to this table
+        self.gdal_ds.ExecuteSQL('UPDATE layer_styles SET f_table_name = %s WHERE f_table_name = %s' % (quoted_table_new, quoted_table))
+        if gdal.GetLastErrorMsg() != '':
+            return False
+
         # we need to reopen after renaming since OGR doesn't update its
         # internal state
         self._opendb()
