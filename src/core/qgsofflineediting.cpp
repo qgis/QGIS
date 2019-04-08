@@ -105,7 +105,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
       QMap<QString, QgsVectorJoinList > joinInfoBuffer;
       QMap<QString, QgsVectorLayer *> layerIdMapping;
 
-      Q_FOREACH ( const QString &layerId, layerIds )
+      for ( const QString &layerId : layerIds )
       {
         QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
@@ -161,7 +161,8 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
         if ( newLayer )
         {
-          Q_FOREACH ( QgsVectorLayerJoinInfo join, it.value() )
+          const QList<QgsVectorLayerJoinInfo> joins = it.value();
+          for ( QgsVectorLayerJoinInfo join : joins )
           {
             QgsVectorLayer *newJoinedLayer = layerIdMapping.value( join.joinLayerId() );
             if ( newJoinedLayer )
@@ -642,7 +643,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       char **options = nullptr;
 
       options = CSLSetNameValue( options, "OVERWRITE", "YES" );
-      options = CSLSetNameValue( options, "IDENTIFIER", tr( "%1 (offline)" ).arg( layer->name() ).toUtf8().constData() );
+      options = CSLSetNameValue( options, "IDENTIFIER", tr( "%1 (offline)" ).arg( layer->id() ).toUtf8().constData() );
       options = CSLSetNameValue( options, "DESCRIPTION", layer->dataComment().toUtf8().constData() );
 
       //the FID-name should not exist in the original data
@@ -851,6 +852,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
           QgsLayerTreeNode *newLayerTreeLayerClone = newLayerTreeLayer->clone();
           //copy the showFeatureCount property to the new node
           newLayerTreeLayerClone->setCustomProperty( CUSTOM_SHOW_FEATURE_COUNT, layerTreeLayer->customProperty( CUSTOM_SHOW_FEATURE_COUNT ) );
+          newLayerTreeLayerClone->setItemVisibilityChecked( layerTreeLayer->isVisible() );
           QgsLayerTreeGroup *grp = qobject_cast<QgsLayerTreeGroup *>( newLayerTreeLayer->parent() );
           parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
           if ( grp )
@@ -909,9 +911,9 @@ void QgsOfflineEditing::applyAttributesAdded( QgsVectorLayer *remoteLayer, sqlit
 void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId )
 {
   QString sql = QStringLiteral( "SELECT \"fid\" FROM 'log_added_features' WHERE \"layer_id\" = %1" ).arg( layerId );
-  QList<int> featureIdInts = sqlQueryInts( db, sql );
+  const QList<int> featureIdInts = sqlQueryInts( db, sql );
   QgsFeatureIds newFeatureIds;
-  Q_FOREACH ( int id, featureIdInts )
+  for ( int id : featureIdInts )
   {
     newFeatureIds << id;
   }
@@ -1072,19 +1074,18 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLay
 void QgsOfflineEditing::updateRelations( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
   QgsRelationManager *relationManager = QgsProject::instance()->relationManager();
-  QList<QgsRelation> relations;
-  relations = relationManager->referencedRelations( sourceLayer );
+  const QList<QgsRelation> referencedRelations = relationManager->referencedRelations( sourceLayer );
 
-  Q_FOREACH ( QgsRelation relation, relations )
+  for ( QgsRelation relation : referencedRelations )
   {
     relationManager->removeRelation( relation );
     relation.setReferencedLayer( targetLayer->id() );
     relationManager->addRelation( relation );
   }
 
-  relations = relationManager->referencingRelations( sourceLayer );
+  const QList<QgsRelation> referencingRelations = relationManager->referencingRelations( sourceLayer );
 
-  Q_FOREACH ( QgsRelation relation, relations )
+  for ( QgsRelation relation : referencingRelations )
   {
     relationManager->removeRelation( relation );
     relation.setReferencingLayer( targetLayer->id() );
@@ -1095,13 +1096,15 @@ void QgsOfflineEditing::updateRelations( QgsVectorLayer *sourceLayer, QgsVectorL
 void QgsOfflineEditing::updateMapThemes( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
   QgsMapThemeCollection *mapThemeCollection = QgsProject::instance()->mapThemeCollection();
-  QStringList mapThemeNames = mapThemeCollection->mapThemes();
+  const QStringList mapThemeNames = mapThemeCollection->mapThemes();
 
-  Q_FOREACH ( const QString &mapThemeName, mapThemeNames )
+  for ( const QString &mapThemeName : mapThemeNames )
   {
     QgsMapThemeCollection::MapThemeRecord record = mapThemeCollection->mapThemeState( mapThemeName );
 
-    Q_FOREACH ( QgsMapThemeCollection::MapThemeLayerRecord layerRecord, record.layerRecords() )
+    const auto layerRecords = record.layerRecords();
+
+    for ( QgsMapThemeCollection::MapThemeLayerRecord layerRecord : layerRecords )
     {
       if ( layerRecord.layer() == sourceLayer )
       {

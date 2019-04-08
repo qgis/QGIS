@@ -103,10 +103,10 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     //! Finds out which mouse move action to choose depending on the scene cursor position
     QgsLayoutMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
 
-    //! Returns true is user is currently dragging the handles
+    //! Returns TRUE is user is currently dragging the handles
     bool isDragging() const { return mIsDragging; }
 
-    //! Returns true is user is currently resizing with the handles
+    //! Returns TRUE is user is currently resizing with the handles
     bool isResizing() const { return mIsResizing; }
 
     bool shouldBlockEvent( QInputEvent *event ) const;
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     //! Returns the mouse handle bounds of current selection
     QRectF selectionBounds() const;
 
-    //! Returns true if all selected items have same rotation, and if so, updates passed rotation variable
+    //! Returns TRUE if all selected items have same rotation, and if so, updates passed rotation variable
     bool selectionRotation( double &rotation ) const;
 
     //! Redraws or hides the handles based on the current selection

@@ -633,11 +633,11 @@ void QgsAuthOAuth2Edit::removeTokenCacheFile()
     return;
   }
 
-  QStringList cachefiles;
-  cachefiles << QgsAuthOAuth2Config::tokenCachePath( authcfg, false )
-             << QgsAuthOAuth2Config::tokenCachePath( authcfg, true );
+  const QStringList cachefiles = QStringList()
+                                 << QgsAuthOAuth2Config::tokenCachePath( authcfg, false )
+                                 << QgsAuthOAuth2Config::tokenCachePath( authcfg, true );
 
-  Q_FOREACH ( const QString &cachefile, cachefiles )
+  for ( const QString &cachefile : cachefiles )
   {
     if ( QFile::exists( cachefile ) && !QFile::remove( cachefile ) )
     {

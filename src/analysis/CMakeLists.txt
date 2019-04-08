@@ -22,6 +22,7 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/Vector3D.cpp
 
   processing/qgsalgorithmaddincrementalfield.cpp
+  processing/qgsalgorithmaddxyfields.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmassignprojection.cpp
   processing/qgsalgorithmboundary.cpp
@@ -47,6 +48,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractbyexpression.cpp
   processing/qgsalgorithmextractbyextent.cpp
   processing/qgsalgorithmextractbylocation.cpp
+  processing/qgsalgorithmextractlayoutmapextent.cpp
   processing/qgsalgorithmextractzmvalues.cpp
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
@@ -58,6 +60,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
+  processing/qgsalgorithmjoinbynearest.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmkmeansclustering.cpp
   processing/qgsalgorithmlineintersection.cpp
@@ -79,6 +82,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
+  processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrastersurfacevolume.cpp
   processing/qgsalgorithmrasterzonalstats.cpp
   processing/qgsalgorithmreclassifybylayer.cpp
@@ -429,6 +433,7 @@ IF(HAVE_OPENCL)
     TARGET_LINK_LIBRARIES(qgis_analysis ${OpenCL_LIBRARIES})
 ENDIF(HAVE_OPENCL)
 
+TARGET_COMPILE_DEFINITIONS(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

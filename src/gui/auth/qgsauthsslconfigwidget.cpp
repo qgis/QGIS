@@ -370,7 +370,8 @@ void QgsAuthSslConfigWidget::appendSslIgnoreErrors( const QList<QSslError> &erro
   enableSslCustomOptions( true );
 
   QList<QSslError::SslError> errenums;
-  Q_FOREACH ( const QSslError &err, errors )
+  const auto constErrors = errors;
+  for ( const QSslError &err : constErrors )
   {
     errenums << err.error();
   }
@@ -392,7 +393,8 @@ void QgsAuthSslConfigWidget::setSslIgnoreErrorEnums( const QList<QSslError::SslE
     return;
   }
   QList<QSslError> errors;
-  Q_FOREACH ( QSslError::SslError errorenum, errorenums )
+  const auto constErrorenums = errorenums;
+  for ( QSslError::SslError errorenum : constErrorenums )
   {
     errors << QSslError( errorenum );
   }
@@ -413,7 +415,8 @@ void QgsAuthSslConfigWidget::setSslIgnoreErrors( const QList<QSslError> &errors 
   enableSslCustomOptions( true );
 
   QList<QSslError::SslError> errenums;
-  Q_FOREACH ( const QSslError &err, errors )
+  const auto constErrors = errors;
+  for ( const QSslError &err : constErrors )
   {
     errenums << err.error();
   }

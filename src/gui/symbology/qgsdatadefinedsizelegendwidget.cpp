@@ -28,6 +28,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
@@ -84,7 +85,8 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   if ( ddsLegend )
   {
     groupManualSizeClasses->setChecked( !ddsLegend->classes().isEmpty() );
-    Q_FOREACH ( const QgsDataDefinedSizeLegend::SizeClass &sc, ddsLegend->classes() )
+    const auto constClasses = ddsLegend->classes();
+    for ( const QgsDataDefinedSizeLegend::SizeClass &sc : constClasses )
     {
       QStandardItem *item = new QStandardItem( QString::number( sc.size ) );
       item->setData( sc.size );

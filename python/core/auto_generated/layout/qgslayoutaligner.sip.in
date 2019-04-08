@@ -38,9 +38,11 @@ sets of layout items, e.g. aligning a group of items to top or left sides.
     {
       DistributeLeft,
       DistributeHCenter,
+      DistributeHSpace,
       DistributeRight,
       DistributeTop,
       DistributeVCenter,
+      DistributeVSpace,
       DistributeBottom,
     };
 

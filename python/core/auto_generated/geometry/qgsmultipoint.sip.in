@@ -50,6 +50,8 @@ Multi point geometry collection.
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
 
 
     virtual QgsMultiPoint *createEmptyWithSameType() const /Factory/;

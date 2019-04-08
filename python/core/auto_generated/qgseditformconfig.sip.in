@@ -138,7 +138,7 @@ Example:
 :param widgetName: The name of the widget to configure
 :param config: The config to set for this widget
 
-:return: false if a field exists with the provided widgetName. In this case
+:return: ``False`` if a field exists with the provided widgetName. In this case
          QgsVectorLayer.setEditorWidgetSetup should be used.
 
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup`
@@ -159,31 +159,31 @@ Remove the configuration for the editor widget with the given name
 
 :param widgetName: The name of the widget.
 
-:return: true if a configuration has been removed
+:return: ``True`` if a configuration has been removed
 %End
 
     bool readOnly( int idx ) const;
 %Docstring
-This returns true if the field is manually set to read only or if the field
+This returns ``True`` if the field is manually set to read only or if the field
 does not support editing like joins or virtual fields.
 %End
 
     void setReadOnly( int idx, bool readOnly = true );
 %Docstring
-If set to false, the widget at the given index will be read-only.
+If set to ``False``, the widget at the given index will be read-only.
 %End
 
     bool labelOnTop( int idx ) const;
 %Docstring
-If this returns true, the widget at the given index will receive its label on the previous line
-while if it returns false, the widget will receive its label on the left hand side.
+If this returns ``True``, the widget at the given index will receive its label on the previous line
+while if it returns ``False``, the widget will receive its label on the left hand side.
 Labeling on top leaves more horizontal space for the widget itself.
 %End
 
     void setLabelOnTop( int idx, bool onTop );
 %Docstring
-If this is set to true, the widget at the given index will receive its label on
-the previous line while if it is set to false, the widget will receive its label
+If this is set to ``True``, the widget at the given index will receive its label on
+the previous line while if it is set to ``False``, the widget will receive its label
 on the left hand side.
 Labeling on top leaves more horizontal space for the widget itself.
 %End

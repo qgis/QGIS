@@ -152,10 +152,10 @@ Sets the name of the field with unique identifiers
 
     void setLazy( bool lazy );
 %Docstring
-Sets the lazy mode. If ``lazy`` is true, then the loading is
+Sets the lazy mode. If ``lazy`` is ``True``, then the loading is
 delayed until an explicit reloading of the layer.
 
-:param lazy: True to delay the loading, false otherwise
+:param lazy: ``True`` to delay the loading, ``False`` otherwise
 
 .. seealso:: :py:func:`QgsDataProvider.reloadData`
 
@@ -168,7 +168,7 @@ delayed until an explicit reloading of the layer.
 %Docstring
 Returns the lazy mode.
 
-:return: True if the loading is delayed, false otherwise.
+:return: ``True`` if the loading is delayed, ``False`` otherwise.
 
 .. seealso:: :py:func:`setLazy`
 

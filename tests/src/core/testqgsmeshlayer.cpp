@@ -26,6 +26,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
 #include "qgstriangularmesh.h"
+#include "qgsmeshlayerutils.h"
 
 /**
  * \ingroup UnitTests
@@ -60,6 +61,9 @@ class TestQgsMeshLayer : public QObject
     void test_read_face_vector_dataset();
     void test_read_vertex_scalar_dataset_with_inactive_face();
     void test_extent();
+
+    void test_time_format_data();
+    void test_time_format();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -424,6 +428,69 @@ void TestQgsMeshLayer::test_write_read_project()
   QVERIFY( prj2.read() );
   QVector<QgsMapLayer *> layers = prj2.layers<QgsMapLayer *>();
   QVERIFY( layers.size() == 2 );
+}
+
+void TestQgsMeshLayer::test_time_format_data()
+{
+  QTest::addColumn<QgsMeshTimeSettings>( "settings" );
+  QTest::addColumn<double>( "hours" );
+  QTest::addColumn<QString>( "expectedTime" );
+
+  QTest::newRow( "rel1" ) << QgsMeshTimeSettings( 0, "hh:mm:ss.zzz" ) << 0.0 << QString( "00:00:00.000" );
+  QTest::newRow( "rel2" ) << QgsMeshTimeSettings( 0, "hh:mm:ss" ) << 0.0 << QString( "00:00:00" );
+  QTest::newRow( "rel3" ) << QgsMeshTimeSettings( 0, "d hh:mm:ss" ) << 0.0 << QString( "0 d 00:00:00" );
+  QTest::newRow( "rel4" ) << QgsMeshTimeSettings( 0, "d hh" ) << 0.0 << QString( "0 d 0" );
+  QTest::newRow( "rel5" ) << QgsMeshTimeSettings( 0, "d" ) << 0.0 << QString( "0" );
+  QTest::newRow( "rel6" ) << QgsMeshTimeSettings( 0, "hh" ) << 0.0 << QString( "0" );
+  QTest::newRow( "rel7" ) << QgsMeshTimeSettings( 0, "ss" ) << 0.0 << QString( "0" );
+  QTest::newRow( "rel8" ) << QgsMeshTimeSettings( 0, "some-invalid-format" ) << 0.0 << QString( "0" );
+
+  QTest::newRow( "rel9" ) << QgsMeshTimeSettings( 100.11111, "hh:mm:ss.zzz" ) << 0.0 << QString( "100:06:39.996" );
+  QTest::newRow( "rel10" ) << QgsMeshTimeSettings( 0, "hh:mm:ss.zzz" ) << 100.11111 << QString( "100:06:39.996" );
+  QTest::newRow( "rel11" ) << QgsMeshTimeSettings( 0, "hh:mm:ss" ) << 100.11111 << QString( "100:06:39" );
+  QTest::newRow( "rel12" ) << QgsMeshTimeSettings( 0, "d hh:mm:ss" ) << 100.11111 << QString( "4 d 04:06:39" );
+  QTest::newRow( "rel13" ) << QgsMeshTimeSettings( 0, "d hh" ) << 100.11111 << QString( "4 d 4" );
+  QTest::newRow( "rel14" ) << QgsMeshTimeSettings( 0, "d" ) << 100.11111 << QString( "4" );
+  QTest::newRow( "rel15" ) << QgsMeshTimeSettings( 0, "hh" ) << 100.11111 << QString( "100.111" );
+  QTest::newRow( "rel16" ) << QgsMeshTimeSettings( 0, "ss" ) << 100.11111 << QString( "360399" );
+  QTest::newRow( "rel17" ) << QgsMeshTimeSettings( 0, "some-invalid-format" ) << 100.11111 << QString( "100.111" );
+
+  QDateTime dt = QDateTime::fromString( "2019-03-21 11:01:02", "yyyy-MM-dd HH:mm:ss" );
+  QTest::newRow( "abs1" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh:mm:ss" ) << 0.0 << QString( "21.03.2019 11:01:02" );
+  QTest::newRow( "abs2" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh:mm" ) << 0.0 << QString( "21.03.2019 11:01" );
+  QTest::newRow( "abs3" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh" ) << 0.0 << QString( "21.03.2019 11" );
+  QTest::newRow( "abs4" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy" ) << 0.0 << QString( "21.03.2019" );
+  QTest::newRow( "abs5" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh:mm:ss" ) << 0.0 << QString( "21/03/2019 11:01:02" );
+  QTest::newRow( "abs6" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh:mm" ) << 0.0 << QString( "21/03/2019 11:01" );
+  QTest::newRow( "abs7" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh" ) << 0.0 << QString( "21/03/2019 11" );
+  QTest::newRow( "abs8" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy" ) << 0.0 << QString( "21/03/2019" );
+  QTest::newRow( "abs9" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh:mm:ss" ) << 0.0 << QString( "03/21/2019 11:01:02" );
+  QTest::newRow( "abs10" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh:mm" ) << 0.0 << QString( "03/21/2019 11:01" );
+  QTest::newRow( "abs11" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh" ) << 0.0 << QString( "03/21/2019 11" );
+  QTest::newRow( "abs12" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy" ) << 0.0 << QString( "03/21/2019" );
+
+  QTest::newRow( "abs13" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh:mm:ss" ) << 100.11111 << QString( "25.03.2019 15:07:41" );
+  QTest::newRow( "abs14" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh:mm" ) << 100.11111 << QString( "25.03.2019 15:07" );
+  QTest::newRow( "abs15" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh" ) << 100.11111 << QString( "25.03.2019 15" );
+  QTest::newRow( "abs16" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy" ) << 100.11111 << QString( "25.03.2019" );
+  QTest::newRow( "abs17" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh:mm:ss" ) << 100.11111 << QString( "25/03/2019 15:07:41" );
+  QTest::newRow( "abs18" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh:mm" ) << 100.11111 << QString( "25/03/2019 15:07" );
+  QTest::newRow( "abs19" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh" ) << 100.11111 << QString( "25/03/2019 15" );
+  QTest::newRow( "abs20" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy" ) << 100.11111 << QString( "25/03/2019" );
+  QTest::newRow( "abs21" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh:mm:ss" ) << 100.11111 << QString( "03/25/2019 15:07:41" );
+  QTest::newRow( "abs22" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh:mm" ) << 100.11111 << QString( "03/25/2019 15:07" );
+  QTest::newRow( "abs23" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh" ) << 100.11111 << QString( "03/25/2019 15" );
+  QTest::newRow( "abs24" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy" ) << 100.11111 << QString( "03/25/2019" );
+}
+
+void TestQgsMeshLayer::test_time_format()
+{
+  QFETCH( QgsMeshTimeSettings, settings );
+  QFETCH( double, hours );
+  QFETCH( QString, expectedTime );
+
+  QString time = QgsMeshLayerUtils::formatTime( hours, settings );
+  QCOMPARE( time, expectedTime );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

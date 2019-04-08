@@ -22,6 +22,7 @@
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgsvectorlayer.h"
 
@@ -270,7 +271,8 @@ QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &ind
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -426,7 +428,8 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -846,7 +849,8 @@ void QgsGraduatedSymbolRendererWidget::applyChangeToSymbol()
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
   if ( m && !selectedIndexes.isEmpty() )
   {
-    Q_FOREACH ( const QModelIndex &idx, selectedIndexes )
+    const auto constSelectedIndexes = selectedIndexes;
+    for ( const QModelIndex &idx : constSelectedIndexes )
     {
       if ( idx.isValid() )
       {
@@ -1072,7 +1076,8 @@ QList<int> QgsGraduatedSymbolRendererWidget::selectedClasses()
   QList<int> rows;
   QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
 
-  Q_FOREACH ( const QModelIndex &r, selectedRows )
+  const auto constSelectedRows = selectedRows;
+  for ( const QModelIndex &r : constSelectedRows )
   {
     if ( r.isValid() )
     {

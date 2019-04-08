@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     virtual void clear() = 0;
 
     /**
-     * Returns true if the collection contains a property with the specified key.
+     * Returns TRUE if the collection contains a property with the specified key.
      * \param key integer key for property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \see property()
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultString default string to return if the property cannot be calculated as a string
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to string
      * \see value()
      * \see valueAsColor()
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultColor default color to return if the property cannot be calculated as a color
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to color
      * \see value()
      * \see valueAsString()
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default double to return if the property cannot be calculated as a double
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to double
      * \see value()
      * \see valueAsString()
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default integer to return if the property cannot be calculated as a integer
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to integer
      * \see value()
      * \see valueAsString()
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default boolean to return if the property cannot be calculated as a boolean
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to bool
      * \see value()
      * \see valueAsString()
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     /**
      * Prepares the collection against a specified expression context. Calling prepare before evaluating the
      * collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
-     * Returns true if preparation was successful.
+     * Returns TRUE if preparation was successful.
      */
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
@@ -209,21 +209,21 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
     /**
-     * Returns true if the collection contains an active property with the specified key.
+     * Returns TRUE if the collection contains an active property with the specified key.
      * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      */
     virtual bool isActive( int key ) const = 0;
 
     /**
-     * Returns true if the collection has any active properties, or false if all properties
+     * Returns TRUE if the collection has any active properties, or FALSE if all properties
      * within the collection are deactivated.
      * \see hasDynamicProperties()
      */
     virtual bool hasActiveProperties() const = 0;
 
     /**
-     * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
+     * Returns TRUE if the collection has any active, non-static properties, or FALSE if either all non-static properties
      * within the collection are deactivated or if the collection only contains static properties.
      * \see hasActiveProperties()
      */
@@ -428,7 +428,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     QgsPropertyCollection *collection( const QString &name );
 
     /**
-     * Returns true if the collection has any active properties, or false if all properties
+     * Returns TRUE if the collection has any active properties, or FALSE if all properties
      * within the collection are deactivated.
      * \see isActive()
      * \see hasDynamicProperties()
@@ -436,14 +436,14 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     bool hasActiveProperties() const override;
 
     /**
-     * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
+     * Returns TRUE if the collection has any active, non-static properties, or FALSE if either all non-static properties
      * within the collection are deactivated or if the collection only contains static properties.
      * \see hasActiveProperties()
      */
     bool hasDynamicProperties() const override;
 
     /**
-     * Returns true if the stack contains an active property with the specified key.
+     * Returns TRUE if the stack contains an active property with the specified key.
      * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \see hasActiveProperties()

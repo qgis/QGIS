@@ -51,9 +51,9 @@ Returns the map layer associated with this node.
 
 .. warning::
 
-   This can be (and often is!) a None, e.g. in the case of a layer node representing a layer
+   This can be (and often is!) ``None``, e.g. in the case of a layer node representing a layer
    which has not yet been fully loaded into a project, or a layer node representing a layer
-   with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing a None.
+   with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing ``None``.
 
 .. seealso:: :py:func:`layerId`
 %End

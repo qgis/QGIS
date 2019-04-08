@@ -128,6 +128,7 @@ class merge(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
         if self.parameterAsBool(parameters, self.PCT, context):
@@ -165,8 +166,11 @@ class merge(GdalAlgorithm):
         arguments.append('--optfile')
         arguments.append(list_file)
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

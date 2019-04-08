@@ -71,7 +71,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     bool tileMode() const;
 
     /**
-     * Returns true if the "add to canvas" checkbox is checked.
+     * Returns TRUE if the "add to canvas" checkbox is checked.
      *
      * \see setAddToCanvas()
      */

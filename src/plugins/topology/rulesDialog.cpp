@@ -174,7 +174,7 @@ void rulesDialog::showControls( const QString &testName )
       }
 
 
-      if ( v1->type() == QgsMapLayer::VectorLayer )
+      if ( v1->type() == QgsMapLayerType::VectorLayer )
       {
         if ( topologyRule.layer2AcceptsType( v1->geometryType() ) )
         {
@@ -317,7 +317,7 @@ void rulesDialog::initGui()
     qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes
-    if ( v1->type() == QgsMapLayer::VectorLayer )
+    if ( v1->type() == QgsMapLayerType::VectorLayer )
     {
       mLayer1Box->addItem( v1->name(), v1->id() );
     }

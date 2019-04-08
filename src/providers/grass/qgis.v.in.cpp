@@ -55,7 +55,8 @@ void writePoint( struct Map_info *map, int type, const QgsPointXY &point, struct
 void writePolyline( struct Map_info *map, int type, const QgsPolylineXY &polyline, struct line_cats *cats )
 {
   Vect_reset_line( gLine );
-  Q_FOREACH ( const QgsPointXY &point, polyline )
+  const auto constPolyline = polyline;
+  for ( const QgsPointXY &point : constPolyline )
   {
     Vect_append_point( gLine, point.x(), point.y(), 0 );
   }
@@ -259,7 +260,8 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::MultiPoint )
       {
         QgsMultiPointXY multiPoint = geometry.asMultiPoint();
-        Q_FOREACH ( const QgsPointXY &point, multiPoint )
+        const auto constMultiPoint = multiPoint;
+        for ( const QgsPointXY &point : constMultiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
         }
@@ -272,7 +274,8 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::MultiLineString )
       {
         QgsMultiPolylineXY multiPolyline = geometry.asMultiPolyline();
-        Q_FOREACH ( const QgsPolylineXY &polyline, multiPolyline )
+        const auto constMultiPolyline = multiPolyline;
+        for ( const QgsPolylineXY &polyline : constMultiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
         }
@@ -280,7 +283,8 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::Polygon )
       {
         QgsPolygonXY polygon = geometry.asPolygon();
-        Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
+        const auto constPolygon = polygon;
+        for ( const QgsPolylineXY &polyline : constPolygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
         }
@@ -288,9 +292,11 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::MultiPolygon )
       {
         QgsMultiPolygonXY multiPolygon = geometry.asMultiPolygon();
-        Q_FOREACH ( const QgsPolygonXY &polygon, multiPolygon )
+        const auto constMultiPolygon = multiPolygon;
+        for ( const QgsPolygonXY &polygon : constMultiPolygon )
         {
-          Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
+          const auto constPolygon = polygon;
+          for ( const QgsPolylineXY &polyline : constPolygon )
           {
             writePolyline( map, GV_BOUNDARY, polyline, cats );
           }
@@ -423,7 +429,8 @@ int main( int argc, char **argv )
       }
 
       QList<QgsFeatureId> idList = spatialIndex.intersects( feature.geometry().boundingBox() );
-      Q_FOREACH ( QgsFeatureId id, idList )
+      const auto constIdList = idList;
+      for ( QgsFeatureId id : constIdList )
       {
         QgsFeature &centroid = centroids[id];
         if ( feature.geometry().contains( centroid.geometry() ) )
@@ -451,7 +458,8 @@ int main( int argc, char **argv )
       if ( it.value().attributes().size() > 0 )
       {
         Vect_reset_cats( cats );
-        Q_FOREACH ( const QVariant &attribute, it.value().attributes() )
+        const auto constAttributes = it.value().attributes();
+        for ( const QVariant &attribute : constAttributes )
         {
           Vect_cat_set( cats, 1, attribute.toInt() );
         }

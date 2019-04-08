@@ -38,6 +38,88 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 3.6.0 'Noosa'? =
+
+This release has following new features:
+
+- Map Tools: Title label decoration
+- Map Tools: Top/bottom centering placement for decoration items
+- Map Tools: Vertex tool fixes and improvements
+- Map Tools: Identify tool supports mesh layers
+- Expressions: New Expression Functions
+- Expressions: Square brackets to easily access map array elements
+- Expressions: New map expression variables
+- User Interface: A new grayscale theme, "blend of gray"
+- User Interface: Multiline selections and editing in code/expression editors
+- Symbology: Better handling of .XML style libraries
+- Symbology: Optionally force right-hand-rule during polygon symbol rendering
+- Symbology: Option for simple lines and marker lines to only render exterior ring or interior rings
+- Symbology: Raster image marker
+- Symbology: Raster fill can have images set to remote URLs or embedded images
+- Symbology: Use represention values for classified renderers
+- Symbology: Option to merge categories in categorized renderer
+- Symbology: Show Project Colors in color bound data defined buttons
+- Symbology: Style manager dialog improvements
+- Digitising: Georeferencer enhancements
+- Digitising: New option to avoid minimizing georeferencer when adding points
+- Data Management: Comment option in db manager
+- Forms and Widgets: New form widget for binary (blob) fields
+- Map Composer: Grid frame improvements
+- Map Composer: Improved handling of text and label export
+- Map Composer: Map labeling improvements
+- Map Composer: Rework of map item extent/scale shortcuts
+- Map Composer: Layout items can "block" map labels
+- Map Composer: Warnings on exports
+- Map Composer: Control over stacking position of map overview extents
+- Map Composer: New expression variables for legend items
+- Map Composer: Expressions inside legend item text
+- Analysis Tools: Hardware acceleration for raster calculator
+- Processing: New algorithm "Remove duplicates by attribute"
+- Processing: Explode HStore algorithm
+- Processing: Force right-hand-rule
+- Processing: Extract Binary Field algorithm
+- Processing: Split Lines by Maximum Length algorithm
+- Processing: New parameter type for authentication config
+- Processing:  resampling and format options in the gdaladdo algorithm
+- Processing: Raster zonal stats algorithm
+- Processing: Extract Z values and Extract M values algorithms
+- Processing: Geodesic line split at antimeridian algorithm
+- Processing: Geodesic mode for "Join by Lines (Hub lines)" algorithm
+- Processing: Raster Surface Volume algorithm
+- Processing: Resurrected model to Python script functionality
+- Application and Project Options: Delete settings from the Advanced tab in options
+- Browser: Add "export to file" options for raster and vector layers within the browser
+- Browser: Native file/folder properties
+- Browser: Preview layers and attributes
+- Browser: Explore QGS/QGZ project files in the browser
+- Browser: Directly Create Geopackage and Shapefiles
+- Browser: Open Terminal at Path
+- General: Improved "missing layer" handling on project load
+- General: Optional setting for disabling version checks
+- General: Add a toggle action to vector layer legend items
+- Data Providers: Open service info for ArcGIS Feature Server layers
+- Data Providers: Binary blob support for OGR providers
+- Data Providers: ArcGIS Feature Server picture marker and picture fill support
+- Data Providers: ArcGIS Feature Server labeling support
+- Data Providers: Boolean and binary field support for memory layers
+- Data Providers: JSON Support for GeoPackage
+- Data Providers: Postgres provider: save primary key selection
+- QGIS Server: Possibility to set ATLAS_PK in GetPrint request to print atlas sheet(s)
+- QGIS Server: WMTS tile matrices configuration
+- Programmability: New class QgsExifTools
+- Programmability: Iterate over parts of a QgsGeometry
+- Programmability: Improved QgsLineString PyQGIS API
+- Programmability: PyQGIS Geometry Collection API improvements
+- Programmability: Easier Processing algorithm creation via @alg decorator
+- Programmability: Blocking (non-async) network requests
+- Programmability: Custom validity checks on layout exports
+- Programmability: API for calculating Geodesic lines
+- 3D Features: Terrain shading
+- 3D Features: Configuration of lights in 3D map scenes
+- 3D Features: Rule-based 3D renderer
+-
+
+
 = What's new in Version 3.4-LTR 'Madeira'? =
 
 This release has following new features:

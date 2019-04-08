@@ -25,13 +25,15 @@ Ownership is transferred to the caller.
 %End
 
     virtual QgsRectangle boundingBox() const;
-%Docstring
-Returns the minimal bounding box for the geometry
-%End
+
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
+
 
   protected:
 
     virtual void clearCache() const;
+
 
 };
 

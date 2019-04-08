@@ -157,7 +157,7 @@ Be sure to return a NULL QVariant if it should be set to NULL.
 
     virtual bool applyDirectly() = 0;
 %Docstring
-If this is true, then this search widget should take effect directly
+If this is ``True``, then this search widget should take effect directly
 when its expression changes
 %End
 
@@ -201,7 +201,7 @@ Clears the widget's current value and resets it back to the default state
 %Docstring
 Toggles whether the search widget is enabled or disabled.
 
-:param enabled: set to true to enable widget
+:param enabled: set to ``True`` to enable widget
 %End
 
   signals:

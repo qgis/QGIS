@@ -41,12 +41,12 @@ class CORE_EXPORT QgsRasterIterator
     QgsRasterIterator( QgsRasterInterface *input );
 
     /**
-     * Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
+     * Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns FALSE.
      * \param bandNumber number of raster band to read
      * \param nCols number of columns
      * \param nRows number of rows
      * \param extent area to read
-     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr );
 
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param topLeftColumn top left column
      * \param topLeftRow top left row
      * \param blockExtent exact extent of returned raster block
-     * \returns false if the last part was already returned
+     * \returns FALSE if the last part was already returned
      *
      * \since QGIS 3.6
     */
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param block address of block pointer
      * \param topLeftCol top left column
      * \param topLeftRow top left row
-     * \returns false if the last part was already returned
+     * \returns FALSE if the last part was already returned
     */
     bool readNextRasterPart( int bandNumber,
                              int &nCols, int &nRows,
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param topLeftCol top left column
      * \param topLeftRow top left row
      * \param blockExtent optional storage for exact extent of returned raster block
-     * \returns false if the last part was already returned
+     * \returns FALSE if the last part was already returned
      * \note Not available in Python bindings
      * \since QGIS 3.2
     */

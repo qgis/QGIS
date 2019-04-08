@@ -55,7 +55,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
-     * Returns the active render widget. Can be null.
+     * Returns the active render widget. Can be NULLPTR.
      */
     QgsRasterRendererWidget *currentRenderWidget() { return mRendererWidget; }
 

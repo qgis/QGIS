@@ -1,0 +1,334 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/expression/qgsexpressioncontextutils.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsExpressionContextUtils
+{
+%Docstring
+Contains utilities for working with QgsExpressionContext objects, including methods
+for creating scopes for specific uses (e.g., project scopes, layer scopes).
+
+.. versionadded:: 2.12
+%End
+
+%TypeHeaderCode
+#include "qgsexpressioncontextutils.h"
+%End
+  public:
+
+    static QgsExpressionContextScope *globalScope() /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to the global QGIS context.
+For instance, QGIS version numbers and variables specified through QGIS options.
+
+.. seealso:: :py:func:`setGlobalVariable`
+%End
+
+    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) /Factory/;
+%Docstring
+Creates a new scope which contains functions and variables from the current attribute form/table ``feature``.
+The variables and values in this scope will reflect the current state of the form/row being edited.
+The ``formMode`` (SingleEditMode etc.) is passed as text
+
+.. versionadded:: 3.2
+%End
+
+    static void setGlobalVariable( const QString &name, const QVariant &value );
+%Docstring
+Sets a global context variable. This variable will be contained within scopes retrieved via
+globalScope().
+
+:param name: variable name
+:param value: variable value
+
+.. seealso:: :py:func:`setGlobalVariable`
+
+.. seealso:: :py:func:`globalScope`
+
+.. seealso:: :py:func:`removeGlobalVariable`
+%End
+
+    static void setGlobalVariables( const QVariantMap &variables );
+%Docstring
+Sets all global context variables. Existing global variables will be removed and replaced
+with the variables specified.
+
+:param variables: new set of global variables
+
+.. seealso:: :py:func:`setGlobalVariable`
+
+.. seealso:: :py:func:`globalScope`
+
+.. seealso:: :py:func:`removeGlobalVariable`
+%End
+
+    static void removeGlobalVariable( const QString &name );
+%Docstring
+Remove a global context variable.
+
+:param name: variable name
+
+.. seealso:: :py:func:`setGlobalVariable`
+
+.. seealso:: :py:func:`setGlobalVariables`
+
+.. seealso:: :py:func:`globalScope`
+%End
+
+    static QgsExpressionContextScope *projectScope( const QgsProject *project ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a QGIS project.
+For instance, project path and title, and variables specified through the project properties.
+
+:param project: What project to use
+
+.. seealso:: :py:func:`setProjectVariable`
+%End
+
+    static void setProjectVariable( QgsProject *project, const QString &name, const QVariant &value );
+%Docstring
+Sets a project context variable. This variable will be contained within scopes retrieved via
+projectScope().
+
+:param project: Project to apply changes to
+:param name: variable name
+:param value: variable value
+
+.. seealso:: :py:func:`setProjectVariables`
+
+.. seealso:: :py:func:`removeProjectVariable`
+
+.. seealso:: :py:func:`projectScope`
+%End
+
+    static void setProjectVariables( QgsProject *project, const QVariantMap &variables );
+%Docstring
+Sets all project context variables. Existing project variables will be removed and replaced
+with the variables specified.
+
+:param project: Project to apply changes to
+:param variables: new set of project variables
+
+.. seealso:: :py:func:`setProjectVariable`
+
+.. seealso:: :py:func:`removeProjectVariable`
+
+.. seealso:: :py:func:`projectScope`
+%End
+
+    static void removeProjectVariable( QgsProject *project, const QString &name );
+%Docstring
+Remove project context variable.
+
+:param project: Project to apply changes to
+:param name: variable name
+
+.. seealso:: :py:func:`setProjectVariable`
+
+.. seealso:: :py:func:`setProjectVariables`
+
+.. seealso:: :py:func:`projectScope`
+%End
+
+    static QgsExpressionContextScope *layerScope( const QgsMapLayer *layer ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsMapLayer`.
+For instance, layer name, id and fields.
+%End
+
+    static QList<QgsExpressionContextScope *> globalProjectLayerScopes( const QgsMapLayer *layer ) /Factory/;
+%Docstring
+Creates a list of three scopes: global, layer's project and layer.
+
+.. versionadded:: 3.0
+%End
+
+    static void setLayerVariable( QgsMapLayer *layer, const QString &name, const QVariant &value );
+%Docstring
+Sets a layer context variable. This variable will be contained within scopes retrieved via
+layerScope().
+
+:param layer: map layer
+:param name: variable name
+:param value: variable value
+
+.. seealso:: :py:func:`setLayerVariables`
+
+.. seealso:: :py:func:`layerScope`
+%End
+
+    static void setLayerVariables( QgsMapLayer *layer, const QVariantMap &variables );
+%Docstring
+Sets all layer context variables. Existing layer variables will be removed and replaced
+with the variables specified.
+
+:param layer: map layer
+:param variables: new set of layer variables
+
+.. seealso:: :py:func:`setLayerVariable`
+
+.. seealso:: :py:func:`layerScope`
+%End
+
+    static QgsExpressionContextScope *mapSettingsScope( const QgsMapSettings &mapSettings ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
+For instance, map scale and rotation.
+%End
+
+    static QgsExpressionContextScope *mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches ) /Factory/;
+%Docstring
+Sets the expression context variables which are available for expressions triggered by
+a map tool capture like add feature.
+
+.. versionadded:: 3.0
+%End
+
+    static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = 0 );
+%Docstring
+Updates a symbol scope related to a QgsSymbol to an expression context.
+
+:param symbol: symbol to extract properties from
+:param symbolScope: pointer to an existing scope to update
+
+.. versionadded:: 2.14
+%End
+
+    static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayout` ``layout``.
+For instance, number of pages and page sizes.
+
+.. versionadded:: 3.0
+%End
+
+    static void setLayoutVariable( QgsLayout *layout, const QString &name, const QVariant &value );
+%Docstring
+Sets a layout context variable. This variable will be contained within scopes retrieved via
+layoutScope().
+
+:param layout: target layout
+:param name: variable name
+:param value: variable value
+
+.. seealso:: :py:func:`setLayoutVariables`
+
+.. seealso:: :py:func:`layoutScope`
+
+.. versionadded:: 3.0
+%End
+
+    static void setLayoutVariables( QgsLayout *layout, const QVariantMap &variables );
+%Docstring
+Sets all layout context variables. Existing layout variables will be removed and replaced
+with the variables specified.
+
+:param layout: target layout
+:param variables: new set of layer variables
+
+.. seealso:: :py:func:`setLayoutVariable`
+
+.. seealso:: :py:func:`layoutScope`
+
+.. versionadded:: 3.0
+%End
+
+    static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutAtlas`.
+For instance, current page name and number.
+
+:param atlas: source atlas. If ``None``, a set of default atlas variables will be added to the scope.
+%End
+
+    static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutItem`.
+For instance, item size and position.
+
+.. seealso:: :py:func:`setLayoutItemVariable`
+
+.. seealso:: :py:func:`setLayoutItemVariables`
+
+.. versionadded:: 3.0
+%End
+
+    static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );
+%Docstring
+Sets a layout ``item`` context variable, with the given ``name`` and ``value``.
+This variable will be contained within scopes retrieved via
+layoutItemScope().
+
+.. seealso:: :py:func:`setLayoutItemVariables`
+
+.. seealso:: :py:func:`layoutItemScope`
+
+.. versionadded:: 3.0
+%End
+
+    static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
+%Docstring
+Sets all layout item context variables for an ``item``. Existing variables will be removed and replaced
+with the ``variables`` specified.
+
+.. seealso:: :py:func:`setLayoutItemVariable`
+
+.. seealso:: :py:func:`layoutItemScope`
+
+.. versionadded:: 3.0
+%End
+
+    static QgsExpressionContext createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields );
+%Docstring
+Helper function for creating an expression context which contains just a feature and fields
+collection. Generally this method should not be used as the created context does not include
+standard scopes such as the global and project scopes.
+%End
+
+    static QgsExpressionContextScope *processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a processing ``algorithm``,
+when used with the specified ``parameters`` and ``context``.
+For instance, algorithm name and parameter functions.
+
+.. seealso:: :py:func:`processingModelAlgorithmScope`
+%End
+
+    static QgsExpressionContextScope *processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QVariantMap &parameters, QgsProcessingContext &context ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a processing ``model`` algorithm,
+when used with the specified ``parameters`` and ``context``.
+For instance, model name and path variables.
+
+.. versionadded:: 3.6
+%End
+
+    static QgsExpressionContextScope *notificationScope( const QString &message = QString() ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to provider notifications
+
+:param message: the notification message
+%End
+
+    static void registerContextFunctions();
+%Docstring
+Registers all known core functions provided by QgsExpressionContextScope objects.
+%End
+
+      public:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/expression/qgsexpressioncontextutils.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -41,7 +41,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
     /**
      * create a highlight widget implementation for the proper widget type.
      * For instance a QgsOptionsDialogHighlightButton for button.
-     * \return a QgsOptionsDialogHighlightWidget or a nullptr if there is no implementation
+     * \return a QgsOptionsDialogHighlightWidget or NULLPTR if there is no implementation
      * for the given widget.
      */
     static QgsOptionsDialogHighlightWidget *createWidget( QWidget *widget ) SIP_FACTORY;
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
 
     /**
      * search for a text pattern and highlight the widget if the text is found
-     * \returns true if the text pattern is found
+     * \returns TRUE if the text pattern is found
      */
     bool searchHighlight( const QString &text );
 
@@ -69,13 +69,13 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
   protected:
 
     /**
-     * Search for the \a text in the widget and return true if it was found
+     * Search for the \a text in the widget and return TRUE if it was found
      */
     virtual bool searchText( const QString &text ) = 0;
 
     /**
      * Highlight the \a text in the widget.
-     * \return true if the text could be highlighted.
+     * \return TRUE if the text could be highlighted.
      */
     virtual bool highlightText( const QString &text ) = 0;
 

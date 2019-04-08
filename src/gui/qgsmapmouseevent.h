@@ -74,10 +74,10 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     QgsPointXY snapPoint();
 
     /**
-     * Returns true if there is a snapped point cached.
+     * Returns TRUE if there is a snapped point cached.
      * Will only be useful after snapPoint has previously been called.
      *
-     * \returns True if there is a snapped point cached.
+     * \returns TRUE if there is a snapped point cached.
      */
     bool isSnapped() const { return mSnapMatch.isValid(); }
 

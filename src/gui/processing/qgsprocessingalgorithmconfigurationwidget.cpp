@@ -21,3 +21,28 @@ QgsProcessingAlgorithmConfigurationWidget::QgsProcessingAlgorithmConfigurationWi
   : QWidget( parent )
 {
 }
+
+void QgsProcessingAlgorithmConfigurationWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  mWidgetContext = context;
+}
+
+const QgsProcessingParameterWidgetContext &QgsProcessingAlgorithmConfigurationWidget::widgetContext() const
+{
+  return mWidgetContext;
+}
+
+void QgsProcessingAlgorithmConfigurationWidget::setAlgorithm( const QgsProcessingAlgorithm *algorithm )
+{
+  mAlgorithm = algorithm;
+}
+
+void QgsProcessingAlgorithmConfigurationWidget::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  mContextGenerator = generator;
+}
+
+QgsExpressionContext QgsProcessingAlgorithmConfigurationWidget::createExpressionContext() const
+{
+  return QgsProcessingGuiUtils::createExpressionContext( mContextGenerator, mWidgetContext, mAlgorithm, nullptr );
+}

@@ -59,7 +59,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 
     //! Returns camera controller
     QgsCameraController *cameraController() { return mCameraController; }
-    //! Returns terrain entity
+    //! Returns terrain entity (may be temporarily NULLPTR)
     QgsTerrainEntity *terrainEntity() { return mTerrain; }
 
     //! Resets camera view to show the whole scene (top view)
@@ -107,7 +107,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onBackgroundColorChanged();
     void onLayerEntityPickEvent( Qt3DRender::QPickEvent *event );
     void updateLights();
-
+    void updateCameraLens();
   private:
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );

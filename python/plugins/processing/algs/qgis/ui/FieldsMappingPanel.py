@@ -87,6 +87,7 @@ class FieldsMappingModel(QAbstractTableModel):
         self._mapping = []
         self._layer = None
         self.configure()
+        self._generator = None
 
     def configure(self):
         self.columns = [{
@@ -126,7 +127,12 @@ class FieldsMappingModel(QAbstractTableModel):
         self._mapping = value
         self.endResetModel()
 
+    def setContextGenerator(self, generator):
+        self._generator = generator
+
     def contextGenerator(self):
+        if self._generator:
+            return self._generator
         if self._layer:
             return self._layer
         return QgsProject.instance()
@@ -319,6 +325,9 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.setDelegate('expression', ExpressionDelegate(self))
         self.setDelegate('type', FieldTypeDelegate(self))
 
+    def setContextGenerator(self, generator):
+        self.model.setContextGenerator(generator)
+
     def setDelegate(self, column_name, delegate):
         self.fieldsView.setItemDelegateForColumn(
             self.model.columnIndex(column_name),
@@ -488,6 +497,8 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
         self.panel = self.createPanel()
         self.panel.dialogType = self.dialogType
 
+        self.panel.setContextGenerator(self)
+
         if self.dialogType == DIALOG_MODELER:
             self.combobox = QComboBox()
             self.combobox.addItem(QCoreApplication.translate('Processing', '[Preconfigure]'), None)
@@ -541,6 +552,9 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
             layer = None
         self._layer = layer
         self.panel.setLayer(self._layer)
+
+    def linkedVectorLayer(self):
+        return self._layer
 
     def setValue(self, value):
         self.panel.setValue(value)

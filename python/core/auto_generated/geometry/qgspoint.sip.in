@@ -371,6 +371,8 @@ M value is preserved.
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
 

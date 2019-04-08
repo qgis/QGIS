@@ -157,7 +157,8 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
 {
   if ( QgsLayerTree::isGroup( node ) )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
+    const auto constChildren = QgsLayerTree::toGroup( node )->children();
+    for ( QgsLayerTreeNode *child : constChildren )
       _addLayerTreeNodeToUriList( child, uris );
   }
   else if ( QgsLayerTree::isLayer( node ) )
@@ -174,7 +175,7 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
 
     switch ( layer->type() )
     {
-      case QgsMapLayer::VectorLayer:
+      case QgsMapLayerType::VectorLayer:
       {
         uri.layerType = QStringLiteral( "vector" );
         if ( uri.providerKey == QStringLiteral( "memory" ) )
@@ -186,14 +187,14 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
         }
         break;
       }
-      case QgsMapLayer::RasterLayer:
+      case QgsMapLayerType::RasterLayer:
       {
         uri.layerType = QStringLiteral( "raster" );
         break;
       }
 
-      case QgsMapLayer::MeshLayer:
-      case QgsMapLayer::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::PluginLayer:
       {
         // plugin layers do not have a standard way of storing their URI...
         return;
@@ -206,7 +207,8 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
 QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes )
 {
   UriList uris;
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+  const auto constNodes = nodes;
+  for ( QgsLayerTreeNode *node : constNodes )
     _addLayerTreeNodeToUriList( node, uris );
   return uriListToByteArray( uris );
 }
@@ -216,7 +218,8 @@ QString QgsMimeDataUtils::encode( const QStringList &items )
   QString encoded;
   // Do not escape colon twice
   QRegularExpression re( "(?<!\\\\):" );
-  Q_FOREACH ( const QString &item, items )
+  const auto constItems = items;
+  for ( const QString &item : constItems )
   {
     QString str = item;
     str.replace( '\\', QLatin1String( "\\\\" ) );
@@ -231,7 +234,8 @@ QStringList QgsMimeDataUtils::decode( const QString &encoded )
   QStringList items;
   QString item;
   bool inEscape = false;
-  Q_FOREACH ( QChar c, encoded )
+  const auto constEncoded = encoded;
+  for ( QChar c : constEncoded )
   {
     if ( c == '\\' && inEscape )
     {
@@ -262,7 +266,8 @@ QByteArray QgsMimeDataUtils::uriListToByteArray( const QgsMimeDataUtils::UriList
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  Q_FOREACH ( const Uri &u, layers )
+  const auto constLayers = layers;
+  for ( const Uri &u : constLayers )
   {
     stream << u.data();
   }

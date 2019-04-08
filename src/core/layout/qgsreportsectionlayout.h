@@ -63,7 +63,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
     void setBody( QgsLayout *body SIP_TRANSFER ) { mBody.reset( body ); }
 
     /**
-     * Returns true if the body for the section is enabled.
+     * Returns TRUE if the body for the section is enabled.
      * \see setBodyEnabled()
      * \see body()
      * \see setBody()

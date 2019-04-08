@@ -218,7 +218,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = nullptr ) const override;
     double area( QString *errorMsg = nullptr ) const override;
     double length( QString *errorMsg = nullptr ) const override;
-    bool isValid( QString *errorMsg = nullptr ) const override;
+    bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr ) const override;
     bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param joinStyle join style for corners ( Round (1) / Miter (2) / Bevel (3) )
      * \param miterLimit limit on the miter ratio used for very sharp corners
      * \param errorMsg error messages emitted, if any
-     * \returns buffered geometry, or an nullptr if buffer could not be
+     * \returns buffered geometry, or an NULLPTR if buffer could not be
      * calculated
      * \since QGIS 3.0
      */
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * OR the envelope surrounding all input nodes.
      * The \a tolerance parameter specifies an optional snapping tolerance which can
      * be used to improve the robustness of the diagram calculation.
-     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
      * \since QGIS 3.0
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Returns the Delaunay triangulation for the vertices of the geometry.
      * The \a tolerance parameter specifies an optional snapping tolerance which can
      * be used to improve the robustness of the triangulation.
-     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
      * \since QGIS 3.0

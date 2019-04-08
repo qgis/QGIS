@@ -190,8 +190,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     //! Convert a QgsField to work with Oracle
     static bool convertField( QgsField &field );
 
-    QgsFields mAttributeFields;  //! List of fields
-    QVariantList mDefaultValues; //! List of default values
+    QgsFields mAttributeFields;  //!< List of fields
+    QVariantList mDefaultValues; //!< List of default values
     QString mDataComment;
 
     //! Data source URI struct for this layer
@@ -238,14 +238,14 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QList<int> mPrimaryKeyAttrs;
     QString mPrimaryKeyDefault;
 
-    QString mGeometryColumn;           //! name of the geometry column
-    mutable QgsRectangle mLayerExtent; //! Rectangle that contains the extent (bounding box) of the layer
-    mutable long mFeaturesCounted;     //! Number of features in the layer
-    int mSrid;                         //! srid of column
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //! capabilities of layer
+    QString mGeometryColumn;           //!< Name of the geometry column
+    mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer
+    mutable long mFeaturesCounted;     //!< Number of features in the layer
+    int mSrid;                         //!< Srid of column
+    QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //!< Capabilities of layer
 
-    QgsWkbTypes::Type mDetectedGeomType;   //! geometry type detected in the database
-    QgsWkbTypes::Type mRequestedGeomType;  //! geometry type requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType;   //!< Geometry type detected in the database
+    QgsWkbTypes::Type mRequestedGeomType;  //!< Geometry type requested in the uri
 
     bool getGeometryDetails();
 
@@ -299,12 +299,12 @@ class QgsOracleProvider : public QgsVectorDataProvider
     static QString quotedIdentifier( QString ident ) { return QgsOracleConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid ) { return QgsOracleConn::quotedValue( value, type ); }
 
-    QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
-    QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
+    QMap<QVariant, QgsFeatureId> mKeyToFid;  //!< Map key values to feature id
+    QMap<QgsFeatureId, QVariant> mFidToKey;  //!< Map feature back to fea
     QgsOracleConn *mConnection = nullptr;
 
-    bool mHasSpatialIndex;                   //! Geometry column is indexed
-    QString mSpatialIndexName;               //! name of spatial index of geometry column
+    bool mHasSpatialIndex;                   //!< Geometry column is indexed
+    QString mSpatialIndexName;               //!< Name of spatial index of geometry column
 
     std::shared_ptr<QgsOracleSharedData> mShared;
 

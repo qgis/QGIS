@@ -24,6 +24,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmeshtimesettings.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -96,7 +97,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      */
     struct LayerOptions
     {
-      int unused;  //! @todo remove me once there are actual members here (breaks SIP <4.19)
+      int unused;  //!< @todo remove me once there are actual members here (breaks SIP <4.19)
     };
 
     /**
@@ -139,35 +140,35 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString providerType() const;
 
     /**
-     * Returns native mesh (nullptr before rendering)
+     * Returns native mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
     QgsMesh *nativeMesh() SIP_SKIP;
 
     /**
-     * Returns native mesh (nullptr before rendering)
+     * Returns native mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
     const QgsMesh *nativeMesh() const SIP_SKIP;
 
     /**
-     * Returns triangular mesh (nullptr before rendering)
+     * Returns triangular mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
     QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
     /**
-     * Returns triangular mesh (nullptr before rendering)
+     * Returns triangular mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
     const QgsTriangularMesh *triangularMesh() const SIP_SKIP;
 
     /**
-     * Returns native mesh (nullptr before rendering)
+     * Returns native mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
@@ -177,6 +178,28 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshRendererSettings rendererSettings() const;
     //! Sets new renderer settings
     void setRendererSettings( const QgsMeshRendererSettings &settings );
+
+    /**
+     * Returns time format settings
+     *
+     * \since QGIS 3.8
+     */
+    QgsMeshTimeSettings timeSettings() const;
+
+    /**
+     * Sets time format settings
+     *
+     * \since QGIS 3.8
+     */
+    void setTimeSettings( const QgsMeshTimeSettings &settings );
+
+    /**
+     * Returns (date) time in hours formatted to human readable form
+     * \param hours time in double in hours
+     * \returns formatted time string
+     * \since QGIS 3.8
+     */
+    QString formatTime( double hours );
 
     /**
       * Interpolates the value on the given point from given dataset.
@@ -211,10 +234,17 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      */
     void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
 
+    /**
+     * Emitted when time format is changed
+     *
+     * \since QGIS 3.8
+     */
+    void timeSettingsChanged( );
+
   private: // Private methods
 
     /**
-     * Returns true if the provider is in read-only mode
+     * Returns TRUE if the provider is in read-only mode
      */
     bool isReadOnly() const override {return true;}
 
@@ -252,6 +282,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Renderer configuration
     QgsMeshRendererSettings mRendererSettings;
+
+    //! Time format configuration
+    QgsMeshTimeSettings mTimeSettings;
 };
 
 #endif //QGSMESHLAYER_H

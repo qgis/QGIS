@@ -222,7 +222,7 @@ class CORE_EXPORT QgsPointXY
      * Compares this point with another point with a fuzzy tolerance
      * \param other point to compare with
      * \param epsilon maximum difference for coordinates between the points
-     * \returns true if points are equal within specified tolerance
+     * \returns TRUE if points are equal within specified tolerance
      * \since QGIS 2.9
      */
     bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsPointXY
 
     friend uint qHash( const QgsPointXY &pnt );
 
-}; // class QgsPoint
+}; // class QgsPointXY
 
 Q_DECLARE_METATYPE( QgsPointXY )
 

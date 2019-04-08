@@ -111,7 +111,7 @@ class CORE_EXPORT QgsContrastEnhancement
     int enhanceContrast( double value );
 
     /**
-     * Returns true if a pixel \a value is in displayable range, false if pixel
+     * Returns TRUE if a pixel \a value is in displayable range, FALSE if pixel
      * is outside of range (i.e. clipped).
      */
     bool isValueInDisplayableRange( double value );
@@ -158,6 +158,15 @@ class CORE_EXPORT QgsContrastEnhancement
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
     void readXml( const QDomElement &elem );
+
+    /**
+     * Write ContrastEnhancement tags following SLD v1.0 specs
+     * SLD1.0 is limited to the parameters listed in:
+     * https://docs.geoserver.org/stable/en/user/styling/sld/reference/rastersymbolizer.html#contrastenhancement
+     * Btw only sld:Normalize + vendor options are supported because there is no clear mapping
+     * of ContrastEnhancement parameters to support sld:Histogram or sld:GammaValue
+     * \since QGIS 3.6  */
+    void toSld( QDomDocument &doc, QDomElement &element ) const;
 
   private:
 #ifdef SIP_RUN

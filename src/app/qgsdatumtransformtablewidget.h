@@ -44,7 +44,6 @@ class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
     };
 
     QgsDatumTransformTableModel( QObject *parent = nullptr );
-    ~QgsDatumTransformTableModel() {}
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
@@ -95,6 +94,10 @@ class APP_EXPORT QgsDatumTransformTableWidget : public QWidget, private Ui::QgsD
 
     //! edit currently selected datum transform
     void editDatumTransform();
+
+  private slots:
+
+    void selectionChanged( const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection() );
 
   private:
     QgsDatumTransformTableModel *mModel = nullptr;

@@ -40,6 +40,7 @@
 #include "qgsrectangle.h"
 #include "qgsspatialindex.h"
 #include "qgis.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsproviderregistry.h"
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -900,7 +901,8 @@ void QgsDelimitedTextProvider::clearInvalidLines() const
 
 bool QgsDelimitedTextProvider::recordIsEmpty( QStringList &record )
 {
-  Q_FOREACH ( const QString &s, record )
+  const auto constRecord = record;
+  for ( const QString &s : constRecord )
   {
     if ( ! s.isEmpty() )
       return false;
@@ -926,7 +928,8 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
   {
     QString tag( QStringLiteral( "DelimitedText" ) );
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
-    Q_FOREACH ( const QString &message, messages )
+    const auto constMessages = messages;
+    for ( const QString &message : constMessages )
     {
       QgsMessageLog::logMessage( message, tag );
     }
@@ -945,7 +948,8 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( tr( "Delimited text file errors" ) );
       output->setMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), QgsMessageOutput::MessageText );
-      Q_FOREACH ( const QString &message, messages )
+      const auto constMessages = messages;
+      for ( const QString &message : constMessages )
       {
         output->appendMessage( message );
       }

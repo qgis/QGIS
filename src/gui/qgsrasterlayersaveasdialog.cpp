@@ -666,7 +666,8 @@ void QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked()
   const QgsRasterTransparency *rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
   if ( !rasterTransparency ) return;
 
-  Q_FOREACH ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel, rasterTransparency->transparentSingleValuePixelList() )
+  const auto constTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
+  for ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel : constTransparentSingleValuePixelList )
   {
     if ( transparencyPixel.percentTransparent == 100 )
     {

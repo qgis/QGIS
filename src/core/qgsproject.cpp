@@ -54,6 +54,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -507,7 +508,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
 
     QgsMapLayer *mapLayer = layer->layer();
-    if ( mapLayer && mapLayer->type() == QgsMapLayer::VectorLayer )
+    if ( mapLayer && mapLayer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -943,30 +944,30 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 {
   QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
-  QgsMapLayer *mapLayer = nullptr;
+  std::unique_ptr<QgsMapLayer> mapLayer;
 
   if ( type == QLatin1String( "vector" ) )
   {
-    mapLayer = new QgsVectorLayer;
+    mapLayer = qgis::make_unique<QgsVectorLayer>();
 
     // apply specific settings to vector layer
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer ) )
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
     {
       vl->setReadExtentFromXml( mTrustLayerMetadata );
     }
   }
   else if ( type == QLatin1String( "raster" ) )
   {
-    mapLayer = new QgsRasterLayer;
+    mapLayer =  qgis::make_unique<QgsRasterLayer>();
   }
   else if ( type == QLatin1String( "mesh" ) )
   {
-    mapLayer = new QgsMeshLayer;
+    mapLayer = qgis::make_unique<QgsMeshLayer>();
   }
   else if ( type == QLatin1String( "plugin" ) )
   {
     QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-    mapLayer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
+    mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
   }
 
   if ( !mapLayer )
@@ -977,13 +978,19 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   Q_CHECK_PTR( mapLayer ); // NOLINT
 
+  // This is tricky: to avoid a leak we need to check if the layer was already in the store
+  // because if it was, the newly created layer will not be added to the store and it would leak.
+  const QString layerId { layerElem.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+  Q_ASSERT( ! layerId.isEmpty() );
+  const bool layerWasStored { layerStore()->mapLayer( layerId ) != nullptr };
+
   // have the layer restore state that is stored in Dom node
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid();
   QList<QgsMapLayer *> newLayers;
-  newLayers << mapLayer;
+  newLayers << mapLayer.get();
   if ( layerIsValid )
   {
-    emit readMapLayer( mapLayer, layerElem );
+    emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
   }
   else
@@ -994,6 +1001,14 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     QgsDebugMsg( "Unable to load " + type + " layer" );
     brokenNodes.push_back( layerElem );
   }
+
+  // It should be safe to delete the layer now if layer was stored, because all the store
+  // had to to was to reset the data source in case the validity changed.
+  if ( ! layerWasStored )
+  {
+    mapLayer.release();
+  }
+
   return layerIsValid;
 }
 
@@ -1420,7 +1435,8 @@ bool QgsProject::readProjectFile( const QString &filename )
 void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
 {
 
-  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
+  const auto constChildren = group->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -1434,7 +1450,8 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
         if ( newGroup )
         {
           QList<QgsLayerTreeNode *> clonedChildren;
-          Q_FOREACH ( QgsLayerTreeNode *newGroupChild, newGroup->children() )
+          const auto constChildren = newGroup->children();
+          for ( QgsLayerTreeNode *newGroupChild : constChildren )
             clonedChildren << newGroupChild->clone();
           delete newGroup;
 
@@ -1512,7 +1529,8 @@ QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
 {
   QList<QgsVectorLayer *> layers;
   QStringList layerIds = readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), QStringList() );
-  Q_FOREACH ( const QString &layerId, layerIds )
+  const auto constLayerIds = layerIds;
+  for ( const QString &layerId : constLayerIds )
   {
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer( layerId ) ) )
       layers << vlayer;
@@ -1523,7 +1541,8 @@ QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
 void QgsProject::setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers )
 {
   QStringList list;
-  Q_FOREACH ( QgsVectorLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsVectorLayer *layer : constLayers )
     list << layer->id();
   writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), list );
   emit avoidIntersectionsLayersChanged();
@@ -1545,7 +1564,8 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
 
   bool tgChanged = false;
 
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
     if ( layer->isValid() )
     {
@@ -1632,7 +1652,8 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
     QVector<QgsVectorLayer *> vectorLayers = layers<QgsVectorLayer *>();
-    Q_FOREACH ( QgsVectorLayer *layer, vectorLayers )
+    const auto constVectorLayers = vectorLayers;
+    for ( QgsVectorLayer *layer : constVectorLayers )
     {
       // TODO: should be only done later - and with all layers (other layers may have referenced this layer)
       layer->resolveReferences( this );
@@ -1846,7 +1867,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( projectLayersNode );
 
   QDomElement layerOrderNode = doc->createElement( QStringLiteral( "layerorder" ) );
-  Q_FOREACH ( QgsMapLayer *layer, mRootGroup->customLayerOrder() )
+  const auto constCustomLayerOrder = mRootGroup->customLayerOrder();
+  for ( QgsMapLayer *layer : constCustomLayerOrder )
   {
     QDomElement mapLayerElem = doc->createElement( QStringLiteral( "layer" ) );
     mapLayerElem.setAttribute( QStringLiteral( "id" ), layer->id() );
@@ -2374,7 +2396,8 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // consider the layers might be identify disabled in its project
-  Q_FOREACH ( const QString &layerId, newGroup->findLayerIds() )
+  const auto constFindLayerIds = newGroup->findLayerIds();
+  for ( const QString &layerId : constFindLayerIds )
   {
     QgsLayerTreeLayer *layer = newGroup->findLayer( layerId );
     if ( layer )
@@ -2389,7 +2412,8 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
 
 void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group )
 {
-  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
+  const auto constChildren = group->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     // all nodes in the subtree will have "embedded" custom property set
     child->setCustomProperty( QStringLiteral( "embedded" ), 1 );
@@ -2755,7 +2779,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   {
     for ( QgsMapLayer *mlayer : myResultList )
     {
-      if ( mlayer->type() != QgsMapLayer::VectorLayer )
+      if ( mlayer->type() != QgsMapLayerType::VectorLayer )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
@@ -2871,7 +2895,7 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
   bool empty = true;
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( it.value()->type() != QgsMapLayer::VectorLayer )
+    if ( it.value()->type() != QgsMapLayerType::VectorLayer )
       continue;
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );

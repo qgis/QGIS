@@ -20,6 +20,7 @@
 
 class QgsLineString;
 class QgsPolygon;
+class QgsFeedback;
 
 class QgsAbstract3DEngine;
 class QgsAbstract3DSymbol;
@@ -31,6 +32,7 @@ namespace Qt3DExtras
 }
 
 #include "qgs3dmapsettings.h"
+#include "qgs3danimationsettings.h"
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 
@@ -53,6 +55,34 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.4
      */
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
+
+    /**
+     * Captures 3D animation frames to the selected folder
+     *
+     * \param animationSettings Settings for keyframes and camera
+     * \param mapSettings 3d map settings
+     * \param framesPerSecond number of frames per second to export
+     * \param outputDirectory output directory where to export frames
+     * \param fileNameTemplate template for exporting the frames.
+     *        Must be in format prefix####.format, where number of
+     *        # represents how many 0 should be left-padded to the frame number
+     *        e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
+     * \param outputSize size of the frame in pixels
+     * \param error error string in case of failure
+     * \param feedback optional feedback object used to cancel export or report progress
+     * \return whether export succeeded. In case of failure, see error argument
+     *
+     * \since QGIS 3.8
+     */
+    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings,
+                                 const Qgs3DMapSettings &mapSettings,
+                                 int framesPerSecond,
+                                 const QString &outputDirectory,
+                                 const QString &fileNameTemplate,
+                                 const QSize &outputSize,
+                                 QString &error,
+                                 QgsFeedback *feedback = nullptr
+                               );
 
     /**
      * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
@@ -105,7 +135,7 @@ class _3D_EXPORT Qgs3DUtils
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );
 
-    //! Returns a new 3D symbol based on given geometry type (or null pointer if geometry type is not supported)
+    //! Returns a new 3D symbol based on given geometry type (or NULLPTR if geometry type is not supported)
     static std::unique_ptr<QgsAbstract3DSymbol> symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
 
     //! Returns expression context for use in preparation of 3D data of a layer

@@ -47,11 +47,11 @@ Convert QString to Qt.CheckState
 
     static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes );
 %Docstring
-Returns true if any of the layers is editable
+Returns ``True`` if any of the layers is editable
 %End
     static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 %Docstring
-Returns true if any of the layers is modified
+Returns ``True`` if any of the layers is modified
 %End
 
     static void removeInvalidLayers( QgsLayerTreeGroup *group );

@@ -222,7 +222,7 @@ QByteArray QgsPoint::asWkb() const
 
 QString QgsPoint::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
+  QString wkt = wktTypeStr() + QLatin1String( " (" );
   wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
   if ( is3D() )
     wkt += ' ' + qgsDoubleToString( mZ, precision );
@@ -282,8 +282,8 @@ QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &n
 QString QgsPoint::asJson( int precision ) const
 {
   return "{\"type\": \"Point\", \"coordinates\": ["
-         + qgsDoubleToString( mX, precision ) + ", " + qgsDoubleToString( mY, precision )
-         + "]}";
+         + qgsDoubleToString( mX, precision ) + QLatin1String( ", " ) + qgsDoubleToString( mY, precision )
+         + QLatin1String( "]}" );
 }
 
 void QgsPoint::draw( QPainter &p ) const
@@ -347,6 +347,11 @@ int QgsPoint::vertexNumberFromVertexId( QgsVertexId id ) const
 QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;
+}
+
+bool QgsPoint::isValid( QString &, int ) const
+{
+  return true;
 }
 
 bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )

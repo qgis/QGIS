@@ -35,6 +35,9 @@
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
          <property name="text">
           <string>Not supported or no layer</string>
          </property>

@@ -174,24 +174,14 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     };
 
+    //! Check if version is above major and minor
+    static bool versionIsAbove( sqlite3 *sqlite_handle, int major, int minor = 0 );
+
+
     /**
      * sqlite3 handles pointer
      */
     QgsSqliteHandle *mHandle = nullptr;
-
-  signals:
-
-    /**
-     *   This is emitted when this provider is satisfied that all objects
-     *   have had a chance to adjust themselves after they'd been notified that
-     *   the full extent is available.
-     *
-     *   \note  It currently isn't being emitted because we don't have an easy way
-     *          for the overview canvas to only be repainted.  In the meantime
-     *          we are satisfied for the overview to reflect the new extent
-     *          when the user adjusts the extent of the main map canvas.
-     */
-    void repaintRequested();
 
   private:
 
@@ -201,7 +191,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! For views, try to get primary key from a dedicated meta table
     void determineViewPrimaryKey();
 
-    //! Returns primary key(s) from a table name
+    //! Returns integer primary key(s) from a table name
     QStringList tablePrimaryKeys( const QString &tableName ) const;
 
     //! Check if a table/view has any triggers.  Triggers can be used on views to make them editable.

@@ -256,7 +256,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      *
      * \param name name of the dataset group
      * \param isScalar dataset contains scalar data, specifically the y-value of QgsMeshDatasetValue is NaN
-     * \param isOnVertices dataset values are defined on mesh's vertices. If false, values are defined on faces.
+     * \param isOnVertices dataset values are defined on mesh's vertices. If FALSE, values are defined on faces.
      * \param minimum minimum value (magnitude for vectors) present among all group's dataset values
      * \param maximum maximum value (magnitude for vectors) present among all group's dataset values
      * \param extraOptions dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
@@ -496,7 +496,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *
      * For example to represent the situation when F1 and F3 are flooded, but F2 is dry,
      * some solvers store water depth on vertices V1-V8 (all non-zero values) and
-     * set active flag for F2 to false.
+     * set active flag for F2 to FALSE.
      *  V1 ---- V2 ---- V5-----V7
      *  |   F1  |   F2   | F3  |
      *  V3 ---- V4 ---- V6-----V8
@@ -522,7 +522,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      * \param datasetActive active flag values for all datasets in the group. Empty array represents can be used
      *                      when all faces are active
      * \param times times in hours for all datasets in the group
-     * \returns true on failure, false on success
+     * \returns TRUE on failure, FALSE on success
      *
      * \since QGIS 3.6
      */

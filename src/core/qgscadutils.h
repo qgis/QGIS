@@ -53,7 +53,7 @@ class CORE_EXPORT QgsCadUtils
     //! Structure defining all constraints for alignMapPoint() method
     struct AlignMapPointContext
     {
-      //! Snapping utils that will be used to snap point to map. Must not be null
+      //! Snapping utils that will be used to snap point to map. Must not be NULLPTR.
       QgsSnappingUtils *snappingUtils = nullptr;
       //! Map units/pixel ratio from map canvas. Needed for
       double mapUnitsPerPixel;

@@ -21,6 +21,7 @@
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
+#include "qgsgeos.h"
 
 bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
 {
@@ -188,6 +189,25 @@ QgsRectangle QgsCurve::boundingBox() const
   return mBoundingBox;
 }
 
+bool QgsCurve::isValid( QString &error, int flags ) const
+{
+  if ( flags == 0 && mHasCachedValidity )
+  {
+    // use cached validity results
+    error = mValidityFailureReason;
+    return error.isEmpty();
+  }
+
+  QgsGeos geos( this );
+  bool res = geos.isValid( &error, flags & QgsGeometry::FlagAllowSelfTouchingHoles, nullptr );
+  if ( flags == 0 )
+  {
+    mValidityFailureReason = !res ? error : QString();
+    mHasCachedValidity = true;
+  }
+  return res;
+}
+
 QPolygonF QgsCurve::asQPolygonF() const
 {
   const int nb = numPoints();
@@ -224,6 +244,8 @@ QgsCurve::Orientation QgsCurve::orientation() const
 void QgsCurve::clearCache() const
 {
   mBoundingBox = QgsRectangle();
+  mHasCachedValidity = false;
+  mValidityFailureReason.clear();
   QgsAbstractGeometry::clearCache();
 }
 

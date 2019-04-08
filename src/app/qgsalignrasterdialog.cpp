@@ -38,7 +38,7 @@ static QgsMapLayer *_rasterLayer( const QString &filename )
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
-    if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
+    if ( layer->type() == QgsMapLayerType::RasterLayer && layer->source() == filename )
       return layer;
   }
   return nullptr;

@@ -46,7 +46,7 @@ Constructor for QgsEditorWidgetSetup
     bool isNull() const;
 %Docstring
 
-:return: true if there is no widget configured.
+:return: ``True`` if there is no widget configured.
 %End
 
 };

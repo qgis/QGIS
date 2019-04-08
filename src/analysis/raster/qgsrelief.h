@@ -55,7 +55,7 @@ class ANALYSIS_EXPORT QgsRelief
 
     /**
      * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-      \param feedback feedback object that receives update and that is checked for cancelation.
+      \param feedback feedback object that receives update and that is checked for cancellation.
       \returns 0 in case of success*/
     int processRaster( QgsFeedback *feedback = nullptr );
 

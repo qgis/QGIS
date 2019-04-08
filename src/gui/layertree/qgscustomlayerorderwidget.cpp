@@ -167,7 +167,8 @@ QStringList CustomLayerOrderModel::mimeTypes() const
 QMimeData *CustomLayerOrderModel::mimeData( const QModelIndexList &indexes ) const
 {
   QStringList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
     lst << data( index, Qt::UserRole + 1 ).toString();
 
   QMimeData *mimeData = new QMimeData();
@@ -216,7 +217,8 @@ bool CustomLayerOrderModel::removeRows( int row, int count, const QModelIndex &p
 void CustomLayerOrderModel::refreshModel( const QList<QgsMapLayer *> &order )
 {
   QStringList orderedIds;
-  Q_FOREACH ( QgsMapLayer *layer, order )
+  const auto constOrder = order;
+  for ( QgsMapLayer *layer : constOrder )
   {
     if ( layer )
       orderedIds.append( layer->id() );

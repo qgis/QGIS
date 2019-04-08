@@ -93,6 +93,7 @@ class ExecuteSql(GdalAlgorithm):
         sql = self.parameterAsString(parameters, self.SQL, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 

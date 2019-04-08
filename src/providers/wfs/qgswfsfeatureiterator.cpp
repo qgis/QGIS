@@ -32,12 +32,15 @@
 #include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgsfeedback.h"
+#include "qgssqliteutils.h"
 
 #include <algorithm>
 #include <QDir>
 #include <QProgressDialog>
 #include <QTimer>
 #include <QStyle>
+
+#include <sqlite3.h>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
@@ -391,7 +394,8 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
     list << QStringLiteral( "text/xml; subtype=gml/3.0.1" );
     list << QStringLiteral( "application/gml+xml; version=3.0" );
     list << QStringLiteral( "GML3" );
-    Q_FOREACH ( const QString &format, list )
+    const auto constList = list;
+    for ( const QString &format : constList )
     {
       if ( mShared->mCaps.outputFormats.contains( format ) )
       {
@@ -986,7 +990,15 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
   QgsFeatureRequest requestCache;
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid ||
        mRequest.filterType() == QgsFeatureRequest::FilterFids )
-    requestCache = mRequest;
+  {
+    QgsFeatureIds qgisIds;
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+      qgisIds.insert( mRequest.filterFid() );
+    else
+      qgisIds = mRequest.filterFids();
+
+    requestCache.setFilterFids( mShared->dbIdsFromQgisIds( qgisIds ) );
+  }
   else
   {
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
@@ -1019,7 +1031,8 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
   {
     QgsFields dataProviderFields = mShared->mCacheDataProvider->fields();
     QgsAttributeList cacheSubSet;
-    Q_FOREACH ( int i, mRequest.subsetOfAttributes() )
+    const auto subsetOfAttributes = mRequest.subsetOfAttributes();
+    for ( int i : subsetOfAttributes )
     {
       int idx = dataProviderFields.indexFromName( mShared->mFields.at( i ).name() );
       if ( idx >= 0 )
@@ -1032,7 +1045,8 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
-      Q_FOREACH ( const QString &field, mRequest.filterExpression()->referencedColumns() )
+      const auto referencedColumns = mRequest.filterExpression()->referencedColumns();
+      for ( const QString &field : referencedColumns )
       {
         int idx = dataProviderFields.indexFromName( field );
         if ( idx >= 0 && !cacheSubSet.contains( idx ) )
@@ -1046,15 +1060,18 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
     // also need attributes required by order by
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
     {
-      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      const auto usedProviderAttributeIndices = mRequest.orderBy().usedAttributeIndices( dataProviderFields );
+      for ( int attrIdx : usedProviderAttributeIndices )
       {
-        int idx = dataProviderFields.indexFromName( attr );
-        if ( idx >= 0 && !cacheSubSet.contains( idx ) )
-          cacheSubSet.append( idx );
+        if ( !cacheSubSet.contains( attrIdx ) )
+          cacheSubSet.append( attrIdx );
+      }
 
-        idx = mShared->mFields.indexFromName( attr );
-        if ( idx >= 0  && !mSubSetAttributes.contains( idx ) )
-          mSubSetAttributes.append( idx );
+      const auto usedSharedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mShared->mFields );
+      for ( int attrIdx : usedSharedAttributeIndices )
+      {
+        if ( !mSubSetAttributes.contains( attrIdx ) )
+          mSubSetAttributes.append( attrIdx );
       }
     }
 
@@ -1130,7 +1147,8 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeat
   {
     mWriterStream = new QDataStream( &mWriterByteArray, QIODevice::WriteOnly );
   }
-  Q_FOREACH ( const QgsWFSFeatureGmlIdPair &pair, list )
+  const auto constList = list;
+  for ( const QgsWFSFeatureGmlIdPair &pair : constList )
   {
     *mWriterStream << pair.first;
   }
@@ -1246,6 +1264,19 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
 
     copyFeature( cachedFeature, f );
     geometryToDestinationCrs( f, mTransform );
+
+    // Retrieve the user-visible id from the Spatialite cache database Id
+    if ( mShared->mCacheIdDb.get() )
+    {
+      auto sql = QgsSqlite3Mprintf( "SELECT qgisId FROM id_cache WHERE dbId = %lld", cachedFeature.id() );
+      int resultCode;
+      auto stmt = mShared->mCacheIdDb.prepare( sql, resultCode );
+      if ( stmt.step() == SQLITE_ROW )
+      {
+        f.setId( stmt.columnAsInt64( 0 ) );
+      }
+    }
+
     return true;
   }
 

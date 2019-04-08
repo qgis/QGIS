@@ -40,32 +40,36 @@ QgsCredentials *QgsCredentials::instance()
 
 bool QgsCredentials::get( const QString &realm, QString &username, QString &password, const QString &message )
 {
-  if ( mCredentialCache.contains( realm ) )
   {
-    QPair<QString, QString> credentials = mCredentialCache.take( realm );
-    username = credentials.first;
-    password = credentials.second;
-    QgsDebugMsg( QStringLiteral( "retrieved realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+    QMutexLocker locker( &mCacheMutex );
+    if ( mCredentialCache.contains( realm ) )
+    {
+      QPair<QString, QString> credentials = mCredentialCache.take( realm );
+      username = credentials.first;
+      password = credentials.second;
+      QgsDebugMsg( QStringLiteral( "retrieved realm:%1 username:%2" ).arg( realm, username ) );
 
-    if ( !password.isNull() )
-      return true;
+      if ( !password.isNull() )
+        return true;
+    }
   }
 
   if ( request( realm, username, password, message ) )
   {
-    QgsDebugMsg( QStringLiteral( "requested realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+    QgsDebugMsg( QStringLiteral( "requested realm:%1 username:%2" ).arg( realm, username ) );
     return true;
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "unset realm:%1" ).arg( realm ) );
+    QgsDebugMsgLevel( QStringLiteral( "unset realm:%1" ).arg( realm ), 4 );
     return false;
   }
 }
 
 void QgsCredentials::put( const QString &realm, const QString &username, const QString &password )
 {
-  QgsDebugMsg( QStringLiteral( "inserting realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+  QMutexLocker locker( &mCacheMutex );
+  QgsDebugMsg( QStringLiteral( "inserting realm:%1 username:%2" ).arg( realm, username ) );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
@@ -81,12 +85,12 @@ bool QgsCredentials::getMasterPassword( QString &password, bool stored )
 
 void QgsCredentials::lock()
 {
-  mMutex.lock();
+  mAuthMutex.lock();
 }
 
 void QgsCredentials::unlock()
 {
-  mMutex.unlock();
+  mAuthMutex.unlock();
 }
 
 

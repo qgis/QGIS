@@ -78,10 +78,15 @@
 namespace QgsTest
 {
 
-  //! Returns true if test is running on Travis infrastructure
+  //! Returns TRUE if test is running on Travis infrastructure
   bool isTravis()
   {
     return qgetenv( "TRAVIS" ) == QStringLiteral( "true" );
+  }
+
+  bool runFlakyTests()
+  {
+    return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
   }
 }
 

@@ -128,7 +128,7 @@ Discover all the relations available from the current layers.
   signals:
     void relationsLoaded();
 %Docstring
-This signal is emitted when the relations were loaded after reading a project
+Emitted when the relations were loaded after reading a project
 %End
 
     void changed();

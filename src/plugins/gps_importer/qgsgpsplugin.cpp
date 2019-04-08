@@ -118,7 +118,7 @@ void QgsGpsPlugin::run()
   for ( iter = layers.constBegin();
         iter != layers.constEnd(); ++iter )
   {
-    if ( iter.value()->type() == QgsMapLayer::VectorLayer )
+    if ( iter.value()->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( iter.value() );
       if ( vLayer->providerType() == QLatin1String( "gpx" ) )

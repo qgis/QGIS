@@ -35,14 +35,21 @@ from qgis.PyQt.QtCore import QDir, QFileInfo
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
-                       QgsProcessingParameterDefinition)
-from qgis.gui import QgsProcessingParameterWidgetContext
+                       QgsProperty,
+                       QgsProject,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsCoordinateReferenceSystem,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingModelAlgorithm)
+from qgis.gui import (QgsProcessingParameterWidgetContext,
+                      QgsProcessingContextGenerator)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 
 from processing.tools import dataobjects
+from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -86,6 +93,19 @@ class BatchPanel(BASE, WIDGET):
         self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
         self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
         self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
+
+        self.processing_context = createContext()
+
+        class ContextGenerator(QgsProcessingContextGenerator):
+
+            def __init__(self, context):
+                super().__init__()
+                self.processing_context = context
+
+            def processingContext(self):
+                return self.processing_context
+
+        self.context_generator = ContextGenerator(self.processing_context)
 
         self.initWidgets()
 
@@ -249,16 +269,21 @@ class BatchPanel(BASE, WIDGET):
     def setCellWrapper(self, row, column, wrapper, context):
         self.wrappers[row][column] = wrapper
 
+        widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
+        if iface is not None:
+            widget_context.setMapCanvas(iface.mapCanvas())
+        if isinstance(self.alg, QgsProcessingModelAlgorithm):
+            widget_context.setModel(self.alg)
+        wrapper.setWidgetContext(widget_context)
+        wrapper.registerProcessingContextGenerator(self.context_generator)
+
         # For compatibility with 3.x API, we need to check whether the wrapper is
         # the deprecated WidgetWrapper class. If not, it's the newer
         # QgsAbstractProcessingParameterWidgetWrapper class
         # TODO QGIS 4.0 - remove
         is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
         if is_cpp_wrapper:
-            widget_context = QgsProcessingParameterWidgetContext()
-            if iface is not None:
-                widget_context.setMapCanvas(iface.mapCanvas())
-            wrapper.setWidgetContext(widget_context)
             widget = wrapper.createWrappedWidget(context)
         else:
             widget = wrapper.widget

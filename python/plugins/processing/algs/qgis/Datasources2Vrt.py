@@ -28,7 +28,10 @@ __revision__ = '$Format:%H$'
 import codecs
 import xml.sax.saxutils
 
-from osgeo import ogr
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from osgeo import ogr
 from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterBoolean,

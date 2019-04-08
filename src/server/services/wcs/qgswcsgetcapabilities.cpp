@@ -42,7 +42,6 @@ namespace QgsWcs
     QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     cacheManager = serverIface->cacheManager();
-#endif
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       capabilitiesDocument = &doc;
@@ -57,7 +56,9 @@ namespace QgsWcs
       }
       capabilitiesDocument = &doc;
     }
-
+#else
+    doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+#endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( capabilitiesDocument->toByteArray() );
   }
@@ -287,7 +288,7 @@ namespace QgsWcs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayer::LayerType::RasterLayer )
+      if ( layer->type() != QgsMapLayerType::RasterLayer )
       {
         continue;
       }

@@ -350,14 +350,14 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mTypeButton->setDefaultAction( mSegmentAction );
   }
 
-  if ( mToleranceSpinBox->value() != config.tolerance() )
-  {
-    mToleranceSpinBox->setValue( config.tolerance() );
-  }
-
   if ( static_cast<QgsTolerance::UnitType>( mUnitsComboBox->currentData().toInt() ) != config.units() )
   {
     mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( config.units() ) );
+  }
+
+  if ( mToleranceSpinBox->value() != config.tolerance() )
+  {
+    mToleranceSpinBox->setValue( config.tolerance() );
   }
 
   if ( config.intersectionSnapping() != mIntersectionSnappingAction->isChecked() )
@@ -548,7 +548,7 @@ void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode *node )
   QList<QgsLayerTreeNode *> toRemove;
   Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
   {
-    if ( QgsLayerTree::isLayer( child ) && ( !QgsLayerTree::toLayer( child )->layer() || QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayer::VectorLayer ) )
+    if ( QgsLayerTree::isLayer( child ) && ( !QgsLayerTree::toLayer( child )->layer() || QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayerType::VectorLayer ) )
     {
       toRemove << child;
       continue;

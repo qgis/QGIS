@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgsmeshlayerutils.h"
+#include "qgsmeshtimesettings.h"
 
 #include <limits>
+#include <QTime>
+#include <QDateTime>
 
 ///@cond PRIVATE
 
@@ -125,6 +128,95 @@ QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const
   bbox.combineExtentWith( p2.x(), p2.y() );
   bbox.combineExtentWith( p3.x(), p3.y() );
   return bbox;
+}
+
+QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &settings )
+{
+  QString ret;
+  if ( settings.useAbsoluteTime() )
+  {
+    QString format( settings.absoluteTimeFormat() );
+    QDateTime dateTime( settings.absoluteTimeReferenceTime() );
+    int seconds = static_cast<int>( hours * 3600.0 );
+    dateTime = dateTime.addSecs( seconds );
+    ret = dateTime.toString( format );
+    if ( ret.isEmpty() ) // error
+      ret = dateTime.toString();
+  }
+  else
+  {
+    QString format( settings.relativeTimeFormat() );
+    format = format.trimmed();
+    hours = hours + settings.relativeTimeOffsetHours();
+    int totalHours = static_cast<int>( hours );
+
+    if ( format == QStringLiteral( "hh:mm:ss.zzz" ) )
+    {
+      int ms = static_cast<int>( hours * 3600.0 * 1000 );
+      int seconds = ms / 1000;
+      int z = ms % 1000;
+      int m = seconds / 60;
+      int s = seconds % 60;
+      int h = m / 60;
+      m = m % 60;
+      ret = QStringLiteral( "%1:%2:%3.%4" ).
+            arg( h, 2, 10, QLatin1Char( '0' ) ).
+            arg( m, 2, 10, QLatin1Char( '0' ) ).
+            arg( s, 2, 10, QLatin1Char( '0' ) ).
+            arg( z, 3, 10, QLatin1Char( '0' ) );
+    }
+    else if ( format == QStringLiteral( "hh:mm:ss" ) )
+    {
+      int seconds = static_cast<int>( hours * 3600.0 );
+      int m = seconds / 60;
+      int s = seconds % 60;
+      int h = m / 60;
+      m = m % 60;
+      ret = QStringLiteral( "%1:%2:%3" ).
+            arg( h, 2, 10, QLatin1Char( '0' ) ).
+            arg( m, 2, 10, QLatin1Char( '0' ) ).
+            arg( s, 2, 10, QLatin1Char( '0' ) );
+
+    }
+    else if ( format == QStringLiteral( "d hh:mm:ss" ) )
+    {
+      int seconds = static_cast<int>( hours * 3600.0 );
+      int m = seconds / 60;
+      int s = seconds % 60;
+      int h = m / 60;
+      m = m % 60;
+      int d = totalHours / 24;
+      h = totalHours % 24;
+      ret = QStringLiteral( "%1 d %2:%3:%4" ).
+            arg( d ).
+            arg( h, 2, 10, QLatin1Char( '0' ) ).
+            arg( m, 2, 10, QLatin1Char( '0' ) ).
+            arg( s, 2, 10, QLatin1Char( '0' ) );
+    }
+    else if ( format == QStringLiteral( "d hh" ) )
+    {
+      int d = totalHours / 24;
+      int h = totalHours % 24;
+      ret = QStringLiteral( "%1 d %2" ).
+            arg( d ).
+            arg( h );
+    }
+    else if ( format == QStringLiteral( "d" ) )
+    {
+      int d = totalHours / 24;
+      ret = QStringLiteral( "%1" ).arg( d );
+    }
+    else if ( format == QStringLiteral( "ss" ) )
+    {
+      int seconds = static_cast<int>( hours * 3600.0 );
+      ret = QStringLiteral( "%1" ).arg( seconds );
+    }
+    else     // "hh"
+    {
+      ret = QStringLiteral( "%1" ).arg( hours );
+    }
+  }
+  return ret;
 }
 
 ///@endcond

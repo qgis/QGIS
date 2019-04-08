@@ -29,7 +29,7 @@ from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
 from qgis.utils import OverrideCursor
 
 from .db_plugins.data_model import TableFieldsModel, TableConstraintsModel, TableIndexesModel
-from .db_plugins.plugin import BaseError
+from .db_plugins.plugin import BaseError, DbError
 from .dlg_db_error import DlgDbError
 
 from .dlg_field_properties import DlgFieldProperties
@@ -49,6 +49,10 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.setupUi(self)
 
         self.db = self.table.database()
+
+        supportCom = self.db.supportsComment()
+        if not supportCom:
+            self.tabs.removeTab(3)
 
         m = TableFieldsModel(self)
         self.viewFields.setModel(m)
@@ -101,7 +105,6 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 
     def populateFields(self):
         """ load field information from database """
-
         m = self.viewFields.model()
         m.clear()
 
@@ -333,10 +336,12 @@ class DlgTableProperties(QDialog, Ui_Dialog):
                 DlgDbError.showError(e, self)
 
     def createComment(self):
-        #Function that add a comment to the selected table
+        """Adds a comment to the selected table"""
         try:
-            #Using the db connector, executing de SQL query Comment on table
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(self.table.schema().name, self.table.name, self.viewComment.text()))
+            schem = self.table.schema().name
+            tab = self.table.name
+            com = self.viewComment.text()
+            self.db.connector.commentTable(schem, tab, com)
         except DbError as e:
             DlgDbError.showError(e, self)
             return
@@ -345,10 +350,11 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         QMessageBox.information(self, self.tr("Add comment"), self.tr("Table successfully commented"))
 
     def deleteComment(self):
-        #Function that drop the comment to the selected table
+        """Drops the comment on the selected table"""
         try:
-            #Using the db connector, executing de SQL query Comment on table using the NULL definition
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(self.table.schema().name, self.table.name))
+            schem = self.table.schema().name
+            tab = self.table.name
+            self.db.connector.commentTable(schem, tab)
         except DbError as e:
             DlgDbError.showError(e, self)
             return

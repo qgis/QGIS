@@ -70,14 +70,14 @@ class QgsCheckableItemModel : public QStandardItemModel
      * \param index item index
      * \param value data value
      * \param role data role
-     * \returns true on success, false otherwise
+     * \returns TRUE on success, FALSE otherwise
      */
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
   signals:
 
     /**
-     * This signal is emitted whenever the items checkstate has changed.
+     * Emitted whenever the items checkstate has changed.
      */
     void itemCheckStateChanged();
 };
@@ -208,7 +208,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
   signals:
 
     /**
-     * This signal is emitted whenever the checked items list changed.
+     * Emitted whenever the checked items list changed.
      */
     void checkedItemsChanged( const QStringList &items );
 

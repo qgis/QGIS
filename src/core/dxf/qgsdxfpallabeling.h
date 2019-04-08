@@ -54,7 +54,7 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
      * \param context render context
      * \param dxfLayerName name of dxf layer
      */
-    void registerDxfFeature( QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName );
+    void registerDxfFeature( const QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName );
 
   protected:
     //! pointer to parent DXF export where this instance is used

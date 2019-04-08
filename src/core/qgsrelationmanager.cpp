@@ -36,7 +36,8 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
 void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )
 {
   mRelations.clear();
-  Q_FOREACH ( const QgsRelation &rel, relations )
+  const auto constRelations = relations;
+  for ( const QgsRelation &rel : constRelations )
   {
     addRelation( rel );
   }
@@ -92,7 +93,8 @@ QList<QgsRelation> QgsRelationManager::relationsByName( const QString &name ) co
 {
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation &rel, mRelations )
+  const auto constMRelations = mRelations;
+  for ( const QgsRelation &rel : constMRelations )
   {
     if ( QString::compare( rel.name(), name, Qt::CaseInsensitive ) == 0 )
       relations << rel;
@@ -116,14 +118,16 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLaye
 
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation &rel, mRelations )
+  const auto constMRelations = mRelations;
+  for ( const QgsRelation &rel : constMRelations )
   {
     if ( rel.referencingLayer() == layer )
     {
       if ( fieldIdx != -2 )
       {
         bool containsField = false;
-        Q_FOREACH ( const QgsRelation::FieldPair &fp, rel.fieldPairs() )
+        const auto constFieldPairs = rel.fieldPairs();
+        for ( const QgsRelation::FieldPair &fp : constFieldPairs )
         {
           if ( fieldIdx == layer->fields().lookupField( fp.referencingField() ) )
           {
@@ -153,7 +157,8 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer *laye
 
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation &rel, mRelations )
+  const auto constMRelations = mRelations;
+  for ( const QgsRelation &rel : constMRelations )
   {
     if ( rel.referencedLayer() == layer )
     {
@@ -201,7 +206,8 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
   QDomElement relationsNode = doc.createElement( QStringLiteral( "relations" ) );
   qgisNode.appendChild( relationsNode );
 
-  Q_FOREACH ( const QgsRelation &relation, mRelations )
+  const auto constMRelations = mRelations;
+  for ( const QgsRelation &relation : constMRelations )
   {
     relation.writeXml( relationsNode, doc );
   }
@@ -210,7 +216,8 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
 void QgsRelationManager::layersRemoved( const QStringList &layers )
 {
   bool relationsChanged = false;
-  Q_FOREACH ( const QString &layer, layers )
+  const auto constLayers = layers;
+  for ( const QString &layer : constLayers )
   {
     QMapIterator<QString, QgsRelation> it( mRelations );
 
@@ -234,7 +241,8 @@ void QgsRelationManager::layersRemoved( const QStringList &layers )
 
 static bool hasRelationWithEqualDefinition( const QList<QgsRelation> &existingRelations, const QgsRelation &relation )
 {
-  Q_FOREACH ( const QgsRelation &cur, existingRelations )
+  const auto constExistingRelations = existingRelations;
+  for ( const QgsRelation &cur : constExistingRelations )
   {
     if ( cur.hasEqualDefinition( relation ) ) return true;
   }
@@ -244,9 +252,11 @@ static bool hasRelationWithEqualDefinition( const QList<QgsRelation> &existingRe
 QList<QgsRelation> QgsRelationManager::discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers )
 {
   QList<QgsRelation> result;
-  Q_FOREACH ( const QgsVectorLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( const QgsVectorLayer *layer : constLayers )
   {
-    Q_FOREACH ( const QgsRelation &relation, layer->dataProvider()->discoverRelations( layer, layers ) )
+    const auto constDiscoverRelations = layer->dataProvider()->discoverRelations( layer, layers );
+    for ( const QgsRelation &relation : constDiscoverRelations )
     {
       if ( !hasRelationWithEqualDefinition( existingRelations, relation ) )
       {

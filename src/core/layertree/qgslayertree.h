@@ -95,7 +95,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 
     /**
      * The order in which layers will be rendered on the canvas.
-     * Will only be used if the property hasCustomLayerOrder is true.
+     * Will only be used if the property hasCustomLayerOrder is TRUE.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
      * \see setCustomLayerOrder
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 
     /**
      * The order in which layers will be rendered on the canvas.
-     * Will only be used if the property hasCustomLayerOrder is true.
+     * Will only be used if the property hasCustomLayerOrder is TRUE.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
      * \see customLayerOrder
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 
     /**
      * The order in which layers will be rendered on the canvas.
-     * Will only be used if the property hasCustomLayerOrder is true.
+     * Will only be used if the property hasCustomLayerOrder is TRUE.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
      * \see customLayerOrder

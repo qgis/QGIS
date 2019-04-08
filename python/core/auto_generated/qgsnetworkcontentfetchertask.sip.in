@@ -57,7 +57,7 @@ the specified network ``request``.
 %Docstring
 Returns the network reply. Ownership is not transferred.
 
-May return None if the request has not yet completed.
+May return ``None`` if the request has not yet completed.
 %End
 
   signals:

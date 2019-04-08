@@ -132,9 +132,9 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void setUid( const QString &uid ) { mUid = uid; }
 
     /**
-     * Sets the lazy mode. If \a lazy is true, then the loading is
+     * Sets the lazy mode. If \a lazy is TRUE, then the loading is
      * delayed until an explicit reloading of the layer.
-     * \param lazy True to delay the loading, false otherwise
+     * \param lazy TRUE to delay the loading, FALSE otherwise
      * \see QgsDataProvider::reloadData()
      * \see isLazy()
      * \since QGIS 3.2
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
 
     /**
      * Returns the lazy mode.
-     * \returns True if the loading is delayed, false otherwise.
+     * \returns TRUE if the loading is delayed, FALSE otherwise.
      * \see setLazy()
      * \since QGIS 3.2
      */

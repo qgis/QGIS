@@ -39,7 +39,7 @@ Load settings according to current environment variables.
 %Docstring
 Load setting for a specific environment variable name.
 
-:return: true if loading is successful, false in case of an invalid name.
+:return: ``True`` if loading is successful, ``False`` in case of an invalid name.
 %End
 
     void logSummary() const;
@@ -58,7 +58,7 @@ Returns the ini file loaded by QSetting.
 %Docstring
 Returns parallel rendering setting.
 
-:return: true if parallel rendering is activated, false otherwise.
+:return: ``True`` if parallel rendering is activated, ``False`` otherwise.
 %End
 
     int maxThreads() const;
@@ -100,7 +100,7 @@ Returns the log file.
 %Docstring
 Returns whether logging to stderr is activated.
 
-:return: true if logging to stderr is activated, false otherwise.
+:return: ``True`` if logging to stderr is activated, ``False`` otherwise.
 
 .. versionadded:: 3.4
 %End
@@ -117,6 +117,42 @@ Returns the cache size.
 Returns the cache directory.
 
 :return: the directory.
+%End
+
+    QString overrideSystemLocale() const;
+%Docstring
+Overrides system locale
+
+:return: the optional override for system locale.
+
+.. versionadded:: 3.8
+%End
+
+    bool showGroupSeparator() const;
+%Docstring
+Show group (thousand) separator
+
+:return: if group separator must be shown, default to ``False``.
+
+.. versionadded:: 3.8
+%End
+
+    int wmsMaxHeight() const;
+%Docstring
+Returns the server-wide max height of a WMS GetMap request. The lower one of this and the project configuration is used.
+
+:return: the max height of a WMS GetMap request.
+
+.. versionadded:: 3.8
+%End
+
+    int wmsMaxWidth() const;
+%Docstring
+Returns the server-wide max width of a WMS GetMap request. The lower one of this and the project configuration is used.
+
+:return: the max width of a WMS GetMap request.
+
+.. versionadded:: 3.8
 %End
 
 };

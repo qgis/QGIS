@@ -41,7 +41,7 @@ from qgis.core import (Qgis,
                        QgsProperty,
                        QgsProject,
                        QgsMessageLog,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsProcessingOutputLayerDefinition)
 from qgis.gui import QgsEncodingFileDialog, QgsGui
 from qgis.utils import OverrideCursor, iface
@@ -88,7 +88,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
         self.cmbInputLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         try:
-            if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
+            if iface.activeLayer().type() == QgsMapLayerType.VectorLayer:
                 self.cmbInputLayer.setLayer(iface.activeLayer())
         except:
             pass

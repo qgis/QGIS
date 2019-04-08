@@ -682,7 +682,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     /**
      * Sets whether the grid frame is drawn for a certain side of the map item.
      * \param flag flag for grid frame side
-     * \param on set to true to draw grid frame on that side of the map
+     * \param on set to TRUE to draw grid frame on that side of the map
      * \see setFrameSideFlags()
      * \see frameSideFlags()
      * \see testFrameSideFlag()
@@ -702,7 +702,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Tests whether the grid frame should be drawn on a specified side of the map
      * item.
      * \param flag flag for grid frame side
-     * \returns true if grid frame should be drawn for that side of the map
+     * \returns TRUE if grid frame should be drawn for that side of the map
      * \see setFrameSideFlags()
      * \see setFrameSideFlag()
      * \see frameSideFlags()

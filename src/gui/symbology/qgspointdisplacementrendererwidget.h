@@ -60,6 +60,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     void mDistanceUnitWidget_changed();
     void mLabelColorButton_colorChanged( const QColor &newColor );
     void mCircleModificationSpinBox_valueChanged( double d );
+    void mLabelDistanceFactorSpinBox_valueChanged( double d );
     void mScaleDependentLabelsCheckBox_stateChanged( int state );
     void minLabelScaleChanged( double scale );
     void mRendererSettingsButton_clicked();

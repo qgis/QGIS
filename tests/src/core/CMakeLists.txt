@@ -90,6 +90,7 @@ SET(TESTS
  testcontrastenhancements.cpp
  testqgscoordinatereferencesystem.cpp
  testqgscoordinatetransform.cpp
+ testqgscredentials.cpp
  testqgscurve.cpp
  testqgsdatadefinedsizelegend.cpp
  testqgsdataitem.cpp
@@ -175,6 +176,7 @@ SET(TESTS
  testqgspoint.cpp
  testqgsproject.cpp
  testqgsprojectstorage.cpp
+ testqgsprojutils.cpp
  testqgsproperty.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp

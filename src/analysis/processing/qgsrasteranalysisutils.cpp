@@ -213,5 +213,64 @@ Qgis::DataType QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( int choice )
   return sDataTypes.value( choice ).second;
 }
 
+void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector< QgsRasterAnalysisUtils::RasterLogicInput > &inputs, QgsRasterDataProvider *destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse,
+    int width, int height, const QgsRectangle &extent, QgsFeedback *feedback,
+    std::function<void( const std::vector< std::unique_ptr< QgsRasterBlock > > &, bool &, bool &, int, int, bool )> &applyLogicFunc,
+    qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount )
+{
+  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * width / maxWidth ) );
+  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * height / maxHeight ) );
+  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+
+  destinationRaster->setEditable( true );
+  QgsRasterIterator outputIter( destinationRaster );
+  outputIter.startRasterRead( 1, width, height, extent );
+
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
+  QgsRectangle blockExtent;
+  std::unique_ptr< QgsRasterBlock > outputBlock;
+  while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
+  {
+    std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : inputs )
+    {
+      for ( int band : i.bands )
+      {
+        std::unique_ptr< QgsRasterBlock > b( i.interface->block( band, blockExtent, iterCols, iterRows ) );
+        inputBlocks.emplace_back( std::move( b ) );
+      }
+    }
+
+    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    for ( int row = 0; row < iterRows; row++ )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      for ( int column = 0; column < iterCols; column++ )
+      {
+        bool res = false;
+        bool resIsNoData = false;
+        applyLogicFunc( inputBlocks, res, resIsNoData, row, column, treatNoDataAsFalse );
+        if ( resIsNoData )
+          noDataCount++;
+        else if ( res )
+          trueCount++;
+        else
+          falseCount++;
+
+        outputBlock->setValue( row, column, resIsNoData ? outputNoDataValue : ( res ? 1 : 0 ) );
+      }
+    }
+    destinationRaster->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+  }
+  destinationRaster->setEditable( false );
+}
+
 ///@endcond PRIVATE
 

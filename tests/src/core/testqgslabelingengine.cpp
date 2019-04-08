@@ -956,7 +956,6 @@ void TestQgsLabelingEngine::testLabelBlockingRegion()
 
   img = job3.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_blocking_boundary_geometry" ), img, 20 ) );
-
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

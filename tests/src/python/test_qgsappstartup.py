@@ -113,6 +113,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
             timeOut=360,
             env={'PYQGIS_STARTUP': testmod})
 
+
 if __name__ == '__main__':
     # look for qgis bin path
     QGIS_BIN = ''

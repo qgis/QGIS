@@ -62,7 +62,7 @@ class CORE_EXPORT QgsEllipsoidUtils
      */
     struct EllipsoidDefinition
     {
-      //! Acronym for ellipsoid
+      //! authority:code for QGIS builds with proj version 6 or greater, or custom acronym for ellipsoid for earlier proj builds
       QString acronym;
       //! Description of ellipsoid
       QString description;

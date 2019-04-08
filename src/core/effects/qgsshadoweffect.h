@@ -181,7 +181,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     /**
      * Specifies whether the shadow is drawn outside the picture or within
      * the picture.
-     * \returns true if shadow is to be drawn outside the picture, or false
+     * \returns TRUE if shadow is to be drawn outside the picture, or FALSE
      * to draw shadow within the picture
      */
     virtual bool exteriorShadow() const = 0;

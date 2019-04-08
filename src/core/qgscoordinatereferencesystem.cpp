@@ -21,7 +21,6 @@
 #include <cmath>
 
 #include <QDir>
-#include <QTemporaryFile>
 #include <QDomNode>
 #include <QDomElement>
 #include <QFileInfo>
@@ -104,7 +103,8 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
   // check both standard & user defined projection databases
   QStringList dbs = QStringList() <<  QgsApplication::srsDatabaseFilePath() << QgsApplication::qgisUserDatabaseFilePath();
 
-  Q_FOREACH ( const QString &db, dbs )
+  const auto constDbs = dbs;
+  for ( const QString &db : constDbs )
   {
     QFileInfo myInfo( db );
     if ( !myInfo.exists() )
@@ -789,7 +789,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
     QStringList myParams;
-    Q_FOREACH ( const QString &param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+    const auto constSplit = myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts );
+    for ( const QString &param : constSplit )
     {
       QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( QgsSqliteUtils::quotedString( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( QLatin1String( "+datum=" ) ) )
@@ -819,7 +820,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     {
       // Bugfix 8487 : test param lists are equal, except for +datum
       QStringList foundParams;
-      Q_FOREACH ( const QString &param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+      const auto constSplit = myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts );
+      for ( const QString &param : constSplit )
       {
         if ( !param.startsWith( QLatin1String( "+datum=" ) ) )
           foundParams << param.trimmed();
@@ -1772,7 +1774,8 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
-  Q_FOREACH ( const QString &csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
+  static const QStringList csvs { QStringList() << QStringLiteral( "gcs.csv" ) << QStringLiteral( "pcs.csv" ) << QStringLiteral( "vertcs.csv" ) << QStringLiteral( "compdcs.csv" ) << QStringLiteral( "geoccs.csv" ) };
+  for ( const QString &csv : csvs )
   {
     QString filename = CPLFindFile( "gdal", csv.toUtf8() );
 

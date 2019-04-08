@@ -225,7 +225,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * \brief Prepare the URI so that we can later simply append param=value
      * \param uri uri to prepare
-     * \retval prepared uri
+     * \returns prepared uri
      */
     static QString prepareUri( QString uri );
 
@@ -294,7 +294,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \param forceRefresh  if true, ignores any previous response cached in memory
      *                      and always contact the server for a new copy.
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      *
      * When this returns, "layers" will make sense.
@@ -311,7 +311,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn
      *
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
     bool calculateExtent() const;

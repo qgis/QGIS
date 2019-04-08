@@ -47,6 +47,13 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
   public:
 
+    enum StyleType
+    {
+      QML,
+      SLD
+    };
+    Q_ENUM( StyleType )
+
     /**
      * \brief Constructor
      * \param ml Map layer for which properties will be displayed

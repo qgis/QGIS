@@ -62,6 +62,8 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+
     /**
      * Returns the band used by the renderer
      */
@@ -92,7 +94,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     double zFactor()  const { return mZFactor; }
 
     /**
-     * Returns true if the renderer is using multi-directional hillshading.
+     * Returns TRUE if the renderer is using multi-directional hillshading.
      * \see setMultiDirectional()
      */
     bool multiDirectional() const { return mMultiDirectional; }
@@ -120,7 +122,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     /**
      * Sets whether to render using a multi-directional hillshade algorithm.
-     * \param isMultiDirectional set to true to use multi directional rendering
+     * \param isMultiDirectional set to TRUE to use multi directional rendering
      * \see multiDirectional()
      */
     void setMultiDirectional( bool isMultiDirectional ) { mMultiDirectional = isMultiDirectional; }

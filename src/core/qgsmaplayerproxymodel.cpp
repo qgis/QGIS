@@ -65,7 +65,8 @@ void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList &ids )
 {
   mExceptList.clear();
 
-  Q_FOREACH ( const QString &id, ids )
+  const auto constIds = ids;
+  for ( const QString &id : constIds )
   {
     QgsMapLayer *l = QgsProject::instance()->mapLayer( id );
     if ( l )
@@ -78,7 +79,8 @@ QStringList QgsMapLayerProxyModel::exceptedLayerIds() const
 {
   QStringList lst;
 
-  Q_FOREACH ( QgsMapLayer *l, mExceptList )
+  const auto constMExceptList = mExceptList;
+  for ( QgsMapLayer *l : constMExceptList )
     lst << l->id();
 
   return lst;
@@ -117,7 +119,7 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   if ( mExceptList.contains( layer ) )
     return false;
 
-  if ( mExcludedProviders.contains( layer->dataProvider()->name() ) )
+  if ( layer->dataProvider() && mExcludedProviders.contains( layer->dataProvider()->name() ) )
     return false;
 
   if ( mFilters.testFlag( WritableLayer ) && layer->readOnly() )
@@ -127,10 +129,10 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
     return false;
 
   // layer type
-  if ( ( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayer::RasterLayer ) ||
-       ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayer::VectorLayer ) ||
-       ( mFilters.testFlag( MeshLayer ) && layer->type() == QgsMapLayer::MeshLayer ) ||
-       ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayer::PluginLayer ) )
+  if ( ( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayerType::RasterLayer ) ||
+       ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
+       ( mFilters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
+       ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
     return true;
 
   // geometry type
@@ -139,7 +141,7 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
                         mFilters.testFlag( LineLayer ) ||
                         mFilters.testFlag( PolygonLayer ) ||
                         mFilters.testFlag( HasGeometry );
-  if ( detectGeometry && layer->type() == QgsMapLayer::VectorLayer )
+  if ( detectGeometry && layer->type() == QgsMapLayerType::VectorLayer )
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {

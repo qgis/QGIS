@@ -176,11 +176,19 @@ class QgsServerTestBase(unittest.TestCase):
 
         return data[1], headers
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
-        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputJpg=False):
+
+        extFile = 'png'
+        if outputJpg:
+            extFile = 'jpg'
+
+        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
 
         with open(temp_image, "wb") as f:
             f.write(image)
+
+        if outputJpg:
+            return (True, "QgsRenderChecker can't be used for JPG images")
 
         control = QgsRenderChecker()
         control.setControlPathPrefix("qgis_server")
@@ -190,35 +198,41 @@ class QgsServerTestBase(unittest.TestCase):
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
         return control.compareImages(control_image, max_diff), control.report()
 
-    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images'):
+    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputJpg=False):
 
-        reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.png'
+        extFile = 'png'
+        contentType = 'image/png'
+        if outputJpg:
+            extFile = 'jpg'
+            contentType = 'image/jpeg'
+
+        reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.' + extFile
         self.store_reference(reference_path, response)
 
         self.assertEqual(
-            headers.get("Content-Type"), "image/png",
-            "Content type is wrong: %s\n%s" % (headers.get("Content-Type"), response))
+            headers.get("Content-Type"), contentType,
+            "Content type is wrong: %s instead of %s\n%s" % (headers.get("Content-Type"), contentType, response))
 
-        test, report = self._img_diff(response, image, max_diff, max_size_diff)
+        test, report = self._img_diff(response, image, max_diff, max_size_diff, outputJpg)
 
-        with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
+        with open(os.path.join(tempfile.gettempdir(), image + "_result." + extFile), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong\: rendered file %s/%s_result.png" % (tempfile.gettempdir(), image)
+                message = "Image is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, extFile)
             else:
-                message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
-                    report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image
+                message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
+                    report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
                 )
 
         # If the failure is in image sizes the diff file will not exists.
-        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
-            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
+        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile)):
+            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong\: diff file %s/%s_result_diff.png" % (tempfile.gettempdir(), image)
+                    message = "Image is wrong\: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, extFile)
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
-                    message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
-                        encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image
+                    message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (
+                        encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
                     )
 
         self.assertTrue(test, message)

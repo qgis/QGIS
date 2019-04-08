@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsactionscoperegistry.h"
 #include "qgsactionscope.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QComboBox>
 #include <QLineEdit>

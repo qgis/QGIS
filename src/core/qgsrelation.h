@@ -340,7 +340,7 @@ class CORE_EXPORT QgsRelation
      * Returns the validity of this relation. Don't use the information if it's not valid.
      * A relation is considered valid if both referenced and referencig layers are valid.
      *
-     * \returns true if the relation is valid
+     * \returns TRUE if the relation is valid
      */
     bool isValid() const;
 
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsRelation
      * Compares the two QgsRelation, ignoring the name and the ID.
      *
      * \param other The other relation
-     * \returns true if they are similar
+     * \returns TRUE if they are similar
      * \since QGIS 3.0
      */
     bool hasEqualDefinition( const QgsRelation &other ) const;

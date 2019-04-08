@@ -63,7 +63,7 @@ Sets the current formatting settings
 %Docstring
 Sets whether the widget should be shown in a compact dock mode.
 
-:param enabled: set to true to show in dock mode.
+:param enabled: set to ``True`` to show in dock mode.
 %End
 
   signals:
@@ -108,7 +108,7 @@ Sets the background color for the text preview widget.
 %Docstring
 Controls whether data defined alignment buttons are enabled.
 
-:param enable: set to true to enable alignment controls
+:param enable: set to ``True`` to enable alignment controls
 %End
 
 

@@ -95,10 +95,9 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
 
     // ensure that all attributes required for order by are fetched
-    const QSet< QString > orderByAttributes = mRequest.orderBy().usedAttributes();
-    for ( const QString &attr : orderByAttributes )
+    const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIndex : usedAttributeIndices )
     {
-      int attrIndex = mSource->mFields.lookupField( attr );
       if ( !attrs.contains( attrIndex ) )
         attrs << attrIndex;
     }
@@ -172,7 +171,8 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   {
     QString delim;
     QString inClause = QStringLiteral( "%1 IN (" ).arg( mSource->mFidColName );
-    Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
+    const auto constFilterFids = mRequest.filterFids();
+    for ( QgsFeatureId featureId : constFilterFids )
     {
       inClause += delim + FID_TO_STRING( featureId );
       delim = ',';
@@ -235,7 +235,8 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+    const auto constOrderBy = request.orderBy();
+    for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
     {
       if ( ( clause.ascending() && !clause.nullsFirst() ) || ( !clause.ascending() && clause.nullsFirst() ) )
       {

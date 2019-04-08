@@ -40,9 +40,9 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
     //! Style for drawing the page/snapping grid
     enum Style
     {
-      StyleLines, //! Solid lines
-      StyleDots, //! Dots
-      StyleCrosses //! Crosses
+      StyleLines, //!< Solid lines
+      StyleDots, //!< Dots
+      StyleCrosses //!< Crosses
     };
 
     /**

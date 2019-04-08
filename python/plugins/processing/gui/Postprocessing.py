@@ -34,7 +34,7 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsWkbTypes,
                        QgsMessageLog,
                        QgsProviderRegistry,
@@ -96,6 +96,8 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 scope = QgsExpressionContextScope()
                 expcontext.appendScope(scope)
                 for out in alg.outputDefinitions():
+                    if out.name() not in parameters:
+                        continue
                     outValue = parameters[out.name()]
                     if hasattr(outValue, "sink"):
                         outValue = outValue.sink.valueAsString(expcontext)[0]
@@ -104,11 +106,11 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                     if outValue == l:
                         outputName = out.name()
                         break
-                style = None                
+                style = None
                 if outputName:
                     style = RenderingStyles.getStyle(alg.id(), outputName)
                 if style is None:
-                    if layer.type() == QgsMapLayer.RasterLayer:
+                    if layer.type() == QgsMapLayerType.RasterLayer:
                         style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
                     else:
                         if layer.geometryType() == QgsWkbTypes.PointGeometry:

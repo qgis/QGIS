@@ -36,6 +36,7 @@ class QgsPropertyOverrideButton;
 class QgsVectorLayer;
 class QgsProcessingModelAlgorithm;
 class QgsMapCanvas;
+class QgsProcessingAlgorithm;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -93,6 +94,20 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsMapCanvas *mapCanvas() const;
 
     /**
+     * Sets the \a project associated with the widget. This allows the widget to retrieve the map layers
+     * and other properties from the correct project.
+     * \see project()
+     * \since QGIS 3.8
+     */
+    void setProject( QgsProject *project );
+
+    /**
+     * Returns the project associated with the widget.
+     * \see setProject()
+     */
+    QgsProject *project() const;
+
+    /**
      * Returns the model which the parameter widget is associated with.
      *
      * \see setModel()
@@ -132,7 +147,25 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
 
     QgsMapCanvas *mMapCanvas = nullptr;
 
+    QgsProject *mProject = nullptr;
+
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class GUI_EXPORT QgsProcessingGuiUtils
+{
+  public:
+
+    static QgsExpressionContext createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator = nullptr,
+        const QgsProcessingParameterWidgetContext &widgetContext = QgsProcessingParameterWidgetContext(),
+        const QgsProcessingAlgorithm *algorithm = nullptr,
+        const QgsVectorLayer *linkedLayer = nullptr );
+
+
+};
+///@endcond
+#endif
 
 /**
  * \class QgsAbstractProcessingParameterWidgetWrapper
@@ -207,7 +240,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      * Creates and returns a new label to accompany widgets created by the wrapper.
      *
      * The caller takes ownership of the returned label. Some parameter type and dialog type
-     * combinations will return nullptr for this method. If nullptr is returned, then no
+     * combinations will return NULLPTR for this method. If NULLPTR is returned, then no
      * label should be shown for the parameter's widget (i.e. the label is embedded inside the
      * widget itself).
      *
@@ -270,6 +303,13 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Sets the parent \a dialog in which the wrapper is shown.
+     *
+     * \since QGIS 3.8
+     */
+    virtual void setDialog( QDialog *dialog );
+
   signals:
 
     // TODO QGIS 4.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,
@@ -295,7 +335,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      * Creates a new label to accompany widgets created by the wrapper.
      *
      * The caller takes ownership of the returned label. Some parameter type and dialog type
-     * combinations will return nullptr for this method. If nullptr is returned, then no
+     * combinations will return NULLPTR for this method. If NULLPTR is returned, then no
      * label should be shown for the parameter's widget (i.e. the label is embedded inside the
      * widget itself).
      *
@@ -320,6 +360,17 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      */
     virtual QVariant widgetValue() const = 0;
 
+    /**
+     * Returns the optional vector layer associated with this widget wrapper, or NULLPTR if no vector
+     * layer is applicable.
+     *
+     * This is used to correctly generate expression contexts within the GUI, e.g. to allow expression
+     * buttons and property override buttons to correctly show the appropriate vector layer fields.
+     *
+     * \since QGIS 3.6
+     */
+    virtual const QgsVectorLayer *linkedVectorLayer() const;
+
   protected:
 
     QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
@@ -334,7 +385,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     QgsProcessingGui::WidgetType mType = QgsProcessingGui::Standard;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
 
-    void setDynamicParentLayerParameter( const QVariant &value );
+    void setDynamicParentLayerParameter( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
 
     QPointer< QWidget > mWidget;
     QPointer< QgsPropertyOverrideButton > mPropertyButton;

@@ -59,6 +59,7 @@ class ProcessingConfig:
     SHOW_CRS_DEF = 'SHOW_CRS_DEF'
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
+    SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
 
     settings = {}
     settingIcons = {}
@@ -94,6 +95,10 @@ class ProcessingConfig:
             ProcessingConfig.tr("Warn before executing if parameter CRS's do not match"), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
+            ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES,
+            ProcessingConfig.tr("Show algorithms with known issues"), False))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
             ProcessingConfig.RASTER_STYLE,
             ProcessingConfig.tr('Style for raster layers'), '',
             valuetype=Setting.FILE))
@@ -124,7 +129,7 @@ class ProcessingConfig:
             valuetype=Setting.FILE))
 
         invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance)'),
-                                  ProcessingConfig.tr('Ignore features with invalid geometries'),
+                                  ProcessingConfig.tr('Skip (ignore) features with invalid geometries'),
                                   ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),

@@ -388,7 +388,7 @@ class CORE_EXPORT QgsSettings : public QObject
 #endif
 
     /**
-     * Returns true if there exists a setting called key; returns false otherwise.
+     * Returns TRUE if there exists a setting called key; returns FALSE otherwise.
      * If a group is set using beginGroup(), key is taken to be relative to that group.
      */
     bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;

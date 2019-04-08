@@ -217,7 +217,7 @@ void TestQgsBrowserProxyModel::testModel()
   proxy.setFilterString( QString() );
 
   // layer type filtering
-  proxy.setLayerType( QgsMapLayer::VectorLayer );
+  proxy.setLayerType( QgsMapLayerType::VectorLayer );
   proxy.setFilterByLayerType( true );
 
   QCOMPARE( proxy.rowCount(), 2 );
@@ -235,7 +235,7 @@ void TestQgsBrowserProxyModel::testModel()
   QCOMPARE( proxy.data( proxy.index( 0, 0, child2Index ) ).toString(), QStringLiteral( "Child3" ) );
   QCOMPARE( proxy.rowCount( root2Index ), 0 );
 
-  proxy.setLayerType( QgsMapLayer::RasterLayer );
+  proxy.setLayerType( QgsMapLayerType::RasterLayer );
   QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
   root2Index = proxy.index( 1, 0 );

@@ -26,6 +26,7 @@
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
 #include "qgslogger.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -368,7 +369,8 @@ QMimeData *QgsCategorizedSymbolRendererModel::mimeData( const QModelIndexList &i
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -636,7 +638,8 @@ void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
       return;
     }
 
-    Q_FOREACH ( int idx, selectedCats )
+    const auto constSelectedCats = selectedCats;
+    for ( int idx : constSelectedCats )
     {
       QgsRendererCategory category = mRenderer->categories().value( idx );
 
@@ -911,7 +914,8 @@ QList<int> QgsCategorizedSymbolRendererWidget::selectedCategories()
   QList<int> rows;
   QModelIndexList selectedRows = viewCategories->selectionModel()->selectedRows();
 
-  Q_FOREACH ( const QModelIndex &r, selectedRows )
+  const auto constSelectedRows = selectedRows;
+  for ( const QModelIndex &r : constSelectedRows )
   {
     if ( r.isValid() )
     {
@@ -1098,7 +1102,8 @@ void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
 
     if ( !selectedCats.isEmpty() )
     {
-      Q_FOREACH ( int idx, selectedCats )
+      const auto constSelectedCats = selectedCats;
+      for ( int idx : constSelectedCats )
       {
         QgsSymbol *newCatSymbol = mCategorizedSymbol->clone();
         if ( selectedCats.count() > 1 )
@@ -1162,7 +1167,8 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }

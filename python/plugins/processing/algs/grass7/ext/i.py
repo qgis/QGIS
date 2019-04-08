@@ -182,7 +182,7 @@ def verifyRasterNum(alg, parameters, context, rasters, mini, maxi=None):
 #     alg.removeOutputFromName(output)
 
 #     # Create output parameter
-#     param = getParameterFromString("ParameterString|{}|output file|None|False|False".format(output))
+#     param = getParameterFromString("ParameterString|{}|output file|None|False|False".format(output), 'GrassAlgorithm')
 #     param.value = outputFile.value
 #     alg.addParameter(param)
 

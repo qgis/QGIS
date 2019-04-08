@@ -111,7 +111,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsAttributeList attributesAsDisplayedValues() const;
 
     /**
-     * Returns true if the "add to canvas" checkbox is checked.
+     * Returns TRUE if the "add to canvas" checkbox is checked.
      *
      * \see setAddToCanvas()
      */
@@ -174,13 +174,13 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsWkbTypes::Type geometryType() const;
 
     /**
-     * Returns true if geometry type is set to automatic.
+     * Returns TRUE if geometry type is set to automatic.
      * \see geometryType()
      */
     bool automaticGeometryType() const;
 
     /**
-     * Returns true if force multi geometry type is checked.
+     * Returns TRUE if force multi geometry type is checked.
      * \see includeZ()
      */
     bool forceMulti() const;
@@ -191,7 +191,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void setForceMulti( bool checked );
 
     /**
-     * Returns true if include z dimension is checked.
+     * Returns TRUE if include z dimension is checked.
      * \see forceMulti()
      */
     bool includeZ() const;

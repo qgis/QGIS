@@ -304,7 +304,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * \param parentElement is the parent DOM element to store the object's properties in
      * \param document DOM document
      * \param context read write context
-     * \returns true if write was successful
+     * \returns TRUE if write was successful
      * \see readObjectPropertiesFromElement()
      */
     bool writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * \param parentElement is the parent DOM element for the object
      * \param document DOM document
      * \param context read write context
-     * \returns true if read was successful
+     * \returns TRUE if read was successful
      * \see writeObjectPropertiesToElement()
      */
     bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );

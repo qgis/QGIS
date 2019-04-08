@@ -120,7 +120,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
 
     switch ( layer->type() )
     {
-      case QgsMapLayer::VectorLayer:
+      case QgsMapLayerType::VectorLayer:
       {
         if ( !packageVectorLayer( qobject_cast< QgsVectorLayer * >( layer ), packagePath,
                                   context, &multiStepFeedback ) )
@@ -130,7 +130,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         break;
       }
 
-      case QgsMapLayer::RasterLayer:
+      case QgsMapLayerType::RasterLayer:
       {
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Raster layers are not currently supported." ) );
@@ -138,13 +138,13 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         break;
       }
 
-      case QgsMapLayer::PluginLayer:
+      case QgsMapLayerType::PluginLayer:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging plugin layers is not supported." ) );
         errored = true;
         break;
 
-      case QgsMapLayer::MeshLayer:
+      case QgsMapLayerType::MeshLayer:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging mesh layers is not supported." ) );
         errored = true;

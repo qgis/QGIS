@@ -55,8 +55,8 @@ Creates a layout item of this class for a specified ``layout``.
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Resolve paths in the item's ``properties`` (if there are any paths).
-When ``saving`` is true, paths are converted from absolute to relative,
-when ``saving`` is false, paths are converted from relative to absolute.
+When ``saving`` is ``True``, paths are converted from absolute to relative,
+when ``saving`` is ``False``, paths are converted from relative to absolute.
 This ensures that paths in project files can be relative, but in item
 instances the paths are always absolute.
 %End
@@ -117,8 +117,8 @@ Creates a layout multiframe of this class for a specified ``layout``.
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Resolve paths in the item's ``properties`` (if there are any paths).
-When ``saving`` is true, paths are converted from absolute to relative,
-when ``saving`` is false, paths are converted from relative to absolute.
+When ``saving`` is ``True``, paths are converted from absolute to relative,
+when ``saving`` is ``False``, paths are converted from relative to absolute.
 This ensures that paths in project files can be relative, but in item
 instances the paths are always absolute.
 %End
@@ -199,13 +199,13 @@ QgsLayoutItemRegistry is not usually directly created, but rather accessed throu
     bool populate();
 %Docstring
 Populates the registry with standard item types. If called on a non-empty registry
-then this will have no effect and will return false.
+then this will have no effect and will return ``False``.
 %End
 
 
     QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;
 %Docstring
-Returns the metadata for the specified item ``type``. Returns None if
+Returns the metadata for the specified item ``type``. Returns ``None`` if
 a corresponding type was not found in the registry.
 
 .. seealso:: :py:func:`multiFrameMetadata`
@@ -213,7 +213,7 @@ a corresponding type was not found in the registry.
 
     QgsLayoutMultiFrameAbstractMetadata *multiFrameMetadata( int type ) const;
 %Docstring
-Returns the metadata for the specified multiframe ``type``. Returns None if
+Returns the metadata for the specified multiframe ``type``. Returns ``None`` if
 a corresponding type was not found in the registry.
 
 .. seealso:: :py:func:`itemMetadata`

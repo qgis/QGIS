@@ -10,16 +10,29 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+// uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
+// #define DWGDEBUG 1
+
 #include "drw_header.h"
 #include "intern/dxfreader.h"
 #include "intern/dxfwriter.h"
 #include "intern/drw_dbg.h"
 #include "intern/dwgbuffer.h"
 
-#include "qgslogger.h"
 #include <QStringList>
 
 #include <cassert>
+
+#include "qgslogger.h"
+
+#ifndef DWGDEBUG
+#undef QgsDebugCall
+#undef QgsDebugMsg
+#undef QgsDebugMsgLevel
+#define QgsDebugCall
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
+#endif
 
 DRW_Header::DRW_Header()
   : curr( nullptr )

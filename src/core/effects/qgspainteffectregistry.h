@@ -71,7 +71,7 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
     virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) = 0 SIP_FACTORY;
 
     /**
-     * Create configuration widget for paint effect of this class. Can return nullptr
+     * Create configuration widget for paint effect of this class. Can return NULLPTR
      * if there's no GUI for the paint effect class.
      * \returns configuration widget
      */
@@ -186,14 +186,14 @@ class CORE_EXPORT QgsPaintEffectRegistry
     /**
      * Returns the metadata for a specific effect.
      * \param name unique string name for paint effect class
-     * \returns paint effect metadata if found, otherwise nullptr
+     * \returns paint effect metadata if found, otherwise NULLPTR
      */
     QgsPaintEffectAbstractMetadata *effectMetadata( const QString &name ) const;
 
     /**
      * Registers a new effect type.
      * \param metadata effect metadata. Ownership is transferred to the registry.
-     * \returns true if add was successful.
+     * \returns TRUE if add was successful.
      */
     bool addEffectType( QgsPaintEffectAbstractMetadata *metadata SIP_TRANSFER );
 
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * Creates a new paint effect given the effect name and properties map.
      * \param name unique name representing paint effect class
      * \param properties encoded string map of effect properties
-     * \returns new paint effect of specified class, or nullptr if matching
+     * \returns new paint effect of specified class, or NULLPTR if matching
      * paint effect could not be created
      */
     QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const SIP_FACTORY;
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * Creates a new paint effect given a DOM element storing paint effect
      * properties.
      * \param element encoded DOM element of effect properties
-     * \returns new paint effect, or nullptr if matching
+     * \returns new paint effect, or NULLPTR if matching
      * paint effect could not be created
      */
     QgsPaintEffect *createEffect( const QDomElement &element ) const SIP_FACTORY;
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
     /**
      * Tests whether a paint effect matches the default effects stack.
      * \param effect paint effect to test
-     * \returns true if effect is default stack
+     * \returns TRUE if effect is default stack
      * \see defaultStack()
      * \since QGIS 2.12
      */

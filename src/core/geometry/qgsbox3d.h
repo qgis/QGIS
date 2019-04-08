@@ -175,23 +175,23 @@ class CORE_EXPORT QgsBox3d
     QgsBox3d intersect( const QgsBox3d &other ) const;
 
     /**
-     * Returns true if the box can be considered a 2-dimensional box, i.e.
+     * Returns TRUE if the box can be considered a 2-dimensional box, i.e.
      * it has equal minimum and maximum z values.
      */
     bool is2d() const;
 
     /**
-     * Returns true if box intersects with another box.
+     * Returns TRUE if box intersects with another box.
      */
     bool intersects( const QgsBox3d &other ) const;
 
     /**
-     * Returns true when box contains other box.
+     * Returns TRUE when box contains other box.
      */
     bool contains( const QgsBox3d &other ) const;
 
     /**
-     * Returns true when box contains a \a point.
+     * Returns TRUE when box contains a \a point.
      *
      * If the point is a 2D point (no z-coordinate), then the containment test
      * will be performed on the x/y extent of the box only.

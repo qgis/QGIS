@@ -99,7 +99,7 @@ determines the open form button is visible in the widget
 %Docstring
 Determines if the filters are chained
 
-:return: True if filters are chained
+:return: ``True`` if filters are chained
 %End
 
     void setChainFilters( bool chainFilters );

@@ -86,7 +86,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::MultiPolygon, source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -144,7 +144,10 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
       if ( dissolve )
         bufferedGeometriesForDissolve << outputGeometry;
       else
+      {
+        outputGeometry.convertToMultiType();
         out.setGeometry( outputGeometry );
+      }
     }
 
     if ( !dissolve )
@@ -157,6 +160,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   if ( dissolve )
   {
     QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve );
+    finalGeometry.convertToMultiType();
     QgsFeature f;
     f.setGeometry( finalGeometry );
     f.setAttributes( dissolveAttrs );

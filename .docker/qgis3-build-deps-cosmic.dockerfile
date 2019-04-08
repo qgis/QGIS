@@ -49,7 +49,6 @@ RUN  apt-get update \
     libqt5svg5-dev \
     libqt5webkit5-dev \
     libqt5xml5 \
-    libqt5xmlpatterns5-dev \
     libqt5serialport5-dev \
     libqwt-qt5-dev \
     libspatialindex-dev \
@@ -136,5 +135,3 @@ ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"
-
-CMD /root/QGIS/.ci/travis/linux/docker-build-test.sh

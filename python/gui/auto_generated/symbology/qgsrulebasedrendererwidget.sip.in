@@ -206,7 +206,7 @@ Apply any changes from the widget to the set rule.
 %Docstring
 Set the widget in dock mode.
 
-:param dockMode: True for dock mode.
+:param dockMode: ``True`` for dock mode.
 %End
 
   protected:

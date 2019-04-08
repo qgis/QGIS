@@ -74,7 +74,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels.
      */
-    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
+    virtual void registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
     /**
      * Returns the geometry for a point feature which should be used as an obstacle for labels. This
@@ -108,9 +108,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Layer's CRS
     QgsCoordinateReferenceSystem mCrs;
     //! Layer's feature source
-    QgsAbstractFeatureSource *mSource = nullptr;
-    //! Whether layer's feature source is owned
-    bool mOwnsSource;
+    std::unique_ptr<QgsAbstractFeatureSource> mSource;
 
     //! List of generated
     QList<QgsLabelFeature *> mLabels;

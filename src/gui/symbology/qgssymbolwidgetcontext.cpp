@@ -16,6 +16,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other )
   : mMapCanvas( other.mMapCanvas )

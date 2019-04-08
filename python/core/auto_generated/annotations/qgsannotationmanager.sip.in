@@ -42,7 +42,7 @@ manager.
     bool addAnnotation( QgsAnnotation *annotation /Transfer/ );
 %Docstring
 Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.
-Returns true if the addition was successful, or false if the annotation could not be added.
+Returns ``True`` if the addition was successful, or ``False`` if the annotation could not be added.
 
 .. seealso:: :py:func:`removeAnnotation`
 
@@ -52,7 +52,7 @@ Returns true if the addition was successful, or false if the annotation could no
     bool removeAnnotation( QgsAnnotation *annotation );
 %Docstring
 Removes an annotation from the manager. The annotation is deleted.
-Returns true if the removal was successful, or false if the removal failed (eg as a result
+Returns ``True`` if the removal was successful, or ``False`` if the removal failed (eg as a result
 of removing an annotation which is not contained in the manager).
 
 .. seealso:: :py:func:`addAnnotation`

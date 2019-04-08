@@ -156,6 +156,26 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
   return cfPath;
 }
 
+void QgsServer::initLocale()
+{
+  // System locale override
+  if ( ! sSettings.overrideSystemLocale().isEmpty() )
+  {
+    QLocale::setDefault( QLocale( sSettings.overrideSystemLocale() ) );
+  }
+  // Number group separator settings
+  QLocale currentLocale;
+  if ( sSettings.showGroupSeparator() )
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  }
+  else
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+  }
+  QLocale::setDefault( currentLocale );
+}
+
 bool QgsServer::init()
 {
   if ( sInitialized )
@@ -190,6 +210,9 @@ bool QgsServer::init()
   {
     QgsServerLogger::instance()->setLogStderr();
   }
+
+  // Configure locale
+  initLocale();
 
   // log settings currently used
   sSettings.logSummary();
@@ -347,11 +370,14 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     catch ( QgsServerException &ex )
     {
       responseDecorator.write( ex );
+      QString format;
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Info );
     }
     catch ( QgsException &ex )
     {
       // Internal server error
-      response.sendError( 500, ex.what() );
+      response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+      QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
   // Terminate the response

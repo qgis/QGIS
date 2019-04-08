@@ -50,6 +50,7 @@ class QgsArrayTranslatedFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgo
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsFeatureSink::SinkFlags sinkFlags() const override;
 
   private:
 

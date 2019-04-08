@@ -121,7 +121,7 @@ class PointsInPolygon(QgisAlgorithm):
         field_index = fields.lookupField(field_name)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, poly_source.wkbType(), poly_source.sourceCrs())
+                                               fields, poly_source.wkbType(), poly_source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 

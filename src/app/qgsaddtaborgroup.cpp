@@ -115,5 +115,5 @@ void QgsAddTabOrGroup::mTabButton_toggled( bool checked )
 
 void QgsAddTabOrGroup::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#customize-a-form-for-your-data" ) );
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#the-drag-and-drop-designer" ) );
 }

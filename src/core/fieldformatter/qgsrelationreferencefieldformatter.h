@@ -41,6 +41,8 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
     QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
+
+    QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const override;
 };
 
 #endif // QGSRELATIONREFERENCEFIELDKIT_H

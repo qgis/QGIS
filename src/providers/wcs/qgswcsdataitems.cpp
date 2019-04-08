@@ -171,7 +171,8 @@ QString QgsWCSLayerItem::createUri()
   }
   else
   {
-    Q_FOREACH ( const QString &f, mimes )
+    const auto constMimes = mimes;
+    for ( const QString &f : constMimes )
     {
       if ( mCoverageSummary.supportedFormat.indexOf( f ) >= 0 )
       {

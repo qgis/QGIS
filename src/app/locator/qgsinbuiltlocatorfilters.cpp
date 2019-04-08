@@ -29,6 +29,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsfeatureaction.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
@@ -477,7 +478,8 @@ void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, 
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::layerScope( QgisApp::instance()->activeLayer() );
 
   QString error;
   if ( QgsExpression::checkExpression( string, &context, error ) )

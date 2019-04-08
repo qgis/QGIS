@@ -72,7 +72,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
 
     ~QgsMapLayerAction() override;
 
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     const Targets &targets() const {return mTargets;}
 
     /**
-     * Returns true if the action is only enabled for layers in editable mode.
+     * Returns TRUE if the action is only enabled for layers in editable mode.
      * \since QGIS 3.0
      */
     bool isEnabledOnlyWhenEditable() const;
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     // true if action is only valid for a specific layer type
     bool mSpecificLayerType = false;
     // layer type if action is only valid for a specific layer type
-    QgsMapLayer::LayerType mLayerType = QgsMapLayer::VectorLayer;
+    QgsMapLayerType mLayerType = QgsMapLayerType::VectorLayer;
 
     // determine if the action can be run on layer and/or single feature and/or multiple features
     Targets mTargets = nullptr;

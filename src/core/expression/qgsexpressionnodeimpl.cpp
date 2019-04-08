@@ -1237,13 +1237,16 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
     }
   }
 
-  if ( context && context->hasFeature() )
+  if ( context )
   {
     QgsFeature feature = context->feature();
-    if ( index >= 0 )
-      return feature.attribute( index );
-    else
-      return feature.attribute( mName );
+    if ( feature.isValid() )
+    {
+      if ( index >= 0 )
+        return feature.attribute( index );
+      else
+        return feature.attribute( mName );
+    }
   }
   return QVariant( '[' + mName + ']' );
 }
@@ -1261,16 +1264,18 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
   QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
 
   mIndex = fields.lookupField( mName );
-  if ( mIndex >= 0 )
+
+  if ( mIndex == -1 && context->hasFeature() )
   {
-    return true;
+    mIndex = context->feature().fieldNameIndex( mName );
   }
-  else
+
+  if ( mIndex == -1 )
   {
     parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
-    mIndex = -1;
     return false;
   }
+  return true;
 }
 
 QString QgsExpressionNodeColumnRef::dump() const

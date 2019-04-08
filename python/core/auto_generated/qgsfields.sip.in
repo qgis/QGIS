@@ -59,19 +59,19 @@ Removes all fields
 
     bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
 %Docstring
-Appends a field. The field must have unique name, otherwise it is rejected (returns false)
+Appends a field. The field must have unique name, otherwise it is rejected (returns ``False``)
 %End
 
     bool rename( int fieldIdx, const QString &name );
 %Docstring
-Renames a name of field. The field must have unique name, otherwise change is rejected (returns false)
+Renames a name of field. The field must have unique name, otherwise change is rejected (returns ``False``)
 
 .. versionadded:: 3.6
 %End
 
     bool appendExpressionField( const QgsField &field, int originIndex );
 %Docstring
-Appends an expression field. The field must have unique name, otherwise it is rejected (returns false)
+Appends an expression field. The field must have unique name, otherwise it is rejected (returns ``False``)
 %End
 
     void remove( int fieldIdx );
@@ -110,7 +110,7 @@ Returns number of items
     sipRes = sipCpp->count();
 %End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
     int __bool__() const;
 %MethodCode
     sipRes = true;
@@ -134,7 +134,7 @@ Returns if a field index is valid
 
 :param i: Index of the field which needs to be checked
 
-:return: True if the field exists
+:return: ``True`` if the field exists
 %End
 
 

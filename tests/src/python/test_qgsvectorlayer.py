@@ -66,6 +66,8 @@ from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
 
+TEST_DATA_DIR = unitTestDataPath()
+
 start_app()
 
 
@@ -182,6 +184,25 @@ def dumpEditBuffer(layer):
     print("CHANGED GEOM:")
     for fid, geom in editBuffer.changedGeometries().items():
         print(("%d | %s" % (f.id(), f.geometry().asWkt())))
+
+
+class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
+
+    """
+    Tests a vector layer against the feature source tests, using a real layer source (not a memory layer)
+    """
+    @classmethod
+    def getSource(cls):
+        vl = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp'), 'test')
+        assert (vl.isValid())
+        return vl
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QgsGui.editorWidgetRegistry().initEditors()
+        # Create test layer for FeatureSourceTestCase
+        cls.source = cls.getSource()
 
 
 class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
@@ -2053,7 +2074,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
         pr = layer.dataProvider()
 
-        string_values = ['this', 'is', 'a', 'test']
+        string_values = ['this', 'is', 'a', 'test', 'a', 'nice', 'test']
         features = []
         for s in string_values:
             f = QgsFeature()
@@ -2065,7 +2086,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         params.delimiter = ' '
         val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenate, 'fldstring', params)
         self.assertTrue(ok)
-        self.assertEqual(val, 'this is a test')
+        self.assertEqual(val, 'this is a test a nice test')
+        val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenateUnique, 'fldstring', params)
+        self.assertTrue(ok)
+        self.assertEqual(val, 'this is a test nice')
 
     def testAggregateInVirtualField(self):
         """

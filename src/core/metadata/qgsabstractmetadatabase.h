@@ -504,7 +504,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      *
      * \param metadataElement The DOM element corresponding to ``resourceMetadata'' tag
      *
-     * \returns true if successful
+     * \returns TRUE if successful
      *
      * Subclasses which override this method should take care to also call the base
      * class method in order to read common metadata properties.
@@ -517,7 +517,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * \param metadataElement is a DOM element corresponding to ``resourceMetadata'' tag
      * \param document is a the DOM document being written
      *
-     * \returns true if successful
+     * \returns TRUE if successful
      *
      * Subclasses which override this method should take care to also call the base
      * class method in order to write common metadata properties.

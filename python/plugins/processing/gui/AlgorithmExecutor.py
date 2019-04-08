@@ -335,7 +335,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
 
             o = outputs[out.name()]
             parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
-        feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i, len(sink_list)))
+        feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i + 1, len(sink_list)))
         feedback.setProgress(i * 100 / len(sink_list))
         ret, results = execute(alg, parameters, context, feedback)
         if not ret:

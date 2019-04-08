@@ -143,13 +143,13 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   {
     switch ( layer->type() )
     {
-      case QgsMapLayer::VectorLayer:
+      case QgsMapLayerType::VectorLayer:
         return !canUseLayer( qobject_cast< QgsVectorLayer * >( layer ) );
-      case QgsMapLayer::RasterLayer:
+      case QgsMapLayerType::RasterLayer:
         return !canUseLayer( qobject_cast< QgsRasterLayer * >( layer ) );
-      case QgsMapLayer::PluginLayer:
+      case QgsMapLayerType::PluginLayer:
         return true;
-      case QgsMapLayer::MeshLayer:
+      case QgsMapLayerType::MeshLayer:
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
     }
     return true;
@@ -159,17 +159,17 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   {
     switch ( typeHint )
     {
-      case UnknownType:
+      case LayerHint::UnknownType:
         return true;
 
-      case Vector:
-        return l->type() == QgsMapLayer::VectorLayer;
+      case LayerHint::Vector:
+        return l->type() == QgsMapLayerType::VectorLayer;
 
-      case Raster:
-        return l->type() == QgsMapLayer::RasterLayer;
+      case LayerHint::Raster:
+        return l->type() == QgsMapLayerType::RasterLayer;
 
-      case Mesh:
-        return l->type() == QgsMapLayer::MeshLayer;
+      case LayerHint::Mesh:
+        return l->type() == QgsMapLayerType::MeshLayer;
     }
     return true;
   };
@@ -235,7 +235,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   QString name = fi.baseName();
 
   // brute force attempt to load a matching layer
-  if ( typeHint == UnknownType || typeHint == Vector )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Vector )
   {
     QgsVectorLayer::LayerOptions options;
     options.loadDefaultStyle = false;
@@ -245,7 +245,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return layer.release();
     }
   }
-  if ( typeHint == UnknownType || typeHint == Raster )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Raster )
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
@@ -255,7 +255,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return rasterLayer.release();
     }
   }
-  if ( typeHint == UnknownType || typeHint == Mesh )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
   {
     QgsMeshLayer::LayerOptions meshOptions;
     std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
@@ -346,7 +346,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   if ( layerRef.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, Vector ) );
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, LayerHint::Vector ) );
   if ( !vl )
     return nullptr;
 
@@ -367,13 +367,12 @@ bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
 {
-  // only gdal file-based layers
-  return layer && layer->providerType() == QStringLiteral( "gdal" );
+  return layer && layer->isValid();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<int> &sourceTypes )
 {
-  return layer &&
+  return layer && layer->isValid() &&
          ( sourceTypes.isEmpty()
            || ( sourceTypes.contains( QgsProcessing::TypeVectorPoint ) && layer->geometryType() == QgsWkbTypes::PointGeometry )
            || ( sourceTypes.contains( QgsProcessing::TypeVectorLine ) && layer->geometryType() == QgsWkbTypes::LineGeometry )
@@ -481,8 +480,9 @@ QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
   return s;
 }
 
-void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter )
+void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension )
 {
+  extension.clear();
   QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
   QRegularExpressionMatch match = splitRx.match( destination );
   if ( match.hasMatch() )
@@ -504,7 +504,12 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
           options.insert( QStringLiteral( "layerName" ), layerName );
         }
         uri = dsUri.database();
-        format = QgsVectorFileWriter::driverForExtension( QFileInfo( uri ).completeSuffix() );
+        extension = QFileInfo( uri ).completeSuffix();
+        format = QgsVectorFileWriter::driverForExtension( extension );
+      }
+      else
+      {
+        extension = QFileInfo( uri ).completeSuffix();
       }
       options.insert( QStringLiteral( "update" ), true );
     }
@@ -516,7 +521,6 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
     providerKey = QStringLiteral( "ogr" );
     QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
-    QString extension;
     if ( match.hasMatch() )
     {
       extension = match.captured( 2 );
@@ -574,8 +578,9 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     QString uri;
     QString layerName;
     QString format;
+    QString extension;
     bool useWriter = false;
-    parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+    parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
 
     QgsFields newFields = fields;
     if ( useWriter && providerKey == QLatin1String( "ogr" ) )
@@ -781,13 +786,20 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   requiresTranslation = requiresTranslation || !vl->subsetString().isEmpty();
 
   // Check if layer is a disk based format and if so if the layer's path has a compatible filename suffix
+  QString diskPath;
   if ( !requiresTranslation )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( vl->dataProvider()->name(), vl->source() );
-    if ( parts.contains( QLatin1String( "path" ) ) )
+    if ( parts.contains( QStringLiteral( "path" ) ) )
     {
-      QFileInfo fi( parts.value( QLatin1String( "path" ) ).toString() );
+      diskPath = parts.value( QStringLiteral( "path" ) ).toString();
+      QFileInfo fi( diskPath );
       requiresTranslation = !compatibleFormats.contains( fi.suffix(), Qt::CaseInsensitive );
+
+      // if the layer name doesn't match the filename, we need to convert the layer. This method can only return
+      // a filename, and cannot handle layernames as well as file paths
+      const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      requiresTranslation = requiresTranslation || ( !layerName.isEmpty() && layerName != fi.baseName() );
     }
     else
     {
@@ -818,7 +830,7 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   }
   else
   {
-    return vl->source();
+    return diskPath;
   }
 }
 

@@ -85,6 +85,7 @@ mPlugins = dict of dicts {id : {
     "downloads" unicode,                        # number of downloads
     "average_vote" unicode,                     # average vote
     "rating_votes" unicode,                     # number of votes
+    "plugin_dependencies" unicode,              # PIP-style comma separated list of plugin dependencies
 }}
 """
 
@@ -339,7 +340,7 @@ class Repositories(QObject):
         self.mRepositories[key]["xmlData"].setProperty('reposName', key)
         self.mRepositories[key]["xmlData"].setProperty('redirectionCounter', redirectionCounter)
         self.mRepositories[key]["xmlData"].downloadProgress.connect(self.mRepositories[key]["Relay"].dataReadProgress)
-        self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
+        self.mRepositories[key]["xmlDataFinished"] = self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
 
     # ----------------------------------------- #
     def fetchingInProgress(self):
@@ -353,7 +354,7 @@ class Repositories(QObject):
     def killConnection(self, key):
         """ kill the fetching on demand """
         if self.mRepositories[key]["state"] == 1 and self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
-            self.mRepositories[key]["xmlData"].finished.disconnect()
+            self.mRepositories[key]["xmlData"].finished.disconnect(self.mRepositories[key]["xmlDataFinished"])
             self.mRepositories[key]["xmlData"].abort()
 
     # ----------------------------------------- #
@@ -446,7 +447,8 @@ class Repositories(QObject):
                         "version_installed": "",
                         "zip_repository": reposName,
                         "library": "",
-                        "readonly": False
+                        "readonly": False,
+                        "plugin_dependencies": pluginNodes.item(i).firstChildElement("plugin_dependencies").text().strip(),
                     }
                     qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().strip()
                     if not qgisMinimumVersion:
@@ -674,7 +676,9 @@ class Plugins(QObject):
             "status": "orphan",  # Will be overwritten, if any available version found.
             "error": error,
             "error_details": errorDetails,
-            "readonly": readOnly}
+            "readonly": readOnly,
+            "plugin_dependencies": pluginMetadata("plugin_dependencies"),
+        }
         return plugin
 
     # ----------------------------------------- #
@@ -746,9 +750,9 @@ class Plugins(QObject):
                         # other remote metadata is preferred:
                         for attrib in ["name", "plugin_id", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                                        "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
-                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted"]:
+                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted", "plugin_dependencies"]:
                             if attrib not in translatableAttributes or attrib == "name":  # include name!
-                                if plugin[attrib]:
+                                if plugin.get(attrib, False):
                                     self.mPlugins[key][attrib] = plugin[attrib]
                     # set status
                     #

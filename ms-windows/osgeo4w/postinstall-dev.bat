@@ -9,15 +9,16 @@ if not %OSGEO4W_MENU_LINKS%==0 mkdir "%OSGEO4W_STARTMENU%"
 if not %OSGEO4W_DESKTOP_LINKS%==0 mkdir "%OSGEO4W_DESKTOP%"
 
 for %%g in (@grassversions@) do (
-	for /F "delims=." %%i in ("%%g") do set v=%%i
+	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
+	for /F "delims=." %%i in ("!gv!") do set v=%%i
 
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.exe" "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe"
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.vars" "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.vars"
 	textreplace -std -map @grassmajor@ !v! -t bin\@package@-g!v!.bat
 	call "%OSGEO4W_ROOT%\bin\@package@-g!v!.bat" --postinstall
 
-	if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe" "%OSGEO4W_STARTMENU%" "QGIS Desktop @version@ with GRASS %%g (Nightly)"
-	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe" "%OSGEO4W_DESKTOP%" "QGIS Desktop @version@ with GRASS %%g (Nightly)"
+	if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe" "%OSGEO4W_STARTMENU%" "QGIS Desktop @version@ with GRASS !gv! (Nightly)"
+	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe" "%OSGEO4W_DESKTOP%" "QGIS Desktop @version@ with GRASS !gv! (Nightly)"
 )
 
 if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_STARTMENU%" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico"

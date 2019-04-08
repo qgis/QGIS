@@ -86,7 +86,7 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsVectorLayerLegendWidget::populateLegendTreeView( const QHash<QString, QString> &content )
 {
-  QStandardItemModel *model = new QStandardItemModel;
+  QStandardItemModel *model = new QStandardItemModel( this );
   model->setColumnCount( 2 );
   model->setHorizontalHeaderLabels( QStringList() << tr( "Symbol" ) << tr( "Text" ) );
 

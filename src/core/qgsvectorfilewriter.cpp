@@ -34,6 +34,7 @@
 #include "qgssettings.h"
 #include "qgsgeometryengine.h"
 #include "qgsproviderregistry.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -252,7 +253,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       QStringList allExts = metadata.ext.split( ' ', QString::SkipEmptyParts );
       bool found = false;
-      Q_FOREACH ( const QString &ext, allExts )
+      const auto constAllExts = allExts;
+      for ( const QString &ext : constAllExts )
       {
         if ( vectorFileName.endsWith( '.' + ext, Qt::CaseInsensitive ) )
         {
@@ -276,7 +278,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         {
           QFileInfoList fileList = dir.entryInfoList(
                                      QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst );
-          Q_FOREACH ( const QFileInfo &info, fileList )
+          const auto constFileList = fileList;
+          for ( const QFileInfo &info : constFileList )
           {
             QFile::remove( info.absoluteFilePath() );
           }
@@ -541,7 +544,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
           case QVariant::String:
             ogrType = OFTString;
-            if ( ogrWidth <= 0 || ogrWidth > 255 )
+            if ( ( ogrWidth <= 0 || ogrWidth > 255 ) && mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
               ogrWidth = 255;
             break;
 
@@ -1006,7 +1009,7 @@ class QgsVectorFileWriterMetadataContainer
 
       layerOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new QgsVectorFileWriter::IntOption(
                              QObject::tr( "Maximum number of figures after decimal separator to write in coordinates. "
-                                          "Default to 15. Truncation will occur to remove trailing zeros." ),
+                                          "Defaults to 15. Truncation will occur to remove trailing zeros." ),
                              15 // Default value
                            ) );
 
@@ -1016,6 +1019,35 @@ class QgsVectorFileWriterMetadataContainer
                                QObject::tr( "GeoJSON" ),
                                QStringLiteral( "*.geojson" ),
                                QStringLiteral( "geojson" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
+      // GeoJSONSeq
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      layerOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new QgsVectorFileWriter::IntOption(
+                             QObject::tr( "Maximum number of figures after decimal separator to write in coordinates. "
+                                          "Defaults to 15. Truncation will occur to remove trailing zeros." ),
+                             15 // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "RS" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to start records with the RS=0x1E character (RFC 8142 standard). "
+                                          "Defaults to NO: Newline Delimited JSON (geojsonl). \n"
+                                          "If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons)." ),
+                             false  // Default value = NO
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "GeoJSONSeq" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "GeoJSON - Newline Delimited" ),
+                               QObject::tr( "GeoJSON - Newline Delimited" ),
+                               QStringLiteral( "*.geojsonl *.geojsons *.json" ),
+                               QStringLiteral( "json" ),  // add json for now
                                datasetOptions,
                                layerOptions,
                                QStringLiteral( "UTF-8" )
@@ -2850,14 +2882,15 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString &fileName )
   QDir dir = fi.dir();
 
   QStringList filter;
-  const char *suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix", ".qpj" };
+  const char *suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix", ".qpj", ".cpg", ".sbn", ".sbx", ".idm", ".ind" };
   for ( std::size_t i = 0; i < sizeof( suffixes ) / sizeof( *suffixes ); i++ )
   {
     filter << fi.completeBaseName() + suffixes[i];
   }
 
   bool ok = true;
-  Q_FOREACH ( const QString &file, dir.entryList( filter ) )
+  const auto constEntryList = dir.entryList( filter );
+  for ( const QString &file : constEntryList )
   {
     QFile f( dir.canonicalPath() + '/' + file );
     if ( !f.remove() )
@@ -3112,7 +3145,8 @@ QString QgsVectorFileWriter::driverForExtension( const QString &extension )
         QString drvName = GDALGetDriverShortName( drv );
         QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
 
-        Q_FOREACH ( const QString &driver, driverExtensions )
+        const auto constDriverExtensions = driverExtensions;
+        for ( const QString &driver : constDriverExtensions )
         {
           if ( driver.compare( ext, Qt::CaseInsensitive ) == 0 )
             return drvName;
@@ -3555,7 +3589,8 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString &datasetName,
   }
   bool ret = false;
   OGRFeatureDefnH defn = OGR_L_GetLayerDefn( hLayer );
-  Q_FOREACH ( int idx, attributes )
+  const auto constAttributes = attributes;
+  for ( int idx : constAttributes )
   {
     QgsField fld = layer->fields().at( idx );
     if ( OGR_FD_GetFieldIndex( defn, fld.name().toUtf8().constData() ) < 0 )

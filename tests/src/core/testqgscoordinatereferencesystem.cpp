@@ -23,11 +23,11 @@ Email                : sherman at mrcc dot com
 #include "qgis.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-
-#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
+#if PROJ_VERSION_MAJOR > 4
+#include <proj.h>
+#else
 #include <proj_api.h>
+#endif
 #include <gdal.h>
 #include <cpl_conv.h>
 #include <QtTest/QSignalSpy>
@@ -122,7 +122,12 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
+#if PROJ_VERSION_MAJOR > 4
+  PJ_INFO info = proj_info();
+  qDebug() << "PROJ version:           " << info.release;
+#else
   qDebug() << "PROJ version:           " << PJ_VERSION;
+#endif
 
   // if user set GDAL_FIX_ESRI_WKT print a warning
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
@@ -894,7 +899,7 @@ void TestQgsCoordinateReferenceSystem::projectEPSG25833()
   QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
   QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/epsg25833.qgs" ) ) );
   QVERIFY( p.crs().isValid() );
-  QVERIFY( p.crs().authid() == QStringLiteral( "EPSG:25833" ) );
+  QCOMPARE( p.crs().authid(), QStringLiteral( "EPSG:25833" ) );
   QCOMPARE( spyCrsChanged.count(), 1 );
 }
 

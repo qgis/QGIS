@@ -144,8 +144,7 @@ MDAL::Faces MDAL::DriverSWW::readFaces( const NetCDFFile &ncFile ) const
   size_t nVolumes, nVertices;
   ncFile.getDimension( "number_of_volumes", &nVolumes, &nVolumesId );
   ncFile.getDimension( "number_of_vertices", &nVertices, &nVerticesId );
-  if ( nVertices != 3 )
-    throw MDAL_Status::Err_UnknownFormat;
+  if ( nVertices != 3 ) throw MDAL_Status::Err_UnknownFormat;
 
   std::vector<int> pvolumes = ncFile.readIntArr( "volumes", nVertices * nVolumes );
 

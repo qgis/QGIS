@@ -50,7 +50,8 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
 
   //generate list from recent colors
   QgsNamedColorList colorList;
-  Q_FOREACH ( const QVariant &color, recentColorVariants )
+  const auto constRecentColorVariants = recentColorVariants;
+  for ( const QVariant &color : constRecentColorVariants )
   {
     colorList.append( qMakePair( color.value<QColor>(), QgsSymbolLayerUtils::colorToName( color.value<QColor>() ) ) );
   }

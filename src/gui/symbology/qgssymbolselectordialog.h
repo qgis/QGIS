@@ -122,7 +122,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsSymbolWidgetContext context() const;
 
     /**
-     * Returns the symbol that is currently active in the widget. Can be null.
+     * Returns the symbol that is currently active in the widget. Can be NULLPTR.
      * \returns The active symbol.
      */
     QgsSymbol *symbol() { return mSymbol; }
@@ -274,7 +274,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
      * \param style The style
      * \param vl Associated vector layer
      * \param parent Parent widget
-     * \param embedded True to embed in renderer properties dialog, false otherwise
+     * \param embedded TRUE to embed in renderer properties dialog, FALSE otherwise
      */
     QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool embedded = false );
     ~QgsSymbolSelectorDialog() override;
@@ -298,7 +298,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbolWidgetContext context() const;
 
     /**
-     * Returns the symbol that is currently active in the widget. Can be null.
+     * Returns the symbol that is currently active in the widget. Can be NULLPTR.
      * \returns The active symbol.
      */
     QgsSymbol *symbol();

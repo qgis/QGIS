@@ -70,6 +70,9 @@ class QgsExpressionPrivate
     std::shared_ptr<QgsDistanceArea> mCalc;
     QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
     QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
+
+    //! Whether prepare() has been called before evaluate()
+    bool mIsPrepared = false;
 };
 ///@endcond
 

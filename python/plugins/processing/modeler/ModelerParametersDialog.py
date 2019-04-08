@@ -36,6 +36,7 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QHBoxLayout, QWidget)
 
 from qgis.core import (Qgis,
+                       QgsProject,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterExtent,
@@ -140,16 +141,21 @@ class ModelerParametersDialog(QDialog):
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         self.verticalLayout.addWidget(line)
-        self.algorithmItem = QgsGui.instance().processingGuiRegistry().algorithmConfigurationWidget(self._alg)
-        if self.configuration:
-            self.algorithmItem.setConfiguration(self.configuration)
-        self.verticalLayout.addWidget(self.algorithmItem)
 
         widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
         widget_context.setModel(self.model)
         widget_context.setModelChildAlgorithmId(self.childId)
+
+        self.algorithmItem = QgsGui.instance().processingGuiRegistry().algorithmConfigurationWidget(self._alg)
+        if self.algorithmItem:
+            self.algorithmItem.setWidgetContext(widget_context)
+            self.algorithmItem.registerProcessingContextGenerator(self.context_generator)
+            if self.configuration:
+                self.algorithmItem.setConfiguration(self.configuration)
+            self.verticalLayout.addWidget(self.algorithmItem)
 
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
@@ -169,9 +175,9 @@ class ModelerParametersDialog(QDialog):
             wrapper = WidgetWrapperFactory.create_wrapper(param, self)
             self.wrappers[param.name()] = wrapper
 
+            wrapper.setWidgetContext(widget_context)
+            wrapper.registerProcessingContextGenerator(self.context_generator)
             if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                wrapper.setWidgetContext(widget_context)
-                wrapper.registerProcessingContextGenerator(self.context_generator)
                 widget = wrapper
             else:
                 widget = wrapper.widget
