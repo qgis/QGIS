@@ -527,11 +527,14 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
 void QgsMapThemeCollection::writeXml( QDomDocument &doc )
 {
   QDomElement visPresetsElem = doc.createElement( QStringLiteral( "visibility-presets" ) );
-  MapThemeRecordMap::const_iterator it = mMapThemes.constBegin();
-  for ( ; it != mMapThemes.constEnd(); ++ it )
+
+  const auto keys = mMapThemes.keys();
+
+  std::sort( keys.begin(), keys.end() );
+
+  for ( const QString &grpName : qgis::as_const( keys ) )
   {
-    QString grpName = it.key();
-    const MapThemeRecord &rec = it.value();
+    const MapThemeRecord &rec = mMapThemes.value( grpName );
     QDomElement visPresetElem = doc.createElement( QStringLiteral( "visibility-preset" ) );
     visPresetElem.setAttribute( QStringLiteral( "name" ), grpName );
     if ( rec.hasExpandedStateInfo() )
