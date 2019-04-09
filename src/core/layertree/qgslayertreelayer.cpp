@@ -76,12 +76,12 @@ void QgsLayerTreeLayer::attachToLayer()
 
 QString QgsLayerTreeLayer::name() const
 {
-  return mRef ? mRef->name() : mLayerName;
+  return ( mRef && mUseLayerName ) ? mRef->name() : mLayerName;
 }
 
 void QgsLayerTreeLayer::setName( const QString &n )
 {
-  if ( mRef )
+  if ( mRef && mUseLayerName )
   {
     if ( mRef->name() == n )
       return;
@@ -171,6 +171,16 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
   mRef.layer.clear();
   // layerId stays in the reference
 
+}
+
+void QgsLayerTreeLayer::setUseLayerName( const bool use )
+{
+  mUseLayerName = use;
+}
+
+bool QgsLayerTreeLayer::useLayerName() const
+{
+  return mUseLayerName;
 }
 
 void QgsLayerTreeLayer::layerNameChanged()

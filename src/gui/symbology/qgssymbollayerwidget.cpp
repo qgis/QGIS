@@ -79,7 +79,8 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -98,17 +99,11 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 void QgsSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
-  Q_FOREACH ( QgsUnitSelectionWidget *unitWidget, findChildren<QgsUnitSelectionWidget *>() )
+  const auto unitSelectionWidgets = findChildren<QgsUnitSelectionWidget *>();
+  for ( QgsUnitSelectionWidget *unitWidget : unitSelectionWidgets )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
-#if 0
-  Q_FOREACH ( QgsPropertyOverrideButton *ddButton, findChildren<QgsPropertyOverrideButton *>() )
-  {
-    if ( ddButton->assistant() )
-      ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
-  }
-#endif
 }
 
 QgsSymbolWidgetContext QgsSymbolLayerWidget::context() const
@@ -487,7 +482,8 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   lstNames->setIconSize( QSize( size, size ) );
 
   double markerSize = size * 0.8;
-  Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
+  const auto shapes = QgsSimpleMarkerSymbolLayerBase::availableShapes();
+  for ( QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
   {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
     lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
@@ -912,7 +908,8 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
-  Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
+  const auto shapes { QgsSimpleMarkerSymbolLayerBase::availableShapes() };
+  for ( QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
   {
     if ( !QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( shape ) )
       continue;

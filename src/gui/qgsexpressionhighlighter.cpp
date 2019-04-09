@@ -26,7 +26,8 @@ QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   keywordPatterns << QStringLiteral( "\\bCASE\\b" ) << QStringLiteral( "\\bWHEN\\b" ) << QStringLiteral( "\\bTHEN\\b" )
                   << QStringLiteral( "\\bELSE\\b" ) << QStringLiteral( "\\bEND\\b" );
 
-  Q_FOREACH ( const QString &pattern, keywordPatterns )
+  const auto constKeywordPatterns = keywordPatterns;
+  for ( const QString &pattern : constKeywordPatterns )
   {
     rule.pattern = QRegExp( pattern, Qt::CaseInsensitive );
     rule.format = keywordFormat;
@@ -48,7 +49,8 @@ void QgsExpressionHighlighter::addFields( const QStringList &fieldList )
 {
   columnNameFormat.setForeground( Qt::darkRed );
   HighlightingRule rule;
-  Q_FOREACH ( const QString &field, fieldList )
+  const auto constFieldList = fieldList;
+  for ( const QString &field : constFieldList )
   {
     if ( field.isEmpty() ) // this really happened :)
       continue;
@@ -60,7 +62,8 @@ void QgsExpressionHighlighter::addFields( const QStringList &fieldList )
 
 void QgsExpressionHighlighter::highlightBlock( const QString &text )
 {
-  Q_FOREACH ( const HighlightingRule &rule, highlightingRules )
+  const auto constHighlightingRules = highlightingRules;
+  for ( const HighlightingRule &rule : constHighlightingRules )
   {
     QRegExp expression( rule.pattern );
     int index = expression.indexIn( text );

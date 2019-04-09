@@ -868,9 +868,9 @@ QString QgsVectorLayer::subsetString() const
 
 bool QgsVectorLayer::setSubsetString( const QString &subset )
 {
-  if ( !mValid || !mDataProvider )
+  if ( !mValid || !mDataProvider || mEditBuffer )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider or while editing" ), 3 );
     return false;
   }
 

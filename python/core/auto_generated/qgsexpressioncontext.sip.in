@@ -450,6 +450,15 @@ variable.
 .. seealso:: :py:func:`isHighlightedFunction`
 %End
 
+    QStringList highlightedVariables() const;
+%Docstring
+Returns the current list of variables highlighted within the context.
+
+.. seealso:: :py:func:`setHighlightedVariables`
+
+.. versionadded:: 3.8
+%End
+
     void setHighlightedVariables( const QStringList &variableNames );
 %Docstring
 Sets the list of variable names within the context intended to be highlighted to the user. This

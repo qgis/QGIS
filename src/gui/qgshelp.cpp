@@ -56,7 +56,8 @@ QUrl QgsHelp::helpUrl( const QString &key )
   QString helpPath, fullPath;
   bool helpFound = false;
 
-  Q_FOREACH ( const QString &path, paths )
+  const auto constPaths = paths;
+  for ( const QString &path : constPaths )
   {
     if ( path.endsWith( QLatin1String( "\\" ) ) || path.endsWith( QLatin1String( "/" ) ) )
     {
@@ -67,7 +68,8 @@ QUrl QgsHelp::helpUrl( const QString &key )
       fullPath = path;
     }
 
-    Q_FOREACH ( const QString &var, scope->variableNames() )
+    const auto constVariableNames = scope->variableNames();
+    for ( const QString &var : constVariableNames )
     {
       QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );

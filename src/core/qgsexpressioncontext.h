@@ -430,6 +430,14 @@ class CORE_EXPORT QgsExpressionContext
     bool isHighlightedVariable( const QString &name ) const;
 
     /**
+     * Returns the current list of variables highlighted within the context.
+     *
+     * \see setHighlightedVariables()
+     * \since QGIS 3.8
+     */
+    QStringList highlightedVariables() const;
+
+    /**
      * Sets the list of variable names within the context intended to be highlighted to the user. This
      * is used by the expression builder to more prominently display these variables.
      * \param variableNames variable names to highlight

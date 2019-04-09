@@ -35,6 +35,8 @@ SET(QGIS_3D_SRCS
   symbols/qgsabstract3dsymbol.cpp
   symbols/qgsline3dsymbol.cpp
   symbols/qgsline3dsymbol_p.cpp
+  symbols/qgslinematerial_p.cpp
+  symbols/qgslinevertexdata_p.cpp
   symbols/qgsmesh3dsymbol.cpp
   symbols/qgsmesh3dsymbol_p.cpp
   symbols/qgspoint3dsymbol.cpp
@@ -74,6 +76,8 @@ SET(QGIS_3D_MOC_HDRS
   chunks/qgschunkqueuejob_p.h
 
   processing/qgs3dalgorithms.h
+
+  symbols/qgslinematerial_p.h
 
   terrain/qgsdemterraintileloader_p.h
   terrain/qgsflatterraingenerator.h
@@ -122,6 +126,8 @@ SET(QGIS_3D_HDRS
   symbols/qgsabstract3dsymbol.h
   symbols/qgsline3dsymbol.h
   symbols/qgsline3dsymbol_p.h
+  symbols/qgslinematerial_p.h
+  symbols/qgslinevertexdata_p.h
   symbols/qgsmesh3dsymbol.h
   symbols/qgsmesh3dsymbol_p.h
   symbols/qgspoint3dsymbol.h

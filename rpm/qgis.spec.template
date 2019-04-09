@@ -21,6 +21,7 @@
 %if %{_timestamp} > 0
 # Epoch is set only when building packages from master
 Epoch: %{_timestamp}
+%define configure_with_sha -D SHA=%(sha=%{_relver}; echo ${sha##git})
 %define combinedversion %{epoch}:%{version}
 %define builddate %(date -d @%{_timestamp} '+%a %b %d %Y')
 %else
@@ -230,6 +231,7 @@ gzip ChangeLog
       -D WITH_SERVER:BOOL=TRUE \
       -D WITH_3D:BOOL=TRUE \
       -D USE_OPENCL:BOOL=TRUE \
+      %{configure_with_sha} \
       .
 
 make %{?_smp_mflags}

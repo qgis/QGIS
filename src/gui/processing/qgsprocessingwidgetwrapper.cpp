@@ -235,7 +235,23 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
 
 QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressionContext() const
 {
-  return QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
+  QgsExpressionContext context = QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
+  if ( mParameterDefinition && !mParameterDefinition->additionalExpressionContextVariables().isEmpty() )
+  {
+    std::unique_ptr< QgsExpressionContextScope > paramScope = qgis::make_unique< QgsExpressionContextScope >();
+    const QStringList additional = mParameterDefinition->additionalExpressionContextVariables();
+    for ( const QString &var : additional )
+    {
+      paramScope->setVariable( var, QVariant() );
+    }
+    context.appendScope( paramScope.release() );
+
+    // we always highlight additional variables for visibility
+    QStringList highlighted = context.highlightedVariables();
+    highlighted.append( additional );
+    context.setHighlightedVariables( highlighted );
+  }
+  return context;
 }
 
 void QgsAbstractProcessingParameterWidgetWrapper::setDialog( QDialog * )

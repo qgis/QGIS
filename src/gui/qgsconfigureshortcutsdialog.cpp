@@ -59,7 +59,8 @@ void QgsConfigureShortcutsDialog::populateActions()
 
   QList<QTreeWidgetItem *> items;
   items.reserve( objects.count() );
-  Q_FOREACH ( QObject *obj, objects )
+  const auto constObjects = objects;
+  for ( QObject *obj : constObjects )
   {
     QString actionText;
     QString sequence;

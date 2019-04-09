@@ -89,7 +89,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
   else
   {
     QList< int > fieldIndexes;
-    Q_FOREACH ( const QString &field, fields )
+    const auto constFields = fields;
+    for ( const QString &field : constFields )
     {
       int index = source->fields().lookupField( field );
       if ( index >= 0 )
@@ -107,7 +108,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
       }
 
       QVariantList indexAttributes;
-      Q_FOREACH ( int index, fieldIndexes )
+      const auto constFieldIndexes = fieldIndexes;
+      for ( int index : constFieldIndexes )
       {
         indexAttributes << f.attribute( index );
       }

@@ -85,7 +85,8 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   if ( ddsLegend )
   {
     groupManualSizeClasses->setChecked( !ddsLegend->classes().isEmpty() );
-    Q_FOREACH ( const QgsDataDefinedSizeLegend::SizeClass &sc, ddsLegend->classes() )
+    const auto constClasses = ddsLegend->classes();
+    for ( const QgsDataDefinedSizeLegend::SizeClass &sc : constClasses )
     {
       QStandardItem *item = new QStandardItem( QString::number( sc.size ) );
       item->setData( sc.size );
