@@ -94,9 +94,8 @@ namespace QgsWms
                              const QString &version, const QgsServerRequest &request,
                              QgsServerResponse &response, bool projectSettings )
   {
-    QgsAccessControl *accessControl = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
 
     QDomDocument doc;
@@ -109,18 +108,20 @@ namespace QgsWms
     cacheKeyList << ( projectSettings ? QStringLiteral( "projectSettings" ) : version );
     cacheKeyList << request.url().host();
     bool cache = true;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     if ( accessControl )
       cache = accessControl->fillCacheKey( cacheKeyList );
+#endif
     QString cacheKey = cacheKeyList.join( '-' );
 
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    cacheManager = serverIface->cacheManager();
-#endif
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       capabilitiesDocument = &doc;
     }
+#endif
 
     if ( !capabilitiesDocument && cache ) //capabilities xml not in cache plugins
     {
@@ -133,16 +134,20 @@ namespace QgsWms
 
       doc = getCapabilities( serverIface, project, version, request, projectSettings );
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( cacheManager &&
            cacheManager->setCachedDocument( &doc, project, request, accessControl ) )
       {
         capabilitiesDocument = &doc;
       }
-      else if ( cache )
+#endif
+
+      if ( !capabilitiesDocument )
       {
         capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );
         capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
       }
+
       if ( !capabilitiesDocument )
       {
         capabilitiesDocument = &doc;
@@ -1662,7 +1667,11 @@ namespace QgsWms
     void appendDrawingOrder( QDomDocument &doc, QDomElement &parentElem, QgsServerInterface *serverIface,
                              const QgsProject *project )
     {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+      ( void )serverIface;
+#endif
       bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
       QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 

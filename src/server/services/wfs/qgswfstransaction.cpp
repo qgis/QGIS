@@ -217,6 +217,9 @@ namespace QgsWfs
 
   void performTransaction( transactionRequest &aRequest, QgsServerInterface *serverIface, const QgsProject *project )
   {
+#ifndef HAVE_SERVER_PYTHON_PLUGINS
+    ( void )serverIface;
+#endif
     // store typeName
     QStringList typeNameList;
 
@@ -242,8 +245,10 @@ namespace QgsWfs
         typeNameList << name;
     }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     // get access controls
     QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually

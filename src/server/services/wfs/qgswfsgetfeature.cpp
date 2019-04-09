@@ -185,11 +185,14 @@ namespace QgsWfs
       }
     }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
-
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
     std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+#else
+    ( void )serverIface;
+#endif
 
     // features counters
     long sentFeatures = 0;
@@ -208,10 +211,12 @@ namespace QgsWfs
       }
 
       QgsMapLayer *layer = mapLayerMap[typeName];
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerReadPermission( layer ) )
       {
         throw QgsSecurityAccessException( QStringLiteral( "Feature access permission denied" ) );
       }
+#endif
 
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
@@ -226,10 +231,12 @@ namespace QgsWfs
         throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' layer's provider error" ).arg( typeName ) );
       }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl )
       {
         QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, vlayer, filterRestorer->originalFilters() );
       }
+#endif
 
       //is there alias info for this vector layer?
       QMap< int, QString > layerAliasInfo;
@@ -326,6 +333,7 @@ namespace QgsWfs
       // subset of attributes
       featureRequest.setSubsetOfAttributes( attrIndexes );
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl )
       {
         accessControl->filterFeatures( vlayer, featureRequest );
@@ -339,6 +347,7 @@ namespace QgsWfs
           accessControl->layerAttributes( vlayer, attributes ),
           vlayer->fields() );
       }
+#endif
 
       if ( onlyOneLayer )
       {
