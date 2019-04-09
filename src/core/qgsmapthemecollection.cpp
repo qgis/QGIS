@@ -528,7 +528,7 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
 {
   QDomElement visPresetsElem = doc.createElement( QStringLiteral( "visibility-presets" ) );
 
-  const auto keys = mMapThemes.keys();
+  auto keys = mMapThemes.keys();
 
   std::sort( keys.begin(), keys.end() );
 
