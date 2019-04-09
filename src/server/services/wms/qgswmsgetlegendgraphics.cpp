@@ -64,11 +64,9 @@ namespace QgsWms
     }
 
     // Get cached image
-    QgsAccessControl *accessControl = nullptr;
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
-    cacheManager = serverIface->cacheManager();
+    QgsAccessControl *accessControl = serverIface->accessControls();
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager )
     {
       QImage image;
@@ -88,14 +86,14 @@ namespace QgsWms
     if ( result )
     {
       writeImage( response, *result,  format, context.imageQuality() );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( cacheManager )
       {
         QByteArray content = response.data();
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( !content.isEmpty() )
           cacheManager->setCachedImage( &content, project, request, accessControl );
-#endif
       }
+#endif
     }
     else
     {
