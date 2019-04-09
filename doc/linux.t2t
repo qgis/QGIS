@@ -172,6 +172,13 @@ on your screen. If you get the error message "error while loading shared librari
 execute this command in your shell.
 
 ```
+sudo ldconfig
+```
+
+If that doesn't help add the install path to LD_LIBRARY_PATH:
+
+
+```
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
 ```
 
