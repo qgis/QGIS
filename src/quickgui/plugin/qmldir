@@ -13,6 +13,7 @@
 module QgsQuick
 plugin qgis_quick_plugin
 
+ComboBox 0.1 qgsquickcombobox.qml
 MapCanvas 0.1 qgsquickmapcanvas.qml
 FeatureForm 0.1 qgsquickfeatureform.qml
 FeatureFormStyling 0.1 qgsquickfeatureformstyling.qml
