@@ -749,13 +749,7 @@ namespace QgsWms
     return true;
   }
 
-  QImage *QgsRenderer::getMap( HitTest *hitTest )
-  {
-    QgsMapSettings mapSettings;
-    return getMap( mapSettings, hitTest );
-  }
-
-  QImage *QgsRenderer::getMap( QgsMapSettings &mapSettings, HitTest *hitTest )
+  QImage *QgsRenderer::getMap()
   {
     // check size
     checkMaximumWidthHeight();
@@ -766,6 +760,8 @@ namespace QgsWms
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
+
+    QgsMapSettings mapSettings;
     configureLayers( layers, &mapSettings );
 
     // create the output image and the painter
@@ -779,7 +775,7 @@ namespace QgsWms
     mapSettings.setLayers( layers );
 
     // rendering step for layers
-    painter.reset( layersRendering( mapSettings, *image, hitTest ) );
+    painter.reset( layersRendering( mapSettings, *image ) );
 
     // rendering step for annotations
     annotationsRendering( painter.get() );
@@ -2710,38 +2706,31 @@ namespace QgsWms
     mTemporaryLayers.clear();
   }
 
-  QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest ) const
+  QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image ) const
   {
     QPainter *painter = nullptr;
-    if ( hitTest )
-    {
-      runHitTest( mapSettings, *hitTest );
-      painter = new QPainter();
-    }
-    else
-    {
-      QgsFeatureFilterProviderGroup filters;
-      filters.addProvider( &mFeatureFilter );
+
+    QgsFeatureFilterProviderGroup filters;
+    filters.addProvider( &mFeatureFilter );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
-      filters.addProvider( mContext.accessControl() );
+    mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
+    filters.addProvider( mContext.accessControl() );
 #endif
-      QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
-      renderJob.render( mapSettings, &image );
-      painter = renderJob.takePainter();
+    QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
+    renderJob.render( mapSettings, &image );
+    painter = renderJob.takePainter();
 
-      if ( !renderJob.errors().isEmpty() )
+    if ( !renderJob.errors().isEmpty() )
+    {
+      QString layerWMSName;
+      QString firstErrorLayerId = renderJob.errors().at( 0 ).layerID;
+      QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
+      if ( errorLayer )
       {
-        QString layerWMSName;
-        QString firstErrorLayerId = renderJob.errors().at( 0 ).layerID;
-        QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
-        if ( errorLayer )
-        {
-          layerWMSName = mContext.layerNickname( *errorLayer );
-        }
-
-        throw QgsException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
+        layerWMSName = mContext.layerNickname( *errorLayer );
       }
+
+      throw QgsException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
     }
 
     return painter;

@@ -104,15 +104,11 @@ namespace QgsWms
       HitTest symbols();
 
       /**
-       * Returns the map as an image (or NULLPTR in case of error). The caller takes ownership
-      of the image object). If an instance to existing hit test structure is passed, instead of rendering
-      it will fill the structure with symbols that would be used for rendering */
-      QImage *getMap( HitTest *hitTest = nullptr );
-
-      /**
-       * Identical to getMap( HitTest* hitTest ) and updates the map settings actually used.
-        \since QGIS 3.0 */
-      QImage *getMap( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
+       * Returns the map as an image (or NULLPTR in case of error). The caller
+       * takes ownership of the image object).
+       * \since QGIS 3.8
+       */
+      QImage *getMap();
 
       /**
        * Returns the map as DXF data
@@ -141,7 +137,7 @@ namespace QgsWms
       QList<QgsMapLayer *> externalLayers( const QList<QgsWmsParametersExternalLayer> &params );
 
       // Rendering step for layers
-      QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest = nullptr ) const;
+      QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image ) const;
 
       // Rendering step for annotations
       void annotationsRendering( QPainter *painter ) const;
