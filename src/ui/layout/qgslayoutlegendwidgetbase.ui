@@ -423,7 +423,7 @@
                <string> Add an expression to the vector layer and each child symbol's label</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/mActionAddExpression.svg</normaloff>:/images/themes/default/mActionAddExpression.svg</iconset>
               </property>
               <property name="iconSize">
