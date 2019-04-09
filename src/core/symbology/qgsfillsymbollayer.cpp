@@ -3512,6 +3512,7 @@ QgsSymbolLayer *QgsCentroidFillSymbolLayer::createFromSld( QDomElement &element 
 
   std::unique_ptr< QgsCentroidFillSymbolLayer > sl = qgis::make_unique< QgsCentroidFillSymbolLayer >();
   sl->setSubSymbol( marker.release() );
+  sl->setPointOnAllParts( false );
   return sl.release();
 }
 
