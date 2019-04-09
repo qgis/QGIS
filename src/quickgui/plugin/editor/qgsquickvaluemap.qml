@@ -35,19 +35,13 @@ Item {
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  ComboBox {
+  QgsQuick.ComboBox {
     id: comboBox
-
-    property var reverseConfig: ({})
-    property var currentValue: value
-    property var currentMap
-    property var currentKey
+    comboStyle: customStyle
+    textRole: 'text'
     height: parent.height
-    anchors { left: parent.left; right: parent.right }
-    currentIndex: find(reverseConfig[value])
-
-    ListModel {
-        id: listModel
+    model: ListModel {
+      id: listModel
     }
 
     Component.onCompleted: {
@@ -63,14 +57,14 @@ Item {
             listModel.append( { text: currentKey } )
             reverseConfig[currentMap[currentKey]] = currentKey;
           }
-          model=listModel
-          textRole = 'text'
         }
         else
         {
           //it's a map (<=QGIS2.18)
-          model = Object.keys(config['map']);
+          currentMap= config['map'].length ? config['map'][currentIndex] : config['map']
+          currentKey = Object.keys(currentMap)[0]
           for(var key in config['map']) {
+            listModel.append( { text: key } )
             reverseConfig[config['map'][key]] = key;
           }
         }
@@ -89,53 +83,5 @@ Item {
       currentIndex = find(reverseConfig[value])
     }
 
-    MouseArea {
-      anchors.fill: parent
-      propagateComposedEvents: true
-
-      onClicked: mouse.accepted = false
-      onPressed: { forceActiveFocus(); mouse.accepted = false; }
-      onReleased: mouse.accepted = false;
-      onDoubleClicked: mouse.accepted = false;
-      onPositionChanged: mouse.accepted = false;
-      onPressAndHold: mouse.accepted = false;
-    }
-
-    // [hidpi fixes]
-    delegate: ItemDelegate {
-      width: comboBox.width
-      height: comboBox.height * 0.8
-      text: config['map'].length ? model.text : modelData
-      font.weight: comboBox.currentIndex === index ? Font.DemiBold : Font.Normal
-      font.pixelSize: customStyle.fontPixelSize
-      highlighted: comboBox.highlightedIndex == index
-      leftPadding: 5 * QgsQuick.Utils.dp
-    }
-
-    contentItem: Text {
-      height: comboBox.height * 0.8
-      text: comboBox.displayText
-      font.pixelSize: customStyle.fontPixelSize
-      horizontalAlignment: Text.AlignLeft
-      verticalAlignment: Text.AlignVCenter
-      elide: Text.ElideRight
-      leftPadding: 5 * QgsQuick.Utils.dp
-      color: customStyle.fontColor
-    }
-
-    background: Item {
-      implicitWidth: 120 * QgsQuick.Utils.dp
-      implicitHeight: comboBox.height * 0.8
-
-      Rectangle {
-        anchors.fill: parent
-        id: backgroundRect
-        border.color: comboBox.pressed ? customStyle.activeColor : customStyle.normalColor
-        border.width: comboBox.visualFocus ? 2 : 1
-        color: customStyle.backgroundColor
-        radius: customStyle.cornerRadius
-      }
-    }
-    // [/hidpi fixes]
   }
 }

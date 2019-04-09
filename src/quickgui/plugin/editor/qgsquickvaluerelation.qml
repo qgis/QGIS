@@ -1,7 +1,7 @@
 /***************************************************************************
  qgsquickvaluerelation.qml
   --------------------------------------
-  Date                 : 2017
+  Date                 : 2019
   Copyright            : (C) 2019 by Viktor Sklencar
   Email                : viktor.sklencar@lutraconsulting.co.uk
  ***************************************************************************
@@ -35,34 +35,26 @@ Item {
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  ComboBox {
-    id: comboBox
-
-    property var reverseConfig: ({})
-    property var currentValue: value
-    property var currentMap: ({})
-    property var currentKey
-    height: parent.height
-    anchors { left: parent.left; right: parent.right }
-    currentIndex: find(value)
-
-    ListModel {
-        id: listModel
+  QgsQuick.ComboBox {
+    comboStyle: customStyle
+    model: ListModel {
+      id: listModel
     }
+    textRole: 'text'
+    height: parent.height
 
     Component.onCompleted: {
-        currentMap = QgsQuick.Utils.createValueRelationCache(config)
-        var keys = Object.keys(currentMap)
-        for(var i=0; i< keys.length; i++)
-        {
-          currentKey = keys[i]
-          var valueText = currentMap[currentKey]
-          listModel.append( { text: valueText } )
-          reverseConfig[valueText] = currentKey;
-        }
-        model=listModel
-        textRole = 'text'
-        currentIndex = find(currentMap[value])
+      currentMap = QgsQuick.Utils.createValueRelationCache(config)
+      var keys = Object.keys(currentMap)
+      for(var i=0; i< keys.length; i++)
+      {
+        currentKey = keys[i]
+        var valueText = currentMap[currentKey]
+        listModel.append( { text: valueText } )
+        reverseConfig[valueText] = currentKey;
+      }
+      model=listModel
+      currentIndex = find(currentMap[value])
     }
 
     onCurrentTextChanged: {
@@ -74,53 +66,5 @@ Item {
       currentIndex = find(currentMap[value])
     }
 
-    MouseArea {
-      anchors.fill: parent
-      propagateComposedEvents: true
-
-      onClicked: mouse.accepted = false
-      onPressed: { forceActiveFocus(); mouse.accepted = false; }
-      onReleased: mouse.accepted = false;
-      onDoubleClicked: mouse.accepted = false;
-      onPositionChanged: mouse.accepted = false;
-      onPressAndHold: mouse.accepted = false;
-    }
-
-    // [hidpi fixes]
-    delegate: ItemDelegate {
-      width: comboBox.width
-      height: comboBox.height * 0.8
-      text: modelData
-      font.weight: comboBox.currentIndex === index ? Font.DemiBold : Font.Normal
-      font.pixelSize: customStyle.fontPixelSize
-      highlighted: comboBox.highlightedIndex == index
-      leftPadding: 5 * QgsQuick.Utils.dp
-    }
-
-    contentItem: Text {
-      height: comboBox.height * 0.8
-      text: comboBox.displayText
-      font.pixelSize: customStyle.fontPixelSize
-      horizontalAlignment: Text.AlignLeft
-      verticalAlignment: Text.AlignVCenter
-      elide: Text.ElideRight
-      leftPadding: 5 * QgsQuick.Utils.dp
-      color: customStyle.fontColor
-    }
-
-    background: Item {
-      implicitWidth: 120 * QgsQuick.Utils.dp
-      implicitHeight: comboBox.height * 0.8
-
-      Rectangle {
-        anchors.fill: parent
-        id: backgroundRect
-        border.color: comboBox.pressed ? customStyle.activeColor : customStyle.normalColor
-        border.width: comboBox.visualFocus ? 2 : 1
-        color: customStyle.backgroundColor
-        radius: customStyle.cornerRadius
-      }
-    }
-    // [/hidpi fixes]
   }
 }

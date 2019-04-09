@@ -10,6 +10,7 @@ SET(QGIS_QUICK_PLUGIN_SRC
 )
 
 SET(QGIS_QUICK_PLUGIN_RESOURCES
+  editor/qgsquickcombobox.qml
   editor/qgsquickcheckbox.qml
   editor/qgsquickdatetime.qml
   editor/qgsquickexternalresource.qml
