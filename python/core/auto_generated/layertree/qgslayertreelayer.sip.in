@@ -78,6 +78,21 @@ Sets the layer's name.
 .. versionadded:: 3.0
 %End
 
+    void setUseLayerName( bool use = true );
+%Docstring
+Uses the layer's name if ``use`` is true, or the name manually set if
+false.
+
+.. versionadded:: 3.8
+%End
+
+    bool useLayerName() const;
+%Docstring
+Returns whether the layer's name is used, or the name manually set.
+
+.. versionadded:: 3.8
+%End
+
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read layer node from XML. Returns new instance.
@@ -125,6 +140,7 @@ Emitted when a previously available layer got unloaded (from layer registry).
 
   protected:
     void attachToLayer();
+
 
 
   private:

@@ -31,7 +31,6 @@
 #include "qgsmapserviceexception.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
-#include "qgslayertreemodellegendnode.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
@@ -94,25 +93,6 @@
 
 namespace QgsWms
 {
-
-  namespace
-  {
-
-    QgsLayerTreeModelLegendNode *_findLegendNodeForRule( QgsLayerTreeModel *legendModel, const QString &rule )
-    {
-      for ( QgsLayerTreeLayer *nodeLayer : legendModel->rootGroup()->findLayers() )
-      {
-        for ( QgsLayerTreeModelLegendNode *legendNode : legendModel->layerLegendNodes( nodeLayer ) )
-        {
-          if ( legendNode->data( Qt::DisplayRole ).toString() == rule )
-            return legendNode;
-        }
-      }
-      return nullptr;
-    }
-
-  } // namespace
-
   QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
     : mContext( context )
   {
@@ -127,17 +107,8 @@ namespace QgsWms
     removeTemporaryLayers();
   }
 
-  QImage *QgsRenderer::getLegendGraphics()
+  QImage *QgsRenderer::getLegendGraphics( QgsLayerTreeModel &model )
   {
-    // check parameters
-    if ( mWmsParameters.allLayersNickname().isEmpty() )
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
-                                    mWmsParameters[QgsWmsParameter::LAYERS] );
-
-    if ( mWmsParameters.format() == QgsWmsParameters::Format::NONE )
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
-                                    mWmsParameters[QgsWmsParameter::FORMAT] );
-
     // get layers
     std::unique_ptr<QgsLayerRestorer> restorer;
     restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
@@ -146,67 +117,81 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
 
-    // build layer tree model for legend
-    QgsLayerTree rootGroup;
-    QgsLegendSettings legendSettings = mContext.parameters().legendSettings();
-    std::unique_ptr<QgsLayerTreeModel> legendModel;
-    legendModel.reset( buildLegendTreeModel( layers, mContext.scaleDenominator(), rootGroup ) );
-
-    // rendering step
-    const qreal dpmm = mContext.dotsPerMm();
-    std::unique_ptr<QImage> image;
-    std::unique_ptr<QPainter> painter;
-
     // getting scale from bbox
+    QgsLegendSettings settings = mWmsParameters.legendSettings();
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      image.reset( createImage( width(), height(), false ) );
-      configureMapSettings( image.get(), mapSettings );
-      legendSettings.setMapScale( mapSettings.scale() );
-      legendSettings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      settings.setMapScale( mapSettings.scale() );
+      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
     }
 
-    if ( !mWmsParameters.rule().isEmpty() )
+    // init renderer
+    QgsLegendRenderer renderer( &model, settings );
+
+    // create image
+    std::unique_ptr<QImage> image;
+    const qreal dpmm = mContext.dotsPerMm();
+    const QSizeF minSize = renderer.minimumSize();
+    const QSize size( minSize.width() * dpmm, minSize.height() * dpmm );
+    image.reset( createImage( size.width(), size.height(), false ) );
+
+    // configure painter
+    std::unique_ptr<QPainter> painter;
+    painter.reset( new QPainter( image.get() ) );
+    painter->setRenderHint( QPainter::Antialiasing, true );
+    painter->scale( dpmm, dpmm );
+
+    // rendering
+    renderer.drawLegend( painter.get() );
+    painter->end();
+
+    return image.release();
+  }
+
+  QImage *QgsRenderer::getLegendGraphics( QgsLayerTreeModelLegendNode &nodeModel )
+  {
+    // get layers
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
+
+    // getting scale from bbox
+    QgsLegendSettings settings = mWmsParameters.legendSettings();
+    if ( !mWmsParameters.bbox().isEmpty() )
     {
-      QString rule = mWmsParameters.rule();
-      int width = mWmsParameters.widthAsInt();
-      int height = mWmsParameters.heightAsInt();
-
-      image.reset( createImage( width, height, false ) );
-      painter.reset( new QPainter( image.get() ) );
-      painter->setRenderHint( QPainter::Antialiasing, true );
-      painter->scale( dpmm, dpmm );
-
-      QgsLayerTreeModelLegendNode *legendNode = _findLegendNodeForRule( legendModel.get(), rule );
-      if ( legendNode )
-      {
-        QgsLayerTreeModelLegendNode::ItemContext ctx;
-        ctx.painter = painter.get();
-        ctx.labelXOffset = 0;
-        ctx.point = QPointF();
-        double itemHeight = height / dpmm;
-        legendNode->drawSymbol( legendSettings, &ctx, itemHeight );
-        painter->end();
-      }
-    }
-    else
-    {
-      QgsLegendRenderer legendRendererNew( legendModel.get(), legendSettings );
-
-      QSizeF minSize = legendRendererNew.minimumSize();
-      QSize s( minSize.width() * dpmm, minSize.height() * dpmm );
-
-      image.reset( createImage( s.width(), s.height(), false ) );
-      painter.reset( new QPainter( image.get() ) );
-      painter->setRenderHint( QPainter::Antialiasing, true );
-      painter->scale( dpmm, dpmm );
-
-      legendRendererNew.drawLegend( painter.get() );
-      painter->end();
+      QgsMapSettings mapSettings;
+      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      settings.setMapScale( mapSettings.scale() );
+      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
     }
 
-    rootGroup.clear();
+    // create image
+    const int width = mWmsParameters.widthAsInt();
+    const int height = mWmsParameters.heightAsInt();
+    std::unique_ptr<QImage> image( createImage( width, height, false ) );
+
+    // configure painter
+    const qreal dpmm = mContext.dotsPerMm();
+    std::unique_ptr<QPainter> painter;
+    painter.reset( new QPainter( image.get() ) );
+    painter->setRenderHint( QPainter::Antialiasing, true );
+    painter->scale( dpmm, dpmm );
+
+    // rendering
+    QgsLayerTreeModelLegendNode::ItemContext ctx;
+    ctx.painter = painter.get();
+    ctx.labelXOffset = 0;
+    ctx.point = QPointF();
+    nodeModel.drawSymbol( settings, &ctx, height / dpmm );
+    painter->end();
+
     return image.release();
   }
 
@@ -258,6 +243,36 @@ namespace QgsWms
     r->stopRender( context );
   }
 
+  QgsRenderer::HitTest QgsRenderer::symbols()
+  {
+    // check size
+    checkMaximumWidthHeight();
+
+    // init layer restorer before doing anything
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+
+    // configure layers
+    QgsMapSettings mapSettings;
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers, &mapSettings );
+
+    // create the output image and the painter
+    std::unique_ptr<QPainter> painter;
+    std::unique_ptr<QImage> image( createImage() );
+
+    // configure map settings (background, DPI, ...)
+    configureMapSettings( image.get(), mapSettings );
+
+    // add layers to map settings
+    mapSettings.setLayers( layers );
+
+    // run hit tests
+    HitTest symbols;
+    runHitTest( mapSettings, symbols );
+
+    return symbols;
+  }
 
   QByteArray QgsRenderer::getPrint()
   {
@@ -394,7 +409,7 @@ namespace QgsWms
     std::unique_ptr<QImage> image( new QImage() );
     configureMapSettings( image.get(), mapSettings );
 
-    // add layers to map settings (revert order for the rendering)
+    // add layers to map settings
     mapSettings.setLayers( layers );
 
     // configure layout
@@ -734,20 +749,10 @@ namespace QgsWms
     return true;
   }
 
-  QImage *QgsRenderer::getMap( HitTest *hitTest )
-  {
-    QgsMapSettings mapSettings;
-    return getMap( mapSettings, hitTest );
-  }
-
-  QImage *QgsRenderer::getMap( QgsMapSettings &mapSettings, HitTest *hitTest )
+  QImage *QgsRenderer::getMap()
   {
     // check size
-    if ( !checkMaximumWidthHeight() )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                    QStringLiteral( "The requested map size is too large" ) );
-    }
+    checkMaximumWidthHeight();
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -755,6 +760,8 @@ namespace QgsWms
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
+
+    QgsMapSettings mapSettings;
     configureLayers( layers, &mapSettings );
 
     // create the output image and the painter
@@ -764,11 +771,11 @@ namespace QgsWms
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
 
-    // add layers to map settings (revert order for the rendering)
+    // add layers to map settings
     mapSettings.setLayers( layers );
 
     // rendering step for layers
-    painter.reset( layersRendering( mapSettings, *image, hitTest ) );
+    painter.reset( layersRendering( mapSettings, *image ) );
 
     // rendering step for annotations
     annotationsRendering( painter.get() );
@@ -1868,7 +1875,7 @@ namespace QgsWms
     }
   }
 
-  bool QgsRenderer::checkMaximumWidthHeight() const
+  void QgsRenderer::checkMaximumWidthHeight() const
   {
     //test if maxWidth / maxHeight are set in the project or as an env variable
     //and WIDTH / HEIGHT parameter is in the range allowed range
@@ -1890,7 +1897,8 @@ namespace QgsWms
     int width = this->width();
     if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
     {
-      return false;
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QStringLiteral( "The requested map width is too large" ) );
     }
 
     //HEIGHT
@@ -1911,7 +1919,8 @@ namespace QgsWms
     int height = this->height();
     if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
     {
-      return false;
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QStringLiteral( "The requested map height is too large" ) );
     }
 
 
@@ -1938,9 +1947,10 @@ namespace QgsWms
          || height <= 0
          || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height )
          || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
-      return false;
-
-    return true;
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+                                    QStringLiteral( "The requested map size is too large" ) );
+    }
   }
 
   void QgsRenderer::convertFeatureInfoToSia2045( QDomDocument &doc ) const
@@ -2696,38 +2706,31 @@ namespace QgsWms
     mTemporaryLayers.clear();
   }
 
-  QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest ) const
+  QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image ) const
   {
     QPainter *painter = nullptr;
-    if ( hitTest )
-    {
-      runHitTest( mapSettings, *hitTest );
-      painter = new QPainter();
-    }
-    else
-    {
-      QgsFeatureFilterProviderGroup filters;
-      filters.addProvider( &mFeatureFilter );
+
+    QgsFeatureFilterProviderGroup filters;
+    filters.addProvider( &mFeatureFilter );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
-      filters.addProvider( mContext.accessControl() );
+    mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
+    filters.addProvider( mContext.accessControl() );
 #endif
-      QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
-      renderJob.render( mapSettings, &image );
-      painter = renderJob.takePainter();
+    QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
+    renderJob.render( mapSettings, &image );
+    painter = renderJob.takePainter();
 
-      if ( !renderJob.errors().isEmpty() )
+    if ( !renderJob.errors().isEmpty() )
+    {
+      QString layerWMSName;
+      QString firstErrorLayerId = renderJob.errors().at( 0 ).layerID;
+      QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
+      if ( errorLayer )
       {
-        QString layerWMSName;
-        QString firstErrorLayerId = renderJob.errors().at( 0 ).layerID;
-        QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
-        if ( errorLayer )
-        {
-          layerWMSName = mContext.layerNickname( *errorLayer );
-        }
-
-        throw QgsException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
+        layerWMSName = mContext.layerNickname( *errorLayer );
       }
+
+      throw QgsException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
     }
 
     return painter;
@@ -2880,136 +2883,6 @@ namespace QgsWms
     }
 
     return scaledImage;
-  }
-
-  QgsLayerTreeModel *QgsRenderer::buildLegendTreeModel( const QList<QgsMapLayer *> &layers, double scaleDenominator, QgsLayerTree &rootGroup )
-  {
-    // get params
-    bool showFeatureCount = mWmsParameters.showFeatureCountAsBool();
-    bool drawLegendLayerLabel = mWmsParameters.layerTitleAsBool();
-    bool drawLegendItemLabel = mWmsParameters.ruleLabelAsBool();
-
-    bool ruleDefined = false;
-    if ( !mWmsParameters.rule().isEmpty() )
-      ruleDefined = true;
-
-    bool contentBasedLegend = false;
-    QgsRectangle contentBasedLegendExtent;
-    if ( ! mWmsParameters.bbox().isEmpty() )
-    {
-      contentBasedLegend = true;
-      contentBasedLegendExtent = mWmsParameters.bboxAsRectangle();
-      if ( contentBasedLegendExtent.isEmpty() )
-        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                      mWmsParameters[QgsWmsParameter::BBOX] );
-
-      if ( !mWmsParameters.rule().isEmpty() )
-        throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
-                                      QStringLiteral( "BBOX parameter cannot be combined with RULE." ) );
-    }
-
-    // build layer tree
-    rootGroup.clear();
-    QList<QgsVectorLayerFeatureCounter *> counters;
-    for ( QgsMapLayer *ml : layers )
-    {
-      QgsLayerTreeLayer *lt = rootGroup.addLayer( ml );
-      lt->setCustomProperty( QStringLiteral( "showFeatureCount" ), showFeatureCount );
-
-      if ( !ml->title().isEmpty() )
-        lt->setName( ml->title() );
-
-      if ( ml->type() != QgsMapLayerType::VectorLayer || !showFeatureCount )
-        continue;
-
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-      QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures();
-      if ( !counter )
-        continue;
-      counters.append( counter );
-    }
-
-    // build legend model
-    QgsLayerTreeModel *legendModel = new QgsLayerTreeModel( &rootGroup );
-    if ( scaleDenominator > 0 )
-      legendModel->setLegendFilterByScale( scaleDenominator );
-
-    QgsMapSettings contentBasedMapSettings;
-    if ( contentBasedLegend )
-    {
-      HitTest hitTest;
-      getMap( contentBasedMapSettings, &hitTest );
-
-      for ( QgsLayerTreeNode *node : rootGroup.children() )
-      {
-        Q_ASSERT( QgsLayerTree::isLayer( node ) );
-        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-        if ( !vl || !vl->renderer() )
-          continue;
-
-        const SymbolSet &usedSymbols = hitTest[vl];
-        QList<int> order;
-        int i = 0;
-        for ( const QgsLegendSymbolItem &legendItem : vl->renderer()->legendSymbolItems() )
-        {
-          QString sProp = QgsSymbolLayerUtils::symbolProperties( legendItem.legacyRuleKey() );
-          if ( usedSymbols.contains( sProp ) )
-            order.append( i );
-          ++i;
-        }
-
-        // either remove the whole layer or just filter out some items
-        if ( order.isEmpty() )
-          rootGroup.removeChildNode( nodeLayer );
-        else
-        {
-          QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
-          legendModel->refreshLayerLegend( nodeLayer );
-        }
-      }
-    }
-
-    // if legend is not based on rendering rules
-    if ( ! ruleDefined )
-    {
-      QList<QgsLayerTreeNode *> rootChildren = rootGroup.children();
-      for ( QgsLayerTreeNode *node : rootChildren )
-      {
-        if ( QgsLayerTree::isLayer( node ) )
-        {
-          QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-
-          // layer titles - hidden or not
-          QgsLegendRenderer::setNodeLegendStyle( nodeLayer, drawLegendLayerLabel ? QgsLegendStyle::Subgroup : QgsLegendStyle::Hidden );
-
-          // rule item titles
-          if ( !drawLegendItemLabel )
-          {
-            for ( QgsLayerTreeModelLegendNode *legendNode : legendModel->layerLegendNodes( nodeLayer ) )
-            {
-              legendNode->setUserLabel( QStringLiteral( " " ) ); // empty string = no override, so let's use one space
-            }
-          }
-          else if ( !drawLegendLayerLabel )
-          {
-            for ( QgsLayerTreeModelLegendNode *legendNode : legendModel->layerLegendNodes( nodeLayer ) )
-            {
-              if ( legendNode->isEmbeddedInParent() )
-                legendNode->setEmbeddedInParent( false );
-            }
-          }
-        }
-      }
-    }
-
-    for ( QgsVectorLayerFeatureCounter *c : counters )
-    {
-      c->waitForFinished();
-    }
-
-    return legendModel;
   }
 
   void QgsRenderer::handlePrintErrors( const QgsLayout *layout ) const
