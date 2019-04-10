@@ -151,7 +151,7 @@ void QgsSnappingConfig::reset()
   const auto constMapLayers = mProject->mapLayers();
   for ( QgsMapLayer *ml : constMapLayers )
   {
-    QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( ml );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl )
     {
       mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units ) );
