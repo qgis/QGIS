@@ -74,7 +74,7 @@ namespace QgsWcs
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Please check the value of the REQUEST parameter" ) );
+                                     QStringLiteral( "Please check the value of the REQUEST parameter" ), 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
@@ -93,7 +93,7 @@ namespace QgsWcs
         {
           // Operation not supported
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Request %1 is not supported" ).arg( req ) );
+                                     QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
         }
       }
 
