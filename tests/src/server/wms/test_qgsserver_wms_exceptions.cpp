@@ -60,6 +60,16 @@ void TestQgsServerWmsExceptions::exception_message()
   QgsWms::QgsServiceException::ExceptionCode code = QgsWms::QgsServiceException::QGIS_MISSING_PARAMETER_VALUE;
   QgsWms::QgsServiceException exception( code, QgsWms::QgsWmsParameter::LAYER, 400 );
   QCOMPARE( exception.message(), QString( "The LAYER parameter is missing." ) );
+
+  code = QgsWms::QgsServiceException::OGC_INVALID_SRS;
+  QgsWms::QgsServiceException exception_srs( code, QgsWms::QgsWmsParameter::SRS, 400 );
+  QCOMPARE( exception_srs.message(), QString( "The SRS is not valid." ) );
+  QCOMPARE( exception_srs.code(), QString( "InvalidSRS" ) );
+
+  code = QgsWms::QgsServiceException::OGC_INVALID_CRS;
+  QgsWms::QgsServiceException exception_crs( code, QgsWms::QgsWmsParameter::CRS, 400 );
+  QCOMPARE( exception_crs.message(), QString( "The CRS is not valid." ) );
+  QCOMPARE( exception_crs.code(), QString( "InvalidCRS" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsExceptions )
