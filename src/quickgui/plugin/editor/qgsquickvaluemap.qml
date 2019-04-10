@@ -35,8 +35,11 @@ Item {
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  QgsQuick.ComboBox {
-    id: comboBox
+  QgsQuick.EditorWidgetComboBox {
+    // Reversed to model's key-value map. It is used to find index according current value
+    property var reverseConfig: ({})
+    property var currentValue: value
+
     comboStyle: customStyle
     textRole: 'text'
     height: parent.height
@@ -52,8 +55,8 @@ Item {
           //it's a list (>=QGIS3.0)
           for(var i=0; i<config['map'].length; i++)
           {
-            currentMap = config['map'][i]
-            currentKey = Object.keys(currentMap)[0]
+            var currentMap = config['map'][i]
+            var currentKey = Object.keys(currentMap)[0]
             listModel.append( { text: currentKey } )
             reverseConfig[currentMap[currentKey]] = currentKey;
           }
@@ -61,20 +64,19 @@ Item {
         else
         {
           //it's a map (<=QGIS2.18)
-          currentMap= config['map'].length ? config['map'][currentIndex] : config['map']
-          currentKey = Object.keys(currentMap)[0]
+          var currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
+          var currentKey = Object.keys(currentMap)[0]
           for(var key in config['map']) {
             listModel.append( { text: key } )
             reverseConfig[config['map'][key]] = key;
           }
         }
       }
-
       currentIndex = find(reverseConfig[value])
     }
 
     onCurrentTextChanged: {
-      currentMap= config['map'].length ? config['map'][currentIndex] : config['map']
+      var currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
       valueChanged(currentMap[currentText], false)
     }
 

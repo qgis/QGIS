@@ -20,19 +20,13 @@ import QgsQuick 0.1 as QgsQuick
 
 /**
  * ComboBox for QGIS Attribute Form - used by QgsQuickValueMap and QgsQuickValueRelation
- * Requires various global properties set to function, see qgsquickfeatureform Loader section
  * Do not use directly from Application QML
  */
 ComboBox {
   id: comboBox
 
-  property var reverseConfig: ({})
-  property var currentValue
-  property var currentMap
-  property var currentKey
   property var comboStyle
   anchors { left: parent.left; right: parent.right }
-  currentIndex: find(reverseConfig[currentValue])
 
   MouseArea {
     anchors.fill: parent

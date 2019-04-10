@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/QgsQuick">
         <file>qmldir</file>
-        <file>editor/qgsquickcombobox.qml</file>
+        <file>editor/qgsquickeditorwidgetcombobox.qml</file>
         <file>editor/qgsquickcheckbox.qml</file>
         <file>editor/qgsquickdatetime.qml</file>
         <file>editor/qgsquickexternalresource.qml</file>
