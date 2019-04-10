@@ -184,6 +184,8 @@ namespace QgsWms
         for ( auto &part : key.split( '_' ) )
         {
           part = part.toLower().replace( 0, 1, part[0].toUpper() );
+          part.replace( QStringLiteral( "Srs" ), QStringLiteral( "SRS" ) );
+          part.replace( QStringLiteral( "Crs" ), QStringLiteral( "CRS" ) );
           formattedCode = QString( "%1%2" ).arg( formattedCode ).arg( part );
         }
 
