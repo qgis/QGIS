@@ -171,6 +171,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool setNoDataValue( int bandNo, double noDataValue ) override;
     bool remove() override;
 
+    void reloadData() override;
+
     QString validateCreationOptions( const QStringList &createOptions, const QString &format ) override;
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
                                            const QStringList &configOptions, const QString &fileFormat ) override;
