@@ -526,6 +526,15 @@ void QgsGdalProvider::closeDataset()
   closeCachedGdalHandlesFor( this );
 }
 
+void QgsGdalProvider::reloadData()
+{
+  QMutexLocker locker( mpMutex );
+  closeDataset();
+
+  mHasInit = false;
+  ( void )initIfNeeded();
+}
+
 QString QgsGdalProvider::htmlMetadata()
 {
   QMutexLocker locker( mpMutex );
