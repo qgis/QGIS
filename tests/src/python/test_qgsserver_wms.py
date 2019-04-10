@@ -88,6 +88,10 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
     def test_getcontext(self):
         self.wms_request_compare('GetContext')
 
+    def test_operation_not_supported(self):
+        qs = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)
+        self._assert_status_code(501, qs)
+
     def test_describelayer(self):
         # Test DescribeLayer
         self.wms_request_compare('DescribeLayer',
