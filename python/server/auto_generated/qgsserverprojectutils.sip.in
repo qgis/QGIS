@@ -170,6 +170,8 @@ Returns the denominator of the default scale used in case of the scale is not gi
 :param project: the QGIS project
 
 :return: the denominator of the scale
+
+.. versionadded:: 3.8
 %End
 
   bool wmsUseLayerIds( const QgsProject &project );
