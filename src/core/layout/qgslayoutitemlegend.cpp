@@ -936,7 +936,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 
       if ( ltmln )
       {
-        if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
+        if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( ltmln ) )
           name = synode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
         return name;
       }
@@ -947,11 +947,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         {
           for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
           {
-            if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( treenode ) )
+            if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
               synode->evaluateLabel( context );
           }
         }
-        else if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+        else if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
           name = synode->evaluateLabel( context, name );
       }
       return name;
