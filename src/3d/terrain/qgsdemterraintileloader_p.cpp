@@ -176,7 +176,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   if ( provider->crs() != destCrs )
   {
     projector.reset( new QgsRasterProjector );
-    projector->setCrs( provider->crs(), destCrs );
+    projector->setCrs( provider->crs(), destCrs, provider->transformContext() );
     projector->setInput( provider );
     input = projector.get();
   }

@@ -59,7 +59,6 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 
 /// @cond PRIVATE
 
-
 void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS,
                                  const QgsCoordinateReferenceSystem &destCRS,
                                  int srcDatumTransform,
@@ -192,8 +191,8 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
     }
   }
   QgsDebugMsgLevel( QStringLiteral( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ), 4 );
-  mDestRowsPerMatrixRow = static_cast< float >( mDestRows ) / ( mCPRows - 1 );
-  mDestColsPerMatrixCol = static_cast< float >( mDestCols ) / ( mCPCols - 1 );
+  mDestRowsPerMatrixRow = static_cast< double >( mDestRows ) / ( mCPRows - 1 );
+  mDestColsPerMatrixCol = static_cast< double >( mDestCols ) / ( mCPCols - 1 );
 
   QgsDebugMsgLevel( QStringLiteral( "CPMatrix:" ), 5 );
   QgsDebugMsgLevel( cpToString(), 5 );
