@@ -19,7 +19,7 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer name="testlayer_2056" providerKey="ogr" checked="Qt::Checked" expanded="1" source="../../../../build-QGIS-Desktop-Debug/output/bin/testlayer_2056.shp" id="testlayer_2056_0a0d85af_384f_43a8_aafd_ce618f07606c">
+    <layer-tree-layer name="testlayer_2056" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./testlayer_2056.shp" id="testlayer_2056_0a0d85af_384f_43a8_aafd_ce618f07606c">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
@@ -146,7 +146,7 @@
         <ymax>1268958.9145528266672045</ymax>
       </extent>
       <id>testlayer_2056_0a0d85af_384f_43a8_aafd_ce618f07606c</id>
-      <datasource>../../../../build-QGIS-Desktop-Debug/output/bin/testlayer_2056.shp</datasource>
+      <datasource>./testlayer_2056.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
