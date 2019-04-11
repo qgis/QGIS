@@ -49,7 +49,7 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent *e )
   Q_UNUSED( e );
 
   QgsMapLayer *layer = mCanvas->currentLayer();
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;
 
@@ -127,7 +127,7 @@ void QgsMapToolShowHideLabels::canvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
 {
   QgsMapLayer *layer = mCanvas->currentLayer();
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;
 

@@ -369,7 +369,7 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
 
     case QgsMapLayerType::VectorLayer:
     {
-      QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vl )
       {
         return QIcon();

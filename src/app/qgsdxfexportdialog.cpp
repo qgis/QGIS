@@ -124,7 +124,7 @@ QgsVectorLayer *QgsVectorLayerAndAttributeModel::vectorLayer( const QModelIndex 
   if ( !n || !QgsLayerTree::isLayer( n ) )
     return nullptr;
 
-  return dynamic_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( n )->layer() );
+  return qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( n )->layer() );
 }
 
 int QgsVectorLayerAndAttributeModel::attributeIndex( const QgsVectorLayer *vl ) const

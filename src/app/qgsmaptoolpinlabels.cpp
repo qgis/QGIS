@@ -203,7 +203,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       {
         continue;
       }
-      QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
       {
         QgsDebugMsg( QStringLiteral( "Failed to cast to vector layer" ) );
