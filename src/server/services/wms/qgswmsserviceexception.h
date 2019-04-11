@@ -46,20 +46,20 @@ namespace QgsWms
        */
       enum ExceptionCode
       {
-        OGC_INVALID_FORMAT,
-        OGC_INVALID_SRS,
-        OGC_LAYER_NOT_DEFINED,
-        OGC_STYLE_NOT_DEFINED,
-        OGC_LAYER_NOT_QUERYABLE,
-        OGC_CURRENT_UPDATE_SEQUENCE,
-        OGC_INVALID_UPDATE_SEQUENCE,
-        OGC_MISSING_DIMENSION_VALUE,
-        OGC_INVALID_DIMENSION_VALUE,
-        OGC_INVALID_POINT, // new in WMS 1.3.0
-        OGC_INVALID_CRS, // new in WMS 1.3.0
-        OGC_OPERATION_NOT_SUPPORTED, // new in WMS 1.3.0
-        QGIS_MISSING_PARAMETER_VALUE,
-        QGIS_INVALID_PARAMETER_VALUE
+        OGC_InvalidFormat,
+        OGC_InvalidSRS,
+        OGC_LayerNotDefined,
+        OGC_StyleNotDefined,
+        OGC_LayerNotQueryable,
+        OGC_CurrentUpdateSequence,
+        OGC_InvalidUpdateSequence,
+        OGC_MissingDimensionValue,
+        OGC_InvalidDimensionValue,
+        OGC_InvalidPoint, // new in WMS 1.3.0
+        OGC_InvalidCRS, // new in WMS 1.3.0
+        OGC_OperationNotSupported, // new in WMS 1.3.0
+        QGIS_MissingParameterValue,
+        QGIS_InvalidParameterValue
       };
       Q_ENUM( ExceptionCode )
 
@@ -115,52 +115,52 @@ namespace QgsWms
 
         switch ( code )
         {
-          case QgsServiceException::QGIS_MISSING_PARAMETER_VALUE:
+          case QgsServiceException::QGIS_MissingParameterValue:
           {
             message = QStringLiteral( "The %1 parameter is missing." ).arg( name );
             break;
           }
-          case QGIS_INVALID_PARAMETER_VALUE:
+          case QGIS_InvalidParameterValue:
           {
             message = QStringLiteral( "The %1 parameter is invalid." ).arg( name );
             break;
           }
-          case OGC_INVALID_FORMAT:
+          case OGC_InvalidFormat:
           {
             message = QStringLiteral( "The format '%1' from %2 is not supported." ).arg( parameter.toString(), name );
             break;
           }
-          case OGC_INVALID_SRS:
+          case OGC_InvalidSRS:
           {
             message = QStringLiteral( "The SRS is not valid." );
             break;
           }
-          case OGC_INVALID_CRS:
+          case OGC_InvalidCRS:
           {
             message = QStringLiteral( "The CRS is not valid." );
             break;
           }
-          case OGC_LAYER_NOT_DEFINED:
+          case OGC_LayerNotDefined:
           {
             message = QStringLiteral( "The layer '%1' does not exist." ).arg( parameter.toString() );
             break;
           }
-          case OGC_LAYER_NOT_QUERYABLE:
+          case OGC_LayerNotQueryable:
           {
             message = QStringLiteral( "The layer '%1' is not queryable." ).arg( parameter.toString() );
             break;
           }
-          case OGC_INVALID_POINT:
+          case OGC_InvalidPoint:
           {
             message = QStringLiteral( "The point '%1' from '%2' is invalid." ).arg( parameter.toString(), name );
             break;
           }
-          case OGC_STYLE_NOT_DEFINED:
-          case OGC_CURRENT_UPDATE_SEQUENCE:
-          case OGC_INVALID_UPDATE_SEQUENCE:
-          case OGC_MISSING_DIMENSION_VALUE:
-          case OGC_INVALID_DIMENSION_VALUE:
-          case OGC_OPERATION_NOT_SUPPORTED:
+          case OGC_StyleNotDefined:
+          case OGC_CurrentUpdateSequence:
+          case OGC_InvalidUpdateSequence:
+          case OGC_MissingDimensionValue:
+          case OGC_InvalidDimensionValue:
+          case OGC_OperationNotSupported:
           {
             break;
           }
@@ -179,17 +179,7 @@ namespace QgsWms
         key.replace( QStringLiteral( "OGC_" ), QString() );
         key.replace( QStringLiteral( "QGIS_" ), QString() );
 
-        // build the exception name
-        QString formattedCode;
-        for ( auto &part : key.split( '_' ) )
-        {
-          part = part.toLower().replace( 0, 1, part[0].toUpper() );
-          part.replace( QStringLiteral( "Srs" ), QStringLiteral( "SRS" ) );
-          part.replace( QStringLiteral( "Crs" ), QStringLiteral( "CRS" ) );
-          formattedCode = QString( "%1%2" ).arg( formattedCode ).arg( part );
-        }
-
-        return formattedCode;
+        return key;
       }
   };
 

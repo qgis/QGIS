@@ -436,7 +436,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
       {
         QgsWmsParameter param( QgsWmsParameter::LAYER );
         param.mValue = lname;
-        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+        throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
                                       param );
       }
     }
@@ -482,7 +482,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
     {
       QgsWmsParameter param( QgsWmsParameter::LAYER );
       param.mValue = nickname;
-      throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+      throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
                                     param );
     }
   }
