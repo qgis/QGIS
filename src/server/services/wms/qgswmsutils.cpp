@@ -163,7 +163,7 @@ namespace QgsWms
     {
       QgsWmsParameter parameter( QgsWmsParameter::FORMAT );
       parameter.mValue = formatStr;
-      throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+      throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
                                     parameter );
     }
   }
