@@ -157,7 +157,7 @@ namespace QgsServerProjectUtils
   /**
    * Returns the denominator of the default scale used in case of the scale is not given
    * \param project the QGIS project
-   * \return the denominator of the scale
+   * \returns the denominator of the scale
    * \since QGIS 3.8
    */
   SERVER_EXPORT double wmsDefaultMapUnitsPerMm( const QgsProject &project );
