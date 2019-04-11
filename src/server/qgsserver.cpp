@@ -319,6 +319,20 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   // Set the request handler into the interface for plugins to manipulate it
   sServerInterface->setRequestHandler( &requestHandler );
 
+  // Initialize configfilepath so that is is available
+  // before calling plugin methods
+  // Note that plugins may still change that value using
+  // setConfigFilePath() interface method
+  if ( ! project )
+  {
+    QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
+    sServerInterface->setConfigFilePath( configFilePath );
+  }
+  else
+  {
+    sServerInterface->setConfigFilePath( project->fileName() );
+  }
+
   // Call  requestReady() method (if enabled)
   responseDecorator.start();
 
@@ -333,20 +347,12 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       //Config file path
       if ( ! project )
       {
-        QString configFilePath = configPath( *sConfigFilePath, params.map() );
-
         // load the project if needed and not empty
-        project = mConfigCache->project( configFilePath );
+        project = mConfigCache->project( sServerInterface->configFilePath() );
         if ( ! project )
         {
           throw QgsServerException( QStringLiteral( "Project file error" ) );
         }
-
-        sServerInterface->setConfigFilePath( configFilePath );
-      }
-      else
-      {
-        sServerInterface->setConfigFilePath( project->fileName() );
       }
 
       if ( ! params.fileName().isEmpty() )
