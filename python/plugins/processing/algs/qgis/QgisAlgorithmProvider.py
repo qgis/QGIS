@@ -62,6 +62,7 @@ from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .DensifyGeometries import DensifyGeometries
 from .EliminateSelection import EliminateSelection
+from .EquidistanceBuffer import EquidistanceBuffer
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtentFromLayer import ExtentFromLayer
