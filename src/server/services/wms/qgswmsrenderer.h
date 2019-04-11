@@ -294,14 +294,14 @@ namespace QgsWms
       /**
        * Returns QgsWmsParameter SRCWIDTH if it's a GetLegendGraphics request and otherwise HEIGHT parameter
        * \returns height parameter
-       * \since QGIS 3.4.7
+       * \since QGIS 3.4
        */
       int height() const;
 
       /**
        * Returns QgsWmsParameter SRCWIDTH parameter if it's a GetLegendGraphics request and otherwise WIDTH parameter
        * \returns width parameter
-       * \since QGIS 3.4.7
+       * \since QGIS 3.4
        */
       int width() const;
 
