@@ -706,7 +706,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultMapUnitsPerMillimeter", max_size_diff=QSize(15, 15))
 
     def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_2056(self):
-        # 1:1000 scale on an EPSG:2056
+        # 1:1000 scale on an EPSG:2056 calculating DPI that is around 96
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": self.testdata_path + 'test_project_scaledsymbols_2056.qgs',
             "SERVICE": "WMS",
@@ -723,7 +723,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Scaled_2056", max_size_diff=QSize(15, 15))
 
     def test_wms_GetLegendGraphic_ScaleSymbol_DefaultScale_2056(self):
-        # 1:1000 as default value - it's not exactly the same result than passing the bbox and size
+        # 1:1000 as default value - it's not exactly the same result than passing the bbox and size because of exact DPI 96 (default)
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": self.testdata_path + 'test_project_scaledsymbols_2056.qgs',
             "SERVICE": "WMS",
