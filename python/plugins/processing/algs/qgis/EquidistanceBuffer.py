@@ -36,23 +36,16 @@ from qgis.core import (QgsGeometry,
                        QgsProcessingException,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
-                       QgsProject,
-                       QgsUnitTypes
+                       QgsProject
                        )
-
+    
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
-    """
-    This algorithm creates equidistance buffers for vector layers.
-
-    Each geometry is transformed to an Azimuthal Equidistant projection centered
-    at that geometry, buffered and transformed back to the original projection.
-    """
     DISTANCE = 'DISTANCE'
     SEGMENTS = 'SEGMENTS'
-    END_CAP_STYLE = 'END_CAP_STYLE'
+    END_CAP_STYLE = 'END_CAP_STYLE' 
     JOIN_STYLE = 'JOIN_STYLE'
     MITER_LIMIT = 'MITER_LIMIT'
 
@@ -67,46 +60,39 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
         self.distance = None
         self.segments = None
         self.join_style = None
+        self.side = None
         self.miter_limit = None
         self.join_styles = [self.tr('Round'),
-                            self.tr('Miter'),
-                            self.tr('Bevel')]
+                            'Miter',
+                            'Bevel']
         self.end_cap_styles = [self.tr('Round'),
-                               self.tr('Flat'),
-                               self.tr('Square')]
+                       'Flat',
+                       'Square']
 
     def initParameters(self, config=None):
-        distanceParam = QgsProcessingParameterDistance(self.DISTANCE,
-                                                       self.tr('Distance'),
-                                                       defaultValue=10000.0)
-        distanceParam.setDefaultUnit(QgsUnitTypes.DistanceMeters)
-        self.addParameter(distanceParam)
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Distance (in meters'),
+                                                         defaultValue=10000.0))
+     
 
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.SEGMENTS,
-                self.tr('Segments'),
-                QgsProcessingParameterNumber.Integer,
-                minValue=1,
-                defaultValue=8))
+        self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
+                                                       self.tr('Segments'), QgsProcessingParameterNumber.Integer,
+                                                       minValue=1, defaultValue=8))
+
 
         self.addParameter(QgsProcessingParameterEnum(
             self.END_CAP_STYLE,
             self.tr('End cap style'),
             options=self.end_cap_styles, defaultValue=0))
-
+            
         self.addParameter(QgsProcessingParameterEnum(
             self.JOIN_STYLE,
             self.tr('Join style'),
             options=self.join_styles))
-
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.MITER_LIMIT,
-                self.tr('Miter limit'),
-                QgsProcessingParameterNumber.Double,
-                minValue=1,
-                defaultValue=2))
+            
+        self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
+                                                       self.tr('Miter limit'), QgsProcessingParameterNumber.Double,
+                                                       minValue=1, defaultValue=2))
 
     def name(self):
         return 'equidistancebuffer'
@@ -127,22 +113,16 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
         return QgsWkbTypes.Polygon
 
     def prepareAlgorithm(self, parameters, context, feedback):
-        self.distance = self.parameterAsDouble(
-            parameters, self.DISTANCE, context)
+        self.distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         self.segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
-        self.end_cap_style = self.parameterAsEnum(
-            parameters, self.END_CAP_STYLE, context) + 1
-        self.join_style = self.parameterAsEnum(
-            parameters, self.JOIN_STYLE, context) + 1
-        self.miter_limit = self.parameterAsDouble(
-            parameters, self.MITER_LIMIT, context)
-
+        self.end_cap_style = self.parameterAsEnum(parameters, self.END_CAP_STYLE, context) + 1
+        self.join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
+        self.miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
+        
         source = self.parameterAsSource(parameters, 'INPUT', context)
         self.source_crs = source.sourceCrs()
         if not self.source_crs.isGeographic():
-            feedback.reportError(
-                self.tr(
-                    'Layer CRS must be a Geographic CRS.'))
+            feedback.reportError('Layer CRS must be a Geograhpic CRS for this algorithm')
             return False
         return super().prepareAlgorithm(parameters, context, feedback)
 
@@ -152,18 +132,11 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
         centroid = geometry.centroid()
         x = centroid.asPoint().x()
         y = centroid.asPoint().y()
-        proj_string = ('PROJ4:+proj=aeqd +ellps=WGS84 +lat_0={} +lon_0={}'
-                       ' +x_0=0 +y_0=0').format(y, x)
+        proj_string = 'PROJ4:+proj=aeqd +ellps=WGS84 +lat_0={} +lon_0={} +x_0=0 +y_0=0'.format(y, x)
         dest_crs = QgsCoordinateReferenceSystem(proj_string)
-        xform = QgsCoordinateTransform(
-            self.source_crs, dest_crs, QgsProject.instance())
+        xform = QgsCoordinateTransform(self.source_crs, dest_crs, QgsProject.instance())
         geometry.transform(xform)
-        buffer = geometry.buffer(
-            self.distance,
-            self.segments,
-            self.end_cap_style,
-            self.join_style,
-            self.miter_limit)
+        buffer = geometry.buffer(self.distance, self.segments, self.end_cap_style, self.join_style, self.miter_limit)
         buffer.transform(xform, QgsCoordinateTransform.ReverseTransform)
         feature.setGeometry(buffer)
         return [feature]
