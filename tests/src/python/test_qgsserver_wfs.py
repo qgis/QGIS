@@ -92,6 +92,10 @@ class TestQgsServerWFS(QgsServerTestBase):
             query_string, request))
         return header, body
 
+    def test_operation_not_supported(self):
+        qs = '?MAP=%s&SERVICE=WFS&VERSION=1.1.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)
+        self._assert_status_code(501, qs)
+
     def test_project_wfs(self):
         """Test some WFS request"""
         for request in ('GetCapabilities', 'DescribeFeatureType'):
