@@ -69,11 +69,11 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
         self.side = None
         self.miter_limit = None
         self.join_styles = [self.tr('Round'),
-                            'Miter',
-                            'Bevel']
+                            self.tr('Miter'),
+                            self.tr('Bevel')]
         self.end_cap_styles = [self.tr('Round'),
-                       'Flat',
-                       'Square']
+                       self.tr('Flat'),
+                       self.tr('Square')]
 
     def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
