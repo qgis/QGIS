@@ -691,6 +691,21 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(15, 15))
 
+    def test_wms_GetLegendGraphic_ScaleSymbol_DefaultMapUnitsPerMillimeter(self):
+        # map units per mm on 1:20000000 with SRCHEIGHT=598&SRCWIDTH=1640&BBOX=16.5,-69.7,73.3,86.1 would be arround what is set as default:  0.359 map units per mm
+            qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultMapUnitsPerMillimeter", max_size_diff=QSize(15, 15))
+
+
     def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_2056(self):
         # 1:1000 scale on an EPSG:2056
         qs = "?" + "&".join(["%s=%s" % i for i in list({
