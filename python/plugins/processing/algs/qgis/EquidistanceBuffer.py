@@ -43,6 +43,12 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
+    """
+    This algorithm creates equidistance buffers for vector layers.
+    
+    Each geometry is transformed to a Azimuthal Equidistant projection centered at that geometry,
+    buffered and transformed back to the original projection.
+    """
     DISTANCE = 'DISTANCE'
     SEGMENTS = 'SEGMENTS'
     END_CAP_STYLE = 'END_CAP_STYLE' 
