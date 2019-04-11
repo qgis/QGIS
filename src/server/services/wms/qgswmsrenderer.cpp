@@ -197,7 +197,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      image.reset( createImage( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt(), false ) );
+      image.reset( createImage( width(), height(), false ) );
       configureMapSettings( image.get(), mapSettings );
       legendSettings.setMapScale( mapSettings.scale() );
       legendSettings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
@@ -1015,10 +1015,10 @@ namespace QgsWms
   QImage *QgsRenderer::createImage( int width, int height, bool useBbox ) const
   {
     if ( width < 0 )
-      width = mWmsParameters.widthAsInt();
+      width = this->width();
 
     if ( height < 0 )
-      height = mWmsParameters.heightAsInt();
+      height = this->height();
 
     //Adapt width / height if the aspect ratio does not correspond with the BBOX.
     //Required by WMS spec. 1.3.
@@ -1919,14 +1919,14 @@ namespace QgsWms
   {
     //test if maxWidth / maxHeight set and WIDTH / HEIGHT parameter is in the range
     int wmsMaxWidth = QgsServerProjectUtils::wmsMaxWidth( *mProject );
-    int width = mWmsParameters.widthAsInt();
+    int width = this->width();
     if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
     {
       return false;
     }
 
     int wmsMaxHeight = QgsServerProjectUtils::wmsMaxHeight( *mProject );
-    int height = mWmsParameters.heightAsInt();
+    int height = this->height();
     if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
     {
       return false;
@@ -2986,8 +2986,8 @@ namespace QgsWms
     // WIDTH / HEIGHT parameters. If not, the image has to be scaled (required
     // by WMS spec)
     QImage *scaledImage = nullptr;
-    int width = mWmsParameters.widthAsInt();
-    int height = mWmsParameters.heightAsInt();
+    int width = this->width();
+    int height = this->height();
     if ( width != image->width() || height != image->height() )
     {
       scaledImage = new QImage( image->scaled( width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
@@ -3210,4 +3210,21 @@ namespace QgsWms
     return result;
   }
 
+  int QgsRenderer::height() const
+  {
+    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
+           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
+         mWmsParameters.srcHeightAsInt() > 0 )
+      return mWmsParameters.srcHeightAsInt();
+    return mWmsParameters.heightAsInt();
+  }
+
+  int QgsRenderer::width() const
+  {
+    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
+           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
+         mWmsParameters.srcWidthAsInt() > 0 )
+      return mWmsParameters.srcWidthAsInt();
+    return mWmsParameters.widthAsInt();
+  }
 } // namespace QgsWms
