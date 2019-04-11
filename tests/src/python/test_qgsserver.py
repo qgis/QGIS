@@ -262,6 +262,12 @@ class QgsServerTestBase(unittest.TestCase):
             headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
+    def _assert_status_code(self, status_code, qs, requestMethod=QgsServerRequest.GetMethod, data=None, project=None):
+        request = QgsBufferServerRequest(qs, requestMethod, {}, data)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        assert response.statusCode() == status_code, "%s != %s" % (response.statusCode(), status_code)
+
 
 class TestQgsServerTestBase(unittest.TestCase):
 

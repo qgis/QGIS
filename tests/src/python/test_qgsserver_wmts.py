@@ -78,6 +78,10 @@ class TestQgsServerWMTS(QgsServerTestBase):
 
         self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (query_string, request))
 
+    def test_operation_not_supported(self):
+        qs = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)
+        self._assert_status_code(501, qs)
+
     def test_project_wmts(self):
         """Test some WMTS request"""
         for request in ('GetCapabilities',):
