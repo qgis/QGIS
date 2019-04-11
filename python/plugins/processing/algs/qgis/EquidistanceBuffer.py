@@ -36,7 +36,8 @@ from qgis.core import (QgsGeometry,
                        QgsProcessingException,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
-                       QgsProject
+                       QgsProject,
+                       QgsUnitTypes
                        )
     
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
@@ -66,7 +67,6 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
         self.distance = None
         self.segments = None
         self.join_style = None
-        self.side = None
         self.miter_limit = None
         self.join_styles = [self.tr('Round'),
                             self.tr('Miter'),
@@ -76,10 +76,11 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
                        self.tr('Square')]
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
-                                                         self.tr('Distance (in meters)'),
-                                                         defaultValue=10000.0))
-     
+        distanceParam = QgsProcessingParameterDistance(self.DISTANCE,
+                                                       self.tr('Distance'),
+                                                       defaultValue=10000.0)
+        distanceParam.setDefaultUnit(QgsUnitTypes.DistanceMeters)
+        self.addParameter(distanceParam)
 
         self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
                                                        self.tr('Segments'), QgsProcessingParameterNumber.Integer,
