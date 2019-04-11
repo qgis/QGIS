@@ -77,7 +77,7 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
 
     def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
-                                                         self.tr('Distance (in meters'),
+                                                         self.tr('Distance (in meters)'),
                                                          defaultValue=10000.0))
      
 
