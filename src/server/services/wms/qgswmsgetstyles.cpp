@@ -59,14 +59,14 @@ namespace QgsWms
 
     if ( layersName.isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
                                     QgsWmsParameter::LAYERS );
     }
 
     QStringList layerList = layersName.split( ',', QString::SkipEmptyParts );
     if ( layerList.isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
                                     QgsWmsParameter::LAYERS );
     }
 
@@ -96,13 +96,13 @@ namespace QgsWms
 
     if ( styleName.isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
                                     QgsWmsParameter::STYLE );
     }
 
     if ( layerName.isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
                                     QgsWmsParameter::LAYERS );
     }
 

@@ -50,7 +50,7 @@ namespace QgsWms
         contentType = QStringLiteral( "application/pdf" );
         break;
       default:
-        throw QgsBadRequestException( QgsServiceException::OGC_INVALID_FORMAT,
+        throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
                                       parameters[QgsWmsParameter::FORMAT] );
         break;
     }
