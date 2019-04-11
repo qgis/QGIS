@@ -200,6 +200,7 @@ class QgsServerRequestTest(QgsServerTestBase):
         request = QgsServerRequest()
         request.setParameter('FOOBAR', 'foobar')
         self.assertEqual(request.parameter('FOOBAR'), 'foobar')
+        self.assertEqual(request.parameter('UNKNOWN'), '')
 
 
 if __name__ == '__main__':
