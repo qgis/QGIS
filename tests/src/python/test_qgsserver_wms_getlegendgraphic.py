@@ -691,6 +691,37 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(15, 15))
 
+    def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_2056(self):
+        # 1:1000 scale on an EPSG:2056
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols_2056.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer_2056",
+            "FORMAT": "image/png",
+            "SRCHEIGHT": "600",
+            "SRCWIDTH": "1500",
+            "BBOX": "2662610.7,1268841.8,2663010.5,1269000.05",
+            "CRS": "EPSG:2056"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Scaled_2056", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_ScaleSymbol_DefaultScale_2056(self):
+        # 1:1000 as default value - it's not exactly the same result than passing the bbox and size
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols_2056.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer_2056",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:2056"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultScale_2056", max_size_diff=QSize(15, 15))
+
 
 if __name__ == '__main__':
     unittest.main()
