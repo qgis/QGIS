@@ -155,9 +155,9 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT int wmsMaxAtlasFeatures( const QgsProject &project );
 
   /**
-   * Returns the denominator of the default scale used in case of the scale is not given
+   * Returns the default number of map units per millimeters in case of the scale is not given
    * \param project the QGIS project
-   * \returns the denominator of the scale
+   * \returns the default number of map units per millimeter
    * \since QGIS 3.8
    */
   SERVER_EXPORT double wmsDefaultMapUnitsPerMm( const QgsProject &project );
