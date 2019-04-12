@@ -37,6 +37,7 @@ from qgis.core import (Qgis,
                        QgsRasterLayer,
                        QgsApplication,
                        QgsMapLayerType,
+                       QgsCoordinateReferenceSystem,
                        QgsProcessingUtils,
                        QgsProcessing,
                        QgsMessageLog,
@@ -126,6 +127,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.outputType = None
         self.minArea = None
         self.alignToResolution = None
+
+        # destination Crs for combineLayerExtents, will be set from layer or mapSettings
+        self.destination_crs = QgsCoordinateReferenceSystem()
 
         # Load parameters from a description file
         self.defineCharacteristicsFromFile()
@@ -500,7 +504,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         # Build GRASS region
         if self.region.isEmpty():
-            self.region = QgsProcessingUtils.combineLayerExtents(self.inputLayers, context)
+            self.region = QgsProcessingUtils.combineLayerExtents(self.inputLayers, self.destination_crs, context)
         command = 'g.region n={} s={} e={} w={}'.format(
             self.region.yMaximum(), self.region.yMinimum(),
             self.region.xMaximum(), self.region.xMinimum()
@@ -1001,6 +1005,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         We creates a PROJ4 definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet and iface:
+            self.destination_crs = iface.mapCanvas().mapSettings().destinationCrs()
             proj4 = iface.mapCanvas().mapSettings().destinationCrs().toProj4()
             command = 'g.proj -c proj4="{}"'.format(proj4)
             self.commands.append(command)
@@ -1013,6 +1018,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         if not Grass7Utils.projectionSet:
             proj4 = str(layer.crs().toProj4())
+            self.destination_crs = layer.crs()
             command = 'g.proj -c proj4="{}"'.format(proj4)
             self.commands.append(command)
             Grass7Utils.projectionSet = True
