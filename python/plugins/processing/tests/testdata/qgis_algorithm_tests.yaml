@@ -1392,7 +1392,7 @@ tests:
       DISTANCE: 10000.0
       END_CAP_STYLE: 0
       INPUT:
-        name: points.gml
+        name: points.gml|layername=points
         type: vector
       JOIN_STYLE: 0
       MITER_LIMIT: 2.0
