@@ -165,11 +165,11 @@ Returns the maximum number of atlas features which can be printed in a request
 
   double wmsDefaultMapUnitsPerMm( const QgsProject &project );
 %Docstring
-Returns the denominator of the default scale used in case of the scale is not given
+Returns the default number of map units per millimeters in case of the scale is not given
 
 :param project: the QGIS project
 
-:return: the denominator of the scale
+:return: the default number of map units per millimeter
 
 .. versionadded:: 3.8
 %End
