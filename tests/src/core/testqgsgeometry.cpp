@@ -158,6 +158,8 @@ class TestQgsGeometry : public QObject
 
     void convertGeometryCollectionToSubclass();
 
+    void emptyJson();
+
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString &testName, const QString &comment = QString(), int mismatchCount = 0 );
@@ -17467,6 +17469,37 @@ void TestQgsGeometry::convertGeometryCollectionToSubclass()
   // trying to convert a geometry that is not a geometry collection
   QgsGeometry wrong = QgsGeometry::fromWkt( QStringLiteral( "Point(1 2)" ) );
   QVERIFY( !wrong.convertGeometryCollectionToSubclass( QgsWkbTypes::PolygonGeometry ) );
+}
+
+void TestQgsGeometry::emptyJson()
+{
+  QString expected;
+// TODO: harmonize Json output. Should be ... [] }
+  expected = QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ ]}" );
+  QCOMPARE( QgsCircularString().asJson(), expected );
+  QCOMPARE( QgsCompoundCurve().asJson(), expected );
+  QCOMPARE( QgsLineString().asJson(), expected );
+
+  expected = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [] }" );
+  QCOMPARE( QgsGeometryCollection().asJson(), expected );
+
+  expected = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [] }" );
+  QCOMPARE( QgsMultiCurve().asJson(), expected );
+  QCOMPARE( QgsMultiLineString().asJson(), expected );
+
+  expected = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": [ ] }" );
+  QCOMPARE( QgsMultiPoint().asJson(), expected );
+
+  expected = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [] }" );
+  QCOMPARE( QgsMultiSurface().asJson(), expected );
+
+  expected = QStringLiteral( "{\"type\": \"Point\", \"coordinates\": [0, 0]}" ); // should be []
+  QCOMPARE( QgsPoint().asJson(), expected );
+
+  expected = QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [] }" );
+  QCOMPARE( QgsCurvePolygon().asJson(), expected );
+  QCOMPARE( QgsPolygon().asJson(), expected );
+  QCOMPARE( QgsTriangle().asJson(), expected );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

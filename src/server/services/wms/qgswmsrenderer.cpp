@@ -187,7 +187,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      image.reset( createImage( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt(), false ) );
+      image.reset( createImage( width(), height(), false ) );
       configureMapSettings( image.get(), mapSettings );
       legendSettings.setMapScale( mapSettings.scale() );
       legendSettings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
@@ -1151,10 +1151,10 @@ namespace QgsWms
   QImage *QgsRenderer::createImage( int width, int height, bool useBbox ) const
   {
     if ( width < 0 )
-      width = mWmsParameters.widthAsInt();
+      width = this->width();
 
     if ( height < 0 )
-      height = mWmsParameters.heightAsInt();
+      height = this->height();
 
     //Adapt width / height if the aspect ratio does not correspond with the BBOX.
     //Required by WMS spec. 1.3.
@@ -2062,12 +2062,12 @@ namespace QgsWms
     if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
     {
       // both are set, so we take the more conservative one
-      wmsMaxWidth = std::min( wmsMaxWidthProj, wmsMaxWidthEnv );
+      wmsMaxWidth = std::min( QgsServerProjectUtils::wmsMaxWidth( *mProject ), wmsMaxWidthEnv );
     }
     else
     {
       // none or one are set, so we take the bigger one which is the one set or -1
-      wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
+      wmsMaxWidth = std::max( QgsServerProjectUtils::wmsMaxWidth( *mProject ), wmsMaxWidthEnv );
     }
 
     int width = this->width();
@@ -2083,12 +2083,12 @@ namespace QgsWms
     if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
     {
       // both are set, so we take the more conservative one
-      wmsMaxHeight = std::min( wmsMaxHeightProj, wmsMaxHeightEnv );
+      wmsMaxHeight = std::min( QgsServerProjectUtils::wmsMaxHeight( *mProject ), wmsMaxHeightEnv );
     }
     else
     {
       // none or one are set, so we take the bigger one which is the one set or -1
-      wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
+      wmsMaxHeight = std::max( QgsServerProjectUtils::wmsMaxHeight( *mProject ), wmsMaxHeightEnv );
     }
 
     int height = this->height();
@@ -3307,8 +3307,8 @@ namespace QgsWms
     // WIDTH / HEIGHT parameters. If not, the image has to be scaled (required
     // by WMS spec)
     QImage *scaledImage = nullptr;
-    int width = mWmsParameters.widthAsInt();
-    int height = mWmsParameters.heightAsInt();
+    int width = this->width();
+    int height = this->height();
     if ( width != image->width() || height != image->height() )
     {
       scaledImage = new QImage( image->scaled( width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
@@ -3556,5 +3556,22 @@ namespace QgsWms
     return result;
   }
 
+  int QgsRenderer::height() const
+  {
+    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
+           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
+         mWmsParameters.srcHeightAsInt() > 0 )
+      return mWmsParameters.srcHeightAsInt();
+    return mWmsParameters.heightAsInt();
+  }
+
+  int QgsRenderer::width() const
+  {
+    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
+           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
+         mWmsParameters.srcWidthAsInt() > 0 )
+      return mWmsParameters.srcWidthAsInt();
+    return mWmsParameters.widthAsInt();
+  }
 
 } // namespace QgsWms
