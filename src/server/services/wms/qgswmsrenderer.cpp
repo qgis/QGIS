@@ -800,7 +800,7 @@ namespace QgsWms
     // check size
     if ( !checkMaximumWidthHeight() )
     {
-      throw QgsBadRequestException( QStringLiteral( "Size error" ),
+      throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ),
                                     QStringLiteral( "The requested map size is too large" ) );
     }
 
@@ -2053,20 +2053,50 @@ namespace QgsWms
 
   bool QgsRenderer::checkMaximumWidthHeight() const
   {
-    //test if maxWidth / maxHeight set and WIDTH / HEIGHT parameter is in the range
-    int wmsMaxWidth = QgsServerProjectUtils::wmsMaxWidth( *mProject );
+    //test if maxWidth / maxHeight are set in the project or as an env variable
+    //and WIDTH / HEIGHT parameter is in the range allowed range
+    //WIDTH
+    int wmsMaxWidthProj = QgsServerProjectUtils::wmsMaxWidth( *mProject );
+    int wmsMaxWidthEnv = mSettings.wmsMaxWidth();
+    int wmsMaxWidth;
+    if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
+    {
+      // both are set, so we take the more conservative one
+      wmsMaxWidth = std::min( QgsServerProjectUtils::wmsMaxWidth( *mProject ), wmsMaxWidthEnv );
+    }
+    else
+    {
+      // none or one are set, so we take the bigger one which is the one set or -1
+      wmsMaxWidth = std::max( QgsServerProjectUtils::wmsMaxWidth( *mProject ), wmsMaxWidthEnv );
+    }
+
     int width = this->width();
     if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
     {
       return false;
     }
 
-    int wmsMaxHeight = QgsServerProjectUtils::wmsMaxHeight( *mProject );
+    //HEIGHT
+    int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
+    int wmsMaxHeightEnv = mSettings.wmsMaxHeight();
+    int wmsMaxHeight;
+    if ( wmsMaxHeightEnv != -1 && wmsMaxHeightProj != -1 )
+    {
+      // both are set, so we take the more conservative one
+      wmsMaxHeight = std::min( QgsServerProjectUtils::wmsMaxHeight( *mProject ), wmsMaxHeightEnv );
+    }
+    else
+    {
+      // none or one are set, so we take the bigger one which is the one set or -1
+      wmsMaxHeight = std::max( QgsServerProjectUtils::wmsMaxHeight( *mProject ), wmsMaxHeightEnv );
+    }
+
     int height = this->height();
     if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
     {
       return false;
     }
+
 
     // Sanity check from internal QImage checks (see qimage.cpp)
     // this is to report a meaningful error message in case of
