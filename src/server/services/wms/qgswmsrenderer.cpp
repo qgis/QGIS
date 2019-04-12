@@ -800,7 +800,7 @@ namespace QgsWms
     // check size
     if ( !checkMaximumWidthHeight() )
     {
-      throw QgsBadRequestException( QStringLiteral( "Size error" ),
+      throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ),
                                     QStringLiteral( "The requested map size is too large" ) );
     }
 
