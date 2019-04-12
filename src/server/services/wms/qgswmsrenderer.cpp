@@ -2080,7 +2080,7 @@ namespace QgsWms
     int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
     int wmsMaxHeightEnv = mSettings.wmsMaxHeight();
     int wmsMaxHeight;
-    if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
+    if ( wmsMaxHeightEnv != -1 && wmsMaxHeightProj != -1 )
     {
       // both are set, so we take the more conservative one
       wmsMaxHeight = std::min( QgsServerProjectUtils::wmsMaxHeight( *mProject ), wmsMaxHeightEnv );
