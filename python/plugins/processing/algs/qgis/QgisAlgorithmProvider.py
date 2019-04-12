@@ -173,6 +173,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DeleteDuplicateGeometries(),
                 DensifyGeometries(),
                 EliminateSelection(),
+                EquidistanceBuffer(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
                 ExtentFromLayer(),
