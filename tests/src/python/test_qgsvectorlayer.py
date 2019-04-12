@@ -57,7 +57,6 @@ from qgis.core import (QgsWkbTypes,
                        QgsTextFormat,
                        QgsVectorLayerSelectedFeatureSource,
                        QgsExpression,
-                       QgsCoordinateTransformContext,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -3167,19 +3166,6 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
         """
         pass
 
-
-class TestQgsVectorLayerTransformContext(unittest.TestCase):
-
-    def testTransformContext(self):
-        vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-            'test', 'memory')
-        ctx = QgsCoordinateTransformContext()
-        ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
-        vl.dataProvider().setTransformContext(ctx)
-        self.assertTrue(vl.isValid())
-        self.assertEqual(vl.transformContext(), vl.dataProvider().transformContext())
-        self.assertEqual(list(vl.transformContext().sourceDestinationDatumTransforms().keys())[0], ('EPSG:4326', 'EPSG:3857'))
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
