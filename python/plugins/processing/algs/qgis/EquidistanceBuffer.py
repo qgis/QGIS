@@ -141,7 +141,8 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
         self.source_crs = source.sourceCrs()
         if not self.source_crs.isGeographic():
             feedback.reportError(
-                'Layer CRS must be a Geograhpic CRS for this algorithm')
+                self.tr(
+                    'Layer CRS must be a Geograhpic CRS for this algorithm'))
             return False
         return super().prepareAlgorithm(parameters, context, feedback)
 
