@@ -597,26 +597,9 @@ void QgsSymbolLegendNode::updateLabel()
   if ( !mLayerNode )
     return;
 
-  bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-
-  if ( mEmbeddedInParent )
-  {
-    mLabel = getCurrentLabel();
-    if ( showFeatureCount && vl && vl->featureCount() >= 0 )
-      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-  }
-  else
-  {
-    mLabel = getCurrentLabel();
-    if ( showFeatureCount && vl )
-    {
-      qlonglong count = vl->featureCount( mItem.ruleKey() );
-      mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
-    }
-  }
-
-  emit dataChanged();
+  QModelIndex index = legendNode2index( mLayerNode );
+  if ( index.isValid() )
+    emit dataChanged( index, index );
 }
 
 QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QString label )
@@ -634,7 +617,6 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
     else if ( mLabel.contains( "[%" ) )
       mLabel = evaluateLabelExpression( mLabel, vl, context );
 
-    emit dataChanged();
     return mLabel;
   }
   else if ( vl )
