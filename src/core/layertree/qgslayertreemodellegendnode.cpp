@@ -597,6 +597,7 @@ void QgsSymbolLegendNode::updateLabel()
   if ( !mLayerNode )
     return;
 
+  mLabel = getCurrentLabel();
   emit dataChanged();
 }
 
