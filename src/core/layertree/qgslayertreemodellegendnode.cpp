@@ -597,9 +597,7 @@ void QgsSymbolLegendNode::updateLabel()
   if ( !mLayerNode )
     return;
 
-  QModelIndex index = legendNode2index( mLayerNode );
-  if ( index.isValid() )
-    emit dataChanged( index, index );
+  emit dataChanged();
 }
 
 QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QString label )
