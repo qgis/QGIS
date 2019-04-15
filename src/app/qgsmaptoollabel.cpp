@@ -395,7 +395,8 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
 #if 0
 bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProperties p, QgsVectorLayer *vlayer ) const
 {
-  Q_FOREACH ( const QString &providerId, vlayer->labeling()->subProviders() )
+  const auto constSubProviders = vlayer->labeling()->subProviders();
+  for ( const QString &providerId : constSubProviders )
   {
     if ( QgsPalLayerSettings *settings = vlayer->labeling()->settings( vlayer, providerId ) )
     {
@@ -475,7 +476,8 @@ bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer *vlayer, int &rotationCol
     return false;
   }
 
-  Q_FOREACH ( const QString &providerId, vlayer->labeling()->subProviders() )
+  const auto constSubProviders = vlayer->labeling()->subProviders();
+  for ( const QString &providerId : constSubProviders )
   {
     if ( labelIsRotatable( vlayer, vlayer->labeling()->settings( providerId ), rotationCol ) )
       return true;
@@ -596,7 +598,8 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCo
     return false;
   }
 
-  Q_FOREACH ( const QString &providerId, vlayer->labeling()->subProviders() )
+  const auto constSubProviders = vlayer->labeling()->subProviders();
+  for ( const QString &providerId : constSubProviders )
   {
     if ( labelMoveable( vlayer, vlayer->labeling()->settings( providerId ), xCol, yCol ) )
       return true;
@@ -629,7 +632,8 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
     return false;
   }
 
-  Q_FOREACH ( const QString &providerId, vlayer->labeling()->subProviders() )
+  const auto constSubProviders = vlayer->labeling()->subProviders();
+  for ( const QString &providerId : constSubProviders )
   {
     QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
                         vlayer->labeling()->settings( providerId ) );

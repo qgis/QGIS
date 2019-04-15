@@ -78,7 +78,8 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
     a->setEnabled( false );
     dialog->addAction( a );
 
-    Q_FOREACH ( const QgsAction &action, actions )
+    const auto constActions = actions;
+    for ( const QgsAction &action : constActions )
     {
       if ( !action.runable() )
         continue;

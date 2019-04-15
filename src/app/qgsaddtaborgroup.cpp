@@ -40,7 +40,8 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
   if ( !mTabs.isEmpty() )
   {
     int i = 0;
-    Q_FOREACH ( const TabPair &tab, mTabs )
+    const auto constMTabs = mTabs;
+    for ( const TabPair &tab : constMTabs )
     {
       mTabList->addItem( tab.first, i );
       ++i;

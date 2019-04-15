@@ -164,7 +164,8 @@ QMap<QString, QString> QgsLayoutManagerDialog::otherTemplates() const
 {
   QMap<QString, QString> templateMap;
   QStringList paths = QgsApplication::layoutTemplatePaths();
-  Q_FOREACH ( const QString &path, paths )
+  const auto constPaths = paths;
+  for ( const QString &path : constPaths )
   {
     QMap<QString, QString> templates = templatesFromPath( path );
     QMap<QString, QString>::const_iterator templateIt = templates.constBegin();

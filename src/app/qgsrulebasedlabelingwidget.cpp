@@ -177,7 +177,8 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex &index )
 void QgsRuleBasedLabelingWidget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
-  Q_FOREACH ( const QItemSelectionRange &range, sel )
+  const auto constSel = sel;
+  for ( const QItemSelectionRange &range : constSel )
   {
     if ( range.isValid() )
       mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
@@ -454,7 +455,8 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )
