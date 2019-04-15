@@ -1335,11 +1335,11 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 ||
               unitName.compare( QLatin1String( "foot" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = QgsUnitTypes::DistanceFeet;
-    else if ( unitName.compare( QLatin1String( "kilometre" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( QLatin1String( "kilometre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
       d->mMapUnits = QgsUnitTypes::DistanceKilometers;
-    else if ( unitName.compare( QLatin1String( "centimetre" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( QLatin1String( "centimetre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
       d->mMapUnits = QgsUnitTypes::DistanceCentimeters;
-    else if ( unitName.compare( QLatin1String( "millimetre" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( QLatin1String( "millimetre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
       d->mMapUnits = QgsUnitTypes::DistanceMillimeters;
     else if ( unitName.compare( QLatin1String( "Statute mile" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = QgsUnitTypes::DistanceMiles;
