@@ -596,7 +596,8 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
   {
     QgsDebugMsg( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( static_cast<int>( type ) ) );
 
-    Q_FOREACH ( const LegendLayerAction &lyrAction, mLegendLayerActionMap[ type ] )
+    const auto legendLayerActions { mLegendLayerActionMap.value( type ) };
+    for ( const LegendLayerAction &lyrAction : legendLayerActions )
     {
       Q_UNUSED( lyrAction );
       QgsDebugMsg( QStringLiteral( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );

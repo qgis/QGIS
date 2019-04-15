@@ -88,7 +88,8 @@ void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu *m, QgsMapLayer *la
     m->addAction( actionRemoveStyle( layer, m ) );
   m->addAction( actionRenameStyle( layer, m ) );
   m->addSeparator();
-  Q_FOREACH ( QAction *a, actionsUseStyle( layer, m ) )
+  const auto actions {actionsUseStyle( layer, m )};
+  for ( QAction *a : actions )
     m->addAction( a );
 }
 

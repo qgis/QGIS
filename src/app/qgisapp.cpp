@@ -1756,8 +1756,9 @@ void QgisApp::dropEvent( QDropEvent *event )
 
 void QgisApp::annotationCreated( QgsAnnotation *annotation )
 {
+  const auto canvases = mapCanvases();
   // create canvas annotation item for annotation
-  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  for ( QgsMapCanvas *canvas : canvases )
   {
     QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, canvas );
     Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
@@ -3469,7 +3470,8 @@ void QgisApp::setupConnections()
 
   connect( mRenderSuppressionCBox, &QAbstractButton::toggled, this, [ = ]( bool flag )
   {
-    Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+    const auto canvases = mapCanvases();
+    for ( QgsMapCanvas *canvas : canvases )
       canvas->setRenderFlag( flag );
     if ( !flag )
       canvasRefreshFinished(); // deals with the busy indicator in case of ongoing rendering
@@ -3829,7 +3831,8 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
 
 QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
 {
-  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  const auto canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
   {
     if ( canvas->objectName() == name )
     {
@@ -3897,7 +3900,8 @@ void QgisApp::setupDockWidget( QDockWidget *dockWidget, bool isFloating, QRect d
 
 void QgisApp::closeMapCanvas( const QString &name )
 {
-  Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
+  const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
+  for ( QgsMapCanvasDockWidget *w : dockWidgets )
   {
     if ( w->mapCanvas()->objectName() == name )
     {
@@ -3911,7 +3915,8 @@ void QgisApp::closeMapCanvas( const QString &name )
 void QgisApp::closeAdditionalMapCanvases()
 {
   freezeCanvases( true ); // closing docks may cause canvases to resize, and we don't want a map refresh occurring
-  Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
+  const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
+  for ( QgsMapCanvasDockWidget *w : dockWidgets )
   {
     w->close();
     delete w;
@@ -3933,7 +3938,8 @@ void QgisApp::closeAdditional3DMapCanvases()
 
 void QgisApp::freezeCanvases( bool frozen )
 {
-  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  const auto canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
   {
     canvas->freeze( frozen );
   }
@@ -6926,7 +6932,8 @@ void QgisApp::removeWindow( QAction *action )
 
 void QgisApp::stopRendering()
 {
-  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  const auto canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
     canvas->stopRendering();
 }
 
@@ -7266,7 +7273,8 @@ void QgisApp::modifyAnnotation()
 
 void QgisApp::reprojectAnnotations()
 {
-  Q_FOREACH ( QgsMapCanvasAnnotationItem *annotation, annotationItems() )
+  const auto annotations = annotationItems();
+  for ( QgsMapCanvasAnnotationItem *annotation : annotations )
   {
     annotation->updatePosition();
   }
@@ -9393,7 +9401,8 @@ void QgisApp::copyFeatures( QgsFeatureStore &featureStore )
 
 void QgisApp::refreshMapCanvas()
 {
-  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  const auto canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
   {
     //stop any current rendering
     canvas->stopRendering();
@@ -9666,7 +9675,8 @@ void QgisApp::saveAllEdits( bool verifyAction )
       return;
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, editableLayers( true ) )
+  const auto layers = editableLayers( true );
+  for ( QgsMapLayer *layer : layers )
   {
     saveEdits( layer, true, false );
   }
@@ -9693,7 +9703,8 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
       return;
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, editableLayers( true ) )
+  const auto layers = editableLayers( true );
+  for ( QgsMapLayer *layer : layers )
   {
     cancelEdits( layer, true, false );
   }
@@ -9720,7 +9731,8 @@ void QgisApp::cancelAllEdits( bool verifyAction )
       return;
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, editableLayers() )
+  const auto layers = editableLayers();
+  for ( QgsMapLayer *layer : layers )
   {
     cancelEdits( layer, false, false );
   }
@@ -10758,7 +10770,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
 
     setupLayerTreeViewFromSettings();
 
-    Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+    const auto canvases = mapCanvases();
+    for ( QgsMapCanvas *canvas : canvases )
     {
       applyDefaultSettingsToCanvas( canvas );
     }
@@ -10773,7 +10786,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     }
 
     //do we need this? TS
-    Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+    for ( QgsMapCanvas *canvas : canvases )
     {
       canvas->refresh();
     }
@@ -13120,12 +13133,13 @@ void QgisApp::renameView()
 
   // calculate existing names
   QStringList names;
-  Q_FOREACH ( QgsMapCanvas *c, mapCanvases() )
+  const auto canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
   {
-    if ( c == view->mapCanvas() )
+    if ( canvas == view->mapCanvas() )
       continue;
 
-    names << c->objectName();
+    names << canvas->objectName();
   }
 
   QString currentName = view->mapCanvas()->objectName();
@@ -13693,7 +13707,8 @@ void QgisApp::writeProject( QDomDocument &doc )
 
   // Save the position of the map view docks
   QDomElement mapViewNode = doc.createElement( QStringLiteral( "mapViewDocks" ) );
-  Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
+  const auto dockWidgets = findChildren< QgsMapCanvasDockWidget * >();
+  for ( QgsMapCanvasDockWidget *w : dockWidgets )
   {
     QDomElement node = doc.createElement( QStringLiteral( "view" ) );
     node.setAttribute( QStringLiteral( "name" ), w->mapCanvas()->objectName() );

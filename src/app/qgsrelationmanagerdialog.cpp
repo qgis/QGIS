@@ -116,8 +116,8 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
 
     QStringList existingNames;
 
-
-    Q_FOREACH ( const QgsRelation &rel, relations() )
+    const auto rels { relations() };
+    for ( const QgsRelation &rel : rels )
     {
       existingNames << rel.id();
     }
