@@ -99,8 +99,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \param nOutputColumns number of columns in output raster
      * \param nOutputRows number of rows in output raster
      * \param rasterEntries list of referenced raster layers
-      * \param transformContext coordinate transformation context
-     * \deprecated since QGIS 3.8, use the version with transformContext instead
+     * \param transformContext coordinate transformation context
      * \since QGIS 3.8
      */
     QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
@@ -119,7 +118,6 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \param nOutputRows number of rows in output raster
      * \param rasterEntries list of referenced raster layers
      * \param transformContext coordinate transformation context
-     * \deprecated since QGIS 3.8, use the version with transformContext instead
      * \since QGIS 3.8
      */
     QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
