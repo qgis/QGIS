@@ -919,21 +919,21 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   if ( !QgsLayerTree::isLayer( currentNode ) )
     return;
 
-  QgsLayerTreeLayer *LayerNode = qobject_cast<QgsLayerTreeLayer *>( currentNode );
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( LayerNode->layer() );
+  QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( currentNode );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerNode->layer() );
 
   if ( !vl )
     return;
 
   QString currentExpression;
-  if ( LayerNode->expression().isEmpty() )
+  if ( layerNode->expression().isEmpty() )
     currentExpression = QStringLiteral( "@symbol_label" );
   else
-    currentExpression = LayerNode->expression();
+    currentExpression = layerNode->expression();
 
   QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", vl->createExpressionContext() );
   if ( expressiondialog.exec() )
-    LayerNode->setExpression( expressiondialog.expressionText() );
+    layerNode->setExpression( expressiondialog.expressionText() );
 
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->updateLegend();
