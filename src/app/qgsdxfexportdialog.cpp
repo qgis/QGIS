@@ -281,12 +281,14 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
   QList< QgsDxfExport::DxfLayer > layers;
   QHash< QString, int > layerIdx;
 
-  Q_FOREACH ( const QModelIndex &idx, mCheckedLeafs )
+  const auto constMCheckedLeafs = mCheckedLeafs;
+  for ( const QModelIndex &idx : constMCheckedLeafs )
   {
     QgsLayerTreeNode *node = index2node( idx );
     if ( QgsLayerTree::isGroup( node ) )
     {
-      Q_FOREACH ( QgsLayerTreeLayer *treeLayer, QgsLayerTree::toGroup( node )->findLayers() )
+      const auto constFindLayers = QgsLayerTree::toGroup( node )->findLayers();
+      for ( QgsLayerTreeLayer *treeLayer : constFindLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
         Q_ASSERT( vl );
@@ -338,7 +340,8 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
 
   if ( name.isEmpty() )
   {
-    Q_FOREACH ( const QgsMapLayer *ml, QgisApp::instance()->mapCanvas()->layers() )
+    const auto constLayers = QgisApp::instance()->mapCanvas()->layers();
+    for ( const QgsMapLayer *ml : constLayers )
     {
       const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );
       if ( !vl )
@@ -366,7 +369,8 @@ void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLay
   if ( !group )
     return;
 
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     if ( QgsLayerTree::isLayer( child ) )
     {
@@ -391,7 +395,8 @@ void QgsVectorLayerAndAttributeModel::retrieveAllLayers( QgsLayerTreeNode *node,
   }
   else if ( QgsLayerTree::isGroup( node ) )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
+    const auto constChildren = QgsLayerTree::toGroup( node )->children();
+    for ( QgsLayerTreeNode *child : constChildren )
     {
       retrieveAllLayers( child, set );
     }
@@ -515,7 +520,8 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
     return;
 
   QList<QgsLayerTreeNode *> toRemove;
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     if ( QgsLayerTree::isLayer( child ) && QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayerType::VectorLayer )
     {
@@ -529,7 +535,8 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
       toRemove << child;
   }
 
-  Q_FOREACH ( QgsLayerTreeNode *child, toRemove )
+  const auto constToRemove = toRemove;
+  for ( QgsLayerTreeNode *child : constToRemove )
     group->removeChildNode( child );
 }
 

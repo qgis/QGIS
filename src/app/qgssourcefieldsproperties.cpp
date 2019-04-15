@@ -242,7 +242,8 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
                                << AttrPrecCol
                                << AttrCommentCol;
 
-  Q_FOREACH ( int i, notEditableCols )
+  const auto constNotEditableCols = notEditableCols;
+  for ( int i : constNotEditableCols )
   {
     if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression )
       mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
@@ -326,7 +327,8 @@ void QgsSourceFieldsProperties::deleteAttributeClicked()
 {
   QSet<int> providerFields;
   QSet<int> expressionFields;
-  Q_FOREACH ( QTableWidgetItem *item, mFieldsList->selectedItems() )
+  const auto constSelectedItems = mFieldsList->selectedItems();
+  for ( QTableWidgetItem *item : constSelectedItems )
   {
     if ( item->column() == 0 )
     {
@@ -423,7 +425,8 @@ void QgsSourceFieldsProperties::updateButtons()
     // Enable delete button if items are selected
     mDeleteAttributeButton->setEnabled( !mFieldsList->selectedItems().isEmpty() );
     // and only if all selected items have their origin in an expression
-    Q_FOREACH ( QTableWidgetItem *item, mFieldsList->selectedItems() )
+    const auto constSelectedItems = mFieldsList->selectedItems();
+    for ( QTableWidgetItem *item : constSelectedItems )
     {
       if ( item->column() == 0 )
       {

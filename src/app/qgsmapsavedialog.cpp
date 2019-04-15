@@ -73,7 +73,8 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mScaleWidget->setShowCurrentScaleButton( true );
 
   QString activeDecorations;
-  Q_FOREACH ( QgsDecorationItem *decoration, decorations )
+  const auto constDecorations = decorations;
+  for ( QgsDecorationItem *decoration : constDecorations )
   {
     mDecorations << decoration;
     if ( activeDecorations.isEmpty() )

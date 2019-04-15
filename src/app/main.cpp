@@ -1156,7 +1156,8 @@ int main( int argc, char *argv[] )
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
                << appResources.append( "/share/gdal" )
                << appResources.append( "/gdal" );
-    Q_FOREACH ( const QString &gdalShare, gdalShares )
+    const auto constGdalShares = gdalShares;
+    for ( const QString &gdalShare : constGdalShares )
     {
       if ( QFile::exists( gdalShare ) )
       {
@@ -1175,7 +1176,8 @@ int main( int argc, char *argv[] )
     QStringList customVarsList = settings.value( QStringLiteral( "qgis/customEnvVars" ), "" ).toStringList();
     if ( !customVarsList.isEmpty() )
     {
-      Q_FOREACH ( const QString &varStr, customVarsList )
+      const auto constCustomVarsList = customVarsList;
+      for ( const QString &varStr : constCustomVarsList )
       {
         int pos = varStr.indexOf( QLatin1Char( '|' ) );
         if ( pos == -1 )
@@ -1431,7 +1433,8 @@ int main( int argc, char *argv[] )
     QList< QgsDxfExport::DxfLayer > layers;
     if ( !dxfMapTheme.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
+      const auto constMapThemeVisibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme );
+      for ( QgsMapLayer *layer : constMapThemeVisibleLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
@@ -1442,7 +1445,8 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      Q_FOREACH ( QgsMapLayer *ml, QgsProject::instance()->mapLayers() )
+      const auto constMapLayers = QgsProject::instance()->mapLayers();
+      for ( QgsMapLayer *ml : constMapLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )

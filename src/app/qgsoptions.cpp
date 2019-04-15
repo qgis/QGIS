@@ -1076,7 +1076,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mAdvancedSettingsEditor->setSettingsObject( mSettings );
 
-  Q_FOREACH ( QgsOptionsWidgetFactory *factory, optionsFactories )
+  const auto constOptionsFactories = optionsFactories;
+  for ( QgsOptionsWidgetFactory *factory : constOptionsFactories )
   {
     QListWidgetItem *item = new QListWidgetItem();
     item->setIcon( factory->icon() );
@@ -1733,7 +1734,8 @@ void QgsOptions::saveOptions()
 
   mLocatorOptionsWidget->commitChanges();
 
-  Q_FOREACH ( QgsOptionsPageWidget *widget, mAdditionalOptionWidgets )
+  const auto constMAdditionalOptionWidgets = mAdditionalOptionWidgets;
+  for ( QgsOptionsPageWidget *widget : constMAdditionalOptionWidgets )
   {
     widget->apply();
   }
@@ -2222,11 +2224,12 @@ void QgsOptions::loadGdalDriverList()
   // myDrivers.sort();
   // sort list case insensitive - no existing function for this!
   QMap<QString, QString> strMap;
-  Q_FOREACH ( const QString &str, myDrivers )
+
+  for ( const QString &str : qgis::as_const( myDrivers ) )
     strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  Q_FOREACH ( const QString &myName, myDrivers )
+  for ( const QString &myName : qgis::as_const( myDrivers ) )
   {
     QTreeWidgetItem *mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
@@ -2254,13 +2257,13 @@ void QgsOptions::loadGdalDriverList()
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
   strMap.clear();
-  Q_FOREACH ( const QString &str, myGdalWriteDrivers )
+  for ( const QString &str : qgis::as_const( myGdalWriteDrivers ) )
     strMap.insert( str.toLower(), str );
   myGdalWriteDrivers = strMap.values();
   myGdalWriteDrivers.removeAll( QStringLiteral( "Gtiff" ) );
   myGdalWriteDrivers.prepend( QStringLiteral( "GTiff" ) );
   cmbEditCreateOptions->clear();
-  Q_FOREACH ( const QString &myName, myGdalWriteDrivers )
+  for ( const QString &myName : qgis::as_const( myGdalWriteDrivers ) )
   {
     cmbEditCreateOptions->addItem( myName );
   }
@@ -2313,7 +2316,8 @@ void QgsOptions::restoreDefaultScaleValues()
   mListGlobalScales->clear();
 
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
-  Q_FOREACH ( const QString &scale, myScalesList )
+  const auto constMyScalesList = myScalesList;
+  for ( const QString &scale : constMyScalesList )
   {
     addScaleToScaleList( scale );
   }
@@ -2335,7 +2339,8 @@ void QgsOptions::importScales()
     QgsDebugMsg( msg );
   }
 
-  Q_FOREACH ( const QString &scale, myScales )
+  const auto constMyScales = myScales;
+  for ( const QString &scale : constMyScales )
   {
     addScaleToScaleList( scale );
   }

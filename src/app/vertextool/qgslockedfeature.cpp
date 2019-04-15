@@ -221,7 +221,8 @@ void QgsLockedFeature::replaceVertexMap()
 
 void QgsLockedFeature::deleteVertexMap()
 {
-  Q_FOREACH ( QgsVertexEntry *entry, mVertexMap )
+  const auto constMVertexMap = mVertexMap;
+  for ( QgsVertexEntry *entry : constMVertexMap )
   {
     delete entry;
   }
@@ -314,7 +315,8 @@ void QgsLockedFeature::invertVertexSelection( int vertexNr )
 
 void QgsLockedFeature::invertVertexSelection( const QVector<int> &vertexIndices )
 {
-  Q_FOREACH ( int index, vertexIndices )
+  const auto constVertexIndices = vertexIndices;
+  for ( int index : constVertexIndices )
   {
     if ( index < 0 || index >= mVertexMap.size() )
       continue;

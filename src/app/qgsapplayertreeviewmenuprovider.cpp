@@ -640,7 +640,8 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu *menu, QgsMap
           QMenu *newMenu = nullptr;
           QString dst = menuName;
           dst.remove( QChar( '&' ) );
-          Q_FOREACH ( QMenu *menu, menus )
+          const auto constMenus = menus;
+          for ( QMenu *menu : constMenus )
           {
             QString src = menu->title();
             src.remove( QChar( '&' ) );

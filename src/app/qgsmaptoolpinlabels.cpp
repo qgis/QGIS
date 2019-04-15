@@ -223,7 +223,8 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
 void QgsMapToolPinLabels::removePinnedHighlights()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
-  Q_FOREACH ( QgsRubberBand *rb, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsRubberBand *rb : constMHighlights )
   {
     delete rb;
   }
