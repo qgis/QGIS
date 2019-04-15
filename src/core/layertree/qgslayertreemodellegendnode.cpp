@@ -603,9 +603,9 @@ void QgsSymbolLegendNode::updateLabel()
 
   if ( showFeatureCount && vl )
   {
-    qlonglong count = mEmbeddedInParent ? vl->featureCount() : vl->featureCount( mItem.ruleKey() ) ; 
+    qlonglong count = mEmbeddedInParent ? vl->featureCount() : vl->featureCount( mItem.ruleKey() ) ;
     mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
-  }	
+  }
 
   emit dataChanged();
 }
