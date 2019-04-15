@@ -1315,12 +1315,38 @@ void QgsCoordinateReferenceSystem::setMapUnits()
                            nullptr );
 
     const QString unitName( outUnitName );
-    if ( unitName.compare( QLatin1String( "degree" ), Qt::CaseInsensitive ) == 0 )
+
+    // proj unit names are freeform -- they differ from authority to authority :(
+    // see https://lists.osgeo.org/pipermail/proj/2019-April/008444.html
+    if ( unitName.compare( QLatin1String( "degree" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree minute second" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree minute second hemisphere" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree minute" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree hemisphere" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree minute hemisphere" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "hemisphere degree" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "hemisphere degree minute" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "hemisphere degree minute second" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree (supplier to define representation)" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = QgsUnitTypes::DistanceDegrees;
     else if ( unitName.compare( QLatin1String( "metre" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = QgsUnitTypes::DistanceMeters;
-    else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 )
+    // we don't differentiate between these, suck it imperial users!
+    else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 ||
+              unitName.compare( QLatin1String( "foot" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = QgsUnitTypes::DistanceFeet;
+    else if ( unitName.compare( QLatin1String( "kilometre" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceKilometers;
+    else if ( unitName.compare( QLatin1String( "centimetre" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceCentimeters;
+    else if ( unitName.compare( QLatin1String( "millimetre" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceMillimeters;
+    else if ( unitName.compare( QLatin1String( "Statute mile" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceMiles;
+    else if ( unitName.compare( QLatin1String( "nautical mile" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceNauticalMiles;
+    else if ( unitName.compare( QLatin1String( "yard" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceYards;
     // TODO - maybe more values to handle here?
     else
       d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
