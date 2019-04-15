@@ -235,7 +235,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.8
      */
-    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
 
   signals:
