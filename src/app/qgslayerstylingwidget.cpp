@@ -224,7 +224,8 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
   }
 
-  Q_FOREACH ( QgsMapLayerConfigWidgetFactory *factory, mPageFactories )
+  const auto constMPageFactories = mPageFactories;
+  for ( QgsMapLayerConfigWidgetFactory *factory : constMPageFactories )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {

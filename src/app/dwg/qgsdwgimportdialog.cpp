@@ -289,7 +289,8 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
   if ( !layers.isEmpty() )
   {
     QStringList exprlist;
-    Q_FOREACH ( QString layer, layers )
+    const auto constLayers = layers;
+    for ( QString layer : constLayers )
     {
       exprlist.append( QStringLiteral( "'%1'" ).arg( layer.replace( QLatin1String( "'" ), QLatin1String( "''" ) ) ) );
     }
@@ -506,7 +507,8 @@ void QgsDwgImportDialog::buttonBox_accepted()
     QgsLayerTreeGroup *dwgGroup = QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup()->addGroup( leLayerGroup->text() );
     Q_ASSERT( dwgGroup );
 
-    Q_FOREACH ( const QString &layer, layers.keys() )
+    const auto constKeys = layers.keys();
+    for ( const QString &layer : constKeys )
     {
       createGroup( dwgGroup, layer, QStringList( layer ), layers[layer] );
     }

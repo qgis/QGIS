@@ -252,7 +252,8 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
       return;
     }
   }
-  Q_FOREACH ( QgsVectorLayer *vl, mProject->snappingConfig().individualLayerSettings().keys() )
+  const auto constKeys = mProject->snappingConfig().individualLayerSettings().keys();
+  for ( QgsVectorLayer *vl : constKeys )
   {
     if ( !oldSettings.contains( vl ) )
     {
@@ -270,7 +271,8 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    const auto constChildren = node->children();
+    for ( QgsLayerTreeNode *child : constChildren )
     {
       hasRowchanged( child, oldSettings );
     }
@@ -314,7 +316,8 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
     return false;
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    const auto constChildren = node->children();
+    for ( QgsLayerTreeNode *child : constChildren )
     {
       if ( nodeShown( child ) )
       {

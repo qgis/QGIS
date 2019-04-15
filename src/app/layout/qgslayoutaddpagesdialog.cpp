@@ -29,7 +29,8 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
   mPageOrientationComboBox->addItem( tr( "Landscape" ), QgsLayoutItemPage::Landscape );
   mPageOrientationComboBox->setCurrentIndex( 1 );
 
-  Q_FOREACH ( const QgsPageSize &size, QgsApplication::pageSizeRegistry()->entries() )
+  const auto constEntries = QgsApplication::pageSizeRegistry()->entries();
+  for ( const QgsPageSize &size : constEntries )
   {
     mPageSizeComboBox->addItem( size.displayName, size.name );
   }

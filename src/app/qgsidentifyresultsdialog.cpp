@@ -543,7 +543,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       actionItem->addChild( editItem );
     }
 
-    Q_FOREACH ( const QgsAction &action, actions )
+    const auto constActions = actions;
+    for ( const QgsAction &action : constActions )
     {
       if ( !action.runable() )
         continue;
@@ -810,7 +811,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
             << QgsRaster::IdentifyFormatFeature
             << QgsRaster::IdentifyFormatText
             << QgsRaster::IdentifyFormatValue;
-    Q_FOREACH ( QgsRaster::IdentifyFormat f, formats )
+    const auto constFormats = formats;
+    for ( QgsRaster::IdentifyFormat f : constFormats )
     {
       if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) )
         continue;
@@ -1171,7 +1173,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 
       int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
-      Q_FOREACH ( const QgsAction &action, actions )
+      const auto constActions = actions;
+      for ( const QgsAction &action : constActions )
       {
         if ( !action.runable() )
           continue;
@@ -1248,7 +1251,8 @@ void QgsIdentifyResultsDialog::clear()
   tblResults->setRowCount( 0 );
 
   mPlot->setVisible( false );
-  Q_FOREACH ( QgsIdentifyPlotCurve *curve, mPlotCurves )
+  const auto constMPlotCurves = mPlotCurves;
+  for ( QgsIdentifyPlotCurve *curve : constMPlotCurves )
     delete curve;
   mPlotCurves.clear();
 
@@ -1279,7 +1283,8 @@ void QgsIdentifyResultsDialog::updateViewModes()
 
 void QgsIdentifyResultsDialog::clearHighlights()
 {
-  Q_FOREACH ( QgsHighlight *h, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsHighlight *h : constMHighlights )
   {
     delete h;
   }
@@ -1289,7 +1294,8 @@ void QgsIdentifyResultsDialog::clearHighlights()
 
 void QgsIdentifyResultsDialog::activate()
 {
-  Q_FOREACH ( QgsHighlight *h, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsHighlight *h : constMHighlights )
   {
     h->show();
   }
@@ -1302,7 +1308,8 @@ void QgsIdentifyResultsDialog::activate()
 
 void QgsIdentifyResultsDialog::deactivate()
 {
-  Q_FOREACH ( QgsHighlight *h, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsHighlight *h : constMHighlights )
   {
     h->hide();
   }

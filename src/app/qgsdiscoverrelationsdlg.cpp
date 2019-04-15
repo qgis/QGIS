@@ -59,7 +59,8 @@ void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
 QList<QgsRelation> QgsDiscoverRelationsDlg::relations() const
 {
   QList<QgsRelation> result;
-  Q_FOREACH ( const QModelIndex &row, mRelationsTable->selectionModel()->selectedRows() )
+  const auto constSelectedRows = mRelationsTable->selectionModel()->selectedRows();
+  for ( const QModelIndex &row : constSelectedRows )
   {
     result.append( mFoundRelations.at( row.row() ) );
   }

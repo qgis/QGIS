@@ -1089,7 +1089,8 @@ void QgsPluginManager::clearRepositoryList()
   buttonRefreshRepos->setEnabled( false );
   buttonEditRep->setEnabled( false );
   buttonDeleteRep->setEnabled( false );
-  Q_FOREACH ( QAction *action, treeRepositories->actions() )
+  const auto constActions = treeRepositories->actions();
+  for ( QAction *action : constActions )
   {
     treeRepositories->removeAction( action );
   }

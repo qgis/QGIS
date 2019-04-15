@@ -39,7 +39,8 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layer
 
   const QList<QgsRelation> &relations = mRelationManager->relations().values();
 
-  Q_FOREACH ( const QgsRelation &rel, relations )
+  const auto constRelations = relations;
+  for ( const QgsRelation &rel : constRelations )
   {
     addRelation( rel );
   }
@@ -142,7 +143,8 @@ void QgsRelationManagerDialog::mBtnDiscoverRelations_clicked()
   QgsDiscoverRelationsDlg discoverDlg( relations(), mLayers, this );
   if ( discoverDlg.exec() )
   {
-    Q_FOREACH ( const QgsRelation &relation, discoverDlg.relations() )
+    const auto constRelations = discoverDlg.relations();
+    for ( const QgsRelation &relation : constRelations )
     {
       addRelation( relation );
     }

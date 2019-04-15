@@ -62,7 +62,8 @@ QList<QAction *> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer *layer, 
   bool onlyOneStyle = mgr->styles().count() == 1;
 
   QList<QAction *> actions;
-  Q_FOREACH ( const QString &name, mgr->styles() )
+  const auto constStyles = mgr->styles();
+  for ( const QString &name : constStyles )
   {
     bool active = name == mgr->currentStyle();
     QAction *actionUse = new QAction( name, parent );

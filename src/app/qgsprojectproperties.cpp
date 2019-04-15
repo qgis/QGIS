@@ -353,7 +353,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QStringList myScales = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
   if ( !myScales.isEmpty() )
   {
-    Q_FOREACH ( const QString &scale, myScales )
+    const auto constMyScales = myScales;
+    for ( const QString &scale : constMyScales )
     {
       addScaleToScaleList( scale );
     }
@@ -584,7 +585,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      Q_FOREACH ( const QString &value, values )
+      const auto constValues = values;
+      for ( const QString &value : constValues )
       {
         list << QStringLiteral( "EPSG:%1" ).arg( value );
       }
@@ -884,7 +886,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mTabRelations->layout()->addWidget( mRelationManagerDlg );
 
   QList<QgsVectorLayer *> vectorLayers;
-  Q_FOREACH ( QgsMapLayer *mapLayer, mapLayers )
+  const auto constMapLayers = mapLayers;
+  for ( QgsMapLayer *mapLayer : constMapLayers )
   {
     if ( QgsMapLayerType::VectorLayer == mapLayer->type() )
     {
@@ -1064,7 +1067,8 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), canvasColor.green() );
   QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), canvasColor.blue() );
 
-  Q_FOREACH ( QgsMapCanvas *canvas, QgisApp::instance()->mapCanvases() )
+  const auto constMapCanvases = QgisApp::instance()->mapCanvases();
+  for ( QgsMapCanvas *canvas : constMapCanvases )
   {
     canvas->setCanvasColor( canvasColor );
     canvas->setSelectionColor( selectionColor );
@@ -1475,7 +1479,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
 
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
-  Q_FOREACH ( QgsMapCanvas *canvas, QgisApp::instance()->mapCanvases() )
+  for ( QgsMapCanvas *canvas : constMapCanvases )
   {
     canvas->refresh();
   }
@@ -1744,7 +1748,8 @@ void QgsProjectProperties::pbnWMSAddSRS_clicked()
 
 void QgsProjectProperties::pbnWMSRemoveSRS_clicked()
 {
-  Q_FOREACH ( QListWidgetItem *item, mWMSList->selectedItems() )
+  const auto constSelectedItems = mWMSList->selectedItems();
+  for ( QListWidgetItem *item : constSelectedItems )
   {
     delete item;
   }
@@ -1902,7 +1907,8 @@ void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 
   QStringList duplicateNames, regExpMessages;
   QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  Q_FOREACH ( const QString &name, owsNames )
+  const auto constOwsNames = owsNames;
+  for ( const QString &name : constOwsNames )
   {
     if ( !snRegExp.exactMatch( name ) )
       regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
@@ -1987,7 +1993,8 @@ void QgsProjectProperties::pbnImportScales_clicked()
     QgsDebugMsg( msg );
   }
 
-  Q_FOREACH ( const QString &scale, myScales )
+  const auto constMyScales = myScales;
+  for ( const QString &scale : constMyScales )
   {
     addScaleToScaleList( scale );
   }
@@ -2376,7 +2383,8 @@ void QgsProjectProperties::populateEllipsoidList()
   }
   // Add all items to selector
 
-  Q_FOREACH ( const EllipsoidDefs &i, mEllipsoidList )
+  const auto constMEllipsoidList = mEllipsoidList;
+  for ( const EllipsoidDefs &i : constMEllipsoidList )
   {
     cmbEllipsoid->addItem( i.description );
   }
