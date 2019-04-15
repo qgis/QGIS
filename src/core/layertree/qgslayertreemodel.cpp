@@ -539,7 +539,8 @@ void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer *nodeLayer )
 
   // update children
   int oldNodeCount = rowCount( idx );
-  if (oldoldNodeCount>0) {
+  if ( oldoldNodeCount > 0 ) 
+  {
     beginRemoveRows( idx, 0, std::max( oldNodeCount - 1, 0 ) );
     removeLegendFromLayer( nodeLayer );
     endRemoveRows();
