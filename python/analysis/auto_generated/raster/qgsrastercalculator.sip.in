@@ -82,8 +82,6 @@ QgsRasterCalculator constructor.
 :param rasterEntries: list of referenced raster layers
 :param transformContext: coordinate transformation context
 
-.. deprecated:: since QGIS 3.8, use the version with transformContext instead
-
 .. versionadded:: 3.8
 %End
 
@@ -104,8 +102,6 @@ QgsRasterCalculator constructor.
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
 :param transformContext: coordinate transformation context
-
-.. deprecated:: since QGIS 3.8, use the version with transformContext instead
 
 .. versionadded:: 3.8
 %End
