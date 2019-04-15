@@ -207,7 +207,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
 
-  Q_FOREACH ( QgsVectorLayer *layer, QgsProject::instance()->layers<QgsVectorLayer *>() )
+  const auto layers { QgsProject::instance()->layers<QgsVectorLayer *>() };
+  for ( QgsVectorLayer *layer : layers )
   {
     if ( layer->isEditable() )
     {
@@ -2370,7 +2371,8 @@ void QgsProjectProperties::populateEllipsoidList()
   myItem.semiMinor = 6370997.0;
   mEllipsoidList.append( myItem );
 
-  Q_FOREACH ( const QgsEllipsoidUtils::EllipsoidDefinition &def, QgsEllipsoidUtils::definitions() )
+  const auto definitions {QgsEllipsoidUtils::definitions()};
+  for ( const QgsEllipsoidUtils::EllipsoidDefinition &def : definitions )
   {
     myItem.acronym = def.acronym;
     myItem.description = def.description;
