@@ -5799,7 +5799,15 @@ void QgisApp::showRasterCalculator()
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library
-    QgsRasterCalculator rc( d.formulaString(), d.outputFile(), d.outputFormat(), d.outputRectangle(), d.outputCrs(), d.numberOfColumns(), d.numberOfRows(), QgsRasterCalculatorEntry::rasterEntries() );
+    QgsRasterCalculator rc( d.formulaString(),
+                            d.outputFile(),
+                            d.outputFormat(),
+                            d.outputRectangle(),
+                            d.outputCrs(),
+                            d.numberOfColumns(),
+                            d.numberOfRows(),
+                            QgsRasterCalculatorEntry::rasterEntries(),
+                            QgsProject::instance()->transformContext() );
 
     QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
@@ -7546,7 +7554,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
     if ( d.outputCrs() != rasterLayer->crs() )
     {
       QgsRasterProjector *projector = new QgsRasterProjector;
-      projector->setCrs( rasterLayer->crs(), d.outputCrs(), rasterLayer->dataProvider()->transformContext() );
+      projector->setCrs( rasterLayer->crs(), d.outputCrs(), QgsProject::instance()->transformContext() );
       if ( !pipe->insert( 2, projector ) )
       {
         QgsDebugMsg( QStringLiteral( "Cannot set pipe projector" ) );
