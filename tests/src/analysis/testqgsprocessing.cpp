@@ -1827,16 +1827,21 @@ void TestQgsProcessing::parameters()
   // as bool
   def->setName( QStringLiteral( "double" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   def->setName( QStringLiteral( "int" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   def->setName( QStringLiteral( "bool" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   def->setName( QStringLiteral( "prop" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   f.setAttribute( 0, false );
   context.expressionContext().setFeature( f );
   def->setName( QStringLiteral( "prop" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
 
   // as layer
   def->setName( QStringLiteral( "double" ) );
@@ -1996,12 +2001,16 @@ void TestQgsProcessing::parameterBoolean()
   QVariantMap params;
   params.insert( "no_def",  false );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( nullptr, params, context ), false );
   params.insert( "no_def",  "false" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( nullptr, params, context ), false );
   params.insert( "no_def",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( nullptr, params, context ), false );
   params.remove( "no_def" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( nullptr, params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( nullptr, params, context ), false );
 
   // with defs
 
@@ -2014,18 +2023,24 @@ void TestQgsProcessing::parameterBoolean()
 
   params.insert( "non_optional_default_false",  false );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   params.insert( "non_optional_default_false",  true );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.insert( "non_optional_default_false",  "true" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.insert( "non_optional_default_false",  "false" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
 
   //non-optional - behavior is undefined, but internally default to false
   params.insert( "non_optional_default_false",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   params.remove( "non_optional_default_false" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
 
   QCOMPARE( def->valueAsPythonString( false, context ), QStringLiteral( "False" ) );
   QCOMPARE( def->valueAsPythonString( true, context ), QStringLiteral( "True" ) );
@@ -2067,17 +2082,23 @@ void TestQgsProcessing::parameterBoolean()
 
   params.insert( "optional_default_true",  false );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   params.insert( "optional_default_true",  true );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.insert( "optional_default_true",  "true" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.insert( "optional_default_true",  "false" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   //optional - should be default
   params.insert( "optional_default_true",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.remove( "optional_default_true" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterBoolean('optional_default_true', '', optional=True, defaultValue=True)" ) );
@@ -2106,17 +2127,23 @@ void TestQgsProcessing::parameterBoolean()
 
   params.insert( "optional_default_false",  false );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   params.insert( "optional_default_false",  true );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.insert( "optional_default_false",  "true" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.insert( "optional_default_false",  "false" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   //optional - should be default
   params.insert( "optional_default_false",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   params.remove( "optional_default_false" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterBoolean('optional_default_false', '', optional=True, defaultValue=False)" ) );
@@ -2139,17 +2166,23 @@ void TestQgsProcessing::parameterBoolean()
 
   params.insert( "non_optional_default_true",  false );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   params.insert( "non_optional_default_true",  true );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.insert( "non_optional_default_true",  "true" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.insert( "non_optional_default_true",  "false" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), false );
   //non-optional - behavior is undefined, but internally fallback to default
   params.insert( "non_optional_default_true",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
   params.remove( "non_optional_default_true" );
   QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBoolean( def.get(), params, context ), true );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterBoolean('non_optional_default_true', '', defaultValue=True)" ) );
