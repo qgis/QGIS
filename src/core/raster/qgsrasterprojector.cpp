@@ -758,7 +758,6 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   if ( feedback && feedback->isCanceled() )
     return new QgsRasterBlock();
 
-  // TODO: check if the last condition always apply to context
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsgLevel( QStringLiteral( "No projection necessary" ), 4 );
