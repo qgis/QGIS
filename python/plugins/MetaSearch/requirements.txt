@@ -1,3 +1,0 @@
-Jinja2==2.7.2
-OWSLib==0.8.10
-pygments==1.6
