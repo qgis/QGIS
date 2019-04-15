@@ -174,7 +174,8 @@ void QgsHandleBadLayers::selectionChanged()
 
   mRows.clear();
 
-  Q_FOREACH ( QTableWidgetItem *item, mLayerList->selectedItems() )
+  const auto constSelectedItems = mLayerList->selectedItems();
+  for ( QTableWidgetItem *item : constSelectedItems )
   {
     if ( item->column() != 0 )
       continue;
@@ -303,7 +304,8 @@ void QgsHandleBadLayers::browseClicked()
       return;
     }
 
-    Q_FOREACH ( int row, mRows )
+    const auto constMRows = mRows;
+    for ( int row : constMRows )
     {
       bool providerFileBased = mLayerList->item( row, 1 )->data( Qt::UserRole + 0 ).toBool();
       if ( !providerFileBased )

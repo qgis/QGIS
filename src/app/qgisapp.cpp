@@ -1826,7 +1826,8 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     }
     else if ( u.layerType == QLatin1String( "custom" ) )
     {
-      Q_FOREACH ( QgsCustomDropHandler *handler, mCustomDropHandlers )
+      const auto constMCustomDropHandlers = mCustomDropHandlers;
+      for ( QgsCustomDropHandler *handler : constMCustomDropHandlers )
       {
         if ( handler && handler->customUriProviderKey() == u.providerKey )
         {
@@ -1945,7 +1946,8 @@ void QgisApp::readRecentProjects()
   {
     QStringList oldRecentProjects = settings.value( QStringLiteral( "UI/recentProjectsList" ) ).toStringList();
 
-    Q_FOREACH ( const QString &project, oldRecentProjects )
+    const auto constOldRecentProjects = oldRecentProjects;
+    for ( const QString &project : constOldRecentProjects )
     {
       QgsWelcomePageItemsModel::RecentProjectData data;
       data.path = project;
@@ -1961,7 +1963,8 @@ void QgisApp::readRecentProjects()
 
   //convert list to int values to obtain proper order
   QList<int> projectKeys;
-  Q_FOREACH ( const QString &key, projectKeysList )
+  const auto constProjectKeysList = projectKeysList;
+  for ( const QString &key : constProjectKeysList )
   {
     projectKeys.append( key.toInt() );
   }
@@ -2488,7 +2491,8 @@ void QgisApp::setAppStyleSheet( const QString &stylesheet )
   setStyleSheet( stylesheet );
 
   // cascade styles to any current layout designers
-  Q_FOREACH ( QgsLayoutDesignerDialog *d, mLayoutDesignerDialogs )
+  const auto constMLayoutDesignerDialogs = mLayoutDesignerDialogs;
+  for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
   {
     d->setStyleSheet( stylesheet );
   }
@@ -2612,7 +2616,8 @@ void QgisApp::refreshProfileMenu()
   QActionGroup *profileGroup = new QActionGroup( mConfigMenu );
   profileGroup->setExclusive( true );
 
-  Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
+  const auto constAllProfiles = userProfileManager()->allProfiles();
+  for ( const QString &name : constAllProfiles )
   {
     std::unique_ptr< QgsUserProfile > namedProfile( userProfileManager()->profileForName( name ) );
     QAction *action = new QAction( namedProfile->icon(), namedProfile->alias(), profileGroup );
@@ -2699,7 +2704,8 @@ void QgisApp::createToolBars()
 
   QList<QAction *> toolbarMenuActions;
   // Set action names so that they can be used in customization
-  Q_FOREACH ( QToolBar *toolBar, toolbarMenuToolBars )
+  const auto constToolbarMenuToolBars = toolbarMenuToolBars;
+  for ( QToolBar *toolBar : constToolbarMenuToolBars )
   {
     toolBar->toggleViewAction()->setObjectName( "mActionToggle" + toolBar->objectName().mid( 1 ) );
     toolbarMenuActions << toolBar->toggleViewAction();
@@ -3244,7 +3250,8 @@ void QgisApp::setIconSizes( int size )
 
   //Change all current icon sizes.
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  Q_FOREACH ( QToolBar *toolbar, toolbars )
+  const auto constToolbars = toolbars;
+  for ( QToolBar *toolbar : constToolbars )
   {
     QString className = toolbar->parent()->metaObject()->className();
     if ( className == QLatin1String( "QgisApp" ) )
@@ -3257,7 +3264,8 @@ void QgisApp::setIconSizes( int size )
     }
   }
 
-  Q_FOREACH ( QgsLayoutDesignerDialog *d, mLayoutDesignerDialogs )
+  const auto constMLayoutDesignerDialogs = mLayoutDesignerDialogs;
+  for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
   {
     d->setIconSizes( size );
   }
@@ -3844,7 +3852,8 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
   applyDefaultSettingsToCanvas( mapCanvas );
 
   // add existing annotations to canvas
-  Q_FOREACH ( QgsAnnotation *annotation, QgsProject::instance()->annotationManager()->annotations() )
+  const auto constAnnotations = QgsProject::instance()->annotationManager()->annotations();
+  for ( QgsAnnotation *annotation : constAnnotations )
   {
     QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, mapCanvas );
     Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
@@ -4199,7 +4208,8 @@ void QgisApp::renderDecorationItems( QPainter *p )
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() );
   context.setPainter( p );
 
-  Q_FOREACH ( QgsDecorationItem *item, mDecorationItems )
+  const auto constMDecorationItems = mDecorationItems;
+  for ( QgsDecorationItem *item : constMDecorationItems )
   {
     item->render( mMapCanvas->mapSettings(), context );
   }
@@ -4207,7 +4217,8 @@ void QgisApp::renderDecorationItems( QPainter *p )
 
 void QgisApp::projectReadDecorationItems()
 {
-  Q_FOREACH ( QgsDecorationItem *item, mDecorationItems )
+  const auto constMDecorationItems = mDecorationItems;
+  for ( QgsDecorationItem *item : constMDecorationItems )
   {
     item->projectRead();
   }
@@ -4218,7 +4229,8 @@ void QgisApp::updateRecentProjectPaths()
 {
   mRecentProjectsMenu->clear();
 
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
+  const auto constMRecentProjects = mRecentProjects;
+  for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
     QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).completeBaseName(),
                       QDir::toNativeSeparators( recentProject.path ) ) );
@@ -4296,7 +4308,8 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
   int pinnedCount = 0;
   int nonPinnedPos = 0;
   bool pinnedTop = true;
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
+  const auto constMRecentProjects = mRecentProjects;
+  for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
     if ( recentProject.pin )
     {
@@ -4347,7 +4360,8 @@ void QgisApp::saveRecentProjects()
   settings.remove( QStringLiteral( "/UI/recentProjects" ) );
   int idx = 0;
 
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
+  const auto constMRecentProjects = mRecentProjects;
+  for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
     ++idx;
     settings.beginGroup( QStringLiteral( "UI/recentProjects/%1" ).arg( idx ) );
@@ -4377,7 +4391,8 @@ void QgisApp::updateProjectFromTemplates()
   mProjectFromTemplateMenu->clear();
 
   // Add entries
-  Q_FOREACH ( const QString &templateFile, templateFiles )
+  const auto constTemplateFiles = templateFiles;
+  for ( const QString &templateFile : constTemplateFiles )
   {
     mProjectFromTemplateMenu->addAction( templateFile );
   }
@@ -4537,7 +4552,8 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Adjust layer CRS to project CRS
   QgsCoordinateReferenceSystem testCrs;
-  Q_FOREACH ( const QString &c, supportedCrs )
+  const auto constSupportedCrs = supportedCrs;
+  for ( const QString &c : constSupportedCrs )
   {
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
@@ -4550,7 +4566,8 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Use the last used image format
   QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  Q_FOREACH ( const QString &fmt, supportedFormats )
+  const auto constSupportedFormats = supportedFormats;
+  for ( const QString &fmt : constSupportedFormats )
   {
     if ( fmt == lastImageEncoding )
     {
@@ -4922,7 +4939,8 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
 
     if ( chooseSublayersDialog.exec() )
     {
-      Q_FOREACH ( const QgsSublayersDialog::LayerDefinition &def, chooseSublayersDialog.selection() )
+      const auto constSelection = chooseSublayersDialog.selection();
+      for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
       {
         childItems << zipItem->children().at( def.layerId );
       }
@@ -4936,7 +4954,8 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   }
 
   // add childItems
-  Q_FOREACH ( QgsDataItem *item, childItems )
+  const auto constChildItems = childItems;
+  for ( QgsDataItem *item : constChildItems )
   {
     QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
     if ( !layerItem )
@@ -5042,7 +5061,8 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
       group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, layer->name() );
     }
 
-    Q_FOREACH ( const QgsSublayersDialog::LayerDefinition &def, chooseSublayersDialog.selection() )
+    const auto constSelection = chooseSublayersDialog.selection();
+    for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
     {
       int i = def.layerId;
       if ( rx.indexIn( sublayers[i] ) != -1 )
@@ -5158,7 +5178,8 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   QMap< QString, int > mapLayerNameToCount;
   bool uniqueNames = true;
   int lastLayerId = -1;
-  Q_FOREACH ( const QString &sublayer, sublayers )
+  const auto constSublayers = sublayers;
+  for ( const QString &sublayer : constSublayers )
   {
     // OGR provider returns items in this format:
     // <layer_index>:<name>:<feature_count>:<geom_type>
@@ -5205,7 +5226,8 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
   QString fileName = QFileInfo( uri ).baseName();
-  Q_FOREACH ( const QgsSublayersDialog::LayerDefinition &def, chooseSublayersDialog.selection() )
+  const auto constSelection = chooseSublayersDialog.selection();
+  for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
   {
     QString layerGeometryType = def.type;
     QString composedURI = uri;
@@ -5284,7 +5306,8 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  Q_FOREACH ( const QString &layerPath, layerPathList )
+  const auto constLayerPathList = layerPathList;
+  for ( const QString &layerPath : constLayerPathList )
   {
     // create the layer
     QgsDataSourceUri uri( layerPath );
@@ -5325,7 +5348,8 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
   QgsProject::instance()->addMapLayers( myList );
 
   // load default style after adding to process readCustomSymbology signals
-  Q_FOREACH ( QgsMapLayer *l, myList )
+  const auto constMyList = myList;
+  for ( QgsMapLayer *l : constMyList )
   {
     bool ok;
     l->loadDefaultStyle( ok );
@@ -5385,7 +5409,8 @@ void QgisApp::fileExit()
   if ( QgsApplication::taskManager()->countActiveTasks() > 0 )
   {
     QStringList tasks;
-    Q_FOREACH ( QgsTask *task, QgsApplication::taskManager()->activeTasks() )
+    const auto constActiveTasks = QgsApplication::taskManager()->activeTasks();
+    for ( QgsTask *task : constActiveTasks )
     {
       tasks << tr( " • %1" ).arg( task->description() );
     }
@@ -6627,7 +6652,8 @@ void QgisApp::updateFilterLegend()
 void QgisApp::saveMapAsImage()
 {
   QList< QgsDecorationItem * > decorations;
-  Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
+  const auto constMDecorationItems = mDecorationItems;
+  for ( QgsDecorationItem *decoration : constMDecorationItems )
   {
     if ( decoration->enabled() )
     {
@@ -6643,7 +6669,8 @@ void QgisApp::saveMapAsImage()
 void QgisApp::saveMapAsPdf()
 {
   QList< QgsDecorationItem * > decorations;
-  Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
+  const auto constMDecorationItems = mDecorationItems;
+  for ( QgsDecorationItem *decoration : constMDecorationItems )
   {
     if ( decoration->enabled() )
     {
@@ -6678,7 +6705,8 @@ void QgisApp::addAllToOverview()
 {
   if ( mLayerTreeView )
   {
-    Q_FOREACH ( QgsLayerTreeLayer *nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+    const auto constFindLayers = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
+    for ( QgsLayerTreeLayer *nodeL : constFindLayers )
       nodeL->setCustomProperty( QStringLiteral( "overview" ), 1 );
   }
 
@@ -6690,7 +6718,8 @@ void QgisApp::removeAllFromOverview()
 {
   if ( mLayerTreeView )
   {
-    Q_FOREACH ( QgsLayerTreeLayer *nodeL, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+    const auto constFindLayers = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
+    for ( QgsLayerTreeLayer *nodeL : constFindLayers )
       nodeL->setCustomProperty( QStringLiteral( "overview" ), 0 );
   }
 
@@ -6922,7 +6951,8 @@ void QgisApp::hideSelectedLayers()
 {
   QgsDebugMsg( QStringLiteral( "hiding selected layers!" ) );
 
-  Q_FOREACH ( QgsLayerTreeNode *node, mLayerTreeView->selectedNodes() )
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     node->setItemVisibilityChecked( false );
   }
@@ -6932,7 +6962,8 @@ void QgisApp::hideDeselectedLayers()
 {
   QList<QgsLayerTreeLayer *> selectedLayerNodes = mLayerTreeView->selectedLayerNodes();
 
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+  const auto constFindLayers = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
   {
     if ( selectedLayerNodes.contains( nodeLayer ) )
       continue;
@@ -6945,7 +6976,8 @@ void QgisApp::showSelectedLayers()
 {
   QgsDebugMsg( QStringLiteral( "show selected layers!" ) );
 
-  Q_FOREACH ( QgsLayerTreeNode *node, mLayerTreeView->selectedNodes() )
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     QgsLayerTreeNode *nodeIter = node;
     while ( nodeIter )
@@ -7078,7 +7110,8 @@ void QgisApp::refreshFeatureActions()
     return;
 
   QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Canvas" ) );
-  Q_FOREACH ( const QgsAction &action, actions )
+  const auto constActions = actions;
+  for ( const QgsAction &action : constActions )
   {
     if ( !vlayer->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
@@ -8196,7 +8229,8 @@ QgsLayoutDesignerDialog *QgisApp::createNewReport( QString title )
 QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsMasterLayoutInterface *layout )
 {
   // maybe a designer already open for this layout
-  Q_FOREACH ( QgsLayoutDesignerDialog *designer, mLayoutDesignerDialogs )
+  const auto constMLayoutDesignerDialogs = mLayoutDesignerDialogs;
+  for ( QgsLayoutDesignerDialog *designer : constMLayoutDesignerDialogs )
   {
     if ( designer->masterLayout() == layout )
     {
@@ -8478,7 +8512,8 @@ void QgisApp::removeAnnotationItems()
     return;
   }
   QList<QgsMapCanvasAnnotationItem *> itemList = annotationItems();
-  Q_FOREACH ( QgsMapCanvasAnnotationItem *item, itemList )
+  const auto constItemList = itemList;
+  for ( QgsMapCanvasAnnotationItem *item : constItemList )
   {
     if ( item )
     {
@@ -8549,7 +8584,8 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QSet<int> toSkip = d.skippedAttributeIndexes();
 
   bool firstFeature = true;
-  Q_FOREACH ( QgsFeatureId fid, vl->selectedFeatureIds() )
+  const auto constSelectedFeatureIds = vl->selectedFeatureIds();
+  for ( QgsFeatureId fid : constSelectedFeatureIds )
   {
     for ( int i = 0; i < merged.count(); ++i )
     {
@@ -9613,7 +9649,8 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
 
 void QgisApp::saveEdits()
 {
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  const auto constSelectedLayers = mLayerTreeView->selectedLayers();
+  for ( QgsMapLayer *layer : constSelectedLayers )
   {
     saveEdits( layer, true, false );
   }
@@ -9639,7 +9676,8 @@ void QgisApp::saveAllEdits( bool verifyAction )
 
 void QgisApp::rollbackEdits()
 {
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  const auto constSelectedLayers = mLayerTreeView->selectedLayers();
+  for ( QgsMapLayer *layer : constSelectedLayers )
   {
     cancelEdits( layer, true, false );
   }
@@ -9665,7 +9703,8 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
 
 void QgisApp::cancelEdits()
 {
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  const auto constSelectedLayers = mLayerTreeView->selectedLayers();
+  for ( QgsMapLayer *layer : constSelectedLayers )
   {
     cancelEdits( layer, false, false );
   }
@@ -9743,7 +9782,8 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
 {
   QList<QgsMapLayer *> editLayers;
   // use legend layers (instead of registry) so QList mirrors its order
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+  const auto constFindLayers = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
   {
     if ( !nodeLayer->layer() )
       continue;
@@ -9899,7 +9939,8 @@ void QgisApp::isInOverview()
 
 void QgisApp::removingLayers( const QStringList &layers )
 {
-  Q_FOREACH ( const QString &layerId, layers )
+  const auto constLayers = layers;
+  for ( const QString &layerId : constLayers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>(
                                QgsProject::instance()->mapLayer( layerId ) );
@@ -9946,7 +9987,8 @@ void QgisApp::removeLayer()
     QList< QgsTask * > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer );
     if ( !tasks.isEmpty() )
     {
-      Q_FOREACH ( QgsTask *task, tasks )
+      const auto constTasks = tasks;
+      for ( QgsTask *task : constTasks )
       {
         activeTaskDescriptions << tr( " • %1" ).arg( task->description() );
       }
@@ -9988,7 +10030,8 @@ void QgisApp::removeLayer()
     return;
   }
 
-  Q_FOREACH ( QgsLayerTreeNode *node, selectedNodes )
+  const auto constSelectedNodes = selectedNodes;
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
     if ( parentGroup )
@@ -10160,7 +10203,8 @@ void QgisApp::setLayerScaleVisibility()
   if ( dlg->exec() )
   {
     freezeCanvases();
-    Q_FOREACH ( QgsMapLayer *layer, layers )
+    const auto constLayers = layers;
+    for ( QgsMapLayer *layer : constLayers )
     {
       layer->setScaleBasedVisibility( dlg->hasScaleVisibility() );
       layer->setMaximumScale( dlg->maximumScale() );
@@ -10215,11 +10259,13 @@ void QgisApp::setLayerCrs()
 
   QgsCoordinateReferenceSystem crs = mySelector.crs();
 
-  Q_FOREACH ( QgsLayerTreeNode *node, mLayerTreeView->selectedNodes() )
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
-      Q_FOREACH ( QgsLayerTreeLayer *child, QgsLayerTree::toGroup( node )->findLayers() )
+      const auto constFindLayers = QgsLayerTree::toGroup( node )->findLayers();
+      for ( QgsLayerTreeLayer *child : constFindLayers )
       {
         if ( child->layer() )
         {
@@ -10318,11 +10364,13 @@ void QgisApp::applyStyleToGroup()
   if ( !mLayerTreeView )
     return;
 
-  Q_FOREACH ( QgsLayerTreeNode *node, mLayerTreeView->selectedNodes() )
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
-      Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, QgsLayerTree::toGroup( node )->findLayers() )
+      const auto constFindLayers = QgsLayerTree::toGroup( node )->findLayers();
+      for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
       {
         if ( nodeLayer->layer() )
         {
@@ -10361,7 +10409,8 @@ void QgisApp::legendGroupSetCrs()
   }
 
   QgsCoordinateReferenceSystem crs = mySelector.crs();
-  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, currentGroup->findLayers() )
+  const auto constFindLayers = currentGroup->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
   {
     if ( nodeLayer->layer() )
     {
@@ -10675,7 +10724,8 @@ QMap< QString, int > QgisApp::optionsPagesMap()
 QgsOptions *QgisApp::createOptionsDialog( QWidget *parent )
 {
   QList< QgsOptionsWidgetFactory * > factories;
-  Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
+  const auto constMOptionsWidgetFactories = mOptionsWidgetFactories;
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : constMOptionsWidgetFactories )
   {
     // remove any deleted factories
     if ( f )
@@ -10837,7 +10887,8 @@ void QgisApp::decreaseContrast()
 
 void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 {
-  Q_FOREACH ( QgsMapLayer *layer, mLayerTreeView->selectedLayers() )
+  const auto constSelectedLayers = mLayerTreeView->selectedLayers();
+  for ( QgsMapLayer *layer : constSelectedLayers )
   {
     if ( !layer )
     {
@@ -11175,9 +11226,11 @@ void QgisApp::embedLayers()
     QgsLayerDefinition::DependencySorter depSorter( projectFile );
     QStringList sortedIds = depSorter.sortedLayerIds();
     QStringList layerIds = d.selectedLayerIds();
-    Q_FOREACH ( const QString &id, sortedIds )
+    const auto constSortedIds = sortedIds;
+    for ( const QString &id : constSortedIds )
     {
-      Q_FOREACH ( const QString &selId, layerIds )
+      const auto constLayerIds = layerIds;
+      for ( const QString &selId : constLayerIds )
       {
         if ( selId == id )
           QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes );
@@ -11203,7 +11256,8 @@ void QgisApp::newMapCanvas()
   {
     name = tr( "Map %1" ).arg( i++ );
     existing = false;
-    Q_FOREACH ( QgsMapCanvas *canvas, existingCanvases )
+    const auto constExistingCanvases = existingCanvases;
+    for ( QgsMapCanvas *canvas : constExistingCanvases )
     {
       if ( canvas->objectName() == name )
       {
@@ -11534,7 +11588,8 @@ bool QgisApp::checkTasksDependOnProject()
     QList< QgsTask * > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layerIt.value() );
     if ( !tasks.isEmpty() )
     {
-      Q_FOREACH ( QgsTask *task, tasks )
+      const auto constTasks = tasks;
+      for ( QgsTask *task : constTasks )
       {
         activeTaskDescriptions.insert( tr( " • %1" ).arg( task->description() ) );
       }
@@ -12257,7 +12312,8 @@ void QgisApp::extentChanged()
 
 void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
 {
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
     QgsDataProvider *provider = nullptr;
 
@@ -13813,7 +13869,8 @@ void QgisApp::readProject( const QDomDocument &doc )
   // unfreeze all new views at once. We don't do this as they are created since additional
   // views which may exist in project could rearrange the docks and cause the canvases to resize
   // resulting in multiple redraws
-  Q_FOREACH ( QgsMapCanvas *c, views )
+  const auto constViews = views;
+  for ( QgsMapCanvas *c : constViews )
   {
     c->freeze( false );
   }
@@ -14162,7 +14219,8 @@ QMenu *QgisApp::createPopupMenu()
     plabel->setAlignment( Qt::AlignHCenter );
     panelstitle->setDefaultWidget( plabel );
     menu->addAction( panelstitle );
-    Q_FOREACH ( QAction *a, panels )
+    const auto constPanels = panels;
+    for ( QAction *a : constPanels )
     {
       if ( !a->property( "fixed_title" ).toBool() )
       {
@@ -14182,7 +14240,8 @@ QMenu *QgisApp::createPopupMenu()
     toolbarstitle->setDefaultWidget( tlabel );
     menu->addAction( toolbarstitle );
     std::sort( toolbars.begin(), toolbars.end(), cmpByText_ );
-    Q_FOREACH ( QAction *a, toolbars )
+    const auto constToolbars = toolbars;
+    for ( QAction *a : constToolbars )
     {
       menu->addAction( a );
     }

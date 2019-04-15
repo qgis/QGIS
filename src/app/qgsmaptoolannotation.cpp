@@ -129,7 +129,8 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
         QgsProject::instance()->annotationManager()->addAnnotation( annotation );
 
         // select newly added item
-        Q_FOREACH ( QGraphicsItem *item, mCanvas->items() )
+        const auto constItems = mCanvas->items();
+        for ( QGraphicsItem *item : constItems )
         {
           if ( QgsMapCanvasAnnotationItem *annotationItem = dynamic_cast< QgsMapCanvasAnnotationItem * >( item ) )
           {
@@ -347,7 +348,8 @@ QList<QgsMapCanvasAnnotationItem *> QgsMapToolAnnotation::annotationItems() cons
 void QgsMapToolAnnotation::toggleTextItemVisibilities()
 {
   QList<QgsMapCanvasAnnotationItem *> itemList = annotationItems();
-  Q_FOREACH ( QgsMapCanvasAnnotationItem *item, itemList )
+  const auto constItemList = itemList;
+  for ( QgsMapCanvasAnnotationItem *item : constItemList )
   {
     QgsTextAnnotation *textItem = dynamic_cast<QgsTextAnnotation *>( item->annotation() );
     if ( textItem )

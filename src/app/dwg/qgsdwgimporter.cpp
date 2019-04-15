@@ -503,7 +503,8 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
 
   startTransaction();
 
-  Q_FOREACH ( const table &t, tables )
+  const auto constTables = tables;
+  for ( const table &t : constTables )
   {
     char **options = nullptr;
     options = CSLSetNameValue( options, "OVERWRITE", "YES" );
@@ -870,7 +871,8 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
     if ( upath[0] < 0 )
       l << QStringLiteral( "0" );
 
-    Q_FOREACH ( double p, upath )
+    const auto constUpath = upath;
+    for ( double p : constUpath )
     {
       l << QString::number( std::fabs( p ) );
     }

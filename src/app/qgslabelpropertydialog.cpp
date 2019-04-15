@@ -261,7 +261,8 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
           << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );
 
-  Q_FOREACH ( int key, mDataDefinedProperties.propertyKeys() )
+  const auto constPropertyKeys = mDataDefinedProperties.propertyKeys();
+  for ( int key : constPropertyKeys )
   {
     if ( !mDataDefinedProperties.isActive( key ) )
       continue;
@@ -385,7 +386,8 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
 {
   //loop through data defined properties, this time setting whether or not the widgets are enabled
   //this can only be done for properties which are assigned to fields
-  Q_FOREACH ( int key, mDataDefinedProperties.propertyKeys() )
+  const auto constPropertyKeys = mDataDefinedProperties.propertyKeys();
+  for ( int key : constPropertyKeys )
   {
     QgsProperty prop = mDataDefinedProperties.property( key );
     if ( !prop || !prop.isActive() || prop.propertyType() != QgsProperty::FieldBasedProperty )
@@ -500,7 +502,8 @@ void QgsLabelPropertyDialog::updateFont( const QFont &font, bool block )
 void QgsLabelPropertyDialog::populateFontStyleComboBox()
 {
   mFontStyleCmbBx->clear();
-  Q_FOREACH ( const QString &style, mFontDB.styles( mLabelFont.family() ) )
+  const auto constFamily = mFontDB.styles( mLabelFont.family() );
+  for ( const QString &style : constFamily )
   {
     mFontStyleCmbBx->addItem( style );
   }

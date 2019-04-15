@@ -96,7 +96,8 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
     return;
 
   QString filter = QStringLiteral( "$id IN (" );
-  Q_FOREACH ( const QgsFeature &feature, featureList )
+  const auto constFeatureList = featureList;
+  for ( const QgsFeature &feature : constFeatureList )
   {
     filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
   }
