@@ -184,7 +184,8 @@ class RasterCalculator(QgisAlgorithm):
                                    crs,
                                    width,
                                    height,
-                                   entries)
+                                   entries,
+                                   context.transformContext())
 
         res = calc.processCalculation(feedback)
         if res == QgsRasterCalculator.ParserError:
