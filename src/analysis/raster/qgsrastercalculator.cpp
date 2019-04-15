@@ -36,6 +36,36 @@
 #include "qgsgdalutils.h"
 #endif
 
+QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
+  , mTransformContext( transformContext )
+{
+
+}
+
+QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+    const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows,
+    const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mOutputCrs( outputCrs )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
+  , mTransformContext( transformContext )
+{
+
+}
+
+// Deprecated!
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
     const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
   : mFormulaString( formulaString )
@@ -48,8 +78,11 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
 {
   //default to first layer's crs
   mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  mTransformContext = QgsProject::instance()->transformContext();
 }
 
+
+// Deprecated!
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
     const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
   : mFormulaString( formulaString )
@@ -61,6 +94,7 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mNumOutputRows( nOutputRows )
   , mRasterEntries( rasterEntries )
 {
+  mTransformContext = QgsProject::instance()->transformContext();
 }
 
 QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
@@ -176,7 +210,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         if ( uniqueRasterEntries[layerRef.first].raster->crs() != mOutputCrs )
         {
           QgsRasterProjector proj;
-          proj.setCrs( ref.raster->crs(), mOutputCrs, ref.raster->dataProvider()->transformContext() );
+          proj.setCrs( ref.raster->crs(), mOutputCrs, mTransformContext );
           proj.setInput( ref.raster->dataProvider() );
           proj.setPrecision( QgsRasterProjector::Exact );
           layerRef.second.reset( proj.block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
