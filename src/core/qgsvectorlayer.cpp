@@ -1414,7 +1414,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mProviderKey = QStringLiteral( "ogr" );
   }
 
-  QgsDataProvider::ProviderOptions options; // {  };
+  QgsDataProvider::ProviderOptions options { context.transformContext() };
   if ( !setDataProvider( mProviderKey, options ) )
   {
     QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
