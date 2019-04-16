@@ -54,8 +54,6 @@ Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
 coordinate ``transformContext`` .
 Ownership of the ``pipe`` is transferred to the writer task, and will
 be deleted when the task completes.
-
-.. deprecated:: since QGIS 3.8, use version with transformContext instead
 %End
 
     virtual void cancel();

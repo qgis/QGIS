@@ -60,7 +60,6 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
      * coordinate \a transformContext .
      * Ownership of the \a pipe is transferred to the writer task, and will
      * be deleted when the task completes.
-     * \deprecated since QGIS 3.8, use version with transformContext instead
      */
     QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe SIP_TRANSFER,
                              int columns, int rows,
