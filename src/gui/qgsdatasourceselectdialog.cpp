@@ -16,10 +16,12 @@
 
 #include "qgsdatasourceselectdialog.h"
 #include "ui_qgsdatasourceselectdialog.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
+
 #include "qgis.h"
 #include "qgsbrowsermodel.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
 #include <QMenu>
@@ -104,6 +106,8 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsDataSourceSelectDialog::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsDataSourceSelectDialog::setFilter );
   connect( group, &QActionGroup::triggered, this, &QgsDataSourceSelectDialog::setFilterSyntax );
+
+  mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   if ( QgsSettings().value( QStringLiteral( "datasourceSelectFilterVisible" ), false, QgsSettings::Section::Gui ).toBool() )
   {
