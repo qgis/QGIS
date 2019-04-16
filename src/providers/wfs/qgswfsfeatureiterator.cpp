@@ -222,22 +222,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
   if ( mShared->mLayerPropertiesList.isEmpty() )
   {
     typenames = mShared->mURI.typeName();
-
-    // Add NAMESPACES parameter for server that declare a namespace in the FeatureType of GetCapabilities response
-    // See https://issues.qgis.org/issues/14685
-    Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, mShared->mCaps.featureTypes )
-    {
-      if ( f.name == typenames )
-      {
-        if ( !f.nameSpace.isEmpty() && f.name.contains( ':' ) )
-        {
-          QString prefixOfTypename = f.name.section( ':', 0, 0 );
-          namespaces = "xmlns(" + prefixOfTypename + "," + f.nameSpace + ")";
-        }
-        break;
-      }
-    }
-
+    namespaces = mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, typenames );
   }
   else
   {
