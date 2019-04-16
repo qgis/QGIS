@@ -206,7 +206,7 @@ namespace QgsWcs
       }
     }
 
-    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS );
+    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS, rLayer->dataProvider()->transformContext() );
     if ( err != QgsRasterFileWriter::NoError )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot write raster error code: %1" ).arg( err ) );
