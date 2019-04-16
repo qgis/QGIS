@@ -58,6 +58,13 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void setLayoutExpContext( QgsExpressionContext *econtext );
 
+
+    /**
+     * Control refreshing, used to prevent segfault
+     * \since QGIS 3.8
+     */
+    bool refreshable = true;
+
   signals:
 
     /**
@@ -80,6 +87,12 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \since QGIS 3.8
      */
     void doneCount( long taskid );
+
+    /**
+     * Allow the legend to be refreshed again by setting refreshable to true, used with QTimer to delay refresh
+     * \since QGIS 3.8
+     */
+    void allowRefresh();
 
   private:
     QgsExpressionContext *mLayoutLegendContext = nullptr;
@@ -498,11 +511,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      */
     QgsExpressionContext updateExpressionContext();
 
-    /**
-     * Control refreshing, used to prevent segfault
-     * \since QGIS 3.8
-     */
-    bool refreshable = true;
 
   public slots:
 
@@ -530,8 +538,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
-
-    void allowRefresh();
 
 
   private:
