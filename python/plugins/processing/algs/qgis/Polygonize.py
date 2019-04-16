@@ -76,7 +76,7 @@ class Polygonize(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        if self.parameterAsBool(parameters, self.KEEP_FIELDS, context):
+        if self.parameterAsBoolean(parameters, self.KEEP_FIELDS, context):
             fields = source.fields()
         else:
             fields = QgsFields()

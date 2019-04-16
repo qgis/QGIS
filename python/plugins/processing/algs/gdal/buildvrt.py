@@ -147,11 +147,11 @@ class buildvrt(GdalAlgorithm):
         arguments = []
         arguments.append('-resolution')
         arguments.append(self.RESOLUTION_OPTIONS[self.parameterAsEnum(parameters, self.RESOLUTION, context)])
-        if self.parameterAsBool(parameters, buildvrt.SEPARATE, context):
+        if self.parameterAsBoolean(parameters, buildvrt.SEPARATE, context):
             arguments.append('-separate')
-        if self.parameterAsBool(parameters, buildvrt.PROJ_DIFFERENCE, context):
+        if self.parameterAsBoolean(parameters, buildvrt.PROJ_DIFFERENCE, context):
             arguments.append('-allow_projection_difference')
-        if self.parameterAsBool(parameters, buildvrt.ADD_ALPHA, context):
+        if self.parameterAsBoolean(parameters, buildvrt.ADD_ALPHA, context):
             arguments.append('-addalpha')
         crs = self.parameterAsCrs(parameters, self.ASSIGN_CRS, context)
         if crs.isValid():

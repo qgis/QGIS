@@ -92,7 +92,7 @@ class HypsometricCurves(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.BOUNDARY_LAYER))
 
         step = self.parameterAsDouble(parameters, self.STEP, context)
-        percentage = self.parameterAsBool(parameters, self.USE_PERCENTAGE, context)
+        percentage = self.parameterAsBoolean(parameters, self.USE_PERCENTAGE, context)
 
         outputPath = self.parameterAsString(parameters, self.OUTPUT_DIRECTORY, context)
 

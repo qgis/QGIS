@@ -96,12 +96,12 @@ class sieve(GdalAlgorithm):
         arguments.append('-st')
         arguments.append(str(self.parameterAsInt(parameters, self.THRESHOLD, context)))
 
-        if self.parameterAsBool(parameters, self.EIGHT_CONNECTEDNESS, context):
+        if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):
             arguments.append('-8')
         else:
             arguments.append('-4')
 
-        if self.parameterAsBool(parameters, self.NO_MASK, context):
+        if self.parameterAsBoolean(parameters, self.NO_MASK, context):
             arguments.append('-nomask')
 
         mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)

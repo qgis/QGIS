@@ -126,13 +126,13 @@ class slope(GdalAlgorithm):
         arguments.append('-s')
         arguments.append(str(self.parameterAsDouble(parameters, self.SCALE, context)))
 
-        if self.parameterAsBool(parameters, self.AS_PERCENT, context):
+        if self.parameterAsBoolean(parameters, self.AS_PERCENT, context):
             arguments.append('-p')
 
-        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        if self.parameterAsBool(parameters, self.ZEVENBERGEN, context):
+        if self.parameterAsBoolean(parameters, self.ZEVENBERGEN, context):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 

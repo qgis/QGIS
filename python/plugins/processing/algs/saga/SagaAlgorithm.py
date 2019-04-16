@@ -273,7 +273,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 if parameters[param.name()]: # parameter may have been an empty list
                     command += ' -{} "{}"'.format(param.name(), ';'.join(self.exportedLayers[param.name()]))
             elif isinstance(param, QgsProcessingParameterBoolean):
-                if self.parameterAsBool(parameters, param.name(), context):
+                if self.parameterAsBoolean(parameters, param.name(), context):
                     command += ' -{} true'.format(param.name().strip())
                 else:
                     command += ' -{} false'.format(param.name().strip())

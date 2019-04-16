@@ -161,10 +161,10 @@ class contour(GdalAlgorithm):
         arguments.append('-i')
         arguments.append(str(self.parameterAsDouble(parameters, self.INTERVAL, context)))
 
-        if self.parameterAsBool(parameters, self.CREATE_3D, context):
+        if self.parameterAsBoolean(parameters, self.CREATE_3D, context):
             arguments.append('-3d')
 
-        if self.parameterAsBool(parameters, self.IGNORE_NODATA, context):
+        if self.parameterAsBoolean(parameters, self.IGNORE_NODATA, context):
             arguments.append('-inodata')
 
         if nodata is not None:

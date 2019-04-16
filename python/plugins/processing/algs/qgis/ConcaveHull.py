@@ -93,8 +93,8 @@ class ConcaveHull(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         alpha = self.parameterAsDouble(parameters, self.ALPHA, context)
-        holes = self.parameterAsBool(parameters, self.HOLES, context)
-        no_multigeom = self.parameterAsBool(parameters, self.NO_MULTIGEOMETRY, context)
+        holes = self.parameterAsBoolean(parameters, self.HOLES, context)
+        no_multigeom = self.parameterAsBoolean(parameters, self.NO_MULTIGEOMETRY, context)
 
         # Delaunay triangulation from input point layer
         feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Creating Delaunay triangles…'))

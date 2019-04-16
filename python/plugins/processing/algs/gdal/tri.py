@@ -102,7 +102,7 @@ class tri(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)

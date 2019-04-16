@@ -94,7 +94,7 @@ class Datasources2Vrt(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         input_layers = self.parameterAsLayerList(parameters, self.INPUT, context)
-        unioned = self.parameterAsBool(parameters, self.UNIONED, context)
+        unioned = self.parameterAsBoolean(parameters, self.UNIONED, context)
         vrtPath = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         vrtString = self.mergeDataSources2Vrt(input_layers,

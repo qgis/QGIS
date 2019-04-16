@@ -92,9 +92,9 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
             self.wkb_type = QgsWkbTypes.LineString
         else:
             self.wkb_type = QgsWkbTypes.Point
-        if self.parameterAsBool(parameters, self.WITH_Z, context):
+        if self.parameterAsBoolean(parameters, self.WITH_Z, context):
             self.wkb_type = QgsWkbTypes.addZ(self.wkb_type)
-        if self.parameterAsBool(parameters, self.WITH_M, context):
+        if self.parameterAsBoolean(parameters, self.WITH_M, context):
             self.wkb_type = QgsWkbTypes.addM(self.wkb_type)
 
         self.expression = QgsExpression(self.parameterAsString(parameters, self.EXPRESSION, context))
