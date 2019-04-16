@@ -7573,7 +7573,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
       QgsDebugMsg( QStringLiteral( "Cannot get pipe projector" ) );
       return QString();
     }
-    projector->setCrs( rasterLayer->crs(), d.outputCrs(), rasterLayer->dataProvider()->transformContext() );
+    projector->setCrs( rasterLayer->crs(), d.outputCrs(), QgsProject::instance()->transformContext() );
   }
 
   if ( !pipe->last() )
@@ -7595,7 +7595,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   QString outputFormat = d.outputFormat();
 
   QgsRasterFileWriterTask *writerTask = new QgsRasterFileWriterTask( fileWriter, pipe.release(), d.nColumns(), d.nRows(),
-      d.outputRectangle(), d.outputCrs() );
+      d.outputRectangle(), QgsProject::instance()->transformContext(), d.outputCrs() );
 
   // when writer is successful:
 
