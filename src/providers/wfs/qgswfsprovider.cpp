@@ -430,7 +430,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   for ( int i = 0; i < 2; i++ )
   {
     if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
-         concatenatedTypenames, bUsePlural ) )
+         concatenatedTypenames, mShared->mCaps, bUsePlural ) )
     {
       errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
                  arg( dataSourceUri(), describeFeatureType.errorMessage() );
@@ -1285,12 +1285,14 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
   fields.clear();
 
   QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
+
   bool bUsePlural = false;
   QByteArray response;
+
   for ( int i = 0; i < 2; i++ )
   {
     if ( !describeFeatureType.requestFeatureType( mShared->mWFSVersion,
-         mShared->mURI.typeName(), bUsePlural ) )
+         mShared->mURI.typeName(), mShared->mCaps, bUsePlural ) )
     {
       QgsMessageLog::logMessage( tr( "DescribeFeatureType network request failed for url %1: %2" ).
                                  arg( dataSourceUri(), describeFeatureType.errorMessage() ), tr( "WFS" ) );

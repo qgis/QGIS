@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswfsdescribefeaturetype.h"
+#include "qgsmessagelog.h"
 
 QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
@@ -21,12 +22,19 @@ QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
 }
 
 bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
-    const QString &typeName, bool bUsePlural )
+    const QString &typeName, const QgsWfsCapabilities::Capabilities &caps, bool bUsePlural )
 {
   QUrl url( mUri.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
   url.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+
   url.addQueryItem( bUsePlural ?
                     QStringLiteral( "TYPENAMES" ) : QStringLiteral( "TYPENAME" ), typeName );
+  QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
+  if ( !namespaceValue.isEmpty() )
+  {
+    url.addQueryItem( bUsePlural ?
+                      QStringLiteral( "NAMESPACES" ) : QStringLiteral( "NAMESPACE" ), namespaceValue );
+  }
 
   return sendGET( url, true, false );
 }

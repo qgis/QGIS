@@ -2984,7 +2984,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename&NAMESPACE=xmlns(my,http://my)'), 'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml"/>
