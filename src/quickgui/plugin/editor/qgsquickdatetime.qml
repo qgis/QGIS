@@ -48,21 +48,21 @@ Item {
 
         Item {
             Layout.fillWidth: true
-            Layout.minimumHeight: customStyle.height
+            Layout.minimumHeight: customStyle.fields.height
 
             TextField {
                 id: label
 
                 anchors.fill: parent
                 verticalAlignment: Text.AlignVCenter
-                font.pixelSize: customStyle.fontPixelSize
+                font.pixelSize: customStyle.fields.fontPixelSize
                 padding: 0
                 background: Rectangle {
-                    radius: customStyle.cornerRadius
+                    radius: customStyle.fields.cornerRadius
 
-                    border.color: label.activeFocus ? customStyle.activeColor : customStyle.normalColor
+                    border.color: label.activeFocus ? customStyle.fields.activeColor : customStyle.fields.normalColor
                     border.width: label.activeFocus ? 2 : 1
-                    color: customStyle.backgroundColor
+                    color: customStyle.fields.backgroundColor
                 }
 
                 inputMethodHints: Qt.ImhDigitsOnly
@@ -95,7 +95,7 @@ Item {
                       }
             }
 
-                color: main.currentValue === undefined ? 'transparent' : customStyle.fontColor
+                color: main.currentValue === undefined ? 'transparent' : customStyle.fields.fontColor
 
                 MouseArea {
                     enabled: config['calendar_popup']
@@ -146,7 +146,7 @@ Item {
                 sourceSize.height: fieldItem.iconSize
                 autoTransform: true
                 fillMode: Image.PreserveAspectFit
-                source: QgsQuick.Utils.getThemeIcon("ic_today")
+                source: customStyle.icons.today
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 visible: fieldItem.enabled
@@ -161,7 +161,7 @@ Item {
             ColorOverlay {
                 anchors.fill: todayBtn
                 source: todayBtn
-                color: customStyle.fontColor
+                color: customStyle.fields.fontColor
                 visible: todayBtn.visible
             }
         }
@@ -211,11 +211,11 @@ Item {
             if (main.currentValue === undefined)
             {
                 label.text = qsTr('(no date)')
-                label.color = customStyle.fontColor
+                label.color = customStyle.fields.fontColor
             }
             else
             {
-                label.color = customStyle.fontColor
+                label.color = customStyle.fields.fontColor
                 label.text = new Date(value).toLocaleString(Qt.locale(), config['display_format'] )
             }
         }

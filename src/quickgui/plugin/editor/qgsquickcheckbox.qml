@@ -35,21 +35,21 @@ Item {
 
   CheckBox {
     property var currentValue: value
-    height: customStyle.height
+    height: customStyle.fields.height
     id: checkBox
     leftPadding: 0
     checked: value == config['CheckedState']
 
     indicator: Rectangle {
-                implicitWidth: customStyle.height
-                implicitHeight: customStyle.height
-                radius: customStyle.cornerRadius
-                border.color: checkBox.activeFocus ? customStyle.fontColor : "grey"
+                implicitWidth: customStyle.fields.height
+                implicitHeight: customStyle.fields.height
+                radius: customStyle.fields.cornerRadius
+                border.color: checkBox.activeFocus ? customStyle.fields.fontColor : "grey"
                 border.width: 1
                 Rectangle {
                     visible: checkBox.checked
-                    color: customStyle.fontColor
-                    radius: customStyle.cornerRadius
+                    color: customStyle.fields.fontColor
+                    radius: customStyle.fields.cornerRadius
                     anchors.margins: 4
                     anchors.fill: parent
                 }

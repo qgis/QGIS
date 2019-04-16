@@ -71,4 +71,14 @@ QtObject {
       property int fontPixelSize: 48 * QgsQuick.Utils.dp
 
     }
+
+  property QtObject icons: QtObject {
+    property var camera: QgsQuick.Utils.getThemeIcon("ic_camera")
+    property var remove: QgsQuick.Utils.getThemeIcon("ic_delete_forever_white")
+    property var gallery: QgsQuick.Utils.getThemeIcon("ic_gallery")
+    property var brokenImage: QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
+    property var notAvailable: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
+    property var today: QgsQuick.Utils.getThemeIcon("ic_today")
+  }
+
 }
