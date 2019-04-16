@@ -1002,7 +1002,7 @@ void QgsLegendModel::doneCount( long taskid )
   }
 }
 
-void QgsLegendMode::allowRefresh()
+void QgsLegendModel::allowRefresh()
 {
   refreshable = true;
 }
