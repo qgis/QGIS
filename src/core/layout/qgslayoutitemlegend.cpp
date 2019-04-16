@@ -156,7 +156,7 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 
 void QgsLayoutItemLegend::refresh()
 {
-  if( mLegendModel->refreshable )
+  if ( mLegendModel->refreshable )
   {
     QgsLayoutItem::refresh();
     onAtlasFeature();
@@ -984,7 +984,7 @@ void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
 
 void QgsLegendModel::pendingCount( long taskid )
 {
-  if( refreshable )
+  if ( refreshable )
     refreshable = false;
   mPendingCount.append( taskid );
 }
@@ -997,7 +997,7 @@ void QgsLegendModel::doneCount( long taskid )
     if ( mPendingCount.isEmpty() )
     {
       emit refreshLegend();
-      QTimer::singleShot(3750, this, SLOT(allowRefresh()));
+      QTimer::singleShot(3750, this, SLOT( allowRefresh() ) );
     }
   }
 }
