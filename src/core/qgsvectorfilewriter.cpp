@@ -2559,7 +2559,7 @@ QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat( QgsVectorLayer *layer, const QgsVectorFileWriter::SaveVectorOptions &options, QgsVectorFileWriter::PreparedWriterDetails &details )
 {
-  if ( !layer )
+  if ( !layer || !layer->isValid() )
   {
     return ErrInvalidLayer;
   }
