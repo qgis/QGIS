@@ -215,6 +215,11 @@ Item {
               horizontalAlignment: Text.AlignHCenter
               verticalAlignment: Text.AlignVCenter
             }
+
+            background: Rectangle {
+              color: !tabButton.enabled ? form.style.tabs.disabledBackgroundColor : tabButton.down ||
+                                                 tabButton.checked ? form.style.tabs.activeBackgroundColor : form.style.tabs.normalBackgroundColor
+            }
           }
         }
       }
