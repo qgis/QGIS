@@ -28,17 +28,17 @@ Item {
   signal valueChanged(var value, bool isNull)
 
   property var image: image
-  property var cameraIcon: QgsQuick.Utils.getThemeIcon("ic_camera")
-  property var deleteIcon: QgsQuick.Utils.getThemeIcon("ic_delete_forever_white")
-  property var galleryIcon: QgsQuick.Utils.getThemeIcon("ic_gallery")
-  property var brokenImageSource: QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
-  property var notavailableImageSource: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
-  property real iconSize:  customStyle.height * 0.75
+  property var cameraIcon: customStyle.icons.camera
+  property var deleteIcon: customStyle.icons.remove
+  property var galleryIcon: customStyle.icons.gallery
+  property var brokenImageIcon: customStyle.icons.brokenImage
+  property var notAvailableImageIcon: customStyle.icons.notAvailable
+  property real iconSize:  customStyle.fields.height * 0.75
   property real textMargin: QgsQuick.Utils.dp * 10
 
   id: fieldItem
   enabled: true // its interactive widget
-  height: customStyle.height * 3
+  height: customStyle.fields.height * 3
   anchors {
     left: parent.left
     right: parent.right
@@ -66,15 +66,15 @@ Item {
     height: window.height
     width: window.width
     edge: Qt.RightEdge
-    imageButtonSize: customStyle.height
+    imageButtonSize: fieldItem.iconSize
   }
 
   Rectangle {
     id: imageContainer
     width: parent.width
-    height: customStyle.height * 3
-    color: customStyle.backgroundColor
-    radius: customStyle.cornerRadius
+    height: parent.height
+    color: customStyle.fields.backgroundColor
+    radius: customStyle.fields.cornerRadius
 
     Image {
       property var currentValue: value
@@ -145,7 +145,7 @@ Item {
     ColorOverlay {
       anchors.fill: deleteIcon
       source: deleteIcon
-      color: customStyle.attentionColor
+      color: customStyle.fields.attentionColor
     }
   }
 
@@ -159,7 +159,8 @@ Item {
     QgsQuick.IconTextItem {
       id: photoButton
       iconSize: fieldItem.iconSize
-      fontColor: customStyle.fontColor
+      fontColor: customStyle.fields.fontColor
+      fontPixelSize: fieldItem.iconSize/2
       iconSource: fieldItem.cameraIcon
       labelText: qsTr("Take a Photo")
 
@@ -180,7 +181,8 @@ Item {
     QgsQuick.IconTextItem {
       id: browseButton
       iconSize: fieldItem.iconSize
-      fontColor: customStyle.fontColor
+      fontColor: customStyle.fields.fontColor
+      fontPixelSize: fieldItem.iconSize/2
       iconSource: fieldItem.galleryIcon
       labelText: qsTr("Add From a Gallery")
 
@@ -198,8 +200,8 @@ Item {
     QgsQuick.IconTextItem {
       id: infoItem
       iconSize: fieldItem.iconSize/2
-      fontColor: customStyle.fontColor
-      iconSource: fieldItem.brokenImageSource
+      fontColor: customStyle.fields.fontColor
+      iconSource: fieldItem.brokenImageIcon
       labelText: qsTr("Image is broken: ") + image.currentValue
 
       visible: fieldItem.state === "broken" || fieldItem.state === "notAvailable"
