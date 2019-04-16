@@ -182,7 +182,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
             self.TILE_SIZE,
             context)
 
-        make_trans = self.parameterAsBool(
+        make_trans = self.parameterAsBoolean(
             parameters,
             self.MAKE_BACKGROUND_TRANSPARENT,
             context)

@@ -229,20 +229,20 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         simplify = self.parameterAsString(parameters, self.SIMPLIFY, context)
         segmentize = self.parameterAsString(parameters, self.SEGMENTIZE, context)
         spat = self.parameterAsExtent(parameters, self.SPAT, context)
-        clip = self.parameterAsBool(parameters, self.CLIP, context)
+        clip = self.parameterAsBoolean(parameters, self.CLIP, context)
         where = self.parameterAsString(parameters, self.WHERE, context)
         wherestring = '-where "' + where + '"'
         gt = self.parameterAsString(parameters, self.GT, context)
-        overwrite = self.parameterAsBool(parameters, self.OVERWRITE, context)
-        append = self.parameterAsBool(parameters, self.APPEND, context)
-        addfields = self.parameterAsBool(parameters, self.ADDFIELDS, context)
-        launder = self.parameterAsBool(parameters, self.LAUNDER, context)
+        overwrite = self.parameterAsBoolean(parameters, self.OVERWRITE, context)
+        append = self.parameterAsBoolean(parameters, self.APPEND, context)
+        addfields = self.parameterAsBoolean(parameters, self.ADDFIELDS, context)
+        launder = self.parameterAsBoolean(parameters, self.LAUNDER, context)
         launderstring = "-lco LAUNDER=NO"
-        index = self.parameterAsBool(parameters, self.INDEX, context)
+        index = self.parameterAsBoolean(parameters, self.INDEX, context)
         indexstring = "-lco SPATIAL_INDEX=OFF"
-        skipfailures = self.parameterAsBool(parameters, self.SKIPFAILURES, context)
-        promotetomulti = self.parameterAsBool(parameters, self.PROMOTETOMULTI, context)
-        precision = self.parameterAsBool(parameters, self.PRECISION, context)
+        skipfailures = self.parameterAsBoolean(parameters, self.SKIPFAILURES, context)
+        promotetomulti = self.parameterAsBoolean(parameters, self.PROMOTETOMULTI, context)
+        precision = self.parameterAsBoolean(parameters, self.PRECISION, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         arguments = []

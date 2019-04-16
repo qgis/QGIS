@@ -133,7 +133,7 @@ class Relief(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         inputFile = self.parameterAsRasterLayer(parameters, self.INPUT, context).source()
         zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
-        automaticColors = self.parameterAsBool(parameters, self.AUTO_COLORS, context)
+        automaticColors = self.parameterAsBoolean(parameters, self.AUTO_COLORS, context)
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         frequencyDistribution = self.parameterAsFileOutput(parameters, self.FREQUENCY_DISTRIBUTION, context)
 

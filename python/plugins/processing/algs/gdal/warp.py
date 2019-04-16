@@ -223,7 +223,7 @@ class warp(GdalAlgorithm):
                 arguments.append('-te_srs')
                 arguments.append(extentCrs.authid())
 
-        if self.parameterAsBool(parameters, self.MULTITHREADING, context):
+        if self.parameterAsBoolean(parameters, self.MULTITHREADING, context):
             arguments.append('-multi')
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)

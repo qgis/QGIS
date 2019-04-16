@@ -118,16 +118,16 @@ class aspect(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.TRIG_ANGLE, context):
+        if self.parameterAsBoolean(parameters, self.TRIG_ANGLE, context):
             arguments.append('-trigonometric')
 
-        if self.parameterAsBool(parameters, self.ZERO_FLAT, context):
+        if self.parameterAsBoolean(parameters, self.ZERO_FLAT, context):
             arguments.append('-zero_for_flat')
 
-        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        if self.parameterAsBool(parameters, self.ZEVENBERGEN, context):
+        if self.parameterAsBoolean(parameters, self.ZEVENBERGEN, context):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 

@@ -116,7 +116,7 @@ class CheckValidity(QgisAlgorithm):
         return self.tr('Check validity')
 
     def processAlgorithm(self, parameters, context, feedback):
-        ignore_ring_self_intersection = self.parameterAsBool(parameters, self.IGNORE_RING_SELF_INTERSECTION, context)
+        ignore_ring_self_intersection = self.parameterAsBoolean(parameters, self.IGNORE_RING_SELF_INTERSECTION, context)
         method_param = self.parameterAsEnum(parameters, self.METHOD, context)
         if method_param == 0:
             settings = QgsSettings()

@@ -75,8 +75,8 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
 
   QString expressionString = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
 
-  bool ascending = parameterAsBool( parameters, QStringLiteral( "ASCENDING" ), context );
-  bool nullsFirst = parameterAsBool( parameters, QStringLiteral( "NULLS_FIRST" ), context );
+  bool ascending = parameterAsBoolean( parameters, QStringLiteral( "ASCENDING" ), context );
+  bool nullsFirst = parameterAsBoolean( parameters, QStringLiteral( "NULLS_FIRST" ), context );
 
   QString sinkId;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
