@@ -248,6 +248,33 @@ namespace QgsGuiUtils
     return static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
   }
 
+  QSize iconSize( bool dockableToolbar )
+  {
+    QgsSettings s;
+    int w = s.value( QStringLiteral( "/qgis/iconSize" ), 32 ).toInt();
+    QSize size( w, w );
+
+    if ( dockableToolbar )
+    {
+      size = panelIconSize( size );
+    }
+
+    return size;
+  }
+
+  QSize panelIconSize( QSize size )
+  {
+    int adjustedSize = 16;
+    if ( size.width() > 32 )
+    {
+      adjustedSize = size.width() - 16;
+    }
+    else if ( size.width() == 32 )
+    {
+      adjustedSize = 24;
+    }
+    return QSize( adjustedSize, adjustedSize );
+  }
 }
 
 //
