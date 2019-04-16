@@ -1979,11 +1979,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Attempts to choose a reasonable default icon size based on the window's screen DPI
     int chooseReasonableDefaultIconSize() const;
 
-    /**
-     * Returns the size of docked toolbars for a given standard (non-docked) toolbar icon size.
-     */
-    int dockedToolbarIconSize( int standardToolbarIconSize ) const;
-
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
 
