@@ -28,7 +28,7 @@ Item {
 
   id: fieldItem
   enabled: !readOnly
-  height: customStyle.height
+  height: customStyle.fields.height
   anchors {
     left: parent.left
     right: parent.right
@@ -40,7 +40,7 @@ Item {
     property var reverseConfig: ({})
     property var currentValue: value
 
-    comboStyle: customStyle
+    comboStyle: customStyle.fields
     textRole: 'text'
     height: parent.height
     model: ListModel {

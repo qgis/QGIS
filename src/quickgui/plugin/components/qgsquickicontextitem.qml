@@ -5,6 +5,7 @@ import QgsQuick 0.1 as QgsQuick
 Item {
   property real iconSize
   property color fontColor
+  property real fontPixelSize: root.iconSize * 0.75
   property string iconSource
   property string labelText
 
@@ -32,7 +33,7 @@ Item {
     id: text
     height: root.iconSize
     text: root.labelText
-    font.pixelSize: root.iconSize * 0.75
+    font.pixelSize: root.fontPixelSize
     color: root.fontColor
     anchors.leftMargin: root.iconSize + fieldItem.textMargin
     x: root.iconSize + fieldItem.textMargin

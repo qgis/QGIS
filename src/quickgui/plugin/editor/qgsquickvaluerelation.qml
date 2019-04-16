@@ -42,7 +42,7 @@ Item {
     property var reversedMap: ({})
     property var currentValue: value
 
-    comboStyle: customStyle
+    comboStyle: customStyle.fields
     textRole: 'text'
     height: parent.height
     model: ListModel {
