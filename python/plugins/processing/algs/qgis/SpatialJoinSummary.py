@@ -165,7 +165,7 @@ class SpatialJoinSummary(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.JOIN))
 
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
-        discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
+        discard_nomatch = self.parameterAsBoolean(parameters, self.DISCARD_NONMATCHING, context)
         summaries = [self.statistics[i][0] for i in
                      sorted(self.parameterAsEnums(parameters, self.SUMMARIES, context))]
 

@@ -84,7 +84,7 @@ class gdal2xyz(GdalAlgorithm):
         arguments.append('-band')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.CSV, context):
+        if self.parameterAsBoolean(parameters, self.CSV, context):
             arguments.append('-csv')
 
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)

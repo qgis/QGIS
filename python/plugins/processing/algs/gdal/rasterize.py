@@ -185,10 +185,10 @@ class rasterize(GdalAlgorithm):
             arguments.append('-init')
             arguments.append(initValue)
 
-        if self.parameterAsBool(parameters, self.INVERT, context):
+        if self.parameterAsBoolean(parameters, self.INVERT, context):
             arguments.append('-i')
 
-        if self.parameterAsBool(parameters, self.ALL_TOUCH, context):
+        if self.parameterAsBoolean(parameters, self.ALL_TOUCH, context):
             arguments.append('-at')
 
         if self.NODATA in parameters and parameters[self.NODATA] is not None:

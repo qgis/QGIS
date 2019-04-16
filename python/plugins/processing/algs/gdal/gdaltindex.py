@@ -135,10 +135,10 @@ class gdaltindex(GdalAlgorithm):
         arguments.append('-tileindex')
         arguments.append(self.parameterAsString(parameters, self.PATH_FIELD_NAME, context))
 
-        if self.parameterAsBool(parameters, self.ABSOLUTE_PATH, context):
+        if self.parameterAsBoolean(parameters, self.ABSOLUTE_PATH, context):
             arguments.append('-write_absolute_path')
 
-        if self.parameterAsBool(parameters, self.PROJ_DIFFERENCE, context):
+        if self.parameterAsBoolean(parameters, self.PROJ_DIFFERENCE, context):
             arguments.append('-skip_different_projection')
 
         if crs_field:

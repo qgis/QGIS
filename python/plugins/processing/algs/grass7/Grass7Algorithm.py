@@ -376,9 +376,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                                                  self.GRASS_OUTPUT_TYPE_PARAMETER,
                                                  context)
         # GRASS align to resolution
-        self.alignToResolution = self.parameterAsBool(parameters,
-                                                      self.GRASS_REGION_ALIGN_TO_RESOLUTION,
-                                                      context)
+        self.alignToResolution = self.parameterAsBoolean(parameters,
+                                                         self.GRASS_REGION_ALIGN_TO_RESOLUTION,
+                                                         context)
 
     def processAlgorithm(self, original_parameters, context, feedback):
         if isWindows():
@@ -573,7 +573,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 value = ','.join(values)
             # For booleans, we just add the parameter name
             elif isinstance(param, QgsProcessingParameterBoolean):
-                if self.parameterAsBool(parameters, paramName, context):
+                if self.parameterAsBoolean(parameters, paramName, context):
                     command += ' {}'.format(paramName)
             # For Extents, remove if the value is null
             elif isinstance(param, QgsProcessingParameterExtent):
@@ -918,7 +918,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         outFormat = QgsVectorFileWriter.driverForExtension(os.path.splitext(fileName)[1]).replace(' ', '_')
         dsco = self.parameterAsString(parameters, self.GRASS_VECTOR_DSCO, context)
         lco = self.parameterAsString(parameters, self.GRASS_VECTOR_LCO, context)
-        exportnocat = self.parameterAsBool(parameters, self.GRASS_VECTOR_EXPORT_NOCAT, context)
+        exportnocat = self.parameterAsBoolean(parameters, self.GRASS_VECTOR_EXPORT_NOCAT, context)
         self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco, exportnocat)
 
     def exportVectorLayer(self, grassName, fileName, layer=None, nocats=False, dataType='auto',

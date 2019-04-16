@@ -137,7 +137,7 @@ class translate(GdalAlgorithm):
             arguments.append('-a_nodata')
             arguments.append(nodata)
 
-        if self.parameterAsBool(parameters, self.COPY_SUBDATASETS, context):
+        if self.parameterAsBoolean(parameters, self.COPY_SUBDATASETS, context):
             arguments.append('-sds')
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)

@@ -119,7 +119,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
+        dissolve = self.parameterAsBoolean(parameters, self.DISSOLVE, context)
         segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
         end_cap_style = self.parameterAsEnum(parameters, self.END_CAP_STYLE, context) + 1
         join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
