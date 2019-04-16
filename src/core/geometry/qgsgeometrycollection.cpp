@@ -436,7 +436,7 @@ QJsonObject QgsGeometryCollection::asJsonObject( int precision ) const
   QJsonArray coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    coordinates.append( geom->asJsonObject() );
+    coordinates.append( geom->asJsonObject( precision ) );
   }
   return
   {
