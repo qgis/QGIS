@@ -141,9 +141,10 @@ QString QgsMultiPolygon::asJson( int precision ) const
 
 QJsonObject QgsMultiPolygon::asJsonObject( int precision ) const
 {
-  QJsonArray coordinates;
+  QJsonArray polygons;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
+    QJsonArray coordinates;
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
       const QgsPolygon *polygon = static_cast<const QgsPolygon *>( geom );
@@ -162,11 +163,12 @@ QJsonObject QgsMultiPolygon::asJsonObject( int precision ) const
         coordinates.append( QgsGeometryUtils::pointsToJsonObject( interiorPts, precision ) );
       }
     }
+    polygons.append( coordinates );
   }
   return
   {
     { QLatin1String( "type" ), QLatin1String( "MultiPolygon" ) },
-    { QLatin1String( "coordinates" ), coordinates }
+    { QLatin1String( "coordinates" ), polygons }
   };
 }
 

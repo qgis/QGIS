@@ -1443,7 +1443,9 @@ Exports the geometry to a GeoJSON string.
 
     QJsonObject asJsonObject( int precision = 17 ) const;
 %Docstring
-Exports the geometry to a GeoJSON object.
+Exports the geometry to a QJsonObject.
+
+.. versionadded:: 3.8
 %End
 
     QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;

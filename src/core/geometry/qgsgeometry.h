@@ -1431,7 +1431,8 @@ class CORE_EXPORT QgsGeometry
     QString asJson( int precision = 17 ) const;
 
     /**
-     * Exports the geometry to a GeoJSON object.
+     * Exports the geometry to a QJsonObject.
+     * \since QGIS 3.8
      */
     QJsonObject asJsonObject( int precision = 17 ) const;
 

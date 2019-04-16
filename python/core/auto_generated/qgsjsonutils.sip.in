@@ -229,20 +229,22 @@ Returns a GeoJSON string representation of a feature.
 :return: GeoJSON string
 
 .. seealso:: :py:func:`exportFeatures`
+
+.. seealso:: :py:func:`exportFeatureToJsonObject`
 %End
 
     QJsonObject exportFeatureToJsonObject( const QgsFeature &feature,
                                            const QVariantMap &extraProperties = QVariantMap(),
                                            const QVariant &id = QVariant() ) const;
 %Docstring
-Returns a GeoJSON string representation of a feature.
+Returns a QJsonObject representation of a feature.
 
 :param feature: feature to convert
 :param extraProperties: map of extra attributes to include in feature's properties
 :param id: optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
            ID is used.
 
-:return: GeoJSON string
+:return: QJsonObject
 
 .. seealso:: :py:func:`exportFeatures`
 %End
@@ -333,13 +335,15 @@ Exports all attributes from a QgsFeature as a JSON map type.
     static QJsonObject exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = 0,
         const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 %Docstring
-Exports all attributes from a QgsFeature as a JSON map type.
+Exports all attributes from a QgsFeature as a QJsonObject.
 
 :param feature: feature to export
 :param layer: optional associated vector layer. If specified, this allows
               richer export utilising settings like the layer's fields widget configuration.
 :param attributeWidgetCaches: optional widget configuration cache. Can be used
                               to speed up exporting the attributes for multiple features from the same layer.
+
+.. versionadded:: 3.8
 %End
 
 

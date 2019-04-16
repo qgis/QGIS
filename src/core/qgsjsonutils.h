@@ -23,7 +23,7 @@
 #include "qgsfields.h"
 
 #include <QPointer>
-#include <QJsonValue>
+#include <QJsonObject>
 
 class QTextCodec;
 
@@ -194,18 +194,19 @@ class CORE_EXPORT QgsJsonExporter
      * ID is used.
      * \returns GeoJSON string
      * \see exportFeatures()
+     * \see exportFeatureToJsonObject()
      */
     QString exportFeature( const QgsFeature &feature,
                            const QVariantMap &extraProperties = QVariantMap(),
                            const QVariant &id = QVariant() ) const;
 
     /**
-     * Returns a GeoJSON string representation of a feature.
+     * Returns a QJsonObject representation of a feature.
      * \param feature feature to convert
      * \param extraProperties map of extra attributes to include in feature's properties
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
-     * \returns GeoJSON string
+     * \returns QJsonObject
      * \see exportFeatures()
      */
     QJsonObject exportFeatureToJsonObject( const QgsFeature &feature,
@@ -306,12 +307,13 @@ class CORE_EXPORT QgsJsonUtils
                                      const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 
     /**
-     * Exports all attributes from a QgsFeature as a JSON map type.
+     * Exports all attributes from a QgsFeature as a QJsonObject.
      * \param feature feature to export
      * \param layer optional associated vector layer. If specified, this allows
      * richer export utilising settings like the layer's fields widget configuration.
      * \param attributeWidgetCaches optional widget configuration cache. Can be used
      * to speed up exporting the attributes for multiple features from the same layer.
+     * \since QGIS 3.8
      */
     static QJsonObject exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
         const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );

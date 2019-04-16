@@ -281,11 +281,13 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QString asJson( int precision = 17 ) const = 0;
 
     /**
-     * Returns a GeoJSON object of the geometry.
+     * Returns a QJsonObject representation of the geometry.
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
      * \see asGml3()
+     * \see asJson()
+     * \since QGIS 3.8
      */
     virtual QJsonObject asJsonObject( int precision = 17 ) const = 0;
 

@@ -261,7 +261,7 @@ Returns a GeoJSON representation of the geometry.
 
     virtual QJsonObject asJsonObject( int precision = 17 ) const = 0;
 %Docstring
-Returns a GeoJSON object of the geometry.
+Returns a QJsonObject representation of the geometry.
 
 .. seealso:: :py:func:`asWkb`
 
@@ -270,6 +270,10 @@ Returns a GeoJSON object of the geometry.
 .. seealso:: :py:func:`asGml2`
 
 .. seealso:: :py:func:`asGml3`
+
+.. seealso:: :py:func:`asJson`
+
+.. versionadded:: 3.8
 %End
 
 

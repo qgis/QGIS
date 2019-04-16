@@ -75,14 +75,14 @@ class TestQgsJsonUtils : public QObject
       QCOMPARE( back.at( 0 ).type(), QVariant::Double );
     }
 
-    void testV2ExportAttributes_data()
+    void testExportAttributesQJson_data()
     {
       QTest::addColumn<bool>( "useQJson" );
       QTest::newRow( "Use V2 (QJson)" ) << true;
       QTest::newRow( "Use old string concat" ) << false;
     }
 
-    void testV2ExportAttributes()
+    void testExportAttributesQJson()
     {
 
       QFETCH( bool, useQJson );
@@ -109,14 +109,14 @@ class TestQgsJsonUtils : public QObject
       }
     }
 
-    void testV2ExportFeature_data()
+    void testExportFeatureQJson_data()
     {
       QTest::addColumn<bool>( "useQJson" );
       QTest::newRow( "Use V2 (QJson)" ) << true;
       QTest::newRow( "Use old string concat" ) << false;
     }
 
-    void testV2ExportFeature()
+    void testExportFeatureQJson()
     {
 
       QFETCH( bool, useQJson );
@@ -128,7 +128,7 @@ class TestQgsJsonUtils : public QObject
 
       QgsJsonExporter exporter { &vl };
 
-      if ( useQJson )  // average: 0.038 msecs per iteration
+      if ( useQJson )  // average: 0.041 msecs per iteration
       {
         QBENCHMARK
         {
@@ -136,7 +136,7 @@ class TestQgsJsonUtils : public QObject
           QCOMPARE( QJsonDocument( json ).toJson( QJsonDocument::JsonFormat::Compact ),
                     QStringLiteral( "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":[[[1.12,1.34]"
                                     ",[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],[[2,2],[3,2],[3,3],[2,3],[2,2]]],"
-                                    "\"type\":\"Point\"},\"id\":0,\"properties\":{\"flddbl\":2,\"fldint\":1,\"fldtxt\":\"a value\"},\"type\":\"Feature\"}"
+                                    "\"type\":\"Polygon\"},\"id\":0,\"properties\":{\"flddbl\":2,\"fldint\":1,\"fldtxt\":\"a value\"},\"type\":\"Feature\"}"
                                   ) );
         }
       }
@@ -150,6 +150,31 @@ class TestQgsJsonUtils : public QObject
                                           "[ [2, 2], [3, 2], [3, 3], [2, 3], [2, 2]]] },\n   "
                                           "\"properties\":{\n      \"fldtxt\":\"a value\",\n      \"fldint\":1,\n      \"flddbl\":2\n   }\n}" ) );
         }
+      }
+    }
+
+    void testExportGeomToQJson()
+    {
+      const QStringList testWkts
+      {
+        {
+          QStringLiteral( "LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)" ),
+          QStringLiteral( "MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))" ),
+          QStringLiteral( "POINT(-71.064544 42.28787)" ),
+          QStringLiteral( "MULTIPOINT(-71.064544 42.28787, -71.1776585052917 42.3902909739571)" ),
+          QStringLiteral( "POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,"
+                          "-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))" ),
+          QStringLiteral( "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))" ),
+          QStringLiteral( "CIRCULARSTRING(220268 150415,220227 150505,220227 150406)" ),
+        }
+      };
+
+      for ( const auto &w : testWkts )
+      {
+        const auto g { QgsGeometry::fromWkt( w ) };
+        QVERIFY( !g.isNull( ) );
+        QCOMPARE( QJsonDocument( g.asJsonObject( 3 ) ).toJson( QJsonDocument::JsonFormat::Compact ),
+                  QJsonDocument::fromJson( g.asJson( 3 ).toUtf8() ).toJson( QJsonDocument::JsonFormat::Compact ) );
       }
     }
 };

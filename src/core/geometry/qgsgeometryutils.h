@@ -422,7 +422,7 @@ class CORE_EXPORT QgsGeometryUtils
     static QString pointsToJSON( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /**
-     * Returns a geoJSON coordinates object.
+     * Returns a QJsonArray coordinates object.
      * \note not available in Python bindings
      */
     static QJsonArray pointsToJsonObject( const QgsPointSequence &points, int precision ) SIP_SKIP;

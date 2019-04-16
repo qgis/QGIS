@@ -449,7 +449,7 @@ QJsonObject QgsCurvePolygon::asJsonObject( int precision ) const
   }
   return
   {
-    { QLatin1String( "type" ), QLatin1String( "Point" ) },
+    { QLatin1String( "type" ), QLatin1String( "Polygon" ) },
     { QLatin1String( "coordinates" ), coordinates }
   };
 }
