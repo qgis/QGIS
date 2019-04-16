@@ -62,7 +62,8 @@ void QgsFormAnnotation::setDesignerForm( const QString &uiFile )
       newFill->setColor( mDesignerWidget->palette().color( QPalette::Window ) );
       setFillSymbol( newFill );
     }
-    setFrameSize( preferredFrameSize() );
+    // convert from size in pixels at 96 dpi to mm
+    setFrameSizeMm( preferredFrameSize() / 3.7795275 );
   }
   emit appearanceChanged();
 }
@@ -112,10 +113,18 @@ void QgsFormAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
   if ( !mDesignerWidget )
     return;
 
+  // scale painter back to 96 dpi, so that forms look good even in layout prints
+  context.painter()->save();
+  const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
+  context.painter()->scale( scaleFactor, scaleFactor );
+  size /= scaleFactor;
+
   mDesignerWidget->setFixedSize( size.toSize() );
   context.painter()->setBrush( Qt::NoBrush );
   context.painter()->setPen( Qt::NoPen );
   mDesignerWidget->render( context.painter(), QPoint( 0, 0 ) );
+
+  context.painter()->restore();
 }
 
 QSizeF QgsFormAnnotation::minimumFrameSize() const
