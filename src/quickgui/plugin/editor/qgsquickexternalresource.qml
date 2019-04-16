@@ -28,18 +28,37 @@ Item {
   signal valueChanged(var value, bool isNull)
 
   property var image: image
+  property var cameraIcon: QgsQuick.Utils.getThemeIcon("ic_camera")
+  property var deleteIcon: QgsQuick.Utils.getThemeIcon("ic_delete_forever_white")
+  property var galleryIcon: QgsQuick.Utils.getThemeIcon("ic_gallery")
   property var brokenImageSource: QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
   property var notavailableImageSource: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
   property real iconSize:  customStyle.height * 0.75
+  property real textMargin: QgsQuick.Utils.dp * 10
 
   id: fieldItem
   enabled: true // its interactive widget
-  height: image.hasValidSource? customStyle.height * 3 : customStyle.height
+  height: customStyle.height * 3
   anchors {
     left: parent.left
     right: parent.right
     rightMargin: 10 * QgsQuick.Utils.dp
   }
+
+  states: [
+    State {
+      name: "valid"
+    },
+    State {
+      name: "notSet"
+    },
+    State {
+      name: "broken"
+    },
+    State {
+      name: "notAvailable"
+    }
+  ]
 
   QgsQuick.PhotoCapture {
     id: photoCapturePanel
@@ -50,66 +69,72 @@ Item {
     imageButtonSize: customStyle.height
   }
 
-  Image {
-    property var currentValue: value
-    property bool hasValidSource: false
+  Rectangle {
+    id: imageContainer
+    width: parent.width
+    height: customStyle.height * 3
+    color: customStyle.backgroundColor
+    radius: customStyle.cornerRadius
 
-    id: image
-    height: fieldItem.height
-    sourceSize.height: image.hasValidSource? customStyle.height * 3 : fieldItem.iconSize
-    autoTransform: true
-    fillMode: Image.PreserveAspectFit
-    visible: hasValidSource
+    Image {
+      property var currentValue: value
 
-    MouseArea {
+      id: image
+      height: imageContainer.height
+      sourceSize.height: imageContainer.height
+      autoTransform: true
+      fillMode: Image.PreserveAspectFit
+      visible: fieldItem.state === "valid"
+      anchors.verticalCenter: parent.verticalCenter
+      anchors.horizontalCenter: parent.horizontalCenter
+
+      MouseArea {
         anchors.fill: parent
         onClicked: externalResourceHandler.previewImage(homePath + "/" + image.currentValue)
-    }
+      }
 
-    onCurrentValueChanged: {
+      onCurrentValueChanged: {
         image.source = image.getSource()
+      }
+
+      Component.onCompleted: image.source = getSource()
+
+      function getSource() {
+        if (image.status === Image.Error) {
+          fieldItem.state = "broken"
+          return ""
+        }
+        else if (image.currentValue && QgsQuick.Utils.fileExists(homePath + "/" + image.currentValue)) {
+          fieldItem.state = "valid"
+          return homePath + "/" + image.currentValue
+        }
+        else if (!image.currentValue) {
+          fieldItem.state = "notSet"
+          return ""
+        }
+        else {
+          fieldItem.state = "notAvailable"
+          return homePath + "/" + image.currentValue
+        }
+      }
     }
-
-    onSourceChanged: {
-        hasValidSource = (image.source ===  fieldItem.brokenImageSource ||
-                          image.source === fieldItem.notavailableImageSource) ? false : true
-    }
-
-    Component.onCompleted: image.source = getSource()
-
-    function getSource() {
-         if (image.status === Image.Error)
-           return fieldItem.brokenImageSource
-         else if (image.currentValue && QgsQuick.Utils.fileExists(homePath + "/" + image.currentValue))
-           return homePath + "/" + image.currentValue
-         else
-           return fieldItem.notavailableImageSource
-       }
-     }
-
-  ColorOverlay {
-      anchors.fill: image
-      source: image
-      color: customStyle.fontColor
-      visible: !image.hasValidSource
   }
 
   Button {
     id: deleteButton
-    visible: !readOnly && image.hasValidSource
+    visible: !readOnly && fieldItem.state === "valid"
     width: fieldItem.iconSize
     height: width
     padding: 0
 
-    anchors.right: imageBrowserButton.left
-    anchors.bottom: parent.bottom
-    anchors.verticalCenter: parent.verticalCenter
+    anchors.right: imageContainer.right
+    anchors.bottom: imageContainer.bottom
 
     onClicked: externalResourceHandler.removeImage(fieldItem, homePath + "/" + image.currentValue)
 
     background: Image {
       id: deleteIcon
-      source: QgsQuick.Utils.getThemeIcon("ic_delete_forever_white")
+      source: fieldItem.deleteIcon
       width: deleteButton.width
       height: deleteButton.height
       sourceSize.width: width
@@ -118,73 +143,71 @@ Item {
     }
 
     ColorOverlay {
-        anchors.fill: deleteIcon
-        source: deleteIcon
-        color: customStyle.attentionColor
+      anchors.fill: deleteIcon
+      source: deleteIcon
+      color: customStyle.attentionColor
     }
   }
 
-  Button {
-    id: imageBrowserButton
-    visible: !readOnly
-    width: fieldItem.iconSize
-    height: width
-    padding: 0
+  Item {
+    id: buttonsContainer
+    anchors.centerIn: imageContainer
+    anchors.fill: imageContainer
+    anchors.margins: 10
+    visible: fieldItem.state !== "valid"
 
-    anchors.right: button.left
-    anchors.bottom: parent.bottom
-    anchors.verticalCenter: parent.verticalCenter
+    QgsQuick.IconTextItem {
+      id: photoButton
+      iconSize: fieldItem.iconSize
+      fontColor: customStyle.fontColor
+      iconSource: fieldItem.cameraIcon
+      labelText: qsTr("Take a Photo")
 
-    onClicked:externalResourceHandler.chooseImage(fieldItem)
+      visible: !readOnly && fieldItem.state !== " valid"
+      height: fieldItem.iconSize
+      anchors.horizontalCenter: parent.horizontalCenter
 
-    background: Image {
-      id: browseIcon
-      source: QgsQuick.Utils.getThemeIcon("ic_gallery")
-      width: imageBrowserButton.width
-      height: imageBrowserButton.height
-      sourceSize.width: width
-      sourceSize.height: height
-      fillMode: Image.PreserveAspectFit
+      MouseArea {
+        anchors.fill: parent
+        onClicked: {
+          photoCapturePanel.visible = true
+          photoCapturePanel.targetDir = homePath
+          photoCapturePanel.fieldItem = fieldItem
+        }
+      }
     }
 
-    ColorOverlay {
-        anchors.fill: browseIcon
-        source: browseIcon
-        color: customStyle.fontColor
-    }
-  }
+    QgsQuick.IconTextItem {
+      id: browseButton
+      iconSize: fieldItem.iconSize
+      fontColor: customStyle.fontColor
+      iconSource: fieldItem.galleryIcon
+      labelText: qsTr("Add From a Gallery")
 
-  Button {
-    id: button
-    visible: !readOnly
-    width: fieldItem.iconSize
-    height: width
-    padding: 0
+      visible: !readOnly && fieldItem.state !== " valid"
+      height: fieldItem.iconSize
+      anchors.top: photoButton.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
 
-    anchors.right: parent.right
-    anchors.bottom: parent.bottom
-    anchors.verticalCenter: parent.verticalCenter
-
-    onClicked: {
-      photoCapturePanel.visible = true
-      photoCapturePanel.targetDir = homePath
-      photoCapturePanel.fieldItem = fieldItem
+      MouseArea {
+        anchors.fill: parent
+        onClicked: externalResourceHandler.chooseImage(fieldItem)
+      }
     }
 
-    background: Image {
-      id: cameraIcon
-      source: QgsQuick.Utils.getThemeIcon("ic_camera")
-      width: button.width
-      height: button.height
-      sourceSize.width: width
-      sourceSize.height: height
-      fillMode: Image.PreserveAspectFit
-    }
+    QgsQuick.IconTextItem {
+      id: infoItem
+      iconSize: fieldItem.iconSize/2
+      fontColor: customStyle.fontColor
+      iconSource: fieldItem.brokenImageSource
+      labelText: qsTr("Image is broken: ") + image.currentValue
 
-    ColorOverlay {
-        anchors.fill: cameraIcon
-        source: cameraIcon
-        color: customStyle.fontColor
+      visible: fieldItem.state === "broken" || fieldItem.state === "notAvailable"
+      height: fieldItem.iconSize/2
+      anchors.bottom: parent.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+
     }
   }
+
 }
