@@ -81,8 +81,9 @@ Ownership of the returned provider is passed to the caller.
 .. versionadded:: 3.0
 %End
 
-    WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-                             const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 );
+
+ WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+        const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated/;
 %Docstring
 Write raster file
 
@@ -92,7 +93,28 @@ Write raster file
 :param outputExtent: extent to output
 :param crs: crs to reproject to
 :param feedback: optional feedback object for progress reports
+
+.. deprecated:: since QGIS 3.8, use version with transformContext instead
 %End
+
+    WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+                             const QgsCoordinateReferenceSystem &crs,
+                             const QgsCoordinateTransformContext &transformContext,
+                             QgsRasterBlockFeedback *feedback = 0 );
+%Docstring
+Write raster file
+
+:param pipe: raster pipe
+:param nCols: number of output columns
+:param nRows: number of output rows (or -1 to automatically calculate row number to have square pixels)
+:param outputExtent: extent to output
+:param crs: crs to reproject to
+:param transformContext: coordinate transform context
+:param feedback: optional feedback object for progress reports
+
+.. versionadded:: 3.8
+%End
+
 
     QString outputUrl() const;
 %Docstring
