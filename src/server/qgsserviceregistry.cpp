@@ -19,6 +19,7 @@
 
 #include "qgsserviceregistry.h"
 #include "qgsservice.h"
+#include "qgsserverapi.h"
 #include "qgsmessagelog.h"
 
 #include <algorithm>
@@ -156,6 +157,36 @@ void QgsServiceRegistry::registerService( QgsService *service )
     mVersions.insert( name, VersionTable::mapped_type( version, key ) );
   }*/
 
+}
+
+void QgsServiceRegistry::registerApi( QgsServerApi *api )
+{
+  QString name    = api->name();
+  QString version = api->version();
+
+  // Test if service is already registered
+  QString key = makeServiceKey( name, version );
+  if ( mServices.constFind( key ) != mServices.constEnd() )
+  {
+    QgsMessageLog::logMessage( QString( "Error API %1 %2 is already registered" ).arg( name, version ) );
+    return;
+  }
+
+  QgsMessageLog::logMessage( QString( "Adding API %1 %2" ).arg( name, version ) );
+  mApis.insert( key, std::shared_ptr<QgsServerApi>( api ) );
+
+}
+
+std::shared_ptr<QgsServerApi> QgsServiceRegistry::getApiForRequest( const QgsServerRequest &request ) const
+{
+  for ( const auto &api : mApis )
+  {
+    if ( api->rootPath().match( request.url().path() ).hasMatch() )
+    {
+      return api;
+    }
+  }
+  return nullptr;
 }
 
 int QgsServiceRegistry::unregisterService( const QString &name, const QString &version )

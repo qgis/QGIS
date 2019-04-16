@@ -34,6 +34,7 @@
 #include "qgsserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
+#include "qgsserverapi.h"
 #include "qgsserverparameters.h"
 #include "qgsapplication.h"
 
@@ -339,38 +340,62 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   // Plugins may have set exceptions
   if ( !requestHandler.exceptionRaised() )
   {
+
     try
     {
       const QgsServerParameters params = request.serverParameters();
       printRequestParameters( params.toMap(), logLevel );
 
-      //Config file path
-      if ( ! project )
+      if ( params.service().isEmpty() )
       {
-        // load the project if needed and not empty
-        project = mConfigCache->project( sServerInterface->configFilePath() );
-        if ( ! project )
+        if ( auto api { sServiceRegistry->getApiForRequest( request ) } )
         {
-          throw QgsServerException( QStringLiteral( "Project file error" ) );
+          api->executeRequest( request, response );
         }
-      }
-
-      if ( ! params.fileName().isEmpty() )
-      {
-        const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
-        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
-      }
-
-      // Lookup for service
-      QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
-      if ( service )
-      {
-        service->executeRequest( request, responseDecorator, project );
+        else
+        {
+          throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
+                                        QStringLiteral( "Service unknown or unsupported" ) );
+        }
       }
       else
       {
-        throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
-                                      QStringLiteral( "Service unknown or unsupported" ) );
+        //Config file path
+        if ( ! project )
+        {
+          QString configFilePath = configPath( *sConfigFilePath, params.map() );
+
+          // load the project if needed and not empty
+          project = mConfigCache->project( configFilePath );
+          if ( ! project )
+          {
+            throw QgsServerException( QStringLiteral( "Project file error" ) );
+          }
+
+          sServerInterface->setConfigFilePath( configFilePath );
+        }
+        else
+        {
+          sServerInterface->setConfigFilePath( project->fileName() );
+        }
+
+        if ( ! params.fileName().isEmpty() )
+        {
+          const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
+          requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
+        }
+
+        // Lookup for service
+        QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
+        if ( service )
+        {
+          service->executeRequest( request, responseDecorator, project );
+        }
+        else
+        {
+          throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
+                                        QStringLiteral( "Service unknown or unsupported" ) );
+        }
       }
     }
     catch ( QgsServerException &ex )

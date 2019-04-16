@@ -29,6 +29,8 @@
 #include <memory>
 
 class QgsService;
+class QgsServerRequest;
+class QgsServerApi;
 class QgsServerInterface;
 
 /**
@@ -77,6 +79,12 @@ class SERVER_EXPORT QgsServiceRegistry
      */
     void registerService( QgsService *service SIP_TRANSFER );
 
+
+    void registerApi( QgsServerApi *api SIP_TRANSFER );
+
+    std::shared_ptr<QgsServerApi> getApiForRequest( const QgsServerRequest &request ) const;
+
+
     /**
      * Unregister service from its name and version
      *
@@ -105,12 +113,14 @@ class SERVER_EXPORT QgsServiceRegistry
     // XXX consider using QMap because of the few numbers of
     // elements to handle
     typedef QHash<QString, std::shared_ptr<QgsService> > ServiceTable;
+    typedef QHash<QString, std::shared_ptr<QgsServerApi> > ApiTable;
     typedef QHash<QString, QPair<QString, QString> > VersionTable;
 
     QgsServiceNativeLoader mNativeLoader;
 
     ServiceTable mServices;
     VersionTable mVersions;
+    ApiTable mApis;
 };
 
 #endif

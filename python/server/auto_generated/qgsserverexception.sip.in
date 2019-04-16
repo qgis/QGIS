@@ -94,6 +94,26 @@ Returns the exception version
 };
 
 
+
+class QgsServerProjectNotValidException
+{
+%Docstring
+Exception thrown in case of invalid project configuration
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverexception.h"
+%End
+  public:
+    QgsServerProjectNotValidException( const QString &message );
+%Docstring
+Construction
+%End
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

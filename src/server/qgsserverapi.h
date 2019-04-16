@@ -1,0 +1,72 @@
+/***************************************************************************
+                          qgsserverapi.h
+
+  Class defining the service interface for QGIS server APIs.
+  -------------------
+  begin                : 2019-04-16
+  copyright            : (C) 2019 by Alessandro Pasotti
+  email                : elpaso at itopen dot it
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+
+
+#ifndef QGSSERVERAPI_H
+#define QGSSERVERAPI_H
+
+#include "qgis_server.h"
+#include <QRegularExpression>
+#include "qgsserverrequest.h"
+
+class QgsServerResponse;
+
+/**
+ * Server API endpoint
+ * \since QGIS 3.10
+ */
+class SERVER_EXPORT QgsServerApi
+{
+  public:
+    QgsServerApi( ) = default;
+    virtual ~QgsServerApi() = default;
+
+    /**
+     * \returns the name of the API
+     */
+    virtual QString name() const = 0;
+
+
+    /**
+     * \returns the regular expression root path of the API
+     */
+    virtual QRegularExpression rootPath() const = 0;
+
+    /**
+     * \returns the version of the service
+     */
+    virtual QString version() const = 0;
+
+    /**
+     * Returns TRUE if the given method is supported by the API, default implementation supports all methods.
+     */
+    virtual bool allowMethod( QgsServerRequest::Method ) const { return true; }
+
+
+    /**
+     * Execute the requests and set result in QgsServerRequest
+     */
+    virtual void executeRequest( const QgsServerRequest &request,
+                                 QgsServerResponse &response ) = 0;
+
+};
+
+
+#endif // QGSSERVERAPI_H

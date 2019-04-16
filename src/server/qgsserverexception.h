@@ -128,4 +128,24 @@ class SERVER_EXPORT QgsBadRequestException: public QgsOgcServiceException
 };
 #endif
 
+
+/**
+ * \ingroup server
+ * \class  QgsServerProjectNotValidException
+ * \brief Exception thrown in case of invalid project configuration
+ * \since QGIS 3.10
+ */
+#ifndef SIP_RUN
+class SERVER_EXPORT QgsServerProjectNotValidException: public QgsServerException
+{
+#else
+class SERVER_EXPORT QgsServerProjectNotValidException
+{
+#endif
+  public:
+    //! Construction
+    QgsServerProjectNotValidException( const QString &message );
+
+};
+
 #endif

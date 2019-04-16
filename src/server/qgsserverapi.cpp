@@ -1,11 +1,11 @@
 /***************************************************************************
-                           qgsmodule.h
+                          qgsserverapi.cpp
 
-  Define some boilerplate code for implementing modules
-  -----------------------------
-  begin                : 2016-12-13
-  copyright            : (C) 2016 by David Marteau
-  email                : david dot marteau at 3liz dot com
+  Class defining the service interface for QGIS server APIs.
+  -------------------
+  begin                : 2019-04-16
+  copyright            : (C) 2019 by Alessandro Pasotti
+  email                : elpaso at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +17,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsservicemodule.h"
-#include "qgsserviceregistry.h"
-#include "qgsservice.h"
 #include "qgsserverapi.h"
-#include "qgsserverinterface.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
+#include "qgsserverrequest.h"
+#include "qgsserverresponse.h"
+
 
 
