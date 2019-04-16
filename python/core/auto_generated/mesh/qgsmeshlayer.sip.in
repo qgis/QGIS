@@ -201,6 +201,7 @@ Interpolates the value on the given point from given dataset.
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
 %Docstring
 Sets the coordinate transform context to ``transformContext``.
 
