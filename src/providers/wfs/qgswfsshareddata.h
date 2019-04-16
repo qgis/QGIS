@@ -289,7 +289,7 @@ class QgsWFSFeatureHitsRequest: public QgsWfsRequest
     explicit QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri );
 
     //! Returns the feature count, or -1 in case of error
-    int getFeatureCount( const QString &WFSVersion, const QString &filter );
+    int getFeatureCount( const QString &WFSVersion, const QString &filter, const QString &namespaces );
 
   protected:
     QString errorMessageWithReason( const QString &reason ) override;

@@ -1274,8 +1274,16 @@ int QgsWFSSharedData::getFeatureCount( bool issueRequestIfNeeded )
   {
     mGetFeatureHitsIssued = true;
     QgsWFSFeatureHitsRequest request( mURI );
-    int featureCount = request.getFeatureCount( mWFSVersion, mWFSFilter );
-
+    QString namespaces = "";
+    Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, mCaps.featureTypes )
+    {
+      if ( f.name == mURI.typeName() )
+      {
+        namespaces = f.nameSpace;
+        break;
+      }
+    }
+    int featureCount = request.getFeatureCount( mWFSVersion, mWFSFilter, namespaces );
     {
       QMutexLocker locker( &mMutex );
       // Check the return value. Might be -1 in case of error, or might be
@@ -1347,14 +1355,37 @@ QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri )
 }
 
 int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
-    const QString &filter )
+    const QString &filter, const QString &namespaces )
 {
+  QString typeName = mUri.typeName();
+
+  //Determine whether namespacing is possible in the request
+  bool tryNameSpacing;
+  QString prefixOfTypename;
+  if ( ( tryNameSpacing = ( !namespaces.isEmpty() && typeName.contains( ':' ) ) ) )
+    prefixOfTypename = typeName.section( ':', 0, 0 );
+
   QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  WFSVersion );
   if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
+  {
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
+    if ( tryNameSpacing )
+    {
+      QString namespacesQueryValue = "xmlns(" + prefixOfTypename + "," + namespaces + ")";
+      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ), namespacesQueryValue );
+    }
+  }
   else
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+  {
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+    if ( tryNameSpacing )
+    {
+      QString namespacesQueryValue = "xmlns(" + prefixOfTypename + "=" + namespaces + ")";
+      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACE" ), namespacesQueryValue );
+    }
+  }
+
   if ( !filter.isEmpty() )
   {
     getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), filter );

@@ -405,6 +405,14 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( psFeatureTypeIter )
         {
           featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+          if ( featureType.nameSpace.isEmpty() )
+          {
+            //Try to look for namespace in Name tag (Seen in GO Publisher)
+            //<wfs:FeatureType>
+            // <wfs:Name xmlns:dagi="http://data.gov.dk/schemas/dagi/2/gml3sfp">dagi:Menighedsraadsafstemningsomraade</wfs:Name>
+            // <wfs:Title>Menighedsraadsafstemningsomraade</wfs:Title>
+            featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "wfs:Name.xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+          }
         }
       }
     }

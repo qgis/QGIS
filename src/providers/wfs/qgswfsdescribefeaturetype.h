@@ -25,7 +25,8 @@ class QgsWFSDescribeFeatureType : public QgsWfsRequest
     explicit QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri );
 
     //! Issue the request
-    bool requestFeatureType( const QString &WFSVersion, const QString &typeName, bool bUsePlural );
+    bool requestFeatureType( const QString &WFSVersion, const QString &typeName, const QString &namespaces );
+    bool requestFeatureType( const QString &WFSVersion, const QString &typeName, const QString &namespaces, bool bUsePlural );
 
   protected:
     QString errorMessageWithReason( const QString &reason ) override;
