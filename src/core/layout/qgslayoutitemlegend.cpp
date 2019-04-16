@@ -231,10 +231,6 @@ void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
   mCustomLayerTree.reset( rootGroup );
 }
 
-void allowRefresh()
-{
-  refreshable = true;
-}
 
 void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
 {
@@ -1005,4 +1001,10 @@ void QgsLegendModel::doneCount( long taskid )
     }
   }
 }
+
+void QgsLegendMode::allowRefresh()
+{
+  refreshable = true;
+}
+
 
