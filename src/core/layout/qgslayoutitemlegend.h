@@ -498,6 +498,12 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      */
     QgsExpressionContext updateExpressionContext();
 
+    /**
+     * Control refreshing, used to prevent segfault
+     * \since QGIS 3.8
+     */
+    bool refreshable = true;
+
   public slots:
 
     void refresh() override;
@@ -524,6 +530,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+
+    void allowRefresh();
 
 
   private:

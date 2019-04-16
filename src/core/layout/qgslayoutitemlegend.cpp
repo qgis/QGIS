@@ -156,8 +156,11 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 
 void QgsLayoutItemLegend::refresh()
 {
-  QgsLayoutItem::refresh();
-  onAtlasFeature();
+  if( mLegendModel->refreshable )
+  {
+    QgsLayoutItem::refresh();
+    onAtlasFeature();
+  }
 }
 
 void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
@@ -226,6 +229,11 @@ void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
   mLegendModel->setRootGroup( rootGroup ? rootGroup : ( mLayout ? mLayout->project()->layerTreeRoot() : nullptr ) );
 
   mCustomLayerTree.reset( rootGroup );
+}
+
+void allowRefresh()
+{
+  refreshable = true;
 }
 
 void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
@@ -980,6 +988,8 @@ void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
 
 void QgsLegendModel::pendingCount( long taskid )
 {
+  if( refreshable )
+    refreshable = false;
   mPendingCount.append( taskid );
 }
 
@@ -989,7 +999,10 @@ void QgsLegendModel::doneCount( long taskid )
   {
     mPendingCount.removeOne( taskid );
     if ( mPendingCount.isEmpty() )
+    {
       emit refreshLegend();
+      QTimer::singleShot(3750, this, SLOT(allowRefresh()));
+    }
   }
 }
 
