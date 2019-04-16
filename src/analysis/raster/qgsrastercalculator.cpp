@@ -261,7 +261,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       if ( it->raster->crs() != mOutputCrs )
       {
         QgsRasterProjector proj;
-        proj.setCrs( it->raster->crs(), mOutputCrs, it->raster->dataProvider()->transformContext() );
+        proj.setCrs( it->raster->crs(), mOutputCrs, it->raster->transformContext() );
         proj.setInput( it->raster->dataProvider() );
         proj.setPrecision( QgsRasterProjector::Exact );
 
@@ -550,7 +550,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       if ( ref.layer->crs() != mOutputCrs )
       {
         QgsRasterProjector proj;
-        proj.setCrs( ref.layer->crs(), mOutputCrs, ref.layer->dataProvider()->transformContext() );
+        proj.setCrs( ref.layer->crs(), mOutputCrs, ref.layer->transformContext() );
         proj.setInput( ref.layer->dataProvider() );
         proj.setPrecision( QgsRasterProjector::Exact );
         block.reset( proj.block( ref.band, rect, mNumOutputColumns, 1 ) );
