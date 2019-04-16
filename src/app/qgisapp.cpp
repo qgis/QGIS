@@ -7554,7 +7554,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   QString outputFormat = d.outputFormat();
 
   QgsRasterFileWriterTask *writerTask = new QgsRasterFileWriterTask( fileWriter, pipe.release(), d.nColumns(), d.nRows(),
-      d.outputRectangle(), QgsProject::instance()->transformContext(), d.outputCrs() );
+      d.outputRectangle(), d.outputCrs(), QgsProject::instance()->transformContext() );
 
   // when writer is successful:
 
