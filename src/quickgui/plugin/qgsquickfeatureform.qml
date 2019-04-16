@@ -373,7 +373,7 @@ Item {
           property var field: Field
           property var constraintValid: ConstraintValid
           property var homePath: form.project ? form.project.homePath : ""
-          property var customStyle: form.style.fields
+          property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
 
