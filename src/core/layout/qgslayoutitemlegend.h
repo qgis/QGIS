@@ -58,9 +58,8 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void setLayoutExpContext( QgsExpressionContext *econtext );
 
-
     /**
-     * Control refreshing, used to prevent segfault
+     * Is used to control QgsLayoutItemLegend::refresh, otherwise segfault may occur when updating featurecount hashes (symbol expressions).
      * \since QGIS 3.8
      */
     bool refreshable = true;
