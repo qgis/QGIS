@@ -217,4 +217,3 @@ class CORE_EXPORT QgsAggregateCalculator
 };
 
 #endif //QGSAGGREGATECALCULATOR_H
-
