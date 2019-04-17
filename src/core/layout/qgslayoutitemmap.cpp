@@ -1300,7 +1300,7 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap ) );
 
-  const QgsLayoutAtlas * atlas = layoutAtlas()
+  const QgsLayoutAtlas *atlas = getAtlas();
   if ( mAtlasDriven && atlas )
     context.appendScope( QgsExpressionContextUtils::atlasScope( atlas ) )
 
@@ -2213,4 +2213,12 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
   {
     return g.boundingBox();
   }
+}
+
+QgsLayoutAtlas *QgsLayoutItemMap::getAtlas() const
+{
+  QgsPrintLayout *layout = qobject_cast< QgsPrintLayout *>( mLayout );
+  if ( !layout )
+    return nullptr;
+  return layout->atlas();
 }

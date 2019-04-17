@@ -844,10 +844,10 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
   if ( mMap )
   {
-    QgsExpressionContext mapcontext createExpressionContext();
+    QgsExpressionContext mapcontext = mMap->createExpressionContext();
     if ( mMap->atlasDriven() )
-      context.appendScope( mMap->createExpressionContext().popScope() );
-    context.appendScope( mMap->createExpressionContext().popScope() );
+      context.appendScope( mapcontext.popScope() );
+    context.appendScope( mapcontext.popScope() );
   }
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );

@@ -26,6 +26,7 @@
 #include "qgslayoutitemmapoverview.h"
 
 class QgsAnnotation;
+class QgsLayoutAtlas;
 
 /**
  * \ingroup core
@@ -516,6 +517,14 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * \returns list of errors
      */
     QgsMapRendererJob::Errors renderingErrors() const { return mRenderingErrors; }
+
+    /**
+     * Returns the atlas of the current layout
+     * \returns a pointer to the LayoutAtlas if available
+     *
+     * \since QGIS 3.8
+     */
+    QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas() const;
 
   protected:
 
