@@ -1302,7 +1302,7 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   const QgsLayoutAtlas *atlas = getAtlas();
   if ( mAtlasDriven && atlas )
-    context.appendScope( QgsExpressionContextUtils::atlasScope( atlas ) )
+    context.appendScope( QgsExpressionContextUtils::atlasScope( atlas ) );
 
   return context;
 }

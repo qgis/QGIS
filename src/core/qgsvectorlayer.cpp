@@ -694,10 +694,11 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
 
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
+  if( !mSymbolFeatureCounted && mPendingTasks )
+    return nullptr;
+
   if ( mSymbolFeatureCounted || mFeatureCounter )
     return mFeatureCounter;
-
-  mSymbolFeatureCountMap.clear();
 
   if ( !mValid )
   {
@@ -715,6 +716,8 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
     return mFeatureCounter;
   }
 
+  if ( mPendingTasks.isEmpty() )
+    mSymbolFeatureCountMap.clear();
 
   mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
   connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );

@@ -646,7 +646,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
 
 QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpressionContext context ) const
 {
-
+  QgsVectorLayerFeatureCounter *counter;
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   context.appendScope( vl->createExpressionContextScope() );
@@ -656,28 +656,21 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
   QVariantList featureIds;
-  if ( vl )
+
+  counter = vl ?  vl->countSymbolFeatures() : nullptr;
+
+  if( counter && vl->featuresCounted() )
   {
-    QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures();
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
 
-    if ( vl->featuresCounted() )
+    const QgsFeatureIds fids = counter->featureIds( mItem.ruleKey() );
+
+    featureIds.reserve( fids.count() );
+    for ( QgsFeatureId fid : fids )
     {
-
-      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
-
-      const QgsFeatureIds fids = counter->featureIds( mItem.ruleKey() );
-
-      featureIds.reserve( fids.count() );
-      for ( QgsFeatureId fid : fids )
-      {
-        featureIds << static_cast<qint64>( fid );
-      }
-      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+      featureIds << static_cast<qint64>( fid );
     }
-    else
-    {
-      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
     }
   }
   else
