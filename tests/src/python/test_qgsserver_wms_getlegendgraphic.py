@@ -665,6 +665,76 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(15, 15))
 
+    def test_wms_GetLegendGraphic_LAYERFONTCOLOR(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "LAYERFONTCOLOR": "red"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LAYERFONTCOLOR", max_size_diff=QSize(10, 2))
+
+    def test_wms_GetLegendGraphic_ITEMFONTCOLOR(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ITEMFONTCOLOR": "red",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR", max_size_diff=QSize(10, 2))
+
+    def test_wms_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ITEMFONTCOLOR": "red",
+            "LAYERFONTCOLOR": "blue"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR", max_size_diff=QSize(10, 2))
+
+    def test_wms_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR_hex(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "ITEMFONTCOLOR": r"%23FF0000",
+            "LAYERFONTCOLOR": r"%230000FF"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR", max_size_diff=QSize(10, 2))
+
 
 if __name__ == '__main__':
     unittest.main()
