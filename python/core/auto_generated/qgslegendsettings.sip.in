@@ -75,6 +75,30 @@ Returns style
     QColor fontColor() const;
     void setFontColor( const QColor &c );
 
+    QColor layerFontColor() const;
+%Docstring
+Returns layer font color, defaults to fontColor()
+
+.. seealso:: :py:func:`setLayerFontColor`
+
+.. seealso:: :py:func:`fontColor`
+
+.. versionadded:: 3.4.7
+%End
+
+    void setLayerFontColor( const QColor &fontColor );
+%Docstring
+Sets layer font color to ``fontColor``
+Overrides fontColor()
+
+.. seealso:: :py:func:`layerFontColor`
+
+.. seealso:: :py:func:`fontColor`
+
+.. versionadded:: 3.4.7
+%End
+
+
     QSizeF symbolSize() const;
     void setSymbolSize( QSizeF s );
 
