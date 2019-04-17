@@ -13,6 +13,7 @@
 #include <map>
 #include <cassert>
 #include <memory>
+#include <limits>
 
 #include "mdal_ascii_dat.hpp"
 #include "mdal.h"
@@ -103,7 +104,8 @@ void MDAL::DriverAsciiDat::loadOldFormat( std::ifstream &in,
     if ( cardType == "ND" && items.size() >= 2 )
     {
       size_t fileNodeCount = toSizeT( items[1] );
-      if ( mesh->verticesCount() != fileNodeCount )
+      size_t meshIdCount = maximumId( mesh ) + 1;
+      if ( meshIdCount != fileNodeCount )
         EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
     }
     else if ( cardType == "SCALAR" || cardType == "VECTOR" )
@@ -167,7 +169,8 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
     if ( cardType == "ND" && items.size() >= 2 )
     {
       size_t fileNodeCount = toSizeT( items[1] );
-      if ( mesh->verticesCount() != fileNodeCount )
+      size_t meshIdCount = maximumId( mesh ) + 1;
+      if ( meshIdCount != fileNodeCount )
         EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
     }
     else if ( cardType == "NC" && items.size() >= 2 )
@@ -247,6 +250,15 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
   }
 }
 
+size_t MDAL::DriverAsciiDat::maximumId( const MDAL::Mesh *mesh ) const
+{
+  const Mesh2dm *m2dm = dynamic_cast<const Mesh2dm *>( mesh );
+  if ( m2dm )
+    return m2dm->maximumVertexId();
+  else
+    return mesh->verticesCount() - 1;
+}
+
 /**
  * The DAT format contains "datasets" and each dataset has N-outputs. One output
  * represents data for all vertices/faces for one timestep
@@ -262,6 +274,14 @@ void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh, M
   if ( !MDAL::fileExists( mDatFile ) )
   {
     if ( status ) *status = MDAL_Status::Err_FileNotFound;
+    return;
+  }
+
+  size_t mID = maximumId( mesh );
+  if ( mID == std::numeric_limits<size_t>::max() )
+  {
+    // This happens when mesh is 2DM and vertices are numbered from 0
+    if ( status ) *status = MDAL_Status::Err_IncompatibleMesh;
     return;
   }
 
@@ -316,7 +336,10 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
 
   const Mesh2dm *m2dm = dynamic_cast<const Mesh2dm *>( mesh );
   double *values = dataset->values();
-  for ( size_t i = 0; i < mesh->verticesCount(); ++i )
+  size_t meshIdCount = maximumId( mesh ) + 1; // these are native format indexes (IDs). For formats without gaps it equals vertex array index
+  size_t vertexCount = mesh->verticesCount();
+
+  for ( size_t id = 0; id < meshIdCount; ++id )
   {
     std::string line;
     std::getline( stream, line );
@@ -324,9 +347,11 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
 
     size_t index;
     if ( m2dm )
-      index = m2dm->vertexIndex( i );
+      index = m2dm->vertexIndex( id ); //this index may be out of values array
     else
-      index = i;
+      index = id;
+
+    if ( index >= vertexCount ) continue;
 
     if ( isVector )
     {
