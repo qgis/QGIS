@@ -239,6 +239,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param parameters parameters controlling aggregate calculation
      * \param context expression context for filter
      * \param ok will be set to TRUE if calculation was successfully performed by the data provider
+     * \param fids List of feature Id to perform the aggregation on a subset
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
@@ -246,7 +247,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
                                 int index,
                                 const QgsAggregateCalculator::AggregateParameters &parameters,
                                 QgsExpressionContext *context,
-                                bool &ok ) const;
+                                bool &ok,
+                                const QgsFeatureIds fids = QgsFeatureIds() ) const;
 
     /**
      * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
