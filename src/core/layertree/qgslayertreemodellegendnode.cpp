@@ -659,19 +659,18 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   counter = vl ?  vl->countSymbolFeatures() : nullptr;
 
-  if( counter && vl->featuresCounted() )
+  if ( counter && vl->featuresCounted() )
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
 
     const QgsFeatureIds fids = counter->featureIds( mItem.ruleKey() );
-
     featureIds.reserve( fids.count() );
+
     for ( QgsFeatureId fid : fids )
     {
       featureIds << static_cast<qint64>( fid );
     }
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
-    }
   }
   else
   {
