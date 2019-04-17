@@ -1300,8 +1300,8 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap ) );
 
-  const QgsLayoutAtlas *atlas = getAtlas();
-  if ( mAtlasDriven && atlas )
+  QgsLayoutAtlas *atlas = getAtlas();
+  if ( mAtlasDriven && atlas.isValid() )
     context.appendScope( QgsExpressionContextUtils::atlasScope( atlas ) );
 
   return context;
@@ -2215,10 +2215,10 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
   }
 }
 
-QgsLayoutAtlas *QgsLayoutItemMap::getAtlas() const
+QgsLayoutAtlas *QgsLayoutItemMap::getAtlas()
 {
-  QgsPrintLayout *layout = qobject_cast< QgsPrintLayout *>( mLayout );
-  if ( !layout )
+  QgsPrintLayout *pLayout = qobject_cast< QgsPrintLayout *>( mLayout );
+  if ( !pLayout.isValid() )
     return nullptr;
-  return layout->atlas();
+  return pLayout->atlas();
 }
