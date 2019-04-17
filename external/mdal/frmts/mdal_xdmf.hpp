@@ -86,7 +86,7 @@ namespace MDAL
    * Currently we do not use any fancy bison/flex based
    * expression parsing, just supporting few types of
    * most common function types:
-   *   - substraction (A-B)
+   *   - subtraction (A-B)
    *   - join ( [A, B] vector)
    *   - magnitude
    *
@@ -126,7 +126,7 @@ namespace MDAL
       size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
 
     private:
-      size_t substractFunction( size_t indexStart, size_t count, double *buffer );
+      size_t subtractFunction( size_t indexStart, size_t count, double *buffer );
       size_t flowFunction( size_t indexStart, size_t count, double *buffer );
       size_t joinFunction( size_t indexStart, size_t count, double *buffer );
       size_t extractRawData( size_t indexStart, size_t count, size_t nDatasets, std::vector<double> &buf );

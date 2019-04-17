@@ -317,7 +317,28 @@ void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
 {
   assert( raster_band );
 
-  double nodata =  GDALGetRasterNoDataValue( raster_band, nullptr );
+  // nodata
+  int pbSuccess;
+  double nodata =  GDALGetRasterNoDataValue( raster_band, &pbSuccess );
+  if ( pbSuccess == 0 ) nodata = std::numeric_limits<double>::quiet_NaN();
+  bool hasNoData = !std::isnan( nodata );
+
+  // offset and scale
+  double offset = 0.0;
+  double scale = GDALGetRasterScale( raster_band, &pbSuccess );
+  if ( ( pbSuccess == 0 ) || MDAL::equals( scale, 0.0 ) || std::isnan( scale ) )
+  {
+    scale = 1.0;
+  }
+  else
+  {
+    offset = GDALGetRasterOffset( raster_band, &pbSuccess );
+    if ( ( pbSuccess == 0 ) || std::isnan( offset ) )
+    {
+      offset = 0.0;
+    }
+  }
+
   unsigned int mXSize = meshGDALDataset()->mXSize;
   unsigned int mYSize = meshGDALDataset()->mYSize;
 
@@ -349,8 +370,11 @@ void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
     {
       unsigned int idx = x + mXSize * y;
       double val = mPafScanline[x];
-      if ( !MDAL::equals( val, nodata ) )
+      if ( !hasNoData || !MDAL::equals( val, nodata ) )
       {
+        // Apply scale and offset
+        val = val * scale + offset;
+
         // values is prepolulated with NODATA values, so store only legal values
         if ( is_vector )
         {

@@ -35,6 +35,9 @@ namespace MDAL
    * such dataset, the dataset name contains "_els_" substring
    * (e.g. depth_els_1.dat)
    *
+   * HYDRO_AS-2D solver can have mesh that has numbering gaps, but
+   * speficies values for even missing indexes in dataset file
+   *
    * In one file, there is always one dataset group stored.
    *
    * Sometime the "older" datasets may have some part of the
@@ -59,6 +62,12 @@ namespace MDAL
 
       void loadOldFormat( std::ifstream &in, Mesh *mesh, MDAL_Status *status ) const;
       void loadNewFormat( std::ifstream &in, Mesh *mesh, MDAL_Status *status ) const;
+
+      //! Gets maximum (native) index.
+      //! For meshes without indexing gap it is vertexCount - 1
+      //! For some HYDRO_AS-2D meshes with indexing gaps, it returns
+      //! maximum native index of the vertex in defined in the mesh
+      size_t maximumId( const Mesh *mesh ) const;
 
       void readVertexTimestep(
         const Mesh *mesh,
