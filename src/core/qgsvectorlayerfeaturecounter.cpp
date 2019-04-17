@@ -34,6 +34,7 @@ bool QgsVectorLayerFeatureCounter::run()
 {
   QMutex mutex;
   mutex.lock();
+  mRunning = true;
   mSymbolFeatureCountMap.clear();
   mSymbolFeatureIdMap.clear();
   QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
@@ -98,6 +99,7 @@ bool QgsVectorLayerFeatureCounter::run()
 
   setProgress( 100 );
   mutex.unlock();
+  mRunning = false;
   emit symbolsCounted();
   return true;
 }
@@ -109,6 +111,8 @@ QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 
 long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const
 {
+  if ( mRunning )
+    return -1;
   return mSymbolFeatureCountMap.value( legendKey, -1 );
 }
 
@@ -119,5 +123,7 @@ QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap()
 
 QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString symbolkey ) const
 {
+  if ( mRunning )
+    return QgsFeatureIds();
   return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
 }
