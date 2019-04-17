@@ -153,7 +153,7 @@ size_t MDAL::XdmfFunctionDataset::scalarData( size_t indexStart, size_t count, d
   assert( mType != FunctionType::Join );
 
   if ( mType == FunctionType::Subtract )
-    return substractFunction( indexStart, count, buffer );
+    return subtractFunction( indexStart, count, buffer );
 
   if ( mType == FunctionType::Flow )
     return flowFunction( indexStart, count, buffer );
@@ -176,7 +176,7 @@ size_t MDAL::XdmfFunctionDataset::activeData( size_t indexStart, size_t count, i
   return count;
 }
 
-size_t MDAL::XdmfFunctionDataset::substractFunction( size_t indexStart, size_t count, double *buffer )
+size_t MDAL::XdmfFunctionDataset::subtractFunction( size_t indexStart, size_t count, double *buffer )
 {
   std::vector<double> buf( 2 * count, std::numeric_limits<double>::quiet_NaN() );
   size_t copyVals = extractRawData( indexStart, count, 2, buf );
