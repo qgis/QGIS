@@ -3911,7 +3911,7 @@ QVariant QgsVectorLayer::maximumValue( int index ) const
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
-                                    bool *ok, const QgsFeatureIds fids ) const
+                                    bool *ok, const QgsFeatureIds *fids ) const
 {
   if ( ok )
     *ok = false;
