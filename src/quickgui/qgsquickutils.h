@@ -124,10 +124,13 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE static bool fileExists( const QString &path );
 
     /**
-     * Extracts filename from path
-     * \since QGIS 3.4
+     * Returns relative path of the file to given prefixPath. If prefixPath does not match a path parameter,
+     * returns an empty string. If a path starts with "file://", this prefix is ignored.
+     * \param path Absolute path to file
+     * \param prefixPath
+     * \since QGIS 3.8
      */
-    Q_INVOKABLE static QString getFileName( const QString &path );
+    Q_INVOKABLE static QString getRelativePath( const QString &path, const QString &prefixPath );
 
     /**
       * Log message in QgsMessageLog
@@ -195,6 +198,16 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
         QgsUnitTypes::SystemOfMeasurement destSystem = QgsUnitTypes::MetricSystem );
 
     /**
+      * Deletes file from a given path.
+      *
+      * \param filePath Absolute path to file
+      * \returns bool TRUE, if removal was successful, otherwise FALSE.
+      *
+      * \since QGIS 3.8
+      */
+    Q_INVOKABLE static bool removeFile( const QString &filePath );
+
+    /**
       * Converts distance to human readable distance in destination system of measurement
       *
       * \sa QgsQuickUtils::formatDistance()
@@ -215,6 +228,18 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
 
     //! Returns a string with information about screen size and resolution - useful for debugging
     QString dumpScreenInfo() const;
+
+    /**
+     * Creates a cache for a value relation field.
+     * This can be used to keep the value map in the local memory
+     * if doing multiple lookups in a loop.
+     * \param config The widget configuration
+     * \param formFeature The feature currently being edited with current attribute values
+     * \return A kvp list of values for the widget
+     *
+     * \since QGIS 3.6
+     */
+    Q_INVOKABLE static QVariantMap createValueRelationCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature() );
 
   private:
     static void formatToMetricDistance( double srcDistance,

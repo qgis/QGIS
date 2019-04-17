@@ -38,7 +38,7 @@ namespace MathUtils
   double ANALYSIS_EXPORT calcCubicHermitePoly( int n, int i, double t );
   //! Calculates the first derivative of a cubic Hermite polynomial with respect to the parameter t
   double ANALYSIS_EXPORT cFDerCubicHermitePoly( int n, int i, double t );
-  //! Calculates the center of the circle passing through p1, p2 and p3. Returns true in case of success and false otherwise (e.g. all three points on a line)
+  //! Calculates the center of the circle passing through p1, p2 and p3. Returns TRUE in case of success and FALSE otherwise (e.g. all three points on a line)
   bool ANALYSIS_EXPORT circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result );
   //! Calculates the (2 dimensional) distance from 'thepoint' to the line defined by p1 and p2
   double ANALYSIS_EXPORT distPointFromLine( QgsPoint *thepoint, QgsPoint *p1, QgsPoint *p2 );
@@ -50,9 +50,9 @@ namespace MathUtils
   bool ANALYSIS_EXPORT inDiametral( QgsPoint *p1, QgsPoint *p2, QgsPoint *point );
   //! Returns whether 'thepoint' is left or right of the line from 'p1' to 'p2'. Negativ values mean left and positiv values right. There may be numerical instabilities, so a threshold may be useful
   double ANALYSIS_EXPORT leftOf( const QgsPoint &thepoint, const QgsPoint *p1, const QgsPoint *p2 );
-  //! Returns true, if line1 (p1 to p2) and line2 (p3 to p4) intersect. If the lines have an endpoint in common, false is returned
+  //! Returns TRUE, if line1 (p1 to p2) and line2 (p3 to p4) intersect. If the lines have an endpoint in common, FALSE is returned
   bool ANALYSIS_EXPORT lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *p4 );
-  //! Returns true, if line1 (p1 to p2) and line2 (p3 to p4) intersect. If the lines have an endpoint in common, false is returned. The intersecting point is stored in 'intersection_point.
+  //! Returns TRUE, if line1 (p1 to p2) and line2 (p3 to p4) intersect. If the lines have an endpoint in common, FALSE is returned. The intersecting point is stored in 'intersection_point.
   bool ANALYSIS_EXPORT lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *p4, QgsPoint *intersection_point );
   //! Lower function
   int ANALYSIS_EXPORT lower( int n, int i );
@@ -68,9 +68,9 @@ namespace MathUtils
   bool ANALYSIS_EXPORT normalRight( Vector3D *v1, Vector3D *result, double length );
   //! Calculates the normal vector of the plane through the points p1, p2 and p3 and assigns the result to vec. If the points are ordered counterclockwise, the normal will have a positive z-coordinate;
   void ANALYSIS_EXPORT normalFromPoints( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, Vector3D *vec );
-  //! Returns true, if the point with coordinates x and y is inside (or at the edge) of the triangle p1,p2,p3 and false, if it is outside. p1, p2 and p3 have to be ordered counterclockwise
+  //! Returns TRUE, if the point with coordinates x and y is inside (or at the edge) of the triangle p1,p2,p3 and FALSE, if it is outside. p1, p2 and p3 have to be ordered counterclockwise
   bool ANALYSIS_EXPORT pointInsideTriangle( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3 );
-  //! Calculates a Vector orthogonal to 'tangent' with length 1 and closest possible to result. Returns true in case of success and false otherwise
+  //! Calculates a Vector orthogonal to 'tangent' with length 1 and closest possible to result. Returns TRUE in case of success and FALSE otherwise
   bool ANALYSIS_EXPORT normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D *result );
   //! Tests, if 'test' is in the same plane as 'p1', 'p2' and 'p3' and returns the z-difference from the plane to 'test
   double ANALYSIS_EXPORT planeTest( QgsPoint *test, QgsPoint *pt1, QgsPoint *pt2, QgsPoint *pt3 );

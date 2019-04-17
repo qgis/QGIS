@@ -30,6 +30,7 @@
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsdataprovider.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QList>
 #include <QStringList>

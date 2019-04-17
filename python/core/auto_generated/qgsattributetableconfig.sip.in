@@ -63,7 +63,7 @@ The list order defines the order of appearance.
 
     bool isEmpty() const;
 %Docstring
-Returns true if the configuration is empty, ie it contains no columns.
+Returns ``True`` if the configuration is empty, ie it contains no columns.
 %End
 
     int mapVisibleColumnToIndex( int visibleColumn ) const;
@@ -91,7 +91,7 @@ fields but not in the configuration will be appended.
 
     bool actionWidgetVisible() const;
 %Docstring
-Returns true if the action widget is visible
+Returns ``True`` if the action widget is visible
 %End
 
     void setActionWidgetVisible( bool visible );
@@ -150,7 +150,7 @@ Sets the width of a column.
 
     bool columnHidden( int column ) const;
 %Docstring
-Returns true if the specified column is hidden.
+Returns ``True`` if the specified column is hidden.
 
 :param column: column index
 
@@ -162,7 +162,7 @@ Returns true if the specified column is hidden.
 Sets whether the specified column should be hidden.
 
 :param column: column index
-:param hidden: set to true to hide column
+:param hidden: set to ``True`` to hide column
 
 .. seealso:: :py:func:`columnHidden`
 %End

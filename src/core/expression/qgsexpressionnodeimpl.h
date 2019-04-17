@@ -177,7 +177,7 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     int precedence() const;
 
     /**
-     * Returns true if the operator is left-associative.
+     * Returns TRUE if the operator is left-associative.
      */
     bool leftAssociative() const;
 
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
   public:
 
     /**
-     * This node tests if the result of \a node is in the result of \a list. Optionally it can be inverted with \a notin which by default is false.
+     * This node tests if the result of \a node is in the result of \a list. Optionally it can be inverted with \a notin which by default is FALSE.
      */
     QgsExpressionNodeInOperator( QgsExpressionNode *node SIP_TRANSFER, QgsExpressionNode::NodeList *list SIP_TRANSFER, bool notin = false )
       : mNode( node )
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
     QgsExpressionNode *node() const { return mNode; }
 
     /**
-     * Returns true if this node is a "NOT IN" operator, or false if the node is a normal "IN" operator.
+     * Returns TRUE if this node is a "NOT IN" operator, or FALSE if the node is a normal "IN" operator.
      */
     bool isNotIn() const { return mNotIn; }
 

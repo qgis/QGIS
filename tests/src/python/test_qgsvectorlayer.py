@@ -22,6 +22,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
                        QgsAction,
+                       QgsCoordinateTransformContext,
                        QgsDataProvider,
                        QgsDefaultValue,
                        QgsEditorWidgetSetup,
@@ -65,6 +66,8 @@ from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 start_app()
 
@@ -182,6 +185,25 @@ def dumpEditBuffer(layer):
     print("CHANGED GEOM:")
     for fid, geom in editBuffer.changedGeometries().items():
         print(("%d | %s" % (f.id(), f.geometry().asWkt())))
+
+
+class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
+
+    """
+    Tests a vector layer against the feature source tests, using a real layer source (not a memory layer)
+    """
+    @classmethod
+    def getSource(cls):
+        vl = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp'), 'test')
+        assert (vl.isValid())
+        return vl
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QgsGui.editorWidgetRegistry().initEditors()
+        # Create test layer for FeatureSourceTestCase
+        cls.source = cls.getSource()
 
 
 class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
@@ -2053,7 +2075,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
         pr = layer.dataProvider()
 
-        string_values = ['this', 'is', 'a', 'test']
+        string_values = ['this', 'is', 'a', 'test', 'a', 'nice', 'test']
         features = []
         for s in string_values:
             f = QgsFeature()
@@ -2065,7 +2087,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         params.delimiter = ' '
         val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenate, 'fldstring', params)
         self.assertTrue(ok)
-        self.assertEqual(val, 'this is a test')
+        self.assertEqual(val, 'this is a test a nice test')
+        val, ok = layer.aggregate(QgsAggregateCalculator.StringConcatenateUnique, 'fldstring', params)
+        self.assertTrue(ok)
+        self.assertEqual(val, 'this is a test nice')
 
     def testAggregateInVirtualField(self):
         """
@@ -3141,6 +3166,71 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
         """ Skip max values test - as noted in the docs this is unreliable when features are in the buffer
         """
         pass
+
+
+class TestQgsVectorLayerTransformContext(unittest.TestCase):
+
+    def setUp(self):
+        """Prepare tc"""
+        super(TestQgsVectorLayerTransformContext, self).setUp()
+        self.ctx = QgsCoordinateTransformContext()
+        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+
+    def testTransformContextIsSetInCtor(self):
+        """Test transform context can be set from ctor"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        options = QgsVectorLayer.LayerOptions(self.ctx)
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory', options)
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+    def testTransformContextInheritsFromProject(self):
+        """Test that when a layer is added to a project it inherits its context"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p = QgsProject()
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p.addMapLayers([vl])
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+    def testTransformContextIsSyncedFromProject(self):
+        """Test that when a layer is synced when project context changes"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p = QgsProject()
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p.addMapLayers([vl])
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        # Now change the project context
+        tc2 = QgsCoordinateTransformContext()
+        p.setTransformContext(tc2)
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

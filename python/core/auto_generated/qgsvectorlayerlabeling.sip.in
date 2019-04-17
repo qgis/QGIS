@@ -76,7 +76,7 @@ Set pal settings for a specific provider (takes ownership).
 
     virtual bool requiresAdvancedEffects() const = 0;
 %Docstring
-Returns true if drawing labels requires advanced effects like composition
+Returns ``True`` if drawing labels requires advanced effects like composition
 modes, which could prevent it being used as an isolated cached image
 or exported to a vector format.
 

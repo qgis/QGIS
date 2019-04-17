@@ -72,6 +72,11 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRasterLayer" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path to a raster layer" );
+    }
 };
 
 /**
@@ -119,6 +124,11 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshLayer : public QgsProcessingPara
              << QObject::tr( "str: layer name" )
              << QObject::tr( "str: layer source" )
              << QStringLiteral( "QgsMeshLayer" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path to a mesh layer" );
     }
 };
 
@@ -168,6 +178,11 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
              << QObject::tr( "str: layer source" )
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsVectorLayer" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path to a vector layer" );
     }
 };
 
@@ -220,6 +235,11 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
              << QStringLiteral( "QgsRasterLayer" )
              << QStringLiteral( "QgsVectorLayer" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path to a vector, raster or mesh layer" );
+    }
 };
 
 /**
@@ -268,6 +288,12 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
              << QStringLiteral( "str" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "1 for true/yes" )
+             << QObject::tr( "0 for false/no" );
+    }
 };
 
 /**
@@ -313,6 +339,11 @@ class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingPar
     {
       return QStringList() << QStringLiteral( "str" )
              << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A valid QGIS expression string, e.g \"road_name\" = 'MAIN RD'" );
     }
 };
 
@@ -370,6 +401,14 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
              << QObject::tr( "QgsProcessingFeatureSourceDefinition: CRS of source is used" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "CRS as an auth ID (e.g. 'EPSG:3111')" )
+             << QObject::tr( "CRS as a PROJ4 string (e.g. 'PROJ4:…')" )
+             << QObject::tr( "CRS as a WKT string (e.g. 'WKT:…')" )
+             << QObject::tr( "Path to a layer. The CRS of the layer is used." ) ;
+    }
 };
 
 /**
@@ -418,6 +457,11 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
              << QObject::tr( "str: as two comma delimited floats, e.g. '1,10'" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Two comma separated numeric values, e.g. '1,10'" );
+    }
 };
 
 /**
@@ -464,7 +508,13 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
       return QStringList() << QObject::tr( "str: as an 'x,y' string, e.g. '1.5,10.1'" )
              << QStringLiteral( "QgsPointXY" )
              << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsReferencedPointXY" );
+             << QStringLiteral( "QgsReferencedPointXY" )
+             << QStringLiteral( "QgsGeometry: centroid of geometry is used" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Point coordinate as an 'x,y' string, e.g. '1.5,10.1'" );
     }
 };
 
@@ -512,6 +562,12 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
       return QStringList() << QStringLiteral( "int" )
              << QObject::tr( "str: as string representation of int, e.g. '1'" )
              << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Number of selected option, e.g. '1'" )
+             << QObject::tr( "Comma separated list of options, e.g. '1,3'" );
     }
 };
 
@@ -566,6 +622,12 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QStringLiteral( "QgsRectangle" )
              << QStringLiteral( "QgsReferencedRectangle" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A comma delimited string of x min, x max, y min, y max. E.g. '4,10,101,105'" )
+             << QObject::tr( "Path to a layer. The extent of the layer is used." ) ;
+    }
 };
 
 /**
@@ -613,6 +675,11 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
              << QStringLiteral( "list" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A comma delimited list of values" );
+    }
 };
 
 /**
@@ -659,6 +726,11 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
       return QStringList() << QStringLiteral( "str" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path to a file" );
+    }
 };
 
 /**
@@ -704,6 +776,12 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
     {
       return QStringList() << QStringLiteral( "str" )
              << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "The name of an existing field" )
+             << QObject::tr( "; delimited list of existing field names" );
     }
 };
 
@@ -760,6 +838,12 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path for new vector layer" );
+    }
+
 };
 
 /**
@@ -814,6 +898,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
       return QStringList() << QStringLiteral( "str" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path for new file" );
+    }
+
 };
 
 /**
@@ -869,6 +959,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
       return QStringList() << QStringLiteral( "str" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path for an existing or new folder" );
+    }
+
 };
 
 /**
@@ -924,6 +1020,12 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path for new raster layer" );
+    }
+
 };
 
 /**
@@ -970,6 +1072,12 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
       return QStringList() << QStringLiteral( "str" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "String value" );
+    }
+
 };
 
 /**
@@ -1015,6 +1123,12 @@ class CORE_EXPORT QgsProcessingParameterTypeAuthConfig : public QgsProcessingPar
     {
       return QStringList() << QStringLiteral( "str" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "An existing QGIS authentication ID string" );
+    }
+
 };
 
 /**
@@ -1114,6 +1228,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsVectorLayer" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path to a vector layer" );
+    }
+
 };
 
 /**
@@ -1161,6 +1281,12 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
              << QStringLiteral( "float" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A numeric value" );
+    }
+
 };
 
 /**
@@ -1209,6 +1335,67 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
              << QStringLiteral( "QgsProperty" );
     }
 
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A numeric value" );
+    }
+
+
+};
+
+
+/**
+ * A scale parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('scale')
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingParameterTypeScale : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterScale( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A numeric parameter representing a map scale." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Scale" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "scale" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterScale" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterScale" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int: scale denominator" )
+             << QStringLiteral( "float: scale denominator" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A numeric value representing the scale denominator" );
+    }
+
+
 };
 
 /**
@@ -1255,6 +1442,12 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
       return QStringList() << QStringLiteral( "int" )
              << QStringLiteral( "QgsProperty" );
     }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Integer value representing an existing raster band number" );
+    }
+
 
 };
 
@@ -1313,6 +1506,121 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
              << QStringLiteral( "QgsProperty" );
     }
 
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path for new vector layer" );
+    }
+
+
 };
 
+
+/**
+ * A print layout parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('layout')
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingParameterTypeLayout : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterLayout( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A print layout parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Print Layout" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "layout" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterLayout" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterLayout" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: name of print layout in current project" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of print layout in current project" );
+    }
+
+
+};
+
+
+
+/**
+ * A print layout item parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('layoutitem')
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingParameterTypeLayoutItem : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterLayoutItem( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A print layout item parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Print Layout Item" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "layoutitem" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterLayoutItem" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterLayoutItem" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: UUID of print layout item" )
+             << QObject::tr( "str: id of print layout item" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "UUID or item id of layout item" );
+    }
+
+
+};
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

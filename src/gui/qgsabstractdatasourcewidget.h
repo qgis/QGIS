@@ -133,7 +133,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Returns the widget mode
     QgsProviderRegistry::WidgetMode widgetMode() const;
 
-    //! Returns the map canvas (can be null)
+    //! Returns the map canvas (can be NULLPTR)
     const QgsMapCanvas *mapCanvas() const;
 
     //! Connect the ok and apply/add buttons to the slots

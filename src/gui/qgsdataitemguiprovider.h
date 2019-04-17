@@ -114,7 +114,7 @@ class GUI_EXPORT QgsDataItemGuiProvider
                                       const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
 
     /**
-     * Called when a user double clicks on an \a item. Providers should return true
+     * Called when a user double clicks on an \a item. Providers should return TRUE
      * if the double-click was handled and do not want other providers to handle the
      * double-click, and to prevent the default double-click behavior for items.
      */

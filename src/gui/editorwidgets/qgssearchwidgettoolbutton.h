@@ -114,7 +114,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     QgsSearchWidgetWrapper::FilterFlags activeFlags() const { return mFilterFlags; }
 
     /**
-     * Returns true if the widget is set to be included in the search.
+     * Returns TRUE if the widget is set to be included in the search.
      * \see setInactive()
      * \see setActive()
      */

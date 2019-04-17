@@ -30,10 +30,10 @@ namespace QgsZipUtils
 {
 
   /**
-   * Returns true if the file name is a zipped file ( i.e with a '.qgz'
-   *  extension, false otherwise.
+   * Returns TRUE if the file name is a zipped file ( i.e with a '.qgz'
+   *  extension, FALSE otherwise.
    * \param filename The name of the file
-   * \returns true if the file is zipped, false otherwise
+   * \returns TRUE if the file is zipped, FALSE otherwise
    */
   CORE_EXPORT bool isZipFile( const QString &filename );
 
@@ -42,7 +42,7 @@ namespace QgsZipUtils
    * \param zip The zip filename
    * \param dir The output directory
    * \param files The absolute path of unzipped files
-   * \returns false if the zip filename does not exist, the output directory
+   * \returns FALSE if the zip filename does not exist, the output directory
    * does not exist or is not writable.
    * \since QGIS 3.0
    */

@@ -75,6 +75,10 @@
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
         <file>composer/missing_image.svg</file>
+        <file>themes/default/checks/SliverOrGap.svg</file>
+        <file>themes/default/checks/InvalidGeometry.svg</file>
+        <file>themes/default/checks/MissingVertex.svg</file>
+        <file>themes/default/checks/Overlap.svg</file>
         <file>themes/default/algorithms/mAlgorithmAddGeometryAttributes.svg</file>
         <file>themes/default/algorithms/mAlgorithmBasicStatistics.svg</file>
         <file>themes/default/algorithms/mAlgorithmBuffer.svg</file>
@@ -167,10 +171,12 @@
         <file>themes/default/mActionDataSourceManager.svg</file>
         <file>themes/default/mActionDistributeBottom.svg</file>
         <file>themes/default/mActionDistributeHCenter.svg</file>
+        <file>themes/default/mActionDistributeHSpace.svg</file>
         <file>themes/default/mActionDistributeLeft.svg</file>
         <file>themes/default/mActionDistributeRight.svg</file>
         <file>themes/default/mActionDistributeTop.svg</file>
         <file>themes/default/mActionDistributeVCenter.svg</file>
+        <file>themes/default/mActionDistributeVSpace.svg</file>
         <file>themes/default/mActionAddLayer.svg</file>
         <file>themes/default/mActionAddMeshLayer.svg</file>
         <file>themes/default/mActionAddAllToOverview.svg</file>
@@ -744,6 +750,7 @@
         <file>themes/default/mIconFieldBool.svg</file>
         <file>themes/default/mIconDataDefineColor.svg</file>
         <file>themes/default/mIconDataDefineColorOn.svg</file>
+        <file>themes/default/mActionNewVirtualLayer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
+#include "qgslinestring.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapthemecollection.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshrenderersettings.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastershader.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshrenderersettings.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -33,12 +34,16 @@
 #include "qgschunknode_p.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsline3dsymbol.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsterrainentity_p.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
+
+#include <QFileInfo>
+#include <QDir>
 
 class TestQgs3DRendering : public QObject
 {
@@ -50,9 +55,11 @@ class TestQgs3DRendering : public QObject
     void testFlatTerrain();
     void testDemTerrain();
     void testExtrudedPolygons();
+    void testLineRendering();
     void testMapTheme();
     void testMesh();
     void testRuleBasedRenderer();
+    void testAnimationExport();
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -210,6 +217,11 @@ void TestQgs3DRendering::testFlatTerrain()
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 45 );
   QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "flat_terrain_3", img3, 40 ) );
+
+  // change camera lens field of view
+  map->setFieldOfView( 85.0f );
+  QImage img4 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "flat_terrain_4", img4, 40 ) );
 }
 
 void TestQgs3DRendering::testDemTerrain()
@@ -269,6 +281,64 @@ void TestQgs3DRendering::testExtrudedPolygons()
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
 }
 
+
+void TestQgs3DRendering::testLineRendering()
+{
+  QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+
+  QgsVectorLayer *layerLines = new QgsVectorLayer( "LineString?crs=EPSG:27700", "lines", "memory" );
+
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setRenderAsSimpleLines( true );
+  lineSymbol->setWidth( 10 );
+  QgsPhongMaterialSettings mat;
+  mat.setAmbient( Qt::red );
+  lineSymbol->setMaterial( mat );
+  layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+
+  QVector<QgsPoint> pts;
+  pts << QgsPoint( 0, 0, 10 ) << QgsPoint( 0, 1000, 10 ) << QgsPoint( 1000, 1000, 10 ) << QgsPoint( 1000, 0, 10 );
+  pts << QgsPoint( 1000, 0, 500 ) << QgsPoint( 1000, 1000, 500 ) << QgsPoint( 0, 1000, 500 ) << QgsPoint( 0, 0, 500 );
+  QgsFeature f1( layerLines->fields() );
+  f1.setGeometry( QgsGeometry( new QgsLineString( pts ) ) );
+  QgsFeatureList flist;
+  flist << f1;
+  layerLines->dataProvider()->addFeatures( flist );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layerLines );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "line_rendering_1", img, 40 ) );
+
+  // more perspective look
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "line_rendering_2", img2, 40 ) );
+
+  delete layerLines;
+}
+
 void TestQgs3DRendering::testMapTheme()
 {
   QgsRectangle fullExtent = mLayerDtm->extent();
@@ -305,6 +375,11 @@ void TestQgs3DRendering::testMapTheme()
 
 void TestQgs3DRendering::testMesh()
 {
+  // Disabled on travic ci. This test is flaky
+  // See https://travis-ci.org/qgis/QGIS/jobs/505456689#L1351
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   QgsRectangle fullExtent = mLayerMesh->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
@@ -384,14 +459,56 @@ bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, in
   QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "3d" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
   myChecker.setColorTolerance( 2 );  // color tolerance < 2 was failing polygon3d_extrusion test
-  bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
+  bool myResultFlag = myChecker.runTest( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
+}
+
+void TestQgs3DRendering::testAnimationExport()
+{
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings map;
+  map.setCrs( mProject->crs() );
+  map.setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map.setLayers( QList<QgsMapLayer *>() << mLayerRgb );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map.crs() );
+  flatTerrain->setExtent( fullExtent );
+  map.setTerrainGenerator( flatTerrain );
+
+  Qgs3DAnimationSettings animSettings;
+  Qgs3DAnimationSettings::Keyframes keyframes;
+  Qgs3DAnimationSettings::Keyframe kf1;
+  kf1.dist = 2500;
+  Qgs3DAnimationSettings::Keyframe kf2;
+  kf2.time = 2;
+  kf2.dist = 3000;
+  keyframes << kf1;
+  keyframes << kf2;
+  animSettings.setKeyframes( keyframes );
+
+  QString dir = QDir::temp().path();
+  QString error;
+
+  bool success = Qgs3DUtils::exportAnimation(
+                   animSettings,
+                   map,
+                   1,
+                   dir,
+                   "test3danimation###.png",
+                   QSize( 600, 400 ),
+                   error,
+                   nullptr );
+
+  QVERIFY( success );
+  QVERIFY( QFileInfo( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ).exists() );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

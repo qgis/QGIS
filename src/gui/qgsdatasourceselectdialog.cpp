@@ -16,10 +16,12 @@
 
 #include "qgsdatasourceselectdialog.h"
 #include "ui_qgsdatasourceselectdialog.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
+
 #include "qgis.h"
 #include "qgsbrowsermodel.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
 #include <QMenu>
@@ -27,7 +29,7 @@
 QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   QgsBrowserModel *browserModel,
   bool setFilterByLayerType,
-  const QgsMapLayer::LayerType &layerType,
+  const QgsMapLayerType &layerType,
   QWidget *parent )
   : QDialog( parent )
 {
@@ -104,6 +106,8 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsDataSourceSelectDialog::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsDataSourceSelectDialog::setFilter );
   connect( group, &QActionGroup::triggered, this, &QgsDataSourceSelectDialog::setFilterSyntax );
+
+  mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   if ( QgsSettings().value( QStringLiteral( "datasourceSelectFilterVisible" ), false, QgsSettings::Section::Gui ).toBool() )
   {
@@ -218,7 +222,7 @@ void QgsDataSourceSelectDialog::setCaseSensitive( bool caseSensitive )
   mBrowserProxyModel.setFilterCaseSensitivity( caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
 }
 
-void QgsDataSourceSelectDialog::setLayerTypeFilter( QgsMapLayer::LayerType layerType )
+void QgsDataSourceSelectDialog::setLayerTypeFilter( QgsMapLayerType layerType )
 {
   mBrowserProxyModel.setFilterByLayerType( true );
   mBrowserProxyModel.setLayerType( layerType );

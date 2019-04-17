@@ -90,13 +90,13 @@ class gdalinfo(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
-        if self.parameterAsBool(parameters, self.MIN_MAX, context):
+        if self.parameterAsBoolean(parameters, self.MIN_MAX, context):
             arguments.append('-mm')
-        if self.parameterAsBool(parameters, self.STATS, context):
+        if self.parameterAsBoolean(parameters, self.STATS, context):
             arguments.append('-stats')
-        if self.parameterAsBool(parameters, self.NO_GCP, context):
+        if self.parameterAsBoolean(parameters, self.NO_GCP, context):
             arguments.append('-nogcp')
-        if self.parameterAsBool(parameters, self.NO_METADATA, context):
+        if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
             arguments.append('-nomd')
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:

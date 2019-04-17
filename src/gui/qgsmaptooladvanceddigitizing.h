@@ -72,7 +72,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * widget should be disabled and only enabled once a vertex is being moved. Other map tools
      * may keep advanced digitizing allowed all the time.
      *
-     * If true is returned, that does not mean that advanced digitizing is actually active,
+     * If TRUE is returned, that does not mean that advanced digitizing is actually active,
      * because it is up to the user to enable/disable it when it is allowed.
      * \sa setAdvancedDigitizingAllowed()
      * \since QGIS 3.0

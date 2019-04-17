@@ -423,6 +423,11 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       // Assuming that the coordinates should be in a projected CRS, we should be able
       // to simplify geometries that may cause problems and avoid possible crashes
       QgsGeometry polygonSimplified = QgsGeometry( polygonNew->clone() ).simplify( 0.001 );
+      if ( polygonSimplified.isNull() )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "geometry simplification failed - skipping" ), QObject::tr( "3D" ) );
+        return;
+      }
       const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
       if ( _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
       {

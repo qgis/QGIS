@@ -100,6 +100,14 @@ size_t MDAL::toSizeT( const std::string &str )
   return static_cast< size_t >( i );
 }
 
+size_t MDAL::toSizeT( const char &str )
+{
+  int i = atoi( &str );
+  if ( i < 0 ) // consistent with atoi return
+    i = 0;
+  return static_cast< size_t >( i );
+}
+
 double MDAL::toDouble( const std::string &str )
 {
   return atof( str.c_str() );
@@ -445,6 +453,9 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
     {
       valsRead = dataset->scalarData( i, bufLen, buffer.data() );
     }
+    if ( valsRead == 0 )
+      return ret;
+
     MDAL::Statistics dsStats = _calculateStatistics( buffer, valsRead, isVector );
     combineStatistics( ret, dsStats );
     i += valsRead;
@@ -492,6 +503,39 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
   {
     vals[i] = vertices[i].z;
   }
+  dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
+  group->datasets.push_back( dataset );
+  group->setStatistics( MDAL::calculateStatistics( group ) );
+  mesh->datasetGroups.push_back( group );
+}
+
+void MDAL::addFaceScalarDatasetGroup( MDAL::Mesh *mesh,
+                                      const std::vector<double> &values,
+                                      const std::string &name )
+{
+  if ( !mesh )
+    return;
+
+  if ( values.empty() )
+    return;
+
+  if ( mesh->facesCount() == 0 )
+    return;
+
+  assert( values.size() ==  mesh->facesCount() );
+
+  std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          mesh->driverName(),
+                                          mesh,
+                                          mesh->uri(),
+                                          name
+                                        );
+  group->setIsOnVertices( false );
+  group->setIsScalar( true );
+
+  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  dataset->setTime( 0.0 );
+  memcpy( dataset->values(), values.data(), sizeof( double )*values.size() );
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
   group->setStatistics( MDAL::calculateStatistics( group ) );

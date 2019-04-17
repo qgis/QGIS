@@ -65,8 +65,8 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     /**
      * Performs a "get" operation on the specified \a request.
      *
-     * If \a forceRefresh is false then previously cached replies may be used for the request. If
-     * it is set to true then a new query is always performed.
+     * If \a forceRefresh is FALSE then previously cached replies may be used for the request. If
+     * it is set to TRUE then a new query is always performed.
      *
      * If an authCfg() has been set, then any authentication configuration required will automatically be applied to
      * \a request. There is no need to manually apply the authentication to the request prior to calling
@@ -87,8 +87,8 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     /**
      * Performs a "post" operation on the specified \a request, using the given \a data.
      *
-     * If \a forceRefresh is false then previously cached replies may be used for the request. If
-     * it is set to true then a new query is always performed.
+     * If \a forceRefresh is FALSE then previously cached replies may be used for the request. If
+     * it is set to TRUE then a new query is always performed.
      *
      * If an authCfg() has been set, then any authentication configuration required will automatically be applied to
      * \a request. There is no need to manually apply the authentication to the request prior to calling

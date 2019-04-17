@@ -116,7 +116,7 @@ class TestQgsProcessingCheckValidity(unittest.TestCase):
         self.assertEqual(invalid_layer.featureCount(), 1)
         f = next(invalid_layer.getFeatures())
         self.assertEqual(f.attributes(), [
-                         1, 'segments 0 and 2 of line 0 intersect at 1, 1\nGeometry has 1 errors.'])
+                         1, 'segments 0 and 2 of line 0 intersect at 1, 1'])
 
         # GEOS method
         parameters['METHOD'] = 2

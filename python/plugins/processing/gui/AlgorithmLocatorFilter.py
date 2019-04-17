@@ -33,13 +33,14 @@ from qgis.core import (QgsApplication,
                        QgsLocatorResult,
                        QgsProcessing,
                        QgsWkbTypes,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsFields)
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmExecutor import execute_in_place
 from qgis.utils import iface
+from processing.core.ProcessingConfig import ProcessingConfig
 
 
 class AlgorithmLocatorFilter(QgsLocatorFilter):
@@ -70,6 +71,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
         # accessing the processing registry is not thread safe
         for a in QgsApplication.processingRegistry().algorithms():
             if a.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
+                continue
+            if not ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES) and \
+                    a.flags() & QgsProcessingAlgorithm.FlagKnownIssues:
                 continue
 
             if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)] or \
@@ -137,7 +141,7 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
         # collect results in main thread, since this method is inexpensive and
         # accessing the processing registry/current layer is not thread safe
 
-        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayer.VectorLayer:
+        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayerType.VectorLayer:
             return
 
         for a in QgsApplication.processingRegistry().algorithms():

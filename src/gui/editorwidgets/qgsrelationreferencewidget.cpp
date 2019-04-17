@@ -40,6 +40,7 @@
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistcombobox.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
@@ -489,7 +490,8 @@ void QgsRelationReferenceWidget::init()
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
         std::sort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
-        Q_FOREACH ( const QVariant &v, uniqueValues )
+        const auto constUniqueValues = uniqueValues;
+        for ( const QVariant &v : constUniqueValues )
         {
           cb->addItem( v.toString(), v );
         }
@@ -801,7 +803,8 @@ void QgsRelationReferenceWidget::filterChanged()
     disableChainedComboBoxes( scb );
 
   // build filters
-  Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+  const auto constMFilterComboBoxes = mFilterComboBoxes;
+  for ( QComboBox *cb : constMFilterComboBoxes )
   {
     if ( cb->currentIndex() != 0 )
     {
@@ -822,7 +825,8 @@ void QgsRelationReferenceWidget::filterChanged()
   if ( mChainFilters )
   {
     QComboBox *ccb = nullptr;
-    Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+    const auto constMFilterComboBoxes = mFilterComboBoxes;
+    for ( QComboBox *cb : constMFilterComboBoxes )
     {
       if ( !ccb )
       {
@@ -843,7 +847,8 @@ void QgsRelationReferenceWidget::filterChanged()
         // ccb = scb
         // cb = scb + 1
         QStringList texts;
-        Q_FOREACH ( const QString &txt, mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] )
+        const auto txts { mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] };
+        for ( const QString &txt : txts )
         {
           QMap<QString, QString> filtersAttrs = filters;
           filtersAttrs[fieldName] = QgsExpression::createFieldEqualityExpression( fieldName, txt );
@@ -914,7 +919,8 @@ void QgsRelationReferenceWidget::updateAddEntryButton()
 void QgsRelationReferenceWidget::disableChainedComboBoxes( const QComboBox *scb )
 {
   QComboBox *ccb = nullptr;
-  Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+  const auto constMFilterComboBoxes = mFilterComboBoxes;
+  for ( QComboBox *cb : constMFilterComboBoxes )
   {
     if ( !ccb )
     {

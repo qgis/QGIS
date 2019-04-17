@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsAnalysis
     /**
      * Returns the global geometry checker registry, used for managing all geometry check factories.
      */
-    static QgsGeometryCheckRegistry *geometryCheckRegistry();
+    static QgsGeometryCheckRegistry *geometryCheckRegistry() SIP_KEEPREFERENCE;
 
   private:
 

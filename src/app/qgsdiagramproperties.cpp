@@ -41,6 +41,7 @@
 #include "qgssettings.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -607,7 +608,8 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem *item )
 
 void QgsDiagramProperties::mAddCategoryPushButton_clicked()
 {
-  Q_FOREACH ( QTreeWidgetItem *attributeItem, mAttributesTreeWidget->selectedItems() )
+  const auto constSelectedItems = mAttributesTreeWidget->selectedItems();
+  for ( QTreeWidgetItem *attributeItem : constSelectedItems )
   {
     addAttribute( attributeItem );
   }
@@ -621,7 +623,8 @@ void QgsDiagramProperties::mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetI
 
 void QgsDiagramProperties::mRemoveCategoryPushButton_clicked()
 {
-  Q_FOREACH ( QTreeWidgetItem *attributeItem, mDiagramAttributesTreeWidget->selectedItems() )
+  const auto constSelectedItems = mDiagramAttributesTreeWidget->selectedItems();
+  for ( QTreeWidgetItem *attributeItem : constSelectedItems )
   {
     delete attributeItem;
   }

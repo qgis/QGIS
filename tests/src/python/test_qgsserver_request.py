@@ -196,6 +196,12 @@ class QgsServerRequestTest(QgsServerTestBase):
         _check_links(params)
         _check_links(params, 'POST')
 
+    def test_add_parameters(self):
+        request = QgsServerRequest()
+        request.setParameter('FOOBAR', 'foobar')
+        self.assertEqual(request.parameter('FOOBAR'), 'foobar')
+        self.assertEqual(request.parameter('UNKNOWN'), '')
+
 
 if __name__ == '__main__':
     unittest.main()

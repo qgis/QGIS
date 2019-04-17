@@ -366,6 +366,8 @@ namespace QgsWmts
     QList< layerDef > wmtsLayers;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
 #endif
 
     // WMTS Project configuration
@@ -619,6 +621,10 @@ namespace QgsWmts
   QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsWmtsParameters &params,
       const QgsProject *project, QgsServerInterface *serverIface )
   {
+#ifndef HAVE_SERVER_PYTHON_PLUGINS
+    ( void )serverIface;
+#endif
+
     //defining Layer
     QString layer = params.layer();
     //read Layer

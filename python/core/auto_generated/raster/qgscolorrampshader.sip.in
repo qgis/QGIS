@@ -188,7 +188,7 @@ Returns the classification mode
 %Docstring
 Sets whether the shader should not render values out of range.
 
-:param clip: set to true to clip values which are out of range.
+:param clip: set to ``True`` to clip values which are out of range.
 
 .. seealso:: :py:func:`clip`
 %End

@@ -10,6 +10,9 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+// uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
+// #define DWGDEBUG 1
+
 #include <cstdlib>
 #include <fstream>
 #include <string>
@@ -20,6 +23,14 @@
 
 #include "qgslogger.h"
 
+#ifndef DWGDEBUG
+#undef QgsDebugCall
+#undef QgsDebugMsg
+#undef QgsDebugMsgLevel
+#define QgsDebugCall
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
+#endif
 
 bool dxfReader::readRec( int *codeData )
 {
@@ -219,6 +230,7 @@ bool dxfReaderAscii::readCode( int *code )
 
   return filestr->good();
 }
+
 bool dxfReaderAscii::readString( std::string *text )
 {
   type = STRING;
@@ -271,27 +283,15 @@ bool dxfReaderAscii::readInt64()
 
 bool dxfReaderAscii::readDouble()
 {
+  bool ok = false;
   type = DOUBLE;
   std::string text;
   if ( readString( &text ) )
   {
-#if defined(__APPLE__)
-    int succeeded = sscanf( & ( text[0] ), "%lg", &doubleData );
-    if ( succeeded != 1 )
-    {
-      QgsDebugMsg( QString( "reading double error:%1" ).arg( text.c_str() ) );
-    }
-#else
-    std::istringstream sd( text );
-    sd >> doubleData;
+    doubleData = QString::fromStdString( text ).toDouble( &ok );
     QgsDebugMsg( QString( "%1" ).arg( doubleData ) );
-#endif
-    return true;
   }
-  else
-  {
-    return false;
-  }
+  return ok;
 }
 
 //saved as int or add a bool member??

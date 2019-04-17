@@ -14,3 +14,5 @@ icon=:/images/themes/default/processingAlgorithm.svg
 homepage=http://qgis.org
 tracker=https://issues.qgis.org/projects/qgis/issues
 repository=https://github.com/qgis/QGIS
+
+hasProcessingProvider=yes

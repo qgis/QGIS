@@ -50,7 +50,6 @@ transforms coordinates from the layer's coordinate system to the map canvas.
 Default constructor, creates an invalid QgsCoordinateTransform.
 %End
 
-
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
                                      const QgsCoordinateTransformContext &context );
@@ -123,7 +122,7 @@ Copy constructor
 
     bool isValid() const;
 %Docstring
-Returns true if the coordinate transform is valid, ie both the source and destination
+Returns ``True`` if the coordinate transform is valid, ie both the source and destination
 CRS have been set and are valid.
 
 .. versionadded:: 3.0
@@ -227,7 +226,7 @@ the returned rectangle.
 
 :param rectangle: rectangle to transform
 :param direction: transform direction (defaults to ForwardTransform)
-:param handle180Crossover: set to true if destination CRS is geographic and handling of extents
+:param handle180Crossover: set to ``True`` if destination CRS is geographic and handling of extents
                            crossing the 180 degree longitude line is required
 
 :return: rectangle in destination CRS
@@ -286,7 +285,7 @@ otherwise points are transformed from destination to source CRS.
 
     bool isShortCircuited() const;
 %Docstring
-Returns true if the transform short circuits because the source and destination are equivalent.
+Returns ``True`` if the transform short circuits because the source and destination are equivalent.
 %End
 
     int sourceDatumTransformId() const;

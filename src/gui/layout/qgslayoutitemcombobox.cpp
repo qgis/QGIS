@@ -16,6 +16,10 @@
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutmodel.h"
 
+//
+// QgsLayoutItemComboBox
+//
+
 QgsLayoutItemComboBox::QgsLayoutItemComboBox( QWidget *parent, QgsLayout *layout )
   : QComboBox( parent )
 {
@@ -27,12 +31,22 @@ QgsLayoutItemComboBox::QgsLayoutItemComboBox( QWidget *parent, QgsLayout *layout
 
 void QgsLayoutItemComboBox::setCurrentLayout( QgsLayout *layout )
 {
+  const bool prevAllowEmpty = mProxyModel && mProxyModel->allowEmptyItem();
+  int itemType = mProxyModel ? mProxyModel->filterType() : -1;
   mProxyModel = qgis::make_unique< QgsLayoutProxyModel >( layout, this );
   connect( mProxyModel.get(), &QAbstractItemModel::rowsInserted, this, &QgsLayoutItemComboBox::rowsChanged );
   connect( mProxyModel.get(), &QAbstractItemModel::rowsRemoved, this, &QgsLayoutItemComboBox::rowsChanged );
   setModel( mProxyModel.get() );
   setModelColumn( QgsLayoutModel::ItemId );
-  mProxyModel->sort( 0, Qt::AscendingOrder );
+  mProxyModel->sort( QgsLayoutModel::ItemId, Qt::AscendingOrder );
+  mProxyModel->setAllowEmptyItem( prevAllowEmpty );
+  if ( itemType >= 0 )
+    mProxyModel->setFilterType( static_cast< QgsLayoutItemRegistry::ItemType >( itemType ) );
+}
+
+QgsLayout *QgsLayoutItemComboBox::currentLayout()
+{
+  return mProxyModel->layout();
 }
 
 void QgsLayoutItemComboBox::setItem( const QgsLayoutItem *item )
@@ -50,7 +64,7 @@ void QgsLayoutItemComboBox::setItem( const QgsLayoutItem *item )
       return;
     }
   }
-  setCurrentIndex( -1 );
+  setCurrentIndex( mProxyModel->allowEmptyItem() ? 0 : -1 );
 }
 
 QgsLayoutItem *QgsLayoutItemComboBox::currentItem() const
@@ -95,6 +109,16 @@ void QgsLayoutItemComboBox::setExceptedItemList( const QList<QgsLayoutItem *> &e
 QList< QgsLayoutItem *> QgsLayoutItemComboBox::exceptedItemList() const
 {
   return mProxyModel->exceptedItemList();
+}
+
+void QgsLayoutItemComboBox::setAllowEmptyItem( bool allowEmpty )
+{
+  mProxyModel->setAllowEmptyItem( allowEmpty );
+}
+
+bool QgsLayoutItemComboBox::allowEmptyItem() const
+{
+  return mProxyModel->allowEmptyItem();
 }
 
 QgsLayoutItem *QgsLayoutItemComboBox::item( int index ) const

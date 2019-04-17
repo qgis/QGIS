@@ -42,6 +42,25 @@ namespace MDAL
       std::map<size_t, size_t> mVertexIDtoIndex;
   };
 
+  /**
+   * 2DM format specification used in TUFLOW and BASEMENET solvers
+   * Text file format representing mesh vertices (ND) and faces (E**)
+   * ND id x y z
+   * Supports lines, triangles and polygons up to 9 vertices (implemented triangles and quads)
+   * E3T id 1 2 3 mat_id -> face type, id, vertex indices ..., material index
+   *
+   * full specification here: https://www.xmswiki.com/wiki/SMS:2D_Mesh_Files_*.2dm
+   *
+   * Exception for the official specification is for recognition of cell-centered
+   * elevation values supported by BASEMENT 3.x releases
+   * If face definition has extra column, it is parsed and recognized as
+   * elevation, e.g. format for triangle
+   * E3T id 1 2 3 mat_id elevation
+   * and added automatically as "Bed Elevation (Face)"
+   *
+   * Note that some 2dm formats do have some extra columns after mat_id column with
+   * data with unknown origin/name (e.g. tests/data/2dm/regular_grid.2dm)
+   */
   class Driver2dm: public Driver
   {
     public:

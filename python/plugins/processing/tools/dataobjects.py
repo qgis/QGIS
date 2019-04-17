@@ -28,16 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.core import (QgsVectorFileWriter,
-                       QgsMapLayer,
-                       QgsDataProvider,
+from qgis.core import (QgsDataProvider,
                        QgsRasterLayer,
                        QgsWkbTypes,
                        QgsVectorLayer,
                        QgsProject,
-                       QgsCoordinateReferenceSystem,
                        QgsSettings,
-                       QgsProcessingUtils,
                        QgsProcessingContext,
                        QgsFeatureRequest,
                        QgsExpressionContext,
@@ -48,9 +44,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import (getTempFilename,
-                                     removeInvalidChars)
 
 ALL_TYPES = [-1]
 
@@ -66,6 +59,12 @@ TYPE_TABLE = 5
 def createContext(feedback=None):
     """
     Creates a default processing context
+
+    :param feedback: Optional existing QgsProcessingFeedback object, or None to use a default feedback object
+    :type feedback: Optional[QgsProcessingFeedback]
+
+    :returns: New QgsProcessingContext object
+    :rtype: QgsProcessingContext
     """
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
@@ -106,8 +105,15 @@ def createExpressionContext():
 
 
 def load(fileName, name=None, crs=None, style=None, isRaster=False):
-    """Loads a layer/table into the current project, given its file.
     """
+    Loads a layer/table into the current project, given its file.
+
+    .. deprecated:: 3.0
+    Do not use, will be removed in QGIS 4.0
+    """
+
+    from warnings import warn
+    warn("processing.load is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     if fileName is None:
         return
@@ -132,7 +138,8 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             if prjSetting:
                 settings.setValue('/Projections/defaultBehavior', prjSetting)
             raise RuntimeError(QCoreApplication.translate('dataobject',
-                                                          'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(fileName))
+                                                          'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(
+                fileName))
     else:
         qgslayer = QgsVectorLayer(fileName, name, 'ogr')
         if qgslayer.isValid():
@@ -155,7 +162,6 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
 
 
 def getRasterSublayer(path, param):
-
     layer = QgsRasterLayer(path)
 
     try:

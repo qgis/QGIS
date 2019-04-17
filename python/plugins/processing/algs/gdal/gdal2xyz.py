@@ -84,7 +84,7 @@ class gdal2xyz(GdalAlgorithm):
         arguments.append('-band')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.CSV, context):
+        if self.parameterAsBoolean(parameters, self.CSV, context):
             arguments.append('-csv')
 
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -94,8 +94,11 @@ class gdal2xyz(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

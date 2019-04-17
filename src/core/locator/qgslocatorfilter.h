@@ -268,7 +268,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     virtual void clearPreviousResults() {}
 
     /**
-     * Returns true if the filter should be used when no prefix
+     * Returns TRUE if the filter should be used when no prefix
      * is entered.
      * \see setUseWithoutPrefix()
      */
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     static bool stringMatches( const QString &candidate, const QString &search );
 
     /**
-     * Returns true if the filter is enabled.
+     * Returns TRUE if the filter is enabled.
      * \see setEnabled()
      */
     bool enabled() const;
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     void setEnabled( bool enabled );
 
     /**
-     * Should return true if the filter has a configuration widget.
+     * Should return TRUE if the filter has a configuration widget.
      * \see openConfigWidget()
      */
     virtual bool hasConfigWidget() const;
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * Opens the configuration widget for the filter (if it has one), with the specified \a parent widget.
      * The base class implementation does nothing. Subclasses can override this to show their own
      * custom configuration widget.
-     * \note hasConfigWidget() must return true to indicate that the filter supports configuration.
+     * \note hasConfigWidget() must return TRUE to indicate that the filter supports configuration.
      */
     virtual void openConfigWidget( QWidget *parent = nullptr );
 

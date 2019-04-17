@@ -117,7 +117,7 @@ ie. no conversion is done.
 Tests whether the position is null, ie both its x and y coordinates
 are zero.
 
-:return: true if point is null
+:return: ``True`` if point is null
 %End
 
     QPointF toQPointF() const;

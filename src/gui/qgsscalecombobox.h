@@ -60,6 +60,15 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     double scale() const;
 
     /**
+     * Returns true if the combo box is currently set to a "null" value.
+     *
+     * \see setAllowNull()
+     * \see setNull()
+     * \since QGIS 3.8
+     */
+    bool isNull() const;
+
+    /**
      * Returns the minimum scale, or 0 if no minimum scale set.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * Any scale lower than the minimum scale will automatically be converted to the minimum scale.
@@ -79,10 +88,28 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     /**
      * Helper function to convert a scale \a string to double.
      * The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * If specified, \a ok will be set to true if the string was successfully interpreted as a scale.
+     * If specified, \a ok will be set to TRUE if the string was successfully interpreted as a scale.
      * \see toString()
      */
     static double toDouble( const QString &string, bool *ok = nullptr );
+
+    /**
+     * Sets whether the scale combobox can be set to a NULL value.
+     * \see allowNull()
+     * \see isNull()
+     * \see setNull()
+     * \since QGIS 3.8
+     */
+    void setAllowNull( bool allowNull );
+
+    /**
+     * Returns TRUE if the combobox can be set to a NULL value.
+     * \see setAllowNull()
+     * \see isNull()
+     * \see setNull()
+     * \since QGIS 3.8
+     */
+    bool allowNull() const;
 
   signals:
 
@@ -115,6 +142,17 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      */
     void setMinScale( double scale );
 
+    /**
+     * Sets the combo box to the null value.
+     *
+     * This only has an effect if allowNull() is true.
+     *
+     * \see allowNull()
+     * \see isNull()
+     * \since QGIS 3.8
+     */
+    void setNull();
+
   protected:
     void showPopup() override;
 
@@ -124,6 +162,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
   private:
     double mScale = 1.0;
     double mMinScale = 0.0;
+    bool mAllowNull = false;
 };
 
 #endif // QGSSCALECOMBOBOX_H

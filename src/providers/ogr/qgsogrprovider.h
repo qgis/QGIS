@@ -72,7 +72,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
 
     /**
@@ -81,7 +81,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * \param options generic data provider options
      */
     explicit QgsOgrProvider( QString const &uri,
-                             const QgsDataProvider::ProviderOptions &options );
+                             const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsOgrProvider() override;
 
@@ -100,6 +100,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
     QStringList subLayers() const override;
+    QgsLayerMetadata layerMetadata() const override;
     QStringList subLayersWithoutFeatureCount() const;
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
@@ -247,6 +248,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! Original layer (not a SQL result layer)
     QgsOgrLayerUniquePtr mOgrOrigLayer;
+
+    QgsLayerMetadata mLayerMetadata;
 
     //! path to filename
     QString mFilePath;

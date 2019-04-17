@@ -32,7 +32,7 @@
  * \brief Interfaces exposed by QGIS Server and made available to plugins.
  * \since QGIS 2.8
  */
-class QgsServerInterfaceImpl : public QgsServerInterface
+class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
 {
   public:
 
@@ -92,7 +92,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
     QgsAccessControl *mAccessControls = nullptr;
-    std::unique_ptr<QgsServerCacheManager> mCacheManager = nullptr;
+    QgsServerCacheManager *mCacheManager = nullptr;
     QgsCapabilitiesCache *mCapabilitiesCache = nullptr;
     QgsRequestHandler *mRequestHandler = nullptr;
     QgsServiceRegistry *mServiceRegistry = nullptr;

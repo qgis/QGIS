@@ -153,7 +153,8 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
 
   QgsDebugMsg( QStringLiteral( "nullValue: %1" ).arg( nullValue ) );
 
-  Q_FOREACH ( const QVariant &var, values )
+  const auto constValues = values;
+  for ( const QVariant &var : constValues )
   {
     QString value;
     if ( var.isNull() )

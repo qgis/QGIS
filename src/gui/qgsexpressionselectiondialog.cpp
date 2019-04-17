@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )

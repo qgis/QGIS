@@ -129,7 +129,7 @@ Method to be overridden for progress reporting.
 
 :param complete: Overall progress of the alignment operation
 
-:return: false if the execution should be canceled, true otherwise
+:return: ``False`` if the execution should be canceled, ``True`` otherwise
 %End
 
       virtual ~ProgressHandler();
@@ -137,11 +137,11 @@ Method to be overridden for progress reporting.
 
     void setProgressHandler( ProgressHandler *progressHandler );
 %Docstring
-Assign a progress handler instance. Does not take ownership. None can be passed.
+Assign a progress handler instance. Does not take ownership. ``None`` can be passed.
 %End
     ProgressHandler *progressHandler() const;
 %Docstring
-Gets associated progress handler. May be None (default)
+Gets associated progress handler. May be ``None`` (default)
 %End
 
     void setRasters( const List &list );
@@ -206,7 +206,7 @@ If default CRS is used, the parameters are set according to the raster file's ge
 If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
 to determine suitable defaults for cell size and grid offset.
 
-:return: true on success (may fail if it is not possible to reproject raster to given CRS)
+:return: ``True`` on success (may fail if it is not possible to reproject raster to given CRS)
 %End
 
     bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
@@ -219,7 +219,7 @@ See the other variant for details.
 %Docstring
 Determine destination extent from the input rasters and calculate derived values
 
-:return: true on success, sets error on error (see errorMessage())
+:return: ``True`` on success, sets error on error (see errorMessage())
 %End
 
     QSize alignedRasterSize() const;
@@ -244,13 +244,13 @@ Returns the expected extent of the resulting aligned raster
 %Docstring
 Run the alignment process
 
-:return: true on success, sets error on error (see errorMessage())
+:return: ``True`` on success, sets error on error (see errorMessage())
 %End
 
     QString errorMessage() const;
 %Docstring
 Returns the error from a previous run() call.
-Error message is empty if run() succeeded (returned true)
+Error message is empty if run() succeeded (returned ``True``)
 %End
 
     void dump() const;
@@ -272,7 +272,7 @@ Internal function for processing of one raster (1. create output, 2. do the alig
 
     static bool suggestedWarpOutput( const RasterInfo &info, const QString &destWkt, QSizeF *cellSize = 0, QPointF *gridOffset = 0, QgsRectangle *rect = 0 );
 %Docstring
-Determine suggested output of raster warp to a different CRS. Returns true on success
+Determine suggested output of raster warp to a different CRS. Returns ``True`` on success
 %End
 
   protected:

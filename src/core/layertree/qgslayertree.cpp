@@ -129,14 +129,14 @@ void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteConte
 
   writeCommonXml( elem );
 
-  Q_FOREACH ( QgsLayerTreeNode *node, mChildren )
+  for ( QgsLayerTreeNode *node : qgis::as_const( mChildren ) )
     node->writeXml( elem, context );
 
   QDomElement customOrderElem = doc.createElement( QStringLiteral( "custom-order" ) );
   customOrderElem.setAttribute( QStringLiteral( "enabled" ), mHasCustomLayerOrder ? 1 : 0 );
   elem.appendChild( customOrderElem );
 
-  Q_FOREACH ( QgsMapLayer *layer, mCustomLayerOrder )
+  for ( QgsMapLayer *layer : qgis::as_const( mCustomLayerOrder ) )
   {
     // Safety belt, see https://issues.qgis.org/issues/19145
     // Crash when deleting an item from the layout legend
@@ -181,12 +181,13 @@ void QgsLayerTree::nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int
     }
     else if ( QgsLayerTree::isGroup( child ) )
     {
-      Q_FOREACH ( QgsLayerTreeLayer *nodeL, QgsLayerTree::toGroup( child )->findLayers() )
+      const auto nodeLayers = QgsLayerTree::toGroup( child )->findLayers();
+      for ( QgsLayerTreeLayer *nodeL : nodeLayers )
         layers << nodeL->layer();
     }
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  for ( QgsMapLayer *layer : qgis::as_const( layers ) )
   {
     if ( !mCustomLayerOrder.contains( layer ) && layer )
       mCustomLayerOrder.append( layer );
@@ -217,8 +218,8 @@ void QgsLayerTree::addMissingLayers()
 {
   bool changed = false;
 
-  const QList< QgsLayerTreeLayer * > foundLayers = findLayers();
-  for ( const auto layer : foundLayers )
+  const QList< QgsLayerTreeLayer * > layers = findLayers();
+  for ( const auto layer : layers )
   {
     if ( !mCustomLayerOrder.contains( layer->layer() ) &&
          layer->layer() && layer->layer()->isSpatial() )

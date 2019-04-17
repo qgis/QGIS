@@ -155,6 +155,8 @@ class FeatureSourceTestCase(object):
         self.assert_query(source, '(name = \'Apple\') is not null', [1, 2, 3, 4])
         self.assert_query(source, 'name LIKE \'Apple\'', [2])
         self.assert_query(source, 'name LIKE \'aPple\'', [])
+        self.assert_query(source, 'name LIKE \'Ap_le\'', [2])
+        self.assert_query(source, 'name LIKE \'Ap\\_le\'', [])
         self.assert_query(source, 'name ILIKE \'aPple\'', [2])
         self.assert_query(source, 'name ILIKE \'%pp%\'', [2])
         self.assert_query(source, 'cnt > 0', [1, 2, 3, 4])
@@ -525,6 +527,22 @@ class FeatureSourceTestCase(object):
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
+
+    def testGeomAndAllAttributes(self):
+        """
+        Test combination of a filter which requires geometry and all attributes
+        """
+        request = QgsFeatureRequest().setFilterExpression('attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setSubsetOfAttributes([]).setFlags(QgsFeatureRequest.NoGeometry)
+        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        self.assertEqual(result, {4})
+        self.assertTrue(all_valid)
+
+        request = QgsFeatureRequest().setFilterExpression('attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60')
+        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        self.assertEqual(result, {4})
+        self.assertTrue(all_valid)
 
     def testRectAndFids(self):
         """

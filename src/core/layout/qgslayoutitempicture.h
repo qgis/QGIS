@@ -119,7 +119,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void setLinkedMap( QgsLayoutItemMap *map );
 
     /**
-     * Returns the linked rotation map, if set. An nullptr means map rotation is
+     * Returns the linked rotation map, if set. An NULLPTR means map rotation is
      * disabled.  If this is set then the picture is rotated by the same amount
      * as the specified map object.
      * \see setLinkedMap()
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void finalizeRestoreFromXml() override;
 
     /**
-     * Returns true if the source image is missing and the picture
+     * Returns TRUE if the source image is missing and the picture
      * cannot be rendered.
      *
      * \since QGIS 3.6
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   signals:
-    //! Is emitted on picture rotation change
+    //! Emitted on picture rotation change
     void pictureRotationChanged( double newRotation );
 
   protected:
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double mPictureRotation = 0;
 
     QString mRotationMapUuid;
-    //! Map that sets the rotation (or nullptr if this picture uses map independent rotation)
+    //! Map that sets the rotation (or NULLPTR if this picture uses map independent rotation)
     QPointer< QgsLayoutItemMap > mRotationMap;
 
     //! Mode used to align to North

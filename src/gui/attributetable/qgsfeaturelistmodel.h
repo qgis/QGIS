@@ -78,7 +78,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
-     * \brief If true is specified, a NULL value will be injected
+     * \brief If TRUE is specified, a NULL value will be injected
      * \param injectNull state of null value injection
      * \since QGIS 2.9
      */
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
 
     /**
      *  \param  expression   A QgsExpression compatible string.
-     *  \returns true if the expression could be set, false if there was a parse error.
+     *  \returns TRUE if the expression could be set, FALSE if there was a parse error.
      *          If it fails, the old expression will still be applied. Call parserErrorString()
      *          for a meaningful error message.
      */

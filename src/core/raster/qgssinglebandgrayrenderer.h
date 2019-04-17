@@ -67,6 +67,8 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+
   private:
 #ifdef SIP_RUN
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );

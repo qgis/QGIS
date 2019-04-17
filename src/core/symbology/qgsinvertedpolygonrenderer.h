@@ -44,7 +44,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 
     /**
      * Constructor
-     * \param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
+     * \param embeddedRenderer optional embeddedRenderer. If NULLPTR, a default one will be assigned.
      * Ownership will be transferred.
      */
     QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer SIP_TRANSFER = nullptr );
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      * \param layer the symbol layer to render, if that makes sense
      * \param selected whether this feature has been selected (this will add decorations)
      * \param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
-     * \returns true if the rendering was OK
+     * \returns TRUE if the rendering was OK
      */
     bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     bool legendSymbolItemChecked( const QString &key ) override;
     void checkLegendSymbolItem( const QString &key, bool state = true ) override;
 
-    //! \returns true if the geometries are to be preprocessed (merged with an union) before rendering.
+    //! \returns TRUE if the geometries are to be preprocessed (merged with an union) before rendering.
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }
 
     /**

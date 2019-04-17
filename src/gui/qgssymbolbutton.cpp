@@ -26,6 +26,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>

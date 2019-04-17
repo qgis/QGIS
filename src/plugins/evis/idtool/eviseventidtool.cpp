@@ -72,7 +72,7 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent *mouseEvent )
   if ( mCanvas->currentLayer() )
   {
     //Check to see if the current layer is a vector layer
-    if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer()->type() )
+    if ( QgsMapLayerType::VectorLayer == mCanvas->currentLayer()->type() )
     {
       select( mCanvas->getCoordinateTransform()->toMapCoordinates( mouseEvent->x(), mouseEvent->y() ) );
     }

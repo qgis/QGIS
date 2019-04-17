@@ -58,7 +58,8 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
       // iterate proxies factories and take first non empty list
-      Q_FOREACH ( QNetworkProxyFactory *f, nam->proxyFactories() )
+      const auto constProxyFactories = nam->proxyFactories();
+      for ( QNetworkProxyFactory *f : constProxyFactories )
       {
         QList<QNetworkProxy> systemproxies = f->systemProxyForQuery( query );
         if ( !systemproxies.isEmpty() )
@@ -75,7 +76,8 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 
       QString url = query.url().toString();
 
-      Q_FOREACH ( const QString &exclude, nam->excludeList() )
+      const auto constExcludeList = nam->excludeList();
+      for ( const QString &exclude : constExcludeList )
       {
         if ( !exclude.trimmed().isEmpty() && url.startsWith( exclude ) )
         {
@@ -414,6 +416,7 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
   // in main thread this will trigger auth handler immediately and return once the request is satisfied,
   // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
   emit authRequestOccurred( reply, auth );
+
   if ( this != sMainNAM )
   {
     // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume

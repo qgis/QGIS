@@ -153,7 +153,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
      * at the bottom of a frame after calculating the optimum break location. Setting
      * a larger value will result in better choice of page break location, but more
      * wasted space at the bottom of frames. This setting is only effective if
-     * useSmartBreaks is true.
+     * useSmartBreaks is TRUE.
      * \see maxBreakDistance()
      * \see setUseSmartBreaks()
      */
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
      * Returns the maximum distance allowed when calculating where to place page breaks
      * in the html. This distance is the maximum amount of empty space allowed
      * at the bottom of a frame after calculating the optimum break location. This setting
-     * is only effective if useSmartBreaks is true.
+     * is only effective if useSmartBreaks is TRUE.
      * \see setMaxBreakDistance()
      * \see useSmartBreaks()
      */
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
 
     /**
      * Reloads the html source from the url and redraws the item.
-     * \param useCache set to true to use a cached copy of remote html
+     * \param useCache set to TRUE to use a cached copy of remote html
      * content
      * \param context expression context for evaluating data defined urls and expressions in html
      * \see setUrl

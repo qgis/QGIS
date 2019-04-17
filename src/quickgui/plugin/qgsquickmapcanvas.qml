@@ -47,6 +47,11 @@ Item {
    */
   property alias incrementalRendering: mapCanvasWrapper.incrementalRendering
 
+  /**
+   * What is the minimum distance (in pixels) in order to start dragging map
+   */
+  property real minimumStartDragDistance: 5 * QgsQuick.Utils.dp
+
   signal clicked(var mouse)
 
   /**
@@ -107,6 +112,7 @@ Item {
 
       property point __initialPosition
       property point __lastPosition
+      property bool __dragging: false
 
       anchors.fill: parent
 
@@ -123,7 +129,7 @@ Item {
           var distance = Math.abs(mouse.x - __initialPosition.x) + Math.abs(
                 mouse.y - __initialPosition.y)
 
-          if (distance < 5 * QgsQuick.Utils.dp)
+          if (distance < minimumStartDragDistance)
             mapArea.clicked(mouse)
         }
       }
@@ -131,6 +137,7 @@ Item {
       onPressed: {
         __lastPosition = Qt.point(mouse.x, mouse.y)
         __initialPosition = __lastPosition
+        __dragging = false
         freeze('pan')
       }
 
@@ -139,9 +146,17 @@ Item {
       }
 
       onPositionChanged: {
-        var currentPosition = Qt.point(mouse.x, mouse.y)
-        mapCanvasWrapper.pan(currentPosition, __lastPosition)
-        __lastPosition = currentPosition
+        // are we far enough to start dragging map? (we want to avoid tiny map moves)
+        var distance = Math.abs(mouse.x - __initialPosition.x) + Math.abs(mouse.y - __initialPosition.y)
+        if (distance >= minimumStartDragDistance)
+            __dragging = true
+
+        if (__dragging)
+        {
+            var currentPosition = Qt.point(mouse.x, mouse.y)
+            mapCanvasWrapper.pan(currentPosition, __lastPosition)
+            __lastPosition = currentPosition
+        }
       }
 
       onCanceled: {

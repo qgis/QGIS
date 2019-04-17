@@ -92,6 +92,42 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
      */
     void setAddBackFaces( bool add ) { mAddBackFaces = add; }
 
+    /**
+     * Returns whether edge highlighting is enabled
+     * \since QGIS 3.8
+     */
+    bool edgesEnabled() const { return mEdgesEnabled; }
+
+    /**
+     * Sets whether edge highlighting is enabled
+     * \since QGIS 3.8
+     */
+    void setEdgesEnabled( bool enabled ) { mEdgesEnabled = enabled; }
+
+    /**
+     * Returns width of edge lines (in pixels)
+     * \since QGIS 3.8
+     */
+    float edgeWidth() const { return mEdgeWidth; }
+
+    /**
+     * Sets width of edge lines (in pixels)
+     * \since QGIS 3.8
+     */
+    void setEdgeWidth( float width ) { mEdgeWidth = width; }
+
+    /**
+     * Returns edge lines color
+     * \since QGIS 3.8
+     */
+    QColor edgeColor() const { return mEdgeColor; }
+
+    /**
+     * Sets edge lines color
+     * \since QGIS 3.8
+     */
+    void setEdgeColor( const QColor &color ) { mEdgeColor = color; }
+
   private:
     //! how to handle altitude of vector features
     Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
@@ -104,6 +140,10 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;  //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
+
+    bool mEdgesEnabled = false;  //!< Whether to highlight edges
+    float mEdgeWidth = 1.f;  //!< Width of edges in pixels
+    QColor mEdgeColor = Qt::black; //!< Color of edge lines
 };
 
 

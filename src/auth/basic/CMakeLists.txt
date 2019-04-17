@@ -43,6 +43,7 @@ TARGET_LINK_LIBRARIES (basicauthmethod
   qgis_core
   qgis_gui
 )
+TARGET_COMPILE_DEFINITIONS(basicauthmethod PRIVATE "-DQT_NO_FOREACH")
 
 INSTALL(TARGETS basicauthmethod
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

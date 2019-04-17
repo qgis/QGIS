@@ -262,8 +262,8 @@ The current thread will be blocked until the request is returned.
 
 This method is safe to call in either the main thread or a worker thread.
 
-If ``forceRefresh`` is false then previously cached replies may be used for the request. If
-it is set to true then a new query is always performed.
+If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
+it is set to ``True`` then a new query is always performed.
 
 If an ``authCfg`` has been specified, then that authentication configuration required will automatically be applied to
 ``request``. There is no need to manually apply the authentication to the request prior to calling
@@ -285,8 +285,8 @@ QgsNetworkReplyContent object for reading. The current thread will be blocked un
 
 This method is safe to call in either the main thread or a worker thread.
 
-If ``forceRefresh`` is false then previously cached replies may be used for the request. If
-it is set to true then a new query is always performed.
+If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
+it is set to ``True`` then a new query is always performed.
 
 If an ``authCfg`` has been specified, then that authentication configuration required will automatically be applied to
 ``request``. There is no need to manually apply the authentication to the request prior to calling
@@ -326,7 +326,7 @@ created in any thread.
 
     void finished( QgsNetworkReplyContent reply );
 %Docstring
-This signal is emitted whenever a pending network reply is finished.
+Emitted whenever a pending network reply is finished.
 
 The ``reply`` parameter will contain a QgsNetworkReplyContent object, containing all the useful
 information relating to the reply, including headers and reply content.

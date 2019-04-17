@@ -34,6 +34,7 @@
 #include "qgsogcutils.h"
 #include "qgswfstransaction.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 
 namespace QgsWfs
@@ -213,6 +214,9 @@ namespace QgsWfs
 
   void performTransaction( transactionRequest &aRequest, QgsServerInterface *serverIface, const QgsProject *project )
   {
+#ifndef HAVE_SERVER_PYTHON_PLUGINS
+    ( void )serverIface;
+#endif
     // store typeName
     QStringList typeNameList;
 
@@ -238,8 +242,10 @@ namespace QgsWfs
         typeNameList << name;
     }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     // get access controls
     QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
@@ -258,7 +264,7 @@ namespace QgsWfs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+      if ( layer->type() != QgsMapLayerType::VectorLayer )
       {
         continue;
       }
@@ -298,6 +304,7 @@ namespace QgsWfs
       {
         throw QgsSecurityAccessException( QStringLiteral( "No permissions to do WFS changes on layer '%1'" ).arg( name ) );
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerUpdatePermission( vlayer )
            && !accessControl->layerDeletePermission( vlayer ) && !accessControl->layerInsertPermission( vlayer ) )
       {
@@ -308,7 +315,7 @@ namespace QgsWfs
       {
         QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, vlayer, filterRestorer->originalFilters() );
       }
-
+#endif
       // store layers
       mapLayerMap[name] = vlayer;
     }
@@ -337,13 +344,14 @@ namespace QgsWfs
         action.errorMsg = QStringLiteral( "No permissions to do WFS updates on layer '%1'" ).arg( typeName );
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerUpdatePermission( vlayer ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "No permissions to do WFS updates on layer '%1'" ).arg( typeName );
         continue;
       }
-
+#endif
       //get provider
       QgsVectorDataProvider *provider = vlayer->dataProvider();
 
@@ -367,12 +375,12 @@ namespace QgsWfs
                         << QgsExpressionContextUtils::projectScope( project )
                         << QgsExpressionContextUtils::layerScope( vlayer );
       featureRequest.setExpressionContext( expressionContext );
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl )
       {
         accessControl->filterFeatures( vlayer, featureRequest );
       }
-
+#endif
       // get iterator
       QgsFeatureIterator fit = vlayer->getFeatures( featureRequest );
       QgsFeature feature;
@@ -389,6 +397,7 @@ namespace QgsWfs
       // Update the features
       while ( fit.nextFeature( feature ) )
       {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->allowToEdit( vlayer, feature ) )
         {
           action.error = true;
@@ -396,6 +405,7 @@ namespace QgsWfs
           vlayer->rollBack();
           break;
         }
+#endif
         QMap< QString, QString >::const_iterator it = propertyMap.constBegin();
         for ( ; it != propertyMap.constEnd(); ++it )
         {
@@ -484,6 +494,7 @@ namespace QgsWfs
       {
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       // verifying changes
       if ( accessControl )
       {
@@ -499,6 +510,7 @@ namespace QgsWfs
           }
         }
       }
+#endif
       if ( action.error )
       {
         continue;
@@ -542,13 +554,14 @@ namespace QgsWfs
         action.errorMsg = QStringLiteral( "No permissions to do WFS deletes on layer '%1'" ).arg( typeName );
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerDeletePermission( vlayer ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "No permissions to do WFS deletes on layer '%1'" ).arg( typeName );
         continue;
       }
-
+#endif
       //get provider
       QgsVectorDataProvider *provider = vlayer->dataProvider();
 
@@ -580,6 +593,7 @@ namespace QgsWfs
       QgsFeatureIds fids;
       while ( fit.nextFeature( feature ) )
       {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->allowToEdit( vlayer, feature ) )
         {
           action.error = true;
@@ -587,6 +601,7 @@ namespace QgsWfs
           vlayer->rollBack();
           break;
         }
+#endif
         fids << feature.id();
       }
       if ( action.error )
@@ -639,13 +654,14 @@ namespace QgsWfs
         action.errorMsg = QStringLiteral( "No permissions to do WFS inserts on layer '%1'" ).arg( typeName );
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerDeletePermission( vlayer ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "No permissions to do WFS inserts on layer '%1'" ).arg( typeName );
         continue;
       }
-
+#endif
       //get provider
       QgsVectorDataProvider *provider = vlayer->dataProvider();
 
@@ -673,6 +689,7 @@ namespace QgsWfs
         action.errorMsg = QStringLiteral( "%1 '%2'" ).arg( ex.message() ).arg( typeName );
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       // control features
       if ( accessControl )
       {
@@ -689,6 +706,7 @@ namespace QgsWfs
           featureIt++;
         }
       }
+#endif
       if ( action.error )
       {
         continue;

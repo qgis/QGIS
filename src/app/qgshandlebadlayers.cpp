@@ -117,6 +117,8 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     bool providerFileBased = ( QgsProviderRegistry::instance()->providerCapabilities( provider ) & QgsDataProvider::File ) != 0;
+    const QString basepath = datasource.left( datasource.lastIndexOf( '/' ) );
+    mFileBase[name].append( basepath );
 
     QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
                  .arg( name,
@@ -172,7 +174,8 @@ void QgsHandleBadLayers::selectionChanged()
 
   mRows.clear();
 
-  Q_FOREACH ( QTableWidgetItem *item, mLayerList->selectedItems() )
+  const auto constSelectedItems = mLayerList->selectedItems();
+  for ( QTableWidgetItem *item : constSelectedItems )
   {
     if ( item->column() != 0 )
       continue;
@@ -301,7 +304,8 @@ void QgsHandleBadLayers::browseClicked()
       return;
     }
 
-    Q_FOREACH ( int row, mRows )
+    const auto constMRows = mRows;
+    for ( int row : constMRows )
     {
       bool providerFileBased = mLayerList->item( row, 1 )->data( Qt::UserRole + 0 ).toBool();
       if ( !providerFileBased )
@@ -360,38 +364,116 @@ void QgsHandleBadLayers::editAuthCfg()
 void QgsHandleBadLayers::apply()
 {
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
-  buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
-  QList<QgsMapLayer *> toRemove;
-  for ( const auto &l : QgsProject::instance()->mapLayers( ) )
-  {
-    if ( ! l->isValid() )
-      toRemove << l;
-  }
+  QHash<QString, QString> baseChange;
 
-  QgsProject::instance()->removeMapLayers( toRemove );
 
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
 
+    const QString name = mLayerList->item( i, 0 )->text();
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
+    const QString basepath = datasource.left( datasource.lastIndexOf( '/' ) );
+    bool changed = false;
 
-    node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
-    if ( QgsProject::instance()->readLayer( node ) )
+    if ( mFileBase[ name ].size() == 1 )
+    {
+      if ( mFileBase[ name ][0] != basepath && !baseChange.contains( mFileBase[ name ][0] ) )
+      {
+        baseChange[ mFileBase[ name ][0] ] = basepath;
+        changed = true;
+      }
+    }
+    else if ( mFileBase[ name ].size() > 1 )
+    {
+      if ( mFileBase[ name ].indexOf( basepath ) == -1 )
+      {
+        const QList<QString> fileBases = mFileBase[ name ];
+        for ( QString fileBase : fileBases )
+        {
+          if ( !baseChange.contains( fileBase ) )
+          {
+            baseChange[ fileBase ] = basepath;
+            changed = true;
+          }
+        }
+      }
+    }
+    if ( !changed && baseChange.contains( basepath ) )
+      datasource = datasource.replace( basepath, baseChange[basepath] );
+
+
+    bool dataSourceFixed { false };
+    const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+    const QString provider { node.namedItem( QStringLiteral( "provider" ) ).toElement().text() };
+
+    // Try first to change the datasource of the existing layers, this will
+    // maintain the current status (checked/unchecked) and group
+    if ( QgsProject::instance()->mapLayer( layerId ) )
+    {
+      QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
+      QgsDataProvider::ProviderOptions options;
+      const auto absolutePath { QgsProject::instance()->pathResolver().readPath( datasource ) };
+      mapLayer->setDataSource( absolutePath, name, provider, options );
+      dataSourceFixed  = mapLayer->isValid();
+      if ( dataSourceFixed )
+      {
+        QString errorMsg;
+        QgsReadWriteContext context;
+        context.setPathResolver( QgsProject::instance()->pathResolver() );
+        context.setProjectTranslator( QgsProject::instance() );
+        if ( ! mapLayer->readSymbology( node, errorMsg, context ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from node XML for layer %1: %2" )
+                       .arg( mapLayer->name( ) )
+                       .arg( errorMsg ) );
+        }
+      }
+    }
+
+    // If the data source was changed successfully, remove the bad layer from the dialog
+    // otherwise, try to set the new datasource in the XML node and reload the layer,
+    // finally marks with red all remaining bad layers.
+    if ( dataSourceFixed )
     {
       mLayerList->removeRow( i-- );
     }
     else
     {
-      item->setForeground( QBrush( Qt::red ) );
+      node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
+      if ( QgsProject::instance()->readLayer( node ) )
+      {
+        mLayerList->removeRow( i-- );
+      }
+      else
+      {
+        item->setForeground( QBrush( Qt::red ) );
+        if ( mFileBase[ name ].size() == 1 )
+          mFileBase[ name ][0] = basepath ;
+        else if ( mFileBase[ name ].size() > 1 )
+          mFileBase[ name ].append( basepath );
+      }
     }
   }
-  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
 
+  // Final cleanup: remove any remaining bad layer
+  // (there should not be any at this point)
   if ( mLayerList->rowCount() == 0 )
+  {
+    QList<QgsMapLayer *> toRemove;
+    const auto mapLayers = QgsProject::instance()->mapLayers();
+    for ( const auto &l : mapLayers )
+    {
+      if ( ! l->isValid() )
+        toRemove << l;
+    }
+    QgsProject::instance()->removeMapLayers( toRemove );
     accept();
+  }
+
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
 
 }
 

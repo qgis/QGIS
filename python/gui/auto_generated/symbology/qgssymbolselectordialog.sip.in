@@ -66,7 +66,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 
     QgsSymbol *symbol();
 %Docstring
-Returns the symbol that is currently active in the widget. Can be null.
+Returns the symbol that is currently active in the widget. Can be ``None``.
 
 :return: The active symbol.
 %End
@@ -201,7 +201,7 @@ Constructor for QgsSymbolSelectorDialog.
 :param style: The style
 :param vl: Associated vector layer
 :param parent: Parent widget
-:param embedded: True to embed in renderer properties dialog, false otherwise
+:param embedded: ``True`` to embed in renderer properties dialog, ``False`` otherwise
 %End
     ~QgsSymbolSelectorDialog();
 
@@ -232,7 +232,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 
     QgsSymbol *symbol();
 %Docstring
-Returns the symbol that is currently active in the widget. Can be null.
+Returns the symbol that is currently active in the widget. Can be ``None``.
 
 :return: The active symbol.
 %End

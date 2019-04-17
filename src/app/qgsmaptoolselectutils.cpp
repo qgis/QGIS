@@ -29,6 +29,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgslogger.h"
 #include "qgis.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QMouseEvent>
 #include <QApplication>

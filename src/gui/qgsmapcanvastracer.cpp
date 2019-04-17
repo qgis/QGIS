@@ -116,20 +116,26 @@ void QgsMapCanvasTracer::configure()
     }
     break;
     case QgsSnappingConfig::AllLayers:
-      Q_FOREACH ( QgsMapLayer *layer, visibleLayers )
+    {
+      const auto constVisibleLayers = visibleLayers;
+      for ( QgsMapLayer *layer : constVisibleLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( vl )
           layers << vl;
       }
-      break;
+    }
+    break;
     case QgsSnappingConfig::AdvancedConfiguration:
-      Q_FOREACH ( const QgsSnappingUtils::LayerConfig &cfg, mCanvas->snappingUtils()->layers() )
+    {
+      const auto constLayers = mCanvas->snappingUtils()->layers();
+      for ( const QgsSnappingUtils::LayerConfig &cfg : constLayers )
       {
         if ( visibleLayers.contains( cfg.layer ) )
           layers << cfg.layer;
       }
-      break;
+    }
+    break;
   }
 
   setLayers( layers );

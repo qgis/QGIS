@@ -39,7 +39,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
         return False, alg.tr("You need to set either start coordinates OR a start points vector layer!")
 
     paramscore = [f for f in ['-c', '-a', '-n']
-                  if alg.parameterAsBool(parameters, f, context)]
+                  if alg.parameterAsBoolean(parameters, f, context)]
     if len(paramscore) > 1:
         return False, alg.tr("-c, -a, -n parameters are mutually exclusive!")
     return True, None

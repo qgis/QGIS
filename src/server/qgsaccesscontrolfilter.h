@@ -105,7 +105,7 @@ class SERVER_EXPORT QgsAccessControlFilter
      * Are we authorized to modify the following geometry
      * \param layer the layer to control
      * \param feature the concerned feature
-     * \returns true if we are allowed to edit
+     * \returns TRUE if we are allowed to edit
      */
     virtual bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 

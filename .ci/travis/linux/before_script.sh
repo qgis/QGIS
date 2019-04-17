@@ -16,39 +16,19 @@
 
 set -e
 
-pushd .docker
-
 DOCKER_DEPS_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ "${TRAVIS_EVENT_TYPE}" != "pull_request" ]] && echo "true" || echo "false" )
-DOCKER_DEPS_IMAGE_REBUILD=$( [[ $TRAVIS_COMMIT_MESSAGE =~ '[docker] update dependencies' ]] && echo "true" || echo "false" )
 
-echo "travis_fold:start:travis_env"
-echo "${bold}Travis environment variables${endbold}"
-echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
-echo "TRAVIS_EVENT_TYPE: $TRAVIS_EVENT_TYPE"
-echo "DOCKER_TAG: $DOCKER_TAG"
-echo "TRAVIS_COMMIT_MESSAGE: $TRAVIS_COMMIT_MESSAGE"
-echo "DOCKER_DEPS_PUSH: $DOCKER_DEPS_PUSH"
-echo "DOCKER_DEPS_IMAGE_REBUILD: $DOCKER_DEPS_IMAGE_REBUILD"
-echo "DOCKER_BUILD_QGIS_IMAGE: $DOCKER_BUILD_QGIS_IMAGE"
-echo "DOCKER_BUILD_DEPS_FILE: $DOCKER_BUILD_DEPS_FILE"
-echo "TRAVIS_TIMESTAMP: $TRAVIS_TIMESTAMP"
-echo "travis_fold:end:travis_env"
+.ci/travis/scripts/echo_travis_var.sh
 
+pushd .docker
 
 echo "travis_fold:start:docker_build"
 echo "${bold}Docker build deps${endbold}"
 docker --version
-if [[ $DOCKER_BUILD_QGIS_IMAGE =~ false ]]; then
-  docker-compose --version
-  docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml config
-fi
-
-if [[ $DOCKER_DEPS_IMAGE_REBUILD =~ true ]]; then
-  docker build --no-cache -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
-else
-  docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
-  docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
-fi
+docker-compose --version
+docker-compose -f ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml config
+docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
+docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
 echo "travis_fold:end:docker_build"
 
 echo "travis_fold:start:docker_push"

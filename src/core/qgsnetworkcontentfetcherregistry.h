@@ -23,15 +23,12 @@
 #include <QMap>
 #include <QMutex>
 #include <QNetworkReply>
-#include <QTemporaryFile>
 
 #include "qgis_core.h"
-
-class QTemporaryFile;
-
 #include "qgstaskmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
 
+class QTemporaryFile;
 
 /**
  * \class QgsFetchedContent
@@ -69,7 +66,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
 
 #ifndef SIP_RUN
-    //! Returns a pointer to the local file, a null pointer if the file is not accessible yet.
+    //! Returns a pointer to the local file, or NULLPTR if the file is not accessible yet.
     QFile *file() const {return mFile;}
 #endif
 
@@ -86,7 +83,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
     /**
      * \brief Start the download
-     * \param redownload if set to true, it will restart any achieved or pending download.
+     * \param redownload if set to TRUE, it will restart any achieved or pending download.
      */
     void download( bool redownload = false );
 

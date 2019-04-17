@@ -105,6 +105,7 @@ class nearblack(GdalAlgorithm):
         arguments.append(inLayer.source())
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
         arguments.append('-o')
@@ -113,7 +114,7 @@ class nearblack(GdalAlgorithm):
         arguments.append('-near')
         arguments.append(str(self.parameterAsInt(parameters, self.NEAR, context)))
 
-        if self.parameterAsBool(parameters, self.WHITE, context):
+        if self.parameterAsBoolean(parameters, self.WHITE, context):
             arguments.append('-white')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)

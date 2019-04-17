@@ -119,28 +119,28 @@ Returns the item's icon.
 
     bool isCheckable() const;
 %Docstring
-Returns true if the item is checkable.
+Returns ``True`` if the item is checkable.
 
 .. seealso:: :py:func:`setCheckable`
 %End
 
     bool isChecked() const;
 %Docstring
-Returns true if the item is checked.
+Returns ``True`` if the item is checked.
 
 .. seealso:: :py:func:`setChecked`
 %End
 
     bool isEnabled() const;
 %Docstring
-Returns true if the item is enabled.
+Returns ``True`` if the item is enabled.
 
 .. seealso:: :py:func:`setEnabled`
 %End
 
     bool isRenderedAsWidget() const;
 %Docstring
-Returns true if the item will be rendered using a widget.
+Returns ``True`` if the item will be rendered using a widget.
 
 .. seealso:: :py:func:`setRenderAsWidget`
 %End

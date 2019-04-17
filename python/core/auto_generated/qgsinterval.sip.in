@@ -158,7 +158,7 @@ Sets the interval duration in seconds.
 
     bool isValid() const;
 %Docstring
-Returns true if the interval is valid.
+Returns ``True`` if the interval is valid.
 
 .. seealso:: :py:func:`setValid`
 %End
@@ -167,7 +167,7 @@ Returns true if the interval is valid.
 %Docstring
 Sets whether the interval is valid.
 
-:param valid: set to true to set the interval as valid.
+:param valid: set to ``True`` to set the interval as valid.
 
 .. seealso:: :py:func:`isValid`
 %End

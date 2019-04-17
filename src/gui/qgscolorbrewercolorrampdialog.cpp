@@ -45,7 +45,8 @@ QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrew
   cboSchemeName->setIconSize( iconSize );
 
   QStringList schemes = QgsColorBrewerColorRamp::listSchemeNames();
-  Q_FOREACH ( const QString &schemeName, schemes )
+  const auto constSchemes = schemes;
+  for ( const QString &schemeName : constSchemes )
   {
     // create a preview icon using five color variant
     QgsColorBrewerColorRamp *r = new QgsColorBrewerColorRamp( schemeName, 5 );
@@ -73,7 +74,8 @@ void QgsColorBrewerColorRampWidget::populateVariants()
   cboColors->clear();
   QString schemeName = cboSchemeName->currentText();
   QList<int> variants = QgsColorBrewerColorRamp::listSchemeVariants( schemeName );
-  Q_FOREACH ( int variant, variants )
+  const auto constVariants = variants;
+  for ( int variant : constVariants )
   {
     cboColors->addItem( QString::number( variant ) );
   }

@@ -1912,105 +1912,38 @@
                  <property name="title">
                   <string>Data source handling</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_24">
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_14">
-                    <item>
-                     <widget class="QLabel" name="label_30">
-                      <property name="text">
-                       <string>Scan for valid items in the browser dock</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_12">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
-                    </item>
-                   </layout>
+                 <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,2,1,0">
+                  <item row="0" column="2">
+                   <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
                   </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <item>
-                     <widget class="QLabel" name="label_29">
-                      <property name="text">
-                       <string>Scan for contents of compressed files (.zip) in browser dock</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_11">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="cmbScanZipInBrowser">
-                      <property name="currentIndex">
-                       <number>-1</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_29">
+                    <property name="text">
+                     <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                    </property>
+                   </widget>
                   </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_12">
-                    <item>
-                     <widget class="QLabel" name="textLabel1_13">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Prompt for raster sublayers when opening</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_10">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="cmbPromptRasterSublayers">
-                      <item>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                   </layout>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="textLabel1_13">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Prompt for raster sublayers when opening</string>
+                    </property>
+                   </widget>
                   </item>
-                  <item>
+                  <item row="6" column="0" colspan="4">
+                   <widget class="QCheckBox" name="cbxCompileExpressions">
+                    <property name="text">
+                     <string>Execute expressions on server-side if possible</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="4">
                    <widget class="QCheckBox" name="cbxIgnoreShapeEncoding">
                     <property name="toolTip">
                      <string>Disable OGR on-the-fly conversion from declared encoding to UTF-8</string>
@@ -2020,28 +1953,28 @@
                     </property>
                    </widget>
                   </item>
-                  <item>
+                  <item row="4" column="0" colspan="4">
                    <widget class="QCheckBox" name="cbxAddPostgisDC">
                     <property name="text">
                      <string>Add PostGIS layers with double-click and select in extended mode</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
+                  <item row="5" column="0" colspan="4">
                    <widget class="QCheckBox" name="cbxAddOracleDC">
                     <property name="text">
                      <string>Add Oracle layers with double-click and select in extended mode</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
-                   <widget class="QCheckBox" name="cbxCompileExpressions">
-                    <property name="text">
-                     <string>Execute expressions on server-side if possible</string>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="cmbScanZipInBrowser">
+                    <property name="currentIndex">
+                     <number>-1</number>
                     </property>
                    </widget>
                   </item>
-                  <item>
+                  <item row="7" column="0" colspan="4">
                    <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
                     <property name="toolTip">
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -2050,6 +1983,35 @@
                      <string>Evaluate default values</string>
                     </property>
                    </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="cmbPromptRasterSublayers">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_30">
+                    <property name="text">
+                     <string>Scan for valid items in the browser dock</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <spacer name="horizontalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </widget>
@@ -4203,7 +4165,14 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="5" column="2">
-                   <widget class="QgsColorButton" name="mSnappingMarkerColorButton"/>
+                   <widget class="QgsColorButton" name="mSnappingMarkerColorButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>120</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </widget>
                   </item>
                   <item row="6" column="0" colspan="4">
                    <widget class="QCheckBox" name="mSnappingTooltipsCheckbox">
@@ -4259,22 +4228,22 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QSpinBox" name="mMarkerSizeSpinBox">
+                   <widget class="QDoubleSpinBox" name="mMarkerSizeSpinBox">
                     <property name="layoutDirection">
                      <enum>Qt::LeftToRight</enum>
                     </property>
                     <property name="minimum">
-                     <number>3</number>
+                     <number>0.4</number>
                     </property>
                     <property name="singleStep">
-                     <number>1</number>
+                     <number>0.2</number>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="label_6">
                     <property name="text">
-                     <string>Marker size</string>
+                     <string>Marker size (in millimeter)</string>
                     </property>
                    </widget>
                   </item>

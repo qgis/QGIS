@@ -185,7 +185,8 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
 {
   QItemSelection selection;
 
-  Q_FOREACH ( QgsFeatureId fid, fids )
+  const auto constFids = fids;
+  for ( QgsFeatureId fid : constFids )
   {
     selection.append( QItemSelectionRange( mModel->mapToMaster( mModel->fidToIdx( fid ) ) ) );
   }
@@ -213,7 +214,8 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
 
 void QgsFeatureListView::repaintRequested( const QModelIndexList &indexes )
 {
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     update( index );
   }

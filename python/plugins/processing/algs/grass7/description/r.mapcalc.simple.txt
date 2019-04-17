@@ -1,11 +1,11 @@
 r.mapcalc.simple
 Calculate new raster map from a r.mapcalc expression.
 Raster (r.*)
-QgsProcessingParameterRasterLayer|a|Raster layer A|False
-QgsProcessingParameterRasterLayer|b|Raster layer B|True
-QgsProcessingParameterRasterLayer|c|Raster layer C|True
-QgsProcessingParameterRasterLayer|d|Raster layer D|True
-QgsProcessingParameterRasterLayer|e|Raster layer E|True
-QgsProcessingParameterRasterLayer|f|Raster layer F|True
-QgsProcessingParameterString|expression|Formula|A*2
+QgsProcessingParameterRasterLayer|a|Raster layer A|None|False
+QgsProcessingParameterRasterLayer|b|Raster layer B|None|True
+QgsProcessingParameterRasterLayer|c|Raster layer C|None|True
+QgsProcessingParameterRasterLayer|d|Raster layer D|None|True
+QgsProcessingParameterRasterLayer|e|Raster layer E|None|True
+QgsProcessingParameterRasterLayer|f|Raster layer F|None|True
+QgsProcessingParameterString|expression|Formula|A*2|False
 QgsProcessingParameterRasterDestination|output|Calculated

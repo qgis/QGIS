@@ -63,7 +63,7 @@ is transferred to the report section.
 
     bool bodyEnabled() const;
 %Docstring
-Returns true if the body for the section is enabled.
+Returns ``True`` if the body for the section is enabled.
 
 .. seealso:: :py:func:`setBodyEnabled`
 

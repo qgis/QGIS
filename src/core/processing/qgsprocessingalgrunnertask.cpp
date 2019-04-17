@@ -27,20 +27,30 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
   , mParameters( parameters )
   , mContext( context )
   , mFeedback( feedback )
-  , mAlgorithm( algorithm->create() )
 {
   if ( !mFeedback )
   {
     mOwnedFeedback.reset( new QgsProcessingFeedback() );
     mFeedback = mOwnedFeedback.get();
   }
-  if ( !mAlgorithm->prepare( mParameters, context, mFeedback ) )
+  try
+  {
+    mAlgorithm.reset( algorithm->create() );
+    if ( !( mAlgorithm && mAlgorithm->prepare( mParameters, context, mFeedback ) ) )
+      cancel();
+  }
+  catch ( QgsProcessingException &e )
+  {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
+    mFeedback->reportError( e.what() );
     cancel();
+  }
 }
 
 void QgsProcessingAlgRunnerTask::cancel()
 {
-  mFeedback->cancel();
+  if ( mFeedback )
+    mFeedback->cancel();
   QgsTask::cancel();
 }
 

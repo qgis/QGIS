@@ -67,7 +67,7 @@ error was encountered.
 
     bool hasRawHeader( const QByteArray &headerName ) const;
 %Docstring
-Returns true if the reply contains a header with the specified ``headerName``.
+Returns ``True`` if the reply contains a header with the specified ``headerName``.
 
 .. seealso:: :py:func:`rawHeaderPairs`
 

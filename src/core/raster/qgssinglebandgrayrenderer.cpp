@@ -218,3 +218,156 @@ QList<int> QgsSingleBandGrayRenderer::usesBands() const
   }
   return bandList;
 }
+
+void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+{
+  QgsStringMap newProps = props;
+
+  // create base structure
+  QgsRasterRenderer::toSld( doc, element, props );
+
+  // look for RasterSymbolizer tag
+  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+  if ( elements.size() == 0 )
+    return;
+
+  // there SHOULD be only one
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
+
+  // add Channel Selection tags
+  // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
+  // after opacity or geometry or as first element after sld:RasterSymbolizer
+  QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
+  elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
+  if ( elements.size() != 0 )
+  {
+    rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
+  }
+  else
+  {
+    elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Geometry" ) );
+    if ( elements.size() != 0 )
+    {
+      rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
+    }
+    else
+    {
+      rasterSymbolizerElem.insertBefore( channelSelectionElem, rasterSymbolizerElem.firstChild() );
+    }
+  }
+
+  // for gray band
+  QDomElement channelElem = doc.createElement( QStringLiteral( "sld:GrayChannel" ) );
+  channelSelectionElem.appendChild( channelElem );
+
+  // set band
+  QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
+  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( grayBand() ) ) );
+  channelElem.appendChild( sourceChannelNameElem );
+
+  // set ContrastEnhancement
+  if ( contrastEnhancement() )
+  {
+    QDomElement contrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
+    contrastEnhancement()->toSld( doc, contrastEnhancementElem );
+
+    // do changes to minValue/maxValues depending on stretching algorithm. This is necessary because
+    // geoserver do a first stretch on min/max, then apply colo map rules. In some combination is necessary
+    // to use real min/max values and in othere the actual edited min/max values
+    switch ( contrastEnhancement()->contrastEnhancementAlgorithm() )
+    {
+      case QgsContrastEnhancement::StretchAndClipToMinimumMaximum:
+      case QgsContrastEnhancement::ClipToMinimumMaximum:
+      {
+        // with this renderer export have to be check against real min/max values of the raster
+        QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+
+        // if minimum range differ from the real minimum => set is in exported SLD vendor option
+        if ( !qgsDoubleNear( contrastEnhancement()->minimumValue(), myRasterBandStats.minimumValue ) )
+        {
+          // look for VendorOption tag to look for that with minValue attribute
+          QDomNodeList elements = contrastEnhancementElem.elementsByTagName( QStringLiteral( "sld:VendorOption" ) );
+          for ( int i = 0; i < elements.size(); ++i )
+          {
+            QDomElement vendorOption = elements.at( i ).toElement();
+            if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QStringLiteral( "minValue" ) )
+              continue;
+
+            // remove old value and add the new one
+            vendorOption.removeChild( vendorOption.firstChild() );
+            vendorOption.appendChild( doc.createTextNode( QString::number( myRasterBandStats.minimumValue ) ) );
+          }
+        }
+        break;
+      }
+      case QgsContrastEnhancement::UserDefinedEnhancement:
+        break;
+      case QgsContrastEnhancement::NoEnhancement:
+        break;
+      case QgsContrastEnhancement::StretchToMinimumMaximum:
+        break;
+    }
+
+    channelElem.appendChild( contrastEnhancementElem );
+  }
+
+  // for each color set a ColorMapEntry tag nested into "sld:ColorMap" tag
+  // e.g. <ColorMapEntry color="#EEBE2F" quantity="-300" label="label" opacity="0"/>
+  QList< QPair< QString, QColor > > classes;
+  legendSymbologyItems( classes );
+
+  // add ColorMap tag
+  QDomElement colorMapElem = doc.createElement( QStringLiteral( "sld:ColorMap" ) );
+  rasterSymbolizerElem.appendChild( colorMapElem );
+
+  // TODO: add clip intervals basing on real min/max without trigger
+  // min/max calculation again that can takes a lot for remote or big images
+  //
+  // contrast enhancement against a color map can be SLD simulated playing with ColorMapEntryies
+  // each ContrastEnhancementAlgorithm need a specific management.
+  // set type of ColorMap ramp [ramp, intervals, values]
+  // basing on interpolation algorithm of the raster shader
+  QList< QPair< QString, QColor > > colorMapping( classes );
+  switch ( contrastEnhancement()->contrastEnhancementAlgorithm() )
+  {
+    case ( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ):
+    case ( QgsContrastEnhancement::ClipToMinimumMaximum ):
+    {
+      QString lowValue = classes[0].first;
+      QColor lowColor = classes[0].second;
+      lowColor.setAlpha( 0 );
+      QString highValue = classes[1].first;
+      QColor highColor = classes[1].second;
+      highColor.setAlpha( 0 );
+
+      colorMapping.prepend( QPair< QString, QColor >( lowValue, lowColor ) );
+      colorMapping.append( QPair< QString, QColor >( highValue, highColor ) );
+      break;
+    }
+    case ( QgsContrastEnhancement::StretchToMinimumMaximum ):
+    {
+      colorMapping[0].first = QStringLiteral( "0" );
+      colorMapping[1].first = QStringLiteral( "255" );
+      break;
+    }
+    case ( QgsContrastEnhancement::UserDefinedEnhancement ):
+      break;
+    case ( QgsContrastEnhancement::NoEnhancement ):
+      break;
+  }
+
+  // create tags
+  QList< QPair< QString, QColor > >::ConstIterator it;
+  for ( it = colorMapping.begin(); it != colorMapping.constEnd() ; ++it )
+  {
+    // set low level color mapping
+    QDomElement lowColorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );
+    colorMapElem.appendChild( lowColorMapEntryElem );
+    lowColorMapEntryElem.setAttribute( QStringLiteral( "color" ), it->second.name() );
+    lowColorMapEntryElem.setAttribute( QStringLiteral( "quantity" ), it->first );
+    if ( it->second.alphaF() == 0.0 )
+    {
+      lowColorMapEntryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( it->second.alpha() ) );
+    }
+  }
+}

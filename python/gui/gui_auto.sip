@@ -287,6 +287,7 @@
 %Include auto_generated/editorwidgets/qgsdatetimesearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsdefaultsearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsdoublespinbox.sip
+%Include auto_generated/editorwidgets/qgshtmlwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsmultiedittoolbutton.sip
 %Include auto_generated/editorwidgets/qgsrelationreferencesearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsrelationreferencewidget.sip
@@ -302,6 +303,7 @@
 %Include auto_generated/layertree/qgslayertreeview.sip
 %Include auto_generated/layertree/qgslayertreeviewdefaultactions.sip
 %Include auto_generated/layertree/qgslayertreeviewindicator.sip
+%Include auto_generated/layout/qgslayoutcombobox.sip
 %Include auto_generated/layout/qgslayoutcustomdrophandler.sip
 %Include auto_generated/layout/qgslayoutdesignerinterface.sip
 %Include auto_generated/layout/qgslayoutitemcombobox.sip
@@ -327,6 +329,7 @@
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessingmodelerparameterwidget.sip
+%Include auto_generated/processing/qgsprocessingmultipleselectiondialog.sip
 %Include auto_generated/processing/qgsprocessingrecentalgorithmlog.sip
 %Include auto_generated/processing/qgsprocessingtoolboxmodel.sip
 %Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip

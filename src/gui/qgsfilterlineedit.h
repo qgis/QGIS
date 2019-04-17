@@ -75,7 +75,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &nullValue = QString() );
 
     /**
-     * Returns true if the widget's clear button is visible.
+     * Returns TRUE if the widget's clear button is visible.
      * \see setShowClearButton()
      * \since QGIS 3.0
      */
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     /**
      * Sets whether the widget's clear button is visible.
-     * \param visible set to false to hide the clear button
+     * \param visible set to FALSE to hide the clear button
      * \see showClearButton()
      * \since QGIS 3.0
      */
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /**
      * Define if a search icon shall be shown on the left of the image
      * when no text is entered
-     * \param visible set to false to hide the search icon
+     * \param visible set to FALSE to hide the search icon
      * \since QGIS 3.0
      */
     void setShowSearchIcon( bool visible );
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /**
      * Determine if the current text represents null.
      *
-     * \returns True if the widget's value is null.
+     * \returns TRUE if the widget's value is null.
      * \see nullValue()
      */
     inline bool isNull() const { return text() == mNullValue; }
@@ -291,7 +291,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     QgsAnimatedIcon *mBusySpinnerAnimatedIcon = nullptr;
 
-    //! Returns true if clear button should be shown
+    //! Returns TRUE if clear button should be shown
     bool shouldShowClear() const;
 
     friend class TestQgsFeatureListComboBox;

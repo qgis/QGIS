@@ -155,6 +155,31 @@ Returns the QgsLayoutItem corresponding to an index from the source
 QgsLayoutModel model.
 %End
 
+    QgsLayout *layout();
+%Docstring
+Returns the associated layout.
+
+.. versionadded:: 3.8
+%End
+
+    void setAllowEmptyItem( bool allowEmpty );
+%Docstring
+Sets whether an optional empty layout item is present in the model.
+
+.. seealso:: :py:func:`allowEmptyItem`
+
+.. versionadded:: 3.8
+%End
+
+    bool allowEmptyItem() const;
+%Docstring
+Returns ``True`` if the model includes the empty item choice.
+
+.. seealso:: :py:func:`setAllowEmptyItem`
+
+.. versionadded:: 3.8
+%End
+
   protected:
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 

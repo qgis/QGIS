@@ -143,7 +143,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Returns the style entity type filter.
      *
-     * \note This filter is only active if entityFilterEnabled() is true.
+     * \note This filter is only active if entityFilterEnabled() is TRUE.
      * \see setEntityFilter()
      */
     QgsStyle::StyleEntity entityFilter() const;
@@ -151,14 +151,14 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Sets the style entity type \a filter.
      *
-     * \note This filter is only active if entityFilterEnabled() is true.
+     * \note This filter is only active if entityFilterEnabled() is TRUE.
      *
      * \see entityFilter()
      */
     void setEntityFilter( QgsStyle::StyleEntity filter );
 
     /**
-     * Returns true if filtering by entity type is enabled.
+     * Returns TRUE if filtering by entity type is enabled.
      *
      * \see setEntityFilterEnabled()
      * \see entityFilter()
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Sets whether filtering by entity type is \a enabled.
      *
-     * If \a enabled is false, then the value of entityFilter() will have no
+     * If \a enabled is FALSE, then the value of entityFilter() will have no
      * effect on the model filtering.
      *
      * \see entityFilterEnabled()
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Returns the symbol type filter.
      *
-     * \note This filter is only active if symbolTypeFilterEnabled() is true, and has
+     * \note This filter is only active if symbolTypeFilterEnabled() is TRUE, and has
      * no effect on non-symbol entities (i.e. color ramps).
      *
      * \see setSymbolType()
@@ -189,14 +189,14 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Sets the symbol \a type filter.
      *
-     * \note This filter is only active if symbolTypeFilterEnabled() is true.
+     * \note This filter is only active if symbolTypeFilterEnabled() is TRUE.
      *
      * \see symbolType()
      */
     void setSymbolType( QgsSymbol::SymbolType type );
 
     /**
-     * Returns true if filtering by symbol type is enabled.
+     * Returns TRUE if filtering by symbol type is enabled.
      *
      * \see setSymbolTypeFilterEnabled()
      * \see symbolType()
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Sets whether filtering by symbol type is \a enabled.
      *
-     * If \a enabled is false, then the value of symbolType() will have no
+     * If \a enabled is FALSE, then the value of symbolType() will have no
      * effect on the model filtering. This has
      * no effect on non-symbol entities (i.e. color ramps).
      *
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
     /**
-     * Returns true if the model is showing only favorited entities.
+     * Returns TRUE if the model is showing only favorited entities.
      *
      * \see setFavoritesOnly()
      */

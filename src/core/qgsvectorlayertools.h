@@ -43,6 +43,8 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
   public:
     QgsVectorLayerTools();
 
+    // TODO QGIS 4: remove const qualifier
+
     /**
      * This method should/will be called, whenever a new feature will be added to the layer
      *
@@ -50,46 +52,50 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param defaultValues   Default values for the feature to add
      * \param defaultGeometry A default geometry to add to the feature
      * \param feature         Updated feature after adding will be written back to this
-     * \returns                True in case of success, False if the operation failed/was aborted
+     * \returns                TRUE in case of success, FALSE if the operation failed/was aborted
      *
-     * TODO QGIS 3: remove const qualifier
      */
     virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr ) const = 0;
+
+    // TODO QGIS 4: remove const qualifier
 
     /**
      * This will be called, whenever a vector layer should be switched to edit mode. Check the providers
      * capability to edit in here.
-     * If successful layer->startEditing() will be called and true returned.
+     * If successful layer->startEditing() will be called and TRUE returned.
      *
      * \param layer  The layer on which to start an edit session
      *
-     * \returns       True, if the editing session was started
+     * \returns       TRUE, if the editing session was started
      *
-     * TODO QGIS 3: remove const qualifier
      */
     virtual bool startEditing( QgsVectorLayer *layer ) const = 0;
+
+    // TODO QGIS 4: remove const qualifier
 
     /**
      * Will be called, when an editing session is ended and the features should be committed.
      * Appropriate dialogs should be shown like
      *
      * \param layer       The layer to commit
-     * \param allowCancel True if a cancel button should be offered
-     * \returns            True if successful
+     * \param allowCancel TRUE if a cancel button should be offered
+     * \returns            TRUE if successful
      *
-     * TODO QGIS 3: remove const qualifier
      */
     virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel = true ) const = 0;
+
+    // TODO QGIS 4: remove const qualifier
 
     /**
      * Should be called, when the features should be committed but the editing session is not ended.
      *
      * \param layer       The layer to commit
-     * \returns            True if successful
+     * \returns            TRUE if successful
      *
-     * TODO QGIS 3: remove const qualifier
      */
     virtual bool saveEdits( QgsVectorLayer *layer ) const = 0;
+
+    // TODO QGIS 4: remove const qualifier
 
     /**
      * Copy and move features with defined translation.
@@ -99,9 +105,8 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param dx The translation on x
      * \param dy The translation on y
      * \param errorMsg If given, it will contain the error message
-     * \returns True if all features could be copied.
+     * \returns TRUE if all features could be copied.
      *
-     * TODO QGIS 3: remove const qualifier
      */
     virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr ) const;
 

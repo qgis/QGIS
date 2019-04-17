@@ -79,7 +79,7 @@ Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 m
 
     bool isValueInDisplayableRange( double value );
 %Docstring
-Returns true if a pixel ``value`` is in displayable range, false if pixel
+Returns ``True`` if a pixel ``value`` is in displayable range, ``False`` if pixel
 is outside of range (i.e. clipped).
 %End
 
@@ -125,6 +125,17 @@ By default it will be generated.
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
     void readXml( const QDomElement &elem );
+
+    void toSld( QDomDocument &doc, QDomElement &element ) const;
+%Docstring
+Write ContrastEnhancement tags following SLD v1.0 specs
+SLD1.0 is limited to the parameters listed in:
+https://docs.geoserver.org/stable/en/user/styling/sld/reference/rastersymbolizer.html#contrastenhancement
+Btw only sld:Normalize + vendor options are supported because there is no clear mapping
+of ContrastEnhancement parameters to support sld:Histogram or sld:GammaValue
+
+.. versionadded:: 3.6
+%End
 
   private:
     const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & );

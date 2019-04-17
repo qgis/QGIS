@@ -36,7 +36,7 @@ from qgis.core import (
     QgsProcessingParameterType,
     NULL)
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 

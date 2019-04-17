@@ -35,7 +35,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      * \param uri uniform resource locator (URI) for a dataset
      * \param options generic data provider options
      */
-    explicit QgsVirtualLayerProvider( QString const &uri, const ProviderOptions &options );
+    explicit QgsVirtualLayerProvider( QString const &uri, const ProviderOptions &coordinateTransformContext );
 
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override;

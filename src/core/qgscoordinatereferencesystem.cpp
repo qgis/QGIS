@@ -21,7 +21,6 @@
 #include <cmath>
 
 #include <QDir>
-#include <QTemporaryFile>
 #include <QDomNode>
 #include <QDomElement>
 #include <QFileInfo>
@@ -38,16 +37,19 @@
 #include "qgssettings.h"
 
 #include <sqlite3.h>
-#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
+#if PROJ_VERSION_MAJOR>=6
+#include "qgsprojutils.h"
+#include <proj.h>
+#else
 #include <proj_api.h>
+#endif
 
 //gdal and ogr includes (needed for == operator)
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
 #include <cpl_csv.h>
+
 
 
 //! The length of the string "+lat_1="
@@ -104,7 +106,8 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
   // check both standard & user defined projection databases
   QStringList dbs = QStringList() <<  QgsApplication::srsDatabaseFilePath() << QgsApplication::qgisUserDatabaseFilePath();
 
-  Q_FOREACH ( const QString &db, dbs )
+  const auto constDbs = dbs;
+  for ( const QString &db : constDbs )
   {
     QFileInfo myInfo( db );
     if ( !myInfo.exists() )
@@ -523,9 +526,14 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     }
     else if ( d->mAuthId.startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) )
     {
+#if PROJ_VERSION_MAJOR>=6
+      d->mPj.reset( proj_create_from_database( QgsProjContext::get(), "EPSG", d->mAuthId.mid( 5 ).toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
+      d->mIsValid = static_cast< bool >( d->mPj );
+#else
       OSRDestroySpatialReference( d->mCRS );
       d->mCRS = OSRNewSpatialReference( nullptr );
       d->mIsValid = OSRSetFromUserInput( d->mCRS, d->mAuthId.toLower().toLatin1() ) == OGRERR_NONE;
+#endif
       setMapUnits();
     }
 
@@ -545,6 +553,9 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 {
   if ( d->mAxisInvertedDirty )
   {
+#if PROJ_VERSION_MAJOR>=6
+    d->mAxisInverted = QgsProjUtils::axisOrderIsSwapped( d->mPj.get() );
+#else
     OGRAxisOrientation orientation;
     OSRGetAxis( d->mCRS, OSRIsGeographic( d->mCRS ) ? "GEOGCS" : "PROJCS", 0, &orientation );
 
@@ -562,6 +573,7 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
     }
 
     d->mAxisInverted = orientation == OAO_North;
+#endif
     d->mAxisInvertedDirty = false;
   }
 
@@ -586,31 +598,70 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   d->mIsValid = false;
   d->mWkt.clear();
   d->mProj4.clear();
-
   if ( wkt.isEmpty() )
   {
     QgsDebugMsgLevel( QStringLiteral( "theWkt is uninitialized, operation failed" ), 4 );
     return d->mIsValid;
   }
+
+  bool res = false;
+#if PROJ_VERSION_MAJOR>=6
+  PROJ_STRING_LIST warnings = nullptr;
+  PROJ_STRING_LIST grammerErrors = nullptr;
+  d->mPj.reset( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+  res = static_cast< bool >( d->mPj );
+  if ( !res )
+  {
+    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
+    QgsDebugMsg( "INPUT: " + wkt );
+    for ( auto iter = warnings; iter && *iter; ++iter )
+      QgsDebugMsg( *iter );
+    for ( auto iter = grammerErrors; iter && *iter; ++iter )
+      QgsDebugMsg( *iter );
+    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
+  }
+  proj_string_list_destroy( warnings );
+  proj_string_list_destroy( grammerErrors );
+#else
   QByteArray ba = wkt.toLatin1();
   const char *pWkt = ba.data();
 
   OGRErr myInputResult = OSRImportFromWkt( d->mCRS, const_cast< char ** >( & pWkt ) );
-
-  if ( myInputResult != OGRERR_NONE )
+  res = myInputResult == OGRERR_NONE;
+  if ( !res )
   {
     QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
     QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
     QgsDebugMsg( "INPUT: " + wkt );
     QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
-
+  }
+#endif
+  if ( !res )
+  {
     sCRSWktLock.lockForWrite();
     sWktCache.insert( wkt, *this );
     sCRSWktLock.unlock();
     return d->mIsValid;
   }
 
+#if PROJ_VERSION_MAJOR>=6
+  if ( d->mPj )
+  {
+    const QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
+    const QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
+    if ( !authName.isEmpty() && !authCode.isEmpty() )
+    {
+      const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
+      bool result = createFromOgcWmsCrs( authid );
+      sCRSWktLock.lockForWrite();
+      sWktCache.insert( wkt, *this );
+      sCRSWktLock.unlock();
+      return result;
+    }
+  }
+#else
   if ( OSRAutoIdentifyEPSG( d->mCRS ) == OGRERR_NONE )
   {
     QString authid = QStringLiteral( "%1:%2" )
@@ -622,11 +673,30 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     sCRSWktLock.unlock();
     return result;
   }
+#endif
 
   // always morph from esri as it doesn't hurt anything
   // FW: Hey, that's not right!  It can screw stuff up! Disable
   //myOgrSpatialRef.morphFromESRI();
 
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // WARNING - wkt to proj conversion is lossy -- we should reevaluate all this logic!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#if PROJ_VERSION_MAJOR>=6
+  // create the proj4 structs needed for transforming
+  if ( d->mPj )
+  {
+    if ( const char *proj4src = proj_as_proj_string( QgsProjContext::get(), d->mPj.get(), PJ_PROJ_4, nullptr ) )
+    {
+      //now that we have the proj4string, delegate to createFromProj4 so
+      // that we can try to fill in the remaining class members...
+      //create from Proj will set the isValidFlag
+      createFromProj4( proj4src );
+    }
+  }
+#else
   // create the proj4 structs needed for transforming
   char *proj4src = nullptr;
   OSRExportToProj4( d->mCRS, &proj4src );
@@ -647,6 +717,8 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 
     createFromProj4( proj4src );
   }
+#endif
+
   //TODO: createFromProj4 used to save to the user database any new CRS
   // this behavior was changed in order to separate creation and saving.
   // Not sure if it necessary to save it here, should be checked by someone
@@ -659,7 +731,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     saveAsUserCrs( myName );
   }
 
+#if PROJ_VERSION_MAJOR<6
   CPLFree( proj4src );
+#endif
 
   sCRSWktLock.lockForWrite();
   sWktCache.insert( wkt, *this );
@@ -789,7 +863,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
     QStringList myParams;
-    Q_FOREACH ( const QString &param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+    const auto constSplit = myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts );
+    for ( const QString &param : constSplit )
     {
       QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( QgsSqliteUtils::quotedString( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( QLatin1String( "+datum=" ) ) )
@@ -819,7 +894,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     {
       // Bugfix 8487 : test param lists are equal, except for +datum
       QStringList foundParams;
-      Q_FOREACH ( const QString &param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+      const auto constSplit = myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts );
+      for ( const QString &param : constSplit )
       {
         if ( !param.startsWith( QLatin1String( "+datum=" ) ) )
           foundParams << param.trimmed();
@@ -1028,10 +1104,17 @@ QString QgsCoordinateReferenceSystem::toProj4() const
 
   if ( d->mProj4.isEmpty() )
   {
+#if PROJ_VERSION_MAJOR>=6
+    if ( d->mPj )
+    {
+      d->mProj4 = QString( proj_as_proj_string( QgsProjContext::get(), d->mPj.get(), PJ_PROJ_4, nullptr ) );
+    }
+#else
     char *proj4src = nullptr;
     OSRExportToProj4( d->mCRS, &proj4src );
     d->mProj4 = proj4src;
     CPLFree( proj4src );
+#endif
   }
   // Stray spaces at the end?
   return d->mProj4.trimmed();
@@ -1122,10 +1205,26 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   d->mProj4 = proj4String;
 
   QgsLocaleNumC l;
+  const QString trimmed = proj4String.trimmed();
 
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *ctx = QgsProjContext::get();
+  d->mPj.reset( proj_create( ctx, trimmed.toLatin1().constData() ) );
+  if ( !d->mPj )
+  {
+    const int errNo = proj_context_errno( ctx );
+    QgsDebugMsg( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
+    d->mIsValid = false;
+  }
+  else
+  {
+    d->mIsValid = true;
+  }
+#else
   OSRDestroySpatialReference( d->mCRS );
   d->mCRS = OSRNewSpatialReference( nullptr );
-  d->mIsValid = OSRImportFromProj4( d->mCRS, proj4String.trimmed().toLatin1().constData() ) == OGRERR_NONE;
+  d->mIsValid = OSRImportFromProj4( d->mCRS, trimmed.toLatin1().constData() ) == OGRERR_NONE;
+
   // OSRImportFromProj4() may accept strings that are not valid proj.4 strings,
   // e.g if they lack a +ellps parameter, it will automatically add +ellps=WGS84, but as
   // we use the original mProj4 with QgsCoordinateTransform, it will fail to initialize
@@ -1142,6 +1241,8 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
     pj_free( proj );
   }
   pj_ctx_free( pContext );
+#endif
+
   d->mWkt.clear();
   setMapUnits();
 }
@@ -1176,13 +1277,89 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     return;
   }
 
-  char *unitName = nullptr;
-
+#if PROJ_VERSION_MAJOR<6
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,5,0)
   // Of interest to us is that this call adds in a unit parameter if
   // one doesn't already exist.
   OSRFixup( d->mCRS );
 #endif
+#endif
+
+#if PROJ_VERSION_MAJOR>=6
+  if ( !d->mPj )
+  {
+    d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    return;
+  }
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( context, d->mPj.get() ) );
+  if ( !coordinateSystem )
+  {
+    d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    return;
+  }
+
+  const int axisCount = proj_cs_get_axis_count( context, coordinateSystem.get() );
+  if ( axisCount > 0 )
+  {
+    const char *outUnitName = nullptr;
+    // Read only first axis
+    proj_cs_get_axis_info( context, coordinateSystem.get(), 0,
+                           nullptr,
+                           nullptr,
+                           nullptr,
+                           nullptr,
+                           &outUnitName,
+                           nullptr,
+                           nullptr );
+
+    const QString unitName( outUnitName );
+
+    // proj unit names are freeform -- they differ from authority to authority :(
+    // see https://lists.osgeo.org/pipermail/proj/2019-April/008444.html
+    if ( unitName.compare( QLatin1String( "degree" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree minute second" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree minute second hemisphere" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree minute" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree hemisphere" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree minute hemisphere" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "hemisphere degree" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "hemisphere degree minute" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "hemisphere degree minute second" ), Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( QLatin1String( "degree (supplier to define representation)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceDegrees;
+    else if ( unitName.compare( QLatin1String( "metre" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceMeters;
+    // we don't differentiate between these, suck it imperial users!
+    else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 ||
+              unitName.compare( QLatin1String( "foot" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceFeet;
+    else if ( unitName.compare( QLatin1String( "kilometre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
+      d->mMapUnits = QgsUnitTypes::DistanceKilometers;
+    else if ( unitName.compare( QLatin1String( "centimetre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
+      d->mMapUnits = QgsUnitTypes::DistanceCentimeters;
+    else if ( unitName.compare( QLatin1String( "millimetre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
+      d->mMapUnits = QgsUnitTypes::DistanceMillimeters;
+    else if ( unitName.compare( QLatin1String( "Statute mile" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceMiles;
+    else if ( unitName.compare( QLatin1String( "nautical mile" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceNauticalMiles;
+    else if ( unitName.compare( QLatin1String( "yard" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = QgsUnitTypes::DistanceYards;
+    // TODO - maybe more values to handle here?
+    else
+      d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    return;
+  }
+  else
+  {
+    d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
+    return;
+  }
+
+#else
+  char *unitName = nullptr;
 
   if ( OSRIsProjected( d->mCRS ) )
   {
@@ -1220,6 +1397,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     }
   }
+#endif
 }
 
 
@@ -1314,12 +1492,21 @@ QString QgsCoordinateReferenceSystem::toWkt() const
 {
   if ( d->mWkt.isEmpty() )
   {
+#if PROJ_VERSION_MAJOR>=6
+    // TODO QGIS 4.0 - upgrade to wkt2 (this would be an API break).
+    if ( d->mPj )
+    {
+      const char *const options[] = {"MULTILINE=NO", "INDENTATION_WIDTH=0", nullptr};
+      d->mWkt = QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), PJ_WKT1_GDAL, options ) );
+    }
+#else
     char *wkt = nullptr;
     if ( OSRExportToWkt( d->mCRS, &wkt ) == OGRERR_NONE )
     {
       d->mWkt = wkt;
       CPLFree( wkt );
     }
+#endif
   }
   return d->mWkt;
 }
@@ -1772,7 +1959,8 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
-  Q_FOREACH ( const QString &csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
+  static const QStringList csvs { QStringList() << QStringLiteral( "gcs.csv" ) << QStringLiteral( "pcs.csv" ) << QStringLiteral( "vertcs.csv" ) << QStringLiteral( "compdcs.csv" ) << QStringLiteral( "geoccs.csv" ) };
+  for ( const QString &csv : csvs )
   {
     QString filename = CPLFindFile( "gdal", csv.toUtf8() );
 
@@ -1852,6 +2040,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
 int QgsCoordinateReferenceSystem::syncDatabase()
 {
+#if 1
   setlocale( LC_ALL, "C" );
   QString dbFilePath = QgsApplication::srsDatabaseFilePath();
   syncDatumTransform( dbFilePath );
@@ -2352,6 +2541,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
     return false;
   }
 
+#endif
   return true;
 }
 
@@ -2361,10 +2551,18 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
   {
     return d->mAuthId;
   }
+#if PROJ_VERSION_MAJOR>=6
+  else if ( d->mPj )
+  {
+    QgsProjUtils::proj_pj_unique_ptr geoCrs( proj_crs_get_geodetic_crs( QgsProjContext::get(), d->mPj.get() ) );
+    return geoCrs ? QStringLiteral( "%1:%2" ).arg( proj_get_id_auth_name( geoCrs.get(), 0 ), proj_get_id_code( geoCrs.get(), 0 ) ) : QString();
+  }
+#else
   else if ( d->mCRS )
   {
     return OSRGetAuthorityName( d->mCRS, "GEOGCS" ) + QStringLiteral( ":" ) + OSRGetAuthorityCode( d->mCRS, "GEOGCS" );
   }
+#endif
   else
   {
     return QString();

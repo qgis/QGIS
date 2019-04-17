@@ -65,19 +65,6 @@ class CORE_EXPORT QgsCoordinateTransform
     QgsCoordinateTransform();
 
     /**
-     * Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
-     * \param source source CRS, typically of the layer's coordinate system
-     * \param destination CRS, typically of the map canvas coordinate system
-     * correctly handle the user's datum transform setup. Instead the constructor
-     * variant which accepts a QgsCoordinateTransformContext or QgsProject
-     * argument should be used instead. It is highly likely that this constructor
-     * will be removed in future QGIS versions.
-     * \note Not available in Python bindings.
-     * \deprecated Use of this constructor is strongly discouraged, as it will not
-     */
-    Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) SIP_SKIP;
-
-    /**
      * Constructs a QgsCoordinateTransform to transform from the \a source
      * to \a destination coordinate reference system.
      *
@@ -150,7 +137,7 @@ class CORE_EXPORT QgsCoordinateTransform
     ~QgsCoordinateTransform();
 
     /**
-     * Returns true if the coordinate transform is valid, ie both the source and destination
+     * Returns TRUE if the coordinate transform is valid, ie both the source and destination
      * CRS have been set and are valid.
      * \since QGIS 3.0
      */
@@ -234,7 +221,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * the returned rectangle.
      * \param rectangle rectangle to transform
      * \param direction transform direction (defaults to ForwardTransform)
-     * \param handle180Crossover set to true if destination CRS is geographic and handling of extents
+     * \param handle180Crossover set to TRUE if destination CRS is geographic and handling of extents
      * crossing the 180 degree longitude line is required
      * \returns rectangle in destination CRS
      */
@@ -341,7 +328,7 @@ class CORE_EXPORT QgsCoordinateTransform
     void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const SIP_THROW( QgsCsException );
 
     /**
-     * Returns true if the transform short circuits because the source and destination are equivalent.
+     * Returns TRUE if the transform short circuits because the source and destination are equivalent.
      */
     bool isShortCircuited() const;
 

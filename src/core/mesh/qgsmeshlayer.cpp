@@ -27,6 +27,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsmeshtimesettings.h"
 #include "qgspainting.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
@@ -34,23 +35,25 @@
 #include "qgstriangularmesh.h"
 
 
+
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
-                            const LayerOptions & )
-  : QgsMapLayer( MeshLayer, baseName, meshLayerPath )
+                            const QgsMeshLayer::LayerOptions &options )
+  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
 {
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions;
+    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataProvider( providerKey, providerOptions );
   }
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
   setDefaultRendererSettings();
 } // QgsMeshLayer ctor
+
 
 void QgsMeshLayer::setDefaultRendererSettings()
 {
@@ -85,7 +88,12 @@ const QgsMeshDataProvider *QgsMeshLayer::dataProvider() const
 
 QgsMeshLayer *QgsMeshLayer::clone() const
 {
-  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey );
+  QgsMeshLayer::LayerOptions options;
+  if ( mDataProvider )
+  {
+    options.transformContext = mDataProvider->transformContext();
+  }
+  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey,  options );
   QgsMapLayer::clone( layer );
   return layer;
 }
@@ -144,6 +152,22 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings 
   triggerRepaint();
 }
 
+QgsMeshTimeSettings QgsMeshLayer::timeSettings() const
+{
+  return mTimeSettings;
+}
+
+void QgsMeshLayer::setTimeSettings( const QgsMeshTimeSettings &settings )
+{
+  mTimeSettings = settings;
+  emit timeSettingsChanged();
+}
+
+QString QgsMeshLayer::formatTime( double hours )
+{
+  return QgsMeshLayerUtils::formatTime( hours, mTimeSettings );
+}
+
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
 {
   QgsMeshDatasetValue value;
@@ -184,6 +208,12 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
   }
 
   return value;
+}
+
+void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
 }
 
 void QgsMeshLayer::fillNativeMesh()
@@ -281,6 +311,10 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings );
 
+  QDomElement elemTimeSettings = elem.firstChildElement( "mesh-time-settings" );
+  if ( !elemTimeSettings.isNull() )
+    mTimeSettings.readXml( elemTimeSettings, context );
+
   // get and set the blend mode if it exists
   QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
   if ( !blendModeNode.isNull() )
@@ -304,6 +338,9 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
 
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
   elem.appendChild( elemRendererSettings );
+
+  QDomElement elemTimeSettings = mTimeSettings.writeXml( doc, context );
+  elem.appendChild( elemTimeSettings );
 
   // add blend mode node
   QDomElement blendModeElement  = doc.createElement( QStringLiteral( "blendMode" ) );

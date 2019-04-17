@@ -24,6 +24,7 @@
 #include "qgsrendercontext.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
@@ -35,6 +36,7 @@
 #include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QPicture>
 
@@ -67,18 +69,18 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   QString markerTypeString = settings.value( QStringLiteral( "qgis/digitizing/marker_style" ), "Cross" ).toString();
   if ( markerTypeString == QLatin1String( "Cross" ) )
   {
-    mVertexMarkerStyle = QgsVectorLayer::Cross;
+    mVertexMarkerStyle = QgsSymbolLayerUtils::Cross;
   }
   else if ( markerTypeString == QLatin1String( "SemiTransparentCircle" ) )
   {
-    mVertexMarkerStyle = QgsVectorLayer::SemiTransparentCircle;
+    mVertexMarkerStyle = QgsSymbolLayerUtils::SemiTransparentCircle;
   }
   else
   {
-    mVertexMarkerStyle = QgsVectorLayer::NoMarker;
+    mVertexMarkerStyle = QgsSymbolLayerUtils::NoMarker;
   }
 
-  mVertexMarkerSize = settings.value( QStringLiteral( "qgis/digitizing/marker_size" ), 3 ).toInt();
+  mVertexMarkerSize = settings.value( QStringLiteral( "qgis/digitizing/marker_size_mm" ), 2.0 ).toDouble();
 
   if ( !mRenderer )
     return;
@@ -494,6 +496,7 @@ void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer *selRenderer 
 
 void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QString> &attributeNames )
 {
+  // TODO: add attributes for geometry generator
   if ( QgsLabelingEngine *engine2 = mContext.labelingEngine() )
   {
     if ( layer->labelsEnabled() )

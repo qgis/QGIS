@@ -63,7 +63,8 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
-      Q_FOREACH ( const QString &field, mRequest.filterExpression()->referencedColumns() )
+      const auto constReferencedColumns = mRequest.filterExpression()->referencedColumns();
+      for ( const QString &field : constReferencedColumns )
       {
         int attrIdx = mSource->mFields.lookupField( field );
         if ( !mAttributeList.contains( attrIdx ) )
@@ -389,7 +390,8 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
     QgsDebugMsgLevel( QStringLiteral( "fid=%1" ).arg( fid ), 5 );
 
     // iterate attributes
-    Q_FOREACH ( int idx, mAttributeList )
+    const auto constMAttributeList = mAttributeList;
+    for ( int idx : constMAttributeList )
     {
       if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
         continue;
@@ -489,7 +491,8 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
         return false;
     }
 
-    Q_FOREACH ( int idx, mAttributeList )
+    const auto constMAttributeList = mAttributeList;
+    for ( int idx : constMAttributeList )
     {
       if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
         continue;

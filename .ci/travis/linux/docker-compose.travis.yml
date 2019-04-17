@@ -1,0 +1,24 @@
+version: '3'
+services:
+  postgres:
+    image: kartoza/postgis:9.5-2.2
+    environment:
+      - ALLOW_IP_RANGE="172.18.0.0/16"
+
+  mssql:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: <YourStrong!Passw0rd>
+
+  qgis-deps:
+    tty: true
+    image: qgis_image
+    volumes:
+      - ${TRAVIS_BUILD_DIR}:/root/QGIS
+    links:
+      - postgres
+      - mssql
+    env_file:
+      - docker-variables.env
+

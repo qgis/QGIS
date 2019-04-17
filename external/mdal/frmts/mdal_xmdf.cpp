@@ -246,7 +246,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
 
   bool isVector = dimValues.size() == 3;
 
-  std::vector<float> times = dsTimes.readArray();
+  std::vector<double> times = dsTimes.readArrayDouble();
 
   // all fine, set group and return
   group = std::make_shared<MDAL::DatasetGroup>(
@@ -269,7 +269,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
   for ( hsize_t i = 0; i < nTimeSteps; ++i )
   {
     std::shared_ptr<XmdfDataset> dataset = std::make_shared< XmdfDataset >( group.get(), dsValues, dsActive, i );
-    dataset->setTime( double( times[i] ) );
+    dataset->setTime( times[i] );
     Statistics stats;
     stats.minimum = static_cast<double>( mins[i] );
     stats.maximum = static_cast<double>( maxs[i] );

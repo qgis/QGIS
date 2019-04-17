@@ -204,7 +204,7 @@ void QgsLayoutAttributeTableWidget::mAttributesPushButton_clicked()
     return;
   }
 
-  //make deep copy of current columns, so we can restore them in case of cancelation
+  //make deep copy of current columns, so we can restore them in case of cancellation
   QVector<QgsLayoutTableColumn *> currentColumns;
   auto it = mTable->columns().constBegin();
   for ( ; it != mTable->columns().constEnd() ; ++it )

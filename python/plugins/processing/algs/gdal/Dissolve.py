@@ -124,6 +124,7 @@ class Dissolve(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
@@ -148,14 +149,14 @@ class Dissolve(GdalAlgorithm):
         arguments.append('-sql')
 
         tokens = []
-        if self.parameterAsBool(parameters, self.COUNT_FEATURES, context):
+        if self.parameterAsBoolean(parameters, self.COUNT_FEATURES, context):
             tokens.append("COUNT({}) AS count".format(geometry))
 
-        if self.parameterAsBool(parameters, self.COMPUTE_AREA, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_AREA, context):
             tokens.append("SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter".format(geometry))
 
         statsField = self.parameterAsString(parameters, self.STATISTICS_ATTRIBUTE, context)
-        if statsField and self.parameterAsBool(parameters, self.COMPUTE_STATISTICS, context):
+        if statsField and self.parameterAsBoolean(parameters, self.COMPUTE_STATISTICS, context):
             tokens.append("SUM({0}) AS sum, MIN({0}) AS min, MAX({0}) AS max, AVG({0}) AS avg".format(statsField))
 
         params = ','.join(tokens)
@@ -166,7 +167,7 @@ class Dissolve(GdalAlgorithm):
         if fieldName:
             group_by = ' GROUP BY {}'.format(fieldName)
 
-        if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
+        if self.parameterAsBoolean(parameters, self.KEEP_ATTRIBUTES, context):
             sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, other_fields, params, layerName, group_by)
         else:
             sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, ', ' + fieldName if fieldName else '',
@@ -174,7 +175,7 @@ class Dissolve(GdalAlgorithm):
 
         arguments.append(sql)
 
-        if self.parameterAsBool(parameters, self.EXPLODE_COLLECTIONS, context):
+        if self.parameterAsBoolean(parameters, self.EXPLODE_COLLECTIONS, context):
             arguments.append('-explodecollections')
 
         if options:

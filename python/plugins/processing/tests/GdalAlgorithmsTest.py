@@ -63,6 +63,7 @@ from processing.algs.gdal.gdaladdo import gdaladdo
 from processing.algs.gdal.sieve import sieve
 from processing.algs.gdal.gdal2xyz import gdal2xyz
 from processing.algs.gdal.polygonize import polygonize
+from processing.algs.gdal.pansharp import pansharp
 
 from processing.tools.system import isWindows
 
@@ -257,6 +258,12 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertEqual(res.featureCount(), 1)
 
         QgsProject.instance().removeMapLayer(layer)
+
+    def testOgrOutputLayerName(self):
+        self.assertEqual(GdalUtils.ogrOutputLayerName('/home/me/out.shp'), 'out')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/test_out.shp'), 'test_out')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/TEST_OUT.shp'), 'TEST_OUT')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/test_out.gpkg'), 'test_out')
 
     def testOgrLayerNameExtraction(self):
         with tempfile.TemporaryDirectory() as outdir:
@@ -1219,55 +1226,52 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with input srs
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': 'EPSG:3111',
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': 'EPSG:3111',
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with target using proj string
             custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': custom_crs,
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:20936 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': custom_crs,
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs EPSG:20936 -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with target using custom projection
             custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': custom_crs,
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': custom_crs,
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with non-EPSG crs code
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': 'POSTGIS:3111',
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': 'POSTGIS:3111',
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn(
+                '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' + outdir + '/test.shp',
+                commands[1])
+            self.assertIn('--optfile ', commands[1])
 
     def testGridAverage(self):
         context = QgsProcessingContext()
@@ -2660,7 +2664,19 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-b 1 -f "ESRI Shapefile" DN'
+                 '-b 1 -f "ESRI Shapefile" check DN'
+                 ])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'VAL',
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-b 1 -f "ESRI Shapefile" check VAL'
                  ])
 
             # 8 connectedness
@@ -2673,7 +2689,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-8 -b 1 -f "ESRI Shapefile" DN'
+                 '-8 -b 1 -f "ESRI Shapefile" check DN'
                  ])
 
             # custom output format
@@ -2687,7 +2703,46 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-b 1 -f "GPKG" DN'
+                 '-b 1 -f "GPKG" check DN'
+                 ])
+
+    def testGdalPansharpen(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        panchrom = os.path.join(testDataPath, 'dem.tif')
+        spectral = os.path.join(testDataPath, 'raster.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/out.tif'
+            alg = pansharp()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'SPECTRAL': spectral,
+                                        'PANCHROMATIC': panchrom,
+                                        'RESAMPLING': 2,
+                                        'OPTIONS': '',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_pansharpen.py',
+                 panchrom + ' ' +
+                 spectral + ' ' +
+                 outsource + ' ' +
+                 '-r cubic -of GTiff'
+                 ])
+
+            # custom resampling
+            self.assertEqual(
+                alg.getConsoleCommands({'SPECTRAL': spectral,
+                                        'PANCHROMATIC': panchrom,
+                                        'RESAMPLING': 4,
+                                        'OPTIONS': '',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_pansharpen.py',
+                 panchrom + ' ' +
+                 spectral + ' ' +
+                 outsource + ' ' +
+                 '-r lanczos -of GTiff'
                  ])
 
 

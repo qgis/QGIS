@@ -5,7 +5,7 @@ QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
 QgsProcessingParameterRasterLayer|selection|Raster layer to select the cells which should be processed|None|True
 QgsProcessingParameterEnum|method|Neighborhood operation|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion|False|0|True
 QgsProcessingParameterNumber|size|Neighborhood size|QgsProcessingParameterNumber.Integer|3|True|1|None
-QgsProcessingParameterNumber|gauss|Sigma (in cells) for Gaussian filter|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterNumber|gauss|Sigma (in cells) for Gaussian filter|QgsProcessingParameterNumber.Integer|None|True|0|None
 QgsProcessingParameterString|quantile|Quantile to calculate for method=quantile|None|False|True
 QgsProcessingParameterBoolean|-c|Use circular neighborhood|False
 *QgsProcessingParameterBoolean|-a|Do not align output with the input|False

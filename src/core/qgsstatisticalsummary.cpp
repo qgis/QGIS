@@ -30,6 +30,12 @@ QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
   reset();
 }
 
+void QgsStatisticalSummary::setStatistics( QgsStatisticalSummary::Statistics stats )
+{
+  mStatistics = stats;
+  reset();
+}
+
 void QgsStatisticalSummary::reset()
 {
   mFirst = std::numeric_limits<double>::quiet_NaN();
@@ -131,7 +137,8 @@ void QgsStatisticalSummary::finalize()
   if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample )
   {
     double sumSquared = 0;
-    Q_FOREACH ( double value, mValues )
+    const auto constMValues = mValues;
+    for ( double value : constMValues )
     {
       double diff = value - mMean;
       sumSquared += diff * diff;

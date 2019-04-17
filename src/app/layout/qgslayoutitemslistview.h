@@ -39,6 +39,10 @@ class QgsLayoutItemsListViewModel : public QSortFilterProxyModel
   public slots:
     void setSelected( const QModelIndex &index );
 
+  protected:
+
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
   private:
 
     QgsLayoutModel *mModel = nullptr;

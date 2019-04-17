@@ -62,8 +62,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     /**
      * Sets whether opacity modification (transparency) is permitted
-     * for the color dialog. Defaults to true.
-     * \param allowOpacity set to false to disable opacity modification
+     * for the color dialog. Defaults to TRUE.
+     * \param allowOpacity set to FALSE to disable opacity modification
      * \since QGIS 3.0
      */
     void setAllowOpacity( bool allowOpacity );
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     /**
      * Sets whether the widget's color has been "discarded" and the selected color should not
      * be stored in the recent color list.
-     * \param discarded set to true to avoid adding color to recent color list on widget destruction.
+     * \param discarded set to TRUE to avoid adding color to recent color list on widget destruction.
      * \since QGIS 3.0
      */
     void setDiscarded( bool discarded ) { mDiscarded = discarded; }
@@ -191,7 +191,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     /**
      * Ends a color picking operation
      * \param eventPos global position of pixel to sample color from
-     * \param takeSample set to true to actually sample the color, false to just cancel
+     * \param takeSample set to TRUE to actually sample the color, FALSE to just cancel
      * the color picking operation
      */
     void stopPicking( QPoint eventPos, bool takeSample = true );

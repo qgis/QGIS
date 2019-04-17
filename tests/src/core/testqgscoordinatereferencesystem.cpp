@@ -23,11 +23,11 @@ Email                : sherman at mrcc dot com
 #include "qgis.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-
-#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
+#if PROJ_VERSION_MAJOR > 4
+#include <proj.h>
+#else
 #include <proj_api.h>
+#endif
 #include <gdal.h>
 #include <cpl_conv.h>
 #include <QtTest/QSignalSpy>
@@ -84,6 +84,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void projectWithCustomCrs();
     void projectEPSG25833();
     void geoCcsDescription();
+    void geographicCrsAuthId();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -122,7 +123,12 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
+#if PROJ_VERSION_MAJOR > 4
+  PJ_INFO info = proj_info();
+  qDebug() << "PROJ version:           " << info.release;
+#else
   qDebug() << "PROJ version:           " << PJ_VERSION;
+#endif
 
   // if user set GDAL_FIX_ESRI_WKT print a warning
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
@@ -707,9 +713,16 @@ void TestQgsCoordinateReferenceSystem::isGeographic()
 void TestQgsCoordinateReferenceSystem::mapUnits()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  QVERIFY( myCrs.mapUnits() == QgsUnitTypes::DistanceDegrees );
+  myCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceDegrees );
   debugPrint( myCrs );
+  myCrs.createFromString( QStringLiteral( "EPSG:28355" ) );
+  QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceMeters );
+  debugPrint( myCrs );
+  myCrs.createFromString( QStringLiteral( "EPSG:26812" ) );
+  QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceFeet );
+  myCrs.createFromString( QStringLiteral( "EPSG:4619" ) );
+  QCOMPARE( myCrs.mapUnits(), QgsUnitTypes::DistanceDegrees );
 
   // an invalid crs should return unknown unit
   QCOMPARE( QgsCoordinateReferenceSystem().mapUnits(), QgsUnitTypes::DistanceUnknownUnit );
@@ -894,7 +907,7 @@ void TestQgsCoordinateReferenceSystem::projectEPSG25833()
   QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
   QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/epsg25833.qgs" ) ) );
   QVERIFY( p.crs().isValid() );
-  QVERIFY( p.crs().authid() == QStringLiteral( "EPSG:25833" ) );
+  QCOMPARE( p.crs().authid(), QStringLiteral( "EPSG:25833" ) );
   QCOMPARE( spyCrsChanged.count(), 1 );
 }
 
@@ -916,6 +929,17 @@ void TestQgsCoordinateReferenceSystem::geoCcsDescription()
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4348" ) );
   QCOMPARE( crs.description(), QStringLiteral( "GDA94 (geocentric)" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::geographicCrsAuthId()
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:4326" ) );
+  crs.createFromString( QStringLiteral( "EPSG:3825" ) );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3825" ) );
+  QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:3824" ) );
 }
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"

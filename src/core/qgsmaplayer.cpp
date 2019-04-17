@@ -67,7 +67,7 @@ QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
   return QString();
 }
 
-QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
+QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
                           const QString &lyrname,
                           const QString &source )
   : mDataSource( source )
@@ -110,7 +110,8 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 {
   layer->setBlendMode( blendMode() );
 
-  Q_FOREACH ( const QString &s, styleManager()->styles() )
+  const auto constStyles = styleManager()->styles();
+  for ( const QString &s : constStyles )
   {
     layer->styleManager()->addStyle( s, styleManager()->style( s ) );
   }
@@ -138,7 +139,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setCustomProperties( mCustomProperties );
 }
 
-QgsMapLayer::LayerType QgsMapLayer::type() const
+QgsMapLayerType QgsMapLayer::type() const
 {
   return mLayerType;
 }
@@ -781,6 +782,11 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
     emit crsChanged();
 }
 
+QgsCoordinateTransformContext QgsMapLayer::transformContext() const
+{
+  return dataProvider() ? dataProvider()->transformContext() : QgsCoordinateTransformContext();
+}
+
 QString QgsMapLayer::formatLayerName( const QString &name )
 {
   QString layerName( name );
@@ -1062,7 +1068,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
   if ( ( sourceCategories.testFlag( QgsMapLayer::Symbology ) || sourceCategories.testFlag( QgsMapLayer::Symbology3D ) ) &&
        ( categories.testFlag( QgsMapLayer::Symbology ) || categories.testFlag( QgsMapLayer::Symbology3D ) ) )
   {
-    if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
+    if ( type() == QgsMapLayerType::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
       QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
@@ -1117,7 +1123,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
    * Check to see if the layer is vector - in which case we should also export its geometryType
    * to avoid eventually pasting to a layer with a different geometry
   */
-  if ( type() == QgsMapLayer::VectorLayer )
+  if ( type() == QgsMapLayerType::VectorLayer )
   {
     //Getting the selectionLayer geometry
     const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( this );
@@ -1392,38 +1398,71 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
   QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
   myDocument.appendChild( header );
 
-  // Create the root element
-  QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "StyledLayerDescriptor" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
-  root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" ) );
-  root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
-  root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
-  root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-  root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-  myDocument.appendChild( root );
-
-  // Create the NamedLayer element
-  QDomElement namedLayerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
-  root.appendChild( namedLayerNode );
-
   const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-  if ( !vlayer )
+  const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( this );
+  if ( !vlayer && !rlayer )
   {
     errorMsg = tr( "Could not save symbology because:\n%1" )
-               .arg( QStringLiteral( "Non-vector layers not supported yet" ) );
+               .arg( tr( "Only vector and raster layers are supported" ) );
     return;
+  }
+
+  // Create the root element
+  QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "StyledLayerDescriptor" ) );
+  QDomElement layerNode;
+  if ( vlayer )
+  {
+    root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
+    root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" ) );
+    root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+    root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
+    root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+    root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+    myDocument.appendChild( root );
+
+    // Create the NamedLayer element
+    layerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
+    root.appendChild( layerNode );
+  }
+
+  // note: Only SLD 1.0 version is generated because seems none is using SE1.1.0 at least for rasters
+  if ( rlayer )
+  {
+    // Create the root element
+    root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
+    root.setAttribute( QStringLiteral( "xmlns:gml" ), QStringLiteral( "http://www.opengis.net/gml" ) );
+    root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+    root.setAttribute( QStringLiteral( "xmlns:sld" ), QStringLiteral( "http://www.opengis.net/sld" ) );
+    myDocument.appendChild( root );
+
+    // Create the NamedLayer element
+    layerNode = myDocument.createElement( QStringLiteral( "UserLayer" ) );
+    root.appendChild( layerNode );
   }
 
   QgsStringMap props;
   if ( hasScaleBasedVisibility() )
   {
-    props[ QStringLiteral( "scaleMinDenom" )] = QString::number( mMinScale );
-    props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( mMaxScale );
+    props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );
+    props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( mMaxScale );
   }
-  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg, props ) )
+
+  if ( vlayer )
   {
-    errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-    return;
+    if ( !vlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    {
+      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+      return;
+    }
+  }
+
+  if ( rlayer )
+  {
+    if ( !rlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    {
+      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+      return;
+    }
   }
 
   doc = myDocument;
@@ -1431,30 +1470,30 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 
 QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 {
+  const QgsMapLayer *mlayer = qobject_cast<const QgsMapLayer *>( this );
+
   QString errorMsg;
   QDomDocument myDocument;
-  exportSldStyle( myDocument, errorMsg );
+  mlayer->exportSldStyle( myDocument, errorMsg );
   if ( !errorMsg.isNull() )
   {
     resultFlag = false;
     return errorMsg;
   }
-  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-
   // check if the uri is a file or ends with .sld,
   // which indicates that it should become one
   QString filename;
-  if ( vlayer->providerType() == QLatin1String( "ogr" ) )
+  if ( mlayer->providerType() == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = uri.split( '|' );
     filename = theURIParts[0];
   }
-  else if ( vlayer->providerType() == QLatin1String( "gpx" ) )
+  else if ( mlayer->providerType() == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = uri.split( '?' );
     filename = theURIParts[0];
   }
-  else if ( vlayer->providerType() == QLatin1String( "delimitedtext" ) )
+  else if ( mlayer->providerType() == QLatin1String( "delimitedtext" ) )
   {
     filename = QUrl::fromEncoded( uri.toLatin1() ).toLocalFile();
     // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
@@ -1788,7 +1827,8 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   QList<const QgsMapLayer *> lst;
   if ( vl == that )
   {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, layers )
+    const auto constLayers = layers;
+    for ( const QgsMapLayerDependency &dep : constLayers )
     {
       if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1796,7 +1836,8 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   }
   else
   {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, vl->dependencies() )
+    const auto constDependencies = vl->dependencies();
+    for ( const QgsMapLayerDependency &dep : constDependencies )
     {
       if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1812,7 +1853,8 @@ static bool _depHasCycleDFS( const QgsMapLayer *n, QHash<const QgsMapLayer *, in
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( const QgsMapLayer *m, _depOutEdges( n, that, layers ) )
+    const auto depOutEdges { _depOutEdges( n, that, layers ) };
+    for ( const QgsMapLayer *m : depOutEdges )
     {
       if ( _depHasCycleDFS( m, mark, that, layers ) )
         return true;
@@ -1856,7 +1898,8 @@ QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
 bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsMapLayerDependency &dep, oDeps )
+  const auto constODeps = oDeps;
+  for ( const QgsMapLayerDependency &dep : constODeps )
   {
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;

@@ -100,7 +100,7 @@ class CORE_EXPORT QgsPropertyDefinition
       /**
        * Property requires a boolean value. Note that setting DataTypeBoolean as the required type
        * means that the property also accepts string and numeric fields, as those may be convertible
-       * to a boolean value (Eg "1.0" -> true)
+       * to a boolean value (Eg "1.0" -> TRUE)
        */
       DataTypeBoolean,
     };
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPropertyDefinition
     StandardPropertyTemplate standardTemplate() const { return mStandardType; }
 
     /**
-     * Returns true if the property is of a type which is compatible with property
+     * Returns TRUE if the property is of a type which is compatible with property
      * override assistants.
      */
     bool supportsAssistant() const;
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsProperty
     //! Property types
     enum Type
     {
-      InvalidProperty, //! Invalid (not set) property
+      InvalidProperty, //!< Invalid (not set) property
       StaticProperty, //!< Static property (QgsStaticProperty)
       FieldBasedProperty, //!< Field based property (QgsFieldBasedProperty)
       ExpressionBasedProperty, //!< Expression based property (QgsExpressionBasedProperty)
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsProperty
     QgsProperty &operator=( const QgsProperty &other );
 
     /**
-     * Returns true if the property is not an invalid type.
+     * Returns TRUE if the property is not an invalid type.
      */
     operator bool() const;
 
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsProperty
     /**
      * Prepares the property against a specified expression context. Calling prepare before evaluating the
      * property multiple times allows precalculation of expensive setup tasks such as parsing expressions.
-     * Returns true if preparation was successful.
+     * Returns TRUE if preparation was successful.
      */
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsProperty
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /**
-     * Returns true if the property is set to a linked project color.
+     * Returns TRUE if the property is set to a linked project color.
      *
      * \since QGIS 3.6
      */
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsProperty
      * in the expression context can be used to alter the calculated value for the property, so that a property
      * is able to respond to the current environment, layers and features within QGIS.
      * \param defaultValue default value to return if the property is not active or cannot be calculated
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns calculated value for property
      * \see valueAsString()
      * \see valueAsColor()
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsProperty
      * Calculates the current value of the property and interprets it as a string.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultString default string to return if the property cannot be calculated as a string
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to string
      * \see value()
      * \see valueAsColor()
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsProperty
      * Calculates the current value of the property and interprets it as a color.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultColor default color to return if the property cannot be calculated as a color
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to color
      * \see value()
      * \see valueAsString()
@@ -407,7 +407,7 @@ class CORE_EXPORT QgsProperty
      * Calculates the current value of the property and interprets it as a double.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default double to return if the property cannot be calculated as a double
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to double
      * \see value()
      * \see valueAsString()
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsProperty
      * Calculates the current value of the property and interprets it as an integer.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default integer to return if the property cannot be calculated as an integer
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to integer
      * \see value()
      * \see valueAsString()
@@ -435,7 +435,7 @@ class CORE_EXPORT QgsProperty
      * Calculates the current value of the property and interprets it as an boolean.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default boolean to return if the property cannot be calculated as an boolean
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to boolean
      * \see value()
      * \see valueAsString()
@@ -464,7 +464,7 @@ class CORE_EXPORT QgsProperty
     /**
      * Sets an optional transformer to use for manipulating the calculated values for the property.
      * \param transformer transformer to install. Ownership is transferred to the property, and any
-     * existing transformer will be deleted. Set to null to remove an existing transformer.
+     * existing transformer will be deleted. Set to NULLPTR to remove an existing transformer.
      * \see transformer()
      */
     void setTransformer( QgsPropertyTransformer *transformer SIP_TRANSFER );
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsProperty
 
     /**
      * Attempts to convert an existing expression based property to a base expression with
-     * corresponding transformer. Returns true if conversion was successful. Note that
+     * corresponding transformer. Returns TRUE if conversion was successful. Note that
      * calling this method requires multiple parsing of expressions, so it should only
      * be called in non-performance critical code.
      */

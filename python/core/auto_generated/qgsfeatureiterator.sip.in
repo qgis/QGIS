@@ -35,7 +35,7 @@ base class constructor - stores the iteration parameters
 
     virtual bool nextFeature( QgsFeature &f );
 %Docstring
-fetch next feature, return true on success
+fetch next feature, return ``True`` on success
 %End
 
     virtual bool rewind() = 0;
@@ -84,7 +84,7 @@ need to implement!!
 
 :param f: The feature to write to
 
-:return: true if a feature was written to f
+:return: ``True`` if a feature was written to f
 %End
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
@@ -97,7 +97,7 @@ redirect this call to fetchFeature so the default check will be omitted.
 
 :param f: The feature to write to
 
-:return: true if a feature was written to f
+:return: ``True`` if a feature was written to f
 %End
 
     virtual bool nextFeatureFilterFids( QgsFeature &f );
@@ -111,7 +111,7 @@ so the default check will be omitted.
 
 :param f: The feature to write to
 
-:return: true if a feature was written to f
+:return: ``True`` if a feature was written to f
 %End
 
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;

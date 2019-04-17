@@ -104,7 +104,7 @@ QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
 QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   int joinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
-  bool discardNonMatching = parameterAsBool( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
+  bool discardNonMatching = parameterAsBoolean( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
 
   std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
@@ -249,7 +249,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
       }
       if ( sinkNonMatching1 )
       {
-        sinkNonMatching1->addFeature( feat );
+        sinkNonMatching1->addFeature( feat, QgsFeatureSink::FastInsert );
       }
       unjoinedCount++;
     }

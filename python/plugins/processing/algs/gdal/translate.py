@@ -120,6 +120,7 @@ class translate(GdalAlgorithm):
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
             nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         else:
@@ -136,7 +137,7 @@ class translate(GdalAlgorithm):
             arguments.append('-a_nodata')
             arguments.append(nodata)
 
-        if self.parameterAsBool(parameters, self.COPY_SUBDATASETS, context):
+        if self.parameterAsBoolean(parameters, self.COPY_SUBDATASETS, context):
             arguments.append('-sds')
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)

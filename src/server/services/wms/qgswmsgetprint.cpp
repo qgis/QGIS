@@ -21,55 +21,54 @@
 #include "qgswmsutils.h"
 #include "qgswmsgetprint.h"
 #include "qgswmsrenderer.h"
+#include "qgswmsserviceexception.h"
 
 namespace QgsWms
 {
   void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project,
-                      const QString &version, const QgsServerRequest &request,
+                      const QString &, const QgsServerRequest &request,
                       QgsServerResponse &response )
   {
-    QgsServerRequest::Parameters params = request.parameters();
-
-    Q_UNUSED( version );
-
-    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
-    QgsRenderer renderer( serverIface, project, wmsParameters );
-
-    QString format = params.value( "FORMAT" );
-    QString contentType;
+    // get wms parameters from query
+    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
     // GetPrint supports svg/png/pdf
-    if ( format.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 ||
-         format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
+    const QgsWmsParameters::Format format = parameters.format();
+    QString contentType;
+    switch ( format )
     {
-      format   = "png";
-      contentType = "image/png";
-    }
-    else if ( format.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
-    {
-      format   = "svg";
-      contentType = "image/svg+xml";
-    }
-    else if ( format.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
-    {
-      format = "pdf";
-      contentType = "application/pdf";
-    }
-    else
-    {
-      throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
-                                 QString( "Output format %1 is not supported by the GetPrint request" ).arg( format ) );
+      case QgsWmsParameters::PNG:
+        contentType = QStringLiteral( "image/png" );
+        break;
+      case QgsWmsParameters::JPG:
+        contentType = QStringLiteral( "image/jpeg" );
+        break;
+      case QgsWmsParameters::SVG:
+        contentType = QStringLiteral( "image/svg+xml" );
+        break;
+      case QgsWmsParameters::PDF:
+        contentType = QStringLiteral( "application/pdf" );
+        break;
+      default:
+        throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
+                                      parameters[QgsWmsParameter::FORMAT] );
+        break;
     }
 
+    // prepare render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::UpdateExtent );
+    context.setFlag( QgsWmsRenderContext::UseOpacity );
+    context.setFlag( QgsWmsRenderContext::UseFilter );
+    context.setFlag( QgsWmsRenderContext::UseSelection );
+    context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
+    context.setFlag( QgsWmsRenderContext::AddExternalLayers );
+    context.setParameters( parameters );
+
+    // rendering
+    QgsRenderer renderer( context );
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
-    response.write( renderer.getPrint( format ) );
+    response.write( renderer.getPrint() );
   }
-
 } // namespace QgsWms
-
-
-
-

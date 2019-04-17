@@ -65,8 +65,11 @@ Performs raster layer calculations.
       BandError,
     };
 
+
     QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                         const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
+                         const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows,
+                         const QVector<QgsRasterCalculatorEntry> &rasterEntries,
+                         const QgsCoordinateTransformContext &transformContext );
 %Docstring
 QgsRasterCalculator constructor.
 
@@ -77,10 +80,51 @@ QgsRasterCalculator constructor.
 :param nOutputColumns: number of columns in output raster
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
+:param transformContext: coordinate transformation context
+
+.. versionadded:: 3.8
 %End
 
     QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                         const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
+                         const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs,
+                         int nOutputColumns, int nOutputRows,
+                         const QVector<QgsRasterCalculatorEntry> &rasterEntries,
+                         const QgsCoordinateTransformContext &transformContext );
+%Docstring
+QgsRasterCalculator constructor.
+
+:param formulaString: formula for raster calculation
+:param outputFile: output file path
+:param outputFormat: output file format
+:param outputExtent: output extent, CRS is specified by outputCrs parameter
+:param outputCrs: destination CRS for output raster
+:param nOutputColumns: number of columns in output raster
+:param nOutputRows: number of rows in output raster
+:param rasterEntries: list of referenced raster layers
+:param transformContext: coordinate transformation context
+
+.. versionadded:: 3.8
+%End
+
+
+ QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+                                           const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) /Deprecated/;
+%Docstring
+QgsRasterCalculator constructor.
+
+:param formulaString: formula for raster calculation
+:param outputFile: output file path
+:param outputFormat: output file format
+:param outputExtent: output extent. CRS for output is taken from first entry in rasterEntries.
+:param nOutputColumns: number of columns in output raster
+:param nOutputRows: number of rows in output raster
+:param rasterEntries: list of referenced raster layers
+
+.. deprecated:: since QGIS 3.8, use the version with transformContext instead
+%End
+
+ QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+                                           const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) /Deprecated/;
 %Docstring
 QgsRasterCalculator constructor.
 
@@ -93,6 +137,8 @@ QgsRasterCalculator constructor.
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
 
+.. deprecated:: since QGIS 3.8, use the version with transformContext instead
+
 .. versionadded:: 2.10
 %End
 
@@ -100,7 +146,7 @@ QgsRasterCalculator constructor.
 %Docstring
 Starts the calculation and writes a new raster.
 
-The optional ``feedback`` argument can be used for progress reporting and cancelation support.
+The optional ``feedback`` argument can be used for progress reporting and cancellation support.
 
 :return: QgsRasterCalculator.Success in case of success. If an error is encountered then
          a description of the error can be obtained by calling lastError().

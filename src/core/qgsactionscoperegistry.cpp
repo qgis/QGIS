@@ -58,7 +58,8 @@ void QgsActionScopeRegistry::unregisterActionScope( const QgsActionScope &action
 
 QgsActionScope QgsActionScopeRegistry::actionScope( const QString &id )
 {
-  Q_FOREACH ( const QgsActionScope &actionScope, mActionScopes )
+  const auto constMActionScopes = mActionScopes;
+  for ( const QgsActionScope &actionScope : constMActionScopes )
   {
     if ( actionScope.id() == id )
     {

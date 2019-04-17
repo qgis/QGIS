@@ -17,6 +17,7 @@ import os
 
 from qgis.core import (
     QgsApplication,
+    QgsCoordinateTransformContext,
     QgsRasterLayer,
     QgsRasterPipe,
     QgsRasterFileWriter,
@@ -57,7 +58,7 @@ class TestQgsRasterFileWriterTask(unittest.TestCase):
         tmp = create_temp_filename('success.tif')
         writer = QgsRasterFileWriter(tmp)
 
-        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs())
+        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs(), QgsCoordinateTransformContext())
 
         task.writeComplete.connect(self.onSuccess)
         task.errorOccurred.connect(self.onFail)
@@ -82,7 +83,7 @@ class TestQgsRasterFileWriterTask(unittest.TestCase):
         tmp = create_temp_filename('remove_layer.tif')
         writer = QgsRasterFileWriter(tmp)
 
-        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs())
+        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs(), QgsCoordinateTransformContext())
 
         task.writeComplete.connect(self.onSuccess)
         task.errorOccurred.connect(self.onFail)

@@ -17,7 +17,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
-   <item row="14" column="0" colspan="2">
+   <item row="14" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -27,7 +27,7 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="0" colspan="2">
+   <item row="10" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>New Field</string>
@@ -127,13 +127,13 @@
      </layout>
     </widget>
    </item>
-   <item row="12" column="0" colspan="2">
+   <item row="12" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Fields List</string>
      </property>
      <layout class="QGridLayout">
-      <item row="2" column="0" colspan="2">
+      <item row="2" column="0" colspan="3">
        <widget class="QTreeWidget" name="mAttributeView">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -211,7 +211,7 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="4" column="0" colspan="3">
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="3" column="0">
       <widget class="QLabel" name="mGeometryTypeLabel">
@@ -271,14 +271,43 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+     <item row="4" column="0">
+      <widget class="QLabel" name="mAdditionalDimensionsLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
-        <string>Include Z dimension</string>
+        <string>Additional dimensions</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="1" colspan="2">
+     <item row="4" column="1">
+      <widget class="QRadioButton" name="mGeometryWithNoneRadioButton">
+       <property name="text">
+        <string>None</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QRadioButton" name="mGeometryWithZRadioButton">
+       <property name="text">
+        <string>Z (+ M values)</string>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="3">
       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
        <property name="minimumSize">
         <size>
@@ -291,28 +320,31 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
-      <widget class="QCheckBox" name="mGeometryWithMCheckBox">
+     <item row="4" column="3">
+      <widget class="QRadioButton" name="mGeometryWithMRadioButton">
        <property name="text">
-        <string>Include M values</string>
+        <string>M values</string>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="2">
+     <item row="1" column="1" colspan="3">
       <widget class="QComboBox" name="mFileEncoding">
        <property name="enabled">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="1" colspan="2">
+     <item row="2" column="1" colspan="3">
       <widget class="QComboBox" name="mFileFormatComboBox">
        <property name="enabled">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="2">
+     <item row="3" column="1" colspan="3">
       <widget class="QComboBox" name="mGeometryTypeBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -322,7 +354,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
+     <item row="0" column="1" colspan="3">
       <widget class="QgsFileWidget" name="mFileName" native="true"/>
      </item>
     </layout>
@@ -348,8 +380,9 @@
   <tabstop>mFileEncoding</tabstop>
   <tabstop>mFileFormatComboBox</tabstop>
   <tabstop>mGeometryTypeBox</tabstop>
-  <tabstop>mGeometryWithZCheckBox</tabstop>
-  <tabstop>mGeometryWithMCheckBox</tabstop>
+  <tabstop>mGeometryWithNoneRadioButton</tabstop>
+  <tabstop>mGeometryWithZRadioButton</tabstop>
+  <tabstop>mGeometryWithMRadioButton</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>

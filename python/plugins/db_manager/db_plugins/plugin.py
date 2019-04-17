@@ -27,7 +27,12 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMes
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsApplication, QgsSettings
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsMapLayerType
+)
 from ..db_plugins import createDbPlugin
 
 
@@ -273,7 +278,7 @@ class Database(DbItemObject):
         return "row_number() over ()"
 
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
-        from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
+        from qgis.core import QgsVectorLayer, QgsRasterLayer
 
         if uniqueCol is None:
             if hasattr(self, 'uniqueIdFunction'):
@@ -290,7 +295,7 @@ class Database(DbItemObject):
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
-        if layerType == QgsMapLayer.RasterLayer:
+        if layerType == QgsMapLayerType.RasterLayer:
             return QgsRasterLayer(uri.uri(False), layerName, provider)
         return QgsVectorLayer(uri.uri(False), layerName, provider)
 
@@ -594,6 +599,7 @@ class Schema(DbItemObject):
         ret = self.database().connector.renameSchema(self.name, new_name)
         if ret is not False:
             self.name = new_name
+            # FIXME: refresh triggers
             self.refresh()
         return ret
 
@@ -652,6 +658,9 @@ class Table(DbItemObject):
         ret = self.database().connector.renameTable((self.schemaName(), self.name), new_name)
         if ret is not False:
             self.name = new_name
+            self._triggers = None
+            self._rules = None
+            self._constraints = None
             self.refresh()
         return ret
 
@@ -1097,21 +1106,7 @@ class TableField(TableSubItemObject):
 
     def getComment(self):
         """Returns the comment for a field"""
-        tab = self.table()
-        # SQL Query checking if a comment exists for the field
-        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
-        # SQL Query that return the comment of the field
-        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
-        c = tab.database().connector._execute(None, sql_cpt) # Execute Check query
-        res = tab.database().connector._fetchone(c)[0] # Store result
-        if res == 1:
-            # When a comment exists
-            c = tab.database().connector._execute(None, sql) # Execute query
-            res = tab.database().connector._fetchone(c)[0] # Store result
-            tab.database().connector._close_cursor(c) # Close cursor
-            return res # Return comment
-        else:
-            return ''
+        return ''
 
     def delete(self):
         return self.table().deleteField(self)

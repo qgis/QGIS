@@ -30,10 +30,8 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
-                                 QComboBox
-                                 )
+                                 QComboBox)
 from qgis.core import (QgsApplication,
-                       QgsMapLayer,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes,
                        QgsRectangle,
@@ -41,9 +39,9 @@ from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingUtils,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterDefinition
-                       )
-from qgis.core import QgsFieldProxyModel
+                       QgsProcessingParameterDefinition,
+                       QgsFieldProxyModel)
+from qgis.gui import QgsDoubleSpinBox
 from qgis.analysis import QgsInterpolator
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD
@@ -203,11 +201,11 @@ class InterpolationDataWidget(BASE, WIDGET):
                 else:
                     inputType = QgsInterpolator.SourceBreakLines
 
-            layers += '{}::~::{:d}::~::{:d}::~::{:d}::|::'.format(layer.source(),
-                                                                  interpolationSource,
-                                                                  fieldIndex,
-                                                                  inputType)
-        return layers[:-1]
+                layers += '{}::~::{:d}::~::{:d}::~::{:d}::|::'.format(layer.source(),
+                                                                      interpolationSource,
+                                                                      fieldIndex,
+                                                                      inputType)
+        return layers[:-len('::|::')]
 
 
 class InterpolationDataWidgetWrapper(WidgetWrapper):

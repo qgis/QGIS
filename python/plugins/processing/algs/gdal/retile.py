@@ -188,10 +188,10 @@ class retile(GdalAlgorithm):
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 
-        if self.parameterAsBool(parameters, self.DIR_FOR_ROW, context):
+        if self.parameterAsBoolean(parameters, self.DIR_FOR_ROW, context):
             arguments.append('-pyramidOnly')
 
-        if self.parameterAsBool(parameters, self.ONLY_PYRAMIDS, context):
+        if self.parameterAsBoolean(parameters, self.ONLY_PYRAMIDS, context):
             arguments.append('-useDirForEachRow')
 
         csvFile = self.parameterAsFileOutput(parameters, self.OUTPUT_CSV, context)
@@ -209,8 +209,11 @@ class retile(GdalAlgorithm):
         layers = [l.source() for l in self.parameterAsLayerList(parameters, self.INPUT, context)]
         arguments.extend(layers)
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

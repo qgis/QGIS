@@ -15,6 +15,7 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
+#include <cmath>
 
 #include <QtGlobal>
 #include <QApplication>
@@ -69,14 +70,14 @@ email                : sherman at mrcc.com
 #include "qgscoordinatetransformcontext.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
-#include <cmath>
+#include "qgsexpressioncontextutils.h"
 
 /**
  * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
  * \note not available in Python bindings
 */
-//TODO QGIS 3.0 - remove
+//TODO QGIS 4.0 - remove
 class QgsMapCanvas::CanvasProperties
 {
   public:
@@ -242,14 +243,7 @@ QgsMapCanvas::~QgsMapCanvas()
   // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
   // already being destructed, ends with segfault
-  QList<QGraphicsItem *> list = mScene->items();
-  QList<QGraphicsItem *>::iterator it = list.begin();
-  while ( it != list.end() )
-  {
-    QGraphicsItem *item = *it;
-    delete item;
-    ++it;
-  }
+  qDeleteAll( mScene->items() );
 
   mScene->deleteLater();  // crashes in python tests on windows
 
@@ -340,7 +334,8 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
   if ( layers == oldLayers )
     return;
 
-  Q_FOREACH ( QgsMapLayer *layer, oldLayers )
+  const auto constOldLayers = oldLayers;
+  for ( QgsMapLayer *layer : constOldLayers )
   {
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     disconnect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
@@ -352,7 +347,8 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 
   mSettings.setLayers( layers );
 
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
     if ( !layer )
       continue;
@@ -604,7 +600,8 @@ void QgsMapCanvas::rendererJobFinished()
   mMapUpdateTimer.stop();
 
   // TODO: would be better to show the errors in message bar
-  Q_FOREACH ( const QgsMapRendererJob::Error &error, mJob->errors() )
+  const auto constErrors = mJob->errors();
+  for ( const QgsMapRendererJob::Error &error : constErrors )
   {
     QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
   }
@@ -1010,7 +1007,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     QgsFeatureIterator fit = layer->getFeatures( req );
     QgsFeature f;
     QgsPointXY closestPoint;
-    double closestSquaredDistance = extentRect.width() + extentRect.height();
+    double closestSquaredDistance = pow( extentRect.width(), 2.0 ) + pow( extentRect.height(), 2.0 );
     bool pointFound = false;
     while ( fit.nextFeature( f ) )
     {
@@ -1566,18 +1563,15 @@ void QgsMapCanvas::paintEvent( QPaintEvent *e )
 
 void QgsMapCanvas::updateCanvasItemPositions()
 {
-  QList<QGraphicsItem *> list = mScene->items();
-  QList<QGraphicsItem *>::iterator it = list.begin();
-  while ( it != list.end() )
+  const QList<QGraphicsItem *> items = mScene->items();
+  for ( QGraphicsItem *gi : items )
   {
-    QgsMapCanvasItem *item = dynamic_cast<QgsMapCanvasItem *>( *it );
+    QgsMapCanvasItem *item = dynamic_cast<QgsMapCanvasItem *>( gi );
 
     if ( item )
     {
       item->updatePosition();
     }
-
-    ++it;
   }
 }
 
@@ -1911,7 +1905,8 @@ void QgsMapCanvas::updateAutoRefreshTimer()
   // min auto refresh interval stores the smallest interval between layer auto refreshes. We automatically
   // trigger a map refresh on this minimum interval
   int minAutoRefreshInterval = -1;
-  Q_FOREACH ( QgsMapLayer *layer, mSettings.layers() )
+  const auto layers = mSettings.layers();
+  for ( QgsMapLayer *layer : layers )
   {
     if ( layer->hasAutoRefreshEnabled() && layer->autoRefreshInterval() > 0 )
       minAutoRefreshInterval = minAutoRefreshInterval > 0 ? std::min( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
@@ -2131,40 +2126,6 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-#if 0
-void QgsMapCanvas::getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
-{
-  if ( !source.isValid() || !destination.isValid() )
-    return;
-
-  //check if default datum transformation available
-  QgsSettings s;
-  QString settingsString = "/Projections/" + source.authid() + "//" + destination.authid();
-  QVariant defaultSrcTransform = s.value( settingsString + "_srcTransform" );
-  QVariant defaultDestTransform = s.value( settingsString + "_destTransform" );
-  if ( defaultSrcTransform.isValid() && defaultDestTransform.isValid() )
-  {
-    int sourceDatumTransform = defaultSrcTransform.toInt();
-    int destinationDatumTransform = defaultDestTransform.toInt();
-
-    QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-    context.addSourceDestinationDatumTransform( source, destination, sourceDatumTransform, destinationDatumTransform );
-    QgsProject::instance()->setTransformContext( context );
-    return;
-  }
-
-  if ( !s.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool() )
-  {
-    return;
-  }
-
-  //if several possibilities:  present dialog
-  QgsDatumTransformDialog d( source, destination );
-  if ( d.availableTransformationCount() > 1 )
-    d.exec();
-}
-#endif
-
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 {
   if ( mScaleLocked )
@@ -2227,11 +2188,10 @@ bool QgsMapCanvas::event( QEvent *e )
 void QgsMapCanvas::refreshAllLayers()
 {
   // reload all layers in canvas
-  for ( int i = 0; i < layerCount(); i++ )
+  const QList<QgsMapLayer *> layers = mapSettings().layers();
+  for ( QgsMapLayer *layer : layers )
   {
-    QgsMapLayer *l = layer( i );
-    if ( l )
-      l->reload();
+    layer->reload();
   }
 
   // clear the cache
@@ -2262,11 +2222,10 @@ void QgsMapCanvas::setSegmentationToleranceType( QgsAbstractGeometry::Segmentati
 QList<QgsMapCanvasAnnotationItem *> QgsMapCanvas::annotationItems() const
 {
   QList<QgsMapCanvasAnnotationItem *> annotationItemList;
-  QList<QGraphicsItem *> itemList = mScene->items();
-  QList<QGraphicsItem *>::iterator it = itemList.begin();
-  for ( ; it != itemList.end(); ++it )
+  const QList<QGraphicsItem *> items = mScene->items();
+  for ( QGraphicsItem *gi : items )
   {
-    QgsMapCanvasAnnotationItem *aItem = dynamic_cast< QgsMapCanvasAnnotationItem *>( *it );
+    QgsMapCanvasAnnotationItem *aItem = dynamic_cast< QgsMapCanvasAnnotationItem *>( gi );
     if ( aItem )
     {
       annotationItemList.push_back( aItem );
@@ -2279,7 +2238,8 @@ QList<QgsMapCanvasAnnotationItem *> QgsMapCanvas::annotationItems() const
 void QgsMapCanvas::setAnnotationsVisible( bool show )
 {
   mAnnotationsVisible = show;
-  Q_FOREACH ( QgsMapCanvasAnnotationItem *item, annotationItems() )
+  const QList<QgsMapCanvasAnnotationItem *> items = annotationItems();
+  for ( QgsMapCanvasAnnotationItem *item : items )
   {
     item->setVisible( show );
   }
@@ -2355,14 +2315,14 @@ void QgsMapCanvas::startPreviewJob( int number )
 void QgsMapCanvas::stopPreviewJobs()
 {
   mPreviewTimer.stop();
-  QList< QgsMapRendererQImageJob * >::const_iterator it = mPreviewJobs.constBegin();
-  for ( ; it != mPreviewJobs.constEnd(); ++it )
+  const auto previewJobs = mPreviewJobs;
+  for ( auto previewJob : previewJobs )
   {
-    if ( *it )
+    if ( previewJob )
     {
-      disconnect( *it, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
-      connect( *it, &QgsMapRendererQImageJob::finished, *it, &QgsMapRendererQImageJob::deleteLater );
-      ( *it )->cancelWithoutBlocking();
+      disconnect( previewJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      connect( previewJob, &QgsMapRendererQImageJob::finished, previewJob, &QgsMapRendererQImageJob::deleteLater );
+      previewJob->cancelWithoutBlocking();
     }
   }
   mPreviewJobs.clear();

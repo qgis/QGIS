@@ -161,7 +161,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * \param painter destination painter
      * \param topMiddle coordinate corresponding to top middle point of desired marker
      * \param color color of marker
-     * \param selected set to true to draw the marker in a selected state
+     * \param selected set to TRUE to draw the marker in a selected state
      */
     void drawStopMarker( QPainter &painter, QPoint topMiddle, const QColor &color, bool selected = false );
 
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     //! Converts a relative ramp position to a x-coordinate in the widget's coordinate system
     int relativePositionToPoint( double position ) const;
 
-    //! Returns true if the selected stop is movable and deletable
+    //! Returns TRUE if the selected stop is movable and deletable
     bool selectedStopIsMovable() const;
 
     //! Returns the closest stop to a mouse x position, or -1 if no stops within tolerance

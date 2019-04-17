@@ -89,7 +89,7 @@ class QgsFeature3DHandler
 
     /**
      * Called before feature iteration starts to initialize, get required attributes.
-     * \returns true on success (on false the handler failed to initialize and processFeature() / finalize() should not be called
+     * \returns TRUE on success (on FALSE the handler failed to initialize and processFeature() / finalize() should not be called
      */
     virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) = 0;
 

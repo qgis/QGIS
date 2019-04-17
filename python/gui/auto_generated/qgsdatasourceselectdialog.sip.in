@@ -33,12 +33,12 @@ will return a (possibly invalid) QgsMimeDataUtils.Uri.
 
     QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = 0,
                                bool setFilterByLayerType = false,
-                               const QgsMapLayer::LayerType &layerType = QgsMapLayer::LayerType::VectorLayer,
+                               const QgsMapLayerType &layerType = QgsMapLayerType::VectorLayer,
                                QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
 
-:param browserModel: an existing browser model (typically from app), if null an instance will be created
+:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
 :param setFilterByLayerType: activates filtering by layer type
 :param layerType: sets the layer type filter, this is in effect only if filtering by layer type is also active
 :param parent: the object
@@ -47,7 +47,7 @@ Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
 
     ~QgsDataSourceSelectDialog();
 
-    void setLayerTypeFilter( QgsMapLayer::LayerType layerType );
+    void setLayerTypeFilter( QgsMapLayerType layerType );
 %Docstring
 Sets layer type filter to ``layerType`` and activates the filtering
 %End

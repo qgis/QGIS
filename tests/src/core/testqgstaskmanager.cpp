@@ -19,6 +19,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgsproxyprogresstask.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -270,6 +271,9 @@ class TestQgsTaskManager : public QObject
     void managerWithSubTasks2();
     void managerWithSubTasks3();
     void cancelBeforeStart();
+    void proxyTask();
+    void proxyTask2();
+    void scopedProxyTask();
 };
 
 void TestQgsTaskManager::initTestCase()
@@ -731,7 +735,7 @@ void TestQgsTaskManager::taskId()
 
 void TestQgsTaskManager::waitForFinished()
 {
-  if ( QgsTest::isTravis() )
+  if ( !QgsTest::runFlakyTests() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
   QgsTaskManager manager;
@@ -1368,6 +1372,76 @@ void TestQgsTaskManager::cancelBeforeStart()
   }
 
   while ( manager.countActiveTasks() > 1 )
+  {
+    QCoreApplication::processEvents();
+  }
+  flushEvents();
+}
+
+void TestQgsTaskManager::proxyTask()
+{
+  if ( !QgsTest::runFlakyTests() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( QString() );
+
+  // finalize before task gets a chance to start
+  QgsTaskManager manager;
+  proxyTask->finalize( false );
+  QPointer< QgsTask > p( proxyTask );
+
+  manager.addTask( proxyTask );
+
+  // should all be ok, no deadlock...
+  while ( p )
+  {
+    QCoreApplication::processEvents();
+  }
+  flushEvents();
+}
+
+void TestQgsTaskManager::proxyTask2()
+{
+  if ( !QgsTest::runFlakyTests() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( QString() );
+
+  // finalize before task gets a chance to start
+  QgsTaskManager manager;
+  QPointer< QgsTask > p( proxyTask );
+  manager.addTask( proxyTask );
+
+  // should all be ok, no deadlock...
+  while ( proxyTask->status() != QgsTask::Running )
+  {
+    QCoreApplication::processEvents();
+  }
+  proxyTask->finalize( false );
+  while ( p )
+  {
+    QCoreApplication::processEvents();
+  }
+
+  flushEvents();
+}
+
+void TestQgsTaskManager::scopedProxyTask()
+{
+  if ( !QgsTest::runFlakyTests() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  {
+    // task finishes before it can start
+    QgsScopedProxyProgressTask task{ QString() };
+  }
+
+  // should all be ok, no deadlock...
+  while ( QgsApplication::taskManager()->countActiveTasks() == 0 )
+  {
+    QCoreApplication::processEvents();
+  }
+  while ( QgsApplication::taskManager()->countActiveTasks() > 0 )
   {
     QCoreApplication::processEvents();
   }

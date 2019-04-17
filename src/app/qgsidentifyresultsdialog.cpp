@@ -49,6 +49,7 @@
 #include "qgsfieldformatter.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -468,19 +469,19 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 {
   switch ( result.mLayer->type() )
   {
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
       addFeature( qobject_cast<QgsVectorLayer *>( result.mLayer ), result.mFeature, result.mDerivedAttributes );
       break;
 
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
       addFeature( qobject_cast<QgsRasterLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes, result.mFields, result.mFeature, result.mParams );
       break;
 
-    case QgsMapLayer::MeshLayer:
+    case QgsMapLayerType::MeshLayer:
       addFeature( qobject_cast<QgsMeshLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes );
       break;
 
-    case QgsMapLayer::PluginLayer:
+    case QgsMapLayerType::PluginLayer:
       break;
   }
 }
@@ -542,7 +543,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       actionItem->addChild( editItem );
     }
 
-    Q_FOREACH ( const QgsAction &action, actions )
+    const auto constActions = actions;
+    for ( const QgsAction &action : constActions )
     {
       if ( !action.runable() )
         continue;
@@ -804,12 +806,13 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     // Add all supported formats, best first. HTML is considered the best because
     // it usually holds most information.
     int capabilities = layer->dataProvider()->capabilities();
-    QList<QgsRaster::IdentifyFormat> formats;
-    formats << QgsRaster::IdentifyFormatHtml
-            << QgsRaster::IdentifyFormatFeature
-            << QgsRaster::IdentifyFormatText
-            << QgsRaster::IdentifyFormatValue;
-    Q_FOREACH ( QgsRaster::IdentifyFormat f, formats )
+    static const QList<QgsRaster::IdentifyFormat> formats
+    {
+      QgsRaster::IdentifyFormatHtml,
+      QgsRaster::IdentifyFormatFeature,
+      QgsRaster::IdentifyFormatText,
+      QgsRaster::IdentifyFormatValue };
+    for ( const auto &f : formats )
     {
       if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) )
         continue;
@@ -826,8 +829,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << ' ' + tr( "Format" ) );
       layItem->addChild( formatItem );
       lstResults->setItemWidget( formatItem, 1, formatCombo );
-      connect( formatCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-               this, static_cast<void ( QgsIdentifyResultsDialog::* )( int )>( &QgsIdentifyResultsDialog::formatChanged ) );
+      connect( formatCombo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+               this, qgis::overload<int>::of( &QgsIdentifyResultsDialog::formatChanged ) );
     }
     else
     {
@@ -853,23 +856,46 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       if ( i >= fields.count() )
         continue;
 
-      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs.at( i ).toString() );
-
+      const auto value { attrs.at( i ).toString() };
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
       attrItem->setData( 0, Qt::DisplayRole, fields.at( i ).name() );
-
-      QVariant value = attrs.at( i );
-      attrItem->setData( 1, Qt::DisplayRole, value );
+      attrItem->setData( 1, Qt::DisplayRole, attrs.at( i ) );
       featItem->addChild( attrItem );
+      bool foundLinks = false;
+      const auto links { QgsStringUtils::insertLinks( value, &foundLinks ) };
+      if ( foundLinks )
+      {
+        auto valueLabel { qgis::make_unique<QLabel>( links ) };
+        attrItem->setText( 1, QString( ) );
+        valueLabel->setOpenExternalLinks( true );
+        lstResults->setItemWidget( attrItem, 1, valueLabel.release() );
+      }
     }
   }
 
   if ( currentFormat == QgsRaster::IdentifyFormatHtml || currentFormat == QgsRaster::IdentifyFormatText )
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
+    attrItem->webView()->page()->setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
+    const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
+    // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
+    if ( horizontalDpi > 96 )
+    {
+      attrItem->webView()->setZoomFactor( attrItem->webView()->zoomFactor() * ( currentFormat == QgsRaster::IdentifyFormatHtml ? 0.7 : 0.9 ) );
+    }
+    connect( attrItem->webView(), &QWebView::linkClicked, [ ]( const QUrl & url )
+    {
+      QDesktopServices::openUrl( url );
+    } );
     featItem->addChild( attrItem ); // before setHtml()!
     if ( !attributes.isEmpty() )
     {
-      attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain; charset=utf-8" );
+      auto value { QgsStringUtils::insertLinks( attributes.begin().value() ) };
+      if ( currentFormat ==  QgsRaster::IdentifyFormatText )
+      {
+        value.prepend( QStringLiteral( "<pre style=\"font-family: monospace;\">" ) ).append( QStringLiteral( "</pre>" ) );
+      }
+      attrItem->setHtml( value );
     }
     else
     {
@@ -911,7 +937,20 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     tblResults->setItem( j, 0, item );
     tblResults->setItem( j, 1, new QTableWidgetItem( QString::number( i + 1 ) ) );
     tblResults->setItem( j, 2, new QTableWidgetItem( it.key() ) );
-    tblResults->setItem( j, 3, new QTableWidgetItem( it.value() ) );
+
+    bool foundLinks = false;
+    QString links = QgsStringUtils::insertLinks( it.value(), &foundLinks );
+    if ( foundLinks )
+    {
+      auto valueLabel { qgis::make_unique<QLabel>( links ) };
+      valueLabel->setOpenExternalLinks( true );
+      tblResults->setItem( j, 3, item );
+      tblResults->setCellWidget( j, 3, valueLabel.release() );
+    }
+    else
+    {
+      tblResults->setItem( j, 3, new QTableWidgetItem( it.value() ) );
+    }
 
     tblResults->resizeRowToContents( j );
 
@@ -1170,7 +1209,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 
       int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
-      Q_FOREACH ( const QgsAction &action, actions )
+      const auto constActions = actions;
+      for ( const QgsAction &action : constActions )
       {
         if ( !action.runable() )
           continue;
@@ -1247,7 +1287,8 @@ void QgsIdentifyResultsDialog::clear()
   tblResults->setRowCount( 0 );
 
   mPlot->setVisible( false );
-  Q_FOREACH ( QgsIdentifyPlotCurve *curve, mPlotCurves )
+  const auto constMPlotCurves = mPlotCurves;
+  for ( QgsIdentifyPlotCurve *curve : constMPlotCurves )
     delete curve;
   mPlotCurves.clear();
 
@@ -1278,7 +1319,8 @@ void QgsIdentifyResultsDialog::updateViewModes()
 
 void QgsIdentifyResultsDialog::clearHighlights()
 {
-  Q_FOREACH ( QgsHighlight *h, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsHighlight *h : constMHighlights )
   {
     delete h;
   }
@@ -1288,7 +1330,8 @@ void QgsIdentifyResultsDialog::clearHighlights()
 
 void QgsIdentifyResultsDialog::activate()
 {
-  Q_FOREACH ( QgsHighlight *h, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsHighlight *h : constMHighlights )
   {
     h->show();
   }
@@ -1301,7 +1344,8 @@ void QgsIdentifyResultsDialog::activate()
 
 void QgsIdentifyResultsDialog::deactivate()
 {
-  Q_FOREACH ( QgsHighlight *h, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsHighlight *h : constMHighlights )
   {
     h->hide();
   }

@@ -39,11 +39,22 @@ void QgsAttributeEditorContainer::setVisibilityExpression( const QgsOptionalExpr
   mVisibilityExpression = visibilityExpression;
 }
 
+QColor QgsAttributeEditorContainer::backgroundColor() const
+{
+  return mBackgroundColor;
+}
+
+void QgsAttributeEditorContainer::setBackgroundColor( const QColor &backgroundColor )
+{
+  mBackgroundColor = backgroundColor;
+}
+
 QList<QgsAttributeEditorElement *> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
 {
   QList<QgsAttributeEditorElement *> results;
 
-  Q_FOREACH ( QgsAttributeEditorElement *elem, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsAttributeEditorElement *elem : constMChildren )
   {
     if ( elem->type() == type )
     {
@@ -179,3 +190,33 @@ QString QgsAttributeEditorQmlElement::typeIdentifier() const
 {
   return QStringLiteral( "attributeEditorQmlElement" );
 }
+
+QgsAttributeEditorElement *QgsAttributeEditorHtmlElement::clone( QgsAttributeEditorElement *parent ) const
+{
+  QgsAttributeEditorHtmlElement *element = new QgsAttributeEditorHtmlElement( name(), parent );
+  element->setHtmlCode( mHtmlCode );
+
+  return element;
+}
+
+QString QgsAttributeEditorHtmlElement::htmlCode() const
+{
+  return mHtmlCode;
+}
+
+void QgsAttributeEditorHtmlElement::setHtmlCode( const QString &htmlCode )
+{
+  mHtmlCode = htmlCode;
+}
+
+void QgsAttributeEditorHtmlElement::saveConfiguration( QDomElement &elem ) const
+{
+  QDomText codeElem = elem.ownerDocument().createTextNode( mHtmlCode );
+  elem.appendChild( codeElem );
+}
+
+QString QgsAttributeEditorHtmlElement::typeIdentifier() const
+{
+  return QStringLiteral( "attributeEditorHtmlElement" );
+}
+

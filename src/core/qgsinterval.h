@@ -158,14 +158,14 @@ class CORE_EXPORT QgsInterval
     void setSeconds( double seconds ) { mSeconds = seconds; mValid = true; }
 
     /**
-     * Returns true if the interval is valid.
+     * Returns TRUE if the interval is valid.
      * \see setValid()
      */
     bool isValid() const { return mValid; }
 
     /**
      * Sets whether the interval is valid.
-     * \param valid set to true to set the interval as valid.
+     * \param valid set to TRUE to set the interval as valid.
      * \see isValid()
      */
     void setValid( bool valid ) { mValid = valid; }

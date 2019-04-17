@@ -67,7 +67,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      */
     bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite );
 
-    //! Returns true if current project is offline
+    //! Returns TRUE if current project is offline
     bool isOfflineProject() const;
 
     //! Synchronize to remote layers
@@ -76,12 +76,12 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
   signals:
 
     /**
-     * The signal is emitted when the process has started.
+     * Emitted when the process has started.
      */
     void progressStarted();
 
     /**
-     * Is emitted whenever a new layer is being processed.
+     * Emitted whenever a new layer is being processed.
      * It is possible to estimate the progress of the complete operation by
      * comparing the index of the current \a layer to the total amount
      * \a numLayers.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void layerProgressUpdated( int layer, int numLayers );
 
     /**
-     * Is emitted when the mode for the progress of the current operation is
+     * Emitted when the mode for the progress of the current operation is
      * set.
      * \param mode progress mode
      * \param maximum total number of entities to process in the current operation

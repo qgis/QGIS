@@ -184,7 +184,8 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
     {
       expressionContext->setFeature( indexedFeature.mFeature );
       int i = 0;
-      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderBy, preparedOrderBys )
+      const auto constPreparedOrderBys = preparedOrderBys;
+      for ( const QgsFeatureRequest::OrderByClause &orderBy : constPreparedOrderBys )
       {
         indexedFeature.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
       }

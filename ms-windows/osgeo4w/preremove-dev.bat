@@ -1,12 +1,13 @@
 setlocal enabledelayedexpansion
 
 for %%g in (@grassversions@) do (
-	for /F "delims=." %%i in ("%%g") do set v=%%i
+	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
+	for /F "delims=." %%i in ("!gv!") do set v=%%i
 
-	del "%OSGEO4W_STARTMENU%\QGIS Desktop @version@ with GRASS %%g (Nightly).lnk"
-	del "%OSGEO4W_STARTMENU%\QGIS Browser @version@ with GRASS %%g (Nightly).lnk"
-	del "%OSGEO4W_DESKTOP%\QGIS Desktop @version@ with GRASS %%g (Nightly).lnk"
-	del "%OSGEO4W_DESKTOP%\QGIS Browser @version@ with GRASS %%g (Nightly).lnk"
+	del "%OSGEO4W_STARTMENU%\QGIS Desktop @version@ with GRASS !gv! (Nightly).lnk"
+	del "%OSGEO4W_STARTMENU%\QGIS Browser @version@ with GRASS !gv! (Nightly).lnk"
+	del "%OSGEO4W_DESKTOP%\QGIS Desktop @version@ with GRASS !gv! (Nightly).lnk"
+	del "%OSGEO4W_DESKTOP%\QGIS Browser @version@ with GRASS !gv! (Nightly).lnk"
 	del "%OSGEO4W_ROOT%\bin\@package@-g!v!.bat"
 	del "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe"
 	del "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.env"

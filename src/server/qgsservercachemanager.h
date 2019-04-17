@@ -62,7 +62,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
      * \param accessControl the access control to identify different documents for the same request provided by server interface
-     * \returns true if the document has been found in cache and the document's content set
+     * \returns TRUE if the document has been found in cache and the document's content set
      */
     bool getCachedDocument( QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
@@ -72,7 +72,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
      * \param accessControl the access control to identify different documents for the same request provided by server interface
-     * \returns true if the document has been cached
+     * \returns TRUE if the document has been cached
      */
     bool setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
@@ -81,14 +81,14 @@ class SERVER_EXPORT QgsServerCacheManager
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
      * \param accessControl the access control to identify different documents for the same request provided by server interface
-     * \returns true if the document has been deleted
+     * \returns TRUE if the document has been deleted
      */
     bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
     /**
      * Deletes all cached documents for a QGIS project
      * \param project the project used to generate the document to provide path
-     * \returns true if the document has been deleted
+     * \returns TRUE if the document has been deleted
      */
     bool deleteCachedDocuments( const QgsProject *project ) const;
 
@@ -107,7 +107,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
      * \param accessControl the access control to identify different documents for the same request provided by server interface
-     * \returns true if the image has been cached
+     * \returns TRUE if the image has been cached
      */
     bool setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
@@ -116,14 +116,14 @@ class SERVER_EXPORT QgsServerCacheManager
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
      * \param accessControl the access control to identify different documents for the same request provided by server interface
-     * \returns true if the image has been deleted
+     * \returns TRUE if the image has been deleted
      */
     bool deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
     /**
      * Deletes all cached images for a QGIS project
      * \param project the project used to generate the images to provide path
-     * \returns true if the images have been deleted
+     * \returns TRUE if the images have been deleted
      */
     bool deleteCachedImages( const QgsProject *project ) const;
 

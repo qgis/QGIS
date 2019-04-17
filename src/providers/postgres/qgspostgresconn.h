@@ -121,14 +121,16 @@ struct QgsPostgresLayerProperty
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( QgsWkbTypes::Type type, types )
+    const auto constTypes = types;
+    for ( QgsWkbTypes::Type type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += '|';
       typeString += QString::number( type );
     }
     QString sridString;
-    Q_FOREACH ( int srid, srids )
+    const auto constSrids = srids;
+    for ( int srid : constSrids )
     {
       if ( !sridString.isEmpty() )
         sridString += '|';
@@ -228,7 +230,7 @@ class QgsPostgresConn : public QObject
     int pgVersion() { return mPostgresqlVersion; }
 
     //! run a query and free result buffer
-    bool PQexecNR( const QString &query, bool retry = true );
+    bool PQexecNR( const QString &query );
 
     //! cursor handling
     bool openCursor( const QString &cursorName, const QString &declare );
@@ -245,7 +247,7 @@ class QgsPostgresConn : public QObject
     //
 
     // run a query and check for errors, thread-safe
-    PGresult *PQexec( const QString &query, bool logError = true ) const;
+    PGresult *PQexec( const QString &query, bool logError = true, bool retry = true ) const;
     void PQfinish();
     QString PQerrorMessage() const;
     int PQstatus() const;
@@ -431,7 +433,7 @@ class QgsPostgresConn : public QObject
 
     int mNextCursorId;
 
-    bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
+    bool mShared; //!< Whether the connection is shared by more providers (must not be if going to be used in worker threads)
 
     bool mTransaction;
 

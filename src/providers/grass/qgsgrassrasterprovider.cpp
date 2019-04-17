@@ -286,7 +286,8 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, bandNo, stats, boundingBox, sampleSize );
 
-  Q_FOREACH ( const QgsRasterBandStats &stats, mStatistics )
+  const auto constMStatistics = mStatistics;
+  for ( const QgsRasterBandStats &stats : constMStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -572,7 +573,8 @@ QDateTime QgsGrassRasterProvider::dataTimestamp() const
   QString mapset = mGisdbase + "/" + mLocation + "/" + mMapset;
   QStringList dirs;
   dirs << QStringLiteral( "cell" ) << QStringLiteral( "colr" );
-  Q_FOREACH ( const QString &dir, dirs )
+  const auto constDirs = dirs;
+  for ( const QString &dir : constDirs )
   {
     QString path = mapset + "/" + dir + "/" + mMapName;
     QFileInfo fi( path );

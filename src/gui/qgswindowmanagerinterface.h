@@ -51,7 +51,7 @@ class GUI_EXPORT QgsWindowManagerInterface
      * implementation, this may either open a new instance of the dialog or bring an
      * existing instance to the foreground.
      *
-     * Returns the dialog if shown, or nullptr if the dialog either could not be
+     * Returns the dialog if shown, or NULLPTR if the dialog either could not be
      * created or is not supported by the window manager implementation.
      */
     virtual QWidget *openStandardDialog( StandardDialog dialog ) = 0;

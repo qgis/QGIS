@@ -161,7 +161,7 @@ Determine if the PEM-encoded text of a key is PKCS#8 format
 
 :param keyPemTxt: PEM-encoded text
 
-:return: True if PKCS#8, otherwise false
+:return: ``True`` if PKCS#8, otherwise ``False``
 %End
 
 
@@ -307,7 +307,7 @@ certIsViable checks for viability errors of ``cert`` and whether it is NULL
 
 :param cert: certificate to be checked
 
-:return: false if cert is NULL or has viability errors
+:return: ``False`` if cert is NULL or has viability errors
 %End
 
     static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
@@ -318,7 +318,7 @@ validateCertChain validates the given ``certificateChain``
 
 :param certificateChain: list of certificates to be checked, with leaf first and with optional root CA last
 :param hostName: (optional) name of the host to be verified
-:param trustRootCa: if true the CA will be added to the trusted CAs for this validation check
+:param trustRootCa: if ``True`` the CA will be added to the trusted CAs for this validation check
 
 :return: list of QSslError, if the list is empty then the cert chain is valid
 %End
@@ -329,9 +329,9 @@ validatePKIBundle validate the PKI bundle by checking the certificate chain, the
 expiration and effective dates, optionally trusts the root CA
 
 :param bundle:
-:param useIntermediates: if true the intermediate certs are also checked
-:param trustRootCa: if true the CA will be added to the trusted CAs for this validation check (if useIntermediates is false)
-                    this option is ignored and set to false
+:param useIntermediates: if ``True`` the intermediate certs are also checked
+:param trustRootCa: if ``True`` the CA will be added to the trusted CAs for this validation check (if useIntermediates is ``False``)
+                    this option is ignored and set to ``False``
 
 :return: a list of error strings, if the list is empty then the PKI bundle is valid
 %End

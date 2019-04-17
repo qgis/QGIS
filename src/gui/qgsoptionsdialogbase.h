@@ -53,7 +53,7 @@ class QgsOptionsDialogHighlightWidget;
  * 2) In source file for dialog, inherit this class instead of QDialog, then in constructor:
  *    ...
  *    setupUi( this ); // set up .ui file objects
- *    initOptionsBase( false ); // set up this class to use .ui objects, optionally restoring base ui
+ *    initOptionsBase( FALSE ); // set up this class to use .ui objects, optionally restoring base ui
  *    ...
  *    restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
  */

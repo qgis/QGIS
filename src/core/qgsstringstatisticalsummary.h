@@ -55,7 +55,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
       MinimumLength = 32, //!< Minimum length of string
       MaximumLength = 64, //!< Maximum length of string
       MeanLength = 128, //!< Mean length of strings
-      All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength, //! All statistics
+      All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength, //!< All statistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 

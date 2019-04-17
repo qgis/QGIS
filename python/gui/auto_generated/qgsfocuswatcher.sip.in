@@ -42,7 +42,7 @@ Constructor for QgsFocusWatcher.
 %Docstring
 Emitted when parent object's focus changes.
 
-:param focused: true if object gained focus, false if object lost focus
+:param focused: ``True`` if object gained focus, ``False`` if object lost focus
 %End
 
     void focusIn();

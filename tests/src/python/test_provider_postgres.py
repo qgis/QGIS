@@ -441,7 +441,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         ft1 = vl.getFeatures('pk=1')
         self.assertFalse(ft1.nextFeature(f))
 
-    def testTransactionConstrains(self):
+    def testTransactionConstraints(self):
         # create a vector layer based on postgres
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."check_constraints" sql=', 'test', 'postgres')
         self.assertTrue(vl.isValid())
@@ -626,7 +626,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         fi = vl.getFeatures(QgsFeatureRequest())
         f = QgsFeature()
 
-        #test list
+        # test list
         fi.nextFeature(f)
         value_idx = vl.fields().lookupField('jvalue')
         self.assertIsInstance(f.attributes()[value_idx], list)
@@ -638,7 +638,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[value_idx], [4, 5, 6])
         self.assertEqual(f.attributes()[value_idx], [4.0, 5.0, 6.0])
 
-        #test dict
+        # test dict
         fi.nextFeature(f)
         value_idx = vl.fields().lookupField('jvalue')
         self.assertIsInstance(f.attributes()[value_idx], dict)
@@ -1183,6 +1183,40 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(g.childCount(), 1)
         self.assertTrue(g.childGeometry(0).vertexCount() > 3)
 
+    def testMassivePaste(self):
+        """Speed test to compare createFeature and createFeatures, for regression #21303"""
+
+        import time
+
+        self.execSQLCommand('CREATE TABLE IF NOT EXISTS massive_paste(pk SERIAL NOT NULL PRIMARY KEY, geom public.geometry(Polygon, 4326))')
+        self.execSQLCommand('TRUNCATE massive_paste')
+
+        start_time = time.time()
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="massive_paste" (geom) sql=', 'test_massive_paste', 'postgres')
+        self.assertTrue(vl.startEditing())
+        features = []
+        context = vl.createExpressionContext()
+        for i in range(4000):
+            features.append(QgsVectorLayerUtils.createFeature(vl, QgsGeometry.fromWkt('Polygon ((7 44, 8 45, 8 46, 7 46, 7 44))'), {0: i}, context))
+        self.assertTrue(vl.addFeatures(features))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(vl.featureCount(), 4000)
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        self.execSQLCommand('TRUNCATE massive_paste')
+        start_time = time.time()
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="massive_paste" (geom) sql=', 'test_massive_paste', 'postgres')
+        self.assertTrue(vl.startEditing())
+        features_data = []
+        context = vl.createExpressionContext()
+        for i in range(4000):
+            features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Polygon ((7 44, 8 45, 8 46, 7 46, 7 44))'), {0: i}))
+        features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
+        self.assertTrue(vl.addFeatures(features))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(vl.featureCount(), 4000)
+        print("--- %s seconds ---" % (time.time() - start_time))
+
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
@@ -1213,6 +1247,12 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
     def partiallyCompiledFilters(self):
         return set([])
+
+    def testConstraints(self):
+        for key in ["key1", "key2"]:
+            idx = self.vl.dataProvider().fieldNameIndex(key)
+            self.assertTrue(idx >= 0)
+            self.assertFalse(self.vl.dataProvider().fieldConstraints(idx) & QgsFieldConstraints.ConstraintUnique)
 
 
 if __name__ == '__main__':

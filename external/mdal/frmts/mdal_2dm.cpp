@@ -12,6 +12,7 @@
 #include <vector>
 #include <map>
 #include <cassert>
+#include <limits>
 
 #include "mdal_2dm.hpp"
 #include "mdal.h"
@@ -62,7 +63,6 @@ size_t MDAL::Mesh2dm::vertexIndex( size_t vertexID ) const
   }
   return vertexID;
 }
-
 
 MDAL::Driver2dm::Driver2dm():
   Driver( DRIVER_NAME,
@@ -135,6 +135,9 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   std::vector<Vertex> vertices( vertexCount );
   std::vector<Face> faces( faceCount );
 
+  // Basement 3.x supports definition of elevation for cell centers
+  std::vector<double> elementCenteredElevation;
+
   in.clear();
   in.seekg( 0, std::ios::beg );
 
@@ -146,30 +149,40 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
 
   while ( std::getline( in, line ) )
   {
-    if ( startsWith( line, "E4Q" ) )
+    if ( startsWith( line, "E4Q" ) ||
+         startsWith( line, "E3T" )
+       )
     {
       chunks = split( line,  ' ' );
       assert( faceIndex < faceCount );
 
-      Face &face = faces[faceIndex];
-      face.resize( 4 );
-      // Right now we just store node IDs here - we will convert them to node indices afterwards
-      for ( size_t i = 0; i < 4; ++i )
-        face[i] = toSizeT( chunks[i + 2] ) - 1; // 2dm is numbered from 1
-
-      faceIndex++;
-    }
-    else if ( startsWith( line, "E3T" ) )
-    {
-      chunks = split( line,  ' ' );
-      assert( faceIndex < faceCount );
+      const size_t faceVertexCount = MDAL::toSizeT( line[1] );
+      assert( ( faceVertexCount == 3 ) || ( faceVertexCount == 4 ) );
 
       Face &face = faces[faceIndex];
-      face.resize( 3 );
+      face.resize( faceVertexCount );
+
+      // chunks format here
+      // E** id vertex_id1, vertex_id2, ... material_id (elevation - optional)
+      // vertex ids are numbered from 1
       // Right now we just store node IDs here - we will convert them to node indices afterwards
-      for ( size_t i = 0; i < 3; ++i )
+      assert( chunks.size() > faceVertexCount + 1 );
+
+      for ( size_t i = 0; i < faceVertexCount; ++i )
+        face[i] = MDAL::toSizeT( chunks[i + 2] ) - 1; // 2dm is numbered from 1
+
+      // OK, now find out if there is optional cell elevation (BASEMENT 3.x)
+      if ( chunks.size() == faceVertexCount + 4 )
       {
-        face[i] = toSizeT( chunks[i + 2] ) - 1; // 2dm is numbered from 1
+
+        // initialize dataset if it is still empty
+        if ( elementCenteredElevation.empty() )
+        {
+          elementCenteredElevation = std::vector<double>( faceCount, std::numeric_limits<double>::quiet_NaN() );
+        }
+
+        // add Bed Elevation (Face) value
+        elementCenteredElevation[faceIndex] = MDAL::toDouble( chunks[ faceVertexCount + 3 ] );
       }
 
       faceIndex++;
@@ -236,6 +249,10 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   );
   mesh->faces = faces;
   mesh->vertices = vertices;
+
+  // Add Bed Elevations
+  MDAL::addFaceScalarDatasetGroup( mesh.get(), elementCenteredElevation, "Bed Elevation (Face)" );
   MDAL::addBedElevationDatasetGroup( mesh.get(), vertices );
+
   return std::unique_ptr<Mesh>( mesh.release() );
 }

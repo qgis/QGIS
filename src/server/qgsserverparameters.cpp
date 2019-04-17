@@ -62,14 +62,31 @@ QColor QgsServerParameterDefinition::toColor( bool &ok ) const
   return color;
 }
 
-QString QgsServerParameterDefinition::toString() const
+QString QgsServerParameterDefinition::toString( const bool defaultValue ) const
 {
-  return mValue.toString();
+  QString value = mValue.toString();
+
+  if ( value.isEmpty() && defaultValue )
+    value = mDefaultValue.toString();
+
+  return value;
 }
 
-QStringList QgsServerParameterDefinition::toStringList( const char delimiter ) const
+QStringList QgsServerParameterDefinition::toStringList( const char delimiter, const bool skipEmptyParts ) const
 {
-  return toString().split( delimiter, QString::SkipEmptyParts );
+  if ( skipEmptyParts )
+  {
+    return toString().split( delimiter, QString::SkipEmptyParts );
+  }
+  else
+  {
+    QStringList list;
+    if ( !toString().isEmpty() )
+    {
+      list = toString().split( delimiter, QString::KeepEmptyParts );
+    }
+    return list;
+  }
 }
 
 QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const char delimiter ) const
@@ -514,7 +531,14 @@ QString QgsServerParameters::request() const
 
 QString QgsServerParameters::value( const QString &key ) const
 {
-  return value( QgsServerParameter::name( key ) ).toString();
+  if ( ! mParameters.contains( QgsServerParameter::name( key ) ) )
+  {
+    return mUnmanagedParameters[key];
+  }
+  else
+  {
+    return value( QgsServerParameter::name( key ) ).toString();
+  }
 }
 
 QVariant QgsServerParameters::value( QgsServerParameter::Name name ) const

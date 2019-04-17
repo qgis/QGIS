@@ -139,8 +139,8 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyFillStyle, //!< Fill style (eg solid, dots)
       PropertyJoinStyle, //!< Line join style
       PropertySecondaryColor, //!< Secondary color (eg for gradient fills)
-      PropertyLineAngle, //!< Line angle
-      PropertyLineDistance, //!< Distance between lines
+      PropertyLineAngle, //!< Line angle, or angle of hash lines for hash line symbols
+      PropertyLineDistance, //!< Distance between lines, or length of lines for hash line symbols
       PropertyGradientType, //!< Gradient fill type
       PropertyCoordinateMode, //!< Gradient coordinate mode
       PropertyGradientSpread, //!< Gradient spread mode
@@ -165,6 +165,7 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyPlacement, //!< Line marker placement
       PropertyInterval, //!< Line marker interval
       PropertyOffsetAlongLine, //!< Offset along line
+      PropertyAverageAngleLength, //!< Length to average symbol angles over
       PropertyHorizontalAnchor, //!< Horizontal anchor point
       PropertyVerticalAnchor, //!< Vertical anchor point
       PropertyLayerEnabled, //!< Whether symbol layer is enabled
@@ -185,7 +186,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual ~QgsSymbolLayer();
 
     /**
-     * Returns true if symbol layer is enabled and will be drawn.
+     * Returns TRUE if symbol layer is enabled and will be drawn.
      * \see setEnabled()
      * \since QGIS 3.0
      */
@@ -399,7 +400,7 @@ class CORE_EXPORT QgsSymbolLayer
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /**
-     * Returns true if the symbol layer (or any of its sub-symbols) contains data defined properties.
+     * Returns TRUE if the symbol layer (or any of its sub-symbols) contains data defined properties.
      *
      * \since QGIS 3.4.5
      */
@@ -703,7 +704,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 
     /**
      * Constructor for QgsMarkerSymbolLayer.
-     * \param locked set to true to lock symbol color
+     * \param locked set to TRUE to lock symbol color
      */
     QgsMarkerSymbolLayer( bool locked = false );
 
@@ -786,15 +787,123 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
       InteriorRingsOnly, //!< Render the interior rings only
     };
 
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
+    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+
+    /**
+     * Renders the line symbol layer along the line joining \a points, using the given render \a context.
+     * \see renderPolygonStroke()
+     */
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;
 
+    /**
+     * Renders the line symbol layer along the outline of polygon, using the given render \a context.
+     *
+     * The exterior ring of the polygon is specified in \a points. Optionally, interior
+     * rings are set via the \a rings argument.
+     *
+     * \see renderPolyline()
+     */
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
+    /**
+     * Sets the \a width of the line symbol layer.
+     *
+     * Calling this method updates the width of the line symbol layer, without
+     * changing the existing width units. It has different effects depending
+     * on the line symbol layer subclass, e.g. for a simple line layer it
+     * changes the stroke width of the line, for a marker line layer it
+     * changes the size of the markers used to draw the line.
+     *
+     * \see width()
+     * \warning Since the width units vary, this method is useful for changing the
+     * relative width of a line symbol layer only.
+     */
     virtual void setWidth( double width ) { mWidth = width; }
+
+    /**
+     * Returns the estimated width for the line symbol layer.
+     *
+     * \warning This returned value is inaccurate if the symbol layer has sub-symbols with
+     * different width units. Use the overload accepting a QgsRenderContext
+     * argument instead for accurate sizes in this case.
+     *
+     * \see setWidth()
+     */
     virtual double width() const { return mWidth; }
 
+    /**
+     * Returns the line symbol layer width, in painter units.
+     *
+     * This method returns an accurate width by calculating the actual rendered
+     * width of the symbol layer using the provided render \a context.
+     *
+     * \see setWidth()
+     *
+     * \since QGIS 3.4.5
+     */
+    virtual double width( const QgsRenderContext &context ) const;
+
+    /**
+     * Returns the line's offset.
+     *
+     * Offset units can be retrieved by calling offsetUnit().
+     *
+     * \see setOffset()
+     * \see offsetUnit()
+     * \see offsetMapUnitScale()
+     */
     double offset() const { return mOffset; }
+
+    /**
+     * Sets the line's \a offset.
+     *
+     * Offset units are set via setOffsetUnit().
+     *
+     * \see offset()
+     * \see setOffsetUnit()
+     * \see setOffsetMapUnitScale()
+     */
     void setOffset( double offset ) { mOffset = offset; }
+
+    /**
+     * Sets the \a unit for the line's offset.
+     * \see offsetUnit()
+     * \see setOffset()
+     * \see setOffsetMapUnitScale()
+    */
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+
+    /**
+     * Returns the units for the line's offset.
+     * \see setOffsetUnit()
+     * \see offset()
+     * \see offsetMapUnitScale()
+    */
+    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+
+    /**
+     * Sets the map unit \a scale for the line's offset.
+     * \see offsetMapUnitScale()
+     * \see setOffset()
+     * \see setOffsetUnit()
+    */
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the line's offset.
+     * \see setOffsetMapUnitScale()
+     * \see offset()
+     * \see offsetUnit()
+    */
+    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+
+    // TODO QGIS 4.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
+    // only apply to simple line symbol layers and do not belong here.
 
     /**
      * Sets the units for the line's width.
@@ -811,32 +920,6 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 
     void setWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWidthMapUnitScale = scale; }
     const QgsMapUnitScale &widthMapUnitScale() const { return mWidthMapUnitScale; }
-
-    /**
-     * Sets the units for the line's offset.
-     * \param unit offset units
-     * \see offsetUnit()
-    */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
-
-    /**
-     * Returns the units for the line's offset.
-     * \see setOffsetUnit()
-    */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
-
-    void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
-    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
-
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
-
-    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
-    QgsMapUnitScale mapUnitScale() const override;
-
-    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
-
-    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
 
     /**
      * Returns the line symbol layer's ring filter, which controls which rings are

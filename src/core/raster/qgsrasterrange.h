@@ -108,7 +108,7 @@ class CORE_EXPORT QgsRasterRange
     }
 
     /**
-     * Returns true if this range contains the specified \a value.
+     * Returns TRUE if this range contains the specified \a value.
      * \since QGIS 3.2
      */
     bool contains( double value ) const
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsRasterRange
      * \brief Tests if a \a value is within the list of ranges
      *  \param value value
      *  \param rangeList list of ranges
-     *  \returns true if value is in at least one of ranges
+     *  \returns TRUE if value is in at least one of ranges
      */
     static bool contains( double value, const QgsRasterRangeList &rangeList )
     {
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsRasterRange
     }
 
     /**
-     * Returns true if this range overlaps another range.
+     * Returns TRUE if this range overlaps another range.
      * \since QGIS 3.2
      */
     bool overlaps( const QgsRasterRange &other ) const;

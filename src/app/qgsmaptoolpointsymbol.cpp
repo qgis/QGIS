@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgssnappingutils.h"
 #include "qgsmapmouseevent.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
@@ -84,7 +85,8 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
   if ( renderer->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature )
   {
     //could be multiple symbols for this feature, so check them all
-    Q_FOREACH ( QgsSymbol *s, renderer->originalSymbolsForFeature( feature, context ) )
+    const auto constOriginalSymbolsForFeature = renderer->originalSymbolsForFeature( feature, context );
+    for ( QgsSymbol *s : constOriginalSymbolsForFeature )
     {
       if ( s && s->type() == QgsSymbol::Marker )
       {

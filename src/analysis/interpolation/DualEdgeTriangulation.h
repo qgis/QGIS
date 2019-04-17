@@ -90,7 +90,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     void eliminateHorizontalTriangles() override;
     //! Adds points to make the triangles better shaped (algorithm of ruppert)
     void ruppertRefinement() override;
-    //! Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise
+    //! Returns TRUE, if the point with coordinates x and y is inside the convex hull and FALSE otherwise
     bool pointInside( double x, double y ) override;
     //! Reads the dual edge structure of a taff file
     //bool readFromTAFF(QString fileName);
@@ -160,7 +160,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     unsigned int mUnstableEdge = 0;
     //! If a point has been inserted twice, its number is stored in this member
     int mTwiceInsPoint = 0;
-    //! Returns true, if it is possible to swap an edge, otherwise false(concave quad or edge on (or outside) the convex hull)
+    //! Returns TRUE, if it is possible to swap an edge, otherwise FALSE(concave quad or edge on (or outside) the convex hull)
     bool swapPossible( unsigned int edge );
     //! Divides a polygon in a triangle and two polygons and calls itself recursively for these two polygons. 'poly' is a pointer to a list with the numbers of the edges of the polygon, 'free' is a pointer to a list of free halfedges, and 'mainedge' is the number of the edge, towards which the new triangle is inserted. Mainedge has to be the same as poly->begin(), otherwise the recursion does not work
     void triangulatePolygon( QList<int> *poly, QList<int> *free, int mainedge );
@@ -170,7 +170,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     double swapMinAngle( int edge ) const;
     //! Inserts a new point on the halfedge with number 'edge'. The position can have a value from 0 to 1 (e.g. 0.5 would be in the middle). The return value is the number of the new inserted point. tin is the triangulation, which should be used to calculate the elevation of the inserted point
     int splitHalfEdge( int edge, float position );
-    //! Returns true, if a half edge is on the convex hull and false otherwise
+    //! Returns TRUE, if a half edge is on the convex hull and FALSE otherwise
     bool edgeOnConvexHull( int edge );
     //! Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge
     void evaluateInfluenceRegion( QgsPoint *point, int edge, QSet<int> &set );

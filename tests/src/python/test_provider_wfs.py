@@ -545,6 +545,35 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertFalse(vl.dataProvider().deleteFeatures([0]))
 
+        # Reload data and check for fid stability of features whose fid/gmlid
+        # has already been downloaded
+        vl.dataProvider().reloadData()
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my">
+  <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
+  <gml:featureMember>
+    <my:typename fid="typename.10">
+      <my:INTFIELD>20</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:INTFIELD>30</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(features[0].id(), 2)
+        self.assertEqual(features[0]['INTFIELD'], 20)
+        self.assertEqual(features[1].id(), 1)
+        self.assertEqual(features[1]['INTFIELD'], 30)
+
         # Test with restrictToRequestBBOX=1
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631&BBOX=400000,5400000,450000,5500000'), 'wb') as f:
             f.write("""
@@ -1473,6 +1502,94 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Check that the layer extent is not built from this single feature
         reference = QgsGeometry.fromRect(QgsRectangle(-80, 60, -50, 80))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
+
+    def testWFSGetOnlyFeaturesInViewExtentZoomOut(self):
+        """Test zoom out outside of declare extent in metadata (#20742) """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_20742'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://schemas.opengis.net/gml">
+  <OperationsMetadata>
+    <Operation name="GetFeature">
+      <Parameter name="resultType">
+        <Value>results</Value>
+        <Value>hits</Value>
+      </Parameter>
+    </Operation>
+  </OperationsMetadata>
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-80 60</LowerCorner>
+        <UpperCorner>-50 80</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="fid" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=60,-80,80,-50,urn:ogc:def:crs:EPSG::4326')
+        getfeature_response = """
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my"
+                       numberOfFeatures="2" timeStamp="2016-03-25T14:51:48.998Z">
+  <gml:featureMembers>
+    <my:typename gml:id="typename.200">
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
+      <my:fid>2</my:fid>
+    </my:typename>
+    <my:typename gml:id="typename.400">
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>71 -64</gml:pos></gml:Point></my:geometryProperty>
+      <my:fid>4</my:fid>
+    </my:typename>
+  </gml:featureMembers>
+</wfs:FeatureCollection>""".encode('UTF-8')
+        with open(last_url, 'wb') as f:
+            f.write(getfeature_response)
+
+        last_url = sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&BBOX=50,-90,90,-40,urn:ogc:def:crs:EPSG::4326')
+        with open(last_url, 'wb') as f:
+            f.write(getfeature_response)
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' restrictToRequestBBOX=1", 'test', 'WFS')
+        # First request with declared extent in metadata
+        extent = QgsRectangle(-80, 60, -50, 80)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        self.assertEqual(len([f for f in vl.getFeatures(request)]), 2)
+        reference = QgsGeometry.fromRect(QgsRectangle(-65, 70, -64, 71))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
+
+        # Second request: zoomed out
+        extent = QgsRectangle(-90, 50, -40, 90)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        self.assertEqual(len([f for f in vl.getFeatures(request)]), 2)
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
 
@@ -3739,6 +3856,9 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
         self.assertEqual(str(got_f2[1]['type']), '0')
         self.assertEqual(str(got_f2[1]['elevation']), 'NULL')
         self.assertEqual(str(got_f2[1]['name']), 'sdf')
+
+    def testGeomAndAllAttributes(self):
+        pass # skip this feature source test -- provider is not affected
 
     def testFilteredFeatureRequests(self):
         """Test https://issues.qgis.org/issues/21077 """

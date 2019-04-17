@@ -43,7 +43,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * Flags that represent the update points (where authentication configurations are expanded)
      * supported by an authentication method. These equate to the 'update*()' virtual functions
      * below, and allow for update point code to skip calling an unused update by a method, because
-     * the base virtual function will always return true, giving a false impression an update occurred.
+     * the base virtual function will always return TRUE, giving a false impression an update occurred.
      * \note When adding an 'update' member function, also add the corresponding Expansion flag.
      * \note These flags will be added to as new update points are added
      */

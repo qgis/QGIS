@@ -39,7 +39,7 @@ namespace QgsWms
       /**
        * Constructor for QgsMapRendererJobProxy. Does not take ownership of
        * \a featureFilterProvider.
-       * \param parallelRendering True to activate parallel rendering, false otherwise
+       * \param parallelRendering TRUE to activate parallel rendering, FALSE otherwise
        * \param maxThreads The number of threads to use in case of parallel rendering
        * \param featureFilterProvider Features filtering
        */

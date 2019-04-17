@@ -1,5 +1,6 @@
 // Include auto-generated SIP files
 %Include auto_generated/expression/qgsexpression.sip
+%Include auto_generated/expression/qgsexpressioncontextutils.sip
 %Include auto_generated/expression/qgsexpressionnode.sip
 %Include auto_generated/expression/qgsexpressionnodeimpl.sip
 %Include auto_generated/expression/qgsexpressionfunction.sip
@@ -98,6 +99,7 @@
 %Include auto_generated/qgsprojectstorageregistry.sip
 %Include auto_generated/qgsprojecttranslator.sip
 %Include auto_generated/qgsprojectversion.sip
+%Include auto_generated/qgsprojutils.sip
 %Include auto_generated/qgsproperty.sip
 %Include auto_generated/qgspropertycollection.sip
 %Include auto_generated/qgspropertytransformer.sip
@@ -119,6 +121,7 @@
 %Include auto_generated/qgsspatialindexkdbush.sip
 %Include auto_generated/qgsspatialindexkdbushdata.sip
 %Include auto_generated/qgssqlstatement.sip
+%Include auto_generated/qgssqliteutils.sip
 %Include auto_generated/qgsstatisticalsummary.sip
 %Include auto_generated/qgsstringstatisticalsummary.sip
 %Include auto_generated/qgsstringutils.sip
@@ -239,6 +242,7 @@
 %Include auto_generated/mesh/qgsmeshlayerinterpolator.sip
 %Include auto_generated/mesh/qgsmeshrenderersettings.sip
 %Include auto_generated/mesh/qgsmeshspatialindex.sip
+%Include auto_generated/mesh/qgsmeshtimesettings.sip
 %Include auto_generated/scalebar/qgsdoubleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsnumericscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsscalebarsettings.sip

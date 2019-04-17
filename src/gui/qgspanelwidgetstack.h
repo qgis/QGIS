@@ -80,7 +80,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
     QgsPanelWidget *takeMainPanel() SIP_TRANSFERBACK;
 
     /**
-     * Clear the stack of all widgets. Unless the panels autoDelete is set to false
+     * Clear the stack of all widgets. Unless the panels autoDelete is set to FALSE
      * the widget will be deleted.
      */
     void clear();

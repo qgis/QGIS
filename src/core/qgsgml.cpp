@@ -194,7 +194,8 @@ int QgsGml::getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, Qgs
 void QgsGml::fillMapsFromParser()
 {
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = mParser.getAndStealReadyFeatures();
-  Q_FOREACH ( const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair, features )
+  const auto constFeatures = features;
+  for ( const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair : constFeatures )
   {
     QgsFeature *feat = featPair.first;
     const QString &gmlId = featPair.second;
@@ -423,7 +424,8 @@ QgsGmlStreamingParser::~QgsGmlStreamingParser()
   XML_ParserFree( mParser );
 
   // Normally a sane user of this class should have consumed everything...
-  Q_FOREACH ( QgsGmlFeaturePtrGmlIdPair featPair, mFeatureList )
+  const auto constMFeatureList = mFeatureList;
+  for ( QgsGmlFeaturePtrGmlIdPair featPair : constMFeatureList )
   {
     delete featPair.first;
   }
@@ -815,11 +817,14 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     }
   }
 
-  if ( elDimension != 0 )
+  if ( elDimension != 0 || mDimensionStack.isEmpty() )
   {
-    mDimension = elDimension;
+    mDimensionStack.push( elDimension );
   }
-  mDimensionStack.push( mDimension );
+  else
+  {
+    mDimensionStack.push( mDimensionStack.back() );
+  }
 
   if ( mEpsg == 0 && isGeom )
   {
@@ -847,7 +852,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
-  mDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
+  int lastDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
@@ -858,6 +863,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   else if ( parseMode == PosList && isGMLNS &&
             ( LOCALNAME_EQUALS( "pos" ) || LOCALNAME_EQUALS( "posList" ) ) )
   {
+    mDimension = lastDimension;
     mParseModeStack.pop();
   }
   else if ( parseMode == AttributeTuple &&
@@ -1506,9 +1512,11 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
 int QgsGmlStreamingParser::totalWKBFragmentSize() const
 {
   int result = 0;
-  Q_FOREACH ( const QList<QgsWkbPtr> &list, mCurrentWKBFragments )
+  const auto constMCurrentWKBFragments = mCurrentWKBFragments;
+  for ( const QList<QgsWkbPtr> &list : constMCurrentWKBFragments )
   {
-    Q_FOREACH ( const QgsWkbPtr &i, list )
+    const auto constList = list;
+    for ( const QgsWkbPtr &i : constList )
     {
       result += i.size();
     }

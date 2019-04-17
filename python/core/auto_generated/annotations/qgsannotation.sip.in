@@ -57,7 +57,7 @@ reflecting the annotation's current state.
 
     bool isVisible() const;
 %Docstring
-Returns true if the annotation is visible and should be rendered.
+Returns ``True`` if the annotation is visible and should be rendered.
 
 .. seealso:: :py:func:`setVisible`
 %End
@@ -71,8 +71,8 @@ Sets whether the annotation is visible and should be rendered.
 
     bool hasFixedMapPosition() const;
 %Docstring
-Returns true if the annotation is attached to a fixed map position, or
-false if the annotation uses a position relative to the current map
+Returns ``True`` if the annotation is attached to a fixed map position, or
+``False`` if the annotation uses a position relative to the current map
 extent.
 
 .. seealso:: :py:func:`setHasFixedMapPosition`

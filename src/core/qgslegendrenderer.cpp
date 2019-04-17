@@ -23,7 +23,9 @@
 #include "qgssymbol.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
+#include <QJsonObject>
 #include <QPainter>
 
 
@@ -42,6 +44,77 @@ QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
 void QgsLegendRenderer::drawLegend( QPainter *painter )
 {
   paintAndDetermineSize( painter );
+}
+
+void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, QJsonObject &json )
+{
+  QgsLayerTreeGroup *rootGroup = mLegendModel->rootGroup();
+  if ( !rootGroup )
+    return;
+
+  json["title"] = mSettings.title();
+  exportLegendToJson( context, rootGroup, json );
+}
+
+void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, QgsLayerTreeGroup *nodeGroup, QJsonObject &json )
+{
+  QJsonArray nodes;
+  for ( auto node : nodeGroup->children() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+    {
+      QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
+      const QModelIndex idx = mLegendModel->node2index( nodeGroup );
+      const QString text = mLegendModel->data( idx, Qt::DisplayRole ).toString();
+
+      QJsonObject group;
+      group[ "type" ] = "group";
+      group[ "title" ] = text;
+      exportLegendToJson( context, nodeGroup, group );
+      nodes.append( group );
+    }
+    else if ( QgsLayerTree::isLayer( node ) )
+    {
+      QJsonObject group;
+      group[ "type" ] = "layer";
+
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+
+      QString text;
+      if ( nodeLegendStyle( nodeLayer ) != QgsLegendStyle::Hidden )
+      {
+        const QModelIndex idx = mLegendModel->node2index( nodeLayer );
+        text = mLegendModel->data( idx, Qt::DisplayRole ).toString();
+      }
+
+      QList<QgsLayerTreeModelLegendNode *> legendNodes = mLegendModel->layerLegendNodes( nodeLayer );
+
+      if ( legendNodes.isEmpty() && mLegendModel->legendFilterMapSettings() )
+        continue;
+
+      if ( legendNodes.count() == 1 )
+      {
+        legendNodes.at( 0 )->exportToJson( mSettings, context, group );
+        nodes.append( group );
+      }
+      else if ( legendNodes.count() > 1 )
+      {
+        QJsonArray symbols;
+        for ( int j = 0; j < legendNodes.count(); j++ )
+        {
+          QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
+          QJsonObject symbol;
+          legendNode->exportToJson( mSettings, context, symbol );
+          symbols.append( symbol );
+        }
+        group[ "title" ] = text;
+        group[ "symbols" ] = symbols;
+        nodes.append( group );
+      }
+    }
+  }
+
+  json["nodes"] = nodes;
 }
 
 QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter *painter )
@@ -63,7 +136,8 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   qreal maxColumnWidth = 0;
   if ( mSettings.equalColumnWidth() )
   {
-    Q_FOREACH ( const Atom &atom, atomList )
+    const auto constAtomList = atomList;
+    for ( const Atom &atom : constAtomList )
     {
       maxColumnWidth = std::max( atom.size.width(), maxColumnWidth );
     }
@@ -80,7 +154,8 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   double columnMaxHeight = 0;
   qreal columnWidth = 0;
   int column = 0;
-  Q_FOREACH ( const Atom &atom, atomList )
+  const auto constAtomList = atomList;
+  for ( const Atom &atom : constAtomList )
   {
     if ( atom.column > column )
     {
@@ -161,7 +236,8 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 
   if ( !parentGroup ) return atoms;
 
-  Q_FOREACH ( QgsLayerTreeNode *node, parentGroup->children() )
+  const auto constChildren = parentGroup->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -275,7 +351,8 @@ void QgsLegendRenderer::setColumns( QList<Atom> &atomList )
   // Divide atoms to columns
   double totalHeight = 0;
   qreal maxAtomHeight = 0;
-  Q_FOREACH ( const Atom &atom, atomList )
+  const auto constAtomList = atomList;
+  for ( const Atom &atom : constAtomList )
   {
     totalHeight += spaceAboveAtom( atom );
     totalHeight += atom.size.height();
@@ -478,7 +555,7 @@ QSizeF QgsLegendRenderer::drawAtomInternal( const Atom &atom, QgsRenderContext *
 {
   bool first = true;
   QSizeF size = QSizeF( atom.size );
-  Q_FOREACH ( const Nucleon &nucleon, atom.nucleons )
+  for ( const Nucleon &nucleon : qgis::as_const( atom.nucleons ) )
   {
     if ( QgsLayerTreeGroup *groupItem = qobject_cast<QgsLayerTreeGroup *>( nucleon.item ) )
     {
@@ -584,9 +661,9 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   double y = point.y();
 
   if ( context && context->painter() )
-    context->painter()->setPen( mSettings.fontColor() );
+    context->painter()->setPen( mSettings.layerFontColor() );
   else if ( painter )
-    painter->setPen( mSettings.fontColor() );
+    painter->setPen( mSettings.layerFontColor() );
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 

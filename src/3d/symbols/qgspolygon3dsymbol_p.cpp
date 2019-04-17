@@ -28,8 +28,11 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "qgsvectorlayer.h"
+#include "qgslinestring.h"
 #include "qgsmultipolygon.h"
 
+#include "qgslinevertexdata_p.h"
+#include "qgslinematerial_p.h"
 
 /// @cond PRIVATE
 
@@ -54,6 +57,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
       QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
     };
 
+    void processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, bool hasDDExtrusion, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
     Qt3DExtras::QPhongMaterial *material( const QgsPolygon3DSymbol &symbol ) const;
 
@@ -65,14 +69,50 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     // outputs
     PolygonData outNormal;  //!< Features that are not selected
     PolygonData outSelected;  //!< Features that are selected
+
+    QgsLineVertexData outEdges;  //!< When highlighting edges, this holds data for vertex/index buffer
 };
 
 
 bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
+  outEdges.withAdjacency = true;
+  outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
+
   QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   return true;
+}
+
+void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, bool hasDDExtrusion, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
+{
+  if ( mSymbol.edgesEnabled() )
+  {
+    // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
+    outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ) );
+    for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
+      outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ) );
+
+    if ( extrusionHeight )
+    {
+      // add roof and wall edges
+      const QgsLineString *exterior = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
+      outEdges.addLineString( *exterior, extrusionHeight );
+      outEdges.addVerticalLines( *exterior, extrusionHeight );
+      for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
+      {
+        const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
+        outEdges.addLineString( *interior, extrusionHeight );
+        outEdges.addVerticalLines( *interior, extrusionHeight );
+      }
+    }
+  }
+
+  Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
+  out.polygons.append( polyClone );
+  out.fids.append( fid );
+  if ( hasDDExtrusion )
+    out.extrusionHeightPerPolygon.append( extrusionHeight );
 }
 
 void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRenderContext &context )
@@ -104,11 +144,7 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
   if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
   {
     QgsPolygon *polyClone = poly->clone();
-    Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
-    out.polygons.append( polyClone );
-    out.fids.append( f.id() );
-    if ( hasDDExtrusion )
-      out.extrusionHeightPerPolygon.append( extrusionHeight );
+    processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
   }
   else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
   {
@@ -117,11 +153,19 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
       const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
       Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
       QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
-      Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
-      out.polygons.append( polyClone );
-      out.fids.append( f.id() );
-      if ( hasDDExtrusion )
-        out.extrusionHeightPerPolygon.append( extrusionHeight );
+      processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
+    }
+  }
+  else if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( g ) )
+  {
+    for ( int i = 0; i < gc->numGeometries(); ++i )
+    {
+      const QgsAbstractGeometry *g2 = gc->geometryN( i );
+      if ( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon )
+      {
+        QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
+        processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
+      }
     }
   }
   else
@@ -134,6 +178,29 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   // create entity for selected and not selected
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  // add entity for edges
+  if ( mSymbol.edgesEnabled() && !outEdges.indexes.isEmpty() )
+  {
+    QgsLineMaterial *mat = new QgsLineMaterial;
+    mat->setLineColor( mSymbol.edgeColor() );
+    mat->setLineWidth( mSymbol.edgeWidth() );
+
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+
+    // geometry renderer
+    Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+    renderer->setGeometry( outEdges.createGeometry( entity ) );
+    renderer->setVertexCount( outEdges.indexes.count() );
+    renderer->setPrimitiveRestartEnabled( true );
+    renderer->setRestartIndexValue( 0 );
+
+    // make entity
+    entity->addComponent( renderer );
+    entity->addComponent( mat );
+    entity->setParent( parent );
+  }
 }
 
 

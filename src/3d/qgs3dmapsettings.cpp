@@ -18,7 +18,7 @@
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
-//#include "quantizedmeshterraingenerator.h"
+#include "qgsonlineterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
 
@@ -46,6 +46,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowCameraViewCenter( other.mShowCameraViewCenter )
   , mShowLabels( other.mShowLabels )
   , mPointLights( other.mPointLights )
+  , mFieldOfView( other.mFieldOfView )
   , mLayers( other.mLayers )
   , mSkyboxEnabled( other.mSkyboxEnabled )
   , mSkyboxFileBase( other.mSkyboxFileBase )
@@ -72,6 +73,12 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
               elemOrigin.attribute( QStringLiteral( "x" ) ).toDouble(),
               elemOrigin.attribute( QStringLiteral( "y" ) ).toDouble(),
               elemOrigin.attribute( QStringLiteral( "z" ) ).toDouble() );
+
+  QDomElement elemCamera = elem.firstChildElement( QStringLiteral( "camera" ) );
+  if ( !elemCamera.isNull() )
+  {
+    mFieldOfView = elemCamera.attribute( QStringLiteral( "field-of-view" ), QStringLiteral( "45" ) ).toFloat();
+  }
 
   QDomElement elemColor = elem.firstChildElement( QStringLiteral( "color" ) );
   if ( !elemColor.isNull() )
@@ -134,12 +141,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     demTerrainGenerator->setCrs( mCrs, mTransformContext );
     mTerrainGenerator.reset( demTerrainGenerator );
   }
-  else if ( terrainGenType == QLatin1String( "quantized-mesh" ) )
+  else if ( terrainGenType == QLatin1String( "online" ) )
   {
-#if 0
-    terrainGenerator.reset( new QuantizedMeshTerrainGenerator );
-#endif
-    Q_ASSERT( false ); // currently disabled
+    QgsOnlineTerrainGenerator *onlineTerrainGenerator = new QgsOnlineTerrainGenerator;
+    onlineTerrainGenerator->setCrs( mCrs, mTransformContext );
+    mTerrainGenerator.reset( onlineTerrainGenerator );
   }
   else // "flat"
   {
@@ -195,6 +201,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemOrigin.setAttribute( QStringLiteral( "y" ), QString::number( mOrigin.y() ) );
   elemOrigin.setAttribute( QStringLiteral( "z" ), QString::number( mOrigin.z() ) );
   elem.appendChild( elemOrigin );
+
+  QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
+  elemCamera.setAttribute( QStringLiteral( "field-of-view" ), mFieldOfView );
+  elem.appendChild( elemCamera );
 
   QDomElement elemColor = doc.createElement( QStringLiteral( "color" ) );
   elemColor.setAttribute( QStringLiteral( "background" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
@@ -500,4 +510,13 @@ void Qgs3DMapSettings::setPointLights( const QList<QgsPointLightSettings> &point
 
   mPointLights = pointLights;
   emit pointLightsChanged();
+}
+
+void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
+{
+  if ( mFieldOfView == fieldOfView )
+    return;
+
+  mFieldOfView = fieldOfView;
+  emit fieldOfViewChanged();
 }

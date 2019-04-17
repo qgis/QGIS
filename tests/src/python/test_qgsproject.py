@@ -19,6 +19,7 @@ import os
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
+                       QgsCoordinateTransformContext,
                        QgsProjectDirtyBlocker,
                        QgsApplication,
                        QgsUnitTypes,
@@ -1189,6 +1190,16 @@ class TestQgsProject(unittest.TestCase):
         p.deleteLater()
         del p
         self.assertEqual(len(spy), 0)
+
+    def testTransformContextSignalIsEmitted(self):
+        """Test that when a project transform context changes a transformContextChanged signal is emitted"""
+
+        p = QgsProject()
+        spy = QSignalSpy(p.transformContextChanged)
+        ctx = QgsCoordinateTransformContext()
+        ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        p.setTransformContext(ctx)
+        self.assertEqual(len(spy), 1)
 
 
 if __name__ == '__main__':

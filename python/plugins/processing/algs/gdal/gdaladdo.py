@@ -134,7 +134,7 @@ class gdaladdo(GdalAlgorithm):
         elif ovrFormat == 2:
             arguments.extend('--config USE_RRD YES'.split(' '))
 
-        if self.parameterAsBool(parameters, self.CLEAN, context):
+        if self.parameterAsBoolean(parameters, self.CLEAN, context):
             arguments.append('-clean')
 
         arguments.extend(self.parameterAsString(parameters, self.LEVELS, context).split(' '))

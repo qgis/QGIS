@@ -74,7 +74,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
     class _3D_EXPORT Rule
     {
       public:
-        //! takes ownership of symbol, symbol may be nullptr
+        //! takes ownership of symbol, symbol may be NULLPTR
         Rule( QgsAbstract3DSymbol *symbol SIP_TRANSFER, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
@@ -92,7 +92,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         };
 
         /**
-         * Gets the labeling settings. May return a null pointer.
+         * Returns the labeling settings. May return NULLPTR.
          */
         QgsAbstract3DSymbol *symbol() const { return mSymbol.get(); }
 
@@ -112,21 +112,21 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         /**
          * Returns if this rule is active
          *
-         * \returns True if the rule is active
+         * \returns TRUE if the rule is active
          */
         bool active() const { return mIsActive; }
 
         /**
          * Check if this rule is an ELSE rule
          *
-         * \returns True if this rule is an else rule
+         * \returns TRUE if this rule is an else rule
          */
         bool isElse() const { return mElseRule; }
 
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
         QString ruleKey() const { return mRuleKey; }
 
-        //! Sets new symbol (or NULL). Deletes old symbol if any.
+        //! Sets new symbol (or NULLPTR). Deletes old symbol if any.
         void setSymbol( QgsAbstract3DSymbol *symbol SIP_TRANSFER );
 
         /**
@@ -152,7 +152,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         /**
          * Sets if this rule is an ELSE rule
          *
-         * \param iselse If true, this rule is an ELSE rule
+         * \param iselse If TRUE, this rule is an ELSE rule
          */
         void setIsElse( bool iselse ) { mElseRule = iselse; }
 
@@ -212,7 +212,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         /**
          * Find a rule thanks to its key.
          * \param key The key of the rule to find
-         * \returns The rule or a nullptr if not found
+         * \returns The rule or NULLPTR if not found
          */
         QgsRuleBased3DRenderer::Rule *findRuleByKey( const QString &key ) SIP_SKIP;
 
@@ -262,7 +262,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
          *
          * \param f         The feature to test
          * \param context   The context in which the rendering happens
-         * \returns          True if the feature shall be rendered
+         * \returns          TRUE if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const;
 
@@ -277,7 +277,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         void updateElseRules();
 
       private:
-        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
+        Rule *mParent = nullptr; // parent rule (nullptr only for root rule)
         std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
         QString mFilterExp;
         QString mDescription;

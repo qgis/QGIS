@@ -95,7 +95,7 @@ Append new error message.
 %Docstring
 Test if any error is set.
 
-:return: true if contains error
+:return: ``True`` if contains error
 %End
 
     QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;

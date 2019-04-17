@@ -63,7 +63,7 @@ void TestQgsQuickScaleBarKit::identifyOne()
 
   double pointX = -31.208;
   double pointY = 20.407999999999998;
-  double pointX2 = pointX + 1;
+  double pointX2 = pointX + 0.5;
 
   // add feature
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
@@ -111,7 +111,7 @@ void TestQgsQuickScaleBarKit::identifyOneDefinedVector()
 
   double pointX = -31.208;
   double pointY = 20.407999999999998;
-  double pointX2 = pointX + 1;
+  double pointX2 = pointX + 0.5;
 
   // add feature
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );

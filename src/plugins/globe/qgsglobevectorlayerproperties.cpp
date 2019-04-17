@@ -206,12 +206,12 @@ QString QgsGlobeLayerPropertiesFactory::title() const
 
 bool QgsGlobeLayerPropertiesFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayer::VectorLayer;
+  return layer->type() == QgsMapLayerType::VectorLayer;
 }
 
 void QgsGlobeLayerPropertiesFactory::readGlobeVectorLayerConfig( QgsMapLayer *mapLayer, const QDomElement &elem )
 {
-  if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
+  if ( qobject_cast<QgsVectorLayer *>( mapLayer ) )
   {
     QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( mapLayer );
     QgsGlobeVectorLayerConfig *config = QgsGlobeVectorLayerConfig::getConfig( vLayer );
@@ -254,7 +254,7 @@ void QgsGlobeLayerPropertiesFactory::readGlobeVectorLayerConfig( QgsMapLayer *ma
 
 void QgsGlobeLayerPropertiesFactory::writeGlobeVectorLayerConfig( QgsMapLayer *mapLayer, QDomElement &elem, QDomDocument &doc )
 {
-  if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
+  if ( qobject_cast<QgsVectorLayer *>( mapLayer ) )
   {
     QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( mapLayer );
     QgsGlobeVectorLayerConfig *config = QgsGlobeVectorLayerConfig::getConfig( vLayer );

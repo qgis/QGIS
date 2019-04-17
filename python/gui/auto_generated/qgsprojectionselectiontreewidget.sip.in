@@ -89,7 +89,7 @@ Returns whether the bounds preview map is shown.
 
     bool hasValidSelection() const;
 %Docstring
-Returns true if the current selection in the widget is a valid choice. Valid
+Returns ``True`` if the current selection in the widget is a valid choice. Valid
 selections include any projection and also the "no/invalid projection" option
 (if setShowNoProjection() was called). Invalid selections are the group
 headers (such as "Geographic Coordinate Systems"

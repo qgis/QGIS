@@ -206,7 +206,8 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
 {
   QStringList errs;
   errs.reserve( mSslErrors.size() );
-  Q_FOREACH ( const QSslError &err, mSslErrors )
+  const auto constMSslErrors = mSslErrors;
+  for ( const QSslError &err : constMSslErrors )
   {
     errs <<  QStringLiteral( "* %1: %2" )
          .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),

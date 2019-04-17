@@ -20,6 +20,7 @@
 #include "qgswfsrequest.h"
 #include "qgswfscapabilities.h"
 #include "qgsogcutils.h"
+#include "qgssqliteutils.h"
 
 /**
  * This class holds data, and logic, shared between QgsWFSProvider, QgsWFSFeatureIterator
@@ -77,6 +78,9 @@ class QgsWFSSharedData : public QObject
 
     //! Give a feature id, find the correspond fid/gml.id. Used by WFS-T
     QString findGmlId( QgsFeatureId fid );
+
+    //! Retrieve the dbId from the qgisId
+    QgsFeatureIds dbIdsFromQgisIds( const QgsFeatureIds &qgisIds );
 
     //! Delete from the on-disk cache the features of given fid. Used by WFS-T
     bool deleteFeatures( const QgsFeatureIds &fidlist );
@@ -250,6 +254,15 @@ class QgsWFSSharedData : public QObject
 
     //! Whether we have already tried fetching one feature after realizing that the capabilities extent is wrong
     bool mTryFetchingOneFeature;
+
+    //! Name of the gmlid, spatialite_id, qgis_id cache. This cache persists even after a layer reload so as to ensure feature id stability.
+    QString mCacheIdDbname;
+
+    //! Connection to mCacheIdDbname
+    sqlite3_database_unique_ptr mCacheIdDb;
+
+    //! Next value for qgisId column
+    QgsFeatureId mNextCachedIdQgisId = 1;
 
     /**
      * Returns the set of gmlIds that have already been downloaded and

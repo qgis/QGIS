@@ -25,6 +25,7 @@
 #include "qgsexception.h"
 #include "qgsrenderer.h"
 #include "qgssettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <queue>
 #include <vector>
@@ -131,7 +132,8 @@ QgsTracerGraph *makeGraph( const QVector<QgsPolylineXY> &edges )
   g->joinedVertices = 0;
   QHash<QgsPointXY, int> point2vertex;
 
-  Q_FOREACH ( const QgsPolylineXY &line, edges )
+  const auto constEdges = edges;
+  for ( const QgsPolylineXY &line : constEdges )
   {
     QgsPointXY p1( line[0] );
     QgsPointXY p2( line[line.count() - 1] );
@@ -385,7 +387,7 @@ void resetGraph( QgsTracerGraph &g )
   g.joinedVertices = 0;
 
   // fix vertices of deactivated edges
-  Q_FOREACH ( int eIdx, g.inactiveEdges )
+  for ( int eIdx : qgis::as_const( g.inactiveEdges ) )
   {
     if ( eIdx >= g.e.count() )
       continue;
@@ -432,20 +434,31 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolylineXY &mpl )
       break;
 
     case QgsWkbTypes::Polygon:
-      Q_FOREACH ( const QgsPolylineXY &ring, geom.asPolygon() )
+    {
+      const auto polygon = geom.asPolygon();
+      for ( const QgsPolylineXY &ring : polygon )
         mpl << ring;
-      break;
+    }
+    break;
 
     case QgsWkbTypes::MultiLineString:
-      Q_FOREACH ( const QgsPolylineXY &linestring, geom.asMultiPolyline() )
+    {
+      const auto multiPolyline = geom.asMultiPolyline();
+      for ( const QgsPolylineXY &linestring : multiPolyline )
         mpl << linestring;
-      break;
+    }
+    break;
 
     case QgsWkbTypes::MultiPolygon:
-      Q_FOREACH ( const QgsPolygonXY &polygon, geom.asMultiPolygon() )
-        Q_FOREACH ( const QgsPolylineXY &ring, polygon )
+    {
+      const auto multiPolygon = geom.asMultiPolygon();
+      for ( const QgsPolygonXY &polygon : multiPolygon )
+      {
+        for ( const QgsPolylineXY &ring : polygon )
           mpl << ring;
-      break;
+      }
+    }
+    break;
 
     default:
       break;  // unknown type - do nothing
@@ -594,7 +607,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
   if ( mLayers == layers )
     return;
 
-  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
+  for ( QgsVectorLayer *layer : qgis::as_const( mLayers ) )
   {
     disconnect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     disconnect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );
@@ -607,7 +620,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
 
   mLayers = layers;
 
-  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
+  for ( QgsVectorLayer *layer : layers )
   {
     connect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );

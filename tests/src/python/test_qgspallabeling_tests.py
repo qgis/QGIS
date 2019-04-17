@@ -23,7 +23,8 @@ import os
 from qgis.PyQt.QtCore import Qt, QPointF, QSizeF
 from qgis.PyQt.QtGui import QFont
 
-from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings
+from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings, QgsProject, QgsExpressionContextUtils, QgsExpressionContext
+from qgis.core import QgsCoordinateReferenceSystem
 
 from utilities import svgSymbolsPath
 
@@ -306,6 +307,24 @@ class TestLineBase(object):
         # Curved placement, on line
         self.lyr.placement = QgsPalLayerSettings.Curved
         self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+    def test_length_expression(self):
+        # compare length using the ellipsoid in kms and the planimetric distance in meters
+        self.lyr.fieldName = "round($length,5) || ' - ' || round(length($geometry),2)"
+        self.lyr.isExpression = True
+
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem("EPSG:32613"))
+        QgsProject.instance().setEllipsoid("WGS84")
+        QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceKilometers)
+
+        ctxt = QgsExpressionContext()
+        ctxt.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+        ctxt.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
+        self._TestMapSettings.setExpressionContext(ctxt)
+
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.MapOrientation
         self.checkTest()
 
 # noinspection PyPep8Naming

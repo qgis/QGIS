@@ -42,12 +42,14 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     /**
      * Joins another vector layer to this layer
       \param joinInfo join object containing join layer id, target and source field
-      \returns (since 2.6) whether the join was successfully added */
+      \returns (since 2.6) whether the join was successfully added
+    */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /**
      * Removes a vector layer join
-      \returns true if join was found and successfully removed */
+      \returns true if join was found and successfully removed
+    */
     bool removeJoin( const QString &joinLayerId );
 
     /**
@@ -125,11 +127,11 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     QgsFeature targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 
     /**
-     * Returns true if the join information is about auxiliary layer, false otherwise
+     * Returns TRUE if the join information is about auxiliary layer, FALSE otherwise
      *
      * \param info The join information
      *
-     * \returns true if the join information is about auxiliary layer, false otherwise
+     * \returns TRUE if the join information is about auxiliary layer, FALSE otherwise
      *
      * \since QGIS 3.0
      */
@@ -151,7 +153,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * \param features The list of features added in the target layer
      * \param flags Unused parameter
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
@@ -168,7 +170,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * \param newValue The new value of the attribute
      * \param oldValue The old value of the attribute
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
@@ -184,7 +186,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * \param newValues The new values for attributes
      * \param oldValues The old values for attributes
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
@@ -196,7 +198,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \param fid The feature id from the target layer to delete
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
@@ -208,7 +210,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \param fids Feature ids from the target layer to delete
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
@@ -239,7 +241,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     //! Joined vector layers
     QgsVectorJoinList mVectorJoins;
 
-    //! Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)
+    //! Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is TRUE (and the cache is not already there)
     void cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo );
 
     //! Main mutex to protect most data members that can be modified concurrently

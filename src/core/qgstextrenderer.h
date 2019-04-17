@@ -71,7 +71,7 @@ class CORE_EXPORT QgsTextBufferSettings
 
     /**
      * Sets whether the text buffer will be drawn.
-     * \param enabled set to true to draw buffer
+     * \param enabled set to TRUE to draw buffer
      * \see enabled()
      */
     void setEnabled( bool enabled );
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsTextBufferSettings
     void setColor( const QColor &color );
 
     /**
-     * Returns whether the interior of the buffer will be filled in. If false, only the stroke
+     * Returns whether the interior of the buffer will be filled in. If FALSE, only the stroke
      * of the text will be drawn as the buffer. The effect of this setting is only visible for
      * semi-transparent text.
      * \see setFillBufferInterior()
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsTextBufferSettings
 
     /**
      * Sets whether the interior of the buffer will be filled in.
-     * \param fill set to false to drawn only the stroke of the text as the buffer, or true to also
+     * \param fill set to FALSE to drawn only the stroke of the text as the buffer, or TRUE to also
      * shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
      * \see fillBufferInterior()
      */
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     /**
      * Sets whether the text background will be drawn.
-     * \param enabled set to true to draw background
+     * \param enabled set to TRUE to draw background
      * \see enabled()
      */
     void setEnabled( bool enabled );
@@ -729,7 +729,7 @@ class CORE_EXPORT QgsTextShadowSettings
 
     /**
      * Sets whether the text shadow will be drawn.
-     * \param enabled set to true to draw shadow
+     * \param enabled set to TRUE to draw shadow
      * \see enabled()
      */
     void setEnabled( bool enabled );
@@ -816,14 +816,14 @@ class CORE_EXPORT QgsTextShadowSettings
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 
     /**
-     * Returns true if the global shadow offset will be used.
+     * Returns TRUE if the global shadow offset will be used.
      * \see setOffsetGlobal()
      */
     bool offsetGlobal() const;
 
     /**
      * Sets whether the global shadow offset should be used.
-     * \param global set to true to use global shadow offset.
+     * \param global set to TRUE to use global shadow offset.
      */
     void setOffsetGlobal( bool global );
 
@@ -882,7 +882,7 @@ class CORE_EXPORT QgsTextShadowSettings
 
     /**
      * Sets whether only the alpha channel for the shadow should be blurred.
-     * \param alphaOnly set to true to blur only the alpha channel. If false, all channels (including
+     * \param alphaOnly set to TRUE to blur only the alpha channel. If FALSE, all channels (including
      * red, green and blue channel) will be blurred.
      * \see blurAlphaOnly()
      */
@@ -1246,19 +1246,19 @@ class CORE_EXPORT QgsTextFormat
 
     /**
      * Attempts to parse the provided mime \a data as a QgsTextFormat.
-     * If data can be parsed as a text format, \a ok will be set to true.
+     * If data can be parsed as a text format, \a ok will be set to TRUE.
      * \see toMimeData()
      */
     static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok SIP_OUT = nullptr );
 
     /**
-     * Returns true if any component of the font format requires advanced effects
+     * Returns TRUE if any component of the font format requires advanced effects
      * such as blend modes, which require output in raster formats to be fully respected.
      */
     bool containsAdvancedEffects() const;
 
     /**
-     * Returns true if the specified font was found on the system, or false
+     * Returns TRUE if the specified font was found on the system, or FALSE
      * if the font was not found and a replacement was used instead.
      * \see resolvedFontFamily()
      */
@@ -1342,7 +1342,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param textLines list of lines of text to draw
      * \param context render context
      * \param format text format
-     * \param drawAsOutlines set to false to render text as text. This allows outputs to
+     * \param drawAsOutlines set to FALSE to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
@@ -1359,7 +1359,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param textLines list of lines of text to draw
      * \param context render context
      * \param format text format
-     * \param drawAsOutlines set to false to render text as text. This allows outputs to
+     * \param drawAsOutlines set to FALSE to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
@@ -1379,7 +1379,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
      * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
-     * \param drawAsOutlines set to false to render text as text. This allows outputs to
+     * \param drawAsOutlines set to FALSE to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
@@ -1399,7 +1399,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
      * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
-     * \param drawAsOutlines set to false to render text as text. This allows outputs to
+     * \param drawAsOutlines set to FALSE to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
