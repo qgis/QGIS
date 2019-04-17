@@ -2216,7 +2216,7 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
   }
 }
 
-QgsLayoutAtlas *QgsLayoutItemMap::layoutAtlas()
+QgsLayoutAtlas *QgsLayoutItemMap::layoutAtlas() const
 {
   QgsPrintLayout *pLayout = qobject_cast< QgsPrintLayout *>( mLayout );
   if ( !pLayout )
