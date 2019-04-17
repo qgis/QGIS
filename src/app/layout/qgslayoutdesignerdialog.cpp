@@ -1078,15 +1078,26 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 
 void QgsLayoutDesignerDialog::setIconSizes( int size )
 {
+  QSize iconSize = QSize( size, size );
+  QSize panelIconSize = QgsGuiUtils::panelIconSize( iconSize );
+
   //Set the icon size of for all the toolbars created in the future.
-  setIconSize( QSize( size, size ) );
+  setIconSize( iconSize );
 
   //Change all current icon sizes.
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
   const auto constToolbars = toolbars;
   for ( QToolBar *toolbar : constToolbars )
   {
-    toolbar->setIconSize( QSize( size, size ) );
+    QString className = toolbar->parent()->metaObject()->className();
+    if ( className == QLatin1String( "QgsLayoutDesignerDialog" ) )
+    {
+      toolbar->setIconSize( iconSize );
+    }
+    else
+    {
+      toolbar->setIconSize( panelIconSize );
+    }
   }
 }
 
