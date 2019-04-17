@@ -95,6 +95,8 @@ class HypsometricCurves(QgisAlgorithm):
         percentage = self.parameterAsBoolean(parameters, self.USE_PERCENTAGE, context)
 
         outputPath = self.parameterAsString(parameters, self.OUTPUT_DIRECTORY, context)
+        if not os.path.exists(outputPath):
+            os.makedirs(outputPath)
 
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
         geoTransform = rasterDS.GetGeoTransform()
@@ -138,7 +140,7 @@ class HypsometricCurves(QgisAlgorithm):
                 continue
 
             fName = os.path.join(
-                outputPath, 'hystogram_%s_%s.csv' % (source.sourceName(), f.id()))
+                outputPath, 'histogram_{}_{}.csv'.format(source.sourceName(), f.id()))
 
             ogrGeom = ogr.CreateGeometryFromWkt(intersectedGeom.asWkt())
             bbox = intersectedGeom.boundingBox()
