@@ -1000,7 +1000,7 @@ void QgsLegendModel::doneCount( long taskid )
     if ( mPendingCount.isEmpty() )
     {
       emit refreshLegend();
-      QTimer::singleShot( 2050, this, SLOT( allowRefresh() ) );
+      QTimer::singleShot( 750, this, SLOT( allowRefresh() ) );
     }
   }
 }

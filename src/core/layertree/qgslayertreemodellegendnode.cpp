@@ -655,7 +655,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
-  QVariantList featureIds;
+  QVariantList featureIds = QVariantList<QVariant>();
 
   counter = vl ?  vl->countSymbolFeatures() : nullptr;
 
