@@ -592,6 +592,11 @@ bool QgsProcessingAlgorithm::parameterAsBool( const QVariantMap &parameters, con
   return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
 }
 
+bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
+}
+
 QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags ) const
 {
   return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags );

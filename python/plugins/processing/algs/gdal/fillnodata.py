@@ -111,7 +111,7 @@ class fillnodata(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.NO_MASK, context):
+        if self.parameterAsBoolean(parameters, self.NO_MASK, context):
             arguments.append('-nomask')
 
         mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)

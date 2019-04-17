@@ -114,7 +114,7 @@ QgsJoinByNearestAlgorithm *QgsJoinByNearestAlgorithm::createInstance() const
 QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const int neighbors = parameterAsInt( parameters, QStringLiteral( "NEIGHBORS" ), context );
-  const bool discardNonMatching = parameterAsBool( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
+  const bool discardNonMatching = parameterAsBoolean( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
   const double maxDistance = parameters.value( QStringLiteral( "MAX_DISTANCE" ) ).isValid() ? parameterAsDouble( parameters, QStringLiteral( "MAX_DISTANCE" ), context ) : std::numeric_limits< double >::quiet_NaN();
   std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )

@@ -88,9 +88,9 @@ class ExtractProjection(GdalAlgorithm):
         return [self.commandName()]
 
     def processAlgorithm(self, parameters, context, feedback):
-        createPrj = self.parameterAsBool(parameters,
-                                         self.PRJ_FILE_CREATE,
-                                         context)
+        createPrj = self.parameterAsBoolean(parameters,
+                                            self.PRJ_FILE_CREATE,
+                                            context)
         raster = self.parameterAsRasterLayer(parameters, self.INPUT,
                                              context)
         if not raster.dataProvider().name() == 'gdal':

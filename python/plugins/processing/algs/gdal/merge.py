@@ -131,10 +131,10 @@ class merge(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
-        if self.parameterAsBool(parameters, self.PCT, context):
+        if self.parameterAsBoolean(parameters, self.PCT, context):
             arguments.append('-pct')
 
-        if self.parameterAsBool(parameters, self.SEPARATE, context):
+        if self.parameterAsBoolean(parameters, self.SEPARATE, context):
             arguments.append('-separate')
 
         if self.NODATA_INPUT in parameters and parameters[self.NODATA_INPUT] is not None:

@@ -199,7 +199,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
 
         include_bounds = True # default to true to maintain 3.0 API
         if self.INCLUDE_BOUNDS in parameters:
-            include_bounds = self.parameterAsBool(parameters, self.INCLUDE_BOUNDS, context)
+            include_bounds = self.parameterAsBoolean(parameters, self.INCLUDE_BOUNDS, context)
 
         fields = startPoints.fields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))

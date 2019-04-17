@@ -188,13 +188,13 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
-        if self.parameterAsBool(parameters, self.KEEP_RESOLUTION, context):
+        if self.parameterAsBoolean(parameters, self.KEEP_RESOLUTION, context):
             arguments.append('-tr')
             arguments.append(str(inLayer.rasterUnitsPerPixelX()))
             arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
             arguments.append('-tap')
 
-        if self.parameterAsBool(parameters, self.SET_RESOLUTION, context):
+        if self.parameterAsBoolean(parameters, self.SET_RESOLUTION, context):
             arguments.append('-tr')
             if self.X_RESOLUTION in parameters and parameters[self.X_RESOLUTION] is not None:
                 xres = self.parameterAsDouble(parameters, self.X_RESOLUTION, context)
@@ -211,16 +211,16 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append('-cutline')
         arguments.append(maskLayer)
 
-        if self.parameterAsBool(parameters, self.CROP_TO_CUTLINE, context):
+        if self.parameterAsBoolean(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append('-crop_to_cutline')
 
-        if self.parameterAsBool(parameters, self.ALPHA_BAND, context):
+        if self.parameterAsBoolean(parameters, self.ALPHA_BAND, context):
             arguments.append('-dstalpha')
 
         if nodata is not None:
             arguments.append('-dstnodata {}'.format(nodata))
 
-        if self.parameterAsBool(parameters, self.MULTITHREADING, context):
+        if self.parameterAsBoolean(parameters, self.MULTITHREADING, context):
             arguments.append('-multi')
 
         if options:

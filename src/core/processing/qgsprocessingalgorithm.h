@@ -610,6 +610,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a static boolean value.
+     * \since QGIS 3.8
+     */
+    bool parameterAsBoolean( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a feature sink.
      *
      * Sinks will either be taken from \a context's active project, or created from external

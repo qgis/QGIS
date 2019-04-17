@@ -156,7 +156,7 @@ class SpatialJoin(QgisAlgorithm):
 
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
         method = self.parameterAsEnum(parameters, self.METHOD, context)
-        discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
+        discard_nomatch = self.parameterAsBoolean(parameters, self.DISCARD_NONMATCHING, context)
         prefix = self.parameterAsString(parameters, self.PREFIX, context)
 
         source_fields = source.fields()

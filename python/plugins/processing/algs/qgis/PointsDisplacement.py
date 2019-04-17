@@ -83,7 +83,7 @@ class PointsDisplacement(QgisAlgorithm):
 
         proximity = self.parameterAsDouble(parameters, self.PROXIMITY, context)
         radius = self.parameterAsDouble(parameters, self.DISTANCE, context)
-        horizontal = self.parameterAsBool(parameters, self.HORIZONTAL, context)
+        horizontal = self.parameterAsBoolean(parameters, self.HORIZONTAL, context)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())

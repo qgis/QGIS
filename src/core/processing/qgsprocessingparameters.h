@@ -704,10 +704,23 @@ class CORE_EXPORT QgsProcessingParameters
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition to a static boolean value.
+     *
+     * \since QGIS 3.8
+     */
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition and \a value to a static boolean value.
      * \since QGIS 3.4
      */
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a static boolean value.
+     * \since QGIS 3.8
+     */
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a feature sink.

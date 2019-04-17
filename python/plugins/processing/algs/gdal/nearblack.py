@@ -114,7 +114,7 @@ class nearblack(GdalAlgorithm):
         arguments.append('-near')
         arguments.append(str(self.parameterAsInt(parameters, self.NEAR, context)))
 
-        if self.parameterAsBool(parameters, self.WHITE, context):
+        if self.parameterAsBoolean(parameters, self.WHITE, context):
             arguments.append('-white')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
