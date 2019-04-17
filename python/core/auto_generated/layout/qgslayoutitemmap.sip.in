@@ -576,7 +576,7 @@ Returns map rendering errors
 :return: list of errors
 %End
 
-    QgsLayoutAtlas *layoutAtlas();
+    QgsLayoutAtlas *layoutAtlas() const;
 %Docstring
 Returns the atlas of the current layout
 

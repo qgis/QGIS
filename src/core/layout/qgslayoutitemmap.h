@@ -524,7 +524,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      *
      * \since QGIS 3.8
      */
-    QgsLayoutAtlas *layoutAtlas();
+    QgsLayoutAtlas *layoutAtlas() const;
 
   protected:
 
