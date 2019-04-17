@@ -152,10 +152,11 @@ Item {
     signal reset
   }
 
-  Item {
+  Rectangle {
     id: container
 
     clip: true
+    color: form.style.tabs.backgroundColor
 
     anchors {
       top: toolbar.bottom
@@ -180,6 +181,12 @@ Item {
         id: tabRow
         visible: model.hasTabs
         height: form.style.tabs.height
+        spacing: form.style.tabs.spacing
+
+        background: Rectangle {
+          anchors.fill: parent
+          color: form.style.tabs.backgroundColor
+        }
 
         Connections {
           target: master
@@ -199,9 +206,10 @@ Item {
             text: Name
             leftPadding: 8 * QgsQuick.Utils.dp
             rightPadding: 8 * QgsQuick.Utils.dp
+            anchors.bottom: parent.bottom
 
             width: contentItem.width + leftPadding + rightPadding
-            height: form.style.tabs.height
+            height: form.style.tabs.buttonHeight
 
             contentItem: Text {
               // Make sure the width is derived from the text so we can get wider
