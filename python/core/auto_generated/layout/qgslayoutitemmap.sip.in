@@ -576,6 +576,15 @@ Returns map rendering errors
 :return: list of errors
 %End
 
+    QgsLayoutAtlas *QgsLayoutDesignerDialog::getAtlas() const;
+%Docstring
+Returns the atlas of the current layout
+
+:return: a pointer to the LayoutAtlas if available
+
+.. versionadded:: 3.8
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
