@@ -38,10 +38,13 @@ QtObject {
     property color normalColor: "#4CAF50"
     property color activeColor: "#1B5E20"
     property color disabledColor: "#FFFFFF"
+    property color backgroundColor: "#999999"
     property color normalBackgroundColor: "#FFFFFF"
     property color activeBackgroundColor: "#4CAF50"
     property color disabledBackgroundColor: "#999999"
     property real height: 48 * QgsQuick.Utils.dp
+    property real buttonHeight: height * 0.8
+    property real spacing: 0
   }
 
   property QtObject constraint: QtObject {
