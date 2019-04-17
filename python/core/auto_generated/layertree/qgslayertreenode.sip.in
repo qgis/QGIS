@@ -238,6 +238,7 @@ Returns list of keys stored in custom properties
 Remove a child from a node
 %End
 
+
   signals:
 
     void willAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
@@ -304,6 +305,7 @@ Low-level removal of children from the node.
 %End
 
   protected:
+
 };
 
 

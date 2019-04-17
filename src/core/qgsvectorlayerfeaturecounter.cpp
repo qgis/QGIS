@@ -15,6 +15,7 @@
 
 #include "qgsvectorlayerfeaturecounter.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeatureid.h"
 
 QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context )
   : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel )
@@ -31,12 +32,18 @@ QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *laye
 
 bool QgsVectorLayerFeatureCounter::run()
 {
+  QMutex mutex;
+  mutex.lock();
+  mRunning = true;
+  mSymbolFeatureCountMap.clear();
+  mSymbolFeatureIdMap.clear();
   QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
   QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
 
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
     mSymbolFeatureCountMap.insert( symbolIt->label(), 0 );
+    mSymbolFeatureIdMap.insert( symbolIt->label(), QgsFeatureIds() );
   }
 
   // If there are no features to be counted, we can spare us the trouble
@@ -65,11 +72,12 @@ bool QgsVectorLayerFeatureCounter::run()
     while ( fit.nextFeature( f ) )
     {
       renderContext.expressionContext().setFeature( f );
-      QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
-      const auto constFeatureKeyList = featureKeyList;
-      for ( const QString &key : constFeatureKeyList )
+
+      const QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
+      for ( const QString &key : featureKeyList )
       {
         mSymbolFeatureCountMap[key] += 1;
+        mSymbolFeatureIdMap[key].insert( f.id() );
       }
       ++featuresCounted;
 
@@ -90,7 +98,8 @@ bool QgsVectorLayerFeatureCounter::run()
   }
 
   setProgress( 100 );
-
+  mutex.unlock();
+  mRunning = false;
   emit symbolsCounted();
   return true;
 }
@@ -102,5 +111,19 @@ QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 
 long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const
 {
+  if ( mRunning )
+    return -1;
   return mSymbolFeatureCountMap.value( legendKey, -1 );
+}
+
+QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const
+{
+  return mSymbolFeatureIdMap;
+}
+
+QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString symbolkey ) const
+{
+  if ( mRunning )
+    return QgsFeatureIds();
+  return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
 }

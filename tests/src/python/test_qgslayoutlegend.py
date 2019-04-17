@@ -41,7 +41,7 @@ from qgis.testing import (start_app,
 from utilities import unitTestDataPath
 from qgslayoutchecker import QgsLayoutChecker
 import os
-
+from time import sleep
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
@@ -57,6 +57,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
 
+        QgsProject.instance().clear()
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
@@ -365,6 +366,54 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
+
+    def testSymbolExpressions(self):
+        """Test expressions embedded in legend node text"""
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        point_layer.countSymbolFeatures()
+        QgsProject.instance().clear()
+
+        layout = QgsPrintLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.setLayers([point_layer])
+        layout.addLayoutItem(map)
+        map.setExtent(point_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+
+        QgsProject.instance().addMapLayers([point_layer])
+        legendlayer = legend.model().rootGroup().addLayer(point_layer)
+        sleep(1) # try to ensure that the counting is done before evaluation
+
+        legend.model().refreshLayerLegend(legendlayer)
+        legendnodes = legend.model().layerLegendNodes(legendlayer)
+        legendnodes[0].setUserLabel('[%@symbol_id %]')
+        legendnodes[1].setUserLabel('[%@symbol_count %]')
+        legendnodes[2].setUserLabel('[%sum("Pilots") %]')
+
+        label1 = legendnodes[0].evaluateLabel()
+        label2 = legendnodes[1].evaluateLabel()
+        label3 = legendnodes[2].evaluateLabel()
+
+        self.assertEqual(label1, '0')
+        self.assertEqual(label2, '5')
+        self.assertEqual(label3, '12')
+
+        legendlayer.setExpression("Concat(@symbol_label, @symbol_id)")
+
+        label1 = legendnodes[0].evaluateLabel()
+        label2 = legendnodes[1].evaluateLabel()
+        label3 = legendnodes[2].evaluateLabel()
+
+        self.assertEqual(label1, '@symbol_id 0')
+        self.assertEqual(label2, '@symbol_count 1')
+        self.assertEqual(label3, 'sum("Pilots") 2')
+
+        QgsProject.instance().clear()
 
 
 if __name__ == '__main__':

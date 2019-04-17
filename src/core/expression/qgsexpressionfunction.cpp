@@ -54,6 +54,9 @@
 #include "qgsapplication.h"
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerfeaturecounter.h"
+#include "qgsfeatureid.h"
+
 
 
 const QString QgsExpressionFunction::helpText() const
@@ -572,13 +575,23 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     if ( context && context->hasCachedValue( cacheKey ) )
       return context->cachedValue( cacheKey );
 
-    QgsExpressionContext subContext( *context );
-    QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
-    subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
-    subContext.appendScope( subScope );
-    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+    {
+      //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
+      QgsExpressionContext context_copy = *context;
+      const QgsFeatureIds fids = vl->countSymbolFeatures()->featureIds( context_copy.variable( "symbol_id" ).toString() );
+      result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, fids );
+    }
+    else
+    {
+      QgsExpressionContext subContext( *context );
+      QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
+      subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
+      subContext.appendScope( subScope );
+      result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
 
-    context->setCachedValue( cacheKey, result );
+      context->setCachedValue( cacheKey, result );
+    }
   }
   else
   {
@@ -739,44 +752,55 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
       parameters.filter = node->dump();
   }
 
-  // build up filter with group by
-
-  // find current group by value
-  if ( !groupBy.isEmpty() )
-  {
-    QgsExpression groupByExp( groupBy );
-    QVariant groupByValue = groupByExp.evaluate( context );
-    QString groupByClause = QStringLiteral( "%1 %2 %3" ).arg( groupBy,
-                            groupByValue.isNull() ? QStringLiteral( "is" ) : QStringLiteral( "=" ),
-                            QgsExpression::quotedValue( groupByValue ) );
-    if ( !parameters.filter.isEmpty() )
-      parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
-    else
-      parameters.filter = groupByClause;
-  }
-
-  QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4" ).arg( vl->id(),
-                     QString::number( static_cast< int >( aggregate ) ),
-                     subExpression,
-                     parameters.filter );
-  if ( context && context->hasCachedValue( cacheKey ) )
-    return context->cachedValue( cacheKey );
-
   QVariant result;
   bool ok = false;
 
-  QgsExpressionContext subContext( *context );
-  result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
-
-  if ( !ok )
+  if ( context->indexOfScope( "Symbol scope" ) != -1 )
   {
-    parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
-    return QVariant();
+    //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
+    QgsExpressionContext context_copy = *context;
+    const QgsFeatureIds fids = vl->countSymbolFeatures()->featureIds( context_copy.variable( "symbol_id" ).toString() );
+    result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, fids );
+  }
+  else
+  {
+    // build up filter with group by
+
+    // find current group by value
+    if ( !groupBy.isEmpty() )
+    {
+      QgsExpression groupByExp( groupBy );
+      QVariant groupByValue = groupByExp.evaluate( context );
+      QString groupByClause = QStringLiteral( "%1 %2 %3" ).arg( groupBy,
+                              groupByValue.isNull() ? QStringLiteral( "is" ) : QStringLiteral( "=" ),
+                              QgsExpression::quotedValue( groupByValue ) );
+      if ( !parameters.filter.isEmpty() )
+        parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
+      else
+        parameters.filter = groupByClause;
+    }
+
+    QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4" ).arg( vl->id(),
+                       QString::number( static_cast< int >( aggregate ) ),
+                       subExpression,
+                       parameters.filter );
+    if ( context && context->hasCachedValue( cacheKey ) )
+      return context->cachedValue( cacheKey );
+
+    QgsExpressionContext subContext( *context );
+    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+
+    if ( !ok )
+    {
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
+      return QVariant();
+    }
+
+    // cache value
+    if ( context )
+      context->setCachedValue( cacheKey, result );
   }
 
-  // cache value
-  if ( context )
-    context->setCachedValue( cacheKey, result );
   return result;
 }
 

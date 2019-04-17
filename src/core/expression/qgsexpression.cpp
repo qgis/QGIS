@@ -830,6 +830,11 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "symbol_color" ), QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
   sVariableHelpTexts.insert( QStringLiteral( "symbol_angle" ), QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
 
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_label" ), QCoreApplication::translate( "variable_help", "Label of the symbol." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_id" ), QCoreApplication::translate( "variable_help", "Id of the symbol." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_count" ), QCoreApplication::translate( "variable_help", "Total number of features defined by this symbol." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_feature_ids" ), QCoreApplication::translate( "variable_help", "List of Ids (QgsFeatureId/qint64) of features defined by this symbol. Is only useful internally for aggregation operation, will not print anything." ) );
+
   //cluster variables
   sVariableHelpTexts.insert( QStringLiteral( "cluster_color" ), QCoreApplication::translate( "cluster_color", "Color of symbols within a cluster, or NULL if symbols have mixed colors." ) );
   sVariableHelpTexts.insert( QStringLiteral( "cluster_size" ), QCoreApplication::translate( "cluster_size", "Number of symbols contained within a cluster." ) );

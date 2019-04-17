@@ -692,14 +692,13 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
-
-
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
+  if ( !mSymbolFeatureCounted && !mPendingTasks.isEmpty() )
+    return nullptr;
+
   if ( mSymbolFeatureCounted || mFeatureCounter )
     return mFeatureCounter;
-
-  mSymbolFeatureCountMap.clear();
 
   if ( !mValid )
   {
@@ -717,14 +716,16 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
     return mFeatureCounter;
   }
 
-  if ( !mFeatureCounter )
-  {
-    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
-    connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
-    connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
+  if ( mPendingTasks.isEmpty() )
+    mSymbolFeatureCountMap.clear();
 
-    QgsApplication::taskManager()->addTask( mFeatureCounter );
-  }
+  mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
+  connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
+  connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
+
+  long taskid = QgsApplication::taskManager()->addTask( mFeatureCounter );
+  emit startCount( taskid );
+  mPendingTasks.append( taskid );
 
   return mFeatureCounter;
 }
@@ -3909,7 +3910,8 @@ QVariant QgsVectorLayer::maximumValue( int index ) const
 }
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
-                                    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool *ok ) const
+                                    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
+                                    bool *ok, const QgsFeatureIds fids ) const
 {
   if ( ok )
     *ok = false;
@@ -3943,7 +3945,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
   c.setParameters( parameters );
-  return c.calculate( aggregate, fieldOrExpression, context, ok );
+  return c.calculate( aggregate, fieldOrExpression, context, ok, fids );
 }
 
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
@@ -4257,6 +4259,13 @@ QgsExpressionContext QgsVectorLayer::createExpressionContext() const
   return QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 }
 
+QgsExpressionContext QgsVectorLayer::createExpressionContext( QgsExpressionContext context ) const
+{
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
+  return context;
+}
+
+
 QgsExpressionContextScope *QgsVectorLayer::createExpressionContextScope() const
 {
   return QgsExpressionContextUtils::layerScope( this );
@@ -4433,13 +4442,29 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 
 void QgsVectorLayer::onFeatureCounterCompleted()
 {
+  doneTask();
   onSymbolsCounted();
-  mFeatureCounter = nullptr;
 }
 
 void QgsVectorLayer::onFeatureCounterTerminated()
 {
-  mFeatureCounter = nullptr;
+  doneTask();
+}
+
+void QgsVectorLayer::doneTask()
+{
+  if ( !mPendingTasks.isEmpty() )
+  {
+    const QList<long> pendingtasks = mPendingTasks;
+    for ( long taskid : pendingtasks )
+    {
+      if ( !( QgsApplication::taskManager()->task( taskid ) ) )
+      {
+        mPendingTasks.removeOne( taskid );
+        emit countDone( taskid );
+      }
+    }
+  }
 }
 
 void QgsVectorLayer::onJoinedFieldsChanged()

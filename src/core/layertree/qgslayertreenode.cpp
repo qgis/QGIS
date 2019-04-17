@@ -264,3 +264,5 @@ bool QgsLayerTreeNode::takeChild( QgsLayerTreeNode *node )
 
   return mChildren.size() < n;
 }
+
+
