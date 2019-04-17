@@ -78,30 +78,33 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
 
   QString levelString;
   QgsSettings settings;
-  QColor color;
+  QPalette pal = qApp->palette();
+  QString defaultColorName = pal.color( QPalette::WindowText ).name();
+  QString colorName;
   switch ( level )
   {
     case Qgis::Info:
       levelString = QStringLiteral( "INFO" );
-      color = QColor( settings.value( QStringLiteral( "colors/info" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/info" ), QString() ).toString();
       break;
     case Qgis::Warning:
       levelString = QStringLiteral( "WARNING" );
-      color = QColor( settings.value( QStringLiteral( "colors/warning" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/warning" ), QString() ).toString();
       break;
     case Qgis::Critical:
       levelString = QStringLiteral( "CRITICAL" );
-      color = QColor( settings.value( QStringLiteral( "colors/critical" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/critical" ), QString() ).toString();
       break;
     case Qgis::Success:
       levelString = QStringLiteral( "SUCCESS" );
-      color = QColor( settings.value( QStringLiteral( "colors/success" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/success" ), QString() ).toString();
       break;
     case Qgis::None:
       levelString = QStringLiteral( "NONE" );
-      color = QColor( settings.value( QStringLiteral( "colors/default" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/default" ), QString() ).toString();
       break;
   }
+  QColor color = QColor( !colorName.isEmpty() ? colorName : defaultColorName );
 
   QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
                    .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
