@@ -43,7 +43,8 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
 
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
     const QString &fieldOrExpression,
-    QgsExpressionContext *context, bool *ok ) const
+    QgsExpressionContext *context, bool *ok,
+    const QgsFeatureIds ids ) const
 {
   if ( ok )
     *ok = false;
@@ -86,7 +87,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     request.setFilterExpression( mFilterExpression );
   if ( context )
     request.setExpressionContext( *context );
-
+  if ( !ids.empty() )
+    request.setFilterFids( ids );
   //determine result type
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )
