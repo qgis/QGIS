@@ -33,6 +33,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslayoutatlas.h"
+#include "qgsprintlayout.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -1300,8 +1301,8 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap ) );
 
-  QgsLayoutAtlas *atlas = getAtlas();
-  if ( mAtlasDriven && atlas.isValid() )
+  QgsLayoutAtlas *atlas = layoutAtlas();
+  if ( mAtlasDriven && atlas )
     context.appendScope( QgsExpressionContextUtils::atlasScope( atlas ) );
 
   return context;
@@ -2215,10 +2216,10 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
   }
 }
 
-QgsLayoutAtlas *QgsLayoutItemMap::getAtlas()
+QgsLayoutAtlas *QgsLayoutItemMap::layoutAtlas()
 {
   QgsPrintLayout *pLayout = qobject_cast< QgsPrintLayout *>( mLayout );
-  if ( !pLayout.isValid() )
+  if ( !pLayout )
     return nullptr;
   return pLayout->atlas();
 }
