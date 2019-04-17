@@ -174,16 +174,15 @@ void QgsServiceRegistry::registerApi( QgsServerApi *api )
 
   QgsMessageLog::logMessage( QString( "Adding API %1 %2" ).arg( name, version ) );
   mApis.insert( key, std::shared_ptr<QgsServerApi>( api ) );
-
 }
 
-std::shared_ptr<QgsServerApi> QgsServiceRegistry::getApiForRequest( const QgsServerRequest &request ) const
+QgsServerApi *QgsServiceRegistry::getApiForRequest( const QgsServerRequest &request ) const
 {
   for ( const auto &api : mApis )
   {
     if ( api->rootPath().match( request.url().path() ).hasMatch() )
     {
-      return api;
+      return api.get();
     }
   }
   return nullptr;

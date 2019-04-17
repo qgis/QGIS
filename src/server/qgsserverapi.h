@@ -43,9 +43,10 @@ class SERVER_EXPORT QgsServerApi
      */
     virtual QString name() const = 0;
 
-
     /**
-     * \returns the regular expression root path of the API
+     * \returns the regular expression root path for the API
+     *
+     * For example: ".*" will respond to any path, while "^/api/" will serve all paths starting with "/api/".
      */
     virtual QRegularExpression rootPath() const = 0;
 
@@ -59,12 +60,11 @@ class SERVER_EXPORT QgsServerApi
      */
     virtual bool allowMethod( QgsServerRequest::Method ) const { return true; }
 
-
     /**
      * Execute the requests and set result in QgsServerRequest
      */
     virtual void executeRequest( const QgsServerRequest &request,
-                                 QgsServerResponse &response ) = 0;
+                                 QgsServerResponse &response, const QgsProject *project ) = 0;
 
 };
 

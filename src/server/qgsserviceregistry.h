@@ -82,8 +82,7 @@ class SERVER_EXPORT QgsServiceRegistry
 
     void registerApi( QgsServerApi *api SIP_TRANSFER );
 
-    std::shared_ptr<QgsServerApi> getApiForRequest( const QgsServerRequest &request ) const;
-
+    QgsServerApi *getApiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
 
     /**
      * Unregister service from its name and version

@@ -21,6 +21,7 @@
  ***************************************************************************/
 
 #include "qgsmodule.h"
+#include "qgsproject.h"
 
 namespace QgsWfs3
 {
@@ -47,16 +48,12 @@ namespace QgsWfs3
       QString version() const override { return QStringLiteral( "1.0.0" ); }
       QRegularExpression rootPath() const override { return mRootPath; }
 
-      bool allowMethod( QgsServerRequest::Method method ) const override
-      {
-        Q_UNUSED( method );
-        return true;
-      }
-
-      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response ) override
+      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
       {
         Q_UNUSED( request );
-        response.write( "Hello! " );
+        QgsMessageLog::logMessage( QStringLiteral( "Running WFS3" ), QStringLiteral( "Server" ), Qgis::Info );
+        response.write( QStringLiteral( "Hello! from project %1" ).arg( project ? project->fileName() : QStringLiteral( "unknown" ) ) );
+        response.finish();
       }
 
     private:
@@ -65,7 +62,7 @@ namespace QgsWfs3
   };
 
 
-} // namespace QgsWfs
+} // namespace QgsWfs3
 
 /**
  * \ingroup server

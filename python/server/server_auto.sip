@@ -19,6 +19,7 @@
 %Include auto_generated/qgsserverrequest.sip
 %Include auto_generated/qgsserverresponse.sip
 %Include auto_generated/qgsservice.sip
+%Include auto_generated/qgsserverapi.sip
 %Include auto_generated/qgsserviceregistry.sip
 %Include auto_generated/qgsfeaturefilterprovidergroup.sip
 %Include auto_generated/qgsfeaturefilter.sip

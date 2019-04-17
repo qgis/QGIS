@@ -340,43 +340,37 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   // Plugins may have set exceptions
   if ( !requestHandler.exceptionRaised() )
   {
-
     try
     {
       const QgsServerParameters params = request.serverParameters();
       printRequestParameters( params.toMap(), logLevel );
 
-      if ( params.service().isEmpty() )
+      // Setup project (config file path)
+      if ( ! project )
       {
-        if ( auto api { sServiceRegistry->getApiForRequest( request ) } )
-        {
-          api->executeRequest( request, response );
-        }
-        else
-        {
-          throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
-                                        QStringLiteral( "Service unknown or unsupported" ) );
-        }
+        QString configFilePath = configPath( *sConfigFilePath, params.map() );
+
+        // load the project if needed and not empty
+        project = mConfigCache->project( configFilePath );
+      }
+
+      if ( project )
+      {
+        sServerInterface->setConfigFilePath( project->fileName() );
+      }
+
+      // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
+      if ( params.service().isEmpty() && sServiceRegistry->getApiForRequest( request ) )
+      {
+        sServiceRegistry->getApiForRequest( request )->executeRequest( request, response, project );
       }
       else
       {
-        //Config file path
+
+        // Project is mandatory for OWS at this point
         if ( ! project )
         {
-          QString configFilePath = configPath( *sConfigFilePath, params.map() );
-
-          // load the project if needed and not empty
-          project = mConfigCache->project( configFilePath );
-          if ( ! project )
-          {
-            throw QgsServerException( QStringLiteral( "Project file error" ) );
-          }
-
-          sServerInterface->setConfigFilePath( configFilePath );
-        }
-        else
-        {
-          sServerInterface->setConfigFilePath( project->fileName() );
+          throw QgsServerException( QStringLiteral( "Project file error: could not load project!" ) );
         }
 
         if ( ! params.fileName().isEmpty() )

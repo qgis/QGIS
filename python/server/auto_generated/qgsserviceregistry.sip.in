@@ -65,8 +65,6 @@ The registry gain ownership of services and will call 'delete' on cleanup
 
     void registerApi( QgsServerApi *api /Transfer/ );
 
-    std::shared_ptr<QgsServerApi> getApiForRequest( const QgsServerRequest &request ) const;
-
 
     int unregisterService( const QString &name, const QString &version = QString() );
 %Docstring
