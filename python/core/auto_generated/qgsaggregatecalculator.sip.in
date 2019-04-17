@@ -120,7 +120,8 @@ Returns the delimiter used for joining values with the StringConcatenate aggrega
 %End
 
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
-                        QgsExpressionContext *context = 0, bool *ok = 0 ) const;
+                        QgsExpressionContext *context = 0, bool *ok = 0,
+                        const QgsFeatureIds *ids = 0) ) const;
 %Docstring
 Calculates the value of an aggregate.
 
@@ -129,6 +130,7 @@ Calculates the value of an aggregate.
                           If an expression is used, then the context parameter must be set.
 :param context: expression context for evaluating expressions
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
+:param ids: Pointer to a list of feature ID to filter out unwanted features in the request
 
 :return: calculated aggregate value
 %End
@@ -160,3 +162,4 @@ Structured information for available aggregates.
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+ 
