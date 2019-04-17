@@ -735,7 +735,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultScale_2056", max_size_diff=QSize(15, 15))
-    
+
     def test_wms_GetLegendGraphic_LAYERFONTCOLOR(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
