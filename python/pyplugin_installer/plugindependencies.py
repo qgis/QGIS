@@ -29,10 +29,10 @@ def __get_plugin_deps(plugin_id):
 
     result = {}
     metadata_parser = updateAvailablePlugins()
-    parser = metadata_parser[plugin_id]
     try:
+        parser = metadata_parser[plugin_id]
         plugin_deps = parser.get('general', 'plugin_dependencies')
-    except (NoOptionError, NoSectionError):
+    except (NoOptionError, NoSectionError, KeyError):
         return result
 
     for dep in plugin_deps.split(','):

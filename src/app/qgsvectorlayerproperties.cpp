@@ -362,11 +362,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLayersDependenciesTreeGroup->setItemVisibilityChecked( false );
 
   QSet<QString> dependencySources;
-  Q_FOREACH ( const QgsMapLayerDependency &dep, mLayer->dependencies() )
+  const auto constDependencies = mLayer->dependencies();
+  for ( const QgsMapLayerDependency &dep : constDependencies )
   {
     dependencySources << dep.layerId();
   }
-  Q_FOREACH ( QgsLayerTreeLayer *layer, mLayersDependenciesTreeGroup->findLayers() )
+  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
+  for ( QgsLayerTreeLayer *layer : constFindLayers )
   {
     layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
   }
@@ -682,7 +684,8 @@ void QgsVectorLayerProperties::apply()
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();
-  Q_FOREACH ( const QgsAction &action, mActionDialog->actions() )
+  const auto constActions = mActionDialog->actions();
+  for ( const QgsAction &action : constActions )
   {
     mLayer->actions()->addAction( action );
   }
@@ -718,7 +721,8 @@ void QgsVectorLayerProperties::apply()
   diagramPropertiesDialog->apply();
 
   // apply all plugin dialogs
-  Q_FOREACH ( QgsMapLayerConfigWidget *page, mLayerPropertiesPages )
+  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
+  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
   {
     page->apply();
   }
@@ -810,7 +814,8 @@ void QgsVectorLayerProperties::apply()
 
   // save dependencies
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsLayerTreeLayer *layer, mLayersDependenciesTreeGroup->findLayers() )
+  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
+  for ( const QgsLayerTreeLayer *layer : constFindLayers )
   {
     if ( layer->isVisible() )
       deps << QgsMapLayerDependency( layer->layerId() );
@@ -852,10 +857,12 @@ void QgsVectorLayerProperties::onCancel()
     // need to undo changes in vector layer joins - they are applied directly to the layer (not in apply())
     // so other parts of the properties dialog can use the fields from the joined layers
 
-    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mLayer->vectorJoins() )
+    const auto constVectorJoins = mLayer->vectorJoins();
+    for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
       mLayer->removeJoin( info.joinLayerId() );
 
-    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mOldJoins )
+    const auto constMOldJoins = mOldJoins;
+    for ( const QgsVectorLayerJoinInfo &info : constMOldJoins )
       mLayer->addJoin( info );
   }
 

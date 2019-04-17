@@ -113,5 +113,5 @@ void QgsOnlineTerrainGenerator::updateGenerator()
     mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
   }
 
-  mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( nullptr, mTerrainTilingScheme, mResolution ) );
+  mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( nullptr, mTerrainTilingScheme, mResolution, mTransformContext ) );
 }

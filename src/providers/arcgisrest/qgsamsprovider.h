@@ -54,7 +54,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
-    QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }

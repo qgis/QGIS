@@ -18,8 +18,8 @@
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsapplication.h"
-
 #include "qgswebframe.h"
+
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -45,6 +45,7 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
     return;
 
   mWidget->setHtml( mHtmlCode );
+#ifdef WITH_QTWEBKIT
   const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
   mWidget->setZoomFactor( horizontalDpi / 96.0 );
 
@@ -54,6 +55,7 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
     auto docHeight { page->mainFrame()->contentsSize().height() };
     mWidget->setFixedHeight( docHeight );
   }, Qt::ConnectionType::UniqueConnection );
+#endif
 
 }
 

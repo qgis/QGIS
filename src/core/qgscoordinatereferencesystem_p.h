@@ -30,7 +30,13 @@
 //
 
 #include "qgscoordinatereferencesystem.h"
+
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#include "qgsprojutils.h"
+#else
 #include <ogr_srs_api.h>
+#endif
 
 #ifdef DEBUG
 typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
@@ -43,7 +49,9 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
   public:
 
     explicit QgsCoordinateReferenceSystemPrivate()
+#if PROJ_VERSION_MAJOR<6
       : mCRS( OSRNewSpatialReference( nullptr ) )
+#endif
     {
     }
 
@@ -58,13 +66,19 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mSRID( other.mSRID )
       , mAuthId( other.mAuthId )
       , mIsValid( other.mIsValid )
+#if PROJ_VERSION_MAJOR<6
       , mCRS( nullptr )
+#endif
       , mValidationHint( other.mValidationHint )
       , mWkt( other.mWkt )
       , mProj4( other.mProj4 )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
     {
+#if PROJ_VERSION_MAJOR>=6
+      if ( mIsValid && mPj.get() )
+        mPj.reset( proj_clone( QgsProjContext::get(), mPj.get() ) );
+#else
       if ( mIsValid )
       {
         mCRS = OSRClone( other.mCRS );
@@ -73,11 +87,14 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       {
         mCRS = OSRNewSpatialReference( nullptr );
       }
+#endif
     }
 
     ~QgsCoordinateReferenceSystemPrivate()
     {
+#if PROJ_VERSION_MAJOR<6
       OSRDestroySpatialReference( mCRS );
+#endif
     }
 
     //! The internal sqlite3 srs.db primary key for this CRS
@@ -107,7 +124,11 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     //! Whether this CRS is properly defined and valid
     bool mIsValid = false;
 
+#if PROJ_VERSION_MAJOR>=6
+    QgsProjUtils::proj_pj_unique_ptr mPj;
+#else
     OGRSpatialReferenceH mCRS;
+#endif
 
     QString mValidationHint;
     mutable QString mWkt;

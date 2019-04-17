@@ -352,7 +352,8 @@ bool QgsLayerCapabilitiesModel::nodeShown( QgsLayerTreeNode *node ) const
     return false;
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    const auto constChildren = node->children();
+    for ( QgsLayerTreeNode *child : constChildren )
     {
       if ( nodeShown( child ) )
       {

@@ -747,12 +747,13 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
   mLegend->beginCommand( tr( "Remove Legend Item" ) );
 
   QList<QPersistentModelIndex> indexes;
-  Q_FOREACH ( const QModelIndex &index, selectionModel->selectedIndexes() )
+  const auto constSelectedIndexes = selectionModel->selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
     indexes << index;
 
   // first try to remove legend nodes
   QHash<QgsLayerTreeLayer *, QList<int> > nodesWithRemoval;
-  Q_FOREACH ( const QPersistentModelIndex &index, indexes )
+  for ( const QPersistentModelIndex &index : qgis::as_const( indexes ) )
   {
     if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->layerTreeModel()->index2legendNode( index ) )
     {
@@ -766,7 +767,8 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
     std::sort( toDelete.begin(), toDelete.end(), std::greater<int>() );
     QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( it.key() );
 
-    Q_FOREACH ( int i, toDelete )
+    const auto constToDelete = toDelete;
+    for ( int i : constToDelete )
     {
       if ( i >= 0 && i < order.count() )
         order.removeAt( i );
@@ -777,7 +779,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
   }
 
   // then remove layer tree nodes
-  Q_FOREACH ( const QPersistentModelIndex &index, indexes )
+  for ( const QPersistentModelIndex &index : qgis::as_const( indexes ) )
   {
     if ( index.isValid() && mItemTreeView->layerTreeModel()->index2node( index ) )
       mLegend->model()->removeRow( index.row(), index.parent() );
@@ -828,7 +830,8 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
 
   mLegend->beginCommand( tr( "Update Legend" ) );
 
-  Q_FOREACH ( const QString &key, nodeLayer->customProperties() )
+  const auto constCustomProperties = nodeLayer->customProperties();
+  for ( const QString &key : constCustomProperties )
   {
     if ( key.startsWith( QLatin1String( "legend/" ) ) )
       nodeLayer->removeCustomProperty( key );

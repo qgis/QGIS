@@ -888,6 +888,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QgsRenderContext mRenderContext;
 
     bool mUsingTransaction = false;
+    bool supportsStringList = false;
 
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
     gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );

@@ -257,7 +257,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
     throw QgsProcessingException( QObject::tr( "Directory %1 does not exist!" ).arg( folder ) );
   }
 
-  bool recurse = parameterAsBool( parameters, QStringLiteral( "RECURSIVE" ), context );
+  bool recurse = parameterAsBoolean( parameters, QStringLiteral( "RECURSIVE" ), context );
 
   QgsFields outFields;
   outFields.append( QgsField( QStringLiteral( "photo" ), QVariant::String ) );

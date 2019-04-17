@@ -68,7 +68,7 @@ QgsPackageAlgorithm *QgsPackageAlgorithm::createInstance() const
 
 QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  bool overwrite = parameterAsBool( parameters, QStringLiteral( "OVERWRITE" ), context );
+  bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
   QString packagePath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
   if ( packagePath.isEmpty() )
     throw QgsProcessingException( QObject::tr( "No output file specified." ) );

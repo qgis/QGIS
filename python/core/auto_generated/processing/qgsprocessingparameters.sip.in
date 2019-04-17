@@ -638,11 +638,25 @@ Evaluates the parameter with matching ``definition`` and ``value`` to list of en
 Evaluates the parameter with matching ``definition`` to a static boolean value.
 %End
 
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a static boolean value.
+
+.. versionadded:: 3.8
+%End
+
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a static boolean value.
 
 .. versionadded:: 3.4
+%End
+
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static boolean value.
+
+.. versionadded:: 3.8
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,

@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 
 #ifdef HAVE_GUI
 #include "qgsdb2newconnection.h"
@@ -339,7 +340,8 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
 
     QgsDebugMsg( QStringLiteral( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
     // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey, options );
 
     if ( srcLayer->isValid() )
     {

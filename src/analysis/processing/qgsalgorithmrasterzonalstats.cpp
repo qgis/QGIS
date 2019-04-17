@@ -140,7 +140,7 @@ bool QgsRasterLayerZonalStatsAlgorithm::prepareAlgorithm( const QVariantMap &par
       {
         mProjector = qgis::make_unique< QgsRasterProjector >();
         mProjector->setInput( mZonesDataProvider.get() );
-        mProjector->setCrs( zonesLayer->crs(), layer->crs() );
+        mProjector->setCrs( zonesLayer->crs(), layer->crs(), context.transformContext() );
         mZonesInterface = mProjector.get();
       }
       break;
@@ -158,7 +158,7 @@ bool QgsRasterLayerZonalStatsAlgorithm::prepareAlgorithm( const QVariantMap &par
       {
         mProjector = qgis::make_unique< QgsRasterProjector >();
         mProjector->setInput( mSourceDataProvider.get() );
-        mProjector->setCrs( layer->crs(), zonesLayer->crs() );
+        mProjector->setCrs( layer->crs(), zonesLayer->crs(), context.transformContext() );
         mSourceInterface = mProjector.get();
       }
       break;

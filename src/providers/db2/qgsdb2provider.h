@@ -35,7 +35,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsDb2Provider() override;
 
@@ -100,8 +100,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      QString *errorMessage = nullptr
     );
 
     //! Convert a QgsField to work with DB2

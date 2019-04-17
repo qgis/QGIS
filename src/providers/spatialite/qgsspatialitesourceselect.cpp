@@ -26,6 +26,7 @@ email                : a.furieri@lqt.it
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
+#include "qgsproject.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -522,7 +523,8 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ), options );
 
   if ( !vlayer->isValid() )
   {

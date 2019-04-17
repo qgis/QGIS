@@ -72,7 +72,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
 
     /**
@@ -81,7 +81,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * \param options generic data provider options
      */
     explicit QgsOgrProvider( QString const &uri,
-                             const QgsDataProvider::ProviderOptions &options );
+                             const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsOgrProvider() override;
 

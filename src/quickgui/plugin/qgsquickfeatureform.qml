@@ -253,19 +253,34 @@ Item {
             id: content
             anchors.fill: parent
             clip: true
+            spacing: form.style.group.spacing
             section.property: "Group"
             section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
             section.delegate: Component {
-              // section header: group box name
-              Rectangle {
+
+            // section header: group box name
+            Rectangle {
                 width: parent.width
                 height: section === "" ? 0 : form.style.group.height
-                color: form.style.group.backgroundColor
+                color: form.style.group.marginColor
 
-                Text {
-                  anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
-                  font.bold: true
-                  text: section
+                Rectangle {
+                  anchors.fill: parent
+                  anchors {
+                    leftMargin: form.style.group.leftMargin
+                    rightMargin: form.style.group.rightMargin
+                    topMargin: form.style.group.topMargin
+                    bottomMargin: form.style.group.bottomMargin
+                  }
+                  color: form.style.group.backgroundColor
+
+                  Text {
+                    anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
+                    font.bold: true
+                    font.pixelSize: form.style.group.fontPixelSize
+                    text: section
+                    color: form.style.group.fontColor
+                  }
                 }
               }
             }

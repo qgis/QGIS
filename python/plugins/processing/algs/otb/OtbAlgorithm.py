@@ -219,7 +219,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             if isinstance(param, QgsProcessingParameterEnum):
                 value = self.parameterAsEnum(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterBoolean):
-                value = self.parameterAsBool(parameters, param.name(), context)
+                value = self.parameterAsBoolean(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterCrs):
                 crsValue = self.parameterAsCrs(parameters, param.name(), context)
                 authid = crsValue.authid()

@@ -614,6 +614,13 @@ Evaluates the parameter with matching ``name`` to list of enum values.
 Evaluates the parameter with matching ``name`` to a static boolean value.
 %End
 
+    bool parameterAsBoolean( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a static boolean value.
+
+.. versionadded:: 3.8
+%End
+
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
                                      const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = 0 ) const /Factory/;
 %Docstring

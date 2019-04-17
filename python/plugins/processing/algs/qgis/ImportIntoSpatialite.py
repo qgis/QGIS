@@ -112,11 +112,11 @@ class ImportIntoSpatialite(QgisAlgorithm):
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
         db = spatialite.GeoDB(uri)
 
-        overwrite = self.parameterAsBool(parameters, self.OVERWRITE, context)
-        createIndex = self.parameterAsBool(parameters, self.CREATEINDEX, context)
-        convertLowerCase = self.parameterAsBool(parameters, self.LOWERCASE_NAMES, context)
-        dropStringLength = self.parameterAsBool(parameters, self.DROP_STRING_LENGTH, context)
-        forceSinglePart = self.parameterAsBool(parameters, self.FORCE_SINGLEPART, context)
+        overwrite = self.parameterAsBoolean(parameters, self.OVERWRITE, context)
+        createIndex = self.parameterAsBoolean(parameters, self.CREATEINDEX, context)
+        convertLowerCase = self.parameterAsBoolean(parameters, self.LOWERCASE_NAMES, context)
+        dropStringLength = self.parameterAsBoolean(parameters, self.DROP_STRING_LENGTH, context)
+        forceSinglePart = self.parameterAsBoolean(parameters, self.FORCE_SINGLEPART, context)
         primaryKeyField = self.parameterAsString(parameters, self.PRIMARY_KEY, context) or 'id'
         encoding = self.parameterAsString(parameters, self.ENCODING, context)
 

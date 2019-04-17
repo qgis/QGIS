@@ -229,7 +229,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     case QVariant::Int:
     case QVariant::LongLong:
     {
-      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, DISPLAY_STATS )
+      for ( QgsStatisticalSummary::Statistic stat : qgis::as_const( DISPLAY_STATS ) )
       {
         newComboBox->addItem( QgsStatisticalSummary::displayName( stat ), stat );
       }

@@ -80,6 +80,7 @@ class FieldsMappingModel(QAbstractTableModel):
         (QVariant.Int, "Integer"),
         (QVariant.LongLong, "Integer64"),
         (QVariant.String, "String"),
+        (QVariant.List, "List"),
         (QVariant.Bool, "Boolean")])
 
     def __init__(self, parent=None):

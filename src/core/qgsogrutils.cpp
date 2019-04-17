@@ -246,6 +246,34 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
+      case QVariant::List:
+      {
+        if ( fields.at( attIndex ).subType() == QVariant::String )
+        {
+          QStringList list;
+          char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+          const int count = CSLCount( lst );
+          if ( count > 0 )
+          {
+            for ( int i = 0; i < count; i++ )
+            {
+              if ( encoding )
+                list << encoding->toUnicode( lst[i] );
+              else
+                list << QString::fromUtf8( lst[i] );
+            }
+          }
+          value = list;
+        }
+        else
+        {
+          Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
+          if ( ok )
+            *ok = false;
+        }
+        break;
+      }
+
       case QVariant::Map:
       {
         //it has to be JSON

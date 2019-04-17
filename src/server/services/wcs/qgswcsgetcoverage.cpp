@@ -201,14 +201,14 @@ namespace QgsWcs
     if ( responseCRS != rLayer->crs() )
     {
       QgsRasterProjector *projector = new QgsRasterProjector;
-      projector->setCrs( rLayer->crs(), responseCRS );
+      projector->setCrs( rLayer->crs(), responseCRS, rLayer->transformContext() );
       if ( !pipe.insert( 2, projector ) )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot set pipe projector" ) );
       }
     }
 
-    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS );
+    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS, rLayer->transformContext() );
     if ( err != QgsRasterFileWriter::NoError )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot write raster error code: %1" ).arg( err ) );

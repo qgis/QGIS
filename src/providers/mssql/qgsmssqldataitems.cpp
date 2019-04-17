@@ -29,6 +29,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsmssqlconnection.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
@@ -499,7 +500,8 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
     }
 
     // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey, options );
 
     if ( srcLayer->isValid() )
     {

@@ -27,8 +27,9 @@
 #include <QDomDocument>
 #include <QStringList>
 
-QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
-  : QgsWfsRequest( QgsWFSDataSourceURI( uri ) )
+QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+  : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ),
+    mOptions( options )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -484,9 +485,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
 
-          Q_NOWARN_DEPRECATED_PUSH
-          QgsCoordinateTransform ct( crsWGS84, crs );
-          Q_NOWARN_DEPRECATED_POP
+          QgsCoordinateTransform ct( crsWGS84, crs, mOptions.transformContext );
 
           QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
           QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );

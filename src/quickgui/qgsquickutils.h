@@ -229,6 +229,18 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     //! Returns a string with information about screen size and resolution - useful for debugging
     QString dumpScreenInfo() const;
 
+    /**
+     * Creates a cache for a value relation field.
+     * This can be used to keep the value map in the local memory
+     * if doing multiple lookups in a loop.
+     * \param config The widget configuration
+     * \param formFeature The feature currently being edited with current attribute values
+     * \return A kvp list of values for the widget
+     *
+     * \since QGIS 3.6
+     */
+    Q_INVOKABLE static QVariantMap createValueRelationCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature() );
+
   private:
     static void formatToMetricDistance( double srcDistance,
                                         QgsUnitTypes::DistanceUnit srcUnits,

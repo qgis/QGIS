@@ -202,14 +202,16 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     case QgsMapLayerType::MeshLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
-      mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+      const QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
     case QgsMapLayerType::VectorLayer:
     {
       QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
-      mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
