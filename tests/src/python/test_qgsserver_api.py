@@ -42,15 +42,14 @@ class QgsServerAPITest(QgsServerTestBase):
         request = QgsBufferServerRequest('http://www.acme.com/')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, None)
-        self.assertEqual(bytes(response.body()).decode('utf8'), """{
-    "links": [
-        [
-            "conformance",
-            "http://www.acme.com//conformance"
-        ]
-    ]
-}
-""")
+        print(bytes(response.body()).decode('utf8'))
+
+    def test_wfs3_api2(self):
+        """Test WFS3 API"""
+        request = QgsBufferServerRequest('http://www.acme.com/jsontest')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, None)
+        print(bytes(response.body()).decode('utf8'))
 
 
 if __name__ == '__main__':

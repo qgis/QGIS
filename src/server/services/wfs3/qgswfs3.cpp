@@ -1,14 +1,9 @@
 /***************************************************************************
-                              qgswfs.cpp
+                              qgswfs3.cpp
                               -------------------------
-  begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswmshandler)
-                         (C) 2012 by René-Luc D'Hont    ( parts from qgswmshandler)
-                         (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
-                         (C) 2016 by David Marteau
-  email                : marco dot hugentobler at karto dot baug dot ethz dot ch
-                         a dot pasotti at itopen dot it
-                         david dot marteau at 3liz dot com
+  begin                : April 15, 2019
+  copyright            : (C) 2019 by Alessandro Pasotti
+  email                : elpaso at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,14 +19,18 @@
 #include "qgsproject.h"
 #include "qgsserverexception.h"
 
+#include "nlohmann/json.hpp"
+#include "inja/inja.hpp"
+using json = nlohmann::json;
+
 namespace QgsWfs3
 {
 
   /**
    * \ingroup server
-   * \class QgsWfs::Service
-   * \brief OGC web service specialized for WFS
-   * \since QGIS 3.0
+   * \class QgsWfs3::Api
+   * \brief OGC web service specialized for WFS3
+   * \since QGIS 3.10
    */
   class Api: public QgsServerApi
   {
@@ -52,7 +51,7 @@ namespace QgsWfs3
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
       {
         QJsonObject data;
-        if ( QRegularExpression( "raw(^/collections$)raw" ).match( request.url().path() ).hasMatch() )
+        if ( QRegularExpression( "raw(^/?collections$)raw" ).match( request.url().path() ).hasMatch() )
         {
           if ( ! project )
           {
@@ -66,7 +65,7 @@ namespace QgsWfs3
           QJsonArray crs {{
               QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" )
             }};
-          // TODO: exposed CRRs
+          // TODO: exposed CRSs
           for ( const auto &l : project->mapLayers( ) )
           {
             // TODO: use layer id?
@@ -86,19 +85,23 @@ namespace QgsWfs3
             { QStringLiteral( "collections" ), collections },
           };
         }
-        else
+        else if ( QRegularExpression( "raw(^/?jsontest)raw" ).match( request.url().path() ).hasMatch() )
+        {
+          json j;
+          j[ "a" ] = "b";
+          j[ "b" ] = { "b", 1.2, 3 };
+          data = QJsonDocument::fromJson( j.dump( ).data() ).object();
+        }
+        else  // Default root
         {
           if ( request.method() != QgsServerRequest::Method::GetMethod )
           {
             throw QgsServerApiException( QStringLiteral( "method_error" ), QStringLiteral( "Unsuppored method" ) );
           }
-          QJsonArray links {{
-              { QStringLiteral( "conformance" ), QStringLiteral( "%1/conformance" ).arg( request.url().toString( ) ) },
-            }};
-          data =
-          {
-            { QStringLiteral( "links" ), links }
-          };
+          json j;
+          j["conformance"] = QStringLiteral( "%1conformance" ).arg( request.url().toString( ) ).toStdString();
+          j["path"] = request.url().path().toStdString();
+          data = QJsonDocument::fromJson( j.dump( ).data() ).object();
         }
 #ifdef QGISDEBUG
         response.write( QJsonDocument( data ).toJson( QJsonDocument::JsonFormat::Indented ) );
@@ -110,7 +113,9 @@ namespace QgsWfs3
     private:
 
       QgsServerInterface *mServerIface = nullptr;
-      QRegularExpression mRootPath { QStringLiteral( R"raw(^/?$)raw" ) };
+      //! Catch all, must be the last!
+      QRegularExpression mRootPath { QStringLiteral( R"raw(.*)raw" ) };
+
   };
 
 

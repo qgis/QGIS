@@ -1,8 +1,9 @@
-
 ########################################################
 # Files
 
 SET (wfs3_SRCS
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
+  ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
   qgswfs3.cpp
 )
 
@@ -23,6 +24,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
