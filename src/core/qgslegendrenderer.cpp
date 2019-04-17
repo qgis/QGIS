@@ -585,9 +585,9 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   double y = point.y();
 
   if ( context && context->painter() )
-    context->painter()->setPen( mSettings.fontColor() );
+    context->painter()->setPen( mSettings.layerFontColor() );
   else if ( painter )
-    painter->setPen( mSettings.fontColor() );
+    painter->setPen( mSettings.layerFontColor() );
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
