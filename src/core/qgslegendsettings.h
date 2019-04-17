@@ -88,6 +88,24 @@ class CORE_EXPORT QgsLegendSettings
     QColor fontColor() const {return mFontColor;}
     void setFontColor( const QColor &c ) {mFontColor = c;}
 
+    /**
+     * Returns layer font color, defaults to fontColor()
+     * \see setLayerFontColor()
+     * \see fontColor()
+     * \since QGIS 3.4.7
+     */
+    QColor layerFontColor() const {return mLayerFontColor.isValid() ? mLayerFontColor : fontColor() ;}
+
+    /**
+     * Sets layer font color to \a fontColor
+     * Overrides fontColor()
+     * \see layerFontColor()
+     * \see fontColor()
+     * \since QGIS 3.4.7
+     */
+    void setLayerFontColor( const QColor &fontColor ) {mLayerFontColor = fontColor;}
+
+
     QSizeF symbolSize() const {return mSymbolSize;}
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
@@ -306,6 +324,9 @@ class CORE_EXPORT QgsLegendSettings
 
     //! DPI to be used when rendering legend
     int mDpi = 96;
+
+    //! Font color for layers, overrides font color
+    QColor mLayerFontColor;
 };
 
 
