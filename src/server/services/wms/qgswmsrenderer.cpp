@@ -117,7 +117,7 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
 
-    // getting scale from bbox
+    // getting scale from bbox or default size
     QgsLegendSettings settings = mWmsParameters.legendSettings();
     if ( !mWmsParameters.bbox().isEmpty() )
     {
@@ -126,6 +126,11 @@ namespace QgsWms
       configureMapSettings( tmp.get(), mapSettings );
       settings.setMapScale( mapSettings.scale() );
       settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+    }
+    else
+    {
+      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
     }
 
     // init renderer
@@ -170,6 +175,11 @@ namespace QgsWms
       configureMapSettings( tmp.get(), mapSettings );
       settings.setMapScale( mapSettings.scale() );
       settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+    }
+    else
+    {
+      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
     }
 
     // create image
