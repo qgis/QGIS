@@ -32,6 +32,8 @@ QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *laye
 
 bool QgsVectorLayerFeatureCounter::run()
 {
+  QMutex mutex;
+  mutex.lock();
   mSymbolFeatureCountMap.clear();
   mSymbolFeatureIdMap.clear();
   QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
@@ -95,7 +97,7 @@ bool QgsVectorLayerFeatureCounter::run()
   }
 
   setProgress( 100 );
-
+  mutex.unlock();
   emit symbolsCounted();
   return true;
 }
