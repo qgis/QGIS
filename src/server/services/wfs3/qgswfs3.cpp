@@ -22,6 +22,7 @@
 
 #include "qgsmodule.h"
 #include "qgsproject.h"
+#include "qgsserverexception.h"
 
 namespace QgsWfs3
 {
@@ -50,15 +51,66 @@ namespace QgsWfs3
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
       {
-        Q_UNUSED( request );
-        QgsMessageLog::logMessage( QStringLiteral( "Running WFS3" ), QStringLiteral( "Server" ), Qgis::Info );
-        response.write( QStringLiteral( "Hello! from project %1" ).arg( project ? project->fileName() : QStringLiteral( "unknown" ) ) );
-        response.finish();
+        QJsonObject data;
+        if ( QRegularExpression( "raw(^/collections$)raw" ).match( request.url().path() ).hasMatch() )
+        {
+          if ( ! project )
+          {
+            throw QgsServerApiException( QStringLiteral( "project_error" ), QStringLiteral( "Project not found" ) );
+          }
+          if ( request.method() != QgsServerRequest::Method::GetMethod )
+          {
+            throw QgsServerApiException( QStringLiteral( "method_error" ), QStringLiteral( "Unsuppored method" ) );
+          }
+          QJsonArray collections;
+          QJsonArray crs {{
+              QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" )
+            }};
+          // TODO: exposed CRRs
+          for ( const auto &l : project->mapLayers( ) )
+          {
+            // TODO: use layer id?
+            const auto extent { l->extent().toString( ) };
+            collections.append( QJsonObject { {
+                { QStringLiteral( "name" ), l->shortName().isEmpty() ? l->name() : l->shortName() },
+                { QStringLiteral( "title" ), l->name() },
+                { QStringLiteral( "description" ), l->abstract() },
+                { QStringLiteral( "extent" ), extent },
+                { QStringLiteral( "crs" ), crs },
+              }
+            } );
+          }
+          data =
+          {
+            { QStringLiteral( "links" ), QStringLiteral( "links" )},
+            { QStringLiteral( "collections" ), collections },
+          };
+        }
+        else
+        {
+          if ( request.method() != QgsServerRequest::Method::GetMethod )
+          {
+            throw QgsServerApiException( QStringLiteral( "method_error" ), QStringLiteral( "Unsuppored method" ) );
+          }
+          QJsonArray links {{
+              { QStringLiteral( "conformance" ), QStringLiteral( "%1/conformance" ).arg( request.url().toString( ) ) },
+            }};
+          data =
+          {
+            { QStringLiteral( "links" ), links }
+          };
+        }
+#ifdef QGISDEBUG
+        response.write( QJsonDocument( data ).toJson( QJsonDocument::JsonFormat::Indented ) );
+#else
+        response.write( QJsonDocument( data ).toJson( QJsonDocument::JsonFormat::Compact ) );
+#endif
       }
 
     private:
+
       QgsServerInterface *mServerIface = nullptr;
-      QRegularExpression mRootPath { QStringLiteral( R"raw(^$)raw" ) };
+      QRegularExpression mRootPath { QStringLiteral( R"raw(^/?$)raw" ) };
   };
 
 

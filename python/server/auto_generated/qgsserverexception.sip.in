@@ -94,6 +94,31 @@ Returns the exception version
 };
 
 
+class QgsServerApiException
+{
+%Docstring
+Exception base class for API exceptions.
+
+Note that this exception is associated with a default return code 200 which may be
+not appropriate in some situations.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverexception.h"
+%End
+  public:
+    QgsServerApiException( const QString &code, const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 200 );
+%Docstring
+Construction
+%End
+
+    virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
+
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

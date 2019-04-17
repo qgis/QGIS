@@ -20,6 +20,8 @@
 
 #include <QString>
 #include <QByteArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "qgsexception.h"
 #include "qgis_server.h"
@@ -127,5 +129,50 @@ class SERVER_EXPORT QgsBadRequestException: public QgsOgcServiceException
     {}
 };
 #endif
+
+/**
+ * \ingroup server
+ * \class  QgsServerApiException
+ * \brief Exception base class for API exceptions.
+ *
+ * Note that this exception is associated with a default return code 200 which may be
+ * not appropriate in some situations.
+ *
+ * \since QGIS 3.10
+ */
+#ifndef SIP_RUN
+class SERVER_EXPORT QgsServerApiException: public QgsServerException
+{
+#else
+class SERVER_EXPORT QgsServerApiException
+{
+#endif
+  public:
+    //! Construction
+    QgsServerApiException( const QString &code, const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 200 )
+      : QgsServerException( message, responseCode )
+      , mCode( code )
+      , mMimeType( mimeType )
+    {
+    }
+
+    QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override
+    {
+      responseFormat = mMimeType;
+      return QJsonDocument
+      {
+        QJsonObject  {
+          {
+            { QStringLiteral( "code" ), mCode },
+            { QStringLiteral( "description" ), what() },
+          }
+        }}.toJson();
+    }
+
+  private:
+    QString mCode;
+    QString mMimeType;
+};
+
 
 #endif
