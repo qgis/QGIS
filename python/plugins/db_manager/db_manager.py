@@ -29,7 +29,12 @@ from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QG
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsApplication, QgsSettings, QgsMapLayer
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsMapLayerType
+)
 from qgis.utils import OverrideCursor
 
 from .info_viewer import InfoViewer
@@ -172,7 +177,7 @@ class DBManager(QMainWindow):
             return
 
         inLayer = table.toMapLayer()
-        if inLayer.type() != QgsMapLayer.VectorLayer:
+        if inLayer.type() != QgsMapLayerType.VectorLayer:
             self.infoBar.pushMessage(
                 self.tr("Select a vector or a tabular layer you want export."),
                 Qgis.Warning, self.iface.messageTimeout())

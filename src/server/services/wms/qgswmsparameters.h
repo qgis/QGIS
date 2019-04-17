@@ -23,7 +23,6 @@
 #include <QColor>
 
 #include "qgsrectangle.h"
-#include "qgswmsserviceexception.h"
 #include "qgslegendsettings.h"
 #include "qgsprojectversion.h"
 #include "qgsogcutils.h"
@@ -176,7 +175,9 @@ namespace QgsWms
         WITH_MAPTIP,
         WMTVER,
         ATLAS_PK,
-        FORMAT_OPTIONS
+        FORMAT_OPTIONS,
+        SRCWIDTH,
+        SRCHEIGHT
       };
       Q_ENUM( Name )
 
@@ -199,6 +200,15 @@ namespace QgsWms
        * Returns TRUE if the parameter is valid, FALSE otherwise.
        */
       bool isValid() const override;
+
+      /**
+       * Converts the parameter into a list of strings and keeps empty parts
+       * Default style value is an empty string
+       * \param delimiter The character used for delimiting
+       * \returns A list of strings
+       * \since QGIS 3.8
+       */
+      QStringList toStyleList( const char delimiter = ',' ) const;
 
       /**
        * Converts the parameter into a list of geometries.
@@ -283,6 +293,12 @@ namespace QgsWms
       void raiseError() const;
 
       /**
+       * Returns the name of the parameter.
+       * \since QGIS 3.8
+       */
+      QString name() const;
+
+      /**
        * Converts a parameter's name into its string representation.
        */
       static QString name( const QgsWmsParameter::Name );
@@ -350,6 +366,12 @@ namespace QgsWms
       virtual ~QgsWmsParameters() = default;
 
       /**
+       * Returns the parameter corresponding to \a name.
+       * \since QGIS 3.8
+       */
+      QgsWmsParameter operator[]( QgsWmsParameter::Name name ) const;
+
+      /**
        * Dumps parameters.
        */
       void dump() const;
@@ -389,6 +411,40 @@ namespace QgsWms
        * \throws QgsBadRequestException
        */
       int heightAsInt() const;
+
+      /**
+       * Returns SRCWIDTH parameter or an empty string if not defined.
+       * \returns srcWidth parameter
+       * \since QGIS 3.8
+       */
+      QString srcWidth() const;
+
+      /**
+       * Returns SRCWIDTH parameter as an int or its default value if not
+       * defined. An exception is raised if SRCWIDTH is defined and cannot be
+       * converted.
+       * \returns srcWidth parameter
+       * \throws QgsBadRequestException
+       * \since QGIS 3.8
+       */
+      int srcWidthAsInt() const;
+
+      /**
+       * Returns SRCHEIGHT parameter or an empty string if not defined.
+       * \returns srcHeight parameter
+       * \since QGIS 3.8
+       */
+      QString srcHeight() const;
+
+      /**
+       * Returns SRCHEIGHT parameter as an int or its default value if not
+       * defined. An exception is raised if SRCHEIGHT is defined and cannot be
+       * converted.
+       * \returns srcHeight parameter
+       * \throws QgsBadRequestException
+       * \since QGIS 3.8
+       */
+      int srcHeightAsInt() const;
 
       /**
        * Returns VERSION parameter if defined or its default value.

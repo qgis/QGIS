@@ -109,7 +109,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Layer type hints.
      * \since QGIS 3.4
      */
-    enum LayerHint
+    enum class LayerHint SIP_MONKEYPATCH_SCOPEENUM : int
     {
       UnknownType, //!< Unknown layer type
       Vector, //!< Vector layer type
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * The \a typeHint can be used to dictate the type of map layer expected.
      */
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 
     /**
      * Converts a variant \a value to a new feature source.
@@ -213,11 +213,21 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static void createFeatureSinkPython( QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK, QString &destination SIP_INOUT, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) SIP_THROW( QgsProcessingException ) SIP_PYNAME( createFeatureSink );
 
+
+    /**
+     * Combines the extent of several map \a layers. If specified, the target \a crs
+     * will be used to transform the layer's extent to the desired output reference system
+     * using the specified \a context.
+     * \since QGIS 3.8
+     */
+    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context );
+
     /**
      * Combines the extent of several map \a layers. If specified, the target \a crs
      * will be used to transform the layer's extent to the desired output reference system.
+     * \deprecated Use version with QgsProcessingContext argument instead
      */
-    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    Q_DECL_DEPRECATED static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) SIP_DEPRECATED;
 
     /**
      * Converts an \a input parameter value for use in source iterating mode, where one individual sink
@@ -308,15 +318,29 @@ class CORE_EXPORT QgsProcessingUtils
      * returned.
      * \see mapLayerFromString()
      */
-    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
+
+    /**
+     * Interprets a string as a map layer. The method will attempt to
+     * load a layer matching the passed \a string using the given coordinate
+     * \a transformContext.
+     * E.g. if the string is a file path,
+     * then the layer at this file path will be loaded.
+     * The caller takes responsibility for deleting the returned map layer.
+     *
+     * \since QGIS 3.8
+     */
+    static QgsMapLayer *loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint = LayerHint::UnknownType );
 
     /**
      * Interprets a string as a map layer. The method will attempt to
      * load a layer matching the passed \a string. E.g. if the string is a file path,
      * then the layer at this file path will be loaded.
      * The caller takes responsibility for deleting the returned map layer.
+     *
+     * \deprecated use mapLayerFromString() that takes QgsCoordinateTransformContext as an argument instead
      */
-    static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = UnknownType );
+    Q_DECL_DEPRECATED static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = LayerHint::UnknownType ) SIP_DEPRECATED ;
 
     static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension );
 

@@ -65,7 +65,8 @@ QgsInterval QgsInterval::fromString( const QString &string )
   map.insert( 0 + MONTHS, QStringList() << QStringLiteral( "month" ) << QStringLiteral( "months" ) << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
   map.insert( 0 + YEARS, QStringList() << QStringLiteral( "year" ) << QStringLiteral( "years" ) << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
 
-  Q_FOREACH ( const QString &match, list )
+  const auto constList = list;
+  for ( const QString &match : constList )
   {
     QStringList split = match.split( QRegExp( "\\s+" ) );
     bool ok;
@@ -80,7 +81,8 @@ QgsInterval QgsInterval::fromString( const QString &string )
     for ( ; it != map.constEnd(); ++it )
     {
       int duration = it.key();
-      Q_FOREACH ( const QString &name, it.value() )
+      const auto constValue = it.value();
+      for ( const QString &name : constValue )
       {
         if ( match.contains( name, Qt::CaseInsensitive ) )
         {

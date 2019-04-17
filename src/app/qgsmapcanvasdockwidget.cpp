@@ -422,7 +422,8 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
   } );
   mMenuPresetActions.append( actionFollowMain );
 
-  Q_FOREACH ( const QString &grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &grpName : constMapThemes )
   {
     QAction *a = new QAction( grpName, mMenu );
     a->setCheckable( true );

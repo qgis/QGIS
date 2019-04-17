@@ -23,7 +23,7 @@
 #include "qgslogger.h"
 #include "qgsrenderer.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgslinestring.h"
 #include <spatialindex/SpatialIndex.h>
 
 #include <QLinkedListIterator>
@@ -332,196 +332,48 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   // we need iterator for segments...
 
   QgsPointLocator::MatchList lst;
-  QByteArray wkb( geom->asWkb() );
-  if ( wkb.isEmpty() )
+
+  // geom is converted to a MultiCurve
+  QgsGeometry straightGeom = geom->convertToType( QgsWkbTypes::LineGeometry, true );
+  // and convert to straight segemnt / converts curve to linestring
+  straightGeom.convertToStraightSegment();
+
+  // so, you must have multilinestring
+  //
+  // Special case: Intersections cannot be done on an empty linestring like
+  // QgsGeometry(QgsLineString()) or QgsGeometry::fromWkt("LINESTRING EMPTY")
+  if ( straightGeom.isEmpty() || ( ( straightGeom.type() != QgsWkbTypes::LineGeometry ) && ( !straightGeom.isMultipart() ) ) )
     return lst;
 
   _CohenSutherland cs( rect );
 
-  QgsConstWkbPtr wkbPtr( wkb );
-  wkbPtr.readHeader();
-
-  QgsWkbTypes::Type wkbType = geom->wkbType();
-
-  bool hasZValue = false;
-  switch ( wkbType )
+  int pointIndex = 0;
+  for ( auto part = straightGeom.const_parts_begin(); part != straightGeom.const_parts_end(); ++part )
   {
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::MultiPoint25D:
-    case QgsWkbTypes::MultiPoint:
-    {
-      // Points have no lines
-      return lst;
-    }
+    // Checking for invalid linestrings
+    // A linestring should/(must?) have at least two points
+    if ( qgsgeometry_cast<QgsLineString *>( *part )->numPoints() < 2 )
+      continue;
 
-    case QgsWkbTypes::LineString25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH
-    case QgsWkbTypes::LineString:
+    QgsAbstractGeometry::vertex_iterator it = ( *part )->vertices_begin();
+    QgsPointXY prevPoint( *it );
+    it++;
+    while ( it != ( *part )->vertices_end() )
     {
-      int nPoints;
-      wkbPtr >> nPoints;
-
-      double prevx = 0.0, prevy = 0.0;
-      for ( int index = 0; index < nPoints; ++index )
+      QgsPointXY thisPoint( *it );
+      if ( cs.isSegmentInRect( prevPoint.x(), prevPoint.y(), thisPoint.x(), thisPoint.y() ) )
       {
-        double thisx = 0.0, thisy = 0.0;
-        wkbPtr >> thisx >> thisy;
-        if ( hasZValue )
-          wkbPtr += sizeof( double );
-
-        if ( index > 0 )
-        {
-          if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
-          {
-            QgsPointXY edgePoints[2];
-            edgePoints[0].set( prevx, prevy );
-            edgePoints[1].set( thisx, thisy );
-            lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), index - 1, edgePoints );
-          }
-        }
-
-        prevx = thisx;
-        prevy = thisy;
+        QgsPointXY edgePoints[2];
+        edgePoints[0] = prevPoint;
+        edgePoints[1] = thisPoint;
+        lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
       }
-      break;
+      prevPoint = QgsPointXY( *it );
+      it++;
+      pointIndex += 1;
+
     }
-
-    case QgsWkbTypes::MultiLineString25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH
-    case QgsWkbTypes::MultiLineString:
-    {
-      int nLines;
-      wkbPtr >> nLines;
-      for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
-      {
-        wkbPtr.readHeader();
-        int nPoints;
-        wkbPtr >> nPoints;
-
-        double prevx = 0.0, prevy = 0.0;
-        for ( int pointnr = 0; pointnr < nPoints; ++pointnr )
-        {
-          double thisx = 0.0, thisy = 0.0;
-          wkbPtr >> thisx >> thisy;
-          if ( hasZValue )
-            wkbPtr += sizeof( double );
-
-          if ( pointnr > 0 )
-          {
-            if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
-            {
-              QgsPointXY edgePoints[2];
-              edgePoints[0].set( prevx, prevy );
-              edgePoints[1].set( thisx, thisy );
-              lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
-            }
-          }
-
-          prevx = thisx;
-          prevy = thisy;
-          ++pointIndex;
-        }
-      }
-      break;
-    }
-
-    case QgsWkbTypes::Polygon25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH
-    case QgsWkbTypes::Polygon:
-    {
-      int nRings;
-      wkbPtr >> nRings;
-
-      for ( int ringnr = 0, pointIndex = 0; ringnr < nRings; ++ringnr )//loop over rings
-      {
-        int nPoints;
-        wkbPtr >> nPoints;
-
-        double prevx = 0.0, prevy = 0.0;
-        for ( int pointnr = 0; pointnr < nPoints; ++pointnr )//loop over points in a ring
-        {
-          double thisx = 0.0, thisy = 0.0;
-          wkbPtr >> thisx >> thisy;
-          if ( hasZValue )
-            wkbPtr += sizeof( double );
-
-          if ( pointnr > 0 )
-          {
-            if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
-            {
-              QgsPointXY edgePoints[2];
-              edgePoints[0].set( prevx, prevy );
-              edgePoints[1].set( thisx, thisy );
-              lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
-            }
-          }
-
-          prevx = thisx;
-          prevy = thisy;
-          ++pointIndex;
-        }
-      }
-      break;
-    }
-
-    case QgsWkbTypes::MultiPolygon25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH
-    case QgsWkbTypes::MultiPolygon:
-    {
-      int nPolygons;
-      wkbPtr >> nPolygons;
-      for ( int polynr = 0, pointIndex = 0; polynr < nPolygons; ++polynr )
-      {
-        wkbPtr.readHeader();
-        int nRings;
-        wkbPtr >> nRings;
-        for ( int ringnr = 0; ringnr < nRings; ++ringnr )
-        {
-          int nPoints;
-          wkbPtr >> nPoints;
-
-          double prevx = 0.0, prevy = 0.0;
-          for ( int pointnr = 0; pointnr < nPoints; ++pointnr )
-          {
-            double thisx = 0.0, thisy = 0.0;
-            wkbPtr >> thisx >> thisy;
-            if ( hasZValue )
-              wkbPtr += sizeof( double );
-
-            if ( pointnr > 0 )
-            {
-              if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
-              {
-                QgsPointXY edgePoints[2];
-                edgePoints[0].set( prevx, prevy );
-                edgePoints[1].set( thisx, thisy );
-                lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
-              }
-            }
-
-            prevx = thisx;
-            prevy = thisy;
-            ++pointIndex;
-          }
-        }
-      }
-      break;
-    }
-
-    case QgsWkbTypes::Unknown:
-    default:
-      return lst;
-  } // switch (wkbType)
-
+  }
   return lst;
 }
 
@@ -548,7 +400,8 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
 
-      Q_FOREACH ( const QgsPointLocator::Match &m, _geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id ) )
+      const auto segmentsInRect {_geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id )};
+      for ( const QgsPointLocator::Match &m : segmentsInRect )
       {
         // in range queries the filter may reject some matches
         if ( mFilter && !mFilter->acceptMatch( m ) )

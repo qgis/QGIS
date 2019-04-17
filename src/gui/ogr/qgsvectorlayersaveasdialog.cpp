@@ -220,7 +220,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
         {
           QComboBox *cb = new QComboBox();
           cb->setObjectName( it.key() );
-          Q_FOREACH ( const QString &val, opt->values )
+          for ( const QString &val : qgis::as_const( opt->values ) )
           {
             cb->addItem( val, val );
           }
@@ -547,7 +547,8 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
       QFormLayout *datasourceLayout = dynamic_cast<QFormLayout *>( mDatasourceOptionsGroupBox->layout() );
 
-      Q_FOREACH ( LabelControlPair control, controls )
+      const auto constControls = controls;
+      for ( LabelControlPair control : constControls )
       {
         datasourceLayout->addRow( control.first, control.second );
       }
@@ -564,7 +565,8 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
       QFormLayout *layerOptionsLayout = dynamic_cast<QFormLayout *>( mLayerOptionsGroupBox->layout() );
 
-      Q_FOREACH ( LabelControlPair control, controls )
+      const auto constControls = controls;
+      for ( LabelControlPair control : constControls )
       {
         layerOptionsLayout->addRow( control.first, control.second );
       }

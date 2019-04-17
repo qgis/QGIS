@@ -71,7 +71,8 @@ void QgsMapToolAddFeature::digitized( QgsFeature &f )
     bool avoidIntersection = !intersectionLayers.isEmpty();
     if ( avoidIntersection ) //try to add topological points also to background layers
     {
-      Q_FOREACH ( QgsVectorLayer *vl, intersectionLayers )
+      const auto constIntersectionLayers = intersectionLayers;
+      for ( QgsVectorLayer *vl : constIntersectionLayers )
       {
         //can only add topological points if background layer is editable...
         if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )

@@ -425,7 +425,8 @@ void QgsMssqlProvider::loadFields()
         mFidColName = query.value( 3 ).toString();
         return;
       }
-      Q_FOREACH ( const QString &pk, pkCandidates )
+      const auto constPkCandidates = pkCandidates;
+      for ( const QString &pk : constPkCandidates )
       {
         query.clear();
         query.setForwardOnly( true );

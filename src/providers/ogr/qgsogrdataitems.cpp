@@ -105,7 +105,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   QList<QgsOgrDbLayerInfo *> children;
 
   // Vector layers
-  QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ) );
+  const QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
+  QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ), layerOptions );
   if ( ! layer.isValid( ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Layer is not a valid %1 Vector layer %2" ).arg( path ), 3 );
@@ -279,7 +280,8 @@ void QgsOgrLayerItem::deleteLayer( const bool isSubLayer, const QString &uri, co
   QString title = isSubLayer ? QObject::tr( "Delete Layer" ) : QObject::tr( "Delete File" );
   // Check if the layer is in the registry
   const QgsMapLayer *projectLayer = nullptr;
-  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  const auto constMapLayers = QgsProject::instance()->mapLayers();
+  for ( const QgsMapLayer *layer : constMapLayers )
   {
     if ( layer->publicSource() == uri )
     {
@@ -640,7 +642,8 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   if ( myExtensions.indexOf( suffix ) < 0 && !dirExtensions.contains( suffix ) )
   {
     bool matches = false;
-    Q_FOREACH ( const QString &wildcard, wildcards() )
+    const auto constWildcards = wildcards();
+    for ( const QString &wildcard : constWildcards )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )

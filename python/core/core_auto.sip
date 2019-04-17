@@ -99,6 +99,7 @@
 %Include auto_generated/qgsprojectstorageregistry.sip
 %Include auto_generated/qgsprojecttranslator.sip
 %Include auto_generated/qgsprojectversion.sip
+%Include auto_generated/qgsprojutils.sip
 %Include auto_generated/qgsproperty.sip
 %Include auto_generated/qgspropertycollection.sip
 %Include auto_generated/qgspropertytransformer.sip

@@ -114,6 +114,7 @@ defined.
 .. versionadded:: 3.6
 %End
 
+
     bool attributeDisplayName() const;
 %Docstring
 Returns whether original names of attributes or aliases are printed.

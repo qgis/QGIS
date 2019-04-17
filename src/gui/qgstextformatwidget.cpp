@@ -593,7 +593,8 @@ void QgsTextFormatWidget::setDockMode( bool enabled )
 
 void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, const char *slot )
 {
-  Q_FOREACH ( QWidget *widget, widgets )
+  const auto constWidgets = widgets;
+  for ( QWidget *widget : constWidgets )
   {
     if ( QgsPropertyOverrideButton *w = qobject_cast<QgsPropertyOverrideButton *>( widget ) )
     {
@@ -1079,7 +1080,8 @@ void QgsTextFormatWidget::populateFontStyleComboBox()
 {
   mFontStyleComboBox->clear();
   QStringList styles = mFontDB.styles( mRefFont.family() );
-  Q_FOREACH ( const QString &style, styles )
+  const auto constStyles = styles;
+  for ( const QString &style : constStyles )
   {
     mFontStyleComboBox->addItem( style );
   }

@@ -143,13 +143,13 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   {
     switch ( layer->type() )
     {
-      case QgsMapLayer::VectorLayer:
+      case QgsMapLayerType::VectorLayer:
         return !canUseLayer( qobject_cast< QgsVectorLayer * >( layer ) );
-      case QgsMapLayer::RasterLayer:
+      case QgsMapLayerType::RasterLayer:
         return !canUseLayer( qobject_cast< QgsRasterLayer * >( layer ) );
-      case QgsMapLayer::PluginLayer:
+      case QgsMapLayerType::PluginLayer:
         return true;
-      case QgsMapLayer::MeshLayer:
+      case QgsMapLayerType::MeshLayer:
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
     }
     return true;
@@ -159,17 +159,17 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   {
     switch ( typeHint )
     {
-      case UnknownType:
+      case LayerHint::UnknownType:
         return true;
 
-      case Vector:
-        return l->type() == QgsMapLayer::VectorLayer;
+      case LayerHint::Vector:
+        return l->type() == QgsMapLayerType::VectorLayer;
 
-      case Raster:
-        return l->type() == QgsMapLayer::RasterLayer;
+      case LayerHint::Raster:
+        return l->type() == QgsMapLayerType::RasterLayer;
 
-      case Mesh:
-        return l->type() == QgsMapLayer::MeshLayer;
+      case LayerHint::Mesh:
+        return l->type() == QgsMapLayerType::MeshLayer;
     }
     return true;
   };
@@ -214,7 +214,7 @@ class ProjectionSettingRestorer
 };
 ///@endcond PRIVATE
 
-QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, LayerHint typeHint )
+QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint )
 {
   QStringList components = string.split( '|' );
   if ( components.isEmpty() )
@@ -235,17 +235,17 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   QString name = fi.baseName();
 
   // brute force attempt to load a matching layer
-  if ( typeHint == UnknownType || typeHint == Vector )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Vector )
   {
-    QgsVectorLayer::LayerOptions options;
+    QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
-    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), options ) );
+    std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( string, name, QStringLiteral( "ogr" ), options );
     if ( layer->isValid() )
     {
       return layer.release();
     }
   }
-  if ( typeHint == UnknownType || typeHint == Raster )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Raster )
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
@@ -255,7 +255,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return rasterLayer.release();
     }
   }
-  if ( typeHint == UnknownType || typeHint == Mesh )
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
   {
     QgsMeshLayer::LayerOptions meshOptions;
     std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
@@ -288,7 +288,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   if ( !allowLoadingNewLayers )
     return nullptr;
 
-  layer = loadMapLayerFromString( string, typeHint );
+  layer = loadMapLayerFromString( string, context.transformContext(), typeHint );
   if ( layer )
   {
     context.temporaryLayerStore()->addMapLayer( layer );
@@ -346,7 +346,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   if ( layerRef.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, Vector ) );
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, LayerHint::Vector ) );
   if ( !vl )
     return nullptr;
 
@@ -367,13 +367,12 @@ bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
 {
-  // only gdal file-based layers
-  return layer && layer->providerType() == QStringLiteral( "gdal" );
+  return layer && layer->isValid();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<int> &sourceTypes )
 {
-  return layer &&
+  return layer && layer->isValid() &&
          ( sourceTypes.isEmpty()
            || ( sourceTypes.contains( QgsProcessing::TypeVectorPoint ) && layer->geometryType() == QgsWkbTypes::PointGeometry )
            || ( sourceTypes.contains( QgsProcessing::TypeVectorLine ) && layer->geometryType() == QgsWkbTypes::LineGeometry )
@@ -602,7 +601,8 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     else
     {
       //create empty layer
-      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags ) );
+      const QgsVectorLayer::LayerOptions layerOptions { context.transformContext() };
+      std::unique_ptr< QgsVectorLayerExporter > exporter = qgis::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
       if ( exporter->errorCode() )
       {
         throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
@@ -611,7 +611,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       // use destination string as layer name (eg "postgis:..." )
       if ( !layerName.isEmpty() )
         uri += QStringLiteral( "|layername=%1" ).arg( layerName );
-      std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( uri, destination, providerKey ) );
+      std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
       // update destination to layer ID
       destination = layer->id();
 
@@ -619,7 +619,6 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
     }
   }
-  return nullptr;
 }
 
 void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &options )
@@ -628,7 +627,7 @@ void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString
 }
 
 
-QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs )
+QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
 {
   QgsRectangle extent;
   for ( const QgsMapLayer *layer : layers )
@@ -639,9 +638,7 @@ QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *>
     if ( crs.isValid() )
     {
       //transform layer extent to target CRS
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsCoordinateTransform ct( layer->crs(), crs );
-      Q_NOWARN_DEPRECATED_POP
+      QgsCoordinateTransform ct( layer->crs(), crs, context.transformContext() );
       try
       {
         QgsRectangle reprojExtent = ct.transformBoundingBox( layer->extent() );
@@ -660,6 +657,13 @@ QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *>
 
   }
   return extent;
+}
+
+// Deprecated
+QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs )
+{
+  QgsProcessingContext context;
+  return QgsProcessingUtils::combineLayerExtents( layers, crs, context );
 }
 
 QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context )

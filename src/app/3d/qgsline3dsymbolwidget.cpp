@@ -67,6 +67,6 @@ QgsLine3DSymbol QgsLine3DSymbolWidget::symbol() const
 void QgsLine3DSymbolWidget::updateGuiState()
 {
   bool simple = chkSimpleLines->isChecked();
-  spinWidth->setEnabled( !simple );
+  //spinWidth->setEnabled( !simple );
   spinExtrusion->setEnabled( !simple );
 }

@@ -34,7 +34,7 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsWkbTypes,
                        QgsMessageLog,
                        QgsProviderRegistry,
@@ -110,7 +110,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 if outputName:
                     style = RenderingStyles.getStyle(alg.id(), outputName)
                 if style is None:
-                    if layer.type() == QgsMapLayer.RasterLayer:
+                    if layer.type() == QgsMapLayerType.RasterLayer:
                         style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
                     else:
                         if layer.geometryType() == QgsWkbTypes.PointGeometry:

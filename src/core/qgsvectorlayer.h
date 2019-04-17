@@ -401,9 +401,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false )
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false )
         : loadDefaultStyle( loadDefaultStyle )
         , readExtentFromXml( readExtentFromXml )
+      {}
+
+      /**
+       * Constructor for LayerOptions.
+       * \since QGIS 3.10
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext,
+                             bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false
+                           )
+        : loadDefaultStyle( loadDefaultStyle )
+        , readExtentFromXml( readExtentFromXml )
+        , transformContext( transformContext )
       {}
 
       //! Set to TRUE if the default layer style should be loaded
@@ -415,7 +429,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        */
       bool readExtentFromXml = false;
 
+      /**
+       * Coordinate transform context
+       * \since QGIS 3.10
+       */
+      QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
+
     };
+
 
     /**
      * Constructor - creates a vector layer
@@ -432,7 +453,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
-
 
     ~QgsVectorLayer() override;
 
@@ -2070,6 +2090,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
 
+
   public slots:
 
     /**
@@ -2138,6 +2159,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see rollBack()
      */
     bool startEditing();
+
+    /**
+     * Sets the coordinate transform context to \a transformContext
+     *
+     * \since QGIS 3.8
+     */
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
   signals:
 

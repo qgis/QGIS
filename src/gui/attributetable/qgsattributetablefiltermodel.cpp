@@ -141,7 +141,8 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   }
 
   QVector<int> newColumnMapping;
-  Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
+  const auto constColumns = mConfig.columns();
+  for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
   {
     // Hidden? Forget about this column
     if ( columnConfig.hidden )
@@ -504,7 +505,8 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  Q_FOREACH ( const QModelIndex &idx, masterModel()->idToIndexList( fid ) )
+  const auto constIdToIndexList = masterModel()->idToIndexList( fid );
+  for ( const QModelIndex &idx : constIdToIndexList )
   {
     indexes.append( mapFromMaster( idx ) );
   }

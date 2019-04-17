@@ -34,7 +34,14 @@ SET(MODULE_WMS_SRCS
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgslayerrestorer.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgsmaprendererjobproxy.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsparameters.cpp
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrendercontext.cpp
 )
+
+SET(MODULE_WMS_HDRS
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsserviceexception.h
+)
+
+QT5_WRAP_CPP(MODULE_WMS_MOC_SRCS ${MODULE_WMS_HDRS})
 
 MACRO (ADD_QGIS_TEST TESTSRC)
   SET (TESTNAME  ${TESTSRC})
@@ -42,7 +49,7 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   STRING(REPLACE "qgs" "" TESTNAME ${TESTNAME})
   STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
   SET (TESTNAME  "qgis_${TESTNAME}test")
-  ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${MODULE_WMS_SRCS})
+  ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${MODULE_WMS_SRCS} ${MODULE_WMS_MOC_SRCS})
   SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(${TESTNAME}
     ${Qt5Core_LIBRARIES}
@@ -63,6 +70,7 @@ ENDMACRO (ADD_QGIS_TEST)
 
 SET(TESTS
   test_qgsserver_wms_dxf.cpp
+  test_qgsserver_wms_exceptions.cpp
 )
 
 FOREACH(TESTSRC ${TESTS})

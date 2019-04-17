@@ -44,6 +44,7 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutitemlabel.h"
+#include "qgscoordinatetransformcontext.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -1032,41 +1033,41 @@ void TestQgsProcessing::mapLayers()
   QString vector = testDataDir + "points.shp";
 
   // test loadMapLayerFromString with raster
-  QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster );
+  QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster, QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayer::RasterLayer );
+  QCOMPARE( l->type(), QgsMapLayerType::RasterLayer );
   QCOMPARE( l->name(), QStringLiteral( "landsat" ) );
 
   delete l;
 
   //test with vector
-  l = QgsProcessingUtils::loadMapLayerFromString( vector );
+  l = QgsProcessingUtils::loadMapLayerFromString( vector, QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
   QCOMPARE( l->name(), QStringLiteral( "points" ) );
   delete l;
 
-  l = QgsProcessingUtils::loadMapLayerFromString( QString() );
+  l = QgsProcessingUtils::loadMapLayerFromString( QString(), QgsCoordinateTransformContext() );
   QVERIFY( !l );
-  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "so much room for activities!" ) );
+  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "so much room for activities!" ), QgsCoordinateTransformContext() );
   QVERIFY( !l );
-  l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp" );
+  l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp", QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
+  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
   QCOMPARE( l->name(), QStringLiteral( "multipoint" ) );
   delete l;
 
   // Test layers from a string with parameters
   QString osmFilePath = testDataDir + "openstreetmap/testdata.xml";
-  std::unique_ptr< QgsVectorLayer > osm( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath ) ) );
+  std::unique_ptr< QgsVectorLayer > osm( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath, QgsCoordinateTransformContext() ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PointGeometry );
 
-  osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3" ) ) );
+  osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3", QgsCoordinateTransformContext() ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PolygonGeometry );
 
-  osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null" ) ) );
+  osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null", QgsCoordinateTransformContext() ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PolygonGeometry );
   QCOMPARE( osm->subsetString(), QStringLiteral( "\"building\" is not null" ) );
@@ -1141,20 +1142,20 @@ void TestQgsProcessing::mapLayerFromString()
   QVERIFY( !c.getMapLayer( QString() ) );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster1, c ), r1 );
   QCOMPARE( c.getMapLayer( raster1 ), r1 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster1, c, true, QgsProcessingUtils::Raster ), r1 );
-  QVERIFY( !QgsProcessingUtils::mapLayerFromString( raster1, c, true, QgsProcessingUtils::Vector ) );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster1, c, true, QgsProcessingUtils::LayerHint::Raster ), r1 );
+  QVERIFY( !QgsProcessingUtils::mapLayerFromString( raster1, c, true, QgsProcessingUtils::LayerHint::Vector ) );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster2, c ), r2 );
   QCOMPARE( c.getMapLayer( raster2 ), r2 );
-  QVERIFY( !QgsProcessingUtils::mapLayerFromString( raster2, c, true, QgsProcessingUtils::Vector ) );
+  QVERIFY( !QgsProcessingUtils::mapLayerFromString( raster2, c, true, QgsProcessingUtils::LayerHint::Vector ) );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "R1", c ), r1 );
   QCOMPARE( c.getMapLayer( "R1" ), r1 );
-  QVERIFY( !QgsProcessingUtils::mapLayerFromString( "R1", c, true, QgsProcessingUtils::Vector ) );
+  QVERIFY( !QgsProcessingUtils::mapLayerFromString( "R1", c, true, QgsProcessingUtils::LayerHint::Vector ) );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "ar2", c ), r2 );
   QCOMPARE( c.getMapLayer( "ar2" ), r2 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V4", c ), v1 );
   QCOMPARE( c.getMapLayer( "V4" ), v1 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V4", c, true, QgsProcessingUtils::Vector ), v1 );
-  QVERIFY( !QgsProcessingUtils::mapLayerFromString( "V4", c, true, QgsProcessingUtils::Raster ) );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V4", c, true, QgsProcessingUtils::LayerHint::Vector ), v1 );
+  QVERIFY( !QgsProcessingUtils::mapLayerFromString( "V4", c, true, QgsProcessingUtils::LayerHint::Raster ) );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v1", c ), v2 );
   QCOMPARE( c.getMapLayer( "v1" ), v2 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( r1->id(), c ), r1 );
@@ -1168,8 +1169,8 @@ void TestQgsProcessing::mapLayerFromString()
   c.temporaryLayerStore()->addMapLayers( QList<QgsMapLayer *>() << v5 << v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V5", c ), v5 );
   QCOMPARE( c.getMapLayer( "V5" ), v5 );
-  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V5", c, true, QgsProcessingUtils::Vector ), v5 );
-  QVERIFY( !QgsProcessingUtils::mapLayerFromString( "V5", c, true, QgsProcessingUtils::Raster ) );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V5", c, true, QgsProcessingUtils::LayerHint::Vector ), v5 );
+  QVERIFY( !QgsProcessingUtils::mapLayerFromString( "V5", c, true, QgsProcessingUtils::LayerHint::Raster ) );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v6", c ), v6 );
   QCOMPARE( c.getMapLayer( "v6" ), v6 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( v5->id(), c ), v5 );
@@ -1188,7 +1189,7 @@ void TestQgsProcessing::mapLayerFromString()
   // allow loading
   QgsMapLayer *loadedLayer = QgsProcessingUtils::mapLayerFromString( newRaster, c, true );
   QVERIFY( loadedLayer->isValid() );
-  QCOMPARE( loadedLayer->type(), QgsMapLayer::RasterLayer );
+  QCOMPARE( loadedLayer->type(), QgsMapLayerType::RasterLayer );
   // should now be in temporary store
   QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
 
@@ -1971,6 +1972,12 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( param.metadata(), metadata );
   param.metadata().insert( "p3", 9 );
   QCOMPARE( param.metadata().value( "p3" ).toInt(), 9 );
+
+  QVERIFY( param.additionalExpressionContextVariables().isEmpty() );
+  param.setAdditionalExpressionContextVariables( QStringList() << "a" << "b" );
+  QCOMPARE( param.additionalExpressionContextVariables(), QStringList() << "a" << "b" );
+  std::unique_ptr< QgsProcessingParameterDefinition > param2( param.clone() );
+  QCOMPARE( param2->additionalExpressionContextVariables(), QStringList() << "a" << "b" );
 
   QVariantMap map = param.toVariantMap();
   QgsProcessingParameterBoolean fromMap( "x" );
@@ -5413,7 +5420,7 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( context.layersToLoadOnCompletion().size(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), QStringLiteral( "test.shp" ) );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "desc" ) );
-  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::Vector );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::Vector );
 
   // with name overloading
   QgsProcessingContext context2;
@@ -5426,7 +5433,7 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), QStringLiteral( "test.shp" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "my_dest" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, QStringLiteral( "x" ) );
-  QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::Vector );
+  QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::Vector );
 
   QgsProcessingContext context3;
   params.insert( QStringLiteral( "x" ), QgsProcessing::TEMPORARY_OUTPUT );
@@ -5590,7 +5597,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( context.layersToLoadOnCompletion().size(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), QStringLiteral( "test.tif" ) );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "desc" ) );
-  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::Raster );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::Raster );
 
   // with name overloading
   QgsProcessingContext context2;
@@ -5603,7 +5610,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), QStringLiteral( "test.tif" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "my_dest" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, QStringLiteral( "x" ) );
-  QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::Raster );
+  QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::Raster );
 }
 
 void TestQgsProcessing::parameterFileOut()
@@ -6230,7 +6237,8 @@ void TestQgsProcessing::checkParamValues()
 
 void TestQgsProcessing::combineLayerExtent()
 {
-  QgsRectangle ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() );
+  QgsProcessingContext context;
+  QgsRectangle ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>(), QgsCoordinateReferenceSystem(), context );
   QVERIFY( ext.isNull() );
 
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
@@ -6242,20 +6250,20 @@ void TestQgsProcessing::combineLayerExtent()
   QFileInfo fi2( raster2 );
   std::unique_ptr< QgsRasterLayer > r2( new QgsRasterLayer( fi2.filePath(), "R2" ) );
 
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get(), QgsCoordinateReferenceSystem(), context );
   QGSCOMPARENEAR( ext.xMinimum(), 1535375.000000, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 1535475, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 5083255, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get() );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), QgsCoordinateReferenceSystem(), context );
   QGSCOMPARENEAR( ext.xMinimum(), 781662, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 1535475, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3339523, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 
   // with reprojection
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), QgsCoordinateReferenceSystem::fromEpsgId( 3785 ) );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), QgsCoordinateReferenceSystem::fromEpsgId( 3785 ), context );
   QGSCOMPARENEAR( ext.xMinimum(), 1995320, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 2008833, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3523084, 10 );

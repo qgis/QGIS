@@ -716,7 +716,8 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     fixedColor.setAlpha( 255 );
   }
   QList<QgsColorWidget *> colorWidgets = this->findChildren<QgsColorWidget *>();
-  Q_FOREACH ( QgsColorWidget *widget, colorWidgets )
+  const auto constColorWidgets = colorWidgets;
+  for ( QgsColorWidget *widget : constColorWidgets )
   {
     if ( widget == mSamplePreview )
     {

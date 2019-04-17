@@ -50,6 +50,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
+#include "qgslinematerial_p.h"
+
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
@@ -545,15 +547,15 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer class is not available. Maybe we need an intermediate map layer 3D renderer
     // class in qgis_core that can be used to handle this case nicely.
-    if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == QLatin1String( "vector" ) )
+    if ( layer->type() == QgsMapLayerType::VectorLayer && renderer->type() == QLatin1String( "vector" ) )
     {
       static_cast<QgsVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
     }
-    else if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == QLatin1String( "rulebased" ) )
+    else if ( layer->type() == QgsMapLayerType::VectorLayer && renderer->type() == QLatin1String( "rulebased" ) )
     {
       static_cast<QgsRuleBased3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
     }
-    else if ( layer->type() == QgsMapLayer::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
+    else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
     {
       static_cast<QgsMeshLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsMeshLayer *>( layer ) );
     }
@@ -570,12 +572,25 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         newEntity->addComponent( picker );
         connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &Qgs3DMapScene::onLayerEntityPickEvent );
       }
+
+      // this is probably not the best place for material-specific configuration,
+      // maybe this could be more generalized when other materials need some specific treatment
+      QgsLineMaterial *lm = newEntity->findChild<QgsLineMaterial *>();
+      if ( lm )
+      {
+        connect( mCameraController, &QgsCameraController::viewportChanged, lm, [lm, this]
+        {
+          lm->setViewportSize( mCameraController->viewport().size() );
+        } );
+
+        lm->setViewportSize( cameraController()->viewport().size() );
+      }
     }
   }
 
   connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
-  if ( layer->type() == QgsMapLayer::VectorLayer )
+  if ( layer->type() == QgsMapLayerType::VectorLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
@@ -590,7 +605,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
   disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
-  if ( layer->type() == QgsMapLayer::VectorLayer )
+  if ( layer->type() == QgsMapLayerType::VectorLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );

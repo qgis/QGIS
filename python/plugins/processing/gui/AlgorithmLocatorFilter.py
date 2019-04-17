@@ -33,7 +33,7 @@ from qgis.core import (QgsApplication,
                        QgsLocatorResult,
                        QgsProcessing,
                        QgsWkbTypes,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsFields)
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.MessageDialog import MessageDialog
@@ -141,7 +141,7 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
         # collect results in main thread, since this method is inexpensive and
         # accessing the processing registry/current layer is not thread safe
 
-        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayer.VectorLayer:
+        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayerType.VectorLayer:
             return
 
         for a in QgsApplication.processingRegistry().algorithms():

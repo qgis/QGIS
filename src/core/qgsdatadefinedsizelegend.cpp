@@ -87,7 +87,8 @@ void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbo
   if ( sizeTransformer && mSizeClasses.isEmpty() )
   {
     mSizeClasses.clear();
-    Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
+    const auto prettyBreaks { QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) };
+    for ( double v : prettyBreaks )
     {
       mSizeClasses << SizeClass( v, QString::number( v ) );
     }
@@ -112,7 +113,8 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
   }
   else if ( mType == LegendSeparated )
   {
-    Q_FOREACH ( const SizeClass &cl, mSizeClasses )
+    const auto constMSizeClasses = mSizeClasses;
+    for ( const SizeClass &cl : constMSizeClasses )
     {
       QgsLegendSymbolItem si( mSymbol.get(), cl.label, QString() );
       QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
@@ -146,8 +148,8 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   // optionally scale size values if transformer is defined
   if ( mSizeScaleTransformer )
   {
-    for ( auto it = classes.begin(); it != classes.end(); ++it )
-      it->size = mSizeScaleTransformer->size( it->size );
+    for ( SizeClass &cls : classes )
+      cls.size = mSizeScaleTransformer->size( cls.size );
   }
 
   // make sure we draw bigger symbols first
@@ -172,7 +174,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   // find out how wide the text will be
   int maxTextWidth = 0;
-  Q_FOREACH ( const SizeClass &c, classes )
+  for ( const SizeClass &c : qgis::as_const( classes ) )
   {
     int w = fm.width( c.label );
     if ( w > maxTextWidth )
@@ -187,7 +189,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   // find out top Y coordinate for individual symbol sizes
   QList<int> symbolTopY;
-  Q_FOREACH ( const SizeClass &c, classes )
+  for ( const SizeClass &c : qgis::as_const( classes ) )
   {
     int outputSymbolSize = std::round( context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() ) );
     switch ( mVAlign )
@@ -241,7 +243,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   p->translate( 0, -textTopY );
 
   // draw symbols first so that they do not cover
-  Q_FOREACH ( const SizeClass &c, classes )
+  for ( const SizeClass &c : qgis::as_const( classes ) )
   {
     s->setSize( c.size );
 
@@ -266,7 +268,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   p->setFont( mFont );
 
   int i = 0;
-  Q_FOREACH ( const SizeClass &c, classes )
+  for ( const SizeClass &c : qgis::as_const( classes ) )
   {
     // line from symbol to the text
     p->drawLine( outputLargestSize / 2, symbolTopY[i], outputLargestSize + hLengthLine, textCenterY[i] );
@@ -403,7 +405,7 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
   if ( !mSizeClasses.isEmpty() )
   {
     QDomElement elemClasses = doc.createElement( QStringLiteral( "classes" ) );
-    Q_FOREACH ( const SizeClass &sc, mSizeClasses )
+    for ( const SizeClass &sc : qgis::as_const( mSizeClasses ) )
     {
       QDomElement elemClass = doc.createElement( QStringLiteral( "class" ) );
       elemClass.setAttribute( QStringLiteral( "size" ), sc.size );

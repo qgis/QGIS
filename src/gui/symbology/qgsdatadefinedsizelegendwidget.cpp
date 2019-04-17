@@ -85,7 +85,8 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   if ( ddsLegend )
   {
     groupManualSizeClasses->setChecked( !ddsLegend->classes().isEmpty() );
-    Q_FOREACH ( const QgsDataDefinedSizeLegend::SizeClass &sc, ddsLegend->classes() )
+    const auto constClasses = ddsLegend->classes();
+    for ( const QgsDataDefinedSizeLegend::SizeClass &sc : constClasses )
     {
       QStandardItem *item = new QStandardItem( QString::number( sc.size ) );
       item->setData( sc.size );
@@ -103,7 +104,8 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( mSizeClassesModel, &QStandardItemModel::dataChanged, this, &QgsDataDefinedSizeLegendWidget::onSizeClassesChanged );
 
   // prepare layer and model to preview legend
-  mPreviewLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326" ), QStringLiteral( "Preview" ), QStringLiteral( "memory" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  mPreviewLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326" ), QStringLiteral( "Preview" ), QStringLiteral( "memory" ), options );
   mPreviewTree = new QgsLayerTree;
   mPreviewLayerNode = mPreviewTree->addLayer( mPreviewLayer );  // node owned by the tree
   mPreviewModel = new QgsLayerTreeModel( mPreviewTree );
@@ -185,7 +187,11 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   context.setExpressionContext( &ec );
 
   QString crsAuthId = mMapCanvas ? mMapCanvas->mapSettings().destinationCrs().authid() : QString();
-  std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( "Point?crs=" + crsAuthId, QStringLiteral( "tmp" ), QStringLiteral( "memory" ) ) );
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=%1" ).arg( crsAuthId ),
+                                          QStringLiteral( "tmp" ),
+                                          QStringLiteral( "memory" ),
+                                          options ) ;
 
   QgsSymbolSelectorDialog d( newSymbol.get(), QgsStyle::defaultStyle(), layer.get(), this );
   d.setContext( context );

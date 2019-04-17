@@ -144,7 +144,8 @@ void QgsAction::writeXml( QDomNode &actionsNode ) const
   actionSetting.setAttribute( QStringLiteral( "isEnabledOnlyWhenEditable" ), mIsEnabledOnlyWhenEditable );
   actionSetting.setAttribute( QStringLiteral( "id" ), mId.toString() );
 
-  Q_FOREACH ( const QString &scope, mActionScopes )
+  const auto constMActionScopes = mActionScopes;
+  for ( const QString &scope : constMActionScopes )
   {
     QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( QStringLiteral( "actionScope" ) );
     actionScopeElem.setAttribute( QStringLiteral( "id" ), scope );

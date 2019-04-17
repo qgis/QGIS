@@ -666,7 +666,8 @@ void QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked()
   const QgsRasterTransparency *rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
   if ( !rasterTransparency ) return;
 
-  Q_FOREACH ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel, rasterTransparency->transparentSingleValuePixelList() )
+  const auto constTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
+  for ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel : constTransparentSingleValuePixelList )
   {
     if ( transparencyPixel.percentTransparent == 100 )
     {
@@ -934,7 +935,8 @@ bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
   }
 
   std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
-  std::unique_ptr< QgsVectorLayer > vectLayer( new QgsVectorLayer( uri, "", QStringLiteral( "ogr" ) ) );
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr< QgsVectorLayer > vectLayer = qgis::make_unique<QgsVectorLayer>( uri, QString(), QStringLiteral( "ogr" ),  options );
   return ( rastLayer->isValid() || vectLayer->isValid() );
 }
 

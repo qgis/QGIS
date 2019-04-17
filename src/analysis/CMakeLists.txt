@@ -60,6 +60,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
+  processing/qgsalgorithmjoinbynearest.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmkmeansclustering.cpp
   processing/qgsalgorithmlineintersection.cpp
@@ -432,6 +433,7 @@ IF(HAVE_OPENCL)
     TARGET_LINK_LIBRARIES(qgis_analysis ${OpenCL_LIBRARIES})
 ENDIF(HAVE_OPENCL)
 
+TARGET_COMPILE_DEFINITIONS(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

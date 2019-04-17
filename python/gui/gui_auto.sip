@@ -287,6 +287,7 @@
 %Include auto_generated/editorwidgets/qgsdatetimesearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsdefaultsearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsdoublespinbox.sip
+%Include auto_generated/editorwidgets/qgshtmlwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsmultiedittoolbutton.sip
 %Include auto_generated/editorwidgets/qgsrelationreferencesearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsrelationreferencewidget.sip

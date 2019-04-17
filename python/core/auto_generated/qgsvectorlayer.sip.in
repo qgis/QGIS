@@ -326,16 +326,30 @@ TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
     struct LayerOptions
     {
 
-      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false );
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false );
 %Docstring
 Constructor for LayerOptions.
+%End
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext,
+                             bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false
+                           );
+%Docstring
+Constructor for LayerOptions.
+
+.. versionadded:: 3.10
 %End
 
       bool loadDefaultStyle;
 
       bool readExtentFromXml;
 
+      QgsCoordinateTransformContext transformContext;
+
     };
+
 
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
@@ -352,7 +366,6 @@ data.
 :param providerLib: The name of the data provider, e.g., "memory", "postgres"
 :param options: layer load options
 %End
-
 
     ~QgsVectorLayer();
 
@@ -2260,6 +2273,7 @@ Configuration and logic to apply automatically on any edit happening on this lay
 
 
 
+
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -2328,6 +2342,13 @@ rollBack().
 .. seealso:: :py:func:`commitChanges`
 
 .. seealso:: :py:func:`rollBack`
+%End
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Sets the coordinate transform context to ``transformContext``
+
+.. versionadded:: 3.8
 %End
 
   signals:

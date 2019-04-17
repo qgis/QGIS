@@ -24,11 +24,6 @@
 #
 ###############################################################################
 
-# avoid PendingDeprecationWarning from qgis.PyQt.uic
-import warnings
-warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 from gettext import gettext, ngettext
 import logging
 import os

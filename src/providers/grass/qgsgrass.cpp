@@ -1293,7 +1293,8 @@ QStringList QgsGrass::vectorLayers( const QString &gisdbase, const QString &loca
   QgsDebugMsg( "GRASS vector successfully opened" );
 
   // Get layers
-  Q_FOREACH ( QgsGrassVectorLayer *layer, vector.layers() )
+  const auto constLayers = vector.layers();
+  for ( QgsGrassVectorLayer *layer : constLayers )
   {
     QString fs = QString::number( layer->number() );
     QgsDebugMsg( "layer number = " + fs );
@@ -1898,9 +1899,11 @@ QString QgsGrass::findModule( QString module )
   paths << QgsGrass::grassModulesPaths();
 
   // Extensions first to prefer .bat over .exe on Windows
-  Q_FOREACH ( const QString &ext, extensions )
+  const auto constExtensions = extensions;
+  for ( const QString &ext : constExtensions )
   {
-    Q_FOREACH ( const QString &path, paths )
+    const auto constPaths = paths;
+    for ( const QString &path : constPaths )
     {
       QString full = module + ext;;
       if ( !path.isEmpty() )
@@ -2426,7 +2429,8 @@ void QgsGrass::insertRow( dbDriver *driver, const QString &tableName,
   }
 
   QStringList valuesStringList;
-  Q_FOREACH ( const QVariant &attribute, attributes )
+  const auto constAttributes = attributes;
+  for ( const QVariant &attribute : constAttributes )
   {
     QString valueString;
 

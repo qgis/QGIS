@@ -92,7 +92,7 @@ value.
 .. seealso:: :py:func:`compatibleVectorLayers`
 %End
 
-    enum LayerHint
+    enum class LayerHint
     {
       UnknownType,
       Vector,
@@ -100,7 +100,7 @@ value.
       Mesh,
     };
 
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, LayerHint typeHint = UnknownType );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
 %Docstring
 Interprets a string as a map layer within the supplied ``context``.
 
@@ -176,10 +176,22 @@ temporary layer store.
    available in Python bindings as createFeatureSink()
 %End
 
-    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context );
+%Docstring
+Combines the extent of several map ``layers``. If specified, the target ``crs``
+will be used to transform the layer's extent to the desired output reference system
+using the specified ``context``.
+
+.. versionadded:: 3.8
+%End
+
+ static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) /Deprecated/;
 %Docstring
 Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system.
+
+.. deprecated:: Use version with QgsProcessingContext argument instead
 %End
 
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );

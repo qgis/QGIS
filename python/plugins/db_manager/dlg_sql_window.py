@@ -33,7 +33,13 @@ from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputD
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.Qsci import QsciAPIs
 
-from qgis.core import QgsProject, QgsApplication, QgsTask, QgsSettings
+from qgis.core import (
+    QgsProject,
+    QgsApplication,
+    QgsTask,
+    QgsSettings,
+    QgsMapLayerType
+)
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError
@@ -401,9 +407,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
 
-        from qgis.core import QgsMapLayer
-
-        layerType = QgsMapLayer.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayer.RasterLayer
+        layerType = QgsMapLayerType.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayerType.RasterLayer
 
         # get a new layer name
         names = []

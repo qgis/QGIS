@@ -350,8 +350,8 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     return;
 
   QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
-  if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayer::VectorLayer ||
-                      layerItem->mapLayerType() == QgsMapLayer::RasterLayer ) )
+  if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayerType::VectorLayer ||
+                      layerItem->mapLayerType() == QgsMapLayerType::RasterLayer ) )
   {
     QMenu *exportMenu = new QMenu( tr( "Export Layer" ), menu );
     menu->addMenu( exportMenu );
@@ -361,9 +361,10 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     {
       switch ( layerItem->mapLayerType() )
       {
-        case QgsMapLayer::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
         {
-          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
+          const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options ) );
           if ( layer && layer->isValid() )
           {
             QgisApp::instance()->saveAsFile( layer.get(), false, false );
@@ -371,7 +372,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           break;
         }
 
-        case QgsMapLayer::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
         {
           std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
           if ( layer && layer->isValid() )
@@ -381,8 +382,8 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           break;
         }
 
-        case QgsMapLayer::PluginLayer:
-        case QgsMapLayer::MeshLayer:
+        case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
           break;
       }
     } );

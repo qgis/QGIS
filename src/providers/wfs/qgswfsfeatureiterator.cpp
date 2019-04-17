@@ -394,7 +394,8 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
     list << QStringLiteral( "text/xml; subtype=gml/3.0.1" );
     list << QStringLiteral( "application/gml+xml; version=3.0" );
     list << QStringLiteral( "GML3" );
-    Q_FOREACH ( const QString &format, list )
+    const auto constList = list;
+    for ( const QString &format : constList )
     {
       if ( mShared->mCaps.outputFormats.contains( format ) )
       {
@@ -1146,7 +1147,8 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeat
   {
     mWriterStream = new QDataStream( &mWriterByteArray, QIODevice::WriteOnly );
   }
-  Q_FOREACH ( const QgsWFSFeatureGmlIdPair &pair, list )
+  const auto constList = list;
+  for ( const QgsWFSFeatureGmlIdPair &pair : constList )
   {
     *mWriterStream << pair.first;
   }

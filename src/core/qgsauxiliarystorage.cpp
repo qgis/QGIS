@@ -61,7 +61,8 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
 //
 
 QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer )
-  : QgsVectorLayer( QString( "%1|layername=%2" ).arg( filename, table ), QString( "%1_auxiliarystorage" ).arg( table ), "ogr" )
+  : QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( filename, table ),
+                    QStringLiteral( "%1_auxiliarystorage" ).arg( table ), QStringLiteral( "ogr" ) )
   , mFileName( filename )
   , mTable( table )
   , mLayer( vlayer )

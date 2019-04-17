@@ -42,7 +42,7 @@ Constructor
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        QgsMapLayer::LayerType type, bool allLayers ) = 0;
+        QgsMapLayerType type, bool allLayers ) = 0;
 %Docstring
 Add action to context menu for layers in the layer tree.
 If allLayers is ``True``, then the action will be available for all layers of given type,

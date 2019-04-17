@@ -198,7 +198,8 @@ struct VTable
       // add a hidden field for rtree filtering
       sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
 
-      Q_FOREACH ( const QgsField &field, mFields )
+      const auto constMFields = mFields;
+      for ( const QgsField &field : constMFields )
       {
         QString typeName = QStringLiteral( "text" );
         switch ( field.type() )
@@ -352,7 +353,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
       layerid = layerid.mid( 1, layerid.size() - 2 );
     }
     QgsMapLayer *l = QgsProject::instance()->mapLayer( layerid );
-    if ( !l || l->type() != QgsMapLayer::VectorLayer )
+    if ( !l || l->type() != QgsMapLayerType::VectorLayer )
     {
       if ( outErr )
       {

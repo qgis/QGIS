@@ -13,6 +13,15 @@
 
 
 
+
+enum class QgsMapLayerType
+  {
+  VectorLayer,
+  RasterLayer,
+  PluginLayer,
+  MeshLayer
+};
+
 class QgsMapLayer : QObject
 {
 %Docstring
@@ -24,7 +33,7 @@ This is the base class for all map layer types (vector, raster).
 #include "qgsmaplayer.h"
 %End
 %ConvertToSubClassCode
-    QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
+    QgsMapLayer * layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
     sipType = 0;
 
@@ -32,16 +41,16 @@ This is the base class for all map layer types (vector, raster).
     {
       switch ( layer->type() )
       {
-        case QgsMapLayer::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
           sipType = sipType_QgsVectorLayer;
           break;
-        case QgsMapLayer::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
           sipType = sipType_QgsRasterLayer;
           break;
-        case QgsMapLayer::PluginLayer:
+        case QgsMapLayerType::PluginLayer:
           sipType = sipType_QgsPluginLayer;
           break;
-        case QgsMapLayer::MeshLayer:
+        case QgsMapLayerType::MeshLayer:
           sipType = sipType_QgsMeshLayer;
           break;
         default:
@@ -51,14 +60,6 @@ This is the base class for all map layer types (vector, raster).
     }
 %End
   public:
-
-    enum LayerType
-    {
-      VectorLayer,
-      RasterLayer,
-      PluginLayer,
-      MeshLayer
-    };
 
     enum PropertyType
     {
@@ -95,7 +96,7 @@ This is the base class for all map layer types (vector, raster).
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
 
 
-    QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
+    QgsMapLayer( QgsMapLayerType type = QgsMapLayerType::VectorLayer, const QString &name = QString(), const QString &source = QString() );
 %Docstring
 Constructor for QgsMapLayer
 
@@ -117,7 +118,7 @@ is still unique.
 .. versionadded:: 3.0
 %End
 
-    QgsMapLayer::LayerType type() const;
+    QgsMapLayerType type() const;
 %Docstring
 Returns the type of the layer.
 %End
@@ -615,6 +616,15 @@ Returns the layer's spatial reference system.
 %Docstring
 Sets layer's spatial reference system
 %End
+
+    QgsCoordinateTransformContext transformContext( ) const;
+%Docstring
+Returns the layer data provider coordinate transform context
+or a default transform context if the layer does not have a valid data provider.
+
+.. versionadded:: 3.8
+%End
+
 
     static QString formatLayerName( const QString &name );
 %Docstring
@@ -1340,11 +1350,18 @@ Set whether provider notification is connected to triggerRepaint
 
     void setRefreshOnNofifyMessage( const QString &message );
 %Docstring
-Set the notification message that triggers repaine
+Set the notification message that triggers repaint
 If refresh on notification is enabled, the notification will triggerRepaint only
 if the notification message is equal to:param message:
 
 .. versionadded:: 3.0
+%End
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
+%Docstring
+Sets the coordinate transform context to ``transformContext``
+
+.. versionadded:: 3.8
 %End
 
   signals:
@@ -1480,6 +1497,7 @@ Emitted whenever the layer's data source has been changed.
 
 .. versionadded:: 3.5
 %End
+
 
   protected:
 

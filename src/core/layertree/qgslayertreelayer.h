@@ -91,6 +91,19 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     void setName( const QString &n ) override;
 
     /**
+     * Uses the layer's name if \a use is true, or the name manually set if
+     * false.
+     * \since QGIS 3.8
+     */
+    void setUseLayerName( bool use = true );
+
+    /**
+     * Returns whether the layer's name is used, or the name manually set.
+     * \since QGIS 3.8
+     */
+    bool useLayerName() const;
+
+    /**
      * Read layer node from XML. Returns new instance.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
@@ -133,8 +146,11 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     //! Weak reference to the layer (or just it's ID if the reference is not resolved yet)
     QgsMapLayerRef mRef;
-    //! Layer name - only used if layer does not exist
+    //! Layer name - only used if layer does not exist or if mUseLayerName is false
     QString mLayerName;
+
+    //!
+    bool mUseLayerName = true;
 
   private slots:
 

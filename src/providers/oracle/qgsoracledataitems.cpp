@@ -57,12 +57,14 @@ void QgsOracleConnectionItem::refresh()
 {
   stop();
 
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     deleteChildItem( child );
   }
 
-  Q_FOREACH ( QgsDataItem *item, createChildren() )
+  const auto constCreateChildren = createChildren();
+  for ( QgsDataItem *item : constCreateChildren )
   {
     addChildItem( item, true );
   }
@@ -70,7 +72,8 @@ void QgsOracleConnectionItem::refresh()
 
 void QgsOracleConnectionItem::setAllAsPopulated()
 {
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     child->setState( Populated );
   }
@@ -244,7 +247,8 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     if ( u.layerType != QLatin1String( "vector" ) )
     {

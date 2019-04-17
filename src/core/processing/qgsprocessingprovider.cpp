@@ -51,6 +51,11 @@ QString QgsProcessingProvider::longName() const
   return name();
 }
 
+QString QgsProcessingProvider::versionInfo() const
+{
+  return QString();
+}
+
 QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
 {
   return QgsRasterFileWriter::supportedFormatExtensions();

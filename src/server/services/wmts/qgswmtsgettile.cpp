@@ -34,12 +34,9 @@ namespace QgsWmts
     QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetMap" ), params, project, serverIface );
 
     // Get cached image
-    QgsAccessControl *accessControl = nullptr;
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
-    cacheManager = serverIface->cacheManager();
-#endif
+    QgsAccessControl *accessControl = serverIface->accessControls();
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager )
     {
       QgsWmtsParameters::Format f = params.format();
@@ -67,18 +64,20 @@ namespace QgsWmts
         return;
       }
     }
-
+#endif
 
     QgsServerParameters wmsParams( query );
     QgsServerRequest wmsRequest( "?" + query.query( QUrl::FullyDecoded ) );
     QgsService *service = serverIface->serviceRegistry()->getService( wmsParams.service(), wmsParams.version() );
     service->executeRequest( wmsRequest, response, project );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     if ( cacheManager )
     {
       QByteArray content = response.data();
       if ( !content.isEmpty() )
         cacheManager->setCachedImage( &content, project, request, accessControl );
     }
+#endif
   }
 
 } // namespace QgsWmts

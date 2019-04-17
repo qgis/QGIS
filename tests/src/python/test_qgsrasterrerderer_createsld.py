@@ -438,7 +438,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertOpacity(root, '1.1')
 
-        # check gamma properties from [-100:0] streched to [0:1]
+        # check gamma properties from [-100:0] stretched to [0:1]
         #  and (0:100] stretche dto (1:100]
         # dom, root = self.rendererToSld(rasterRenderer, {'contrast': '-100'})
         # self.assertGamma(root, '0')

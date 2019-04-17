@@ -120,6 +120,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsexternalresourcewidgetfactory.cpp
   editorwidgets/qgshiddenwidgetwrapper.cpp
   editorwidgets/qgshiddenwidgetfactory.cpp
+  editorwidgets/qgshtmlwidgetwrapper.cpp
   editorwidgets/qgskeyvaluewidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
   editorwidgets/qgslistwidgetfactory.cpp
@@ -681,6 +682,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsexternalresourceconfigdlg.h
   editorwidgets/qgsexternalresourcewidgetwrapper.h
   editorwidgets/qgshiddenwidgetwrapper.h
+  editorwidgets/qgshtmlwidgetwrapper.h
   editorwidgets/qgskeyvaluewidgetwrapper.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
@@ -1061,6 +1063,8 @@ TARGET_LINK_LIBRARIES(qgis_gui
 IF(ENABLE_MODELTEST)
   TARGET_LINK_LIBRARIES(qgis_gui ${Qt5Test_LIBRARIES})
 ENDIF(ENABLE_MODELTEST)
+
+TARGET_COMPILE_DEFINITIONS(qgis_gui PRIVATE "-DQT_NO_FOREACH")
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)

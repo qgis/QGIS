@@ -206,8 +206,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     // initialize resampling methods
     cboResamplingMethod->clear();
-    QPair<QString, QString> method;
-    Q_FOREACH ( method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
+
+    const auto constProviderType = QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() );
+    for ( QPair<QString, QString> method : constProviderType )
     {
       cboResamplingMethod->addItem( method.second, method.first );
     }
@@ -392,7 +393,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;
   mDisableRenderTypeComboBoxCurrentIndexChanged = true;
-  Q_FOREACH ( const QString &name, QgsApplication::rasterRendererRegistry()->renderersList() )
+  const auto constRenderersList = QgsApplication::rasterRendererRegistry()->renderersList();
+  for ( const QString &name : constRenderersList )
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {

@@ -546,9 +546,10 @@ void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode *node )
     return;
 
   QList<QgsLayerTreeNode *> toRemove;
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
-    if ( QgsLayerTree::isLayer( child ) && ( !QgsLayerTree::toLayer( child )->layer() || QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayer::VectorLayer ) )
+    if ( QgsLayerTree::isLayer( child ) && ( !QgsLayerTree::toLayer( child )->layer() || QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayerType::VectorLayer ) )
     {
       toRemove << child;
       continue;
@@ -560,6 +561,7 @@ void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode *node )
       toRemove << child;
   }
 
-  Q_FOREACH ( QgsLayerTreeNode *child, toRemove )
+  const auto constToRemove = toRemove;
+  for ( QgsLayerTreeNode *child : constToRemove )
     group->removeChildNode( child );
 }

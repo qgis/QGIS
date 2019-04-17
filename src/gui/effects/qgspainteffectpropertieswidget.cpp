@@ -91,7 +91,8 @@ void QgsPaintEffectPropertiesWidget::populateEffectTypes()
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   QStringList types = registry->effects();
 
-  Q_FOREACH ( const QString &type, types )
+  const auto constTypes = types;
+  for ( const QString &type : constTypes )
   {
     //don't show stack effect
     if ( type == QLatin1String( "effectStack" ) )

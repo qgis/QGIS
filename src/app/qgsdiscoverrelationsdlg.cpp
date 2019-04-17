@@ -28,10 +28,10 @@ QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation> &exis
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDlg::onSelectionChanged );
 
   mFoundRelations = QgsRelationManager::discoverRelations( existingRelations, layers );
-  Q_FOREACH ( const QgsRelation &relation, mFoundRelations ) addRelation( relation );
+  for ( const QgsRelation &relation : qgis::as_const( mFoundRelations ) )
+    addRelation( relation );
 
   mRelationsTable->resizeColumnsToContents();
-
 }
 
 void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
@@ -53,13 +53,13 @@ void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
   }
 
   mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );
-
 }
 
 QList<QgsRelation> QgsDiscoverRelationsDlg::relations() const
 {
   QList<QgsRelation> result;
-  Q_FOREACH ( const QModelIndex &row, mRelationsTable->selectionModel()->selectedRows() )
+  const auto constSelectedRows = mRelationsTable->selectionModel()->selectedRows();
+  for ( const QModelIndex &row : constSelectedRows )
   {
     result.append( mFoundRelations.at( row.row() ) );
   }

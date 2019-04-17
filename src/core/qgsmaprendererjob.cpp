@@ -134,7 +134,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
 
     if ( ml->crs().isGeographic() )
     {
-      if ( ml->type() == QgsMapLayer::VectorLayer && !ct.destinationCrs().isGeographic() )
+      if ( ml->type() == QgsMapLayerType::VectorLayer && !ct.destinationCrs().isGeographic() )
       {
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
@@ -270,7 +270,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
     // Force render of layers that are being edited
     // or if there's a labeling engine that needs the layer to register features
-    if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
+    if ( mCache && ml->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
       bool requiresLabeling = false;
@@ -419,7 +419,8 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
 
     if ( job.renderer )
     {
-      Q_FOREACH ( const QString &message, job.renderer->errors() )
+      const auto constErrors = job.renderer->errors();
+      for ( const QString &message : constErrors )
         mErrors.append( Error( job.renderer->layerId(), message ) );
 
       delete job.renderer;
@@ -516,14 +517,16 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const Lab
     return;
 
   QMultiMap<int, QString> elapsed;
-  Q_FOREACH ( const LayerRenderJob &job, jobs )
+  const auto constJobs = jobs;
+  for ( const LayerRenderJob &job : constJobs )
     elapsed.insert( job.renderingTime, job.layer ? job.layer->id() : QString() );
 
   elapsed.insert( labelJob.renderingTime, tr( "Labeling" ) );
 
   QList<int> tt( elapsed.uniqueKeys() );
   std::sort( tt.begin(), tt.end(), std::greater<int>() );
-  Q_FOREACH ( int t, tt )
+  const auto constTt = tt;
+  for ( int t : constTt )
   {
     QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( QStringLiteral( ", " ) ) ), tr( "Rendering" ) );
   }

@@ -28,6 +28,7 @@ from qgis._core import *
 
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import fromFunction
+from .additions.markerlinesymbollayer import *
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
 from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker

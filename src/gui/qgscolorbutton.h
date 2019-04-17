@@ -17,7 +17,6 @@
 
 #include <QColorDialog>
 #include <QToolButton>
-#include <QTemporaryFile>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 

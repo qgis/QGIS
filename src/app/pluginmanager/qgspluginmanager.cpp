@@ -995,6 +995,13 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Changelog" ), changelog );
   }
 
+  if ( ! metadata->value( QStringLiteral( "plugin_dependencies" ) ).isEmpty() )
+  {
+    QString pluginDependencies = metadata->value( QStringLiteral( "plugin_dependencies" ) );
+    pluginDependencies = pluginDependencies.trimmed();
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Plugin dependencies" ), pluginDependencies );
+  }
+
   html += QLatin1String( "</table>" );
 
   html += QLatin1String( "</body>" );
@@ -1082,7 +1089,8 @@ void QgsPluginManager::clearRepositoryList()
   buttonRefreshRepos->setEnabled( false );
   buttonEditRep->setEnabled( false );
   buttonDeleteRep->setEnabled( false );
-  Q_FOREACH ( QAction *action, treeRepositories->actions() )
+  const auto constActions = treeRepositories->actions();
+  for ( QAction *action : constActions )
   {
     treeRepositories->removeAction( action );
   }

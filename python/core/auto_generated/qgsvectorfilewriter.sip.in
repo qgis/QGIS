@@ -528,7 +528,7 @@ Adds a ``feature`` to the currently opened data source, using the style from a s
 
     static bool deleteShapeFile( const QString &fileName );
 %Docstring
-Delete a shapefile (and its accompanying shx / dbf / prf)
+Delete a shapefile (and its accompanying shx / dbf / prj / qix / qpj / cpg / sbn / sbx / idm / ind)
 
 :param fileName: /path/to/file.shp
 

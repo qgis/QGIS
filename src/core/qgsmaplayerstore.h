@@ -149,6 +149,11 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *                      If you specify FALSE here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
+     *
+     * \note If a layer with the same id is already in the store it is not added again,
+     *       but if the validity of the layer has changed from FALSE to TRUE, the
+     *       layer data source is updated to the new one.
+     *
      * \returns a list of the map layers that were added
      *         successfully. If a layer already exists in the store,
      *         it will not be part of the returned list.

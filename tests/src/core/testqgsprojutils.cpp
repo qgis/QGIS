@@ -18,6 +18,10 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#endif
+
 //header for class being tested
 #include "qgsprojutils.h"
 #include <QtConcurrent>
@@ -29,6 +33,8 @@ class TestQgsProjUtils: public QObject
     void initTestCase();
     void cleanupTestCase();
     void threadSafeContext();
+    void usesAngularUnits();
+    void axisOrderIsSwapped();
 
 };
 
@@ -65,6 +71,30 @@ void TestQgsProjUtils::threadSafeContext()
   QVector< int > list;
   list.resize( 100 );
   QtConcurrent::blockingMap( list, ProjContextWrapper() );
+}
+
+void TestQgsProjUtils::usesAngularUnits()
+{
+#if PROJ_VERSION_MAJOR>=6
+  QVERIFY( !QgsProjUtils::usesAngularUnit( QString() ) );
+  QVERIFY( !QgsProjUtils::usesAngularUnit( QString( "" ) ) );
+  QVERIFY( !QgsProjUtils::usesAngularUnit( QStringLiteral( "x" ) ) );
+  QVERIFY( QgsProjUtils::usesAngularUnit( QStringLiteral( "+proj=longlat +ellps=WGS60 +no_defs" ) ) );
+  QVERIFY( !QgsProjUtils::usesAngularUnit( QStringLiteral( "+proj=tmerc +lat_0=0 +lon_0=147 +k_0=0.9996 +x_0=500000 +y_0=10000000 +ellps=GRS80 +units=m +no_defs" ) ) );
+#endif
+}
+
+void TestQgsProjUtils::axisOrderIsSwapped()
+{
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QVERIFY( !QgsProjUtils::axisOrderIsSwapped( nullptr ) );
+
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( context, "urn:ogc:def:crs:EPSG::3111" ) );
+  QVERIFY( !QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
+  crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4326" ) );
+  QVERIFY( QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsProjUtils )

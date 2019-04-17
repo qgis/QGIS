@@ -113,7 +113,7 @@ Sets whether the model is filtered by map layer type.
 .. seealso:: :py:func:`setLayerType`
 %End
 
-    QgsMapLayer::LayerType layerType() const;
+    QgsMapLayerType layerType() const;
 %Docstring
 Returns the layer type to filter the model by. This is only used if
 filterByLayerType() is ``True``.
@@ -123,7 +123,7 @@ filterByLayerType() is ``True``.
 .. seealso:: :py:func:`filterByLayerType`
 %End
 
-    void setLayerType( QgsMapLayer::LayerType type );
+    void setLayerType( QgsMapLayerType type );
 %Docstring
 Sets the layer ``type`` to filter the model by. This is only used if
 filterByLayerType() is ``True``.

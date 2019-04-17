@@ -50,7 +50,6 @@ transforms coordinates from the layer's coordinate system to the map canvas.
 Default constructor, creates an invalid QgsCoordinateTransform.
 %End
 
-
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
                                      const QgsCoordinateTransformContext &context );

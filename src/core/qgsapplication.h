@@ -885,6 +885,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static members
     static ApplicationMembers *sApplicationMembers;
 
+    static QgsAuthManager *sAuthManager;
+
     static ApplicationMembers *members();
 };
 

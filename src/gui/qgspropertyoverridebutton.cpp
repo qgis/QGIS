@@ -219,7 +219,8 @@ void QgsPropertyOverrideButton::setVectorLayer( const QgsVectorLayer *layer )
 
 void QgsPropertyOverrideButton::registerCheckedWidget( QWidget *widget, bool natural )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingCheckState )
       return;
@@ -230,7 +231,8 @@ void QgsPropertyOverrideButton::registerCheckedWidget( QWidget *widget, bool nat
 
 void QgsPropertyOverrideButton::registerEnabledWidget( QWidget *widget, bool natural )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingEnableState )
       return;
@@ -241,7 +243,8 @@ void QgsPropertyOverrideButton::registerEnabledWidget( QWidget *widget, bool nat
 
 void QgsPropertyOverrideButton::registerVisibleWidget( QWidget *widget, bool natural )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingVisibility )
       return;
@@ -252,7 +255,8 @@ void QgsPropertyOverrideButton::registerVisibleWidget( QWidget *widget, bool nat
 
 void QgsPropertyOverrideButton::registerExpressionWidget( QWidget *widget )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingExpressionText )
       return;
@@ -469,7 +473,8 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   {
     QgsExpressionContext context = mExpressionContextGenerator->createExpressionContext();
     QStringList variables = context.variableNames();
-    Q_FOREACH ( const QString &variable, variables )
+    const auto constVariables = variables;
+    for ( const QString &variable : constVariables )
     {
       if ( context.isReadOnly( variable ) ) //only want to show user-set variables
         continue;
@@ -840,7 +845,8 @@ void QgsPropertyOverrideButton::setActivePrivate( bool active )
 
 void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     switch ( sw.mSiblingType )
     {

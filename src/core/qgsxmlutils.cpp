@@ -129,7 +129,8 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     {
       QVariantList list = value.toList();
 
-      Q_FOREACH ( const QVariant &value, list )
+      const auto constList = list;
+      for ( const QVariant &value : constList )
       {
         QDomElement valueElement = writeVariant( value, doc );
         element.appendChild( valueElement );
@@ -142,7 +143,8 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     {
       QStringList list = value.toStringList();
 
-      Q_FOREACH ( const QString &value, list )
+      const auto constList = list;
+      for ( const QString &value : constList )
       {
         QDomElement valueElement = writeVariant( value, doc );
         element.appendChild( valueElement );

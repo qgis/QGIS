@@ -174,12 +174,21 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( bool loadDefaultStyle = true )
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
         : loadDefaultStyle( loadDefaultStyle )
+        , transformContext( transformContext )
       {}
 
       //! Sets to TRUE if the default layer style should be loaded
       bool loadDefaultStyle = true;
+
+      /**
+       * Coordinate transform context
+       * \since QGIS 3.8
+       */
+      QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
+
     };
 
     /**
@@ -428,6 +437,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   public slots:
     void showStatusMessage( const QString &message );
+
+    /**
+     * Sets the coordinate transform context to \a transformContext
+     *
+     * \since QGIS 3.8
+     */
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
   protected:
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;

@@ -32,7 +32,12 @@ from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardI
 from qgis.PyQt.Qsci import QsciAPIs
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import QgsProject, QgsDataSourceUri, QgsReadWriteContext
+from qgis.core import (
+    QgsProject,
+    QgsDataSourceUri,
+    QgsReadWriteContext,
+    QgsMapLayerType
+)
 from qgis.utils import OverrideCursor
 
 from .db_plugins import createDbPlugin
@@ -301,9 +306,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
 
-        from qgis.core import QgsMapLayer
-
-        layerType = QgsMapLayer.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayer.RasterLayer
+        layerType = QgsMapLayerType.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayerType.RasterLayer
 
         # get a new layer name
         names = []

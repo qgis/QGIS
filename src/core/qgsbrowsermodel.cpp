@@ -102,7 +102,8 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add drives
-  Q_FOREACH ( const QFileInfo &drive, QDir::drives() )
+  const auto drives { QDir::drives() };
+  for ( const QFileInfo &drive : drives )
   {
     const QString path = drive.absolutePath();
 
@@ -126,7 +127,8 @@ void QgsBrowserModel::addRootItems()
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
   QMap<int, QgsDataItem *> providerMap;
 
-  Q_FOREACH ( QgsDataItemProvider *pr, QgsApplication::dataItemProviderRegistry()->providers() )
+  const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
+  for ( QgsDataItemProvider *pr : constProviders )
   {
     int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )
@@ -147,7 +149,8 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add as sorted groups by QgsDataProvider::DataCapability enum
-  Q_FOREACH ( int key, providerMap.uniqueKeys() )
+  const auto constUniqueKeys = providerMap.uniqueKeys();
+  for ( int key : constUniqueKeys )
   {
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )
@@ -155,7 +158,8 @@ void QgsBrowserModel::addRootItems()
       std::sort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
     }
 
-    Q_FOREACH ( QgsDataItem *ditem, providerGroup )
+    const auto constProviderGroup = providerGroup;
+    for ( QgsDataItem *ditem : constProviderGroup )
     {
       mRootItems << ditem;
     }
@@ -164,7 +168,8 @@ void QgsBrowserModel::addRootItems()
 
 void QgsBrowserModel::removeRootItems()
 {
-  Q_FOREACH ( QgsDataItem *item, mRootItems )
+  const auto constMRootItems = mRootItems;
+  for ( QgsDataItem *item : constMRootItems )
   {
     delete item;
   }
@@ -574,7 +579,8 @@ QStringList QgsBrowserModel::mimeTypes() const
 QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( index.isValid() )
     {

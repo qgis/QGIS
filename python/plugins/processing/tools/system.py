@@ -118,6 +118,14 @@ def tempHelpFolder():
 
 
 def escapeAndJoin(strList):
+    """
+    .. deprecated:: 3.0
+    Do not use, will be removed in QGIS 4.0
+    """
+
+    from warnings import warn
+    warn("processing.escapeAndJoin is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
     joined = ''
     for s in strList:
         if s[0] != '-' and ' ' in s:

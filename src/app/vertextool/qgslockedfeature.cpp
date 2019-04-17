@@ -42,15 +42,6 @@ QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,
   // signal changing of current layer
   connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsLockedFeature::currentLayerChanged );
 
-  // feature was deleted
-  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsLockedFeature::featureDeleted );
-
-  // rolling back
-  connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsLockedFeature::beforeRollBack );
-
-  // geometry was changed
-  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
-
   replaceVertexMap();
 }
 
@@ -230,7 +221,8 @@ void QgsLockedFeature::replaceVertexMap()
 
 void QgsLockedFeature::deleteVertexMap()
 {
-  Q_FOREACH ( QgsVertexEntry *entry, mVertexMap )
+  const auto constMVertexMap = mVertexMap;
+  for ( QgsVertexEntry *entry : constMVertexMap )
   {
     delete entry;
   }
@@ -323,7 +315,8 @@ void QgsLockedFeature::invertVertexSelection( int vertexNr )
 
 void QgsLockedFeature::invertVertexSelection( const QVector<int> &vertexIndices )
 {
-  Q_FOREACH ( int index, vertexIndices )
+  const auto constVertexIndices = vertexIndices;
+  for ( int index : constVertexIndices )
   {
     if ( index < 0 || index >= mVertexMap.size() )
       continue;

@@ -23,7 +23,15 @@ QtObject {
 
   property QtObject group: QtObject {
     property color backgroundColor: "lightGray"
-    property real height: 30 * QgsQuick.Utils.dp
+    property color marginColor: "black"
+    property real leftMargin: 1 * QgsQuick.Utils.dp
+    property real rightMargin: 1 * QgsQuick.Utils.dp
+    property real topMargin: 1 * QgsQuick.Utils.dp
+    property real bottomMargin: 1 * QgsQuick.Utils.dp
+    property real height: 64 * QgsQuick.Utils.dp
+    property color fontColor: "black"
+    property int spacing: 10 * QgsQuick.Utils.dp
+    property int fontPixelSize: 24 * QgsQuick.Utils.dp
   }
 
   property QtObject tabs: QtObject {

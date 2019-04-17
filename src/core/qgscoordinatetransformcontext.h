@@ -70,7 +70,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      */
     QgsCoordinateTransformContext();
 
-    ~QgsCoordinateTransformContext();
+    ~QgsCoordinateTransformContext() ;
 
     /**
      * Copy constructor

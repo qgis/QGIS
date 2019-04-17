@@ -256,7 +256,9 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgs3DTypes::AltitudeClamping
     terrainZ = map.terrainGenerator()->heightAt( pt.x(), pt.y(), map );
   }
 
-  float geomZ = altClamp == Qgs3DTypes::AltClampAbsolute || altClamp == Qgs3DTypes::AltClampRelative ? p.z() : 0;
+  float geomZ = 0;
+  if ( p.is3D() && ( altClamp == Qgs3DTypes::AltClampAbsolute || altClamp == Qgs3DTypes::AltClampRelative ) )
+    geomZ = p.z();
 
   float z = ( terrainZ + geomZ ) * map.terrainVerticalScale() + height;
   return z;

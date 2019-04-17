@@ -86,7 +86,8 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     return;
   }
 
-  Q_FOREACH ( int idx, mOldToNewAttrIdx )
+  const auto constMOldToNewAttrIdx = mOldToNewAttrIdx;
+  for ( int idx : constMOldToNewAttrIdx )
   {
     if ( idx > mAttributeCount )
       mAttributeCount = idx;
@@ -350,9 +351,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   // Create our transform
   if ( destCRS.isValid() )
   {
-    Q_NOWARN_DEPRECATED_PUSH
-    ct = QgsCoordinateTransform( layer->crs(), destCRS );
-    Q_NOWARN_DEPRECATED_POP
+    ct = QgsCoordinateTransform( layer->crs(), destCRS, layer->transformContext() );
   }
 
   // Check for failure

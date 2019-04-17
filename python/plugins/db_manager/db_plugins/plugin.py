@@ -27,7 +27,12 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMes
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsApplication, QgsSettings
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsMapLayerType
+)
 from ..db_plugins import createDbPlugin
 
 
@@ -273,7 +278,7 @@ class Database(DbItemObject):
         return "row_number() over ()"
 
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
-        from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
+        from qgis.core import QgsVectorLayer, QgsRasterLayer
 
         if uniqueCol is None:
             if hasattr(self, 'uniqueIdFunction'):
@@ -290,7 +295,7 @@ class Database(DbItemObject):
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
-        if layerType == QgsMapLayer.RasterLayer:
+        if layerType == QgsMapLayerType.RasterLayer:
             return QgsRasterLayer(uri.uri(False), layerName, provider)
         return QgsVectorLayer(uri.uri(False), layerName, provider)
 

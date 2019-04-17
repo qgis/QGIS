@@ -208,15 +208,15 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
 
 bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType )
 {
-  if ( layer->type() == QgsMapLayer::RasterLayer && layerType.testFlag( RasterLayer ) )
+  if ( layer->type() == QgsMapLayerType::RasterLayer && layerType.testFlag( RasterLayer ) )
   {
     return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), geometry, viewExtent, mapUnitsPerPixel );
   }
-  else if ( layer->type() == QgsMapLayer::VectorLayer && layerType.testFlag( VectorLayer ) )
+  else if ( layer->type() == QgsMapLayerType::VectorLayer && layerType.testFlag( VectorLayer ) )
   {
     return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), geometry );
   }
-  else if ( layer->type() == QgsMapLayer::MeshLayer && layerType.testFlag( MeshLayer ) )
+  else if ( layer->type() == QgsMapLayerType::MeshLayer && layerType.testFlag( MeshLayer ) )
   {
     return identifyMeshLayer( results, qobject_cast<QgsMeshLayer *>( layer ), geometry );
   }

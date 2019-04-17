@@ -353,7 +353,8 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
 
-  Q_FOREACH ( const NativeType &nativeType, mNativeTypes )
+  const auto constMNativeTypes = mNativeTypes;
+  for ( const NativeType &nativeType : constMNativeTypes )
   {
     QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
                       .arg( QVariant::typeToName( nativeType.mType ) )
@@ -609,7 +610,8 @@ QStringList QgsVectorDataProvider::availableEncodings()
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]
   {
-    Q_FOREACH ( const QString &codec, QTextCodec::availableCodecs() )
+    const auto codecs { QTextCodec::availableCodecs() };
+    for ( const QString &codec : codecs )
     {
       sEncodings << codec;
     }

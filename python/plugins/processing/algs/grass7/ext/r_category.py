@@ -52,7 +52,7 @@ def processInputs(alg, parameters, context, feedback):
                                          parameters, context,
                                          False, None)
     alg.loadRasterLayerFromParameter('map', parameters, context)
-    alg.postInputs()
+    alg.postInputs(context)
 
 
 def processCommand(alg, parameters, context, feedback):

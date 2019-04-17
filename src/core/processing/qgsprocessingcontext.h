@@ -170,7 +170,7 @@ class CORE_EXPORT QgsProcessingContext
         /**
          * Constructor for LayerDetails.
          */
-        LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString(), QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::UnknownType )
+        LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString(), QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::LayerHint::UnknownType )
           : name( name )
           , outputName( outputName )
           , layerTypeHint( layerTypeHint )
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsProcessingContext
          *
          * \since QGIS 3.4
          */
-        QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::UnknownType;
+        QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::LayerHint::UnknownType;
 
         /**
          * Layer post-processor. May be NULLPTR if no post-processing is required.

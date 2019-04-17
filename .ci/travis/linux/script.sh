@@ -16,6 +16,8 @@
 
 set -e
 
+echo "Running flaky test: ${RUN_FLAKY_TESTS}"
+
 # build QGIS in docker
 echo "travis_fold:start:docker_build_qgis"
 echo "${bold}Docker build QGIS${endbold}"

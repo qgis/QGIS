@@ -21,6 +21,7 @@
 #include "qgswmsutils.h"
 #include "qgswmsgetprint.h"
 #include "qgswmsrenderer.h"
+#include "qgswmsserviceexception.h"
 
 namespace QgsWms
 {
@@ -28,13 +29,12 @@ namespace QgsWms
                       const QString &, const QgsServerRequest &request,
                       QgsServerResponse &response )
   {
-    const QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
-    QgsRenderer renderer( serverIface, project, wmsParameters );
-
-    const QgsWmsParameters::Format format = wmsParameters.format();
-    QString contentType;
+    // get wms parameters from query
+    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
     // GetPrint supports svg/png/pdf
+    const QgsWmsParameters::Format format = parameters.format();
+    QString contentType;
     switch ( format )
     {
       case QgsWmsParameters::PNG:
@@ -50,13 +50,25 @@ namespace QgsWms
         contentType = QStringLiteral( "application/pdf" );
         break;
       default:
-        throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
-                                   QString( "Output format %1 is not supported by the GetPrint request" ).arg( wmsParameters.formatAsString() ) );
+        throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
+                                      parameters[QgsWmsParameter::FORMAT] );
         break;
     }
 
+    // prepare render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::UpdateExtent );
+    context.setFlag( QgsWmsRenderContext::UseOpacity );
+    context.setFlag( QgsWmsRenderContext::UseFilter );
+    context.setFlag( QgsWmsRenderContext::UseSelection );
+    context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
+    context.setFlag( QgsWmsRenderContext::AddExternalLayers );
+    context.setParameters( parameters );
+
+    // rendering
+    QgsRenderer renderer( context );
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
     response.write( renderer.getPrint() );
   }
-
 } // namespace QgsWms

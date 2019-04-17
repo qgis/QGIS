@@ -224,7 +224,8 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
     else if ( def->type() == QgsProcessingParameterMultipleLayers::typeName() )
     {
       QList< QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( def, parameters, context );
-      Q_FOREACH ( QgsMapLayer *layer, layers )
+      const auto constLayers = layers;
+      for ( QgsMapLayer *layer : constLayers )
       {
         if ( !layer )
           continue;
