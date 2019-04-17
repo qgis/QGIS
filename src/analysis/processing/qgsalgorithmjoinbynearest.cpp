@@ -33,7 +33,7 @@ QString QgsJoinByNearestAlgorithm::displayName() const
 
 QStringList QgsJoinByNearestAlgorithm::tags() const
 {
-  return QObject::tr( "join,connect,attributes,values,fields,tables,proximity,closest,neighbour,neighbor,n-nearest" ).split( ',' );
+  return QObject::tr( "join,connect,attributes,values,fields,tables,proximity,closest,neighbour,neighbor,n-nearest,distance" ).split( ',' );
 }
 
 QString QgsJoinByNearestAlgorithm::group() const
