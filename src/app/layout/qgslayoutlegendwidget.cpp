@@ -931,7 +931,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   else
     currentExpression = layerNode->expression();
 
-  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", vl->createExpressionContext() );
+  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", vl->createExpressionContext( mLegend->createExpressionContext() ) );
   if ( expressiondialog.exec() )
     layerNode->setExpression( expressiondialog.expressionText() );
 

@@ -844,6 +844,9 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
   if ( mMap )
   {
+    QgsExpressionContext mapcontext createExpressionContext();
+    if ( mMap->atlasDriven() )
+      context.appendScope( mMap->createExpressionContext().popScope() );
     context.appendScope( mMap->createExpressionContext().popScope() );
   }
 

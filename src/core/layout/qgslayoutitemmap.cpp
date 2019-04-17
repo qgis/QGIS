@@ -32,6 +32,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslayoutatlas.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -1298,6 +1299,10 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers" ), layers, true ) );
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap ) );
+
+  const QgsLayoutAtlas * atlas = layoutAtlas()
+  if ( mAtlasDriven && atlas )
+    context.appendScope( QgsExpressionContextUtils::atlasScope( atlas ) )
 
   return context;
 }
