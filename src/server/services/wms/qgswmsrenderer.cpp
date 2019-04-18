@@ -118,23 +118,8 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
 
-    // getting scale from bbox or default size
-    QgsLegendSettings settings = mWmsParameters.legendSettings();
-    if ( !mWmsParameters.bbox().isEmpty() )
-    {
-      QgsMapSettings mapSettings;
-      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
-      configureMapSettings( tmp.get(), mapSettings );
-      settings.setMapScale( mapSettings.scale() );
-      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
-    }
-    else
-    {
-      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
-      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
-    }
-
     // init renderer
+    QgsLegendSettings legendSettings();
     QgsLegendRenderer renderer( &model, settings );
 
     // create image
@@ -167,26 +152,9 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
 
-    // getting scale from bbox
-    QgsLegendSettings settings = mWmsParameters.legendSettings();
-    if ( !mWmsParameters.bbox().isEmpty() )
-    {
-      QgsMapSettings mapSettings;
-      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
-      configureMapSettings( tmp.get(), mapSettings );
-      settings.setMapScale( mapSettings.scale() );
-      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
-    }
-    else
-    {
-      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
-      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
-    }
-
     // create image
-    const int width = mWmsParameters.widthAsInt();
-    const int height = mWmsParameters.heightAsInt();
-    std::unique_ptr<QImage> image( createImage( QSize( width, height ) ) );
+    const QSize size( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() );
+    std::unique_ptr<QImage> image( createImage( size ) );
 
     // configure painter
     const qreal dpmm = mContext.dotsPerMm();
@@ -196,6 +164,7 @@ namespace QgsWms
     painter->scale( dpmm, dpmm );
 
     // rendering
+    QgsLegendSettings legendSettings();
     QgsLayerTreeModelLegendNode::ItemContext ctx;
     ctx.painter = painter.get();
     ctx.labelXOffset = 0;
@@ -2854,5 +2823,27 @@ namespace QgsWms
     QString err;
     layer->readSld( sld, err );
     layer->setCustomProperty( "readSLD", true );
+  }
+
+  QgsLegendSettings QgsRenderer::legendSettings() const
+  {
+    // getting scale from bbox or default size
+    QgsLegendSettings settings = mWmsParameters.legendSettings();
+
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      settings.setMapScale( mapSettings.scale() );
+      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+    }
+    else
+    {
+      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
+    }
+
+    return settings;
   }
 } // namespace QgsWms

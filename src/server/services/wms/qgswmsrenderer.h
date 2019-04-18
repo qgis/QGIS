@@ -129,6 +129,7 @@ namespace QgsWms
       QByteArray getFeatureInfo( const QString &version = "1.3.0" );
 
     private:
+      QgsLegendSettings legendSettings() const;
 
       // Build and returns highlight layers
       QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
