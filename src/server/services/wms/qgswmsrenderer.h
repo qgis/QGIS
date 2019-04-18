@@ -228,11 +228,6 @@ namespace QgsWms
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );
 
-      /**
-       * Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
-        \returns true if width/height values are okay*/
-      void checkMaximumWidthHeight() const;
-
       //! Converts a feature info xml document to SIA2045 norm
       void convertFeatureInfoToSia2045( QDomDocument &doc ) const;
 

@@ -207,6 +207,18 @@ namespace QgsWms
        */
       QSize mapSize( bool aspectRatio = true ) const;
 
+      bool isValidWidthHeight() const;
+
+      /**
+       * Returns WIDTH or SRCWIDTH according to \a UseSrcWidthHeight flag.
+       */
+      int width() const;
+
+      /**
+       * Returns HEIGHT or SRCHEIGHT according to \a UseSrcWidthHeight flag.
+       */
+      int height() const;
+
     private:
       void initNicknameLayers();
       void initRestrictedLayers();

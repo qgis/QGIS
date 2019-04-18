@@ -257,7 +257,11 @@ namespace QgsWms
   QgsRenderer::HitTest QgsRenderer::symbols()
   {
     // check size
-    checkMaximumWidthHeight();
+    if ( ! mContext.isValidWidthHeight() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    QStringLiteral( "The requested map size is too large" ) );
+    }
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -763,7 +767,11 @@ namespace QgsWms
   QImage *QgsRenderer::getMap()
   {
     // check size
-    checkMaximumWidthHeight();
+    if ( ! mContext.isValidWidthHeight() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    QStringLiteral( "The requested map size is too large" ) );
+    }
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -1821,84 +1829,6 @@ namespace QgsWms
         concatString.clear();
         startGroup = -1;
       }
-    }
-  }
-
-  void QgsRenderer::checkMaximumWidthHeight() const
-  {
-    //test if maxWidth / maxHeight are set in the project or as an env variable
-    //and WIDTH / HEIGHT parameter is in the range allowed range
-    //WIDTH
-    int wmsMaxWidthProj = QgsServerProjectUtils::wmsMaxWidth( *mProject );
-    int wmsMaxWidthEnv = mContext.settings().wmsMaxWidth();
-    int wmsMaxWidth;
-    if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
-    {
-      // both are set, so we take the more conservative one
-      wmsMaxWidth = std::min( wmsMaxWidthProj, wmsMaxWidthEnv );
-    }
-    else
-    {
-      // none or one are set, so we take the bigger one which is the one set or -1
-      wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
-    }
-
-    int width = this->width();
-    if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    QStringLiteral( "The requested map width is too large" ) );
-    }
-
-    //HEIGHT
-    int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
-    int wmsMaxHeightEnv = mContext.settings().wmsMaxHeight();
-    int wmsMaxHeight;
-    if ( wmsMaxHeightEnv != -1 && wmsMaxHeightProj != -1 )
-    {
-      // both are set, so we take the more conservative one
-      wmsMaxHeight = std::min( wmsMaxHeightProj, wmsMaxHeightEnv );
-    }
-    else
-    {
-      // none or one are set, so we take the bigger one which is the one set or -1
-      wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
-    }
-
-    int height = this->height();
-    if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    QStringLiteral( "The requested map height is too large" ) );
-    }
-
-
-    // Sanity check from internal QImage checks (see qimage.cpp)
-    // this is to report a meaningful error message in case of
-    // image creation failure and to differentiate it from out
-    // of memory conditions.
-
-    // depth for now it cannot be anything other than 32, but I don't like
-    // to hardcode it: I hope we will support other depths in the future.
-    uint depth = 32;
-    switch ( mWmsParameters.format() )
-    {
-      case QgsWmsParameters::Format::JPG:
-      case QgsWmsParameters::Format::PNG:
-      default:
-        depth = 32;
-    }
-
-    const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
-
-    if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( width )
-         || bytes_per_line <= 0
-         || height <= 0
-         || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height )
-         || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    QStringLiteral( "The requested map size is too large" ) );
     }
   }
 

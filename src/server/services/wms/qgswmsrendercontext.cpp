@@ -538,24 +538,110 @@ QMap<QString, QList<QgsMapLayer *> > QgsWmsRenderContext::layerGroups() const
   return mLayerGroups;
 }
 
-QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
+int QgsWmsRenderContext::width() const
 {
   int width = mParameters.widthAsInt();
+
+  // May use SRCWIDTH to define image map size
+  if ( ( mFlags & UseSrcWidthHeight ) && mParameters.srcWidthAsInt() > 0 )
+  {
+    width = mParameters.srcWidthAsInt();
+  }
+
+  return width;
+}
+
+int QgsWmsRenderContext::height() const
+{
   int height = mParameters.heightAsInt();
 
-  // May use SRCWIDTH and SRCHEIGHT to define image map size
-  if ( mFlags & UseSrcWidthHeight )
+  // May use SRCHEIGHT to define image map size
+  if ( ( mFlags & UseSrcWidthHeight ) && mParameters.srcHeightAsInt() > 0 )
   {
-    if ( mParameters.srcWidthAsInt() > 0 )
-    {
-      width = mParameters.srcWidthAsInt();
-    }
-
-    if ( mParameters.srcHeightAsInt() > 0 )
-    {
-      height = mParameters.srcHeightAsInt();
-    }
+    height = mParameters.srcHeightAsInt();
   }
+
+  return height;
+}
+
+bool QgsWmsRenderContext::isValidWidthHeight() const
+{
+  //test if maxWidth / maxHeight are set in the project or as an env variable
+  //and WIDTH / HEIGHT parameter is in the range allowed range
+  //WIDTH
+  const int wmsMaxWidthProj = QgsServerProjectUtils::wmsMaxWidth( *mProject );
+  const int wmsMaxWidthEnv = settings().wmsMaxWidth();
+  int wmsMaxWidth;
+  if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
+  {
+    // both are set, so we take the more conservative one
+    wmsMaxWidth = std::min( wmsMaxWidthProj, wmsMaxWidthEnv );
+  }
+  else
+  {
+    // none or one are set, so we take the bigger one which is the one set or -1
+    wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
+  }
+
+  if ( wmsMaxWidth != -1 && width() > wmsMaxWidth )
+  {
+    return false;
+  }
+
+  //HEIGHT
+  const int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
+  const int wmsMaxHeightEnv = settings().wmsMaxHeight();
+  int wmsMaxHeight;
+  if ( wmsMaxHeightEnv != -1 && wmsMaxHeightProj != -1 )
+  {
+    // both are set, so we take the more conservative one
+    wmsMaxHeight = std::min( wmsMaxHeightProj, wmsMaxHeightEnv );
+  }
+  else
+  {
+    // none or one are set, so we take the bigger one which is the one set or -1
+    wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
+  }
+
+  if ( wmsMaxHeight != -1 && height() > wmsMaxHeight )
+  {
+    return false;
+  }
+
+  // Sanity check from internal QImage checks (see qimage.cpp)
+  // this is to report a meaningful error message in case of
+  // image creation failure and to differentiate it from out
+  // of memory conditions.
+
+  // depth for now it cannot be anything other than 32, but I don't like
+  // to hardcode it: I hope we will support other depths in the future.
+  uint depth = 32;
+  switch ( mParameters.format() )
+  {
+    case QgsWmsParameters::Format::JPG:
+    case QgsWmsParameters::Format::PNG:
+    default:
+      depth = 32;
+  }
+
+  const int bytes_per_line = ( ( width() * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
+
+  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( width() )
+       || bytes_per_line <= 0
+       || height() <= 0
+       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height() )
+       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height() ) )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
+{
+  int mapWidth = width();
+  int mapHeight = height();
 
   // Adapt width / height if the aspect ratio does not correspond with the BBOX.
   // Required by WMS spec. 1.3.
@@ -582,32 +668,32 @@ QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
       extent.invert();
     }
 
-    if ( !extent.isEmpty() && height > 0 && width > 0 )
+    if ( !extent.isEmpty() && mapHeight > 0 && mapWidth > 0 )
     {
       const double mapRatio = extent.width() / extent.height();
-      const double imageRatio = static_cast<double>( width ) / static_cast<double>( height );
+      const double imageRatio = static_cast<double>( mapWidth ) / static_cast<double>( mapHeight );
       if ( !qgsDoubleNear( mapRatio, imageRatio, 0.0001 ) )
       {
         // inspired by MapServer, mapdraw.c L115
-        const double cellsize = ( extent.width() / static_cast<double>( width ) ) * 0.5 + ( extent.height() / static_cast<double>( height ) ) * 0.5;
-        width = extent.width() / cellsize;
-        height = extent.height() / cellsize;
+        const double cellsize = ( extent.width() / static_cast<double>( mapWidth ) ) * 0.5 + ( extent.height() / static_cast<double>( mapHeight ) ) * 0.5;
+        mapWidth = extent.width() / cellsize;
+        mapHeight = extent.height() / cellsize;
       }
     }
   }
 
-  if ( width <= 0 )
+  if ( mapWidth <= 0 )
   {
     throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                   mParameters[QgsWmsParameter::WIDTH] );
   }
-  else if ( height <= 0 )
+  else if ( mapHeight <= 0 )
   {
     throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                   mParameters[QgsWmsParameter::HEIGHT] );
   }
 
-  return QSize( width, height );
+  return QSize( mapWidth, mapHeight );
 }
 
 void QgsWmsRenderContext::removeUnwantedLayers()
