@@ -345,5 +345,5 @@ QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
 
 QString QgsServerProjectUtils::wmtsServiceUrl( const QgsProject &project )
 {
-  return project.readEntry( QStringLiteral( "WMTSSUrl" ), QStringLiteral( "/" ), "" );
+  return project.readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), "" );
 }
