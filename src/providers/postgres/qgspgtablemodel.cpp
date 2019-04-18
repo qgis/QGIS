@@ -35,6 +35,7 @@ QgsPgTableModel::QgsPgTableModel()
   headerLabels << tr( "SRID" );
   headerLabels << tr( "Feature id" );
   headerLabels << tr( "Select at id" );
+  headerLabels << tr( "Check pk unicity" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
 }
@@ -122,6 +123,11 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
 
+    QStandardItem *checkPkUnicityItem  = new QStandardItem( QString() );
+    checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() | Qt::ItemIsUserCheckable );
+    checkPkUnicityItem->setCheckState( Qt::Unchecked );
+    checkPkUnicityItem->setToolTip( tr( "Enable check for primary key unicity when loading the features. This may slow down loading for large tables." ) );
+
     QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
     QList<QStandardItem *> childItemList;
@@ -135,6 +141,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     childItemList << sridItem;
     childItemList << pkItem;
     childItemList << selItem;
+    childItemList << checkPkUnicityItem;
     childItemList << sqlItem;
 
     Q_FOREACH ( QStandardItem *item, childItemList )
@@ -374,6 +381,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 
   bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;
   QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
+  bool checkPkUnicity = itemFromIndex( index.sibling( index.row(), DbtmCheckPkUnicity ) )->checkState() == Qt::Checked;
 
   QgsDataSourceUri uri( connInfo );
 
@@ -390,6 +398,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
+  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QString( checkPkUnicity ) );
 
   QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
