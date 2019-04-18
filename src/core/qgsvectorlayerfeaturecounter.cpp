@@ -61,7 +61,7 @@ bool QgsVectorLayerFeatureCounter::run()
     if ( !mRenderer->filterNeedsGeometry() )
       request.setFlags( QgsFeatureRequest::NoGeometry );
     request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mSource->fields() );
-    QgsFeatureIterator fit = mSource->getFeatures( request );
+    const QgsFeatureIterator fit = mSource->getFeatures( request );
 
     // TODO: replace QgsInterruptionChecker with QgsFeedback
     // fit.setInterruptionChecker( mFeedback );
@@ -92,6 +92,8 @@ bool QgsVectorLayerFeatureCounter::run()
       if ( isCanceled() )
       {
         mRenderer->stopRender( renderContext );
+        mRunning = false;
+        mutex.unlock();
         return false;
       }
     }
