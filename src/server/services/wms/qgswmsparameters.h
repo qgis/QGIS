@@ -186,7 +186,7 @@ namespace QgsWms
       /**
        * Default destructor for QgsWmsParameter.
        */
-      virtual ~QgsWmsParameter() = default;
+      virtual ~QgsWmsParameter() override = default;
 
       /**
        * Returns true if the parameter is valid, false otherwise.
@@ -335,7 +335,7 @@ namespace QgsWms
         */
       QgsWmsParameters();
 
-      virtual ~QgsWmsParameters() = default;
+      virtual ~QgsWmsParameters() override = default;
 
       /**
        * Dumps parameters.
