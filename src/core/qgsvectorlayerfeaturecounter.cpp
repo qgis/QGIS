@@ -99,8 +99,8 @@ bool QgsVectorLayerFeatureCounter::run()
   }
 
   setProgress( 100 );
-  mutex.unlock();
   mRunning = false;
+  mutex.unlock();
   emit symbolsCounted();
   return true;
 }
