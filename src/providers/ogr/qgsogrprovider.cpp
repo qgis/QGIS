@@ -4525,10 +4525,11 @@ void QgsOgrProvider::close()
 
 void QgsOgrProvider::reloadData()
 {
+  bool wasValid = mValid;
   forceReload();
   close();
   open( OpenModeSameAsCurrent );
-  if ( !mValid )
+  if ( !mValid && wasValid )
     pushError( tr( "Cannot reopen datasource %1" ).arg( dataSourceUri() ) );
 }
 
