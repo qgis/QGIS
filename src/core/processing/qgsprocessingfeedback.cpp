@@ -19,11 +19,11 @@
 #include "qgsgeos.h"
 #include <ogr_api.h>
 #include <gdal_version.h>
-#if PROJ_VERSION_MAJOR > 4
-#include <proj.h>
-#else
-#include <proj_api.h>
+
+#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 #endif
+#include <proj_api.h>
 
 void QgsProcessingFeedback::setProgressText( const QString & )
 {
@@ -64,13 +64,7 @@ void QgsProcessingFeedback::pushVersionInfo()
   pushDebugInfo( tr( "Qt version: %1" ).arg( qVersion() ) );
   pushDebugInfo( tr( "GDAL version: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
   pushDebugInfo( tr( "GEOS version: %1" ).arg( GEOSversion() ) );
-
-#if PROJ_VERSION_MAJOR > 4
-  PJ_INFO info = proj_info();
-  pushDebugInfo( tr( "PROJ version: %1" ).arg( info.release ) );
-#else
   pushDebugInfo( tr( "PROJ version: %1" ).arg( PJ_VERSION ) );
-#endif
 }
 
 
