@@ -96,6 +96,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     QHash<QString, QgsFeatureIds> mSymbolFeatureIdMap;
     int mFeatureCount;
     bool mRunning = false;
+    QMutex mutex;
 
 };
 

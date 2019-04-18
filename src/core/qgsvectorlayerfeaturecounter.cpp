@@ -33,7 +33,6 @@ QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *laye
 
 bool QgsVectorLayerFeatureCounter::run()
 {
-  QMutex mutex;
   mutex.lock();
   mRunning = true;
   mSymbolFeatureCountMap.clear();
@@ -114,9 +113,14 @@ QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 
 long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const
 {
+  mutex.lock();
+  long count
   if ( mRunning )
-    return -1;
-  return mSymbolFeatureCountMap.value( legendKey, -1 );
+    count = -1;
+  else
+    count = mSymbolFeatureCountMap.value( legendKey, -1 );
+  mutex.unlock()
+  return count;
 }
 
 QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const
@@ -126,7 +130,12 @@ QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap()
 
 QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString symbolkey ) const
 {
+  mutex.lock();
+  QgsFeatureIds ids;
   if ( mRunning )
-    return QgsFeatureIds();
-  return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
+    ids = QgsFeatureIds();
+  else
+    ids = mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
+  mutex.unlock()
+  return ids;
 }
