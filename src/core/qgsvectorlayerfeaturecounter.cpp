@@ -60,7 +60,7 @@ bool QgsVectorLayerFeatureCounter::run()
     if ( !mRenderer->filterNeedsGeometry() )
       request.setFlags( QgsFeatureRequest::NoGeometry );
     request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mSource->fields() );
-    const QgsFeatureIterator fit = mSource->getFeatures( request );
+    QgsFeatureIterator fit = mSource->getFeatures( request );
 
     // TODO: replace QgsInterruptionChecker with QgsFeedback
     // fit.setInterruptionChecker( mFeedback );
@@ -113,14 +113,7 @@ QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 
 long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const
 {
-  mutex.lock();
-  long count
-  if ( mRunning )
-    count = -1;
-  else
-    count = mSymbolFeatureCountMap.value( legendKey, -1 );
-  mutex.unlock()
-  return count;
+  return mRunning ? -1 : mSymbolFeatureCountMap.value( legendKey, -1 );
 }
 
 QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const
@@ -130,12 +123,5 @@ QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap()
 
 QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString symbolkey ) const
 {
-  mutex.lock();
-  QgsFeatureIds ids;
-  if ( mRunning )
-    ids = QgsFeatureIds();
-  else
-    ids = mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
-  mutex.unlock()
-  return ids;
+   return mRunning ? -1 : mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
 }
