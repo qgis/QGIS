@@ -82,6 +82,7 @@ struct QgsPostgresLayerProperty
   bool                          isView = false;
   bool                          isMaterializedView = false;
   QString                       tableComment;
+  bool                          checkPkUnicity = false;
 
 
   // TODO: rename this !
