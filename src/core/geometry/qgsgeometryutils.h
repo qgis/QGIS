@@ -426,6 +426,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      */
     static QJsonArray pointsToJsonObject( const QgsPointSequence &points, int precision ) SIP_SKIP;
+    static json pointsToJson( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /**
      * Ensures that an angle is in the range 0 <= angle < 2 pi.

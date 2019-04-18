@@ -21,7 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgscurvepolygon.h"
 #include "qgsmultilinestring.h"
-
+#include "nlohmann/json.hpp"
 #include <QJsonObject>
 
 QgsMultiPolygon::QgsMultiPolygon()
@@ -139,12 +139,13 @@ QString QgsMultiPolygon::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsMultiPolygon::asJsonObject( int precision ) const
+
+json QgsMultiPolygon::asJsonObject(int precision) const
 {
-  QJsonArray polygons;
+  json polygons;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    QJsonArray coordinates;
+    json coordinates;
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
       const QgsPolygon *polygon = static_cast<const QgsPolygon *>( geom );
@@ -152,7 +153,7 @@ QJsonObject QgsMultiPolygon::asJsonObject( int precision ) const
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
-      coordinates.append( QgsGeometryUtils::pointsToJsonObject( exteriorPts, precision ) );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );
 
       std::unique_ptr< QgsLineString > interiorLineString;
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
@@ -160,15 +161,15 @@ QJsonObject QgsMultiPolygon::asJsonObject( int precision ) const
         interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
         QgsPointSequence interiorPts;
         interiorLineString->points( interiorPts );
-        coordinates.append( QgsGeometryUtils::pointsToJsonObject( interiorPts, precision ) );
+        coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision ) );
       }
     }
-    polygons.append( coordinates );
+    polygons.push_back( coordinates );
   }
   return
   {
-    { QLatin1String( "type" ), QLatin1String( "MultiPolygon" ) },
-    { QLatin1String( "coordinates" ), polygons }
+    { "type", "MultiPolygon" },
+    { "coordinates", polygons }
   };
 }
 

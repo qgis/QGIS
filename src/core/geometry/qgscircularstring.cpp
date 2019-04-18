@@ -28,6 +28,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
+#include "nlohmann/json.hpp"
 
 QgsCircularString::QgsCircularString()
 {
@@ -375,7 +376,7 @@ QString QgsCircularString::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsCircularString::asJsonObject( int precision ) const
+json QgsCircularString::asJsonObject(int precision) const
 {
   // GeoJSON does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );

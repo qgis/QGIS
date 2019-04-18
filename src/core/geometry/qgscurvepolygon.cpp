@@ -30,6 +30,8 @@
 #include <QPainterPath>
 #include <memory>
 
+#include "nlohmann/json.hpp"
+
 QgsCurvePolygon::QgsCurvePolygon()
 {
   mWkbType = QgsWkbTypes::CurvePolygon;
@@ -428,15 +430,15 @@ QString QgsCurvePolygon::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsCurvePolygon::asJsonObject( int precision ) const
+json QgsCurvePolygon::asJsonObject(int precision) const
 {
-  QJsonArray coordinates;
+  json coordinates;
   if ( exteriorRing() )
   {
     std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
     QgsPointSequence exteriorPts;
     exteriorLineString->points( exteriorPts );
-    coordinates.append( QgsGeometryUtils::pointsToJsonObject( exteriorPts, precision ) );
+    coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );
 
     std::unique_ptr< QgsLineString > interiorLineString;
     for ( int i = 0, n = numInteriorRings(); i < n; ++i )
@@ -444,13 +446,13 @@ QJsonObject QgsCurvePolygon::asJsonObject( int precision ) const
       interiorLineString.reset( interiorRing( i )->curveToLine() );
       QgsPointSequence interiorPts;
       interiorLineString->points( interiorPts );
-      coordinates.append( QgsGeometryUtils::pointsToJsonObject( interiorPts, precision ) );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision ) );
     }
   }
   return
   {
-    { QLatin1String( "type" ), QLatin1String( "Polygon" ) },
-    { QLatin1String( "coordinates" ), coordinates }
+    {  "type", "Polygon"  },
+    { "coordinates" , coordinates }
   };
 }
 

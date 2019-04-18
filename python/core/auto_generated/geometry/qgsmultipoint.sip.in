@@ -38,8 +38,6 @@ Multi point geometry collection.
 
     virtual QString asJson( int precision = 17 ) const;
 
-    virtual QJsonObject asJsonObject( int precision ) const;
-
     virtual int nCoordinates() const;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );

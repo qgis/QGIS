@@ -27,6 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
+#include "nlohmann/json.hpp"
 #include <memory>
 
 QgsGeometryCollection::QgsGeometryCollection()
@@ -431,17 +432,17 @@ QString QgsGeometryCollection::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsGeometryCollection::asJsonObject( int precision ) const
+json QgsGeometryCollection::asJsonObject(int precision) const
 {
-  QJsonArray coordinates;
+  json coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    coordinates.append( geom->asJsonObject( precision ) );
+    coordinates.push_back( geom->asJsonObject( precision ) );
   }
   return
   {
-    { QLatin1String( "type" ), QLatin1String( "GeometryCollection" ) },
-    { QLatin1String( "coordinates" ), coordinates }
+    { "type" ,  "GeometryCollection" },
+    { "coordinates" , coordinates }
   };
 }
 

@@ -22,6 +22,12 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfields.h"
 
+
+#ifndef SIP_RUN
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+#endif
+
 #include <QPointer>
 #include <QJsonObject>
 
@@ -209,9 +215,9 @@ class CORE_EXPORT QgsJsonExporter
      * \returns QJsonObject
      * \see exportFeatures()
      */
-    QJsonObject exportFeatureToJsonObject( const QgsFeature &feature,
-                                           const QVariantMap &extraProperties = QVariantMap(),
-                                           const QVariant &id = QVariant() ) const;
+    json exportFeatureToJsonObject( const QgsFeature &feature,
+                             const QVariantMap &extraProperties = QVariantMap(),
+                             const QVariant &id = QVariant() ) const SIP_SKIP;
 
 
     /**
@@ -307,7 +313,7 @@ class CORE_EXPORT QgsJsonUtils
                                      const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 
     /**
-     * Exports all attributes from a QgsFeature as a QJsonObject.
+     * Exports all attributes from a QgsFeature as a json object.
      * \param feature feature to export
      * \param layer optional associated vector layer. If specified, this allows
      * richer export utilising settings like the layer's fields widget configuration.
@@ -315,9 +321,8 @@ class CORE_EXPORT QgsJsonUtils
      * to speed up exporting the attributes for multiple features from the same layer.
      * \since QGIS 3.8
      */
-    static QJsonObject exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
-        const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
-
+    static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
+        const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() ) SIP_SKIP;
 
     /**
      * Parse a simple array (depth=1).
@@ -326,6 +331,10 @@ class CORE_EXPORT QgsJsonUtils
      * \since QGIS 3.0
      */
     static QVariantList parseArray( const QString &json, QVariant::Type type );
+
+    static json jsonFromVariant( const QVariant &v) SIP_SKIP;
+
+
 };
 
 #endif // QGSJSONUTILS_H

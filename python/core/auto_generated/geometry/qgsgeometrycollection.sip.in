@@ -154,8 +154,6 @@ An IndexError will be raised if no geometry with the specified index exists.
 
     virtual QString asJson( int precision = 17 ) const;
 
-    virtual QJsonObject asJsonObject( int precision ) const;
-
 
     virtual QgsRectangle boundingBox() const;
 

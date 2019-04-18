@@ -22,6 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgscurvepolygon.h"
 #include "qgsmulticurve.h"
+#include "nlohmann/json.hpp"
 
 #include <QJsonObject>
 
@@ -149,9 +150,9 @@ QString QgsMultiSurface::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsMultiSurface::asJsonObject( int precision ) const
+json QgsMultiSurface::asJsonObject(int precision) const
 {
-  QJsonArray coordinates;
+  json coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
@@ -160,7 +161,7 @@ QJsonObject QgsMultiSurface::asJsonObject( int precision ) const
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
-      coordinates.append( QgsGeometryUtils::pointsToJsonObject( exteriorPts, precision ) );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );
 
       std::unique_ptr< QgsLineString > interiorLineString;
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
@@ -168,14 +169,14 @@ QJsonObject QgsMultiSurface::asJsonObject( int precision ) const
         interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
         QgsPointSequence interiorPts;
         interiorLineString->points( interiorPts );
-        coordinates.append( QgsGeometryUtils::pointsToJsonObject( interiorPts, precision ) );
+        coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision ) );
       }
     }
   }
   return
   {
-    { QLatin1String( "type" ), QLatin1String( "MultiPolygon" ) },
-    { QLatin1String( "coordinates" ), coordinates }
+    {  "type" ,  "MultiPolygon" },
+    {  "coordinates", coordinates }
   };
 }
 

@@ -25,6 +25,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
 
+#ifndef SIP_RUN
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+#endif
+
 class QgsMapToPixel;
 class QgsCurve;
 class QgsMultiCurve;
@@ -47,6 +52,7 @@ typedef QVector< QgsRingSequence > QgsCoordinateSequence;
 typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 #endif
+
 
 /**
  * \ingroup core
@@ -281,7 +287,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QString asJson( int precision = 17 ) const = 0;
 
     /**
-     * Returns a QJsonObject representation of the geometry.
+     * Returns a json obejct representation of the geometry.
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
@@ -289,7 +295,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asJson()
      * \since QGIS 3.8
      */
-    virtual QJsonObject asJsonObject( int precision = 17 ) const = 0;
+    virtual json asJsonObject( int precision = 17 ) const  SIP_SKIP { Q_UNUSED( precision ); return nullptr; }
+
 
     //render pipeline
 

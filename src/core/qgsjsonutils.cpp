@@ -236,13 +236,19 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
   return s;
 }
 
-QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
+json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature& feature, const QVariantMap& extraProperties, const QVariant& id) const
 {
-  QJsonObject featureJson
-  {
-    { QStringLiteral( "type" ), QStringLiteral( "Feature" ) },
-    { QStringLiteral( "id" ), ( ! id.isValid() ? QJsonValue( feature.id() ) : QJsonValue::fromVariant( id ) )  },
+  json featureJson  {
+    {  "type",  "Feature" },
   };
+  if ( id.isValid() )
+  {
+    featureJson["id"] = id.toString().toStdString();
+  }
+  else
+  {
+    featureJson["id"] = feature.id();
+  }
 
   QgsGeometry geom = feature.geometry();
   if ( !geom.isNull() && mIncludeGeometry )
@@ -264,21 +270,21 @@ QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &featur
 
     if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
     {
-      featureJson[ QStringLiteral( "bbox" ) ] = QJsonArray( { box.xMinimum(),
+      featureJson[ "bbox" ] = { { box.xMinimum(),
           box.yMinimum(),
           box.xMaximum(),
-          box.yMaximum() } );
+          box.yMaximum() } };
     }
-    featureJson[ QStringLiteral( "geometry" ) ] =  geom.asJsonObject( mPrecision );
+    featureJson[ "geometry" ] = geom.asJsonObject( mPrecision );
   }
   else
   {
-    featureJson[ QStringLiteral( "geometry" ) ] = QJsonValue();
+    featureJson[ "geometry"  ] = nullptr;
   }
 
   // build up properties element
   int attributeCounter { 0 };
-  QJsonObject properties;
+  json properties;
   if ( mIncludeAttributes || !extraProperties.isEmpty() )
   {
     //read all attribute values from the feature
@@ -312,7 +318,7 @@ QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &featur
         {
           name = mLayer->attributeDisplayName( i );
         }
-        properties[ name ] = QJsonValue::fromVariant( val );
+        properties[ name.toStdString() ] = QgsJsonUtils::jsonFromVariant( val );
         attributeCounter++;
       }
     }
@@ -322,7 +328,7 @@ QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &featur
       QVariantMap::const_iterator it = extraProperties.constBegin();
       for ( ; it != extraProperties.constEnd(); ++it )
       {
-        properties[ it.key() ] = QJsonValue::fromVariant( it.value() );
+        properties[ it.key().toStdString() ] = QgsJsonUtils::jsonFromVariant( it.value() );
         attributeCounter++;
       }
     }
@@ -336,7 +342,7 @@ QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &featur
         QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
         req.setFlags( QgsFeatureRequest::NoGeometry );
         QgsVectorLayer *childLayer = relation.referencingLayer();
-        QJsonArray relatedFeatureAttributes;
+        json relatedFeatureAttributes;
         if ( childLayer )
         {
           QgsFeatureIterator it = childLayer->getFeatures( req );
@@ -356,13 +362,12 @@ QJsonObject QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &featur
             relatedFeatureAttributes += QgsJsonUtils::exportAttributesToJsonObject( relatedFet, childLayer, attributeWidgetCaches );
           }
         }
-        properties[ relation.name() ] = relatedFeatureAttributes;
+        properties[ relation.name().toStdString() ] = relatedFeatureAttributes;
         attributeCounter++;
       }
     }
   }
-  // bool hasProperties = attributeCounter > 0;
-  featureJson[ QStringLiteral( "properties" ) ] = properties;
+  featureJson[ "properties" ] = properties;
   return featureJson;
 }
 
@@ -376,8 +381,6 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features ) const
   }
   return QStringLiteral( "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n%1\n]}" ).arg( featureJSON.join( QStringLiteral( ",\n" ) ) );
 }
-
-
 
 //
 // QgsJsonUtils
@@ -481,11 +484,28 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
   return result;
 }
 
+json QgsJsonUtils::jsonFromVariant(const QVariant& val)
+{
 
-QJsonObject QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
+  switch (val.userType())
+  {
+    case QMetaType::Int:
+    case QMetaType::UInt:
+    case QMetaType::LongLong:
+    case QMetaType::ULongLong:
+      return val.toLongLong();
+    case QMetaType::Double:
+    case QMetaType::Float:
+      return val.toDouble();
+    default:
+      return  val.toString().toStdString();
+  }
+}
+
+json QgsJsonUtils::exportAttributesToJsonObject(const QgsFeature& feature, QgsVectorLayer* layer, const QVector<QVariant>& attributeWidgetCaches)
 {
   QgsFields fields = feature.fields();
-  QJsonObject attrs;
+  json attrs;
   for ( int i = 0; i < fields.count(); ++i )
   {
     QVariant val = feature.attributes().at( i );
@@ -496,9 +516,8 @@ QJsonObject QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &featur
       QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
       if ( fieldFormatter != QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter() )
         val = fieldFormatter->representValue( layer, i, setup.config(), attributeWidgetCaches.count() >= i ? attributeWidgetCaches.at( i ) : QVariant(), val );
-    }
-
-    attrs.insert( fields.at( i ).name(), QJsonValue::fromVariant( val ) );
+    }    
+    attrs[fields.at( i ).name().toStdString()] = jsonFromVariant(val);
   }
   return attrs;
 }

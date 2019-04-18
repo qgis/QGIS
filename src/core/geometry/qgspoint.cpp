@@ -29,6 +29,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include "nlohmann/json.hpp"
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -285,21 +287,20 @@ QString QgsPoint::asJson( int precision ) const
 {
   return "{\"type\": \"Point\", \"coordinates\": ["
          + qgsDoubleToString( mX, precision ) + QLatin1String( ", " ) + qgsDoubleToString( mY, precision )
-         + QLatin1String( "]}" );
+      + QLatin1String( "]}" );
 }
 
-QJsonObject QgsPoint::asJsonObject( int precision ) const
+json QgsPoint::asJsonObject(int precision) const
 {
-  QJsonArray coordinates { { qgsRound( mX, precision ), qgsRound( mY, precision ) } };
+  json j {
+      { "type", "Point" },
+      { "coordinates", { qgsRound( mX, precision ), qgsRound( mY, precision ) } },
+    };
   if ( is3D() )
   {
-    coordinates.append( qgsRound( mZ, precision ) );
+    j["coordinates"].push_back( qgsRound( mZ, precision ) );
   }
-  return
-  {
-    { QLatin1String( "type" ), QLatin1String( "Point" ) },
-    { QLatin1String( "coordinates" ), coordinates }
-  };
+  return j;
 }
 
 void QgsPoint::draw( QPainter &p ) const

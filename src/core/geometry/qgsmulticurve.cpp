@@ -23,6 +23,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipoint.h"
 #include <QJsonObject>
 #include <memory>
+#include "nlohmann/json.hpp"
 
 QgsMultiCurve::QgsMultiCurve()
 {
@@ -131,9 +132,9 @@ QString QgsMultiCurve::asJson( int precision ) const
   return json;
 }
 
-QJsonObject QgsMultiCurve::asJsonObject( int precision ) const
+json QgsMultiCurve::asJsonObject(int precision) const
 {
-  QJsonArray coordinates;
+  json coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
@@ -141,13 +142,13 @@ QJsonObject QgsMultiCurve::asJsonObject( int precision ) const
       std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
       QgsPointSequence pts;
       lineString->points( pts );
-      coordinates.append( QgsGeometryUtils::pointsToJsonObject( pts, precision ) );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );
     }
   }
   return
   {
-    { QLatin1String( "type" ), QLatin1String( "MultiLineString" ) },
-    { QLatin1String( "coordinates" ), coordinates }
+    {  "type" ,  "MultiLineString"  },
+    {  "coordinates", coordinates }
   };
 }
 

@@ -12,9 +12,11 @@
 
 
 
+
 typedef QVector< QgsPoint > QgsPointSequence;
 typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
+
 
 class QgsAbstractGeometry
 {
@@ -259,22 +261,7 @@ Returns a GeoJSON representation of the geometry.
 .. seealso:: :py:func:`asGml3`
 %End
 
-    virtual QJsonObject asJsonObject( int precision = 17 ) const = 0;
-%Docstring
-Returns a QJsonObject representation of the geometry.
 
-.. seealso:: :py:func:`asWkb`
-
-.. seealso:: :py:func:`asWkt`
-
-.. seealso:: :py:func:`asGml2`
-
-.. seealso:: :py:func:`asGml3`
-
-.. seealso:: :py:func:`asJson`
-
-.. versionadded:: 3.8
-%End
 
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException ) = 0;

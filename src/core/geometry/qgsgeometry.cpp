@@ -47,6 +47,8 @@ email                : morb at ozemail dot com dot au
 #include "qgscircle.h"
 #include "qgscurve.h"
 
+#include "nlohmann/json.hpp"
+
 struct QgsGeometryPrivate
 {
   QgsGeometryPrivate(): ref( 1 ) {}
@@ -1268,13 +1270,14 @@ QString QgsGeometry::asJson( int precision ) const
   return d->geometry->asJson( precision );
 }
 
-QJsonObject QgsGeometry::asJsonObject( int precision ) const
+json QgsGeometry::asJsonObject(int precision) const
 {
   if ( !d->geometry )
   {
-    return QJsonObject( );
+    return nullptr;
   }
   return d->geometry->asJsonObject( precision );
+
 }
 
 QgsGeometry QgsGeometry::convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart ) const

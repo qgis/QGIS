@@ -6,6 +6,7 @@ IF(WITH_QSPATIALITE)
 ENDIF(WITH_QSPATIALITE)
 
 SET(SPATIALITE_SRCS
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   qgsspatialiteprovider.cpp
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
@@ -44,11 +45,13 @@ IF (WITH_GUI)
 ENDIF ()
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui

@@ -21,6 +21,15 @@
 
 class TestQgsJsonUtils : public QObject
 {
+
+ public:
+
+  enum JsonAlgs {
+    Json,
+    String
+  };
+  Q_ENUM(JsonAlgs)
+
     Q_OBJECT
   private slots:
     void testStringList()
@@ -75,31 +84,31 @@ class TestQgsJsonUtils : public QObject
       QCOMPARE( back.at( 0 ).type(), QVariant::Double );
     }
 
-    void testExportAttributesQJson_data()
+    void testExportAttributesJson_data()
     {
-      QTest::addColumn<bool>( "useQJson" );
-      QTest::newRow( "Use V2 (QJson)" ) << true;
-      QTest::newRow( "Use old string concat" ) << false;
+      QTest::addColumn<JsonAlgs>( "JsonAlgs" );
+      QTest::newRow( "Use json" ) << JsonAlgs::Json;
+      QTest::newRow( "Use old string concat" ) << JsonAlgs::String;
     }
 
-    void testExportAttributesQJson()
+    void testExportAttributesJson()
     {
 
-      QFETCH( bool, useQJson );
+      QFETCH( enum JsonAlgs, JsonAlgs );
 
       QgsVectorLayer vl { QStringLiteral( "Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
       QgsFeature feature { vl.fields() };
       feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
 
-      if ( useQJson )  // average: 0.0048 msecs per iteration
+      if ( JsonAlgs == JsonAlgs::Json )  // 0.0022
       {
         QBENCHMARK
         {
-          const auto json { QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) };
-          QCOMPARE( QString( QJsonDocument( json ).toJson( QJsonDocument::JsonFormat::Compact ) ), QStringLiteral( R"raw({"flddbl":2,"fldint":1,"fldtxt":"a value"})raw" ) );
+          json j { QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) };
+          QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral(R"raw({"flddbl":2.0,"fldint":1,"fldtxt":"a value"})raw" ) );
         }
       }
-      else // average: 0.0070 msecs per iteration
+      else // 0.0032
       {
         QBENCHMARK
         {
@@ -109,17 +118,17 @@ class TestQgsJsonUtils : public QObject
       }
     }
 
-    void testExportFeatureQJson_data()
+    void testExportFeatureJson_data()
     {
-      QTest::addColumn<bool>( "useQJson" );
-      QTest::newRow( "Use V2 (QJson)" ) << true;
-      QTest::newRow( "Use old string concat" ) << false;
+      QTest::addColumn<JsonAlgs>( "JsonAlgs" );
+      QTest::newRow( "Use json" ) << JsonAlgs::Json;
+      QTest::newRow( "Use old string concat" ) << JsonAlgs::String;
     }
 
-    void testExportFeatureQJson()
+    void testExportFeatureJson()
     {
 
-      QFETCH( bool, useQJson );
+      QFETCH( enum JsonAlgs, JsonAlgs );
 
       QgsVectorLayer vl { QStringLiteral( "Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
       QgsFeature feature { vl.fields() };
@@ -128,19 +137,20 @@ class TestQgsJsonUtils : public QObject
 
       QgsJsonExporter exporter { &vl };
 
-      if ( useQJson )  // average: 0.041 msecs per iteration
+      if ( JsonAlgs == JsonAlgs::Json )
       {
         QBENCHMARK
         {
-          const auto json { exporter.exportFeatureToJsonObject( feature ) };
-          QCOMPARE( QString( QJsonDocument( json ).toJson( QJsonDocument::JsonFormat::Compact ) ),
-                    QStringLiteral( "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":[[[1.12,1.34]"
-                                    ",[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],[[2,2],[3,2],[3,3],[2,3],[2,2]]],"
-                                    "\"type\":\"Polygon\"},\"id\":0,\"properties\":{\"flddbl\":2,\"fldint\":1,\"fldtxt\":\"a value\"},\"type\":\"Feature\"}"
-                                  ) );
+          const auto j { exporter.exportFeatureToJsonObject( feature ) };
+          QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral( "{\"bbox\":[[1.12,1.12,5.45,5.33]],\"geometry\":{\"coordinates\":"
+                                                                        "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+                                                                        "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+                                                                        ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+                                                                        ",\"type\":\"Feature\"}"
+         ) );
         }
       }
-      else // average: 0.047 msecs per iteration
+      else
       {
         QBENCHMARK
         {
@@ -153,7 +163,14 @@ class TestQgsJsonUtils : public QObject
       }
     }
 
-    void testExportGeomToQJson()
+    void testExportGeomToJson_data()
+    {
+      QTest::addColumn<JsonAlgs>( "JsonAlgs" );
+      QTest::newRow( "Use json" ) << JsonAlgs::Json;
+      QTest::newRow( "Use old string concat" ) << JsonAlgs::String;
+    }
+
+    void testExportGeomToJson()
     {
       const QStringList testWkts
       {
@@ -173,8 +190,32 @@ class TestQgsJsonUtils : public QObject
       {
         const auto g { QgsGeometry::fromWkt( w ) };
         QVERIFY( !g.isNull( ) );
-        QCOMPARE( QJsonDocument( g.asJsonObject( 3 ) ).toJson( QJsonDocument::JsonFormat::Compact ),
+        QCOMPARE( QJsonDocument::fromJson( QByteArray::fromStdString( g.asJsonObject( 3 ).dump() ) ).toJson( QJsonDocument::JsonFormat::Compact ),
                   QJsonDocument::fromJson( g.asJson( 3 ).toUtf8() ).toJson( QJsonDocument::JsonFormat::Compact ) );
+      }
+
+      QFETCH( enum JsonAlgs, JsonAlgs );
+      if ( JsonAlgs == JsonAlgs::Json )
+      {
+        QBENCHMARK
+        {
+          for ( const auto &w : testWkts )
+          {
+            const auto g { QgsGeometry::fromWkt( w ) };
+            QJsonDocument::fromJson( QByteArray::fromStdString( g.asJsonObject( 3 ).dump() ) ).toJson( QJsonDocument::JsonFormat::Compact );
+          }
+        }
+      }
+      else
+      {
+        QBENCHMARK
+        {
+          for ( const auto &w : testWkts )
+          {
+            const auto g { QgsGeometry::fromWkt( w ) };
+            QJsonDocument::fromJson( g.asJson( 3 ).toUtf8() ).toJson( QJsonDocument::JsonFormat::Compact );
+          }
+        }
       }
     }
 };

@@ -23,6 +23,7 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
+#include "nlohmann/json.hpp"
 
 #include <cmath>
 #include <memory>
@@ -419,14 +420,14 @@ QString QgsLineString::asJson( int precision ) const
   return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
 }
 
-QJsonObject QgsLineString::asJsonObject( int precision ) const
+json QgsLineString::asJsonObject(int precision) const
 {
   QgsPointSequence pts;
   points( pts );
   return
   {
-    { QLatin1String( "type" ), QLatin1String( "LineString" ) },
-    { QLatin1String( "coordinates" ),  QgsGeometryUtils::pointsToJsonObject( pts, precision ) }
+    {  "type",  "LineString" },
+    {  "coordinates" ,  QgsGeometryUtils::pointsToJson( pts, precision ) }
   };
 }
 
