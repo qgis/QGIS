@@ -4261,7 +4261,7 @@ QgsExpressionContext QgsVectorLayer::createExpressionContext() const
 
 QgsExpressionContext QgsVectorLayer::createExpressionContext( QgsExpressionContext context ) const
 {
-  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
+  context.appendScope( QgsExpressionContextUtils::layerScope( this ) );
   return context;
 }
 

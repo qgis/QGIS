@@ -843,7 +843,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   // will contain duplicate global, project, layout, etc scopes.
 
   if ( mMap )
-    context.appendScope( mMap->createExpressionContext() );
+    context.appendScopes( mMap->createExpressionContext().takeScopes() );
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
 
