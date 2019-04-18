@@ -35,9 +35,11 @@ QgsPgTableModel::QgsPgTableModel()
   headerLabels << tr( "SRID" );
   headerLabels << tr( "Feature id" );
   headerLabels << tr( "Select at id" );
-  headerLabels << tr( "Check pk unicity" );
+  headerLabels << tr( "Check PK unicity" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
+  setHeaderData( 8, Qt::Orientation::Horizontal, tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ), Qt::ToolTipRole );
+  setHeaderData( 9, Qt::Orientation::Horizontal, tr( "Enable check for primary key unicity when loading the features. This may slow down loading for large tables." ), Qt::ToolTipRole );
 }
 
 void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProperty )
@@ -121,12 +123,12 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     QStandardItem *selItem = new QStandardItem( QString() );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
     selItem->setCheckState( Qt::Checked );
-    selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
+    selItem->setToolTip( headerData( 8, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
 
     QStandardItem *checkPkUnicityItem  = new QStandardItem( QString() );
     checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() | Qt::ItemIsUserCheckable );
     checkPkUnicityItem->setCheckState( Qt::Unchecked );
-    checkPkUnicityItem->setToolTip( tr( "Enable check for primary key unicity when loading the features. This may slow down loading for large tables." ) );
+    checkPkUnicityItem->setToolTip( headerData( 9, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
 
     QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
@@ -152,7 +154,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       else
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
-      if ( tip.isEmpty() )
+      if ( tip.isEmpty() && item != checkPkUnicityItem && item != selItem )
       {
         item->setToolTip( QString() );
       }
