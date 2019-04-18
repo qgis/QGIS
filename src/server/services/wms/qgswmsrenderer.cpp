@@ -194,7 +194,7 @@ namespace QgsWms
     }
     else
     {
-      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject ) / dpmm;
       legendSettings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
     }
 
@@ -236,12 +236,6 @@ namespace QgsWms
       legendRendererNew.drawLegend( painter.get() );
       painter->end();
     }
-    else
-    {
-      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
-      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
-    }
-
     rootGroup.clear();
     return image.release();
   }
