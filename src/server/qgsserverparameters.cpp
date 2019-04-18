@@ -519,7 +519,14 @@ QString QgsServerParameters::request() const
 
 QString QgsServerParameters::value( const QString &key ) const
 {
-  return value( QgsServerParameter::name( key ) ).toString();
+  if ( ! mParameters.contains( QgsServerParameter::name( key ) ) )
+  {
+    return mUnmanagedParameters[key];
+  }
+  else
+  {
+    return value( QgsServerParameter::name( key ) ).toString();
+  }
 }
 
 QVariant QgsServerParameters::value( QgsServerParameter::Name name ) const
