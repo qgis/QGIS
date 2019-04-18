@@ -661,7 +661,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
   counter = vl ?  vl->countSymbolFeatures() : nullptr;
 
   if ( counter )
-    counted = vl->featuresCounted() ? true : false
+    counted = vl->featuresCounted() ? true : false;
 
   if ( counter && counted )
   {
