@@ -440,8 +440,8 @@ namespace QgsWmts
       }
       else
       {
-        pLayer.maxScale = l->maximumScale();
-        pLayer.minScale = l->minimumScale();
+        pLayer.maxScale = 0.0;
+        pLayer.minScale = 0.0;
       }
 
       wmtsLayers.append( pLayer );

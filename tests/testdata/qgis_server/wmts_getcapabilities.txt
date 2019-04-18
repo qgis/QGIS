@@ -1,7 +1,7 @@
-
+Content-Length: 45696
 Content-Type: text/xml; charset=utf-8
 
-<Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" xmlns="http://www.opengis.net/wmts/1.0" version="1.0.0" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+<Capabilities xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns="http://www.opengis.net/wmts/1.0" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0" xmlns:xlink="http://www.w3.org/1999/xlink">
  <ows:ServiceIdentification>
   <ows:ServiceType>OGC WMTS</ows:ServiceType>
   <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
@@ -20,21 +20,21 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="GetCapabilities">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?"/>
+     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_groups.qgs&amp;"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>
   <ows:Operation name="GetTile">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?"/>
+     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_groups.qgs&amp;"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>
   <ows:Operation name="GetFeatureInfo">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?"/>
+     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_groups.qgs&amp;"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>
@@ -718,6 +718,132 @@ Content-Type: text/xml; charset=utf-8
       <MinTileRow>0</MinTileRow>
       <MaxTileRow>1</MaxTileRow>
      </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>3</TileMatrix>
+      <MinTileCol>1</MinTileCol>
+      <MaxTileCol>6</MaxTileCol>
+      <MinTileRow>1</MinTileRow>
+      <MaxTileRow>3</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>4</TileMatrix>
+      <MinTileCol>2</MinTileCol>
+      <MaxTileCol>12</MaxTileCol>
+      <MinTileRow>3</MinTileRow>
+      <MaxTileRow>7</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>5</TileMatrix>
+      <MinTileCol>4</MinTileCol>
+      <MaxTileCol>24</MaxTileCol>
+      <MinTileRow>7</MinTileRow>
+      <MaxTileRow>15</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>6</TileMatrix>
+      <MinTileCol>8</MinTileCol>
+      <MaxTileCol>49</MaxTileCol>
+      <MinTileRow>14</MinTileRow>
+      <MaxTileRow>31</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>7</TileMatrix>
+      <MinTileCol>16</MinTileCol>
+      <MaxTileCol>99</MaxTileCol>
+      <MinTileRow>28</MinTileRow>
+      <MaxTileRow>63</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>8</TileMatrix>
+      <MinTileCol>33</MinTileCol>
+      <MaxTileCol>198</MaxTileCol>
+      <MinTileRow>57</MinTileRow>
+      <MaxTileRow>127</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>9</TileMatrix>
+      <MinTileCol>66</MinTileCol>
+      <MaxTileCol>396</MaxTileCol>
+      <MinTileRow>115</MinTileRow>
+      <MaxTileRow>254</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>10</TileMatrix>
+      <MinTileCol>133</MinTileCol>
+      <MaxTileCol>792</MaxTileCol>
+      <MinTileRow>230</MinTileRow>
+      <MaxTileRow>508</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>11</TileMatrix>
+      <MinTileCol>267</MinTileCol>
+      <MaxTileCol>1584</MaxTileCol>
+      <MinTileRow>460</MinTileRow>
+      <MaxTileRow>1017</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>12</TileMatrix>
+      <MinTileCol>534</MinTileCol>
+      <MaxTileCol>3168</MaxTileCol>
+      <MinTileRow>921</MinTileRow>
+      <MaxTileRow>2034</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>13</TileMatrix>
+      <MinTileCol>1068</MinTileCol>
+      <MaxTileCol>6336</MaxTileCol>
+      <MinTileRow>1842</MinTileRow>
+      <MaxTileRow>4068</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>14</TileMatrix>
+      <MinTileCol>2136</MinTileCol>
+      <MaxTileCol>12672</MaxTileCol>
+      <MinTileRow>3684</MinTileRow>
+      <MaxTileRow>8137</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>15</TileMatrix>
+      <MinTileCol>4273</MinTileCol>
+      <MaxTileCol>25344</MaxTileCol>
+      <MinTileRow>7368</MinTileRow>
+      <MaxTileRow>16274</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>16</TileMatrix>
+      <MinTileCol>8547</MinTileCol>
+      <MaxTileCol>50689</MaxTileCol>
+      <MinTileRow>14736</MinTileRow>
+      <MaxTileRow>32548</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>17</TileMatrix>
+      <MinTileCol>17094</MinTileCol>
+      <MaxTileCol>101378</MaxTileCol>
+      <MinTileRow>29473</MinTileRow>
+      <MaxTileRow>65097</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>18</TileMatrix>
+      <MinTileCol>34188</MinTileCol>
+      <MaxTileCol>202756</MaxTileCol>
+      <MinTileRow>58947</MinTileRow>
+      <MaxTileRow>130194</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>19</TileMatrix>
+      <MinTileCol>68377</MinTileCol>
+      <MaxTileCol>405512</MaxTileCol>
+      <MinTileRow>117895</MinTileRow>
+      <MaxTileRow>260388</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>20</TileMatrix>
+      <MinTileCol>136755</MinTileCol>
+      <MaxTileCol>811025</MaxTileCol>
+      <MinTileRow>235791</MinTileRow>
+      <MaxTileRow>520776</MaxTileRow>
+     </TileMatrixLimits>
     </TileMatrixSetLimits>
    </TileMatrixSetLink>
    <TileMatrixSetLink>
@@ -736,6 +862,132 @@ Content-Type: text/xml; charset=utf-8
       <MaxTileCol>3</MaxTileCol>
       <MinTileRow>0</MinTileRow>
       <MaxTileRow>0</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>2</TileMatrix>
+      <MinTileCol>1</MinTileCol>
+      <MaxTileCol>6</MaxTileCol>
+      <MinTileRow>0</MinTileRow>
+      <MaxTileRow>1</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>3</TileMatrix>
+      <MinTileCol>2</MinTileCol>
+      <MaxTileCol>12</MaxTileCol>
+      <MinTileRow>0</MinTileRow>
+      <MaxTileRow>3</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>4</TileMatrix>
+      <MinTileCol>4</MinTileCol>
+      <MaxTileCol>24</MaxTileCol>
+      <MinTileRow>1</MinTileRow>
+      <MaxTileRow>7</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>5</TileMatrix>
+      <MinTileCol>8</MinTileCol>
+      <MaxTileCol>49</MaxTileCol>
+      <MinTileRow>3</MinTileRow>
+      <MaxTileRow>15</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>6</TileMatrix>
+      <MinTileCol>16</MinTileCol>
+      <MaxTileCol>99</MaxTileCol>
+      <MinTileRow>7</MinTileRow>
+      <MaxTileRow>31</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>7</TileMatrix>
+      <MinTileCol>33</MinTileCol>
+      <MaxTileCol>198</MaxTileCol>
+      <MinTileRow>14</MinTileRow>
+      <MaxTileRow>63</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>8</TileMatrix>
+      <MinTileCol>66</MinTileCol>
+      <MaxTileCol>396</MaxTileCol>
+      <MinTileRow>28</MinTileRow>
+      <MaxTileRow>127</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>9</TileMatrix>
+      <MinTileCol>133</MinTileCol>
+      <MaxTileCol>792</MaxTileCol>
+      <MinTileRow>57</MinTileRow>
+      <MaxTileRow>255</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>10</TileMatrix>
+      <MinTileCol>267</MinTileCol>
+      <MaxTileCol>1584</MaxTileCol>
+      <MinTileRow>115</MinTileRow>
+      <MaxTileRow>511</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>11</TileMatrix>
+      <MinTileCol>534</MinTileCol>
+      <MaxTileCol>3168</MaxTileCol>
+      <MinTileRow>230</MinTileRow>
+      <MaxTileRow>1022</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>12</TileMatrix>
+      <MinTileCol>1068</MinTileCol>
+      <MaxTileCol>6336</MaxTileCol>
+      <MinTileRow>460</MinTileRow>
+      <MaxTileRow>2045</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>13</TileMatrix>
+      <MinTileCol>2136</MinTileCol>
+      <MaxTileCol>12672</MaxTileCol>
+      <MinTileRow>920</MinTileRow>
+      <MaxTileRow>4091</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>14</TileMatrix>
+      <MinTileCol>4273</MinTileCol>
+      <MaxTileCol>25344</MaxTileCol>
+      <MinTileRow>1841</MinTileRow>
+      <MaxTileRow>8182</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>15</TileMatrix>
+      <MinTileCol>8547</MinTileCol>
+      <MaxTileCol>50689</MaxTileCol>
+      <MinTileRow>3682</MinTileRow>
+      <MaxTileRow>16364</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>16</TileMatrix>
+      <MinTileCol>17094</MinTileCol>
+      <MaxTileCol>101378</MaxTileCol>
+      <MinTileRow>7365</MinTileRow>
+      <MaxTileRow>32729</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>17</TileMatrix>
+      <MinTileCol>34188</MinTileCol>
+      <MaxTileCol>202756</MaxTileCol>
+      <MinTileRow>14730</MinTileRow>
+      <MaxTileRow>65459</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>18</TileMatrix>
+      <MinTileCol>68377</MinTileCol>
+      <MaxTileCol>405512</MaxTileCol>
+      <MinTileRow>29460</MinTileRow>
+      <MaxTileRow>130918</MaxTileRow>
+     </TileMatrixLimits>
+     <TileMatrixLimits>
+      <TileMatrix>19</TileMatrix>
+      <MinTileCol>136755</MinTileCol>
+      <MaxTileCol>811025</MaxTileCol>
+      <MinTileRow>58921</MinTileRow>
+      <MaxTileRow>261836</MaxTileRow>
      </TileMatrixLimits>
     </TileMatrixSetLimits>
    </TileMatrixSetLink>
