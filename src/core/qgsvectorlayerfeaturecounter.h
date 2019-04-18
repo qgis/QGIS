@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      *
      * \since QGIS 3.8
      */
-    QgsFeatureIds featureIds( const QString symbolkey ) const;
+    QgsFeatureIds featureIds( const QString &symbolkey ) const;
 
   signals:
 
