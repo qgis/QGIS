@@ -148,6 +148,10 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
 {
+  if ( options.fallbackCrs.isValid() )
+    setCrs( options.fallbackCrs, false );
+  mWkbType = options.fallbackWkbType;
+
   setProviderType( providerKey );
 
   mGeometryOptions = qgis::make_unique<QgsGeometryOptions>();

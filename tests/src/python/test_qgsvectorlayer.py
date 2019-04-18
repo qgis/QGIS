@@ -434,6 +434,24 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         shutil.rmtree(temp_path, True)
 
+    def testFallbackCrsWkbType(self):
+        """
+        Test fallback CRS and WKB types are used when layer path is invalid
+        """
+        vl = QgsVectorLayer('this is an outrage!!!')
+        self.assertFalse(vl.isValid()) # i'd certainly hope so...
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Unknown)
+        self.assertFalse(vl.crs().isValid())
+
+        # with fallback
+        options = QgsVectorLayer.LayerOptions()
+        options.fallbackWkbType = QgsWkbTypes.CircularString
+        options.fallbackCrs = QgsCoordinateReferenceSystem('EPSG:3111')
+        vl = QgsVectorLayer("i'm the moon", options=options)
+        self.assertFalse(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.CircularString)
+        self.assertEqual(vl.crs().authid(), 'EPSG:3111')
+
     def test_layer_crs(self):
         """
         Test that spatial layers have CRS, and non-spatial don't
