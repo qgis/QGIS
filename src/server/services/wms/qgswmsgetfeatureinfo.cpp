@@ -31,6 +31,15 @@ namespace QgsWms
     // get wms parameters from query
     QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
+    // WIDTH and HEIGHT are not mandatory, but we need to set a default size
+    if ( parameters.widthAsInt() <= 0
+         && parameters.heightAsInt() <= 0
+         && ! parameters.infoFormatIsImage() )
+    {
+      parameters.set( QgsWmsParameter::WIDTH, 10 );
+      parameters.set( QgsWmsParameter::HEIGHT, 10 );
+    }
+
     // prepare render context
     QgsWmsRenderContext context( project, serverIface );
     context.setFlag( QgsWmsRenderContext::AddQueryLayers );

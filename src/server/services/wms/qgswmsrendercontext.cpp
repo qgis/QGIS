@@ -538,6 +538,78 @@ QMap<QString, QList<QgsMapLayer *> > QgsWmsRenderContext::layerGroups() const
   return mLayerGroups;
 }
 
+QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
+{
+  int width = mParameters.widthAsInt();
+  int height = mParameters.heightAsInt();
+
+  // May use SRCWIDTH and SRCHEIGHT to define image map size
+  if ( mFlags & UseSrcWidthHeight )
+  {
+    if ( mParameters.srcWidthAsInt() > 0 )
+    {
+      width = mParameters.srcWidthAsInt();
+    }
+
+    if ( mParameters.srcHeightAsInt() > 0 )
+    {
+      height = mParameters.srcHeightAsInt();
+    }
+  }
+
+  // Adapt width / height if the aspect ratio does not correspond with the BBOX.
+  // Required by WMS spec. 1.3.
+  if ( aspectRatio
+       && mParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
+  {
+    QgsRectangle extent = mParameters.bboxAsRectangle();
+    if ( !mParameters.bbox().isEmpty() && extent.isEmpty() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    mParameters[QgsWmsParameter::BBOX] );
+    }
+
+    QString crs = mParameters.crs();
+    if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
+    {
+      crs = QString( "EPSG:4326" );
+      extent.invert();
+    }
+
+    QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+    if ( outputCrs.hasAxisInverted() )
+    {
+      extent.invert();
+    }
+
+    if ( !extent.isEmpty() && height > 0 && width > 0 )
+    {
+      const double mapRatio = extent.width() / extent.height();
+      const double imageRatio = static_cast<double>( width ) / static_cast<double>( height );
+      if ( !qgsDoubleNear( mapRatio, imageRatio, 0.0001 ) )
+      {
+        // inspired by MapServer, mapdraw.c L115
+        const double cellsize = ( extent.width() / static_cast<double>( width ) ) * 0.5 + ( extent.height() / static_cast<double>( height ) ) * 0.5;
+        width = extent.width() / cellsize;
+        height = extent.height() / cellsize;
+      }
+    }
+  }
+
+  if ( width <= 0 )
+  {
+    throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                  mParameters[QgsWmsParameter::WIDTH] );
+  }
+  else if ( height <= 0 )
+  {
+    throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                  mParameters[QgsWmsParameter::HEIGHT] );
+  }
+
+  return QSize( width, height );
+}
+
 void QgsWmsRenderContext::removeUnwantedLayers()
 {
   QList<QgsMapLayer *> layers;

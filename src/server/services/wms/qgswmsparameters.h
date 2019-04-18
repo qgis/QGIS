@@ -371,6 +371,8 @@ namespace QgsWms
        */
       QgsWmsParameter operator[]( QgsWmsParameter::Name name ) const;
 
+      void set( QgsWmsParameter::Name name, const QVariant &value );
+
       /**
        * Dumps parameters.
        */

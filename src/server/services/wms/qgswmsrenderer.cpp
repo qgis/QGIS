@@ -123,7 +123,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
+      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
       settings.setMapScale( mapSettings.scale() );
       settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
@@ -142,7 +142,7 @@ namespace QgsWms
     const qreal dpmm = mContext.dotsPerMm();
     const QSizeF minSize = renderer.minimumSize();
     const QSize size( minSize.width() * dpmm, minSize.height() * dpmm );
-    image.reset( createImage( size.width(), size.height(), false ) );
+    image.reset( createImage( size ) );
 
     // configure painter
     std::unique_ptr<QPainter> painter;
@@ -172,7 +172,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
+      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
       settings.setMapScale( mapSettings.scale() );
       settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
@@ -186,7 +186,7 @@ namespace QgsWms
     // create image
     const int width = mWmsParameters.widthAsInt();
     const int height = mWmsParameters.heightAsInt();
-    std::unique_ptr<QImage> image( createImage( width, height, false ) );
+    std::unique_ptr<QImage> image( createImage( QSize( width, height ) ) );
 
     // configure painter
     const qreal dpmm = mContext.dotsPerMm();
@@ -270,7 +270,7 @@ namespace QgsWms
 
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
-    std::unique_ptr<QImage> image( createImage() );
+    std::unique_ptr<QImage> image( createImage( mContext.mapSize() ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
@@ -777,7 +777,7 @@ namespace QgsWms
 
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
-    std::unique_ptr<QImage> image( createImage() );
+    std::unique_ptr<QImage> image( createImage( mContext.mapSize() ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
@@ -909,16 +909,7 @@ namespace QgsWms
     }
 
     // create the mapSettings and the output image
-    int imageWidth = mWmsParameters.widthAsInt();
-    int imageHeight = mWmsParameters.heightAsInt();
-
-    if ( !( imageWidth && imageHeight ) &&  ! mWmsParameters.infoFormatIsImage() )
-    {
-      imageWidth = 10;
-      imageHeight = 10;
-    }
-
-    std::unique_ptr<QImage> outputImage( createImage( imageWidth, imageHeight ) );
+    std::unique_ptr<QImage> outputImage( createImage( mContext.mapSize() ) );
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -966,61 +957,8 @@ namespace QgsWms
     return ba;
   }
 
-  QImage *QgsRenderer::createImage( int width, int height, bool useBbox ) const
+  QImage *QgsRenderer::createImage( const QSize &size ) const
   {
-    if ( width < 0 )
-      width = this->width();
-
-    if ( height < 0 )
-      height = this->height();
-
-    //Adapt width / height if the aspect ratio does not correspond with the BBOX.
-    //Required by WMS spec. 1.3.
-    if ( useBbox && mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
-    {
-      QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
-      if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
-      {
-        throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                      mWmsParameters[QgsWmsParameter::BBOX] );
-      }
-
-      QString crs = mWmsParameters.crs();
-      if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
-      {
-        crs = QString( "EPSG:4326" );
-        mapExtent.invert();
-      }
-      QgsCoordinateReferenceSystem outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-      if ( outputCRS.hasAxisInverted() )
-      {
-        mapExtent.invert();
-      }
-      if ( !mapExtent.isEmpty() && height > 0 && width > 0 )
-      {
-        double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
-        double imageWidthHeightRatio = static_cast<double>( width ) / static_cast<double>( height );
-        if ( !qgsDoubleNear( mapWidthHeightRatio, imageWidthHeightRatio, 0.0001 ) )
-        {
-          // inspired by MapServer, mapdraw.c L115
-          double cellsize = ( mapExtent.width() / static_cast<double>( width ) ) * 0.5 + ( mapExtent.height() / static_cast<double>( height ) ) * 0.5;
-          width = mapExtent.width() / cellsize;
-          height = mapExtent.height() / cellsize;
-        }
-      }
-    }
-
-    if ( width <= 0 )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    mWmsParameters[QgsWmsParameter::WIDTH] );
-    }
-    else if ( height <= 0 )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    mWmsParameters[QgsWmsParameter::HEIGHT] );
-    }
-
     std::unique_ptr<QImage> image;
 
     // use alpha channel only if necessary because it slows down performance
@@ -1029,12 +967,12 @@ namespace QgsWms
 
     if ( transparent && format != QgsWmsParameters::JPG )
     {
-      image = qgis::make_unique<QImage>( width, height, QImage::Format_ARGB32_Premultiplied );
+      image = qgis::make_unique<QImage>( size, QImage::Format_ARGB32_Premultiplied );
       image->fill( 0 );
     }
     else
     {
-      image = qgis::make_unique<QImage>( width, height, QImage::Format_RGB32 );
+      image = qgis::make_unique<QImage>( size, QImage::Format_RGB32 );
       image->fill( mWmsParameters.backgroundColorAsColor() );
     }
 
@@ -2873,12 +2811,12 @@ namespace QgsWms
 
   QImage *QgsRenderer::scaleImage( const QImage *image ) const
   {
-    //test if width / height ratio of image is the same as the ratio of
+    // Test if width / height ratio of image is the same as the ratio of
     // WIDTH / HEIGHT parameters. If not, the image has to be scaled (required
     // by WMS spec)
     QImage *scaledImage = nullptr;
-    int width = this->width();
-    int height = this->height();
+    const int width = mWmsParameters.widthAsInt();
+    const int height = mWmsParameters.heightAsInt();
     if ( width != image->width() || height != image->height() )
     {
       scaledImage = new QImage( image->scaled( width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );

@@ -46,7 +46,8 @@ namespace QgsWms
         SetAccessControl       = 0x40,
         AddQueryLayers         = 0x80,
         UseWfsLayersOnly       = 0x100,
-        AddExternalLayers      = 0x200
+        AddExternalLayers      = 0x200,
+        UseSrcWidthHeight      = 0x400
       };
       Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -198,6 +199,13 @@ namespace QgsWms
        * \since QGIS 3.8
        */
       QMap<QString, QList<QgsMapLayer *> > layerGroups() const;
+
+      /**
+       * Returns the size (in pixels) of the map to render, according to width
+       * and height WMS parameters as well as the \a aspectRatio option.
+       * \since QGIS 3.8
+       */
+      QSize mapSize( bool aspectRatio = true ) const;
 
     private:
       void initNicknameLayers();

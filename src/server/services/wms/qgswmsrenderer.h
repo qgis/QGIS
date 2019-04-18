@@ -168,7 +168,7 @@ namespace QgsWms
        * \returns a non null pointer
        * may throw an exception
        */
-      QImage *createImage( int width = -1, int height = -1, bool useBbox = true ) const;
+      QImage *createImage( const QSize &size ) const;
 
       /**
        * Configures map settings according to WMS parameters.
