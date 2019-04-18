@@ -38,7 +38,7 @@ Item {
     height: customStyle.fields.height
     id: checkBox
     leftPadding: 0
-    checked: value == config['CheckedState']
+    checked: config['CheckedState'] ? value == config['CheckedState'] : value
 
     indicator: Rectangle {
                 implicitWidth: customStyle.fields.height
@@ -60,13 +60,14 @@ Item {
                 }
         }
     onCheckedChanged: {
-      valueChanged( checked ? config['CheckedState'] : config['UncheckedState'], false )
+      valueChanged( checked ? (config['CheckedState'] ? config['CheckedState'] : true) :
+                              (config['UncheckedState'] ? config['UncheckedState'] : false), false )
       forceActiveFocus()
     }
 
     // Workaround to get a signal when the value has changed
     onCurrentValueChanged: {
-      checked = currentValue == config['CheckedState']
+      checked = config['CheckedState'] ? currentValue == config['CheckedState'] : currentValue
     }
   }
 }
