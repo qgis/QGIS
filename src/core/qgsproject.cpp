@@ -1839,8 +1839,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
       if ( emIt == mEmbeddedLayers.constEnd() )
       {
         QDomElement maplayerElem;
-        // If layer is not valid, let's try to restore saved properties from invalidLayerProperties
-        if ( ml->isValid() )
+        // If layer is not valid, prefer to restore saved properties from invalidLayerProperties. But if that's
+        // not available, just write what we DO have
+        if ( ml->isValid() || ml->originalXmlProperties().isEmpty() )
         {
           // general layer metadata
           maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
