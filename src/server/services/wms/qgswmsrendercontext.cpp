@@ -538,7 +538,7 @@ QMap<QString, QList<QgsMapLayer *> > QgsWmsRenderContext::layerGroups() const
   return mLayerGroups;
 }
 
-int QgsWmsRenderContext::width() const
+int QgsWmsRenderContext::mapWidth() const
 {
   int width = mParameters.widthAsInt();
 
@@ -551,7 +551,7 @@ int QgsWmsRenderContext::width() const
   return width;
 }
 
-int QgsWmsRenderContext::height() const
+int QgsWmsRenderContext::mapHeight() const
 {
   int height = mParameters.heightAsInt();
 
@@ -583,7 +583,7 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
     wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
   }
 
-  if ( wmsMaxWidth != -1 && width() > wmsMaxWidth )
+  if ( wmsMaxWidth != -1 && mapWidth() > wmsMaxWidth )
   {
     return false;
   }
@@ -603,7 +603,7 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
     wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
   }
 
-  if ( wmsMaxHeight != -1 && height() > wmsMaxHeight )
+  if ( wmsMaxHeight != -1 && mapHeight() > wmsMaxHeight )
   {
     return false;
   }
@@ -624,13 +624,13 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
       depth = 32;
   }
 
-  const int bytes_per_line = ( ( width() * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
+  const int bytes_per_line = ( ( mapWidth() * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
 
-  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( width() )
+  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( mapWidth() )
        || bytes_per_line <= 0
-       || height() <= 0
-       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height() )
-       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height() ) )
+       || mapHeight() <= 0
+       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( mapHeight() )
+       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( mapHeight() ) )
   {
     return false;
   }
@@ -640,8 +640,8 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
 
 QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
 {
-  int mapWidth = width();
-  int mapHeight = height();
+  int width = mapWidth();
+  int height = mapHeight();
 
   // Adapt width / height if the aspect ratio does not correspond with the BBOX.
   // Required by WMS spec. 1.3.
@@ -668,32 +668,32 @@ QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
       extent.invert();
     }
 
-    if ( !extent.isEmpty() && mapHeight > 0 && mapWidth > 0 )
+    if ( !extent.isEmpty() && height > 0 && width > 0 )
     {
       const double mapRatio = extent.width() / extent.height();
-      const double imageRatio = static_cast<double>( mapWidth ) / static_cast<double>( mapHeight );
+      const double imageRatio = static_cast<double>( width ) / static_cast<double>( height );
       if ( !qgsDoubleNear( mapRatio, imageRatio, 0.0001 ) )
       {
         // inspired by MapServer, mapdraw.c L115
-        const double cellsize = ( extent.width() / static_cast<double>( mapWidth ) ) * 0.5 + ( extent.height() / static_cast<double>( mapHeight ) ) * 0.5;
-        mapWidth = extent.width() / cellsize;
-        mapHeight = extent.height() / cellsize;
+        const double cellsize = ( extent.width() / static_cast<double>( width ) ) * 0.5 + ( extent.height() / static_cast<double>( height ) ) * 0.5;
+        width = extent.width() / cellsize;
+        height = extent.height() / cellsize;
       }
     }
   }
 
-  if ( mapWidth <= 0 )
+  if ( width <= 0 )
   {
     throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                   mParameters[QgsWmsParameter::WIDTH] );
   }
-  else if ( mapHeight <= 0 )
+  else if ( height <= 0 )
   {
     throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                   mParameters[QgsWmsParameter::HEIGHT] );
   }
 
-  return QSize( mapWidth, mapHeight );
+  return QSize( width, height );
 }
 
 void QgsWmsRenderContext::removeUnwantedLayers()

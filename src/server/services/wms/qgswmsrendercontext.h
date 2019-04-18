@@ -212,12 +212,12 @@ namespace QgsWms
       /**
        * Returns WIDTH or SRCWIDTH according to \a UseSrcWidthHeight flag.
        */
-      int width() const;
+      int mapWidth() const;
 
       /**
        * Returns HEIGHT or SRCHEIGHT according to \a UseSrcWidthHeight flag.
        */
-      int height() const;
+      int mapHeight() const;
 
     private:
       void initNicknameLayers();
