@@ -24,6 +24,7 @@ QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *laye
   , mExpressionContext( context )
   , mFeatureCount( layer->featureCount() )
 {
+  mRunning = false;
   if ( !mExpressionContext.scopeCount() )
   {
     mExpressionContext = layer->createExpressionContext();
