@@ -646,6 +646,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
 
 QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpressionContext context ) const
 {
+  bool counted = false;
   QgsVectorLayerFeatureCounter *counter;
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
@@ -659,7 +660,10 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   counter = vl ?  vl->countSymbolFeatures() : nullptr;
 
-  if ( counter && vl->featuresCounted() )
+  if ( counter )
+    counted = vl->featuresCounted() ? true : false
+
+  if ( counter && counted )
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
 
