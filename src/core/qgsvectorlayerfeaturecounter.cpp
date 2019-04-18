@@ -33,8 +33,6 @@ QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *laye
 
 bool QgsVectorLayerFeatureCounter::run()
 {
-  mutex.lock();
-  mRunning = true;
   mSymbolFeatureCountMap.clear();
   mSymbolFeatureIdMap.clear();
   QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
@@ -91,17 +89,12 @@ bool QgsVectorLayerFeatureCounter::run()
       if ( isCanceled() )
       {
         mRenderer->stopRender( renderContext );
-        mRunning = false;
-        mutex.unlock();
         return false;
       }
     }
     mRenderer->stopRender( renderContext );
   }
-
   setProgress( 100 );
-  mRunning = false;
-  mutex.unlock();
   emit symbolsCounted();
   return true;
 }
@@ -113,7 +106,7 @@ QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 
 long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) const
 {
-  return mRunning ? -1 : mSymbolFeatureCountMap.value( legendKey, -1 );
+  return mSymbolFeatureCountMap.value( legendKey, -1 );
 }
 
 QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const
@@ -121,7 +114,7 @@ QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap()
   return mSymbolFeatureIdMap;
 }
 
-QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString symbolkey ) const
+QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString &symbolkey ) const
 {
-   return mRunning ? QgsFeatureIds() : mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
+  return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
 }
