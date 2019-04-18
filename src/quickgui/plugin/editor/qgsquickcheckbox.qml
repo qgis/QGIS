@@ -56,7 +56,7 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: checkBox.currentValue = !checkBox.currentValue
+                    onClicked: checkBox.checked = !checkBox.checked
                 }
         }
     onCheckedChanged: {
