@@ -156,7 +156,7 @@ class CORE_EXPORT QgsAggregateCalculator
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
-     * \param ids Pointer to a list of feature ID to filter out unwanted features in the request
+     * \param ids Pointer to a list of feature IDs to use in the calculation. Set to NULLPTR to disable any ID based filtering. An empty list indicates that no features will be considered.
      * \returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
