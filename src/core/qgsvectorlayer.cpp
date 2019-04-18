@@ -1405,6 +1405,11 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   if ( !setDataProvider( mProviderKey, options ) )
   {
     QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
+    const QDomElement elem = layer_node.toElement();
+
+    // for invalid layer sources, we fallback to stored wkbType if available
+    if ( elem.hasAttribute( QStringLiteral( "wkbType" ) ) )
+      mWkbType = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "wkbType" ) ), mWkbType );
   }
 
   QDomElement pkeyElem = pkeyNode.toElement();
@@ -1691,6 +1696,7 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
 
   // set the geometry type
   mapLayerNode.setAttribute( QStringLiteral( "geometry" ), QgsWkbTypes::geometryDisplayString( geometryType() ) );
+  mapLayerNode.setAttribute( QStringLiteral( "wkbType" ), qgsEnumValueToKey( wkbType() ) );
 
   // add provider node
   if ( mDataProvider )
