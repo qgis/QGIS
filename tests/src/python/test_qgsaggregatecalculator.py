@@ -396,6 +396,11 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
+        # test with subset
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', ids=list() )
+        self.assertTrue(ok)
+        self.assertEqual(val, 0.0)
+
     def testExpressionNoMatch(self):
         """ test aggregate calculation using an expression with no features """
 
