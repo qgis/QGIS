@@ -2840,7 +2840,7 @@ namespace QgsWms
     }
     else
     {
-      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
       settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
     }
 
