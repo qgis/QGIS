@@ -269,20 +269,6 @@ namespace QgsWms
 
       void handlePrintErrors( const QgsLayout *layout ) const;
 
-      /**
-       * Returns QgsWmsParameter SRCWIDTH if it's a GetLegendGraphics request and otherwise HEIGHT parameter
-       * \returns height parameter
-       * \since QGIS 3.4.7
-       */
-      int height() const;
-
-      /**
-       * Returns QgsWmsParameter SRCWIDTH parameter if it's a GetLegendGraphics request and otherwise WIDTH parameter
-       * \returns width parameter
-       * \since QGIS 3.4.7
-       */
-      int width() const;
-
       void configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings = nullptr );
 
       void setLayerStyle( QgsMapLayer *layer, const QString &style ) const;

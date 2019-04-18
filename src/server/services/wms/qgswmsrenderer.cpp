@@ -2775,24 +2775,6 @@ namespace QgsWms
     }
   }
 
-  int QgsRenderer::height() const
-  {
-    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
-           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
-         mWmsParameters.srcHeightAsInt() > 0 )
-      return mWmsParameters.srcHeightAsInt();
-    return mWmsParameters.heightAsInt();
-  }
-
-  int QgsRenderer::width() const
-  {
-    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
-           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
-         mWmsParameters.srcWidthAsInt() > 0 )
-      return mWmsParameters.srcWidthAsInt();
-    return mWmsParameters.widthAsInt();
-  }
-
   void QgsRenderer::configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings )
   {
     const bool useSld = !mContext.parameters().sldBody().isEmpty();
