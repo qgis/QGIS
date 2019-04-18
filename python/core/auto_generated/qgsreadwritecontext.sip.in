@@ -119,7 +119,7 @@ Returns data provider coordinate transform context
 
 .. seealso:: :py:func:`setTransformContext`
 
-.. versionadded:: 3.10
+.. versionadded:: 3.8
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext );
@@ -128,7 +128,7 @@ Sets data coordinate transform context to ``transformContext``
 
 .. seealso:: :py:func:`transformContext`
 
-.. versionadded:: 3.10
+.. versionadded:: 3.8
 %End
 
       public:
