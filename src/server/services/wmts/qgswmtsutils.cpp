@@ -99,6 +99,7 @@ namespace QgsWmts
     }
 
     tmi.unit = crs.mapUnits();
+    tmi.hasAxisInverted = crs.hasAxisInverted();
 
     // calculate tile matrix scale denominator
     double scaleDenominator = 0.0;
@@ -186,6 +187,7 @@ namespace QgsWmts
     tms.ref = tmi.ref;
     tms.extent = extent;
     tms.unit = unit;
+    tms.hasAxisInverted = tmi.hasAxisInverted;
     tms.tileMatrixList = tileMatrixList;
 
     return tms;
@@ -282,6 +284,7 @@ namespace QgsWmts
 
           QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
           tmi.unit = crs.mapUnits();
+          tmi.hasAxisInverted = crs.hasAxisInverted();
 
           QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ), crs, project );
           try
@@ -327,6 +330,7 @@ namespace QgsWmts
         tms.ref = tmi.ref;
         tms.extent = tmi.extent;
         tms.unit = tmi.unit;
+        tms.hasAxisInverted = tmi.hasAxisInverted;
         tms.tileMatrixList = tileMatrixList;
 
         tmsList.append( tms );
@@ -759,7 +763,7 @@ namespace QgsWmts
     double maxx = tm.left + ( tc + 1 ) * ( tileSize * res );
     double maxy = tm.top - tr * ( tileSize * res );
     QString bbox;
-    if ( tms.ref == "EPSG:4326" )
+    if ( tms.hasAxisInverted )
     {
       bbox = qgsDoubleToString( miny, 6 ) + ',' +
              qgsDoubleToString( minx, 6 ) + ',' +
@@ -820,6 +824,7 @@ namespace QgsWmts
       tmi4326.extent = QgsRectangle( -180, -90, 180, 90 );
       tmi4326.scaleDenominator = 279541132.0143588675418869;
       tmi4326.unit = QgsUnitTypes::DistanceDegrees;
+      tmi4326.hasAxisInverted = true;
       m[tmi4326.ref] = tmi4326;
 
       return m;
