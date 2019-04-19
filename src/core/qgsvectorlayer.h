@@ -74,6 +74,7 @@ class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
+class QgsFeatureIds;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -970,6 +971,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns number of features rendered by symbol or -1 if failed or counts are not available
      */
     long featureCount( const QString &legendKey ) const;
+
+    /**
+     * List of Id of features rendered with specified legend key. Features must be first
+     * calculated by countSymbolFeatures()
+     * \returns List of Id of features rendered by symbol or an empty list of not counted or symbol not in the list.
+     *
+     * \since QGIS 3.8
+     */
+    const QgsFeatureIds featureIds( const QString &legendKey ) const;
 
     /**
      * Determines if this vector layer has features.
@@ -2606,6 +2616,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     // Feature counts for each renderer legend key
     QHash<QString, long> mSymbolFeatureCountMap;
+
+    // feature id for each renderer legend keyh
+    QHash<QString, QgsFeatureIds> mSymbolIdMap;
 
     //! True while an undo command is active
     bool mEditCommandActive = false;

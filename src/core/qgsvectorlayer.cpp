@@ -52,6 +52,7 @@
 #include "qgsexpressionfieldbuffer.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeature.h"
+#include "qgsfeatureid.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -692,6 +693,14 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
+long QgsVectorLayer::featureIds( const QString &legendKey ) const
+{
+  if ( !mSymbolFeatureCounted )
+    return QgsFeatureIds();
+
+  return mSymbolIdMap.value( legendKey, QgsFeatureIds() );
+}
+
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
   if ( !mSymbolFeatureCounted && !mPendingTasks.isEmpty() )
@@ -718,6 +727,7 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 
   if ( mPendingTasks.isEmpty() )
     mSymbolFeatureCountMap.clear();
+    mSymbolIdMap.clear();
 
   mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
   connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
@@ -3232,6 +3242,7 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     mRenderer = r;
     mSymbolFeatureCounted = false;
     mSymbolFeatureCountMap.clear();
+    mSymbolIdMap.clear();
 
     emit rendererChanged();
     emit styleChanged();
@@ -4493,6 +4504,7 @@ void QgsVectorLayer::onSymbolsCounted()
   if ( mFeatureCounter )
   {
     mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
+    mSymbolIdMap = mFeatureCounter->symbolFeatureIdMap();
     mSymbolFeatureCounted = true;
     emit symbolFeatureCountMapChanged();
   }
