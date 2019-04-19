@@ -163,10 +163,6 @@ Expression to evaluate in the legend
 
   private:
 
-    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
-%Docstring
-Copies are not allowed
-%End
 };
 
 
