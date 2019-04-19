@@ -910,6 +910,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
     if ( ltmln )
     {
+      qInfo()<<"ltmln";
       symnode = qobject_cast<QgsSymbolLegendNode *>( ltmln );
       name = symnode->getCurrentLabel();
     }
@@ -940,6 +941,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     if ( evaluate || name.contains( "[%" ) )
     {
       qInfo()<<evaluate;
+      qInfo()<<name;
       QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
       if ( vlayer )
       {
@@ -948,7 +950,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       }
 
       if ( symnode )
-          name = symnode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
+        name = symnode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
       else
       {
         const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );

@@ -156,6 +156,7 @@ Emitted when a previously available layer got unloaded (from layer registry).
     void attachToLayer();
 
 
+
   private:
 
     QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
