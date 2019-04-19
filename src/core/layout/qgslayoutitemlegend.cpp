@@ -910,7 +910,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
     if ( ltmln )
     {
-      symnode = qobject_cast<QgsSymbolLegendNode *>( ltmln )
+      symnode = qobject_cast<QgsSymbolLegendNode *>( ltmln );
       name = symnode->getCurrentLabel();
     }
     else
@@ -935,12 +935,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       }
     }
 
-    bool evaluate = vlayer ? !vlayer->expression().isEmpty() : false;
+    bool evaluate = vlayer ? !nodeLayer->expression().isEmpty() : false;
 
-    qInfo() << evaluate;
-    qInfo() << ltmln;
     if ( evaluate || name.contains( "[%" ) )
     {
+      qInfo()<<evaluate;
       QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
       if ( vlayer )
       {
