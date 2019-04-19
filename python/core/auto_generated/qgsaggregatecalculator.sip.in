@@ -130,7 +130,7 @@ Calculates the value of an aggregate.
                           If an expression is used, then the context parameter must be set.
 :param context: expression context for evaluating expressions
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
-:param ids: Pointer to a list of feature IDs to use in the calculation. Set to NULLPTR to disable any ID based filtering. An empty list indicates that no features will be considered.
+:param ids: Pointer to a list of feature IDs to use in the calculation. Set to ``None`` to disable any ID based filtering. An empty list indicates that no features will be considered.
 
 :return: calculated aggregate value
 %End
