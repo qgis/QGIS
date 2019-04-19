@@ -669,11 +669,14 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
     qInfo()<<mItem.ruleKey();
     const QgsFeatureIds fids = vl->featureIds( mItem.ruleKey() );
-    featureIds.reserve( fids.count() );
-
-    for ( QgsFeatureId fid : fids )
+    if ( !fids.empty() )
     {
-      featureIds << static_cast<qint64>( fid );
+      featureIds.reserve( fids.count() );
+
+      for ( QgsFeatureId fid : fids )
+      {
+        featureIds << static_cast<qint64>( fid );
+      }
     }
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
   }
