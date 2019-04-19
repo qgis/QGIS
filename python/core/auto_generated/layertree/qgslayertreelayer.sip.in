@@ -155,6 +155,10 @@ Emitted when a previously available layer got unloaded (from layer registry).
   protected:
     void attachToLayer();
 
+     QString mExpression = QString();
+%Docstring
+Expression to evaluate in the legend
+%End
 
 
   private:

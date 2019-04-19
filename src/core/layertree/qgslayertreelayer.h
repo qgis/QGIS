@@ -163,7 +163,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     //! Layer name - only used if layer does not exist or if mUseLayerName is false
     QString mLayerName;
     //! Expression to evaluate in the legend
-    QString mExpression = QStringLiteral("");
+    QString mExpression = QString();
 
     //!
     bool mUseLayerName = true;

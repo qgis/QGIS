@@ -725,8 +725,10 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
   }
 
   if ( mPendingTasks.isEmpty() )
+  {
     mSymbolFeatureCountMap.clear();
     mSymbolIdMap.clear();
+  }
 
   mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
   connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
