@@ -94,6 +94,10 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     void allowRefresh();
 
   private:
+    /**
+     * Cached QgsExpressionContext
+     * \since QGIS 3.8
+     */
     QgsExpressionContext *mLayoutLegendContext = nullptr;
 
     /**

@@ -115,5 +115,6 @@ QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap()
 
 QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString &symbolkey ) const
 {
+  qInfo() << symbolokey;
   return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
 }

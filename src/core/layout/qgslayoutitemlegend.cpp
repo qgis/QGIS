@@ -903,10 +903,12 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ); // Possibly useless
   QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node ) ? QgsLayerTree::toLayer( node ) : nullptr;
-  if ( nodeLayer )
+  if ( nodeLayer && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-    if ( !ltmln && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
+    if ( ltmln )
+      name = ltmln->getCurrentLabel();
+    else
     {
       //finding the first label that is stored
       name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
@@ -916,7 +918,6 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
       if ( name.isEmpty() )
         name = node->name();
-
       if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
       {
         if ( vlayer && vlayer->featureCount() >= 0 )
@@ -927,7 +928,12 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         }
       }
     }
-    if ( ( nodeLayer || ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
+
+    bool evaluate = vlayer ? !vlayer->expression().isEmpty() : false;
+
+    qInfo() << evaluate;
+    qInfo() << ltmln;
+    if ( evaluate || name.contains( "[%" ) )
     {
       QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
       if ( vlayer )
@@ -940,7 +946,6 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       {
         if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( ltmln ) )
           name = synode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
-        return name;
       }
       else
       {
@@ -956,8 +961,8 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         else if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
           name = synode->evaluateLabel( context, name );
       }
-      return name;
     }
+    return name;
   }
   Q_UNUSED( name );
   return QgsLayerTreeModel::data( index, role );
