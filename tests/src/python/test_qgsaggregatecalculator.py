@@ -397,7 +397,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertEqual(val, 6.0)
 
         # test with subset
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', ids=list() )
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', ids=list())
         self.assertTrue(ok)
         self.assertEqual(val, 0.0)
 
