@@ -217,7 +217,7 @@ but subclasses can override this method to handoff calculation of aggregates to 
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for filter
 :param ok: will be set to ``True`` if calculation was successfully performed by the data provider
-:param fids: Pointer to a list of feature IDs to use in the calculation. Set to NULLPTR to disable any ID based filtering. An empty list indicates that no features will be considered.
+:param fids: Pointer to a list of feature IDs to use in the calculation. Set to ``None`` to disable any ID based filtering. An empty list indicates that no features will be considered.
 
 :return: calculated aggregate value
 
