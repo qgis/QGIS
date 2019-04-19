@@ -371,6 +371,10 @@ namespace QgsWms
        */
       QgsWmsParameter operator[]( QgsWmsParameter::Name name ) const;
 
+      /**
+       * Sets a parameter \a value thanks to its \a name.
+       * \since QGIS 3.8
+       */
       void set( QgsWmsParameter::Name name, const QVariant &value );
 
       /**

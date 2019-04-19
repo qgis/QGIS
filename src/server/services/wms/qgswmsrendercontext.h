@@ -207,6 +207,11 @@ namespace QgsWms
        */
       QSize mapSize( bool aspectRatio = true ) const;
 
+      /**
+       * Returns true if width and height are valid according to the maximum
+       * values defined within the project, false otherwise.
+       * \since QGIS 3.8
+       */
       bool isValidWidthHeight() const;
 
       /**

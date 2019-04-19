@@ -162,10 +162,8 @@ namespace QgsWms
       QImage *scaleImage( const QImage *image ) const;
 
       /**
-       * Creates a QImage from the HEIGHT and WIDTH parameters
-       * \param width image width (or -1 if width should be taken from WIDTH wms parameter)
-       * \param height image height (or -1 if height should be taken from HEIGHT wms parameter)
-       * \param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
+       * Creates a QImage.
+       * \param size image size
        * \returns a non null pointer
        * may throw an exception
        */
