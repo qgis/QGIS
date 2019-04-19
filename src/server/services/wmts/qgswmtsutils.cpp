@@ -137,6 +137,7 @@ namespace QgsWmts
     double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileSize * res );
     tmi.extent = QgsRectangle( left, bottom, right, top );
 
+    tmi.resolution = res;
     tmi.scaleDenominator = scaleDenominator;
 
     tileMatrixInfoMap[crsStr] = tmi;
@@ -152,8 +153,7 @@ namespace QgsWmts
     QgsUnitTypes::DistanceUnit unit = tmi.unit;
 
     // constant
-    double unit_to_m = QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
-    double resolution = points_to_m * scaleDenominator / unit_to_m;
+    double resolution = tmi.resolution;
     int column = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * resolution ) );
     int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * resolution ) );
 
@@ -691,17 +691,23 @@ namespace QgsWmts
 
       // Tile matrix information
       // to build tile matrix set like Google Mercator or TMS
+      // some references for resolution
+      // https://github.com/mapserver/mapcache/blob/master/lib/configuration.c#L94
       tileMatrixInfo tmi3857;
       tmi3857.ref = QStringLiteral( "EPSG:3857" );
       tmi3857.extent = QgsRectangle( -20037508.3427892480, -20037508.3427892480, 20037508.3427892480, 20037508.3427892480 );
+      tmi3857.resolution = 156543.0339280410;
       tmi3857.scaleDenominator = 559082264.0287179;
       tmi3857.unit = QgsUnitTypes::DistanceMeters;
       m[tmi3857.ref] = tmi3857;
 
-
+      // To build tile matrix set like mapcache for WGS84
+      // some references for resolution
+      // https://github.com/mapserver/mapcache/blob/master/lib/configuration.c#L73
       tileMatrixInfo tmi4326;
       tmi4326.ref = QStringLiteral( "EPSG:4326" );
       tmi4326.extent = QgsRectangle( -180, -90, 180, 90 );
+      tmi4326.resolution = 0.703125000000000;
       tmi4326.scaleDenominator = 279541132.0143588675418869;
       tmi4326.unit = QgsUnitTypes::DistanceDegrees;
       tmi4326.hasAxisInverted = true;
