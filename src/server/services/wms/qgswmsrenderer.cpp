@@ -119,7 +119,7 @@ namespace QgsWms
     configureLayers( layers );
 
     // init renderer
-    QgsLegendSettings legendSettings();
+    QgsLegendSettings settings = legendSettings();
     QgsLegendRenderer renderer( &model, settings );
 
     // create image
@@ -164,12 +164,12 @@ namespace QgsWms
     painter->scale( dpmm, dpmm );
 
     // rendering
-    QgsLegendSettings legendSettings();
+    QgsLegendSettings settings = legendSettings();
     QgsLayerTreeModelLegendNode::ItemContext ctx;
     ctx.painter = painter.get();
     ctx.labelXOffset = 0;
     ctx.point = QPointF();
-    nodeModel.drawSymbol( settings, &ctx, height / dpmm );
+    nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
     painter->end();
 
     return image.release();
