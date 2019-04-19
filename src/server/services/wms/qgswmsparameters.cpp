@@ -1094,6 +1094,16 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::ITEMFONTSIZE ].toDouble();
   }
 
+  QString QgsWmsParameters::itemFontColor() const
+  {
+    return mWmsParameters[ QgsWmsParameter::ITEMFONTCOLOR ].toString();
+  }
+
+  QColor QgsWmsParameters::itemFontColorAsColor() const
+  {
+    return mWmsParameters[ QgsWmsParameter::ITEMFONTCOLOR ].toColor();
+  }
+
   QFont QgsWmsParameters::layerFont() const
   {
     QFont font;
@@ -1146,6 +1156,18 @@ namespace QgsWms
 
     settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, layerSpaceAsDouble() );
     settings.rstyle( QgsLegendStyle::Subgroup ).setFont( layerFont() );
+
+    if ( !itemFontColor().isEmpty() )
+    {
+      settings.setFontColor( itemFontColorAsColor() );
+    }
+
+    // Ok, this is tricky: because QgsLegendSettings's layerFontColor was added to the API after
+    // fontColor, to fix regressions #21871 and #21870 and the previous behavior was to use fontColor
+    // for the whole legend we need to preserve that behavior.
+    // But, the 2.18 server parameters ITEMFONTCOLOR did not have effect on the layer titles too, so
+    // we set explicitly layerFontColor to black if it's not overridden by LAYERFONTCOLOR argument.
+    settings.setLayerFontColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
 
     settings.rstyle( QgsLegendStyle::SymbolLabel ).setFont( itemFont() );
     settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, symbolSpaceAsDouble() );
