@@ -899,15 +899,20 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
 QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
-  QString name;
+
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ); // Possibly useless
   QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node ) ? QgsLayerTree::toLayer( node ) : nullptr;
   if ( nodeLayer && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
+    QString name;
+    QgsSymbolLegendNode *symnode = nullptr;
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
     if ( ltmln )
-      name = ltmln->getCurrentLabel();
+    {
+      symnode = qobject_cast<QgsSymbolLegendNode *>( ltmln )
+      name = symnode->getCurrentLabel();
+    }
     else
     {
       //finding the first label that is stored
@@ -924,6 +929,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         {
           name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
           Q_UNUSED( ltmln );
+          Q_UNUSED( symnode );
           return name;
         }
       }
@@ -942,11 +948,8 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         connect( vlayer, &QgsVectorLayer::countDone, this, &QgsLegendModel::doneCount );
       }
 
-      if ( ltmln )
-      {
-        if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( ltmln ) )
-          name = synode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
-      }
+      if ( symnode )
+          name = symnode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
       else
       {
         const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
@@ -955,16 +958,15 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
           for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
           {
             if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
-              synode->evaluateLabel( context );
+              symnode->evaluateLabel( context );
           }
         }
         else if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-          name = synode->evaluateLabel( context, name );
+          name = symnode->evaluateLabel( context, name );
       }
     }
     return name;
   }
-  Q_UNUSED( name );
   return QgsLayerTreeModel::data( index, role );
 }
 
