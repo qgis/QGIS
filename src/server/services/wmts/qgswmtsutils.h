@@ -45,6 +45,8 @@ namespace QgsWmts
 
     bool hasAxisInverted = false;
 
+    double resolution = 0.0;
+
     double scaleDenominator = 0.0;
 
     int lastLevel = -1;
