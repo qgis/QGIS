@@ -74,7 +74,6 @@ class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
-class QgsFeatureIds;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;

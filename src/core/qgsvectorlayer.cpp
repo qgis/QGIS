@@ -52,7 +52,6 @@
 #include "qgsexpressionfieldbuffer.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeature.h"
-#include "qgsfeatureid.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
