@@ -195,6 +195,21 @@ Retrieves a variable's value from the scope.
 .. seealso:: :py:func:`function`
 %End
 
+    QVariantList variableList( const QString &name ) const;
+%Docstring
+Retrieves a variable's value from the scope.
+
+:param name: variable name
+
+:return: List of variable values or invalid QVariantList if matching variable could not be found
+
+.. seealso:: :py:func:`hasVariable`
+
+.. seealso:: :py:func:`function`
+
+.. versionadded:: 3.8
+%End
+
     QStringList variableNames() const;
 %Docstring
 Returns a list of variable names contained within the scope.
@@ -414,6 +429,23 @@ Check whether a variable is specified by any scope within the context.
 .. seealso:: :py:func:`variable`
 
 .. seealso:: :py:func:`variableNames`
+%End
+
+    QVariantList variableList( const QString &name ) const;
+%Docstring
+Fetches a matching lvariable from the context. The variable will be fetched
+from the last scope contained within the context which has a matching
+variable set.
+
+:param name: variable name
+
+:return: List of variable values if matching variable exists in the context, otherwise an invalid QVariantList
+
+.. seealso:: :py:func:`hasVariable`
+
+.. seealso:: :py:func:`variableNames`
+
+.. versionadded:: 3.8 
 %End
 
     QVariant variable( const QString &name ) const;
