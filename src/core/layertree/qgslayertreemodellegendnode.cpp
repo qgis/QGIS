@@ -654,7 +654,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
-  QVariantList featureIds = QVariantList();
+  //QVariantList featureIds = QVariantList();
 
   counter = vl ?  vl->countSymbolFeatures() : nullptr;
 
@@ -664,22 +664,21 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
   if ( counter && counted )
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
-    const QgsFeatureIds fids = vl->featureIds( mItem.ruleKey() );
-    if ( !fids.empty() )
-    {
-      featureIds.reserve( fids.count() );
-
-      for ( QgsFeatureId fid : fids )
-      {
-        featureIds << static_cast<qint64>( fid );
-      }
-    }
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+    //const QgsFeatureIds fids = vl->featureIds( mItem.ruleKey() );
+    //if ( !fids.empty() )
+    //{
+    //  featureIds.reserve( fids.count() );
+    //  for ( QgsFeatureId fid : fids )
+    //  {
+    //    featureIds << static_cast<qint64>( fid );
+    //  }
+    //}
+    //scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
   }
   else
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( -1 ), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
+    //scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
   }
 
   context.appendScope( scope );
