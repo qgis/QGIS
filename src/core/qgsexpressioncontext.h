@@ -215,6 +215,16 @@ class CORE_EXPORT QgsExpressionContextScope
     QVariant variable( const QString &name ) const;
 
     /**
+     * Retrieves a variable's value from the scope.
+     * \param name variable name
+     * \returns List of variable values or invalid QVariantList if matching variable could not be found
+     * \see hasVariable()
+     * \see function()
+     * \since QGIS 3.8
+     */
+    QVariantList variableList( const QString &name ) const;
+
+    /**
      * Returns a list of variable names contained within the scope.
      * \see functionNames()
      * \see filteredVariableNames()
@@ -412,6 +422,18 @@ class CORE_EXPORT QgsExpressionContext
      * \see variableNames()
      */
     QVariant variable( const QString &name ) const;
+
+    /**
+     * Fetches a matching lvariable from the context. The variable will be fetched
+     * from the last scope contained within the context which has a matching
+     * variable set.
+     * \param name variable name
+     * \returns List of variable values if matching variable exists in the context, otherwise an invalid QVariantList
+     * \see hasVariable()
+     * \see variableNames()
+     * \since QGIS 3.8
+     */
+    QVariantList variableList( const QString &name ) const;
 
     /**
      * Returns a map of variable name to value representing all the expression variables

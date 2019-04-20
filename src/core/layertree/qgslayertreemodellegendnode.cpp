@@ -617,26 +617,26 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  if (label.isEmpty() )
-  {
-    if( vl )
-    {
-    mLabel = getCurrentLabel();
-    if ( ! mLayerNode->expression().isEmpty() )
-      mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", vl, context );
-    else if ( mLabel.contains( "[%" ) )
-      mLabel = evaluateLabelExpression( mLabel, vl, context );
-    }
-    return mLabel;
-  }
-  else 
+  if ( label.isEmpty() )
   {
     if ( vl )
     {
-    if ( ! mLayerNode->expression().isEmpty() )
-      label = evaluateLabelExpression( label + "[%" + mLayerNode->expression() + "%]", vl, context );
-    else if ( label.contains( "[%" ) )
-      label = evaluateLabelExpression( label, vl, context );
+      mLabel = getCurrentLabel();
+      if ( ! mLayerNode->expression().isEmpty() )
+        mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", vl, context );
+      else if ( mLabel.contains( "[%" ) )
+        mLabel = evaluateLabelExpression( mLabel, vl, context );
+    }
+    return mLabel;
+  }
+  else
+  {
+    if ( vl )
+    {
+      if ( ! mLayerNode->expression().isEmpty() )
+        label = evaluateLabelExpression( label + "[%" + mLayerNode->expression() + "%]", vl, context );
+      else if ( label.contains( "[%" ) )
+        label = evaluateLabelExpression( label, vl, context );
     }
     return label;
   }
@@ -654,7 +654,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
-  QList<QVariant> featureIds = QList<QVariant>();
+  QVariantList featureIds = QVariantList();
 
   counter = vl ?  vl->countSymbolFeatures() : nullptr;
 
@@ -663,9 +663,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   if ( counter && counted )
   {
-    qInfo()<<"counted";
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
-    qInfo()<<mItem.ruleKey();
     const QgsFeatureIds fids = vl->featureIds( mItem.ruleKey() );
     if ( !fids.empty() )
     {
