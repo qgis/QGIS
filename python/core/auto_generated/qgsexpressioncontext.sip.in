@@ -195,21 +195,6 @@ Retrieves a variable's value from the scope.
 .. seealso:: :py:func:`function`
 %End
 
-    QVariantList variableList( const QString &name ) const;
-%Docstring
-Retrieves a variable's value from the scope.
-
-:param name: variable name
-
-:return: List of variable values or invalid QVariantList if matching variable could not be found
-
-.. seealso:: :py:func:`hasVariable`
-
-.. seealso:: :py:func:`function`
-
-.. versionadded:: 3.8
-%End
-
     QStringList variableNames() const;
 %Docstring
 Returns a list of variable names contained within the scope.

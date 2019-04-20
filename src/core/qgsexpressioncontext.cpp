@@ -301,12 +301,6 @@ QVariant QgsExpressionContext::variable( const QString &name ) const
   return scope ? scope->variable( name ) : QVariant();
 }
 
-QVariantList QgsExpressionContext::variableList( const QString &name ) const
-{
-  const QgsExpressionContextScope *scope = activeScopeForVariable( name );
-  return scope ? scope->variableList( name ) : QVariantList();
-}
-
 QVariantMap QgsExpressionContext::variablesToMap() const
 {
   QStringList names = variableNames();
