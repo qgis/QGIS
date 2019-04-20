@@ -110,11 +110,6 @@ QVariant QgsExpressionContextScope::variable( const QString &name ) const
   return hasVariable( name ) ? mVariables.value( name ).value : QVariant();
 }
 
-QVariantList QgsExpressionContextScope::variableList( const QString &name ) const
-{
-  return hasVariable( name ) ? mVariables.value( name ) : QVariantList();
-}
-
 QStringList QgsExpressionContextScope::variableNames() const
 {
   QStringList names = mVariables.keys();

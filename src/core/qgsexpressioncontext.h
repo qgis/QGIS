@@ -215,16 +215,6 @@ class CORE_EXPORT QgsExpressionContextScope
     QVariant variable( const QString &name ) const;
 
     /**
-     * Retrieves a variable's value from the scope.
-     * \param name variable name
-     * \returns List of variable values or invalid QVariantList if matching variable could not be found
-     * \see hasVariable()
-     * \see function()
-     * \since QGIS 3.8
-     */
-    QVariantList variableList( const QString &name ) const;
-
-    /**
      * Returns a list of variable names contained within the scope.
      * \see functionNames()
      * \see filteredVariableNames()
