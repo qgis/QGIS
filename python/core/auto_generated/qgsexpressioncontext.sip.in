@@ -431,6 +431,21 @@ Check whether a variable is specified by any scope within the context.
 .. seealso:: :py:func:`variableNames`
 %End
 
+    QVariant variable( const QString &name ) const;
+%Docstring
+Fetches a matching variable from the context. The variable will be fetched
+from the last scope contained within the context which has a matching
+variable set.
+
+:param name: variable name
+
+:return: variable value if matching variable exists in the context, otherwise an invalid QVariant
+
+.. seealso:: :py:func:`hasVariable`
+
+.. seealso:: :py:func:`variableNames`
+%End
+
     QVariantList variableList( const QString &name ) const;
 %Docstring
 Fetches a matching lvariable from the context. The variable will be fetched
@@ -446,21 +461,6 @@ variable set.
 .. seealso:: :py:func:`variableNames`
 
 .. versionadded:: 3.8 
-%End
-
-    QVariant variable( const QString &name ) const;
-%Docstring
-Fetches a matching variable from the context. The variable will be fetched
-from the last scope contained within the context which has a matching
-variable set.
-
-:param name: variable name
-
-:return: variable value if matching variable exists in the context, otherwise an invalid QVariant
-
-.. seealso:: :py:func:`hasVariable`
-
-.. seealso:: :py:func:`variableNames`
 %End
 
     QVariantMap variablesToMap() const;
