@@ -579,7 +579,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     {
       //QgsExpressionContext context_copy = *context;
 
-      QList<qint64> fids;
+      QSet<qint64> fids;
       const QSet<QVariant> ids = context->variableList( "symbol_feature_ids" ).toSet();
       QgsExpressionContext context_copy = *context;
       for ( QVariant id : ids )
