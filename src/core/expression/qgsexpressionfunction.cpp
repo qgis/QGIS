@@ -580,10 +580,10 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
       //QgsExpressionContext context_copy = *context;
 
       QList<qint64> fids;
-      const Qset<QVariant> ids = context->variableList( "symbol_feature_ids" ).toSet();
-      for (QVariant id : ids)
-        fids << static_cast<qint64>( id );
-      result = vl->aggregate( aggregate, subExpression, parameters, &context, &ok, &fids );
+      const QSet<QVariant> ids = context->variableList( "symbol_feature_ids" ).toSet();
+      for ( QVariant id : ids )
+        fids <<  id.toLongLong();
+      result = vl->aggregate( aggregate, subExpression, parameters, context, &ok, &fids );
     }
     else
     {
