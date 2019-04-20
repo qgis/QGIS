@@ -838,10 +838,6 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 {
   QgsExpressionContext context = QgsLayoutItem::createExpressionContext();
 
-  // We only want the last scope from the map's expression context, as this contains
-  // the map specific variables. We don't want the rest of the map's context, because that
-  // will contain duplicate global, project, layout, etc scopes.
-
   if ( mMap )
     context.appendScopes( mMap->createExpressionContext().takeScopes() );
 
@@ -865,10 +861,7 @@ QgsExpressionContext QgsLayoutItemLegend::updateExpressionContext()
 
   mExpContext.~QgsExpressionContext();
   const QList<QgsExpressionContextScope *> scopes = context.takeScopes();
-  for ( QgsExpressionContextScope *scopep : scopes )
-  {
-    mExpContext.appendScope( scopep );
-  }
+  mExpContext.appendScopes( scopes );
   return mExpContext;
 
 }
@@ -958,11 +951,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         {
           for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
           {
-            if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
+            if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
               symnode->evaluateLabel( context );
           }
         }
-        else if ( QgsSymbolLegendNode *synode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+        else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
           name = symnode->evaluateLabel( context, name );
       }
     }
