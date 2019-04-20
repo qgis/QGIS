@@ -577,7 +577,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
 
     if ( context->indexOfScope( "Symbol scope" ) != -1 )
     {
-      const QgsFeatureIds ids = vl->featureIds( context->variable( "symbol_id" )->toString() );
+      const QgsFeatureIds ids = vl->featureIds( context->variable( "symbol_id" ).toString() );
       QgsExpressionContext context_copy = *context;
       result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, &ids );
     }
