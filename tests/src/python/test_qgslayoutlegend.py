@@ -366,7 +366,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().clear()
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        point_layer.countSymbolFeatures()
 
         layout = QgsPrintLayout(QgsProject.instance())
         layout.initializeDefaults()
@@ -381,20 +380,14 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layer = QgsProject.instance().addMapLayer(point_layer)
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
 
+        point_layer.countSymbolFeatures( disable_async = True )
+
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
         legendnodes[0].setUserLabel('[%@symbol_id %]')
         legendnodes[1].setUserLabel('[%@symbol_count %]')
         legendnodes[2].setUserLabel('[%sum("Pilots") %]')
 
-        _ = legendnodes[0].evaluateLabel()
-        
-        x=0
-        while x<7:
-            sleep(1)
-            if point_layer.featuresCounted():
-                break
-            x+=1
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()

@@ -700,7 +700,7 @@ const QgsFeatureIds QgsVectorLayer::featureIds( const QString &legendKey ) const
   return mSymbolIdMap.value( legendKey, QgsFeatureIds() );
 }
 
-QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
+QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool disable_async )
 {
   if ( !mSymbolFeatureCounted && !mPendingTasks.isEmpty() )
     return nullptr;
@@ -725,12 +725,22 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
   }
 
   mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
-  connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
-  connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
+  if ( disable_async )
+  {
+    mFeatureCounter->run();
+    mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
+    mSymbolIdMap = mFeatureCounter->symbolFeatureIdMap();
+    mSymbolFeatureCounted = true;
+  }
+  else
+  {
+    connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
+    connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
 
-  long taskid = QgsApplication::taskManager()->addTask( mFeatureCounter );
-  emit startCount( taskid );
-  mPendingTasks.append( taskid );
+    long taskid = QgsApplication::taskManager()->addTask( mFeatureCounter );
+    emit startCount( taskid );
+    mPendingTasks.append( taskid );
+  }
 
   return mFeatureCounter;
 }
