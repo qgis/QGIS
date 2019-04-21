@@ -296,11 +296,18 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     /**
     * Evaluate the label with the proper context
     * \param label text to evaluate
-    * \param vl pointer to the vectorlayer
     * \param context extra QgsExpressionContext to use for evaluation
     * \since QGIS 3.8
     */
-    QString evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context = QgsExpressionContext() ) const;
+    QString evaluateLabelExpression( QString label, QgsExpressionContext context = QgsExpressionContext() ) const;
+
+    /**
+     * Evaluates  and returns the text label of the current node
+     * \param context extra QgsExpressionContext to use for evaluating the expression
+     * \param label text to evaluate instead of the layer layertree string
+     * \since QGIS 3.8
+     */
+    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
 
   public slots:
 
@@ -327,15 +334,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \since QGIS 3.6
      */
     void toggleAllItems();
-
-    /**
-     * Evaluates  and returns the text label of the current node
-     * \param context extra QgsExpressionContext to use for evaluating the expression
-     * \param label text to evaluate instead of the layer layertree string
-     * \since QGIS 3.8
-     */
-    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
-
 
   private:
     void updateLabel();

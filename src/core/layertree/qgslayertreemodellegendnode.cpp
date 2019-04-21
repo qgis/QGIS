@@ -623,9 +623,9 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
     {
       mLabel = getCurrentLabel();
       if ( ! mLayerNode->expression().isEmpty() )
-        mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", vl, context );
+        mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", context );
       else if ( mLabel.contains( "[%" ) )
-        mLabel = evaluateLabelExpression( mLabel, vl, context );
+        mLabel = evaluateLabelExpression( mLabel, context );
     }
     return mLabel;
   }
@@ -634,9 +634,9 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
     if ( vl )
     {
       if ( ! mLayerNode->expression().isEmpty() )
-        label = evaluateLabelExpression( label + "[%" + mLayerNode->expression() + "%]", vl, context );
+        label = evaluateLabelExpression( label + "[%" + mLayerNode->expression() + "%]", context );
       else if ( label.contains( "[%" ) )
-        label = evaluateLabelExpression( label, vl, context );
+        label = evaluateLabelExpression( label, context );
     }
     return label;
   }
@@ -644,51 +644,34 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
 
 QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpressionContext context ) const
 {
-  bool counted = false;
-  QgsVectorLayerFeatureCounter *counter;
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-
-  context.appendScope( vl->createExpressionContextScope() );
-
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
-
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
-  //QVariantList featureIds = QVariantList();
-
-  counter = vl ?  vl->countSymbolFeatures() : nullptr;
-
-  if ( counter )
-    counted = vl->featuresCounted() ? true : false;
-
-  if ( counter && counted )
+  if ( vl )
   {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
+    vl->countSymbolFeatures();
+    context.appendScope( vl->createExpressionContextScope() );
+
+    QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
+
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
+    //QVariantList featureIds = QVariantList();
     //const QgsFeatureIds fids = vl->featureIds( mItem.ruleKey() );
     //if ( !fids.empty() )
-    //{
-    //  featureIds.reserve( fids.count() );
+    //{ featureIds.reserve( fids.count() );
     //  for ( QgsFeatureId fid : fids )
-    //  {
     //    featureIds << static_cast<qint64>( fid );
-    //  }
     //}
     //scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
-  }
-  else
-  {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( -1 ), true ) );
-    //scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
-  }
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
 
-  context.appendScope( scope );
-
+    context.appendScope( scope );
+  }
   return context;
 }
 
-QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context ) const
+QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsExpressionContext context ) const
 {
-  context = ( mLayerNode->layer()->type() == QgsMapLayerType::VectorLayer ) ? createExpressionContext( context ) : vl->createExpressionContext( context );
+  context = createExpressionContext( context );
   label = QgsExpression().replaceExpressionText( label, &context );
   return label;
 }
