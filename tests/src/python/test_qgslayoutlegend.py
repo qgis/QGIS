@@ -380,7 +380,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layer = QgsProject.instance().addMapLayer(point_layer)
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
 
-        point_layer.countSymbolFeatures( disable_async = True )
+        point_layer.countSymbolFeatures(disable_async=True)
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
@@ -391,8 +391,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
-
-        print("featuress_counted?:", point_layer.featuresCounted(), x)
 
         self.assertEqual(label1, '0')
         self.assertEqual(label2, '5')
