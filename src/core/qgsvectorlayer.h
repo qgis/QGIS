@@ -2108,10 +2108,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
 
     /**
-     * Returns true if the features were counted
+     * Returns true if the features were counted.
      * \since QIGS 3.8
      */
-    bool featuresCounted() SIP_SKIP { return mSymbolFeatureCounted; }
+    bool featuresCounted() const { return mSymbolFeatureCounted; }
 
   public slots:
 

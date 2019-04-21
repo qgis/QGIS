@@ -2290,6 +2290,12 @@ Configuration and logic to apply automatically on any edit happening on this lay
 .. versionadded:: 3.4
 %End
 
+    bool featuresCounted() const;
+%Docstring
+Returns true if the features were counted.
+
+.. versionadded:: 3.8
+%End
 
 
 
