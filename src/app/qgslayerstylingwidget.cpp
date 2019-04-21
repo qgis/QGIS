@@ -272,6 +272,7 @@ void QgsLayerStylingWidget::apply()
   QWidget *current = mWidgetStack->mainPanel();
 
   bool styleWasChanged = false;
+  bool triggerRepaint = false;  // whether the change needs the layer to be repainted
   if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
   {
     widget->apply();
@@ -287,31 +288,34 @@ void QgsLayerStylingWidget::apply()
       QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( layer->renderer()->type() );
       undoName = QStringLiteral( "Style Change - %1" ).arg( m->visibleName() );
       styleWasChanged = true;
+      triggerRepaint = true;
     }
   }
   else if ( QgsRasterTransparencyWidget *widget = qobject_cast<QgsRasterTransparencyWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
   }
   else if ( qobject_cast<QgsRasterHistogramWidget *>( current ) )
   {
     mRasterStyleWidget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
   }
   else if ( QgsMapLayerConfigWidget *widget = qobject_cast<QgsMapLayerConfigWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = widget->shouldTriggerLayerRepaint();
   }
 
-  pushUndoItem( undoName );
+  pushUndoItem( undoName, triggerRepaint );
 
   if ( styleWasChanged )
   {
     emit styleChanged( mCurrentLayer );
     QgsProject::instance()->setDirty( true );
-    mCurrentLayer->triggerRepaint();
   }
   connect( mCurrentLayer, &QgsMapLayer::styleChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );
 }
@@ -609,25 +613,26 @@ void QgsLayerStylingWidget::liveApplyToggled( bool value )
   settings.setValue( QStringLiteral( "UI/autoApplyStyling" ), value );
 }
 
-void QgsLayerStylingWidget::pushUndoItem( const QString &name )
+void QgsLayerStylingWidget::pushUndoItem( const QString &name, bool triggerRepaint )
 {
   QString errorMsg;
   QDomDocument doc( QStringLiteral( "style" ) );
   QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
   doc.appendChild( rootNode );
   mCurrentLayer->writeStyle( rootNode, doc, errorMsg, QgsReadWriteContext() );
-  mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, name, rootNode, mLastStyleXml ) );
+  mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, name, rootNode, mLastStyleXml, triggerRepaint ) );
   // Override the last style on the stack
   mLastStyleXml = rootNode.cloneNode();
 }
 
 
-QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last )
+QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last, bool triggerRepaint )
   : QUndoCommand( text )
   , mLayer( layer )
   , mXml( current )
   , mLastState( last )
   , mTime( QTime::currentTime() )
+  , mTriggerRepaint( triggerRepaint )
 {
 }
 
@@ -636,7 +641,8 @@ void QgsMapLayerStyleCommand::undo()
   QString error;
   QgsReadWriteContext context = QgsReadWriteContext();
   mLayer->readStyle( mLastState, error, context );
-  mLayer->triggerRepaint();
+  if ( mTriggerRepaint )
+    mLayer->triggerRepaint();
 }
 
 void QgsMapLayerStyleCommand::redo()
@@ -644,7 +650,8 @@ void QgsMapLayerStyleCommand::redo()
   QString error;
   QgsReadWriteContext context = QgsReadWriteContext();
   mLayer->readStyle( mXml, error, context );
-  mLayer->triggerRepaint();
+  if ( mTriggerRepaint )
+    mLayer->triggerRepaint();
 }
 
 bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
@@ -665,6 +672,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
 
   mXml = otherCmd->mXml;
   mTime = otherCmd->mTime;
+  mTriggerRepaint |= otherCmd->mTriggerRepaint;
   return true;
 }
 
