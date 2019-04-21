@@ -66,6 +66,9 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
 
     void setDockMode( bool dockMode ) override;
 
+    //! Only modifies 3D renderer so we do not want layer repaint (which would trigger unnecessary terrain map update)
+    bool shouldTriggerLayerRepaint() const override { return false; }
+
   public slots:
     void apply() override;
 
