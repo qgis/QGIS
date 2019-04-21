@@ -325,6 +325,7 @@ Evaluate the label with the proper context
 .. versionadded:: 3.8
 %End
 
+
   public slots:
 
     void checkAllItems();

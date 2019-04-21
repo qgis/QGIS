@@ -48,7 +48,6 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-
 class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
@@ -57,8 +56,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        point_layer.countSymbolFeatures()
         QgsProject.instance().clear()
         QgsProject.instance().addMapLayers([point_layer])
 
@@ -116,8 +115,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     def testResizeWithMapContent(self):
         """Test test legend resizes to match map content"""
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        point_layer.countSymbolFeatures()
         QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
@@ -155,8 +154,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     def testResizeDisabled(self):
         """Test that test legend does not resize if auto size is disabled"""
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        point_layer.countSymbolFeatures()
         QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
@@ -198,8 +197,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     def testResizeDisabledCrop(self):
         """Test that if legend resizing is disabled, and legend is too small, then content is cropped"""
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        point_layer.countSymbolFeatures()
         QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
@@ -309,8 +308,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     def testExpressionInText(self):
         """Test expressions embedded in legend node text"""
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        point_layer.countSymbolFeatures()
         layout = QgsPrintLayout(QgsProject.instance())
         layout.setName('LAYOUT')
         layout.initializeDefaults()
@@ -394,7 +393,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
 
-        print(point_layer.featuresCounted())
+        print("featuress_counted?:",point_layer.featuresCounted())
 
         self.assertEqual(label1, '0')
         self.assertEqual(label2, '5')

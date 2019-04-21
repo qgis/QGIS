@@ -335,7 +335,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \since QGIS 3.8
      */
     QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
-    
+
   private:
     void updateLabel();
 
