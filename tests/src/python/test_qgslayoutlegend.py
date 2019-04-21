@@ -388,12 +388,18 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legendnodes[2].setUserLabel('[%sum("Pilots") %]')
 
         _ = legendnodes[0].evaluateLabel()
-        sleep(1)
+        
+        x=0
+        while x<7:
+            sleep(1)
+            if point_layer.featuresCounted():
+                break
+            x+=1
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
 
-        print("featuress_counted?:",point_layer.featuresCounted())
+        print("featuress_counted?:", point_layer.featuresCounted(), x)
 
         self.assertEqual(label1, '0')
         self.assertEqual(label2, '5')
