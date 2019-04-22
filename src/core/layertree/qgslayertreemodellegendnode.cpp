@@ -419,6 +419,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   QgsRenderContext context;
   context.setScaleFactor( settings.dpi() / 25.4 );
   context.setRendererScale( settings.mapScale() );
+  context.setFlag( QgsRenderContext::Antialiasing, true );
   context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
   context.setForceVectorOutput( true );
   context.setPainter( ctx ? ctx->painter : nullptr );
@@ -484,6 +485,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );
       tempImage.fill( Qt::transparent );
       QPainter imagePainter( &tempImage );
+      imagePainter.setRenderHint( QPainter::Antialiasing );
       context.setPainter( &imagePainter );
       s->drawPreviewIcon( &imagePainter, tempImageSize, &context );
       context.setPainter( ctx->painter );
