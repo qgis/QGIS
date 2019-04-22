@@ -105,6 +105,10 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
+  if ( painter && painter->renderHints() & QPainter::Antialiasing )
+  {
+    context.setFlag( QgsRenderContext::Antialiasing, true );
+  }
   return context;
 }
 
