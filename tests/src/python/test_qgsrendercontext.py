@@ -73,6 +73,7 @@ class TestQgsRenderContext(unittest.TestCase):
         p = QPainter()
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
+        self.assertEqual(c.testFlag(QgsRenderContext.Antialiasing), False)
         self.assertAlmostEqual(c.scaleFactor(), 88 / 25.4, 3)
 
         im = QImage(1000, 600, QImage.Format_RGB32)
@@ -80,8 +81,10 @@ class TestQgsRenderContext(unittest.TestCase):
         im.setDotsPerMeterX(dots_per_m)
         im.setDotsPerMeterY(dots_per_m)
         p = QPainter(im)
+        p.setRenderHint(QPainter.Antialiasing)
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
+        self.assertEqual(c.testFlag(QgsRenderContext.Antialiasing), True)
         self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
 
     def testFromMapSettings(self):
