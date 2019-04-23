@@ -1055,11 +1055,23 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
   Q_UNUSED( current );
   Q_UNUSED( previous );
 
+  mLayerExpressionButton->setEnabled( false );
+
   if ( mLegend && mLegend->autoUpdateModel() )
+      QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
+      if ( !QgsLayerTree::isLayer( currentNode ) )
+        return;
+
+      QgsLayerTreeLayer *currentLayerNode = QgsLayerTree::toLayer( currentNode );
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( currentLayerNode->layer() );
+      if ( !vl )
+        return;
+      mLayerExpressionButton->setEnabled( true );
     return;
 
   mCountToolButton->setChecked( false );
   mCountToolButton->setEnabled( false );
+
 
   mExpressionFilterButton->blockSignals( true );
   mExpressionFilterButton->setChecked( false );
@@ -1077,6 +1089,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
 
   mCountToolButton->setChecked( currentNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
   mCountToolButton->setEnabled( true );
+  mLayerExpressionButton->setEnabled( true );
 
   bool exprEnabled;
   QString expr = QgsLayerTreeUtils::legendFilterByExpression( *qobject_cast<QgsLayerTreeLayer *>( currentNode ), &exprEnabled );
