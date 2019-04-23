@@ -16,6 +16,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 2.0
 import QtGraphicalEffects 1.0
+import QtQuick.Layouts 1.3
 import QgsQuick 0.1 as QgsQuick
 
 /**
@@ -33,8 +34,19 @@ Item {
   property var galleryIcon: customStyle.icons.gallery
   property var brokenImageIcon: customStyle.icons.brokenImage
   property var notAvailableImageIcon: customStyle.icons.notAvailable
-  property real iconSize:  customStyle.fields.height * 0.75
+  property real iconSize:  customStyle.fields.height
   property real textMargin: QgsQuick.Utils.dp * 10
+  // Ment to be use with the save callback - stores image source
+  property string sourceToDelete
+
+  Component.onCompleted: {
+    callbackOnSave = function() {
+      externalResourceHandler.onFormSave(fieldItem)
+    }
+    callbackOnCancel = function() {
+      externalResourceHandler.onFormCanceled(fieldItem)
+    }
+  }
 
   id: fieldItem
   enabled: true // its interactive widget
@@ -51,9 +63,6 @@ Item {
     },
     State {
       name: "notSet"
-    },
-    State {
-      name: "broken"
     },
     State {
       name: "notAvailable"
@@ -101,7 +110,7 @@ Item {
 
       function getSource() {
         if (image.status === Image.Error) {
-          fieldItem.state = "broken"
+          fieldItem.state = "notAvailable"
           return ""
         }
         else if (image.currentValue && QgsQuick.Utils.fileExists(homePath + "/" + image.currentValue)) {
@@ -112,10 +121,8 @@ Item {
           fieldItem.state = "notSet"
           return ""
         }
-        else {
-          fieldItem.state = "notAvailable"
-          return homePath + "/" + image.currentValue
-        }
+        fieldItem.state = "notAvailable"
+        return homePath + "/" + image.currentValue
       }
     }
   }
@@ -150,66 +157,77 @@ Item {
   }
 
   Item {
+    property real itemHeight: fieldItem.iconSize/2
+
     id: buttonsContainer
     anchors.centerIn: imageContainer
     anchors.fill: imageContainer
-    anchors.margins: 10
+    anchors.margins: fieldItem.textMargin
     visible: fieldItem.state !== "valid"
 
-    QgsQuick.IconTextItem {
-      id: photoButton
-      iconSize: fieldItem.iconSize
-      fontColor: customStyle.fields.fontColor
-      fontPixelSize: fieldItem.iconSize/2
-      iconSource: fieldItem.cameraIcon
-      labelText: qsTr("Take a Photo")
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.verticalCenter: parent.verticalCenter
 
-      visible: !readOnly && fieldItem.state !== " valid"
-      height: fieldItem.iconSize
+    ColumnLayout {
+      width: parent.width
+      height: photoButton.height * 2
       anchors.horizontalCenter: parent.horizontalCenter
+      anchors.verticalCenter: parent.verticalCenter
 
-      MouseArea {
-        anchors.fill: parent
-        onClicked: {
-          photoCapturePanel.visible = true
-          photoCapturePanel.targetDir = homePath
-          photoCapturePanel.fieldItem = fieldItem
+      QgsQuick.IconTextItem {
+        id: photoButton
+        iconSize: buttonsContainer.itemHeight
+        fontColor: customStyle.fields.fontColor
+        fontPixelSize: customStyle.fields.fontPixelSize
+        iconSource: fieldItem.cameraIcon
+        labelText: qsTr("Take a Photo")
+
+        visible: !readOnly && fieldItem.state !== " valid"
+        height: buttonsContainer.itemHeight
+        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+        MouseArea {
+          anchors.fill: parent
+          onClicked: {
+            photoCapturePanel.visible = true
+            photoCapturePanel.targetDir = homePath
+            photoCapturePanel.fieldItem = fieldItem
+          }
+        }
+      }
+
+      QgsQuick.IconTextItem {
+        id: browseButton
+        iconSize: buttonsContainer.itemHeight
+        fontColor: customStyle.fields.fontColor
+        fontPixelSize: customStyle.fields.fontPixelSize
+        iconSource: fieldItem.galleryIcon
+        labelText: qsTr("Add From a Gallery")
+
+        visible: !readOnly && fieldItem.state !== " valid"
+        height: buttonsContainer.itemHeight
+        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+        MouseArea {
+          anchors.fill: parent
+          onClicked: externalResourceHandler.chooseImage(fieldItem)
         }
       }
     }
+  }
 
-    QgsQuick.IconTextItem {
-      id: browseButton
-      iconSize: fieldItem.iconSize
-      fontColor: customStyle.fields.fontColor
-      fontPixelSize: fieldItem.iconSize/2
-      iconSource: fieldItem.galleryIcon
-      labelText: qsTr("Add From a Gallery")
+  QgsQuick.IconTextItem {
+    id: infoItem
+    iconSize: fieldItem.iconSize/2
+    fontColor: customStyle.fields.fontColor
+    iconSource: fieldItem.brokenImageIcon
+    labelText: qsTr("Image is not available: ") + image.currentValue
 
-      visible: !readOnly && fieldItem.state !== " valid"
-      height: fieldItem.iconSize
-      anchors.top: photoButton.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-
-      MouseArea {
-        anchors.fill: parent
-        onClicked: externalResourceHandler.chooseImage(fieldItem)
-      }
-    }
-
-    QgsQuick.IconTextItem {
-      id: infoItem
-      iconSize: fieldItem.iconSize/2
-      fontColor: customStyle.fields.fontColor
-      iconSource: fieldItem.brokenImageIcon
-      labelText: qsTr("Image is broken: ") + image.currentValue
-
-      visible: fieldItem.state === "broken" || fieldItem.state === "notAvailable"
-      height: fieldItem.iconSize/2
-      anchors.bottom: parent.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-
-    }
+    visible: fieldItem.state === "notAvailable"
+    height: fieldItem.iconSize/2
+    anchors.bottom: parent.bottom
+    anchors.bottomMargin: fieldItem.textMargin
+    anchors.horizontalCenter: parent.horizontalCenter
   }
 
 }
