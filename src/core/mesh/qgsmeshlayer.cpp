@@ -218,7 +218,7 @@ void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &tra
 
 void QgsMeshLayer::fillNativeMesh()
 {
-  Q_ASSERT( !mNativeMesh );
+  //Q_ASSERT( !mNativeMesh );
 
   mNativeMesh.reset( new QgsMesh() );
 
@@ -277,8 +277,10 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
+  bool nativeMeshHasChanged = dataProvider()->meshHasChanged();
+  
   // Native mesh
-  if ( !mNativeMesh )
+  if ( !mNativeMesh || nativeMeshHasChanged )
   {
     // lazy loading of mesh data
     fillNativeMesh();
@@ -291,7 +293,7 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
   mTriangularMesh->update( mNativeMesh.get(), &rendererContext );
 
   // Cache
-  if ( !mRendererCache )
+  if ( !mRendererCache || nativeMeshHasChanged )
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
 
   return new QgsMeshLayerRenderer( this, rendererContext );
