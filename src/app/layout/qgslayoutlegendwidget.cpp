@@ -1058,16 +1058,19 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
   mLayerExpressionButton->setEnabled( false );
 
   if ( mLegend && mLegend->autoUpdateModel() )
-      QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
-      if ( !QgsLayerTree::isLayer( currentNode ) )
-        return;
+  {
+    QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
+    if ( !QgsLayerTree::isLayer( currentNode ) )
+      return;
 
-      QgsLayerTreeLayer *currentLayerNode = QgsLayerTree::toLayer( currentNode );
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( currentLayerNode->layer() );
-      if ( !vl )
-        return;
-      mLayerExpressionButton->setEnabled( true );
+    QgsLayerTreeLayer *currentLayerNode = QgsLayerTree::toLayer( currentNode );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( currentLayerNode->layer() );
+    if ( !vl )
+      return;
+
+    mLayerExpressionButton->setEnabled( true );
     return;
+  }
 
   mCountToolButton->setChecked( false );
   mCountToolButton->setEnabled( false );
