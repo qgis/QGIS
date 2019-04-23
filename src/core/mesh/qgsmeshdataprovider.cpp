@@ -58,10 +58,6 @@ QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvi
 {
 }
 
-bool QgsMeshDataProvider::meshHasChanged()
-{
-  return false;
-}
 
 QgsMeshDatasetValue::QgsMeshDatasetValue( double x, double y )
   : mX( x ), mY( y )
@@ -180,6 +176,11 @@ double QgsMeshDatasetGroupMetadata::minimum() const
 double QgsMeshDatasetGroupMetadata::maximum() const
 {
   return mMaximumValue;
+}
+
+bool QgsMeshDatasetSourceInterface::meshHasChanged()
+{
+  return false;
 }
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
