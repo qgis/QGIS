@@ -409,9 +409,6 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
      */
     virtual void populateMesh( QgsMesh *mesh ) const = 0;
     
-    /**
-     * Give information if mesh has changed
-     */
     virtual bool meshHasChanged();
 };
 
