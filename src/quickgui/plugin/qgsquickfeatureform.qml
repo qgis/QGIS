@@ -376,6 +376,8 @@ Item {
           property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
+          property var callbackOnSave: undefined
+          property var callbackOnCancel: undefined
 
           active: widget !== 'Hidden'
 
@@ -386,6 +388,26 @@ Item {
           target: attributeEditorLoader.item
           onValueChanged: {
             AttributeValue = isNull ? undefined : value
+          }
+        }
+
+        Connections {
+          target: form
+          ignoreUnknownSignals: true
+          onSaved: {
+            if (attributeEditorLoader.widget === "ExternalResource") {
+              attributeEditorLoader.callbackOnSave()
+            }
+          }
+        }
+
+        Connections {
+          target: form
+          ignoreUnknownSignals: true
+          onCanceled: {
+            if (attributeEditorLoader.widget === "ExternalResource") {
+              attributeEditorLoader.callbackOnCancel()
+            }
           }
         }
       }
