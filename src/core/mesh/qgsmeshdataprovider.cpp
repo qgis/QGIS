@@ -178,11 +178,6 @@ double QgsMeshDatasetGroupMetadata::maximum() const
   return mMaximumValue;
 }
 
-bool QgsMeshDatasetSourceInterface::meshHasChanged()
-{
-  return false;
-}
-
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
 {
   return datasetCount( index.group() );
@@ -341,4 +336,9 @@ int QgsMesh::vertexCount() const
 int QgsMesh::faceCount() const
 {
   return faces.size();
+}
+
+bool QgsMeshDataSourceInterface::meshHasChanged()
+{
+  return false;
 }
