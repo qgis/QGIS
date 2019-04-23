@@ -413,7 +413,7 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
     /**
      * Give information if mesh has changed
      */
-    virtual bool meshHasChanged() { return false; }
+    virtual bool meshHasChanged();
 };
 
 /**
