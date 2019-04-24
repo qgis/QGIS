@@ -876,10 +876,14 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidg
     void mVerticalDistanceSpinBox_valueChanged( double d );
     void mHorizontalDisplacementSpinBox_valueChanged( double d );
     void mVerticalDisplacementSpinBox_valueChanged( double d );
+    void mHorizontalOffsetSpinBox_valueChanged( double d );
+    void mVerticalOffsetSpinBox_valueChanged( double d );
     void mHorizontalDistanceUnitWidget_changed();
     void mVerticalDistanceUnitWidget_changed();
     void mHorizontalDisplacementUnitWidget_changed();
     void mVerticalDisplacementUnitWidget_changed();
+    void mHorizontalOffsetUnitWidget_changed();
+    void mVerticalOffsetUnitWidget_changed();
 };
 
 /////////

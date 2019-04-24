@@ -1623,6 +1623,46 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
     double displacementY() const;
     void setDisplacementY( double d );
 
+    void setOffsetX( double offset );
+%Docstring
+Sets the horizontal offset values for points in the pattern.
+
+:param offset: offset value
+
+.. seealso:: :py:func:`offsetX`
+
+.. seealso:: :py:func:`setOffsetY`
+%End
+
+    double offsetX() const;
+%Docstring
+Returns the horizontal offset values for points in the pattern.
+
+.. seealso:: :py:func:`setOffsetX`
+
+.. seealso:: :py:func:`offsetY`
+%End
+
+    void setOffsetY( double offset );
+%Docstring
+Sets the vertical offset values for points in the pattern.
+
+:param offset: offset value
+
+.. seealso:: :py:func:`offsetY`
+
+.. seealso:: :py:func:`setOffsetX`
+%End
+
+    double offsetY() const;
+%Docstring
+Returns the vertical offset values for points in the pattern.
+
+.. seealso:: :py:func:`setOffsetY`
+
+.. seealso:: :py:func:`offsetX`
+%End
+
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     virtual QgsSymbol *subSymbol();
@@ -1718,6 +1758,86 @@ Returns the units for the vertical displacement between rows in the pattern.
 
     void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &displacementYMapUnitScale() const;
+
+    void setOffsetXUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units for the horizontal offset between rows in the pattern.
+
+:param unit: offset units
+
+.. seealso:: :py:func:`offsetXUnit`
+
+.. seealso:: :py:func:`setOffsetYUnit`
+%End
+
+    QgsUnitTypes::RenderUnit offsetXUnit() const;
+%Docstring
+Returns the units for the horizontal offset for rows in the pattern.
+
+.. seealso:: :py:func:`setOffsetXUnit`
+
+.. seealso:: :py:func:`offsetYUnit`
+%End
+
+    void setOffsetXMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the unit scale for the horizontal offset for rows in the pattern.
+
+:param scale: offset unit scale
+
+.. seealso:: :py:func:`offsetXMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetYMapUnitScale`
+%End
+
+    const QgsMapUnitScale &offsetXMapUnitScale() const;
+%Docstring
+Returns the unit scale for the horizontal offset for rows in the pattern.
+
+.. seealso:: :py:func:`setOffsetXMapUnitScale`
+
+.. seealso:: :py:func:`offsetYMapUnitScale`
+%End
+
+    void setOffsetYUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units for the vertical offset for rows in the pattern.
+
+:param unit: offset units
+
+.. seealso:: :py:func:`offsetYUnit`
+
+.. seealso:: :py:func:`setOffsetXUnit`
+%End
+
+    QgsUnitTypes::RenderUnit offsetYUnit() const;
+%Docstring
+Returns the units for the vertical offset for rows in the pattern.
+
+.. seealso:: :py:func:`setOffsetYUnit`
+
+.. seealso:: :py:func:`offsetXUnit`
+%End
+
+    void setOffsetYMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the unit scale for the vertical offset for rows in the pattern.
+
+:param scale: offset unit scale
+
+.. seealso:: :py:func:`offsetYMapUnitScale`
+
+.. seealso:: :py:func:`setOffsetXMapUnitScale`
+%End
+
+    const QgsMapUnitScale &offsetYMapUnitScale() const;
+%Docstring
+Returns the unit scale for the vertical offset between rows in the pattern.
+
+.. seealso:: :py:func:`setOffsetYMapUnitScale`
+
+.. seealso:: :py:func:`offsetXMapUnitScale`
+%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 

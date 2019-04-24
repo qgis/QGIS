@@ -1480,6 +1480,36 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double displacementY() const { return mDisplacementY; }
     void setDisplacementY( double d ) { mDisplacementY = d; }
 
+    /**
+     * Sets the horizontal offset values for points in the pattern.
+     * \param offset offset value
+     * \see offsetX()
+     * \see setOffsetY()
+    */
+    void setOffsetX( double offset ) { mOffsetX = offset; }
+
+    /**
+     * Returns the horizontal offset values for points in the pattern.
+     * \see setOffsetX()
+     * \see offsetY()
+    */
+    double offsetX() const { return mOffsetX; }
+
+    /**
+     * Sets the vertical offset values for points in the pattern.
+     * \param offset offset value
+     * \see offsetY()
+     * \see setOffsetX()
+    */
+    void setOffsetY( double offset ) { mOffsetY = offset; }
+
+    /**
+     * Returns the vertical offset values for points in the pattern.
+     * \see setOffsetY()
+     * \see offsetX()
+    */
+    double offsetY() const { return mOffsetY; }
+
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override { return mMarkerSymbol; }
 
@@ -1555,6 +1585,66 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale ) { mDisplacementYMapUnitScale = scale; }
     const QgsMapUnitScale &displacementYMapUnitScale() const { return mDisplacementYMapUnitScale; }
 
+    /**
+     * Sets the units for the horizontal offset between rows in the pattern.
+     * \param unit offset units
+     * \see offsetXUnit()
+     * \see setOffsetYUnit()
+    */
+    void setOffsetXUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetXUnit = unit; }
+
+    /**
+     * Returns the units for the horizontal offset for rows in the pattern.
+     * \see setOffsetXUnit()
+     * \see offsetYUnit()
+    */
+    QgsUnitTypes::RenderUnit offsetXUnit() const { return mOffsetXUnit; }
+
+    /**
+     * Sets the unit scale for the horizontal offset for rows in the pattern.
+     * \param scale offset unit scale
+     * \see offsetXMapUnitScale()
+     * \see setOffsetYMapUnitScale()
+    */
+    void setOffsetXMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetXMapUnitScale = scale; }
+
+    /**
+     * Returns the unit scale for the horizontal offset for rows in the pattern.
+     * \see setOffsetXMapUnitScale()
+     * \see offsetYMapUnitScale()
+    */
+    const QgsMapUnitScale &offsetXMapUnitScale() const { return mOffsetXMapUnitScale; }
+
+    /**
+     * Sets the units for the vertical offset for rows in the pattern.
+     * \param unit offset units
+     * \see offsetYUnit()
+     * \see setOffsetXUnit()
+    */
+    void setOffsetYUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetYUnit = unit; }
+
+    /**
+     * Returns the units for the vertical offset for rows in the pattern.
+     * \see setOffsetYUnit()
+     * \see offsetXUnit()
+    */
+    QgsUnitTypes::RenderUnit offsetYUnit() const { return mOffsetYUnit; }
+
+    /**
+     * Sets the unit scale for the vertical offset for rows in the pattern.
+     * \param scale offset unit scale
+     * \see offsetYMapUnitScale()
+     * \see setOffsetXMapUnitScale()
+    */
+    void setOffsetYMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetYMapUnitScale = scale; }
+
+    /**
+     * Returns the unit scale for the vertical offset between rows in the pattern.
+     * \see setOffsetYMapUnitScale()
+     * \see offsetXMapUnitScale()
+    */
+    const QgsMapUnitScale &offsetYMapUnitScale() const { return mOffsetYMapUnitScale; }
+
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
 
@@ -1580,6 +1670,12 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mDisplacementY = 0;
     QgsUnitTypes::RenderUnit mDisplacementYUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDisplacementYMapUnitScale;
+    double mOffsetX = 0;
+    QgsUnitTypes::RenderUnit mOffsetXUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetXMapUnitScale;
+    double mOffsetY = 0;
+    QgsUnitTypes::RenderUnit mOffsetYUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetYMapUnitScale;
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
@@ -1589,7 +1685,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 #endif
 
     void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
-                       double displacementX, double displacementY );
+                       double displacementX, double displacementY, double offsetX, double offsetY );
 };
 
 /**

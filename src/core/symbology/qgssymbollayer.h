@@ -175,6 +175,8 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyArrowHeadThickness, //!< Arrow head thickness
       PropertyArrowHeadType, //!< Arrow head type
       PropertyArrowType, //!< Arrow type
+      PropertyOffsetX, //!< Horizontal offset
+      PropertyOffsetY, //!< Vertical offset
     };
 
     /**
