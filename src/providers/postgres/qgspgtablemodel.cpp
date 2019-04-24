@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <climits>
 
@@ -39,7 +40,7 @@ QgsPgTableModel::QgsPgTableModel()
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
   setHeaderData( 8, Qt::Orientation::Horizontal, tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ), Qt::ToolTipRole );
-  setHeaderData( 9, Qt::Orientation::Horizontal, tr( "Enable check for primary key unicity when loading the features. This may slow down loading for large tables." ), Qt::ToolTipRole );
+  setHeaderData( 9, Qt::Orientation::Horizontal, tr( "Enable check for primary key unicity when loading views and materialized views. This option can make loading of large datasets significantly slower." ), Qt::ToolTipRole );
 }
 
 void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProperty )
@@ -127,8 +128,21 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     QStandardItem *checkPkUnicityItem  = new QStandardItem( QString() );
     checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() | Qt::ItemIsUserCheckable );
-    checkPkUnicityItem->setCheckState( Qt::Unchecked );
-    checkPkUnicityItem->setToolTip( headerData( 9, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
+
+    // Legacy: default value is determined by project option to trust layer's metadata
+    // TODO: remove this default from QGIS 4 and leave default value to false
+    // checkPkUnicity has only effect on views and materialized views, so we can safely disable it
+    if ( layerProperty.isView || layerProperty.isMaterializedView )
+    {
+      checkPkUnicityItem->setCheckState( QgsProject::instance( )->trustLayerMetadata() ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
+      checkPkUnicityItem->setToolTip( headerData( 9, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
+    }
+    else
+    {
+      checkPkUnicityItem->setCheckState( Qt::CheckState::Unchecked );
+      checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~ Qt::ItemIsEnabled );
+      checkPkUnicityItem->setToolTip( tr( "This option is only available for views and materialized views." ) );
+    }
 
     QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
@@ -383,7 +397,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 
   bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;
   QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
-  bool checkPkUnicity = itemFromIndex( index.sibling( index.row(), DbtmCheckPkUnicity ) )->checkState() == Qt::Checked;
+  bool checkPrimaryKeyUnicity = itemFromIndex( index.sibling( index.row(), DbtmCheckPkUnicity ) )->checkState() == Qt::Checked;
 
   QgsDataSourceUri uri( connInfo );
 
@@ -400,7 +414,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
-  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QString( checkPkUnicity ) );
+  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), checkPrimaryKeyUnicity ? QLatin1Literal( "1" ) : QLatin1Literal( "0" ) );
 
   QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );

@@ -82,8 +82,6 @@ struct QgsPostgresLayerProperty
   bool                          isView = false;
   bool                          isMaterializedView = false;
   QString                       tableComment;
-  bool                          checkPkUnicity = false;
-
 
   // TODO: rename this !
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
