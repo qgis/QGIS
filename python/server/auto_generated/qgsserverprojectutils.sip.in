@@ -171,7 +171,7 @@ Returns the default number of map units per millimeters in case of the scale is 
 
 :return: the default number of map units per millimeter
 
-.. versionadded:: 3.8
+.. versionadded:: 3.4
 %End
 
   bool wmsUseLayerIds( const QgsProject &project );
