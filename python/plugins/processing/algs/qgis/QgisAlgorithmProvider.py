@@ -135,6 +135,7 @@ from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .TextToFloat import TextToFloat
+from .TilesXYZ import TilesXYZ
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
@@ -246,6 +247,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 StatisticsByCategories(),
                 SumLines(),
                 TextToFloat(),
+                TilesXYZ(),
                 TinInterpolation(),
                 TopoColor(),
                 TruncateTable(),
