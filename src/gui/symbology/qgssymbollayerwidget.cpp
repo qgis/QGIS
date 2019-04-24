@@ -2978,10 +2978,14 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
   connect( mVerticalDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mVerticalDistanceSpinBox_valueChanged );
   connect( mHorizontalDisplacementSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalDisplacementSpinBox_valueChanged );
   connect( mVerticalDisplacementSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementSpinBox_valueChanged );
+  connect( mHorizontalOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalOffsetSpinBox_valueChanged );
+  connect( mVerticalOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointPatternFillSymbolLayerWidget::mVerticalOffsetSpinBox_valueChanged );
   connect( mHorizontalDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalDistanceUnitWidget_changed );
   connect( mVerticalDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mVerticalDistanceUnitWidget_changed );
   connect( mHorizontalDisplacementUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalDisplacementUnitWidget_changed );
   connect( mVerticalDisplacementUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementUnitWidget_changed );
+  connect( mHorizontalOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mHorizontalOffsetUnitWidget_changed );
+  connect( mVerticalOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointPatternFillSymbolLayerWidget::mVerticalOffsetUnitWidget_changed );
   mHorizontalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mVerticalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -2990,6 +2994,10 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mVerticalDisplacementUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mHorizontalOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mVerticalOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 }
 
 
@@ -3001,18 +3009,12 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   }
 
   mLayer = static_cast<QgsPointPatternFillSymbolLayer *>( layer );
-  mHorizontalDistanceSpinBox->blockSignals( true );
-  mHorizontalDistanceSpinBox->setValue( mLayer->distanceX() );
-  mHorizontalDistanceSpinBox->blockSignals( false );
-  mVerticalDistanceSpinBox->blockSignals( true );
-  mVerticalDistanceSpinBox->setValue( mLayer->distanceY() );
-  mVerticalDistanceSpinBox->blockSignals( false );
-  mHorizontalDisplacementSpinBox->blockSignals( true );
-  mHorizontalDisplacementSpinBox->setValue( mLayer->displacementX() );
-  mHorizontalDisplacementSpinBox->blockSignals( false );
-  mVerticalDisplacementSpinBox->blockSignals( true );
-  mVerticalDisplacementSpinBox->setValue( mLayer->displacementY() );
-  mVerticalDisplacementSpinBox->blockSignals( false );
+  whileBlocking( mHorizontalDistanceSpinBox )->setValue( mLayer->distanceX() );
+  whileBlocking( mVerticalDistanceSpinBox )->setValue( mLayer->distanceY() );
+  whileBlocking( mHorizontalDisplacementSpinBox )->setValue( mLayer->displacementX() );
+  whileBlocking( mVerticalDisplacementSpinBox )->setValue( mLayer->displacementY() );
+  whileBlocking( mHorizontalOffsetSpinBox )->setValue( mLayer->offsetX() );
+  whileBlocking( mVerticalOffsetSpinBox )->setValue( mLayer->offsetY() );
 
   mHorizontalDistanceUnitWidget->blockSignals( true );
   mHorizontalDistanceUnitWidget->setUnit( mLayer->distanceXUnit() );
@@ -3030,11 +3032,21 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   mVerticalDisplacementUnitWidget->setUnit( mLayer->displacementYUnit() );
   mVerticalDisplacementUnitWidget->setMapUnitScale( mLayer->displacementYMapUnitScale() );
   mVerticalDisplacementUnitWidget->blockSignals( false );
+  mHorizontalOffsetUnitWidget->blockSignals( true );
+  mHorizontalOffsetUnitWidget->setUnit( mLayer->offsetXUnit() );
+  mHorizontalOffsetUnitWidget->setMapUnitScale( mLayer->offsetXMapUnitScale() );
+  mHorizontalOffsetUnitWidget->blockSignals( false );
+  mVerticalOffsetUnitWidget->blockSignals( true );
+  mVerticalOffsetUnitWidget->setUnit( mLayer->offsetYUnit() );
+  mVerticalOffsetUnitWidget->setMapUnitScale( mLayer->offsetYMapUnitScale() );
+  mVerticalOffsetUnitWidget->blockSignals( false );
 
   registerDataDefinedButton( mHorizontalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceX );
   registerDataDefinedButton( mVerticalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceY );
   registerDataDefinedButton( mHorizontalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementX );
   registerDataDefinedButton( mVerticalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementY );
+  registerDataDefinedButton( mHorizontalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetX );
+  registerDataDefinedButton( mVerticalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetY );
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayerWidget::symbolLayer()
@@ -3078,6 +3090,24 @@ void QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementSpinBox_valueCha
   }
 }
 
+void QgsPointPatternFillSymbolLayerWidget::mHorizontalOffsetSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetX( d );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::mVerticalOffsetSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetY( d );
+    emit changed();
+  }
+}
+
 void QgsPointPatternFillSymbolLayerWidget::mHorizontalDistanceUnitWidget_changed()
 {
   if ( mLayer )
@@ -3114,6 +3144,26 @@ void QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementUnitWidget_chang
   {
     mLayer->setDisplacementYUnit( mVerticalDisplacementUnitWidget->unit() );
     mLayer->setDisplacementYMapUnitScale( mVerticalDisplacementUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::mHorizontalOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetXUnit( mHorizontalOffsetUnitWidget->unit() );
+    mLayer->setOffsetXMapUnitScale( mHorizontalOffsetUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::mVerticalOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetYUnit( mVerticalOffsetUnitWidget->unit() );
+    mLayer->setOffsetYMapUnitScale( mVerticalOffsetUnitWidget->getMapUnitScale() );
     emit changed();
   }
 }
