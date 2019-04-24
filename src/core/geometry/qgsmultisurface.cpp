@@ -150,7 +150,7 @@ QString QgsMultiSurface::asJson( int precision ) const
   return json;
 }
 
-json QgsMultiSurface::asJsonObject(int precision) const
+json QgsMultiSurface::asJsonObject( int precision ) const
 {
   json coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
@@ -175,7 +175,7 @@ json QgsMultiSurface::asJsonObject(int precision) const
   }
   return
   {
-    {  "type" ,  "MultiPolygon" },
+    {  "type",  "MultiPolygon" },
     {  "coordinates", coordinates }
   };
 }

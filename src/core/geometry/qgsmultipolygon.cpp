@@ -140,7 +140,7 @@ QString QgsMultiPolygon::asJson( int precision ) const
 }
 
 
-json QgsMultiPolygon::asJsonObject(int precision) const
+json QgsMultiPolygon::asJsonObject( int precision ) const
 {
   json polygons;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )

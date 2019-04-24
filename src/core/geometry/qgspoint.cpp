@@ -287,15 +287,16 @@ QString QgsPoint::asJson( int precision ) const
 {
   return "{\"type\": \"Point\", \"coordinates\": ["
          + qgsDoubleToString( mX, precision ) + QLatin1String( ", " ) + qgsDoubleToString( mY, precision )
-      + QLatin1String( "]}" );
+         + QLatin1String( "]}" );
 }
 
-json QgsPoint::asJsonObject(int precision) const
+json QgsPoint::asJsonObject( int precision ) const
 {
-  json j {
-      { "type", "Point" },
-      { "coordinates", { qgsRound( mX, precision ), qgsRound( mY, precision ) } },
-    };
+  json j
+  {
+    { "type", "Point" },
+    { "coordinates", { qgsRound( mX, precision ), qgsRound( mY, precision ) } },
+  };
   if ( is3D() )
   {
     j["coordinates"].push_back( qgsRound( mZ, precision ) );

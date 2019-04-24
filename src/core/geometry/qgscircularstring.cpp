@@ -376,7 +376,7 @@ QString QgsCircularString::asJson( int precision ) const
   return json;
 }
 
-json QgsCircularString::asJsonObject(int precision) const
+json QgsCircularString::asJsonObject( int precision ) const
 {
   // GeoJSON does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );

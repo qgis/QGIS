@@ -1214,7 +1214,7 @@ QJsonArray QgsGeometryUtils::pointsToJsonObject( const QgsPointSequence &points,
   return coordinates;
 }
 
-json QgsGeometryUtils::pointsToJson(const QgsPointSequence& points, int precision)
+json QgsGeometryUtils::pointsToJson( const QgsPointSequence &points, int precision )
 {
   json coordinates;
   for ( const QgsPoint &p : points )

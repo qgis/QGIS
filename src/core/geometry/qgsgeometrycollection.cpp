@@ -432,7 +432,7 @@ QString QgsGeometryCollection::asJson( int precision ) const
   return json;
 }
 
-json QgsGeometryCollection::asJsonObject(int precision) const
+json QgsGeometryCollection::asJsonObject( int precision ) const
 {
   json coordinates;
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
@@ -441,8 +441,8 @@ json QgsGeometryCollection::asJsonObject(int precision) const
   }
   return
   {
-    { "type" ,  "GeometryCollection" },
-    { "coordinates" , coordinates }
+    { "type",  "GeometryCollection" },
+    { "coordinates", coordinates }
   };
 }
 

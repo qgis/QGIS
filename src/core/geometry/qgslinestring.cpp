@@ -420,14 +420,14 @@ QString QgsLineString::asJson( int precision ) const
   return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
 }
 
-json QgsLineString::asJsonObject(int precision) const
+json QgsLineString::asJsonObject( int precision ) const
 {
   QgsPointSequence pts;
   points( pts );
   return
   {
     {  "type",  "LineString" },
-    {  "coordinates" ,  QgsGeometryUtils::pointsToJson( pts, precision ) }
+    {  "coordinates",  QgsGeometryUtils::pointsToJson( pts, precision ) }
   };
 }
 

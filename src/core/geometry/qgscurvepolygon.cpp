@@ -430,7 +430,7 @@ QString QgsCurvePolygon::asJson( int precision ) const
   return json;
 }
 
-json QgsCurvePolygon::asJsonObject(int precision) const
+json QgsCurvePolygon::asJsonObject( int precision ) const
 {
   json coordinates;
   if ( exteriorRing() )
@@ -452,7 +452,7 @@ json QgsCurvePolygon::asJsonObject(int precision) const
   return
   {
     {  "type", "Polygon"  },
-    { "coordinates" , coordinates }
+    { "coordinates", coordinates }
   };
 }
 

@@ -130,19 +130,20 @@ QString QgsMultiPoint::asJson( int precision ) const
   return json;
 }
 
-json QgsMultiPoint::asJsonObject(int precision) const
+json QgsMultiPoint::asJsonObject( int precision ) const
 {
-  json j {
-      { "type", "MultiPoint" },
-      { "coordinates", json::array() },
-    };
+  json j
+  {
+    { "type", "MultiPoint" },
+    { "coordinates", json::array() },
+  };
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
     const QgsPoint *point = static_cast<const QgsPoint *>( geom );
     if ( point->is3D() )
       j[ "coordinates" ].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ), qgsRound( point->z(), precision ) } );
     else
-      j[ "coordinates" ].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ) }  );
+      j[ "coordinates" ].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ) } );
   }
   return j;
 }

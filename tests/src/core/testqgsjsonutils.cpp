@@ -22,13 +22,14 @@
 class TestQgsJsonUtils : public QObject
 {
 
- public:
+  public:
 
-  enum JsonAlgs {
-    Json,
-    String
-  };
-  Q_ENUM(JsonAlgs)
+    enum JsonAlgs
+    {
+      Json,
+      String
+    };
+    Q_ENUM( JsonAlgs )
 
     Q_OBJECT
   private slots:
@@ -105,7 +106,7 @@ class TestQgsJsonUtils : public QObject
         QBENCHMARK
         {
           json j { QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) };
-          QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral(R"raw({"flddbl":2.0,"fldint":1,"fldtxt":"a value"})raw" ) );
+          QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral( R"raw({"flddbl":2.0,"fldint":1,"fldtxt":"a value"})raw" ) );
         }
       }
       else // 0.0032
@@ -143,11 +144,11 @@ class TestQgsJsonUtils : public QObject
         {
           const auto j { exporter.exportFeatureToJsonObject( feature ) };
           QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral( "{\"bbox\":[[1.12,1.12,5.45,5.33]],\"geometry\":{\"coordinates\":"
-                                                                        "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
-                                                                        "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
-                                                                        ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
-                                                                        ",\"type\":\"Feature\"}"
-         ) );
+                    "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+                    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+                    ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+                    ",\"type\":\"Feature\"}"
+                                                                      ) );
         }
       }
       else

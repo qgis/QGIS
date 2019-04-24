@@ -216,8 +216,8 @@ class CORE_EXPORT QgsJsonExporter
      * \see exportFeatures()
      */
     json exportFeatureToJsonObject( const QgsFeature &feature,
-                             const QVariantMap &extraProperties = QVariantMap(),
-                             const QVariant &id = QVariant() ) const SIP_SKIP;
+                                    const QVariantMap &extraProperties = QVariantMap(),
+                                    const QVariant &id = QVariant() ) const SIP_SKIP;
 
 
     /**
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsJsonUtils
      */
     static QVariantList parseArray( const QString &json, QVariant::Type type );
 
-    static json jsonFromVariant( const QVariant &v) SIP_SKIP;
+    static json jsonFromVariant( const QVariant &v ) SIP_SKIP;
 
 
 };

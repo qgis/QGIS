@@ -119,7 +119,7 @@ QString QgsMultiLineString::asJson( int precision ) const
   return json;
 }
 
-json QgsMultiLineString::asJsonObject(int precision) const
+json QgsMultiLineString::asJsonObject( int precision ) const
 {
   json coordinates;
   for ( const QgsAbstractGeometry *geom : mGeometries )
@@ -135,7 +135,7 @@ json QgsMultiLineString::asJsonObject(int precision) const
   return
   {
     { "type",  "MultiLineString" },
-    { "coordinates" , coordinates }
+    { "coordinates", coordinates }
   };
 }
 

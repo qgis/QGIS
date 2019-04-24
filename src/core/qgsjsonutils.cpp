@@ -236,9 +236,10 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
   return s;
 }
 
-json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature& feature, const QVariantMap& extraProperties, const QVariant& id) const
+json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
 {
-  json featureJson  {
+  json featureJson
+  {
     {  "type",  "Feature" },
   };
   if ( id.isValid() )
@@ -270,10 +271,13 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature& feature, cons
 
     if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
     {
-      featureJson[ "bbox" ] = { { box.xMinimum(),
+      featureJson[ "bbox" ] = { {
+          box.xMinimum(),
           box.yMinimum(),
           box.xMaximum(),
-          box.yMaximum() } };
+          box.yMaximum()
+        }
+      };
     }
     featureJson[ "geometry" ] = geom.asJsonObject( mPrecision );
   }
@@ -484,10 +488,10 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
   return result;
 }
 
-json QgsJsonUtils::jsonFromVariant(const QVariant& val)
+json QgsJsonUtils::jsonFromVariant( const QVariant &val )
 {
 
-  switch (val.userType())
+  switch ( val.userType() )
   {
     case QMetaType::Int:
     case QMetaType::UInt:
@@ -502,7 +506,7 @@ json QgsJsonUtils::jsonFromVariant(const QVariant& val)
   }
 }
 
-json QgsJsonUtils::exportAttributesToJsonObject(const QgsFeature& feature, QgsVectorLayer* layer, const QVector<QVariant>& attributeWidgetCaches)
+json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
 {
   QgsFields fields = feature.fields();
   json attrs;
@@ -516,8 +520,8 @@ json QgsJsonUtils::exportAttributesToJsonObject(const QgsFeature& feature, QgsVe
       QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
       if ( fieldFormatter != QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter() )
         val = fieldFormatter->representValue( layer, i, setup.config(), attributeWidgetCaches.count() >= i ? attributeWidgetCaches.at( i ) : QVariant(), val );
-    }    
-    attrs[fields.at( i ).name().toStdString()] = jsonFromVariant(val);
+    }
+    attrs[fields.at( i ).name().toStdString()] = jsonFromVariant( val );
   }
   return attrs;
 }

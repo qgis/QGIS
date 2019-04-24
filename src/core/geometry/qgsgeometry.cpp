@@ -1270,7 +1270,7 @@ QString QgsGeometry::asJson( int precision ) const
   return d->geometry->asJson( precision );
 }
 
-json QgsGeometry::asJsonObject(int precision) const
+json QgsGeometry::asJsonObject( int precision ) const
 {
   if ( !d->geometry )
   {
