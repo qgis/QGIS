@@ -39,13 +39,11 @@ Item {
   // Ment to be use with the save callback - stores image source
   property string sourceToDelete
 
-  Component.onCompleted: {
-    callbackOnSave = function() {
-      externalResourceHandler.onFormSave(fieldItem)
-    }
-    callbackOnCancel = function() {
-      externalResourceHandler.onFormCanceled(fieldItem)
-    }
+  function callbackOnSave() {
+    externalResourceHandler.onFormSave(fieldItem)
+  }
+  function callbackOnCancel() {
+    externalResourceHandler.onFormCanceled(fieldItem)
   }
 
   id: fieldItem
@@ -129,13 +127,14 @@ Item {
 
   Button {
     id: deleteButton
-    visible: !readOnly && fieldItem.state === "valid"
-    width: fieldItem.iconSize
+    visible: !readOnly && fieldItem.state !== "notSet"
+    width: buttonsContainer.itemHeight
     height: width
     padding: 0
 
     anchors.right: imageContainer.right
     anchors.bottom: imageContainer.bottom
+    anchors.margins: buttonsContainer.itemHeight/4
 
     onClicked: externalResourceHandler.removeImage(fieldItem, homePath + "/" + image.currentValue)
 
@@ -163,7 +162,7 @@ Item {
     anchors.centerIn: imageContainer
     anchors.fill: imageContainer
     anchors.margins: fieldItem.textMargin
-    visible: fieldItem.state !== "valid"
+    visible: fieldItem.state === "notSet"
 
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
@@ -216,18 +215,20 @@ Item {
     }
   }
 
-  QgsQuick.IconTextItem {
-    id: infoItem
-    iconSize: fieldItem.iconSize/2
-    fontColor: customStyle.fields.fontColor
-    iconSource: fieldItem.brokenImageIcon
-    labelText: qsTr("Image is not available: ") + image.currentValue
-
+  Text {
+    id: text
+    height: parent.height
+    width: imageContainer.width - 2* fieldItem.textMargin
+    wrapMode: Text.WordWrap
+    minimumPixelSize: 50 * QgsQuick.Utils.dp
+    text: qsTr("Image is not available: ") + image.currentValue
+    font.pixelSize: buttonsContainer.itemHeight * 0.75
+    color: customStyle.fields.fontColor
+    anchors.leftMargin: buttonsContainer.itemHeight + fieldItem.textMargin
+    horizontalAlignment: Text.AlignHCenter
+    verticalAlignment: Text.AlignVCenter
+    elide: Text.ElideRight
     visible: fieldItem.state === "notAvailable"
-    height: fieldItem.iconSize/2
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: fieldItem.textMargin
-    anchors.horizontalCenter: parent.horizontalCenter
   }
 
 }

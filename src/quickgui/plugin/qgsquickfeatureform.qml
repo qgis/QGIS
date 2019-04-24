@@ -376,8 +376,6 @@ Item {
           property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
-          property var callbackOnSave: undefined
-          property var callbackOnCancel: undefined
 
           active: widget !== 'Hidden'
 
@@ -395,8 +393,8 @@ Item {
           target: form
           ignoreUnknownSignals: true
           onSaved: {
-            if (attributeEditorLoader.widget === "ExternalResource") {
-              attributeEditorLoader.callbackOnSave()
+            if (typeof attributeEditorLoader.item.callbackOnSave === "function") {
+              attributeEditorLoader.item.callbackOnSave()
             }
           }
         }
@@ -405,8 +403,8 @@ Item {
           target: form
           ignoreUnknownSignals: true
           onCanceled: {
-            if (attributeEditorLoader.widget === "ExternalResource") {
-              attributeEditorLoader.callbackOnCancel()
+            if (typeof attributeEditorLoader.item.callbackOnCancel === "function") {
+              attributeEditorLoader.item.callbackOnCancel()
             }
           }
         }
