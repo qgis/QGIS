@@ -642,6 +642,25 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mWMSMaxAtlasFeaturesSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 ) );
 
+  QString defaultValueToolTip = tr( "In case of no other information to evaluate the map unit sized symbols, it uses default scale (on projected CRS) or default map units per mm (on geographic CRS)." );
+  mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
+  mWMSDefaultMapUnitsPerMm->setDecimals( 4 );
+  mWMSDefaultMapUnitsPerMm->setSingleStep( 0.001 );
+  mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
+  mWMSDefaultMapUnitsPerMm->setToolTip( defaultValueToolTip );
+  mWMSDefaultMapUnitScale = new QgsScaleWidget();
+  mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters ) );
+  mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
+  if ( QgsProject::instance()->crs().isGeographic() )
+  {
+    mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitsPerMm );
+  }
+  else
+  {
+    mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitScale );
+    mWMSDefaultMapUnitsPerMmLabel->setText( tr( "Default scale for legend" ) );
+  }
+
   mWMTSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), QString() ) );
   mWMTSMinScaleLineEdit->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), 5000 ) );
 
@@ -1297,6 +1316,18 @@ void QgsProjectProperties::apply()
 
   int maxAtlasFeatures = mWMSMaxAtlasFeaturesSpinBox->value();
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), maxAtlasFeatures );
+
+  double defaultMapUnitsPerMm;
+  if ( QgsProject::instance()->crs().isGeographic() )
+  {
+    defaultMapUnitsPerMm = mWMSDefaultMapUnitsPerMm->value();
+  }
+  else
+  {
+    defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters );
+  }
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), mWMTSUrlLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), mWMTSMinScaleLineEdit->value() );
