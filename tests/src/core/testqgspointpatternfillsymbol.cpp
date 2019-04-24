@@ -54,6 +54,7 @@ class TestQgsPointPatternFillSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void pointPatternFillSymbol();
+    void offsettedPointPatternFillSymbol();
     void dataDefinedSubSymbol();
 
   private:
@@ -140,6 +141,33 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "symbol_pointfill" ) );
+}
+
+void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
+{
+  mReport += QLatin1String( "<h2>Offsetted point pattern fill symbol renderer test</h2>\n" );
+
+  QgsStringMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  mPointPatternFill->setSubSymbol( pointSymbol );
+  mPointPatternFill->setDistanceX( 15 );
+  mPointPatternFill->setDistanceY( 15 );
+  mPointPatternFill->setOffsetX( 4 );
+  mPointPatternFill->setOffsetY( 4 );
+  QVERIFY( imageCheck( "symbol_pointfill_offset" ) );
+
+  // With offset values greater than the pattern size (i.e. distance * 2 ), offsets values are modulos of offset against distance
+  mPointPatternFill->setOffsetX( 19 );
+  mPointPatternFill->setOffsetY( 19 );
+  QVERIFY( imageCheck( "symbol_pointfill_offset" ) );
+
+  mPointPatternFill->setOffsetX( 0 );
+  mPointPatternFill->setOffsetY( 0 );
 }
 
 void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()

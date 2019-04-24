@@ -133,6 +133,8 @@ class QgsSymbolLayer
       PropertyArrowHeadThickness,
       PropertyArrowHeadType,
       PropertyArrowType,
+      PropertyOffsetX,
+      PropertyOffsetY,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
