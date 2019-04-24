@@ -179,10 +179,10 @@ Item {
         fontColor: customStyle.fields.fontColor
         fontPixelSize: customStyle.fields.fontPixelSize
         iconSource: fieldItem.cameraIcon
-        labelText: qsTr("Take a Photo")
+        labelText: qsTr("Take a photo")
 
         visible: !readOnly && fieldItem.state !== " valid"
-        height: buttonsContainer.itemHeight
+        height: buttonsContainer.itemHeight * 1.5
         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
         MouseArea {
@@ -201,10 +201,10 @@ Item {
         fontColor: customStyle.fields.fontColor
         fontPixelSize: customStyle.fields.fontPixelSize
         iconSource: fieldItem.galleryIcon
-        labelText: qsTr("Add From a Gallery")
+        labelText: qsTr("Add from gallery")
 
         visible: !readOnly && fieldItem.state !== " valid"
-        height: buttonsContainer.itemHeight
+        height: buttonsContainer.itemHeight * 1.5
         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
         MouseArea {
