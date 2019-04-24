@@ -1323,7 +1323,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
     QStringList log;
 
-    // no primary or unique indizes found
+    // no primary or unique indices found
     if ( res.PQntuples() == 0 )
     {
       QgsDebugMsg( QStringLiteral( "Relation has no primary key -- investigating alternatives" ) );
@@ -1601,7 +1601,6 @@ bool QgsPostgresProvider::uniqueData( const QString &quotedColNames )
     pushError( unique.PQresultErrorMessage() );
     return false;
   }
-
   return unique.PQntuples() == 1 && unique.PQgetvalue( 0, 0 ).startsWith( 't' );
 }
 
