@@ -52,13 +52,14 @@ from qgis.core import (QgsProcessingException,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-# Math functions taken from https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+# Math functions taken from https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames #spellok
 def deg2num(lat_deg, lon_deg, zoom):
     lat_rad = math.radians(lat_deg)
     n = 2.0 ** zoom
     xtile = int((lon_deg + 180.0) / 360.0 * n)
     ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
     return (xtile, ytile)
+
 
 def num2deg(xtile, ytile, zoom):
     n = 2.0 ** zoom
@@ -251,7 +252,6 @@ class TilesXYZ(QgisAlgorithm):
                                                      self.outputs,
                                                      defaultValue=0))
 
-
     def name(self):
         return 'tilesxyz'
 
@@ -344,9 +344,9 @@ class TilesXYZ(QgisAlgorithm):
                 painter.end()
 
                 # For analysing metatiles (labels, etc.)
-                metatile_dir = os.path.join(output_dir, name, str(zoom))
-                os.makedirs(metatile_dir, exist_ok=True)
-                image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
+                # metatile_dir = os.path.join(output_dir, name, str(zoom))
+                # os.makedirs(metatile_dir, exist_ok=True)
+                # image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
 
                 progress += 1
                 feedback.setProgress(100 * (progress / metatiles_count))
