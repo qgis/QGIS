@@ -24,6 +24,7 @@
 #include "qgsstringstatisticalsummary.h"
 #include <QVariant>
 #include "qgsfeatureid.h"
+#include "qgsfeaturerequest.h"
 
 
 class QgsFeatureIterator;
@@ -156,12 +157,12 @@ class CORE_EXPORT QgsAggregateCalculator
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
-     * \param ids Pointer to a list of feature IDs to use in the calculation. Set to NULLPTR to disable any ID based filtering. An empty list indicates that no features will be considered.
+     * \param request qgsfeaturerequest with filters criteria, if not provided all features will be used
      * \returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
                         QgsExpressionContext *context = nullptr, bool *ok = nullptr,
-                        const QgsFeatureIds *ids = nullptr ) const;
+                        const QgsFeatureRequest &request = QgsFeatureQuest() ) const;
 
     /**
      * Converts a string to a aggregate type.
