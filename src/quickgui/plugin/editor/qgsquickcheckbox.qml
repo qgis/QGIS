@@ -25,6 +25,12 @@ import QgsQuick 0.1 as QgsQuick
 Item {
   signal valueChanged( var value, bool isNull )
 
+  /**
+   * Handling missing config value for un/checked state for boolean field
+   */
+  property var checkedState: getConfigValue(config['CheckedState'], true)
+  property var uncheckedState: getConfigValue(config['UncheckedState'], false)
+
   id: fieldItem
   enabled: !readOnly
   height: childrenRect.height
@@ -33,12 +39,18 @@ Item {
     left: parent.left
   }
 
+  function getConfigValue(configValue, defaultValue) {
+     if (typeof value === "boolean" && !configValue) {
+         return defaultValue
+     } else return configValue
+  }
+
   CheckBox {
     property var currentValue: value
     height: customStyle.fields.height
     id: checkBox
     leftPadding: 0
-    checked: config['CheckedState'] ? value == config['CheckedState'] : value
+    checked: value === fieldItem.checkedState
 
     indicator: Rectangle {
                 implicitWidth: customStyle.fields.height
@@ -60,14 +72,13 @@ Item {
                 }
         }
     onCheckedChanged: {
-      valueChanged( checked ? (config['CheckedState'] ? config['CheckedState'] : true) :
-                              (config['UncheckedState'] ? config['UncheckedState'] : false), false )
+      valueChanged( checked ? fieldItem.checkedState : fieldItem.uncheckedState, false )
       forceActiveFocus()
     }
 
     // Workaround to get a signal when the value has changed
     onCurrentValueChanged: {
-      checked = config['CheckedState'] ? currentValue == config['CheckedState'] : currentValue
+      checked = currentValue === fieldItem.checkedState
     }
   }
 }
