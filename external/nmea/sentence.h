@@ -54,6 +54,25 @@ typedef struct _nmeaGPGGA
   int     dgps_sid;   //!< DGPS station ID number
 
 } nmeaGPGGA;
+  
+/**
+ * GGA packet information structure (Global Positioning System Fix Data)
+ */
+typedef struct _nmeaGPGST
+{
+  nmeaTIME utc;       //!< UTC of position fix
+  double  rms_pr;     //!< RMS value of the pseudorange residuals; 
+                      //!< includes carrier phase residuals during periods of RTK (float) and RTK (fixed) processing
+  double  err_major;  //!< Error ellipse semi-major axis 1 sigma error, in meters
+  double  err_minor;  //!< Error ellipse semi-minor axis 1 sigma error, in meters
+  double  err_ori;    //!< Error ellipse orientation, degrees from true north
+  double  sig_lat;    //!< Latitude 1 sigma error, in meters
+  double  sig_lon;    //!< Longitude 1 sigma error, in meters
+  double  sig_alt;    //!< Height 1 sigma error, in meters
+  double  rms_h;      //!< Horizontal RMS, derived from sig_lat and sig_lon
+  double  rms_v;      //!< Vertical RMS, derived from sig_alt
+  
+} nmeaGPGST;
 
 /**
  * GSA packet information structure (Satellite status)
@@ -117,6 +136,7 @@ typedef struct _nmeaGPVTG
 } nmeaGPVTG;
 
 void nmea_zero_GPGGA( nmeaGPGGA *pack );
+void nmea_zero_GPGST( nmeaGPGST *pack );
 void nmea_zero_GPGSA( nmeaGPGSA *pack );
 void nmea_zero_GPGSV( nmeaGPGSV *pack );
 void nmea_zero_GPRMC( nmeaGPRMC *pack );
