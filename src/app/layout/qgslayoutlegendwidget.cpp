@@ -933,8 +933,9 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
     currentExpression = QStringLiteral( "@symbol_label" );
   else
     currentExpression = layerNode->expression();
-  #TODO make expression context API
-  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", vl->createExpressionContext( mLegend->createExpressionContext() ) );
+  QgsExpressionContext legendContext = mLegend->createExpressionContext();
+  legendContext.appendScope( vl->createExpressionContextScope() );
+  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", legendContext );
   if ( expressiondialog.exec() )
     layerNode->setExpression( expressiondialog.expressionText() );
 

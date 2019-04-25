@@ -4275,13 +4275,6 @@ QgsExpressionContext QgsVectorLayer::createExpressionContext() const
   return QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 }
 
-QgsExpressionContext QgsVectorLayer::createExpressionContext( QgsExpressionContext context ) const
-{
-  context.appendScope( QgsExpressionContextUtils::layerScope( this ) );
-  return context;
-}
-
-
 QgsExpressionContextScope *QgsVectorLayer::createExpressionContextScope() const
 {
   return QgsExpressionContextUtils::layerScope( this );
