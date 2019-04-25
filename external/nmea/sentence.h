@@ -70,8 +70,6 @@ typedef struct _nmeaGPGST
   double  sig_lat;    //!< Latitude 1 sigma error, in meters
   double  sig_lon;    //!< Longitude 1 sigma error, in meters
   double  sig_alt;    //!< Height 1 sigma error, in meters
-  double  rms_h;      //!< Horizontal RMS, derived from sig_lat and sig_lon
-  double  rms_v;      //!< Vertical RMS, derived from sig_alt
   
 } nmeaGPGST;
 
