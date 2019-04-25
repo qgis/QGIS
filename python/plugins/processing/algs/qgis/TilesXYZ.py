@@ -163,29 +163,33 @@ class MBTilesWriter:
         ds = None
         self._zoom = None
 
-    def _initZoomLayer(self, first_tile):
+    def _initZoomLayer(self, zoom):
+        west_edge, south_edge, east_edge, north_edge = self.extent
+        first_tile = Tile(*deg2num(north_edge, west_edge, zoom), zoom)
+        last_tile = Tile(*deg2num(south_edge, east_edge, zoom), zoom)
+
         first_tile_extent = first_tile.extent()
-        sqlite_driver = ogr.GetDriverByName('SQLite')
-        ds = sqlite_driver.Open(self.filename, 1)
+        last_tile_extent = last_tile.extent()
         zoom_extent = [
             first_tile_extent[0],
-            # extend with height of 1 tile, but do not exceed -89.98 to stay in valid range (gdal)
-            max(-89.98, self.extent[1] - (first_tile_extent[3] - first_tile_extent[1])),
-            # extend with width of 1 tile, do not exceed 180
-            min(180, self.extent[2] + (first_tile_extent[2] - first_tile_extent[0])),
+            last_tile_extent[1],
+            last_tile_extent[2],
             first_tile_extent[3]
         ]
+
+        sqlite_driver = ogr.GetDriverByName('SQLite')
+        ds = sqlite_driver.Open(self.filename, 1)
         bounds = ','.join(map(str, zoom_extent))
         ds.ExecuteSQL("UPDATE metadata SET value='{}' WHERE name='bounds'".format(bounds))
         ds = None
 
         self._zoomDs = gdal.OpenEx(self.filename, 1, open_options=['ZOOM_LEVEL=%s' % first_tile.z])
         self._first_tile = first_tile
-        self._zoom = first_tile.z
+        self._zoom = zoom
 
     def writeTile(self, tile, image):
         if tile.z != self._zoom:
-            self._initZoomLayer(tile)
+            self._initZoomLayer(tile.z)
 
         data = QByteArray()
         buff = QBuffer(data)
@@ -288,7 +292,7 @@ class TilesXYZ(QgisAlgorithm):
         settings.setLayers(layers)
         settings.setOutputDpi(dpi)
 
-        wgs_extent = src_to_wgs.transform(extent)
+        wgs_extent = src_to_wgs.transformBoundingBox(extent)
         wgs_extent = [wgs_extent.xMinimum(), wgs_extent.yMinimum(), wgs_extent.xMaximum(), wgs_extent.yMaximum()]
 
         metatiles_by_zoom = {}
@@ -319,8 +323,7 @@ class TilesXYZ(QgisAlgorithm):
             for i, metatile in enumerate(metatiles_by_zoom[zoom]):
                 size = QSize(tile_width * metatile.rows(), tile_height * metatile.columns())
                 extent = QgsRectangle(*metatile.extent())
-                # TODO: transformation of bounding points?
-                settings.setExtent(wgs_to_dest.transform(extent))
+                settings.setExtent(wgs_to_dest.transformBoundingBox(extent))
                 settings.setOutputSize(size)
 
                 label_area = QgsRectangle(settings.extent())
