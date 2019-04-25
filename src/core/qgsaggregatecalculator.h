@@ -162,7 +162,7 @@ class CORE_EXPORT QgsAggregateCalculator
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
                         QgsExpressionContext *context = nullptr, bool *ok = nullptr,
-                        const QgsFeatureRequest &request = QgsFeatureQuest() ) const;
+                        const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
 
     /**
      * Converts a string to a aggregate type.
