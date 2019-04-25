@@ -42,7 +42,6 @@ from qgis.core import (QgsProcessingException,
                        QgsProcessingOutputFile,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
-                       QgsProject,
                        QgsGeometry,
                        QgsRectangle,
                        QgsMapSettings,
@@ -233,18 +232,25 @@ class TilesXYZ(QgisAlgorithm):
         return 'rastertools'
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterString(self.NAME, self.tr('Name'), defaultValue='Test'))
-        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT_DIRECTORY, self.tr('Output directory')))
-
+        self.addParameter(QgsProcessingParameterString(self.NAME,
+                                                       self.tr('Name'),
+                                                       defaultValue='Tiles'))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT, self.tr('Extent')))
         self.addParameter(QgsProcessingParameterNumber(self.ZOOM_MIN,
                                                        self.tr('Minimum zoom'),
+                                                       minValue=0,
+                                                       maxValue=25,
                                                        defaultValue=12))
         self.addParameter(QgsProcessingParameterNumber(self.ZOOM_MAX,
                                                        self.tr('Maximum zoom'),
+                                                       minValue=0,
+                                                       maxValue=25,
                                                        defaultValue=12))
-        self.addParameter(QgsProcessingParameterNumber(self.DPI, self.tr('DPI'), defaultValue=96))
-
+        self.addParameter(QgsProcessingParameterNumber(self.DPI,
+                                                       self.tr('DPI'),
+                                                       minValue=48,
+                                                       maxValue=600,
+                                                       defaultValue=96))
         self.formats = ['PNG', 'JPG']
         self.addParameter(QgsProcessingParameterEnum(self.TILE_FORMAT,
                                                      self.tr('Tile format'),
@@ -255,12 +261,20 @@ class TilesXYZ(QgisAlgorithm):
                                                      self.tr('Output format'),
                                                      self.outputs,
                                                      defaultValue=0))
+        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT_DIRECTORY,
+                                                                  self.tr('Output directory')))
 
     def name(self):
         return 'tilesxyz'
 
     def displayName(self):
         return self.tr('Generate XYZ tiles')
+
+    def prepareAlgorithm(self, parameters, context, feedback):
+        project = context.project()
+        visible_layers = [item.layer() for item in project.layerTreeRoot().findLayers() if item.isVisible()]
+        self.layers = [l for l in project.layerTreeRoot().layerOrder() if l in visible_layers]
+        return True
 
     def processAlgorithm(self, parameters, context, feedback):
         feedback.setProgress(1)
@@ -276,20 +290,17 @@ class TilesXYZ(QgisAlgorithm):
         tile_width = 256
         tile_height = 256
 
-        project = QgsProject.instance()
-        visible_layers = [item.layer() for item in project.layerTreeRoot().findLayers() if item.isVisible()]
-        layers = [l for l in project.layerTreeRoot().layerOrder() if l in visible_layers]
-
         wgs_crs = QgsCoordinateReferenceSystem('EPSG:4326')
         dest_crs = QgsCoordinateReferenceSystem('EPSG:3857')
 
+        project = context.project()
         src_to_wgs = QgsCoordinateTransform(project.crs(), wgs_crs, context.transformContext())
         wgs_to_dest = QgsCoordinateTransform(wgs_crs, dest_crs, context.transformContext())
 
         settings = QgsMapSettings()
         settings.setOutputImageFormat(QImage.Format_ARGB32_Premultiplied)
         settings.setDestinationCrs(dest_crs)
-        settings.setLayers(layers)
+        settings.setLayers(self.layers)
         settings.setOutputDpi(dpi)
 
         wgs_extent = src_to_wgs.transformBoundingBox(extent)
@@ -351,11 +362,12 @@ class TilesXYZ(QgisAlgorithm):
                 # os.makedirs(metatile_dir, exist_ok=True)
                 # image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
 
-                progress += 1
-                feedback.setProgress(100 * (progress / metatiles_count))
                 for r, c, tile in metatile.tiles:
                     tile_img = image.copy(tile_width * r, tile_height * c, tile_width, tile_height)
                     writer.writeTile(tile, tile_img)
+
+                progress += 1
+                feedback.setProgress(100 * (progress / metatiles_count))
 
         output = writer.close()
         return {'OUTPUT': output}
