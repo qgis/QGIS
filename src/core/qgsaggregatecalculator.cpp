@@ -44,10 +44,12 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
     const QString &fieldOrExpression,
     QgsExpressionContext *context, bool *ok,
-    const QgsFeatureIds *ids ) const
+    const QgsFeatureRequest &request ) const
 {
   if ( ok )
     *ok = false;
+
+  QgsFeatureRequest requestCopy = request;
 
   if ( !mLayer )
     return QVariant();
@@ -78,8 +80,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   else
     lst = expression->referencedColumns();
 
-  QgsFeatureRequest request = QgsFeatureRequest()
-                              .setFlags( ( expression && expression->needsGeometry() ) ?
+  requestCopy.setFlags( ( expression && expression->needsGeometry() ) ?
                                          QgsFeatureRequest::NoFlags :
                                          QgsFeatureRequest::NoGeometry )
                               .setSubsetOfAttributes( lst, mLayer->fields() );
@@ -87,8 +88,6 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     request.setFilterExpression( mFilterExpression );
   if ( context )
     request.setExpressionContext( *context );
-  if ( ids )
-    request.setFilterFids( *ids );
   //determine result type
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )
