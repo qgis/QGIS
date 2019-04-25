@@ -86,7 +86,12 @@ class AlgorithmsTest(object):
         :param defs: A python dict containing a test algorithm definition
         """
         self.vector_layer_params = {}
-        QgsProject.instance().removeAllMapLayers()
+        QgsProject.instance().clear()
+
+        if 'project' in defs:
+            full_project_path = os.path.join(processingTestDataPath(), defs['project'])
+            project_read_success = QgsProject.instance().read(full_project_path)
+            self.assertTrue(project_read_success, 'Failed to load project file: ' + defs['project'])
 
         if 'project_crs' in defs:
             QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(defs['project_crs']))
@@ -212,6 +217,9 @@ class AlgorithmsTest(object):
                 basename = 'raster.tif'
             filepath = os.path.join(outdir, basename)
             return filepath
+        elif param['type'] == 'directory':
+            outdir = tempfile.mkdtemp()
+            return outdir
 
         raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
 
@@ -350,6 +358,11 @@ class AlgorithmsTest(object):
                 result_filepath = results[id]
 
                 self.assertFilesEqual(expected_filepath, result_filepath)
+            elif 'directory' == expected_result['type']:
+                expected_dirpath = self.filepath_from_param(expected_result)
+                result_dirpath = results[id]
+
+                self.assertDirectoriesEqual(expected_dirpath, result_dirpath)
             elif 'regex' == expected_result['type']:
                 with open(results[id], 'r') as file:
                     data = file.read()
