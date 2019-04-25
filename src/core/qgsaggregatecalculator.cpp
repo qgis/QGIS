@@ -85,15 +85,15 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
                         QgsFeatureRequest::NoGeometry )
   .setSubsetOfAttributes( lst, mLayer->fields() );
   if ( !mFilterExpression.isEmpty() )
-    request.setFilterExpression( mFilterExpression );
+    requestCopy.setFilterExpression( mFilterExpression );
   if ( context )
-    request.setExpressionContext( *context );
+    requestCopy.setExpressionContext( *context );
   //determine result type
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )
   {
     // evaluate first feature, check result type
-    QgsFeatureRequest testRequest( request );
+    QgsFeatureRequest testRequest( requestCopy );
     testRequest.setLimit( 1 );
     QgsFeature f;
     QgsFeatureIterator fit = mLayer->getFeatures( testRequest );
@@ -115,7 +115,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     resultType = mLayer->fields().at( attrNum ).type();
   }
 
-  QgsFeatureIterator fit = mLayer->getFeatures( request );
+  QgsFeatureIterator fit = mLayer->getFeatures( requestCopy );
   return calculate( aggregate, fit, resultType, attrNum, expression.get(), mDelimiter, context, ok );
 }
 
