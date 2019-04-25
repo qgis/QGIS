@@ -81,9 +81,9 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     lst = expression->referencedColumns();
 
   requestCopy.setFlags( ( expression && expression->needsGeometry() ) ?
-                                         QgsFeatureRequest::NoFlags :
-                                         QgsFeatureRequest::NoGeometry )
-                              .setSubsetOfAttributes( lst, mLayer->fields() );
+                        QgsFeatureRequest::NoFlags :
+                        QgsFeatureRequest::NoGeometry )
+  .setSubsetOfAttributes( lst, mLayer->fields() );
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
   if ( context )

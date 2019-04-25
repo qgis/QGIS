@@ -1915,7 +1915,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param parameters parameters controlling aggregate calculation
      * \param context expression context for expressions and filters
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
-     * \param fids Pointer to a list of feature ID to filter out unwanted features in the request
+     * \param request qgsfeaturerequest with filters criteria, if not provided all features will be used
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
@@ -1924,7 +1924,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr,
-                        const QgsFeatureIds *fids = nullptr ) const;
+                        const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
 
     //! Sets the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
