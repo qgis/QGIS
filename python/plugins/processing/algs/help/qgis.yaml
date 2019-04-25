@@ -150,7 +150,7 @@ qgis:eliminateselectedpolygons: >
   Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.
 
 qgis:equidistancebuffer: >
-  This algorithm creates equidistance buffers for vector layers. Each geometry is transformed to a Azimuthal Equidistant projection centered at that geometry, buffered and transformed back to the original projection.
+  This algorithm creates equidistance buffers for vector layers. Each geometry is transformed to an Azimuthal Equidistant projection centered at that geometry, buffered and transformed back to the original projection.
 
 qgis:exportaddgeometrycolumns: >
   This algorithm computes geometric properties of the features in a vector layer. It generates a new vector layer with the same content as the input one, but with additional attributes in its attributes table, containing geometric measurements.
