@@ -48,7 +48,7 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
     """
     This algorithm creates equidistance buffers for vector layers.
 
-    Each geometry is transformed to a Azimuthal Equidistant projection centered
+    Each geometry is transformed to an Azimuthal Equidistant projection centered
     at that geometry, buffered and transformed back to the original projection.
     """
     DISTANCE = 'DISTANCE'
