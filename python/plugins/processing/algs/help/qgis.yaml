@@ -509,6 +509,13 @@ qgis:sumlinelengths: >
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 
+qgis:tilesxyz: >
+  This algorithm generates raster XYZ tiles of map canvas content.
+
+  Tile images can be saved as individual images in directory structure, or as single file in MBTiles format.
+
+  Tile size is fixed to 256x256.
+
 qgis:topologicalcoloring: >
   This algorithm assigns a color index to polygon features in such a way that no adjacent polygons share the same color index, whilst minimizing the number of colors required.
 
