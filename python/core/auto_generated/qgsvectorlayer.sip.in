@@ -2229,13 +2229,6 @@ It may also contain embedded expressions.
 .. versionadded:: 3.0
 %End
 
-    QgsExpressionContext createExpressionContext( QgsExpressionContext context ) const;
-%Docstring
-Provide the global and layer context for evaluation
-
-:param context: extra QgsExpressionContext to add
-%End
-
     virtual QgsExpressionContext createExpressionContext() const ${SIP_FINAL};
 
 
