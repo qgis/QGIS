@@ -1485,6 +1485,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param offset offset value
      * \see offsetX()
      * \see setOffsetY()
+     * \since QGIS 3.8
     */
     void setOffsetX( double offset ) { mOffsetX = offset; }
 
@@ -1492,6 +1493,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * Returns the horizontal offset values for points in the pattern.
      * \see setOffsetX()
      * \see offsetY()
+     * \since QGIS 3.8
     */
     double offsetX() const { return mOffsetX; }
 
@@ -1500,6 +1502,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param offset offset value
      * \see offsetY()
      * \see setOffsetX()
+     * \since QGIS 3.8
     */
     void setOffsetY( double offset ) { mOffsetY = offset; }
 
@@ -1507,6 +1510,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * Returns the vertical offset values for points in the pattern.
      * \see setOffsetY()
      * \see offsetX()
+     * \since QGIS 3.8
     */
     double offsetY() const { return mOffsetY; }
 
@@ -1590,6 +1594,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param unit offset units
      * \see offsetXUnit()
      * \see setOffsetYUnit()
+     * \since QGIS 3.8
     */
     void setOffsetXUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetXUnit = unit; }
 
@@ -1597,6 +1602,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * Returns the units for the horizontal offset for rows in the pattern.
      * \see setOffsetXUnit()
      * \see offsetYUnit()
+     * \since QGIS 3.8
     */
     QgsUnitTypes::RenderUnit offsetXUnit() const { return mOffsetXUnit; }
 
@@ -1605,6 +1611,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param scale offset unit scale
      * \see offsetXMapUnitScale()
      * \see setOffsetYMapUnitScale()
+     * \since QGIS 3.8
     */
     void setOffsetXMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetXMapUnitScale = scale; }
 
@@ -1612,6 +1619,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * Returns the unit scale for the horizontal offset for rows in the pattern.
      * \see setOffsetXMapUnitScale()
      * \see offsetYMapUnitScale()
+     * \since QGIS 3.8
     */
     const QgsMapUnitScale &offsetXMapUnitScale() const { return mOffsetXMapUnitScale; }
 
@@ -1620,6 +1628,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param unit offset units
      * \see offsetYUnit()
      * \see setOffsetXUnit()
+     * \since QGIS 3.8
     */
     void setOffsetYUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetYUnit = unit; }
 
@@ -1627,6 +1636,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * Returns the units for the vertical offset for rows in the pattern.
      * \see setOffsetYUnit()
      * \see offsetXUnit()
+     * \since QGIS 3.8
     */
     QgsUnitTypes::RenderUnit offsetYUnit() const { return mOffsetYUnit; }
 
@@ -1635,6 +1645,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param scale offset unit scale
      * \see offsetYMapUnitScale()
      * \see setOffsetXMapUnitScale()
+     * \since QGIS 3.8
     */
     void setOffsetYMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetYMapUnitScale = scale; }
 
@@ -1642,6 +1653,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * Returns the unit scale for the vertical offset between rows in the pattern.
      * \see setOffsetYMapUnitScale()
      * \see offsetXMapUnitScale()
+     * \since QGIS 3.8
     */
     const QgsMapUnitScale &offsetYMapUnitScale() const { return mOffsetYMapUnitScale; }
 
