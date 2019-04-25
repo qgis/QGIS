@@ -133,7 +133,7 @@ class DirectoryWriter:
         return path
 
     def close(self):
-        return self.folder
+        pass
 
 
 class MBTilesWriter:
@@ -212,11 +212,9 @@ class MBTilesWriter:
         bounds = ','.join(map(str, self.extent))
         ds.ExecuteSQL("UPDATE metadata SET value='{}' WHERE name='bounds'".format(bounds))
         ds = None
-        return self.filename
 
 
 class TilesXYZ(QgisAlgorithm):
-    NAME = 'NAME'
     EXTENT = 'EXTENT'
     ZOOM_MIN = 'ZOOM_MIN'
     ZOOM_MAX = 'ZOOM_MAX'
@@ -224,6 +222,7 @@ class TilesXYZ(QgisAlgorithm):
     DPI = 'DPI'
     OUTPUT_FORMAT = 'OUTPUT_FORMAT'
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
+    OUTPUT_FILE = 'OUTPUT_FILE'
 
     def group(self):
         return self.tr('Raster tools')
@@ -232,9 +231,6 @@ class TilesXYZ(QgisAlgorithm):
         return 'rastertools'
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterString(self.NAME,
-                                                       self.tr('Name'),
-                                                       defaultValue='Tiles'))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT, self.tr('Extent')))
         self.addParameter(QgsProcessingParameterNumber(self.ZOOM_MIN,
                                                        self.tr('Minimum zoom'),
@@ -262,7 +258,12 @@ class TilesXYZ(QgisAlgorithm):
                                                      self.outputs,
                                                      defaultValue=0))
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT_DIRECTORY,
-                                                                  self.tr('Output directory')))
+                                                                  self.tr('Output directory'),
+                                                                  optional=True))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_FILE,
+                                                                self.tr('Output file (for MBTiles)'),
+                                                                self.tr('MBTiles files (*.mbtiles)'),
+                                                                optional=True))
 
     def name(self):
         return 'tilesxyz'
@@ -279,14 +280,16 @@ class TilesXYZ(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         feedback.setProgress(1)
 
-        name = self.parameterAsString(parameters, self.NAME, context)
-        output_dir = self.parameterAsString(parameters, self.OUTPUT_DIRECTORY, context)
         extent = self.parameterAsExtent(parameters, self.EXTENT, context)
         min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
         max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
         dpi = self.parameterAsInt(parameters, self.DPI, context)
         tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
         output_format = self.outputs[self.parameterAsEnum(parameters, self.OUTPUT_FORMAT, context)]
+        if output_format == 'Directory':
+            output_dir = self.parameterAsString(parameters, self.OUTPUT_DIRECTORY, context)
+        else:  # MBTiles
+            output_file = self.parameterAsString(parameters, self.OUTPUT_FILE, context)
         tile_width = 256
         tile_height = 256
 
@@ -323,10 +326,9 @@ class TilesXYZ(QgisAlgorithm):
             'height': tile_height
         }
         if output_format == 'Directory':
-            writer = DirectoryWriter(os.path.join(output_dir, name), tile_params)
+            writer = DirectoryWriter(output_dir, tile_params)
         else:
-            filename = os.path.join(output_dir, '%s.mbtiles' % name)
-            writer = MBTilesWriter(filename, tile_params, wgs_extent, min_zoom, max_zoom)
+            writer = MBTilesWriter(output_file, tile_params, wgs_extent, min_zoom, max_zoom)
 
         for zoom in range(min_zoom, max_zoom + 1):
             feedback.pushConsoleInfo('Generating tiles for zoom level: %s' % zoom)
@@ -358,7 +360,7 @@ class TilesXYZ(QgisAlgorithm):
                 painter.end()
 
                 # For analysing metatiles (labels, etc.)
-                # metatile_dir = os.path.join(output_dir, name, str(zoom))
+                # metatile_dir = os.path.join(output_dir, str(zoom))
                 # os.makedirs(metatile_dir, exist_ok=True)
                 # image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
 
@@ -369,8 +371,14 @@ class TilesXYZ(QgisAlgorithm):
                 progress += 1
                 feedback.setProgress(100 * (progress / metatiles_count))
 
-        output = writer.close()
-        return {'OUTPUT': output}
+        writer.close()
+
+        results = {}
+        if output_format == 'Directory':
+            results['OUTPUT_DIRECTORY'] = output_dir
+        else:  # MBTiles
+            results['OUTPUT_FILE'] = output_file
+        return results
 
     def checkParameterValues(self, parameters, context):
         min_zoom = self.parameterAsInt(parameters, self.ZOOM_MIN, context)
