@@ -31,6 +31,7 @@ enum nmeaPACKTYPE
   GPGSV   = 0x0004,   //!< GSV - Number of SVs in view, PRN numbers, elevation, azimuth & SNR values.
   GPRMC   = 0x0008,   //!< RMC - Recommended Minimum Specific GPS/TRANSIT Data.
   GPVTG   = 0x0010    //!< VTG - Actual track made good and speed over ground.
+  GPGST   = 0x0012    //!< GST - GPS Pseudorange Noise Statistics
 };
 
 /**
@@ -56,7 +57,7 @@ typedef struct _nmeaGPGGA
 } nmeaGPGGA;
   
 /**
- * GGA packet information structure (Global Positioning System Fix Data)
+ * GST packet information structure (GPS Pseudorange Noise Statistics)
  */
 typedef struct _nmeaGPGST
 {
