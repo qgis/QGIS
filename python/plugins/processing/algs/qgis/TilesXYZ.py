@@ -288,8 +288,12 @@ class TilesXYZ(QgisAlgorithm):
         output_format = self.outputs[self.parameterAsEnum(parameters, self.OUTPUT_FORMAT, context)]
         if output_format == 'Directory':
             output_dir = self.parameterAsString(parameters, self.OUTPUT_DIRECTORY, context)
+            if not output_dir:
+                raise QgsProcessingException(self.tr('You need to specify output directory.'))
         else:  # MBTiles
             output_file = self.parameterAsString(parameters, self.OUTPUT_FILE, context)
+            if not output_file:
+                raise QgsProcessingException(self.tr('You need to specify output filename.'))
         tile_width = 256
         tile_height = 256
 
