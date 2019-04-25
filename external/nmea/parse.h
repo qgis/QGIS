@@ -45,7 +45,7 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack );
 int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack );
 
 void nmea_GPGGA2info( nmeaGPGGA *pack, nmeaINFO *info );
-void nmea_GPGST2info( nmeaGPGTA *pack, nmeaINFO *info );
+void nmea_GPGST2info( nmeaGPGST *pack, nmeaINFO *info );
 void nmea_GPGSA2info( nmeaGPGSA *pack, nmeaINFO *info );
 void nmea_GPGSV2info( nmeaGPGSV *pack, nmeaINFO *info );
 void nmea_GPRMC2info( nmeaGPRMC *pack, nmeaINFO *info );
