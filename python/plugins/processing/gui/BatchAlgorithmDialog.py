@@ -78,7 +78,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         load_layers = self.mainWidget().checkLoadLayersOnCompletion.isChecked()
         project = QgsProject.instance() if load_layers else None
 
-        for row in range(len(self.mainWidget().batchRowCount())):
+        for row in range(self.mainWidget().batchRowCount()):
             col = 0
             parameters = {}
             for param in self.algorithm().parameterDefinitions():
