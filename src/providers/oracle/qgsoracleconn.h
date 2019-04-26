@@ -118,6 +118,11 @@ class QgsOracleConn : public QObject
     void disconnect();
 
     /**
+     * Try to reconnect to database after timeout
+     */
+    void reconnect();
+
+    /**
      * Double quote a Oracle identifier for placement in a SQL string.
      */
     static QString quotedIdentifier( QString ident );
