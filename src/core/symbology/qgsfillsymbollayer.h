@@ -250,7 +250,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      * \see colorRamp()
      * \see setGradientColorType()
      */
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     //! Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor
     QColor color2() const { return mColor2; }
