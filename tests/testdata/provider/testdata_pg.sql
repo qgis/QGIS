@@ -548,6 +548,7 @@ CREATE TABLE qgis_test.b21839_pk_unicity
 (
   pk serial NOT NULL,
   an_int integer NOT NULL,
+  a_unique_int integer NOT NULL,
   geom geometry(Point),
   CONSTRAINT b21839_pk_unicity_pkey PRIMARY KEY (pk)
 )
@@ -557,19 +558,20 @@ WITH (
 
 
 INSERT INTO qgis_test.b21839_pk_unicity(
-            pk, an_int, geom)
-    VALUES (1, 1, ST_GeomFromText('point( 1 1)'));
+            pk, an_int, a_unique_int , geom)
+    VALUES (1, 1, 1, ST_GeomFromText('point( 1 1)'));
 
 
 INSERT INTO qgis_test.b21839_pk_unicity(
-            pk, an_int, geom)
-    VALUES (2, 1, ST_GeomFromText('point( 1 3)'));
+            pk, an_int, a_unique_int, geom)
+    VALUES (2, 1, 2, ST_GeomFromText('point( 1 3)'));
 
 
 
 CREATE OR REPLACE VIEW qgis_test.b21839_pk_unicity_view AS
  SELECT b21839_pk_unicity.pk,
     b21839_pk_unicity.an_int,
+    b21839_pk_unicity.a_unique_int,
     b21839_pk_unicity.geom
    FROM qgis_test.b21839_pk_unicity;
 
