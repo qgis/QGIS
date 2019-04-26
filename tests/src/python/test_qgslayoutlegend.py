@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtCore import QRectF,QEventLoop
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsPrintLayout,
@@ -380,7 +380,11 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layer = QgsProject.instance().addMapLayer(point_layer)
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
 
-        point_layer.countSymbolFeatures(disable_async=True)
+        loop = QEventLoop()
+        counterTask = point_layer.countSymbolFeatures()
+        counterTask.symbolsCounted.connect(loop.quit)
+        # start counting features here
+        loop.exec_()
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)

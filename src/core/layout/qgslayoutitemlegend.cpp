@@ -44,9 +44,8 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
 #endif
 
-  updateExpressionContext();
   mTitle = mSettings.title();
-  mLegendModel->setLayoutExpContext( &mExpContext );
+  mLegendModel->setLayoutExpContext( createExpressionContext() );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
@@ -156,11 +155,8 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 
 void QgsLayoutItemLegend::refresh()
 {
-  if ( mLegendModel->refreshable )
-  {
-    QgsLayoutItem::refresh();
-    onAtlasFeature();
-  }
+   QgsLayoutItem::refresh();
+   onAtlasFeature();
 }
 
 void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
@@ -689,9 +685,7 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
 
   updateFilterByMap();
 
-  // unsure if needed
-  QgsExpressionContext context = updateExpressionContext();
-  mLegendModel->setLayoutExpContext( &mExpContext );
+  mLegendModel->setLayoutExpContext( createExpressionContext() );
 
 }
 
@@ -854,18 +848,6 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   return context;
 }
 
-QgsExpressionContext QgsLayoutItemLegend::updateExpressionContext()
-{
-
-  QgsExpressionContext context = createExpressionContext();
-
-  mExpContext.~QgsExpressionContext();
-  const QList<QgsExpressionContextScope *> scopes = context.takeScopes();
-  mExpContext.appendScopes( scopes );
-  return mExpContext;
-
-}
-
 
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
@@ -878,15 +860,6 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   mLayoutLegendContext = nullptr;
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
-}
-
-Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
-{
-  // make the legend nodes selectable even if they are not by default
-  if ( index2legendNode( index ) )
-    return QgsLayerTreeModel::flags( index ) | Qt::ItemIsSelectable;
-
-  return QgsLayerTreeModel::flags( index );
 }
 
 QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
@@ -961,6 +934,15 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   return QgsLayerTreeModel::data( index, role );
 }
 
+Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
+{
+  // make the legend nodes selectable even if they are not by default
+  if ( index2legendNode( index ) )
+    return QgsLayerTreeModel::flags( index ) | Qt::ItemIsSelectable;
+
+  return QgsLayerTreeModel::flags( index );
+}
+
 QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent ) const
 {
   if ( !mLegend.contains( nodeLayer ) )
@@ -980,8 +962,6 @@ void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
 
 void QgsLegendModel::pendingCount( long taskid )
 {
-  if ( refreshable )
-    refreshable = false;
   mPendingCount.append( taskid );
 }
 
@@ -996,11 +976,6 @@ void QgsLegendModel::doneCount( long taskid )
       QTimer::singleShot( 750, this, SLOT( allowRefresh() ) );
     }
   }
-}
-
-void QgsLegendModel::allowRefresh()
-{
-  refreshable = true;
 }
 
 

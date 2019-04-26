@@ -133,14 +133,14 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      *
      * \since QGIS 3.8
      */
-    void setExpression( const QString &expression );
+    void setLabelExpression( const QString &expression );
 
     /**
      * Returns the expression member of the LayerTreeNode
      *
      * \since QGIS 3.8
      */
-    QString expression() const { return mExpression; }
+    QString labelExpression() const { return mLabelExpression; }
 
   signals:
 
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     //! Layer name - only used if layer does not exist or if mUseLayerName is false
     QString mLayerName;
     //! Expression to evaluate in the legend
-    QString mExpression = QString();
+    QString mLabelExpression;
 
     //!
     bool mUseLayerName = true;

@@ -44,8 +44,6 @@ Set the pointer to the layoutlegend expressioncontext
 .. versionadded:: 3.8
 %End
 
-    bool refreshable;
-
   signals:
 
     void refreshLegend();
@@ -512,18 +510,6 @@ Returns the legend's renderer settings object.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
-%Docstring
-Creates an expression context
-
-.. versionadded:: 3.8
-%End
-
-    QgsExpressionContext updateExpressionContext();
-%Docstring
-Updates the member QgsExpressionContext and returns it.
-
-.. versionadded:: 3.8
-%End
 
 
   public slots:

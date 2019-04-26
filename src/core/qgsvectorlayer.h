@@ -1026,14 +1026,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * The method will return the feature counter task. You will need to
      * connect to the symbolFeatureCountMapChanged() signal to be
      * notified when the freshly updated feature counts are ready.
-     * \param disable_async If set to true, counting will be done in the main thread.
      * \note If the count features for symbols has been already done a
      *       NULLPTR is returned. If you need to wait for the results,
      *       you can call waitForFinished() on the feature counter.
      *
      * \since This is asynchronous since QGIS 3.0
      */
-    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool disable_async = false );
+    QgsVectorLayerFeatureCounter *countSymbolFeatures();
 
     /**
      * Sets the string (typically sql) used to define a subset of the layer

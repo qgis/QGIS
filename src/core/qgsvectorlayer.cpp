@@ -700,7 +700,7 @@ const QgsFeatureIds QgsVectorLayer::featureIds( const QString &legendKey ) const
   return mSymbolIdMap.value( legendKey, QgsFeatureIds() );
 }
 
-QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool disable_async )
+QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
   if ( !mSymbolFeatureCounted && !mPendingTasks.isEmpty() )
     return nullptr;
@@ -723,17 +723,9 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool disable_
     QgsDebugMsgLevel( QStringLiteral( "invoked with null mRenderer" ), 3 );
     return mFeatureCounter;
   }
-
-  mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
-  if ( disable_async )
+  if ( !mFeatureCounter )
   {
-    mFeatureCounter->run();
-    mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
-    mSymbolIdMap = mFeatureCounter->symbolFeatureIdMap();
-    mSymbolFeatureCounted = true;
-  }
-  else
-  {
+    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
     connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
     connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
 
@@ -741,7 +733,6 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool disable_
     emit startCount( taskid );
     mPendingTasks.append( taskid );
   }
-
   return mFeatureCounter;
 }
 

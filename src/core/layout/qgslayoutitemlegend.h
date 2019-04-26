@@ -58,12 +58,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void setLayoutExpContext( QgsExpressionContext *econtext );
 
-    /**
-     * Is used to control QgsLayoutItemLegend::refresh, otherwise segfault may occur when updating featurecount hashes (symbol expressions).
-     * \since QGIS 3.8
-     */
-    bool refreshable = true;
-
   signals:
 
     /**
@@ -87,19 +81,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void doneCount( long taskid );
 
-    /**
-     * Allow the legend to be refreshed again by setting refreshable to true, used with QTimer to delay refresh
-     * \since QGIS 3.8
-     */
-    void allowRefresh();
-
   private:
-
-    /**
-     * Cached QgsExpressionContext
-     * \since QGIS 3.8
-     */
-    QgsExpressionContext *mLayoutLegendContext = nullptr;
 
     /**
      * Returns filtered list of active legend nodes attached to a particular layer node
@@ -503,18 +485,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
-    /**
-     * Creates an expression context
-     * \since QGIS 3.8
-     */
     QgsExpressionContext createExpressionContext() const override;
-
-    /**
-     * Updates the member QgsExpressionContext and returns it.
-     * \since QGIS 3.8
-     */
-    QgsExpressionContext updateExpressionContext();
-
 
   public slots:
 
@@ -586,8 +557,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     bool mSizeToContents = true;
 
     friend class QgsCompositionConverter;
-
-    mutable QgsExpressionContext mExpContext = QgsLayoutItem::createExpressionContext();
 
 };
 

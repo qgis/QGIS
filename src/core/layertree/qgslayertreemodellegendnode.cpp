@@ -233,7 +233,7 @@ const QgsSymbol *QgsSymbolLegendNode::symbol() const
   return mItem.symbol();
 }
 
-QString QgsSymbolLegendNode::getCurrentLabel() const
+QString QgsSymbolLegendNode::symbolLabel() const
 {
   QString label;
   if ( mEmbeddedInParent )
@@ -599,7 +599,7 @@ void QgsSymbolLegendNode::updateLabel()
 
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-  mLabel = getCurrentLabel();
+  mLabel = symbolLabel();
 
   if ( showFeatureCount && vl )
   {
@@ -621,7 +621,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
   {
     if ( vl )
     {
-      mLabel = getCurrentLabel();
+      mLabel = symbolLabel();
       if ( ! mLayerNode->expression().isEmpty() )
         mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", context );
       else if ( mLabel.contains( "[%" ) )
@@ -652,7 +652,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
     QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
 
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), getCurrentLabel().remove( "[%" ).remove( "%]" ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
     //QVariantList featureIds = QVariantList();
     //const QgsFeatureIds fids = vl->featureIds( mItem.ruleKey() );
