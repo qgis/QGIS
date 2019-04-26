@@ -141,21 +141,20 @@ int nmea_pack_type( const char *buff, int buff_sz )
 
   if ( buff_sz < 5 )
     return GPNON;
-  else if ( 0 == memcmp( buff, P_HEADS[0], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[0], 6 ) )
     return GPGGA;
-  else if ( 0 == memcmp( buff, P_HEADS[1], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[1], 6 ) )
     return GPGSA;
-  else if ( 0 == memcmp( buff, P_HEADS[2], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[2], 6 ) )
     return GPGSV;
-  else if ( 0 == memcmp( buff, P_HEADS[3], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[3], 6 ) )
     return GPRMC;
-  else if ( 0 == memcmp( buff, P_HEADS[4], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[4], 6 ) )
     return GPVTG;
-  else if ( 0 == memcmp( buff, P_HEADS[5], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[5], 6 ) )
     return GPRMC;
-  else if ( 0 == memcmp( buff, P_HEADS[6], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[6], 6 ) )
     return GPGST;
-
 
   return GPNON;
 }
