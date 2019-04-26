@@ -261,7 +261,7 @@ int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
 
   NMEA_ASSERT( buff && pack );
 
-  memset( pack, 0, sizeof( nmeaGPGGA ) );
+  memset( pack, 0, sizeof( nmeaGPGST ) );
 
   nmea_trace_buff( buff, buff_sz );
 
