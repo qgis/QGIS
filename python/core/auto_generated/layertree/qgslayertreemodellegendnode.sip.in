@@ -273,7 +273,7 @@ to the associated vector layer's renderer.
 
     QString textOnSymbolLabel() const;
 %Docstring
-Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
+Returns label of text to be shown on top of the symbol.
 
 .. versionadded:: 3.2
 %End
@@ -301,7 +301,7 @@ Sets format of text to be shown on top of the symbol.
 
     QString symbolLabel() const;
 %Docstring
-Returns the legend label of the layer or symbol.
+Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
 
 .. versionadded:: 3.8
 %End
