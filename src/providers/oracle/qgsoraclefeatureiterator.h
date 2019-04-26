@@ -73,6 +73,8 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     bool openQuery( const QString &whereClause, const QVariantList &args, bool showLog = true );
 
+    bool execQuery( const QString &query, const QVariantList &args, int retryCount = 0 );
+
     QgsOracleConn *mConnection = nullptr;
     QSqlQuery mQry;
     bool mRewind = false;

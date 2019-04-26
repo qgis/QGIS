@@ -299,9 +299,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     static QString quotedIdentifier( QString ident ) { return QgsOracleConn::quotedIdentifier( ident ); }
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid ) { return QgsOracleConn::quotedValue( value, type ); }
 
-    QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
-    QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
-    QgsOracleConn *mConnection = nullptr;
+    QMap<QVariant, QgsFeatureId> mKeyToFid;  //!< Map key values to feature id
+    QMap<QgsFeatureId, QVariant> mFidToKey;  //!< Map feature back to feature id
 
     bool mHasSpatialIndex;                   //! Geometry column is indexed
     QString mSpatialIndexName;               //! name of spatial index of geometry column
