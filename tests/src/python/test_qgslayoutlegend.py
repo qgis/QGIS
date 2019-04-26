@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QRectF,QEventLoop
+from qgis.PyQt.QtCore import QRectF, QEventLoop
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsPrintLayout,
