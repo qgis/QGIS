@@ -381,9 +381,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
 
         counterTask = point_layer.countSymbolFeatures()
-        loop = QEventLoop()
-        counterTask.symbolsCounted.connect(loop.quit)
-        loop.exec_()
+        counterTask..waitForFinished()
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
