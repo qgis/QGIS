@@ -116,10 +116,6 @@ class BatchPanel(BASE, WIDGET):
                 break
 
         # Determine column count
-        nOutputs = len(self.alg.destinationParameterDefinitions()) + 1
-        if nOutputs == 1:
-            nOutputs = 0
-
         self.tblParameters.setColumnCount(
             self.alg.countVisibleParameters())
 
@@ -140,10 +136,6 @@ class BatchPanel(BASE, WIDGET):
                     column, QTableWidgetItem(out.description()))
                 column += 1
 
-        # Last column for indicating if output will be added to canvas
-        if len(self.alg.destinationParameterDefinitions()) > 0:
-            self.tblParameters.setHorizontalHeaderItem(
-                column, QTableWidgetItem(self.tr('Load in QGIS')))
 
         # Add an empty row to begin
         self.addRow()
