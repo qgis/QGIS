@@ -281,7 +281,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     void setTextOnSymbolTextFormat( const QgsTextFormat &format ) { mTextOnSymbolTextFormat = format; }
 
     /**
-     * Returns the legend label of the layer or symbol.
+     * Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
      * \since QGIS 3.8
      */
     QString symbolLabel() const;
