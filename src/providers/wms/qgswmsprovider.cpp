@@ -3089,7 +3089,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
             fieldIterator = properties.constBegin();
             for ( ; fieldIterator != properties.constEnd(); ++fieldIterator )
             {
-              feature.setAttribute( j++, fieldIterator.value().toString() );
+              feature.setAttribute( j++, fieldIterator.value().toVariant() );
             }
 
             QgsFeatureStore featureStore( fields, crs() );
