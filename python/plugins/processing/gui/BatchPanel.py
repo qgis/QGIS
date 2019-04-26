@@ -136,7 +136,6 @@ class BatchPanel(BASE, WIDGET):
                     column, QTableWidgetItem(out.description()))
                 column += 1
 
-
         # Add an empty row to begin
         self.addRow()
 
