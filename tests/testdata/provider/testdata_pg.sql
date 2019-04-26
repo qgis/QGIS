@@ -543,7 +543,7 @@ INSERT INTO qgis_test.check_constraints VALUES (
 --
 
 
-DROP TABLE IF EXISTS qgis_test.b21839_pk_unicity CASCADE;
+DROP TABLE IF EXISTS qgis_test.b21839_pk_unicity;
 CREATE TABLE qgis_test.b21839_pk_unicity
 (
   pk serial NOT NULL,
