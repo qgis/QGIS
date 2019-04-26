@@ -130,6 +130,12 @@ class BatchPanelFillWidget(QToolButton):
         calculate_by_expression.setToolTip(self.tr('Calculates parameter values by evaluating an expression'))
         self.menu.addAction(calculate_by_expression)
 
+        add_by_expression = QAction(QCoreApplication.translate('BatchPanel', 'Add Values by Expression…'),
+                                    self.menu)
+        add_by_expression.triggered.connect(self.addByExpression)
+        add_by_expression.setToolTip(self.tr('Adds new parameter values by evaluating an expression'))
+        self.menu.addAction(add_by_expression)
+
         if isinstance(self.parameterDefinition, (QgsProcessingParameterFile,
                                                  QgsProcessingParameterMapLayer,
                                                  QgsProcessingParameterRasterLayer,
@@ -192,6 +198,18 @@ class BatchPanelFillWidget(QToolButton):
         """
         Calculates parameter values by evaluating expressions.
         """
+        self.populateByExpression(adding=False)
+
+    def addByExpression(self):
+        """
+        Adds new parameter values by evaluating an expression
+        """
+        self.populateByExpression(adding=True)
+
+    def populateByExpression(self, adding=False):
+        """
+        Populates the panel using an expression
+        """
         context = dataobjects.createContext()
         expression_context = context.expressionContext()
 
@@ -211,27 +229,41 @@ class BatchPanelFillWidget(QToolButton):
         expression_context.setHighlightedVariables(highlighted_vars)
 
         dlg = QgsExpressionBuilderDialog(layer=None, context=context.expressionContext())
+        if adding:
+            dlg.setExpectedOutputFormat(self.tr('An array of values corresponding to each new row to add'))
+
         if not dlg.exec_():
             return
 
-        for row in range(self.panel.batchRowCount()):
-            params = self.panel.parametersForRow(row, warnOnInvalid=False)
-
-            # remove previous algorithm scope -- we need to rebuild this completely, using the
-            # other parameter values from the current row
-            expression_context.popScope()
-            alg_scope = QgsExpressionContextUtils.processingAlgorithmScope(self.panel.alg, params, context)
-
-            for k, v in params.items():
-                alg_scope.setVariable(k, v, True)
-
-            expression_context.appendScope(alg_scope)
-
-            # rebuild a new expression every time -- we don't want the expression compiler to replace
-            # variables with precompiled values
+        if adding:
             exp = QgsExpression(dlg.expressionText())
-            value = exp.evaluate(expression_context)
-            self.setRowValue(row, value, context)
+            res = exp.evaluate(expression_context)
+
+            if type(res) is not list:
+                res = [res]
+
+            first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+            for row, value in enumerate(res):
+                self.setRowValue(row + first_row, value, context)
+        else:
+            for row in range(self.panel.batchRowCount()):
+                params = self.panel.parametersForRow(row, warnOnInvalid=False)
+
+                # remove previous algorithm scope -- we need to rebuild this completely, using the
+                # other parameter values from the current row
+                expression_context.popScope()
+                alg_scope = QgsExpressionContextUtils.processingAlgorithmScope(self.panel.alg, params, context)
+
+                for k, v in params.items():
+                    alg_scope.setVariable(k, v, True)
+
+                expression_context.appendScope(alg_scope)
+
+                # rebuild a new expression every time -- we don't want the expression compiler to replace
+                # variables with precompiled values
+                exp = QgsExpression(dlg.expressionText())
+                value = exp.evaluate(expression_context)
+                self.setRowValue(row, value, context)
 
 
 class BatchPanel(BASE, WIDGET):
