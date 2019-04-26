@@ -929,15 +929,15 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
     return;
 
   QString currentExpression;
-  if ( layerNode->expression().isEmpty() )
+  if ( layerNode->labelExpression().isEmpty() )
     currentExpression = QStringLiteral( "@symbol_label" );
   else
-    currentExpression = layerNode->expression();
+    currentExpression = layerNode->labelExpression();
   QgsExpressionContext legendContext = mLegend->createExpressionContext();
   legendContext.appendScope( vl->createExpressionContextScope() );
   QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, "generic", legendContext );
   if ( expressiondialog.exec() )
-    layerNode->setExpression( expressiondialog.expressionText() );
+    layerNode->setLabelExpression( expressiondialog.expressionText() );
 
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->updateLegend();

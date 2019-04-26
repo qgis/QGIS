@@ -511,7 +511,6 @@ Returns the legend's renderer settings object.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
-
   public slots:
 
     virtual void refresh();

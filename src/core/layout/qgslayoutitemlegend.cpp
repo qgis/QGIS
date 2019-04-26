@@ -155,8 +155,8 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 
 void QgsLayoutItemLegend::refresh()
 {
-   QgsLayoutItem::refresh();
-   onAtlasFeature();
+  QgsLayoutItem::refresh();
+  onAtlasFeature();
 }
 
 void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
@@ -901,7 +901,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       }
     }
 
-    bool evaluate = vlayer ? !nodeLayer->expression().isEmpty() : false;
+    bool evaluate = vlayer ? !nodeLayer->labelExpression().isEmpty() : false;
 
     if ( evaluate || name.contains( "[%" ) )
     {

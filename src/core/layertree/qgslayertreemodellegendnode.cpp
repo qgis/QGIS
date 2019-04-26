@@ -622,8 +622,8 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
     if ( vl )
     {
       mLabel = symbolLabel();
-      if ( ! mLayerNode->expression().isEmpty() )
-        mLabel = evaluateLabelExpression( "[%" + mLayerNode->expression() + "%]", context );
+      if ( ! mLayerNode->labelExpression().isEmpty() )
+        mLabel = evaluateLabelExpression( "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( mLabel.contains( "[%" ) )
         mLabel = evaluateLabelExpression( mLabel, context );
     }
@@ -633,8 +633,8 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
   {
     if ( vl )
     {
-      if ( ! mLayerNode->expression().isEmpty() )
-        label = evaluateLabelExpression( label + "[%" + mLayerNode->expression() + "%]", context );
+      if ( ! mLayerNode->labelExpression().isEmpty() )
+        label = evaluateLabelExpression( label + "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( label.contains( "[%" ) )
         label = evaluateLabelExpression( label, context );
     }
