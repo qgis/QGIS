@@ -2841,19 +2841,23 @@ void TestProcessingGui::testPointPanel()
   QCOMPARE( panel->value().toString(), QStringLiteral( "200,250 [EPSG:3111]" ) );
   QCOMPARE( spy.count(), 2 );
 
+  panel->setValue( QgsPointXY( 123456.123456789122, 654321.987654321012 ), QgsCoordinateReferenceSystem() );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "123456.123456789122,654321.987654321012" ) );
+  QCOMPARE( spy.count(), 3 );
+
   QVERIFY( !panel->mLineEdit->showClearButton() );
   panel->setAllowNull( true );
   QVERIFY( panel->mLineEdit->showClearButton() );
   panel->clear();
   QVERIFY( !panel->value().isValid() );
-  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.count(), 4 );
 
   QgsMapCanvas canvas;
   canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
   panel->setMapCanvas( &canvas );
   panel->updatePoint( QgsPointXY( 1.5, -3.5 ) );
   QCOMPARE( panel->value().toString(), QStringLiteral( "1.5,-3.5 [EPSG:28356]" ) );
-  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spy.count(), 5 );
 
   panel.reset();
 }
