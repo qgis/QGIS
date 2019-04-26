@@ -49,14 +49,21 @@ from qgis.PyQt.QtCore import (
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
-                       QgsProperty,
+                       QgsProperty,  # NOQA - must be here for saved file evaluation
                        QgsProject,
-                       QgsProcessingFeatureSourceDefinition,
-                       QgsCoordinateReferenceSystem,
+                       QgsProcessingFeatureSourceDefinition,  # NOQA - must be here for saved file evaluation
+                       QgsCoordinateReferenceSystem,  # NOQA - must be here for saved file evaluation
                        QgsProcessingParameterDefinition,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterMapLayer,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterMeshLayer,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource)
 from qgis.gui import (QgsProcessingParameterWidgetContext,
-                      QgsProcessingContextGenerator)
+                      QgsProcessingContextGenerator,
+                      QgsFindFilesByPatternDialog)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
@@ -103,8 +110,19 @@ class BatchPanelFillWidget(QToolButton):
         fill_down_action = QAction(self.tr('Fill Down'), self.menu)
         fill_down_action.triggered.connect(self.fillDown)
         fill_down_action.setToolTip(self.tr('Copy the first value down to all other rows'))
-
         self.menu.addAction(fill_down_action)
+
+        if isinstance(self.parameterDefinition, (QgsProcessingParameterFile,
+                                                 QgsProcessingParameterMapLayer,
+                                                 QgsProcessingParameterRasterLayer,
+                                                 QgsProcessingParameterMeshLayer,
+                                                 QgsProcessingParameterVectorLayer,
+                                                 QgsProcessingParameterFeatureSource)):
+            find_by_pattern_action = QAction(QCoreApplication.translate('BatchPanel', 'Add Files by Pattern…'),
+                                             self.menu)
+            find_by_pattern_action.triggered.connect(self.addFilesByPattern)
+            find_by_pattern_action.setToolTip(self.tr('Adds files by a file pattern match'))
+            self.menu.addAction(find_by_pattern_action)
 
     def fillDown(self):
         """
@@ -127,12 +145,29 @@ class BatchPanelFillWidget(QToolButton):
         """
         Sets the value for a row, in the current column
         """
+        if self.panel.batchRowCount() <= row:
+            self.panel.addRow()
+
         wrapper = self.panel.wrappers[row][self.column]
         if wrapper is None:
             # e.g. destination header
             self.panel.tblParameters.cellWidget(row + 1, self.column).setValue(str(value))
         else:
             wrapper.setParameterValue(value, context)
+
+    def addFilesByPattern(self):
+        """
+        Populates the dialog using a file pattern match
+        """
+        dlg = QgsFindFilesByPatternDialog()
+        dlg.setWindowTitle(self.tr("Add Files by Pattern"))
+        if dlg.exec_():
+            files = dlg.files()
+            context = dataobjects.createContext()
+
+            first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+            for row, file in enumerate(files):
+                self.setRowValue(first_row + row, file, context)
 
 
 class BatchPanel(BASE, WIDGET):
