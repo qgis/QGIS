@@ -1516,6 +1516,50 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_External", 20000)
 
+    def test_wms_getmap_root_custom_layer_order_regression_21917(self):
+        """When drawing root layer, custom layer order order should be respected."""
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'bug_21917_root_layer_order.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "44.9014,8.20346,44.9015,8.20355",
+            "CRS": "EPSG:4326",
+            "WIDTH": "400",
+            "HEIGHT": "400",
+            "LAYERS": "group",
+            "STYLES": ",",
+            "FORMAT": "image/png",
+            "DPI": "200",
+            "MAP_RESOLUTION": "200",
+            "FORMAT_OPTIONS": "dpi:200"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Group_Layer_Order")
+
+        # Check with root_layer
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'bug_21917_root_layer_order.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "44.9014,8.20346,44.9015,8.20355",
+            "CRS": "EPSG:4326",
+            "WIDTH": "400",
+            "HEIGHT": "400",
+            "LAYERS": "root_layer",
+            "STYLES": ",",
+            "FORMAT": "image/png",
+            "DPI": "200",
+            "MAP_RESOLUTION": "200",
+            "FORMAT_OPTIONS": "dpi:200"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Group_Layer_Order")
+
 
 if __name__ == '__main__':
     unittest.main()
