@@ -265,7 +265,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
+                <width>537</width>
                 <height>795</height>
                </rect>
               </property>
@@ -863,8 +863,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>780</height>
+                <width>546</width>
+                <height>164</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -938,8 +938,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>780</height>
+                <width>269</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1378,7 +1378,7 @@
            <item row="3" column="0">
             <widget class="QCheckBox" name="mTrustProjectCheckBox">
              <property name="toolTip">
-              <string>Speed up project loading by skipping data checks in Postgres layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
+              <string>Speed up project loading by skipping data checks in PostgreSQL layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
              </property>
              <property name="text">
               <string>Trust project when data source has no metadata</string>
@@ -1576,7 +1576,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
+                <width>598</width>
                 <height>2732</height>
                </rect>
               </property>
