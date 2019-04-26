@@ -7524,5 +7524,21 @@ tests:
         name: expected/join_to_nearest_no_matches.gml
         type: vector
 
+  - name: Generate XYZ tiles
+    algorithm: qgis:tilesxyz
+    project: ../../../../../tests/testdata/xyztiles.qgs
+    project_crs: EPSG:3857
+    params:
+      EXTENT: -12535000,-9883000,3360000,5349000 [EPSG:3857]
+      ZOOM_MIN: 1
+      ZOOM_MAX: 3
+      TILE_FORMAT: 0     # png
+      OUTPUT_FORMAT: 0   # directory
+
+    results:
+      OUTPUT_DIRECTORY:
+        type: directory
+        name: expected/xyztiles
+
 
 # See ../README.md for a description of the file format
