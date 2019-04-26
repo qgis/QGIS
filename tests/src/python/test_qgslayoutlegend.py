@@ -380,10 +380,9 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layer = QgsProject.instance().addMapLayer(point_layer)
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
 
-        loop = QEventLoop()
         counterTask = point_layer.countSymbolFeatures()
+        loop = QEventLoop()
         counterTask.symbolsCounted.connect(loop.quit)
-        # start counting features here
         loop.exec_()
 
         legend.model().refreshLayerLegend(legendlayer)

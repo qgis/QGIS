@@ -857,7 +857,6 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
-  mLayoutLegendContext = nullptr;
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 }
@@ -905,7 +904,8 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 
     if ( evaluate || name.contains( "[%" ) )
     {
-      QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
+      QgsExpressionContext context = QgsExpressionContext( *mLayoutLegendContext );
+
       if ( vlayer )
       {
         connect( vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::pendingCount );
@@ -955,7 +955,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerT
   return lst;
 }
 
-void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
+void QgsLegendModel::setLayoutExpContext( QgsExpressionContext econtext )
 {
   mLayoutLegendContext = econtext;
 }

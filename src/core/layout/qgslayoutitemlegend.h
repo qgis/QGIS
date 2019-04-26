@@ -58,6 +58,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void setLayoutExpContext( QgsExpressionContext *econtext );
 
+
   signals:
 
     /**
@@ -82,6 +83,12 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     void doneCount( long taskid );
 
   private:
+
+    /**
+     * Cached QgsExpressionContext
+     * \since QGIS 3.8
+     */
+    QgsExpressionContext mLayoutLegendContext;
 
     /**
      * Returns filtered list of active legend nodes attached to a particular layer node
