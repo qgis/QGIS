@@ -392,12 +392,14 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertEqual(val, 5)
 
         # test with subset
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', ids=[1, 2])
+        request = QgsFeatureRequest().setFilterFids([1, 2])
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
         # test with subset
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', ids=list())
+        request = QgsFeatureRequest().setFilterFids(list())
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
         self.assertTrue(ok)
         self.assertEqual(val, 0.0)
 
