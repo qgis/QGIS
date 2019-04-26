@@ -65,12 +65,15 @@ from qgis.core import (
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterVectorDestination,
     QgsProcessingParameterFeatureSink,
-    QgsProcessingOutputLayerDefinition
+    QgsProcessingOutputLayerDefinition,
+    QgsExpressionContextUtils,
+    QgsExpression
 )
 from qgis.gui import (
     QgsProcessingParameterWidgetContext,
     QgsProcessingContextGenerator,
-    QgsFindFilesByPatternDialog
+    QgsFindFilesByPatternDialog,
+    QgsExpressionBuilderDialog
 )
 from qgis.utils import iface
 
@@ -120,12 +123,20 @@ class BatchPanelFillWidget(QToolButton):
         fill_down_action.setToolTip(self.tr('Copy the first value down to all other rows'))
         self.menu.addAction(fill_down_action)
 
+        calculate_by_expression = QAction(QCoreApplication.translate('BatchPanel', 'Calculate by Expression…'),
+                                          self.menu)
+        calculate_by_expression.setIcon(QgsApplication.getThemeIcon('/mActionCalculateField.svg'))
+        calculate_by_expression.triggered.connect(self.calculateByExpression)
+        calculate_by_expression.setToolTip(self.tr('Calculates parameter values by evaluating an expression'))
+        self.menu.addAction(calculate_by_expression)
+
         if isinstance(self.parameterDefinition, (QgsProcessingParameterFile,
                                                  QgsProcessingParameterMapLayer,
                                                  QgsProcessingParameterRasterLayer,
                                                  QgsProcessingParameterMeshLayer,
                                                  QgsProcessingParameterVectorLayer,
                                                  QgsProcessingParameterFeatureSource)):
+            self.menu.addSeparator()
             find_by_pattern_action = QAction(QCoreApplication.translate('BatchPanel', 'Add Files by Pattern…'),
                                              self.menu)
             find_by_pattern_action.triggered.connect(self.addFilesByPattern)
@@ -176,6 +187,51 @@ class BatchPanelFillWidget(QToolButton):
             first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
             for row, file in enumerate(files):
                 self.setRowValue(first_row + row, file, context)
+
+    def calculateByExpression(self):
+        """
+        Calculates parameter values by evaluating expressions.
+        """
+        context = dataobjects.createContext()
+        expression_context = context.expressionContext()
+
+        # use the first row parameter values as a preview during expression creation
+        params = self.panel.parametersForRow(0, warnOnInvalid=False)
+        alg_scope = QgsExpressionContextUtils.processingAlgorithmScope(self.panel.alg, params, context)
+
+        # create explicit variables corresponding to every parameter
+        for k, v in params.items():
+            alg_scope.setVariable(k, v, True)
+
+        expression_context.appendScope(alg_scope)
+
+        # mark the parameter variables as highlighted for discoverability
+        highlighted_vars = expression_context.highlightedVariables()
+        highlighted_vars.extend(list(params.keys()))
+        expression_context.setHighlightedVariables(highlighted_vars)
+
+        dlg = QgsExpressionBuilderDialog(layer=None, context=context.expressionContext())
+        if not dlg.exec_():
+            return
+
+        for row in range(self.panel.batchRowCount()):
+            params = self.panel.parametersForRow(row, warnOnInvalid=False)
+
+            # remove previous algorithm scope -- we need to rebuild this completely, using the
+            # other parameter values from the current row
+            expression_context.popScope()
+            alg_scope = QgsExpressionContextUtils.processingAlgorithmScope(self.panel.alg, params, context)
+
+            for k, v in params.items():
+                alg_scope.setVariable(k, v, True)
+
+            expression_context.appendScope(alg_scope)
+
+            # rebuild a new expression every time -- we don't want the expression compiler to replace
+            # variables with precompiled values
+            exp = QgsExpression(dlg.expressionText())
+            value = exp.evaluate(expression_context)
+            self.setRowValue(row, value, context)
 
 
 class BatchPanel(BASE, WIDGET):
