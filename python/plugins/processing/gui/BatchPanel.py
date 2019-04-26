@@ -46,24 +46,32 @@ from qgis.PyQt.QtCore import (
     QFileInfo,
     QCoreApplication
 )
-from qgis.core import (Qgis,
-                       QgsApplication,
-                       QgsSettings,
-                       QgsProperty,  # NOQA - must be here for saved file evaluation
-                       QgsProject,
-                       QgsProcessingFeatureSourceDefinition,  # NOQA - must be here for saved file evaluation
-                       QgsCoordinateReferenceSystem,  # NOQA - must be here for saved file evaluation
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingModelAlgorithm,
-                       QgsProcessingParameterFile,
-                       QgsProcessingParameterMapLayer,
-                       QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterMeshLayer,
-                       QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterFeatureSource)
-from qgis.gui import (QgsProcessingParameterWidgetContext,
-                      QgsProcessingContextGenerator,
-                      QgsFindFilesByPatternDialog)
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsProperty,  # NOQA - must be here for saved file evaluation
+    QgsProject,
+    QgsProcessingFeatureSourceDefinition,  # NOQA - must be here for saved file evaluation
+    QgsCoordinateReferenceSystem,  # NOQA - must be here for saved file evaluation
+    QgsProcessingParameterDefinition,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterMapLayer,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterMeshLayer,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingOutputLayerDefinition
+)
+from qgis.gui import (
+    QgsProcessingParameterWidgetContext,
+    QgsProcessingContextGenerator,
+    QgsFindFilesByPatternDialog
+)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
@@ -171,7 +179,6 @@ class BatchPanelFillWidget(QToolButton):
 
 
 class BatchPanel(BASE, WIDGET):
-
     PARAMETERS = "PARAMETERS"
     OUTPUTS = "OUTPUTS"
 
@@ -457,3 +464,45 @@ class BatchPanel(BASE, WIDGET):
         for column, param in enumerate(self.alg.parameterDefinitions()):
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.tblParameters.setColumnHidden(column, not checked)
+
+    def parametersForRow(self, row, destinationProject=None, warnOnInvalid=True):
+        """
+        Returns the parameters dictionary corresponding to a row in the batch table
+        """
+        col = 0
+        parameters = {}
+        for param in self.alg.parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
+                continue
+            wrapper = self.wrappers[row][col]
+            parameters[param.name()] = wrapper.parameterValue()
+            if warnOnInvalid and not param.checkValueIsAcceptable(wrapper.parameterValue()):
+                self.parent.messageBar().pushMessage("",
+                                                     self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                                                         param.description(), row + 1),
+                                                     level=Qgis.Warning, duration=5)
+                return {}
+            col += 1
+        count_visible_outputs = 0
+        for out in self.alg.destinationParameterDefinitions():
+            if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+
+            count_visible_outputs += 1
+            widget = self.tblParameters.cellWidget(row + 1, col)
+            text = widget.getValue()
+            if not warnOnInvalid or out.checkValueIsAcceptable(text):
+                if isinstance(out, (QgsProcessingParameterRasterDestination,
+                                    QgsProcessingParameterVectorDestination,
+                                    QgsProcessingParameterFeatureSink)):
+                    # load rasters and sinks on completion
+                    parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, destinationProject)
+                else:
+                    parameters[out.name()] = text
+                col += 1
+            else:
+                self.parent.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
+                    out.description(), row + 1),
+                    level=Qgis.Warning, duration=5)
+                return {}
+        return parameters
