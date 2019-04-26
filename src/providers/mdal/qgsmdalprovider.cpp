@@ -241,6 +241,22 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
   return false;
 }
 
+void QgsMdalProvider::reloadData()
+{
+  if ( mMeshH )
+    MDAL_CloseMesh( mMeshH );
+
+  QByteArray curi = dataSourceUri().toUtf8();
+  mMeshH = MDAL_LoadMesh( curi.constData() );
+
+  if ( mMeshH )
+  {
+    const QString proj = MDAL_M_projection( mMeshH );
+    if ( !proj.isEmpty() )
+      mCrs.createFromString( proj );
+  }
+}
+
 
 void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString )
 {

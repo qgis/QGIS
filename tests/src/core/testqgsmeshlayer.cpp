@@ -64,6 +64,8 @@ class TestQgsMeshLayer : public QObject
 
     void test_time_format_data();
     void test_time_format();
+
+    void test_reload();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -491,6 +493,72 @@ void TestQgsMeshLayer::test_time_format()
 
   QString time = QgsMeshLayerUtils::formatTime( hours, settings );
   QCOMPARE( time, expectedTime );
+}
+
+void TestQgsMeshLayer::test_reload()
+{
+  QString uri1( mDataDir + "/quad_and_triangle.2dm" );
+  QFile fileSource1( uri1 );
+  QDataStream streamFileSource1( &fileSource1 );
+
+  QString uri2( mDataDir + "/quad_flower.2dm" );
+  QFile fileSource2( uri2 );
+  QDataStream streamFileSource2( &fileSource2 );
+
+  QString uriTest( "fileTest.2dm" );
+
+  QTemporaryFile testFile;
+  QDataStream streamTestFile( &testFile );
+
+  //copy the quad_and_triangle.2dm to the temporary tstFile
+  QVERIFY( testFile.open() );
+  QVERIFY( fileSource1.open( QIODevice::ReadOnly ) );
+  while ( !streamFileSource1.atEnd() )
+  {
+    char *rd = new char[1];
+    int len = streamFileSource1.readRawData( rd, 1 );
+    streamTestFile.writeRawData( rd, len );
+  }
+
+  testFile.close();
+  fileSource1.close();
+
+  //create layer with temporary file
+  QgsMeshLayer layer( testFile.fileName(), "Test", "mdal" );
+  QgsRenderContext rendererContext;
+  layer.createMapRenderer( rendererContext ); //to active the lazy loading of mesh data
+
+
+  //Test if the layer matches with quad and triangle
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( 5, layer.nativeMesh()->vertexCount() );
+  QCOMPARE( 2, layer.nativeMesh()->faceCount() );
+
+
+  //copy the quad_flower.2dm with the test file name
+  //QDataStream streamTestFile(&testFile);
+  QVERIFY( testFile.open() );
+  QVERIFY( fileSource2.open( QIODevice::ReadOnly ) );
+  while ( !streamFileSource2.atEnd() )
+  {
+    char *rd = new char[1];
+    int len = streamFileSource2.readRawData( rd, 1 );
+    streamTestFile.writeRawData( rd, len );
+  }
+  testFile.close();
+  fileSource2.close();
+
+
+  //reload the layer
+  layer.reload();
+
+
+  //Test if the layer matches with quad flower
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( 8, layer.nativeMesh()->vertexCount() );
+  QCOMPARE( 5, layer.nativeMesh()->faceCount() );
+
+
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )
