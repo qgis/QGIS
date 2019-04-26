@@ -534,7 +534,7 @@ INSERT INTO qgis_test.check_constraints VALUES (
   1, -- id
   4, -- a
   3  -- b
-)
+);
 
 
 ---------------------------------------------
@@ -542,8 +542,7 @@ INSERT INTO qgis_test.check_constraints VALUES (
 -- Table and view for tests on  checkPrimaryKeyUnicity
 --
 
-
-DROP TABLE IF EXISTS qgis_test.b21839_pk_unicity;
+DROP TABLE IF EXISTS qgis_test.b21839_pk_unicity CASCADE;
 CREATE TABLE qgis_test.b21839_pk_unicity
 (
   pk serial NOT NULL,
