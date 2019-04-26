@@ -238,7 +238,7 @@ used if the gradient color type is set to ColorRamp.
 .. seealso:: :py:func:`gradientColorType`
 %End
 
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
 Sets the color ramp used for the gradient fill. This is only
 used if the gradient color type is set to ColorRamp.
