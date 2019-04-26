@@ -1566,7 +1566,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   // so it has to be set before initializing the provider,
   // this manipulation is necessary to preserve default behavior when
   // "trust layer metadata" project level option is set and checkPrimaryKeyUnicity
-  // was not explicitely passed in the uri
+  // was not explicitly passed in the uri
   if ( provider.compare( QLatin1String( "postgres" ) ) == 0 )
   {
     const QString checkUnicityKey { QStringLiteral( "checkPrimaryKeyUnicity" ) };
