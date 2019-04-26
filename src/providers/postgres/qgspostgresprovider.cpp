@@ -108,6 +108,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   if ( mUri.hasParam( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
   {
+
     if ( mUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).compare( QLatin1String( "0" ) )  == 0 )
     {
       mCheckPrimaryKeyUnicity = false;
