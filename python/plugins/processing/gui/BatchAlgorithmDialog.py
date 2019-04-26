@@ -187,6 +187,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         self.createSummaryTable(algorithm_results)
         self.mainWidget().setEnabled(True)
+        self.resetGui()
 
     def loadHTMLResults(self, results, num):
         for out in self.algorithm().outputDefinitions():
