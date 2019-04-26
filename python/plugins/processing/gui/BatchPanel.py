@@ -30,8 +30,22 @@ import json
 import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QDir, QFileInfo
+from qgis.PyQt.QtWidgets import (
+    QTableWidgetItem,
+    QComboBox,
+    QHeaderView,
+    QFileDialog,
+    QMessageBox,
+    QToolButton,
+    QMenu,
+    QAction
+)
+from qgis.PyQt.QtGui import QPalette
+from qgis.PyQt.QtCore import (
+    QDir,
+    QFileInfo,
+    QCoreApplication
+)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
@@ -57,6 +71,68 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
         os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
+
+
+class BatchPanelFillWidget(QToolButton):
+
+    def __init__(self, parameterDefinition, column, panel, parent=None):
+        super().__init__(parent)
+
+        self.setBackgroundRole(QPalette.Window)
+        self.setAutoFillBackground(True)
+
+        self.parameterDefinition = parameterDefinition
+        self.column = column
+        self.panel = panel
+
+        self.setText(QCoreApplication.translate('BatchPanel', 'Autofill…'))
+        f = self.font()
+        f.setItalic(True)
+        self.setFont(f)
+        self.setPopupMode(QToolButton.InstantPopup)
+        self.setAutoRaise(True)
+
+        self.menu = QMenu()
+        self.menu.aboutToShow.connect(self.createMenu)
+        self.setMenu(self.menu)
+
+    def createMenu(self):
+        self.menu.clear()
+        self.menu.setMinimumWidth(self.width())
+
+        fill_down_action = QAction(self.tr('Fill Down'), self.menu)
+        fill_down_action.triggered.connect(self.fillDown)
+        fill_down_action.setToolTip(self.tr('Copy the first value down to all other rows'))
+
+        self.menu.addAction(fill_down_action)
+
+    def fillDown(self):
+        """
+        Copy the top value down
+        """
+        context = dataobjects.createContext()
+
+        wrapper = self.panel.wrappers[0][self.column]
+        if wrapper is None:
+            # e.g. double clicking on a destination header
+            widget = self.panel.tblParameters.cellWidget(1, self.column)
+            value = widget.getValue()
+        else:
+            value = wrapper.parameterValue()
+
+        for row in range(1, self.panel.batchRowCount()):
+            self.setRowValue(row, value, context)
+
+    def setRowValue(self, row, value, context):
+        """
+        Sets the value for a row, in the current column
+        """
+        wrapper = self.panel.wrappers[row][self.column]
+        if wrapper is None:
+            # e.g. destination header
+            self.panel.tblParameters.cellWidget(row + 1, self.column).setValue(str(value))
+        else:
+            wrapper.setParameterValue(value, context)
 
 
 class BatchPanel(BASE, WIDGET):
@@ -87,8 +163,6 @@ class BatchPanel(BASE, WIDGET):
         self.btnOpen.clicked.connect(self.load)
         self.btnSave.clicked.connect(self.save)
         self.btnAdvanced.toggled.connect(self.toggleAdvancedMode)
-        self.tblParameters.horizontalHeader().sectionDoubleClicked.connect(
-            self.fillParameterValues)
 
         self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
         self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
@@ -106,6 +180,8 @@ class BatchPanel(BASE, WIDGET):
                 return self.processing_context
 
         self.context_generator = ContextGenerator(self.processing_context)
+
+        self.column_to_parameter_definition = {}
 
         self.initWidgets()
 
@@ -132,13 +208,18 @@ class BatchPanel(BASE, WIDGET):
                 column, QTableWidgetItem(param.description()))
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.tblParameters.setColumnHidden(column, True)
+
+            self.column_to_parameter_definition[column] = param.name()
             column += 1
 
         for out in self.alg.destinationParameterDefinitions():
             if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 self.tblParameters.setHorizontalHeaderItem(
                     column, QTableWidgetItem(out.description()))
+                self.column_to_parameter_definition[column] = out.name()
                 column += 1
+
+        self.addFillRow()
 
         # Add an empty row to begin
         self.addRow()
@@ -146,6 +227,12 @@ class BatchPanel(BASE, WIDGET):
         self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
         self.tblParameters.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
+
+    def batchRowCount(self):
+        """
+        Returns the number of rows corresponding to execution iterations
+        """
+        return len(self.wrappers)
 
     def load(self):
         context = dataobjects.createContext()
@@ -163,7 +250,7 @@ class BatchPanel(BASE, WIDGET):
             # If the user clicked on the cancel button.
             return
 
-        self.tblParameters.setRowCount(0)
+        self.tblParameters.setRowCount(1)
         try:
             for row, alg in enumerate(values):
                 self.addRow()
@@ -186,7 +273,7 @@ class BatchPanel(BASE, WIDGET):
                         continue
                     if out.name() in outputs:
                         value = outputs[out.name()].strip("'")
-                        widget = self.tblParameters.cellWidget(row, column)
+                        widget = self.tblParameters.cellWidget(row + 1, column)
                         widget.setValue(value)
                     column += 1
         except TypeError:
@@ -198,7 +285,7 @@ class BatchPanel(BASE, WIDGET):
     def save(self):
         toSave = []
         context = dataobjects.createContext()
-        for row in range(self.tblParameters.rowCount()):
+        for row in range(self.batchRowCount()):
             algParams = {}
             algOutputs = {}
             col = 0
@@ -222,7 +309,8 @@ class BatchPanel(BASE, WIDGET):
                 value = wrapper.parameterValue()
 
                 if not param.checkValueIsAcceptable(value, context):
-                    self.parent.messageBar().pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                    self.parent.messageBar().pushMessage("", self.tr(
+                        'Wrong or missing parameter value: {0} (row {1})').format(
                         param.description(), row + 1),
                         level=Qgis.Warning, duration=5)
                     return
@@ -231,15 +319,16 @@ class BatchPanel(BASE, WIDGET):
             for out in alg.destinationParameterDefinitions():
                 if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
-                widget = self.tblParameters.cellWidget(row, col)
+                widget = self.tblParameters.cellWidget(row + 1, col)
                 text = widget.getValue()
                 if text.strip() != '':
                     algOutputs[out.name()] = text.strip()
                     col += 1
                 else:
-                    self.parent.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                        out.description(), row + 1),
-                        level=Qgis.Warning, duration=5)
+                    self.parent.messageBar().pushMessage("",
+                                                         self.tr('Wrong or missing output value: {0} (row {1})').format(
+                                                             out.description(), row + 1),
+                                                         level=Qgis.Warning, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
@@ -258,7 +347,7 @@ class BatchPanel(BASE, WIDGET):
                 json.dump(toSave, f)
 
     def setCellWrapper(self, row, column, wrapper, context):
-        self.wrappers[row][column] = wrapper
+        self.wrappers[row - 1][column] = wrapper
 
         widget_context = QgsProcessingParameterWidgetContext()
         widget_context.setProject(QgsProject.instance())
@@ -280,6 +369,12 @@ class BatchPanel(BASE, WIDGET):
             widget = wrapper.widget
 
         self.tblParameters.setCellWidget(row, column, widget)
+
+    def addFillRow(self):
+        self.tblParameters.setRowCount(1)
+        for col, name in self.column_to_parameter_definition.items():
+            param_definition = self.alg.parameterDefinition(self.column_to_parameter_definition[col])
+            self.tblParameters.setCellWidget(0, col, BatchPanelFillWidget(param_definition, col, self))
 
     def addRow(self):
         self.wrappers.append([None] * self.tblParameters.columnCount())
@@ -319,20 +414,9 @@ class BatchPanel(BASE, WIDGET):
             wrapper.postInitialize(list(wrappers.values()))
 
     def removeRows(self):
-        if self.tblParameters.rowCount() > 1:
+        if self.tblParameters.rowCount() > 2:
             self.wrappers.pop()
             self.tblParameters.setRowCount(self.tblParameters.rowCount() - 1)
-
-    def fillParameterValues(self, column):
-        context = dataobjects.createContext()
-
-        wrapper = self.wrappers[0][column]
-        if wrapper is None:
-            # e.g. double clicking on a destination header
-            return
-
-        for row in range(1, self.tblParameters.rowCount()):
-            self.wrappers[row][column].setParameterValue(wrapper.parameterValue(), context)
 
     def toggleAdvancedMode(self, checked):
         for column, param in enumerate(self.alg.parameterDefinitions()):
