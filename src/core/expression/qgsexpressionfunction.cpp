@@ -581,6 +581,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
       QgsExpressionContext context_copy = *context;
       QgsFeatureRequest request = QgsFeatureRequest();
       request.setFilterFids( ids );
+      #TODO allow stacking in the request
       result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, request );
     }
     else
@@ -763,6 +764,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
     QgsExpressionContext context_copy = *context;
     QgsFeatureRequest request = QgsFeatureRequest();
     request.setFilterFids( ids );
+    #TODO allow stacking in the request
     result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, request );
   }
   else
