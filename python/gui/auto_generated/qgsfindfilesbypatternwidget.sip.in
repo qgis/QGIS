@@ -67,8 +67,6 @@ Constructor for QgsFindFilesByPatternDialog, with the specified ``parent`` widge
     QStringList files() const;
 %Docstring
 Returns the list of files found by the dialog.
-
-.. seealso:: :py:func:`filesFound`
 %End
 
 };
