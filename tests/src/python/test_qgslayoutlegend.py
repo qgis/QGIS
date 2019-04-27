@@ -360,7 +360,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
-"""
+    """
     def testSymbolExpressions(self):
         "Test expressions embedded in legend node text"
         QgsProject.instance().clear()
