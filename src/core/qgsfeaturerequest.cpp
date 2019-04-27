@@ -520,3 +520,23 @@ QString QgsFeatureRequest::OrderBy::dump() const
 
   return results.join( QStringLiteral( ", " ) );
 }
+
+void QgsFeatureRequest::stackFilters()
+{
+  mStackFilters = true;
+}
+
+void QgsFeatureRequest::unstackFilters()
+{
+  mStackFilters = false;
+}
+
+bool QgsFeatureRequest::stackedFilters()
+{
+  if ( mStackFilters )
+  {
+    if ( !mFilterFids.empty() && !mFilterExpression.empty() )
+      return true;
+  }
+  return false;
+}

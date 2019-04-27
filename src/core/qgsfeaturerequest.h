@@ -704,6 +704,24 @@ class CORE_EXPORT QgsFeatureRequest
      */
     QgsFeatureRequest &setRequestMayBeNested( bool requestMayBeNested );
 
+    /**
+     * Allow the stacking of the expression and fid filter.
+     * \since QGIS 3.8
+     */
+    void stackFilters();
+
+    /**
+     * Disable the stacking of the expression and fid filter.
+     * \since QGIS 3.8
+     */
+    void unstackFilters();
+
+    /**
+     * Return true if filter stacking is allow and both expression and fids filter are not empty.
+     * \since QGIS 3.8
+     */
+    bool stackedFilters();
+
   protected:
     FilterType mFilter = FilterNone;
     QgsRectangle mFilterRect;
@@ -723,6 +741,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsCoordinateTransformContext mTransformContext;
     int mTimeout = -1;
     int mRequestMayBeNested = false;
+    bool mStackFilters = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
