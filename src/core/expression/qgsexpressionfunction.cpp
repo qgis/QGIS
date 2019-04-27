@@ -4782,6 +4782,57 @@ static QVariant fcnEnvVar( const QVariantList &values, const QgsExpressionContex
   return QProcessEnvironment::systemEnvironment().value( envVarName );
 }
 
+static QVariant fcnBaseFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QFileInfo( file ).completeBaseName();
+}
+
+static QVariant fcnFileSuffix( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QFileInfo( file ).completeSuffix();
+}
+
+static QVariant fcnFileExists( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QFileInfo::exists( file );
+}
+
+static QVariant fcnFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QFileInfo( file ).fileName();
+}
+
+static QVariant fcnPathIsFile( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QFileInfo( file ).isFile();
+}
+
+static QVariant fcnPathIsDir( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QFileInfo( file ).isDir();
+}
+
+static QVariant fcnFilePath( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QDir::toNativeSeparators( QFileInfo( file ).path() );
+}
+
+static QVariant fcnFileSize( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString file = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QFileInfo( file ).size();
+}
+
+
+
+
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 {
   // The construction of the list isn't thread-safe, and without the mutex,
@@ -5044,6 +5095,24 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "factor" ) ),
                                             fncLighter, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "set_color_part" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "component" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fncSetColorPart, QStringLiteral( "Color" ) )
+
+        // file info
+        << new QgsStaticExpressionFunction( QStringLiteral( "base_file_name" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnBaseFileName, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "file_suffix" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnFileSuffix, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "file_exists" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnFileExists, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "file_name" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnFileName, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "is_file" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnPathIsFile, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "is_directory" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnPathIsDir, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "file_path" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnFilePath, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "file_size" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnFileSize, QStringLiteral( "Files and Paths" ) )
 
         // deprecated stuff - hidden from users
         << new QgsStaticExpressionFunction( QStringLiteral( "$scale" ), QgsExpressionFunction::ParameterList(), fcnMapScale, QStringLiteral( "deprecated" ) );
