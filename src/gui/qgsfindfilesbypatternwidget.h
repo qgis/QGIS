@@ -85,7 +85,6 @@ class GUI_EXPORT QgsFindFilesByPatternDialog : public QDialog
 
     /**
      * Returns the list of files found by the dialog.
-     * \see filesFound()
      */
     QStringList files() const;
 
