@@ -189,6 +189,15 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsLayerTreeModelLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsLayerTreeModelLegendNode;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
 
     /**
@@ -293,6 +302,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const;
 
+    /**
+     * Evaluates  and returns the text label of the current node
+     * \param context extra QgsExpressionContext to use for evaluating the expression
+     * \param label text to evaluate instead of the layer layertree string
+     * \since QGIS 3.8
+     */
+    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
 
   public slots:
 
@@ -319,14 +335,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \since QGIS 3.6
      */
     void toggleAllItems();
-
-    /**
-     * Evaluates  and returns the text label of the current node
-     * \param context extra QgsExpressionContext to use for evaluating the expression
-     * \param label text to evaluate instead of the layer layertree string
-     * \since QGIS 3.8
-     */
-    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
 
   private:
     void updateLabel();
