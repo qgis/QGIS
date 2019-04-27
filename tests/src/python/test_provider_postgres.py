@@ -1119,7 +1119,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'an_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres', options)
         self.assertTrue(vl0.isValid())
 
-        # Valid because a_unique_int is unique
+        # Valid because a_unique_int is unique and default is to check unicity
         vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'a_unique_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
         self.assertEqual(vl0.getFeature(1).geometry().asWkt(), geom)
 
