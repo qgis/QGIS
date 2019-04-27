@@ -544,9 +544,18 @@ class BatchPanel(BASE, WIDGET):
             wrapper.postInitialize(list(wrappers.values()))
 
     def removeRows(self):
-        if self.tblParameters.rowCount() > 2:
-            self.wrappers.pop()
-            self.tblParameters.setRowCount(self.tblParameters.rowCount() - 1)
+        rows = set()
+        for index in self.tblParameters.selectedIndexes():
+            if index.row() == 0:
+                continue
+            rows.add(index.row())
+
+        for row in sorted(rows, reverse=True):
+            if self.tblParameters.rowCount() <= 2:
+                break
+
+            del self.wrappers[row - 1]
+            self.tblParameters.removeRow(row)
 
     def toggleAdvancedMode(self, checked):
         for column, param in enumerate(self.alg.parameterDefinitions()):
