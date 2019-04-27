@@ -236,7 +236,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>8</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -265,8 +265,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>590</width>
-                <height>777</height>
+                <width>537</width>
+                <height>795</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -863,8 +863,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>603</width>
-                <height>161</height>
+                <width>546</width>
+                <height>164</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -938,8 +938,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>543</height>
+                <width>269</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1378,7 +1378,7 @@
            <item row="3" column="0">
             <widget class="QCheckBox" name="mTrustProjectCheckBox">
              <property name="toolTip">
-              <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized views.</string>
+              <string>Speed up project loading by skipping data checks in PostgreSQL layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
              </property>
              <property name="text">
               <string>Trust project when data source has no metadata</string>
@@ -1514,8 +1514,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>178</width>
-                <height>54</height>
+                <width>167</width>
+                <height>55</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1575,9 +1575,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-975</y>
-                <width>671</width>
-                <height>2682</height>
+                <y>0</y>
+                <width>598</width>
+                <height>2732</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
