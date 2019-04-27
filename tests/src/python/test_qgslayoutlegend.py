@@ -457,6 +457,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.model().layerLegendNodes(layer_tree_layer)[2].setUserLabel('[%sum("Pilots") %]')
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
+        legend.updateLegend()
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
         sleep(1)

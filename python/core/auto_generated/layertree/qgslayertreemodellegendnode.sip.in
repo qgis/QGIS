@@ -190,7 +190,7 @@ and allowing interaction with the symbol / renderer.
       sipType = sipType_QgsLayerTreeModelLegendNode;
     else
       sipType = 0;
-%End 
+%End
   public:
 
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent /TransferThis/ = 0 );

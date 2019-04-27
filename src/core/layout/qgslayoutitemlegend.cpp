@@ -969,10 +969,7 @@ void QgsLegendModel::doneCount( long taskid )
   {
     mPendingCount.removeOne( taskid );
     if ( mPendingCount.isEmpty() )
-    {
       emit refreshLegend();
-      QTimer::singleShot( 750, this, SLOT( allowRefresh() ) );
-    }
   }
 }
 
