@@ -754,7 +754,7 @@ Disable the stacking of the expression and fid filter.
 
     bool stackedFilters();
 %Docstring
-Return true if filter stacking is allow and both expression and fids filter are not empty.
+Returns true if filter stacking is allowed and both expression and fids filter are not empty.
 
 .. versionadded:: 3.8
 %End
