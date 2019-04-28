@@ -398,7 +398,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
-        # test with subset
+        # test with empty subset
         request = QgsFeatureRequest().setFilterFids(list())
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
         self.assertTrue(ok)
