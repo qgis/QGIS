@@ -404,6 +404,14 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 0.0)
 
+        #test with double filters
+        request = QgsFeatureRequest().setFilterFids([1, 2, 3, 5, 7])
+        request.setFilterExpression("fldint > 3")
+        request.stackFilters()
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
+        self.assertTrue(ok)
+        self.assertEqual(val, 17.0)
+
     def testExpressionNoMatch(self):
         """ test aggregate calculation using an expression with no features """
 
