@@ -360,7 +360,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
-    """
+
     def testSymbolExpressions(self):
         "Test expressions embedded in legend node text"
         QgsProject.instance().clear()
@@ -407,7 +407,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(label2, '@symbol_count 1')
         self.assertEqual(label3, 'sum("Pilots") 2')
 
-        QgsProject.instance().clear()"""
+        QgsProject.instance().clear()
 
     def testSymbolExpressionRender(self):
         """Test expressions embedded in legend node text"""
@@ -458,7 +458,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
         legend.updateLegend()
-        print( layer_tree_layer.expression() )
+        print(layer_tree_layer.expression())
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
         sleep(1)
         checker = QgsLayoutChecker(
