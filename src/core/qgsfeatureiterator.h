@@ -128,6 +128,21 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 
     /**
+     * By default, the iterator will fetch all features and check if the id
+     * is in the request and in the expression.
+     * If you have a more sophisticated metodology (SQL request for the features...)
+     * and you are sure, that any feature you return from fetchFeature will match
+     * if the request was FilterFids and the expression,
+     * you can just redirect this call to fetchFeature
+     * so the default check will be omitted.
+     *
+     * \param f The feature to write to
+     * \returns  TRUE if a feature was written to f
+     * \singe QGIS 3.8
+     */
+    virtual bool nextFeatureFilterFidsExpression( QgsFeature &f );
+
+    /**
      * Transforms \a feature's geometry according to the specified coordinate \a transform.
      * If \a feature has no geometry or \a transform is invalid then calling this method
      * has no effect and will be shortcut.
