@@ -717,7 +717,7 @@ class CORE_EXPORT QgsFeatureRequest
     void unstackFilters();
 
     /**
-     * Return true if filter stacking is allow and both expression and fids filter are not empty.
+     * Returns true if filter stacking is allow and both expression and fids filter are not empty.
      * \since QGIS 3.8
      */
     bool stackedFilters();

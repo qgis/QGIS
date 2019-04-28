@@ -535,7 +535,7 @@ bool QgsFeatureRequest::stackedFilters()
 {
   if ( mStackFilters )
   {
-    if ( !mFilterFids.empty() && !mFilterExpression.empty() )
+    if ( !mFilterFids.empty() && !mFilterExpression )
       return true;
   }
   return false;
