@@ -129,7 +129,6 @@ so the default check will be omitted.
 :return: ``True`` if a feature was written to f
 
 .. versionadded:: 3.8
-
 %End
 
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
