@@ -458,7 +458,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
         legend.updateLegend()
-        print(layer_tree_layer.expression())
+        print(layer_tree_layer.labelExpression())
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
         sleep(1)
         checker = QgsLayoutChecker(
