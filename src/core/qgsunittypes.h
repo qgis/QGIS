@@ -414,11 +414,20 @@ class CORE_EXPORT QgsUnitTypes
      */
     Q_INVOKABLE static QgsUnitTypes::RenderUnit decodeRenderUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
+
     /**
      * Returns a translated string representing a render \a unit.
      * \since QGIS 3.0
      */
     static QString toString( QgsUnitTypes::RenderUnit unit );
+
+    /**
+     * Returns a translated abbreviation representing a render unit.
+     * \param unit unit to convert to string
+     *
+     * \since QGIS 3.8
+     */
+    Q_INVOKABLE static QString toAbbreviatedString( QgsUnitTypes::RenderUnit unit );
 
 
     // LAYOUT UNITS
