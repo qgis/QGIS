@@ -47,6 +47,10 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature &f )
       mZombie = false;
     }
   }
+  else if ( mRequest.stackedFilters() )
+  {
+    dataOk = nextFeatureFilterFidsExpression( f );
+  }
   else
   {
     switch ( mRequest.filterType() )
@@ -88,6 +92,20 @@ bool QgsAbstractFeatureIterator::nextFeatureFilterFids( QgsFeature &f )
   {
     if ( mRequest.filterFids().contains( f.id() ) )
       return true;
+  }
+  return false;
+}
+
+bool QgsAbstractFeatureIterator::nextFeatureFilterFidsExpression( QgsFeature &f )
+{
+  while ( fetchFeature( f ) )
+  {
+    mRequest.expressionContext()->setFeature( f );
+    if ( mRequest.filterFids().contains( f.id() ) )
+    {
+      if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+        return true;
+    }
   }
   return false;
 }
