@@ -3,6 +3,6 @@
   "type": "function",
   "description": "Returns the file suffix (extension) from a file path.",
   "arguments": [ {"arg":"path","description":"a file path"}],
-  "examples": [ { "expression":"base_file_name('/home/qgis/data/country_boundaries.shp')", "returns":"'shp'"}]
+  "examples": [ { "expression":"file_suffix('/home/qgis/data/country_boundaries.shp')", "returns":"'shp'"}]
 }
 
