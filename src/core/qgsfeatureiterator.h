@@ -138,7 +138,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      *
      * \param f The feature to write to
      * \returns  TRUE if a feature was written to f
-     * \singe QGIS 3.8
+     * \since QGIS 3.8
      */
     virtual bool nextFeatureFilterFidsExpression( QgsFeature &f );
 

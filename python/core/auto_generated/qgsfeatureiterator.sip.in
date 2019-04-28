@@ -127,7 +127,8 @@ so the default check will be omitted.
 :param f: The feature to write to
 
 :return: ``True`` if a feature was written to f
-         \singe QGIS 3.8
+
+.. versionadded:: 3.8
 %End
 
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
