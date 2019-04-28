@@ -364,7 +364,24 @@ void QgsSimpleLineSymbolLayerWidget::mCustomCheckBox_stateChanged( int state )
 
 void QgsSimpleLineSymbolLayerWidget::mChangePatternButton_clicked()
 {
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsDashSpaceWidget *widget = new QgsDashSpaceWidget( mLayer->customDashVector(), panel );
+    widget->setPanelTitle( tr( "Custom Dash Pattern" ) );
+    widget->setUnit( mDashPatternUnitWidget->unit() );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ this, widget ]()
+    {
+      mLayer->setCustomDashVector( widget->dashDotVector() );
+      updatePatternIcon();
+    } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsSymbolLayerWidget::changed );
+    panel->openPanel( widget );
+    return;
+  }
+
   QgsDashSpaceDialog d( mLayer->customDashVector() );
+  d.setUnit( mDashPatternUnitWidget->unit() );
   if ( d.exec() == QDialog::Accepted )
   {
     mLayer->setCustomDashVector( d.dashDotVector() );
