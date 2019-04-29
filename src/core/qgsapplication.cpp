@@ -452,7 +452,7 @@ void QgsApplication::setFileOpenEventReceiver( QObject *receiver )
 void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPaths )
 {
   ABISYM( mPrefixPath ) = prefixPath;
-#if defined(_MSC_VER)
+#if defined(Q_OS_WIN)
   if ( ABISYM( mPrefixPath ).endsWith( "/bin" ) )
   {
     ABISYM( mPrefixPath ).chop( 4 );
@@ -732,12 +732,12 @@ QString QgsApplication::resolvePkgPath()
     prefixPath = dir.absolutePath();
 #else
 
-#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACX)
     prefixPath = appPath;
-#if defined(_MSC_VER)
+#elif defined(Q_OS_WIN)
+    prefixPath = appPath;
     if ( prefixPath.endsWith( "/bin" ) )
       prefixPath.chop( 4 );
-#endif
 #else
     QDir dir( appPath );
     // Fix for server which is one level deeper in /usr/lib/cgi-bin
