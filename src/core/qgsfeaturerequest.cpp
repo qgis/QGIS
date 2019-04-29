@@ -87,7 +87,6 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mTimeout = rh.mTimeout;
   mRequestMayBeNested = rh.mRequestMayBeNested;
-  mStackFilters = rh.mStackFilters;
   return *this;
 }
 
@@ -520,24 +519,4 @@ QString QgsFeatureRequest::OrderBy::dump() const
   }
 
   return results.join( QStringLiteral( ", " ) );
-}
-
-void QgsFeatureRequest::stackFilters()
-{
-  mStackFilters = true;
-}
-
-void QgsFeatureRequest::unstackFilters()
-{
-  mStackFilters = false;
-}
-
-bool QgsFeatureRequest::stackedFilters()
-{
-  if ( mStackFilters )
-  {
-    if ( !mFilterFids.empty() && !mFilterExpression )
-      return true;
-  }
-  return false;
 }

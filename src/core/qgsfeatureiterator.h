@@ -128,6 +128,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 
     /**
+<<<<<<< HEAD
      * By default, the iterator will fetch all features and check if the id
      * is in the request and in the expression.
      * If you have a more sophisticated metodology (SQL request for the features...)
@@ -143,6 +144,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     virtual bool nextFeatureFilterFidsExpression( QgsFeature &f );
 
     /**
+=======
+>>>>>>> parent of d43182f0c2... Merge branch 'aggregate2' into patch-1
      * Transforms \a feature's geometry according to the specified coordinate \a transform.
      * If \a feature has no geometry or \a transform is invalid then calling this method
      * has no effect and will be shortcut.

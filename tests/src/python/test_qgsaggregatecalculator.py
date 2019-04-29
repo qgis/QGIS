@@ -21,7 +21,6 @@ from qgis.core import (QgsAggregateCalculator,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
                        QgsGeometry,
-                       QgsFeatureRequest,
                        NULL
                        )
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
@@ -392,6 +391,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 5)
 
+<<<<<<< HEAD
         # test with subset
         request = QgsFeatureRequest().setFilterFids([1, 2])
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
@@ -412,6 +412,8 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 17.0)
 
+=======
+>>>>>>> parent of d43182f0c2... Merge branch 'aggregate2' into patch-1
     def testExpressionNoMatch(self):
         """ test aggregate calculation using an expression with no features """
 

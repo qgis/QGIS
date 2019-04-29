@@ -114,6 +114,7 @@ so the default check will be omitted.
 :return: ``True`` if a feature was written to f
 %End
 
+<<<<<<< HEAD
     virtual bool nextFeatureFilterFidsExpression( QgsFeature &f );
 %Docstring
 By default, the iterator will fetch all features and check if the id
@@ -131,6 +132,8 @@ so the default check will be omitted.
 .. versionadded:: 3.8
 %End
 
+=======
+>>>>>>> parent of d43182f0c2... Merge branch 'aggregate2' into patch-1
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
 %Docstring
 Transforms ``feature``'s geometry according to the specified coordinate ``transform``.
