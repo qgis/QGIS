@@ -154,7 +154,7 @@ class GUI_EXPORT CharacterWidget : public QWidget
 
   private:
     QFont mDisplayFont;
-    int mColumns = 16;
+    int mColumns = 13;
     int mLastKey = -1;
     int mSquareSize = 24;
 };

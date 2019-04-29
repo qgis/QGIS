@@ -321,6 +321,12 @@
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0" rowspan="2">
       <widget class="QgsScrollArea" name="scrollArea">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>158</height>
+        </size>
+       </property>
        <widget class="QWidget" name="scrollAreaWidgetContents">
         <property name="geometry">
          <rect>
