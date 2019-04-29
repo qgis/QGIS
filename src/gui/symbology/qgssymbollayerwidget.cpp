@@ -439,6 +439,8 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   {
     return;
   }
+  QColor color = qApp->palette().color( QPalette::WindowText );
+  layerCopy->setColor( color );
   layerCopy->setUseCustomDashPattern( true );
   QIcon buttonIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( layerCopy, QgsUnitTypes::RenderMillimeters, mChangePatternButton->iconSize() );
   mChangePatternButton->setIcon( buttonIcon );
