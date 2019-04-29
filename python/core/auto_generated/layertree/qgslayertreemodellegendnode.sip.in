@@ -191,7 +191,6 @@ and allowing interaction with the symbol / renderer.
 %TypeHeaderCode
 #include "qgslayertreemodellegendnode.h"
 %End
-
   public:
 
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent /TransferThis/ = 0 );

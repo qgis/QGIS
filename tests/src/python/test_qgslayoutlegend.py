@@ -460,7 +460,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.updateLegend()
         print(layer_tree_layer.labelExpression())
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
-        sleep(1)
+        sleep(3)
         checker = QgsLayoutChecker(
             'composer_legend_expressions', layout)
         checker.setControlPathPrefix("composer_legend")
