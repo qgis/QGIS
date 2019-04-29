@@ -108,6 +108,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   if ( mUri.hasParam( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
   {
+
     if ( mUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).compare( QLatin1String( "0" ) )  == 0 )
     {
       mCheckPrimaryKeyUnicity = false;
@@ -1312,7 +1313,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
     QStringList log;
 
-    // no primary or unique indizes found
+    // no primary or unique indices found
     if ( res.PQntuples() == 0 )
     {
       QgsDebugMsg( QStringLiteral( "Relation has no primary key -- investigating alternatives" ) );
@@ -1568,7 +1569,6 @@ bool QgsPostgresProvider::uniqueData( const QString &quotedColNames )
     pushError( unique.PQresultErrorMessage() );
     return false;
   }
-
   return unique.PQntuples() == 1 && unique.PQgetvalue( 0, 0 ).startsWith( 't' );
 }
 
