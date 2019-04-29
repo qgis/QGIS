@@ -217,7 +217,7 @@ class CORE_EXPORT QgsRasterBlock
      * \returns value
      * \see valueAndNoData()
     */
-    double value( qgssize index ) const;
+    inline double value( qgssize index ) const;
 
     /**
      * Reads a single value from the pixel at the specified data matrix \a index, if type of block is numeric. If type is color,
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsRasterBlock
      * \see isNoData()
      * \since QGIS 3.6
      */
-    double valueAndNoData( qgssize index, bool &isNoData ) const SIP_SKIP;
+    inline double valueAndNoData( qgssize index, bool &isNoData ) const SIP_SKIP;
 
     /**
      * Gives direct access to the raster block data.
@@ -668,7 +668,7 @@ class CORE_EXPORT QgsRasterBlock
      * \param value tested value
      * \returns TRUE if value is nodata
     */
-    bool isNoDataValue( double value ) const;
+    inline bool isNoDataValue( double value ) const;
 
     /**
      * Allocate no data bitmap
