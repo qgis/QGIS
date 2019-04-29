@@ -54,14 +54,7 @@ QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
   : QgsMeshDataProvider( uri, options )
 {
-  QByteArray curi = uri.toUtf8();
-  mMeshH = MDAL_LoadMesh( curi.constData() );
-  if ( mMeshH )
-  {
-    const QString proj = MDAL_M_projection( mMeshH );
-    if ( !proj.isEmpty() )
-      mCrs.createFromString( proj );
-  }
+  loadData();
 }
 
 QgsMdalProvider::~QgsMdalProvider()
@@ -241,20 +234,37 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
   return false;
 }
 
-void QgsMdalProvider::reloadData()
+void QgsMdalProvider::loadData()
 {
-  if ( mMeshH )
-    MDAL_CloseMesh( mMeshH );
-
   QByteArray curi = dataSourceUri().toUtf8();
   mMeshH = MDAL_LoadMesh( curi.constData() );
-
   if ( mMeshH )
   {
     const QString proj = MDAL_M_projection( mMeshH );
     if ( !proj.isEmpty() )
       mCrs.createFromString( proj );
   }
+}
+
+void QgsMdalProvider::reloadData()
+{
+  if ( mMeshH )
+    MDAL_CloseMesh( mMeshH );
+
+  loadData();
+
+  if ( mMeshH )
+    for ( auto uri : mExtraDatasetUris )
+    {
+      std::string str = uri.toStdString();
+      MDAL_M_LoadDatasets( mMeshH, str.c_str() );
+
+      if ( MDAL_LastStatus() != MDAL_Status::None )
+      {
+        mExtraDatasetUris.removeOne( uri );
+      }
+    }
+
 }
 
 

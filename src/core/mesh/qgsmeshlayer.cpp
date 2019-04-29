@@ -470,6 +470,9 @@ void QgsMeshLayer::reload()
 
     dataProvider()->populateMesh( mNativeMesh.get() );
 
+    //clear the TriangularMesh
+    mTriangularMesh.reset( new QgsTriangularMesh() );
+
     //clear the rendererCache
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
   }

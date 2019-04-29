@@ -104,6 +104,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
   private:
     QVector<QgsMeshVertex> vertices( ) const;
     QVector<QgsMeshFace> faces( ) const;
+    void loadData();
     MeshH mMeshH;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
