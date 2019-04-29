@@ -298,6 +298,11 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mCustomCheckBox->setCheckState( useCustomDashPattern ? Qt::Checked : Qt::Unchecked );
   mCustomCheckBox->blockSignals( false );
 
+  //make sure height of custom dash button looks good under different platforms
+  QSize size = mChangePatternButton->minimumSizeHint();
+  int fontHeight = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4 );
+  mChangePatternButton->setMinimumSize( QSize( size.width(), std::max( size.height(), fontHeight ) ) );
+
   //draw inside polygon?
   const bool drawInsidePolygon = mLayer->drawInsidePolygon();
   whileBlocking( mDrawInsideCheckBox )->setCheckState( drawInsidePolygon ? Qt::Checked : Qt::Unchecked );
@@ -332,7 +337,6 @@ void QgsSimpleLineSymbolLayerWidget::penWidthChanged()
 void QgsSimpleLineSymbolLayerWidget::colorChanged( const QColor &color )
 {
   mLayer->setColor( color );
-  updatePatternIcon();
   emit changed();
 }
 
@@ -341,6 +345,7 @@ void QgsSimpleLineSymbolLayerWidget::penStyleChanged()
   mLayer->setPenStyle( cboPenStyle->penStyle() );
   mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
   mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
+  updatePatternIcon();
   emit changed();
 }
 
@@ -396,6 +401,7 @@ void QgsSimpleLineSymbolLayerWidget::mPenWidthUnitWidget_changed()
   {
     mLayer->setWidthUnit( mPenWidthUnitWidget->unit() );
     mLayer->setWidthMapUnitScale( mPenWidthUnitWidget->getMapUnitScale() );
+    updatePatternIcon();
     emit changed();
   }
 }
@@ -416,6 +422,7 @@ void QgsSimpleLineSymbolLayerWidget::mDashPatternUnitWidget_changed()
   {
     mLayer->setCustomDashPatternUnit( mDashPatternUnitWidget->unit() );
     mLayer->setCustomDashPatternMapUnitScale( mDashPatternUnitWidget->getMapUnitScale() );
+    updatePatternIcon();
     emit changed();
   }
 }
@@ -434,17 +441,53 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   {
     return;
   }
-  QgsSimpleLineSymbolLayer *layerCopy = mLayer->clone();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > layerCopy( mLayer->clone() );
   if ( !layerCopy )
   {
     return;
   }
   QColor color = qApp->palette().color( QPalette::WindowText );
   layerCopy->setColor( color );
+  // reset offset, we don't want to show that in the preview
+  layerCopy->setOffset( 0 );
   layerCopy->setUseCustomDashPattern( true );
-  QIcon buttonIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( layerCopy, QgsUnitTypes::RenderMillimeters, mChangePatternButton->iconSize() );
-  mChangePatternButton->setIcon( buttonIcon );
-  delete layerCopy;
+
+  QSize currentIconSize;
+  //icon size is button size with a small margin
+#ifdef Q_OS_WIN
+  currentIconSize = QSize( mChangePatternButton->width() - 10, mChangePatternButton->height() - 6 );
+#else
+  currentIconSize = QSize( mChangePatternButton->width() - 10, mChangePatternButton->height() - 12 );
+#endif
+
+  if ( !currentIconSize.isValid() || currentIconSize.width() <= 0 || currentIconSize.height() <= 0 )
+  {
+    return;
+  }
+
+  //create an icon pixmap
+  std::unique_ptr< QgsLineSymbol > previewSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << layerCopy.release() );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize );
+  mChangePatternButton->setIconSize( currentIconSize );
+  mChangePatternButton->setIcon( icon );
+
+  // set tooltip
+  // create very large preview image
+  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
+  int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+
+  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
+  QByteArray data;
+  QBuffer buffer( &data );
+  pm.save( &buffer, "PNG", 100 );
+  mChangePatternButton->setToolTip( QStringLiteral( "<img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) ) );
+}
+
+void QgsSimpleLineSymbolLayerWidget::resizeEvent( QResizeEvent *event )
+{
+  QgsSymbolLayerWidget::resizeEvent( event );
+  // redraw custom dash pattern icon -- the button size has changed
+  updatePatternIcon();
 }
 
 

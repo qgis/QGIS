@@ -125,6 +125,9 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
 
     void updatePatternIcon();
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+
 };
 
 
