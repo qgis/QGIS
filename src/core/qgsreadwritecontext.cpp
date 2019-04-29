@@ -14,8 +14,23 @@
  ***************************************************************************/
 #include "qgsreadwritecontext.h"
 
+class DefaultTranslator : public QgsProjectTranslator
+{
+    // QgsProjectTranslator interface
+  public:
+    QString translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const override
+    {
+      Q_UNUSED( context );
+      Q_UNUSED( disambiguation );
+      Q_UNUSED( n );
+      return sourceText;
+    }
+};
+
+static DefaultTranslator sDefaultTranslator;
+
 QgsReadWriteContext::QgsReadWriteContext()
-  : mProjectTranslator( &mDefaultTranslator )
+  : mProjectTranslator( &sDefaultTranslator )
 {
 
 }
@@ -77,12 +92,4 @@ QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages(
   QList<QgsReadWriteContext::ReadWriteMessage > messages = mMessages;
   mMessages.clear();
   return messages;
-}
-
-QString QgsReadWriteContext::DefaultTranslator::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const
-{
-  Q_UNUSED( context )
-  Q_UNUSED( disambiguation )
-  Q_UNUSED( n )
-  return sourceText;
 }

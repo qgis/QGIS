@@ -131,7 +131,6 @@ Sets data coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
-      public:
 };
 
 
