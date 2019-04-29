@@ -83,7 +83,6 @@ struct QgsPostgresLayerProperty
   bool                          isMaterializedView = false;
   QString                       tableComment;
 
-
   // TODO: rename this !
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
@@ -252,12 +251,16 @@ class QgsPostgresConn : public QObject
     PGresult *PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes );
     PGresult *PQexecPrepared( const QString &stmtName, const QStringList &params );
 
-    //! PQsendQuery is used for asynchronous queries (with PQgetResult)
-    //! Thread safety must be ensured by the caller by calling QgsPostgresConn::lock() and QgsPostgresConn::unlock()
+    /**
+     * PQsendQuery is used for asynchronous queries (with PQgetResult)
+     * Thread safety must be ensured by the caller by calling QgsPostgresConn::lock() and QgsPostgresConn::unlock()
+     */
     int PQsendQuery( const QString &query );
 
-    //! PQgetResult is used for asynchronous queries (with PQsendQuery)
-    //! Thread safety must be ensured by the caller by calling QgsPostgresConn::lock() and QgsPostgresConn::unlock()
+    /**
+     * PQgetResult is used for asynchronous queries (with PQsendQuery)
+     * Thread safety must be ensured by the caller by calling QgsPostgresConn::lock() and QgsPostgresConn::unlock()
+     */
     PGresult *PQgetResult();
 
     bool begin();
