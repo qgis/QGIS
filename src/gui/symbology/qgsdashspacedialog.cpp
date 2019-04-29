@@ -95,8 +95,11 @@ QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent
   mWidget = new QgsDashSpaceWidget( v );
   vLayout->addWidget( mWidget );
   QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QgsDashSpaceDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QgsDashSpaceDialog::reject );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
+  setWindowTitle( tr( "Custom Dash Pattern" ) );
 }
 
 QVector<qreal> QgsDashSpaceDialog::dashDotVector() const
