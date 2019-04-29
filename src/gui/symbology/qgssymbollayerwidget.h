@@ -153,6 +153,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     //creates a new icon for the 'change pattern' button
     void updatePatternIcon();
 
+    void resizeEvent( QResizeEvent *event ) override;
+
   private slots:
 
     void updateAssistantSymbol();
