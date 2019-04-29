@@ -189,14 +189,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( qobject_cast<QgsLayerTreeModelLegendNode *> ( sipCpp ) )
-      sipType = sipType_QgsLayerTreeModelLegendNode;
-    else
-      sipType = 0;
-    SIP_END
-#endif
 
   public:
 
