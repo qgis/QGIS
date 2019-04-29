@@ -1097,6 +1097,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl2.extent(), originalExtent)
 
+    def testCheckPkUnicityOnView(self):
+        # vector layer based on view
+
+        # This is valid
+        vl0 = QgsVectorLayer(self.dbconn + ' checkPrimaryKeyUnicity=\'0\'  sslmode=disable key=\'pk\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl0.isValid())
+
+        geom = vl0.getFeature(1).geometry().asWkt()
+
+        # This is NOT valid
+        vl0 = QgsVectorLayer(self.dbconn + ' checkPrimaryKeyUnicity=\'1\' sslmode=disable key=\'an_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertFalse(vl0.isValid())
+
+        # This is NOT valid because the default is to check unicity
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'an_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertFalse(vl0.isValid())
+
+        # This is valid because the readExtentFromXml option is set
+        options = QgsVectorLayer.LayerOptions(True, True)  # loadDefaultStyle, readExtentFromXml
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'an_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres', options)
+        self.assertTrue(vl0.isValid())
+
+        # Valid because a_unique_int is unique and default is to check unicity
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'a_unique_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertEqual(vl0.getFeature(1).geometry().asWkt(), geom)
+
+        # Valid because a_unique_int is unique
+        vl0 = QgsVectorLayer(self.dbconn + ' checkPrimaryKeyUnicity=\'1\' sslmode=disable key=\'a_unique_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl0.isValid())
+        self.assertEqual(vl0.getFeature(1).geometry().asWkt(), geom)
+
     def testNotify(self):
         vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
         vl0.dataProvider().setListening(True)
