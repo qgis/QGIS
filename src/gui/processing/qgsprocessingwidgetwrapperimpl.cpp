@@ -2206,8 +2206,8 @@ void QgsProcessingPointPanel::clear()
 void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
 {
   QString newText = QStringLiteral( "%1,%2" )
-                    .arg( QString::number( point.x(), 'g', 18 ) )
-                    .arg( QString::number( point.y(), 'g', 18 ) );
+                    .arg( QString::number( point.x(), 'f' ) )
+                    .arg( QString::number( point.y(), 'f' ) );
 
   mCrs = crs;
   if ( mCrs.isValid() )
