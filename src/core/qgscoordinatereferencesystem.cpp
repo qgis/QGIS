@@ -18,6 +18,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatereferencesystem_p.h"
 
+#include "qgscoordinatereferencesystem_legacy.h"
+
 #include <cmath>
 
 #include <QDir>
@@ -524,10 +526,24 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     {
       d->mAuthId = QStringLiteral( "USER:%1" ).arg( d->mSrsId );
     }
-    else if ( d->mAuthId.startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) )
+    else if ( !d->mAuthId.startsWith( QLatin1String( "USER:" ), Qt::CaseInsensitive ) )
     {
 #if PROJ_VERSION_MAJOR>=6
-      d->mPj.reset( proj_create_from_database( QgsProjContext::get(), "EPSG", d->mAuthId.mid( 5 ).toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
+      QStringList parts = d->mAuthId.split( ':' );
+      QString auth = parts.at( 0 );
+      QString code = parts.at( 1 );
+
+      QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( QgsProjContext::get(), auth.toLatin1(), code.toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
+      if ( crs && proj_get_type( crs.get() ) == PJ_TYPE_COMPOUND_CRS )
+      {
+        // freaking take a guess that 0 is horizontal, because we are only mortal
+        d->mPj.reset( proj_crs_get_sub_crs( QgsProjContext::get(), crs.get(), 0 ) );
+      }
+      else
+      {
+        d->mPj = std::move( crs );
+      }
+
       d->mIsValid = static_cast< bool >( d->mPj );
 #else
       OSRDestroySpatialReference( d->mCRS );
@@ -608,7 +624,18 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 #if PROJ_VERSION_MAJOR>=6
   PROJ_STRING_LIST warnings = nullptr;
   PROJ_STRING_LIST grammerErrors = nullptr;
-  d->mPj.reset( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+  if ( crs && proj_get_type( crs.get() ) == PJ_TYPE_COMPOUND_CRS )
+  {
+    // freaking take a guess that 0 is horizontal, because we are only mortal
+    d->mPj.reset( proj_crs_get_sub_crs( QgsProjContext::get(), crs.get(), 0 ) );
+  }
+  else
+  {
+    d->mPj = std::move( crs );
+  }
+
   res = static_cast< bool >( d->mPj );
   if ( !res )
   {
@@ -1209,7 +1236,18 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
 
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *ctx = QgsProjContext::get();
-  d->mPj.reset( proj_create( ctx, trimmed.toLatin1().constData() ) );
+
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( ctx, trimmed.toLatin1().constData() ) );
+  if ( crs && proj_get_type( crs.get() ) == PJ_TYPE_COMPOUND_CRS )
+  {
+    // freaking take a guess that 0 is horizontal, because we are only mortal
+    d->mPj.reset( proj_crs_get_sub_crs( QgsProjContext::get(), crs.get(), 0 ) );
+  }
+  else
+  {
+    d->mPj = std::move( crs );
+  }
+
   if ( !d->mPj )
   {
     const int errNo = proj_context_errno( ctx );
@@ -2040,10 +2078,9 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
 int QgsCoordinateReferenceSystem::syncDatabase()
 {
-#if 1
   setlocale( LC_ALL, "C" );
   QString dbFilePath = QgsApplication::srsDatabaseFilePath();
-  syncDatumTransform( dbFilePath );
+  //syncDatumTransform( dbFilePath );
 
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
@@ -2062,10 +2099,239 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return -1;
   }
 
-  OGRSpatialReferenceH crs = nullptr;
   sqlite3_statement_unique_ptr statement;
   int result;
   char *errMsg = nullptr;
+
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *pjContext = QgsProjContext::get();
+  PROJ_STRING_LIST authorities = proj_get_authorities_from_database( pjContext );
+
+  int nextSrId = 520000000;
+  for ( auto authIter = authorities; authIter && *authIter; ++authIter )
+  {
+    const QString authority( *authIter );
+    QgsDebugMsgLevel( QStringLiteral( "Loading authority '%1'" ).arg( authority ), 1 );
+    PROJ_STRING_LIST codes = proj_get_codes_from_database( pjContext, *authIter, PJ_TYPE_CRS, true );
+
+    QStringList allCodes;
+
+    for ( auto codesIter = codes; codesIter && *codesIter; ++codesIter )
+    {
+      const QString code( *codesIter );
+      allCodes << QgsSqliteUtils::quotedString( code );
+      QgsDebugMsgLevel( QStringLiteral( "Loading code '%1'" ).arg( code ), 4 );
+      QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( pjContext, *authIter, *codesIter, PJ_CATEGORY_CRS, false, nullptr ) );
+      if ( !crs )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not load '%1:%2'" ).arg( authority, code ) );
+        continue;
+      }
+
+      QString proj4( proj_as_proj_string( pjContext, crs.get(), PJ_PROJ_4, nullptr ) );
+      proj4 = proj4.trimmed();
+
+      if ( proj4.isEmpty() )
+      {
+        QgsDebugMsg( QStringLiteral( "No proj4 for '%1:%2'" ).arg( authority, code ) );
+        continue;
+      }
+
+      const bool deprecated = proj_is_deprecated( crs.get() );
+      const QString name( proj_get_name( crs.get() ) );
+
+      QString sql = QStringLiteral( "SELECT parameters,description,deprecated FROM tbl_srs WHERE auth_name='%1' AND auth_id='%2'" ).arg( authority, code );
+      statement = database.prepare( sql, result );
+      if ( result != SQLITE_OK )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not prepare: %1 [%2]\n" ).arg( sql, database.errorMessage() ) );
+        continue;
+      }
+
+      QString srsProj4;
+      QString srsDesc;
+      bool srsDeprecated = deprecated;
+      if ( statement.step() == SQLITE_ROW )
+      {
+        srsProj4 = statement.columnAsText( 0 );
+        srsDesc = statement.columnAsText( 1 );
+        srsDeprecated = statement.columnAsText( 2 ).toInt() != 0;
+      }
+
+      if ( !srsProj4.isEmpty() || !srsDesc.isEmpty() )
+      {
+        if ( proj4 != srsProj4 || name != srsDesc || deprecated != srsDeprecated )
+        {
+          errMsg = nullptr;
+          sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3 WHERE auth_name=%4 AND auth_id=%5" )
+                .arg( QgsSqliteUtils::quotedString( proj4 ) )
+                .arg( QgsSqliteUtils::quotedString( name ) )
+                .arg( deprecated ? 1 : 0 )
+                .arg( QgsSqliteUtils::quotedString( authority ), QgsSqliteUtils::quotedString( code ) );
+
+          if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
+          {
+            QgsDebugMsg( QStringLiteral( "Could not execute: %1 [%2/%3]\n" ).arg(
+                           sql,
+                           database.errorMessage(),
+                           errMsg ? errMsg : "(unknown error)" ) );
+            if ( errMsg )
+              sqlite3_free( errMsg );
+            errors++;
+          }
+          else
+          {
+            updated++;
+          }
+        }
+      }
+      else
+      {
+        QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_get_ellipsoid( pjContext, crs.get() ) );
+        QString ellps;
+        if ( ellipsoid )
+        {
+          const QString ellipsoidAuthName( proj_get_id_auth_name( ellipsoid.get(), 0 ) );
+          const QString ellipsoidAuthCode( proj_get_id_code( ellipsoid.get(), 0 ) );
+          ellps = QStringLiteral( "%1:%2" ).arg( ellipsoidAuthName, ellipsoidAuthCode );
+        }
+        else
+        {
+          // satisfy not null constraint on ellipsoid_acronym field
+          // possibly we should drop the constraint, yet the crses with missing ellipsoid_acronym are malformed
+          // and will result in oddities within other areas of QGIS (e.g. project ellipsoid won't be correctly
+          // set for these CRSes). Better just hack around and make the constraint happy for now,
+          // and hope that the definitions get corrected in future.
+          ellps = "";
+        }
+
+
+        bool isGeographic = false;
+        QString operation = "";
+
+        QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( pjContext, crs.get() ) );
+        if ( coordinateSystem )
+        {
+          const int axisCount = proj_cs_get_axis_count( pjContext, coordinateSystem.get() );
+          if ( axisCount > 0 )
+          {
+            const char *outUnitAuthName = nullptr;
+            const char *outUnitAuthCode = nullptr;
+            // Read only first axis
+            proj_cs_get_axis_info( pjContext, coordinateSystem.get(), 0,
+                                   nullptr,
+                                   nullptr,
+                                   nullptr,
+                                   nullptr,
+                                   nullptr,
+                                   &outUnitAuthName,
+                                   &outUnitAuthCode );
+
+            if ( outUnitAuthName && outUnitAuthCode )
+            {
+              const char *unitCategory = nullptr;
+              if ( proj_uom_get_info_from_database( pjContext, outUnitAuthName, outUnitAuthCode, nullptr, nullptr, &unitCategory ) )
+              {
+                isGeographic = QString( unitCategory ).compare( QLatin1String( "angular" ), Qt::CaseInsensitive ) == 0;
+              }
+            }
+          }
+        }
+
+        QgsProjUtils::proj_pj_unique_ptr coordOperation( proj_crs_get_coordoperation( pjContext, crs.get() ) );
+        if ( coordOperation )
+        {
+          const char *methodName = nullptr;
+          proj_coordoperation_get_method_info( pjContext, coordOperation.get(), &methodName, nullptr, nullptr );
+
+          // TODO - get short operation name?? e.g. tmerc
+          operation = QString( methodName );
+        }
+
+        // work out srid and srsid
+        const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( authority, code ) );
+        QString srsId;
+        QString srId;
+        if ( !dbVals.isEmpty() )
+        {
+          const QStringList parts = dbVals.split( ',' );
+          srsId = parts.at( 0 );
+          srId = parts.at( 1 );
+        }
+        if ( srId.isEmpty() )
+        {
+          srId = QString::number( nextSrId );
+          nextSrId++;
+        }
+
+        if ( !srsId.isEmpty() )
+        {
+          sql = QStringLiteral( "INSERT INTO tbl_srs(srs_id, description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1, %2,%3,%4,%5,%6,%7,%8,%9,%10)" )
+                .arg( srsId )
+                .arg( QgsSqliteUtils::quotedString( name ),
+                      QgsSqliteUtils::quotedString( operation ),
+                      QgsSqliteUtils::quotedString( ellps ),
+                      QgsSqliteUtils::quotedString( proj4 ) )
+                .arg( srId )
+                .arg( QgsSqliteUtils::quotedString( authority ) )
+                .arg( QgsSqliteUtils::quotedString( code ) )
+                .arg( isGeographic ? 1 : 0 )
+                .arg( deprecated ? 1 : 0 );
+        }
+        else
+        {
+          sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%2,%3,%4,%5,%6,%7,%8,%9,%10)" )
+                .arg( QgsSqliteUtils::quotedString( name ),
+                      QgsSqliteUtils::quotedString( operation ),
+                      QgsSqliteUtils::quotedString( ellps ),
+                      QgsSqliteUtils::quotedString( proj4 ) )
+                .arg( srId )
+                .arg( QgsSqliteUtils::quotedString( authority ) )
+                .arg( QgsSqliteUtils::quotedString( code ) )
+                .arg( isGeographic ? 1 : 0 )
+                .arg( deprecated ? 1 : 0 );
+        }
+
+        errMsg = nullptr;
+        if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
+        {
+          inserted++;
+        }
+        else
+        {
+          qCritical( "Could not execute: %s [%s/%s]\n",
+                     sql.toLocal8Bit().constData(),
+                     sqlite3_errmsg( database.get() ),
+                     errMsg ? errMsg : "(unknown error)" );
+          errors++;
+
+          if ( errMsg )
+            sqlite3_free( errMsg );
+        }
+      }
+    }
+
+    proj_string_list_destroy( codes );
+
+    const QString sql = QStringLiteral( "DELETE FROM tbl_srs WHERE auth_name='%1' AND NOT auth_id IN (%2)" ).arg( authority, allCodes.join( ',' ) );
+    if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr ) == SQLITE_OK )
+    {
+      deleted = sqlite3_changes( database.get() );
+    }
+    else
+    {
+      errors++;
+      qCritical( "Could not execute: %s [%s]\n",
+                 sql.toLocal8Bit().constData(),
+                 sqlite3_errmsg( database.get() ) );
+    }
+
+  }
+  proj_string_list_destroy( authorities );
+
+#else
+
+  OGRSpatialReferenceH crs = nullptr;
 
   QString proj4;
   QString sql;
@@ -2323,6 +2589,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   pj_ctx_free( pContext );
 
+#endif
+
   if ( sqlite3_exec( database.get(), "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
     QgsDebugMsg( QStringLiteral( "Could not commit transaction: %1 [%2]\n" ).arg(
@@ -2333,7 +2601,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   }
 
   Q_UNUSED( deleted );
-  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( QString::number( inserted ), QString::number( updated ), QString::number( deleted ), QString::number( errors ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( QString::number( inserted ), QString::number( updated ), QString::number( deleted ), QString::number( errors ) ), 0 );
 
   if ( errors > 0 )
     return -errors;
@@ -2535,7 +2803,6 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
     return false;
   }
 
-#endif
   return true;
 }
 

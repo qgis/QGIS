@@ -697,7 +697,7 @@ void TestQgsCoordinateReferenceSystem::toProj4()
   debugPrint( myCrs );
   //first proj string produced by gdal 1.8-1.9
   //second by gdal 1.7
-  QVERIFY( myCrs.toProj4() == GEOPROJ4 );
+  QCOMPARE( myCrs.toProj4(), GEOPROJ4 );
 }
 void TestQgsCoordinateReferenceSystem::isGeographic()
 {
