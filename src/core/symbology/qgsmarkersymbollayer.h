@@ -800,8 +800,10 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
+
+    //! Constructs a font marker symbol layer.
     QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
-                              QChar chr = DEFAULT_FONTMARKER_CHR,
+                              QString chr = DEFAULT_FONTMARKER_CHR,
                               double pointSize = DEFAULT_FONTMARKER_SIZE,
                               const QColor &color = DEFAULT_FONTMARKER_COLOR,
                               double angle = DEFAULT_FONTMARKER_ANGLE );
@@ -853,18 +855,18 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setFontFamily( const QString &family ) { mFontFamily = family; }
 
     /**
-     * Returns the character used when rendering points.
+     * Returns the character(s) used when rendering points.
      *
      * \see setCharacter()
      */
-    QChar character() const { return mChr; }
+    QString character() const { return mString; }
 
     /**
-     * Sets the character used when rendering points.
+     * Sets the character(s) used when rendering points.
      *
      * \see character()
      */
-    void setCharacter( QChar ch ) { mChr = ch; }
+    void setCharacter( QString chr ) { mString = chr; }
 
     QColor strokeColor() const override { return mStrokeColor; }
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
@@ -958,7 +960,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QString mFontFamily;
     QFontMetrics *mFontMetrics = nullptr;
-    QChar mChr;
+    QString mString;
 
     double mChrWidth = 0;
     QPointF mChrOffset;
