@@ -111,6 +111,7 @@ class BatchPanel(BASE, WIDGET):
 
         self.context_generator = ContextGenerator(self.processing_context)
 
+        self.parameter_to_column = {}
         self.initWidgets()
 
     def layerRegistryChanged(self):
@@ -136,12 +137,14 @@ class BatchPanel(BASE, WIDGET):
                 column, QTableWidgetItem(param.description()))
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.tblParameters.setColumnHidden(column, True)
+            self.parameter_to_column[param.name()] = column
             column += 1
 
         for out in self.alg.destinationParameterDefinitions():
             if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 self.tblParameters.setHorizontalHeaderItem(
                     column, QTableWidgetItem(out.description()))
+                self.parameter_to_column[out.name()] = column
                 column += 1
 
         # Add an empty row to begin
@@ -345,6 +348,6 @@ class BatchPanel(BASE, WIDGET):
             self.wrappers[row][column].setParameterValue(wrapper.parameterValue(), context)
 
     def toggleAdvancedMode(self, checked):
-        for column, param in enumerate(self.alg.parameterDefinitions()):
+        for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                self.tblParameters.setColumnHidden(column, not checked)
+                self.tblParameters.setColumnHidden(self.parameter_to_column[param.name()], not checked)
