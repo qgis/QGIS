@@ -142,6 +142,13 @@ class GUI_EXPORT CharacterWidget : public QWidget
      */
     void setCharacter( QChar character );
 
+    /**
+     * Clears the currently selected character in the widget.
+     * \see character()
+     * \see setCharacter()
+     */
+    void clearCharacter();
+
   signals:
 
     /**
