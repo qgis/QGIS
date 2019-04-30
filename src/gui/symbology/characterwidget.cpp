@@ -52,12 +52,15 @@
 #include <QPainter>
 #include <QPen>
 #include <QPoint>
+#include <QScrollArea>
+#include <QScrollBar>
 #include <QToolTip>
 
 CharacterWidget::CharacterWidget( QWidget *parent )
   : QWidget( parent )
 {
   setMouseTracking( true );
+  setFocusPolicy( Qt::StrongFocus );
 }
 
 void CharacterWidget::setFont( const QFont &font )
@@ -109,6 +112,13 @@ void CharacterWidget::setColumns( int columns )
 void CharacterWidget::setCharacter( QChar character )
 {
   mLastKey = character.unicode();
+  QWidget *widget = parentWidget();
+  if ( widget )
+  {
+    QScrollArea *scrollArea = qobject_cast< QScrollArea *>( widget->parent() );
+    if ( scrollArea && mLastKey < 65536 )
+      scrollArea->verticalScrollBar()->setValue( mLastKey / mColumns * mSquareSize );
+  }
   update();
 }
 
@@ -117,15 +127,29 @@ QSize CharacterWidget::sizeHint() const
   return QSize( mColumns * mSquareSize, ( 65536 / mColumns ) * mSquareSize );
 }
 
+void CharacterWidget::keyPressEvent( QKeyEvent *event )
+{
+  if ( !event->text().isEmpty() )
+  {
+    QChar chr = event->text().at( 0 );
+    if ( chr.unicode() != mLastKey )
+    {
+      setCharacter( chr );
+      emit characterSelected( chr );
+    }
+  }
+}
+
 void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
 {
   QPoint widgetPosition = mapFromGlobal( event->globalPos() );
   uint key = ( widgetPosition.y() / mSquareSize ) * mColumns + widgetPosition.x() / mSquareSize;
 
-  QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1\">%2</span><p>Value: 0x%3" )
+  QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1\">%2</span><p>Decimal: %3<p>Hex: 0x%4" )
                  .arg( mDisplayFont.family() )
                  .arg( QChar( key ) )
-                 .arg( key, 16 );
+                 .arg( key )
+                 .arg( QString::number( key, 16 ) );
   QToolTip::showText( event->globalPos(), text, this );
 }
 

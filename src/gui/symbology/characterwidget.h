@@ -47,13 +47,15 @@
 #ifndef CHARACTERWIDGET_H
 #define CHARACTERWIDGET_H
 
+#include "qgis_sip.h"
+#include "qgis_gui.h"
+
 #include <QFont>
 #include <QPoint>
 #include <QSize>
 #include <QString>
 #include <QWidget>
-#include "qgis_sip.h"
-#include "qgis_gui.h"
+
 
 class QMouseEvent;
 class QPaintEvent;
@@ -148,6 +150,7 @@ class GUI_EXPORT CharacterWidget : public QWidget
     void characterSelected( QChar character );
 
   protected:
+    void keyPressEvent( QKeyEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
     void paintEvent( QPaintEvent *event ) override;
