@@ -312,6 +312,7 @@ class BatchPanel(BASE, WIDGET):
         self.context_generator = ContextGenerator(self.processing_context)
 
         self.column_to_parameter_definition = {}
+        self.parameter_to_column = {}
 
         self.initWidgets()
 
@@ -340,6 +341,7 @@ class BatchPanel(BASE, WIDGET):
                 self.tblParameters.setColumnHidden(column, True)
 
             self.column_to_parameter_definition[column] = param.name()
+            self.parameter_to_column[param.name()] = column
             column += 1
 
         for out in self.alg.destinationParameterDefinitions():
@@ -347,6 +349,7 @@ class BatchPanel(BASE, WIDGET):
                 self.tblParameters.setHorizontalHeaderItem(
                     column, QTableWidgetItem(out.description()))
                 self.column_to_parameter_definition[column] = out.name()
+                self.parameter_to_column[out.name()] = column
                 column += 1
 
         self.addFillRow()
@@ -558,9 +561,9 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.removeRow(row)
 
     def toggleAdvancedMode(self, checked):
-        for column, param in enumerate(self.alg.parameterDefinitions()):
+        for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                self.tblParameters.setColumnHidden(column, not checked)
+                self.tblParameters.setColumnHidden(self.parameter_to_column[param.name()], not checked)
 
     def parametersForRow(self, row, destinationProject=None, warnOnInvalid=True):
         """
