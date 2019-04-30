@@ -103,6 +103,15 @@ Sets the currently selected ``character`` in the widget.
 .. seealso:: :py:func:`characterSelected`
 %End
 
+    void clearCharacter();
+%Docstring
+Clears the currently selected character in the widget.
+
+.. seealso:: :py:func:`character`
+
+.. seealso:: :py:func:`setCharacter`
+%End
+
   signals:
 
     void characterSelected( QChar character );
