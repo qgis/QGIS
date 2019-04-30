@@ -30,16 +30,20 @@ Constructor for QgsFindFilesByPatternWidget, with the specified ``parent`` widge
 
     QStringList files() const;
 %Docstring
-Returns the list of files found by the dialog.
+Returns the list of files found by the dialog. This may be empty if
+no matching files were found.
 
-.. seealso:: :py:func:`filesFound`
+.. seealso:: :py:func:`findComplete`
 %End
 
   signals:
 
-    void filesFound( const QStringList &files );
+    void findComplete( const QStringList &files );
 %Docstring
 Emitted after files are found in the dialog.
+
+The ``files`` argument contains a list of all matching files found. This may be empty if
+no matching files were found.
 
 .. seealso:: :py:func:`files`
 %End
@@ -66,7 +70,8 @@ Constructor for QgsFindFilesByPatternDialog, with the specified ``parent`` widge
 
     QStringList files() const;
 %Docstring
-Returns the list of files found by the dialog.
+Returns the list of files found by the dialog. This may be empty if
+no matching files were found.
 %End
 
 };
