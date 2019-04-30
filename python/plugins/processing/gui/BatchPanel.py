@@ -96,7 +96,7 @@ class BatchPanelFillWidget(QToolButton):
     def __init__(self, parameterDefinition, column, panel, parent=None):
         super().__init__(parent)
 
-        self.setBackgroundRole(QPalette.Window)
+        self.setBackgroundRole(QPalette.Button)
         self.setAutoFillBackground(True)
 
         self.parameterDefinition = parameterDefinition
