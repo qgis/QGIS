@@ -215,7 +215,24 @@ void QgsAnnotation::updateBalloon()
     QLineF currentSegment = segmentList.at( i );
     QgsPointXY currentMinDistPoint;
     double currentMinDist = origin.sqrDistToSegment( currentSegment.x1(), currentSegment.y1(), currentSegment.x2(), currentSegment.y2(), currentMinDistPoint );
-    if ( currentMinDist < minEdgeDist )
+    bool isPreferredSegment = false;
+    if ( qgsDoubleNear( currentMinDist, minEdgeDist ) )
+    {
+      // two segments are close - work out which looks nicer
+      const double angle = fmod( origin.azimuth( currentMinDistPoint ) + 360.0, 360.0 );
+      if ( angle < 45 || angle > 315 )
+        isPreferredSegment = i == 0;
+      else if ( angle < 135 )
+        isPreferredSegment = i == 3;
+      else if ( angle < 225 )
+        isPreferredSegment = i == 2;
+      else
+        isPreferredSegment = i == 1;
+    }
+    else if ( currentMinDist < minEdgeDist )
+      isPreferredSegment = true;
+
+    if ( isPreferredSegment )
     {
       minEdgeIndex = i;
       minEdgePoint = currentMinDistPoint;
