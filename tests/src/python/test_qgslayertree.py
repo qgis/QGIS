@@ -19,7 +19,8 @@ import os
 from qgis.core import (
     QgsLayerTree,
     QgsProject,
-    QgsVectorLayer
+    QgsVectorLayer,
+    QgsLayerTreeLayer
 )
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -77,6 +78,28 @@ class TestQgsLayerTree(unittest.TestCase):
         # clear project
         prj.clear()
         self.assertEqual(prj.layerTreeRoot().customLayerOrder(), [])
+
+    def testCustomLayerOrderChanged(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+
+        layer_tree = QgsLayerTree()
+        layer_order_changed_spy = QSignalSpy(layer_tree.customLayerOrderChanged)
+        layer1_node = QgsLayerTreeLayer(layer)
+        layer_tree.addChildNode(layer1_node)
+        self.assertEqual(len(layer_order_changed_spy), 1)
+        layer2_node = QgsLayerTreeLayer(layer2)
+        layer_tree.addChildNode(layer2_node)
+        self.assertEqual(len(layer_order_changed_spy), 2)
+
+        # simulate a layer move in the tree
+        layer3_node = QgsLayerTreeLayer(layer)
+        layer_tree.addChildNode(layer3_node)
+        self.assertEqual(len(layer_order_changed_spy), 3)
+        layer_tree.removeChildNode(layer1_node)
+        self.assertEqual(len(layer_order_changed_spy), 4)
 
 
 if __name__ == '__main__':
