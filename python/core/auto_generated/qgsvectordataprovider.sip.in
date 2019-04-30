@@ -217,7 +217,7 @@ but subclasses can override this method to handoff calculation of aggregates to 
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for filter
 :param ok: will be set to ``True`` if calculation was successfully performed by the data provider
-:param request: qgsfeaturerequest with filters criteria, if not provided all features will be used
+:param request: optional feature request with feature filtering criteria, if not provided all features will be used
 
 :return: calculated aggregate value
 
