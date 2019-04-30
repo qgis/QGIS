@@ -110,6 +110,21 @@ class TestQgsLayerDefinition(unittest.TestCase):
         self.assertEqual(len(layers), 2)
         QgsProject.instance().removeAllMapLayers()
 
+    def testInvalidSource(self):
+        # Load a QLR containing a vector layer with a broken path
+        QgsProject.instance().removeAllMapLayers()
+        layers = QgsProject.instance().mapLayers()
+        self.assertEqual(len(layers), 0)
+
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/invalid_source.qlr', QgsProject.instance(), QgsProject.instance().layerTreeRoot())
+        self.assertTrue(result)
+        self.assertFalse(errMsg)
+
+        layers = QgsProject.instance().mapLayers()
+        self.assertEqual(len(layers), 1)
+        self.assertFalse(list(layers.values())[0].isValid())
+        QgsProject.instance().removeAllMapLayers()
+
 
 if __name__ == '__main__':
     unittest.main()
