@@ -86,13 +86,11 @@ class BatchInputSelectionPanel(QWidget):
 
         if not (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
                 self.param.layerType == dataobjects.TYPE_FILE):
-            selectLayerAction = QAction(
-                QCoreApplication.translate('BatchInputSelectionPanel', 'Select from Open Layers…'), self.pushButton)
+            selectLayerAction = QAction(self.tr('Select from Open Layers…'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
             popupmenu.addAction(selectLayerAction)
 
-        selectFileAction = QAction(
-            QCoreApplication.translate('BatchInputSelectionPanel', 'Select from File System…'), self.pushButton)
+        selectFileAction = QAction(self.tr('Select from File System…'), self.pushButton)
         selectFileAction.triggered.connect(self.showFileSelectionDialog)
         popupmenu.addAction(selectFileAction)
 
@@ -146,13 +144,13 @@ class BatchInputSelectionPanel(QWidget):
 
     def showFileSelectionDialog(self):
         settings = QgsSettings()
-        text = str(self.text.text())
+        text = self.text.text()
         if os.path.isdir(text):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
         elif settings.contains('/Processing/LastInputPath'):
-            path = str(settings.value('/Processing/LastInputPath'))
+            path = settings.value('/Processing/LastInputPath')
         else:
             path = ''
 
@@ -161,7 +159,7 @@ class BatchInputSelectionPanel(QWidget):
         if ret:
             files = list(ret)
             settings.setValue('/Processing/LastInputPath',
-                              os.path.dirname(str(files[0])))
+                              os.path.dirname(files[0]))
             for i, filename in enumerate(files):
                 files[i] = dataobjects.getRasterSublayer(filename, self.param)
             if len(files) == 1:

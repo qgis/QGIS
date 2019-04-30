@@ -36,6 +36,10 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
                        QgsProperty,
+                       QgsProcessingParameterMapLayer,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFile,
                        QgsProcessingFeatureSourceDefinition,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
@@ -46,6 +50,7 @@ from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
+from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 
 from processing.tools import dataobjects
 from processing.tools.dataobjects import createContext
@@ -292,9 +297,16 @@ class BatchPanel(BASE, WIDGET):
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
                 continue
 
-            wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
-            wrappers[param.name()] = wrapper
-            self.setCellWrapper(row, column, wrapper, context)
+            if isinstance(param, (QgsProcessingParameterMapLayer, QgsProcessingParameterRasterLayer,
+                                  QgsProcessingParameterVectorLayer, QgsProcessingParameterFile)):
+                self.tblParameters.setCellWidget(
+                    row, column, BatchInputSelectionPanel(
+                        param, row, column, self.parent))
+            else:
+                wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
+                wrappers[param.name()] = wrapper
+                self.setCellWrapper(row, column, wrapper, context)
+
             column += 1
 
         for out in self.alg.destinationParameterDefinitions():
