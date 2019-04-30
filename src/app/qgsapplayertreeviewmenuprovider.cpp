@@ -140,18 +140,24 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( layer && layer->isSpatial() )
       {
-        menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
+        QAction *zoomToLayer = actions->actionZoomToLayer( mCanvas, menu );
+        zoomToLayer->setEnabled( layer->isValid() );
+        menu->addAction( zoomToLayer );
         if ( vlayer )
         {
           QAction *actionZoomSelected = actions->actionZoomToSelection( mCanvas, menu );
-          actionZoomSelected->setEnabled( !vlayer->selectedFeatureIds().isEmpty() );
+          actionZoomSelected->setEnabled( vlayer->isValid() && !vlayer->selectedFeatureIds().isEmpty() );
           menu->addAction( actionZoomSelected );
         }
         menu->addAction( actions->actionShowInOverview( menu ) );
       }
 
       if ( vlayer )
-        menu->addAction( actions->actionShowFeatureCount( menu ) );
+      {
+        QAction *showFeatureCount = actions->actionShowFeatureCount( menu );
+        menu->addAction( showFeatureCount );
+        showFeatureCount->setEnabled( vlayer->isValid() );
+      }
 
       QAction *actionCopyLayer = new QAction( tr( "Copy Layer" ), menu );
       connect( actionCopyLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::copyLayer );
@@ -161,10 +167,14 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( rlayer )
       {
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
+        QAction *zoomToNative = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
+        zoomToNative->setEnabled( rlayer->isValid() );
 
         if ( rlayer->rasterType() != QgsRasterLayer::Palette )
-          menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), &QgisApp::legendLayerStretchUsingCurrentExtent );
+        {
+          QAction *stretch = menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), &QgisApp::legendLayerStretchUsingCurrentExtent );
+          stretch->setEnabled( rlayer->isValid() );
+        }
       }
 
       addCustomLayerActions( menu, layer );
@@ -208,8 +218,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // attribute table
         QgsSettings settings;
         QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                         QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
+        QAction *attributeTable = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
+                                  QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
+        attributeTable->setEnabled( vlayer->isValid() );
 
         // allow editing
         unsigned int cap = vlayer->dataProvider()->capabilities();
@@ -219,7 +230,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             menu->addAction( toggleEditingAction );
             toggleEditingAction->setChecked( vlayer->isEditable() );
-            toggleEditingAction->setEnabled( true );
+            toggleEditingAction->setEnabled( vlayer->isValid() );
           }
           if ( saveLayerEditsAction && vlayer->isModified() )
           {
@@ -298,10 +309,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
         QAction *actionSaveAs = new QAction( tr( "Save Features As…" ), menuExportVector );
         connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+        actionSaveAs->setEnabled( vlayer->isValid() );
         menuExportVector->addAction( actionSaveAs );
         QAction *actionSaveSelectedFeaturesAs = new QAction( tr( "Save Selected Features As…" ), menuExportVector );
         connect( actionSaveSelectedFeaturesAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile( nullptr, true ); } );
-        actionSaveSelectedFeaturesAs->setEnabled( vlayer->selectedFeatureCount() > 0 );
+        actionSaveSelectedFeaturesAs->setEnabled( vlayer->isValid() && vlayer->selectedFeatureCount() > 0 );
         menuExportVector->addAction( actionSaveSelectedFeaturesAs );
         QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
         connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
@@ -322,6 +334,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportRaster );
         connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
         menuExportRaster->addAction( actionSaveAs );
+        actionSaveAs->setEnabled( rlayer->isValid() );
         connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
         menuExportRaster->addAction( actionSaveAsDefinitionLayer );
         connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
