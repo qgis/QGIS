@@ -3394,7 +3394,7 @@ void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
     return;
 
   // take the last character of a string for a better experience when users cycle through several characters on their keyboard
-  QChar chr = text.back();
+  QChar chr = text.at( text.length() - 1 );
   if ( text.contains( QRegularExpression( QStringLiteral( "^0x[0-9a-fA-F]{1,4}$" ) ) ) )
   {
     bool ok = false;
