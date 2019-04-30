@@ -85,8 +85,8 @@ class BatchInputSelectionPanel(QWidget):
     def showPopupMenu(self):
         popupmenu = QMenu()
 
-        if not (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                self.param.layerType() == QgsProcessing.TypeFile):
+        if (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
+                self.param.layerType() != QgsProcessing.TypeFile):
             selectLayerAction = QAction(self.tr('Select from Open Layers…'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
             popupmenu.addAction(selectLayerAction)
@@ -184,7 +184,7 @@ class BatchInputSelectionPanel(QWidget):
         self._value = self.text.text()
         self.valueChanged.emit()
 
-    def value(self):
+    def getValue(self):
         return self._value if self._value else None
 
     def setValue(self, value):
