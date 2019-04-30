@@ -3308,7 +3308,10 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   widgetChar->blockSignals( true );
   widgetChar->setFont( layerFont );
-  widgetChar->setCharacter( mLayer->character() );
+  if ( mLayer->character().length() == 1 )
+  {
+    widgetChar->setCharacter( mLayer->character().at( 0 ) );
+  }
   widgetChar->blockSignals( false );
   whileBlocking( mCharLineEdit )->setText( mLayer->character() );
 
@@ -3394,26 +3397,26 @@ void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
     return;
 
   // take the last character of a string for a better experience when users cycle through several characters on their keyboard
-  QChar chr = text.at( text.length() - 1 );
+  QString character = text;
   if ( text.contains( QRegularExpression( QStringLiteral( "^0x[0-9a-fA-F]{1,4}$" ) ) ) )
   {
     bool ok = false;
     unsigned int value = text.toUInt( &ok, 0 );
     if ( ok )
-      chr = QChar( value );
-  }
-  else if ( text.contains( QRegularExpression( QStringLiteral( "^[0-9]{1,}$" ) ) ) )
-  {
-    bool ok = false;
-    unsigned int value = text.toUInt( &ok, 10 );
-    if ( ok )
-      chr = QChar( value );
+      character = QChar( value );
   }
 
-  if ( chr != mLayer->character() )
+  if ( character != mLayer->character() )
   {
-    mLayer->setCharacter( chr );
-    whileBlocking( widgetChar )->setCharacter( mLayer->character() );
+    mLayer->setCharacter( character );
+    if ( mLayer->character().length() == 1 )
+    {
+      whileBlocking( widgetChar )->setCharacter( mLayer->character().at( 0 ) );
+    }
+    else
+    {
+      widgetChar->clearCharacter();
+    }
     emit changed();
   }
 }

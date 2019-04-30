@@ -122,6 +122,12 @@ void CharacterWidget::setCharacter( QChar character )
   update();
 }
 
+void CharacterWidget::clearCharacter()
+{
+  mLastKey = -1;
+  update();
+}
+
 QSize CharacterWidget::sizeHint() const
 {
   return QSize( mColumns * mSquareSize, ( 65536 / mColumns ) * mSquareSize );
