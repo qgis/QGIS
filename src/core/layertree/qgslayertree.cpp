@@ -210,7 +210,18 @@ void QgsLayerTree::nodeRemovedChildren()
       ++layer;
   }
 
+  // we need to ensure that the customLayerOrderChanged signal is ALWAYS raised
+  // here, since that order HAS changed due to removal of the child!
+  // setCustomLayerOrder will only emit this signal when the layers list
+  // at this stage is different to the stored customer layer order. If this
+  // isn't the case (i.e. the lists ARE the same) then manually emit the
+  // signal
+  const bool emitSignal = _qgis_listRawToQPointer( layers ) == mCustomLayerOrder;
+
   setCustomLayerOrder( layers );
+  if ( emitSignal )
+    emit customLayerOrderChanged();
+
   emit layerOrderChanged();
 }
 
