@@ -2062,12 +2062,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return -1;
   }
 
-  // fix up database, if not done already //
-  if ( sqlite3_exec( database.get(), "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
-    ( void )sqlite3_exec( database.get(), "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", nullptr, nullptr, nullptr );
-
-  ( void )sqlite3_exec( database.get(), "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, nullptr, nullptr );
-
   OGRSpatialReferenceH crs = nullptr;
   sqlite3_statement_unique_ptr statement;
   int result;
