@@ -64,7 +64,7 @@ class ExtentFromLayer(QgisAlgorithm):
         return QgsApplication.iconPath("/algorithms/mAlgorithmExtractLayerExtent.svg")
 
     def tags(self):
-        return self.tr('polygon,from,vector,raster,extent,envelope,bounds,bounding,boundary,layer,round,rounded').split(',')
+        return self.tr('polygon,vector,raster,extent,envelope,bounds,bounding,boundary,layer,round,rounded').split(',')
 
     def group(self):
         return self.tr('Layer tools')
@@ -78,7 +78,8 @@ class ExtentFromLayer(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMapLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterNumber(self.ROUND_TO,
-                                                       self.tr('Round values to'), minValue=0,
+                                                       self.tr('Round values to'),
+                                                       minValue=0,
                                                        defaultValue=0,
                                                        type=QgsProcessingParameterNumber.Double))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent'), type=QgsProcessing.TypeVectorPolygon))
@@ -93,7 +94,6 @@ class ExtentFromLayer(QgisAlgorithm):
         layer = self.parameterAsLayer(parameters, self.INPUT, context)
 
         round_to = self.parameterAsDouble(parameters, self.ROUND_TO, context)
-
 
         fields = QgsFields()
         fields.append(QgsField('MINX', QVariant.Double))
