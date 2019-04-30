@@ -41,8 +41,9 @@ class GUI_EXPORT QgsFindFilesByPatternWidget : public QWidget, private Ui::QgsFi
     QgsFindFilesByPatternWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Returns the list of files found by the dialog.
-     * \see filesFound()
+     * Returns the list of files found by the dialog. This may be empty if
+     * no matching files were found.
+     * \see findComplete()
      */
     QStringList files() const { return mFiles; }
 
@@ -51,9 +52,12 @@ class GUI_EXPORT QgsFindFilesByPatternWidget : public QWidget, private Ui::QgsFi
     /**
      * Emitted after files are found in the dialog.
      *
+     * The \a files argument contains a list of all matching files found. This may be empty if
+     * no matching files were found.
+     *
      * \see files()
      */
-    void filesFound( const QStringList &files );
+    void findComplete( const QStringList &files );
 
   private slots:
 
@@ -84,7 +88,8 @@ class GUI_EXPORT QgsFindFilesByPatternDialog : public QDialog
     QgsFindFilesByPatternDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Returns the list of files found by the dialog.
+     * Returns the list of files found by the dialog. This may be empty if
+     * no matching files were found.
      */
     QStringList files() const;
 

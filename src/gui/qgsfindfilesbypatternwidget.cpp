@@ -103,7 +103,7 @@ void QgsFindFilesByPatternWidget::find()
   disconnect( mFindButton, &QPushButton::clicked, this, &QgsFindFilesByPatternWidget::cancel );
   connect( mFindButton, &QPushButton::clicked, this, &QgsFindFilesByPatternWidget::find );
 
-  emit filesFound( mFiles );
+  emit findComplete( mFiles );
 }
 
 void QgsFindFilesByPatternWidget::cancel()
@@ -135,7 +135,7 @@ QgsFindFilesByPatternDialog::QgsFindFilesByPatternDialog( QWidget *parent )
   setLayout( vLayout );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mWidget, &QgsFindFilesByPatternWidget::filesFound, this, [ = ]( const QStringList & files )
+  connect( mWidget, &QgsFindFilesByPatternWidget::findComplete, this, [ = ]( const QStringList & files )
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !files.empty() );
   } );
