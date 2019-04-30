@@ -84,7 +84,7 @@ def getFileFilter(param):
     elif param.type() == 'fileDestination':
         return param.fileFilter() + ';;' + tr('All files (*.*)')
 
-    if param.defaultFileExtension():
+    if hasattr(param, 'defaultFileExtension') and param.defaultFileExtension():
         return tr('Default extension') + ' (*.' + param.defaultFileExtension() + ')'
     else:
         return ''
