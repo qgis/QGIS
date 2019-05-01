@@ -34,7 +34,8 @@ from qgis.core import (QgsPrintLayout,
                        QgsExpression,
                        QgsMapLayerLegendUtils,
                        QgsLegendStyle,
-                       QgsFontUtils)
+                       QgsFontUtils,
+                       QgsApplication)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -382,17 +383,18 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         counterTask = point_layer.countSymbolFeatures()
         counterTask.waitForFinished()
+        TM = QgsApplication.taskManager()
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
         legendnodes[0].setUserLabel('[%@symbol_id %]')
         legendnodes[1].setUserLabel('[%@symbol_count %]')
         legendnodes[2].setUserLabel('[%sum("Pilots") %]')
-
+        print(TM.isActive(),TM.status(),TM.progress())
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
-
+        print(TM.isActive(),TM.status(),TM.progress())
         self.assertEqual(label1, '0')
         self.assertEqual(label2, '5')
         self.assertEqual(label3, '12')
@@ -459,8 +461,9 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setLinkedMap(map)
         legend.updateLegend()
         print(layer_tree_layer.labelExpression())
+        TM=QgsApplication.taskManager()
+        print(TM.isActive(),TM.status(),TM.progress())
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
-        sleep(3)
         checker = QgsLayoutChecker(
             'composer_legend_expressions', layout)
         checker.setControlPathPrefix("composer_legend")
