@@ -247,9 +247,12 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
       if ( key == mLastKey )
         painter.fillRect( column * mSquareSize + 1, row * mSquareSize + 1, mSquareSize, mSquareSize, QBrush( palette.color( QPalette::Highlight ) ) );
 
-      painter.drawText( column * mSquareSize + ( mSquareSize / 2 ) - fontMetrics.width( QChar( key ) ) / 2,
-                        row * mSquareSize + 4 + fontMetrics.ascent(),
-                        QString( QChar( key ) ) );
+      if ( fontMetrics.inFont( QChar( key ) ) )
+      {
+        painter.drawText( column * mSquareSize + ( mSquareSize / 2 ) - fontMetrics.width( QChar( key ) ) / 2,
+                          row * mSquareSize + 4 + fontMetrics.ascent(),
+                          QString( QChar( key ) ) );
+      }
     }
   }
 }
