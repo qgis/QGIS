@@ -111,6 +111,7 @@ void CharacterWidget::setColumns( int columns )
 
 void CharacterWidget::setCharacter( QChar character )
 {
+  const bool changed = character != mLastKey;
   mLastKey = character.unicode();
   QWidget *widget = parentWidget();
   if ( widget )
@@ -119,6 +120,9 @@ void CharacterWidget::setCharacter( QChar character )
     if ( scrollArea && mLastKey < 65536 )
       scrollArea->verticalScrollBar()->setValue( mLastKey / mColumns * mSquareSize );
   }
+  if ( changed )
+    emit characterSelected( mLastKey );
+
   update();
 }
 
@@ -141,7 +145,6 @@ void CharacterWidget::keyPressEvent( QKeyEvent *event )
     if ( chr.unicode() != mLastKey )
     {
       setCharacter( chr );
-      emit characterSelected( chr );
     }
   }
 }
