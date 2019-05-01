@@ -139,7 +139,45 @@ QSize CharacterWidget::sizeHint() const
 
 void CharacterWidget::keyPressEvent( QKeyEvent *event )
 {
-  if ( !event->text().isEmpty() )
+  QFontMetrics fm( mDisplayFont );
+
+  if ( event->key() == Qt::Key_Right )
+  {
+    int next = std::min( mLastKey + 1, 0xfffc );
+    while ( next < 0xfffc && !fm.inFont( QChar( next ) ) )
+    {
+      next++;
+    }
+    setCharacter( QChar( next ) );
+  }
+  else if ( event->key() == Qt::Key_Left )
+  {
+    int next = mLastKey - 1;
+    while ( next > 0 && !fm.inFont( QChar( next ) ) )
+    {
+      next--;
+    }
+    setCharacter( QChar( next ) );
+  }
+  else if ( event->key() == Qt::Key_Down )
+  {
+    int next = std::min( mLastKey + mColumns, 0xfffc );
+    while ( next < 0xfffc && !fm.inFont( QChar( next ) ) )
+    {
+      next = std::min( next + mColumns, 0xfffc );
+    }
+    setCharacter( QChar( next ) );
+  }
+  else if ( event->key() == Qt::Key_Up )
+  {
+    int next = std::max( 0, mLastKey - mColumns );
+    while ( next > 0 && !fm.inFont( QChar( next ) ) )
+    {
+      next = std::max( 0, next - mColumns );
+    }
+    setCharacter( QChar( next ) );
+  }
+  else if ( !event->text().isEmpty() )
   {
     QChar chr = event->text().at( 0 );
     if ( chr.unicode() != mLastKey )
