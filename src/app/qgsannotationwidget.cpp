@@ -74,6 +74,18 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWid
   mMapMarkerButton->setMessageBar( QgisApp::instance()->messageBar() );
   mFrameStyleButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
   mFrameStyleButton->setMessageBar( QgisApp::instance()->messageBar() );
+
+  connect( mFrameStyleButton, &QgsSymbolButton::changed, this, &QgsAnnotationWidget::frameStyleChanged );
+}
+
+QColor QgsAnnotationWidget::backgroundColor()
+{
+  return mFrameStyleButton->symbol() ? mFrameStyleButton->symbol()->color() : QColor();
+}
+
+void QgsAnnotationWidget::frameStyleChanged()
+{
+  emit backgroundColorChanged( backgroundColor() );
 }
 
 void QgsAnnotationWidget::apply()
