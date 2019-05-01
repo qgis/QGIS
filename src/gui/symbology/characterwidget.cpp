@@ -216,15 +216,18 @@ void CharacterWidget::mousePressEvent( QMouseEvent *event )
 void CharacterWidget::paintEvent( QPaintEvent *event )
 {
   QPainter painter( this );
-  QPalette palette = qApp->palette();
-  painter.fillRect( event->rect(), QBrush( palette.color( QPalette::Base ) ) );
   painter.setFont( mDisplayFont );
 
   QRect redrawRect = event->rect();
   int beginRow = redrawRect.top() / mSquareSize;
   int endRow = redrawRect.bottom() / mSquareSize;
   int beginColumn = redrawRect.left() / mSquareSize;
-  int endColumn = redrawRect.right() / mSquareSize;
+  int endColumn = std::min( mColumns - 1, redrawRect.right() / mSquareSize );
+
+  QPalette palette = qApp->palette();
+  QRectF backgroundRect = event->rect();
+  backgroundRect.setWidth( std::min( backgroundRect.width(), ( endColumn + 1 ) * mSquareSize - backgroundRect.left() ) );
+  painter.fillRect( backgroundRect, QBrush( palette.color( QPalette::Base ) ) );
 
   painter.setPen( QPen( palette.color( QPalette::Mid ) ) );
   for ( int row = beginRow; row <= endRow; ++row )
