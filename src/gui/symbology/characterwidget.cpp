@@ -256,3 +256,9 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
     }
   }
 }
+
+void CharacterWidget::resizeEvent( QResizeEvent *event )
+{
+  mColumns = event->size().width() / mSquareSize;
+  QWidget::resizeEvent( event );
+}
