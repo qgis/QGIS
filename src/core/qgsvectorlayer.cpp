@@ -4442,7 +4442,6 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 
 void QgsVectorLayer::onFeatureCounterCompleted()
 {
-  doneTask();
   onSymbolsCounted();
 }
 
