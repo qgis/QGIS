@@ -34,6 +34,13 @@ void QgsScrollArea::wheelEvent( QWheelEvent *e )
   QScrollArea::wheelEvent( e );
 }
 
+void QgsScrollArea::resizeEvent( QResizeEvent *event )
+{
+  if ( mVerticalOnly && widget() )
+    widget()->setFixedWidth( event->size().width() );
+  QScrollArea::resizeEvent( event );
+}
+
 void QgsScrollArea::scrollOccurred()
 {
   mTimer.setSingleShot( true );
@@ -43,6 +50,16 @@ void QgsScrollArea::scrollOccurred()
 bool QgsScrollArea::hasScrolled() const
 {
   return mTimer.isActive();
+}
+
+void QgsScrollArea::setVerticalOnly( bool verticalOnly )
+{
+  mVerticalOnly = verticalOnly;
+  if ( mVerticalOnly )
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+
+  if ( mVerticalOnly && widget() )
+    widget()->setFixedWidth( size().width() );
 }
 
 ///@cond PRIVATE
