@@ -1177,6 +1177,7 @@ SET(QGIS_CORE_HDRS
   scalebar/qgsticksscalebarrenderer.h
 
   symbology/qgs25drenderer.h
+  symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
   symbology/qgsellipsesymbollayer.h
