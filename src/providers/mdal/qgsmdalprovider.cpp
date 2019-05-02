@@ -258,11 +258,6 @@ void QgsMdalProvider::reloadData()
     {
       std::string str = uri.toStdString();
       MDAL_M_LoadDatasets( mMeshH, str.c_str() );
-
-      if ( MDAL_LastStatus() != MDAL_Status::None )
-      {
-        mExtraDatasetUris.removeOne( uri );
-      }
     }
 
 }

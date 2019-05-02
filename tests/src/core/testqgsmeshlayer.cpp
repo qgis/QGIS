@@ -617,17 +617,19 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
 
   layer.reload();
 
-  //test if dataset removed
-  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 0 );
+  //test if dataset presence
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
 
   //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
 
+  layer.reload();
+
   //add the data set from temporary tesFile and test
   QVERIFY( layer.dataProvider()->addDataset( testFileDataSet.fileName() ) );
-  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 2 );
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
 
   //copy a invalid file to the temporary testFile
   QVERIFY( testFileDataSet.open() );
@@ -637,26 +639,23 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
 
   layer.reload();
 
-  //test if dataset removed
-  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 0 );
+  //test dataset presence
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
 
   //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
 
-  //add the data set from temporary tesFile and test
-  QVERIFY( layer.dataProvider()->addDataset( testFileDataSet.fileName() ) );
-  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 2 );
+  layer.reload();
+
+  //test dataset presence
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
 
   //copy the qad_and_triangle_vertex_vector.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_3, testFileDataSet );
 
   layer.reload();
-
-  //test if dataset still here
-  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 2 );
 
   //Test dataSet
   QgsMeshDatasetIndex ds( 1, 0 );
