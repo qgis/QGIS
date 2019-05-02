@@ -220,6 +220,8 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
   QPainter painter( this );
   painter.setFont( mDisplayFont );
 
+  QFontMetrics fontMetrics( mDisplayFont );
+
   QRect redrawRect = event->rect();
   int beginRow = redrawRect.top() / mSquareSize;
   int endRow = redrawRect.bottom() / mSquareSize;
@@ -227,20 +229,17 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
   int endColumn = std::min( mColumns - 1, redrawRect.right() / mSquareSize );
 
   QPalette palette = qApp->palette();
-  QRectF backgroundRect = event->rect();
-  backgroundRect.setWidth( std::min( backgroundRect.width(), ( endColumn + 1 ) * mSquareSize - backgroundRect.left() ) );
-  painter.fillRect( backgroundRect, QBrush( palette.color( QPalette::Base ) ) );
-
   painter.setPen( QPen( palette.color( QPalette::Mid ) ) );
   for ( int row = beginRow; row <= endRow; ++row )
   {
     for ( int column = beginColumn; column <= endColumn; ++column )
     {
+      int key = row * mColumns + column;
+      painter.setBrush( fontMetrics.inFont( QChar( key ) ) ? QBrush( palette.color( QPalette::Base ) ) : Qt::NoBrush );
       painter.drawRect( column * mSquareSize, row * mSquareSize, mSquareSize, mSquareSize );
     }
   }
 
-  QFontMetrics fontMetrics( mDisplayFont );
   for ( int row = beginRow; row <= endRow; ++row )
   {
     for ( int column = beginColumn; column <= endColumn; ++column )
