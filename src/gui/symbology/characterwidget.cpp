@@ -118,7 +118,9 @@ void CharacterWidget::setCharacter( QChar character )
   {
     QScrollArea *scrollArea = qobject_cast< QScrollArea *>( widget->parent() );
     if ( scrollArea && mLastKey < 65536 )
-      scrollArea->verticalScrollBar()->setValue( mLastKey / mColumns * mSquareSize );
+    {
+      scrollArea->ensureVisible( 0, mLastKey / mColumns * mSquareSize );
+    }
   }
   if ( changed )
     emit characterSelected( mLastKey );
