@@ -1768,13 +1768,13 @@ void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
 
   // set new map tool and activate it
   mMapTool = tool;
+  emit mapToolSet( mMapTool, oldTool );
   if ( mMapTool )
   {
     connect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->activate();
   }
 
-  emit mapToolSet( mMapTool, oldTool );
 } // setMapTool
 
 void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
