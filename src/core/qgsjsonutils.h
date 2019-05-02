@@ -319,6 +319,7 @@ class CORE_EXPORT QgsJsonUtils
      * richer export utilising settings like the layer's fields widget configuration.
      * \param attributeWidgetCaches optional widget configuration cache. Can be used
      * to speed up exporting the attributes for multiple features from the same layer.
+     * \note Not available in Python bindings
      * \since QGIS 3.8
      */
     static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
@@ -332,6 +333,12 @@ class CORE_EXPORT QgsJsonUtils
      */
     static QVariantList parseArray( const QString &json, QVariant::Type type );
 
+
+    /**
+     * Converts a QVariant \a v to a json object
+     * \note Not available in Python bindings
+     * \since QGIS 3.10
+     */
     static json jsonFromVariant( const QVariant &v ) SIP_SKIP;
 
 
