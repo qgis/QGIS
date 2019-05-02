@@ -179,6 +179,24 @@ void CharacterWidget::keyPressEvent( QKeyEvent *event )
     }
     setCharacter( QChar( next ) );
   }
+  else if ( event->key() == Qt::Key_Home )
+  {
+    int next = 0;
+    while ( next < 0xfffc && !fm.inFont( QChar( next ) ) )
+    {
+      next++;
+    }
+    setCharacter( QChar( next ) );
+  }
+  else if ( event->key() == Qt::Key_End )
+  {
+    int next = 0xfffc;
+    while ( next > 0 && !fm.inFont( QChar( next ) ) )
+    {
+      next--;
+    }
+    setCharacter( QChar( next ) );
+  }
   else if ( !event->text().isEmpty() )
   {
     QChar chr = event->text().at( 0 );
