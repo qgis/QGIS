@@ -40,7 +40,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterMapLayer,
-                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsFields)
 
@@ -77,11 +78,15 @@ class ExtentFromLayer(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMapLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterNumber(self.ROUND_TO,
-                                                       self.tr('Round values to'),
-                                                       minValue=0,
-                                                       defaultValue=0,
-                                                       type=QgsProcessingParameterNumber.Double))
+
+        round_to_parameter = QgsProcessingParameterDistance(self.ROUND_TO,
+                                                            self.tr('Round values to'),
+                                                            parentParameterName=self.INPUT,
+                                                            minValue=0,
+                                                            defaultValue=0)
+        round_to_parameter.setFlags(round_to_parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(round_to_parameter)
+
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
