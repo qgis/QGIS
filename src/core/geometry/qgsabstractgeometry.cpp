@@ -153,6 +153,11 @@ QString QgsAbstractGeometry::wktTypeStr() const
   return wkt;
 }
 
+QString QgsAbstractGeometry::asJson( int precision )
+{
+  return QString::fromStdString( asJsonObject( precision ).dump() );
+}
+
 QgsPoint QgsAbstractGeometry::centroid() const
 {
   // http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon

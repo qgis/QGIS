@@ -110,31 +110,9 @@ QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QStri
   return elemMultiCurve;
 }
 
-QString QgsMultiCurve::asJson( int precision ) const
-{
-  // GeoJSON does not support curves
-  QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
-  for ( const QgsAbstractGeometry *geom : mGeometries )
-  {
-    if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
-    {
-      std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
-      QgsPointSequence pts;
-      lineString->points( pts );
-      json += QgsGeometryUtils::pointsToJSON( pts, precision ) + QLatin1String( ", " );
-    }
-  }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
-  {
-    json.chop( 2 ); // Remove last ", "
-  }
-  json += QLatin1String( "] }" );
-  return json;
-}
-
 json QgsMultiCurve::asJsonObject( int precision ) const
 {
-  json coordinates;
+  json coordinates { json::array( ) };
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )

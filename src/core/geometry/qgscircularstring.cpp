@@ -368,13 +368,6 @@ QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const Q
   return elemCurve;
 }
 
-QString QgsCircularString::asJson( int precision ) const
-{
-  // GeoJSON does not support curves
-  std::unique_ptr< QgsLineString > line( curveToLine() );
-  QString json = line->asJson( precision );
-  return json;
-}
 
 json QgsCircularString::asJsonObject( int precision ) const
 {

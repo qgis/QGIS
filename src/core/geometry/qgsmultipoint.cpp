@@ -112,24 +112,6 @@ QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QStri
   return elemMultiPoint;
 }
 
-QString QgsMultiPoint::asJson( int precision ) const
-{
-  QString json = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": " );
-
-  QgsPointSequence pts;
-  for ( const QgsAbstractGeometry *geom : mGeometries )
-  {
-    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
-    {
-      const QgsPoint *point = static_cast<const QgsPoint *>( geom );
-      pts << *point;
-    }
-  }
-  json += QgsGeometryUtils::pointsToJSON( pts, precision );
-  json += QLatin1String( " }" );
-  return json;
-}
-
 json QgsMultiPoint::asJsonObject( int precision ) const
 {
   json j

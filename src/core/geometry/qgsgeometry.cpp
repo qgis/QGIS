@@ -1263,11 +1263,7 @@ QString QgsGeometry::asWkt( int precision ) const
 
 QString QgsGeometry::asJson( int precision ) const
 {
-  if ( !d->geometry )
-  {
-    return QStringLiteral( "null" );
-  }
-  return d->geometry->asJson( precision );
+  return QString::fromStdString( asJsonObject( precision ).dump() );
 }
 
 json QgsGeometry::asJsonObject( int precision ) const

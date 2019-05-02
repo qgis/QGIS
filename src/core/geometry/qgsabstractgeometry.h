@@ -277,23 +277,25 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 
     /**
-     * Returns a GeoJSON representation of the geometry.
+     * Returns a GeoJSON representation of the geometry as a QString.
      * \param precision number of decimal places for coordinates
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
      * \see asGml3()
+     * \see asJsonObject()
      */
-    virtual QString asJson( int precision = 17 ) const = 0;
+    QString asJson( int precision = 17 );
 
     /**
-     * Returns a json obejct representation of the geometry.
+     * Returns a json object representation of the geometry.
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
      * \see asGml3()
      * \see asJson()
-     * \since QGIS 3.8
+     * \note not available in Python bindings
+     * \since QGIS 3.10
      */
     virtual json asJsonObject( int precision = 17 ) const  SIP_SKIP { Q_UNUSED( precision ); return nullptr; }
 

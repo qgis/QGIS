@@ -98,54 +98,12 @@ QDomElement QgsMultiPolygon::asGml3( QDomDocument &doc, int precision, const QSt
   return elemMultiSurface;
 }
 
-QString QgsMultiPolygon::asJson( int precision ) const
-{
-  // GeoJSON does not support curves
-  QString json = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [" );
-  for ( const QgsAbstractGeometry *geom : mGeometries )
-  {
-    if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
-    {
-      json += '[';
-
-      const QgsPolygon *polygon = static_cast<const QgsPolygon *>( geom );
-
-      std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
-      QgsPointSequence exteriorPts;
-      exteriorLineString->points( exteriorPts );
-      json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + QLatin1String( ", " );
-
-      std::unique_ptr< QgsLineString > interiorLineString;
-      for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
-      {
-        interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
-        QgsPointSequence interiorPts;
-        interiorLineString->points( interiorPts );
-        json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + QLatin1String( ", " );
-      }
-      if ( json.endsWith( QLatin1String( ", " ) ) )
-      {
-        json.chop( 2 ); // Remove last ", "
-      }
-
-      json += QLatin1String( "], " );
-    }
-  }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
-  {
-    json.chop( 2 ); // Remove last ", "
-  }
-  json += QLatin1String( "] }" );
-  return json;
-}
-
-
 json QgsMultiPolygon::asJsonObject( int precision ) const
 {
-  json polygons;
+  json polygons { json::array( ) };
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    json coordinates;
+    json coordinates { json::array( ) };
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
       const QgsPolygon *polygon = static_cast<const QgsPolygon *>( geom );

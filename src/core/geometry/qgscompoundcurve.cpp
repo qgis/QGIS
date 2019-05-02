@@ -292,14 +292,6 @@ QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QS
   return compoundCurveElem;
 }
 
-QString QgsCompoundCurve::asJson( int precision ) const
-{
-  // GeoJSON does not support curves
-  std::unique_ptr< QgsLineString > line( curveToLine() );
-  QString json = line->asJson( precision );
-  return json;
-}
-
 json QgsCompoundCurve::asJsonObject( int precision ) const
 {
   // GeoJSON does not support curves

@@ -412,14 +412,6 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   return elemLineString;
 }
 
-QString QgsLineString::asJson( int precision ) const
-{
-  QgsPointSequence pts;
-  points( pts );
-
-  return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
-}
-
 json QgsLineString::asJsonObject( int precision ) const
 {
   QgsPointSequence pts;

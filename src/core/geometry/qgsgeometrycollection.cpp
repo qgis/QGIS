@@ -417,24 +417,9 @@ QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, con
   return elemMultiGeometry;
 }
 
-QString QgsGeometryCollection::asJson( int precision ) const
-{
-  QString json = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [" );
-  for ( const QgsAbstractGeometry *geom : mGeometries )
-  {
-    json += geom->asJson( precision ) + QLatin1String( ", " );
-  }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
-  {
-    json.chop( 2 ); // Remove last ", "
-  }
-  json += QLatin1String( "] }" );
-  return json;
-}
-
 json QgsGeometryCollection::asJsonObject( int precision ) const
 {
-  json coordinates;
+  json coordinates { json::array( ) };
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
     coordinates.push_back( geom->asJsonObject( precision ) );
@@ -442,7 +427,7 @@ json QgsGeometryCollection::asJsonObject( int precision ) const
   return
   {
     { "type",  "GeometryCollection" },
-    { "coordinates", coordinates }
+    { "geometries", coordinates }
   };
 }
 

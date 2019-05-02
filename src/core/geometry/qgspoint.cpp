@@ -283,12 +283,6 @@ QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &n
  * See details in QEP #17
  ****************************************************************************/
 
-QString QgsPoint::asJson( int precision ) const
-{
-  return "{\"type\": \"Point\", \"coordinates\": ["
-         + qgsDoubleToString( mX, precision ) + QLatin1String( ", " ) + qgsDoubleToString( mY, precision )
-         + QLatin1String( "]}" );
-}
 
 json QgsPoint::asJsonObject( int precision ) const
 {
