@@ -1411,7 +1411,9 @@ void QgsTextFormatWidget::mPreviewBackgroundBtn_colorChanged( const QColor &colo
 void QgsTextFormatWidget::mDirectSymbLeftToolBtn_clicked()
 {
   bool gotChar = false;
-  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+
+  const QChar initial = !mDirectSymbLeftLineEdit->text().isEmpty() ? mDirectSymbLeftLineEdit->text().at( 0 ) : QChar();
+  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ), initial );
 
   if ( !gotChar )
     return;
@@ -1423,7 +1425,8 @@ void QgsTextFormatWidget::mDirectSymbLeftToolBtn_clicked()
 void QgsTextFormatWidget::mDirectSymbRightToolBtn_clicked()
 {
   bool gotChar = false;
-  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+  const QChar initial = !mDirectSymbRightLineEdit->text().isEmpty() ? mDirectSymbRightLineEdit->text().at( 0 ) : QChar();
+  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ), initial );
 
   if ( !gotChar )
     return;
