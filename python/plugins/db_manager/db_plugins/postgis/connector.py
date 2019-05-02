@@ -234,7 +234,8 @@ class PostGisDBConnector(DBConnector):
             "serial", "bigserial",  # auto-incrementing ints
             "real", "double precision", "numeric",  # floats
             "varchar", "varchar(255)", "char(20)", "text",  # strings
-            "date", "time", "timestamp"  # date/time
+            "date", "time", "timestamp",  # date/time
+            "boolean" # bool
         ]
 
     def getDatabasePrivileges(self):
