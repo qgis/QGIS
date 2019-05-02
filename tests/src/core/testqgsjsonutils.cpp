@@ -129,7 +129,6 @@ class TestQgsJsonUtils : public QObject
     void testExportFeatureJson()
     {
 
-      QFETCH( enum JsonAlgs, JsonAlgs );
 
       QgsVectorLayer vl { QStringLiteral( "Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
       QgsFeature feature { vl.fields() };
@@ -138,38 +137,18 @@ class TestQgsJsonUtils : public QObject
 
       QgsJsonExporter exporter { &vl };
 
-      if ( JsonAlgs == JsonAlgs::Json )
-      {
-        QBENCHMARK
-        {
-          const auto j { exporter.exportFeatureToJsonObject( feature ) };
-          QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral( "{\"bbox\":[[1.12,1.12,5.45,5.33]],\"geometry\":{\"coordinates\":"
-                    "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
-                    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
-                    ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
-                    ",\"type\":\"Feature\"}"
-                                                                      ) );
-        }
-      }
-      else
-      {
-        QBENCHMARK
-        {
-          const auto json { exporter.exportFeature( feature ) };
-          QCOMPARE( json, QStringLiteral( "{\n   \"type\":\"Feature\",\n   \"id\":0,\n   \"bbox\":[1.12, 1.12, 5.45, 5.33],\n   \"geometry\":\n   "
-                                          "{\"type\": \"Polygon\", \"coordinates\": [[ [1.12, 1.34], [5.45, 1.12], [5.34, 5.33], [1.56, 5.2], [1.12, 1.34]], "
-                                          "[ [2, 2], [3, 2], [3, 3], [2, 3], [2, 2]]] },\n   "
-                                          "\"properties\":{\n      \"fldtxt\":\"a value\",\n      \"fldint\":1,\n      \"flddbl\":2\n   }\n}" ) );
-        }
-      }
+      const auto expectedJson { QStringLiteral( "{\"bbox\":[[1.12,1.12,5.45,5.33]],\"geometry\":{\"coordinates\":"
+                                "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+                                "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+                                ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+                                ",\"type\":\"Feature\"}" ) };
+
+      const auto j { exporter.exportFeatureToJsonObject( feature ) };
+      QCOMPARE( QString::fromStdString( j.dump() ),  expectedJson );
+      const auto json { exporter.exportFeature( feature ) };
+      QCOMPARE( json, expectedJson );
     }
 
-    void testExportGeomToJson_data()
-    {
-      QTest::addColumn<JsonAlgs>( "JsonAlgs" );
-      QTest::newRow( "Use json" ) << JsonAlgs::Json;
-      QTest::newRow( "Use old string concat" ) << JsonAlgs::String;
-    }
 
     void testExportGeomToJson()
     {
@@ -191,33 +170,17 @@ class TestQgsJsonUtils : public QObject
       {
         const auto g { QgsGeometry::fromWkt( w ) };
         QVERIFY( !g.isNull( ) );
-        QCOMPARE( QJsonDocument::fromJson( QByteArray::fromStdString( g.asJsonObject( 3 ).dump() ) ).toJson( QJsonDocument::JsonFormat::Compact ),
-                  QJsonDocument::fromJson( g.asJson( 3 ).toUtf8() ).toJson( QJsonDocument::JsonFormat::Compact ) );
+        QCOMPARE( QJsonDocument::fromJson( QByteArray::fromStdString( g.asJsonObject( 3 ).dump() ) )
+                  .toJson( QJsonDocument::JsonFormat::Compact ),
+                  QJsonDocument::fromJson( g.asJson( 3 ).toUtf8() )
+                  .toJson( QJsonDocument::JsonFormat::Compact ) );
+        const auto outp { QJsonDocument::fromJson( g.asJson( 3 ).toUtf8() )
+                          .toJson( QJsonDocument::JsonFormat::Compact ) };
+        qDebug() << QStringLiteral( "{ \"%1\", R\"json(%2)json\" }, " )
+                 .arg( w )
+                 .arg( QString( outp ) );
       }
 
-      QFETCH( enum JsonAlgs, JsonAlgs );
-      if ( JsonAlgs == JsonAlgs::Json )
-      {
-        QBENCHMARK
-        {
-          for ( const auto &w : testWkts )
-          {
-            const auto g { QgsGeometry::fromWkt( w ) };
-            QJsonDocument::fromJson( QByteArray::fromStdString( g.asJsonObject( 3 ).dump() ) ).toJson( QJsonDocument::JsonFormat::Compact );
-          }
-        }
-      }
-      else
-      {
-        QBENCHMARK
-        {
-          for ( const auto &w : testWkts )
-          {
-            const auto g { QgsGeometry::fromWkt( w ) };
-            QJsonDocument::fromJson( g.asJson( 3 ).toUtf8() ).toJson( QJsonDocument::JsonFormat::Compact );
-          }
-        }
-      }
     }
 };
 
