@@ -396,6 +396,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
         count.waitForFinished()
+        print(point_layer.featuresCounted())
         self.assertEqual(label1, '0')
         self.assertEqual(label2, '5')
         self.assertEqual(label3, '12')
@@ -467,6 +468,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         print(TM.tasks(), actask)
         count = actask[0]
         count.waitForFinished()
+        print(point_layer.featuresCounted())
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
         checker = QgsLayoutChecker(
             'composer_legend_expressions', layout)
