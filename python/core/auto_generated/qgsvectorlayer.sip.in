@@ -2098,7 +2098,8 @@ been changed inside the edit buffer then the previous saved value may be returne
                         const QString &fieldOrExpression,
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = 0,
-                        bool *ok = 0 ) const;
+                        bool *ok = 0,
+                        const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
 %Docstring
 Calculates an aggregated value from the layer's features.
 
@@ -2107,6 +2108,7 @@ Calculates an aggregated value from the layer's features.
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for expressions and filters
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
+:param request: qgsfeaturerequest with filters criteria, if not provided all features will be used
 
 :return: calculated aggregate value
 
