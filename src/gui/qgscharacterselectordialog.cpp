@@ -25,6 +25,7 @@ QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::Win
   setupUi( this );
   mCharWidget = new CharacterWidget( this );
   mCharSelectScrollArea->setWidget( mCharWidget );
+  mCharSelectScrollArea->setVerticalOnly( true );
   connect( mCharWidget, &CharacterWidget::characterSelected, this, &QgsCharacterSelectorDialog::setCharacter );
 }
 
