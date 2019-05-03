@@ -2062,4 +2062,61 @@ tests:
         name: expected/xyztiles
 
 
+  - algorithm: native:calculatevectoroverlaps
+    name: Overlap analysis 1
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+      LAYERS:
+        params:
+        - name: custom/overlay1_a.geojson
+          type: vector
+        - name: custom/overlay1_b.geojson
+          type: vector
+        - name: custom/overlay2_a.geojson
+          type: vector
+        - name: custom/overlay2_b.geojson
+          type: vector
+        - name: custom/overlay3_a.geojson
+          type: vector
+        - name: custom/overlay3_b.geojson
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/overlap_analysis_1.gml
+        type: vector
+
+  - algorithm: native:calculatevectoroverlaps
+    name: Overlap analysis reprojected
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/overlay0_4326.gml|layername=overlay0_4326
+        type: vector
+      LAYERS:
+        params:
+        - name: custom/overlay1_a.geojson
+          type: vector
+        - name: custom/overlay1_b.geojson
+          type: vector
+        - name: custom/overlay2_a.geojson
+          type: vector
+        - name: custom/overlay2_b.geojson
+          type: vector
+        - name: custom/overlay3_a.geojson
+          type: vector
+        - name: custom/overlay3_b.geojson
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/overlap_analysis_4326.gml
+        type: vector
+
+
 # See ../README.md for a description of the file format

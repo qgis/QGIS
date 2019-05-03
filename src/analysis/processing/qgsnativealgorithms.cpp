@@ -23,6 +23,7 @@
 #include "qgsalgorithmboundary.h"
 #include "qgsalgorithmboundingbox.h"
 #include "qgsalgorithmbuffer.h"
+#include "qgsalgorithmcalculateoverlaps.h"
 #include "qgsalgorithmcategorizeusingstyle.h"
 #include "qgsalgorithmcentroid.h"
 #include "qgsalgorithmclip.h"
@@ -159,6 +160,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsBoundingBoxAlgorithm() );
   addAlgorithm( new QgsBufferAlgorithm() );
+  addAlgorithm( new QgsCalculateVectorOverlapsAlgorithm() );
   addAlgorithm( new QgsCategorizeUsingStyleAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
