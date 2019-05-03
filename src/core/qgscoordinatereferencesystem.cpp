@@ -533,15 +533,9 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
       QString auth = parts.at( 0 );
       QString code = parts.at( 1 );
 
-      QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( QgsProjContext::get(), auth.toLatin1(), code.toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
-      if ( crs && proj_get_type( crs.get() ) == PJ_TYPE_COMPOUND_CRS )
       {
-        // freaking take a guess that 0 is horizontal, because we are only mortal
-        d->mPj.reset( proj_crs_get_sub_crs( QgsProjContext::get(), crs.get(), 0 ) );
-      }
-      else
-      {
-        d->mPj = std::move( crs );
+        QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( QgsProjContext::get(), auth.toLatin1(), code.toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
+        d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
       }
 
       d->mIsValid = static_cast< bool >( d->mPj );
@@ -625,15 +619,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   PROJ_STRING_LIST warnings = nullptr;
   PROJ_STRING_LIST grammerErrors = nullptr;
 
-  QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
-  if ( crs && proj_get_type( crs.get() ) == PJ_TYPE_COMPOUND_CRS )
   {
-    // freaking take a guess that 0 is horizontal, because we are only mortal
-    d->mPj.reset( proj_crs_get_sub_crs( QgsProjContext::get(), crs.get(), 0 ) );
-  }
-  else
-  {
-    d->mPj = std::move( crs );
+    QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+    d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
   }
 
   res = static_cast< bool >( d->mPj );
@@ -1232,20 +1220,14 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   d->mProj4 = proj4String;
 
   QgsLocaleNumC l;
-  const QString trimmed = proj4String.trimmed();
+  const QString trimmed = proj4String.trimmed() + QStringLiteral( " +type=crs" );
 
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *ctx = QgsProjContext::get();
 
-  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( ctx, trimmed.toLatin1().constData() ) );
-  if ( crs && proj_get_type( crs.get() ) == PJ_TYPE_COMPOUND_CRS )
   {
-    // freaking take a guess that 0 is horizontal, because we are only mortal
-    d->mPj.reset( proj_crs_get_sub_crs( QgsProjContext::get(), crs.get(), 0 ) );
-  }
-  else
-  {
-    d->mPj = std::move( crs );
+    QgsProjUtils::proj_pj_unique_ptr crs( proj_create( ctx, trimmed.toLatin1().constData() ) );
+    d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
   }
 
   if ( !d->mPj )
@@ -2127,6 +2109,17 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         QgsDebugMsg( QStringLiteral( "Could not load '%1:%2'" ).arg( authority, code ) );
         continue;
       }
+
+      switch ( proj_get_type( crs.get() ) )
+      {
+        case PJ_TYPE_VERTICAL_CRS: // don't need these in the CRS db
+          continue;
+
+        default:
+          break;
+      }
+
+      crs = QgsProjUtils::crsToSingleCrs( crs.get() );
 
       QString proj4( proj_as_proj_string( pjContext, crs.get(), PJ_PROJ_4, nullptr ) );
       proj4 = proj4.trimmed();
