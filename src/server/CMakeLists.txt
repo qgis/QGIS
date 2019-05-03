@@ -37,7 +37,6 @@ SET(QGIS_SERVER_SRCS
   qgsserverresponse.cpp
   qgsserversettings.cpp
   qgsservice.cpp
-  qgsserverapi.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
   qgsfeaturefilterprovidergroup.cpp
@@ -100,6 +99,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/dxf

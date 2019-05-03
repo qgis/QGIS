@@ -16,110 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmodule.h"
-#include "qgsproject.h"
-#include "qgsserverexception.h"
-
-#include "nlohmann/json.hpp"
-#include "inja/inja.hpp"
-using json = nlohmann::json;
-
-namespace QgsWfs3
-{
-
-  /**
-   * \ingroup server
-   * \class QgsWfs3::Api
-   * \brief OGC web service specialized for WFS3
-   * \since QGIS 3.10
-   */
-  class Api: public QgsServerApi
-  {
-    public:
-
-      /**
-       * Constructor for WFS service.
-       * \param serverIface Interface for plugins.
-       */
-      Api( QgsServerInterface *serverIface )
-        : mServerIface( serverIface )
-      {}
-
-      QString name()    const override { return QStringLiteral( "WFS3" ); }
-      QString version() const override { return QStringLiteral( "1.0.0" ); }
-      QRegularExpression rootPath() const override { return mRootPath; }
-
-      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
-      {
-        QJsonObject data;
-        if ( QRegularExpression( "raw(^/?collections$)raw" ).match( request.url().path() ).hasMatch() )
-        {
-          if ( ! project )
-          {
-            throw QgsServerApiException( QStringLiteral( "project_error" ), QStringLiteral( "Project not found" ) );
-          }
-          if ( request.method() != QgsServerRequest::Method::GetMethod )
-          {
-            throw QgsServerApiException( QStringLiteral( "method_error" ), QStringLiteral( "Unsuppored method" ) );
-          }
-          QJsonArray collections;
-          QJsonArray crs {{
-              QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" )
-            }};
-          // TODO: exposed CRSs
-          for ( const auto &l : project->mapLayers( ) )
-          {
-            // TODO: use layer id?
-            const auto extent { l->extent().toString( ) };
-            collections.append( QJsonObject { {
-                { QStringLiteral( "name" ), l->shortName().isEmpty() ? l->name() : l->shortName() },
-                { QStringLiteral( "title" ), l->name() },
-                { QStringLiteral( "description" ), l->abstract() },
-                { QStringLiteral( "extent" ), extent },
-                { QStringLiteral( "crs" ), crs },
-              }
-            } );
-          }
-          data =
-          {
-            { QStringLiteral( "links" ), QStringLiteral( "links" )},
-            { QStringLiteral( "collections" ), collections },
-          };
-        }
-        else if ( QRegularExpression( "raw(^/?jsontest)raw" ).match( request.url().path() ).hasMatch() )
-        {
-          json j;
-          j[ "a" ] = "b";
-          j[ "b" ] = { "b", 1.2, 3 };
-          data = QJsonDocument::fromJson( j.dump( ).data() ).object();
-        }
-        else  // Default root
-        {
-          if ( request.method() != QgsServerRequest::Method::GetMethod )
-          {
-            throw QgsServerApiException( QStringLiteral( "method_error" ), QStringLiteral( "Unsuppored method" ) );
-          }
-          json j;
-          j["conformance"] = QStringLiteral( "%1conformance" ).arg( request.url().toString( ) ).toStdString();
-          j["path"] = request.url().path().toStdString();
-          data = QJsonDocument::fromJson( j.dump( ).data() ).object();
-        }
-#ifdef QGISDEBUG
-        response.write( QJsonDocument( data ).toJson( QJsonDocument::JsonFormat::Indented ) );
-#else
-        response.write( QJsonDocument( data ).toJson( QJsonDocument::JsonFormat::Compact ) );
-#endif
-      }
-
-    private:
-
-      QgsServerInterface *mServerIface = nullptr;
-      //! Catch all, must be the last!
-      QRegularExpression mRootPath { QStringLiteral( R"raw(.*)raw" ) };
-
-  };
-
-
-} // namespace QgsWfs3
+#include "qgswfs3api.h"
 
 /**
  * \ingroup server
@@ -136,6 +33,7 @@ class QgsWfs3Module: public QgsServiceModule
       registry.registerApi( new  QgsWfs3::Api( serverIface ) );
     }
 };
+
 
 
 // Entry points

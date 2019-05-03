@@ -20,12 +20,15 @@
 
 #include <QString>
 #include <QByteArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 #include "qgsexception.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "nlohmann/json.hpp"
+
+#ifndef SIP_RUN
+using json = nlohmann::json;
+#endif
 
 
 /**
@@ -140,13 +143,8 @@ class SERVER_EXPORT QgsBadRequestException: public QgsOgcServiceException
  *
  * \since QGIS 3.10
  */
-#ifndef SIP_RUN
 class SERVER_EXPORT QgsServerApiException: public QgsServerException
 {
-#else
-class SERVER_EXPORT QgsServerApiException
-{
-#endif
   public:
     //! Construction
     QgsServerApiException( const QString &code, const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 200 )
@@ -159,14 +157,27 @@ class SERVER_EXPORT QgsServerApiException
     QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override
     {
       responseFormat = mMimeType;
-      return QJsonDocument
+      json data
       {
-        QJsonObject  {
-          {
-            { QStringLiteral( "code" ), mCode },
-            { QStringLiteral( "description" ), what() },
-          }
-        }}.toJson();
+        {
+          { "code", mCode.toStdString() },
+          { "description", what().toStdString() },
+        }
+      };
+      if ( responseFormat == QStringLiteral( "application/json" ) )
+      {
+        return QByteArray::fromStdString( data.dump() );
+      }
+      else if ( responseFormat == QStringLiteral( "text/html" ) )
+      {
+        // TODO: template
+        return QByteArray::fromStdString( data.dump() );
+      }
+      else
+      {
+        // TODO: template
+        return QByteArray::fromStdString( data.dump() );
+      }
     }
 
   private:
@@ -174,5 +185,46 @@ class SERVER_EXPORT QgsServerApiException
     QString mMimeType;
 };
 
+
+/**
+ * \ingroup server
+ * \class  QgsServerApiInternalServerError
+ * \brief Internal server error API exceptions.
+ *
+ * Note that this exception is associated with a default return code 500 which may be
+ * not appropriate in some situations.
+ *
+ * \since QGIS 3.10
+ */
+class SERVER_EXPORT QgsServerApiInternalServerError: public QgsServerApiException
+{
+  public:
+    //! Construction
+    QgsServerApiInternalServerError( const QString &code, const QString &message = QStringLiteral( "Internal server error" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
+      : QgsServerApiException( code, message, mimeType, responseCode )
+    {
+    }
+};
+
+
+/**
+ * \ingroup server
+ * \class  QgsServerApiNotFoundError
+ * \brief Not found error API exceptions.
+ *
+ * Note that this exception is associated with a default return code 404 which may be
+ * not appropriate in some situations.
+ *
+ * \since QGIS 3.10
+ */
+class SERVER_EXPORT QgsServerApiNotFoundError: public QgsServerApiException
+{
+  public:
+    //! Construction
+    QgsServerApiNotFoundError( const QString &code, const QString &message = QStringLiteral( "Not found" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 404 )
+      : QgsServerApiException( code, message, mimeType, responseCode )
+    {
+    }
+};
 
 #endif

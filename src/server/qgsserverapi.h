@@ -24,17 +24,20 @@
 
 #include "qgis_server.h"
 #include <QRegularExpression>
+#include "qgsserverexception.h"
 #include "qgsserverrequest.h"
 
 class QgsServerResponse;
+class QgsProject;
 
 /**
- * Server API endpoint
+ * Server API endpoint abstract base class
  * \since QGIS 3.10
  */
 class SERVER_EXPORT QgsServerApi
 {
   public:
+
     QgsServerApi( ) = default;
     virtual ~QgsServerApi() = default;
 
@@ -44,16 +47,14 @@ class SERVER_EXPORT QgsServerApi
     virtual QString name() const = 0;
 
     /**
-     * \returns the regular expression root path for the API
-     *
-     * For example: ".*" will respond to any path, while "^/api/" will serve all paths starting with "/api/".
-     */
-    virtual QRegularExpression rootPath() const = 0;
-
-    /**
      * \returns the version of the service
      */
     virtual QString version() const = 0;
+
+    /**
+     * \returns the root path for the API
+     */
+    virtual QString rootPath() const = 0;
 
     /**
      * Returns TRUE if the given method is supported by the API, default implementation supports all methods.
@@ -61,10 +62,10 @@ class SERVER_EXPORT QgsServerApi
     virtual bool allowMethod( QgsServerRequest::Method ) const { return true; }
 
     /**
-     * Execute the requests and set result in QgsServerRequest
+     * Execute the requests and set result in QgsServerResponse
      */
     virtual void executeRequest( const QgsServerRequest &request,
-                                 QgsServerResponse &response, const QgsProject *project ) = 0;
+                                 QgsServerResponse &response, const QgsProject *project ) const = 0;
 
 };
 

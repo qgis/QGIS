@@ -1,0 +1,12 @@
+Content-Type: application/json
+
+{
+  "collections": [],
+  "links": [
+    {
+      "href": "http://www.acme.com/collections",
+      "rel": "data",
+      "title": "Metadata about the feature collections"
+    }
+  ]
+}

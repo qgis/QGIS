@@ -13,6 +13,7 @@ ADD_LIBRARY (dummy MODULE ${dummy_SRCS})
 
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python

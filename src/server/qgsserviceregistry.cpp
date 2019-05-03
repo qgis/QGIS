@@ -180,7 +180,7 @@ QgsServerApi *QgsServiceRegistry::getApiForRequest( const QgsServerRequest &requ
 {
   for ( const auto &api : mApis )
   {
-    if ( api->rootPath().match( request.url().path() ).hasMatch() )
+    if ( request.url().path().startsWith( api->rootPath() ) )
     {
       return api.get();
     }

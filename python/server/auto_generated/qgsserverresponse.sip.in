@@ -98,6 +98,7 @@ to the underlying I/O device
 
 
 
+
     virtual void write( const QgsServerException &ex );
 %Docstring
 Write server exception

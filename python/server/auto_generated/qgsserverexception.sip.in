@@ -11,6 +11,7 @@
 
 
 
+
 class QgsServerException
 {
 %Docstring
@@ -94,7 +95,7 @@ Returns the exception version
 };
 
 
-class QgsServerApiException
+class QgsServerApiException: QgsServerException
 {
 %Docstring
 Exception base class for API exceptions.
@@ -118,6 +119,49 @@ Construction
 
 };
 
+
+class QgsServerApiInternalServerError: QgsServerApiException
+{
+%Docstring
+Internal server error API exceptions.
+
+Note that this exception is associated with a default return code 500 which may be
+not appropriate in some situations.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverexception.h"
+%End
+  public:
+    QgsServerApiInternalServerError( const QString &code, const QString &message = QStringLiteral( "Internal server error" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 );
+%Docstring
+Construction
+%End
+};
+
+
+class QgsServerApiNotFoundError: QgsServerApiException
+{
+%Docstring
+Not found error API exceptions.
+
+Note that this exception is associated with a default return code 404 which may be
+not appropriate in some situations.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverexception.h"
+%End
+  public:
+    QgsServerApiNotFoundError( const QString &code, const QString &message = QStringLiteral( "Not found" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 404 );
+%Docstring
+Construction
+%End
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

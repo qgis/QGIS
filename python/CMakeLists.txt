@@ -255,6 +255,7 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
   INCLUDE_DIRECTORIES(
     ../src/server
    ${CMAKE_BINARY_DIR}/src/server
+   ${CMAKE_SOURCE_DIR}/external
   )
 
   SET(PY_MODULES ${PY_MODULES} server)

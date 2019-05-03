@@ -138,6 +138,17 @@ class SERVER_EXPORT QgsServerResponse
     virtual qint64 write( const char *data ) SIP_SKIP;
 
     /**
+     * Writes at most maxSize bytes of data
+     *
+     * This is a convenient method that will write directly
+     * to the underlying I/O device
+     * \returns the number of bytes written
+     *
+     * \note not available in Python bindings
+     */
+    virtual qint64 write( std::string data ) SIP_SKIP;
+
+    /**
      * Write server exception
      */
     virtual void write( const QgsServerException &ex );

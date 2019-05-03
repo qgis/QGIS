@@ -5,9 +5,12 @@ SET (wfs3_SRCS
   ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
   qgswfs3.cpp
+  qgswfs3api.cpp
+  qgswfs3handlers.cpp
 )
 
-SET (wfs3_MOC_HDRS
+SET (wfs3_MOC_HDRS    
+  qgswfs3api.h
 )
 
 ########################################################
