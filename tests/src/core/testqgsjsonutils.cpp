@@ -179,7 +179,7 @@ class TestQgsJsonUtils : public QObject
         if ( w.first.startsWith( QStringLiteral( "CIRCULARSTRING" ) ) )
         {
           QVERIFY( g.asJson( 3 ).startsWith( w.second ) );
-          QCOMPARE( g.asJsonObject( 3 )["type"], "LineString" );
+          QCOMPARE( QString::fromStdString( g.asJsonObject( 3 )["type"].dump() ), QStringLiteral( R"("LineString")" ) );
         }
         else
         {
