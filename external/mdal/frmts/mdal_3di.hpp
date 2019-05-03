@@ -44,12 +44,11 @@ namespace MDAL
       Driver3Di *create() override;
 
     private:
-      CFDimensions populateDimensions( const NetCDFFile &ncFile ) override;
+      CFDimensions populateDimensions( ) override;
       void populateFacesAndVertices( Vertices &vertices, Faces &faces ) override;
-      void addBedElevation( Mesh *mesh ) override;
+      void addBedElevation( MemoryMesh *mesh ) override;
       std::string getCoordinateSystemVariableName() override;
       std::set<std::string> ignoreNetCDFVariables() override;
-      std::string nameSuffix( CFDimensions::Type type ) override;
       void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
                                         std::string &name, bool *is_vector, bool *is_x ) override;
 

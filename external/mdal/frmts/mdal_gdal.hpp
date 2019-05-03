@@ -90,7 +90,6 @@ namespace MDAL
       metadata_hash parseMetadata( GDALMajorObjectH gdalBand, const char *pszDomain = nullptr );
       void addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset> tos, bool is_vector, bool is_x );
       bool addSrcProj();
-      void activateFaces( std::shared_ptr<MemoryDataset> tos );
       void addDatasetGroups();
       void createMesh();
       void parseRasterBands( const GdalDataset *cfGDALDataset );
