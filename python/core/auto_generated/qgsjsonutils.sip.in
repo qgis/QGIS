@@ -219,7 +219,8 @@ take precedence over attributes included via attributes().
 
     QString exportFeature( const QgsFeature &feature,
                            const QVariantMap &extraProperties = QVariantMap(),
-                           const QVariant &id = QVariant() ) const;
+                           const QVariant &id = QVariant(),
+                           int indent = -1 ) const;
 %Docstring
 Returns a GeoJSON string representation of a feature.
 
@@ -227,6 +228,7 @@ Returns a GeoJSON string representation of a feature.
 :param extraProperties: map of extra attributes to include in feature's properties
 :param id: optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
            ID is used.
+:param indent: number of indentation spaces for generated JSON (defaults to none)
 
 :return: GeoJSON string
 
@@ -237,11 +239,12 @@ Returns a GeoJSON string representation of a feature.
 
 
 
-    QString exportFeatures( const QgsFeatureList &features ) const;
+    QString exportFeatures( const QgsFeatureList &features, int indent = -1 ) const;
 %Docstring
 Returns a GeoJSON string representation of a list of features (feature collection).
 
 :param features: features to convert
+:param indent: number of indentation spaces for generated JSON (defaults to none)
 
 :return: GeoJSON string
 

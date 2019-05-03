@@ -198,13 +198,15 @@ class CORE_EXPORT QgsJsonExporter
      * \param extraProperties map of extra attributes to include in feature's properties
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
+     * \param indent number of indentation spaces for generated JSON (defaults to none)
      * \returns GeoJSON string
      * \see exportFeatures()
      * \see exportFeatureToJsonObject()
      */
     QString exportFeature( const QgsFeature &feature,
                            const QVariantMap &extraProperties = QVariantMap(),
-                           const QVariant &id = QVariant() ) const;
+                           const QVariant &id = QVariant(),
+                           int indent = -1 ) const;
 
     /**
      * Returns a QJsonObject representation of a feature.
@@ -223,10 +225,11 @@ class CORE_EXPORT QgsJsonExporter
     /**
      * Returns a GeoJSON string representation of a list of features (feature collection).
      * \param features features to convert
+     * \param indent number of indentation spaces for generated JSON (defaults to none)
      * \returns GeoJSON string
      * \see exportFeature()
      */
-    QString exportFeatures( const QgsFeatureList &features ) const;
+    QString exportFeatures( const QgsFeatureList &features, int indent = -1 ) const;
 
   private:
 

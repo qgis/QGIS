@@ -69,9 +69,9 @@ QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
 }
 
 QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties,
-                                        const QVariant &id ) const
+                                        const QVariant &id, int indent ) const
 {
-  return QString::fromStdString( exportFeatureToJsonObject( feature, extraProperties, id ).dump() );
+  return QString::fromStdString( exportFeatureToJsonObject( feature, extraProperties, id ).dump( indent ) );
 }
 
 json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
@@ -82,7 +82,16 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   };
   if ( id.isValid() )
   {
-    featureJson["id"] = id.toString().toStdString();
+    bool ok = false;
+    auto intId = id.toLongLong( &ok );
+    if ( ok )
+    {
+      featureJson["id"] = intId;
+    }
+    else
+    {
+      featureJson["id"] = id.toString().toStdString();
+    }
   }
   else
   {
@@ -213,15 +222,19 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   return featureJson;
 }
 
-QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features ) const
+QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int indent ) const
 {
-  QStringList featureJSON;
+  json data
+  {
+    { "type", "FeatureCollection" },
+    { "features", json::array() }
+  };
   const auto constFeatures = features;
   for ( const QgsFeature &feature : constFeatures )
   {
-    featureJSON << exportFeature( feature );
+    data["features"].push_back( exportFeatureToJsonObject( feature ) );
   }
-  return QStringLiteral( "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n%1\n]}" ).arg( featureJSON.join( QStringLiteral( ",\n" ) ) );
+  return QString::fromStdString( data.dump( indent ) );
 }
 
 //
@@ -328,19 +341,41 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
 
 json QgsJsonUtils::jsonFromVariant( const QVariant &val )
 {
-
-  switch ( val.userType() )
+  if ( val.type() == QVariant::Type::Map )
   {
-    case QMetaType::Int:
-    case QMetaType::UInt:
-    case QMetaType::LongLong:
-    case QMetaType::ULongLong:
-      return val.toLongLong();
-    case QMetaType::Double:
-    case QMetaType::Float:
-      return val.toDouble();
-    default:
-      return  val.toString().toStdString();
+    const auto vMap { val.toMap() };
+    auto jMap { json::object() };
+    for ( auto it = vMap.constBegin(); it != vMap.constEnd(); it++ )
+    {
+      jMap[ it.key().toStdString() ] = jsonFromVariant( it.value() );
+    }
+    return jMap;
+  }
+  else if ( val.type() == QVariant::Type::List )
+  {
+    const auto vList{ val.toList() };
+    auto jList { json::array() };
+    for ( const auto &v : vList )
+    {
+      jList.push_back( jsonFromVariant( v ) );
+    }
+    return jList;
+  }
+  else
+  {
+    switch ( val.userType() )
+    {
+      case QMetaType::Int:
+      case QMetaType::UInt:
+      case QMetaType::LongLong:
+      case QMetaType::ULongLong:
+        return val.toLongLong();
+      case QMetaType::Double:
+      case QMetaType::Float:
+        return val.toDouble();
+      default:
+        return  val.toString().toStdString();
+    }
   }
 }
 
