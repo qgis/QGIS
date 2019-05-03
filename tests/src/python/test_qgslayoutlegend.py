@@ -471,7 +471,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         print(point_layer.featuresCounted())
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
         checker = QgsLayoutChecker(
-            'composer_legend_expressions', layout)
+            'composer_legend_symbol_expression', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
         self.assertTrue(result, message)
