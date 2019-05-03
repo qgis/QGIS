@@ -1906,6 +1906,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context expression context for expressions and filters
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
      * \param request qgsfeaturerequest with filters criteria, if not provided all features will be used
+     * \warn Currently any expression provided will override the list of filtered FIDS.
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
