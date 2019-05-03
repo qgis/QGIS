@@ -172,9 +172,9 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   options.feedback = feedback;
 
   QString error;
-  if ( QgsVectorFileWriter::writeAsVectorFormat( layer, path, options, &error ) != QgsVectorFileWriter::NoError )
+  if ( QgsVectorFileWriter::writeAsVectorFormat( layer, path, options, nullptr, &error ) != QgsVectorFileWriter::NoError )
   {
-    feedback->pushDebugInfo( QObject::tr( "Packaging layer failed: %1" ).arg( error ) );
+    feedback->reportError( QObject::tr( "Packaging layer failed: %1" ).arg( error ) );
     return false;
   }
   else
