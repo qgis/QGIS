@@ -1238,6 +1238,14 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   }
   else
   {
+    QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_get_ellipsoid( ctx, d->mPj.get() ) );
+    if ( ellipsoid )
+    {
+      const QString ellipsoidAuthName( proj_get_id_auth_name( ellipsoid.get(), 0 ) );
+      const QString ellipsoidAuthCode( proj_get_id_code( ellipsoid.get(), 0 ) );
+      d->mEllipsoidAcronym = QStringLiteral( "%1:%2" ).arg( ellipsoidAuthName, ellipsoidAuthCode );
+    }
+
     d->mIsValid = true;
   }
 #else
@@ -2231,15 +2239,38 @@ int QgsCoordinateReferenceSystem::syncDatabase()
           }
         }
 
-        QgsProjUtils::proj_pj_unique_ptr coordOperation( proj_crs_get_coordoperation( pjContext, crs.get() ) );
-        if ( coordOperation )
+        switch ( proj_get_type( crs.get() ) )
         {
-          const char *methodName = nullptr;
-          proj_coordoperation_get_method_info( pjContext, coordOperation.get(), &methodName, nullptr, nullptr );
+          case PJ_TYPE_GEOGRAPHIC_2D_CRS:
+          case PJ_TYPE_GEOGRAPHIC_3D_CRS:
+          {
+            // TODO I think(?) this means longlat??
+            operation = "longlat";
+            break;
+          }
 
-          // TODO - get short operation name?? e.g. tmerc
-          operation = QString( methodName );
+          // PJ_TYPE_GEODETIC_CRS ??
+
+          default:
+          {
+            QgsProjUtils::proj_pj_unique_ptr coordOperation( proj_crs_get_coordoperation( pjContext, crs.get() ) );
+            if ( coordOperation )
+            {
+              const char *methodName = nullptr;
+              proj_coordoperation_get_method_info( pjContext, coordOperation.get(), &methodName, nullptr, nullptr );
+
+              // TODO - get short operation name?? e.g. tmerc
+              operation = QString( methodName );
+            }
+            else
+            {
+              QgsDebugMsg( QStringLiteral( "%1:%2" ).arg( authority, code ) );
+            }
+            break;
+          }
         }
+
+
 
         // work out srid and srsid
         const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( authority, code ) );
