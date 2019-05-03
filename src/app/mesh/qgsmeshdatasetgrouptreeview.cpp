@@ -317,7 +317,7 @@ void QgsMeshDatasetGroupTreeModel::addTreeItem( const QString &groupName, bool i
 
 QModelIndex QgsMeshDatasetGroupTreeModel::groupIndexToModelIndex( int groupIndex )
 {
-  if ( groupIndex < 0 )
+  if ( groupIndex < 0 || !mDatasetGroupIndexToItem.contains( groupIndex ) )
     return QModelIndex();
 
   const auto item = mDatasetGroupIndexToItem[groupIndex];
