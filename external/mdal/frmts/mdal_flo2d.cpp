@@ -109,6 +109,7 @@ void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::ve
   // CADPTS.DAT - COORDINATES OF CELL CENTERS (ELEM NUM, X, Y)
   while ( std::getline( cadptsStream, line ) )
   {
+    line = MDAL::rtrim( line );
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 3 )
     {
@@ -140,6 +141,7 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
 
   while ( std::getline( fplainStream, line ) )
   {
+    line = MDAL::rtrim( line );
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 7 )
     {
@@ -220,6 +222,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
 
   while ( std::getline( inStream, line ) )
   {
+    line = MDAL::rtrim( line );
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() == 1 )
     {
@@ -301,6 +304,7 @@ void MDAL::DriverFlo2D::parseDEPTHFile( const std::string &datFileName, const st
   // DEPTH.OUT - COORDINATES (ELEM NUM, X, Y, MAX DEPTH)
   while ( std::getline( depthStream, line ) )
   {
+    line = MDAL::rtrim( line );
     if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
 
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
@@ -348,6 +352,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     {
       if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
 
+      line = MDAL::rtrim( line );
       std::vector<std::string> lineParts = MDAL::split( line, ' ' );
       if ( lineParts.size() != 4 )
       {
@@ -378,6 +383,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     {
       if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
 
+      line = MDAL::rtrim( line );
       std::vector<std::string> lineParts = MDAL::split( line, ' ' );
       if ( lineParts.size() != 4 )
       {
