@@ -87,6 +87,12 @@ class CORE_EXPORT QgsProjUtils
      */
     static bool axisOrderIsSwapped( const PJ *crs );
 
+    /**
+     * Given a PROJ crs (which may be a compound or bound crs, or some other type), extract a single crs
+     * from it.
+     */
+    static proj_pj_unique_ptr crsToSingleCrs( const PJ *crs );
+
 #endif
 #endif
 };
