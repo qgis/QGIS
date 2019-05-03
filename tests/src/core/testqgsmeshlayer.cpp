@@ -64,6 +64,9 @@ class TestQgsMeshLayer : public QObject
 
     void test_time_format_data();
     void test_time_format();
+
+    void test_reload();
+    void test_reload_extra_dataset();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -491,6 +494,176 @@ void TestQgsMeshLayer::test_time_format()
 
   QString time = QgsMeshLayerUtils::formatTime( hours, settings );
   QCOMPARE( time, expectedTime );
+}
+
+void TestQgsMeshLayer::test_reload()
+{
+  //init file for the test
+  QString uri1( mDataDir + "/quad_and_triangle.2dm" );
+  QFile fileSource1( uri1 );
+
+  QString uri2( mDataDir + "/quad_flower.2dm" );
+  QFile fileSource2( uri2 );
+
+  QTemporaryFile testFile;
+
+  auto copyToTemporaryFile = []( QFile & fileTocopy, QTemporaryFile & tempFile )
+  {
+    QDataStream streamToCopy( &fileTocopy );
+    QDataStream streamTemporaryFile( &tempFile );
+    tempFile.open();
+    fileTocopy.open( QIODevice::ReadOnly );
+
+    while ( !streamToCopy.atEnd() )
+    {
+      char *rd = new char[1];
+      int len = streamToCopy.readRawData( rd, 1 );
+      streamTemporaryFile.writeRawData( rd, len );
+    }
+    fileTocopy.close();
+    tempFile.close();
+  };
+
+  //copy the quad_and_triangle.2dm to the temporary testFile
+  copyToTemporaryFile( fileSource1, testFile );
+
+  //create layer with temporary file
+  QgsMeshLayer layer( testFile.fileName(), "Test", "mdal" );
+  QgsRenderContext rendererContext;
+  layer.createMapRenderer( rendererContext ); //to active the lazy loading of mesh data
+
+  //Test if the layer matches with quad and triangle
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( 5, layer.nativeMesh()->vertexCount() );
+  QCOMPARE( 2, layer.nativeMesh()->faceCount() );
+
+  //Test dataSet in quad and triangle
+  QgsMeshDatasetIndex ds( 0, 0 );
+  QCOMPARE( QgsMeshDatasetValue( 20 ), layer.dataProvider()->datasetValue( ds, 0 ) );
+  QCOMPARE( QgsMeshDatasetValue( 30 ), layer.dataProvider()->datasetValue( ds, 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 40 ), layer.dataProvider()->datasetValue( ds, 2 ) );
+  QCOMPARE( QgsMeshDatasetValue( 50 ), layer.dataProvider()->datasetValue( ds, 3 ) );
+  QCOMPARE( QgsMeshDatasetValue( 10 ), layer.dataProvider()->datasetValue( ds, 4 ) );
+
+  //copy the quad_flower.2dm to the temporary testFile
+  copyToTemporaryFile( fileSource2, testFile );
+
+  //reload the layer
+  layer.reload();
+
+  //Test if the layer matches with quad flower
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( 8, layer.nativeMesh()->vertexCount() );
+  QCOMPARE( 5, layer.nativeMesh()->faceCount() );
+
+  //Test dataSet in quad flower
+  QCOMPARE( QgsMeshDatasetValue( 200 ), layer.dataProvider()->datasetValue( ds, 0 ) );
+  QCOMPARE( QgsMeshDatasetValue( 200 ), layer.dataProvider()->datasetValue( ds, 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 800 ), layer.dataProvider()->datasetValue( ds, 2 ) );
+  QCOMPARE( QgsMeshDatasetValue( 200 ), layer.dataProvider()->datasetValue( ds, 3 ) );
+  QCOMPARE( QgsMeshDatasetValue( 200 ), layer.dataProvider()->datasetValue( ds, 4 ) );
+  QCOMPARE( QgsMeshDatasetValue( 800 ), layer.dataProvider()->datasetValue( ds, 5 ) );
+  QCOMPARE( QgsMeshDatasetValue( 800 ), layer.dataProvider()->datasetValue( ds, 6 ) );
+  QCOMPARE( QgsMeshDatasetValue( 800 ), layer.dataProvider()->datasetValue( ds, 7 ) );
+}
+
+void TestQgsMeshLayer::test_reload_extra_dataset()
+{
+  //init files for the test
+  QgsMeshLayer layer( mDataDir + "/quad_and_triangle.2dm", "MDAL layer", "mdal" );
+
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 0 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+
+  QString datasetUri_1( mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
+  QFile dataSetFile_1( datasetUri_1 );
+
+
+  QString datasetUri_2( mDataDir + "/quad_and_triangle_vertex_scalar_incompatible_mesh.dat" );
+  QFile dataSetFile_2( datasetUri_2 );
+
+  QString datasetUri_3( mDataDir + "/quad_and_triangle_vertex_vector.dat" );
+  QFile dataSetFile_3( datasetUri_3 );
+
+  QTemporaryFile testFileDataSet;
+
+  auto copyToTemporaryFile = []( QFile & fileTocopy, QTemporaryFile & tempFile )
+  {
+    QDataStream streamToCopy( &fileTocopy );
+    QDataStream streamTemporaryFile( &tempFile );
+    tempFile.open();
+    fileTocopy.open( QIODevice::ReadOnly );
+
+    while ( !streamToCopy.atEnd() )
+    {
+      char *rd = new char[1];
+      int len = streamToCopy.readRawData( rd, 1 );
+      streamTemporaryFile.writeRawData( rd, len );
+    }
+    fileTocopy.close();
+    tempFile.close();
+  };
+
+  //copy the qad_and_triangle_vertex_scalar.dat to the temporary testFile
+  copyToTemporaryFile( dataSetFile_1, testFileDataSet );
+
+  //add the data set from temporary file and test
+  QVERIFY( layer.dataProvider()->addDataset( testFileDataSet.fileName() ) );
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 2 );
+
+  //copy the qad_and_triangle_vertex_scalar_incompatible_mesh.dat to the temporary testFile
+  copyToTemporaryFile( dataSetFile_2, testFileDataSet );
+
+  layer.reload();
+
+  //test if dataset presence
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+
+  //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
+  copyToTemporaryFile( dataSetFile_1, testFileDataSet );
+
+  layer.reload();
+
+  //add the data set from temporary tesFile and test
+  QVERIFY( layer.dataProvider()->addDataset( testFileDataSet.fileName() ) );
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
+
+  //copy a invalid file to the temporary testFile
+  QVERIFY( testFileDataSet.open() );
+  QDataStream streamTestFile( &testFileDataSet );
+  streamTestFile.writeBytes( "x", 1 );
+  testFileDataSet.close();
+
+  layer.reload();
+
+  //test dataset presence
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+
+  //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
+  copyToTemporaryFile( dataSetFile_1, testFileDataSet );
+
+  layer.reload();
+
+  //test dataset presence
+  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
+
+  //copy the qad_and_triangle_vertex_vector.dat to the temporary testFile
+  copyToTemporaryFile( dataSetFile_3, testFileDataSet );
+
+  layer.reload();
+
+  //Test dataSet
+  QgsMeshDatasetIndex ds( 1, 0 );
+  QCOMPARE( QgsMeshDatasetValue( 1, 1 ), layer.dataProvider()->datasetValue( ds, 0 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2, 1 ), layer.dataProvider()->datasetValue( ds, 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 3, 2 ), layer.dataProvider()->datasetValue( ds, 2 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2, 2 ), layer.dataProvider()->datasetValue( ds, 3 ) );
+  QCOMPARE( QgsMeshDatasetValue( 1, -2 ), layer.dataProvider()->datasetValue( ds, 4 ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )
