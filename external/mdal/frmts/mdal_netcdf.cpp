@@ -103,13 +103,13 @@ std::string NetCDFFile::getAttrStr( const std::string &name, const std::string &
   return getAttrStr( attr_name, arr_id );
 }
 
-std::string NetCDFFile::getAttrStr( const std::string &name, int varid ) const
+std::string NetCDFFile::getAttrStr( const std::string &attr_name, int varid ) const
 {
   assert( mNcid != 0 );
 
   size_t attlen = 0;
 
-  if ( nc_inq_attlen( mNcid, varid, name.c_str(), &attlen ) )
+  if ( nc_inq_attlen( mNcid, varid, attr_name.c_str(), &attlen ) )
   {
     // attribute is missing
     return std::string();
@@ -117,7 +117,7 @@ std::string NetCDFFile::getAttrStr( const std::string &name, int varid ) const
 
   char *string_attr = static_cast<char *>( malloc( attlen + 1 ) );
 
-  if ( nc_get_att_text( mNcid, varid, name.c_str(), string_attr ) ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nc_get_att_text( mNcid, varid, attr_name.c_str(), string_attr ) ) throw MDAL_Status::Err_UnknownFormat;
   string_attr[attlen] = '\0';
 
   std::string res( string_attr );
@@ -139,6 +139,7 @@ double NetCDFFile::getAttrDouble( int varid, const std::string &attr_name ) cons
   return res;
 }
 
+
 int NetCDFFile::getVarId( const std::string &name )
 {
   int ncid_val;
@@ -152,4 +153,10 @@ void NetCDFFile::getDimension( const std::string &name, size_t *val, int *ncid_v
 
   if ( nc_inq_dimid( mNcid, name.c_str(), ncid_val ) != NC_NOERR ) throw MDAL_Status::Err_UnknownFormat;
   if ( nc_inq_dimlen( mNcid, *ncid_val, val ) != NC_NOERR ) throw MDAL_Status::Err_UnknownFormat;
+}
+
+bool NetCDFFile::hasDimension( const std::string &name ) const
+{
+  int ncid_val;
+  return nc_inq_dimid( mNcid, name.c_str(), &ncid_val ) == NC_NOERR;
 }
