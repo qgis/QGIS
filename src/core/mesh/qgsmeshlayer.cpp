@@ -457,6 +457,27 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   return writeSymbology( layer_node, document, errorMsg, context );
 }
 
+void QgsMeshLayer::reload()
+{
+  if ( mDataProvider && mDataProvider->isValid() )
+  {
+
+    mDataProvider->reloadData();
+
+    //reload the mesh structure
+    if ( !mNativeMesh )
+      mNativeMesh.reset( new QgsMesh );
+
+    dataProvider()->populateMesh( mNativeMesh.get() );
+
+    //clear the TriangularMesh
+    mTriangularMesh.reset( new QgsTriangularMesh() );
+
+    //clear the rendererCache
+    mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  }
+}
+
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
   delete mDataProvider;

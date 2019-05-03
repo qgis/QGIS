@@ -133,6 +133,9 @@ QgsMeshLayer cannot be copied.
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
 
+    virtual void reload();
+
+
     QString providerType() const;
 %Docstring
 Returns the provider type for this layer
