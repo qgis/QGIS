@@ -211,7 +211,12 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       f.setGeometry( g );
       f.setValid( true );
 
+      // The snapping result needs to be added so it's available in the @snapping_results variable of default value etc. expression contexts
+      addVertex( e->mapPoint(), e->mapPointMatch() );
+
       digitized( f );
+
+      stopCapturing();
 
       // we are done with digitizing for now so instruct advanced digitizing dock to reset its CAD points
       cadDockWidget()->clearPoints();
