@@ -43,13 +43,12 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
 
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
     const QString &fieldOrExpression,
-    QgsExpressionContext *context, bool *ok,
-    const QgsFeatureRequest &request ) const
+    QgsExpressionContext *context, bool *ok) const
 {
   if ( ok )
     *ok = false;
 
-  QgsFeatureRequest requestCopy = request;
+  QgsFeatureRequest request = new QgsFeatureRequest();
 
   if ( !mLayer )
     return QVariant();
@@ -80,20 +79,24 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   else
     lst = expression->referencedColumns();
 
-  requestCopy.setFlags( ( expression && expression->needsGeometry() ) ?
+  request.setFlags( ( expression && expression->needsGeometry() ) ?
                         QgsFeatureRequest::NoFlags :
                         QgsFeatureRequest::NoGeometry )
   .setSubsetOfAttributes( lst, mLayer->fields() );
+  if ( mFidsFilter )
+    request.setFidsFilter( &mFidsFilter );
   if ( !mFilterExpression.isEmpty() )
-    requestCopy.setFilterExpression( mFilterExpression );
+    request.setFilterExpression( mFilterExpression );
+  if ( mStackFilters )
+    // TODO
   if ( context )
-    requestCopy.setExpressionContext( *context );
+    request.setExpressionContext( *context );
   //determine result type
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )
   {
     // evaluate first feature, check result type
-    QgsFeatureRequest testRequest( requestCopy );
+    QgsFeatureRequest testRequest( request );
     testRequest.setLimit( 1 );
     QgsFeature f;
     QgsFeatureIterator fit = mLayer->getFeatures( testRequest );
@@ -115,7 +118,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     resultType = mLayer->fields().at( attrNum ).type();
   }
 
-  QgsFeatureIterator fit = mLayer->getFeatures( requestCopy );
+  QgsFeatureIterator fit = mLayer->getFeatures( request );
   return calculate( aggregate, fit, resultType, attrNum, expression.get(), mDelimiter, context, ok );
 }
 

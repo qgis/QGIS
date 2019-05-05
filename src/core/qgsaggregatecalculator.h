@@ -132,6 +132,20 @@ class CORE_EXPORT QgsAggregateCalculator
     void setFilter( const QString &filterExpression ) { mFilterExpression = filterExpression; }
 
     /**
+     * Sets a filter to limit the features used during the aggregate calculation.
+     * \param filterExpression expression for filtering features, or empty string to remove filter
+     * \see filter()
+     */
+    void setFidsFilter( const QgsFeatureIds *fids ) { mFidsFilter = fids; }
+
+    /**
+     * Sets a filter to limit the features used during the aggregate calculation.
+     * \param filterExpression expression for filtering features, or empty string to remove filter
+     * \see filter()
+     */
+    void stackFilters( const bool &stack ) { mStackFilters = stack; }
+
+    /**
      * Returns the filter which limits the features used during the aggregate calculation.
      * \see setFilter()
      */
@@ -157,12 +171,10 @@ class CORE_EXPORT QgsAggregateCalculator
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
-     * \param request qgsfeaturerequest with filters criteria, if not provided all features will be used
      * \returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
-                        QgsExpressionContext *context = nullptr, bool *ok = nullptr,
-                        const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+                        QgsExpressionContext *context = nullptr, bool *ok = nullptr ) const;
 
     /**
      * Converts a string to a aggregate type.
@@ -189,6 +201,12 @@ class CORE_EXPORT QgsAggregateCalculator
 
     //! Delimiter to use for concatenate aggregate
     QString mDelimiter;
+
+    //!list of fids to filter
+    QgsFeatureIds *mFidsFilter = nullptr;
+
+    //!variable to control stacking
+    bool mStackFilters;
 
     static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
     static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
