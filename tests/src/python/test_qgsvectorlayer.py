@@ -2127,8 +2127,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        request = QgsFeatureRequest().setFilterFids([1, 2])
-        val, ok = layer.aggregate(QgsAggregateCalculator.Sum, 'fldint', request=request)
+        val, ok = layer.aggregate(QgsAggregateCalculator.Sum, 'fldint', fids=[1, 2])
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
