@@ -147,7 +147,6 @@ Calculates the value of an aggregate.
                           If an expression is used, then the context parameter must be set.
 :param context: expression context for evaluating expressions
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
-:param request: qgsfeaturerequest with filters criteria, if not provided all features will be used
 
 :return: calculated aggregate value
 %End
