@@ -29,6 +29,44 @@ class QMutex;
 class QgsCoordinateTransform;
 class QgsCoordinateReferenceSystem;
 
+class QgsMdalDatasetIndex
+{
+  public:
+    QgsMdalDatasetIndex( int mdalIndex, int uriIndex );
+
+    int mdalGroupIndex() const {return mMdalGroupIndex;}
+    int uriIndex() const {return mUriIndex;}
+
+    void invalidate();
+    void validate( int mdalGroupIndex );
+
+  private:
+    int mMdalGroupIndex = -1; //index of the dataset for MDAL
+    int mUriIndex = -1; //index of the extra dataset groups uri
+};
+
+
+class QgsMdalProviderDatasetProxy
+{
+  public:
+
+    void addMeshDatasetGroups( int mdalIndex );
+    void addExtraDatasetGroups( int firstMdalIndex, int groupsCount, int uriIndex );
+
+    int mdalGroupIndex( int qgisIndex ) const;
+    int dataSetGroupsCount() const;
+
+    void invalidateIndexes( int uriIndex );
+    void validateIndexes( int uriIndex, int firstIndexMdal, int count );
+
+    void writeToXml( QDomDocument &document, QDomElement &parent ) const;
+    void readFromXml( const QDomElement &elementTable );
+
+  private:
+    QList<QgsMdalDatasetIndex> mdalGroupIndexes;
+};
+
+
 /**
   \brief Data provider for MDAL layers.
 */
@@ -57,6 +95,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     void populateMesh( QgsMesh *mesh ) const override;
 
     bool addDataset( const QString &uri ) override;
+    void addUriDataset( const QString &uri ) override;
     QStringList extraDatasets() const override;
 
     int datasetGroupCount() const override;
@@ -101,13 +140,22 @@ class QgsMdalProvider : public QgsMeshDataProvider
      */
     static void fileMeshExtensions( QStringList &fileMeshExtensions, QStringList &fileMeshDatasetExtensions );
 
+    QDomElement writeProxyToXml( QDomDocument &document ) const override;
+
+    void readProxyFromXml( const QDomNode &layer_node ) override;
+
   private:
     QVector<QgsMeshVertex> vertices( ) const;
     QVector<QgsMeshFace> faces( ) const;
     void loadData();
+
     MeshH mMeshH;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
+
+    QgsMdalProviderDatasetProxy datasetProxy;
+    void reloadExtraDatasetUris( ) override;
+    int datasetGroupMDALCount( ) const;
 };
 
 #endif //QGSMDALPROVIDER_H

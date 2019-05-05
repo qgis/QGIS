@@ -439,6 +439,13 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
     virtual bool addDataset( const QString &uri ) = 0;
 
     /**
+     * \brief Associate uri dataset with the mesh
+     *
+     * Doesn't load the dataSet, this method is called before all the dataset groups are loaded when opening
+     */
+    virtual void addUriDataset( const QString &uri ) {Q_UNUSED( uri );}
+
+    /**
      * Returns list of additional dataset file URIs added using addDataset() calls.
      */
     virtual QStringList extraDatasets() const = 0;
@@ -532,8 +539,9 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
                                       const QVector<QgsMeshDataBlock> &datasetActive,
                                       const QVector<double> &times
                                     ) = 0;
-};
 
+    virtual void reloadExtraDatasetUris() {}
+};
 
 /**
  * \ingroup core
@@ -552,6 +560,9 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
   public:
     //! Ctor
     QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+
+    virtual QDomElement writeProxyToXml( QDomDocument &document ) const {Q_UNUSED( document ); return QDomElement();}
+    virtual void readProxyFromXml( const QDomNode &layer_node ) {Q_UNUSED( layer_node );}
 
   signals:
     //! Emitted when some new dataset groups have been added

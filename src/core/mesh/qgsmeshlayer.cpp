@@ -402,16 +402,22 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     {
       QString uri = context.pathResolver().readPath( elemUri.text() );
 
-      bool res = mDataProvider->addDataset( uri );
-#ifdef QGISDEBUG
-      QgsDebugMsg( QStringLiteral( "extra dataset (res %1): %2" ).arg( res ).arg( uri ) );
-#else
-      ( void )res; // avoid unused warning in release builds
-#endif
+//      #ifdef QGISDEBUG
+//            QgsDebugMsg( QStringLiteral( "extra dataset (res %1): %2" ).arg( res ).arg( uri ) );
+//      #else
+//            ( void )res; // avoid unused warning in release builds
+//      #endif
+
+//      need to leave this control ??
+
+      mDataProvider->addUriDataset( uri ); //indeed addDataset( uri ) because the dataset will be reloaded and the proxy updated with reloadExtraDatasetUris() below
 
       elemUri = elemUri.nextSiblingElement( QStringLiteral( "uri" ) );
     }
   }
+
+  mDataProvider->readProxyFromXml( layer_node );
+  mDataProvider->reloadExtraDatasetUris();
 
   QString errorMsg;
   readSymbology( layer_node, errorMsg, context );
@@ -450,6 +456,8 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
       elemExtraDatasets.appendChild( elemUri );
     }
     layer_node.appendChild( elemExtraDatasets );
+
+    layer_node.appendChild( mDataProvider->writeProxyToXml( document ) );
   }
 
   // renderer specific settings

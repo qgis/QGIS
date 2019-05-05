@@ -440,6 +440,13 @@ Associate dataset with the mesh
 emits dataChanged when successful
 %End
 
+    virtual void addUriDataset( const QString &uri );
+%Docstring
+Associate uri dataset with the mesh
+
+Doesn't load the dataSet, this method is called before all the dataset groups are loaded when opening
+%End
+
     virtual QStringList extraDatasets() const = 0;
 %Docstring
 Returns list of additional dataset file URIs added using addDataset() calls.
@@ -535,8 +542,9 @@ On success, the mesh's dataset group count is changed
 
 .. versionadded:: 3.6
 %End
-};
 
+    virtual void reloadExtraDatasetUris();
+};
 
 class QgsMeshDataProvider: QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
 {
@@ -560,6 +568,9 @@ Responsible for reading native mesh data
 %Docstring
 Ctor
 %End
+
+    virtual QDomElement writeProxyToXml( QDomDocument &document ) const;
+    virtual void readProxyFromXml( const QDomNode &layer_node );
 
   signals:
     void datasetGroupsAdded( int count );

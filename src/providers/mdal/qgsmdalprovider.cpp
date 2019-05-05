@@ -55,6 +55,9 @@ QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &opt
   : QgsMeshDataProvider( uri, options )
 {
   loadData();
+
+  for ( int i = 0; i < datasetGroupMDALCount(); ++i )
+    datasetProxy.addMeshDatasetGroups( i );
 }
 
 QgsMdalProvider::~QgsMdalProvider()
@@ -246,6 +249,33 @@ void QgsMdalProvider::loadData()
   }
 }
 
+void QgsMdalProvider::reloadExtraDatasetUris()
+{
+  for ( int uriIndex = 0; uriIndex < mExtraDatasetUris.count(); ++uriIndex )
+  {
+    int datasetCount = datasetGroupMDALCount();
+    std::string str = mExtraDatasetUris.at( uriIndex ).toStdString();
+    MDAL_M_LoadDatasets( mMeshH, str.c_str() );
+
+    if ( MDAL_LastStatus() != 0 )
+    {
+      //invalidate all datasetGroups of this URI
+      datasetProxy.invalidateIndexes( uriIndex );
+    }
+    else
+    {
+      //assign MDAL index
+      datasetProxy.validateIndexes( uriIndex, datasetCount, datasetGroupMDALCount() - datasetCount );
+    }
+  }
+
+}
+
+int QgsMdalProvider::datasetGroupMDALCount() const
+{
+  return MDAL_M_datasetGroupCount( mMeshH );
+}
+
 void QgsMdalProvider::reloadData()
 {
   if ( mMeshH )
@@ -254,11 +284,7 @@ void QgsMdalProvider::reloadData()
   loadData();
 
   if ( mMeshH )
-    for ( auto uri : mExtraDatasetUris )
-    {
-      std::string str = uri.toStdString();
-      MDAL_M_LoadDatasets( mMeshH, str.c_str() );
-    }
+    reloadExtraDatasetUris();
 }
 
 void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString )
@@ -383,26 +409,48 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
   QgsDebugMsg( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( QStringLiteral( ";;" ) ) );
 }
 
+QDomElement QgsMdalProvider::writeProxyToXml( QDomDocument &document ) const
+{
+  QDomElement elementTable = document.createElement( QStringLiteral( "dataset-groups-table" ) );
+  datasetProxy.writeToXml( document, elementTable );
+  return elementTable;
+}
+
+void QgsMdalProvider::readProxyFromXml( const QDomNode &layer_node )
+{
+  QDomElement elemTableDatasets = layer_node.firstChildElement( QStringLiteral( "dataset-groups-table" ) );
+  if ( !elemTableDatasets.isNull() )
+  {
+    datasetProxy.readFromXml( elemTableDatasets );
+  }
+}
+
 /*----------------------------------------------------------------------------------------------*/
 
 bool QgsMdalProvider::addDataset( const QString &uri )
 {
-  int datasetCount = datasetGroupCount();
+  int datasetCount = datasetGroupMDALCount();
 
   std::string str = uri.toStdString();
   MDAL_M_LoadDatasets( mMeshH, str.c_str() );
 
-  if ( datasetCount == datasetGroupCount() )
+  if ( datasetCount == datasetGroupMDALCount() )
   {
     return false;
   }
   else
   {
+    datasetProxy.addExtraDatasetGroups( datasetCount, datasetGroupMDALCount() - datasetCount, mExtraDatasetUris.count() );
     mExtraDatasetUris << uri;
-    emit datasetGroupsAdded( datasetGroupCount() - datasetCount );
+    emit datasetGroupsAdded( datasetGroupMDALCount() - datasetCount );
     emit dataChanged();
     return true; // Ok
   }
+}
+
+void QgsMdalProvider::addUriDataset( const QString &uri )
+{
+  mExtraDatasetUris.append( uri );
 }
 
 QStringList QgsMdalProvider::extraDatasets() const
@@ -412,13 +460,14 @@ QStringList QgsMdalProvider::extraDatasets() const
 
 int QgsMdalProvider::datasetGroupCount() const
 {
-  return MDAL_M_datasetGroupCount( mMeshH );
+  return datasetProxy.dataSetGroupsCount();//MDAL_M_datasetGroupCount( mMeshH );
 }
 
 
 int QgsMdalProvider::datasetCount( int groupIndex ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
+  int groupMdalIndex = datasetProxy.mdalGroupIndex( groupIndex );
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupMdalIndex );
   if ( !group )
     return 0;
   return MDAL_G_datasetCount( group );
@@ -426,7 +475,12 @@ int QgsMdalProvider::datasetCount( int groupIndex ) const
 
 QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupIndex ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
+  int groupMdalIndex = datasetProxy.mdalGroupIndex( groupIndex );
+
+  if ( groupMdalIndex == -1 )
+    return QgsMeshDatasetGroupMetadata( tr( "Not valid or not compatible data" ), false, false, 0, 0, QMap<QString, QString>() );
+
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupMdalIndex );
   if ( !group )
     return QgsMeshDatasetGroupMetadata();
 
@@ -460,7 +514,9 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
 
 QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex index ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  int groupMdalIndex = datasetProxy.mdalGroupIndex( index.group() );
+
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupMdalIndex );
   if ( !group )
     return QgsMeshDatasetMetadata();
 
@@ -492,7 +548,8 @@ QgsMeshDatasetValue QgsMdalProvider::datasetValue( QgsMeshDatasetIndex index, in
 
 QgsMeshDataBlock QgsMdalProvider::datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  int groupMdalIndex = datasetProxy.mdalGroupIndex( index.group() );
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupMdalIndex );
   if ( !group )
     return QgsMeshDataBlock();
 
@@ -522,7 +579,8 @@ bool QgsMdalProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) c
 
 QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  int groupMdalIndex = datasetProxy.mdalGroupIndex( index.group() );
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupMdalIndex );
   if ( !group )
     return QgsMeshDataBlock();
 
@@ -624,3 +682,93 @@ QGISEXTERN void fileMeshFilters( QString &fileMeshFiltersString, QString &fileMe
 }
 
 #endif
+
+QgsMdalDatasetIndex::QgsMdalDatasetIndex( int mdalIndex, int uriIndex ):
+  mMdalGroupIndex( mdalIndex ),/*mFileIndex(fileIndex),*/mUriIndex( uriIndex )
+{}
+
+void QgsMdalDatasetIndex::invalidate()
+{
+  mMdalGroupIndex = -1;
+}
+
+void QgsMdalDatasetIndex::validate( int mdalGroupIndex )
+{
+  mMdalGroupIndex = mdalGroupIndex;
+}
+
+void QgsMdalProviderDatasetProxy::addMeshDatasetGroups( int mdalIndex )
+{
+  mdalGroupIndexes.append( QgsMdalDatasetIndex( mdalIndex, -1 ) );
+}
+
+void QgsMdalProviderDatasetProxy::addExtraDatasetGroups( int firstMdalIndex, int groupsCount, int uriIndex )
+{
+  for ( int i = 0; i < groupsCount; ++i )
+    mdalGroupIndexes.append( QgsMdalDatasetIndex( firstMdalIndex + i, uriIndex ) );
+
+}
+
+int QgsMdalProviderDatasetProxy::mdalGroupIndex( int qgisIndex ) const
+{
+  if ( qgisIndex < 0 || qgisIndex >= mdalGroupIndexes.count() )
+    return -1;
+  return mdalGroupIndexes.at( qgisIndex ).mdalGroupIndex();
+}
+
+void QgsMdalProviderDatasetProxy::invalidateIndexes( int uriIndex )
+{
+  for ( auto &dgi : mdalGroupIndexes )
+  {
+    if ( dgi.uriIndex() == uriIndex )
+      dgi.invalidate();
+  }
+}
+
+void QgsMdalProviderDatasetProxy::validateIndexes( int uriIndex, int firstIndexMdal, int count )
+{
+  int firstIndex = 0;
+
+  while ( mdalGroupIndexes.at( firstIndex ).uriIndex() != uriIndex && firstIndex < mdalGroupIndexes.count() )
+  {
+    firstIndex++;
+  }
+
+  for ( int i = 0; i < count; ++i )
+  {
+    int reealndex = firstIndex + i;
+    if ( reealndex < mdalGroupIndexes.count() &&
+         mdalGroupIndexes.at( reealndex ).uriIndex() == uriIndex ) //If number of dataset groups increase for this uri, to avoid to validate indexes of other uri
+      mdalGroupIndexes[firstIndex + i].validate( firstIndexMdal + i );
+  }
+}
+
+void QgsMdalProviderDatasetProxy::writeToXml( QDomDocument &document, QDomElement &parent ) const
+{
+  for ( const auto &mgi : mdalGroupIndexes )
+  {
+    QDomElement indexElement = document.createElement( QStringLiteral( "mdal-dataset-group-index" ) );
+    indexElement.setAttribute( QStringLiteral( "uri-index" ), mgi.uriIndex() );
+    indexElement.setAttribute( QStringLiteral( "mdal-index" ), mgi.mdalGroupIndex() );
+    parent.appendChild( indexElement );
+  }
+}
+
+void QgsMdalProviderDatasetProxy::readFromXml( const QDomElement &elementTable )
+{
+  QDomElement elemIndex = elementTable.firstChildElement( QStringLiteral( "mdal-dataset-group-index" ) );
+  while ( !elemIndex.isNull() )
+  {
+    QgsMdalDatasetIndex index( elemIndex.attribute( "mdal-index" ).toInt(),
+                               elemIndex.attribute( "uri-index" ).toInt() );
+    if ( index.uriIndex() != -1 ) //if uri == -1, the dataset group is owned by the mesh, so it was already present in the table
+      mdalGroupIndexes.append( index );
+
+    elemIndex = elemIndex.nextSiblingElement( QStringLiteral( "mdal-dataset-group-index" ) );
+  }
+}
+
+int QgsMdalProviderDatasetProxy::dataSetGroupsCount() const
+{
+  return mdalGroupIndexes.count();
+}

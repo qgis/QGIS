@@ -617,9 +617,9 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
 
   layer.reload();
 
-  //test if dataset presence
+  //test if dataset is present
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 2 );
 
   //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
@@ -641,7 +641,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
 
   //test dataset presence
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
 
   //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
