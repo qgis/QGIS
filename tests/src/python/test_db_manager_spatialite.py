@@ -109,6 +109,20 @@ class TestPyQgsDBManagerSpatialite(unittest.TestCase):
             pass
         self.assertFalse(connection_succeeded, 'exception should have been raised')
 
+    def testExecuteRegExp(self):
+        """This test checks for REGEXP syntax support, which is enabled in Qgis.utils' spatialite_connection()"""
+
+        connection_name = 'testListLayer'
+        plugin = createDbPlugin('spatialite')
+        uri = QgsDataSourceUri()
+        uri.setDatabase(self.test_spatialite)
+        self.assertTrue(plugin.addConnection(connection_name, uri))
+
+        connection = createDbPlugin('spatialite', connection_name)
+        connection.connect()
+        db = connection.database()
+        db.connector._execute(None, 'SELECT \'ABC\' REGEXP \'[CBA]\'')
+
     def testListLayer(self):
         connection_name = 'testListLayer'
         plugin = createDbPlugin('spatialite')
