@@ -136,24 +136,27 @@ int nmea_pack_type( const char *buff, int buff_sz )
     "GNRMC",    
     "GPGST",
   };
+  
+  // BUFFER_SIZE = size(P_HEADS) - 1;
+  int buffer_size = 6;
 
   NMEA_ASSERT( buff );
 
-  if ( buff_sz < 5 )
+  if ( buff_sz < buffer_size )
     return GPNON;
-  else if ( 0 == memcmp( buff, P_HEADS[0], 6 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[0], buffer_size ) )
     return GPGGA;
-  else if ( 0 == memcmp( buff, P_HEADS[1], 6 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[1], buffer_size ) )
     return GPGSA;
-  else if ( 0 == memcmp( buff, P_HEADS[2], 6 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[2], buffer_size ) )
     return GPGSV;
-  else if ( 0 == memcmp( buff, P_HEADS[3], 6 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[3], buffer_size ) )
     return GPRMC;
-  else if ( 0 == memcmp( buff, P_HEADS[4], 6 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[4], buffer_size ) )
     return GPVTG;
-  else if ( 0 == memcmp( buff, P_HEADS[5], 6 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[5], buffer_size ) )
     return GPRMC;
-  else if ( 0 == memcmp( buff, P_HEADS[6], 6 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[6], buffer_size ) )
     return GPGST;
 
   return GPNON;
