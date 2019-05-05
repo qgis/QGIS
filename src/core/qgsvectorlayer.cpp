@@ -3930,7 +3930,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     if ( origin == QgsFields::OriginProvider )
     {
       bool providerOk = false;
-      QVariant val = mDataProvider->aggregate( aggregate, attrIndex, parameters, context, providerOk );
+      QVariant val = mDataProvider->aggregate( aggregate, attrIndex, parameters, context, providerOk, request );
       if ( providerOk )
       {
         // provider handled calculation
