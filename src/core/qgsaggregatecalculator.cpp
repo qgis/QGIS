@@ -42,13 +42,12 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
 }
 
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
-    const QString &fieldOrExpression,
-    QgsExpressionContext *context, bool *ok) const
+    const QString &fieldOrExpression, QgsExpressionContext *context, bool *ok ) const
 {
   if ( ok )
     *ok = false;
 
-  QgsFeatureRequest request = new QgsFeatureRequest();
+  QgsFeatureRequest request = QgsFeatureRequest();
 
   if ( !mLayer )
     return QVariant();
@@ -80,15 +79,15 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     lst = expression->referencedColumns();
 
   request.setFlags( ( expression && expression->needsGeometry() ) ?
-                        QgsFeatureRequest::NoFlags :
-                        QgsFeatureRequest::NoGeometry )
+                    QgsFeatureRequest::NoFlags :
+                    QgsFeatureRequest::NoGeometry )
   .setSubsetOfAttributes( lst, mLayer->fields() );
   if ( mFidsFilter )
     request.setFidsFilter( &mFidsFilter );
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
   if ( mStackFilters )
-    // TODO
+    ;// TODO
   if ( context )
     request.setExpressionContext( *context );
   //determine result type

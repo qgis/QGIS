@@ -96,7 +96,7 @@ Sets a filter to limit the features used during the aggregate calculation.
 .. seealso:: :py:func:`filter`
 %End
 
-    void setFidsFilter( const QgsFeatureIds *fids );
+    void setFidsFilter( QgsFeatureIds *fids );
 %Docstring
 Sets a filter to limit the features used during the aggregate calculation.
 
@@ -105,7 +105,7 @@ Sets a filter to limit the features used during the aggregate calculation.
 .. seealso:: :py:func:`filter`
 %End
 
-    void stackFilters( const bool &stack );
+    void stackFilters( bool &stack );
 %Docstring
 Sets a filter to limit the features used during the aggregate calculation.
 
