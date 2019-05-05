@@ -131,7 +131,7 @@ set the expression to evaluate
 .. versionadded:: 3.8
 %End
 
-    QString labelExpression() const;
+    const QString labelExpression() const;
 %Docstring
 Returns the expression member of the LayerTreeNode
 

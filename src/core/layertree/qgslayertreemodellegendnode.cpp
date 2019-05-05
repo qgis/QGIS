@@ -621,7 +621,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
   {
     if ( vl )
     {
-      const symLabel = symbolLabel();
+      const QString symLabel = symbolLabel();
       if ( ! mLayerNode->labelExpression().isEmpty() )
         mLabel = evaluateLabelExpression( "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( mLabel.contains( "[%" ) )
@@ -631,6 +631,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
   }
   else
   {
+    eLabel = QString;
     if ( vl )
     {
       if ( ! mLayerNode->labelExpression().isEmpty() )
