@@ -631,13 +631,13 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
   }
   else
   {
-    eLabel = QString;
+    QString eLabel;
     if ( vl )
     {
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        QString eLabel = evaluateLabelExpression( label + "[%" + mLayerNode->labelExpression() + "%]", context );
+        eLabel = evaluateLabelExpression( label + "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( label.contains( "[%" ) )
-        QString eLabel = evaluateLabelExpression( label, context );
+        eLabel = evaluateLabelExpression( label, context );
     }
     return eLabel;
   }
