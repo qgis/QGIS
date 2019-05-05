@@ -1900,7 +1900,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Calculates an aggregated value from the layer's features.
-     * Currently any expression provided will override the list of filtered FIDS in the FeatureRequest.
+     * Currently any filtering expression provided will override filters in the FeatureRequest.
      * \param aggregate aggregate to calculate
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * \param parameters parameters controlling aggregate calculation

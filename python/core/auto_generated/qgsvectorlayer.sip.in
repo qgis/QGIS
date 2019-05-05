@@ -2102,7 +2102,7 @@ been changed inside the edit buffer then the previous saved value may be returne
                         const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
 %Docstring
 Calculates an aggregated value from the layer's features.
-Currently any expression provided will override the list of filtered FIDS in the FeatureRequest.
+Currently any filtering expression provided will override filters in the FeatureRequest.
 
 :param aggregate: aggregate to calculate
 :param fieldOrExpression: source field or expression to use as basis for aggregated values.
