@@ -83,7 +83,10 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
                     QgsFeatureRequest::NoGeometry )
   .setSubsetOfAttributes( lst, mLayer->fields() );
   if ( mFidsFilter )
-    request.setFilterFids( &mFidsFilter );
+  {
+    const QgsFeatureIds fids = *mFidsFilter;
+    request.setFilterFids( fids );
+  }
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
   if ( mStackFilters )
