@@ -136,14 +136,14 @@ class CORE_EXPORT QgsAggregateCalculator
      * \param filterExpression expression for filtering features, or empty string to remove filter
      * \see filter()
      */
-    void setFidsFilter( const QgsFeatureIds *fids ) { mFidsFilter = fids; }
+    void setFidsFilter( QgsFeatureIds *fids ) { mFidsFilter = fids; }
 
     /**
      * Sets a filter to limit the features used during the aggregate calculation.
      * \param filterExpression expression for filtering features, or empty string to remove filter
      * \see filter()
      */
-    void stackFilters( const bool &stack ) { mStackFilters = stack; }
+    void stackFilters( bool &stack ) { mStackFilters = stack; }
 
     /**
      * Returns the filter which limits the features used during the aggregate calculation.
