@@ -45,7 +45,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
 #endif
 
   mTitle = mSettings.title();
-  mLegendModel->setLayoutExpContext( createExpressionContext() );
+  mLegendModel->setLayoutExpressionContext( createExpressionContext() );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
@@ -685,7 +685,7 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
 
   updateFilterByMap();
 
-  mLegendModel->setLayoutExpContext( createExpressionContext() );
+  mLegendModel->setLayoutExpressionContext( createExpressionContext() );
 
 }
 
@@ -953,9 +953,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerT
   return lst;
 }
 
-void QgsLegendModel::setLayoutExpContext( QgsExpressionContext econtext )
+void QgsLegendModel::setLayoutExpressionContext( QgsExpressionContext expressionContext )
 {
-  mLayoutLegendContext = econtext;
+  mLayoutLegendContext = expressionContext;
 }
 
 void QgsLegendModel::pendingCount( long taskid )

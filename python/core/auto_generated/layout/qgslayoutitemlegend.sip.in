@@ -35,11 +35,11 @@ Construct the model based on the given layer tree
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
 
-    void setLayoutExpContext( QgsExpressionContext econtext );
+    void setLayoutExpressionContext( QgsExpressionContext expressionContext );
 %Docstring
 Set the pointer to the layoutlegend expressioncontext
 
-:param econtext: pointer to the context
+:param expressionContext: pointer to the context
 
 .. versionadded:: 3.8
 %End

@@ -579,9 +579,8 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     {
       const QgsFeatureIds ids = vl->featureIds( context->variable( "symbol_id" ).toString() );
       QgsExpressionContext context_copy = *context;
-      QgsFeatureRequest request = QgsFeatureRequest();
-      request.setFilterFids( ids );
-      result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, request );
+      // TODO fix when merged
+      result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok );
     }
     else
     {
@@ -761,9 +760,8 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
     //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
     const QgsFeatureIds ids = vl->featureIds( context->variable( "symbol_id" ).toString() );
     QgsExpressionContext context_copy = *context;
-    QgsFeatureRequest request = QgsFeatureRequest();
-    request.setFilterFids( ids );
-    result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, request );
+    // TODO fix when merged
+    result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok );
   }
   else
   {

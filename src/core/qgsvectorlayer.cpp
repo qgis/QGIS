@@ -3918,7 +3918,7 @@ QVariant QgsVectorLayer::maximumValue( int index ) const
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
-                                    bool *ok, const QgsFeatureRequest &request ) const
+                                    bool *ok ) const
 {
   if ( ok )
     *ok = false;
@@ -3952,7 +3952,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
   c.setParameters( parameters );
-  return c.calculate( aggregate, fieldOrExpression, context, ok, request );
+  return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
 
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )

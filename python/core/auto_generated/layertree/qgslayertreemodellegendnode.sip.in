@@ -321,7 +321,7 @@ Create an expression context containing symbol elements
 .. versionadded:: 3.8
 %End
 
-    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
+    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), const QString label = QString() );
 %Docstring
 Evaluates  and returns the text label of the current node
 

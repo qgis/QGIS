@@ -21,7 +21,6 @@ from qgis.core import (QgsAggregateCalculator,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
                        QgsGeometry,
-                       QgsFeatureRequest,
                        NULL
                        )
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
@@ -391,18 +390,6 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         val, ok = agg.calculate(QgsAggregateCalculator.Min, "@my_var", context)
         self.assertTrue(ok)
         self.assertEqual(val, 5)
-
-        # test with subset
-        request = QgsFeatureRequest().setFilterFids([1, 2])
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
-        self.assertTrue(ok)
-        self.assertEqual(val, 6.0)
-
-        # test with empty subset
-        request = QgsFeatureRequest().setFilterFids(list())
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
-        self.assertTrue(ok)
-        self.assertEqual(val, 0.0)
 
     def testExpressionNoMatch(self):
         """ test aggregate calculation using an expression with no features """

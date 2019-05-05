@@ -610,7 +610,7 @@ void QgsSymbolLegendNode::updateLabel()
   emit dataChanged();
 }
 
-QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QString label )
+QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const QString label )
 {
   if ( !mLayerNode )
     return QString();
@@ -621,11 +621,11 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
   {
     if ( vl )
     {
-      mLabel = symbolLabel();
+      const symLabel = symbolLabel();
       if ( ! mLayerNode->labelExpression().isEmpty() )
         mLabel = evaluateLabelExpression( "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( mLabel.contains( "[%" ) )
-        mLabel = evaluateLabelExpression( mLabel, context );
+        mLabel = evaluateLabelExpression( symLabel, context );
     }
     return mLabel;
   }
@@ -634,11 +634,11 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
     if ( vl )
     {
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        label = evaluateLabelExpression( label + "[%" + mLayerNode->labelExpression() + "%]", context );
+        QString eLabel = evaluateLabelExpression( label + "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( label.contains( "[%" ) )
-        label = evaluateLabelExpression( label, context );
+        QString eLabel = evaluateLabelExpression( label, context );
     }
-    return label;
+    return eLabel;
   }
 }
 
@@ -669,11 +669,11 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
   return context;
 }
 
-QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsExpressionContext context ) const
+QString QgsSymbolLegendNode::evaluateLabelExpression( const QString label, QgsExpressionContext context ) const
 {
   context = createExpressionContext( context );
-  label = QgsExpression().replaceExpressionText( label, &context );
-  return label;
+  QString eLabel = QgsExpression().replaceExpressionText( label, &context );
+  return eLabel;
 }
 
 // -------------------------------------------------------------------------
