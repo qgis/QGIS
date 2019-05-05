@@ -217,7 +217,7 @@ but subclasses can override this method to handoff calculation of aggregates to 
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for filter
 :param ok: will be set to ``True`` if calculation was successfully performed by the data provider
-:param fids: fids pointer to a list of fids to filter, otherwise will use all fids 
+:param fids: list of fids to filter, otherwise will use all fids 
 
 :return: calculated aggregate value
 
