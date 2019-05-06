@@ -202,6 +202,16 @@ void QgsField::setAlias( const QString &alias )
   d->alias = alias;
 }
 
+QString QgsField::arrayFormatString() const
+{
+  return d->arrayFormatString;
+}
+
+void QgsField::setArrayFormatString( const QString &arrayFormatString )
+{
+  d->arrayFormatString = arrayFormatString;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.
@@ -270,7 +280,7 @@ QString QgsField::displayString( const QVariant &v ) const
   }
   else if ( d->type == QVariant::StringList )
   {
-    return "{" + v.toStringList().join( "," ) + "}";
+    return d->arrayFormatString.arg( v.toStringList().join( "," ) );
   }
 
   // Fallback if special rules do not apply

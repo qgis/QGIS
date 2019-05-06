@@ -255,6 +255,28 @@ Sets the alias for the field (the friendly displayed name of the field ).
 .. versionadded:: 3.0
 %End
 
+    QString arrayFormatString() const;
+%Docstring
+Returns the format string used when displayString() is called on an array value.
+
+:return: format string where %1 will be replaced by array values separated with commas.
+
+.. seealso:: :py:func:`setArrayFormatString`
+
+.. versionadded:: 3.7
+%End
+
+    void setArrayFormatString( const QString &arrayFormatString );
+%Docstring
+Set the format string used when displayString() is called on an array value.
+
+:param format: string where %1 is replaced by array values separated with commas.
+
+.. seealso:: :py:func:`arrayFormatString`
+
+.. versionadded:: 3.7
+%End
+
     QString displayString( const QVariant &v ) const;
 %Docstring
 Formats string for display

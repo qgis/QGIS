@@ -257,6 +257,22 @@ class CORE_EXPORT QgsField
      */
     void setAlias( const QString &alias );
 
+    /**
+     * Returns the format string used when displayString() is called on an array value.
+     * \returns format string where %1 will be replaced by array values separated with commas.
+     * \see setArrayFormatString()
+     * \since QGIS 3.7
+     */
+    QString arrayFormatString() const;
+
+    /**
+     * Set the format string used when displayString() is called on an array value.
+     * \param format string where %1 is replaced by array values separated with commas.
+     * \see arrayFormatString()
+     * \since QGIS 3.7
+     */
+    void setArrayFormatString( const QString &arrayFormatString );
+
     //! Formats string for display
     QString displayString( const QVariant &v ) const;
 

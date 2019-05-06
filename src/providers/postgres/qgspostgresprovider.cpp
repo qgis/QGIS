@@ -1084,6 +1084,7 @@ bool QgsPostgresProvider::loadFields()
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
 
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
+    newField.setArrayFormatString( "{%1}" );
 
     QgsFieldConstraints constraints;
     if ( notNullMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == i ) || identityMap[tableoid][attnum] != ' ' )
@@ -5166,7 +5167,6 @@ void QgsPostgresSharedData::setFieldSupportsEnumValues( int index, bool isSuppor
   QMutexLocker locker( &mMutex );
   mFieldSupportsEnumValues[ index ] = isSupported;
 }
-
 
 QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
   : QgsProviderMetadata( QgsPostgresProvider::POSTGRES_KEY, QgsPostgresProvider::POSTGRES_DESCRIPTION )
