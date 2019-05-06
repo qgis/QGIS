@@ -233,8 +233,21 @@ class CORE_EXPORT QgsRenderContext
      * should never be used to determine the actual visible extent of a map render.
      *
      * \see setExtent()
+     * \see mapExtent()
      */
     const QgsRectangle &extent() const { return mExtent; }
+
+    /**
+     * Returns the original extent of the map being rendered.
+     *
+     * Unlike extent(), this extent is always in the final destination CRS for the map
+     * render and represents the exact bounds of the map being rendered.
+     *
+     * \see extent()
+     * \see setMapExtent()
+     * \since QGIS 3.4.8
+     */
+    QgsRectangle mapExtent() const { return mOriginalMapExtent; }
 
     const QgsMapToPixel &mapToPixel() const {return mMapToPixel;}
 
@@ -312,8 +325,21 @@ class CORE_EXPORT QgsRenderContext
      * entire visible area.
      *
      * \see setExtent()
+     * \see setMapExtent()
      */
     void setExtent( const QgsRectangle &extent ) {mExtent = extent;}
+
+    /**
+     * Sets the original \a extent of the map being rendered.
+     *
+     * Unlike setExtent(), this extent is always in the final destination CRS for the map
+     * render and represents the exact bounds of the map being rendered.
+     *
+     * \see mapExtent()
+     * \see setExtent()
+     * \since QGIS 3.4.8
+     */
+    void setMapExtent( const QgsRectangle &extent ) { mOriginalMapExtent = extent; }
 
     void setDrawEditingInformation( bool b );
 
@@ -511,6 +537,7 @@ class CORE_EXPORT QgsRenderContext
     QgsDistanceArea mDistanceArea;
 
     QgsRectangle mExtent;
+    QgsRectangle mOriginalMapExtent;
 
     QgsMapToPixel mMapToPixel;
 
