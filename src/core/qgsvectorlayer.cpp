@@ -702,8 +702,6 @@ const QgsFeatureIds QgsVectorLayer::featureIds( const QString &legendKey ) const
 
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
-  if ( !mSymbolFeatureCounted && !mPendingTasks.isEmpty() )
-    return nullptr;
 
   if ( mSymbolFeatureCounted || mFeatureCounter )
     return mFeatureCounter;

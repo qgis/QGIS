@@ -72,7 +72,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * Handle incoming signal to refresh the legend.
      * \since QGIS 3.8
      */
-    void forceRefresh():
+    void forceRefresh();
 
   private:
 
