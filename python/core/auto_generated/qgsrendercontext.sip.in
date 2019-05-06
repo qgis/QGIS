@@ -184,6 +184,22 @@ than the actual visible portion of that layer.
    should never be used to determine the actual visible extent of a map render.
 
 .. seealso:: :py:func:`setExtent`
+
+.. seealso:: :py:func:`mapExtent`
+%End
+
+    QgsRectangle mapExtent() const;
+%Docstring
+Returns the original extent of the map being rendered.
+
+Unlike extent(), this extent is always in the final destination CRS for the map
+render and represents the exact bounds of the map being rendered.
+
+.. seealso:: :py:func:`extent`
+
+.. seealso:: :py:func:`setMapExtent`
+
+.. versionadded:: 3.4.8
 %End
 
     const QgsMapToPixel &mapToPixel() const;
@@ -263,6 +279,22 @@ to the map. It may be larger than the actual visible area, but MUST contain at l
 entire visible area.
 
 .. seealso:: :py:func:`setExtent`
+
+.. seealso:: :py:func:`setMapExtent`
+%End
+
+    void setMapExtent( const QgsRectangle &extent );
+%Docstring
+Sets the original ``extent`` of the map being rendered.
+
+Unlike setExtent(), this extent is always in the final destination CRS for the map
+render and represents the exact bounds of the map being rendered.
+
+.. seealso:: :py:func:`mapExtent`
+
+.. seealso:: :py:func:`setExtent`
+
+.. versionadded:: 3.4.8
 %End
 
     void setDrawEditingInformation( bool b );
