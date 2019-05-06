@@ -906,8 +906,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     {
       if ( vlayer )
       {
-        connect( vlayer, &QgsVectorLayer::startCount, this, &QgsLegendModel::pendingCount );
-        connect( vlayer, &QgsVectorLayer::countDone, this, &QgsLegendModel::doneCount );
+        connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh );
       }
 
       if ( symnode )
@@ -958,19 +957,10 @@ void QgsLegendModel::setLayoutExpressionContext( QgsExpressionContext expression
   mLayoutLegendContext = expressionContext;
 }
 
-void QgsLegendModel::pendingCount( long taskid )
-{
-  mPendingCount.append( taskid );
-}
 
-void QgsLegendModel::doneCount( long taskid )
+void QgsLegendModel::forceRefresh()
 {
-  if ( !mPendingCount.isEmpty() )
-  {
-    mPendingCount.removeOne( taskid );
-    if ( mPendingCount.isEmpty() )
-      emit refreshLegend();
-  }
+  emit refreshLegend();
 }
 
 

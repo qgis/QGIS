@@ -727,11 +727,8 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
   {
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
     connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
-    connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
 
     long taskid = QgsApplication::taskManager()->addTask( mFeatureCounter );
-    emit startCount( taskid );
-    mPendingTasks.append( taskid );
   }
   return mFeatureCounter;
 }
@@ -4445,26 +4442,8 @@ void QgsVectorLayer::onFeatureCounterCompleted()
   onSymbolsCounted();
 }
 
-void QgsVectorLayer::onFeatureCounterTerminated()
-{
-  doneTask();
-}
 
-void QgsVectorLayer::doneTask()
-{
-  if ( !mPendingTasks.isEmpty() )
-  {
-    const QList<long> pendingtasks = mPendingTasks;
-    for ( long taskid : pendingtasks )
-    {
-      if ( !( QgsApplication::taskManager()->task( taskid ) ) )
-      {
-        mPendingTasks.removeOne( taskid );
-        emit countDone( taskid );
-      }
-    }
-  }
-}
+
 
 void QgsVectorLayer::onJoinedFieldsChanged()
 {

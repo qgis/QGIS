@@ -66,20 +66,13 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void refreshLegend();
 
-
-  private slots:
-
-    /**
-     * keep track of current counting tasks
-     * \since QGIS 3.8
-     */
-    void pendingCount( long taskid );
+  private slot:
 
     /**
-     * Ensure that no more counting is remaining to refresh the legend
+     * Handle incoming signal to refresh the legend.
      * \since QGIS 3.8
      */
-    void doneCount( long taskid );
+    void forceRefresh():
 
   private:
 
@@ -97,12 +90,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \since QGIS 3.8
      */
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
-
-    /**
-     * storage for current counting tasks
-     * \since QGIS 3.8
-     */
-    QList<long> mPendingCount;
 
 };
 

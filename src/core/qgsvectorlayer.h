@@ -2433,18 +2433,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void symbolFeatureCountMapChanged();
 
-    /**
-     * Emitted when counting started
-     * \since QGIS 3.8
-     */
-    void startCount( long taskid );
-
-    /**
-     * Emitted when a counting task is finished
-     * \since QGIS 3.8
-     */
-    void countDone( long taskid );
-
 
   protected:
     //! Sets the extent
@@ -2453,7 +2441,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
   private slots:
     void invalidateSymbolCountedFlag();
     void onFeatureCounterCompleted();
-    void onFeatureCounterTerminated();
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
@@ -2631,7 +2618,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     friend class QgsVectorLayerFeatureSource;
 
-    QList<long> mPendingTasks;
 };
 
 

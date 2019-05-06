@@ -2660,20 +2660,6 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 .. versionadded:: 3.0
 %End
 
-    void startCount( long taskid );
-%Docstring
-Emitted when counting started
-
-.. versionadded:: 3.8
-%End
-
-    void countDone( long taskid );
-%Docstring
-Emitted when a counting task is finished
-
-.. versionadded:: 3.8
-%End
-
 
   protected:
     virtual void setExtent( const QgsRectangle &rect ) ${SIP_FINAL};
