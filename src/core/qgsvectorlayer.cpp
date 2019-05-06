@@ -726,7 +726,7 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
     connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
 
-    long taskid = QgsApplication::taskManager()->addTask( mFeatureCounter );
+    QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
   return mFeatureCounter;
 }
