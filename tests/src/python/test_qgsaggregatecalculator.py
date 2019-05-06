@@ -393,14 +393,15 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertEqual(val, 5)
 
         # test with subset
-        request = QgsFeatureRequest().setFilterFids([1, 2])
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
+        agg = QgsAggregateCalculator( layer )#reset to remove expression filter
+        request = agg.setFilterFids([1, 2])
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
         # test with empty subset
-        request = QgsFeatureRequest().setFilterFids(list())
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint', request=request)
+        request = agg.setFilterFids(list())
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
         self.assertTrue(ok)
         self.assertEqual(val, 0.0)
 
