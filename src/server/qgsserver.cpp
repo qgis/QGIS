@@ -360,9 +360,10 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       }
 
       // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
-      if ( params.service().isEmpty() && sServiceRegistry->getApiForRequest( request ) )
+      QgsServerApi *api = nullptr;
+      if ( params.service().isEmpty() && ( api = sServiceRegistry->getApiForRequest( request ) ) )
       {
-        sServiceRegistry->getApiForRequest( request )->executeRequest( request, response, project );
+        api->executeRequest( request, response, project );
       }
       else
       {

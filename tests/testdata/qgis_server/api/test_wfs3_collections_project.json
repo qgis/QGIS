@@ -1,0 +1,34 @@
+Content-Type: application/json
+
+{
+  "collections": [
+    {
+      "name": "landsat"
+    },
+    {
+      "name": "testlayer èé"
+    },
+    {
+      "name": "testlayer3"
+    },
+    {
+      "name": "testlayer2"
+    },
+    {
+      "name": "testlayer"
+    },
+    {
+      "name": "exclude_attribute"
+    },
+    {
+      "name": "fields_alias"
+    }
+  ],
+  "links": [
+    {
+      "href": "http://www.acme.com/wfs3/collections",
+      "rel": "data",
+      "title": "Metadata about the feature collections"
+    }
+  ]
+}

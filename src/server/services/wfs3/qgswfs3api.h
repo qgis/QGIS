@@ -35,6 +35,8 @@ namespace QgsWfs3
 
   Q_NAMESPACE
 
+
+
   //! Rel link types
   enum rel
   {
@@ -48,31 +50,65 @@ namespace QgsWfs3
   };
   Q_ENUM_NS( rel )
 
-  //! For content negotiation based on requested file extention
+  //! Content types used for content negotiation based on requested file extension
   enum contentType
   {
     JSON,
-    HTML
+    HTML,
+    XML
   };
   Q_ENUM_NS( contentType )
+
 
   //! Generic URL handler
   struct Handler
   {
 
-    //Q_GADGET
+      Q_GADGET
 
-    virtual ~Handler() = default;
-    virtual void handleRequest( const Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const;
-    std::string href( const Api *api, const QgsServerRequest &request ) const;
+    public:
 
-    QString path;
-    std::string operationId;
-    std::string summary;
-    std::string description;
-    std::string linkTitle;
-    rel linkType;
-    std::string mimeType;
+      virtual ~Handler() = default;
+      virtual void handleRequest( const Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const;
+      std::string href( const Api *api, const QgsServerRequest &request ) const;
+
+      QString path;
+      std::string operationId;
+      std::string summary;
+      std::string description;
+      std::string linkTitle;
+      rel linkType;
+      std::string mimeType;
+
+      /**
+       * Writes \a data to the \a response stream as JSON or HTML with an optional \a contentType (by default it is infered from the \a request)
+       * \note use xmlDump for XML output
+       * \see xmlDump()
+       */
+      void write( const json &data, const QgsServerRequest &request, QgsServerResponse &response, const QString &contentType = "" ) const;
+
+      /**
+       * Utility that writes JSON output to the response stream (indented if debug is active)
+       * \param data json data
+       * \param response
+       */
+      void jsonDump( const json &data, QgsServerResponse &response, const QString &contentType = QStringLiteral( "application/json" ) ) const;
+
+      /**
+       * Utility that writes HTML output to the response stream
+       * \param data json data
+       * \param response
+       * \param template (HTML template, if empty a standard template path based on the handler class name will be used)
+       */
+      void htmlDump( const json &data, QgsServerResponse &response, const std::string &templatePath = "" ) const;
+
+      /**
+       * Utility that writes JSON output to the response stream (indented if debug is active)
+       * \param data json data
+       * \param response
+       */
+      void xmlDump( const json &data, QgsServerResponse &response ) const;
+
   };
 
   /**
@@ -93,7 +129,7 @@ namespace QgsWfs3
 
       QString name()    const override { return QStringLiteral( "WFS3" ); }
       QString version() const override { return QStringLiteral( "1.0.0" ); }
-      QString rootPath() const override { return mRootPath; }
+      QString rootPath() const override { return QStringLiteral( "/wfs3" ); }
 
       // Utilities
 
@@ -112,20 +148,6 @@ namespace QgsWfs3
 
       const std::vector<std::unique_ptr<Handler>> &handlers() const;
 
-      /**
-       * Utility that writes JSON output to the response stream (indented if debug is active)
-       * \param data json data
-       * \param response
-       */
-      static void jsonDump( const json &data, QgsServerResponse &response, const QString &contentType = QStringLiteral( "application/json" ) );
-
-      /**
-       * Utility that writes JSON output to the response stream (indented if debug is active)
-       * \param data json data
-       * \param response
-       */
-      static void htmlDump( const json &data, QgsServerResponse &response, const std::string &templatePath );
-
       static std::string relToString( const QgsWfs3::rel &rel )
       {
         static QMetaEnum metaEnum = QMetaEnum::fromType<QgsWfs3::rel>();
@@ -141,16 +163,14 @@ namespace QgsWfs3
     private:
 
       QgsServerInterface *mServerIface = nullptr;
-      //! Catch all, must be the last!
-      QString mRootPath { "" };
 
       std::vector<std::unique_ptr<Handler>> mHandlers;
-
 
       // QgsServerApi interface
     public:
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const override;
+
   };
 
 

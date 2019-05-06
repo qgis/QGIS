@@ -123,7 +123,7 @@ Construction
 class QgsServerApiInternalServerError: QgsServerApiException
 {
 %Docstring
-Internal server error API exceptions.
+Internal server error API exception.
 
 Note that this exception is associated with a default return code 500 which may be
 not appropriate in some situations.
@@ -145,7 +145,7 @@ Construction
 class QgsServerApiNotFoundError: QgsServerApiException
 {
 %Docstring
-Not found error API exceptions.
+Not found error API exception.
 
 Note that this exception is associated with a default return code 404 which may be
 not appropriate in some situations.
@@ -162,6 +162,29 @@ not appropriate in some situations.
 Construction
 %End
 };
+
+
+class QgsServerApiBadRequestError: QgsServerApiException
+{
+%Docstring
+Bad request error API exception.
+
+Note that this exception is associated with a default return code 400 which may be
+not appropriate in some situations.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverexception.h"
+%End
+  public:
+    QgsServerApiBadRequestError( const QString &code, const QString &message = QStringLiteral( "Not found" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 );
+%Docstring
+Construction
+%End
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -31,13 +31,13 @@ APIHandler::APIHandler()
   mimeType = "application/openapi+json;version=3.0";
 }
 
-void APIHandler::handleRequest( const QgsWfs3::Api *, const QgsServerRequest &, QgsServerResponse &response, const QgsProject * ) const
+void APIHandler::handleRequest( const QgsWfs3::Api *, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject * ) const
 {
   json data
   {
     { "api", "TODO" }
   };
-  QgsWfs3::Api::jsonDump( data, response );
+  write( data, request, response );
 }
 
 LandingPageHandler::LandingPageHandler()
@@ -68,7 +68,7 @@ void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, const QgsServer
       { "title", h->linkTitle },
     } );
   }
-  QgsWfs3::Api::jsonDump( data, response );
+  write( data, request, response );
 }
 
 ConformanceHandler::ConformanceHandler()
@@ -122,18 +122,5 @@ void CollectionsHandler::handleRequest( const QgsWfs3::Api *api, const QgsServer
       } );
     }
   }
-
-  const auto extension { QgsWfs3::Api::extension( request.url() ) };
-  if ( extension == "" || extension == QgsWfs3::Api::contentTypeToString( QgsWfs3::contentType::JSON ) )
-  {
-    QgsWfs3::Api::jsonDump( data, response );
-  }
-  else if ( extension == QgsWfs3::Api::contentTypeToString( QgsWfs3::contentType::HTML ) )
-  {
-    QgsWfs3::Api::htmlDump( data, response, "template.html" );
-  }
-  else
-  {
-    throw QgsServerApiNotFoundError( "Collection not found" );
-  }
+  write( data, request, response );
 }

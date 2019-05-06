@@ -189,7 +189,7 @@ class SERVER_EXPORT QgsServerApiException: public QgsServerException
 /**
  * \ingroup server
  * \class  QgsServerApiInternalServerError
- * \brief Internal server error API exceptions.
+ * \brief Internal server error API exception.
  *
  * Note that this exception is associated with a default return code 500 which may be
  * not appropriate in some situations.
@@ -210,7 +210,7 @@ class SERVER_EXPORT QgsServerApiInternalServerError: public QgsServerApiExceptio
 /**
  * \ingroup server
  * \class  QgsServerApiNotFoundError
- * \brief Not found error API exceptions.
+ * \brief Not found error API exception.
  *
  * Note that this exception is associated with a default return code 404 which may be
  * not appropriate in some situations.
@@ -226,5 +226,27 @@ class SERVER_EXPORT QgsServerApiNotFoundError: public QgsServerApiException
     {
     }
 };
+
+
+/**
+ * \ingroup server
+ * \class  QgsServerApiBadRequestError
+ * \brief Bad request error API exception.
+ *
+ * Note that this exception is associated with a default return code 400 which may be
+ * not appropriate in some situations.
+ *
+ * \since QGIS 3.10
+ */
+class SERVER_EXPORT QgsServerApiBadRequestError: public QgsServerApiException
+{
+  public:
+    //! Construction
+    QgsServerApiBadRequestError( const QString &code, const QString &message = QStringLiteral( "Not found" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 )
+      : QgsServerApiException( code, message, mimeType, responseCode )
+    {
+    }
+};
+
 
 #endif
