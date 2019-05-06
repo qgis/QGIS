@@ -42,10 +42,10 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
 }
 
 void QgsAggregateCalculator::setFidsFilter( const QgsFeautreIds fids )
- {
+{
   mFidsSet = true;
   mFidsFilter = fids;
- }
+}
 
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
     const QString &fieldOrExpression, QgsExpressionContext *context, bool *ok ) const

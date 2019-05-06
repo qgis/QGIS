@@ -136,7 +136,7 @@ class CORE_EXPORT QgsAggregateCalculator
      * \param filterExpression expression for filtering features, or empty string to remove filter
      * \see filter()
      */
-    void setFidsFilter( const QgsFeatureIds fids )
+    void setFidsFilter( const QgsFeatureIds fids );
 
     /**
      * Endable or disable filter stacking, otherwise the expression filter will override the Fids filter if both are set.
