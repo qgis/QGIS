@@ -3946,7 +3946,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   if ( fids )
   {
     bool stack = true;
-    c.setFidsFilter( fids );
+    c.setFidsFilter( *fids );
     c.stackFilters( stack );
   }
   c.setParameters( parameters );
