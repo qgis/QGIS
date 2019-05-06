@@ -206,7 +206,7 @@ class CORE_EXPORT QgsAggregateCalculator
     QgsFeatureIds mFidsFilter;
 
     //trigger variable
-    bool mFidsSet = False;
+    bool mFidsSet = false;
 
     //!variable to control stacking
     bool mStackFilters;
