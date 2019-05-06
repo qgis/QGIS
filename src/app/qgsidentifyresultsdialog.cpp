@@ -58,6 +58,7 @@
 #include <QPixmap>
 #include <QMenu>
 #include <QClipboard>
+#include <QDesktopWidget>
 #include <QMenuBar>
 #include <QPushButton>
 #include <QPrinter>
@@ -930,6 +931,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   if ( currentFormat == QgsRaster::IdentifyFormatHtml || currentFormat == QgsRaster::IdentifyFormatText )
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
+#ifdef WITH_QTWEBKIT
     attrItem->webView()->page()->setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
     const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
     // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
@@ -941,6 +943,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     {
       QDesktopServices::openUrl( url );
     } );
+#endif
     featItem->addChild( attrItem ); // before setHtml()!
     if ( !attributes.isEmpty() )
     {
