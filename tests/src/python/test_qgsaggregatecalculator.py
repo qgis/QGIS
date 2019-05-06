@@ -394,13 +394,13 @@ class TestQgsAggregateCalculator(unittest.TestCase):
 
         # test with subset
         agg = QgsAggregateCalculator(layer)  # reset to remove expression filter
-        request = agg.setFilterFids([1, 2])
+        request = agg.setFidsFilter([1, 2])
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
         # test with empty subset
-        request = agg.setFilterFids(list())
+        request = agg.setFidsFilter(list())
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
         self.assertTrue(ok)
         self.assertEqual(val, 0.0)
