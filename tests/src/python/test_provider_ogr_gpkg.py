@@ -1344,6 +1344,25 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(vl1.uniqueValues(0), {1, 2})
         self.assertEqual(vl1.uniqueValues(1), {'one', 'two'})
 
+    def testForeignKeyViolation(self):
+        """Test that we can open a dataset with a foreign key violation"""
+
+        tmpfile = os.path.join(self.basetestpath, 'testForeignKeyViolation.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        ds.ExecuteSQL("PRAGMA foreign_keys = OFF")
+        ds.ExecuteSQL("CREATE TABLE foo(id INTEGER)")
+        ds.ExecuteSQL("CREATE TABLE bar(fkey INTEGER, CONSTRAINT fkey_constraint FOREIGN KEY (fkey) REFERENCES foo(id))")
+        ds.ExecuteSQL("INSERT INTO bar VALUES (1)")
+        ds = None
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        fids = set([f['fid'] for f in vl.getFeatures()])
+        self.assertEqual(len(fids), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
