@@ -43,6 +43,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mCoordTransform( rh.mCoordTransform )
   , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
+  , mOriginalMapExtent( rh.mOriginalMapExtent )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
   , mScaleFactor( rh.mScaleFactor )
@@ -70,6 +71,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mPainter = rh.mPainter;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;
+  mOriginalMapExtent = rh.mOriginalMapExtent;
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
   mScaleFactor = rh.mScaleFactor;
@@ -157,6 +159,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   QgsRenderContext ctx;
   ctx.setMapToPixel( mapSettings.mapToPixel() );
   ctx.setExtent( mapSettings.visibleExtent() );
+  ctx.setMapExtent( mapSettings.visibleExtent() );
   ctx.setFlag( DrawEditingInfo, mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
   ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
   ctx.setFlag( UseAdvancedEffects, mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
