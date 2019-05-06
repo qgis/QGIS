@@ -267,7 +267,7 @@ class CORE_EXPORT QgsField
 
     /**
      * Set the format string used when displayString() is called on an array value.
-     * \param format string where %1 is replaced by array values separated with commas.
+     * \param arrayFormatString format string where %1 is replaced by array values separated with commas.
      * \see arrayFormatString()
      * \since QGIS 3.7
      */
