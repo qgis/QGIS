@@ -111,7 +111,7 @@ If an expression filter is set, it will override this filter unless filter stack
 Endable or disable filter stacking, if disabled the expression filter will override the Fids filter if both are set.
 When enables the inner set of the expression and fids will be used.
 
-:param stack: boolean to enable or disable stacking.
+:param stack: boolean to enable or disable filter stacking.
 
 .. seealso:: :py:func:`filter`
 %End
