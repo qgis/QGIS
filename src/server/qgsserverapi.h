@@ -68,14 +68,6 @@ class SERVER_EXPORT QgsServerApi
     virtual void executeRequest( const QgsServerRequest &request,
                                  QgsServerResponse &response, const QgsProject *project ) const = 0;
 
-    std::unique_ptr<QgsServerResponse> response;
-
-  private:
-
-    Q_DISABLE_COPY( QgsServerApi )
-#ifdef SIP_RUN
-    QgsServerApi( const QgsServerApi &rh );
-#endif
 
 };
 
