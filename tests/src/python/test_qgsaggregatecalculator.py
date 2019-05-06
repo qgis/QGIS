@@ -393,7 +393,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertEqual(val, 5)
 
         # test with subset
-        agg = QgsAggregateCalculator(layer)#reset to remove expression filter
+        agg = QgsAggregateCalculator(layer)  # reset to remove expression filter
         request = agg.setFilterFids([1, 2])
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
         self.assertTrue(ok)
