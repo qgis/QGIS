@@ -41,7 +41,7 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
   mDelimiter = parameters.delimiter;
 }
 
-void QgsAggregateCalculator::setFidsFilter( const QgsFeautreIds fids )
+void QgsAggregateCalculator::setFidsFilter( const QgsFeatureIds fids )
 {
   mFidsSet = true;
   mFidsFilter = fids;
