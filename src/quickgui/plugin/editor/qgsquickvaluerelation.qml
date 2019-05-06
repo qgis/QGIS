@@ -28,7 +28,7 @@ Item {
 
   id: fieldItem
   enabled: !readOnly
-  height: customStyle.height
+  height: customStyle.fields.height
   anchors {
     left: parent.left
     right: parent.right
@@ -51,16 +51,18 @@ Item {
 
     Component.onCompleted: {
       currentMap = QgsQuick.Utils.createValueRelationCache(config)
+      var valueInKeys = false
       var keys = Object.keys(currentMap)
       for(var i=0; i< keys.length; i++)
       {
         var currentKey = keys[i]
+        if (value == currentKey) valueInKeys = true
         var valueText = currentMap[currentKey]
         listModel.append( { text: valueText } )
         reversedMap[valueText] = currentKey;
       }
       model = listModel
-      currentIndex = find(currentMap[value])
+      currentIndex = valueInKeys ? find(currentMap[value]) : -1
     }
 
     onCurrentTextChanged: {
@@ -69,7 +71,7 @@ Item {
 
     // Workaround to get a signal when the value has changed
     onCurrentValueChanged: {
-      currentIndex = find(currentMap[value])
+      currentIndex = currentMap ? find(currentMap[value]) : -1
     }
 
   }
