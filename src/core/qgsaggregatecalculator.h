@@ -146,6 +146,7 @@ class CORE_EXPORT QgsAggregateCalculator
      * \see filter()
      */
     void stackFilters( bool stack ) { mStackFilters = stack; }
+
     /**
      * Returns the filter which limits the features used during the aggregate calculation.
      * \see setFilter()
