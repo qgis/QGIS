@@ -105,11 +105,11 @@ Sets a filter to limit the features used during the aggregate calculation.
 .. seealso:: :py:func:`filter`
 %End
 
-    void stackFilters( bool &stack );
+    void stackFilters( bool stack );
 %Docstring
-Sets a filter to limit the features used during the aggregate calculation.
+Endable or disable filter stacking, otherwise the expression filter will override the Fids filter if both are set.
 
-:param filterExpression: expression for filtering features, or empty string to remove filter
+:param stack: boolean to enable or disable stacking.
 
 .. seealso:: :py:func:`filter`
 %End

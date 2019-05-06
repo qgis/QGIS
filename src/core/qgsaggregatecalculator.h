@@ -136,14 +136,14 @@ class CORE_EXPORT QgsAggregateCalculator
      * \param filterExpression expression for filtering features, or empty string to remove filter
      * \see filter()
      */
-    void setFidsFilter( QgsFeatureIds *fids ) { mFidsFilter = fids; }
+    void setFidsFilter( const QgsFeatureIds fids )
 
     /**
-     * Sets a filter to limit the features used during the aggregate calculation.
-     * \param filterExpression expression for filtering features, or empty string to remove filter
+     * Endable or disable filter stacking, otherwise the expression filter will override the Fids filter if both are set.
+     * \param stack boolean to enable or disable stacking.
      * \see filter()
      */
-    void stackFilters( bool &stack ) { mStackFilters = stack; }
+    void stackFilters( bool stack ) { mStackFilters = stack; }
 
     /**
      * Returns the filter which limits the features used during the aggregate calculation.
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsAggregateCalculator
   private:
 
     //! Source layer
-    QgsVectorLayer *mLayer = nullptr;
+    const QgsVectorLayer *mLayer = nullptr;
 
     //! Filter expression, or empty for no filter
     QString mFilterExpression;
@@ -203,7 +203,10 @@ class CORE_EXPORT QgsAggregateCalculator
     QString mDelimiter;
 
     //!list of fids to filter
-    QgsFeatureIds *mFidsFilter = nullptr;
+    QgsFeatureIds mFidsFilter;
+
+    //trigger variable
+    bool mFidsSet = False;
 
     //!variable to control stacking
     bool mStackFilters;
