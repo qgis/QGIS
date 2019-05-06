@@ -21,7 +21,8 @@ from qgis.core import (QgsRenderContext,
                        QgsCoordinateReferenceSystem,
                        QgsMapUnitScale,
                        QgsUnitTypes,
-                       QgsProject)
+                       QgsProject,
+                       QgsRectangle)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
@@ -45,6 +46,9 @@ class TestQgsRenderContext(unittest.TestCase):
         c.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         self.assertEqual(c.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
 
+        c.setMapExtent(QgsRectangle(1, 2, 3, 4))
+        self.assertEqual(c.mapExtent(), QgsRectangle(1, 2, 3, 4))
+
     def testCopyConstructor(self):
         """
         Test the copy constructor
@@ -52,9 +56,11 @@ class TestQgsRenderContext(unittest.TestCase):
         c1 = QgsRenderContext()
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
+        c1.setMapExtent(QgsRectangle(1, 2, 3, 4))
 
         c2 = QgsRenderContext(c1)
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
+        self.assertEqual(c2.mapExtent(), QgsRectangle(1, 2, 3, 4))
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         c2 = QgsRenderContext(c1)
@@ -92,6 +98,9 @@ class TestQgsRenderContext(unittest.TestCase):
         test QgsRenderContext.fromMapSettings()
         """
         ms = QgsMapSettings()
+        ms.setOutputSize(QSize(1000, 1000))
+        ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        ms.setExtent(QgsRectangle(10000, 20000, 30000, 40000))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
@@ -100,6 +109,8 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
+
+        self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
 
     def testRenderMetersInMapUnits(self):
 
