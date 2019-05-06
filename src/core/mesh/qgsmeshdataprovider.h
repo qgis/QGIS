@@ -442,6 +442,8 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      * \brief Associate uri dataset with the mesh
      *
      * Doesn't load the dataSet, this method is called before all the dataset groups are loaded when opening
+	 *
+	 * \since QGIS 3.10
      */
     virtual void addUriDataset( const QString &uri ) {Q_UNUSED( uri );}
 
@@ -540,7 +542,19 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
                                       const QVector<double> &times
                                     ) = 0;
 
+    /**
+     * \brief reloads the extras dataset groups from uri
+	 *
+	 * \since QGIS 3.10
+     */
     virtual void reloadExtraDatasetUris() {}
+
+    /**
+     * \brief reloads the dataset groups come from calculation
+	 *
+	 * \since QGIS 3.10
+     */
+    virtual void reloadPersistDatasetGroups() {}
 };
 
 /**
@@ -561,7 +575,18 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
     //! Ctor
     QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
+    /**
+     * \brief writes proxy data
+	 *
+	 * \since QGIS 3.10
+     */
     virtual QDomElement writeProxyToXml( QDomDocument &document ) const {Q_UNUSED( document ); return QDomElement();}
+
+    /**
+     * \brief reads proxy data
+	 *
+	 * \since QGIS 3.10
+     */
     virtual void readProxyFromXml( const QDomNode &layer_node ) {Q_UNUSED( layer_node );}
 
   signals:

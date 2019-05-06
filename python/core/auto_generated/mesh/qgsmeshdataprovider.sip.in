@@ -544,6 +544,14 @@ On success, the mesh's dataset group count is changed
 %End
 
     virtual void reloadExtraDatasetUris();
+%Docstring
+reload the extras dataset groups from uri
+%End
+
+    virtual void reloadPersistDatasetGroups();
+%Docstring
+reload the dataset groups come from calculation
+%End
 };
 
 class QgsMeshDataProvider: QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
@@ -570,7 +578,14 @@ Ctor
 %End
 
     virtual QDomElement writeProxyToXml( QDomDocument &document ) const;
+%Docstring
+write proxy data
+%End
+
     virtual void readProxyFromXml( const QDomNode &layer_node );
+%Docstring
+read proxy data
+%End
 
   signals:
     void datasetGroupsAdded( int count );

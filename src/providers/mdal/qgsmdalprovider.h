@@ -33,9 +33,11 @@ class QgsMdalDatasetIndex
 {
   public:
     QgsMdalDatasetIndex( int mdalIndex, int uriIndex );
+    QgsMdalDatasetIndex( int mdalIndex, const QString &persistFile );
 
     int mdalGroupIndex() const {return mMdalGroupIndex;}
     int uriIndex() const {return mUriIndex;}
+    QString persistFile() const {return mPersisitFile;}
 
     void invalidate();
     void validate( int mdalGroupIndex );
@@ -43,6 +45,7 @@ class QgsMdalDatasetIndex
   private:
     int mMdalGroupIndex = -1; //index of the dataset for MDAL
     int mUriIndex = -1; //index of the extra dataset groups uri
+    QString mPersisitFile = "";
 };
 
 
@@ -52,15 +55,31 @@ class QgsMdalProviderDatasetProxy
 
     void addMeshDatasetGroups( int mdalIndex );
     void addExtraDatasetGroups( int firstMdalIndex, int groupsCount, int uriIndex );
+    void addPersistDatasetGroups( int mdalIndex, QString path );
 
     int mdalGroupIndex( int qgisIndex ) const;
     int dataSetGroupsCount() const;
 
     void invalidateIndexes( int uriIndex );
+    void invalidateIndexes( QString persistFile );
     void validateIndexes( int uriIndex, int firstIndexMdal, int count );
+    void validateIndexes( QString persistFile, int mdalIndex );
 
     void writeToXml( QDomDocument &document, QDomElement &parent ) const;
     void readFromXml( const QDomElement &elementTable );
+
+    QStringList persistDatasetGroupFilesList() const
+    {
+      QStringList list;
+      for ( const auto &mdi : mdalGroupIndexes )
+      {
+        QString file = mdi.persistFile();
+        if ( !file.isEmpty() )
+          list.append( mdi.persistFile() );
+      }
+
+      return list;
+    }
 
   private:
     QList<QgsMdalDatasetIndex> mdalGroupIndexes;
@@ -141,8 +160,10 @@ class QgsMdalProvider : public QgsMeshDataProvider
     static void fileMeshExtensions( QStringList &fileMeshExtensions, QStringList &fileMeshDatasetExtensions );
 
     QDomElement writeProxyToXml( QDomDocument &document ) const override;
-
     void readProxyFromXml( const QDomNode &layer_node ) override;
+
+    void reloadExtraDatasetUris( ) override;
+    void reloadPersistDatasetGroups( ) override;
 
   private:
     QVector<QgsMeshVertex> vertices( ) const;
@@ -153,8 +174,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
 
-    QgsMdalProviderDatasetProxy datasetProxy;
-    void reloadExtraDatasetUris( ) override;
+    QgsMdalProviderDatasetProxy mDatasetProxy;
     int datasetGroupMDALCount( ) const;
 };
 
