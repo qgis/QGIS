@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void refreshLegend();
 
-  private slot:
+  private slots:
 
     /**
      * Handle incoming signal to refresh the legend.
