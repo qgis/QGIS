@@ -2305,6 +2305,7 @@ namespace QgsWms
       }
     }
 #ifdef QGISDEBUG
+    // This is only useful to generate human readable reference files for tests
     return QByteArray::fromStdString( json.dump( 2 ) );
 #else
     return QByteArray::fromStdString( json.dump() );
