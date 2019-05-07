@@ -831,7 +831,7 @@ void QgsMdalProviderDatasetProxy::readFromXml( const QDomElement &elementTable )
     {
       mdalGroupIndexes.append( QgsMdalDatasetIndex( elemIndex.attribute( "mdal-index" ).toInt(), persistFile ) );
     }
-	
+
     elemIndex = elemIndex.nextSiblingElement( QStringLiteral( "mdal-dataset-group-index" ) );
   }
 }

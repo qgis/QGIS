@@ -445,6 +445,8 @@ emits dataChanged when successful
 Associate uri dataset with the mesh
 
 Doesn't load the dataSet, this method is called before all the dataset groups are loaded when opening
+
+.. versionadded:: 3.10
 %End
 
     virtual QStringList extraDatasets() const = 0;
@@ -545,12 +547,16 @@ On success, the mesh's dataset group count is changed
 
     virtual void reloadExtraDatasetUris();
 %Docstring
-reload the extras dataset groups from uri
+reloads the extras dataset groups from uri
+
+.. versionadded:: 3.10
 %End
 
     virtual void reloadPersistDatasetGroups();
 %Docstring
-reload the dataset groups come from calculation
+reloads the dataset groups come from calculation
+
+.. versionadded:: 3.10
 %End
 };
 
@@ -579,12 +585,16 @@ Ctor
 
     virtual QDomElement writeProxyToXml( QDomDocument &document ) const;
 %Docstring
-write proxy data
+writes proxy data
+
+.. versionadded:: 3.10
 %End
 
     virtual void readProxyFromXml( const QDomNode &layer_node );
 %Docstring
-read proxy data
+reads proxy data
+
+.. versionadded:: 3.10
 %End
 
   signals:
