@@ -171,6 +171,7 @@ Obsoletes:      python2-%{name} < %{version}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
 Requires:       gdal-python3
+Requires:       gdal-python-tools
 Requires:       python3-future
 Requires:       python3-jinja2
 Requires:       python3-OWSLib
