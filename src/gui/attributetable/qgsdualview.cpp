@@ -13,6 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QClipboard>
+#include <QDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QProgressDialog>
+#include <QGroupBox>
+#include <QInputDialog>
+#include <QTimer>
+
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
 #include "qgsattributetablemodel.h"
@@ -32,20 +41,14 @@
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
 
-#include <QClipboard>
-#include <QDialog>
-#include <QMenu>
-#include <QMessageBox>
-#include <QProgressDialog>
-#include <QGroupBox>
-#include <QInputDialog>
 
 QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
 {
   setupUi( this );
-  connect( mFeatureList, &QgsFeatureListView::aboutToChangeEditSelection, this, &QgsDualView::mFeatureList_aboutToChangeEditSelection );
-  connect( mFeatureList, &QgsFeatureListView::currentEditSelectionChanged, this, &QgsDualView::mFeatureList_currentEditSelectionChanged );
+  connect( mFeatureListView, &QgsFeatureListView::aboutToChangeEditSelection, this, &QgsDualView::featureListAboutToChangeEditSelection );
+  connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionChanged, this, &QgsDualView::featureListCurrentEditSelectionChanged );
+  connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionProgressChanged, this, &QgsDualView::updateEditSelectionProgress );
 
   mConditionalFormatWidget->hide();
 
@@ -57,23 +60,37 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   // Connect layer list preview signals
   connect( mActionExpressionPreview, &QAction::triggered, this, &QgsDualView::previewExpressionBuilder );
-  connect( mFeatureList, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::previewExpressionChanged );
+  connect( mFeatureListView, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::previewExpressionChanged );
+
+  connect( mNextFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editNextFeature );
+  connect( mPreviousFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editPreviousFeature );
+
+  QButtonGroup *buttonGroup = new QButtonGroup( this );
+  buttonGroup->setExclusive( false );
+  buttonGroup->addButton( mFlashButton, FlashFeature );
+  buttonGroup->addButton( mAutoPanButton, PanToFeature );
+  buttonGroup->addButton( mAutoZoomButton, ZoomToFeature );
+  FeatureListBrowsingAction action = QgsSettings().enumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), FlashFeature );
+  QAbstractButton *bt = buttonGroup->button( static_cast<int>( action ) );
+  if ( bt )
+    bt->setChecked( true );
+  connect( buttonGroup, qgis::overload< QAbstractButton *, bool >::of( &QButtonGroup::buttonToggled ), this, &QgsDualView::panZoomGroupButtonToggled );
 }
 
-void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context, bool loadFeatures )
+void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request,
+                        const QgsAttributeEditorContext &context, bool loadFeatures )
 {
   if ( !layer )
     return;
 
   mLayer = layer;
-
   mEditorContext = context;
 
   connect( mTableView, &QgsAttributeTableView::willShowContextMenu, this, &QgsDualView::viewWillShowContextMenu );
   mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTableView->horizontalHeader(), &QHeaderView::customContextMenuRequested, this, &QgsDualView::showViewHeaderMenu );
   connect( mTableView, &QgsAttributeTableView::columnResized, this, &QgsDualView::tableColumnResized );
-  connect( mFeatureList, &QgsFeatureListView::willShowContextMenu, this, &QgsDualView::widgetWillShowContextMenu );
+  connect( mFeatureListView, &QgsFeatureListView::willShowContextMenu, this, &QgsDualView::widgetWillShowContextMenu );
 
   initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
   initModels( mapCanvas, request, loadFeatures );
@@ -81,7 +98,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mConditionalFormatWidget->setLayer( mLayer );
 
   mTableView->setModel( mFilterModel );
-  mFeatureList->setModel( mFeatureListModel );
+  mFeatureListView->setModel( mFeatureListModel );
   delete mAttributeForm;
   mAttributeForm = new QgsAttributeForm( mLayer, mTempAttributeFormFeature, mEditorContext );
   mTempAttributeFormFeature = QgsFeature();
@@ -104,7 +121,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
 
   if ( mFeatureListPreviewButton->defaultAction() )
-    mFeatureList->setDisplayExpression( mDisplayExpression );
+    mFeatureListView->setDisplayExpression( mDisplayExpression );
   else
     columnBoxInit();
 
@@ -168,9 +185,9 @@ void QgsDualView::columnBoxInit()
   // If there is no single field found as preview
   if ( !mFeatureListPreviewButton->defaultAction() )
   {
-    mFeatureList->setDisplayExpression( displayExpression );
+    mFeatureListView->setDisplayExpression( displayExpression );
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
-    setDisplayExpression( mFeatureList->displayExpression() );
+    setDisplayExpression( mFeatureListView->displayExpression() );
   }
   else
   {
@@ -302,7 +319,7 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   connect( mMasterModel, &QgsAttributeTableModel::rowsRemoved, mFilterModel, &QgsAttributeTableFilterModel::invalidate );
   connect( mMasterModel, &QgsAttributeTableModel::rowsInserted, mFilterModel, &QgsAttributeTableFilterModel::invalidate );
 
-  connect( mFeatureList, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::displayExpressionChanged );
+  connect( mFeatureListView, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::displayExpressionChanged );
 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
   mFeatureListModel->setSortByDisplayExpression( true );
@@ -401,13 +418,74 @@ void QgsDualView::insertRecentlyUsedDisplayExpression( const QString &expression
   mLastDisplayExpressionAction = previewAction;
 }
 
-void QgsDualView::mFeatureList_aboutToChangeEditSelection( bool &ok )
+void QgsDualView::updateEditSelectionProgress( int progress, int count )
+{
+  mProgressCount->setText( QStringLiteral( "%1 / %2" ).arg( progress + 1 ).arg( count ) );
+  mPreviousFeatureButton->setEnabled( progress > 0 );
+  mNextFeatureButton->setEnabled( progress + 1 < count );
+}
+
+void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
+{
+  QgsMapCanvas *canvas = mFilterModel->mapCanvas();
+  if ( canvas )
+  {
+    if ( mAutoPanButton->isChecked() )
+      QTimer::singleShot( 0, this, [ = ]()
+    {
+      canvas->panToFeatureIds( mLayer, featureset, false );
+      canvas->flashFeatureIds( mLayer, featureset );
+    } );
+    else if ( mAutoZoomButton->isChecked() )
+      QTimer::singleShot( 0, this, [ = ]()
+    {
+      canvas->zoomToFeatureIds( mLayer, featureset );
+      canvas->flashFeatureIds( mLayer, featureset );
+    } );
+    else if ( mFlashButton->isChecked() )
+      QTimer::singleShot( 0, this, [ = ]()
+    {
+      canvas->flashFeatureIds( mLayer, featureset );
+    } );
+  }
+}
+
+void QgsDualView::panZoomGroupButtonToggled( QAbstractButton *button, bool checked )
+{
+  if ( button == mAutoPanButton && checked )
+  {
+    QgsSettings().setEnumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), PanToFeature );
+    mAutoZoomButton->setChecked( false );
+    mFlashButton->setChecked( false );
+  }
+  else if ( button == mAutoZoomButton && checked )
+  {
+    QgsSettings().setEnumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), ZoomToFeature );
+    mAutoPanButton->setChecked( false );
+    mFlashButton->setChecked( false );
+  }
+  else if ( button == mFlashButton && checked )
+  {
+    QgsSettings().setEnumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), FlashFeature );
+    mAutoZoomButton->setChecked( false );
+    mAutoPanButton->setChecked( false );
+  }
+  else
+  {
+    QgsSettings().setEnumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), NoAction );
+  }
+
+  if ( checked )
+    panOrZoomToFeature( mFeatureListView->currentEditSelection() );
+}
+
+void QgsDualView::featureListAboutToChangeEditSelection( bool &ok )
 {
   if ( mLayer->isEditable() && !mAttributeForm->save() )
     ok = false;
 }
 
-void QgsDualView::mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
+void QgsDualView::featureListCurrentEditSelectionChanged( const QgsFeature &feat )
 {
   if ( !mAttributeForm )
   {
@@ -416,7 +494,11 @@ void QgsDualView::mFeatureList_currentEditSelectionChanged( const QgsFeature &fe
   else if ( !mLayer->isEditable() || mAttributeForm->save() )
   {
     mAttributeForm->setFeature( feat );
-    setCurrentEditSelection( QgsFeatureIds() << feat.id() );
+    QgsFeatureIds featureset;
+    featureset << feat.id();
+    setCurrentEditSelection( featureset );
+
+    panOrZoomToFeature( featureset );
   }
   else
   {
@@ -426,8 +508,8 @@ void QgsDualView::mFeatureList_currentEditSelectionChanged( const QgsFeature &fe
 
 void QgsDualView::setCurrentEditSelection( const QgsFeatureIds &fids )
 {
-  mFeatureList->setCurrentFeatureEdited( false );
-  mFeatureList->setEditSelection( fids );
+  mFeatureListView->setCurrentFeatureEdited( false );
+  mFeatureListView->setEditSelection( fids );
 }
 
 bool QgsDualView::saveEditChanges()
@@ -467,28 +549,28 @@ void QgsDualView::previewExpressionBuilder()
   // Show expression builder
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
-  QgsExpressionBuilderDialog dlg( mLayer, mFeatureList->displayExpression(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, mFeatureListView->displayExpression(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression Based Preview" ) );
-  dlg.setExpressionText( mFeatureList->displayExpression() );
+  dlg.setExpressionText( mFeatureListView->displayExpression() );
 
   if ( dlg.exec() == QDialog::Accepted )
   {
-    mFeatureList->setDisplayExpression( dlg.expressionText() );
+    mFeatureListView->setDisplayExpression( dlg.expressionText() );
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
     mFeatureListPreviewButton->setPopupMode( QToolButton::MenuButtonPopup );
   }
 
-  setDisplayExpression( mFeatureList->displayExpression() );
+  setDisplayExpression( mFeatureListView->displayExpression() );
 }
 
 void QgsDualView::previewColumnChanged( QAction *previewAction, const QString &expression )
 {
-  if ( !mFeatureList->setDisplayExpression( QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( expression ) ) )
+  if ( !mFeatureListView->setDisplayExpression( QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( expression ) ) )
   {
     QMessageBox::warning( this,
                           tr( "Column Preview" ),
                           tr( "Could not set column '%1' as preview column.\nParser error:\n%2" )
-                          .arg( previewAction->text(), mFeatureList->parserErrorString() )
+                          .arg( previewAction->text(), mFeatureListView->parserErrorString() )
                         );
   }
   else
@@ -498,7 +580,7 @@ void QgsDualView::previewColumnChanged( QAction *previewAction, const QString &e
     mFeatureListPreviewButton->setPopupMode( QToolButton::InstantPopup );
   }
 
-  setDisplayExpression( mFeatureList->displayExpression() );
+  setDisplayExpression( mFeatureListView->displayExpression() );
 }
 
 int QgsDualView::featureCount()
@@ -841,11 +923,11 @@ void QgsDualView::onSortColumnChanged()
 void QgsDualView::sortByPreviewExpression()
 {
   Qt::SortOrder sortOrder = Qt::AscendingOrder;
-  if ( mFeatureList->displayExpression() == sortExpression() )
+  if ( mFeatureListView->displayExpression() == sortExpression() )
   {
     sortOrder = mConfig.sortOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder;
   }
-  setSortExpression( mFeatureList->displayExpression(), sortOrder );
+  setSortExpression( mFeatureListView->displayExpression(), sortOrder );
 }
 
 void QgsDualView::updateSelectedFeatures()
@@ -878,7 +960,7 @@ void QgsDualView::featureFormAttributeChanged( const QString &attribute, const Q
   Q_UNUSED( attribute );
   Q_UNUSED( value );
   if ( attributeChanged )
-    mFeatureList->setCurrentFeatureEdited( true );
+    mFeatureListView->setCurrentFeatureEdited( true );
 }
 
 void QgsDualView::setFilteredFeatures( const QgsFeatureIds &filteredFeatures )
@@ -894,7 +976,7 @@ void QgsDualView::setRequest( const QgsFeatureRequest &request )
 void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
   mTableView->setFeatureSelectionManager( featureSelectionManager );
-  mFeatureList->setFeatureSelectionManager( featureSelectionManager );
+  mFeatureListView->setFeatureSelectionManager( featureSelectionManager );
 
   if ( mFeatureSelectionManager && mFeatureSelectionManager->parent() == this )
     delete mFeatureSelectionManager;

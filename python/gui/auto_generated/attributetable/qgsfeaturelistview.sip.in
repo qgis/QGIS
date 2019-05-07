@@ -120,6 +120,16 @@ Emitted whenever the current edit selection has been changed.
 :param feat: the feature, which will be edited.
 %End
 
+    void currentEditSelectionProgressChanged( int progress, int count );
+%Docstring
+Emitted whenever the current edit selection has been changed.
+
+:param progress: the position of the feature in the list
+:param count: the number of features in the list
+
+.. versionadded:: 3.8
+%End
+
     void displayExpressionChanged( const QString &expression );
 %Docstring
 Emitted whenever the display expression is successfully changed
@@ -161,6 +171,20 @@ Select all currently visible features
 
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
+
+    void editNextFeature();
+%Docstring
+editNextFeature will try to edit next feature in form
+
+.. versionadded:: 3.8
+%End
+
+    void editPreviousFeature();
+%Docstring
+editPreviousFeature will try to edit previous feature in form
+
+.. versionadded:: 3.8
+%End
 
 };
 

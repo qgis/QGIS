@@ -1074,7 +1074,7 @@ void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds 
 
 }
 
-void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids )
+void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter )
 {
   if ( !layer )
   {
@@ -1085,7 +1085,8 @@ void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &
   QString errorMsg;
   if ( boundingBoxOfFeatureIds( ids, layer, bbox, errorMsg ) )
   {
-    setCenter( bbox.center() );
+    if ( alwaysRecenter || !mapSettings().extent().contains( bbox ) )
+      setCenter( bbox.center() );
     refresh();
   }
   else

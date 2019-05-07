@@ -49,6 +49,7 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
   mModel = featureListModel;
 
   delete mFeatureSelectionModel;
+  delete mCurrentEditSelectionModel;
 
   mCurrentEditSelectionModel = new QItemSelectionModel( mModel->masterModel(), this );
   if ( !mFeatureSelectionManager )
@@ -169,6 +170,7 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected,
       mModel->featureByIndex( mModel->mapFromMaster( indexList.first() ), feat );
 
       emit currentEditSelectionChanged( feat );
+      emit currentEditSelectionProgressChanged( mModel->mapFromMaster( indexList.first() ).row(), mModel->rowCount() );
     }
   }
 }
@@ -259,48 +261,56 @@ void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
 {
-  if ( Qt::Key_Up == event->key() || Qt::Key_Down == event->key() )
+  switch ( event->key() )
   {
-    int currentRow = 0;
-    if ( 0 != mCurrentEditSelectionModel->selectedIndexes().count() )
-    {
-      QModelIndex localIndex = mModel->mapFromMaster( mCurrentEditSelectionModel->selectedIndexes().first() );
-      currentRow = localIndex.row();
-    }
+    case Qt::Key_Up:
+      editNextOrPreviousFeature( Previous );
+      break;
 
-    QModelIndex newLocalIndex;
-    QModelIndex newIndex;
+    case Qt::Key_Down:
+      editNextOrPreviousFeature( Next );
+      break;
 
-    switch ( event->key() )
-    {
-      case Qt::Key_Up:
-        newLocalIndex = mModel->index( currentRow - 1, 0 );
-        newIndex = mModel->mapToMaster( newLocalIndex );
-        if ( newIndex.isValid() )
-        {
-          setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
-          scrollTo( newLocalIndex );
-        }
-        break;
-
-      case Qt::Key_Down:
-        newLocalIndex = mModel->index( currentRow + 1, 0 );
-        newIndex = mModel->mapToMaster( newLocalIndex );
-        if ( newIndex.isValid() )
-        {
-          setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
-          scrollTo( newLocalIndex );
-        }
-        break;
-
-      default:
-        break;
-    }
+    default:
+      QListView::keyPressEvent( event );
   }
-  else
+}
+
+void QgsFeatureListView::editNextOrPreviousFeature( QgsFeatureListView::NextOrPrevious nextOrPrevious )
+{
+  int currentRow = 0;
+  if ( 0 != mCurrentEditSelectionModel->selectedIndexes().count() )
   {
-    QListView::keyPressEvent( event );
+    QModelIndex localIndex = mModel->mapFromMaster( mCurrentEditSelectionModel->selectedIndexes().first() );
+    currentRow = localIndex.row();
   }
+
+  QModelIndex newLocalIndex;
+  QModelIndex newIndex;
+
+  switch ( nextOrPrevious )
+  {
+    case Previous:
+      newLocalIndex = mModel->index( currentRow - 1, 0 );
+      newIndex = mModel->mapToMaster( newLocalIndex );
+      if ( newIndex.isValid() )
+      {
+        setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
+        scrollTo( newLocalIndex );
+      }
+      break;
+
+    case Next:
+      newLocalIndex = mModel->index( currentRow + 1, 0 );
+      newIndex = mModel->mapToMaster( newLocalIndex );
+      if ( newIndex.isValid() )
+      {
+        setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
+        scrollTo( newLocalIndex );
+      }
+      break;
+  }
+
 }
 
 void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
