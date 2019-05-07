@@ -77,6 +77,13 @@ Returns the currently selected layer, or ``None`` if no layers is selected.
 .. seealso:: :py:func:`setCurrentLayer`
 %End
 
+    void setLayerVisible( QgsMapLayer *layer, bool visible );
+%Docstring
+Sets the visible state of the specified layer
+
+.. versionadded:: 3.10
+%End
+
     void setCurrentLayer( QgsMapLayer *layer );
 %Docstring
 Sets the currently selected ``layer``.
