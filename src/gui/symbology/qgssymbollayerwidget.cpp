@@ -900,22 +900,27 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
-  QSize size = lstNames->iconSize();
-  double markerSize = DEFAULT_POINT_SIZE * 2;
-  Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
-  {
-    if ( !QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( shape ) )
-      continue;
+  int size = lstNames->iconSize().width();
+  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXX" ) ) ) ) );
+  lstNames->setGridSize( QSize( size * 1.2, size * 1.2 ) );
+  lstNames->setIconSize( QSize( size, size ) );
 
+  double markerSize = size * 0.8;
+  const auto shapes = QgsSimpleMarkerSymbolLayerBase::availableShapes();
+  for ( QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
+  {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
+    lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
+    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
     delete lyr;
   }
+  // show at least 3 rows
+  lstNames->setMinimumHeight( lstNames->gridSize().height() * 3.1 );
 
   connect( lstNames, &QListWidget::currentRowChanged, this, &QgsFilledMarkerSymbolLayerWidget::setShape );
   connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFilledMarkerSymbolLayerWidget::setSize );
