@@ -367,6 +367,12 @@ class BatchPanel(BASE, WIDGET):
         """
         return len(self.wrappers)
 
+    def clear(self):
+        self.tblParameters.setRowCount(1)
+        self.wrappers = []
+        self.column_to_parameter_definition = {}
+        self.parameter_to_column = {}
+
     def load(self):
         context = dataobjects.createContext()
         settings = QgsSettings()
@@ -383,7 +389,7 @@ class BatchPanel(BASE, WIDGET):
             # If the user clicked on the cancel button.
             return
 
-        self.tblParameters.setRowCount(1)
+        self.clear()
         try:
             for row, alg in enumerate(values):
                 self.addRow()
