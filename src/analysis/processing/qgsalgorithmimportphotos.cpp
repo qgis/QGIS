@@ -330,7 +330,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
                << fi.completeBaseName()
                << QDir::toNativeSeparators( fi.absolutePath() );
 
-    gdal::dataset_unique_ptr hDS( GDALOpen( file.toLocal8Bit().constData(), GA_ReadOnly ) );
+    gdal::dataset_unique_ptr hDS( GDALOpen( file.toUtf8().constData(), GA_ReadOnly ) );
     if ( !hDS )
     {
       feedback->reportError( QObject::tr( "Could not open %1" ).arg( QDir::toNativeSeparators( file ) ) );
