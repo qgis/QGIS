@@ -519,7 +519,7 @@ is usually used for orienting symbols to match a line's angle.
 .. versionadded:: 2.9
 %End
 
-    void setSize( double size );
+    virtual void setSize( double size );
 %Docstring
 Sets the symbol size.
 
