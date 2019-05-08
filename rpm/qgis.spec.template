@@ -114,7 +114,7 @@ BuildRequires:  qtkeychain-qt5-devel
 BuildRequires:  qt5-qtserialport-devel
 BuildRequires:  qt5-qt3d-devel
 
-# In F30+ qt5-qtbase-devel has been splitted
+# In F30+ qt5-qtbase-devel has been split
 # in qt5-qtbase-devel and qt5-qtbase-private-devel
 # qt5-qtbase-private-devel is needed by 
 # external/qspatialite/qsql_spatialite.cpp:49:10
