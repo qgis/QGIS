@@ -21,6 +21,7 @@ from qgis.core import (QgsAggregateCalculator,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
                        QgsGeometry,
+                       QgsFeatureRequest,
                        NULL
                        )
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
@@ -151,6 +152,20 @@ class TestQgsAggregateCalculator(unittest.TestCase):
             val, ok = agg.calculate(t, 'flddbl')
             self.assertFalse(ok)
 
+        # with order by
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        self.assertEqual(val, [4, 2, 3, 2, 5, NULL, 8])
+        params = QgsAggregateCalculator.AggregateParameters()
+        params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('fldint')])
+        agg.setParameters(params)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        self.assertEqual(val, [2, 2, 3, 4, 5, 8, NULL])
+        params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('flddbl')])
+        agg.setParameters(params)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        self.assertEqual(val, [2, 2, 4, 8, 3, 5, NULL])
+
     def testString(self):
         """ Test calculation of aggregates on string fields"""
 
@@ -207,6 +222,18 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                   ]:
             val, ok = agg.calculate(t, 'fldstring')
             self.assertFalse(ok)
+
+        # with order by
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldstring')
+        self.assertEqual(val, ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', '', 'dddd'])
+        params = QgsAggregateCalculator.AggregateParameters()
+        params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('fldstring')])
+        agg.setParameters(params)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldstring')
+        self.assertEqual(val, ['', '', 'aaaa', 'aaaa', 'bbbbbbbb', 'cc', 'dddd', 'eeee', 'eeee'])
+        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
+        self.assertEqual(val, 'aaaaaaaabbbbbbbbccddddeeeeeeee')
 
     def testDateTime(self):
         """ Test calculation of aggregates on date/datetime fields"""
