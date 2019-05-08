@@ -1259,5 +1259,6 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         fids = set([f['fid'] for f in vl.getFeatures()])
         self.assertEqual(len(fids), 1)
 
+
 if __name__ == '__main__':
     unittest.main()
