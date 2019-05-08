@@ -321,7 +321,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
     constraints.setConstraint( QgsFieldConstraints::ConstraintExpression );
   }
 
-  constraints.setConstraintExpression( mAttributeTypeDialog->constraintExpressionDescription(), mAttributeTypeDialog->constraintExpression() );
+  constraints.setConstraintExpression( mAttributeTypeDialog->constraintExpression(), mAttributeTypeDialog->constraintExpressionDescription() );
 
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, mAttributeTypeDialog->notNullEnforced() ?
                                      QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
