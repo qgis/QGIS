@@ -22,6 +22,7 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
+#include "qgsfeaturerequest.h"
 #include <QVariant>
 
 
@@ -103,6 +104,12 @@ class CORE_EXPORT QgsAggregateCalculator
        * \see QgsAggregateCalculator::delimiter()
        */
       QString delimiter;
+
+      /**
+       * Optional order by clauses.
+       * \since QGIS 3.8
+       */
+      QgsFeatureRequest::OrderBy orderBy;
     };
 
     /**
@@ -182,6 +189,9 @@ class CORE_EXPORT QgsAggregateCalculator
 
     //! Filter expression, or empty for no filter
     QString mFilterExpression;
+
+    //! Order by clause
+    QgsFeatureRequest::OrderBy mOrderBy;
 
     //! Delimiter to use for concatenate aggregate
     QString mDelimiter;

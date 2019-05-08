@@ -39,6 +39,7 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
 {
   mFilterExpression = parameters.filter;
   mDelimiter = parameters.delimiter;
+  mOrderBy = parameters.orderBy;
 }
 
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
@@ -82,6 +83,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
                                          QgsFeatureRequest::NoFlags :
                                          QgsFeatureRequest::NoGeometry )
                               .setSubsetOfAttributes( lst, mLayer->fields() );
+  if ( !mOrderBy.empty() )
+    request.setOrderBy( mOrderBy );
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
   if ( context )
