@@ -3938,11 +3938,21 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     bIsLocalGpkg = true;
   }
 
+  bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
+  {
+    CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
+  }
+
   const int nOpenFlags = GDAL_OF_VECTOR | ( bUpdate ? GDAL_OF_UPDATE : 0 );
   GDALDatasetH hDS = GDALOpenEx( pszPath, nOpenFlags, nullptr, papszOpenOptions, nullptr );
   CSLDestroy( papszOpenOptions );
 
   CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", nullptr );
+  if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
+  {
+    CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  }
 
   if ( !hDS )
   {
