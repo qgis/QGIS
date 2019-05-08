@@ -66,6 +66,8 @@ to a data provider for remote calculation.
       QString filter;
 
       QString delimiter;
+
+      QgsFeatureRequest::OrderBy orderBy;
     };
 
     QgsAggregateCalculator( const QgsVectorLayer *layer );
