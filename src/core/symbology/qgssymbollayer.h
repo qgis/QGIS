@@ -531,7 +531,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setSizeUnit()
      * \see setSizeMapUnitScale()
      */
-    void setSize( double size ) { mSize = size; }
+    virtual void setSize( double size ) { mSize = size; }
 
     /**
      * Returns the symbol size. Units are specified by sizeUnit().
