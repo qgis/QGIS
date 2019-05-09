@@ -533,8 +533,16 @@ namespace QgsWmts
           tmElement.appendChild( tmScaleDenomElem );
 
           QDomElement tmTopLeftCornerElem = doc.createElement( QStringLiteral( "TopLeftCorner" ) );
-          QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( tm.left, 6 ) + ' ' + qgsDoubleToString( tm.top, 6 ) );
-          tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
+          if ( tms.hasAxisInverted )
+          {
+            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( tm.top, 6 ) + ' ' + qgsDoubleToString( tm.left, 6 ) );
+            tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
+          }
+          else
+          {
+            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( tm.left, 6 ) + ' ' + qgsDoubleToString( tm.top, 6 ) );
+            tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
+          }
           tmElement.appendChild( tmTopLeftCornerElem );
 
           QDomElement tmTileWidthElem = doc.createElement( QStringLiteral( "TileWidth" ) );

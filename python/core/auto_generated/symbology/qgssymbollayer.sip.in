@@ -133,6 +133,8 @@ class QgsSymbolLayer
       PropertyArrowHeadThickness,
       PropertyArrowHeadType,
       PropertyArrowType,
+      PropertyOffsetX,
+      PropertyOffsetY,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -286,7 +288,20 @@ layer may use it to specify the units for the line width.
     virtual QgsMapUnitScale mapUnitScale() const;
 
     void setRenderingPass( int renderingPass );
+%Docstring
+Specifies the rendering pass in which this symbol layer should be rendered.
+The lower the number, the lower the symbol will be rendered.
+0: first pass, 1: second pass, ...
+Defaults to 0
+%End
+
     int renderingPass() const;
+%Docstring
+Specifies the rendering pass in which this symbol layer should be rendered.
+The lower the number, the lower the symbol will be rendered.
+0: first pass, 1: second pass, ...
+Defaults to 0
+%End
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
@@ -525,7 +540,7 @@ is usually used for orienting symbols to match a line's angle.
 .. versionadded:: 2.9
 %End
 
-    void setSize( double size );
+    virtual void setSize( double size );
 %Docstring
 Sets the symbol size.
 

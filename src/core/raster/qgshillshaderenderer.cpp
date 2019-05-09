@@ -176,7 +176,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     if ( source.isEmpty() )
     {
       useOpenCL = false;
-      QgsMessageLog::logMessage( QObject::tr( "Error loading OpenCL program source from path" ).arg( QgsOpenClUtils::sourcePath() ), QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+      QgsMessageLog::logMessage( QObject::tr( "Error loading OpenCL program source from path %1" ).arg( QgsOpenClUtils::sourcePath() ), QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
     }
   }
 

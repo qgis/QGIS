@@ -339,7 +339,7 @@ Constructor for LayerOptions.
 %Docstring
 Constructor for LayerOptions.
 
-.. versionadded:: 3.10
+.. versionadded:: 3.8
 %End
 
       bool loadDefaultStyle;
@@ -348,8 +348,11 @@ Constructor for LayerOptions.
 
       QgsCoordinateTransformContext transformContext;
 
-    };
+      QgsWkbTypes::Type fallbackWkbType;
 
+      QgsCoordinateReferenceSystem fallbackCrs;
+
+    };
 
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );

@@ -373,7 +373,7 @@ Item {
           property var field: Field
           property var constraintValid: ConstraintValid
           property var homePath: form.project ? form.project.homePath : ""
-          property var customStyle: form.style.fields
+          property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
 
@@ -386,6 +386,26 @@ Item {
           target: attributeEditorLoader.item
           onValueChanged: {
             AttributeValue = isNull ? undefined : value
+          }
+        }
+
+        Connections {
+          target: form
+          ignoreUnknownSignals: true
+          onSaved: {
+            if (typeof attributeEditorLoader.item.callbackOnSave === "function") {
+              attributeEditorLoader.item.callbackOnSave()
+            }
+          }
+        }
+
+        Connections {
+          target: form
+          ignoreUnknownSignals: true
+          onCanceled: {
+            if (typeof attributeEditorLoader.item.callbackOnCancel === "function") {
+              attributeEditorLoader.item.callbackOnCancel()
+            }
           }
         }
       }

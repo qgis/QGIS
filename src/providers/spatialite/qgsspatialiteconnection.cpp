@@ -19,6 +19,7 @@
 #include "qgssqliteutils.h"
 
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <cstdlib> // atoi
 
 #ifdef _MSC_VER
@@ -640,6 +641,17 @@ error:
 
 
 
+static void fcnRegexp( sqlite3_context *ctx, int /*argc*/, sqlite3_value *argv[] )
+{
+  QRegularExpression re( reinterpret_cast<const char *>( sqlite3_value_text( argv[0] ) ) );
+  QString string( reinterpret_cast<const char *>( sqlite3_value_text( argv[1] ) ) );
+
+  if ( !re.isValid() )
+    return sqlite3_result_error( ctx, "invalid operand", -1 );
+
+  sqlite3_result_int( ctx, string.contains( re ) );
+}
+
 
 
 
@@ -702,6 +714,10 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
     QgsDebugMsg( QStringLiteral( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
     return nullptr;
   }
+
+  // add REGEXP function
+  sqlite3_create_function( database.get(), "REGEXP", 2, SQLITE_UTF8, nullptr, fcnRegexp, nullptr, nullptr );
+
   // activating Foreign Key constraints
   ( void )sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 

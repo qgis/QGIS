@@ -15,6 +15,7 @@ plugin qgis_quick_plugin
 
 # suppose to be used only internaly in QgsQuick plugin
 EditorWidgetComboBox  0.1 qgsquickeditorwidgetcombobox.qml
+IconTextItem 0.1 qgsquickicontextitem.qml
 
 MapCanvas 0.1 qgsquickmapcanvas.qml
 FeatureForm 0.1 qgsquickfeatureform.qml

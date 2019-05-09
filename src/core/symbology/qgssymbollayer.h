@@ -175,6 +175,8 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyArrowHeadThickness, //!< Arrow head thickness
       PropertyArrowHeadType, //!< Arrow head type
       PropertyArrowType, //!< Arrow type
+      PropertyOffsetX, //!< Horizontal offset
+      PropertyOffsetY, //!< Vertical offset
     };
 
     /**
@@ -306,9 +308,21 @@ class CORE_EXPORT QgsSymbolLayer
     virtual void setMapUnitScale( const QgsMapUnitScale &scale ) { Q_UNUSED( scale ); }
     virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }
 
-    // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
-    void setRenderingPass( int renderingPass ) { mRenderingPass = renderingPass; }
-    int renderingPass() const { return mRenderingPass; }
+    /**
+     * Specifies the rendering pass in which this symbol layer should be rendered.
+     * The lower the number, the lower the symbol will be rendered.
+     * 0: first pass, 1: second pass, ...
+     * Defaults to 0
+     */
+    void setRenderingPass( int renderingPass );
+
+    /**
+     * Specifies the rendering pass in which this symbol layer should be rendered.
+     * The lower the number, the lower the symbol will be rendered.
+     * 0: first pass, 1: second pass, ...
+     * Defaults to 0
+     */
+    int renderingPass() const;
 
     /**
      * Returns the set of attributes referenced by the layer. This includes attributes
@@ -417,7 +431,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     bool mLocked;
     QColor mColor;
-    int mRenderingPass;
+    int mRenderingPass = 0;
 
     QgsPropertyCollection mDataDefinedProperties;
 
@@ -532,7 +546,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setSizeUnit()
      * \see setSizeMapUnitScale()
      */
-    void setSize( double size ) { mSize = size; }
+    virtual void setSize( double size ) { mSize = size; }
 
     /**
      * Returns the symbol size. Units are specified by sizeUnit().

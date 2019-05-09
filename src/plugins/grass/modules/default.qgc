@@ -230,6 +230,7 @@
                 <grass name="r.grow.distance" version_min="6.4"/>
                 <grass name="r.walk.coord"/>
                 <grass name="r.walk.vect"/>
+                <grass name="r.geomorphon"/>
             </section>
             <section label="Transform features">
                 <grass name="r.clump"/>

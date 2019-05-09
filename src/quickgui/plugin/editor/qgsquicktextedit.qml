@@ -37,14 +37,14 @@ Item {
 
   TextField {
     id: textField
-    height: textArea.height == 0 ? customStyle.height : 0
+    height: textArea.height == 0 ? customStyle.fields.height : 0
     topPadding: 10 * QgsQuick.Utils.dp
     bottomPadding: 10 * QgsQuick.Utils.dp
     visible: height !== 0
     anchors.left: parent.left
     anchors.right: parent.right
-    font.pixelSize: customStyle.fontPixelSize
-    color: customStyle.fontColor
+    font.pixelSize: customStyle.fields.fontPixelSize
+    color: customStyle.fields.fontColor
 
     text: value || ''
     inputMethodHints: field.isNumeric || widget == 'Range' ? field.precision === 0 ? Qt.ImhDigitsOnly : Qt.ImhFormattedNumbersOnly : Qt.ImhNone
@@ -63,10 +63,10 @@ Item {
 
     background: Rectangle {
         anchors.fill: parent
-        border.color: textField.activeFocus ? customStyle.activeColor : customStyle.normalColor
+        border.color: textField.activeFocus ? customStyle.fields.activeColor : customStyle.fields.normalColor
         border.width: textField.activeFocus ? 2 : 1
-        color: customStyle.backgroundColor
-        radius: customStyle.cornerRadius
+        color: customStyle.fields.backgroundColor
+        radius: customStyle.fields.cornerRadius
     }
 
     onTextChanged: {
@@ -77,20 +77,20 @@ Item {
   TextArea {
     id: textArea
     height: config['IsMultiline'] === true ? undefined : 0
-    topPadding: customStyle.height * 0.25
-    bottomPadding: customStyle.height * 0.25
+    topPadding: customStyle.fields.height * 0.25
+    bottomPadding: customStyle.fields.height * 0.25
     visible: height !== 0
     anchors.left: parent.left
     anchors.right: parent.right
-    font.pixelSize: customStyle.fontPixelSize
+    font.pixelSize: customStyle.fields.fontPixelSize
     wrapMode: Text.Wrap
-    color: customStyle.fontColor
+    color: customStyle.fields.fontColor
     text: value || ''
     textFormat: config['UseHtml'] ? TextEdit.RichText : TextEdit.PlainText
 
     background: Rectangle {
-        color: customStyle.backgroundColor
-        radius: customStyle.cornerRadius
+        color: customStyle.fields.backgroundColor
+        radius: customStyle.fields.cornerRadius
     }
 
     onEditingFinished: {

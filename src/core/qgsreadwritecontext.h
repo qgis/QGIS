@@ -120,7 +120,7 @@ class CORE_EXPORT QgsReadWriteContext
      *
      * \see setTransformContext()
      *
-     * \since QGIS 3.10
+     * \since QGIS 3.8
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsReadWriteContext
      *
      * \see transformContext()
      *
-     * \since QGIS 3.10
+     * \since QGIS 3.8
      */
     void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 

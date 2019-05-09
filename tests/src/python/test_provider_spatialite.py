@@ -701,6 +701,16 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(set(indexed_columns), set(['name', 'number']))
         con.close()
 
+    def testSubsetStringRegexp(self):
+        """Check that the provider supports the REGEXP syntax"""
+
+        testPath = "dbname=%s table='test_filter' (geometry) key='id'" % self.dbname
+        vl = QgsVectorLayer(testPath, 'test', 'spatialite')
+        self.assertTrue(vl.isValid())
+        vl.setSubsetString('"name" REGEXP \'[txe]\'')
+        self.assertEqual(vl.featureCount(), 4)
+        del(vl)
+
     def testSubsetStringExtent_bug17863(self):
         """Check that the extent is correct when applied in the ctor and when
         modified after a subset string is set """

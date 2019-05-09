@@ -56,9 +56,10 @@ class BatchInputSelectionPanel(QWidget):
     def __init__(self, param, row, col, dialog):
         super(BatchInputSelectionPanel, self).__init__(None)
         self.param = param
-        self.dialog = dialog
         self.row = row
         self.col = col
+        self.dialog = dialog
+
         self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
@@ -67,8 +68,7 @@ class BatchInputSelectionPanel(QWidget):
         self.text.setMinimumWidth(300)
         self.setValue('')
         self.text.editingFinished.connect(self.textEditingFinished)
-        self.text.setSizePolicy(QSizePolicy.Expanding,
-                                QSizePolicy.Expanding)
+        self.text.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
         self.pushButton.setText('…')
@@ -85,15 +85,13 @@ class BatchInputSelectionPanel(QWidget):
     def showPopupMenu(self):
         popupmenu = QMenu()
 
-        if not (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                self.param.layerType == dataobjects.TYPE_FILE):
-            selectLayerAction = QAction(
-                QCoreApplication.translate('BatchInputSelectionPanel', 'Select from Open Layers…'), self.pushButton)
+        if (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
+                self.param.layerType() != QgsProcessing.TypeFile):
+            selectLayerAction = QAction(self.tr('Select from Open Layers…'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
             popupmenu.addAction(selectLayerAction)
 
-        selectFileAction = QAction(
-            QCoreApplication.translate('BatchInputSelectionPanel', 'Select from File System…'), self.pushButton)
+        selectFileAction = QAction(self.tr('Select from File System…'), self.pushButton)
         selectFileAction.triggered.connect(self.showFileSelectionDialog)
         popupmenu.addAction(selectFileAction)
 
@@ -151,13 +149,13 @@ class BatchInputSelectionPanel(QWidget):
 
     def showFileSelectionDialog(self):
         settings = QgsSettings()
-        text = str(self.text.text())
+        text = self.text.text()
         if os.path.isdir(text):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
         elif settings.contains('/Processing/LastInputPath'):
-            path = str(settings.value('/Processing/LastInputPath'))
+            path = settings.value('/Processing/LastInputPath')
         else:
             path = ''
 
@@ -165,8 +163,7 @@ class BatchInputSelectionPanel(QWidget):
                                                             getFileFilter(self.param))
         if ret:
             files = list(ret)
-            settings.setValue('/Processing/LastInputPath',
-                              os.path.dirname(str(files[0])))
+            settings.setValue('/Processing/LastInputPath', os.path.dirname(files[0]))
             for i, filename in enumerate(files):
                 files[i] = dataobjects.getRasterSublayer(filename, self.param)
             if len(files) == 1:
@@ -187,7 +184,7 @@ class BatchInputSelectionPanel(QWidget):
         self._value = self.text.text()
         self.valueChanged.emit()
 
-    def value(self):
+    def getValue(self):
         return self._value if self._value else None
 
     def setValue(self, value):

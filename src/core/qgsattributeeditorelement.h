@@ -474,7 +474,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
  * \ingroup core
  * An attribute editor widget that will represent arbitrary HTML code.
  *
- * \since QGIS 3.10
+ * \since QGIS 3.8
  */
 class CORE_EXPORT QgsAttributeEditorHtmlElement : public QgsAttributeEditorElement
 {

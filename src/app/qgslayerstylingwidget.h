@@ -56,7 +56,7 @@ class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWid
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
   public:
-    QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last );
+    QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last, bool triggerRepaint = true );
 
     /**
      * Returns unique ID for this kind of undo command.
@@ -75,6 +75,7 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     QDomNode mXml;
     QDomNode mLastState;
     QTime mTime;
+    bool mTriggerRepaint = true;
 };
 
 class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerStylingWidgetBase
@@ -129,7 +130,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void liveApplyToggled( bool value );
 
   private:
-    void pushUndoItem( const QString &name );
+    void pushUndoItem( const QString &name, bool triggerRepaint = true );
     int mNotSupportedPage;
     int mLayerPage;
     QTimer *mAutoApplyTimer = nullptr;

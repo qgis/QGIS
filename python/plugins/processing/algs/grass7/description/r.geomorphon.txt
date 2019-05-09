@@ -1,0 +1,11 @@
+r.geomorphon
+Calculates geomorphons (terrain forms) and associated geometry using machine vision approach.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False
+QgsProcessingParameterNumber|search|Outer search radius|QgsProcessingParameterNumber.Integer|3|True|3|499
+QgsProcessingParameterNumber|skip|Inner search radius|QgsProcessingParameterNumber.Integer|0|True|0|499
+QgsProcessingParameterNumber|flat|Flatenss threshold (degrees)|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|dist|Flatenss distance, zero for none|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterRasterDestination|forms|Most common geomorphic forms
+*QgsProcessingParameterBoolean|-m|Use meters to define search units (default is cells)|False
+*QgsProcessingParameterBoolean|-e|Use extended form correction|False

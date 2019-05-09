@@ -78,43 +78,8 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         load_layers = self.mainWidget().checkLoadLayersOnCompletion.isChecked()
         project = QgsProject.instance() if load_layers else None
 
-        for row in range(self.mainWidget().tblParameters.rowCount()):
-            col = 0
-            parameters = {}
-            for param in self.algorithm().parameterDefinitions():
-                if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
-                    continue
-                wrapper = self.mainWidget().wrappers[row][col]
-                parameters[param.name()] = wrapper.parameterValue()
-                if not param.checkValueIsAcceptable(wrapper.parameterValue()):
-                    self.messageBar().pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                        param.description(), row + 1),
-                        level=Qgis.Warning, duration=5)
-                    return
-                col += 1
-            count_visible_outputs = 0
-            for out in self.algorithm().destinationParameterDefinitions():
-                if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                    continue
-
-                count_visible_outputs += 1
-                widget = self.mainWidget().tblParameters.cellWidget(row, col)
-                text = widget.getValue()
-                if out.checkValueIsAcceptable(text):
-                    if isinstance(out, (QgsProcessingParameterRasterDestination,
-                                        QgsProcessingParameterVectorDestination,
-                                        QgsProcessingParameterFeatureSink)):
-                        # load rasters and sinks on completion
-                        parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, project)
-                    else:
-                        parameters[out.name()] = text
-                    col += 1
-                else:
-                    self.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                        out.description(), row + 1),
-                        level=Qgis.Warning, duration=5)
-                    return
-
+        for row in range(self.mainWidget().batchRowCount()):
+            parameters = self.mainWidget().parametersForRow(row, destinationProject=project, warnOnInvalid=True)
             alg_parameters.append(parameters)
 
         task = QgsScopedProxyProgressTask(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
@@ -139,8 +104,11 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             for count, parameters in enumerate(alg_parameters):
                 if feedback.isCanceled():
                     break
-                self.setProgressText(QCoreApplication.translate('BatchAlgorithmDialog', '\nProcessing algorithm {0}/{1}…').format(count + 1, len(alg_parameters)))
-                self.setInfo(self.tr('<b>Algorithm {0} starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
+                self.setProgressText(
+                    QCoreApplication.translate('BatchAlgorithmDialog', '\nProcessing algorithm {0}/{1}…').format(
+                        count + 1, len(alg_parameters)))
+                self.setInfo(self.tr('<b>Algorithm {0} starting&hellip;</b>').format(self.algorithm().displayName()),
+                             escapeHtml=False)
                 multi_feedback.setCurrentStep(count)
 
                 parameters = self.algorithm().preprocessParameters(parameters)
@@ -158,7 +126,9 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 alg_start_time = time.time()
                 ret, results = execute(self.algorithm(), parameters, context, multi_feedback)
                 if ret:
-                    self.setInfo(QCoreApplication.translate('BatchAlgorithmDialog', 'Algorithm {0} correctly executed…').format(self.algorithm().displayName()), escapeHtml=False)
+                    self.setInfo(
+                        QCoreApplication.translate('BatchAlgorithmDialog', 'Algorithm {0} correctly executed…').format(
+                            self.algorithm().displayName()), escapeHtml=False)
                     feedback.pushInfo(
                         self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - alg_start_time)))
                     feedback.pushInfo(self.tr('Results:'))
@@ -182,6 +152,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         self.createSummaryTable(algorithm_results)
         self.mainWidget().setEnabled(True)
+        self.resetGui()
 
     def loadHTMLResults(self, results, num):
         for out in self.algorithm().outputDefinitions():
@@ -209,5 +180,6 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                         f.write('<p>{}: {}</p>\n'.format(out.description(), res[out.name()]))
             f.write('<hr>\n')
 
-        resultsList.addResult(self.algorithm().icon(),
-                              '{} [summary]'.format(self.algorithm().name()), outputFile)
+        resultsList.addResult(icon=self.algorithm().icon(),
+                              name='{} [summary]'.format(self.algorithm().name()), timestamp=time.localtime(),
+                              result=outputFile)

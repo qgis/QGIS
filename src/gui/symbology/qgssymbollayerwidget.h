@@ -153,6 +153,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     //creates a new icon for the 'change pattern' button
     void updatePatternIcon();
 
+    void resizeEvent( QResizeEvent *event ) override;
+
   private slots:
 
     void updateAssistantSymbol();
@@ -876,10 +878,14 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidg
     void mVerticalDistanceSpinBox_valueChanged( double d );
     void mHorizontalDisplacementSpinBox_valueChanged( double d );
     void mVerticalDisplacementSpinBox_valueChanged( double d );
+    void mHorizontalOffsetSpinBox_valueChanged( double d );
+    void mVerticalOffsetSpinBox_valueChanged( double d );
     void mHorizontalDistanceUnitWidget_changed();
     void mVerticalDistanceUnitWidget_changed();
     void mHorizontalDisplacementUnitWidget_changed();
     void mVerticalDisplacementUnitWidget_changed();
+    void mHorizontalOffsetUnitWidget_changed();
+    void mVerticalOffsetUnitWidget_changed();
 };
 
 /////////
@@ -926,7 +932,19 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void setColorStroke( const QColor &color );
     void setSize( double size );
     void setAngle( double angle );
+
+    /**
+     * Set the font marker character from char.
+     * \param chr the char
+     */
     void setCharacter( QChar chr );
+
+    /**
+     * Set the font marker character from a text string.
+     * \param text the text string
+     * \since QGIS 3.8
+     */
+    void setCharacterFromText( const QString &text );
 
   protected:
     QgsFontMarkerSymbolLayer *mLayer = nullptr;

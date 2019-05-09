@@ -28,7 +28,7 @@ QGIS utilities module
 
 """
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread, qDebug
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
 from qgis.core import Qgis, QgsMessageLog, qgsfunction, QgsMessageOutput
 from qgis.gui import QgsMessageBar
@@ -282,7 +282,6 @@ def updateAvailablePlugins():
     available_plugins = plugins
     global plugins_metadata_parser
     plugins_metadata_parser = metadata_parser
-    return metadata_parser
 
 
 def pluginMetadata(packageName, fct):
@@ -446,6 +445,9 @@ def _unloadPluginModules(packageName):
     mods = _plugin_modules[packageName]
 
     for mod in mods:
+        if not mod in sys.modules:
+            continue
+
         # if it looks like a Qt resource file, try to do a cleanup
         # otherwise we might experience a segfault next time the plugin is loaded
         # because Qt will try to access invalid plugin resource data
@@ -453,12 +455,23 @@ def _unloadPluginModules(packageName):
             if hasattr(sys.modules[mod], 'qCleanupResources'):
                 sys.modules[mod].qCleanupResources()
         except:
-            pass
+            # Print stack trace for debug
+            qDebug("qCleanupResources error:\n%s" % traceback.format_exc())
+
+        # try removing path
+        if hasattr(sys.modules[mod], '__path__'):
+            for path in sys.modules[mod].__path__:
+                try:
+                    sys.path.remove(path)
+                except ValueError:
+                    # Discard if path is not there
+                    pass
+
         # try to remove the module from python
         try:
             del sys.modules[mod]
         except:
-            pass
+            qDebug("Error when removing module:\n%s" % traceback.format_exc())
     # remove the plugin entry
     del _plugin_modules[packageName]
 
@@ -633,6 +646,12 @@ def spatialite_connect(*args, **kwargs):
     """returns a dbapi2.Connection to a SpatiaLite db
 using the "mod_spatialite" extension (python3)"""
     import sqlite3
+    import re
+
+    def fcnRegexp(pattern, string):
+        result = re.search(pattern, string)
+        return True if result else False
+
     con = sqlite3.dbapi2.connect(*args, **kwargs)
     con.enable_load_extension(True)
     cur = con.cursor()
@@ -657,6 +676,7 @@ using the "mod_spatialite" extension (python3)"""
         raise RuntimeError("Cannot find any suitable spatialite module")
     cur.close()
     con.enable_load_extension(False)
+    con.create_function("regexp", 2, fcnRegexp)
     return con
 
 

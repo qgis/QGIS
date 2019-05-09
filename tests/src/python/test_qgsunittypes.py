@@ -660,6 +660,24 @@ class TestQgsUnitTypes(unittest.TestCase):
         assert ok
         self.assertEqual(res, QgsUnitTypes.LayoutPixels)
 
+    def testAbbreviateRenderUnits(self):
+        """Test abbreviating render units"""
+        units = [QgsUnitTypes.RenderMillimeters,
+                 QgsUnitTypes.RenderMapUnits,
+                 QgsUnitTypes.RenderPixels,
+                 QgsUnitTypes.RenderPercentage,
+                 QgsUnitTypes.RenderPoints,
+                 QgsUnitTypes.RenderInches,
+                 QgsUnitTypes.RenderUnknownUnit,
+                 QgsUnitTypes.RenderMetersInMapUnits]
+
+        used = set()
+        for u in units:
+            self.assertTrue(QgsUnitTypes.toString(u))
+            self.assertTrue(QgsUnitTypes.toAbbreviatedString(u))
+            self.assertFalse(QgsUnitTypes.toAbbreviatedString(u) in used)
+            used.add(QgsUnitTypes.toAbbreviatedString(u))
+
     def testAbbreviateLayoutUnits(self):
         """Test abbreviating layout units"""
         units = [QgsUnitTypes.LayoutMillimeters,

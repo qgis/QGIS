@@ -58,6 +58,7 @@
 #include <QPixmap>
 #include <QMenu>
 #include <QClipboard>
+#include <QDesktopWidget>
 #include <QMenuBar>
 #include <QPushButton>
 #include <QPrinter>
@@ -781,6 +782,8 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer *vlayer, const 
   return fieldFormatter->representValue( vlayer, idx, setup.config(), cache, value );
 }
 
+
+// Raster variant of addFeature
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     const QString &label,
     const QMap<QString, QString> &attributes,
@@ -856,19 +859,71 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       if ( i >= fields.count() )
         continue;
 
-      const auto value { attrs.at( i ).toString() };
-      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
-      attrItem->setData( 0, Qt::DisplayRole, fields.at( i ).name() );
-      attrItem->setData( 1, Qt::DisplayRole, attrs.at( i ) );
-      featItem->addChild( attrItem );
-      bool foundLinks = false;
-      const auto links { QgsStringUtils::insertLinks( value, &foundLinks ) };
-      if ( foundLinks )
+      // We have no vector layer here (can't use the formatters), let's guess the format from the QVariant type
+      const auto value { attrs.at( i ) };
+      auto formattedValue { value.toString() };
+      bool isString = false;
+      if ( value.isValid( ) )
       {
-        auto valueLabel { qgis::make_unique<QLabel>( links ) };
-        attrItem->setText( 1, QString( ) );
-        valueLabel->setOpenExternalLinks( true );
-        lstResults->setItemWidget( attrItem, 1, valueLabel.release() );
+        if ( value.type() == QVariant::Double )
+        {
+          bool ok;
+          double val( value.toDouble( &ok ) );
+          if ( ok )
+          {
+            // Precision is not set, let's guess it from the
+            // standard conversion to string
+            const auto strVal { value.toString() };
+            int dotPosition { strVal.indexOf( '.' ) };
+            int precision;
+            if ( dotPosition < 0 )
+            {
+              precision = 0;
+            }
+            else
+            {
+              precision = strVal.length() - dotPosition - 1;
+            }
+            formattedValue = QLocale().toString( val, 'f', precision );
+          }
+        }
+        else if ( value.type() == QVariant::Int )
+        {
+          bool ok;
+          double val( value.toInt( &ok ) );
+          if ( ok )
+          {
+            formattedValue =  QLocale().toString( val, 'f', 0 );
+          }
+        }
+        else if ( value.type() == QVariant::LongLong )
+        {
+          bool ok;
+          double val( value.toLongLong( &ok ) );
+          if ( ok )
+          {
+            formattedValue =  QLocale().toString( val, 'f', 0 );
+          }
+        }
+        else
+        {
+          isString = true;
+        }
+      }
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( { fields.at( i ).name(), formattedValue } );
+      featItem->addChild( attrItem );
+      // If not numeric, convert links
+      if ( isString )
+      {
+        bool foundLinks = false;
+        const auto links { QgsStringUtils::insertLinks( formattedValue, &foundLinks ) };
+        if ( foundLinks )
+        {
+          auto valueLabel { qgis::make_unique<QLabel>( links ) };
+          attrItem->setText( 1, QString( ) );
+          valueLabel->setOpenExternalLinks( true );
+          lstResults->setItemWidget( attrItem, 1, valueLabel.release() );
+        }
       }
     }
   }
@@ -876,6 +931,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   if ( currentFormat == QgsRaster::IdentifyFormatHtml || currentFormat == QgsRaster::IdentifyFormatText )
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
+#ifdef WITH_QTWEBKIT
     attrItem->webView()->page()->setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
     const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
     // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
@@ -887,6 +943,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     {
       QDesktopServices::openUrl( url );
     } );
+#endif
     featItem->addChild( attrItem ); // before setHtml()!
     if ( !attributes.isEmpty() )
     {

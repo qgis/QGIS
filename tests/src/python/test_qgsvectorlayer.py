@@ -15,9 +15,11 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
+import tempfile
+import shutil
 
 from qgis.PyQt.QtCore import QVariant, Qt
-from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
@@ -357,6 +359,98 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # should have reset renderer!
         self.assertNotEqual(layer.renderer(), r)
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Line)
+
+    def testSetDataSourceInvalidToValid(self):
+        """
+        Test that changing an invalid layer path to valid maintains the renderer
+        """
+        layer = createLayerWithOnePoint()
+        layer.setCrs(QgsCoordinateReferenceSystem("epsg:3111"))
+        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry))
+        layer.setRenderer(r)
+        self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Marker)
+
+        # change to invalid path
+        options = QgsDataProvider.ProviderOptions()
+        layer.setDataSource('nothing', 'new name', 'ogr', options)
+
+        self.assertFalse(layer.isValid())
+        # these properties should be kept intact!
+        self.assertEqual(layer.name(), 'new name')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(layer.crs().authid(), 'EPSG:3111')
+        # should have kept the same renderer!
+        self.assertEqual(layer.renderer(), r)
+
+        # set to a valid path
+        points_path = os.path.join(unitTestDataPath(), 'points.shp')
+        layer.setDataSource(points_path, 'new name2', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertIn(points_path, layer.dataProvider().dataSourceUri())
+
+        # should STILL have kept renderer!
+        self.assertEqual(layer.renderer(), r)
+
+    def testStoreWkbTypeInvalidLayers(self):
+        """
+        Test that layer wkb types are restored for projects with invalid layer paths
+        """
+        layer = createLayerWithOnePoint()
+        layer.setName('my test layer')
+        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry))
+        r.symbol().setColor(QColor('#123456'))
+        layer.setRenderer(r)
+        self.assertEqual(layer.renderer().symbol().color().name(), '#123456')
+
+        p = QgsProject()
+        p.addMapLayer(layer)
+
+        # reset layer to a bad path
+        options = QgsDataProvider.ProviderOptions()
+        layer.setDataSource('nothing', 'new name', 'ogr', options)
+        # should have kept the same renderer and wkb type!
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(layer.renderer().symbol().color().name(), '#123456')
+
+        # save project to a temporary file
+        temp_path = tempfile.mkdtemp()
+        temp_project_path = os.path.join(temp_path, 'temp.qgs')
+        self.assertTrue(p.write(temp_project_path))
+
+        # restore project
+        p2 = QgsProject()
+        self.assertTrue(p2.read(temp_project_path))
+
+        l2 = p2.mapLayersByName('new name')[0]
+        self.assertFalse(l2.isValid())
+
+        # should have kept the same renderer and wkb type!
+        self.assertEqual(l2.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(l2.renderer().symbol().color().name(), '#123456')
+
+        shutil.rmtree(temp_path, True)
+
+    def testFallbackCrsWkbType(self):
+        """
+        Test fallback CRS and WKB types are used when layer path is invalid
+        """
+        vl = QgsVectorLayer('this is an outrage!!!')
+        self.assertFalse(vl.isValid()) # i'd certainly hope so...
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Unknown)
+        self.assertFalse(vl.crs().isValid())
+
+        # with fallback
+        options = QgsVectorLayer.LayerOptions()
+        options.fallbackWkbType = QgsWkbTypes.CircularString
+        options.fallbackCrs = QgsCoordinateReferenceSystem('EPSG:3111')
+        vl = QgsVectorLayer("i'm the moon", options=options)
+        self.assertFalse(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.CircularString)
+        self.assertEqual(vl.crs().authid(), 'EPSG:3111')
 
     def test_layer_crs(self):
         """
