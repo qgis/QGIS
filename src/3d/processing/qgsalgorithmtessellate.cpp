@@ -79,7 +79,7 @@ QgsTessellateAlgorithm *QgsTessellateAlgorithm::createInstance() const
   return new QgsTessellateAlgorithm();
 }
 
-QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -106,7 +106,14 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
         t.addPolygon( *p, 0 );
       }
       QgsGeometry g( t.asMultiPolygon() );
-      g.translate( bounds.xMinimum(), bounds.yMinimum() );
+      if ( !g.isEmpty() )
+      {
+        g.translate( bounds.xMinimum(), bounds.yMinimum() );
+      }
+      else
+      {
+        feedback->reportError( QObject::tr( "Feature ID %1 could not be divided into triangular components." ).arg( f.id() ) );
+      }
       f.setGeometry( g );
     }
   }

@@ -303,7 +303,21 @@
      </property>
     </widget>
    </item>
-   <item row="13" column="3">
+   <item row="14" column="0">
+    <widget class="QLabel" name="label_12">
+     <property name="text">
+      <string>Character(s)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="1" colspan="2">
+    <widget class="QLineEdit" name="mCharLineEdit">
+     <property name="toolTip">
+      <string>Type in characters directly, or enter a character's hexadecimal value.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="3">
     <widget class="QgsPropertyOverrideButton" name="mCharDDBtn">
      <property name="text">
       <string>…</string>
@@ -317,10 +331,16 @@
      </property>
     </widget>
    </item>
-   <item row="13" column="0" colspan="3">
+   <item row="13" column="0" colspan="4">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0" rowspan="2">
       <widget class="QgsScrollArea" name="scrollArea">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>158</height>
+        </size>
+       </property>
        <widget class="QWidget" name="scrollAreaWidgetContents">
         <property name="geometry">
          <rect>
@@ -340,7 +360,7 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>20</width>
+         <width>0</width>
          <height>40</height>
         </size>
        </property>

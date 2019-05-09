@@ -73,7 +73,7 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
 /**
  * \ingroup gui
  * To pass the QgsExpression functionality and it's context to the context of the QWebView
- * \since QGIS 3.10
+ * \since QGIS 3.8
  */
 class HtmlExpression : public QObject
 {

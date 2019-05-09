@@ -125,6 +125,9 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
 
     void updatePatternIcon();
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+
 };
 
 
@@ -692,7 +695,22 @@ Set stroke color.
 %End
     void setSize( double size );
     void setAngle( double angle );
+
     void setCharacter( QChar chr );
+%Docstring
+Set the font marker character from char.
+
+:param chr: the char
+%End
+
+    void setCharacterFromText( const QString &text );
+%Docstring
+Set the font marker character from a text string.
+
+:param text: the text string
+
+.. versionadded:: 3.8
+%End
 
   protected:
 

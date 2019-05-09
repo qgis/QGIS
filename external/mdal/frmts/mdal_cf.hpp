@@ -63,6 +63,7 @@ namespace MDAL
 
   //! NetCDF Climate and Forecast (CF) Metadata Conventions
   //! http://cfconventions.org
+  //! and http://ugrid-conventions.github.io/ugrid-conventions/
   class DriverCF: public Driver
   {
     public:
@@ -74,12 +75,11 @@ namespace MDAL
       std::unique_ptr< Mesh > load( const std::string &fileName, MDAL_Status *status ) override;
 
     protected:
-      virtual CFDimensions populateDimensions( const NetCDFFile &ncFile ) = 0;
+      virtual CFDimensions populateDimensions( ) = 0;
       virtual void populateFacesAndVertices( Vertices &vertices, Faces &faces ) = 0;
-      virtual void addBedElevation( MDAL::Mesh *mesh ) = 0;
+      virtual void addBedElevation( MDAL::MemoryMesh *mesh ) = 0;
       virtual std::string getCoordinateSystemVariableName() = 0;
       virtual std::set<std::string> ignoreNetCDFVariables() = 0;
-      virtual std::string nameSuffix( CFDimensions::Type type ) = 0;
       virtual void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
           std::string &name, bool *is_vector, bool *is_x ) = 0;
 

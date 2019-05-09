@@ -414,11 +414,21 @@ Decodes a render unit from a string.
 .. seealso:: :py:func:`encodeUnit`
 %End
 
+
     static QString toString( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Returns a translated string representing a render ``unit``.
 
 .. versionadded:: 3.0
+%End
+
+    static QString toAbbreviatedString( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Returns a translated abbreviation representing a render unit.
+
+:param unit: unit to convert to string
+
+.. versionadded:: 3.8
 %End
 
 

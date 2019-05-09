@@ -34,6 +34,7 @@
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
 #include "qgsmapcanvas.h"
+#include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
@@ -312,7 +313,17 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
   emit changed();
 
   // also update paint effect preview
+  bool paintEffectToggled = false;
+  if ( mLayer->paintEffect() && mLayer->paintEffect()->enabled() )
+  {
+    mLayer->paintEffect()->setEnabled( false );
+    paintEffectToggled = true;
+  }
   mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 80, 80 ) ) );
+  if ( paintEffectToggled )
+  {
+    mLayer->paintEffect()->setEnabled( true );
+  }
   emit widgetChanged();
 }
 

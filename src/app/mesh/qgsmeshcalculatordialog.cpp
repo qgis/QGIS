@@ -247,7 +247,7 @@ void QgsMeshCalculatorDialog::mExpressionTextEdit_textChanged()
   }
   else
   {
-    mExpressionValidLabel->setText( tr( "Expression invalid" ) );
+    mExpressionValidLabel->setText( tr( "Expression invalid or datasets type not supported" ) );
   }
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }

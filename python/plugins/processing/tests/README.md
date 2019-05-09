@@ -194,6 +194,25 @@ OUTPUT:
     - 'Feature Count: 6'
 ```
 
+#### Directories
+
+You can compare the content of an output directory by en expected result reference directory
+
+```yaml
+OUTPUT_DIR:
+  name: expected/tiles_xyz/test_1
+  type: directory
+```
+
+### Algorithm Context
+
+There are few more definitions that can modify context of the algorithm - these can be specified at top level of test:
+
+- `project` - will load a specified QGIS project file before running the algorithm. If not specified, algorithm will run with empty project
+- `project_crs` - overrides the default project CRS - e.g. `EPSG:27700`
+- `ellipsoid` - overrides the default project ellipsoid used for measurements - e.g. `GRS80`
+
+
 Running tests locally
 ------------------
 ```bash

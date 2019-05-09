@@ -280,10 +280,10 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument
     if ( !layer )
       continue;
 
-    if ( layer->readLayerXml( layerElem, context ) )
-    {
-      layers << layer;
-    }
+    // always add the layer, even if the source is invalid -- this allows users to fix the source
+    // at a later stage and still retain all the layer properties intact
+    layer->readLayerXml( layerElem, context );
+    layers << layer;
   }
   return layers;
 }

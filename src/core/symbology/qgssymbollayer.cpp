@@ -176,7 +176,6 @@ QgsSymbolLayer::QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked )
   : mType( type )
   , mEnabled( true )
   , mLocked( locked )
-  , mRenderingPass( 0 )
 
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
@@ -216,6 +215,16 @@ bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
     return true;
 
   return symbol->type() == mType;
+}
+
+void QgsSymbolLayer::setRenderingPass( int renderingPass )
+{
+  mRenderingPass = renderingPass;
+}
+
+int QgsSymbolLayer::renderingPass() const
+{
+  return mRenderingPass;
 }
 
 QSet<QString> QgsSymbolLayer::usedAttributes( const QgsRenderContext &context ) const

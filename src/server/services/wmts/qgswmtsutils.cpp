@@ -99,6 +99,7 @@ namespace QgsWmts
     }
 
     tmi.unit = crs.mapUnits();
+    tmi.hasAxisInverted = crs.hasAxisInverted();
 
     // calculate tile matrix scale denominator
     double scaleDenominator = 0.0;
@@ -139,6 +140,7 @@ namespace QgsWmts
     double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileSize * res );
     tmi.extent = QgsRectangle( left, bottom, right, top );
 
+    tmi.resolution = res;
     tmi.scaleDenominator = scaleDenominator;
 
     calculatedTileMatrixInfoMap[crsStr] = tmi;
@@ -154,8 +156,7 @@ namespace QgsWmts
     QgsUnitTypes::DistanceUnit unit = tmi.unit;
 
     // constant
-    double UNIT_TO_M = QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
-    double resolution = POINTS_TO_M * scaleDenominator / UNIT_TO_M;
+    double resolution = tmi.resolution;
     int column = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * resolution ) );
     int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * resolution ) );
 
@@ -186,6 +187,7 @@ namespace QgsWmts
     tms.ref = tmi.ref;
     tms.extent = extent;
     tms.unit = unit;
+    tms.hasAxisInverted = tmi.hasAxisInverted;
     tms.tileMatrixList = tileMatrixList;
 
     return tms;
@@ -261,7 +263,7 @@ namespace QgsWmts
         {
           tmi = fixedTileMatrixInfoMap[crsStr];
           // Calculate resolution based on scale denominator
-          resolution = POINTS_TO_M * tmi.scaleDenominator / QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
+          resolution = tmi.resolution;
           // Get fixed corner
           QgsRectangle extent = tmi.extent;
           fixedTop = extent.yMaximum();
@@ -282,6 +284,7 @@ namespace QgsWmts
 
           QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
           tmi.unit = crs.mapUnits();
+          tmi.hasAxisInverted = crs.hasAxisInverted();
 
           QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ), crs, project );
           try
@@ -327,6 +330,7 @@ namespace QgsWmts
         tms.ref = tmi.ref;
         tms.extent = tmi.extent;
         tms.unit = tmi.unit;
+        tms.hasAxisInverted = tmi.hasAxisInverted;
         tms.tileMatrixList = tileMatrixList;
 
         tmsList.append( tms );
@@ -759,7 +763,7 @@ namespace QgsWmts
     double maxx = tm.left + ( tc + 1 ) * ( tileSize * res );
     double maxy = tm.top - tr * ( tileSize * res );
     QString bbox;
-    if ( tms.ref == "EPSG:4326" )
+    if ( tms.hasAxisInverted )
     {
       bbox = qgsDoubleToString( miny, 6 ) + ',' +
              qgsDoubleToString( minx, 6 ) + ',' +
@@ -807,19 +811,26 @@ namespace QgsWmts
 
       // Tile matrix information
       // to build tile matrix set like Google Mercator or TMS
+      // some references for resolution
+      // https://github.com/mapserver/mapcache/blob/master/lib/configuration.c#L94
       tileMatrixInfo tmi3857;
       tmi3857.ref = QStringLiteral( "EPSG:3857" );
       tmi3857.extent = QgsRectangle( -20037508.3427892480, -20037508.3427892480, 20037508.3427892480, 20037508.3427892480 );
+      tmi3857.resolution = 156543.0339280410;
       tmi3857.scaleDenominator = 559082264.0287179;
       tmi3857.unit = QgsUnitTypes::DistanceMeters;
       m[tmi3857.ref] = tmi3857;
 
-
+      // To build tile matrix set like mapcache for WGS84
+      // some references for resolution
+      // https://github.com/mapserver/mapcache/blob/master/lib/configuration.c#L73
       tileMatrixInfo tmi4326;
       tmi4326.ref = QStringLiteral( "EPSG:4326" );
       tmi4326.extent = QgsRectangle( -180, -90, 180, 90 );
+      tmi4326.resolution = 0.703125000000000;
       tmi4326.scaleDenominator = 279541132.0143588675418869;
       tmi4326.unit = QgsUnitTypes::DistanceDegrees;
+      tmi4326.hasAxisInverted = true;
       m[tmi4326.ref] = tmi4326;
 
       return m;

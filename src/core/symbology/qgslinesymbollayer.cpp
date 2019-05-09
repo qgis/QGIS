@@ -194,12 +194,13 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setColor( penColor );
   double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
   mPen.setWidthF( scaledWidth );
-  if ( mUseCustomDashPattern && !qgsDoubleNear( scaledWidth, 0 ) )
+  if ( mUseCustomDashPattern )
   {
     mPen.setStyle( Qt::CustomDashLine );
 
     //scale pattern vector
-    double dashWidthDiv = scaledWidth;
+    double dashWidthDiv = qgsDoubleNear( scaledWidth, 0 ) ? 1.0 : scaledWidth;
+
     //fix dash pattern width in Qt 4.8
     QStringList versionSplit = QString( qVersion() ).split( '.' );
     if ( versionSplit.size() > 1

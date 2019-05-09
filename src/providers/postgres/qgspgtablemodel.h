@@ -53,6 +53,7 @@ class QgsPgTableModel : public QStandardItemModel
       DbtmSrid,
       DbtmPkCol,
       DbtmSelectAtId,
+      DbtmCheckPkUnicity,
       DbtmSql,
       DbtmColumns
     };

@@ -186,6 +186,39 @@ QString QgsUnitTypes::toString( DistanceUnit unit )
   return QString();
 }
 
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::RenderUnit unit )
+{
+  switch ( unit )
+  {
+    case RenderMillimeters:
+      return QObject::tr( "mm", "render" );
+
+    case RenderMapUnits:
+      return QObject::tr( "map units", "render" );
+
+    case RenderPixels:
+      return QObject::tr( "px", "render" );
+
+    case RenderPercentage:
+      return QObject::tr( "%", "render" );
+
+    case RenderPoints:
+      return QObject::tr( "pt", "render" );
+
+    case RenderInches:
+      return QObject::tr( "in", "render" );
+
+    case RenderUnknownUnit:
+      return QObject::tr( "unknown", "render" );
+
+    case RenderMetersInMapUnits:
+      return QObject::tr( "m", "render" );
+
+  }
+
+  return QString();
+}
+
 QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceUnit unit )
 {
   switch ( unit )

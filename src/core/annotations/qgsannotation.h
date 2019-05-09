@@ -157,30 +157,64 @@ class CORE_EXPORT QgsAnnotation : public QObject
     void setRelativePosition( QPointF position );
 
     /**
-     * Sets the annotation's frame's offset from the mapPosition() reference point.
+     * Sets the annotation's frame's offset (in pixels) from the mapPosition() reference point.
      * \see frameOffsetFromReferencePoint()
+     * \deprecated use setFrameOffsetFromReferencePointMm() instead
      */
-    void setFrameOffsetFromReferencePoint( QPointF offset );
+    Q_DECL_DEPRECATED void setFrameOffsetFromReferencePoint( QPointF offset ) SIP_DEPRECATED;
 
     /**
-     * Returns the annotation's frame's offset from the mapPosition() reference point.
+     * Returns the annotation's frame's offset (in pixels) from the mapPosition() reference point.
      * \see setFrameOffsetFromReferencePoint()
+     * \deprecated use frameOffsetFromReferencePointMm() instead
      */
-    QPointF frameOffsetFromReferencePoint() const { return mOffsetFromReferencePoint; }
+    Q_DECL_DEPRECATED QPointF frameOffsetFromReferencePoint() const SIP_DEPRECATED;
 
     /**
-     * Sets the size of the annotation's frame (the main area in which
+     * Sets the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+     * \see frameOffsetFromReferencePointMm()
+     * \since QGIS 3.4.8
+     */
+    void setFrameOffsetFromReferencePointMm( QPointF offset );
+
+    /**
+     * Returns the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+     * \see setFrameOffsetFromReferencePointMm()
+     * \since QGIS 3.4.8
+     */
+    QPointF frameOffsetFromReferencePointMm() const { return mOffsetFromReferencePoint; }
+
+    /**
+     * Sets the size (in pixels) of the annotation's frame (the main area in which
      * the annotation's content is drawn).
      * \see frameSize()
+     * \deprecated use setFrameSizeMm() instead
      */
-    void setFrameSize( QSizeF size );
+    Q_DECL_DEPRECATED void setFrameSize( QSizeF size ) SIP_DEPRECATED;
 
     /**
-     * Returns the size of the annotation's frame (the main area in which
+     * Returns the size (in pixels) of the annotation's frame (the main area in which
      * the annotation's content is drawn).
      * \see setFrameSize()
+     * \deprecated use frameSizeMm() instead
      */
-    QSizeF frameSize() const { return mFrameSize; }
+    Q_DECL_DEPRECATED QSizeF frameSize() const SIP_DEPRECATED;
+
+    /**
+     * Sets the size (in millimeters) of the annotation's frame (the main area in which
+     * the annotation's content is drawn).
+     * \see frameSizeMm()
+     * \since QGIS 3.4.8
+     */
+    void setFrameSizeMm( QSizeF size );
+
+    /**
+     * Returns the size (in millimeters) of the annotation's frame (the main area in which
+     * the annotation's content is drawn).
+     * \see setFrameSizeMm()
+     * \since QGIS 3.4.8
+     */
+    QSizeF frameSizeMm() const { return mFrameSize; }
 
     /**
      * Sets the margins (in millimeters) between the outside of the frame and the annotation
@@ -332,10 +366,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     void updateBalloon();
 
     //! Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)
-    QLineF segment( int index ) const;
-
-    //! Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
-    QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const;
+    QLineF segment( int index, QgsRenderContext *context ) const;
 
     //! Draws the annotation frame to a destination painter
     void drawFrame( QgsRenderContext &context ) const;
@@ -357,10 +388,10 @@ class CORE_EXPORT QgsAnnotation : public QObject
     //! Relative position (for non-fixed items) (0-1)
     QPointF mRelativePosition;
 
-    //! Describes the shift of the item content box to the reference point
-    QPointF mOffsetFromReferencePoint = QPointF( 50, -50 );
+    //! Describes the shift of the item content box to the reference point in mm
+    QPointF mOffsetFromReferencePoint = QPointF( 13, -13 );
 
-    //! Size of the frame (without balloon)
+    //! Size of the frame in mm (without balloon)
     QSizeF mFrameSize;
 
     //! Point symbol that is to be drawn at the map reference location
@@ -374,10 +405,10 @@ class CORE_EXPORT QgsAnnotation : public QObject
     //! Segment number where the connection to the map point is attached. -1 if no balloon needed (e.g. if point is contained in frame)
     int mBalloonSegment = -1;
 
-    //! First segment point for drawing the connection (ccw direction)
+    //! First segment point for drawing the connection (ccw direction) (always in mm)
     QPointF mBalloonSegmentPoint1;
 
-    //! Second segment point for drawing the balloon connection (ccw direction)
+    //! Second segment point for drawing the balloon connection (ccw direction) (always in mm)
     QPointF mBalloonSegmentPoint2;
 
     //! Associated layer (or NULLPTR if not attached to a layer)
@@ -385,6 +416,9 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     //! Associated feature, or invalid feature if no feature associated
     QgsFeature mFeature;
+
+    //! Roughly 10 pixels at 96 dpi, to match earlier version rendering
+    double mSegmentPointWidthMm = 2.64;
 
 };
 

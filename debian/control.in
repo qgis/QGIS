@@ -392,6 +392,7 @@ Depends:
  python3-six,
  python3-tz,
  python3-yaml,
+ python3-lxml,
  ${python3:Depends},
  ${shlibs:Depends},
  ${sip3:Depends},

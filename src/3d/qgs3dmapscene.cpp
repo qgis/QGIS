@@ -575,8 +575,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       // this is probably not the best place for material-specific configuration,
       // maybe this could be more generalized when other materials need some specific treatment
-      QgsLineMaterial *lm = newEntity->findChild<QgsLineMaterial *>();
-      if ( lm )
+      for ( QgsLineMaterial *lm : newEntity->findChildren<QgsLineMaterial *>() )
       {
         connect( mCameraController, &QgsCameraController::viewportChanged, lm, [lm, this]
         {
