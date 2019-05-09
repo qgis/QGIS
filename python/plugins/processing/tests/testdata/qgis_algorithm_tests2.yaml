@@ -67,6 +67,7 @@ tests:
         hash:
           - 1e07ea5c90a16f87df812042d3e89dd5b1216defa7714921f306de94
           - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
+          - 6e533a4c2c2e8ef5ca62814a7ad6dd29cb0f0f6eea85baf2a2802870
         type: rasterhash
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
@@ -87,6 +88,7 @@ tests:
         hash:
           - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
           - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
+          - 3851b5d5f4030513003883150a64c83ec5d63709a6a5866867440309
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -104,6 +106,7 @@ tests:
         hash:
           - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
           - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
+          - 3851b5d5f4030513003883150a64c83ec5d63709a6a5866867440309
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
@@ -121,6 +124,7 @@ tests:
         hash:
           - 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
           - a31f0faf918ebe0902e5c9c5c8cf606d30f52eb4094bf24e4f8ac67a
+          - de8de3914164770865c0045b19cb9bd68531d74e7ceb9794a5f4989d
         type: rasterhash
       #TRIANGULATION_FILE:
       #  name: expected/triangulation.gml
@@ -141,6 +145,7 @@ tests:
         hash:
           - 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
           - b8389559d6a85e7a672d72254228473fae71af2d89e5a5dd73d1b0d7
+          - caeb23e86e710ab0e5555eb8508e9b07b162706bda7fa4faeb94cd7b
         type: rasterhash
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
