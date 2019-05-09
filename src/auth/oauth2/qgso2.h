@@ -76,7 +76,7 @@ class QgsO2: public O2
 
   protected:
 
-    QNetworkAccessManager* getManager() override;
+    QNetworkAccessManager *getManager() override;
 
   signals:
 
