@@ -272,7 +272,9 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   {
     return false;
   }
-  QgsVectorLayer *layer = new QgsVectorLayer( file, QFileInfo( file ).baseName(), QStringLiteral( "ogr" ) );
+
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( file, QFileInfo( file ).baseName(), QStringLiteral( "ogr" ), options );
   if ( !layer->isValid() )
   {
     delete layer;

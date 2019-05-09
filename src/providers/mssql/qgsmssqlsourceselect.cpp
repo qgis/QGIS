@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmssqlconnection.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -676,8 +677,8 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   const QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsMssqlTableModel::DbtmTable ) )->text();
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
-
-  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer>( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer>( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
 
   if ( !vlayer->isValid() )
   {

@@ -79,7 +79,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
 
     /**
@@ -89,7 +89,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * and query the table.
      * \param options generic data provider options
      */
-    explicit QgsPostgresProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsPostgresProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
 
     ~QgsPostgresProvider() override;
@@ -285,7 +285,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setEditorWidgets();
 
     //! Convert a QgsField to work with PG
-    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
+    static bool convertField( QgsField &field, const QMap<QString, QVariant> *coordinateTransformContext = nullptr );
 
     /**
      * Parses the enum_range of an attribute and inserts the possible values into a stringlist

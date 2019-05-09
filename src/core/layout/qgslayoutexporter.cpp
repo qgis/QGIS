@@ -1355,7 +1355,7 @@ std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayou
 void QgsLayoutExporter::writeWorldFile( const QString &worldFileName, double a, double b, double c, double d, double e, double f ) const
 {
   QFile worldFile( worldFileName );
-  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return;
   }

@@ -95,7 +95,7 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
   mNbCellsYProvider = mInterface->ySize();
 
   mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "NO_DATA" ), context );
-  mUseNoDataForMissingValues = parameterAsBool( parameters, QStringLiteral( "NODATA_FOR_MISSING" ), context );
+  mUseNoDataForMissingValues = parameterAsBoolean( parameters, QStringLiteral( "NODATA_FOR_MISSING" ), context );
 
   int boundsType = parameterAsEnum( parameters, QStringLiteral( "RANGE_BOUNDARIES" ), context );
   switch ( boundsType )

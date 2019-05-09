@@ -142,12 +142,15 @@ typedef bool deleteStyleById_t(
 QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
-                                const LayerOptions &options )
+                                const QgsVectorLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::VectorLayer, baseName, vectorLayerPath )
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
 {
+  if ( options.fallbackCrs.isValid() )
+    setCrs( options.fallbackCrs, false );
+  mWkbType = options.fallbackWkbType;
 
   setProviderType( providerKey );
 
@@ -163,7 +166,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions;
+    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
   }
 
@@ -179,8 +182,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mSimplifyMethod.setThreshold( settings.value( QStringLiteral( "qgis/simplifyDrawingTol" ), mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( QStringLiteral( "qgis/simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( QStringLiteral( "qgis/simplifyMaxScale" ), mSimplifyMethod.maximumScale() ).toFloat() );
-} // QgsVectorLayer ctor
 
+} // QgsVectorLayer ctor
 
 
 QgsVectorLayer::~QgsVectorLayer()
@@ -208,7 +211,12 @@ QgsVectorLayer::~QgsVectorLayer()
 
 QgsVectorLayer *QgsVectorLayer::clone() const
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( source(), name(), mProviderKey );
+  QgsVectorLayer::LayerOptions options;
+  if ( mDataProvider )
+  {
+    options.transformContext = mDataProvider->transformContext();
+  }
+  QgsVectorLayer *layer = new QgsVectorLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
 
   QList<QgsVectorLayerJoinInfo> joins = vectorJoins();
@@ -1372,6 +1380,12 @@ bool QgsVectorLayer::startEditing()
   return true;
 }
 
+void QgsVectorLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
+}
+
 bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
   QgsDebugMsgLevel( QStringLiteral( "Datasource in QgsVectorLayer::readXml: %1" ).arg( mDataSource.toLocal8Bit().data() ), 3 );
@@ -1404,10 +1418,15 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mProviderKey = QStringLiteral( "ogr" );
   }
 
-  QgsDataProvider::ProviderOptions options;
+  QgsDataProvider::ProviderOptions options { context.transformContext() };
   if ( !setDataProvider( mProviderKey, options ) )
   {
     QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
+    const QDomElement elem = layer_node.toElement();
+
+    // for invalid layer sources, we fallback to stored wkbType if available
+    if ( elem.hasAttribute( QStringLiteral( "wkbType" ) ) )
+      mWkbType = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "wkbType" ) ), mWkbType );
   }
 
   QDomElement pkeyElem = pkeyNode.toElement();
@@ -1480,7 +1499,7 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
 
 void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-  QgsWkbTypes::GeometryType geomType = mValid && mDataProvider ? geometryType() : QgsWkbTypes::UnknownGeometry;
+  QgsWkbTypes::GeometryType geomType = geometryType();
 
   mDataSource = dataSource;
   setName( baseName );
@@ -1562,25 +1581,26 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
 
 bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
-  mProviderKey = provider;     // XXX is this necessary?  Usually already set
+  mProviderKey = provider;
+  delete mDataProvider;
 
-  // primary key unicity is tested at construction time, so it has to be set
-  // before initializing postgres provider
-  QString checkUnicityKey = QStringLiteral( "checkPrimaryKeyUnicity" );
-  QString dataSource = mDataSource;
+  // For Postgres provider primary key unicity is tested at construction time,
+  // so it has to be set before initializing the provider,
+  // this manipulation is necessary to preserve default behavior when
+  // "trust layer metadata" project level option is set and checkPrimaryKeyUnicity
+  // was not explicitly passed in the uri
   if ( provider.compare( QLatin1String( "postgres" ) ) == 0 )
   {
-    QgsDataSourceUri uri( dataSource );
-
-    if ( uri.hasParam( checkUnicityKey ) )
-      uri.removeParam( checkUnicityKey );
-
-    uri.setParam( checkUnicityKey, mReadExtentFromXml ? "0" : "1" );
-    dataSource = uri.uri( false );
+    const QString checkUnicityKey { QStringLiteral( "checkPrimaryKeyUnicity" ) };
+    QgsDataSourceUri uri( mDataSource );
+    if ( ! uri.hasParam( checkUnicityKey ) )
+    {
+      uri.setParam( checkUnicityKey, mReadExtentFromXml ? "0" : "1" );
+      mDataSource = uri.uri( false );
+    }
   }
 
-  delete mDataProvider;
-  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options ) );
+  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options ) );
   if ( !mDataProvider )
   {
     mValid = false;
@@ -1639,15 +1659,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
       if ( !lName.isEmpty() )
         setName( lName );
     }
-
     QgsDebugMsgLevel( QStringLiteral( "Beautified layer name %1" ).arg( name() ), 3 );
-
-    // deal with unnecessary schema qualification to make v.in.ogr happy
-    // and remove unnecessary key
-    QgsDataSourceUri dataProviderUri( mDataProvider->dataSourceUri() );
-    if ( dataProviderUri.hasParam( checkUnicityKey ) )
-      dataProviderUri.removeParam( checkUnicityKey );
-    mDataSource = dataProviderUri.uri( false );
   }
   else if ( mProviderKey == QLatin1String( "osm" ) )
   {
@@ -1695,6 +1707,7 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
 
   // set the geometry type
   mapLayerNode.setAttribute( QStringLiteral( "geometry" ), QgsWkbTypes::geometryDisplayString( geometryType() ) );
+  mapLayerNode.setAttribute( QStringLiteral( "wkbType" ), qgsEnumValueToKey( wkbType() ) );
 
   // add provider node
   if ( mDataProvider )

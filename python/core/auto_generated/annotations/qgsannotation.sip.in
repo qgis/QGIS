@@ -143,34 +143,80 @@ the relative percentage for the position compared to the map width and height.
 .. seealso:: :py:func:`relativePosition`
 %End
 
-    void setFrameOffsetFromReferencePoint( QPointF offset );
+ void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated/;
 %Docstring
-Sets the annotation's frame's offset from the mapPosition() reference point.
+Sets the annotation's frame's offset (in pixels) from the mapPosition() reference point.
 
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
+
+.. deprecated:: use setFrameOffsetFromReferencePointMm() instead
 %End
 
-    QPointF frameOffsetFromReferencePoint() const;
+ QPointF frameOffsetFromReferencePoint() const /Deprecated/;
 %Docstring
-Returns the annotation's frame's offset from the mapPosition() reference point.
+Returns the annotation's frame's offset (in pixels) from the mapPosition() reference point.
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
+
+.. deprecated:: use frameOffsetFromReferencePointMm() instead
 %End
 
-    void setFrameSize( QSizeF size );
+    void setFrameOffsetFromReferencePointMm( QPointF offset );
 %Docstring
-Sets the size of the annotation's frame (the main area in which
+Sets the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+
+.. seealso:: :py:func:`frameOffsetFromReferencePointMm`
+
+.. versionadded:: 3.4.8
+%End
+
+    QPointF frameOffsetFromReferencePointMm() const;
+%Docstring
+Returns the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+
+.. seealso:: :py:func:`setFrameOffsetFromReferencePointMm`
+
+.. versionadded:: 3.4.8
+%End
+
+ void setFrameSize( QSizeF size ) /Deprecated/;
+%Docstring
+Sets the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
 
 .. seealso:: :py:func:`frameSize`
+
+.. deprecated:: use setFrameSizeMm() instead
 %End
 
-    QSizeF frameSize() const;
+ QSizeF frameSize() const /Deprecated/;
 %Docstring
-Returns the size of the annotation's frame (the main area in which
+Returns the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
 
 .. seealso:: :py:func:`setFrameSize`
+
+.. deprecated:: use frameSizeMm() instead
+%End
+
+    void setFrameSizeMm( QSizeF size );
+%Docstring
+Sets the size (in millimeters) of the annotation's frame (the main area in which
+the annotation's content is drawn).
+
+.. seealso:: :py:func:`frameSizeMm`
+
+.. versionadded:: 3.4.8
+%End
+
+    QSizeF frameSizeMm() const;
+%Docstring
+Returns the size (in millimeters) of the annotation's frame (the main area in which
+the annotation's content is drawn).
+
+.. seealso:: :py:func:`setFrameSizeMm`
+
+.. versionadded:: 3.4.8
 %End
 
     void setContentsMargin( const QgsMargins &margins );

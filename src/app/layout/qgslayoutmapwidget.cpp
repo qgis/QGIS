@@ -31,6 +31,8 @@
 #include "qgslayoutundostack.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutdesignerinterface.h"
+#include "qgsguiutils.h"
+
 #include <QMenu>
 #include <QMessageBox>
 
@@ -86,7 +88,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   setPanelTitle( tr( "Map Properties" ) );
   mMapRotationSpinBox->setClearValue( 0 );
 
-  mDockToolbar->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mDockToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, item );
@@ -246,7 +248,8 @@ void QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu()
     return;
 
   menu->clear();
-  Q_FOREACH ( const QString &presetName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &presetName : constMapThemes )
   {
     menu->addAction( presetName, this, &QgsLayoutMapWidget::keepLayersVisibilityPresetSelected );
   }

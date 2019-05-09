@@ -114,6 +114,14 @@ BuildRequires:  qtkeychain-qt5-devel
 BuildRequires:  qt5-qtserialport-devel
 BuildRequires:  qt5-qt3d-devel
 
+# In F30+ qt5-qtbase-devel has been split
+# in qt5-qtbase-devel and qt5-qtbase-private-devel
+# qt5-qtbase-private-devel is needed by 
+# external/qspatialite/qsql_spatialite.cpp:49:10
+%if 0%{?fedora} >= 30
+BuildRequires:  qt5-qtbase-private-devel
+%endif
+
 # Qwt stuff
 BuildRequires:  qwt-devel
 BuildRequires:  qwt-qt5-devel
@@ -171,6 +179,7 @@ Obsoletes:      python2-%{name} < %{version}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
 Requires:       gdal-python3
+Requires:       gdal-python-tools
 Requires:       python3-future
 Requires:       python3-jinja2
 Requires:       python3-OWSLib

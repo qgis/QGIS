@@ -69,9 +69,19 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     Qgis::DataType dataType( int bandNo ) const override;
 
-    //! Sets the source and destination CRS
+    /**
+     * Sets the source and destination CRS
+     * \deprecated since QGIS 3.8, use transformContext version instead
+     */
+    Q_DECL_DEPRECATED void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
+                                   int srcDatumTransform = -1, int destDatumTransform = -1 ) SIP_DEPRECATED;
+
+    /**
+     * Sets source CRS to \a srcCRS and destination CRS to \a destCRS and the transformation context to \a transformContext
+     * \since QGIS 3.8
+     */
     void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
-                 int srcDatumTransform = -1, int destDatumTransform = -1 );
+                 QgsCoordinateTransformContext transformContext );
 
     //! Returns the source CRS
     QgsCoordinateReferenceSystem sourceCrs() const { return mSrcCRS; }

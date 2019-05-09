@@ -480,7 +480,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     return;
   }
 
-  QgsWmsCapabilities caps;
+  QgsWmsCapabilities caps { QgsProject::instance()->transformContext()  };
   if ( !caps.parseResponse( capDownload.response(), wmsSettings.parserSettings() ) )
   {
     QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ),

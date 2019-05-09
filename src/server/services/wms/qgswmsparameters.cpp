@@ -1139,6 +1139,16 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::ITEMFONTSIZE ].toDouble();
   }
 
+  QString QgsWmsParameters::itemFontColor() const
+  {
+    return mWmsParameters[ QgsWmsParameter::ITEMFONTCOLOR ].toString();
+  }
+
+  QColor QgsWmsParameters::itemFontColorAsColor() const
+  {
+    return mWmsParameters[ QgsWmsParameter::ITEMFONTCOLOR ].toColor();
+  }
+
   QFont QgsWmsParameters::layerFont() const
   {
     QFont font;
@@ -1192,6 +1202,18 @@ namespace QgsWms
     settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Top, layerSpaceAsDouble() );
     settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Bottom, layerTitleSpaceAsDouble() );
     settings.rstyle( QgsLegendStyle::Style::Subgroup ).setFont( layerFont() );
+
+    if ( !itemFontColor().isEmpty() )
+    {
+      settings.setFontColor( itemFontColorAsColor() );
+    }
+
+    // Ok, this is tricky: because QgsLegendSettings's layerFontColor was added to the API after
+    // fontColor, to fix regressions #21871 and #21870 and the previous behavior was to use fontColor
+    // for the whole legend we need to preserve that behavior.
+    // But, the 2.18 server parameters ITEMFONTCOLOR did not have effect on the layer titles too, so
+    // we set explicitly layerFontColor to black if it's not overridden by LAYERFONTCOLOR argument.
+    settings.setLayerFontColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
 
     settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setFont( itemFont() );
     settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpaceAsDouble() );
@@ -1836,7 +1858,7 @@ namespace QgsWms
 
   void QgsWmsParameters::raiseError( const QString &msg ) const
   {
-    throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE, msg );
+    throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, msg );
   }
 
   QgsWmsParameter QgsWmsParameters::idParameter( const QgsWmsParameter::Name name, const int id ) const

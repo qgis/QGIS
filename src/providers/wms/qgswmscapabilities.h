@@ -26,6 +26,8 @@
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
 #include "qgsapplication.h"
+#include "qgsdataprovider.h"
+
 
 class QNetworkReply;
 
@@ -626,7 +628,11 @@ class QgsWmsSettings
 class QgsWmsCapabilities
 {
   public:
-    QgsWmsCapabilities() = default;
+
+    /**
+     * Constructs a QgsWmsCapabilities object with the given \a coordinateTransformContext
+     */
+    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
 
     bool isValid() const { return mValid; }
 
@@ -758,6 +764,10 @@ class QgsWmsCapabilities
 
     //temporarily caches invert axis setting for each crs
     QHash<QString, bool> mCrsInvertAxis;
+
+  private:
+
+    QgsCoordinateTransformContext mCoordinateTransformContext;
 
     friend class QgsWmsProvider;
 };

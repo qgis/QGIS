@@ -131,25 +131,25 @@ namespace QgsWms
   {
     if ( parameters.allLayersNickname().isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
                                     parameters[QgsWmsParameter::LAYERS] );
     }
 
     if ( parameters.format() == QgsWmsParameters::Format::NONE )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MISSING_PARAMETER_VALUE,
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
                                     parameters[QgsWmsParameter::FORMAT] );
     }
 
     if ( ! parameters.bbox().isEmpty() && !parameters.rule().isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                     QStringLiteral( "BBOX parameter cannot be combined with RULE." ) );
     }
 
     if ( ! parameters.bbox().isEmpty() && parameters.bboxAsRectangle().isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_INVALID_PARAMETER_VALUE,
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                     parameters[QgsWmsParameter::BBOX] );
     }
   }

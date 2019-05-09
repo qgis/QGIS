@@ -121,7 +121,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setProviderType( providerKey );
 
-  QgsDataProvider::ProviderOptions providerOptions;
+  QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
@@ -137,7 +137,12 @@ QgsRasterLayer::~QgsRasterLayer()
 
 QgsRasterLayer *QgsRasterLayer::clone() const
 {
-  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey );
+  QgsRasterLayer::LayerOptions options;
+  if ( mDataProvider )
+  {
+    options.transformContext = mDataProvider->transformContext();
+  }
+  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
 
   // do not clone data provider which is the first element in pipe
@@ -267,7 +272,7 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCrs( rasterViewPort->mSrcCRS, rasterViewPort->mDestCRS, rasterViewPort->mSrcDatumTransform, rasterViewPort->mDestDatumTransform );
+    projector->setCrs( rasterViewPort->mSrcCRS, rasterViewPort->mDestCRS, rasterViewPort->mTransformContext );
   }
 
   // Drawer to pipe?
@@ -1510,6 +1515,12 @@ void QgsRasterLayer::showStatusMessage( QString const &message )
   emit statusChanged( message );
 }
 
+void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
+}
+
 QStringList QgsRasterLayer::subLayers() const
 {
   return mDataProvider->subLayers();
@@ -1746,7 +1757,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
 
-  QgsDataProvider::ProviderOptions providerOptions;
+  QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
   setDataProvider( mProviderKey, providerOptions );
 
   if ( ! mDataProvider )

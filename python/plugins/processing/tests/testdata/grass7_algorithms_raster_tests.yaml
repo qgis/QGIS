@@ -1772,3 +1772,24 @@ tests:
       stream_raster:
         hash: 916672ce0c35295100bcdc56bc60e26841b9cbb384924ae4f54648a8
         type: rasterhash
+        
+  - algorithm: grass7:r.geomorphon
+    name: Test (grass7:r.geomorphon)
+    params:
+      -e: false
+      -m: false
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      dist: 0.0
+      elevation:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      flat: 1.0
+      search: 3
+      skip: 0
+    results:
+      forms:
+        hash: e1a1fc36d53e2ac801632f9e2271922d2b1340869f2db82d5edaeb0e
+        type: rasterhash
+  

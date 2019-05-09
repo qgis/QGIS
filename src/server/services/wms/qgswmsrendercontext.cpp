@@ -300,9 +300,33 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
   if ( !groupName.isEmpty() )
   {
     mLayerGroups[groupName] = QList<QgsMapLayer *>();
-    for ( QgsLayerTreeLayer *layer : group->findLayers() )
+    const auto projectLayerTreeRoot { mProject->layerTreeRoot() };
+    const auto treeGroupLayers { group->findLayers() };
+    // Fast track if there is no custom layer order,
+    // otherwise reorder layers.
+    if ( ! projectLayerTreeRoot->hasCustomLayerOrder() )
     {
-      mLayerGroups[groupName].append( layer->layer() );
+      for ( const auto &tl : treeGroupLayers )
+      {
+        mLayerGroups[groupName].push_back( tl->layer() );
+      }
+    }
+    else
+    {
+      const auto projectLayerOrder { projectLayerTreeRoot->layerOrder() };
+      // Flat list containing the layers from the tree nodes
+      QList<QgsMapLayer *> groupLayersList;
+      for ( const auto &tl : treeGroupLayers )
+      {
+        groupLayersList << tl->layer();
+      }
+      for ( const auto &l : projectLayerOrder )
+      {
+        if ( groupLayersList.contains( l ) )
+        {
+          mLayerGroups[groupName].push_back( l );
+        }
+      }
     }
   }
 
@@ -436,7 +460,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
       {
         QgsWmsParameter param( QgsWmsParameter::LAYER );
         param.mValue = lname;
-        throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+        throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
                                       param );
       }
     }
@@ -482,7 +506,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
     {
       QgsWmsParameter param( QgsWmsParameter::LAYER );
       param.mValue = nickname;
-      throw QgsBadRequestException( QgsServiceException::OGC_LAYER_NOT_DEFINED,
+      throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
                                     param );
     }
   }

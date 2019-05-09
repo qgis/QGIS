@@ -90,7 +90,7 @@ namespace QgsWms
         const QString req = parameters.request();
         if ( req.isEmpty() )
         {
-          throw QgsServiceException( QgsServiceException::OGC_OPERATION_NOT_SUPPORTED,
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
                                      QStringLiteral( "Please check the value of the REQUEST parameter" ), 501 );
         }
 
@@ -153,7 +153,7 @@ namespace QgsWms
         else
         {
           // Operation not supported
-          throw QgsServiceException( QgsServiceException::OGC_OPERATION_NOT_SUPPORTED,
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
                                      QString( "Request %1 is not supported" ).arg( req ), 501 );
         }
       }

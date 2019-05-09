@@ -94,7 +94,8 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
     return vectorLayer;
   }
   owner = true;
-  return new QgsVectorLayer( uri, name, providerKey );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  return new QgsVectorLayer( uri, name, providerKey, options );
 }
 
 QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error ) const

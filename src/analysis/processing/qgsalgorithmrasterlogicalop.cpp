@@ -83,7 +83,7 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
   mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "NO_DATA" ), context );
   mDataType = QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( parameterAsEnum( parameters, QStringLiteral( "DATA_TYPE" ), context ) );
 
-  mTreatNodataAsFalse = parameterAsBool( parameters, QStringLiteral( "NODATA_AS_FALSE" ), context );
+  mTreatNodataAsFalse = parameterAsBoolean( parameters, QStringLiteral( "NODATA_AS_FALSE" ), context );
 
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "INPUT" ), context );
   QList< QgsRasterLayer * > rasterLayers;
@@ -103,7 +103,7 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
       {
         input.projector = qgis::make_unique< QgsRasterProjector >();
         input.projector->setInput( input.sourceDataProvider.get() );
-        input.projector->setCrs( layer->crs(), mCrs );
+        input.projector->setCrs( layer->crs(), mCrs, context.transformContext() );
         input.interface = input.projector.get();
       }
       mInputs.emplace_back( std::move( input ) );

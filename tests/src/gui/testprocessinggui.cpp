@@ -2834,26 +2834,30 @@ void TestProcessingGui::testPointPanel()
   QSignalSpy spy( panel.get(), &QgsProcessingPointPanel::changed );
 
   panel->setValue( QgsPointXY( 100, 150 ), QgsCoordinateReferenceSystem() );
-  QCOMPARE( panel->value().toString(), QStringLiteral( "100,150" ) );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "100.000000,150.000000" ) );
   QCOMPARE( spy.count(), 1 );
 
   panel->setValue( QgsPointXY( 200, 250 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
-  QCOMPARE( panel->value().toString(), QStringLiteral( "200,250 [EPSG:3111]" ) );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "200.000000,250.000000 [EPSG:3111]" ) );
   QCOMPARE( spy.count(), 2 );
+
+  panel->setValue( QgsPointXY( 123456.123456789, 654321.987654321 ), QgsCoordinateReferenceSystem() );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "123456.123457,654321.987654" ) );
+  QCOMPARE( spy.count(), 3 );
 
   QVERIFY( !panel->mLineEdit->showClearButton() );
   panel->setAllowNull( true );
   QVERIFY( panel->mLineEdit->showClearButton() );
   panel->clear();
   QVERIFY( !panel->value().isValid() );
-  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.count(), 4 );
 
   QgsMapCanvas canvas;
   canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
   panel->setMapCanvas( &canvas );
   panel->updatePoint( QgsPointXY( 1.5, -3.5 ) );
-  QCOMPARE( panel->value().toString(), QStringLiteral( "1.5,-3.5 [EPSG:28356]" ) );
-  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( panel->value().toString(), QStringLiteral( "1.500000,-3.500000 [EPSG:28356]" ) );
+  QCOMPARE( spy.count(), 5 );
 
   panel.reset();
 }
@@ -2875,8 +2879,8 @@ void TestProcessingGui::testPointWrapper()
     QCOMPARE( spy.count(), 1 );
     if ( type != QgsProcessingGui::Modeler )
     {
-      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2" ) );
-      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2" ) );
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1.000000,2.000000" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1.000000,2.000000" ) );
     }
     else
     {
@@ -2887,8 +2891,8 @@ void TestProcessingGui::testPointWrapper()
     QCOMPARE( spy.count(), 2 );
     if ( type != QgsProcessingGui::Modeler )
     {
-      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
-      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1.000000,2.000000 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1.000000,2.000000 [EPSG:3111]" ) );
     }
     else
     {
@@ -2935,8 +2939,8 @@ void TestProcessingGui::testPointWrapper()
     QCOMPARE( spy2.count(), 1 );
     if ( type != QgsProcessingGui::Modeler )
     {
-      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2" ) );
-      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1.000000,2.000000" ) );
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1.000000,2.000000" ) );
     }
     else
     {
@@ -2948,8 +2952,8 @@ void TestProcessingGui::testPointWrapper()
     QCOMPARE( spy2.count(), 2 );
     if ( type != QgsProcessingGui::Modeler )
     {
-      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1,2 [EPSG:3111]" ) );
-      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1,2 [EPSG:3111]" ) );
+      QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1.000000,2.000000 [EPSG:3111]" ) );
+      QCOMPARE( static_cast< QgsProcessingPointPanel * >( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1.000000,2.000000 [EPSG:3111]" ) );
     }
     else
     {

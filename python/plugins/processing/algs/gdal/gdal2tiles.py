@@ -213,13 +213,13 @@ class gdal2tiles(GdalAlgorithm):
             arguments.append('-b')
             arguments.append(key)
 
-        if self.parameterAsBool(parameters, self.RESUME, context):
+        if self.parameterAsBoolean(parameters, self.RESUME, context):
             arguments.append('-e')
 
-        if self.parameterAsBool(parameters, self.KML, context):
+        if self.parameterAsBoolean(parameters, self.KML, context):
             arguments.append('-k')
 
-        if self.parameterAsBool(parameters, self.NO_KML, context):
+        if self.parameterAsBoolean(parameters, self.NO_KML, context):
             arguments.append('-n')
 
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)

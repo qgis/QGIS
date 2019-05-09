@@ -37,6 +37,7 @@
 
 class QgsRasterDataProvider;
 class QgsRasterLayer;
+class QgsCoordinateTransformContext;
 
 /**
  * \ingroup 3d
@@ -80,7 +81,7 @@ class QgsDemHeightMapGenerator : public QObject
      * Constructs height map generator based on a raster layer with elevation model,
      * terrain's tiling scheme and height map resolution (number of height values on each side of tile)
      */
-    QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution );
+    QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext );
     ~QgsDemHeightMapGenerator() override;
 
     //! asynchronous terrain read for a tile (array of floats)

@@ -325,7 +325,8 @@ void QgsBookmarks::importFromXml()
   QStringList queriesList = queries.split( ';' );
   QSqlQuery query( mQgisModel->database() );
 
-  Q_FOREACH ( const QString &queryTxt, queriesList )
+  const auto constQueriesList = queriesList;
+  for ( const QString &queryTxt : constQueriesList )
   {
     if ( queryTxt.trimmed().isEmpty() )
     {

@@ -148,13 +148,13 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 #include <QFutureWatcher>
 #include "qgsterraindownloader.h"
 
-QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution )
+QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext )
   : mDtm( dtm )
   , mClonedProvider( dtm ? ( QgsRasterDataProvider * )dtm->dataProvider()->clone() : nullptr )
   , mTilingScheme( tilingScheme )
   , mResolution( resolution )
   , mLastJobId( 0 )
-  , mDownloader( dtm ? nullptr : new QgsTerrainDownloader )
+  , mDownloader( dtm ? nullptr : new QgsTerrainDownloader( transformContext ) )
 {
 }
 
@@ -176,7 +176,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   if ( provider->crs() != destCrs )
   {
     projector.reset( new QgsRasterProjector );
-    projector->setCrs( provider->crs(), destCrs );
+    projector->setCrs( provider->crs(), destCrs, provider->transformContext() );
     projector->setInput( provider );
     input = projector.get();
   }

@@ -29,6 +29,7 @@ email                : sherman at mrcc.com
 #include "qgscolumntypethread.h"
 #include "qgssettings.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -631,7 +632,8 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, QStringLiteral( "postgres" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, QStringLiteral( "postgres" ), options );
   if ( !vlayer->isValid() )
   {
     delete vlayer;

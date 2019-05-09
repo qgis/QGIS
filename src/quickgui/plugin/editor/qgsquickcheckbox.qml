@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-import QtQuick 2.0
+import QtQuick 2.6
 import QtQuick.Controls 2.2
 import QgsQuick 0.1 as QgsQuick
 
@@ -25,48 +25,82 @@ import QgsQuick 0.1 as QgsQuick
 Item {
   signal valueChanged( var value, bool isNull )
 
+  property var checkedState: getConfigValue(config['CheckedState'], true)
+  property var uncheckedState: getConfigValue(config['UncheckedState'], false)
+  property string booleanEnum: "1" // QMetaType::Bool Enum of Qvariant::Type
+
   id: fieldItem
   enabled: !readOnly
   height: childrenRect.height
   anchors {
     right: parent.right
     left: parent.left
+    rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  CheckBox {
-    property var currentValue: value
-    height: customStyle.height
-    id: checkBox
-    leftPadding: 0
-    checked: value == config['CheckedState']
+  function getConfigValue(configValue, defaultValue) {
+    if (!configValue && field.type + "" === fieldItem.booleanEnum) {
+      return defaultValue
+    } else return configValue
+  }
 
-    indicator: Rectangle {
-                implicitWidth: customStyle.height
-                implicitHeight: customStyle.height
-                radius: customStyle.cornerRadius
-                border.color: checkBox.activeFocus ? customStyle.fontColor : "grey"
-                border.width: 1
-                Rectangle {
-                    visible: checkBox.checked
-                    color: customStyle.fontColor
-                    radius: customStyle.cornerRadius
-                    anchors.margins: 4
-                    anchors.fill: parent
-                }
+  Rectangle {
+    id: fieldContainer
+    height: customStyle.fields.height
+    color: customStyle.fields.backgroundColor
+    radius: customStyle.fields.cornerRadius
+    anchors { right: parent.right; left: parent.left }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: checkBox.currentValue = !checkBox.currentValue
-                }
-        }
-    onCheckedChanged: {
-      valueChanged( checked ? config['CheckedState'] : config['UncheckedState'], false )
-      forceActiveFocus()
+    Text {
+      text: checkBox.checked ? fieldItem.checkedState : fieldItem.uncheckedState
+      font.pixelSize: customStyle.fields.fontPixelSize
+      color: customStyle.fields.fontColor
+      horizontalAlignment: Text.AlignLeft
+      verticalAlignment: Text.AlignVCenter
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      leftPadding: 6 * QgsQuick.Utils.dp
     }
 
-    // Workaround to get a signal when the value has changed
-    onCurrentValueChanged: {
-      checked = currentValue == config['CheckedState']
+    CheckBox {
+      property var currentValue: value
+      height: customStyle.fields.height/2
+      width: height * 2
+      anchors.right: parent.right
+      anchors.rightMargin: fieldItem.anchors.rightMargin
+      anchors.verticalCenter: parent.verticalCenter
+      id: checkBox
+      leftPadding: 0
+      checked: value === fieldItem.checkedState
+
+      indicator: Rectangle {
+        implicitWidth: parent.width
+        implicitHeight: parent.height
+        x: checkBox.leftPadding
+        y: parent.height / 2 - height / 2
+        radius: parent.height/2
+        color: checkBox.checked ? customStyle.fields.fontColor : "#ffffff"
+        border.color: checkBox.checked ? customStyle.fields.fontColor : customStyle.fields.normalColor
+
+        Rectangle {
+          x: checkBox.checked ? parent.width - width : 0
+          width: parent.height
+          height: parent.height
+          radius: parent.height/2
+          color: "#ffffff"
+          border.color: checkBox.checked ? customStyle.fields.fontColor : customStyle.fields.normalColor
+        }
+      }
+
+      onCheckedChanged: {
+        valueChanged( checked ? fieldItem.checkedState : fieldItem.uncheckedState, false )
+        forceActiveFocus()
+      }
+
+      // Workaround to get a signal when the value has changed
+      onCurrentValueChanged: {
+        checked = currentValue === fieldItem.checkedState
+      }
     }
   }
 }

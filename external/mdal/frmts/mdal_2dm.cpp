@@ -13,6 +13,7 @@
 #include <map>
 #include <cassert>
 #include <limits>
+#include <algorithm>
 
 #include "mdal_2dm.hpp"
 #include "mdal.h"
@@ -62,6 +63,19 @@ size_t MDAL::Mesh2dm::vertexIndex( size_t vertexID ) const
     return  ni2i->second; // convert from ID to index
   }
   return vertexID;
+}
+
+size_t MDAL::Mesh2dm::maximumVertexId() const
+{
+  size_t maxIndex = verticesCount() - 1;
+  if ( mVertexIDtoIndex.empty() )
+    return maxIndex;
+  else
+  {
+    // std::map is sorted!
+    size_t maxID = mVertexIDtoIndex.rbegin()->first;
+    return std::max( maxIndex, maxID );
+  }
 }
 
 MDAL::Driver2dm::Driver2dm():
@@ -146,6 +160,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   size_t faceIndex = 0;
   size_t vertexIndex = 0;
   std::map<size_t, size_t> vertexIDtoIndex;
+  size_t lastVertexID = 0;
 
   while ( std::getline( in, line ) )
   {
@@ -205,7 +220,22 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
     else if ( startsWith( line, "ND" ) )
     {
       chunks = split( line,  ' ' );
-      size_t nodeID = toSizeT( chunks[1] ) - 1; // 2dm is numbered from 1
+      size_t nodeID = toSizeT( chunks[1] );
+
+      if ( nodeID != 0 )
+      {
+        // specification of 2DM states that ID should be positive integer numbered from 1
+        // but it seems some formats do not respect that
+        if ( ( lastVertexID != 0 ) && ( nodeID <= lastVertexID ) )
+        {
+          // the algorithm requires that the file has NDs orderer by index
+          if ( status ) *status = MDAL_Status::Err_InvalidData;
+          return nullptr;
+        }
+        lastVertexID = nodeID;
+      }
+      nodeID -= 1; // 2dm is numbered from 1
+
       _parse_vertex_id_gaps( vertexIDtoIndex, vertexIndex, nodeID, status );
       assert( vertexIndex < vertexCount );
       Vertex &vertex = vertices[vertexIndex];

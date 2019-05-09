@@ -1069,9 +1069,7 @@ bool QgsWcsProvider::calculateExtent() const
       //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
       //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
 
-      Q_NOWARN_DEPRECATED_PUSH
-      mCoordinateTransform = QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
-      Q_NOWARN_DEPRECATED_POP
+      mCoordinateTransform = QgsCoordinateTransform( qgisSrsSource, qgisSrsDest, transformContext() );
     }
 
     QgsDebugMsg( "mCoverageSummary.wgs84BoundingBox= " + mCoverageSummary.wgs84BoundingBox.toString() );

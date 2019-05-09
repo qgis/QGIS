@@ -145,7 +145,8 @@ void QgsPluginRegistry::dump()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsDebugMsg( QStringLiteral( "PYTHON PLUGINS IN REGISTRY:" ) );
-    Q_FOREACH ( const QString &pluginName, mPythonUtils->listActivePlugins() )
+    const auto constListActivePlugins = mPythonUtils->listActivePlugins();
+    for ( const QString &pluginName : constListActivePlugins )
     {
       Q_UNUSED( pluginName );
       QgsDebugMsg( pluginName );
@@ -186,7 +187,8 @@ void QgsPluginRegistry::unloadAll()
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    Q_FOREACH ( const QString &pluginName, mPythonUtils->listActivePlugins() )
+    const auto constListActivePlugins = mPythonUtils->listActivePlugins();
+    for ( const QString &pluginName : constListActivePlugins )
     {
       mPythonUtils->unloadPlugin( pluginName );
     }
@@ -527,7 +529,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     corePlugins << QStringLiteral( "MetaSearch" );
 
     // make the required core plugins enabled by default:
-    Q_FOREACH ( const QString &corePlugin, corePlugins )
+    const auto constCorePlugins = corePlugins;
+    for ( const QString &corePlugin : constCorePlugins )
     {
       if ( !mySettings.contains( "/PythonPlugins/" + corePlugin ) )
       {
@@ -535,7 +538,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
     }
 
-    Q_FOREACH ( const QString &packageName, pluginList )
+    const auto constPluginList = pluginList;
+    for ( const QString &packageName : constPluginList )
     {
       // TODO: apply better solution for #5879
       // start - temporary fix for issue #5879

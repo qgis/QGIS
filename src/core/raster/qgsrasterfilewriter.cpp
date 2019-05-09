@@ -68,8 +68,17 @@ QgsRasterFileWriter::QgsRasterFileWriter()
 
 }
 
+
+// Deprecated!
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
     const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback )
+{
+  return writeRaster( pipe, nCols, nRows, outputExtent, crs, ( pipe && pipe->provider() ) ? pipe->provider()->transformContext() : QgsCoordinateTransformContext(), feedback );
+}
+
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+    const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
+    QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
@@ -142,13 +151,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
   }
   else
   {
-    WriterError e = writeDataRaster( pipe, &iter, nCols, nRows, outputExtent, crs, feedback );
+    WriterError e = writeDataRaster( pipe, &iter, nCols, nRows, outputExtent, crs, transformContext, feedback );
     return e;
   }
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-    const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback )
+    const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( !iter )
@@ -231,9 +240,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       QgsRasterProjector *projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs() );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs(), transformContext );
         srcExtent = ct.transformBoundingBox( outputExtent );
       }
       if ( !srcProvider->extent().contains( srcExtent ) )
@@ -498,10 +505,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
 
-  void *redData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
-  void *greenData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
-  void *blueData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
-  void *alphaData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
+  void *redData = qgsMalloc( static_cast<size_t>( mMaxTileWidth * mMaxTileHeight ) );
+  void *greenData = qgsMalloc( static_cast<size_t>( mMaxTileWidth * mMaxTileHeight ) );
+  void *blueData = qgsMalloc( static_cast<size_t>( mMaxTileWidth * mMaxTileHeight ) );
+  void *alphaData = qgsMalloc( static_cast<size_t>( mMaxTileWidth * mMaxTileHeight ) );
   int iterLeft = 0, iterTop = 0, iterCols = 0, iterRows = 0;
   int fileIndex = 0;
 

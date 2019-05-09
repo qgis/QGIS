@@ -36,6 +36,36 @@
 #include "qgsgdalutils.h"
 #endif
 
+QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
+  , mTransformContext( transformContext )
+{
+
+}
+
+QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+    const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows,
+    const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mOutputCrs( outputCrs )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
+  , mTransformContext( transformContext )
+{
+
+}
+
+// Deprecated!
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
     const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
   : mFormulaString( formulaString )
@@ -48,8 +78,11 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
 {
   //default to first layer's crs
   mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  mTransformContext = QgsProject::instance()->transformContext();
 }
 
+
+// Deprecated!
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
     const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
   : mFormulaString( formulaString )
@@ -61,6 +94,7 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mNumOutputRows( nOutputRows )
   , mRasterEntries( rasterEntries )
 {
+  mTransformContext = QgsProject::instance()->transformContext();
 }
 
 QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
@@ -176,7 +210,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         if ( uniqueRasterEntries[layerRef.first].raster->crs() != mOutputCrs )
         {
           QgsRasterProjector proj;
-          proj.setCrs( ref.raster->crs(), mOutputCrs );
+          proj.setCrs( ref.raster->crs(), mOutputCrs, mTransformContext );
           proj.setInput( ref.raster->dataProvider() );
           proj.setPrecision( QgsRasterProjector::Exact );
           layerRef.second.reset( proj.block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
@@ -227,7 +261,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       if ( it->raster->crs() != mOutputCrs )
       {
         QgsRasterProjector proj;
-        proj.setCrs( it->raster->crs(), mOutputCrs );
+        proj.setCrs( it->raster->crs(), mOutputCrs, it->raster->transformContext() );
         proj.setInput( it->raster->dataProvider() );
         proj.setPrecision( QgsRasterProjector::Exact );
 
@@ -516,7 +550,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       if ( ref.layer->crs() != mOutputCrs )
       {
         QgsRasterProjector proj;
-        proj.setCrs( ref.layer->crs(), mOutputCrs );
+        proj.setCrs( ref.layer->crs(), mOutputCrs, ref.layer->transformContext() );
         proj.setInput( ref.layer->dataProvider() );
         proj.setPrecision( QgsRasterProjector::Exact );
         block.reset( proj.block( ref.band, rect, mNumOutputColumns, 1 ) );

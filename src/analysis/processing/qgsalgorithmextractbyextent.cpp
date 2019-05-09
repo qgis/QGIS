@@ -71,7 +71,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, featureSource->sourceCrs() );
-  bool clip = parameterAsBool( parameters, QStringLiteral( "CLIP" ), context );
+  bool clip = parameterAsBoolean( parameters, QStringLiteral( "CLIP" ), context );
 
   // if clipping, we force multi output
   QgsWkbTypes::Type outType = clip ? QgsWkbTypes::multiType( featureSource->wkbType() ) : featureSource->wkbType();

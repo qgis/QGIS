@@ -406,7 +406,7 @@ class QgsAttributeEditorHtmlElement : QgsAttributeEditorElement
 %Docstring
 An attribute editor widget that will represent arbitrary HTML code.
 
-.. versionadded:: 3.10
+.. versionadded:: 3.8
 %End
 
 %TypeHeaderCode

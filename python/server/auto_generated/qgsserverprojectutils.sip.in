@@ -163,6 +163,17 @@ Returns the maximum number of atlas features which can be printed in a request
 :return: the number of atlas features
 %End
 
+  double wmsDefaultMapUnitsPerMm( const QgsProject &project );
+%Docstring
+Returns the default number of map units per millimeters in case of the scale is not given
+
+:param project: the QGIS project
+
+:return: the default number of map units per millimeter
+
+.. versionadded:: 3.4
+%End
+
   bool wmsUseLayerIds( const QgsProject &project );
 %Docstring
 Returns if layer ids are used as name in WMS.

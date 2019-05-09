@@ -32,7 +32,7 @@ def processInputs(alg, parameters, context, feedback):
 
     # We need to import all the bands and color tables of the input raster
     alg.loadRasterLayerFromParameter('input', parameters, context, False, None)
-    alg.postInputs()
+    alg.postInputs(context)
 
 
 def processCommand(alg, parameters, context, feedback):

@@ -113,6 +113,24 @@ It's usually the QgsProject where the function with the context is made and won'
 .. versionadded:: 3.4
 %End
 
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns data provider coordinate transform context
+
+.. seealso:: :py:func:`setTransformContext`
+
+.. versionadded:: 3.8
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Sets data coordinate transform context to ``transformContext``
+
+.. seealso:: :py:func:`transformContext`
+
+.. versionadded:: 3.8
+%End
+
       public:
 };
 

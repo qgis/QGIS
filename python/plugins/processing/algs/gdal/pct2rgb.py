@@ -100,7 +100,7 @@ class pct2rgb(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.RGBA, context):
+        if self.parameterAsBoolean(parameters, self.RGBA, context):
             arguments.append('-rgba')
 
         if isWindows():

@@ -261,7 +261,16 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 
 GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
 {
+  bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
+  {
+    CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
+  }
   GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
+  if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
+  {
+    CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  }
   return hDS;
 }
 

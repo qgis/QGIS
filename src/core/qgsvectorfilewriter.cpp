@@ -2495,9 +2495,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   QgsCoordinateTransform ct;
   if ( destCRS.isValid() && layer )
   {
-    Q_NOWARN_DEPRECATED_PUSH
-    ct = QgsCoordinateTransform( layer->crs(), destCRS );
-    Q_NOWARN_DEPRECATED_POP
+    ct = QgsCoordinateTransform( layer->crs(), destCRS, layer->transformContext() );
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
@@ -2559,7 +2557,7 @@ QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat( QgsVectorLayer *layer, const QgsVectorFileWriter::SaveVectorOptions &options, QgsVectorFileWriter::PreparedWriterDetails &details )
 {
-  if ( !layer )
+  if ( !layer || !layer->isValid() )
   {
     return ErrInvalidLayer;
   }

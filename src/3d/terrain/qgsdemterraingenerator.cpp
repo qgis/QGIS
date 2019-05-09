@@ -112,7 +112,7 @@ void QgsDemTerrainGenerator::updateGenerator()
 
     mTerrainTilingScheme = QgsTilingScheme( te, mCrs );
     delete mHeightMapGenerator;
-    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution );
+    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
   }
   else
   {

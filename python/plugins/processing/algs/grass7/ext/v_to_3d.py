@@ -42,4 +42,4 @@ def processInputs(alg, parameters, context, feedback):
 
     # We need to import the vector layer with v.in.ogr
     alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
-    alg.postInputs()
+    alg.postInputs(context)
