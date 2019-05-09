@@ -2046,7 +2046,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     if ( mMouseAtEndpoint->vertexId != 0 )
     {
-      // If we were adding at the end of the featue, we need to update the index
+      // If we were adding at the end of the feature, we need to update the index
       mMouseAtEndpoint.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId + 1 ) );
     }
     // And then we just restart the drag
