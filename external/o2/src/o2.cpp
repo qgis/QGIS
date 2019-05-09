@@ -437,7 +437,9 @@ void O2::onRefreshFinished() {
         QVariantMap tokens = parseTokenResponse(reply);
         setToken(tokens.value(O2_OAUTH2_ACCESS_TOKEN).toString());
         setExpires(QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value(O2_OAUTH2_EXPIRES_IN).toInt());
-        setRefreshToken(tokens.value(O2_OAUTH2_REFRESH_TOKEN).toString());
+        const QString refreshToken = tokens.value(O2_OAUTH2_REFRESH_TOKEN).toString();
+        if ( !refreshToken.isEmpty() )
+          setRefreshToken(refreshToken);
         timedReplies_.remove(refreshReply);
         setLinked(true);
         Q_EMIT linkingSucceeded();
