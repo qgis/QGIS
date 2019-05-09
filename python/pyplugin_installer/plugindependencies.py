@@ -29,7 +29,6 @@ def __get_plugin_deps(plugin_id):
     result = {}
     updateAvailablePlugins()
     try:
-        global plugins_metadata_parser
         parser = plugins_metadata_parser[plugin_id]
         plugin_deps = parser.get('general', 'plugin_dependencies')
     except (NoOptionError, NoSectionError, KeyError):
@@ -68,7 +67,6 @@ def find_dependencies(plugin_id, plugin_data=None, plugin_deps=None, installed_p
         plugin_deps = __get_plugin_deps(plugin_id)
 
     if installed_plugins is None:
-        global plugins_metadata_parser
         updateAvailablePlugins()
         metadata_parser = plugins_metadata_parser
         installed_plugins = {metadata_parser[k].get('general', 'name'): metadata_parser[k].get('general', 'version') for k, v in metadata_parser.items()}
