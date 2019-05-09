@@ -1399,7 +1399,7 @@ tests:
       SEGMENTS: 8
     results:
       OUTPUT:
-        name: expected/equidistance_buffer_points.gml'
+        name: expected/equidistance_buffer_points.gml
         type: vector
         
   - algorithm: qgis:extractvertices
