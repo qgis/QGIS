@@ -1268,7 +1268,7 @@ tests:
           fields:
             fid: skip
             fid_2: skip
-            id: skip # cant check these - order of match is not predictable
+            id: skip # can't check these - order of match is not predictable
             id2: skip
 
   - algorithm: qgis:joinattributesbylocation
@@ -1294,7 +1294,7 @@ tests:
           fields:
             fid: skip
             fid_2: skip
-            id: skip # cant check these - order of match is not predictable
+            id: skip # can't check these - order of match is not predictable
             id2: skip
 
   - algorithm: qgis:joinattributesbylocation

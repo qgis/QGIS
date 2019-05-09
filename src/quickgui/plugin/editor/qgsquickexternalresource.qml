@@ -36,7 +36,7 @@ Item {
   property var notAvailableImageIcon: customStyle.icons.notAvailable
   property real iconSize:  customStyle.fields.height
   property real textMargin: QgsQuick.Utils.dp * 10
-  // Ment to be use with the save callback - stores image source
+  // Meant to be use with the save callback - stores image source
   property string sourceToDelete
 
   function callbackOnSave() {

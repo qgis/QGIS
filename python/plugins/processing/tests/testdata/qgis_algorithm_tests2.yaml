@@ -14,8 +14,8 @@ tests:
     results:
       OUTPUT:
         hash:
-        - 76d59e1a9905e97fde7da598022d50ec7de15994e61a59e2b6dc952f
-        - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
+          - 76d59e1a9905e97fde7da598022d50ec7de15994e61a59e2b6dc952f
+          - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -30,8 +30,8 @@ tests:
     results:
       OUTPUT:
         hash:
-        - 76d59e1a9905e97fde7da598022d50ec7de15994e61a59e2b6dc952f
-        - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
+          - 76d59e1a9905e97fde7da598022d50ec7de15994e61a59e2b6dc952f
+          - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
@@ -46,8 +46,8 @@ tests:
     results:
       OUTPUT:
         hash:
-        - 1e07ea5c90a16f87df812042d3e89dd5b1216defa7714921f306de94
-        - 6e533a4c2c2e8ef5ca62814a7ad6dd29cb0f0f6eea85baf2a2802870
+          - 1e07ea5c90a16f87df812042d3e89dd5b1216defa7714921f306de94
+          - 6e533a4c2c2e8ef5ca62814a7ad6dd29cb0f0f6eea85baf2a2802870
         type: rasterhash
       #TRIANGULATION_FILE:
       #  name: expected/triangulation.gml
@@ -85,8 +85,8 @@ tests:
     results:
       OUTPUT:
         hash:
-        - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
-        - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
+          - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+          - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -102,8 +102,8 @@ tests:
     results:
       OUTPUT:
         hash:
-        - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
-        - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
+          - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+          - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
@@ -119,8 +119,8 @@ tests:
     results:
       OUTPUT:
         hash:
-        - 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
-        - a31f0faf918ebe0902e5c9c5c8cf606d30f52eb4094bf24e4f8ac67a
+          - 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
+          - a31f0faf918ebe0902e5c9c5c8cf606d30f52eb4094bf24e4f8ac67a
         type: rasterhash
       #TRIANGULATION_FILE:
       #  name: expected/triangulation.gml
@@ -139,8 +139,8 @@ tests:
     results:
       OUTPUT:
         hash:
-        - 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
-        - b8389559d6a85e7a672d72254228473fae71af2d89e5a5dd73d1b0d7
+          - 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
+          - b8389559d6a85e7a672d72254228473fae71af2d89e5a5dd73d1b0d7
         type: rasterhash
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
@@ -900,7 +900,7 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/orthagonal_polys.gml
+        name: expected/orthagonal_polys.gml # SPELLOK
         type: vector
         compare:
           geometry:
@@ -914,7 +914,7 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/orthagonal_lines.gml
+        name: expected/orthagonal_lines.gml # SPELLOK
         type: vector
         compare:
           geometry:
@@ -957,26 +957,26 @@ tests:
     name: Refactor fields, empty expression
     params:
       FIELDS_MAPPING:
-      - expression: '"fid"'
-        length: 0
-        name: fid
-        precision: 0
-        type: 10
-      - expression: '"id"'
-        length: 0
-        name: id
-        precision: 0
-        type: 2
-      - expression: '"id2"'
-        length: 0
-        name: id2
-        precision: 0
-        type: 2
-      - expression: ''
-        length: 0
-        name: no_exp
-        precision: 0
-        type: 10
+        - expression: '"fid"'
+          length: 0
+          name: fid
+          precision: 0
+          type: 10
+        - expression: '"id"'
+          length: 0
+          name: id
+          precision: 0
+          type: 2
+        - expression: '"id2"'
+          length: 0
+          name: id2
+          precision: 0
+          type: 2
+        - expression: ''
+          length: 0
+          name: no_exp
+          precision: 0
+          type: 10
       INPUT:
         name: points.gml
         type: vector
@@ -1067,7 +1067,7 @@ tests:
           fields:
             fid: skip
         pk:
-        - id2
+          - id2
 
   - algorithm: qgis:linestopolygons
     name: convert lines to polygon
@@ -1202,14 +1202,14 @@ tests:
         type: vector
       HUB_FIELD: id
       HUB_FIELDS:
-      - id
-      - id2
+        - id
+        - id2
       SPOKES:
         name: custom/spoke_points.gml
         type: vector
       SPOKE_FIELD: id
       SPOKE_FIELDS:
-      - name
+        - name
     results:
       OUTPUT:
         name: expected/hub_lines_field_subset.gml
@@ -1280,8 +1280,8 @@ tests:
     results:
       OUTPUT:
         name:
-        - expected/points_to_path_grouped.gml
-        - expected/points_to_path_grouped2.gml
+          - expected/points_to_path_grouped.gml
+          - expected/points_to_path_grouped2.gml
         type: vector
 
   - algorithm: native:joinattributestable
@@ -1359,7 +1359,7 @@ tests:
     params:
       FIELD: id
       FIELDS_TO_COPY:
-      - NUM_A
+        - NUM_A
       FIELD_2: ID
       INPUT:
         name: points.gml
@@ -1630,8 +1630,8 @@ tests:
             start: skip
             end: skip
         pk:
-        - d
-        - type
+          - d
+          - type
 
   - algorithm: qgis:serviceareafromlayer
     name: Service area from layer no bounds
@@ -1665,8 +1665,8 @@ tests:
             start: skip
             end: skip
         pk:
-        - d
-        - type
+          - d
+          - type
 
   - algorithm: qgis:serviceareafromlayer
     name: Service area from layer (lines)
@@ -1700,8 +1700,8 @@ tests:
             start: skip
             end: skip
         pk:
-        - d
-        - type
+          - d
+          - type
 
   - algorithm: qgis:createattributeindex
     name: Create attribute index
