@@ -231,7 +231,11 @@ bool QgsServer::init()
   QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), Qgis::Info );
   QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
   QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::listSeparator() ), QStringLiteral( "Server" ), Qgis::Info );
+#ifdef Q_OS_WIN
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( ';' ), QStringLiteral( "Server" ), Qgis::Info );
+#else
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( ':' ), QStringLiteral( "Server" ), Qgis::Info );
+#endif
 
   QgsApplication::createDatabase(); //init qgis.db (e.g. necessary for user crs)
 
