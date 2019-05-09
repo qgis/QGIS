@@ -74,9 +74,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     expression.reset( new QgsExpression( fieldOrExpression ) );
 
     if ( expression->hasParserError() || !expression->prepare( context ) )
-    {
       return QVariant();
-    }
   }
 
   QSet<QString> lst;
@@ -89,10 +87,9 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
                     QgsFeatureRequest::NoFlags :
                     QgsFeatureRequest::NoGeometry )
   .setSubsetOfAttributes( lst, mLayer->fields() );
+
   if ( mFidsSet )
-  {
     request.setFilterFids( mFidsFilter );
-  }
 
   if ( !mOrderBy.empty() )
     request.setOrderBy( mOrderBy );
@@ -126,9 +123,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     resultType = v.type();
   }
   else
-  {
     resultType = mLayer->fields().at( attrNum ).type();
-  }
 
   QgsFeatureIterator fit = mLayer->getFeatures( request );
   return calculate( aggregate, fit, resultType, attrNum, expression.get(), mDelimiter, context, ok );
