@@ -156,7 +156,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
       o2->refresh();
 
       // block request update until asynchronous linking loop is quit
-      rloop.exec();
+      rloop.exec( QEventLoop::ExcludeUserInputEvents );
 
       // refresh result should set o2 to (un)linked
     }
