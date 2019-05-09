@@ -3,7 +3,7 @@
 tests:
 
   - algorithm: native:projectpointcartesian
-    name: Project points cartesian
+    name: Project points Cartesian
     params:
       BEARING: 90.0
       DISTANCE: 1.0
@@ -16,7 +16,7 @@ tests:
         type: vector
 
   - algorithm: native:projectpointcartesian
-    name: Project multipoints cartesian
+    name: Project multipoints Cartesian
     params:
       BEARING: -90.0
       DISTANCE: 0.5
