@@ -25,7 +25,6 @@
 #include "qgsfeaturerequest.h"
 #include <QVariant>
 #include "qgsfeatureid.h"
-#include "qgsfeaturerequest.h"
 
 
 class QgsFeatureIterator;
