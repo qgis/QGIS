@@ -521,7 +521,11 @@ QGroupBox {
 }
 
 QGroupBox::title { 
-    color: @text;
+    color: @textlight;
+}
+
+QGroupBox::title:disabled { 
+    color: @itemalternativebackground;
 }
 
 QGroupBox::indicator {
@@ -534,45 +538,73 @@ QGroupBox::indicator:unchecked {
     image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }
 
+QGroupBox::indicator:unchecked:disabled {
+    image: url(@theme_path/icons/qcheckbox-unchecked-disabled.svg);
+}
+
 QGroupBox::indicator:checked {
     border: 1px solid @background;
     image: url(@theme_path/icons/qcheckbox-checked.svg);
+}
+
+QGroupBox::indicator:checked:disabled {
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 
 /* ==================================================================================== */
 /* RADIO BUTTON                                                                         */
 /* ==================================================================================== */
 
-QRadioButton::indicator:unchecked {
+QRadioButton::indicator
+{
     border: 1px solid @background;
-    image: url(@theme_path/icons/qradiobox-unchecked.svg);
     width:0.8em;
     height:0.8em;
 }
 
+QRadioButton::indicator:unchecked 
+{
+    image: url(@theme_path/icons/qradiobox-unchecked.svg);
+}
+
+QRadioButton::indicator:unchecked:disabled
+{
+    image: url(@theme_path/icons/qradiobox-unchecked-disabled.svg);
+}
+
 QRadioButton::indicator:checked {
-    border: 1px solid @background;
     image: url(@theme_path/icons/qradiobox-checked.svg);
-    width:0.8em;
-    height:0.8em;
+}
+
+QRadioButton::indicator:checked:disabled {
+    image: url(@theme_path/icons/qradiobox-checked-disabled.svg);
 }
 
 /* ==================================================================================== */
 /* CHECKBOX                                                                             */
 /* ==================================================================================== */
 
-QCheckBox::indicator:unchecked {
+QCheckBox::indicator
+{
     border: 1px solid @background;
-    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
     width:0.8em;
     height:0.8em;
 }
 
+QCheckBox::indicator:unchecked {
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
+}
+
+QCheckBox::indicator:unchecked:disabled {
+    image: url(@theme_path/icons/qcheckbox-unchecked-disabled.svg);
+}
+
 QCheckBox::indicator:checked {
-    border: 1px solid @background;
     image: url(@theme_path/icons/qcheckbox-checked.svg);
-    width:0.8em;
-    height:0.8em;
+}
+
+QCheckBox::indicator:checked:disabled {
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 
 /* ==================================================================================== */
