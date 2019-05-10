@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsgeometrycollection.h"
+#include "nlohmann/json.hpp"
 
 #include <limits>
 #include <QTransform>
@@ -156,6 +157,11 @@ QString QgsAbstractGeometry::wktTypeStr() const
 QString QgsAbstractGeometry::asJson( int precision )
 {
   return QString::fromStdString( asJsonObject( precision ).dump() );
+}
+
+json QgsAbstractGeometry::asJsonObject( int precision ) const
+{
+  Q_UNUSED( precision ); return nullptr;
 }
 
 QgsPoint QgsAbstractGeometry::centroid() const

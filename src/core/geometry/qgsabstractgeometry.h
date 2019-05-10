@@ -26,7 +26,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 #ifndef SIP_RUN
-#include "nlohmann/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 using json = nlohmann::json;
 #endif
 
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    virtual json asJsonObject( int precision = 17 ) const  SIP_SKIP { Q_UNUSED( precision ); return nullptr; }
+    virtual json asJsonObject( int precision = 17 ) SIP_SKIP const;
 
 
     //render pipeline

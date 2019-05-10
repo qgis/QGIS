@@ -91,6 +91,8 @@
 #include "qgsunittypes.h"
 #include <QUrl>
 
+#include"nlohmann/json.hpp"
+
 namespace QgsWms
 {
   QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )

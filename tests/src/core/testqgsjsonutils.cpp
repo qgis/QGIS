@@ -17,7 +17,7 @@
 #include <qgsjsonutils.h>
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
-
+#include"nlohmann/json.hpp"
 
 class TestQgsJsonUtils : public QObject
 {

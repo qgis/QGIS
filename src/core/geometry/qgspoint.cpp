@@ -277,12 +277,6 @@ QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &n
   return elemPoint;
 }
 
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
-
 
 json QgsPoint::asJsonObject( int precision ) const
 {
@@ -318,6 +312,13 @@ void QgsPoint::clear()
 
   clearCache();
 }
+
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsPoint::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
