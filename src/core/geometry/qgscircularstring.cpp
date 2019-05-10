@@ -24,9 +24,11 @@
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 #include "qgslogger.h"
+#include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
+#include "nlohmann/json.hpp"
 
 QgsCircularString::QgsCircularString()
 {
@@ -366,12 +368,12 @@ QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const Q
   return elemCurve;
 }
 
-QString QgsCircularString::asJson( int precision ) const
+
+json QgsCircularString::asJsonObject( int precision ) const
 {
   // GeoJSON does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QString json = line->asJson( precision );
-  return json;
+  return line->asJsonObject( precision );
 }
 
 bool QgsCircularString::isEmpty() const

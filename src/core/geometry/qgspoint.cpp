@@ -26,6 +26,10 @@
 #include <cmath>
 #include <QPainter>
 #include <QRegularExpression>
+#include <QJsonObject>
+#include <QJsonArray>
+
+#include "nlohmann/json.hpp"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -273,17 +277,19 @@ QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &n
   return elemPoint;
 }
 
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
 
-QString QgsPoint::asJson( int precision ) const
+json QgsPoint::asJsonObject( int precision ) const
 {
-  return "{\"type\": \"Point\", \"coordinates\": ["
-         + qgsDoubleToString( mX, precision ) + QLatin1String( ", " ) + qgsDoubleToString( mY, precision )
-         + QLatin1String( "]}" );
+  json j
+  {
+    { "type", "Point" },
+    { "coordinates", { qgsRound( mX, precision ), qgsRound( mY, precision ) } },
+  };
+  if ( is3D() )
+  {
+    j["coordinates"].push_back( qgsRound( mZ, precision ) );
+  }
+  return j;
 }
 
 void QgsPoint::draw( QPainter &p ) const
@@ -306,6 +312,13 @@ void QgsPoint::clear()
 
   clearCache();
 }
+
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsPoint::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {

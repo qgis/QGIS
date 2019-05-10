@@ -19,6 +19,7 @@ email                : morb at ozemail dot com dot au
 #include <functional>
 
 #include <QDomDocument>
+#include <QJsonObject>
 #include <QSet>
 #include <QString>
 #include <QVector>
@@ -35,6 +36,10 @@ email                : morb at ozemail dot com dot au
 #include "qgspoint.h"
 #include "qgsfeatureid.h"
 
+#ifndef SIP_RUN
+#include "nlohmann/json_fwd.hpp"
+using json = nlohmann::json;
+#endif
 
 class QgsGeometryEngine;
 class QgsVectorLayer;
@@ -163,7 +168,7 @@ class CORE_EXPORT QgsGeometry
      */
     explicit QgsGeometry( std::unique_ptr< QgsAbstractGeometry > geom ) SIP_SKIP;
 
-    ~QgsGeometry();
+    virtual ~QgsGeometry();
 
     /**
      * Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
@@ -1428,6 +1433,13 @@ class CORE_EXPORT QgsGeometry
      * Exports the geometry to a GeoJSON string.
      */
     QString asJson( int precision = 17 ) const;
+
+    /**
+     * Exports the geometry to a json object.
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    virtual json asJsonObject( int precision = 17 ) const SIP_SKIP;
 
     /**
      * Try to convert the geometry to the requested type

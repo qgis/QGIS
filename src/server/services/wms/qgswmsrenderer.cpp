@@ -91,6 +91,8 @@
 #include "qgsunittypes.h"
 #include <QUrl>
 
+#include"nlohmann/json.hpp"
+
 namespace QgsWms
 {
   QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
@@ -2204,10 +2206,11 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const
   {
-    QString json;
-    json.append( QStringLiteral( "{\"type\": \"FeatureCollection\",\n" ) );
-    json.append( QStringLiteral( "    \"features\":[\n" ) );
-
+    json json
+    {
+      { "type", "FeatureCollection" },
+      { "features", json::array() },
+    };
     const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
 
     const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
@@ -2289,46 +2292,36 @@ namespace QgsWms
 
         for ( const auto &feature : qgis::as_const( features ) )
         {
-          if ( json.right( 1 ).compare( QStringLiteral( "}" ) ) == 0 )
-          {
-            json.append( QStringLiteral( "," ) );
-          }
-
           const QString id = QStringLiteral( "%1.%2" ).arg( layer->name(), QgsJsonUtils::encodeValue( feature.id() ) );
-          json.append( exporter.exportFeature( feature, QVariantMap(), id ) );
+          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, QVariantMap(), id ) );
         }
       }
       else // raster layer
       {
-        if ( json.right( 1 ).compare( QStringLiteral( "}" ) ) == 0 )
-        {
-          json.append( QStringLiteral( "," ) );
-        }
-        json.append( QStringLiteral( "{" ) );
-        json.append( QStringLiteral( "\"type\":\"Feature\",\n" ) );
-        json.append( QStringLiteral( "\"id\":\"%1\",\n" ).arg( layer->name() ) );
-        json.append( QStringLiteral( "\"properties\":{\n" ) );
-
+        auto properties = json::object();
         const QDomNodeList attributesNode = layerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
         for ( int j = 0; j < attributesNode.size(); ++j )
         {
           const QDomElement attrElmt = attributesNode.at( j ).toElement();
           const QString name = attrElmt.attribute( QStringLiteral( "name" ) );
           const QString value = attrElmt.attribute( QStringLiteral( "value" ) );
-
-          if ( j > 0 )
-            json.append( QStringLiteral( ",\n" ) );
-
-          json.append( QStringLiteral( "    \"%1\": \"%2\"" ).arg( name, value ) );
+          properties[name.toStdString()] = value.toStdString();
         }
 
-        json.append( QStringLiteral( "\n}\n}" ) );
+        json["features"].push_back(
+        {
+          {"type", "Feature" },
+          {"id", layer->name().toStdString() },
+          {"properties", properties }
+        } );
       }
     }
-
-    json.append( QStringLiteral( "]}" ) );
-
-    return json.toUtf8();
+#ifdef QGISDEBUG
+    // This is only useful to generate human readable reference files for tests
+    return QByteArray::fromStdString( json.dump( 2 ) );
+#else
+    return QByteArray::fromStdString( json.dump() );
+#endif
   }
 
   QDomElement QgsRenderer::createFeatureGML(

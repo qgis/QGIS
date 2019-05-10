@@ -24,6 +24,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsabstractgeometry.h"
 #include "qgsvector3d.h"
 
+#include <QJsonArray>
 
 class QgsLineString;
 
@@ -419,6 +420,12 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      */
     static QString pointsToJSON( const QgsPointSequence &points, int precision ) SIP_SKIP;
+
+    /**
+     * Returns coordinates as json object.
+     * \note not available in Python bindings
+     */
+    static json pointsToJson( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /**
      * Ensures that an angle is in the range 0 <= angle < 2 pi.

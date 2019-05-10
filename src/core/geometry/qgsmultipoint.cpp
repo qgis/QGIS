@@ -19,6 +19,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 
+#include <QJsonArray>
+#include <QJsonObject>
+
+#include "nlohmann/json.hpp"
+
 QgsMultiPoint::QgsMultiPoint()
 {
   mWkbType = QgsWkbTypes::MultiPoint;
@@ -107,23 +112,24 @@ QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QStri
   return elemMultiPoint;
 }
 
-QString QgsMultiPoint::asJson( int precision ) const
+json QgsMultiPoint::asJsonObject( int precision ) const
 {
-  QString json = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": " );
-
-  QgsPointSequence pts;
-  for ( const QgsAbstractGeometry *geom : mGeometries )
+  json j
   {
-    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
-    {
-      const QgsPoint *point = static_cast<const QgsPoint *>( geom );
-      pts << *point;
-    }
+    { "type", "MultiPoint" },
+    { "coordinates", json::array() },
+  };
+  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    const QgsPoint *point = static_cast<const QgsPoint *>( geom );
+    if ( point->is3D() )
+      j[ "coordinates" ].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ), qgsRound( point->z(), precision ) } );
+    else
+      j[ "coordinates" ].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ) } );
   }
-  json += QgsGeometryUtils::pointsToJSON( pts, precision );
-  json += QLatin1String( " }" );
-  return json;
+  return j;
 }
+
 
 int QgsMultiPoint::nCoordinates() const
 {

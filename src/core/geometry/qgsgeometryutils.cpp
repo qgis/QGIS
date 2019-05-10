@@ -27,6 +27,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QVector>
 #include <QRegularExpression>
 
+#include "nlohmann/json.hpp"
+
 QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {
   QVector< QgsLineString * > linestrings;
@@ -1192,6 +1194,24 @@ QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int prec
   }
   json += ']';
   return json;
+}
+
+
+json QgsGeometryUtils::pointsToJson( const QgsPointSequence &points, int precision )
+{
+  json coordinates { json::array() };
+  for ( const QgsPoint &p : points )
+  {
+    if ( p.is3D() )
+    {
+      coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ), qgsRound( p.z(), precision ) } );
+    }
+    else
+    {
+      coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ) } );
+    }
+  }
+  return coordinates;
 }
 
 double QgsGeometryUtils::normalizedAngle( double angle )

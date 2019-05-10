@@ -27,6 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
+#include "nlohmann/json.hpp"
 #include <memory>
 
 QgsGeometryCollection::QgsGeometryCollection()
@@ -416,19 +417,18 @@ QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, con
   return elemMultiGeometry;
 }
 
-QString QgsGeometryCollection::asJson( int precision ) const
+json QgsGeometryCollection::asJsonObject( int precision ) const
 {
-  QString json = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [" );
-  for ( const QgsAbstractGeometry *geom : mGeometries )
+  json coordinates { json::array( ) };
+  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    json += geom->asJson( precision ) + QLatin1String( ", " );
+    coordinates.push_back( geom->asJsonObject( precision ) );
   }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
+  return
   {
-    json.chop( 2 ); // Remove last ", "
-  }
-  json += QLatin1String( "] }" );
-  return json;
+    { "type",  "GeometryCollection" },
+    { "geometries", coordinates }
+  };
 }
 
 QgsRectangle QgsGeometryCollection::boundingBox() const

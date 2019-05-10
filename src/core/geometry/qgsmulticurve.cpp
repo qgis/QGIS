@@ -21,7 +21,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
+#include <QJsonObject>
 #include <memory>
+#include "nlohmann/json.hpp"
 
 QgsMultiCurve::QgsMultiCurve()
 {
@@ -108,26 +110,24 @@ QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QStri
   return elemMultiCurve;
 }
 
-QString QgsMultiCurve::asJson( int precision ) const
+json QgsMultiCurve::asJsonObject( int precision ) const
 {
-  // GeoJSON does not support curves
-  QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
-  for ( const QgsAbstractGeometry *geom : mGeometries )
+  json coordinates { json::array( ) };
+  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
       std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
       QgsPointSequence pts;
       lineString->points( pts );
-      json += QgsGeometryUtils::pointsToJSON( pts, precision ) + QLatin1String( ", " );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );
     }
   }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
+  return
   {
-    json.chop( 2 ); // Remove last ", "
-  }
-  json += QLatin1String( "] }" );
-  return json;
+    {  "type",  "MultiLineString"  },
+    {  "coordinates", coordinates }
+  };
 }
 
 bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )

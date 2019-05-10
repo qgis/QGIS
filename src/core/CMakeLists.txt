@@ -3,6 +3,8 @@
 
 SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
 
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
@@ -1247,6 +1249,7 @@ INCLUDE_DIRECTORIES(
   metadata
   mesh
   validity
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri

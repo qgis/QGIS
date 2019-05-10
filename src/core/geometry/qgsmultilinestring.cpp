@@ -21,6 +21,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmulticurve.h"
+#include "nlohmann/json.hpp"
+
+#include <QJsonObject>
 
 QgsMultiLineString::QgsMultiLineString()
 {
@@ -95,9 +98,9 @@ QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const 
   return elemMultiCurve;
 }
 
-QString QgsMultiLineString::asJson( int precision ) const
+json QgsMultiLineString::asJsonObject( int precision ) const
 {
-  QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
+  json coordinates { json::array( ) };
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
@@ -105,15 +108,14 @@ QString QgsMultiLineString::asJson( int precision ) const
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
       QgsPointSequence pts;
       lineString->points( pts );
-      json += QgsGeometryUtils::pointsToJSON( pts, precision ) + QLatin1String( ", " );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );
     }
   }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
+  return
   {
-    json.chop( 2 ); // Remove last ", "
-  }
-  json += QLatin1String( "] }" );
-  return json;
+    { "type",  "MultiLineString" },
+    { "coordinates", coordinates }
+  };
 }
 
 bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
