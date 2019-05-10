@@ -376,11 +376,10 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       QByteArray ar = mQuery->record().value( mSource->mGeometryColName ).toByteArray();
       if ( !ar.isEmpty() )
       {
-        if ( unsigned char *wkb = mParser.ParseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() ) )
+        std::unique_ptr<QgsAbstractGeometry> geom = mParser.ParseSqlGeometry(reinterpret_cast< unsigned char * >(ar.data()), ar.size());
+        if ( geom != nullptr )
         {
-          QgsGeometry g;
-          g.fromWkb( wkb, mParser.GetWkbLen() );
-          feature.setGeometry( g );
+          feature.setGeometry( QgsGeometry( geom.release() ) );
         }
       }
     }
