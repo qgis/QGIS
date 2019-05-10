@@ -30,6 +30,7 @@
 #include "qgssmartgroupeditordialog.h"
 #include "qgssettings.h"
 #include "qgsstylemodel.h"
+#include "qgsmessagebar.h"
 
 #include <QAction>
 #include <QFile>
@@ -153,6 +154,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
+
+  mMessageBar = new QgsMessageBar();
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  mVerticalLayout->insertWidget( 0,  mMessageBar );
 
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
@@ -484,9 +489,7 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     cursorOverride.reset();
     if ( count > 0 )
     {
-      QMessageBox::information( this, tr( "Import Items" ),
-                                count > 1 ? tr( "Successfully imported %1 items." ).arg( count )
-                                : tr( "Successfully imported item." ) );
+      mMessageBar->pushSuccess( tr( "Import Items" ), count > 1 ? tr( "Successfully imported %1 items." ).arg( count ) : tr( "Successfully imported item." ) );
     }
   }
 }
@@ -1424,8 +1427,7 @@ int QgsStyleManagerDialog::addTag()
   int check = mStyle->tagId( itemName );
   if ( check > 0 )
   {
-    QMessageBox::critical( this, tr( "Add Tag" ),
-                           tr( "Tag name already exists in your symbol database." ) );
+    mMessageBar->pushCritical( tr( "Add Tag" ), tr( "The tag “%1” already exists." ).arg( itemName ) );
     return 0;
   }
 
@@ -1437,9 +1439,7 @@ int QgsStyleManagerDialog::addTag()
 
   if ( !id )
   {
-    QMessageBox::critical( this, tr( "Add Tag" ),
-                           tr( "New tag could not be created.\n"
-                               "There was a problem with your symbol database." ) );
+    mMessageBar->pushCritical( tr( "Add Tag" ),  tr( "New tag could not be created — There was a problem with the symbol database." ) );
     return 0;
   }
 
@@ -1498,6 +1498,7 @@ void QgsStyleManagerDialog::removeGroup()
   QString data = index.data( Qt::UserRole + 1 ).toString();
   if ( data == QLatin1String( "all" ) || data == QLatin1String( "favorite" ) || data == QLatin1String( "tags" ) || index.data() == "smartgroups" )
   {
+    // should never appear -- blocked by GUI
     int err = QMessageBox::critical( this, tr( "Remove Group" ),
                                      tr( "Invalid selection. Cannot delete system defined categories.\n"
                                          "Kindly select a group or smart group you might want to delete." ) );
@@ -1801,6 +1802,7 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   QModelIndex present = groupTree->currentIndex();
   if ( present.parent().data( Qt::UserRole + 1 ) != "smartgroups" )
   {
+    // should never appear - blocked by GUI logic
     QMessageBox::critical( this, tr( "Edit Smart Group" ),
                            tr( "You have not selected a Smart Group. Kindly select a Smart Group to edit." ) );
     return;
@@ -1822,8 +1824,7 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   mBlockGroupUpdates--;
   if ( !id )
   {
-    QMessageBox::critical( this, tr( "Edit Smart Group" ),
-                           tr( "There was some error while editing the smart group." ) );
+    mMessageBar->pushCritical( tr( "Edit Smart Group" ), tr( "There was an error while editing the smart group." ) );
     return;
   }
   item->setText( dlg.smartgroupName() );
