@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsGeometry,
                        QgsPoint,
                        QgsFeature,
+                       QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsProcessing,
                        QgsProcessingParameterDistance,
@@ -74,6 +75,9 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
         self.end_cap_styles = [self.tr('Round'),
                                self.tr('Flat'),
                                self.tr('Square')]
+        self.source_crs = QgsCoordinateReferenceSystem()
+        self.intermediate_crs = QgsCoordinateReferenceSystem()
+        self.transform_context = None
 
     def initParameters(self, config=None):
         distanceParam = QgsProcessingParameterDistance(self.DISTANCE,
@@ -126,6 +130,9 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
     def outputWkbType(self, input_wkb_type):
         return QgsWkbTypes.Polygon
 
+    def request(self):
+        return QgsFeatureRequest().setDestinationCrs(self.intermediate_crs, self.transform_context)
+
     def prepareAlgorithm(self, parameters, context, feedback):
         self.distance = self.parameterAsDouble(
             parameters, self.DISTANCE, context)
@@ -139,14 +146,17 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
 
         source = self.parameterAsSource(parameters, 'INPUT', context)
         self.source_crs = source.sourceCrs()
+        self.transform_context = context.transformContext()
         if not self.source_crs.isGeographic():
-            feedback.reportError(
-                self.tr(
-                    'Layer CRS must be a Geographic CRS.'))
-            return False
+            self.intermediate_crs = QgsCoordinateReferenceSystem('EPSG:4326')
+        else:
+            self.intermediate_crs = self.source_crs
         return super().prepareAlgorithm(parameters, context, feedback)
 
     def processFeature(self, feature, context, feedback):
+        if not feature.hasGeometry():
+            return [feature]
+
         geometry = feature.geometry()
         # For point features, centroid() returns the point itself
         centroid = geometry.centroid()
@@ -156,7 +166,7 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
                        ' +x_0=0 +y_0=0').format(y, x)
         dest_crs = QgsCoordinateReferenceSystem(proj_string)
         xform = QgsCoordinateTransform(
-            self.source_crs, dest_crs, QgsProject.instance())
+            self.intermediate_crs, dest_crs, context.transformContext())
         geometry.transform(xform)
         buffer = geometry.buffer(
             self.distance,
@@ -164,6 +174,8 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
             self.end_cap_style,
             self.join_style,
             self.miter_limit)
-        buffer.transform(xform, QgsCoordinateTransform.ReverseTransform)
+
+        reverse_transform = QgsCoordinateTransform(dest_crs, self.source_crs, context.transformContext())
+        buffer.transform(reverse_transform)
         feature.setGeometry(buffer)
         return [feature]
