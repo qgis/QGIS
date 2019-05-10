@@ -827,13 +827,13 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
         parameters.filter = groupByClause;
     }
 
-  QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(),
-                     QString::number( static_cast< int >( aggregate ) ),
-                     subExpression,
-                     parameters.filter,
-                     orderBy );
-  if ( context && context->hasCachedValue( cacheKey ) )
-    return context->cachedValue( cacheKey );
+    QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(),
+                      QString::number( static_cast< int >( aggregate ) ),
+                      subExpression,
+                      parameters.filter,
+                      orderBy );
+    if ( context && context->hasCachedValue( cacheKey ) )
+      return context->cachedValue( cacheKey );
 
     QgsExpressionContext subContext( *context );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
