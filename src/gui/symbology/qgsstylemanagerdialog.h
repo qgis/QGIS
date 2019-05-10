@@ -28,6 +28,7 @@
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;
+class QgsMessageBar;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -354,6 +355,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
                           QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
                           bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
 
+    QgsMessageBar *mMessageBar = nullptr;
 
     QgsStyle *mStyle = nullptr;
 
