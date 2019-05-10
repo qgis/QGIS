@@ -135,7 +135,7 @@ not appropriate in some situations.
 #include "qgsserverexception.h"
 %End
   public:
-    QgsServerApiInternalServerError( const QString &code, const QString &message = QStringLiteral( "Internal server error" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 );
+    QgsServerApiInternalServerError( const QString &message = QStringLiteral( "Internal server error" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 );
 %Docstring
 Construction
 %End
@@ -157,7 +157,7 @@ not appropriate in some situations.
 #include "qgsserverexception.h"
 %End
   public:
-    QgsServerApiNotFoundError( const QString &code, const QString &message = QStringLiteral( "Not found" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 404 );
+    QgsServerApiNotFoundError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 404 );
 %Docstring
 Construction
 %End
@@ -179,13 +179,55 @@ not appropriate in some situations.
 #include "qgsserverexception.h"
 %End
   public:
-    QgsServerApiBadRequestError( const QString &code, const QString &message = QStringLiteral( "Not found" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 );
+    QgsServerApiBadRequestError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 );
 %Docstring
 Construction
 %End
 };
 
 
+class QgsServerApiImproperlyConfiguredError: QgsServerApiException
+{
+%Docstring
+configuration error on the server prevents to serve the request, which would be valid otherwise.
+
+Note that this exception is associated with a default return code 500 which may be
+not appropriate in some situations.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverexception.h"
+%End
+  public:
+    QgsServerApiImproperlyConfiguredError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 );
+%Docstring
+Construction
+%End
+};
+
+
+class QgsServerApiNotImplementedError: QgsServerApiException
+{
+%Docstring
+this method is not yet implemented
+
+Note that this exception is associated with a default return code 500 which may be
+not appropriate in some situations.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverexception.h"
+%End
+  public:
+    QgsServerApiNotImplementedError( const QString &message = QStringLiteral( "Requested method is not implemented" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 );
+%Docstring
+Construction
+%End
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

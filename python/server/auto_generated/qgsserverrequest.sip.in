@@ -87,7 +87,7 @@ Returns parameters
 Set a parameter
 %End
 
-    QString parameter( const QString &key ) const;
+    QString parameter( const QString &key, const QString &defaultValue = QString() ) const;
 %Docstring
 Gets a parameter value
 %End

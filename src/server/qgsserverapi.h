@@ -45,17 +45,17 @@ class SERVER_EXPORT QgsServerApi
     /**
      * \returns the name of the API
      */
-    virtual QString name() const = 0;
+    virtual const QString name() const = 0;
 
     /**
      * \returns the version of the service
      */
-    virtual QString version() const = 0;
+    virtual const QString version() const = 0;
 
     /**
      * \returns the root path for the API
      */
-    virtual QString rootPath() const = 0;
+    virtual const QString rootPath() const = 0;
 
     /**
      * Returns TRUE if the given method is supported by the API, default implementation supports all methods.

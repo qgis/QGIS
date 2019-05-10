@@ -18,7 +18,10 @@
 #include "qgswfs3handlers.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
-
+#include "qgsserverapiutils.h"
+#include "qgsfeaturerequest.h"
+#include "qgsjsonutils.h"
+#include "qgsvectorlayer.h"
 
 APIHandler::APIHandler()
 {
@@ -101,26 +104,144 @@ CollectionsHandler::CollectionsHandler()
 
 void CollectionsHandler::handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const
 {
+  qDebug() << "Checking URL " << api->normalizedUrl( request.url() ).path();
+  static const QRegularExpression collectionsRe { QStringLiteral( R"re(/collections(\.json|\.html)?$)re" ) };
+  static const QRegularExpression itemsRe { QStringLiteral( R"re(/collections/(?<collectionid>[^/]+)/items)re" ) };
+  json data;
+  const auto path { api->normalizedUrl( request.url() ).path() };
+  if ( itemsRe.match( path ).hasMatch() )
+  {
+    const auto match { itemsRe.match( path ) };
+    data = items( api, request, response, project, match.capturedTexts()[1] );
+  }
+  else if ( collectionsRe.match( path ).hasMatch() )
+  {
+    data = collections( api, request, response, project );
+  }
+  else
+  {
+    throw QgsServerApiBadRequestError( QStringLiteral( "Invalid method called" ) );
+  }
+  write( data, request, response );
+}
+
+json CollectionsHandler::collections( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const
+{
+  Q_UNUSED( response );
   json data
   {
-    { "links", json::array() },
+    {
+      "links", {
+        {
+          { "href", href( api, request ) },
+          { "rel", QgsWfs3::Api::relToString( linkType ) },
+          { "title", "this document as JSON" }
+        },
+        {
+          { "href", href( api, request ) + "." + QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) },
+          { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::alternate ) },
+          { "title", "this document as HTML" }
+        },
+      }
+    },  // TODO: add XSD: mandatory?
     { "collections", json::array() },
   };
-  data["links"].push_back(
-  {
-    { "href", href( api, request ) },
-    { "rel", QgsWfs3::Api::relToString( linkType ) },
-    { "title", linkTitle },
-  } );
+
   if ( project )
   {
-    for ( const auto &l : project->mapLayers( ) )
+    // TODO: inclue meshes?
+    for ( const auto &l : project->layers<QgsVectorLayer *>( ) )
     {
       data["collections"].push_back(
       {
-        { "name", l->name().toStdString() }
+        // identifier of the collection used, for example, in URIs
+        { "name", l->name().toStdString() },
+        // human readable title of the collection
+        { "title", l->title().toStdString() },
+        // a description of the features in the collection
+        { "description", l->abstract().toStdString() },
+        { "extent", "TODO" },
+        { "CRS", "TODO" },
+        {
+          "links", {
+            {
+              { "href", href( api, request ) + "/" + l->name().toStdString() + "/items"  },
+              { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
+              { "type", " application/geo+json" },
+              { "title", l->title().toStdString() }
+            }
+          }
+        },
       } );
     }
   }
-  write( data, request, response );
+  return data;
+}
+
+json CollectionsHandler::items( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, const QString &collectionId ) const
+{
+  if ( ! project )
+  {
+    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Project is invalid or undefined" ) );
+  }
+  // Check collectionId
+  const auto mapLayers { project->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
+  if ( mapLayers.count() != 1 )
+  {
+    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Collection with given id was not found or multiple matches were found" ) );
+  }
+
+  // Get parameters
+  json data;
+  if ( request.method() == QgsServerRequest::Method::GetMethod )
+  {
+
+    // Validate inputs
+    auto ok { false };
+    const auto bbox { request.parameter( QStringLiteral( "bbox" ) ) };
+    const auto bboxCrs { request.parameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
+    const auto filterRect { QgsServerApiUtils::parseBbox( bbox ) };
+    const auto crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
+    if ( crs.isValid() )
+    {
+      throw QgsServerApiBadRequestError( QStringLiteral( "CRS not valid" ) );
+    }
+    auto limit { request.parameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
+    if ( 0 >= limit || limit > 10000 || !ok )
+    {
+      throw QgsServerApiBadRequestError( QStringLiteral( "Limit is not valid (0-10000)" ) );
+    }
+    // TODO: implement time
+    const auto time { request.parameter( QStringLiteral( "time" ) ) };
+    if ( ! time.isEmpty() )
+    {
+      throw QgsServerApiNotImplementedError( QStringLiteral( "Time is not implemented" ) ) ;
+    }
+
+    // Inputs are valid, process request
+    const auto &mapLayer { mapLayers.first() };
+    QgsFeatureRequest req;
+    if ( ! filterRect.isNull() )
+    {
+      QgsCoordinateTransform ct( crs, mapLayer->crs(), project->transformContext() );
+      ct.transform( filterRect );
+      req.setFilterRect( ct.transform( filterRect ) );
+    }
+    req.setLimit( limit );
+    QgsJsonExporter exporter { mapLayer };
+    QgsFeatureList featureList;
+    auto features { mapLayer->getFeatures( req ) };
+    QgsFeature feat;
+    while ( features.nextFeature( feat ) )
+    {
+      featureList << feat;
+    }
+    data = exporter.exportFeaturesToJsonObject( featureList );
+  }
+  else
+  {
+    throw QgsServerApiNotImplementedError( QStringLiteral( "Only GET method is implemented." ) );
+  }
+  return data;
+
 }

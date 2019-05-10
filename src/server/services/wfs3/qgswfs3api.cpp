@@ -139,7 +139,7 @@ namespace QgsWfs3
     // Throw
     if ( ! hasMatch )
     {
-      throw QgsServerApiNotFoundError( QStringLiteral( "Requested URI does not match with any API handler" ) );
+      throw QgsServerApiBadRequestError( QStringLiteral( "Requested URI does not match with any API handler" ) );
     }
   }
 

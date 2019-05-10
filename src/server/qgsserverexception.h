@@ -200,8 +200,8 @@ class SERVER_EXPORT QgsServerApiInternalServerError: public QgsServerApiExceptio
 {
   public:
     //! Construction
-    QgsServerApiInternalServerError( const QString &code, const QString &message = QStringLiteral( "Internal server error" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
-      : QgsServerApiException( code, message, mimeType, responseCode )
+    QgsServerApiInternalServerError( const QString &message = QStringLiteral( "Internal server error" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
+      : QgsServerApiException( QStringLiteral( "Internal server error" ), message, mimeType, responseCode )
     {
     }
 };
@@ -221,8 +221,8 @@ class SERVER_EXPORT QgsServerApiNotFoundError: public QgsServerApiException
 {
   public:
     //! Construction
-    QgsServerApiNotFoundError( const QString &code, const QString &message = QStringLiteral( "Not found" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 404 )
-      : QgsServerApiException( code, message, mimeType, responseCode )
+    QgsServerApiNotFoundError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 404 )
+      : QgsServerApiException( QStringLiteral( "API not found error" ), message, mimeType, responseCode )
     {
     }
 };
@@ -242,11 +242,51 @@ class SERVER_EXPORT QgsServerApiBadRequestError: public QgsServerApiException
 {
   public:
     //! Construction
-    QgsServerApiBadRequestError( const QString &code, const QString &message = QStringLiteral( "Not found" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 )
-      : QgsServerApiException( code, message, mimeType, responseCode )
+    QgsServerApiBadRequestError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 )
+      : QgsServerApiException( QStringLiteral( "Bad request error" ), message, mimeType, responseCode )
     {
     }
 };
 
 
+/**
+ * \ingroup server
+ * \class  QgsServerApiImproperlyConfiguredError
+ * \brief  configuration error on the server prevents to serve the request, which would be valid otherwise.
+ *
+ * Note that this exception is associated with a default return code 500 which may be
+ * not appropriate in some situations.
+ *
+ * \since QGIS 3.10
+ */
+class SERVER_EXPORT QgsServerApiImproperlyConfiguredError: public QgsServerApiException
+{
+  public:
+    //! Construction
+    QgsServerApiImproperlyConfiguredError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
+      : QgsServerApiException( QStringLiteral( "Improperly configured error" ), message, mimeType, responseCode )
+    {
+    }
+};
+
+
+/**
+ * \ingroup server
+ * \class  QgsServerApiNotImplementedError
+ * \brief  this method is not yet implemented
+ *
+ * Note that this exception is associated with a default return code 500 which may be
+ * not appropriate in some situations.
+ *
+ * \since QGIS 3.10
+ */
+class SERVER_EXPORT QgsServerApiNotImplementedError: public QgsServerApiException
+{
+  public:
+    //! Construction
+    QgsServerApiNotImplementedError( const QString &message = QStringLiteral( "Requested method is not implemented" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
+      : QgsServerApiException( QStringLiteral( "Not implemented error" ), message, mimeType, responseCode )
+    {
+    }
+};
 #endif

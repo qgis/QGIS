@@ -97,9 +97,14 @@ void QgsServerRequest::setParameter( const QString &key, const QString &value )
   mUrl.setQuery( mParams.urlQuery() );
 }
 
-QString QgsServerRequest::parameter( const QString &key ) const
+QString QgsServerRequest::parameter( const QString &key, const QString &defaultValue ) const
 {
-  return mParams.value( key );
+  const auto value { mParams.value( key ) };
+  if ( value.isEmpty() )
+  {
+    return defaultValue;
+  }
+  return value;
 }
 
 void QgsServerRequest::removeParameter( const QString &key )

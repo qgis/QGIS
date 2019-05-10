@@ -113,7 +113,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Gets a parameter value
      */
-    QString parameter( const QString &key ) const;
+    QString parameter( const QString &key, const QString &defaultValue = QString() ) const;
 
     /**
      * Remove a parameter

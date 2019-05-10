@@ -757,6 +757,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 
     /**
+     * Retrieve a list of matching registered layers by layer short name.
+     * \param shortName short name of layers to match,
+     * \note by default short name is equal to the layer name
+     * \returns list of matching layers
+     * \see mapLayer()
+     * \see mapLayers()
+     */
+    QList<QgsMapLayer *> mapLayersByShortName( const QString &shortName ) const;
+
+
+    /**
      * Returns a map of all registered layers by layer ID.
      *
      * \param validOnly if set only valid layers will be returned
@@ -789,6 +800,31 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     {
       return mLayerStore->layers<T>();
     }
+
+
+    /**
+     * Retrieve a list of matching registered layers by layer short name with a specified layer type.
+     * \param shortName short name of layers to match,
+     * \note by default short name is equal to the layer name
+     * \returns list of matching layers
+     * \see mapLayer()
+     * \see mapLayers()
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    template <typename T>
+    QVector<T> mapLayersByShortName( const QString &shortName ) const
+    {
+      QVector<T> layers;
+      const auto constMapLayers { mLayerStore->layers<T>() };
+      for ( const auto l : constMapLayers )
+      {
+        if ( l->shortName() == shortName )
+          layers << l;
+      }
+      return layers;
+    }
+
 #endif
 
     /**

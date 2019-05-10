@@ -3,32 +3,106 @@ Content-Type: application/json
 {
   "collections": [
     {
-      "name": "landsat"
+      "CRS": "TODO",
+      "description": "A test vector layer with unicode òà",
+      "extent": "TODO",
+      "links": [
+        {
+          "href": "http://www.acme.com/wfs3/collections/testlayer èé/items",
+          "rel": "item",
+          "title": "A test vector layer",
+          "type": " application/geo+json"
+        }
+      ],
+      "name": "testlayer èé",
+      "title": "A test vector layer"
     },
     {
-      "name": "testlayer èé"
+      "CRS": "TODO",
+      "description": "",
+      "extent": "TODO",
+      "links": [
+        {
+          "href": "http://www.acme.com/wfs3/collections/testlayer3/items",
+          "rel": "item",
+          "title": "",
+          "type": " application/geo+json"
+        }
+      ],
+      "name": "testlayer3",
+      "title": ""
     },
     {
-      "name": "testlayer3"
+      "CRS": "TODO",
+      "description": "",
+      "extent": "TODO",
+      "links": [
+        {
+          "href": "http://www.acme.com/wfs3/collections/testlayer2/items",
+          "rel": "item",
+          "title": "",
+          "type": " application/geo+json"
+        }
+      ],
+      "name": "testlayer2",
+      "title": ""
     },
     {
-      "name": "testlayer2"
+      "CRS": "TODO",
+      "description": "A Layer with an abstract",
+      "extent": "TODO",
+      "links": [
+        {
+          "href": "http://www.acme.com/wfs3/collections/testlayer/items",
+          "rel": "item",
+          "title": "A Layer with a short name",
+          "type": " application/geo+json"
+        }
+      ],
+      "name": "testlayer",
+      "title": "A Layer with a short name"
     },
     {
-      "name": "testlayer"
+      "CRS": "TODO",
+      "description": "A test vector layer with unicode òà",
+      "extent": "TODO",
+      "links": [
+        {
+          "href": "http://www.acme.com/wfs3/collections/exclude_attribute/items",
+          "rel": "item",
+          "title": "A test vector layer",
+          "type": " application/geo+json"
+        }
+      ],
+      "name": "exclude_attribute",
+      "title": "A test vector layer"
     },
     {
-      "name": "exclude_attribute"
-    },
-    {
-      "name": "fields_alias"
+      "CRS": "TODO",
+      "description": "A test vector layer with unicode òà",
+      "extent": "TODO",
+      "links": [
+        {
+          "href": "http://www.acme.com/wfs3/collections/fields_alias/items",
+          "rel": "item",
+          "title": "A test vector layer",
+          "type": " application/geo+json"
+        }
+      ],
+      "name": "fields_alias",
+      "title": "A test vector layer"
     }
   ],
   "links": [
     {
       "href": "http://www.acme.com/wfs3/collections",
       "rel": "data",
-      "title": "Metadata about the feature collections"
+      "title": "this document as JSON"
+    },
+    {
+      "href": "http://www.acme.com/wfs3/collections.html",
+      "rel": "alternate",
+      "title": "this document as HTML"
     }
   ]
 }

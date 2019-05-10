@@ -250,6 +250,7 @@ Returns a GeoJSON string representation of a list of features (feature collectio
 .. seealso:: :py:func:`exportFeature`
 %End
 
+
 };
 
 

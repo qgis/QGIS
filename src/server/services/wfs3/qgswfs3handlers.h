@@ -45,8 +45,15 @@ struct ConformanceHandler: public QgsWfs3::Handler
 
 struct CollectionsHandler: public QgsWfs3::Handler
 {
-  CollectionsHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project ) const override;
+    CollectionsHandler( );
+    void handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project ) const override;
+
+  private:
+
+    json collections( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project ) const;
+
+    json items( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project, const QString &collectionId ) const;
+
 };
 
 #endif // QGS_WFS3_HANDLERS_H

@@ -1,0 +1,55 @@
+Content-Type: application/json
+
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          8.203496,
+          44.901483
+        ],
+        "type": "Point"
+      },
+      "id": 0,
+      "properties": {
+        "id": 1,
+        "name": "one",
+        "utf8nameè": "one èé"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          8.203547,
+          44.901436
+        ],
+        "type": "Point"
+      },
+      "id": 1,
+      "properties": {
+        "id": 2,
+        "name": "two",
+        "utf8nameè": "two àò"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          8.203459,
+          44.901395
+        ],
+        "type": "Point"
+      },
+      "id": 2,
+      "properties": {
+        "id": 3,
+        "name": "three",
+        "utf8nameè": "three èé↓"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

@@ -107,6 +107,28 @@ class QgsServerAPITest(QgsServerTestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         self.compareApi(request, project, 'test_wfs3_collections_project.json')
 
+    def test_wfs3_collection_items(self):
+        """Test WFS3 API"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items')
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé.json')
+
+    def test_invalid_args(self):
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?limit=-1')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.code(), 400) # Bad request
+        self.assertEqual(response.body(), "bad request") # Bad request
+
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?limit=10001')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.code(), 400) # Bad request
+        self.assertEqual(response.body(), "bad request") # Bad request
+
 
 if __name__ == '__main__':
     unittest.main()

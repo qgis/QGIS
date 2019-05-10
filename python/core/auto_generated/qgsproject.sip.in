@@ -747,6 +747,24 @@ Retrieve a list of matching registered layers by layer name.
 .. seealso:: :py:func:`mapLayers`
 %End
 
+    QList<QgsMapLayer *> mapLayersByShortName( const QString &shortName ) const;
+%Docstring
+Retrieve a list of matching registered layers by layer short name.
+
+:param shortName: short name of layers to match,
+
+.. note::
+
+   by default short name is equal to the layer name
+
+:return: list of matching layers
+
+.. seealso:: :py:func:`mapLayer`
+
+.. seealso:: :py:func:`mapLayers`
+%End
+
+
     QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 %Docstring
 Returns a map of all registered layers by layer ID.

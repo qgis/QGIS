@@ -26,6 +26,7 @@ SET(QGIS_SERVER_SRCS
   qgsfilterrestorer.cpp
   qgsrequesthandler.cpp
   qgsserver.cpp
+  qgsserverapiutils.cpp
   qgsserverparameters.cpp
   qgsserverexception.cpp
   qgsserverinterface.cpp

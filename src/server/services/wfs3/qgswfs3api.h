@@ -127,9 +127,9 @@ namespace QgsWfs3
        */
       Api( QgsServerInterface *serverIface );
 
-      QString name()    const override { return QStringLiteral( "WFS3" ); }
-      QString version() const override { return QStringLiteral( "1.0.0" ); }
-      QString rootPath() const override { return QStringLiteral( "/wfs3" ); }
+      const QString name()    const override { return QStringLiteral( "WFS3" ); }
+      const QString version() const override { return QStringLiteral( "1.0.0" ); }
+      const QString rootPath() const override { return QStringLiteral( "/wfs3" ); }
 
       // Utilities
 
@@ -158,6 +158,11 @@ namespace QgsWfs3
       {
         static QMetaEnum metaEnum = QMetaEnum::fromType<contentType>();
         return metaEnum.valueToKey( ct );
+      }
+
+      static std::string contentTypeToExtension( const contentType &ct )
+      {
+        return QString::fromStdString( contentTypeToString( ct ) ).toLower().toStdString();
       }
 
     private:

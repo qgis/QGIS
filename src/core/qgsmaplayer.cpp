@@ -174,6 +174,13 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
   return nullptr;
 }
 
+QString QgsMapLayer::shortName() const
+{
+  if ( mShortName.isEmpty() )
+    return  name();
+  return mShortName;
+}
+
 QString QgsMapLayer::publicSource() const
 {
   // Redo this every time we're asked for it, as we don't know if
