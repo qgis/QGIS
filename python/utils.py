@@ -265,6 +265,11 @@ def findPlugins(path):
         yield (pluginName, cp)
 
 
+def metadataParser():
+    """Used by other modules to access the local parser object"""
+    return plugins_metadata_parser
+
+
 def updateAvailablePlugins():
     """ Go through the plugin_paths list and find out what plugins are available. """
     # merge the lists
