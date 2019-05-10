@@ -427,7 +427,7 @@ def _unloadPluginModules(packageName):
         try:
             del sys.modules[mod]
         except:
-            qDebug("Error when removing module:\n%s" % traceback.format_exc())
+            pass
     # remove the plugin entry
     del _plugin_modules[packageName]
 
