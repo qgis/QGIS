@@ -758,7 +758,6 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     return;
   }
 
-  QgsGeometry geom;
   if ( !readAllGeography && query.next() )
   {
     mExtent.setXMinimum( query.value( 0 ).toDouble() );
@@ -772,11 +771,10 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   while ( query.next() )
   {
     QByteArray ar = query.value( 0 ).toByteArray();
-    unsigned char *wkb = mParser.ParseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
-    if ( wkb )
+    std::unique_ptr<QgsAbstractGeometry> geom = mParser.ParseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
+    if ( geom != nullptr )
     {
-      geom.fromWkb( wkb, mParser.GetWkbLen() );
-      QgsRectangle rect = geom.boundingBox();
+      QgsRectangle rect = geom->boundingBox();
 
       if ( rect.xMinimum() < mExtent.xMinimum() )
         mExtent.setXMinimum( rect.xMinimum() );
@@ -787,7 +785,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       if ( rect.yMaximum() > mExtent.yMaximum() )
         mExtent.setYMaximum( rect.yMaximum() );
 
-      mWkbType = geom.wkbType();
+      mWkbType = geom->wkbType();
       mSRId = mParser.GetSRSId();
     }
   }

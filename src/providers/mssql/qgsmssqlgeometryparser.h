@@ -18,6 +18,18 @@
 #ifndef QGSMSSQLGEOMETRYPARSER_H
 #define QGSMSSQLGEOMETRYPARSER_H
 
+#include "qgsabstractgeometry.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
+#include "qgsmultipoint.h"
+#include "qgslinestring.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
+#include "qgscurvepolygon.h"
+#include "qgspolygon.h"
+#include "qgspoint.h"
+
+
 
 /**
 \class QgsMssqlGeometryParser
@@ -30,11 +42,8 @@ class QgsMssqlGeometryParser
 
   protected:
     unsigned char *pszData = nullptr;
-    unsigned char *pszWkb = nullptr;
-    int nWkbLen = 0;
-    int nWkbMaxLen = 100;
-    /* byte order */
-    char chByteOrder;
+    /* version information */
+    char chVersion = 0;
     /* serialization properties */
     char chProps = 0;
     /* point array */
@@ -47,25 +56,32 @@ class QgsMssqlGeometryParser
     /* shape array */
     int nShapePos = 0;
     int nNumShapes = 0;
+    /* segmenttype array */
+    int nSegmentPos = 0;
+    int nNumSegments = 0;
+    int iSegment = 0;
     int nSRSId = 0;
 
   protected:
-    void CopyBytes( void *src, int len );
-    void CopyCoordinates( int iPoint );
-    void CopyPoint( int iPoint );
-    void ReadPoint( int iShape );
-    void ReadMultiPoint( int iShape );
-    void ReadLineString( int iShape );
-    void ReadMultiLineString( int iShape );
-    void ReadPolygon( int iShape );
-    void ReadMultiPolygon( int iShape );
-    void ReadGeometryCollection( int iShape );
+    QgsPoint QgsMssqlGeometryParser::ReadCoordinates( int iPoint );
+    const QgsPointSequence ReadPointSequence( int iPoint, int iNextPoint );
+    std::unique_ptr< QgsPoint > ReadPoint( int iShape );
+    std::unique_ptr< QgsMultiPoint > ReadMultiPoint( int iShape );
+    std::unique_ptr< QgsLineString > ReadLineString( int iPoint, int iNextPoint );
+    std::unique_ptr< QgsLineString > ReadLineString( int iFigure );
+    std::unique_ptr< QgsCircularString > ReadCircularString( int iPoint, int iNextPoint );
+    std::unique_ptr< QgsCircularString > ReadCircularString( int iFigure );
+    std::unique_ptr< QgsMultiLineString > ReadMultiLineString( int iShape );
+    std::unique_ptr< QgsPolygon > ReadPolygon( int iShape );
+    std::unique_ptr< QgsMultiPolygon > ReadMultiPolygon( int iShape );
+    std::unique_ptr< QgsCompoundCurve > ReadCompoundCurve( int iFigure );
+    std::unique_ptr< QgsCurvePolygon > ReadCurvePolygon( int iShape );
+    std::unique_ptr< QgsGeometryCollection > ReadGeometryCollection( int iShape );
 
   public:
     QgsMssqlGeometryParser();
-    unsigned char *ParseSqlGeometry( unsigned char *pszInput, int nLen );
+    std::unique_ptr<QgsAbstractGeometry> ParseSqlGeometry( unsigned char *pszInput, int nLen );
     int GetSRSId() { return nSRSId; }
-    int GetWkbLen() { return nWkbLen; }
     void DumpMemoryToLog( const char *pszMsg, unsigned char *pszInput, int nLen );
     /* sql geo type */
     bool IsGeography = false;
