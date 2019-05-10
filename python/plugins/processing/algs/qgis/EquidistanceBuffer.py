@@ -98,7 +98,7 @@ class EquidistanceBuffer(QgisFeatureBasedAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(
             self.JOIN_STYLE,
             self.tr('Join style'),
-            options=self.join_styles))
+            options=self.join_styles, defaultValue=0))
 
         self.addParameter(
             QgsProcessingParameterNumber(
