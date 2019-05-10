@@ -412,7 +412,7 @@ def _unloadPluginModules(packageName):
                 sys.modules[mod].qCleanupResources()
         except:
             # Print stack trace for debug
-            qDebug("qCleanupResources error:\n%s" % traceback.format_exc())
+            pass
 
         # try removing path
         if hasattr(sys.modules[mod], '__path__'):
