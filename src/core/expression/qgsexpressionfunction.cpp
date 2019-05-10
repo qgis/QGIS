@@ -828,10 +828,10 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
     }
 
     QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(),
-                        QString::number( static_cast< int >( aggregate ) ),
-                        subExpression,
-                        parameters.filter,
-                        orderBy );
+                       QString::number( static_cast< int >( aggregate ) ),
+                       subExpression,
+                       parameters.filter,
+                       orderBy );
     if ( context && context->hasCachedValue( cacheKey ) )
       return context->cachedValue( cacheKey );
 
