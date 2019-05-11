@@ -63,7 +63,7 @@ class QgsMssqlGeometryParser
     int nSRSId = 0;
 
   protected:
-    QgsPoint QgsMssqlGeometryParser::ReadCoordinates( int iPoint );
+    QgsPoint ReadCoordinates( int iPoint );
     const QgsPointSequence ReadPointSequence( int iPoint, int iNextPoint );
     std::unique_ptr< QgsPoint > ReadPoint( int iShape );
     std::unique_ptr< QgsMultiPoint > ReadMultiPoint( int iShape );
