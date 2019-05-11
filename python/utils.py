@@ -415,6 +415,16 @@ def _unloadPluginModules(packageName):
                 sys.modules[mod].qCleanupResources()
         except:
             pass
+
+        # try removing path
+        if hasattr(sys.modules[mod], '__path__'):
+            for path in sys.modules[mod].__path__:
+                try:
+                    sys.path.remove(path)
+                except ValueError:
+                    # Discard if path is not there
+                    pass
+
         # try to remove the module from python
         try:
             del sys.modules[mod]
