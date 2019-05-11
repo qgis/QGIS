@@ -68,20 +68,20 @@ QgsMssqlFeatureIterator::~QgsMssqlFeatureIterator()
 
 double QgsMssqlFeatureIterator::ValidLat( const double latitude )
 {
-  if (latitude < -90.0)
+  if ( latitude < -90.0 )
     return -90.0;
-  if (latitude > 90.0)
+  if ( latitude > 90.0 )
     return 90.0;
   return latitude;
 }
 
 double QgsMssqlFeatureIterator::ValidLon( const double longitude )
 {
-    if (longitude < -15069.0)
-        return -15069.0;
-    if (longitude > 15069.0)
-        return 15069.0;
-    return longitude;
+  if ( longitude < -15069.0 )
+    return -15069.0;
+  if ( longitude > 15069.0 )
+    return 15069.0;
+  return longitude;
 }
 
 void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
@@ -154,21 +154,21 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     foo.setRealNumberPrecision( 8 );
     foo.setRealNumberNotation( QTextStream::FixedNotation );
 
-    if (mSource->mGeometryColType == QLatin1String("geometry"))
+    if ( mSource->mGeometryColType == QLatin1String( "geometry" ) )
     {
-        foo << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
-            << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
-            << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
-            << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
-            << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() );
+      foo << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
+          << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
+          << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
+          << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
+          << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() );
     }
     else
     {
-        foo << qgsDoubleToString( ValidLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMinimum() ) ) << ", "
-            << qgsDoubleToString( ValidLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMinimum() ) ) << ", "
-            << qgsDoubleToString( ValidLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMaximum() ) ) << ", "
-            << qgsDoubleToString( ValidLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMaximum() ) ) << ", "
-            << qgsDoubleToString( ValidLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMinimum() ) );
+      foo << qgsDoubleToString( ValidLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMinimum() ) ) << ", "
+          << qgsDoubleToString( ValidLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMinimum() ) ) << ", "
+          << qgsDoubleToString( ValidLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMaximum() ) ) << ", "
+          << qgsDoubleToString( ValidLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMaximum() ) ) << ", "
+          << qgsDoubleToString( ValidLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( ValidLat( mFilterRect.yMinimum() ) );
     }
 
     mStatement += QStringLiteral( " WHERE " );
@@ -406,7 +406,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       QByteArray ar = mQuery->record().value( mSource->mGeometryColName ).toByteArray();
       if ( !ar.isEmpty() )
       {
-        std::unique_ptr<QgsAbstractGeometry> geom = mParser.ParseSqlGeometry(reinterpret_cast< unsigned char * >(ar.data()), ar.size());
+        std::unique_ptr<QgsAbstractGeometry> geom = mParser.ParseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
         if ( geom != nullptr )
         {
           feature.setGeometry( QgsGeometry( std::move( geom ) ) );
