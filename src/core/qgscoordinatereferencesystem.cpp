@@ -2130,6 +2130,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       crs = QgsProjUtils::crsToSingleCrs( crs.get() );
 
       QString proj4( proj_as_proj_string( pjContext, crs.get(), PJ_PROJ_4, nullptr ) );
+      proj4.replace( QStringLiteral( "+type=crs" ), QString() );
       proj4 = proj4.trimmed();
 
       if ( proj4.isEmpty() )
@@ -2188,13 +2189,21 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       }
       else
       {
-        QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_get_ellipsoid( pjContext, crs.get() ) );
-        QString ellps;
-        if ( ellipsoid )
+        // ideally we'd be getting these using the proj api -- but that's not possible
+
+        QRegExp projRegExp( "\\+proj=(\\S+)" );
+        if ( projRegExp.indexIn( proj4 ) < 0 )
         {
-          const QString ellipsoidAuthName( proj_get_id_auth_name( ellipsoid.get(), 0 ) );
-          const QString ellipsoidAuthCode( proj_get_id_code( ellipsoid.get(), 0 ) );
-          ellps = QStringLiteral( "%1:%2" ).arg( ellipsoidAuthName, ellipsoidAuthCode );
+          QgsDebugMsg( QStringLiteral( "%1:%2: no +proj argument found [%2]" ).arg( authority, code, proj4 ) );
+          continue;
+        }
+        const QString operation = projRegExp.cap( 1 );
+
+        QRegExp ellipseRegExp( "\\+ellps=(\\S+)" );
+        QString ellps;
+        if ( ellipseRegExp.indexIn( proj4 ) >= 0 )
+        {
+          ellps = ellipseRegExp.cap( 1 );
         }
         else
         {
@@ -2208,7 +2217,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
 
         bool isGeographic = false;
-        QString operation = "";
 
         QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( pjContext, crs.get() ) );
         if ( coordinateSystem )
@@ -2238,39 +2246,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
             }
           }
         }
-
-        switch ( proj_get_type( crs.get() ) )
-        {
-          case PJ_TYPE_GEOGRAPHIC_2D_CRS:
-          case PJ_TYPE_GEOGRAPHIC_3D_CRS:
-          {
-            // TODO I think(?) this means longlat??
-            operation = "longlat";
-            break;
-          }
-
-          // PJ_TYPE_GEODETIC_CRS ??
-
-          default:
-          {
-            QgsProjUtils::proj_pj_unique_ptr coordOperation( proj_crs_get_coordoperation( pjContext, crs.get() ) );
-            if ( coordOperation )
-            {
-              const char *methodName = nullptr;
-              proj_coordoperation_get_method_info( pjContext, coordOperation.get(), &methodName, nullptr, nullptr );
-
-              // TODO - get short operation name?? e.g. tmerc
-              operation = QString( methodName );
-            }
-            else
-            {
-              QgsDebugMsg( QStringLiteral( "%1:%2" ).arg( authority, code ) );
-            }
-            break;
-          }
-        }
-
-
 
         // work out srid and srsid
         const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( authority, code ) );
