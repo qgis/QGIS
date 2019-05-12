@@ -17,6 +17,7 @@ email                : morb at ozemail dot com dot au
 #include <cstdarg>
 #include <cstdio>
 #include <cmath>
+#include <nlohmann/json.hpp>
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -46,8 +47,6 @@ email                : morb at ozemail dot com dot au
 #include "qgslinestring.h"
 #include "qgscircle.h"
 #include "qgscurve.h"
-
-#include "nlohmann/json.hpp"
 
 struct QgsGeometryPrivate
 {

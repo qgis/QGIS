@@ -21,8 +21,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmulticurve.h"
-#include "nlohmann/json.hpp"
 
+#include <nlohmann/json.hpp>
 #include <QJsonObject>
 
 QgsMultiLineString::QgsMultiLineString()

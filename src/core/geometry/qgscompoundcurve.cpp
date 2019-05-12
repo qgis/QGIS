@@ -21,11 +21,12 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 QgsCompoundCurve::QgsCompoundCurve()
 {

@@ -22,9 +22,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgscurvepolygon.h"
 #include "qgsmulticurve.h"
-#include "nlohmann/json.hpp"
 
 #include <QJsonObject>
+#include <nlohmann/json.hpp>
 
 QgsMultiSurface::QgsMultiSurface()
 {

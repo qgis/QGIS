@@ -27,7 +27,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
-#include "nlohmann/json.hpp"
+
+#include <nlohmann/json.hpp>
 #include <memory>
 
 QgsGeometryCollection::QgsGeometryCollection()

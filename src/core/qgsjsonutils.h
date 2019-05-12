@@ -22,9 +22,8 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfields.h"
 
-
 #ifndef SIP_RUN
-#include "nlohmann/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 using json = nlohmann::json;
 #endif
 

@@ -23,8 +23,8 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
-#include "nlohmann/json.hpp"
 
+#include <nlohmann/json.hpp>
 #include <cmath>
 #include <memory>
 #include <QPainter>

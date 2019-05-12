@@ -20,8 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsgeometrycollection.h"
-#include "nlohmann/json.hpp"
 
+#include <nlohmann/json.hpp>
 #include <limits>
 #include <QTransform>
 

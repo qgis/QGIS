@@ -28,8 +28,7 @@
 #include <QRegularExpression>
 #include <QJsonObject>
 #include <QJsonArray>
-
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

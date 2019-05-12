@@ -26,10 +26,10 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 #include "qgsapplication.h"
-#include "nlohmann/json.hpp"
 
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <nlohmann/json.hpp>
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )

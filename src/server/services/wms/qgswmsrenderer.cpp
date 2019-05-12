@@ -69,6 +69,8 @@
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QDir>
+#include <QUrl>
+#include <nlohmann/json.hpp>
 
 //for printing
 #include "qgslayoutatlas.h"
@@ -89,9 +91,6 @@
 #include "qgsfeaturefilterprovidergroup.h"
 #include "qgsogcutils.h"
 #include "qgsunittypes.h"
-#include <QUrl>
-
-#include"nlohmann/json.hpp"
 
 namespace QgsWms
 {

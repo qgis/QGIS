@@ -12,7 +12,6 @@
 
 
 
-
 typedef QVector< QgsPoint > QgsPointSequence;
 typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;

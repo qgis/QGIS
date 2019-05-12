@@ -24,11 +24,12 @@
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 #include "qgslogger.h"
+
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 QgsCircularString::QgsCircularString()
 {

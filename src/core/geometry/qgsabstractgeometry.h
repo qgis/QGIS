@@ -17,7 +17,6 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSABSTRACTGEOMETRYV2
 
 #include <functional>
-
 #include <QString>
 
 #include "qgis_core.h"
@@ -26,7 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 #ifndef SIP_RUN
-#include "nlohmann/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 using json = nlohmann::json;
 #endif
 

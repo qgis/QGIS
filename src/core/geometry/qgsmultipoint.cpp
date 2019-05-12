@@ -21,8 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include <QJsonArray>
 #include <QJsonObject>
-
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 QgsMultiPoint::QgsMultiPoint()
 {

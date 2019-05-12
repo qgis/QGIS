@@ -26,8 +26,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QStringList>
 #include <QVector>
 #include <QRegularExpression>
-
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {

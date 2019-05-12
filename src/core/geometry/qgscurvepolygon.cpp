@@ -24,13 +24,13 @@
 #include "qgspolygon.h"
 #include "qgswkbptr.h"
 #include "qgsmulticurve.h"
+
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
-
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 QgsCurvePolygon::QgsCurvePolygon()
 {

@@ -37,7 +37,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsfeatureid.h"
 
 #ifndef SIP_RUN
-#include "nlohmann/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 using json = nlohmann::json;
 #endif
 
