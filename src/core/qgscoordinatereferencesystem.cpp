@@ -787,15 +787,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +units=m +no_defs
   //
   QString myProj4String = proj4String.trimmed();
-#if PROJ_VERSION_MAJOR>=6
-  if ( !myProj4String.contains( QStringLiteral( "+type=crs" ) ) )
-  {
-    myProj4String += QStringLiteral( " +type=crs" );
-  }
-#else
   myProj4String.remove( QStringLiteral( "+type=crs" ) );
   myProj4String = myProj4String.trimmed();
-#endif
 
   // hack!
 #if PROJ_VERSION_MAJOR>=6
@@ -809,7 +802,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // broken on proj <= 6.1.0
 #if PROJ_VERSION_MAJOR>=6
   // first, try to use proj to do this for us...
-  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj4String.toLatin1().constData() ) );
+  const QString projCrsString = myProj4String + ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), projCrsString.toLatin1().constData() ) );
   if ( crs )
   {
     //crs = QgsProjUtils::crsToSingleCrs( crs.get() ) ;
