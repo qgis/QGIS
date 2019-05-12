@@ -787,8 +787,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +units=m +no_defs
   //
   QString myProj4String = proj4String.trimmed();
-#if 0// PROJ_VERSION_MAJOR>=6
-  if ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) )
+#if PROJ_VERSION_MAJOR>=6
+  if ( !myProj4String.contains( QStringLiteral( "+type=crs" ) ) )
   {
     myProj4String += QStringLiteral( " +type=crs" );
   }
@@ -806,13 +806,13 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   d->mIsValid = false;
   d->mWkt.clear();
 
-  // seems broken. Sigh.
+  // broken on proj <= 6.1.0
 #if PROJ_VERSION_MAJOR>=6
   // first, try to use proj to do this for us...
   QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj4String.toLatin1().constData() ) );
   if ( crs )
   {
-    crs = QgsProjUtils::crsToSingleCrs( crs.get() ) ;
+    //crs = QgsProjUtils::crsToSingleCrs( crs.get() ) ;
     int *confidence = nullptr;
     if ( PJ_OBJ_LIST *crsList = proj_identify( QgsProjContext::get(), crs.get(), nullptr, nullptr, &confidence ) )
     {
@@ -1284,9 +1284,10 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   d->mProj4 = proj4String;
 
   QgsLocaleNumC l;
-  const QString trimmed = proj4String.trimmed() + QStringLiteral( " +type=crs" );
+  QString trimmed = proj4String.trimmed();
 
 #if PROJ_VERSION_MAJOR>=6
+  trimmed += QStringLiteral( " +type=crs" );
   PJ_CONTEXT *ctx = QgsProjContext::get();
 
   {
@@ -2134,7 +2135,10 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 {
   setlocale( LC_ALL, "C" );
   QString dbFilePath = QgsApplication::srsDatabaseFilePath();
-  //syncDatumTransform( dbFilePath );
+
+#if PROJ_VERSION_MAJOR<6
+  syncDatumTransform( dbFilePath );
+#endif
 
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
@@ -2152,6 +2156,14 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     QgsDebugMsg( QStringLiteral( "Could not begin transaction: %1 (%2)\n" ).arg( QgsApplication::srsDatabaseFilePath(), database.errorMessage() ) );
     return -1;
   }
+
+#if PROJ_VERSION_MAJOR<6
+// fix up database, if not done already //
+  if ( sqlite3_exec( database.get(), "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
+    ( void )sqlite3_exec( database.get(), "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", nullptr, nullptr, nullptr );
+
+  ( void )sqlite3_exec( database.get(), "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, nullptr, nullptr );
+#endif
 
   sqlite3_statement_unique_ptr statement;
   int result;
