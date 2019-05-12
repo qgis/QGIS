@@ -787,9 +787,64 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +units=m +no_defs
   //
   QString myProj4String = proj4String.trimmed();
+#if 0// PROJ_VERSION_MAJOR>=6
+  if ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) )
+  {
+    myProj4String += QStringLiteral( " +type=crs" );
+  }
+#else
+  myProj4String.remove( QStringLiteral( "+type=crs" ) );
+  myProj4String = myProj4String.trimmed();
+#endif
+
+  // hack!
+#if PROJ_VERSION_MAJOR>=6
+  myProj4String.remove( QStringLiteral( "+towgs84=0,0,0,0,0,0,0" ) );
+  myProj4String = myProj4String.trimmed();
+#endif
+
   d->mIsValid = false;
   d->mWkt.clear();
 
+  // seems broken. Sigh.
+#if 0 // PROJ_VERSION_MAJOR>=6
+  // first, try to use proj to do this for us...
+  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj4String.toLatin1().constData() ) );
+  if ( crs )
+  {
+    crs = QgsProjUtils::crsToSingleCrs( crs.get() ) ;
+    int *confidence = nullptr;
+    if ( PJ_OBJ_LIST *crsList = proj_identify( QgsProjContext::get(), crs.get(), nullptr, nullptr, &confidence ) )
+    {
+      const int count = proj_list_get_count( crsList );
+      QgsProjUtils::proj_pj_unique_ptr matchedCrs;
+      if ( count > 0 )
+      {
+        matchedCrs.reset( proj_list_get( QgsProjContext::get(), crsList, 0 ) );
+      }
+      proj_list_destroy( crsList );
+      proj_int_list_destroy( confidence );
+      if ( matchedCrs && confidence[0] >= 70 )
+      {
+        const QString authName( proj_get_id_auth_name( crs.get(), 0 ) );
+        const QString authCode( proj_get_id_code( crs.get(), 0 ) );
+        if ( !authName.isEmpty() && !authCode.isEmpty() )
+        {
+          const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
+          const bool result = createFromOgcWmsCrs( authid );
+          sProj4CacheLock.lockForWrite();
+          sProj4Cache.insert( proj4String, *this );
+          sProj4CacheLock.unlock();
+          return result;
+        }
+      }
+    }
+  }
+
+  // don't do any of this for proj 6 -- responsibility for all this rests in the proj library.
+  // Woohoo! we can be free of this legacy cruft FOREVER!
+  // (and if any of this has value, take it up with the proj project. That's where it belongs)
+#else
   QRegExp myProjRegExp( "\\+proj=(\\S+)" );
   int myStart = myProjRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
@@ -948,6 +1003,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
       d->mIsValid = false;
     }
   }
+#endif
 
   // if we failed to look up the projection in database, don't worry. we can still use it :)
   if ( !d->mIsValid )
