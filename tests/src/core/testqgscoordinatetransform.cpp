@@ -225,9 +225,7 @@ void TestQgsCoordinateTransform::scaleFactor()
   QFETCH( double, factor );
 
   QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
-
-  // qDebug() << QString::number(ct.scaleFactor( rect ), 'g', 17) ;
-  QVERIFY( qgsDoubleNear( ct.scaleFactor( rect ), factor ) );
+  QGSCOMPARENEAR( ct.scaleFactor( rect ), factor, 0.00000001 );
 }
 
 void TestQgsCoordinateTransform::scaleFactor_data()
