@@ -1062,7 +1062,10 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     if ( statement.step() != SQLITE_DONE )
     {
       QgsDebugMsgLevel( QStringLiteral( "Multiple records found in srs.db" ), 4 );
+      //be less fussy on proj 6 -- the db has MANY more entries!
+#if PROJ_VERSION_MAJOR<6
       myMap.clear();
+#endif
     }
   }
   else
