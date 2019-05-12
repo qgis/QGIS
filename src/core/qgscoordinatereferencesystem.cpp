@@ -807,7 +807,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   d->mWkt.clear();
 
   // seems broken. Sigh.
-#if 0 // PROJ_VERSION_MAJOR>=6
+#if PROJ_VERSION_MAJOR>=6
   // first, try to use proj to do this for us...
   QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj4String.toLatin1().constData() ) );
   if ( crs )
@@ -817,14 +817,16 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     if ( PJ_OBJ_LIST *crsList = proj_identify( QgsProjContext::get(), crs.get(), nullptr, nullptr, &confidence ) )
     {
       const int count = proj_list_get_count( crsList );
+      int confidence0 = 0;
       QgsProjUtils::proj_pj_unique_ptr matchedCrs;
       if ( count > 0 )
       {
         matchedCrs.reset( proj_list_get( QgsProjContext::get(), crsList, 0 ) );
+        confidence0 = confidence[0];
       }
       proj_list_destroy( crsList );
       proj_int_list_destroy( confidence );
-      if ( matchedCrs && confidence[0] >= 70 )
+      if ( matchedCrs && confidence0 >= 70 )
       {
         const QString authName( proj_get_id_auth_name( crs.get(), 0 ) );
         const QString authCode( proj_get_id_code( crs.get(), 0 ) );
@@ -840,11 +842,14 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
       }
     }
   }
+#endif
 
+  // IDEALLY!!
   // don't do any of this for proj 6 -- responsibility for all this rests in the proj library.
   // Woohoo! we can be free of this legacy cruft FOREVER!
   // (and if any of this has value, take it up with the proj project. That's where it belongs)
-#else
+  // EXCEPT ABOVE SEEMS BROKEN so whatever..
+#if 1
   QRegExp myProjRegExp( "\\+proj=(\\S+)" );
   int myStart = myProjRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
