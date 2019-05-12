@@ -238,4 +238,4 @@ FOREACH(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})
 ENDFOREACH(TESTSRC)
 
-ADD_DEPENDENCIES(qgis_coordinatereferencesystemtest synccrsdb)
+#ADD_DEPENDENCIES(qgis_coordinatereferencesystemtest synccrsdb)
