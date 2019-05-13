@@ -2285,6 +2285,7 @@ Configuration and logic to apply automatically on any edit happening on this lay
 %End
 
 
+
   public slots:
 
     void select( QgsFeatureId featureId );
