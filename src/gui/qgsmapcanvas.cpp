@@ -2120,7 +2120,13 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
 
   // store canvas expression context
   QDomElement scopeElement = doc.createElement( QStringLiteral( "expressionContextScope" ) );
-  mExpressionContextScope.writeXml( scopeElement, doc, QgsReadWriteContext() );
+  QgsExpressionContextScope tmpScope( mExpressionContextScope );
+  tmpScope.removeVariable( QStringLiteral( "atlas_featurenumber" ) );
+  tmpScope.removeVariable( QStringLiteral( "atlas_pagename" ) );
+  tmpScope.removeVariable( QStringLiteral( "atlas_feature" ) );
+  tmpScope.removeVariable( QStringLiteral( "atlas_featureid" ) );
+  tmpScope.removeVariable( QStringLiteral( "atlas_geometry" ) );
+  tmpScope.writeXml( scopeElement, doc, QgsReadWriteContext() );
   mapcanvasNode.appendChild( scopeElement );
 
   // TODO: store only units, extent, projections, dest CRS
