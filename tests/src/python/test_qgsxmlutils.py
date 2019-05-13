@@ -13,9 +13,9 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA switch sip api
-
 from qgis.core import (QgsXmlUtils,
                        QgsProperty,
+                       QgsGeometry,
                        QgsCoordinateReferenceSystem)
 
 from qgis.PyQt.QtXml import QDomDocument
@@ -45,6 +45,19 @@ class TestQgsXmlUtils(unittest.TestCase):
         doc = QDomDocument("properties")
 
         my_properties = {'a': 1, 'b': 2, 'c': 3, 'd': -1}
+        elem = QgsXmlUtils.writeVariant(my_properties, doc)
+
+        prop2 = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(my_properties, prop2)
+
+    def test_long(self):
+        """
+        Test that maps are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        # not sure if this actually does map to a long?
+        my_properties = {'a': 9223372036854775808}
         elem = QgsXmlUtils.writeVariant(my_properties, doc)
 
         prop2 = QgsXmlUtils.readVariant(elem)
@@ -159,6 +172,18 @@ class TestQgsXmlUtils(unittest.TestCase):
 
         crs2 = QgsXmlUtils.readVariant(elem)
         self.assertFalse(crs2.isValid())
+
+    def test_geom(self):
+        """
+        Test that QgsGeometry values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        g = QgsGeometry.fromWkt('Point(3 4)')
+        elem = QgsXmlUtils.writeVariant(g, doc)
+
+        g2 = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(g2.asWkt(), 'Point (3 4)')
 
 
 if __name__ == '__main__':
