@@ -830,19 +830,28 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     if ( PJ_OBJ_LIST *crsList = proj_identify( QgsProjContext::get(), crs.get(), nullptr, nullptr, &confidence ) )
     {
       const int count = proj_list_get_count( crsList );
-      int confidence0 = 0;
+      int bestConfidence = 0;
       QgsProjUtils::proj_pj_unique_ptr matchedCrs;
-      if ( count > 0 )
+      for ( int i = 0; i < count; ++i )
       {
-        matchedCrs.reset( proj_list_get( QgsProjContext::get(), crsList, 0 ) );
-        confidence0 = confidence[0];
+        if ( confidence[i] >= bestConfidence )
+        {
+          // prefer EPSG codes for compatibility with earlier qgis conversions
+          QgsProjUtils::proj_pj_unique_ptr candidateCrs( proj_list_get( QgsProjContext::get(), crsList, i ) );
+          const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
+          if ( confidence[i] > bestConfidence || authName == QLatin1String( "EPSG" ) )
+          {
+            bestConfidence = confidence[i];
+            matchedCrs = std::move( candidateCrs );
+          }
+        }
       }
       proj_list_destroy( crsList );
       proj_int_list_destroy( confidence );
-      if ( matchedCrs && confidence0 >= 70 )
+      if ( matchedCrs && bestConfidence >= 70 )
       {
-        const QString authName( proj_get_id_auth_name( crs.get(), 0 ) );
-        const QString authCode( proj_get_id_code( crs.get(), 0 ) );
+        const QString authName( proj_get_id_auth_name( matchedCrs.get(), 0 ) );
+        const QString authCode( proj_get_id_code( matchedCrs.get(), 0 ) );
         if ( !authName.isEmpty() && !authCode.isEmpty() )
         {
           const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
@@ -861,7 +870,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // don't do any of this for proj 6 -- responsibility for all this rests in the proj library.
   // Woohoo! we can be free of this legacy cruft FOREVER!
   // (and if any of this has value, take it up with the proj project. That's where it belongs)
-  // EXCEPT ABOVE SEEMS BROKEN so whatever..
+  // I ***think*** this is safe to disable for proj 6.1.1 and above
 #if 1
   QRegExp myProjRegExp( "\\+proj=(\\S+)" );
   int myStart = myProjRegExp.indexIn( myProj4String );
