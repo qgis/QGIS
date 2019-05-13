@@ -821,7 +821,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   }
 
   // cache value
-  if ( context && context->indexOfScope( "Symbol scope" ) == -1)
+  if ( context && context->indexOfScope( "Symbol scope" ) == -1 )
     context->setCachedValue( cacheKey, result );
 
   return result;

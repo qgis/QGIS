@@ -3928,10 +3928,10 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
 
   if ( context )
   {
-    if( context->indexOfScope( "Symbol scope" ) != -1 )
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
     {
       const QgsFeatureIds ids = featureIds( context->variable( "symbol_id" ).toString() );
-      Q_UNUSED(ids);
+      Q_UNUSED( ids );
     }
   }
 
