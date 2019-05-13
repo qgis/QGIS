@@ -593,7 +593,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     subContext.appendScope( subScope );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
 
-    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+    if ( context->indexOfScope( "Symbol scope" ) == -1 )
       context->setCachedValue( cacheKey, result );
   }
   else
@@ -801,7 +801,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
       parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
     else
       parameters.filter = groupByClause;
-    }
+  }
 
   QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(),
                      QString::number( static_cast< int >( aggregate ) ),
@@ -823,7 +823,6 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   // cache value
   if ( context && context->indexOfScope( "Symbol scope" ) == -1)
     context->setCachedValue( cacheKey, result );
-  }
 
   return result;
 }
