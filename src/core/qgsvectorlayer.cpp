@@ -3931,11 +3931,10 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     if( context->indexOfScope( "Symbol scope" ) != -1 )
     {
       const QgsFeatureIds ids = featureIds( context->variable( "symbol_id" ).toString() );
-      fids_filter = true;
+      Q_UNUSED(ids);
     }
   }
 
-  Q_UNUSED(ids);
   // test if we are calculating based on a field
   int attrIndex = mFields.lookupField( fieldOrExpression );
   if ( attrIndex >= 0 )
