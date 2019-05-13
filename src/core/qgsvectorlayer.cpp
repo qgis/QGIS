@@ -3926,8 +3926,14 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     return QVariant();
   }
 
-  if ( context->indexOfScope( "Symbol scope" ) != -1 )
-    const QgsFeatureIds ids = featureIds( context->variable( "symbol_id" ).toString() );
+  if ( context )
+  {
+    if( context->indexOfScope( "Symbol scope" ) != -1 )
+    {
+      const QgsFeatureIds ids = featureIds( context->variable( "symbol_id" ).toString() );
+      fids_filter = true;
+    }
+  }
 
   Q_UNUSED(ids);
   // test if we are calculating based on a field
