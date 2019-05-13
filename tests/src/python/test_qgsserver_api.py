@@ -18,21 +18,56 @@ import os
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse, QgsServerApi
-from qgis.core import QgsProject
+from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse, QgsServerApi, QgsServerApiUtils
+from qgis.core import QgsProject, QgsRectangle
 from qgis.testing import unittest
 from utilities import unitTestDataPath
+from urllib import parse
 
 import tempfile
 
 from test_qgsserver import QgsServerTestBase
 
 
+class QgsServerAPIUtilsTest(QgsServerTestBase):
+    """ QGIS API server utils tests"""
+
+    def test_parse_bbox(self):
+        bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,8.203497,44.901484')
+        self.assertEquals(bbox.xMinimum(), 8.203495)
+        self.assertEquals(bbox.yMinimum(), 44.901482)
+        self.assertEquals(bbox.xMaximum(), 8.203497)
+        self.assertEquals(bbox.yMaximum(), 44.901484)
+
+        bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,8.203497,44.901484,100,120')
+        self.assertEquals(bbox.xMinimum(), 8.203495)
+        self.assertEquals(bbox.yMinimum(), 44.901482)
+        self.assertEquals(bbox.xMaximum(), 8.203497)
+        self.assertEquals(bbox.yMaximum(), 44.901484)
+
+        bbox = QgsServerApiUtils.parseBbox('something_wrong_here')
+        self.assertTrue(bbox.isEmpty())
+        bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,8.203497,something_wrong_here')
+        self.assertTrue(bbox.isEmpty())
+
+    def test_parse_crs(self):
+        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/OGC/1.3/CRS84')
+        self.assertTrue(crs.isValid())
+        self.assertEquals(crs.postgisSrid(), 4326)
+
+        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/EPSG/9.6.2/32632')
+        self.assertTrue(crs.isValid())
+        self.assertEquals(crs.postgisSrid(), 32632)
+
+        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/something_wrong_here')
+        self.assertFalse(crs.isValid())
+
+
 class QgsServerAPITest(QgsServerTestBase):
     """ QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    #regenerate_reference = True
+    regenerate_reference = True
 
     def dump(self, response):
         result = []
@@ -120,14 +155,33 @@ class QgsServerAPITest(QgsServerTestBase):
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?limit=-1')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
-        self.assertEqual(response.code(), 400) # Bad request
-        self.assertEqual(response.body(), "bad request") # Bad request
+        self.assertEqual(response.statusCode(), 400) # Bad request
+        self.assertEqual(response.body(), b'[{"code":"Bad request error","description":"Limit is not valid (0-10000)"}]') # Bad request
 
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?limit=10001')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
-        self.assertEqual(response.code(), 400) # Bad request
-        self.assertEqual(response.body(), "bad request") # Bad request
+        self.assertEqual(response.statusCode(), 400) # Bad request
+        self.assertEqual(response.body(), b'[{"code":"Bad request error","description":"Limit is not valid (0-10000)"}]') # Bad request
+
+    def test_wfs3_collection_items_limit(self):
+        """Test WFS3 API"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?limit=1')
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1.json')
+
+    def test_wfs3_collection_items_bbox(self):
+        """Test WFS3 API"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?bbox=8.203495,44.901482,8.203497,44.901484')
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_bbox.json')
+
+        # Test with a different CRS
+        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/32632', safe='')
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?bbox=437106.99096772138727829,4972307.72834488749504089,437129.50390358484582976,4972318.1108037903904914&bbox-crs={}'.format(encoded_crs))
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_bbox_32632.json')
 
 
 if __name__ == '__main__':

@@ -200,21 +200,21 @@ json CollectionsHandler::items( const QgsWfs3::Api *api, QgsServerApiContext *co
 
     // Validate inputs
     auto ok { false };
-    const auto bbox { context->request()->parameter( QStringLiteral( "bbox" ) ) };
-    const auto bboxCrs { context->request()->parameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
+    const auto bbox { context->request()->queryParameter( QStringLiteral( "bbox" ) ) };
+    const auto bboxCrs { context->request()->queryParameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
     const auto filterRect { QgsServerApiUtils::parseBbox( bbox ) };
     const auto crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
-    if ( crs.isValid() )
+    if ( ! crs.isValid() )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "CRS not valid" ) );
     }
-    auto limit { context->request()->parameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
+    auto limit { context->request()->queryParameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
     if ( 0 >= limit || limit > 10000 || !ok )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "Limit is not valid (0-10000)" ) );
     }
     // TODO: implement time
-    const auto time { context->request()->parameter( QStringLiteral( "time" ) ) };
+    const auto time { context->request()->queryParameter( QStringLiteral( "time" ) ) };
     if ( ! time.isEmpty() )
     {
       throw QgsServerApiNotImplementedError( QStringLiteral( "Time is not implemented" ) ) ;

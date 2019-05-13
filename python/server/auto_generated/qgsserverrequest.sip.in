@@ -155,6 +155,11 @@ by default this is equal to the url seen by QGIS server
 Set the request method
 %End
 
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+%Docstring
+Returns the query string parameter with the given ``name`` from the request URL, a ``defaultValue`` can be specified.
+%End
+
   protected:
 
     void setOriginalUrl( const QUrl &url );

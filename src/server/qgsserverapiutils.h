@@ -34,8 +34,14 @@ class SERVER_EXPORT QgsServerApiUtils
 
   public:
 
+    /**
+     * parseBbox parses the comma separated \a bbox into a (possibily empty) QgsRectangle, if
+     * \note Z values (i.e. a 6 elements bbox) are silently discarded
+     */
     static QgsRectangle parseBbox( const QString &bbox );
+
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
+
 
 };
 #endif // QGSSERVERAPIUTILS_H

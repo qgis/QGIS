@@ -56,7 +56,8 @@ namespace QgsWfs3
   {
     JSON,
     HTML,
-    XML
+    XML,
+    GML
   };
   Q_ENUM_NS( contentType )
 

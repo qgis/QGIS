@@ -25,7 +25,23 @@
 
 QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
 {
-  // TODO
+  const auto parts { bbox.split( ',', QString::SplitBehavior::SkipEmptyParts ) };
+  // Note: Z is ignored
+  auto ok { true };
+  if ( parts.count() >= 4 )
+  {
+    auto toDouble = [ & ]( const int i ) -> double
+    {
+      if ( ! ok )
+        return 0;
+      return parts[i].toDouble( &ok );
+    };
+    const auto rect { QgsRectangle( toDouble( 0 ), toDouble( 1 ), toDouble( 2 ), toDouble( 3 ) ) };
+    if ( ok )
+    {
+      return rect;
+    }
+  }
   return QgsRectangle();
 }
 
@@ -37,9 +53,12 @@ QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs
   // We want this:
   // "urn:ogc:def:crs:<auth>:[<version>]:<code>"
   const auto parts { QUrl( bboxCrs ).path().split( '/' ) };
-  if ( parts.count() == 5 )
+  if ( parts.count() == 6 )
   {
-    crs.fromOgcWmsCrs( QStringLiteral( "urn:ogc:def:crs:<auth>:[<version>]:<code>" ).arg( parts[2], parts[3], parts[4] ) );
+    return crs.fromOgcWmsCrs( QStringLiteral( "urn:ogc:def:crs:%1:%2:%3" ).arg( parts[3], parts[4], parts[5] ) );
   }
-  return crs;
+  else
+  {
+    return crs;
+  }
 }

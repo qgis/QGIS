@@ -92,6 +92,7 @@ namespace QgsWfs3
 
   void Handler::write( const json &data,  const QgsServerRequest &request, QgsServerResponse &response, const QString &contentType ) const
   {
+    // TODO: accept GML and get mime type from ACCEPT HTTP header
     const auto extension { QgsWfs3::Api::extension( request.url() ) };
     if ( extension == "" || extension == QgsWfs3::Api::contentTypeToString( QgsWfs3::contentType::JSON ) )
     {
