@@ -627,18 +627,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
     bool mPainterCancelWait = false;
 
-    <<< <<< < HEAD
-    == == == =
-      QgsLayoutMeasurement mLabelMargin{ 0 };
-    QgsLayoutMeasurement mEvaluatedLabelMargin{ 0 };
-
-    QStringList mBlockingLabelItemUuids;
-    QList< QPointer< QgsLayoutItem > > mBlockingLabelItems;
-
     //!layer id / error message
     QgsMapRendererJob::Errors mRenderingErrors;
 
-  >>> >>> > 0f3c39deb7... Server: throw exception in GetMap if DB connection is not ok
     void init();
 
     //! Resets the item tooltip to reflect current map id
