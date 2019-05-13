@@ -100,9 +100,9 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   }
 
   //add protocol drivers
-  QStringList protocolTypes = QString( "HTTP/HTTPS/FTP,vsicurl;AWS S3,vsis3;Google Cloud Storage,vsigs;" ).split( ';' );
+  QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl;AWS S3,vsis3;Google Cloud Storage,vsigs;" ).split( ';' );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
-  protocolTypes += QString( "Microsoft Azure Blob,vsiaz;Alibaba Cloud OSS,vsioss;OpenStack Swift Object Storage,vsiswift;" ).split( ';' );
+  protocolTypes += QStringLiteral( "Microsoft Azure Blob,vsiaz;Alibaba Cloud OSS,vsioss;OpenStack Swift Object Storage,vsiswift;WFS3 (experimental),WFS3" ).split( ';' );
 #endif
   protocolTypes += QgsProviderRegistry::instance()->protocolDrivers().split( ';' );
   for ( int i = 0; i < protocolTypes.count(); i++ )
