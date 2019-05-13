@@ -95,8 +95,8 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
-    double ValidLat( const double latitude );
-    double ValidLon( const double longitude );
+    double validLat( const double latitude ) const;
+    double validLon( const double longitude ) const;
 
     // The current database
     QSqlDatabase mDatabase;
