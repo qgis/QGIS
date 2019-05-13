@@ -1427,6 +1427,29 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_GroupedLayersDown")
 
+    def test_wms_getmap_datasource_error(self):
+        """Must throw a server exception if datasource if not available"""
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_invalid_layers.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "613402.5658687877003,5809005.018114360981,619594.408781287726,5813869.006602735259",
+            "CRS": "EPSG:25832",
+            "WIDTH": "429",
+            "HEIGHT": "337",
+            "LAYERS": "areas and symbols,osm",
+            "STYLES": ",",
+            "FORMAT": "image/png",
+            "DPI": "200",
+            "MAP_RESOLUTION": "200",
+            "FORMAT_OPTIONS": "dpi:200"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+
+        self.assertTrue('ServerException' in str(r))
+
     def test_wms_getmap_root_custom_layer_order_regression_21917(self):
         """When drawing root layer, custom layer order order should be respected."""
 
