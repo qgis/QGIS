@@ -2227,8 +2227,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
       crs = QgsProjUtils::crsToSingleCrs( crs.get() );
 
-      crs.reset( proj_crs_create_bound_crs_to_WGS84( pjContext, crs.get(), nullptr ) );
-
       QString proj4 = getFullProjString( crs.get() );
       proj4.replace( QStringLiteral( "+type=crs" ), QString() );
       proj4 = proj4.trimmed();
