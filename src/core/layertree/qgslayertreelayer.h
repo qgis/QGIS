@@ -140,7 +140,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      *
      * \since QGIS 3.8
      */
-    const QString labelExpression() const { return mLabelExpression; }
+    QString labelExpression() const { return mLabelExpression; }
 
   signals:
 

@@ -2285,14 +2285,6 @@ Configuration and logic to apply automatically on any edit happening on this lay
 %End
 
 
-
-    bool featuresCounted() const;
-%Docstring
-Returns true if the features were counted.
-
-.. versionadded:: 3.8
-%End
-
   public slots:
 
     void select( QgsFeatureId featureId );
