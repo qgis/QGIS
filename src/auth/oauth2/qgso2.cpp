@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QDir>
 #include <QSettings>
