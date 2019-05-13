@@ -614,6 +614,7 @@
         <file>themes/default/mActionPanHighlightFeature.svg</file>
         <file>themes/default/cadtools/construction.svg</file>
         <file>themes/default/cadtools/delta.svg</file>
+        <file>themes/default/cadtools/floater.svg</file>
         <file>themes/default/cadtools/cad.svg</file>
         <file>themes/default/cadtools/lock.svg</file>
         <file>themes/default/cadtools/parallel.svg</file>

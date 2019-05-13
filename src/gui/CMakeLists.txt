@@ -214,6 +214,7 @@ SET(QGIS_GUI_SRCS
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
+  qgsadvanceddigitizingfloater.cpp
   qgsaggregatetoolbutton.cpp
   qgsattributedialog.cpp
   qgsattributeform.cpp
@@ -401,6 +402,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgisinterface.h
   qgsactionmenu.h
   qgsadvanceddigitizingdockwidget.h
+  qgsadvanceddigitizingfloater.h
   qgsaggregatetoolbutton.h
   qgsattributedialog.h
   qgsattributeform.h
