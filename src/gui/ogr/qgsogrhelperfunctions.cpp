@@ -269,6 +269,10 @@ QString createProtocolURI( const QString &type, const QString &url,  const QStri
   {
     uri = QStringLiteral( "DODS:%1" ).arg( url );
   }
+  else if ( type == QLatin1String( "WFS3" ) )
+  {
+    uri = QStringLiteral( "WFS3:%1" ).arg( url );
+  }
   QgsDebugMsg( "Connection type is=" + type + " and uri=" + uri );
   // Update URI with authentication information
   if ( ! configId.isEmpty() )
