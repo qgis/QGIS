@@ -29,6 +29,7 @@
 
 class QgsServerResponse;
 class QgsProject;
+class QgsServerApiContext;
 
 /**
  * Server API endpoint abstract base class
@@ -63,11 +64,10 @@ class SERVER_EXPORT QgsServerApi
     virtual bool allowMethod( QgsServerRequest::Method ) const { return true; }
 
     /**
-     * Execute the requests and set result in QgsServerResponse
+     * executeRequest executes a request by passing the given \a context to the handlers.
+     * \note the method does not take ownership of the context
      */
-    virtual void executeRequest( const QgsServerRequest &request,
-                                 QgsServerResponse &response, const QgsProject *project ) const = 0;
-
+    virtual void executeRequest( QgsServerApiContext *context ) const = 0;
 
 };
 

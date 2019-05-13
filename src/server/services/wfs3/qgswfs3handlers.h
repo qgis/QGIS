@@ -24,21 +24,21 @@
 struct APIHandler: public QgsWfs3::Handler
 {
   APIHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project ) const override;
+  void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 };
 
 
 struct LandingPageHandler: public QgsWfs3::Handler
 {
   LandingPageHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project ) const override;
+  void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 };
 
 
 struct ConformanceHandler: public QgsWfs3::Handler
 {
   ConformanceHandler( );
-  void handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project ) const override;
+  void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 };
 
 
@@ -46,13 +46,13 @@ struct ConformanceHandler: public QgsWfs3::Handler
 struct CollectionsHandler: public QgsWfs3::Handler
 {
     CollectionsHandler( );
-    void handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project ) const override;
+    void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 
   private:
 
-    json collections( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project ) const;
+    json collections( const QgsWfs3::Api *api, QgsServerApiContext *context ) const;
 
-    json items( const QgsWfs3::Api *api, const QgsServerRequest &request,  QgsServerResponse &response, const QgsProject *project, const QString &collectionId ) const;
+    json items( const QgsWfs3::Api *api, QgsServerApiContext *context, const QString &collectionId ) const;
 
 };
 

@@ -32,7 +32,7 @@ class QgsServerAPITest(QgsServerTestBase):
     """ QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regenerate_reference = True
+    #regenerate_reference = True
 
     def dump(self, response):
         result = []
@@ -71,8 +71,8 @@ class QgsServerAPITest(QgsServerTestBase):
             def rootPath(self):
                 return "/testapi"
 
-            def executeRequest(self, request, response, project):
-                response.write(b"\"Test API\"")
+            def executeRequest(self, request_context):
+                request_context.response().write(b"\"Test API\"")
 
         api = API()
         self.server.serverInterface().serviceRegistry().registerApi(api)

@@ -27,6 +27,7 @@
 
 using json = nlohmann::json;
 
+class QgsServerApiContext;
 
 namespace QgsWfs3
 {
@@ -60,7 +61,7 @@ namespace QgsWfs3
   Q_ENUM_NS( contentType )
 
 
-  //! Generic URL handler
+  //! Generic endpoint handler for API, this class could be eventually factored out to QgsServerApi
   struct Handler
   {
 
@@ -69,7 +70,7 @@ namespace QgsWfs3
     public:
 
       virtual ~Handler() = default;
-      virtual void handleRequest( const Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const;
+      virtual void handleRequest( const Api *api, QgsServerApiContext *context ) const;
       std::string href( const Api *api, const QgsServerRequest &request ) const;
 
       QString path;
@@ -132,9 +133,10 @@ namespace QgsWfs3
       const QString rootPath() const override { return QStringLiteral( "/wfs3" ); }
 
       // Utilities
-
+#ifndef SIP_RUN
       template<class T>
       void registerHandler();
+#endif
 
       /**
        * Returns a copy of the \a url with the path without an ending slash
@@ -148,22 +150,11 @@ namespace QgsWfs3
 
       const std::vector<std::unique_ptr<Handler>> &handlers() const;
 
-      static std::string relToString( const QgsWfs3::rel &rel )
-      {
-        static QMetaEnum metaEnum = QMetaEnum::fromType<QgsWfs3::rel>();
-        return metaEnum.valueToKey( rel );
-      }
+      static std::string relToString( const QgsWfs3::rel &rel );
 
-      static std::string contentTypeToString( const contentType &ct )
-      {
-        static QMetaEnum metaEnum = QMetaEnum::fromType<contentType>();
-        return metaEnum.valueToKey( ct );
-      }
+      static std::string contentTypeToString( const contentType &ct );
 
-      static std::string contentTypeToExtension( const contentType &ct )
-      {
-        return QString::fromStdString( contentTypeToString( ct ) ).toLower().toStdString();
-      }
+      static std::string contentTypeToExtension( const contentType &ct );
 
     private:
 
@@ -174,7 +165,7 @@ namespace QgsWfs3
       // QgsServerApi interface
     public:
 
-      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const override;
+      void executeRequest( QgsServerApiContext *context ) const override;
 
   };
 

@@ -35,6 +35,7 @@
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
 #include "qgsserverapi.h"
+#include "qgsserverapicontext.h"
 #include "qgsserverparameters.h"
 #include "qgsapplication.h"
 
@@ -363,7 +364,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QgsServerApi *api = nullptr;
       if ( params.service().isEmpty() && ( api = sServiceRegistry->getApiForRequest( request ) ) )
       {
-        api->executeRequest( request, response, project );
+        std::unique_ptr<QgsServerApiContext> context = qgis::make_unique<QgsServerApiContext>( &request, &response, project, sServerInterface );
+        api->executeRequest( context.get() );
       }
       else
       {

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswfs3handlers.h"
+#include "qgsserverapicontext.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 #include "qgsserverapiutils.h"
@@ -34,13 +35,13 @@ APIHandler::APIHandler()
   mimeType = "application/openapi+json;version=3.0";
 }
 
-void APIHandler::handleRequest( const QgsWfs3::Api *, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject * ) const
+void APIHandler::handleRequest( const QgsWfs3::Api *, QgsServerApiContext *context ) const
 {
   json data
   {
     { "api", "TODO" }
   };
-  write( data, request, response );
+  write( data, *context->request(), *context->response() );
 }
 
 LandingPageHandler::LandingPageHandler()
@@ -55,7 +56,7 @@ LandingPageHandler::LandingPageHandler()
   mimeType = "application/json";
 }
 
-void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const
+void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
 {
   json data
   {
@@ -65,13 +66,13 @@ void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, const QgsServer
   {
     data["links"].push_back(
     {
-      { "href", h->href( api, request )},
+      { "href", h->href( api, *context->request() )},
       { "rel", QgsWfs3::Api::relToString( linkType ) },
       { "type", h->mimeType },
       { "title", h->linkTitle },
     } );
   }
-  write( data, request, response );
+  write( data, *context->request(), *context->response() );
 }
 
 ConformanceHandler::ConformanceHandler()
@@ -86,9 +87,10 @@ ConformanceHandler::ConformanceHandler()
   mimeType = "application/json";
 }
 
-void ConformanceHandler::handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const
+void ConformanceHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
 {
-  Handler::handleRequest( api, request, response, project );
+  // TODO
+  Handler::handleRequest( api, context );
 }
 
 CollectionsHandler::CollectionsHandler()
@@ -102,43 +104,42 @@ CollectionsHandler::CollectionsHandler()
   mimeType = "application/json";
 }
 
-void CollectionsHandler::handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const
+void CollectionsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
 {
-  qDebug() << "Checking URL " << api->normalizedUrl( request.url() ).path();
+  qDebug() << "Checking URL " << api->normalizedUrl( context->request()->url() ).path();
   static const QRegularExpression collectionsRe { QStringLiteral( R"re(/collections(\.json|\.html)?$)re" ) };
   static const QRegularExpression itemsRe { QStringLiteral( R"re(/collections/(?<collectionid>[^/]+)/items)re" ) };
   json data;
-  const auto path { api->normalizedUrl( request.url() ).path() };
+  const auto path { api->normalizedUrl( context->request()->url() ).path() };
   if ( itemsRe.match( path ).hasMatch() )
   {
     const auto match { itemsRe.match( path ) };
-    data = items( api, request, response, project, match.capturedTexts()[1] );
+    data = items( api, context, match.capturedTexts()[1] );
   }
   else if ( collectionsRe.match( path ).hasMatch() )
   {
-    data = collections( api, request, response, project );
+    data = collections( api, context );
   }
   else
   {
     throw QgsServerApiBadRequestError( QStringLiteral( "Invalid method called" ) );
   }
-  write( data, request, response );
+  write( data, *context->request(), *context->response() );
 }
 
-json CollectionsHandler::collections( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const
+json CollectionsHandler::collections( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
 {
-  Q_UNUSED( response );
   json data
   {
     {
       "links", {
         {
-          { "href", href( api, request ) },
+          { "href", href( api, *context->request() ) },
           { "rel", QgsWfs3::Api::relToString( linkType ) },
           { "title", "this document as JSON" }
         },
         {
-          { "href", href( api, request ) + "." + QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) },
+          { "href", href( api, *context->request() ) + "." + QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) },
           { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::alternate ) },
           { "title", "this document as HTML" }
         },
@@ -147,10 +148,10 @@ json CollectionsHandler::collections( const QgsWfs3::Api *api, const QgsServerRe
     { "collections", json::array() },
   };
 
-  if ( project )
+  if ( context->project() )
   {
     // TODO: inclue meshes?
-    for ( const auto &l : project->layers<QgsVectorLayer *>( ) )
+    for ( const auto &l : context->project()->layers<QgsVectorLayer *>( ) )
     {
       data["collections"].push_back(
       {
@@ -165,7 +166,7 @@ json CollectionsHandler::collections( const QgsWfs3::Api *api, const QgsServerRe
         {
           "links", {
             {
-              { "href", href( api, request ) + "/" + l->name().toStdString() + "/items"  },
+              { "href", href( api, *context->request() ) + "/" + l->name().toStdString() + "/items"  },
               { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
               { "type", " application/geo+json" },
               { "title", l->title().toStdString() }
@@ -178,14 +179,15 @@ json CollectionsHandler::collections( const QgsWfs3::Api *api, const QgsServerRe
   return data;
 }
 
-json CollectionsHandler::items( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, const QString &collectionId ) const
+json CollectionsHandler::items( const QgsWfs3::Api *api, QgsServerApiContext *context, const QString &collectionId ) const
 {
-  if ( ! project )
+  Q_UNUSED( api );
+  if ( ! context->project() )
   {
     throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Project is invalid or undefined" ) );
   }
   // Check collectionId
-  const auto mapLayers { project->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
+  const auto mapLayers { context->project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
   if ( mapLayers.count() != 1 )
   {
     throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Collection with given id was not found or multiple matches were found" ) );
@@ -193,26 +195,26 @@ json CollectionsHandler::items( const QgsWfs3::Api *api, const QgsServerRequest 
 
   // Get parameters
   json data;
-  if ( request.method() == QgsServerRequest::Method::GetMethod )
+  if ( context->request()->method() == QgsServerRequest::Method::GetMethod )
   {
 
     // Validate inputs
     auto ok { false };
-    const auto bbox { request.parameter( QStringLiteral( "bbox" ) ) };
-    const auto bboxCrs { request.parameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
+    const auto bbox { context->request()->parameter( QStringLiteral( "bbox" ) ) };
+    const auto bboxCrs { context->request()->parameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
     const auto filterRect { QgsServerApiUtils::parseBbox( bbox ) };
     const auto crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
     if ( crs.isValid() )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "CRS not valid" ) );
     }
-    auto limit { request.parameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
+    auto limit { context->request()->parameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
     if ( 0 >= limit || limit > 10000 || !ok )
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "Limit is not valid (0-10000)" ) );
     }
     // TODO: implement time
-    const auto time { request.parameter( QStringLiteral( "time" ) ) };
+    const auto time { context->request()->parameter( QStringLiteral( "time" ) ) };
     if ( ! time.isEmpty() )
     {
       throw QgsServerApiNotImplementedError( QStringLiteral( "Time is not implemented" ) ) ;
@@ -223,7 +225,7 @@ json CollectionsHandler::items( const QgsWfs3::Api *api, const QgsServerRequest 
     QgsFeatureRequest req;
     if ( ! filterRect.isNull() )
     {
-      QgsCoordinateTransform ct( crs, mapLayer->crs(), project->transformContext() );
+      QgsCoordinateTransform ct( crs, mapLayer->crs(), context->project()->transformContext() );
       ct.transform( filterRect );
       req.setFilterRect( ct.transform( filterRect ) );
     }

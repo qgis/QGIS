@@ -18,6 +18,7 @@
 #include "qgsmodule.h"
 #include "qgsproject.h"
 #include "qgsserverexception.h"
+#include "qgsserverapicontext.h"
 #include "qgswfs3api.h"
 #include "qgswfs3handlers.h"
 
@@ -72,6 +73,23 @@ namespace QgsWfs3
     return mHandlers;
   }
 
+  std::string Api::relToString( const rel &rel )
+  {
+    static QMetaEnum metaEnum = QMetaEnum::fromType<QgsWfs3::rel>();
+    return metaEnum.valueToKey( rel );
+  }
+
+  std::string Api::contentTypeToString( const contentType &ct )
+  {
+    static QMetaEnum metaEnum = QMetaEnum::fromType<contentType>();
+    return metaEnum.valueToKey( ct );
+  }
+
+  std::string Api::contentTypeToExtension( const contentType &ct )
+  {
+    return QString::fromStdString( contentTypeToString( ct ) ).toLower().toStdString();
+  }
+
   void Handler::write( const json &data,  const QgsServerRequest &request, QgsServerResponse &response, const QString &contentType ) const
   {
     const auto extension { QgsWfs3::Api::extension( request.url() ) };
@@ -119,10 +137,10 @@ namespace QgsWfs3
     response.write( "<pre>" + data.dump( 2 ) + "</pre>" );
   }
 
-  void Api::executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const
+  void Api::executeRequest( QgsServerApiContext *context ) const
   {
     // Get url
-    const auto url { normalizedUrl( request.url() ) };
+    const auto url { normalizedUrl( context->request()->url() ) };
     // Find matching handler
     auto hasMatch { false };
     for ( const auto &h : handlers() )
@@ -132,7 +150,7 @@ namespace QgsWfs3
       {
         hasMatch = true;
         // Execute handler
-        h->handleRequest( this, request, response, project );
+        h->handleRequest( this, context );
         break;
       }
     }
@@ -143,7 +161,7 @@ namespace QgsWfs3
     }
   }
 
-  void Handler::handleRequest( const QgsWfs3::Api *api, const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) const
+  void Handler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
   {
     const json data
     {
@@ -155,7 +173,7 @@ namespace QgsWfs3
       { "linkType", QgsWfs3::Api::relToString( linkType ) },
       { "mimeType", mimeType }
     };
-    jsonDump( data, response );
+    jsonDump( data, *context->response() );
   }
 
   std::string Handler::href( const Api *api, const QgsServerRequest &request ) const
