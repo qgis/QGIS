@@ -42,6 +42,7 @@
 #if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
 #include <proj.h>
+#include <proj_experimental.h>
 #else
 #include <proj_api.h>
 #endif
@@ -72,6 +73,23 @@ QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sSrsId
 QReadWriteLock QgsCoordinateReferenceSystem::sCrsStringLock;
 QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sStringCache;
 
+
+#if PROJ_VERSION_MAJOR>=6
+QString getFullProjString( PJ *obj )
+{
+  // see https://lists.osgeo.org/pipermail/proj/2019-May/008565.html, it's not sufficient to just
+  // use proj_as_proj_string
+  QgsProjUtils::proj_pj_unique_ptr boundCrs( proj_crs_create_bound_crs_to_WGS84( QgsProjContext::get(), obj, nullptr ) );
+  if ( const char *proj4src = proj_as_proj_string( QgsProjContext::get(), boundCrs.get(), PJ_PROJ_4, nullptr ) )
+  {
+    return QString( proj4src );
+  }
+  else
+  {
+    return QString( proj_as_proj_string( QgsProjContext::get(), obj, PJ_PROJ_4, nullptr ) );
+  }
+}
+#endif
 //--------------------------
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
@@ -91,7 +109,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long id, CrsTy
   createFromId( id, type );
 }
 
-QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs ) //NOLINT
+QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs )  //NOLINT
   : d( srs.d )
 {
 }
@@ -703,12 +721,13 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
   // create the proj4 structs needed for transforming
   if ( d->mPj )
   {
-    if ( const char *proj4src = proj_as_proj_string( QgsProjContext::get(), d->mPj.get(), PJ_PROJ_4, nullptr ) )
+    const QString proj4String = getFullProjString( d->mPj.get() );
+    if ( !proj4String.isEmpty() )
     {
       //now that we have the proj4string, delegate to createFromProj4 so
       // that we can try to fill in the remaining class members...
       //create from Proj will set the isValidFlag
-      createFromProj4( proj4src );
+      createFromProj4( proj4String );
     }
   }
 #else
@@ -1180,7 +1199,7 @@ QString QgsCoordinateReferenceSystem::toProj4() const
 #if PROJ_VERSION_MAJOR>=6
     if ( d->mPj )
     {
-      d->mProj4 = QString( proj_as_proj_string( QgsProjContext::get(), d->mPj.get(), PJ_PROJ_4, nullptr ) );
+      d->mProj4 = getFullProjString( d->mPj.get() );
     }
 #else
     char *proj4src = nullptr;
@@ -2199,7 +2218,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
       crs = QgsProjUtils::crsToSingleCrs( crs.get() );
 
-      QString proj4( proj_as_proj_string( pjContext, crs.get(), PJ_PROJ_4, nullptr ) );
+      crs.reset( proj_crs_create_bound_crs_to_WGS84( pjContext, crs.get(), nullptr ) );
+
+      QString proj4 = getFullProjString( crs.get() );
       proj4.replace( QStringLiteral( "+type=crs" ), QString() );
       proj4 = proj4.trimmed();
 
