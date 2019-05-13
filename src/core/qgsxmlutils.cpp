@@ -154,8 +154,11 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     }
 
     case QVariant::Int:
+    case QVariant::UInt:
     case QVariant::Bool:
     case QVariant::Double:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
     case QVariant::String:
       element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
@@ -175,6 +178,13 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsCoordinateReferenceSystem" ) );
         const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
         crs.writeXml( element, doc );
+        break;
+      }
+      else if ( value.canConvert< QgsGeometry >() )
+      {
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsGeometry" ) );
+        const QgsGeometry geom = value.value< QgsGeometry >();
+        element.setAttribute( QStringLiteral( "value" ), geom.asWkt() );
         break;
       }
       FALLTHROUGH
@@ -199,6 +209,18 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   else if ( type == QLatin1String( "int" ) )
   {
     return element.attribute( QStringLiteral( "value" ) ).toInt();
+  }
+  else if ( type == QLatin1String( "uint" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).toUInt();
+  }
+  else if ( type == QLatin1String( "qlonglong" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).toLongLong();
+  }
+  else if ( type == QLatin1String( "qulonglong" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).toULongLong();
   }
   else if ( type == QLatin1String( "double" ) )
   {
@@ -264,6 +286,10 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
     QgsCoordinateReferenceSystem crs;
     crs.readXml( element );
     return crs;
+  }
+  else if ( type == QLatin1String( "QgsGeometry" ) )
+  {
+    return QgsGeometry::fromWkt( element.attribute( "value" ) );
   }
   else
   {

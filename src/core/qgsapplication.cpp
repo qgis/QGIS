@@ -209,6 +209,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
   qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
   qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
+  qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
 
   ( void ) resolvePkgPath();
 
