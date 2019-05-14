@@ -264,11 +264,11 @@ void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
   switch ( event->key() )
   {
     case Qt::Key_Up:
-      editNextOrPreviousFeature( Previous );
+      editOtherFeature( Previous );
       break;
 
     case Qt::Key_Down:
-      editNextOrPreviousFeature( Next );
+      editOtherFeature( Next );
       break;
 
     default:
@@ -276,7 +276,7 @@ void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
   }
 }
 
-void QgsFeatureListView::editNextOrPreviousFeature( QgsFeatureListView::NextOrPrevious nextOrPrevious )
+void QgsFeatureListView::editOtherFeature( QgsFeatureListView::PositionInList positionInList )
 {
   int currentRow = 0;
   if ( 0 != mCurrentEditSelectionModel->selectedIndexes().count() )
@@ -288,29 +288,31 @@ void QgsFeatureListView::editNextOrPreviousFeature( QgsFeatureListView::NextOrPr
   QModelIndex newLocalIndex;
   QModelIndex newIndex;
 
-  switch ( nextOrPrevious )
+  switch ( positionInList )
   {
+    case First:
+      newLocalIndex = mModel->index( 0, 0 );
+      break;
+
     case Previous:
       newLocalIndex = mModel->index( currentRow - 1, 0 );
-      newIndex = mModel->mapToMaster( newLocalIndex );
-      if ( newIndex.isValid() )
-      {
-        setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
-        scrollTo( newLocalIndex );
-      }
       break;
 
     case Next:
       newLocalIndex = mModel->index( currentRow + 1, 0 );
-      newIndex = mModel->mapToMaster( newLocalIndex );
-      if ( newIndex.isValid() )
-      {
-        setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
-        scrollTo( newLocalIndex );
-      }
+      break;
+
+    case Last:
+      newLocalIndex = mModel->index( mModel->rowCount() - 1, 0 );
       break;
   }
 
+  newIndex = mModel->mapToMaster( newLocalIndex );
+  if ( newIndex.isValid() )
+  {
+    setEditSelection( newIndex, QItemSelectionModel::ClearAndSelect );
+    scrollTo( newLocalIndex );
+  }
 }
 
 void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )

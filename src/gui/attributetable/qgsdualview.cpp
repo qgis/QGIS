@@ -64,6 +64,8 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   connect( mNextFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editNextFeature );
   connect( mPreviousFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editPreviousFeature );
+  connect( mFirstFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editFirstFeature );
+  connect( mLastFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editLastFeature );
 
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->setExclusive( false );
@@ -423,10 +425,14 @@ void QgsDualView::updateEditSelectionProgress( int progress, int count )
   mProgressCount->setText( QStringLiteral( "%1 / %2" ).arg( progress + 1 ).arg( count ) );
   mPreviousFeatureButton->setEnabled( progress > 0 );
   mNextFeatureButton->setEnabled( progress + 1 < count );
+  mFirstFeatureButton->setEnabled( progress > 0 );
+  mLastFeatureButton->setEnabled( progress + 1 < count );
 }
 
 void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
 {
+  //QgsDebugMsg("hey");
+
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas )
   {

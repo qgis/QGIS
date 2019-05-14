@@ -172,19 +172,35 @@ Select all currently visible features
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
 
+    void editFirstFeature();
+%Docstring
+editFirstFeature will try to edit the first feature of the list
+
+.. versionadded:: 3.8
+%End
+
     void editNextFeature();
 %Docstring
-editNextFeature will try to edit next feature in form
+editNextFeature will try to edit next feature of the list
 
 .. versionadded:: 3.8
 %End
 
     void editPreviousFeature();
 %Docstring
-editPreviousFeature will try to edit previous feature in form
+editPreviousFeature will try to edit previous feature of the list
 
 .. versionadded:: 3.8
 %End
+
+    void editLastFeature();
+%Docstring
+editLastFeature will try to edit the last feature of the list
+
+.. versionadded:: 3.8
+%End
+
+
 
 };
 

@@ -186,16 +186,30 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void repaintRequested();
 
     /**
-     * editNextFeature will try to edit next feature in form
+     * editFirstFeature will try to edit the first feature of the list
      * \since QGIS 3.8
      */
-    void editNextFeature() {editNextOrPreviousFeature( Next );}
+    void editFirstFeature() {editOtherFeature( First );}
 
     /**
-     * editPreviousFeature will try to edit previous feature in form
+     * editNextFeature will try to edit next feature of the list
      * \since QGIS 3.8
      */
-    void editPreviousFeature() {editNextOrPreviousFeature( Previous );}
+    void editNextFeature() {editOtherFeature( Next );}
+
+    /**
+     * editPreviousFeature will try to edit previous feature of the list
+     * \since QGIS 3.8
+     */
+    void editPreviousFeature() {editOtherFeature( Previous );}
+
+    /**
+     * editLastFeature will try to edit the last feature of the list
+     * \since QGIS 3.8
+     */
+    void editLastFeature() {editOtherFeature( Last );}
+
+
 
   private slots:
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
@@ -211,13 +225,15 @@ class GUI_EXPORT QgsFeatureListView : public QListView
   private:
     void selectRow( const QModelIndex &index, bool anchor );
 
-    enum NextOrPrevious
+    enum PositionInList
     {
+      First,
       Next,
-      Previous
+      Previous,
+      Last
     };
 
-    void editNextOrPreviousFeature( NextOrPrevious nextOrPrevious );
+    void editOtherFeature( PositionInList positionInList );
 
 
     QgsFeatureListModel *mModel = nullptr;

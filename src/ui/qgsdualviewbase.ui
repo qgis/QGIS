@@ -135,7 +135,33 @@
             <number>0</number>
            </property>
            <item>
+            <widget class="QPushButton" name="mFirstFeatureButton">
+             <property name="maximumSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionDoubleArrowLeft.svg</normaloff>:/images/themes/default/mActionDoubleArrowLeft.svg</iconset>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="mPreviousFeatureButton">
+             <property name="maximumSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -241,12 +267,44 @@
            </item>
            <item>
             <widget class="QPushButton" name="mNextFeatureButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
              <property name="text">
               <string/>
              </property>
              <property name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/mActionArrowRight.svg</normaloff>:/images/themes/default/mActionArrowRight.svg</iconset>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="mLastFeatureButton">
+             <property name="maximumSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionDoubleArrowRight.svg</normaloff>:/images/themes/default/mActionDoubleArrowRight.svg</iconset>
              </property>
              <property name="flat">
               <bool>true</bool>
