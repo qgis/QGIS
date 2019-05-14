@@ -135,7 +135,7 @@ class Climb(QgisAlgorithm):
         hasZ = QgsWkbTypes.hasZ(source.wkbType())
 
         if not hasZ:
-            feedback.reportError(self.tr('The layer has not Z values. Please use the Drape algorithm with a DEM layer to extact the Z value.'))
+            feedback.reportError(self.tr('The layer does not have Z values. If you have a DEM, use the Drape algorithm to extract Z values.'))
             return
 
         thefields = QgsFields()
@@ -195,6 +195,9 @@ class Climb(QgisAlgorithm):
                 zval = 0
                 for v in part.vertices():
                     zval = v.z()
+                    if math.isnan(zval):
+                        feedback.pushInfo("Missing Z value")
+                        continue
                     if first:
                         prevz = zval
                         minelev = zval
