@@ -50,8 +50,9 @@ class SERVER_EXPORT QgsServerApi
 
     /**
      * \returns the version of the service
+     * \note the default implementation returns an empty string
      */
-    virtual const QString version() const = 0;
+    virtual const QString version() const { return QString(); }
 
     /**
      * \returns the root path for the API

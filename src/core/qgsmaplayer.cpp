@@ -176,8 +176,6 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
 
 QString QgsMapLayer::shortName() const
 {
-  if ( mShortName.isEmpty() )
-    return  name();
   return mShortName;
 }
 

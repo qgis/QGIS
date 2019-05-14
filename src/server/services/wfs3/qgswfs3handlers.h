@@ -23,6 +23,7 @@
 
 struct APIHandler: public QgsWfs3::Handler
 {
+
   APIHandler( );
   void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 };
@@ -30,6 +31,7 @@ struct APIHandler: public QgsWfs3::Handler
 
 struct LandingPageHandler: public QgsWfs3::Handler
 {
+
   LandingPageHandler( );
   void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 };
@@ -37,23 +39,53 @@ struct LandingPageHandler: public QgsWfs3::Handler
 
 struct ConformanceHandler: public QgsWfs3::Handler
 {
+
   ConformanceHandler( );
   void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 };
 
 
-
+/**
+ * The CollectionsHandler lists all available collections for the current project
+ * Path: /collections
+ */
 struct CollectionsHandler: public QgsWfs3::Handler
 {
-    CollectionsHandler( );
-    void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 
-  private:
+  CollectionsHandler( );
+  void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
+};
 
-    json collections( const QgsWfs3::Api *api, QgsServerApiContext *context ) const;
+/**
+ * The DescribeCollectionHandler describes a single collection
+ * Path: /collections/{collectionId}
+ */
+struct DescribeCollectionHandler: public QgsWfs3::Handler
+{
 
-    json items( const QgsWfs3::Api *api, QgsServerApiContext *context, const QString &collectionId ) const;
+  DescribeCollectionHandler( );
+  void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 
 };
+
+/**
+ * The CollectionsItemsHandler list all items in the collection
+ * Path: /collections/{collectionId}
+ */
+struct CollectionsItemsHandler: public QgsWfs3::Handler
+{
+
+  CollectionsItemsHandler( );
+  void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
+};
+
+
+struct CollectionsFeatureHandler: public QgsWfs3::Handler
+{
+
+  CollectionsFeatureHandler( );
+  void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
+};
+
 
 #endif // QGS_WFS3_HANDLERS_H

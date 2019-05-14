@@ -26,7 +26,7 @@
 
 APIHandler::APIHandler()
 {
-  path = "/api";
+  path.setPattern( QStringLiteral( R"re(/api)re" ) );
   operationId = "api";
   summary = "The API definition";
   description = "The API definition";
@@ -46,7 +46,7 @@ void APIHandler::handleRequest( const QgsWfs3::Api *, QgsServerApiContext *conte
 
 LandingPageHandler::LandingPageHandler()
 {
-  path = "/";
+  path.setPattern( QStringLiteral( R"re($)re" ) );
   operationId = "getLandingPage";
   summary = "Landing page of this API";
   description = "The landing page provides links to the API definition, the Conformance "
@@ -77,7 +77,7 @@ void LandingPageHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiCon
 
 ConformanceHandler::ConformanceHandler()
 {
-  path = "/conformance";
+  path.setPattern( QStringLiteral( R"re(/conformance$)re" ) );
   operationId = "getRequirementClasses";
   linkTitle = "WFS 3.0 conformance classes";
   summary = "Information about standards that this API conforms to";
@@ -95,7 +95,7 @@ void ConformanceHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiCon
 
 CollectionsHandler::CollectionsHandler()
 {
-  path = "/collections";
+  path.setPattern( QStringLiteral( R"re(/collections$)re" ) );
   operationId = "describeCollections";
   linkTitle = "Metadata about the feature collections";
   summary = "describe the feature collections in the dataset";
@@ -105,29 +105,6 @@ CollectionsHandler::CollectionsHandler()
 }
 
 void CollectionsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
-{
-  qDebug() << "Checking URL " << api->normalizedUrl( context->request()->url() ).path();
-  static const QRegularExpression collectionsRe { QStringLiteral( R"re(/collections(\.json|\.html)?$)re" ) };
-  static const QRegularExpression itemsRe { QStringLiteral( R"re(/collections/(?<collectionid>[^/]+)/items)re" ) };
-  json data;
-  const auto path { api->normalizedUrl( context->request()->url() ).path() };
-  if ( itemsRe.match( path ).hasMatch() )
-  {
-    const auto match { itemsRe.match( path ) };
-    data = items( api, context, match.capturedTexts()[1] );
-  }
-  else if ( collectionsRe.match( path ).hasMatch() )
-  {
-    data = collections( api, context );
-  }
-  else
-  {
-    throw QgsServerApiBadRequestError( QStringLiteral( "Invalid method called" ) );
-  }
-  write( data, *context->request(), *context->response() );
-}
-
-json CollectionsHandler::collections( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
 {
   json data
   {
@@ -139,7 +116,7 @@ json CollectionsHandler::collections( const QgsWfs3::Api *api, QgsServerApiConte
           { "title", "this document as JSON" }
         },
         {
-          { "href", href( api, *context->request() ) + "." + QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) },
+          { "href", href( api, *context->request(), QString(), QgsWfs3::Api::contentTypeToExtension( QgsWfs3::contentType::HTML ) ) },
           { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::alternate ) },
           { "title", "this document as HTML" }
         },
@@ -153,12 +130,14 @@ json CollectionsHandler::collections( const QgsWfs3::Api *api, QgsServerApiConte
     // TODO: inclue meshes?
     for ( const auto &l : context->project()->layers<QgsVectorLayer *>( ) )
     {
+      const auto title { l->title().isEmpty() ? l->name().toStdString() : l->title().toStdString() };
+      const auto shortName { l->shortName().isEmpty() ? l->name() : l->shortName() };
       data["collections"].push_back(
       {
         // identifier of the collection used, for example, in URIs
         { "name", l->name().toStdString() },
         // human readable title of the collection
-        { "title", l->title().toStdString() },
+        { "title", title },
         // a description of the features in the collection
         { "description", l->abstract().toStdString() },
         { "extent", "TODO" },
@@ -166,20 +145,113 @@ json CollectionsHandler::collections( const QgsWfs3::Api *api, QgsServerApiConte
         {
           "links", {
             {
-              { "href", href( api, *context->request() ) + "/" + l->name().toStdString() + "/items"  },
+              { "href", href( api, *context->request(), QStringLiteral( "/%1/items" ).arg( shortName ) )  },
               { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
-              { "type", " application/geo+json" },
-              { "title", l->title().toStdString() }
+              { "type", "application/geo+json" },
+              { "title", title }
+            },
+            {
+              { "href", href( api, *context->request(), QStringLiteral( "/%1/concepts" ).arg( shortName ) )  },
+              { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
+              { "type", "application/geo+json" },
+              { "title", "Describe " + title }
             }
           }
         },
       } );
     }
   }
-  return data;
+  write( data, *context->request(), *context->response() );
 }
 
-json CollectionsHandler::items( const QgsWfs3::Api *api, QgsServerApiContext *context, const QString &collectionId ) const
+DescribeCollectionHandler::DescribeCollectionHandler()
+{
+  path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+)(\.json|\.html)?$)re" ) );
+  operationId = "describeCollection";
+  linkTitle = "Metadata about the feature collections";
+  summary = "describe the feature collections in the dataset";
+  description = "Metadata about the feature collections shared by this API.";
+  linkType = QgsWfs3::rel::data;
+  mimeType = "application/json";
+}
+
+void DescribeCollectionHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
+{
+  if ( ! context->project() )
+  {
+    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Project is invalid or undefined" ) );
+  }
+  // Check collectionId
+  const auto match { path.match( context->request()->url().path( ) ) };
+  if ( ! match.hasMatch() )
+  {
+    throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
+  }
+  const auto collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
+  const auto mapLayers { context->project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
+  if ( mapLayers.count() != 1 )
+  {
+    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Collection with given id was not found or multiple matches were found" ) );
+  }
+  const auto layer { mapLayers.first() };
+  const auto title { layer->title().isEmpty() ? layer->name().toStdString() : layer->title().toStdString() };
+  const auto shortName { layer->shortName().isEmpty() ? layer->name() : layer->shortName() };
+  json data
+  {
+    { "name", layer->name().toStdString() },
+    { "title", title },
+    // TODO: check if we need to expose other advertised CRS here
+    {
+      "crs", {
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "http://www.opengis.net/def/crs/EPSG/0/4326"
+      }
+    },
+    // TODO: "relations" ?
+    {
+      "extent",  {
+        { "crs", "http://www.opengis.net/def/crs/OGC/1.3/CRS84" },
+        { "spatial", QgsServerApiUtils::layerExtent( layer ) }
+      }
+    },
+    {
+      "links", {
+        {
+          { "href", href( api, *context->request(), QStringLiteral( "/%1/items" ).arg( shortName ) )  },
+          { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
+          { "type", "application/geo+json" },
+          { "title", title }
+        }
+        /* TODO: not sure what these "concepts" are about, or if they are mandatory
+        ,{
+          { "href", href( api, *context->request() , QStringLiteral( "/concepts" ), QStringLiteral( "html") )  },
+          { "rel", QgsWfs3::Api::relToString( QgsWfs3::rel::item ) },
+          { "type", "text/html" },
+          { "title", "Describe " + title }
+        }
+        */
+      }
+    }
+  };
+  write( data, *context->request(), *context->response() );
+}
+
+
+CollectionsItemsHandler::CollectionsItemsHandler()
+{
+  path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+)/items(\.json|\.html)?$)re" ) );
+  operationId = "describeCollection";
+  linkTitle = "Retrieve the features of the collection";
+  summary = "retrieve features of feature collection collectionId";
+  description = "Every feature in a dataset belongs to a collection. A dataset may "
+                "consist of multiple feature collections. A feature collection is often a "
+                "collection of features of a similar type, based on a common schema. "
+                "Use content negotiation to request HTML or GeoJSON.";
+  linkType = QgsWfs3::rel::data;
+  mimeType = "application/json";
+}
+
+void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
 {
   Q_UNUSED( api );
   if ( ! context->project() )
@@ -187,26 +259,40 @@ json CollectionsHandler::items( const QgsWfs3::Api *api, QgsServerApiContext *co
     throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Project is invalid or undefined" ) );
   }
   // Check collectionId
+  const auto match { path.match( context->request()->url().path( ) ) };
+  if ( ! match.hasMatch() )
+  {
+    throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
+  }
+  const auto collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
   const auto mapLayers { context->project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
   if ( mapLayers.count() != 1 )
   {
     throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Collection with given id was not found or multiple matches were found" ) );
   }
+  const auto &mapLayer { mapLayers.first() };
 
   // Get parameters
-  json data;
   if ( context->request()->method() == QgsServerRequest::Method::GetMethod )
   {
 
     // Validate inputs
     auto ok { false };
     const auto bbox { context->request()->queryParameter( QStringLiteral( "bbox" ) ) };
+    const auto offset { context->request()->queryParameter( QStringLiteral( "offset" ) ) };
+    const auto resultType { context->request()->queryParameter( QStringLiteral( "resultType" ), QStringLiteral( "results" ) ) };
+    static const QStringList availableResultTypes { QStringLiteral( "results" ), QStringLiteral( "hits" )};
+    if ( ! availableResultTypes.contains( resultType ) )
+    {
+      throw QgsServerApiBadRequestError( QStringLiteral( "resultType is not valid [results, hits]" ) );
+    }
+    // TODO: attribute filters
     const auto bboxCrs { context->request()->queryParameter( QStringLiteral( "bbox-crs" ), QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) };
     const auto filterRect { QgsServerApiUtils::parseBbox( bbox ) };
     const auto crs { QgsServerApiUtils::parseCrs( bboxCrs ) };
     if ( ! crs.isValid() )
     {
-      throw QgsServerApiBadRequestError( QStringLiteral( "CRS not valid" ) );
+      throw QgsServerApiBadRequestError( QStringLiteral( "CRS is not valid" ) );
     }
     auto limit { context->request()->queryParameter( QStringLiteral( "limit" ), QStringLiteral( "10" ) ).toInt( &ok ) };
     if ( 0 >= limit || limit > 10000 || !ok )
@@ -221,7 +307,6 @@ json CollectionsHandler::items( const QgsWfs3::Api *api, QgsServerApiContext *co
     }
 
     // Inputs are valid, process request
-    const auto &mapLayer { mapLayers.first() };
     QgsFeatureRequest req;
     if ( ! filterRect.isNull() )
     {
@@ -238,12 +323,62 @@ json CollectionsHandler::items( const QgsWfs3::Api *api, QgsServerApiContext *co
     {
       featureList << feat;
     }
-    data = exporter.exportFeaturesToJsonObject( featureList );
+    write( exporter.exportFeaturesToJsonObject( featureList ), *context->request(), *context->response() );
   }
   else
   {
     throw QgsServerApiNotImplementedError( QStringLiteral( "Only GET method is implemented." ) );
   }
-  return data;
 
+}
+
+CollectionsFeatureHandler::CollectionsFeatureHandler()
+{
+  path.setPattern( QStringLiteral( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+)(\.json|\.html)?$)re" ) );
+  operationId = "getFeature";
+  linkTitle = "Retrieve a feature";
+  summary = "retrieve a feature; use content negotiation to request HTML or GeoJSON";
+  description = "";
+  linkType = QgsWfs3::rel::data;
+  mimeType = "application/json";
+}
+
+void CollectionsFeatureHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
+{
+  Q_UNUSED( api );
+  if ( ! context->project() )
+  {
+    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Project is invalid or undefined" ) );
+  }
+  // Check collectionId
+  const auto match { path.match( context->request()->url().path( ) ) };
+  if ( ! match.hasMatch() )
+  {
+    throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
+  }
+  const auto collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
+  const auto mapLayers { context->project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
+  if ( mapLayers.count() != 1 )
+  {
+    throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Collection with given id was not found or multiple matches were found" ) );
+  }
+  if ( context->request()->method() == QgsServerRequest::Method::GetMethod )
+  {
+    const auto featureId { match.captured( QStringLiteral( "featureId" ) ) };
+    const auto &mapLayer { mapLayers.first() };
+    QgsJsonExporter exporter { mapLayer };
+    QgsFeatureRequest req { QgsExpression { QStringLiteral( "$id = '%1'" ).arg( featureId ) } };
+    auto features { mapLayer->getFeatures( req ) };
+    QgsFeature feat;
+    QgsFeatureList featureList;
+    while ( features.nextFeature( feat ) )
+    {
+      featureList << feat;
+    }
+    write( exporter.exportFeaturesToJsonObject( featureList ), *context->request(), *context->response() );
+  }
+  else
+  {
+    throw QgsServerApiNotImplementedError( QStringLiteral( "Only GET method is implemented." ) );
+  }
 }

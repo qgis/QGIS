@@ -124,11 +124,11 @@ void QgsServiceRegistry::registerService( QgsService *service )
   QString key = makeServiceKey( name, version );
   if ( mServices.constFind( key ) != mServices.constEnd() )
   {
-    QgsMessageLog::logMessage( QString( "Error Service %1 %2 is already registered" ).arg( name, version ) );
+    QgsMessageLog::logMessage( QStringLiteral( "Error Service %1 %2 is already registered" ).arg( name, version ) );
     return;
   }
 
-  QgsMessageLog::logMessage( QString( "Adding service %1 %2" ).arg( name, version ) );
+  QgsMessageLog::logMessage( QStringLiteral( "Adding service %1 %2" ).arg( name, version ) );
   mServices.insert( key, std::shared_ptr<QgsService>( service ) );
 
   // Check the default version
@@ -161,27 +161,18 @@ void QgsServiceRegistry::registerService( QgsService *service )
 
 void QgsServiceRegistry::registerApi( QgsServerApi *api )
 {
-  QString name    = api->name();
-  QString version = api->version();
-
-  // Test if service is already registered
-  QString key = makeServiceKey( name, version );
-  if ( mServices.constFind( key ) != mServices.constEnd() )
-  {
-    QgsMessageLog::logMessage( QString( "Error API %1 %2 is already registered" ).arg( name, version ) );
-    return;
-  }
-
-  QgsMessageLog::logMessage( QString( "Adding API %1 %2" ).arg( name, version ) );
-  mApis.insert( key, std::shared_ptr<QgsServerApi>( api ) );
+  _registerApi( api );
 }
 
 QgsServerApi *QgsServiceRegistry::getApiForRequest( const QgsServerRequest &request ) const
 {
   for ( const auto &api : mApis )
   {
+    QgsMessageLog::logMessage( QStringLiteral( "Trying URL path: %1 for %2" ).arg( request.url().path(), api->rootPath() ), QStringLiteral( "Server" ), Qgis::Info );
     if ( request.url().path().startsWith( api->rootPath() ) )
     {
+      Q_ASSERT( !api->name().isEmpty() );
+      QgsMessageLog::logMessage( QStringLiteral( "API %1 matches the URL path %2 " ).arg( api->name(), request.url().path() ), QStringLiteral( "Server" ), Qgis::Info );
       return api.get();
     }
   }
@@ -262,7 +253,25 @@ void QgsServiceRegistry::cleanUp()
   // Release all services
   mVersions.clear();
   mServices.clear();
+  mApis.clear();
   mNativeLoader.unloadModules();
+}
+
+void QgsServiceRegistry::_registerApi( QgsServerApi *api )
+{
+  const QString name { api->name() };
+  const QString version { api->version() };
+
+  // Test if service is already registered
+  QString key = makeServiceKey( name, version );
+  if ( mServices.constFind( key ) != mServices.constEnd() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Error API %1 %2 is already registered" ).arg( name, version ), QStringLiteral( "Server" ), Qgis::Warning );
+    return;
+  }
+
+  QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2 - %3" ).arg( name, version, api->rootPath() ), QStringLiteral( "Server" ), Qgis::Info );
+  mApis.insert( key, std::shared_ptr<QgsServerApi>( api ) );
 }
 
 

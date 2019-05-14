@@ -73,14 +73,48 @@ class SERVER_EXPORT QgsServiceRegistry
      * This method is intended to  be called by modules for registering
      * services. A module may register multiple services.
      *
-     * The registry gain ownership of services and will call 'delete' on cleanup
+     * The registry takes ownership of services and will call 'delete' on cleanup
      *
      * \param service a QgsService to be registered
      */
     void registerService( QgsService *service SIP_TRANSFER );
 
+#ifndef SIP_RUN
 
-    void registerApi( QgsServerApi *api SIP_TRANSFER );
+    /**
+     * Registers the QgsServerApi \a api
+     *
+     * The registry takes ownership of services and will call 'delete' on cleanup
+     */
+    void registerApi( QgsServerApi *api SIP_TRANSFER SIP_GETWRAPPER );
+
+#else
+
+    /**
+     * Registers the QgsServerApi \a api
+     *
+     * The registry takes ownership of services and will call 'delete' on cleanup
+     */
+    void registerApi( QgsServerApi *api SIP_TRANSFER SIP_GETWRAPPER );
+    % MethodCode
+    // Inc reference or the python generated object will be garbage collected.
+    // I thought that SIP_TRANSFER would do the trick but it does not.
+    Py_BEGIN_ALLOW_THREADS
+    try
+    {
+      Py_INCREF( a0Wrapper );
+      sipCpp->_registerApi( a0 );
+    }
+    catch ( ... )
+    {
+      Py_BLOCK_THREADS
+
+      sipRaiseUnknownException();
+      return NULL;
+    }
+    Py_END_ALLOW_THREADS
+    % End
+#endif
 
     QgsServerApi *getApiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
 
@@ -108,7 +142,12 @@ class SERVER_EXPORT QgsServiceRegistry
      */
     void cleanUp();
 
+  protected:
+
+    void _registerApi( QgsServerApi *api SIP_SKIP );
+
   private:
+
     // XXX consider using QMap because of the few numbers of
     // elements to handle
     typedef QHash<QString, std::shared_ptr<QgsService> > ServiceTable;

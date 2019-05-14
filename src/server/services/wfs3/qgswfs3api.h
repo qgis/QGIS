@@ -22,7 +22,7 @@
 #include "qgsproject.h"
 #include "qgsserverexception.h"
 
-#include "nlohmann/json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "inja/inja.hpp"
 
 using json = nlohmann::json;
@@ -66,50 +66,50 @@ namespace QgsWfs3
   struct Handler
   {
 
-      Q_GADGET
+    virtual ~Handler() = default;
+    virtual void handleRequest( const Api *api, QgsServerApiContext *context ) const;
+    std::string href( const Api *api, const QgsServerRequest &request, const QString &extraPath = QString(), const QString &extension = QString() ) const;
 
-    public:
+    QRegularExpression path;
+    std::string operationId;
+    std::string summary;
+    std::string description;
+    std::string linkTitle;
+    rel linkType;
+    std::string mimeType;
 
-      virtual ~Handler() = default;
-      virtual void handleRequest( const Api *api, QgsServerApiContext *context ) const;
-      std::string href( const Api *api, const QgsServerRequest &request ) const;
+    /**
+     * Writes \a data to the \a response stream as JSON or HTML with an optional \a contentType (by default it is infered from the \a request)
+     * \note use xmlDump for XML output
+     * \see xmlDump()
+     */
+    void write( const json &data, const QgsServerRequest &request, QgsServerResponse &response, const QString &contentType = "" ) const;
 
-      QString path;
-      std::string operationId;
-      std::string summary;
-      std::string description;
-      std::string linkTitle;
-      rel linkType;
-      std::string mimeType;
+    /**
+     * Utility that writes JSON output to the response stream (indented if debug is active)
+     * \param data json data
+     * \param response
+     */
+    void jsonDump( const json &data, QgsServerResponse &response, const QString &contentType = QStringLiteral( "application/json" ) ) const;
 
-      /**
-       * Writes \a data to the \a response stream as JSON or HTML with an optional \a contentType (by default it is infered from the \a request)
-       * \note use xmlDump for XML output
-       * \see xmlDump()
-       */
-      void write( const json &data, const QgsServerRequest &request, QgsServerResponse &response, const QString &contentType = "" ) const;
+    /**
+     * Utility that writes HTML output to the response stream using the default template
+     * \param data json data
+     * \param response
+     */
+    void htmlDump( const json &data, QgsServerResponse &response ) const;
 
-      /**
-       * Utility that writes JSON output to the response stream (indented if debug is active)
-       * \param data json data
-       * \param response
-       */
-      void jsonDump( const json &data, QgsServerResponse &response, const QString &contentType = QStringLiteral( "application/json" ) ) const;
+    /**
+     * Utility that writes JSON output to the response stream (indented if debug is active)
+     * \param data json data
+     * \param response
+     */
+    void xmlDump( const json &data, QgsServerResponse &response ) const;
 
-      /**
-       * Utility that writes HTML output to the response stream
-       * \param data json data
-       * \param response
-       * \param template (HTML template, if empty a standard template path based on the handler class name will be used)
-       */
-      void htmlDump( const json &data, QgsServerResponse &response, const std::string &templatePath = "" ) const;
-
-      /**
-       * Utility that writes JSON output to the response stream (indented if debug is active)
-       * \param data json data
-       * \param response
-       */
-      void xmlDump( const json &data, QgsServerResponse &response ) const;
+    /**
+     * Returns the HTML template path for the handler
+     */
+    const QString templatePath() const;
 
   };
 
@@ -153,9 +153,11 @@ namespace QgsWfs3
 
       static std::string relToString( const QgsWfs3::rel &rel );
 
-      static std::string contentTypeToString( const contentType &ct );
+      static QString contentTypeToString( const contentType &ct );
 
-      static std::string contentTypeToExtension( const contentType &ct );
+      static std::string contentTypeToStdString( const contentType &ct );
+
+      static QString contentTypeToExtension( const contentType &ct );
 
     private:
 

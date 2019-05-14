@@ -57,13 +57,36 @@ Register a service by its name and version
 This method is intended to  be called by modules for registering
 services. A module may register multiple services.
 
-The registry gain ownership of services and will call 'delete' on cleanup
+The registry takes ownership of services and will call 'delete' on cleanup
 
 :param service: a QgsService to be registered
 %End
 
 
-    void registerApi( QgsServerApi *api /Transfer/ );
+    void registerApi( QgsServerApi *api /Transfer,GetWrapper/ );
+%Docstring
+Registers the :py:class:`QgsServerApi` ``api``
+
+The registry takes ownership of services and will call 'delete' on cleanup
+%End
+%MethodCode
+    // Inc reference or the python generated object will be garbage collected.
+    // I thought that SIP_TRANSFER would do the trick but it does not.
+    Py_BEGIN_ALLOW_THREADS
+    try
+    {
+      Py_INCREF( a0Wrapper );
+      sipCpp->_registerApi( a0 );
+    }
+    catch ( ... )
+    {
+      Py_BLOCK_THREADS
+
+      sipRaiseUnknownException();
+      return NULL;
+    }
+    Py_END_ALLOW_THREADS
+%End
 
 
     int unregisterService( const QString &name, const QString &version = QString() );
@@ -91,6 +114,9 @@ Initialize registry, load modules and auto register services
 %Docstring
 Clean up registered service and unregister modules
 %End
+
+  protected:
+
 
 };
 

@@ -19,7 +19,10 @@
 
 #include "qgsserverapiutils.h"
 #include "qgsrectangle.h"
+#include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
+
+#include "nlohmann/json.hpp"
 
 #include <QUrl>
 
@@ -43,6 +46,18 @@ QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
     }
   }
   return QgsRectangle();
+}
+
+json QgsServerApiUtils::layerExtent( const QgsVectorLayer *layer )
+{
+  auto extent { layer->extent() };
+  if ( layer->crs().postgisSrid() != 4326 )
+  {
+    static const QgsCoordinateReferenceSystem targetCrs { 4326 };
+    const QgsCoordinateTransform ct( layer->crs(), targetCrs, layer->transformContext() );
+    extent = ct.transform( extent );
+  }
+  return {{ extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() }};
 }
 
 QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs )

@@ -27,6 +27,12 @@
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
+class QgsVectorLayer;
+
+#ifndef SIP_RUN
+#include "nlohmann/json_fwd.hpp"
+using json = nlohmann::json;
+#endif
 
 
 class SERVER_EXPORT QgsServerApiUtils
@@ -39,6 +45,11 @@ class SERVER_EXPORT QgsServerApiUtils
      * \note Z values (i.e. a 6 elements bbox) are silently discarded
      */
     static QgsRectangle parseBbox( const QString &bbox );
+
+    /**
+     * layerExtent returns json array with [xMin,yMin,xMax,yMax] CRS84 extent for the given \a layer
+     */
+    static json layerExtent( const QgsVectorLayer *layer ) SIP_SKIP;
 
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 

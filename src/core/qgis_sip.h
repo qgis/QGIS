@@ -35,6 +35,13 @@
  */
 #define SIP_TRANSFER
 
+
+/*
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-GetWrapper
+ *
+ */
+#define SIP_GETWRAPPER
+
 /*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferBack
  */

@@ -67,7 +67,7 @@ class QgsServerAPITest(QgsServerTestBase):
     """ QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regenerate_reference = True
+    #regenerate_reference = True
 
     def dump(self, response):
         result = []
@@ -109,8 +109,7 @@ class QgsServerAPITest(QgsServerTestBase):
             def executeRequest(self, request_context):
                 request_context.response().write(b"\"Test API\"")
 
-        api = API()
-        self.server.serverInterface().serviceRegistry().registerApi(api)
+        self.server.serverInterface().serviceRegistry().registerApi(API())
         request = QgsBufferServerRequest('http://www.acme.com/testapi')
         self.compareApi(request, None, 'test_api.json')
 
@@ -133,14 +132,22 @@ class QgsServerAPITest(QgsServerTestBase):
         """Test WFS3 API"""
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections')
         self.compareApi(request, None, 'test_wfs3_collections.json')
+
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections.json')
         self.compareApi(request, None, 'test_wfs3_collections.json')
+
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections.html')
         self.compareApi(request, None, 'test_wfs3_collections.html')
+
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections.json')
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         self.compareApi(request, project, 'test_wfs3_collections_project.json')
+
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections.html')
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        self.compareApi(request, project, 'test_wfs3_collections_project.html')
 
     def test_wfs3_collection_items(self):
         """Test WFS3 API"""

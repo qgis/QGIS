@@ -803,7 +803,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
 
     /**
-     * Retrieve a list of matching registered layers by layer short name with a specified layer type.
+     * Retrieve a list of matching registered layers by layer short name with a specified layer type,
+     * if layer's short name is empty a match with layer's name is attempted.
+     *
      * \param shortName short name of layers to match,
      * \note by default short name is equal to the layer name
      * \returns list of matching layers
@@ -819,8 +821,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       const auto constMapLayers { mLayerStore->layers<T>() };
       for ( const auto l : constMapLayers )
       {
-        if ( l->shortName() == shortName )
+        if ( ! l->shortName().isEmpty() )
+        {
+          if ( l->shortName() == shortName )
+            layers << l;
+        }
+        else if ( l->name() == shortName )
+        {
           layers << l;
+        }
       }
       return layers;
     }
