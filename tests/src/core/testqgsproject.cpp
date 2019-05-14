@@ -43,6 +43,7 @@ class TestQgsProject : public QObject
     void testLayerFlags();
     void testLocalFiles();
     void testLocalUrlFiles();
+    void testAttachedFiles();
 };
 
 void TestQgsProject::init()
@@ -404,7 +405,6 @@ void TestQgsProject::testLocalFiles()
   f2.close();
   QgsPathResolver resolver( f.fileName( ) );
   QCOMPARE( resolver.writePath( layerPath ), QString( "./" + info.baseName() + ".shp" ) ) ;
-
 }
 
 void TestQgsProject::testLocalUrlFiles()
@@ -425,6 +425,30 @@ void TestQgsProject::testLocalUrlFiles()
   QgsPathResolver resolver( f.fileName( ) );
   QCOMPARE( resolver.writePath( layerPath ), QString( "./" + info.baseName() + ".shp" + extraStuff ) ) ;
 
+}
+
+void TestQgsProject::testAttachedFiles()
+{
+  QTemporaryDir dir;
+  QString qgzFileName = dir.filePath( QStringLiteral( "project.qgz" ) );
+
+  QTemporaryFile attachedFile;
+
+  if ( attachedFile.open() )
+  {
+    QTextStream stream( &attachedFile );
+    stream << QStringLiteral( "success" ) << endl;
+  }
+
+  QgsProject prj;
+  connect( &prj, &QgsProject::collectAttachedFiles, this, [ &attachedFile ]( QgsStringMap & files ) { files.insert( QStringLiteral( "test/file.txt" ), attachedFile.fileName() ); } );
+  prj.write( qgzFileName );
+  prj.clear();
+  prj.read( qgzFileName );
+  QFile extractedFile( prj.attachedFile( QStringLiteral( "test/file.txt" ) ) );
+  extractedFile.open( QFile::ReadOnly | QFile::Text );
+  QTextStream in( &extractedFile );
+  QCOMPARE( QString::fromUtf8( extractedFile.readAll().constData() ), QStringLiteral( "success\n" ) );
 }
 
 
