@@ -45,38 +45,49 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   mainLayout->addLayout( layout );
 
-  QWidget *recentProjectsContainer = new QWidget;
-  recentProjectsContainer->setLayout( new QVBoxLayout );
-  recentProjectsContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
-  recentProjectsContainer->layout()->setMargin( 0 );
+  QWidget *centerContainer = new QWidget;
+  QGridLayout *centerLayout = new QGridLayout;
+  centerContainer->setLayout( centerLayout );
+
+  centerLayout->setContentsMargins( 0, 0, 0, 0 );
+  centerLayout->setMargin( 0 );
 
   int titleSize = QApplication::fontMetrics().height() * 1.4;
-  QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Recent Projects" ) ) );
+  QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
   recentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
-
-  recentProjectsContainer->layout()->addWidget( recentProjectsTitle );
+  centerLayout->addWidget( recentProjectsTitle, 0, 0 );
 
   mRecentProjectsListView = new QListView();
   mRecentProjectsListView->setResizeMode( QListView::Adjust );
   mRecentProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mRecentProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForProjects );
 
-  mModel = new QgsWelcomePageItemsModel( mRecentProjectsListView );
-  mRecentProjectsListView->setModel( mModel );
-  mRecentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( mRecentProjectsListView ) );
+  mRecentProjectsModel = new QgsRecentProjectItemsModel( mRecentProjectsListView );
+  mRecentProjectsListView->setModel( mRecentProjectsModel );
+  mRecentProjectsListView->setItemDelegate( new QgsRecentProjectItemDelegate( mRecentProjectsListView ) );
 
-  recentProjectsContainer->layout()->addWidget( mRecentProjectsListView );
+  centerLayout->addWidget( mRecentProjectsListView, 1, 0 );
 
-  layout->addWidget( recentProjectsContainer );
+  layout->addWidget(centerContainer);
+
+  QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Templates" ) ) );
+  templatesTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
+  centerLayout->addWidget( templatesTitle, 0, 1 );
+
+  mTemplateProjectsModel = new QStandardItemModel;
+  mTemplateProjectsListView = new QListView();
+  mTemplateProjectsListView->setResizeMode( QListView::Adjust );
+  mTemplateProjectsListView->setModel( mTemplateProjectsModel );
+  centerLayout->addWidget( mTemplateProjectsListView, 1, 1 );
 
   mVersionInformation = new QTextBrowser;
   mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
   mVersionInformation->setReadOnly( true );
   mVersionInformation->setOpenExternalLinks( true );
-  mVersionInformation->setStyleSheet( "QTextEdit { background-color: #dff0d8; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+  mVersionInformation->setStyleSheet( QStringLiteral("QTextEdit { background-color: #dff0d8; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
                                       "QScrollBar { background-color: rgba(0,0,0,0); } "
                                       "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
-                                      "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
+                                      "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } ") );
 
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
@@ -89,7 +100,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
     mVersionInfo->checkVersion();
   }
 
-  connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::itemActivated );
+  connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::recentProjectItemActivated );
 }
 
 QgsWelcomePage::~QgsWelcomePage()
@@ -97,14 +108,14 @@ QgsWelcomePage::~QgsWelcomePage()
   delete mVersionInfo;
 }
 
-void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects )
+void QgsWelcomePage::setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects )
 {
-  mModel->setRecentProjects( recentProjects );
+  mRecentProjectsModel->setRecentProjects( recentProjects );
 }
 
-void QgsWelcomePage::itemActivated( const QModelIndex &index )
+void QgsWelcomePage::recentProjectItemActivated( const QModelIndex &index )
 {
-  QgisApp::instance()->openProject( mModel->data( index, Qt::ToolTipRole ).toString() );
+  QgisApp::instance()->openProject( mRecentProjectsModel->data( index, Qt::ToolTipRole ).toString() );
 }
 
 void QgsWelcomePage::versionInfoReceived()
@@ -127,12 +138,12 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   if ( !index.isValid() )
     return;
 
-  bool pin = mModel->data( index, QgsWelcomePageItemsModel::PinRole ).toBool();
-  QString path = mModel->data( index, QgsWelcomePageItemsModel::PathRole ).toString();
+  bool pin = mRecentProjectsModel->data( index, QgsRecentProjectItemsModel::PinRole ).toBool();
+  QString path = mRecentProjectsModel->data( index, QgsRecentProjectItemsModel::PathRole ).toString();
   if ( path.isEmpty() )
     return;
 
-  bool enabled = mModel->flags( index ) & Qt::ItemIsEnabled;
+  bool enabled = mRecentProjectsModel->flags( index ) & Qt::ItemIsEnabled;
 
   QMenu *menu = new QMenu( this );
 
@@ -143,7 +154,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       QAction *pinAction = new QAction( tr( "Pin to List" ), menu );
       connect( pinAction, &QAction::triggered, this, [this, index]
       {
-        mModel->pinProject( index );
+        mRecentProjectsModel->pinProject( index );
         emit projectPinned( index.row() );
       } );
       menu->addAction( pinAction );
@@ -153,7 +164,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       QAction *pinAction = new QAction( tr( "Unpin from List" ), menu );
       connect( pinAction, &QAction::triggered, this, [this, index]
       {
-        mModel->unpinProject( index );
+        mRecentProjectsModel->unpinProject( index );
         emit projectUnpinned( index.row() );
       } );
       menu->addAction( pinAction );
@@ -170,7 +181,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     QAction *rescanAction = new QAction( tr( "Refresh" ), menu );
     connect( rescanAction, &QAction::triggered, this, [this, index]
     {
-      mModel->recheckProject( index );
+      mRecentProjectsModel->recheckProject( index );
     } );
     menu->addAction( rescanAction );
 
@@ -187,7 +198,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
   connect( removeProjectAction, &QAction::triggered, this, [this, index]
   {
-    mModel->removeProject( index );
+    mRecentProjectsModel->removeProject( index );
     emit projectRemoved( index.row() );
   } );
   menu->addAction( removeProjectAction );

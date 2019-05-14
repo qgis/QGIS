@@ -1919,7 +1919,7 @@ void QgisApp::readRecentProjects()
     const auto constOldRecentProjects = oldRecentProjects;
     for ( const QString &project : constOldRecentProjects )
     {
-      QgsWelcomePageItemsModel::RecentProjectData data;
+      QgsRecentProjectItemsModel::RecentProjectData data;
       data.path = project;
       data.title = project;
 
@@ -1944,7 +1944,7 @@ void QgisApp::readRecentProjects()
   const int maxProjects = QgsSettings().value( QStringLiteral( "maxRecentProjects" ), 20, QgsSettings::App ).toInt();
   for ( int i = 0; i < projectKeys.count(); ++i )
   {
-    QgsWelcomePageItemsModel::RecentProjectData data;
+    QgsRecentProjectItemsModel::RecentProjectData data;
     settings.beginGroup( QString::number( projectKeys.at( i ) ) );
     data.title = settings.value( QStringLiteral( "title" ) ).toString();
     data.path = settings.value( QStringLiteral( "path" ) ).toString();
@@ -4196,7 +4196,7 @@ void QgisApp::updateRecentProjectPaths()
   mRecentProjectsMenu->clear();
 
   const auto constMRecentProjects = mRecentProjects;
-  for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : constMRecentProjects )
+  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
     QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).completeBaseName(),
                       QDir::toNativeSeparators( recentProject.path ) ) );
@@ -4209,7 +4209,7 @@ void QgisApp::updateRecentProjectPaths()
   }
 
   std::vector< QgsNative::RecentProjectProperties > recentProjects;
-  for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : qgis::as_const( mRecentProjects ) )
+  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : qgis::as_const( mRecentProjects ) )
   {
     QgsNative::RecentProjectProperties project;
     project.title = recentProject.title;
@@ -4229,7 +4229,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
   readRecentProjects();
 
   // Get canonical absolute path
-  QgsWelcomePageItemsModel::RecentProjectData projectData;
+  QgsRecentProjectItemsModel::RecentProjectData projectData;
   projectData.path = QgsProject::instance()->absoluteFilePath();
   QString templateDirName = QgsSettings().value( QStringLiteral( "qgis/projectTemplateDir" ),
                             QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
@@ -4282,7 +4282,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
   int nonPinnedPos = 0;
   bool pinnedTop = true;
   const auto constMRecentProjects = mRecentProjects;
-  for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : constMRecentProjects )
+  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
     if ( recentProject.pin )
     {
@@ -4334,7 +4334,7 @@ void QgisApp::saveRecentProjects()
   int idx = 0;
 
   const auto constMRecentProjects = mRecentProjects;
-  for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : constMRecentProjects )
+  for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : constMRecentProjects )
   {
     ++idx;
     settings.beginGroup( QStringLiteral( "UI/recentProjects/%1" ).arg( idx ) );

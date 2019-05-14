@@ -20,12 +20,12 @@
 #include <QStringList>
 #include <QStyledItemDelegate>
 
-class QgsWelcomePageItemDelegate : public QStyledItemDelegate
+class QgsRecentProjectItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
-    explicit QgsWelcomePageItemDelegate( QObject *parent = nullptr );
+    explicit QgsRecentProjectItemDelegate( QObject *parent = nullptr );
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
@@ -34,7 +34,7 @@ class QgsWelcomePageItemDelegate : public QStyledItemDelegate
     int mRoundedRectSizePixels = 5;
 };
 
-class QgsWelcomePageItemsModel : public QAbstractListModel
+class QgsRecentProjectItemsModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -60,7 +60,7 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
       mutable bool exists = false;
     };
 
-    explicit QgsWelcomePageItemsModel( QObject *parent = nullptr );
+    explicit QgsRecentProjectItemsModel( QObject *parent = nullptr );
 
     void setRecentProjects( const QList<RecentProjectData> &recentProjects );
 
@@ -77,4 +77,4 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     QList<RecentProjectData> mRecentProjects;
 };
 
-#endif // QGSWELCOMEPAGEITEMSMODEL_H
+#endif // QGSRECENTPROJECTITEMSMODEL_H

@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswelcomepageitemsmodel.h"
+#include "qgsrecentprojectsitemsmodel.h"
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
@@ -29,14 +29,14 @@
 #include <QTextDocument>
 #include <QDir>
 
-QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject *parent )
+QgsRecentProjectItemDelegate::QgsRecentProjectItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
   , mRoundedRectSizePixels( Qgis::UI_SCALE_FACTOR * QApplication::fontMetrics().height() * 0.5 )
 {
 
 }
 
-void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+void QgsRecentProjectItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   painter->save();
 
@@ -81,10 +81,10 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   int textSize = titleSize * 0.85;
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize )
-               .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
-                     index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
+               .arg( index.data( QgsRecentProjectItemsModel::TitleRole ).toString(),
+                     index.data( QgsRecentProjectItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
+                     index.data( QgsRecentProjectItemsModel::NativePathRole ).toString(),
+                     index.data( QgsRecentProjectItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )
@@ -99,7 +99,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   painter->restore();
 }
 
-QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QSize QgsRecentProjectItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QTextDocument doc;
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
@@ -118,22 +118,22 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
   int textSize = titleSize * 0.85;
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize )
-               .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
-                     index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
+               .arg( index.data( QgsRecentProjectItemsModel::TitleRole ).toString(),
+                     index.data( QgsRecentProjectItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
+                     index.data( QgsRecentProjectItemsModel::NativePathRole ).toString(),
+                     index.data( QgsRecentProjectItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( icon.height() ) ) + 2.5 * mRoundedRectSizePixels );
 }
 
-QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject *parent )
+QgsRecentProjectItemsModel::QgsRecentProjectItemsModel( QObject *parent )
   : QAbstractListModel( parent )
 {
 
 }
 
-void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData> &recentProjects )
+void QgsRecentProjectItemsModel::setRecentProjects( const QList<RecentProjectData> &recentProjects )
 {
   beginResetModel();
   mRecentProjects = recentProjects;
@@ -141,13 +141,13 @@ void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData>
 }
 
 
-int QgsWelcomePageItemsModel::rowCount( const QModelIndex &parent ) const
+int QgsRecentProjectItemsModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return mRecentProjects.size();
 }
 
-QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) const
+QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) const
 {
   switch ( role )
   {
@@ -204,7 +204,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
 }
 
 
-Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() || !rowCount( index.parent() ) )
     return Qt::NoItemFlags;
@@ -231,24 +231,24 @@ Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
   return flags;
 }
 
-void QgsWelcomePageItemsModel::pinProject( const QModelIndex &index )
+void QgsRecentProjectItemsModel::pinProject( const QModelIndex &index )
 {
   mRecentProjects.at( index.row() ).pin = true;
 }
 
-void QgsWelcomePageItemsModel::unpinProject( const QModelIndex &index )
+void QgsRecentProjectItemsModel::unpinProject( const QModelIndex &index )
 {
   mRecentProjects.at( index.row() ).pin = false;
 }
 
-void QgsWelcomePageItemsModel::removeProject( const QModelIndex &index )
+void QgsRecentProjectItemsModel::removeProject( const QModelIndex &index )
 {
   beginRemoveRows( index, index.row(), index.row() );
   mRecentProjects.removeAt( index.row() );
   endRemoveRows();
 }
 
-void QgsWelcomePageItemsModel::recheckProject( const QModelIndex &index )
+void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )
 {
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );
   projectData.exists = QFile::exists( ( projectData.path ) );

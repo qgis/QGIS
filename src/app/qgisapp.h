@@ -149,7 +149,7 @@ class QgsNetworkRequestParameters;
 #include "qgsconfig.h"
 #include "qgspointxy.h"
 #include "qgsmimedatautils.h"
-#include "qgswelcomepageitemsmodel.h"
+#include "qgsrecentprojectsitemsmodel.h"
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsmaplayeractionregistry.h"
@@ -2165,7 +2165,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
-    QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
+    QList<QgsRecentProjectItemsModel::RecentProjectData> mRecentProjects;
 
     //! Currently open layout designer dialogs
     QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;

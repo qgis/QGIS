@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSWELCOMEDIALOG_H
-#define QGSWELCOMEDIALOG_H
+#ifndef QGSWELCOMEPAGE_H
+#define QGSWELCOMEPAGE_H
 
 #include <QWidget>
 #include <QTextBrowser>
+#include <QStandardItemModel>
 
-#include "qgswelcomepageitemsmodel.h"
+#include "qgsrecentprojectsitemsmodel.h"
 
 class QgsVersionInfo;
 class QListView;
@@ -33,7 +34,7 @@ class QgsWelcomePage : public QWidget
 
     ~QgsWelcomePage() override;
 
-    void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects );
+    void setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects );
 
   signals:
     void projectRemoved( int row );
@@ -41,15 +42,17 @@ class QgsWelcomePage : public QWidget
     void projectUnpinned( int row );
 
   private slots:
-    void itemActivated( const QModelIndex &index );
+    void recentProjectItemActivated( const QModelIndex &index );
     void versionInfoReceived();
     void showContextMenuForProjects( QPoint point );
 
   private:
-    QgsWelcomePageItemsModel *mModel = nullptr;
+    QgsRecentProjectItemsModel *mRecentProjectsModel = nullptr;
     QTextBrowser *mVersionInformation = nullptr;
     QgsVersionInfo *mVersionInfo = nullptr;
     QListView *mRecentProjectsListView = nullptr;
+    QListView *mTemplateProjectsListView = nullptr;
+    QStandardItemModel *mTemplateProjectsModel = nullptr;
 };
 
-#endif // QGSWELCOMEDIALOG_H
+#endif // QGSWELCOMEPAGE_H

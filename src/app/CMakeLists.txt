@@ -74,7 +74,7 @@ SET(QGIS_APP_SRCS
   qgsstatusbarscalewidget.cpp
   qgsvectorlayerloadstyledialog.cpp
   qgsversioninfo.cpp
-  qgswelcomepageitemsmodel.cpp
+  qgsrecentprojectsitemsmodel.cpp
   qgswelcomepage.cpp
 
   qgsmaptooladdfeature.cpp
@@ -312,7 +312,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsstatusbarscalewidget.h
   qgsvectorlayerloadstyledialog.h
   qgsversioninfo.h
-  qgswelcomepageitemsmodel.h
+  qgsrecentprojectsitemsmodel.h
   qgswelcomepage.h
 
   qgsmaptooladdfeature.h
