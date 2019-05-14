@@ -68,6 +68,16 @@ QgsPackageAlgorithm *QgsPackageAlgorithm::createInstance() const
   return new QgsPackageAlgorithm();
 }
 
+bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  for ( QgsMapLayer *layer : layers )
+  {
+    mLayers.emplace_back( layer->clone() );
+  }
+  return true;
+}
+
 QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
@@ -97,21 +107,18 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
     throw QgsProcessingException( QObject::tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
 
   bool errored = false;
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
-  QgsProcessingMultiStepFeedback multiStepFeedback( layers.count(), feedback );
+  QgsProcessingMultiStepFeedback multiStepFeedback( mLayers.size(), feedback );
 
   QStringList outputLayers;
   int i = 0;
-  for ( QgsMapLayer *layer : layers )
+  for ( const auto &layer : mLayers )
   {
     if ( feedback->isCanceled() )
       break;
 
     multiStepFeedback.setCurrentStep( i );
     i++;
-
-    feedback->pushInfo( QObject::tr( "Packaging layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer ? layer->name() : QString() ) );
 
     if ( !layer )
     {
@@ -121,11 +128,13 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
       continue;
     }
 
+    feedback->pushInfo( QObject::tr( "Packaging layer %1/%2: %3" ).arg( i ).arg( mLayers.size() ).arg( layer ? layer->name() : QString() ) );
+
     switch ( layer->type() )
     {
       case QgsMapLayerType::VectorLayer:
       {
-        if ( !packageVectorLayer( qobject_cast< QgsVectorLayer * >( layer ), packagePath,
+        if ( !packageVectorLayer( qobject_cast< QgsVectorLayer * >( layer.get() ), packagePath,
                                   context, &multiStepFeedback, saveStyles ) )
           errored = true;
         else
