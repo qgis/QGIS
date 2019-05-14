@@ -1722,11 +1722,10 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString &svgFilePath, double
   : QgsImageFillSymbolLayer()
   , mPatternWidth( width )
 {
-  setSvgFilePath( svgFilePath );
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  setDefaultSvgParams();
+  setSvgFilePath( svgFilePath );
 }
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double width, double angle )
