@@ -197,6 +197,7 @@ class TestQgsProject(unittest.TestCase):
         prj.read(prj_path)
 
         layer_tree_group = prj.layerTreeRoot()
+        self.assertEqual(layer_tree_group.findLayerIds().count(), 2)
         for layer_id in layer_tree_group.findLayerIds():
             name = prj.mapLayer(layer_id).name()
             self.assertTrue(name in ['polys', 'lines'])
