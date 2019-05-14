@@ -53,6 +53,14 @@ qgis:checkvalidity: >
 
   By default the algorithm uses the strict OGC definition of polygon validity, where a polygon is marked as invalid if a self-intersecting ring causes an interior hole. If the "Ignore ring self intersections" option is checked, then this rule will be ignored and a more lenient validity check will be performed.
 
+qgis:climbalongline: >
+  This algorithm calculates the total climb and descent along line geometries.
+
+  It works only if the line layer already has Z values on the vertex. If it does not, consider using the Drape (set z-value from
+  raster) algorithm.
+
+  The output layer is a copy of the input layer with some additional fields that represent the total climb, total descent, the minimum elevation and the maximum elevation.
+
 qgis:clip: >
   This algorithm clips a vector layer using the polygons of an additional polygons layer. Only the parts of the features in the input layer that falls within the polygons of the clipping layer will be added to the resulting layer.
 
