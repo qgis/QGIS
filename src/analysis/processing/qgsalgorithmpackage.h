@@ -52,7 +52,7 @@ class QgsPackageAlgorithm : public QgsProcessingAlgorithm
 
   private:
 
-    bool packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    bool packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles );
 
 };
 
