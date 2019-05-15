@@ -120,7 +120,7 @@ const KeyboardTranslator* KeyboardTranslatorManager::findTranslator(const QStrin
 bool KeyboardTranslatorManager::saveTranslator(const KeyboardTranslator* translator)
 {
 qDebug() << "KeyboardTranslatorManager::saveTranslator" << "unimplemented";
-Q_UNUSED(translator);
+Q_UNUSED(translator)
 #if 0
     const QString path = KGlobal::dirs()->saveLocation("data","konsole/")+translator->name()
            +".keytab";

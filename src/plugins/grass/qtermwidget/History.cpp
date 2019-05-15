@@ -127,7 +127,7 @@ void HistoryFile::map()
 void HistoryFile::unmap()
 {
     int result = munmap( fileMap , length );
-    Q_ASSERT( result == 0 ); Q_UNUSED( result );
+    Q_ASSERT( result == 0 ); Q_UNUSED( result )
 
     fileMap = nullptr;
 }
@@ -523,7 +523,7 @@ void HistoryScrollBlockArray::addCells(const Character a[], int count)
 
   size_t res = m_blockArray.newBlock();
   Q_ASSERT(res > 0);
-  Q_UNUSED( res );
+  Q_UNUSED( res )
 
   m_lineLengths.insert(m_blockArray.getCurrent(), count);
 }
