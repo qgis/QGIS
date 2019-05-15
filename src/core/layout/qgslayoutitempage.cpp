@@ -270,7 +270,7 @@ QgsLayoutItemPageGrid::QgsLayoutItemPageGrid( double x, double y, double width, 
 
 void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
-  Q_UNUSED( pWidget );
+  Q_UNUSED( pWidget )
 
   //draw grid
   if ( !mLayout )

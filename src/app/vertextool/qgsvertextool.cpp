@@ -2040,6 +2040,18 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   setHighlightedVertices( mSelectedVertices );  // update positions of existing highlighted vertices
   setHighlightedVerticesVisible( true );  // time to show highlighted vertices again
+
+  // restart startDraggingAddVertexAtEndpoint right after it finishes
+  if ( addingAtEndpoint )
+  {
+    if ( mMouseAtEndpoint->vertexId != 0 )
+    {
+      // If we were adding at the end of the feature, we need to update the index
+      mMouseAtEndpoint.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId + 1 ) );
+    }
+    // And then we just restart the drag
+    startDraggingAddVertexAtEndpoint( mapPoint );
+  }
 }
 
 
@@ -2676,7 +2688,7 @@ QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureI
 void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
 {
   // nothing to do here for now...
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )

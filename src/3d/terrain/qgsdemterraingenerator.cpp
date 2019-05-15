@@ -65,7 +65,7 @@ QgsRectangle QgsDemTerrainGenerator::extent() const
 
 float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
 {
-  Q_UNUSED( map );
+  Q_UNUSED( map )
   if ( mHeightMapGenerator )
     return mHeightMapGenerator->heightAt( x, y );
   else

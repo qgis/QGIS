@@ -27,7 +27,7 @@ QgsGrassUndoCommandChangeAttribute::QgsGrassUndoCommandChangeAttribute( QgsGrass
   , mDeleteCat( deleteCat )
   , mDeleteRecord( deleteRecord )
 {
-  Q_UNUSED( mField );
+  Q_UNUSED( mField )
 }
 
 void QgsGrassUndoCommandChangeAttribute::undo()
@@ -58,7 +58,7 @@ void QgsGrassUndoCommandChangeAttribute::undo()
       {
         mProvider->mLayer->map()->lockReadWrite();
         int newLid = mProvider->rewriteLine( realLine, type, mProvider->mPoints, mProvider->mCats );
-        Q_UNUSED( newLid );
+        Q_UNUSED( newLid )
         mProvider->mLayer->map()->newCats().remove( mFid );
         mProvider->mLayer->map()->unlockReadWrite();
       }

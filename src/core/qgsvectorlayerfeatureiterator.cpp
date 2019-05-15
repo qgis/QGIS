@@ -903,13 +903,13 @@ void QgsVectorLayerFeatureIterator::addExpressionAttribute( QgsFeature &f, int a
 
 bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
-  Q_UNUSED( simplifyMethod );
+  Q_UNUSED( simplifyMethod )
   return false;
 }
 
 bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
-  Q_UNUSED( methodType );
+  Q_UNUSED( methodType )
   return false;
 }
 
@@ -1087,7 +1087,7 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 
 bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
 {
-  Q_UNUSED( orderBys );
+  Q_UNUSED( orderBys )
   return true;
 }
 

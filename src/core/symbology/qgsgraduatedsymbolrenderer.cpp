@@ -538,7 +538,7 @@ void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element,
 
 QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QgsSymbolList lst;
   lst.reserve( mRanges.count() );
   const auto constMRanges = mRanges;

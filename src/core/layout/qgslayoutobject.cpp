@@ -167,7 +167,7 @@ bool QgsLayoutObject::writeObjectPropertiesToElement( QDomElement &parentElement
 
 bool QgsLayoutObject::readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext & )
 {
-  Q_UNUSED( document );
+  Q_UNUSED( document )
   if ( parentElement.isNull() )
   {
     return false;

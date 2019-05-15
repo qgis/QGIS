@@ -47,9 +47,9 @@ void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, c
 
 bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
-  Q_UNUSED( drawVertexMarker );
-  Q_UNUSED( context );
-  Q_UNUSED( layer );
+  Q_UNUSED( drawVertexMarker )
+  Q_UNUSED( context )
+  Q_UNUSED( layer )
 
   /*
    * IMPORTANT: This algorithm is ported to Python in the processing "Points Displacement" algorithm.

@@ -50,7 +50,7 @@ QgsRectangle QgsOnlineTerrainGenerator::extent() const
 
 float QgsOnlineTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
 {
-  Q_UNUSED( map );
+  Q_UNUSED( map )
   if ( mHeightMapGenerator )
     return mHeightMapGenerator->heightAt( x, y );
   else

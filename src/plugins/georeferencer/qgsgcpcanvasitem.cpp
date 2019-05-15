@@ -163,7 +163,7 @@ void QgsGCPCanvasItem::updatePosition()
 
 void QgsGCPCanvasItem::drawResidualArrow( QPainter *p, const QgsRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   if ( !mDataPoint || !mIsGCPSource || !mMapCanvas )
   {
     return;

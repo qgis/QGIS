@@ -1801,4 +1801,30 @@ tests:
         name: expected/multipoint_delaunay.gml
         type: vector
 
+  - algorithm: qgis:polygonfromlayerextent
+    name: Polygon from layer extent rounded to 0
+    params:
+      BY_FEATURE: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      ROUND_TO: 0.0
+    results:
+      OUTPUT:
+        name: expected/polygon_from_extent.gml
+        type: vector
+
+  - algorithm: qgis:polygonfromlayerextent
+    name: Polygon from layer extent rounded to 2
+    params:
+      BY_FEATURE: false
+      INPUT:
+        name: lines.gml
+        type: vector
+      ROUND_TO: 2.0
+    results:
+      OUTPUT:
+        name: expected/polygon_from_extent_rounded_2.gml
+        type: vector
+
 # See ../README.md for a description of the file format

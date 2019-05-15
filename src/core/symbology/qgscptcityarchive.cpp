@@ -1402,7 +1402,7 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
 
 QVariant QgsCptCityBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  Q_UNUSED( section );
+  Q_UNUSED( section )
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     if ( section == 0 )
@@ -1442,7 +1442,7 @@ bool QgsCptCityBrowserModel::hasChildren( const QModelIndex &parent ) const
 
 int QgsCptCityBrowserModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -1703,8 +1703,8 @@ QMimeData *QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) co
 
 bool QgsCptCityBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
+  Q_UNUSED( row )
+  Q_UNUSED( column )
 
   QgsCptCityDataItem *destItem = dataItem( parent );
   if ( !destItem )

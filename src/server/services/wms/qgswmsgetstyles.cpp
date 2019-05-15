@@ -51,7 +51,7 @@ namespace QgsWms
   QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                           const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -85,7 +85,7 @@ namespace QgsWms
   QDomDocument getStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                          const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 

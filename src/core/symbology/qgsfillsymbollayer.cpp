@@ -256,7 +256,7 @@ void QgsSimpleFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsSimpleFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
@@ -835,7 +835,7 @@ void QgsGradientFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsGradientFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsGradientFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
@@ -1122,7 +1122,7 @@ void QgsShapeburstFillSymbolLayer::startRender( QgsSymbolRenderContext &context 
 
 void QgsShapeburstFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
@@ -1677,7 +1677,7 @@ double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRender
 
 QColor QgsImageFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   if ( !mStroke )
   {
     return QColor( Qt::black );
@@ -1724,11 +1724,10 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString &svgFilePath, double
   : QgsImageFillSymbolLayer()
   , mPatternWidth( width )
 {
-  setSvgFilePath( svgFilePath );
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  setDefaultSvgParams();
+  setSvgFilePath( svgFilePath );
 }
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double width, double angle )
@@ -3340,7 +3339,7 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &element )
 {
-  Q_UNUSED( element );
+  Q_UNUSED( element )
   return nullptr;
 }
 
@@ -3498,7 +3497,7 @@ void QgsCentroidFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 
 void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( rings );
+  Q_UNUSED( rings )
 
   if ( !mPointOnAllParts )
   {
@@ -3740,7 +3739,7 @@ void QgsRasterFillSymbolLayer::resolvePaths( QgsStringMap &properties, const Qgs
 
 bool QgsRasterFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  Q_UNUSED( symbol );
+  Q_UNUSED( symbol )
   return true;
 }
 
@@ -3785,7 +3784,7 @@ void QgsRasterFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsRasterFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 QgsStringMap QgsRasterFillSymbolLayer::properties() const

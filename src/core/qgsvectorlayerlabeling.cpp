@@ -71,7 +71,7 @@ QDomElement QgsVectorLayerSimpleLabeling::save( QDomDocument &doc, const QgsRead
 
 QgsPalLayerSettings QgsVectorLayerSimpleLabeling::settings( const QString &providerId ) const
 {
-  Q_UNUSED( providerId );
+  Q_UNUSED( providerId )
   return *mSettings;
 }
 
@@ -558,7 +558,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
 
 void QgsVectorLayerSimpleLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )
 {
-  Q_UNUSED( providerId );
+  Q_UNUSED( providerId )
 
   if ( mSettings.get() == settings )
     return;

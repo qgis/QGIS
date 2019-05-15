@@ -41,7 +41,7 @@ QgsMapToolReverseLine::~QgsMapToolReverseLine()
 
 void QgsMapToolReverseLine::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //nothing to do
 }
 
@@ -81,7 +81,7 @@ void QgsMapToolReverseLine::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   if ( !vlayer || !vlayer->isEditable() )
   {

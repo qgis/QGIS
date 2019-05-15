@@ -125,7 +125,7 @@ int QgsAttributeTableFilterModel::actionColumnIndex() const
 
 int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mColumnMapping.count();
 }
 
@@ -325,7 +325,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
 
 bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  Q_UNUSED( sourceParent );
+  Q_UNUSED( sourceParent )
   switch ( mFilterMode )
   {
     case ShowAll:

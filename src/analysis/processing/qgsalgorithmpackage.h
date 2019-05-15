@@ -47,12 +47,16 @@ class QgsPackageAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
 
-    bool packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    bool packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles );
+
+    std::vector< std::unique_ptr< QgsMapLayer> > mLayers;
 
 };
 

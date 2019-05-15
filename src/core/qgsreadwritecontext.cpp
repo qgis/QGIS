@@ -81,8 +81,8 @@ QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages(
 
 QString QgsReadWriteContext::DefaultTranslator::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( disambiguation );
-  Q_UNUSED( n );
+  Q_UNUSED( context )
+  Q_UNUSED( disambiguation )
+  Q_UNUSED( n )
   return sourceText;
 }

@@ -619,7 +619,7 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
 
 QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QgsSymbolList lst;
   lst.reserve( mCategories.count() );
   for ( const QgsRendererCategory &cat : mCategories )

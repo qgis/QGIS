@@ -74,7 +74,7 @@ QSize QgsGradientStopEditor::sizeHint() const
 
 void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   QRect frameRect( rect().x() + MARGIN_X, rect().y(),

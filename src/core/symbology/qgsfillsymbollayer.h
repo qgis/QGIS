@@ -691,7 +691,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     //! Custom stroke
     std::unique_ptr< QgsLineSymbol > mStroke;
 
-    virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ); }
+    virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
 
   private:
 #ifdef SIP_RUN

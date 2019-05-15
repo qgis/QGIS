@@ -362,6 +362,8 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
 }
 void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 {
+  // disabled for proj >= 6 -- all this belongs in proj, not in QGIS
+#if PROJ_VERSION_MAJOR<6
   QString msg;
   QgsCoordinateReferenceSystem myCrs;
   const char *configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
@@ -446,7 +448,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
     }
 
   }
-
+#endif
   //  QVERIFY( bOK );
 }
 void TestQgsCoordinateReferenceSystem::createFromSrId()
@@ -697,7 +699,7 @@ void TestQgsCoordinateReferenceSystem::toProj4()
   debugPrint( myCrs );
   //first proj string produced by gdal 1.8-1.9
   //second by gdal 1.7
-  QVERIFY( myCrs.toProj4() == GEOPROJ4 );
+  QCOMPARE( myCrs.toProj4(), GEOPROJ4 );
 }
 void TestQgsCoordinateReferenceSystem::isGeographic()
 {

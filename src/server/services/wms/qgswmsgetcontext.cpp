@@ -88,7 +88,7 @@ namespace QgsWms
   QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
                            const QString &version, const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
@@ -441,7 +441,7 @@ namespace QgsWms
           }
           catch ( const QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
 
           if ( parentLayer.hasChildNodes() )

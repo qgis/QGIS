@@ -35,8 +35,8 @@ QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
 
 void QgsLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
-  Q_UNUSED( result );
-  Q_UNUSED( actionId );
+  Q_UNUSED( result )
+  Q_UNUSED( actionId )
 }
 
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )
@@ -61,7 +61,7 @@ bool QgsLocatorFilter::hasConfigWidget() const
 
 void QgsLocatorFilter::openConfigWidget( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
 }
 
 bool QgsLocatorFilter::useWithoutPrefix() const

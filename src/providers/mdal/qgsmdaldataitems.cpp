@@ -67,7 +67,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     QStringList meshExtensions;
     QStringList datasetsExtensions;
     QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
-    Q_UNUSED( datasetsExtensions );
+    Q_UNUSED( datasetsExtensions )
   } );
 
   // Filter files by extension

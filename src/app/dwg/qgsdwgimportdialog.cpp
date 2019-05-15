@@ -135,7 +135,7 @@ void QgsDwgImportDialog::mDatabaseFileWidget_textChanged( const QString &filenam
 
 void QgsDwgImportDialog::leLayerGroup_textChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   updateUI();
 }
 

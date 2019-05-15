@@ -38,7 +38,7 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
   , mTools( tools )
   , mTabWidget( parent )
 {
-  Q_UNUSED( name );
+  Q_UNUSED( name )
   QVBoxLayout *mainLayout = new QVBoxLayout( this );
   mTerminal = new QTermWidget( 0, this );
   initTerminal( mTerminal );

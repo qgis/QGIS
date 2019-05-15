@@ -29,7 +29,7 @@ QgsVectorLayerFeaturePool::QgsVectorLayerFeaturePool( QgsVectorLayer *layer )
 
 bool QgsVectorLayerFeaturePool::addFeature( QgsFeature &feature, Flags flags )
 {
-  Q_UNUSED( flags );
+  Q_UNUSED( flags )
 
   bool res = false;
 
@@ -67,7 +67,7 @@ bool QgsVectorLayerFeaturePool::addFeature( QgsFeature &feature, Flags flags )
 
 bool QgsVectorLayerFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags )
 {
-  Q_UNUSED( flags );
+  Q_UNUSED( flags )
 
   bool res = false;
 

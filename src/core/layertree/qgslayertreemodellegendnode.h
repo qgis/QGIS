@@ -77,7 +77,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QString userLabel() const { return mUserLabel; }
     virtual void setUserLabel( const QString &userLabel ) { mUserLabel = userLabel; }
 
-    virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ); return true; }
+    virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ) return true; }
 
     /**
      * Notification from model that information from associated map view has changed.

@@ -375,8 +375,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mLayerCapabilitiesTree->selectionModel(), &QItemSelectionModel::selectionChanged, this,
            [ = ]( const QItemSelection & selected, const QItemSelection & deselected )
   {
-    Q_UNUSED( selected );
-    Q_UNUSED( deselected );
+    Q_UNUSED( selected )
+    Q_UNUSED( deselected )
     bool hasSelection = !mLayerCapabilitiesTree->selectionModel()->selectedIndexes().isEmpty();
     mLayerCapabilitiesToggleSelectionButton->setEnabled( hasSelection );
   } );
@@ -392,7 +392,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( mLayerCapabilitiesToggleSelectionButton, &QToolButton::clicked, this, [ = ]( bool clicked )
   {
-    Q_UNUSED( clicked );
+    Q_UNUSED( clicked )
     const QModelIndexList indexes = mLayerCapabilitiesTree->selectionModel()->selectedIndexes();
     mLayerCapabilitiesModel->toggleSelectedItems( indexes );
     mLayerCapabilitiesTree->repaint();
@@ -1497,7 +1497,7 @@ void QgsProjectProperties::showProjectionsTab()
 
 void QgsProjectProperties::lwWmsRowsInserted( const QModelIndex &parent, int first, int last )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   for ( int i = first; i <= last; i++ )
   {
     QString crsStr = mWMSList->item( i )->text();
@@ -1508,9 +1508,9 @@ void QgsProjectProperties::lwWmsRowsInserted( const QModelIndex &parent, int fir
 
 void QgsProjectProperties::lwWmsRowsRemoved( const QModelIndex &parent, int first, int last )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( first );
-  Q_UNUSED( last );
+  Q_UNUSED( parent )
+  Q_UNUSED( first )
+  Q_UNUSED( last )
   QStringList crslist;
   for ( int i = 0; i < mWMSList->count(); i++ )
   {
@@ -2305,7 +2305,7 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
     }
   }
   gridItem->setData( 4, Qt::DisplayRole, scaleDenominator );

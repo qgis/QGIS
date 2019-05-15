@@ -157,24 +157,11 @@ void TestQgisAppClipboard::copyToText()
   // GeoJSON
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
   result = mQgisApp->clipboard()->generateClipboardText();
-  QString expected = "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n"
-                     "{\n   \"type\":\"Feature\",\n"
-                     "   \"id\":5,\n"
-                     "   \"geometry\":\n"
-                     "   {\"type\": \"Point\", \"coordinates\": [5, 6]},\n"
-                     "   \"properties\":{\n"
-                     "      \"int_field\":9,\n"
-                     "      \"string_field\":\"val\"\n"
-                     "   }\n"
-                     "},\n"
-                     "{\n   \"type\":\"Feature\",\n"
-                     "   \"id\":6,\n"
-                     "   \"geometry\":\n"
-                     "   {\"type\": \"Point\", \"coordinates\": [7, 8]},\n"
-                     "   \"properties\":{\n"
-                     "      \"int_field\":19,\n"
-                     "      \"string_field\":\"val2\"\n"
-                     "   }\n}\n]}";
+  QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,"
+                      "\"properties\":{\"int_field\":9,\"string_field\":\"val\"},\"type\":\"Feature\"},"
+                      "{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,"
+                      "\"properties\":{\"int_field\":19,\"string_field\":\"val2\"},\"type\":\"Feature\"}],"
+                      "\"type\":\"FeatureCollection\"}";
   QCOMPARE( result, expected );
 
   // test CRS is transformed correctly for GeoJSON
@@ -191,7 +178,7 @@ void TestQgisAppClipboard::copyToText()
 
   // just test coordinates as integers - that's enough to verify that reprojection has occurred
   // and helps avoid rounding issues
-  QRegExp regex( "\\[([-\\d.]+), ([-\\d.]+)\\]" );
+  QRegExp regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
   ( void )regex.indexIn( result );
   QStringList list = regex.capturedTexts();
   QCOMPARE( list.count(), 3 );

@@ -50,13 +50,13 @@ bool QgsLayerTreeViewMemoryIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 
 QString QgsLayerTreeViewMemoryIndicatorProvider::iconName( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return QStringLiteral( "/mIndicatorMemory.svg" );
 }
 
 QString QgsLayerTreeViewMemoryIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return tr( "<b>Temporary scratch layer only!</b><br>Contents will be discarded after closing this project" );
 }
 

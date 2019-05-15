@@ -702,7 +702,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
 
 void QgsWFSSourceSelect::cmbConnections_activated( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsWfsConnection::setSelectedConnection( cmbConnections->currentText() );
 
   QgsWfsConnection connection( cmbConnections->currentText() );

@@ -2422,7 +2422,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     if ( layer )
     {
       layer->resolveReferences( this );
-      layer->setItemVisibilityChecked( invisibleLayers.contains( layerId ) );
+      layer->setItemVisibilityChecked( !invisibleLayers.contains( layerId ) );
     }
   }
 

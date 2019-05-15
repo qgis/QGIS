@@ -58,7 +58,7 @@ namespace QgsWcs
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {
-        Q_UNUSED( project );
+        Q_UNUSED( project )
 
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );

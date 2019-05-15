@@ -346,8 +346,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     QgsRasterDataProvider *destProvider,
     QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( pipe );
-  Q_UNUSED( destHasNoDataValueList );
+  Q_UNUSED( pipe )
+  Q_UNUSED( destHasNoDataValueList )
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   const QgsRasterInterface *iface = iter->input();
@@ -754,7 +754,7 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
 #if 0
 int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMessage, void *pData )
 {
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( pszMessage )
   GDALTermProgress( dfComplete, 0, 0 );
   QProgressDialog *progressDialog = static_cast<QProgressDialog *>( pData );
   if ( pData && progressDialog->wasCanceled() )

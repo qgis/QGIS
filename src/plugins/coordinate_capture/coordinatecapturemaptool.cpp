@@ -45,7 +45,7 @@ void CoordinateCaptureMapTool::canvasMoveEvent( QgsMapMouseEvent *thepEvent )
 
 void CoordinateCaptureMapTool::canvasPressEvent( QgsMapMouseEvent *thepEvent )
 {
-  Q_UNUSED( thepEvent );
+  Q_UNUSED( thepEvent )
 }
 
 void CoordinateCaptureMapTool::canvasReleaseEvent( QgsMapMouseEvent *thepEvent )

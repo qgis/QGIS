@@ -221,7 +221,7 @@ void QgsRuleBasedRendererWidget::removeRule()
 
 void QgsRuleBasedRendererWidget::currentRuleChanged( const QModelIndex &current, const QModelIndex &previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   btnEditRule->setEnabled( current.isValid() );
 }
 
@@ -437,7 +437,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
 
 void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int newSize )
 {
-  Q_UNUSED( oldSize );
+  Q_UNUSED( oldSize )
   // skip last section, as it stretches
   if ( section == 5 )
     return;
@@ -1152,7 +1152,7 @@ void _labeling2rendererRules( QDomElement &ruleElem )
 bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
     Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   if ( action == Qt::IgnoreAction )
     return true;

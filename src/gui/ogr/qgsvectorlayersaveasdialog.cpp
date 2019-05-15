@@ -391,7 +391,7 @@ void QgsVectorLayerSaveAsDialog::accept()
 
 void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 {
-  Q_UNUSED( idx );
+  Q_UNUSED( idx )
 
   mFilename->setEnabled( true );
   mFilename->setFilter( QgsVectorFileWriter::filterForDriver( format() ) );

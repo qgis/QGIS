@@ -113,7 +113,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
 
   QgsArcGisRestUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers]( const QString & parentLayerId, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid )
   {
-    Q_UNUSED( description );
+    Q_UNUSED( description )
 
     if ( !parentLayerId.isEmpty() )
       parents.insert( id, parentLayerId );

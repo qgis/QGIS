@@ -630,7 +630,7 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
 
 void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
   QgsDebugMsg( QStringLiteral( "done" ) );
 }

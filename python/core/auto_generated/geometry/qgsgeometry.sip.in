@@ -88,7 +88,7 @@ geom is transferred.
 %End
 
 
-    ~QgsGeometry();
+    virtual ~QgsGeometry();
 
     const QgsAbstractGeometry *constGet() const;
 %Docstring
@@ -1440,6 +1440,7 @@ Exports the geometry to WKT
 %Docstring
 Exports the geometry to a GeoJSON string.
 %End
+
 
     QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;
 %Docstring

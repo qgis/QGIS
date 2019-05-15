@@ -715,7 +715,7 @@ QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem &option,
 void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *model,
     const QModelIndex &index ) const
 {
-  Q_UNUSED( model );
+  Q_UNUSED( model )
 
   if ( !mParentTree )
     return;

@@ -41,7 +41,7 @@ void QgsBrowserTreeView::setBrowserModel( QgsBrowserModel *model )
 
 void QgsBrowserTreeView::showEvent( QShowEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   if ( model() )
     restoreState();
   QTreeView::showEvent( e );
@@ -50,7 +50,7 @@ void QgsBrowserTreeView::showEvent( QShowEvent *e )
 // closeEvent is not called when application is closed
 void QgsBrowserTreeView::hideEvent( QHideEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   // hideEvent() may be called (Mac) before showEvent
   if ( model() )
     saveState();

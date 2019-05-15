@@ -612,7 +612,7 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
     const auto legendLayerActions { mLegendLayerActionMap.value( type ) };
     for ( const LegendLayerAction &lyrAction : legendLayerActions )
     {
-      Q_UNUSED( lyrAction );
+      Q_UNUSED( lyrAction )
       QgsDebugMsg( QStringLiteral( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
     }
   }

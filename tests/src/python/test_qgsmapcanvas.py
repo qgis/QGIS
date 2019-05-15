@@ -349,6 +349,33 @@ class TestQgsMapCanvas(unittest.TestCase):
         print((self.report))
         return result
 
+    def testSaveCanvasVariablesToProject(self):
+        """
+        Ensure that temporary canvas atlas variables are not written to project
+        """
+        c1 = QgsMapCanvas()
+        c1.setObjectName('c1')
+        c1.expressionContextScope().setVariable('atlas_featurenumber', 1111)
+        c1.expressionContextScope().setVariable('atlas_pagename', 'bb')
+        c1.expressionContextScope().setVariable('atlas_feature', QgsFeature(1))
+        c1.expressionContextScope().setVariable('atlas_featureid', 22)
+        c1.expressionContextScope().setVariable('atlas_geometry', QgsGeometry.fromWkt('Point( 1 2 )'))
+        c1.expressionContextScope().setVariable('vara', 1111)
+        c1.expressionContextScope().setVariable('varb', 'bb')
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("qgis")
+        doc.appendChild(elem)
+        c1.writeProject(doc)
+
+        c2 = QgsMapCanvas()
+        c2.setObjectName('c1')
+        c2.readProject(doc)
+
+        self.assertCountEqual(c2.expressionContextScope().variableNames(), ['vara', 'varb'])
+        self.assertEqual(c2.expressionContextScope().variable('vara'), 1111)
+        self.assertEqual(c2.expressionContextScope().variable('varb'), 'bb')
+
     def testSaveMultipleCanvasesToProject(self):
         # test saving/restoring canvas state to project with multiple canvases
         c1 = QgsMapCanvas()

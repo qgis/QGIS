@@ -79,8 +79,8 @@ void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter *acce
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls->registerAccessControl( accessControl, priority );
 #else
-  Q_UNUSED( accessControl );
-  Q_UNUSED( priority );
+  Q_UNUSED( accessControl )
+  Q_UNUSED( priority )
 #endif
 }
 
@@ -90,8 +90,8 @@ void QgsServerInterfaceImpl::registerServerCache( QgsServerCacheFilter *serverCa
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mCacheManager->registerServerCache( serverCache, priority );
 #else
-  Q_UNUSED( serverCache );
-  Q_UNUSED( priority );
+  Q_UNUSED( serverCache )
+  Q_UNUSED( priority )
 #endif
 }
 

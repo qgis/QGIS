@@ -1156,7 +1156,7 @@ void QgsGrassImportItemWidget::setHtml( const QString &html )
 
 void QgsGrassImportItemWidget::onProgressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value )
 {
-  Q_UNUSED( allHtml );
+  Q_UNUSED( allHtml )
   if ( !recentHtml.isEmpty() )
   {
     mTextEdit->append( recentHtml );

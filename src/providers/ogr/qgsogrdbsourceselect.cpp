@@ -185,7 +185,7 @@ void QgsOgrDbSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStr
 
 void QgsOgrDbSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -418,7 +418,7 @@ void QgsOgrDbSourceSelect::setConnectionListPosition()
 
 void QgsOgrDbSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsOgrDbSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

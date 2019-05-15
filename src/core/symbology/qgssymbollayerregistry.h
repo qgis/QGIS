@@ -63,9 +63,9 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
      */
     virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
     {
-      Q_UNUSED( properties );
-      Q_UNUSED( pathResolver );
-      Q_UNUSED( saving );
+      Q_UNUSED( properties )
+      Q_UNUSED( pathResolver )
+      Q_UNUSED( saving )
     }
 
   protected:

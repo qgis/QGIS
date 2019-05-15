@@ -1478,7 +1478,7 @@ void QgsAttributeForm::init()
     if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
     {
       QToolButton *filterButton = new QToolButton();
-      filterButton->setText( tr( "Filter features" ) );
+      filterButton->setText( tr( "Filter Features" ) );
       filterButton->setPopupMode( QToolButton::MenuButtonPopup );
       filterButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
       connect( filterButton, &QToolButton::clicked, this, &QgsAttributeForm::filterTriggered );

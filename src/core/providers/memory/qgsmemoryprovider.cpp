@@ -578,7 +578,7 @@ QString QgsMemoryProvider::subsetString() const
 
 bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
-  Q_UNUSED( updateFeatureCount );
+  Q_UNUSED( updateFeatureCount )
 
   if ( !theSQL.isEmpty() )
   {

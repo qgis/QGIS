@@ -137,7 +137,7 @@ QgsFeatureList QgsExtractZMValuesAlgorithmBase::processFeature( const QgsFeature
 
 bool QgsExtractZMValuesAlgorithmBase::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 

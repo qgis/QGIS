@@ -197,15 +197,14 @@ class TestQgsProject(unittest.TestCase):
         prj.read(prj_path)
 
         layer_tree_group = prj.layerTreeRoot()
-        layers_ids = layer_tree_group.findLayerIds()
-
-        layers_names = []
-        for layer_id in layers_ids:
+        self.assertEqual(len(layer_tree_group.findLayerIds()), 2)
+        for layer_id in layer_tree_group.findLayerIds():
             name = prj.mapLayer(layer_id).name()
-            layers_names.append(name)
-
-        expected = ['polys', 'lines']
-        self.assertEqual(sorted(layers_names), sorted(expected))
+            self.assertTrue(name in ['polys', 'lines'])
+            if name == 'polys':
+                self.assertTrue(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
+            elif name == 'lines':
+                self.assertFalse(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
 
     def testInstance(self):
         """ test retrieving global instance """

@@ -1003,7 +1003,7 @@ void QgsDxfExport::writeEntities()
 
     auto scopePopper = [&ctx]( QgsExpressionContextScope * scope )
     {
-      Q_UNUSED( scope );
+      Q_UNUSED( scope )
       delete ctx.expressionContext().popScope();
     };
     std::unique_ptr<QgsExpressionContextScope, decltype( scopePopper ) > layerScope( QgsExpressionContextUtils::layerScope( ml ), scopePopper );
@@ -4408,7 +4408,7 @@ QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
 
 void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( !settings.drawLabels )
     return;

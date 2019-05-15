@@ -180,7 +180,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * \since QGIS 2.16
      */
     // TODO QGIS 4.0 - make pure virtual
-    virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
+    virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ) return QStringLiteral( "TRUE" ); }
 
     /**
      * Gets a field name or expression to use as field comparison.
@@ -219,7 +219,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * Toggles whether the search widget is enabled or disabled.
      * \param enabled set to TRUE to enable widget
      */
-    void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
+    void setEnabled( bool enabled ) override { Q_UNUSED( enabled ) }
 
   signals:
 

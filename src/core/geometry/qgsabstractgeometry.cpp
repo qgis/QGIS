@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 #include "qgsgeometrycollection.h"
 
+#include <nlohmann/json.hpp>
 #include <limits>
 #include <QTransform>
 
@@ -153,6 +154,16 @@ QString QgsAbstractGeometry::wktTypeStr() const
   return wkt;
 }
 
+QString QgsAbstractGeometry::asJson( int precision )
+{
+  return QString::fromStdString( asJsonObject( precision ).dump() );
+}
+
+json QgsAbstractGeometry::asJsonObject( int precision ) const
+{
+  Q_UNUSED( precision ) return nullptr;
+}
+
 QgsPoint QgsAbstractGeometry::centroid() const
 {
   // http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
@@ -280,7 +291,7 @@ bool QgsAbstractGeometry::hasChildGeometries() const
 
 QgsPoint QgsAbstractGeometry::childPoint( int index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return QgsPoint();
 }
 
@@ -298,8 +309,8 @@ bool QgsAbstractGeometry::hasCurvedSegments() const
 
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  Q_UNUSED( tolerance );
-  Q_UNUSED( toleranceType );
+  Q_UNUSED( tolerance )
+  Q_UNUSED( toleranceType )
   return clone();
 }
 
