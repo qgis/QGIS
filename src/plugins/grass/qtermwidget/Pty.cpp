@@ -297,7 +297,7 @@ void Pty::dataReceived()
 
 void Pty::lockPty(bool lock)
 {
-    Q_UNUSED(lock);
+    Q_UNUSED(lock)
 
 // TODO: Support for locking the Pty
   //if (lock)
