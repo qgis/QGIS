@@ -14445,7 +14445,22 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
         QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
 
     const QString originalFilename = QgsProject::instance()->fileName();
-    const QString templateName = QFileInfo( originalFilename ).baseName();
+    QString templateName = QFileInfo( originalFilename ).baseName();
+
+    if ( templateName.isEmpty() )
+    {
+      bool ok;
+      templateName = QInputDialog::getText( this, tr( "Template Name" ),
+                                            tr( "Name for the template" ), QLineEdit::Normal,
+                                            QString(), &ok );
+
+      if ( !ok )
+        return;
+      if ( templateName.isEmpty() )
+      {
+        messageBar()->pushInfo( tr( "Template not saved" ), tr( "The template can not have an empty name." ) );
+      }
+    }
     const QString filePath = templateDirName + QDir::separator() + templateName + QStringLiteral( ".qgz" );
     if ( QFileInfo( filePath ).exists() )
     {
