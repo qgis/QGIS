@@ -1066,7 +1066,7 @@ static QVariant fcnAggregateMinLength( const QVariantList &values, const QgsExpr
   if ( context )
   {
     if ( context->indexOfScope( "Symbol scope" ) != -1 )
-      return fcnCalculateCalculator::StringMinimumLength, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+      return fcnCalculateGeneric( QgsAggregateCalculator::StringMinimumLength, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
   }
   return fcnAggregateGeneric( QgsAggregateCalculator::StringMinimumLength, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
