@@ -58,12 +58,16 @@
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsunittypes.h"
+#include "qgsgeometryengine.h"
+#include "qgsspatialindex.h"
 
 typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
 
 Q_GLOBAL_STATIC( ExpressionFunctionList, sOwnedFunctions )
 Q_GLOBAL_STATIC( QStringList, sBuiltinFunctions )
 Q_GLOBAL_STATIC( ExpressionFunctionList, sFunctions )
+
+Q_DECLARE_METATYPE(QgsSpatialIndex*)
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -5646,6 +5650,39 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
   return QVariant( decoded );
 }
 
+static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction *  )
+{
+  QString targetLayerId = values.at( 0 ).toString();
+
+  FEAT_FROM_CONTEXT( context, feat );
+  QgsGeometry geom = feat.geometry();
+  QgsVectorLayer *targetLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( targetLayerId );
+  QgsSpatialIndex *targetLayerIndex;
+
+  if ( !context->hasCachedValue( targetLayerId )){
+      targetLayerIndex = new QgsSpatialIndex(targetLayer->getFeatures());
+      context->setCachedValue( targetLayerId, QVariant::fromValue(targetLayerIndex) );
+  }
+
+  targetLayerIndex = qvariant_cast<QgsSpatialIndex*>(context->cachedValue( targetLayerId ));
+
+  QList<qint64> targetFeatureIds = targetLayerIndex->intersects(geom.boundingBox());
+  bool found = false;
+  if (!targetFeatureIds.empty()) {
+      qint64 featId;
+      for (int i = 0; i < targetFeatureIds.size(); ++i) {
+          featId = targetFeatureIds.at(i);
+          QgsFeature feat = targetLayer->getFeature(featId);
+          if ( feat.geometry().intersects(geom) ) {
+              found = true;
+              break;
+          }
+      }
+  }
+  return QVariant( found );
+}
+
+
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 {
   // The construction of the list isn't thread-safe, and without the mutex,
@@ -6014,6 +6051,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "is_valid" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnGeomIsValid, QStringLiteral( "GeometryGroup" ) )
+
+   QgsStaticExpressionFunction *fcnGeomOverlayIntersectsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_intersects" ), 1, fcnGeomOverlayIntersects, QStringLiteral( "GeometryGroup" ), QString(), true  );
+   fcnGeomOverlayIntersectsFunc->setIsStatic( false );
+   functions << fcnGeomOverlayIntersectsFunc;
+
+
+    functions
         << new QgsStaticExpressionFunction( QStringLiteral( "x" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnGeomX, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "y" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnGeomY, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "z" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnGeomZ, QStringLiteral( "GeometryGroup" ) )
