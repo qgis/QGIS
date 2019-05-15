@@ -875,8 +875,8 @@ void QgsDualView::extentChanged()
 
 void QgsDualView::featureFormAttributeChanged( const QString &attribute, const QVariant &value, bool attributeChanged )
 {
-  Q_UNUSED( attribute );
-  Q_UNUSED( value );
+  Q_UNUSED( attribute )
+  Q_UNUSED( value )
   if ( attributeChanged )
     mFeatureList->setCurrentFeatureEdited( true );
 }

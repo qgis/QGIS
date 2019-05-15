@@ -934,7 +934,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note used for vertex_iterator implementation
      * \since QGIS 3.0
      */
-    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ); return nullptr; }
+    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ) return nullptr; }
 
     /**
      * Returns point at index (for geometries without child geometries - i.e. curve / point)

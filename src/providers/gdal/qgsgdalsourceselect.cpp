@@ -136,7 +136,7 @@ void QgsGdalSourceSelect::radioSrcProtocol_toggled( bool checked )
 
 void QgsGdalSourceSelect::cmbProtocolTypes_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   setProtocolWidgetsVisibility();
 }
 

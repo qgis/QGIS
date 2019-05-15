@@ -1761,7 +1761,7 @@ void QgisApp::annotationCreated( QgsAnnotation *annotation )
   for ( QgsMapCanvas *canvas : canvases )
   {
     QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, canvas );
-    Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+    Q_UNUSED( canvasItem ) //item is already added automatically to canvas scene
   }
 }
 
@@ -3842,7 +3842,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
   for ( QgsAnnotation *annotation : constAnnotations )
   {
     QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, mapCanvas );
-    Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+    Q_UNUSED( canvasItem ) //item is already added automatically to canvas scene
   }
 
   markDirty();
@@ -6456,7 +6456,7 @@ void QgisApp::runScript( const QString &filePath )
                              tr( "Failed to run Python script:" ), false );
   }
 #else
-  Q_UNUSED( filePath );
+  Q_UNUSED( filePath )
 #endif
 }
 
@@ -6908,7 +6908,7 @@ void QgisApp::addWindow( QAction *action )
   action->setCheckable( true );
   action->setChecked( true );
 #else
-  Q_UNUSED( action );
+  Q_UNUSED( action )
 #endif
 }
 
@@ -6918,7 +6918,7 @@ void QgisApp::removeWindow( QAction *action )
   mWindowActions->removeAction( action );
   mWindowMenu->removeAction( action );
 #else
-  Q_UNUSED( action );
+  Q_UNUSED( action )
 #endif
 }
 
@@ -10479,8 +10479,8 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
         return mPythonUtils->runString( command, messageOnError, false );
       }
 #else
-      Q_UNUSED( command );
-      Q_UNUSED( messageOnError );
+      Q_UNUSED( command )
+      Q_UNUSED( messageOnError )
 #endif
       return false;
     }
@@ -10493,8 +10493,8 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
         return mPythonUtils->evalString( command, result );
       }
 #else
-      Q_UNUSED( command );
-      Q_UNUSED( result );
+      Q_UNUSED( command )
+      Q_UNUSED( result )
 #endif
       return false;
     }
@@ -11412,7 +11412,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
   map3DWidget->setMainCanvas( mMapCanvas );
   return map3DWidget;
 #else
-  Q_UNUSED( name );
+  Q_UNUSED( name )
   return nullptr;
 #endif
 }
@@ -13605,7 +13605,7 @@ void QgisApp::takeAppScreenShots( const QString &saveDirectory, const int catego
 
 void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
 {
-  Q_UNUSED( oldVersion );
+  Q_UNUSED( oldVersion )
   QgsSettings settings;
 
   if ( settings.value( QStringLiteral( "qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() )
@@ -13641,7 +13641,7 @@ void QgisApp::updateUndoActions()
 // add project directory to python path
 void QgisApp::projectChanged( const QDomDocument &doc )
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   QgsProject *project = qobject_cast<QgsProject *>( sender() );
   if ( !project )
     return;
@@ -14293,7 +14293,7 @@ bool QgisApp::gestureEvent( QGestureEvent *event )
   }
   return true;
 #else
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   return false;
 #endif
 }

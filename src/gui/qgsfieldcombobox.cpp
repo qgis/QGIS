@@ -86,7 +86,7 @@ QString QgsFieldComboBox::currentField() const
 
 void QgsFieldComboBox::indexChanged( int i )
 {
-  Q_UNUSED( i );
+  Q_UNUSED( i )
   QString name = currentField();
   emit fieldChanged( name );
 }

@@ -430,7 +430,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       }
       catch ( QgsCsException &cse )
       {
-        Q_UNUSED( cse );
+        Q_UNUSED( cse )
         return false;
       }
     }

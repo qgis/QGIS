@@ -186,7 +186,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 
 static void noticeProcessor( void *arg, const char *message )
 {
-  Q_UNUSED( arg );
+  Q_UNUSED( arg )
   QString msg( QString::fromUtf8( message ) );
   msg.chop( 1 );
   QgsMessageLog::logMessage( QObject::tr( "NOTICE: %1" ).arg( msg ), QObject::tr( "PostGIS" ) );

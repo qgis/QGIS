@@ -1023,7 +1023,7 @@ void QgsDwgImporter::addDimStyle( const DRW_Dimstyle &data )
 
 void QgsDwgImporter::addVport( const DRW_Vport &data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
 }
 
 void QgsDwgImporter::addTextStyle( const DRW_Textstyle &data )
@@ -1055,7 +1055,7 @@ void QgsDwgImporter::addTextStyle( const DRW_Textstyle &data )
 
 void QgsDwgImporter::addAppId( const DRW_AppId &data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
 }
 
 bool QgsDwgImporter::createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g0 ) const
@@ -1120,7 +1120,7 @@ void QgsDwgImporter::addBlock( const DRW_Block &data )
 
 void QgsDwgImporter::setBlock( const int handle )
 {
-  Q_UNUSED( handle );
+  Q_UNUSED( handle )
 }
 
 void QgsDwgImporter::endBlock()
@@ -1186,13 +1186,13 @@ void QgsDwgImporter::addPoint( const DRW_Point &data )
 
 void QgsDwgImporter::addRay( const DRW_Ray &data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "RAY entities" ) );
 }
 
 void QgsDwgImporter::addXline( const DRW_Xline &data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "XLINE entities" ) );
 }
 
@@ -2003,7 +2003,7 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
 
 void QgsDwgImporter::addKnot( const DRW_Entity &data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "KNOT entities" ) );
 }
 
@@ -2043,13 +2043,13 @@ void QgsDwgImporter::addInsert( const DRW_Insert &data )
 
 void QgsDwgImporter::addTrace( const DRW_Trace &data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "TRACE entities" ) );
 }
 
 void QgsDwgImporter::add3dFace( const DRW_3Dface &data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "3DFACE entities" ) );
 }
 
@@ -2167,49 +2167,49 @@ void QgsDwgImporter::addText( const DRW_Text &data )
 
 void QgsDwgImporter::addDimAlign( const DRW_DimAligned *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "DIMALIGN entities" ) );
 }
 
 void QgsDwgImporter::addDimLinear( const DRW_DimLinear *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "DIMLINEAR entities" ) );
 }
 
 void QgsDwgImporter::addDimRadial( const DRW_DimRadial *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "DIMRADIAL entities" ) );
 }
 
 void QgsDwgImporter::addDimDiametric( const DRW_DimDiametric *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "DIMDIAMETRIC entities" ) );
 }
 
 void QgsDwgImporter::addDimAngular( const DRW_DimAngular *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "DIMANGULAR entities" ) );
 }
 
 void QgsDwgImporter::addDimAngular3P( const DRW_DimAngular3p *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "DIMANGULAR3P entities" ) );
 }
 
 void QgsDwgImporter::addDimOrdinate( const DRW_DimOrdinate *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "DIMORDINAL entities" ) );
 }
 
 void QgsDwgImporter::addLeader( const DRW_Leader *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "LEADER entities" ) );
 }
 
@@ -2368,25 +2368,25 @@ void QgsDwgImporter::addLine( const DRW_Line &data )
 
 void QgsDwgImporter::addViewport( const DRW_Viewport &data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "VIEWPORT entities" ) );
 }
 
 void QgsDwgImporter::addImage( const DRW_Image *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "IMAGE entities" ) );
 }
 
 void QgsDwgImporter::linkImage( const DRW_ImageDef *data )
 {
-  Q_UNUSED( data );
+  Q_UNUSED( data )
   NYI( tr( "image links" ) );
 }
 
 void QgsDwgImporter::addComment( const char *comment )
 {
-  Q_UNUSED( comment );
+  Q_UNUSED( comment )
   NYI( tr( "comments" ) );
 }
 
@@ -2480,7 +2480,7 @@ bool QgsDwgImporter::expandInserts( QString &error, int block, QTransform base )
   }
 
   GIntBig n = OGR_L_GetFeatureCount( inserts, 0 );
-  Q_UNUSED( n );
+  Q_UNUSED( n )
 
   OGR_L_ResetReading( inserts );
 
@@ -2570,7 +2570,7 @@ bool QgsDwgImporter::expandInserts( QString &error, int block, QTransform base )
       }
 
       GIntBig n = OGR_L_GetFeatureCount( src, 0 );
-      Q_UNUSED( n );
+      Q_UNUSED( n )
 
       dfn = OGR_L_GetLayerDefn( src );
       Q_ASSERT( dfn );
@@ -2612,7 +2612,7 @@ bool QgsDwgImporter::expandInserts( QString &error, int block, QTransform base )
           break;
 
         GIntBig fid = OGR_F_GetFID( f.get() );
-        Q_UNUSED( fid );
+        Q_UNUSED( fid )
 
         ogrG = OGR_F_GetGeometryRef( f.get() );
         if ( !ogrG )

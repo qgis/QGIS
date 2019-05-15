@@ -472,7 +472,7 @@ void QgsLayoutItemPicture::updateMapRotation()
       }
       catch ( QgsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
       }
       break;

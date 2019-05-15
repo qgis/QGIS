@@ -170,7 +170,7 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 
 void QgsCameraController::frameTriggered( float dt )
 {
-  Q_UNUSED( dt );
+  Q_UNUSED( dt )
 }
 
 void QgsCameraController::resetView( float distance )
@@ -348,13 +348,13 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 
 void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 {
-  Q_UNUSED( mouse );
+  Q_UNUSED( mouse )
   mKeyboardHandler->setFocus( true );
 }
 
 void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 {
-  Q_UNUSED( mouse );
+  Q_UNUSED( mouse )
 }
 
 void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
@@ -439,7 +439,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
 
 void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 }
 
 void QgsCameraController::onPickerMousePressed( Qt3DRender::QPickEvent *pick )

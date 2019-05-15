@@ -268,7 +268,7 @@ class CORE_EXPORT QgsTask : public QObject
      * for the duration of this method so tasks should avoid performing any
      * lengthy operations here.
      */
-    virtual void finished( bool result ) { Q_UNUSED( result ); }
+    virtual void finished( bool result ) { Q_UNUSED( result ) }
 
     /**
      * Will return TRUE if task should terminate ASAP. If the task reports the CanCancel

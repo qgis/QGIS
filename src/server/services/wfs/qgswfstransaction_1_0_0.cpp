@@ -61,7 +61,7 @@ namespace QgsWfs
     QDomDocument createTransactionDocument( QgsServerInterface *serverIface, const QgsProject *project,
                                             const QString &version, const QgsServerRequest &request )
     {
-      Q_UNUSED( version );
+      Q_UNUSED( version )
 
       QgsServerRequest::Parameters parameters = request.parameters();
       transactionRequest aRequest;

@@ -112,7 +112,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       }
       catch ( QgsCsException &cse )
       {
-        Q_UNUSED( cse );
+        Q_UNUSED( cse )
       }
     }
     QgsRectangle box = geom.boundingBox();

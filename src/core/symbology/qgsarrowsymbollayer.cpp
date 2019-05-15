@@ -683,7 +683,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
 
 void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( points );
+  Q_UNUSED( points )
 
   if ( !context.renderContext().painter() )
   {

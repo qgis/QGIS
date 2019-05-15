@@ -705,7 +705,7 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const &e, QgsWcsCover
 
 void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   coverageSummary.orderId = ++mCoverageCount;
 
   coverageSummary.identifier = firstChildText( e, QStringLiteral( "name" ) );

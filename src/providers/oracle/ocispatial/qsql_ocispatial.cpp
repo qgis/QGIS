@@ -860,7 +860,7 @@ OCIType *QOCISpatialDriverPrivate::tdo( QString type )
   }
   catch ( int r )
   {
-    Q_UNUSED( r );
+    Q_UNUSED( r )
     return nullptr;
   }
 

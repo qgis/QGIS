@@ -183,7 +183,7 @@ void QgsLayoutItemLabel::contentChanged()
 
 void QgsLayoutItemLabel::loadingHtmlFinished( bool result )
 {
-  Q_UNUSED( result );
+  Q_UNUSED( result )
   mHtmlLoaded = true;
 }
 

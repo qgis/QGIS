@@ -479,7 +479,7 @@ void QgsLayoutItemPropertiesWidget::strokeUnitChanged( QgsUnitTypes::LayoutUnit 
 
 void QgsLayoutItemPropertiesWidget::mFrameJoinStyleCombo_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mItem )
   {
     return;
@@ -711,7 +711,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
 
 void QgsLayoutItemPropertiesWidget::mBlendModeCombo_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Blend Mode" ) );

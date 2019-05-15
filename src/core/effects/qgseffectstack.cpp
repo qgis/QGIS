@@ -192,7 +192,7 @@ QgsStringMap QgsEffectStack::properties() const
 
 void QgsEffectStack::readProperties( const QgsStringMap &props )
 {
-  Q_UNUSED( props );
+  Q_UNUSED( props )
 }
 
 void QgsEffectStack::clearStack()

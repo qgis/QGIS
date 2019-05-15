@@ -40,7 +40,7 @@ namespace QgsWcs
   void writeGetCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                          const QgsServerRequest &request, QgsServerResponse &response )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     response.write( getCoverageData( serverIface, project, request ) );
     response.setHeader( "Content-Type", "image/tiff" );

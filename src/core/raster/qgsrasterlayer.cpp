@@ -1292,7 +1292,7 @@ QDateTime QgsRasterLayer::timestamp() const
 
 bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props ) const
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
 
   QgsStringMap localProps = QgsStringMap( props );
   if ( hasScaleBasedVisibility() )
@@ -1595,7 +1595,7 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage,
                                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement rasterRendererElem;
@@ -1842,7 +1842,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage,
                                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement layerElement = layer_node.toElement();

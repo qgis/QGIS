@@ -299,7 +299,7 @@ void QgsDb2ConnectionItem::refreshConnection()
 {
   QString errMsg;
   QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errMsg );
-  Q_UNUSED( db );
+  Q_UNUSED( db )
   if ( errMsg.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "successful get db2 connection on refresh" ) );

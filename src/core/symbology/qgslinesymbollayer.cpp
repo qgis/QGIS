@@ -234,7 +234,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsSimpleLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
@@ -652,7 +652,7 @@ QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) con
 
 double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   double offset = mOffset;
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )

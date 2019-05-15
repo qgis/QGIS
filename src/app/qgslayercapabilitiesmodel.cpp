@@ -88,7 +88,7 @@ bool QgsLayerCapabilitiesModel::searchable( QgsMapLayer *layer ) const
 
 int QgsLayerCapabilitiesModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 5;
 }
 

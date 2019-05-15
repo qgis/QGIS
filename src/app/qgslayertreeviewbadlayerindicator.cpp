@@ -52,13 +52,13 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
 
 QString QgsLayerTreeViewBadLayerIndicatorProvider::iconName( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return QStringLiteral( "/mIndicatorBadLayer.svg" );
 }
 
 QString QgsLayerTreeViewBadLayerIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return tr( "<b>Unavailable layer!</b><br>Layer data source could not be found. Click to set a new data source" );
 }
 

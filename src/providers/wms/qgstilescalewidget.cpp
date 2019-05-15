@@ -77,7 +77,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
 
 void QgsTileScaleWidget::scaleChanged( double scale )
 {
-  Q_UNUSED( scale );
+  Q_UNUSED( scale )
 
   if ( mResolutions.isEmpty() )
     return;

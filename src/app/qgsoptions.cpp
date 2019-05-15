@@ -1796,7 +1796,7 @@ void QgsOptions::leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem
 
 void QgsOptions::lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
   // edit driver if driver supports write
   if ( item && ( cmbEditCreateOptions->findText( item->text( 0 ) ) != -1 ) )
   {
@@ -2144,7 +2144,7 @@ void QgsOptions::optionsStackedWidget_CurrentChanged( int index )
 {
   QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
 
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   // load gdal driver list when gdal tab is first opened
   if ( mOptionsStackedWidget->currentWidget()->objectName() == QLatin1String( "mOptionsPageGDAL" )
        && ! mLoadedGdalDriverList )

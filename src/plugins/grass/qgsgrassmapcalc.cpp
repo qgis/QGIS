@@ -44,8 +44,8 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   , QgsGrassModuleOptions( tools, module, iface, false )
   , mTool( -1 )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( f );
+  Q_UNUSED( parent )
+  Q_UNUSED( f )
   QgsDebugMsg( "QgsGrassMapcalc()" );
 
   setupUi( this );
@@ -148,7 +148,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   connect( mMapComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassMapcalc::mapChanged );
   connect( mMapComboBox, &QComboBox::editTextChanged, this, &QgsGrassMapcalc::mapChanged );
   bool firstSet = mMapComboBox->setFirst();
-  Q_UNUSED( firstSet );
+  Q_UNUSED( firstSet )
   mInputFrame->layout()->addWidget( mMapComboBox );
 
   /* Create functions */
@@ -541,8 +541,8 @@ QStringList QgsGrassMapcalc::checkRegion()
 
 bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
 {
-  Q_UNUSED( crs );
-  Q_UNUSED( all );
+  Q_UNUSED( crs )
+  Q_UNUSED( all )
 
   try
   {
@@ -1443,8 +1443,8 @@ int QgsGrassMapcalcObject::type() const
 void QgsGrassMapcalcObject::paint( QPainter *painter,
                                    const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-  Q_UNUSED( option );
-  Q_UNUSED( widget );
+  Q_UNUSED( option )
+  Q_UNUSED( widget )
   //QGraphicsRectItem::paint(painter, option, widget);
 
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
@@ -1819,8 +1819,8 @@ QgsGrassMapcalcConnector::~QgsGrassMapcalcConnector()
 void QgsGrassMapcalcConnector::paint( QPainter *painter,
                                       const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-  Q_UNUSED( option );
-  Q_UNUSED( widget );
+  Q_UNUSED( option )
+  Q_UNUSED( widget )
   for ( int i = 0; i < 2; i++ )
   {
     if ( mSocketObjects[i] )
@@ -2009,7 +2009,7 @@ QgsGrassMapcalcView::QgsGrassMapcalcView( QgsGrassMapcalc *mapcalc,
     QWidget *parent, Qt::WindowFlags f )
   : QGraphicsView( parent )
 {
-  Q_UNUSED( f );
+  Q_UNUSED( f )
   setAttribute( Qt::WA_StaticContents );
   mMapcalc = mapcalc;
 

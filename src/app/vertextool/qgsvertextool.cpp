@@ -2688,7 +2688,7 @@ QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureI
 void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
 {
   // nothing to do here for now...
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )

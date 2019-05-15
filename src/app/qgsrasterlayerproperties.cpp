@@ -1417,7 +1417,7 @@ void QgsRasterLayerProperties::pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::transparencyCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   QgsDebugMsg( QStringLiteral( "text = %1" ).arg( text ) );
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
@@ -1650,7 +1650,7 @@ void QgsRasterLayerProperties::pbnRemoveSelectedRow_clicked()
 
 void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint, const Qt::MouseButton &btn )
 {
-  Q_UNUSED( btn );
+  Q_UNUSED( btn )
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
   {

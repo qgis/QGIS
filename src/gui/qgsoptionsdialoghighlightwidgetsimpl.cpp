@@ -62,7 +62,7 @@ bool QgsOptionsDialogHighlightLabel::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -103,7 +103,7 @@ bool QgsOptionsDialogHighlightCheckBox::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -144,7 +144,7 @@ bool QgsOptionsDialogHighlightButton::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -182,7 +182,7 @@ bool QgsOptionsDialogHighlightGroupBox::searchText( const QString &text )
 
 bool QgsOptionsDialogHighlightGroupBox::highlightText( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   if ( !mWidget )
     return false;
 

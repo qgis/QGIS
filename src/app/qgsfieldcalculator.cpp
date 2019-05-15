@@ -444,7 +444,7 @@ void QgsFieldCalculator::mCreateVirtualFieldCheckbox_stateChanged( int state )
 
 void QgsFieldCalculator::mOutputFieldNameLineEdit_textChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   setOkButtonState();
 }
 

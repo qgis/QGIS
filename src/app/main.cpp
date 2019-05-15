@@ -293,7 +293,7 @@ static void dumpBacktrace( unsigned int depth )
 #elif defined(Q_OS_WIN)
   // TODO Replace with incoming QgsStackTrace
 #else
-  Q_UNUSED( depth );
+  Q_UNUSED( depth )
 #endif
 }
 
@@ -469,7 +469,7 @@ int main( int argc, char *argv[] )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
-    Q_UNUSED( oldSoft ); //avoid warnings
+    Q_UNUSED( oldSoft ) //avoid warnings
     QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
                  .arg( oldSoft ).arg( oldHard ) );
   }

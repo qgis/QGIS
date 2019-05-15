@@ -35,7 +35,7 @@ namespace QgsWms
     , mFeatureFilterProvider( featureFilterProvider )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
-    Q_UNUSED( mFeatureFilterProvider );
+    Q_UNUSED( mFeatureFilterProvider )
 #endif
     if ( mParallelRendering )
     {

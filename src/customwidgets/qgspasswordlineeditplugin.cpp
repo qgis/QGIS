@@ -62,7 +62,7 @@ bool QgsPasswordLineEditPlugin::isInitialized() const
 
 void QgsPasswordLineEditPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

@@ -441,7 +441,7 @@ void QgsCptCityColorRampDialog::updateCopyingInfo( const QMap< QString, QString 
 
 void QgsCptCityColorRampDialog::cboVariantName_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( cboVariantName->currentIndex() != -1 )
     mRamp.setVariantName( cboVariantName->currentData( Qt::UserRole ).toString() );
   QgsDebugMsg( QStringLiteral( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );

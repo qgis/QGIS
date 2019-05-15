@@ -413,19 +413,19 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
 QString QgsSqlExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
-  Q_UNUSED( fnName );
+  Q_UNUSED( fnName )
   return QString();
 }
 
 QStringList QgsSqlExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
-  Q_UNUSED( fnName );
+  Q_UNUSED( fnName )
   return QStringList( fnArgs );
 }
 
 QString QgsSqlExpressionCompiler::castToReal( const QString &value ) const
 {
-  Q_UNUSED( value );
+  Q_UNUSED( value )
   return QString();
 }
 
@@ -436,7 +436,7 @@ QString QgsSqlExpressionCompiler::castToText( const QString &value ) const
 
 QString QgsSqlExpressionCompiler::castToInt( const QString &value ) const
 {
-  Q_UNUSED( value );
+  Q_UNUSED( value )
   return QString();
 }
 

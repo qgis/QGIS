@@ -38,13 +38,13 @@ QgsPluginLayer *QgsPluginLayerType::createLayer()
 
 QgsPluginLayer *QgsPluginLayerType::createLayer( const QString &uri )
 {
-  Q_UNUSED( uri );
+  Q_UNUSED( uri )
   return nullptr;
 }
 
 bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 

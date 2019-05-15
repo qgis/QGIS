@@ -420,7 +420,7 @@ int QgsRandomColorRamp::count() const
 
 double QgsRandomColorRamp::value( int index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return 0.0;
 }
 

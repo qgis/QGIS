@@ -511,7 +511,7 @@ int QgsDiagramRenderer::dpiPaintDevice( const QPainter *painter )
 
 void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   mDiagram.reset();
   QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
   if ( diagramType == QLatin1String( "Pie" ) )
@@ -531,8 +531,8 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
 
 void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( doc );
-  Q_UNUSED( context );
+  Q_UNUSED( doc )
+  Q_UNUSED( context )
 
   if ( mDiagram )
   {
@@ -548,7 +548,7 @@ QgsSingleCategoryDiagramRenderer *QgsSingleCategoryDiagramRenderer::clone() cons
 
 bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature &, const QgsRenderContext &c, QgsDiagramSettings &s ) const
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
   s = mSettings;
   return true;
 }

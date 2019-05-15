@@ -322,7 +322,7 @@ QgsLayoutManagerModel::QgsLayoutManagerModel( QgsLayoutManager *manager, QObject
 
 int QgsLayoutManagerModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return ( mLayoutManager ? mLayoutManager->layouts().count() : 0 ) + ( mAllowEmpty ? 1 : 0 );
 }
 

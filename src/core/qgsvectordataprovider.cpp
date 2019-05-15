@@ -85,14 +85,14 @@ QString QgsVectorDataProvider::dataComment() const
 
 bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
-  Q_UNUSED( flist );
-  Q_UNUSED( flags );
+  Q_UNUSED( flist )
+  Q_UNUSED( flags )
   return false;
 }
 
 bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
-  Q_UNUSED( ids );
+  Q_UNUSED( ids )
   return false;
 }
 
@@ -112,37 +112,37 @@ bool QgsVectorDataProvider::truncate()
 
 bool QgsVectorDataProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  Q_UNUSED( attributes );
+  Q_UNUSED( attributes )
   return false;
 }
 
 bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
-  Q_UNUSED( attributes );
+  Q_UNUSED( attributes )
   return false;
 }
 
 bool QgsVectorDataProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
 {
-  Q_UNUSED( renamedAttributes );
+  Q_UNUSED( renamedAttributes )
   return false;
 }
 
 bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  Q_UNUSED( attr_map );
+  Q_UNUSED( attr_map )
   return false;
 }
 
 QVariant QgsVectorDataProvider::defaultValue( int fieldId ) const
 {
-  Q_UNUSED( fieldId );
+  Q_UNUSED( fieldId )
   return QVariant();
 }
 
 QString QgsVectorDataProvider::defaultValueClause( int fieldIndex ) const
 {
-  Q_UNUSED( fieldIndex );
+  Q_UNUSED( fieldIndex )
   return QString();
 }
 
@@ -162,7 +162,7 @@ bool QgsVectorDataProvider::skipConstraintCheck( int, QgsFieldConstraints::Const
 
 bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  Q_UNUSED( geometry_map );
+  Q_UNUSED( geometry_map )
   return false;
 }
 
@@ -185,7 +185,7 @@ bool QgsVectorDataProvider::createSpatialIndex()
 
 bool QgsVectorDataProvider::createAttributeIndex( int field )
 {
-  Q_UNUSED( field );
+  Q_UNUSED( field )
   return true;
 }
 
@@ -469,10 +469,10 @@ QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate agg
     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok ) const
 {
   //base implementation does nothing
-  Q_UNUSED( aggregate );
-  Q_UNUSED( index );
-  Q_UNUSED( parameters );
-  Q_UNUSED( context );
+  Q_UNUSED( aggregate )
+  Q_UNUSED( index )
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
 
   ok = false;
   return QVariant();

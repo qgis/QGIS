@@ -69,7 +69,7 @@ Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify() = default;
 
 void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   identifyTool2D->clearResults();
@@ -130,7 +130,7 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
   }
   catch ( QgsException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
   }
 

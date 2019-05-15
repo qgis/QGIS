@@ -551,7 +551,7 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
 
 void QgsAttributesFormProperties::onInvertSelectionButtonClicked( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   const auto selectedItemList { mFormLayoutTree->selectedItems() };
   const auto rootItem { mFormLayoutTree->invisibleRootItem() };
   for ( int i = 0; i < rootItem->childCount(); ++i )

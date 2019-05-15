@@ -661,7 +661,7 @@ QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager:
 
 void QgsSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<QSslError> & )
 {
-  Q_UNUSED( reply );
+  Q_UNUSED( reply )
   QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 }
 
@@ -671,6 +671,6 @@ void QgsSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<QSsl
 
 void QgsNetworkAuthenticationHandler::handleAuthRequest( QNetworkReply *reply, QAuthenticator * )
 {
-  Q_UNUSED( reply );
+  Q_UNUSED( reply )
   QgsDebugMsg( QStringLiteral( "Network reply required authentication, but no handler was in place to provide this authentication request while accessing the URL:\n%1" ).arg( reply->request().url().toString() ) );
 }

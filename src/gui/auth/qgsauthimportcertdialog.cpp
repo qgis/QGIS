@@ -236,7 +236,7 @@ void QgsAuthImportCertDialog::btnImportFile_clicked()
 
 void QgsAuthImportCertDialog::chkAllowInvalid_toggled( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   validateCertificates();
 }
 

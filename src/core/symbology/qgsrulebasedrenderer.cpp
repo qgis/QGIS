@@ -904,7 +904,7 @@ bool QgsRuleBasedRenderer::renderFeature( const QgsFeature &feature,
     bool selected,
     bool drawVertexMarker )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
 
   int flags = ( selected ? FeatIsSelected : 0 ) | ( drawVertexMarker ? FeatDrawMarkers : 0 );
   mCurrentFeatures.append( FeatureToRender( feature, flags ) );

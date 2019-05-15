@@ -81,7 +81,7 @@ int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
 
 int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   if ( !mLockedFeature )
     return 0;
   else

@@ -734,7 +734,7 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
 
 void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
 
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
   if ( !lineEdit ) return;
@@ -805,7 +805,7 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
 
 void QgsRasterLayerSaveAsDialog::mPyramidsGroupBox_toggled( bool toggled )
 {
-  Q_UNUSED( toggled );
+  Q_UNUSED( toggled )
   populatePyramidsLevels();
 }
 

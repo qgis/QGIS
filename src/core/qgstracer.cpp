@@ -587,10 +587,10 @@ bool QgsTracer::initGraph()
 
   int timeMake = t3.elapsed();
 
-  Q_UNUSED( timeExtract );
-  Q_UNUSED( timeNoding );
-  Q_UNUSED( timeNodingCall );
-  Q_UNUSED( timeMake );
+  Q_UNUSED( timeExtract )
+  Q_UNUSED( timeNoding )
+  Q_UNUSED( timeNodingCall )
+  Q_UNUSED( timeMake )
   QgsDebugMsg( QStringLiteral( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
                .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ) );
 
@@ -694,28 +694,28 @@ void QgsTracer::invalidateGraph()
 
 void QgsTracer::onFeatureAdded( QgsFeatureId fid )
 {
-  Q_UNUSED( fid );
+  Q_UNUSED( fid )
   invalidateGraph();
 }
 
 void QgsTracer::onFeatureDeleted( QgsFeatureId fid )
 {
-  Q_UNUSED( fid );
+  Q_UNUSED( fid )
   invalidateGraph();
 }
 
 void QgsTracer::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  Q_UNUSED( fid );
-  Q_UNUSED( geom );
+  Q_UNUSED( fid )
+  Q_UNUSED( geom )
   invalidateGraph();
 }
 
 void QgsTracer::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  Q_UNUSED( fid );
-  Q_UNUSED( idx );
-  Q_UNUSED( value );
+  Q_UNUSED( fid )
+  Q_UNUSED( idx )
+  Q_UNUSED( value )
   invalidateGraph();
 }
 
@@ -767,8 +767,8 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
   QgsPolylineXY points = shortestPath( *mGraph, v1, v2 );
   int tPath = t2.elapsed();
 
-  Q_UNUSED( tPrep );
-  Q_UNUSED( tPath );
+  Q_UNUSED( tPrep )
+  Q_UNUSED( tPath )
   QgsDebugMsg( QStringLiteral( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
 
   resetGraph( *mGraph );

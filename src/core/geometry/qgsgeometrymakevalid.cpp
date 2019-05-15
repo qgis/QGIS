@@ -707,7 +707,7 @@ Q_NOWARN_UNREACHABLE_PUSH
 
 static GEOSGeometry *LWGEOM_GEOS_makeValidLine( const GEOSGeometry *gin, QString &errorMessage )
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   return LWGEOM_GEOS_nodeLines( gin );
 }
 

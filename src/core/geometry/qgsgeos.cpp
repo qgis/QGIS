@@ -93,7 +93,7 @@ static void printGEOSNotice( const char *fmt, ... )
 
   QgsDebugMsg( QStringLiteral( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
 #else
-  Q_UNUSED( fmt );
+  Q_UNUSED( fmt )
 #endif
 }
 
@@ -1874,8 +1874,8 @@ geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int
 
 geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision )
 {
-  Q_UNUSED( hasM );
-  Q_UNUSED( m );
+  Q_UNUSED( hasM )
+  Q_UNUSED( m )
 
   geos::unique_ptr geosPoint;
 

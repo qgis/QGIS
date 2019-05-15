@@ -1024,7 +1024,7 @@ void QgsExpressionBuilderWidget::txtSearchEditValues_textChanged()
 
 void QgsExpressionBuilderWidget::lblPreview_linkActivated( const QString &link )
 {
-  Q_UNUSED( link );
+  Q_UNUSED( link )
   QgsMessageViewer *mv = new QgsMessageViewer( this );
   mv->setWindowTitle( tr( "More Info on Expression Error" ) );
   mv->setMessageAsHtml( txtExpressionString->toolTip() );

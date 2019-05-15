@@ -75,7 +75,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   mClickedFeature = feature;
   createPreviewItem( mMarkerSymbol.get() );
   mOffsetItem->setPointLocation( snappedPoint );
@@ -130,7 +130,7 @@ void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   if ( mOffsetting && mActiveLayer )
   {

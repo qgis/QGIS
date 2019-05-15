@@ -123,7 +123,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
 
 void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   QgsDebugMsg( QStringLiteral( "text = %1" ).arg( text ) );
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( !renderer )

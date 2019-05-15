@@ -120,7 +120,7 @@ QgsMapLayer *QgsMapLayerComboBox::layer( int layerIndex ) const
 
 void QgsMapLayerComboBox::indexChanged( int i )
 {
-  Q_UNUSED( i );
+  Q_UNUSED( i )
   QgsMapLayer *layer = currentLayer();
   emit layerChanged( layer );
 }

@@ -484,7 +484,7 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
 
 bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   if ( action == Qt::IgnoreAction )
     return true;

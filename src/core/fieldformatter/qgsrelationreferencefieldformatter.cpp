@@ -96,7 +96,7 @@ QVariant QgsRelationReferenceFieldFormatter::sortValue( QgsVectorLayer *layer, i
 
 QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
 {
-  Q_UNUSED( fieldIndex );
+  Q_UNUSED( fieldIndex )
   QMap<QVariant, QString> cache;
 
   // Some sanity checks
