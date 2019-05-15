@@ -222,6 +222,105 @@ QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint )
   }
 }
 
+void QgsMssqlGeometryParser::readCoordinates( int iPoint, int iNextPoint, double *x, double *y, double *z, double *m )
+{
+  int i = 0;
+  if ( mIsGeography )
+  {
+    if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadY( iPoint );
+        y[i] = ReadX( iPoint );
+        z[i] = ReadZ( iPoint );
+        m[i] = ReadM( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else if ( mProps & SP_HASZVALUES )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadY( iPoint );
+        y[i] = ReadX( iPoint );
+        z[i] = ReadZ( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else if ( mProps & SP_HASMVALUES )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadY( iPoint );
+        y[i] = ReadX( iPoint );
+        m[i] = ReadZ( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadY( iPoint );
+        y[i] = ReadX( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+  }
+  else
+  {
+    if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadX( iPoint );
+        y[i] = ReadY( iPoint );
+        z[i] = ReadZ( iPoint );
+        m[i] = ReadM( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else if ( mProps & SP_HASZVALUES )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadX( iPoint );
+        y[i] = ReadY( iPoint );
+        z[i] = ReadZ( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else if ( mProps & SP_HASMVALUES )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadX( iPoint );
+        y[i] = ReadY( iPoint );
+        m[i] = ReadZ( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadX( iPoint );
+        y[i] = ReadY( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+  }
+}
+
 const QgsPointSequence QgsMssqlGeometryParser::readPointSequence( int iPoint, int iNextPoint )
 {
   if ( iPoint >= iNextPoint )
@@ -229,12 +328,10 @@ const QgsPointSequence QgsMssqlGeometryParser::readPointSequence( int iPoint, in
 
   QgsPointSequence pts;
 
-  int i = 0;
   while ( iPoint < iNextPoint )
   {
     pts << readCoordinates( iPoint );
     ++iPoint;
-    ++i;
   }
 
   return pts;
@@ -270,7 +367,22 @@ std::unique_ptr< QgsMultiPoint > QgsMssqlGeometryParser::readMultiPoint( int iSh
 
 std::unique_ptr< QgsLineString > QgsMssqlGeometryParser::readLineString( int iPoint, int iNextPoint )
 {
-  return qgis::make_unique< QgsLineString >( readPointSequence( iPoint, iNextPoint ) );
+  QVector< double > xOut( iNextPoint - iPoint );
+  QVector< double > yOut( iNextPoint - iPoint );
+  QVector< double > zOut;
+  if ( mProps & SP_HASZVALUES )
+    zOut.resize( iNextPoint - iPoint );
+  QVector< double > mOut;
+  if ( mProps & SP_HASMVALUES )
+    mOut.resize( iNextPoint - iPoint );
+  double *x = xOut.data();
+  double *y = yOut.data();
+  double *z = zOut.data();
+  double *m = mOut.data();
+
+  readCoordinates( iPoint, iNextPoint, x, y, z, m );
+
+  return qgis::make_unique< QgsLineString >( xOut, yOut, zOut, mOut );
 }
 
 std::unique_ptr< QgsLineString > QgsMssqlGeometryParser::readLineString( int iFigure )
