@@ -42,6 +42,7 @@ from qgis.core import (QgsExpressionContext,
                        QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
+                       QgsProcessingOutputBoolean,
                        QgsProcessingOutputFolder,
                        QgsProcessingOutputMultipleLayers)
 
@@ -93,6 +94,8 @@ def getOutputFromString(s):
                 out = QgsProcessingOutputNumber(name, description)
             elif token.lower().strip().startswith('outputstring'):
                 out = QgsProcessingOutputString(name, description)
+            elif token.lower().strip().startswith('outputboolean'):
+                out = QgsProcessingOutputBoolean(name, description)
 #            elif token.lower().strip().startswith('extent'):
 #                out = OutputExtent()
 

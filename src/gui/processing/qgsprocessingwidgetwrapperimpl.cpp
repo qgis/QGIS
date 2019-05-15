@@ -171,7 +171,8 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
          << QgsProcessingOutputFile::typeName()
          << QgsProcessingOutputRasterLayer::typeName()
          << QgsProcessingOutputVectorLayer::typeName()
-         << QgsProcessingOutputString::typeName();
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputBoolean::typeName();
 }
 
 QList<int> QgsProcessingBooleanWidgetWrapper::compatibleDataTypes() const

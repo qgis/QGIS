@@ -164,7 +164,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         createTable = False
 
         for out in self.algorithm().outputDefinitions():
-            if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString)):
+            if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString, QgsProcessingOutputBoolean)):
                 createTable = True
                 break
 
