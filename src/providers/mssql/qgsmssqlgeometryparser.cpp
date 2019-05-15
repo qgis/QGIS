@@ -159,10 +159,6 @@ SegmentType (1 byte)
 #define ReadZ(iPoint) (ReadDouble(mPointPos + 16 * mNumPoints + 8 * (iPoint)))
 #define ReadM(iPoint) (ReadDouble(mPointPos + 24 * mNumPoints + 8 * (iPoint)))
 
-/************************************************************************/
-/*                   QgsMssqlGeometryParser()                           */
-/************************************************************************/
-
 QgsMssqlGeometryParser::QgsMssqlGeometryParser()
 {
 }
@@ -200,10 +196,6 @@ void QgsMssqlGeometryParser::DumpMemoryToLog( const char *pszMsg, unsigned char 
 #endif
 }
 
-/************************************************************************/
-/*                         readPoint()                                  */
-/************************************************************************/
-
 QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint )
 {
   if ( mIsGeography )
@@ -230,10 +222,6 @@ QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint )
   }
 }
 
-/************************************************************************/
-/*                         readPointSequence()                          */
-/************************************************************************/
-
 const QgsPointSequence QgsMssqlGeometryParser::readPointSequence( int iPoint, int iNextPoint )
 {
   if ( iPoint >= iNextPoint )
@@ -252,10 +240,6 @@ const QgsPointSequence QgsMssqlGeometryParser::readPointSequence( int iPoint, in
   return pts;
 }
 
-/************************************************************************/
-/*                         readPoint()                                  */
-/************************************************************************/
-
 std::unique_ptr< QgsPoint > QgsMssqlGeometryParser::readPoint( int iFigure )
 {
   if ( iFigure < mNumFigures )
@@ -268,10 +252,6 @@ std::unique_ptr< QgsPoint > QgsMssqlGeometryParser::readPoint( int iFigure )
   }
   return nullptr;
 }
-
-/************************************************************************/
-/*                         readMultiPoint()                             */
-/************************************************************************/
 
 std::unique_ptr< QgsMultiPoint > QgsMssqlGeometryParser::readMultiPoint( int iShape )
 {
@@ -288,10 +268,6 @@ std::unique_ptr< QgsMultiPoint > QgsMssqlGeometryParser::readMultiPoint( int iSh
   return poMultiPoint;
 }
 
-/************************************************************************/
-/*                         readLineString()                             */
-/************************************************************************/
-
 std::unique_ptr< QgsLineString > QgsMssqlGeometryParser::readLineString( int iPoint, int iNextPoint )
 {
   return qgis::make_unique< QgsLineString >( readPointSequence( iPoint, iNextPoint ) );
@@ -301,10 +277,6 @@ std::unique_ptr< QgsLineString > QgsMssqlGeometryParser::readLineString( int iFi
 {
   return readLineString( PointOffset( iFigure ), NextPointOffset( iFigure ) );
 }
-
-/************************************************************************/
-/*                         readCircularString()                         */
-/************************************************************************/
 
 std::unique_ptr< QgsCircularString > QgsMssqlGeometryParser::readCircularString( int iPoint, int iNextPoint )
 {
@@ -317,10 +289,6 @@ std::unique_ptr< QgsCircularString > QgsMssqlGeometryParser::readCircularString(
 {
   return readCircularString( PointOffset( iFigure ), NextPointOffset( iFigure ) );
 }
-
-/************************************************************************/
-/*                         readMultiLineString()                        */
-/************************************************************************/
 
 std::unique_ptr< QgsMultiLineString > QgsMssqlGeometryParser::readMultiLineString( int iShape )
 {
@@ -336,10 +304,6 @@ std::unique_ptr< QgsMultiLineString > QgsMssqlGeometryParser::readMultiLineStrin
 
   return poMultiLineString;
 }
-
-/************************************************************************/
-/*                         readPolygon()                                */
-/************************************************************************/
 
 std::unique_ptr< QgsPolygon > QgsMssqlGeometryParser::readPolygon( int iShape )
 {
@@ -360,10 +324,6 @@ std::unique_ptr< QgsPolygon > QgsMssqlGeometryParser::readPolygon( int iShape )
   return poPoly;
 }
 
-/************************************************************************/
-/*                         readMultiPolygon()                           */
-/************************************************************************/
-
 std::unique_ptr< QgsMultiPolygon > QgsMssqlGeometryParser::readMultiPolygon( int iShape )
 {
   std::unique_ptr< QgsMultiPolygon > poMultiPolygon = qgis::make_unique< QgsMultiPolygon >();
@@ -378,10 +338,6 @@ std::unique_ptr< QgsMultiPolygon > QgsMssqlGeometryParser::readMultiPolygon( int
 
   return poMultiPolygon;
 }
-
-/************************************************************************/
-/*                         readCompoundCurve()                          */
-/************************************************************************/
 
 std::unique_ptr< QgsCompoundCurve > QgsMssqlGeometryParser::readCompoundCurve( int iFigure )
 {
@@ -442,10 +398,6 @@ std::unique_ptr< QgsCompoundCurve > QgsMssqlGeometryParser::readCompoundCurve( i
   return poCompoundCurve;
 }
 
-/************************************************************************/
-/*                         readCurvePolygon()                         */
-/************************************************************************/
-
 std::unique_ptr< QgsCurvePolygon > QgsMssqlGeometryParser::readCurvePolygon( int iShape )
 {
   int iFigure;
@@ -480,10 +432,6 @@ std::unique_ptr< QgsCurvePolygon > QgsMssqlGeometryParser::readCurvePolygon( int
   }
   return poPoly;
 }
-
-/************************************************************************/
-/*                         readGeometryCollection()                     */
-/************************************************************************/
 
 std::unique_ptr< QgsGeometryCollection > QgsMssqlGeometryParser::readGeometryCollection( int iShape )
 {
@@ -530,10 +478,6 @@ std::unique_ptr< QgsGeometryCollection > QgsMssqlGeometryParser::readGeometryCol
 
   return poGeomColl;
 }
-
-/************************************************************************/
-/*                         parseSqlGeometry()                           */
-/************************************************************************/
 
 std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( unsigned char *pszInput, int nLen )
 {
