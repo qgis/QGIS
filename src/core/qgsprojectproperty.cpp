@@ -29,7 +29,7 @@ QgsProjectProperty::QgsProjectProperty() //NOLINT
 
 void QgsProjectPropertyValue::dump( int tabs ) const
 {
-  Q_UNUSED( tabs );
+  Q_UNUSED( tabs )
 #ifdef QGISDEBUG
 
   QString tabString;

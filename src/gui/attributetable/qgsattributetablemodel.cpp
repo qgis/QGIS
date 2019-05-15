@@ -576,13 +576,13 @@ int QgsAttributeTableModel::fieldCol( int idx ) const
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mRowIdMap.size();
 }
 
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return std::max( 1, mFieldCount + mExtraColumns );  // if there are zero columns all model indices will be considered invalid
 }
 

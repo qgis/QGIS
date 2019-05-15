@@ -200,7 +200,7 @@ void QgsEllipseSymbolLayerWidget::mRotationSpinBox_valueChanged( double d )
 
 void QgsEllipseSymbolLayerWidget::mStrokeStyleComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( mLayer )
   {

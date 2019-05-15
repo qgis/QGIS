@@ -613,9 +613,9 @@ static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color
   p.fillRect( rect, QBrush( c, Qt::DiagCrossPattern ) );
   p.setCompositionMode( oldMode );
 #else
-  Q_UNUSED( p );
-  Q_UNUSED( rect );
-  Q_UNUSED( color );
+  Q_UNUSED( p )
+  Q_UNUSED( rect )
+  Q_UNUSED( color )
 #endif
 }
 
@@ -861,7 +861,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     p.end();
 
     int t2 = t.elapsed() - t1;
-    Q_UNUSED( t2 ); // only used in debug build
+    Q_UNUSED( t2 ) // only used in debug build
 
     if ( feedback && feedback->isPreviewOnly() )
     {
@@ -900,7 +900,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
 void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   // TODO: optimize to avoid writing to QImage
   QImage *image = draw( viewExtent, pixelWidth, pixelHeight, feedback );
   if ( !image )   // should not happen
@@ -1290,7 +1290,7 @@ Qgis::DataType QgsWmsProvider::dataType( int bandNo ) const
 
 Qgis::DataType QgsWmsProvider::sourceDataType( int bandNo ) const
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   return Qgis::ARGB32;
 }
 
@@ -1374,7 +1374,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     return false;
   }
   QgsDebugMsg( QStringLiteral( "transformed layer extent %1" ).arg( extent.toString( true ) ) );
@@ -1613,7 +1613,7 @@ bool QgsWmsProvider::calculateExtent() const
           }
           catch ( QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
         }
       }
@@ -2939,7 +2939,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 #ifdef QGISDEBUG
           QgsDebugMsg( QStringLiteral( "parsing result = %1" ).arg( ret ) );
 #else
-          Q_UNUSED( ret );
+          Q_UNUSED( ret )
 #endif
           // TODO: all features coming from this layer should probably have the same CRS
           // the same as this layer, because layerExtentToOutputExtent() may be used
@@ -3505,7 +3505,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage &img )
 
 void QgsWmsProvider::getLegendGraphicReplyErrored( const QString &message )
 {
-  Q_UNUSED( message );
+  Q_UNUSED( message )
   QgsDebugMsg( QStringLiteral( "get legend failed: %1" ).arg( message ) );
 
   QObject *reply = sender();
@@ -3711,8 +3711,8 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
 
 void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  Q_UNUSED( bytesReceived );
-  Q_UNUSED( bytesTotal );
+  Q_UNUSED( bytesReceived )
+  Q_UNUSED( bytesTotal )
   QgsDebugMsg( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
 }
 

@@ -3712,8 +3712,8 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
 
 static QVariant fcnPi( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  Q_UNUSED( values );
-  Q_UNUSED( parent );
+  Q_UNUSED( values )
+  Q_UNUSED( parent )
   return M_PI;
 }
 

@@ -168,7 +168,7 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
 
 void QgsSimpleMarkerSymbolLayerBase::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRenderContext &context )
@@ -1101,8 +1101,8 @@ void QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
 
 QString QgsSimpleMarkerSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
 {
-  Q_UNUSED( mmScaleFactor );
-  Q_UNUSED( mapUnitScaleFactor );
+  Q_UNUSED( mmScaleFactor )
+  Q_UNUSED( mapUnitScaleFactor )
 #if 0
   QString ogrType = "3"; //default is circle
   if ( mName == "square" )
@@ -1210,7 +1210,7 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
 
 void QgsSimpleMarkerSymbolLayer::drawMarker( QPainter *p, QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( mPolygon.count() != 0 )
   {
@@ -1224,7 +1224,7 @@ void QgsSimpleMarkerSymbolLayer::drawMarker( QPainter *p, QgsSymbolRenderContext
 
 bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
-  Q_UNUSED( mmMapUnitScaleFactor );
+  Q_UNUSED( mmMapUnitScaleFactor )
 
   //data defined size?
   double size = mSize;
@@ -1950,12 +1950,12 @@ QString QgsSvgMarkerSymbolLayer::layerType() const
 void QgsSvgMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QgsMarkerSymbolLayer::startRender( context ); // get anchor point expressions
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsSvgMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
@@ -3025,7 +3025,7 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsFontMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &context, QPointF &charOffset, double &charWidth )

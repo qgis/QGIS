@@ -367,7 +367,7 @@ void QgsAuthConfigEdit::validateAuth()
 
 void QgsAuthConfigEdit::leName_textChanged( const QString &txt )
 {
-  Q_UNUSED( txt );
+  Q_UNUSED( txt )
   validateAuth();
 }
 

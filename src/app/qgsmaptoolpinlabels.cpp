@@ -48,7 +48,7 @@ QgsMapToolPinLabels::~QgsMapToolPinLabels()
 
 void QgsMapToolPinLabels::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );

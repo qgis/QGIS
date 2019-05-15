@@ -612,7 +612,7 @@ void ProjectorData::calcCP( int row, int col, const QgsCoordinateTransform &ct )
   }
   catch ( QgsCsException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     // Caught an error in transform
     mCPLegalMatrix[row][col] = false;
   }
@@ -676,7 +676,7 @@ bool ProjectorData::checkCols( const QgsCoordinateTransform &ct )
       }
       catch ( QgsCsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // Caught an error in transform
         return false;
       }
@@ -721,7 +721,7 @@ bool ProjectorData::checkRows( const QgsCoordinateTransform &ct )
       }
       catch ( QgsCsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // Caught an error in transform
         return false;
       }

@@ -48,7 +48,7 @@ QVariant QgsFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, co
 
 Qt::AlignmentFlag QgsFieldFormatter::alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
 {
-  Q_UNUSED( config );
+  Q_UNUSED( config )
 
   QgsField field = layer->fields().at( fieldIndex );
   if ( field.isNumeric() || field.isDateOrTime() )

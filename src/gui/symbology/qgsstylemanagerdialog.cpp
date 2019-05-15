@@ -1624,8 +1624,8 @@ void QgsStyleManagerDialog::symbolSelected( const QModelIndex &index )
 
 void QgsStyleManagerDialog::selectedSymbolsChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
   actnRemoveItem->setDisabled( nothingSelected || mReadOnly );
   actnAddFavorite->setDisabled( nothingSelected || mReadOnly );

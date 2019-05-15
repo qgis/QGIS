@@ -604,7 +604,7 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemDoubleClicked( QTreeWidge
 
 void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *item, int column )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( item )
 
   if ( column == ValueColumn )
   {

@@ -398,7 +398,7 @@ QSize QgsColorWheel::sizeHint() const
 
 void QgsColorWheel::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( !mWidgetImage || !mWheelImage || !mTriangleImage )
@@ -621,7 +621,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
 
 void QgsColorWheel::mouseReleaseEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mClickedPart = QgsColorWheel::None;
 }
 
@@ -756,7 +756,7 @@ QSize QgsColorBox::sizeHint() const
 
 void QgsColorBox::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   QStyleOptionFrame option;
@@ -992,7 +992,7 @@ QSize QgsColorRampWidget::sizeHint() const
 
 void QgsColorRampWidget::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( mShowFrame )
@@ -1431,7 +1431,7 @@ void QgsColorTextWidget::setColor( const QColor &color, const bool emitSignals )
 
 void QgsColorTextWidget::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QSize sz = mMenuButton->sizeHint();
   int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
   mMenuButton->move( mLineEdit->rect().right() - frameWidth - sz.width(),
@@ -1568,7 +1568,7 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter
 
 void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( mColor2.isValid() )

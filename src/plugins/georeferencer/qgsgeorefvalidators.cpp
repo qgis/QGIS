@@ -24,7 +24,7 @@ QgsDMSAndDDValidator::QgsDMSAndDDValidator( QObject *parent )
 
 QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) const
 {
-  Q_UNUSED( pos );
+  Q_UNUSED( pos )
 
   QRegExp rx( "-?\\d*" );
   if ( rx.exactMatch( input ) )

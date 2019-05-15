@@ -141,7 +141,7 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
 
 bool QgsAddXYFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 

@@ -1696,7 +1696,7 @@ namespace QgsWms
       QDomElement &layerElement,
       const QString &version ) const
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     if ( !infoPoint || !layer || !layer->dataProvider() )
     {
@@ -2841,7 +2841,7 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( mContext.accessControl(), layer );
 #else
-    Q_UNUSED( layer );
+    Q_UNUSED( layer )
 #endif
   }
 

@@ -50,9 +50,9 @@ void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 
 float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
-  Q_UNUSED( map );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
+  Q_UNUSED( map )
   return 0.f;
 }
 

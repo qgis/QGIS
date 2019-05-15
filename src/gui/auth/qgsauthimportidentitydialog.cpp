@@ -181,7 +181,7 @@ void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
 
 void QgsAuthImportIdentityDialog::lePkiPathsKeyPass_textChanged( const QString &pass )
 {
-  Q_UNUSED( pass );
+  Q_UNUSED( pass )
   validateIdentity();
 }
 
@@ -212,7 +212,7 @@ void QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked()
 
 void QgsAuthImportIdentityDialog::lePkiPkcs12KeyPass_textChanged( const QString &pass )
 {
-  Q_UNUSED( pass );
+  Q_UNUSED( pass )
   validateIdentity();
 }
 

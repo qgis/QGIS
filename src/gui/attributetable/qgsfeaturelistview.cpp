@@ -244,7 +244,7 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 
 void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 
   if ( mEditSelectionDrag )
   {

@@ -987,7 +987,7 @@ bool QgsOracleProvider::determinePrimaryKey()
 
 bool QgsOracleProvider::uniqueData( QString query, QString colName )
 {
-  Q_UNUSED( query );
+  Q_UNUSED( query )
   // Check to see if the given column contains unique data
   QSqlQuery qry( *mConnection );
 
@@ -2620,8 +2620,8 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   QString *errorMessage,
   const QMap<QString, QVariant> *options )
 {
-  Q_UNUSED( wkbType );
-  Q_UNUSED( options );
+  Q_UNUSED( wkbType )
+  Q_UNUSED( options )
 
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
@@ -3090,7 +3090,7 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   return new QgsOracleRootItem( parentItem, "Oracle", "oracle:" );
 }
 

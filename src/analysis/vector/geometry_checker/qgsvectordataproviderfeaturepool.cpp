@@ -50,7 +50,7 @@ QgsVectorDataProviderFeaturePool::QgsVectorDataProviderFeaturePool( QgsVectorLay
 
 bool QgsVectorDataProviderFeaturePool::addFeature( QgsFeature &feature, Flags flags )
 {
-  Q_UNUSED( flags );
+  Q_UNUSED( flags )
   QgsFeatureList features;
   features.append( feature );
 
@@ -90,7 +90,7 @@ bool QgsVectorDataProviderFeaturePool::addFeature( QgsFeature &feature, Flags fl
 
 bool QgsVectorDataProviderFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags )
 {
-  Q_UNUSED( flags );
+  Q_UNUSED( flags )
 
   bool res = false;
 

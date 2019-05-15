@@ -86,7 +86,7 @@ void QgsDrawSourceWidget::opacityChanged( double value )
 
 void QgsDrawSourceWidget::mDrawModeComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -97,7 +97,7 @@ void QgsDrawSourceWidget::mDrawModeComboBox_currentIndexChanged( int index )
 
 void QgsDrawSourceWidget::mBlendCmbBx_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -207,7 +207,7 @@ void QgsBlurWidget::opacityChanged( double value )
 
 void QgsBlurWidget::mDrawModeComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -218,7 +218,7 @@ void QgsBlurWidget::mDrawModeComboBox_currentIndexChanged( int index )
 
 void QgsBlurWidget::mBlendCmbBx_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -372,7 +372,7 @@ void QgsShadowEffectWidget::mShadowRadiuSpnBx_valueChanged( int value )
 
 void QgsShadowEffectWidget::mDrawModeComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -383,7 +383,7 @@ void QgsShadowEffectWidget::mDrawModeComboBox_currentIndexChanged( int index )
 
 void QgsShadowEffectWidget::mShadowBlendCmbBx_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -549,7 +549,7 @@ void QgsGlowWidget::mBlurRadiusSpnBx_valueChanged( int value )
 
 void QgsGlowWidget::mBlendCmbBx_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -560,7 +560,7 @@ void QgsGlowWidget::mBlendCmbBx_currentIndexChanged( int index )
 
 void QgsGlowWidget::mDrawModeComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -671,7 +671,7 @@ void QgsTransformWidget::blockSignals( const bool block )
 
 void QgsTransformWidget::mDrawModeComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -874,7 +874,7 @@ void QgsColorEffectWidget::opacityChanged( double value )
 
 void QgsColorEffectWidget::mBlendCmbBx_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -885,7 +885,7 @@ void QgsColorEffectWidget::mBlendCmbBx_currentIndexChanged( int index )
 
 void QgsColorEffectWidget::mDrawModeComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;
@@ -951,7 +951,7 @@ void QgsColorEffectWidget::mColorizeColorButton_colorChanged( const QColor &colo
 
 void QgsColorEffectWidget::mGrayscaleCombo_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( !mEffect )
     return;

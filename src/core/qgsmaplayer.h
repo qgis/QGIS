@@ -844,7 +844,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage )
-    { Q_UNUSED( node ); errorMessage = QStringLiteral( "Layer type %1 not supported" ).arg( static_cast<int>( type() ) ); return false; }
+    { Q_UNUSED( node ) errorMessage = QStringLiteral( "Layer type %1 not supported" ).arg( static_cast<int>( type() ) ); return false; }
 
 
 

@@ -840,7 +840,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
           }
           catch ( QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
         }
       }

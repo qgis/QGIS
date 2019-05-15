@@ -2557,7 +2557,7 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
 
 bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props ) const
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
 
   QgsStringMap localProps = QgsStringMap( props );
   if ( hasScaleBasedVisibility() )

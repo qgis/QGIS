@@ -61,7 +61,7 @@ const QgsAttributeTableModel *QgsAttributeTableDelegate::masterModel( const QAbs
 
 QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   QgsVectorLayer *vl = layer( index.model() );
   if ( !vl )
     return nullptr;

@@ -249,7 +249,7 @@ osgEarth::TileSource::Status QgsGlobeTileSource::initialize( const osgDB::Option
 
 osg::Image *QgsGlobeTileSource::createImage( const osgEarth::TileKey &key, osgEarth::ProgressCallback *progress )
 {
-  Q_UNUSED( progress );
+  Q_UNUSED( progress )
 
   int tileSize = getPixelsPerTile();
   if ( tileSize <= 0 )

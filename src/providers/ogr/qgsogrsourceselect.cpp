@@ -544,20 +544,20 @@ void QgsOgrSourceSelect::btnEdit_clicked()
 
 void QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   populateConnectionList();
   setSelectedConnectionType();
 }
 
 void QgsOgrSourceSelect::cmbConnections_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   setSelectedConnection();
 }
 
 void QgsOgrSourceSelect::cmbProtocolTypes_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   setProtocolWidgetsVisibility();
 }
 //********************end auto connected slots *****************/

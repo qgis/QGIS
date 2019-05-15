@@ -473,7 +473,7 @@ void QgsOWSSourceSelect::clearCrs()
 
 void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( item )
 
   QTableWidgetItem *rowItem = mTilesetsTableWidget->item( mTilesetsTableWidget->currentRow(), 0 );
   bool wasSelected = mCurrentTileset == rowItem;

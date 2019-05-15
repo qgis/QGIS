@@ -469,8 +469,8 @@ QgsPoint QgsLineString::endPoint() const
 
 QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  Q_UNUSED( tolerance );
-  Q_UNUSED( toleranceType );
+  Q_UNUSED( tolerance )
+  Q_UNUSED( toleranceType )
   return clone();
 }
 

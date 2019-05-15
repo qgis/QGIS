@@ -177,7 +177,7 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, c
 
 bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   if ( itemElem.isNull() )
   {
     return false;

@@ -246,7 +246,7 @@ QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent
 
 QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
 {
-  Q_UNUSED( child );
+  Q_UNUSED( child )
   return QModelIndex();
 }
 
@@ -262,7 +262,7 @@ int QgsFieldModel::rowCount( const QModelIndex &parent ) const
 
 int QgsFieldModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 

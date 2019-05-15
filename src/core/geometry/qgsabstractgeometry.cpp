@@ -161,7 +161,7 @@ QString QgsAbstractGeometry::asJson( int precision )
 
 json QgsAbstractGeometry::asJsonObject( int precision ) const
 {
-  Q_UNUSED( precision ); return nullptr;
+  Q_UNUSED( precision ) return nullptr;
 }
 
 QgsPoint QgsAbstractGeometry::centroid() const
@@ -291,7 +291,7 @@ bool QgsAbstractGeometry::hasChildGeometries() const
 
 QgsPoint QgsAbstractGeometry::childPoint( int index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return QgsPoint();
 }
 
@@ -309,8 +309,8 @@ bool QgsAbstractGeometry::hasCurvedSegments() const
 
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  Q_UNUSED( tolerance );
-  Q_UNUSED( toleranceType );
+  Q_UNUSED( tolerance )
+  Q_UNUSED( toleranceType )
   return clone();
 }
 

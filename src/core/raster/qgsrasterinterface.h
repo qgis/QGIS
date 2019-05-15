@@ -437,9 +437,9 @@ class CORE_EXPORT QgsRasterInterface
                                 int sampleSize = 0 );
 
     //! Write base class members to xml.
-    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const { Q_UNUSED( doc ) Q_UNUSED( parentElem ); }
     //! Sets base class members from xml. Usually called from create() methods of subclasses
-    virtual void readXml( const QDomElement &filterElem ) { Q_UNUSED( filterElem ); }
+    virtual void readXml( const QDomElement &filterElem ) { Q_UNUSED( filterElem ) }
 
   protected:
     // QgsRasterInterface used as input

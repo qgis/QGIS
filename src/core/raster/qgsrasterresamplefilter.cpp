@@ -120,7 +120,7 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler *r )
 
 QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )

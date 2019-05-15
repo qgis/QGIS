@@ -31,7 +31,7 @@
 
 bool QgsLayoutTableStyle::writeXml( QDomElement &styleElem, QDomDocument &doc ) const
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   styleElem.setAttribute( QStringLiteral( "cellBackgroundColor" ), QgsSymbolLayerUtils::encodeColor( cellBackgroundColor ) );
   styleElem.setAttribute( QStringLiteral( "enabled" ), enabled );
   return true;
@@ -469,7 +469,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       {
         for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
         {
-          Q_UNUSED( column );
+          Q_UNUSED( column )
 
           //draw background
 
@@ -792,7 +792,7 @@ QMap<int, QString> QgsLayoutTable::headerLabels() const
 
 QSizeF QgsLayoutTable::fixedFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( mTableSize.width(), 0 );
 }
 

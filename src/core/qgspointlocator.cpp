@@ -99,8 +99,8 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -148,8 +148,8 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -198,8 +198,8 @@ class QgsPointLocator_VisitorArea : public IVisitor
       , mGeomPt( QgsGeometry::fromPointXY( origPt ) )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -392,8 +392,8 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -437,8 +437,8 @@ class QgsPointLocator_VisitorVerticesInRect : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -610,7 +610,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // See https://issues.qgis.org/issues/12634
         QgsDebugMsg( QStringLiteral( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
@@ -661,7 +661,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // See https://issues.qgis.org/issues/12634
         QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         continue;
@@ -770,7 +770,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // See https://issues.qgis.org/issues/12634
         QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         return;
@@ -805,15 +805,15 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  Q_UNUSED( geom );
+  Q_UNUSED( geom )
   onFeatureDeleted( fid );
   onFeatureAdded( fid );
 }
 
 void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  Q_UNUSED( idx );
-  Q_UNUSED( value );
+  Q_UNUSED( idx )
+  Q_UNUSED( value )
   if ( mContext )
   {
     onFeatureDeleted( fid );

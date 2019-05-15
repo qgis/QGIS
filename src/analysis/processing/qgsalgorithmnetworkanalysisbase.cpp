@@ -83,7 +83,7 @@ void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
 
 void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED( feedback );
+  Q_UNUSED( feedback )
 
   mNetwork.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !mNetwork )

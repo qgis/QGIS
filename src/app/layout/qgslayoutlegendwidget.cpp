@@ -921,7 +921,7 @@ void QgsLayoutLegendWidget::mAddGroupToolButton_clicked()
 
 void QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled( bool toggled )
 {
-  Q_UNUSED( toggled );
+  Q_UNUSED( toggled )
   if ( mLegend )
   {
     mLegend->setLegendFilterOutAtlas( toggled );
@@ -1011,8 +1011,8 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
 
 void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )
 {
-  Q_UNUSED( current );
-  Q_UNUSED( previous );
+  Q_UNUSED( current )
+  Q_UNUSED( previous )
 
   if ( mLegend && mLegend->autoUpdateModel() )
     return;

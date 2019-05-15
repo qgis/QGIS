@@ -2161,7 +2161,7 @@ bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRe
 gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeature &feature )
 {
   QgsLocaleNumC l; // Make sure the decimal delimiter is a dot
-  Q_UNUSED( l );
+  Q_UNUSED( l )
 
   gdal::ogr_feature_unique_ptr poFeature( OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) ) );
 

@@ -277,7 +277,7 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const
 
 bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   if ( itemElem.isNull() )
   {
     return false;
@@ -1741,7 +1741,7 @@ int QgsLayoutItemMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, cons
       }
       catch ( QgsCsException &cse )
       {
-        Q_UNUSED( cse );
+        Q_UNUSED( cse )
         QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
@@ -1817,7 +1817,7 @@ int QgsLayoutItemMapGrid::yGridLinesCrsTransform( const QgsRectangle &bbox, cons
       }
       catch ( QgsCsException &cse )
       {
-        Q_UNUSED( cse );
+        Q_UNUSED( cse )
         QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
@@ -2383,7 +2383,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
     return 1;
   }

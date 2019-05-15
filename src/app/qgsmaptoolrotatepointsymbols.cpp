@@ -158,7 +158,7 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   if ( mRotating && mActiveLayer )
   {

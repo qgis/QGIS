@@ -359,7 +359,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
     return 2;
   }

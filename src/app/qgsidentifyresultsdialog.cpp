@@ -282,7 +282,7 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
 
 void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 {
-  Q_UNUSED( ok );
+  Q_UNUSED( ok )
 
   mWebView->show();
   treeWidget()->setItemWidget( this, 0, mWebView );
@@ -1156,7 +1156,7 @@ void QgsIdentifyResultsDialog::show()
 
 void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
   if ( item->data( 0, Qt::UserRole ).toString() == QLatin1String( "edit" ) )
   {
     lstResults->setCurrentItem( item );
@@ -1577,14 +1577,14 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *
 
 void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( item )
   // column width is now stored in settings
   //expandColumnsToFit();
 }
 
 void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
 
   mActionPrint->setEnabled( false );
 
@@ -2068,7 +2068,7 @@ void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
 
 void QgsIdentifyResultsDialog::mActionCopy_triggered( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   copyFeature();
 }
 

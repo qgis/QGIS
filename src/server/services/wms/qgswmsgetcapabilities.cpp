@@ -1453,7 +1453,7 @@ namespace QgsWms
         }
         catch ( QgsCsException &cse )
         {
-          Q_UNUSED( cse );
+          Q_UNUSED( cse )
           return;
         }
       }

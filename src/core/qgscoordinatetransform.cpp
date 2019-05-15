@@ -759,7 +759,7 @@ const char *finder( const char *name )
   proj = QApplication::applicationDirPath()
          + "/share/proj/" + QString( name );
 #else
-  Q_UNUSED( name );
+  Q_UNUSED( name )
 #endif
   return proj.toUtf8();
 }

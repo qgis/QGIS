@@ -100,7 +100,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
                                   const char *pszMessage,
                                   void *pProgressArg )
 {
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( pszMessage )
 
   static double sDfLastComplete = -1.0;
 

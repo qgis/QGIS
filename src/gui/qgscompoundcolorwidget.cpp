@@ -519,7 +519,7 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
 
 void QgsCompoundColorWidget::listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( deselected );
+  Q_UNUSED( deselected )
   mActionCopyColors->setEnabled( selected.length() > 0 );
 }
 

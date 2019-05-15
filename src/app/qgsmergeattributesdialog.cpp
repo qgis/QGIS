@@ -266,7 +266,7 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox *c ) const
 
 void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   QComboBox *senderComboBox = qobject_cast<QComboBox *>( sender() );
   if ( !senderComboBox )
   {

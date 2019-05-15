@@ -127,7 +127,7 @@ QgsBlurEffect *QgsBlurEffect::clone() const
 
 QRectF QgsBlurEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   double spread = mBlurLevel * 2.0 + 10;

@@ -56,7 +56,7 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
 
 int QgsDatumTransformTableModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mTransformContext.sourceDestinationDatumTransforms().count()
 #ifdef singlesourcedest
          + mTransformContext.sourceDatumTransforms().count()
@@ -67,7 +67,7 @@ int QgsDatumTransformTableModel::rowCount( const QModelIndex &parent ) const
 
 int QgsDatumTransformTableModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 4;
 }
 

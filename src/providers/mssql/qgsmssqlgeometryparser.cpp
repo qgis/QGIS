@@ -148,9 +148,9 @@ void QgsMssqlGeometryParser::DumpMemoryToLog( const char *pszMsg, unsigned char 
   file.write( "\n" );
   file.close();
 #else
-  Q_UNUSED( pszMsg );
-  Q_UNUSED( pszInput );
-  Q_UNUSED( nLen );
+  Q_UNUSED( pszMsg )
+  Q_UNUSED( pszInput )
+  Q_UNUSED( nLen )
 #endif
 }
 

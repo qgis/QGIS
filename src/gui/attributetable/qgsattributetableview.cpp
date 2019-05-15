@@ -277,7 +277,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   QgsSettings settings;
   settings.setValue( QStringLiteral( "BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
 }

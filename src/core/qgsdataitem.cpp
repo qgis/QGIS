@@ -549,7 +549,7 @@ bool QgsDataItem::equal( const QgsDataItem *other )
 
 QList<QAction *> QgsDataItem::actions( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return QList<QAction *>();
 }
 
@@ -601,7 +601,7 @@ void QgsDataItem::setState( State state )
 
 QList<QMenu *> QgsDataItem::menus( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return QList<QMenu *>();
 }
 
@@ -1211,7 +1211,7 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, QStringLiteral( "favorites:" ) )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   mCapabilities |= Fast;
   mType = Favorites;
   mIconName = QStringLiteral( "/mIconFavourites.svg" );

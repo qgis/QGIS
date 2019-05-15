@@ -29,8 +29,8 @@ QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent ) : QStyledItemDel
 
 QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
-  Q_UNUSED( index );
+  Q_UNUSED( option )
+  Q_UNUSED( index )
   // Calculate row height, adds some 20% padding
   int pixelsHigh = QApplication::fontMetrics().height() * 1.4;
   return QSize( pixelsHigh, pixelsHigh );
