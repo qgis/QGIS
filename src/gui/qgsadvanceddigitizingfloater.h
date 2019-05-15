@@ -41,6 +41,12 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
 
   public:
 
+    /**
+     * Create an advanced digitizing floater widget
+     * \param canvas The map canvas on which the widget operates
+     * \param cadDockWidget The cadDockWidget to which the floater belongs
+     * \since QGIS 3.8
+     */
     explicit QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     /**
