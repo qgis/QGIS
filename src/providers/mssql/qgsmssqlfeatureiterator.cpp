@@ -157,18 +157,18 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     if ( mSource->mGeometryColType == QLatin1String( "geometry" ) )
     {
       stream << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
-          << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
-          << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
-          << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
-          << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() );
+             << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
+             << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
+             << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
+             << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() );
     }
     else
     {
       stream << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
-          << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
-          << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
-          << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
-          << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) );
+             << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
+             << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
+             << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
+             << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) );
     }
 
     mStatement += QStringLiteral( " WHERE " );
