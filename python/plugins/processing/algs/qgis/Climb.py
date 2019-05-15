@@ -67,7 +67,7 @@ class Climb(QgisAlgorithm):
         return 'climbalongline'
 
     def displayName(self):
-        return self.tr("Climb Along Line")
+        return self.tr('Climb Along Line')
 
     def group(self):
         return self.tr('Vector analysis')
@@ -145,15 +145,15 @@ class Climb(QgisAlgorithm):
 
         # Skip fields with names that are equal to the generated ones
         for field in source.fields():
-            if str(field.name()) == str(self.CLIMBATTRIBUTE):
-                feedback.pushInfo("Warning: existing " +
+            if field.name() == self.CLIMBATTRIBUTE:
+                feedback.pushWarning(self.tr(
                                   str(self.CLIMBATTRIBUTE) +
-                                  " attribute found and removed")
+                                  ' attribute found and removed'))
                 climbindex = fieldnumber
-            elif str(field.name()) == str(self.DESCENTATTRIBUTE):
-                feedback.pushInfo("Warning: existing " +
+            elif field.name() == self.DESCENTATTRIBUTE:
+                feedback.pushWarning(self.tr(
                                   str(self.DESCENTATTRIBUTE) +
-                                  " attribute found and removed")
+                                  ' attribute found and removed'))
                 descentindex = fieldnumber
             else:
                 thefields.append(field)
@@ -180,6 +180,8 @@ class Climb(QgisAlgorithm):
         minelevation = float('Infinity')
         maxelevation = float('-Infinity')
 
+        no_z_nodes = []
+
         for current, feature in enumerate(features):
             # Stop the algorithm if cancelled
             if feedback.isCanceled():
@@ -189,14 +191,15 @@ class Climb(QgisAlgorithm):
             minelev = float('Infinity')
             maxelev = float('-Infinity')
             # In case of multigeometries we need to do the parts
-            for part in feature.geometry().constParts():
+            parts = feature.geometry().constParts()
+            for part in parts:
                 # Calculate the climb
                 first = True
                 zval = 0
-                for v in part.vertices():
+                for idx, v in enumerate(part.vertices()):
                     zval = v.z()
                     if math.isnan(zval):
-                        feedback.pushInfo("Missing Z value")
+                        no_z_nodes.append(idx)
                         continue
                     if first:
                         prevz = zval
@@ -239,6 +242,8 @@ class Climb(QgisAlgorithm):
             # Update the progress bar
             if fcount > 0:
                 feedback.setProgress(int(100 * current / fcount))
+
+        feedback.pushInfo(self.tr('Following nodes miss Z value ') + str(no_z_nodes))
         # Return the results
         return {self.OUTPUT: dest_id, self.TOTALCLIMB: totalclimb,
                 self.TOTALDESCENT: totaldescent,
