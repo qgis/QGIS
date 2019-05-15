@@ -147,13 +147,17 @@ class Climb(QgisAlgorithm):
         for field in source.fields():
             if field.name() == self.CLIMBATTRIBUTE:
                 feedback.pushWarning(self.tr(
-                                  str(self.CLIMBATTRIBUTE) +
-                                  ' attribute found and removed'))
+                                '{attr_name} attribute found and removed'.format(
+                                    attr_name=self.CLIMBATTRIBUTE)
+                                    )
+                                )
                 climbindex = fieldnumber
             elif field.name() == self.DESCENTATTRIBUTE:
                 feedback.pushWarning(self.tr(
-                                  str(self.DESCENTATTRIBUTE) +
-                                  ' attribute found and removed'))
+                                '{attr_name} attribute found and removed'.format(
+                                    attr_name=self.DESCENTATTRIBUTE)
+                                    )
+                                )
                 descentindex = fieldnumber
             else:
                 thefields.append(field)
