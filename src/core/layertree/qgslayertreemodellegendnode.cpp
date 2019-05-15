@@ -647,11 +647,11 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
   }
 }
 
-QgsExpressionContextScope QgsSymbolLegendNode::createSymbolScope( QgsExpressionContext context ) const
+QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope( QgsExpressionContext context ) const
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
+  QgsExpressionContextScope *scope = QgsExpressionContextScope( tr( "Symbol scope" ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
   if ( vl )
@@ -672,7 +672,8 @@ QgsExpressionContextScope QgsSymbolLegendNode::createSymbolScope( QgsExpressionC
 
 QString QgsSymbolLegendNode::evaluateLabelExpression( const QString label, QgsExpressionContext context ) const
 {
-  context.appendScope( createSymbolScope());
+  QgsExpressionContextScope *symbolScope = createSymbolScope();
+  context.appendScope( symbolScope );
   QString eLabel = QgsExpression().replaceExpressionText( label, &context );
   return eLabel;
 }
