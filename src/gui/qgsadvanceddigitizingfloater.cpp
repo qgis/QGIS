@@ -27,8 +27,9 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   : QWidget( canvas->viewport() ), mMapCanvas( canvas ), mCadDockWidget( cadDockWidget )
 {
   setupUi( this );
-  setWindowFlag( Qt::FramelessWindowHint );
+
   setAttribute( Qt::WA_TransparentForMouseEvents );
+  adjustSize();
 
   setActive( QgsSettings().value( QStringLiteral( "/Cad/Floater" ), false ).toBool() );
 
@@ -235,6 +236,7 @@ void QgsAdvancedDigitizingFloater::changeRelativeX( bool relative )
   {
     mXLabel->setText( "Δx" );
   }
+  adjustSize();
 }
 
 void QgsAdvancedDigitizingFloater::changeRelativeY( bool relative )
@@ -247,6 +249,7 @@ void QgsAdvancedDigitizingFloater::changeRelativeY( bool relative )
   {
     mYLabel->setText( "Δy" );
   }
+  adjustSize();
 }
 
 // distance is always relative
@@ -261,6 +264,7 @@ void QgsAdvancedDigitizingFloater::changeRelativeAngle( bool relative )
   {
     mAngleLabel->setText( "Δa" );
   }
+  adjustSize();
 }
 
 void QgsAdvancedDigitizingFloater::focusOnX()
@@ -304,22 +308,26 @@ void QgsAdvancedDigitizingFloater::enabledChangedX( bool enabled )
 {
   mXLineEdit->setVisible( enabled );
   mXLabel->setVisible( enabled );
+  adjustSize();
 }
 
 void QgsAdvancedDigitizingFloater::enabledChangedY( bool enabled )
 {
   mYLineEdit->setVisible( enabled );
   mYLabel->setVisible( enabled );
+  adjustSize();
 }
 
 void QgsAdvancedDigitizingFloater::enabledChangedDistance( bool enabled )
 {
   mDistanceLineEdit->setVisible( enabled );
   mDistanceLabel->setVisible( enabled );
+  adjustSize();
 }
 
 void QgsAdvancedDigitizingFloater::enabledChangedAngle( bool enabled )
 {
   mAngleLineEdit->setVisible( enabled );
   mAngleLabel->setVisible( enabled );
+  adjustSize();
 }

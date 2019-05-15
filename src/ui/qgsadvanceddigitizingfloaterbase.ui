@@ -6,13 +6,56 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>150</width>
-    <height>120</height>
+    <width>279</width>
+    <height>142</height>
    </rect>
+  </property>
+  <property name="palette">
+   <palette>
+    <active>
+     <colorrole role="Base">
+      <brush brushstyle="SolidPattern">
+       <color alpha="127">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </active>
+    <inactive>
+     <colorrole role="Base">
+      <brush brushstyle="SolidPattern">
+       <color alpha="127">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </inactive>
+    <disabled>
+     <colorrole role="Base">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>240</red>
+        <green>240</green>
+        <blue>240</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </disabled>
+   </palette>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QLineEdit{background-color: rgba(255,255,255,127)}</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="topMargin">
     <number>0</number>
@@ -24,31 +67,38 @@
     <number>0</number>
    </property>
    <property name="horizontalSpacing">
-    <number>6</number>
+    <number>2</number>
    </property>
    <property name="verticalSpacing">
     <number>0</number>
    </property>
-   <item row="3" column="1">
-    <widget class="QLabel" name="mAngleLabel">
+   <item row="2" column="1">
+    <widget class="QLabel" name="mDistanceLabel">
      <property name="text">
-      <string>Δa</string>
+      <string>d</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="2" column="3">
-    <widget class="QLineEdit" name="mDistanceLineEdit">
-     <property name="toolTip">
-      <string/>
-     </property>
+   <item row="3" column="1">
+    <widget class="QLabel" name="mAngleLabel">
      <property name="text">
-      <string>-</string>
-     </property>
-     <property name="frame">
-      <bool>false</bool>
+      <string>a</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="mXLabel">
+     <property name="text">
+      <string>x</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
@@ -71,6 +121,22 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="3">
+    <widget class="QLineEdit" name="mDistanceLineEdit">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="3">
     <widget class="QLineEdit" name="mXLineEdit">
      <property name="minimumSize">
@@ -90,17 +156,13 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="mXLabel">
-     <property name="text">
-      <string>x</string>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="1">
     <widget class="QLabel" name="mYLabel">
      <property name="text">
       <string>y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
@@ -122,26 +184,6 @@
       <bool>false</bool>
      </property>
     </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="mDistanceLabel">
-     <property name="text">
-      <string>d</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="3">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
