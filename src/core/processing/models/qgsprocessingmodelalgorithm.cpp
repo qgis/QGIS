@@ -655,7 +655,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterString::typeName()
       << QgsProcessingParameterAuthConfig::typeName(),
       QStringList() << QgsProcessingOutputNumber::typeName()
-      << QgsProcessingOutputString::typeName() );
+      << QgsProcessingOutputString::typeName()
+      << QgsProcessingOutputBoolean::typeName() );
 
   for ( const QgsProcessingModelChildParameterSource &source : qgis::as_const( sources ) )
   {
