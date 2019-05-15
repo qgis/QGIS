@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCapabilitiesCache : QObject
 {
 %Docstring
