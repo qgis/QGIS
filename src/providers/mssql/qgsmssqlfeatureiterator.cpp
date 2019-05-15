@@ -407,7 +407,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       if ( !ar.isEmpty() )
       {
         std::unique_ptr<QgsAbstractGeometry> geom = mParser.parseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
-        if ( geom != nullptr )
+        if ( geom )
         {
           feature.setGeometry( QgsGeometry( std::move( geom ) ) );
         }

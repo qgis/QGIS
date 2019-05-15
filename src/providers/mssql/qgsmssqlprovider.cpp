@@ -772,7 +772,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   {
     QByteArray ar = query.value( 0 ).toByteArray();
     std::unique_ptr<QgsAbstractGeometry> geom = mParser.parseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
-    if ( geom != nullptr )
+    if ( geom )
     {
       QgsRectangle rect = geom->boundingBox();
 
