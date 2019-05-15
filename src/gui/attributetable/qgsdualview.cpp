@@ -431,8 +431,6 @@ void QgsDualView::updateEditSelectionProgress( int progress, int count )
 
 void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
 {
-  //QgsDebugMsg("hey");
-
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas )
   {
