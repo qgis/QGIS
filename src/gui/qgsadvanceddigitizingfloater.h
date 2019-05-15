@@ -118,6 +118,11 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     //! Whether the floater is enabled.
     bool mActive = false;
 
+  private:
+#ifdef SIP_RUN
+    //! event filter to track mouse position
+    bool eventFilter( QObject *obj, QEvent *event );
+#endif
 };
 
 #endif // QGSADVANCEDDIGITIZINGFLOATER_H

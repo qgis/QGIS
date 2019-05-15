@@ -59,6 +59,9 @@ Note that the floater may be active but not visible (e.g. if the mouse is not ov
 .. versionadded:: 3.8
 %End
 
+  private:
+    //! event filter to track mouse position
+    bool eventFilter( QObject *obj, QEvent *event );
 };
 
 /************************************************************************
