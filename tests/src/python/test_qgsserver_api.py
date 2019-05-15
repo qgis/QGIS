@@ -82,7 +82,7 @@ class QgsServerAPITest(QgsServerTestBase):
     def compareApi(self, request, project, reference_file):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
-        result = self.dump(response)
+        result = bytes(response.body()).decode('utf8') if reference_file.endswith('html') else self.dump(response)
         path = unitTestDataPath('qgis_server') + '/api/' + reference_file
         if self.regenerate_reference:
             f = open(path, 'w+')
@@ -95,6 +95,7 @@ class QgsServerAPITest(QgsServerTestBase):
     @classmethod
     def setUpClass(cls):
         super(QgsServerAPITest, cls).setUpClass()
+        cls.maxDiff = None
 
     def test_api(self):
 
@@ -109,13 +110,23 @@ class QgsServerAPITest(QgsServerTestBase):
             def executeRequest(self, request_context):
                 request_context.response().write(b"\"Test API\"")
 
-        self.server.serverInterface().serviceRegistry().registerApi(API())
+        api = API()
+        self.server.serverInterface().serviceRegistry().registerApi(api)
         request = QgsBufferServerRequest('http://www.acme.com/testapi')
         self.compareApi(request, None, 'test_api.json')
+        self.server.serverInterface().serviceRegistry().unregisterApi(api.name())
 
     def test_wfs3_landing_page(self):
-        """Test WFS3 API"""
-        request = QgsBufferServerRequest('http://www.acme.com/wf3')
+        """Test WFS3 API landing page in HTML format"""
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3')
+        self.compareApi(request, None, 'test_wfs3_landing_page.html')
+
+    def test_wfs3_landing_page_json(self):
+        """Test WFS3 API landing page in JSON format"""
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3.json')
+        self.compareApi(request, None, 'test_wfs3_landing_page.json')
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3')
+        request.setHeader('Accept', 'application/json')
         self.compareApi(request, None, 'test_wfs3_landing_page.json')
 
     def test_wfs3_api(self):
@@ -128,22 +139,26 @@ class QgsServerAPITest(QgsServerTestBase):
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/conformance')
         self.compareApi(request, None, 'test_wfs3_conformance.json')
 
-    def test_wfs3_collections(self):
-        """Test WFS3 API"""
+    def test_wfs3_collections_empty(self):
+        """Test WFS3 collections API"""
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections')
-        self.compareApi(request, None, 'test_wfs3_collections.json')
+        self.compareApi(request, None, 'test_wfs3_collections_empty.json')
 
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections.json')
-        self.compareApi(request, None, 'test_wfs3_collections.json')
+        self.compareApi(request, None, 'test_wfs3_collections_empty.json')
 
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections.html')
-        self.compareApi(request, None, 'test_wfs3_collections.html')
+        self.compareApi(request, None, 'test_wfs3_collections_empty.html')
 
+    def test_wfs3_collections_json(self):
+        """Test WFS3 API collections in json format"""
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections.json')
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         self.compareApi(request, project, 'test_wfs3_collections_project.json')
 
+    def test_wfs3_collections_html(self):
+        """Test WFS3 API collections in html format"""
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections.html')
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
@@ -177,6 +192,13 @@ class QgsServerAPITest(QgsServerTestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
         request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?limit=1')
         self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1.json')
+
+    def test_wfs3_collection_items_limit_offset(self):
+        """Test WFS3 API"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project.qgs')
+        request = QgsBufferServerRequest('http://www.acme.com/wfs3/collections/testlayer%20èé/items?limit=1&offset=1')
+        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1_offset_1.json')
 
     def test_wfs3_collection_items_bbox(self):
         """Test WFS3 API"""

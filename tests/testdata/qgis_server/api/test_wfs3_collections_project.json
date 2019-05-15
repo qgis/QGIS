@@ -8,10 +8,16 @@ Content-Type: application/json
       "extent": "TODO",
       "links": [
         {
-          "href": "http://www.acme.com/wfs3/collections/testlayer èé/items",
+          "href": "http://www.acme.com/wfs3/collections/testlayer%20%C3%A8%C3%A9/items",
           "rel": "item",
           "title": "A test vector layer",
-          "type": " application/geo+json"
+          "type": "application/geo+json"
+        },
+        {
+          "href": "http://www.acme.com/wfs3/collections/testlayer%20%C3%A8%C3%A9/concepts",
+          "rel": "item",
+          "title": "Describe A test vector layer",
+          "type": "application/geo+json"
         }
       ],
       "name": "testlayer èé",
@@ -25,12 +31,18 @@ Content-Type: application/json
         {
           "href": "http://www.acme.com/wfs3/collections/testlayer3/items",
           "rel": "item",
-          "title": "",
-          "type": " application/geo+json"
+          "title": "testlayer3",
+          "type": "application/geo+json"
+        },
+        {
+          "href": "http://www.acme.com/wfs3/collections/testlayer3/concepts",
+          "rel": "item",
+          "title": "Describe testlayer3",
+          "type": "application/geo+json"
         }
       ],
       "name": "testlayer3",
-      "title": ""
+      "title": "testlayer3"
     },
     {
       "CRS": "TODO",
@@ -40,12 +52,18 @@ Content-Type: application/json
         {
           "href": "http://www.acme.com/wfs3/collections/testlayer2/items",
           "rel": "item",
-          "title": "",
-          "type": " application/geo+json"
+          "title": "testlayer2",
+          "type": "application/geo+json"
+        },
+        {
+          "href": "http://www.acme.com/wfs3/collections/testlayer2/concepts",
+          "rel": "item",
+          "title": "Describe testlayer2",
+          "type": "application/geo+json"
         }
       ],
       "name": "testlayer2",
-      "title": ""
+      "title": "testlayer2"
     },
     {
       "CRS": "TODO",
@@ -53,10 +71,16 @@ Content-Type: application/json
       "extent": "TODO",
       "links": [
         {
-          "href": "http://www.acme.com/wfs3/collections/testlayer/items",
+          "href": "http://www.acme.com/wfs3/collections/layer_with_short_name/items",
           "rel": "item",
           "title": "A Layer with a short name",
-          "type": " application/geo+json"
+          "type": "application/geo+json"
+        },
+        {
+          "href": "http://www.acme.com/wfs3/collections/layer_with_short_name/concepts",
+          "rel": "item",
+          "title": "Describe A Layer with a short name",
+          "type": "application/geo+json"
         }
       ],
       "name": "testlayer",
@@ -71,7 +95,13 @@ Content-Type: application/json
           "href": "http://www.acme.com/wfs3/collections/exclude_attribute/items",
           "rel": "item",
           "title": "A test vector layer",
-          "type": " application/geo+json"
+          "type": "application/geo+json"
+        },
+        {
+          "href": "http://www.acme.com/wfs3/collections/exclude_attribute/concepts",
+          "rel": "item",
+          "title": "Describe A test vector layer",
+          "type": "application/geo+json"
         }
       ],
       "name": "exclude_attribute",
@@ -86,7 +116,13 @@ Content-Type: application/json
           "href": "http://www.acme.com/wfs3/collections/fields_alias/items",
           "rel": "item",
           "title": "A test vector layer",
-          "type": " application/geo+json"
+          "type": "application/geo+json"
+        },
+        {
+          "href": "http://www.acme.com/wfs3/collections/fields_alias/concepts",
+          "rel": "item",
+          "title": "Describe A test vector layer",
+          "type": "application/geo+json"
         }
       ],
       "name": "fields_alias",

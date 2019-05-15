@@ -21,6 +21,10 @@
 #include "qgsserverapi.h"
 #include "qgswfs3api.h"
 
+
+/**
+ * The APIHandler struct handles the API definition
+ */
 struct APIHandler: public QgsWfs3::Handler
 {
 
@@ -29,10 +33,25 @@ struct APIHandler: public QgsWfs3::Handler
 };
 
 
+/**
+ * The StaticHandler struct serves static files from resources/server/api/wfs3/static
+ */
+struct StaticHandler: public QgsWfs3::Handler
+{
+
+  StaticHandler( );
+  void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
+};
+
+
 struct LandingPageHandler: public QgsWfs3::Handler
 {
 
   LandingPageHandler( );
+
+  /**
+   * Return links to handlers having showInLandingPage = TRUE;
+   */
   void handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const override;
 };
 

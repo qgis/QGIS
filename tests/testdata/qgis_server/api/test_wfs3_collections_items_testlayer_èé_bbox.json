@@ -1,0 +1,23 @@
+Content-Type: application/json
+
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          8.203496,
+          44.901483
+        ],
+        "type": "Point"
+      },
+      "id": 0,
+      "properties": {
+        "id": 1,
+        "name": "one",
+        "utf8nameè": "one èé"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

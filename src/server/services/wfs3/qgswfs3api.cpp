@@ -23,7 +23,7 @@
 #include "qgswfs3handlers.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
-
+#include "qgsvectorlayer.h"
 
 #include "nlohmann/json.hpp"
 #include "inja/inja.hpp"
@@ -31,8 +31,23 @@
 using json = nlohmann::json;
 using namespace inja;
 
+
+
 namespace QgsWfs3
 {
+
+  QMap<contentTypes, QString> sContentTypeMime = [ ]() -> QMap<contentTypes, QString>
+  {
+    QMap<contentTypes, QString> map;
+    map[contentTypes::JSON] = QStringLiteral( "application/json" );
+    map[contentTypes::GEOJSON] = QStringLiteral( "application/vnd.geo+json" );
+    map[contentTypes::HTML] = QStringLiteral( "text/html" );
+    map[contentTypes::XML] = QStringLiteral( "application/xml" );
+    map[contentTypes::GML] = QStringLiteral( "application/gml+xml" );
+    map[contentTypes::OPENAPI3] = QStringLiteral( "application/openapi+json;version=3.0" );
+    Q_ASSERT( map.count() == QMetaEnum::fromType<QgsWfs3::contentTypes>().keyCount() );
+    return map;
+  }();
 
   template<class T>
   void Api::registerHandler()
@@ -52,25 +67,9 @@ namespace QgsWfs3
     registerHandler<LandingPageHandler>();
   }
 
-  QUrl Api::normalizedUrl( QUrl url ) const
+  QUrl Api::normalizedUrl( QUrl url )
   {
-    if ( url.path().endsWith( '/' ) )
-    {
-      url.setPath( url.path().chopped( 1 ) );
-    }
-    return url;
-  }
-
-  std::string Api::extension( QUrl url )
-  {
-    const auto parts { url.fileName().split( '.', QString::SplitBehavior::SkipEmptyParts ) };
-    if ( parts.length() > 1 )
-    {
-      auto res { parts.last().toStdString() };
-      std::transform( res.begin(), res.end(), res.begin(), ::toupper );
-      return res;
-    }
-    return "";
+    return url.adjusted( QUrl::StripTrailingSlash | QUrl::NormalizePathSegments );
   }
 
   const std::vector<std::unique_ptr<Handler>> &Api::handlers() const
@@ -84,52 +83,56 @@ namespace QgsWfs3
     return metaEnum.valueToKey( rel );
   }
 
-  QString Api::contentTypeToString( const contentType &ct )
+  QString Api::contentTypeToString( const contentTypes &ct )
   {
-    static QMetaEnum metaEnum = QMetaEnum::fromType<contentType>();
+    static QMetaEnum metaEnum = QMetaEnum::fromType<contentTypes>();
     return metaEnum.valueToKey( ct );
   }
 
-  std::string Api::contentTypeToStdString( const contentType &ct )
+  std::string Api::contentTypeToStdString( const contentTypes &ct )
   {
-    static QMetaEnum metaEnum = QMetaEnum::fromType<contentType>();
+    static QMetaEnum metaEnum = QMetaEnum::fromType<contentTypes>();
     return metaEnum.valueToKey( ct );
   }
 
-  QString Api::contentTypeToExtension( const contentType &ct )
+  QString Api::contentTypeToExtension( const contentTypes &ct )
   {
     return contentTypeToString( ct ).toLower();
   }
 
-  void Handler::write( const json &data,  const QgsServerRequest &request, QgsServerResponse &response, const QString &contentType ) const
+
+  void Handler::write( const json &data,  const QgsServerRequest *request, QgsServerResponse *response ) const
   {
-    // TODO: accept GML and get mime type from ACCEPT HTTP header
-    const auto extension { QgsWfs3::Api::extension( request.url() ) };
-    if ( extension == "" || extension == QgsWfs3::Api::contentTypeToStdString( QgsWfs3::contentType::JSON ) )
+    // TODO: accept GML
+    const auto contentType { contentTypeFromRequest( request ) };
+
+    switch ( contentType )
     {
-      jsonDump( data, response, contentType == "" ? QStringLiteral( "application/json" ) : contentType );
-    }
-    else if ( extension == QgsWfs3::Api::contentTypeToStdString( QgsWfs3::contentType::HTML ) )
-    {
-      htmlDump( data, response );
-    }
-    else
-    {
-      throw QgsServerApiBadRequestError( "Content type could not be determined from the request!" );
+      case QgsWfs3::contentTypes::HTML:
+        htmlDump( data, response );
+        break;
+      case QgsWfs3::contentTypes::GEOJSON:
+      case QgsWfs3::contentTypes::JSON:
+      case QgsWfs3::contentTypes::OPENAPI3:
+        jsonDump( data, response, sContentTypeMime.value( contentType ) );
+        break;
+      case QgsWfs3::contentTypes::GML:
+      case QgsWfs3::contentTypes::XML:
+        throw QgsServerApiNotImplementedError( QStringLiteral( "Requested content type is not yet implemented" ) );
     }
   }
 
-  void Handler::jsonDump( const json &data, QgsServerResponse &response, const QString &contentType ) const
+  void Handler::jsonDump( const json &data, QgsServerResponse *response, const QString &contentType ) const
   {
-    response.setHeader( QStringLiteral( "Content-Type" ), contentType );
+    response->setHeader( QStringLiteral( "Content-Type" ), contentType );
 #ifdef QGISDEBUG
-    response.write( data.dump( 2 ) );
+    response->write( data.dump( 2 ) );
 #else
-    response.write( data.dump( ) );
+    response->write( data.dump( ) );
 #endif
   }
 
-  void Handler::htmlDump( const json &data, QgsServerResponse &response ) const
+  void Handler::htmlDump( const json &data, QgsServerResponse *response ) const
   {
     auto path { templatePath() };
     if ( ! QFile::exists( path ) )
@@ -145,16 +148,12 @@ namespace QgsWfs3
       throw QgsServerApiInternalServerError( QStringLiteral( "Could not open template file" ) );
     }
 
-    QTextStream in( &f );
-    const auto tplSource { in.readAll().toStdString() };
-    f.close();
-
-    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html" ) );
-    Environment env;
-    auto tpl { env.parse( tplSource ) };
     try
     {
-      response.write( env.render( tpl, data ) );
+      // Get the template directory and the file name
+      QFileInfo pathInfo { path };
+      Environment env { ( pathInfo.dir().path() + QDir::separator() ).toStdString() };
+      response->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
     }
     catch ( std::exception &e )
     {
@@ -163,19 +162,72 @@ namespace QgsWfs3
     }
   }
 
-  void Handler::xmlDump( const json &data, QgsServerResponse &response ) const
+  void Handler::xmlDump( const json &data, QgsServerResponse *response ) const
   {
-    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "application/xml" ) );
-    response.write( "<pre>" + data.dump( 2 ) + "</pre>" );
+    response->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "application/xml" ) );
+    response->write( "<pre>" + data.dump( 2 ) + "</pre>" );
   }
 
   const QString Handler::templatePath() const
   {
-    // TODO: make this path configurable
-    auto path { QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/server/api/wfs3/" ) )};
-    path += staticMetaObject.className();
+    auto path { resourcesPath() };
+    path += QString::fromStdString( operationId );
     path += QStringLiteral( ".html" );
     return path;
+  }
+
+  const QString Handler::resourcesPath() const
+  {
+    return QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/server/api/wfs3/" ) );
+  }
+
+  const QString Handler::staticPath() const
+  {
+    return resourcesPath() + QDir().separator() + QStringLiteral( "static" );
+  }
+
+  contentTypes Handler::contentTypeFromRequest( const QgsServerRequest *request ) const
+  {
+    const auto accept { request->header( QStringLiteral( "Accept" ) ) };
+    if ( ! accept.isEmpty() )
+    {
+      const auto ctFromAccept { contentTypeForAccept( accept ) };
+      if ( ! ctFromAccept.isEmpty() )
+      {
+        return sContentTypeMime.key( ctFromAccept );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported content type in Accept header: %1" ).arg( accept ), QStringLiteral( "Server" ), Qgis::Warning );
+      }
+    }
+    const auto extension { QFileInfo( request->url().path() ).completeSuffix().toUpper() };
+    if ( ! extension.isEmpty() )
+    {
+      static QMetaEnum metaEnum { QMetaEnum::fromType<contentTypes>() };
+      auto ok { false };
+      const auto ct  { metaEnum.keyToValue( extension.toLocal8Bit().constData(), &ok ) };
+      if ( ok )
+      {
+        return static_cast<contentTypes>( ct );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported extension: %1" ).arg( extension ), QStringLiteral( "Server" ), Qgis::Warning );
+      }
+    }
+    // Fallback to default
+    return mimeType;
+  }
+
+  QgsVectorLayer *Handler::layerFromCollection( QgsServerApiContext *context, const QString &collectionId ) const
+  {
+    const auto mapLayers { context->project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
+    if ( mapLayers.count() != 1 )
+    {
+      throw QgsServerApiImproperlyConfiguredError( QStringLiteral( "Collection with given id (%1) was not found or multiple matches were found" ).arg( collectionId ) );
+    }
+    return mapLayers.first();
   }
 
   void Api::executeRequest( QgsServerApiContext *context ) const
@@ -216,17 +268,47 @@ namespace QgsWfs3
       { "linkType", QgsWfs3::Api::relToString( linkType ) },
       { "mimeType", mimeType }
     };
-    jsonDump( data, *context->response() );
+    jsonDump( data, context->response() );
   }
 
-  std::string Handler::href( const Api *api, const QgsServerRequest &request, const QString &extraPath, const QString &extension ) const
+  std::string Handler::href( const Api *api, const QgsServerRequest *request, const QString &extraPath, const QString &extension ) const
   {
-    auto url { request.url() };
-    Q_ASSERT( path.match( url.path() ).captured().count() > 0 );
-    url.setPath( api->rootPath() + path.match( url.path() ).captured()[0] + extraPath );
-    if ( ! extension.isEmpty() )
+    auto url { request->url() };
+    const auto match { path.match( url.path() ) };
+    if ( match.captured().count() > 0 )
+    {
+      url.setPath( api->rootPath() + match.captured( 0 ) );
+    }
+    // Remove any existing extension
+    const auto suffixLength { QFileInfo( url.path() ).completeSuffix().length() };
+    if ( suffixLength > 0 )
+    {
+      auto path {url.path()};
+      path.truncate( path.length() - ( suffixLength + 1 ) );
+      url.setPath( path );
+    }
+    // Add extra path
+    url.setPath( url.path() + extraPath );
+
+    // (re-)add extention
+    // JSON is the default anyway, we don'n need to add it
+    if ( ! extension.isEmpty() &&  extension != QStringLiteral( "json" ) )
+    {
       url.setPath( url.path() + '.' + extension );
-    return url.toString( QUrl::FullyEncoded ).toStdString();
+    }
+    return QgsWfs3::Api::normalizedUrl( url ).toString( QUrl::FullyEncoded ).toStdString();
+  }
+
+  QString contentTypeForAccept( const QString &accept )
+  {
+    for ( const auto &ct : sContentTypeMime )
+    {
+      if ( accept.contains( ct ) )
+      {
+        return ct;
+      }
+    }
+    return QString();
   }
 
 

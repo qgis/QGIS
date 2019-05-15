@@ -159,9 +159,26 @@ void QgsServiceRegistry::registerService( QgsService *service )
 
 }
 
-void QgsServiceRegistry::registerApi( QgsServerApi *api )
+int QgsServiceRegistry::unregisterApi( const QString &name, const QString &version )
 {
-  _registerApi( api );
+  const auto key { makeServiceKey( name, version ) };
+  if ( ! version.isEmpty() )
+  {
+    return mApis.remove( key );
+  }
+  else
+  {
+    auto removed { 0 };
+    const auto constKeys { mApis.keys() };
+    for ( const auto &k : constKeys )
+    {
+      if ( k.startsWith( key ) )
+      {
+        removed += mApis.remove( k );
+      }
+    }
+    return removed;
+  }
 }
 
 QgsServerApi *QgsServiceRegistry::getApiForRequest( const QgsServerRequest &request ) const
@@ -257,14 +274,14 @@ void QgsServiceRegistry::cleanUp()
   mNativeLoader.unloadModules();
 }
 
-void QgsServiceRegistry::_registerApi( QgsServerApi *api )
+void QgsServiceRegistry::registerApi( QgsServerApi *api )
 {
   const QString name { api->name() };
   const QString version { api->version() };
 
-  // Test if service is already registered
-  QString key = makeServiceKey( name, version );
-  if ( mServices.constFind( key ) != mServices.constEnd() )
+  // Test if API is already registered
+  const auto key { makeServiceKey( name, version ) };
+  if ( mApis.contains( key ) )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Error API %1 %2 is already registered" ).arg( name, version ), QStringLiteral( "Server" ), Qgis::Warning );
     return;
@@ -273,5 +290,4 @@ void QgsServiceRegistry::_registerApi( QgsServerApi *api )
   QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2 - %3" ).arg( name, version, api->rootPath() ), QStringLiteral( "Server" ), Qgis::Info );
   mApis.insert( key, std::shared_ptr<QgsServerApi>( api ) );
 }
-
 

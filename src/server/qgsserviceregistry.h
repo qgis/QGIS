@@ -79,49 +79,32 @@ class SERVER_EXPORT QgsServiceRegistry
      */
     void registerService( QgsService *service SIP_TRANSFER );
 
-#ifndef SIP_RUN
-
     /**
      * Registers the QgsServerApi \a api
      *
      * The registry takes ownership of services and will call 'delete' on cleanup
      */
-    void registerApi( QgsServerApi *api SIP_TRANSFER SIP_GETWRAPPER );
-
-#else
+    void registerApi( QgsServerApi *api SIP_TRANSFER );
 
     /**
-     * Registers the QgsServerApi \a api
+     * Unregister API from its name and version
      *
-     * The registry takes ownership of services and will call 'delete' on cleanup
+     * \param name the name of the service
+     * \param version (optional) the specific version to unload
+     * \returns the number of APIs unregistered
+     *
+     * If the version is not specified then all versions from the specified API
+     * are unloaded
      */
-    void registerApi( QgsServerApi *api SIP_TRANSFER SIP_GETWRAPPER );
-    % MethodCode
-    // Inc reference or the python generated object will be garbage collected.
-    // I thought that SIP_TRANSFER would do the trick but it does not.
-    Py_BEGIN_ALLOW_THREADS
-    try
-    {
-      Py_INCREF( a0Wrapper );
-      sipCpp->_registerApi( a0 );
-    }
-    catch ( ... )
-    {
-      Py_BLOCK_THREADS
+    int unregisterApi( const QString &name, const QString &version = QString() );
 
-      sipRaiseUnknownException();
-      return NULL;
-    }
-    Py_END_ALLOW_THREADS
-    % End
-#endif
 
     QgsServerApi *getApiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
 
     /**
      * Unregister service from its name and version
      *
-     * \param name the tame of the service
+     * \param name the name of the service
      * \param version (optional) the specific version to unload
      * \returns the number of services unregistered
      *
@@ -141,10 +124,6 @@ class SERVER_EXPORT QgsServiceRegistry
      * Clean up registered service and unregister modules
      */
     void cleanUp();
-
-  protected:
-
-    void _registerApi( QgsServerApi *api SIP_SKIP );
 
   private:
 

@@ -1,5 +1,5 @@
-Content-Type: application/json
+Content-Type: application/openapi+json;version=3.0
 
 {
-  "api": "TODO"
+  "api": "This page will contain the API documentation for this service."
 }

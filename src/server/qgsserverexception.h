@@ -289,4 +289,25 @@ class SERVER_EXPORT QgsServerApiNotImplementedError: public QgsServerApiExceptio
     {
     }
 };
+
+
+/**
+ * \ingroup server
+ * \class  QgsServerApiInvalidMimeType
+ * \brief  the client sent an invalid mime type in the "Accept" header
+ *
+ * Note that this exception is associated with a default return code 406
+ *
+ * \since QGIS 3.10
+ */
+class SERVER_EXPORT QgsServerApiInvalidMimeType: public QgsServerApiException
+{
+  public:
+    //! Construction
+    QgsServerApiInvalidMimeType( const QString &message = QStringLiteral( "The Accept header submitted in the request did not support any of the media types supported by the server for the requested resource" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 406 )
+      : QgsServerApiException( QStringLiteral( "Invalid mime-type" ), message, mimeType, responseCode )
+    {
+    }
+};
+
 #endif

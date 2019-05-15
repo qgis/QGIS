@@ -4,8 +4,8 @@ Content-Type: application/json
   "description": "List all requirements classes specified in a standard (e.g., WFS 3.0 Part 1: Core) that the server conforms to",
   "linkTitle": "WFS 3.0 conformance classes",
   "linkType": "conformance",
-  "mimeType": "application/json",
+  "mimeType": 2,
   "operationId": "getRequirementClasses",
-  "path": "/conformance",
+  "path": "/conformance$",
   "summary": "Information about standards that this API conforms to"
 }

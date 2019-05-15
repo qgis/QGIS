@@ -62,38 +62,33 @@ The registry takes ownership of services and will call 'delete' on cleanup
 :param service: a QgsService to be registered
 %End
 
-
-    void registerApi( QgsServerApi *api /Transfer,GetWrapper/ );
+    void registerApi( QgsServerApi *api /Transfer/ );
 %Docstring
 Registers the :py:class:`QgsServerApi` ``api``
 
 The registry takes ownership of services and will call 'delete' on cleanup
 %End
-%MethodCode
-    // Inc reference or the python generated object will be garbage collected.
-    // I thought that SIP_TRANSFER would do the trick but it does not.
-    Py_BEGIN_ALLOW_THREADS
-    try
-    {
-      Py_INCREF( a0Wrapper );
-      sipCpp->_registerApi( a0 );
-    }
-    catch ( ... )
-    {
-      Py_BLOCK_THREADS
 
-      sipRaiseUnknownException();
-      return NULL;
-    }
-    Py_END_ALLOW_THREADS
+    int unregisterApi( const QString &name, const QString &version = QString() );
+%Docstring
+Unregister API from its name and version
+
+:param name: the name of the service
+:param version: (optional) the specific version to unload
+
+:return: the number of APIs unregistered
+
+If the version is not specified then all versions from the specified API
+are unloaded
 %End
+
 
 
     int unregisterService( const QString &name, const QString &version = QString() );
 %Docstring
 Unregister service from its name and version
 
-:param name: the tame of the service
+:param name: the name of the service
 :param version: (optional) the specific version to unload
 
 :return: the number of services unregistered
@@ -114,9 +109,6 @@ Initialize registry, load modules and auto register services
 %Docstring
 Clean up registered service and unregister modules
 %End
-
-  protected:
-
 
 };
 
