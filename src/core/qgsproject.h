@@ -980,7 +980,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \note Attached files are only supported by QGZ file based projects
      * \see collectAttachedFiles()
-     * \see attachedFile( fileName )
+     * \see attachedFile()
      * \since QGIS 3.8
      */
     QgsStringMap attachedFiles() const;
@@ -1363,7 +1363,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \note Only will be emitted with QGZ project files
      * \see attachedFiles()
-     * \see attachedFile( fileName )
+     * \see attachedFile()
      * \since QGIS 3.8
      */
     void collectAttachedFiles( QgsStringMap &files SIP_INOUT );
