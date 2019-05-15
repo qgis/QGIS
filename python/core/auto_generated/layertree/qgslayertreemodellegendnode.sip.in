@@ -312,7 +312,7 @@ Label of the symbol, user defined label will be used, otherwise will default to 
 .. versionadded:: 3.8
 %End
 
-    QgsExpressionContextScope *createSymbolScope() const;
+    QgsExpressionContextScope createSymbolScope() const;
 %Docstring
 Create an expressionContextScope containing symbol related variables
 

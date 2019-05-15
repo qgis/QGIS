@@ -299,7 +299,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Create an expressionContextScope containing symbol related variables
      * \since QGIS 3.8
      */
-    QgsExpressionContextScope *createSymbolScope() const;
+    QgsExpressionContextScope createSymbolScope() const;
 
     /**
      * Evaluates  and returns the text label of the current node
