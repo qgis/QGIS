@@ -1091,6 +1091,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void onSnappingConfigChanged();
 
+    void generateProjectAttachedFiles( QgsStringMap &files );
+
     /**
      * Triggers validation of the specified \a crs.
      */
@@ -1763,6 +1765,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activeLayerChanged( QgsMapLayer *layer );
 
   private:
+    void createPreviewImage( const QString &path );
     void startProfile( const QString &name );
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );

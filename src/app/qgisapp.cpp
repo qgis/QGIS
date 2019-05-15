@@ -924,6 +924,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
   mMapCanvas->setSnappingUtils( mSnappingUtils );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, mSnappingUtils, &QgsSnappingUtils::setConfig );
+  connect( QgsProject::instance(), &QgsProject::collectAttachedFiles, this, &QgisApp::generateProjectAttachedFiles );
   connect( mSnappingUtils, &QgsSnappingUtils::configChanged, QgsProject::instance(), &QgsProject::setSnappingConfig );
 
 
@@ -4258,18 +4259,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
     projectData.previewImagePath = QStringLiteral( "%1/%2.png" ).arg( previewDir, fileName );
     QDir().mkdir( previewDir );
 
-    // Render the map canvas
-    QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
-    QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2
-                               , ( mMapCanvas->height() - previewSize.height() ) / 2 )
-                       , previewSize );
-
-    QPixmap previewImage( previewSize );
-    QPainter previewPainter( &previewImage );
-    mMapCanvas->render( &previewPainter, QRect( QPoint(), previewSize ), previewRect );
-
-    // Save
-    previewImage.save( projectData.previewImagePath );
+    createPreviewImage( projectData.previewImagePath );
   }
   else
   {
@@ -13528,6 +13518,32 @@ void QgisApp::onTransactionGroupsChanged()
 void QgisApp::onSnappingConfigChanged()
 {
   mSnappingUtils->setConfig( QgsProject::instance()->snappingConfig() );
+}
+
+void QgisApp::generateProjectAttachedFiles( QgsStringMap &files )
+{
+  QTemporaryFile *previewImage = new QTemporaryFile( QStringLiteral( "preview-XXXXXXXXXXX.png" ) );
+  previewImage->open();
+  previewImage->close();
+  createPreviewImage( previewImage->fileName() );
+  files.insert( QStringLiteral( "preview.png" ), previewImage->fileName() );
+  previewImage->deleteLater();
+}
+
+void QgisApp::createPreviewImage( const QString &path )
+{
+  // Render the map canvas
+  QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
+  QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2
+                             , ( mMapCanvas->height() - previewSize.height() ) / 2 )
+                     , previewSize );
+
+  QPixmap previewImage( previewSize );
+  QPainter previewPainter( &previewImage );
+  mMapCanvas->render( &previewPainter, QRect( QPoint(), previewSize ), previewRect );
+
+  // Save
+  previewImage.save( path );
 }
 
 void QgisApp::startProfile( const QString &name )
