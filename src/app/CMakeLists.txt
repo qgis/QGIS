@@ -5,7 +5,6 @@ ENDIF(NOT WIN32)
 
 SET(QGIS_APP_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
 
   qgisapp.cpp
   qgisappinterface.cpp

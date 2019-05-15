@@ -3,9 +3,6 @@
 
 SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
-
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -1323,6 +1320,7 @@ ENDIF(HAVE_OPENCL)
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+  INSTALL(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
 ELSE(NOT APPLE)
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
