@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgsfocuswatcher.h"
 
 QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QWidget( canvas->viewport() ), mMapCanvas( canvas ), mCadDockWidget( cadDockWidget )
@@ -71,11 +72,26 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedAngle, this, &QgsAdvancedDigitizingFloater::enabledChangedAngle );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedDistance, this, &QgsAdvancedDigitizingFloater::enabledChangedDistance );
 
-  // Connect our line edits signals to update cadDockWidget's state
-  connect( mXLineEdit, &QLineEdit::returnPressed, cadDockWidget, [ = ]() { cadDockWidget->setX( mXLineEdit->text() ); } );
-  connect( mYLineEdit, &QLineEdit::returnPressed, cadDockWidget, [ = ]() { cadDockWidget->setY( mYLineEdit->text() ); } );
-  connect( mAngleLineEdit, &QLineEdit::returnPressed, cadDockWidget, [ = ]() { cadDockWidget->setAngle( mAngleLineEdit->text() ); } );
-  connect( mDistanceLineEdit, &QLineEdit::returnPressed, cadDockWidget, [ = ]() { cadDockWidget->setDistance( mDistanceLineEdit->text() ); } );
+  // Connect our line edits signals to update cadDockWidget's state (implementation copied from QgsAdvancedDigitizingDockWidget)
+  connect( mXLineEdit, &QLineEdit::returnPressed, cadDockWidget, [ = ]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
+  connect( mYLineEdit, &QLineEdit::returnPressed, cadDockWidget, [ = ]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
+  connect( mAngleLineEdit, &QLineEdit::returnPressed, cadDockWidget, [ = ]() { cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
+  connect( mDistanceLineEdit, &QLineEdit::returnPressed, cadDockWidget, [ = ]() { cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
+
+  connect( mXLineEdit, &QLineEdit::textEdited, cadDockWidget, [ = ]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mYLineEdit, &QLineEdit::textEdited, cadDockWidget, [ = ]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mAngleLineEdit, &QLineEdit::textEdited, cadDockWidget, [ = ]() { cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mDistanceLineEdit, &QLineEdit::textEdited, cadDockWidget, [ = ]() { cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+
+  QgsFocusWatcher *xWatcher = new QgsFocusWatcher( mXLineEdit );
+  connect( xWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=](){ cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
+  QgsFocusWatcher *yWatcher = new QgsFocusWatcher( mYLineEdit );
+  connect( yWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=](){ cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
+  QgsFocusWatcher *angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
+  connect( angleWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=](){ cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
+  QgsFocusWatcher *distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
+  connect( distanceWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=](){ cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
+
 }
 
 bool QgsAdvancedDigitizingFloater::eventFilter( QObject *obj, QEvent *event )

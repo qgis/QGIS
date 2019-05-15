@@ -74,6 +74,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       Parallel       //!< Parallel
     };
 
+    /**
+     * Type of interaction to simulate when editing values from external widget
+     */
+    enum WidgetSetMode {
+      ReturnPressed, FocusOut, TextEdited
+    };
+
 
     /**
      * \ingroup gui
@@ -344,36 +351,42 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void updateCadPaintItem();
 
     /**
-    * Set and lock the X \a value.
-    * Can be used to set constraints.
+    * Set the X \a value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
     * \note The value is a QString, as it could be an expression.
     * \since QGIS 3.8
     */
-    void setX( const QString &value );
+    void setX( const QString &value, WidgetSetMode mode );
 
     /**
-    * Set and lock the Y \a value.
-    * Can be used to set constraints.
+    * Set the Y \a value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
     * \note The value is a QString, as it could be an expression.
     * \since QGIS 3.8
     */
-    void setY( const QString &value );
+    void setY( const QString &value, WidgetSetMode mode );
 
     /**
-    * Set and lock the angle \a value.
-    * Can be used to set constraints.
+    * Set the angle \a value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
     * \note The value is a QString, as it could be an expression.
     * \since QGIS 3.8
     */
-    void setAngle( const QString &value );
+    void setAngle( const QString &value, WidgetSetMode mode );
 
     /**
-    * Set and lock the distance \a value.
-    * Can be used to set constraints.
+    * Set the distance \a value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
     * \note The value is a QString, as it could be an expression.
     * \since QGIS 3.8
     */
-    void setDistance( const QString &value );
+    void setDistance( const QString &value, WidgetSetMode mode );
+
+
 
   signals:
 
