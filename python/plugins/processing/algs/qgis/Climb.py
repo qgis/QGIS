@@ -202,7 +202,6 @@ class Climb(QgisAlgorithm):
         no_z_nodes = []
 
         for current, feature in enumerate(features):
-            # Stop the algorithm if cancelled
             if feedback.isCanceled():
                 break
             climb = 0
