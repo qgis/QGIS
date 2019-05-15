@@ -149,14 +149,14 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   {
     // polygons should be CCW for SqlGeography
     QString r;
-    QTextStream foo( &r );
+    QTextStream stream( &r );
 
-    foo.setRealNumberPrecision( 8 );
-    foo.setRealNumberNotation( QTextStream::FixedNotation );
+    stream.setRealNumberPrecision( 8 );
+    stream.setRealNumberNotation( QTextStream::FixedNotation );
 
     if ( mSource->mGeometryColType == QLatin1String( "geometry" ) )
     {
-      foo << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
+      stream << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
           << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
           << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
           << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
@@ -164,7 +164,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
     else
     {
-      foo << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
+      stream << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
           << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
           << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
           << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
