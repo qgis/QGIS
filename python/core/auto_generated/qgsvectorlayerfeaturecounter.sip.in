@@ -33,7 +33,7 @@ Create a new feature counter for ``layer``.
     virtual bool run();
 
 %Docstring
-Calculate the feature count and Ids per symbol
+Calculates the feature count and Ids per symbol
 %End
 
 

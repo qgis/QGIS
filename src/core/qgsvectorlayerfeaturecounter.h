@@ -44,7 +44,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
 
 
     /**
-     * Calculate the feature count and Ids per symbol
+     * Calculates the feature count and Ids per symbol
      */
     bool run() override;
 

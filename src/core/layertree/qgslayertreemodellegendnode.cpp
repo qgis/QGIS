@@ -623,6 +623,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
   {
     if ( vl )
     {
+      context.appendScope( vl->createExpressionContextScope() );
       const QString symLabel = symbolLabel();
       if ( ! mLayerNode->labelExpression().isEmpty() )
         mLabel = evaluateLabelExpression( "[%" + mLayerNode->labelExpression() + "%]", context );
@@ -636,6 +637,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
     QString eLabel;
     if ( vl )
     {
+      context.appendScope( vl->createExpressionContextScope() );
       if ( ! mLayerNode->labelExpression().isEmpty() )
         eLabel = evaluateLabelExpression( label + "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( label.contains( "[%" ) )
@@ -645,18 +647,16 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
   }
 }
 
-QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpressionContext context ) const
+QgsExpressionContextScope QgsSymbolLegendNode::createSymbolScope( QgsExpressionContext context ) const
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
   if ( vl )
   {
     vl->countSymbolFeatures();
-    context.appendScope( vl->createExpressionContextScope() );
-
-    QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
-
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
     //QVariantList featureIds = QVariantList();
     //const QgsFeatureIds fids = vl->featureIds( mItem.ruleKey() );
     //if ( !fids.empty() )
@@ -666,15 +666,13 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
     //}
     //scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
-
-    context.appendScope( scope );
   }
-  return context;
+  return scope;
 }
 
 QString QgsSymbolLegendNode::evaluateLabelExpression( const QString label, QgsExpressionContext context ) const
 {
-  context = createExpressionContext( context );
+  context.appendScope( createSymbolScope());
   QString eLabel = QgsExpression().replaceExpressionText( label, &context );
   return eLabel;
 }

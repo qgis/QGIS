@@ -296,11 +296,10 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QString symbolLabel() const;
 
     /**
-     * Create an expression context containing symbol elements
-     * \param context extra QgsExpressionContext to use for evaluation
+     * Create an expressionContextScope containing symbol related variables
      * \since QGIS 3.8
      */
-    QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const;
+    QgsExpressionContextScope createSymbolScope() const;
 
     /**
      * Evaluates  and returns the text label of the current node
@@ -345,7 +344,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     * \param context extra QgsExpressionContext to use for evaluation
     * \since QGIS 3.8
     */
-    QString evaluateLabelExpression( const QString label, QgsExpressionContext context = QgsExpressionContext() ) const;
+    QString evaluateLabelExpression( const QString &label, QgsExpressionContext &context ) const;
 
 
   private:
