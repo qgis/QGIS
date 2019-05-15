@@ -827,94 +827,267 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   return result;
 }
 
+static QVariant fcnCalculateGeneric( QgsAggregateCalculator::Aggregate aggregate, const QVariantList &values, QgsAggregateCalculator::AggregateParameters parameters, const QgsExpressionContext *context, QgsExpression *parent, int orderByPos = -1 )
+{
+  //fcnAggregateGeneric but without caching, will always evaluate.
+
+  // first step - find current layer
+  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+  if ( !vl )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot use aggregate function in this context" ) );
+    return QVariant();
+  }
+
+  //lazy eval, so we need to evaluate nodes now
+
+  //first node is subexpression (or field name)
+  QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
+  ENSURE_NO_EVAL_ERROR;
+  QString subExpression = node->dump();
+
+  //optional second node is group by
+  QString groupBy;
+  if ( values.count() > 1 )
+  {
+    node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    if ( !nl || nl->value().isValid() )
+      groupBy = node->dump();
+  }
+
+  //optional third node is filter
+  if ( values.count() > 2 )
+  {
+    node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    if ( !nl || nl->value().isValid() )
+      parameters.filter = node->dump();
+  }
+
+  QVariant result;
+  bool ok = false;
+  //optional order by node, if supported
+  QString orderBy;
+  if ( orderByPos >= 0 && values.count() > orderByPos )
+  {
+    node = QgsExpressionUtils::getNode( values.at( orderByPos ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
+    if ( !nl || nl->value().isValid() )
+    {
+      orderBy = node->dump();
+      parameters.orderBy << QgsFeatureRequest::OrderByClause( orderBy );
+    }
+  }
+
+  // build up filter with group by
+
+  // find current group by value
+  if ( !groupBy.isEmpty() )
+  {
+    QgsExpression groupByExp( groupBy );
+    QVariant groupByValue = groupByExp.evaluate( context );
+    QString groupByClause = QStringLiteral( "%1 %2 %3" ).arg( groupBy,
+                            groupByValue.isNull() ? QStringLiteral( "is" ) : QStringLiteral( "=" ),
+                            QgsExpression::quotedValue( groupByValue ) );
+    if ( !parameters.filter.isEmpty() )
+      parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
+    else
+      parameters.filter = groupByClause;
+  }
+
+  QgsExpressionContext subContext( *context );
+  result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+
+  if ( !ok )
+  {
+    parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
+    return QVariant();
+  }
+
+  return result;
+}
 
 static QVariant fcnAggregateCount( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Count, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Count, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateCountDistinct( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::CountDistinct, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::CountDistinct, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateCountMissing( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::CountMissing, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::CountMissing, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateMin( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Min, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Min, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateMax( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Max, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Max, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateSum( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Sum, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Sum, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateMean( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Mean, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Mean, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateMedian( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Median, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Median, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateStdev( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::StDevSample, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::StDevSample, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateRange( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Range, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Range, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateMinority( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Minority, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Minority, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateMajority( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::Majority, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::Majority, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateQ1( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::FirstQuartile, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::FirstQuartile, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateQ3( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::ThirdQuartile, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::ThirdQuartile, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateIQR( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::InterQuartileRange, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::InterQuartileRange, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateMinLength( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateCalculator::StringMinimumLength, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::StringMinimumLength, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateMaxLength( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::StringMaximumLength, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::StringMaximumLength, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
 static QVariant fcnAggregateCollectGeometry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( context )
+  {
+    if ( context->indexOfScope( "Symbol scope" ) != -1 )
+      return fcnCalculateGeneric( QgsAggregateCalculator::GeometryCollect, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+  }
   return fcnAggregateGeneric( QgsAggregateCalculator::GeometryCollect, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
