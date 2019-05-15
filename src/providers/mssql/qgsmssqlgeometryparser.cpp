@@ -137,27 +137,27 @@ SegmentType (1 byte)
 #define SMT_FIRSTLINE 2
 #define SMT_FIRSTARC 3
 
-#define ReadInt32(nPos) (*((unsigned int*)(pszData + (nPos))))
+#define ReadInt32(nPos) (*((unsigned int*)(mData + (nPos))))
 
-#define ReadByte(nPos) (pszData[nPos])
+#define ReadByte(nPos) (mData[nPos])
 
-#define ReadDouble(nPos) (*((double*)(pszData + (nPos))))
+#define ReadDouble(nPos) (*((double*)(mData + (nPos))))
 
-#define ParentOffset(iShape) (ReadInt32(nShapePos + (iShape) * 9 ))
-#define FigureOffset(iShape) (ReadInt32(nShapePos + (iShape) * 9 + 4))
-#define ShapeType(iShape) (ReadByte(nShapePos + (iShape) * 9 + 8))
-#define SegmentType(iSegment) (ReadByte(nSegmentPos + (iSegment)))
+#define ParentOffset(iShape) (ReadInt32(mShapePos + (iShape) * 9 ))
+#define FigureOffset(iShape) (ReadInt32(mShapePos + (iShape) * 9 + 4))
+#define ShapeType(iShape) (ReadByte(mShapePos + (iShape) * 9 + 8))
+#define SegmentType(iSegment) (ReadByte(mSegmentPos + (iSegment)))
 
-#define NextFigureOffset(iShape) (iShape + 1 < nNumShapes? FigureOffset((iShape) +1) : nNumFigures)
+#define NextFigureOffset(iShape) (iShape + 1 < mNumShapes? FigureOffset((iShape) +1) : mNumFigures)
 
-#define FigureAttribute(iFigure) (ReadByte(nFigurePos + (iFigure) * 5))
-#define PointOffset(iFigure) (ReadInt32(nFigurePos + (iFigure) * 5 + 1))
-#define NextPointOffset(iFigure) (iFigure + 1 < nNumFigures? PointOffset((iFigure) +1) : nNumPoints)
+#define FigureAttribute(iFigure) (ReadByte(mFigurePos + (iFigure) * 5))
+#define PointOffset(iFigure) (ReadInt32(mFigurePos + (iFigure) * 5 + 1))
+#define NextPointOffset(iFigure) (iFigure + 1 < mNumFigures? PointOffset((iFigure) +1) : mNumPoints)
 
-#define ReadX(iPoint) (ReadDouble(nPointPos + 16 * (iPoint)))
-#define ReadY(iPoint) (ReadDouble(nPointPos + 16 * (iPoint) + 8))
-#define ReadZ(iPoint) (ReadDouble(nPointPos + 16 * nNumPoints + 8 * (iPoint)))
-#define ReadM(iPoint) (ReadDouble(nPointPos + 24 * nNumPoints + 8 * (iPoint)))
+#define ReadX(iPoint) (ReadDouble(mPointPos + 16 * (iPoint)))
+#define ReadY(iPoint) (ReadDouble(mPointPos + 16 * (iPoint) + 8))
+#define ReadZ(iPoint) (ReadDouble(mPointPos + 16 * mNumPoints + 8 * (iPoint)))
+#define ReadM(iPoint) (ReadDouble(mPointPos + 24 * mNumPoints + 8 * (iPoint)))
 
 /************************************************************************/
 /*                   QgsMssqlGeometryParser()                           */
@@ -206,24 +206,24 @@ void QgsMssqlGeometryParser::DumpMemoryToLog( const char *pszMsg, unsigned char 
 
 QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint )
 {
-  if ( IsGeography )
+  if ( mIsGeography )
   {
-    if ( ( chProps & SP_HASZVALUES ) && ( chProps & SP_HASMVALUES ) )
+    if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
       return QgsPoint( QgsWkbTypes::PointZM, ReadY( iPoint ), ReadX( iPoint ), ReadZ( iPoint ), ReadM( iPoint ) );
-    else if ( chProps & SP_HASZVALUES )
+    else if ( mProps & SP_HASZVALUES )
       return QgsPoint( QgsWkbTypes::PointZ, ReadY( iPoint ), ReadX( iPoint ), ReadZ( iPoint ) );
-    else if ( chProps & SP_HASMVALUES )
+    else if ( mProps & SP_HASMVALUES )
       return QgsPoint( QgsWkbTypes::PointM, ReadY( iPoint ), ReadX( iPoint ), 0.0, ReadZ( iPoint ) );
     else
       return QgsPoint( QgsWkbTypes::Point, ReadY( iPoint ), ReadX( iPoint ) );
   }
   else
   {
-    if ( ( chProps & SP_HASZVALUES ) && ( chProps & SP_HASMVALUES ) )
+    if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
       return QgsPoint( QgsWkbTypes::PointZM, ReadX( iPoint ), ReadY( iPoint ), ReadZ( iPoint ), ReadM( iPoint ) );
-    else if ( chProps & SP_HASZVALUES )
+    else if ( mProps & SP_HASZVALUES )
       return QgsPoint( QgsWkbTypes::PointZ, ReadX( iPoint ), ReadY( iPoint ), ReadZ( iPoint ) );
-    else if ( chProps & SP_HASMVALUES )
+    else if ( mProps & SP_HASMVALUES )
       return QgsPoint( QgsWkbTypes::PointM, ReadX( iPoint ), ReadY( iPoint ), 0.0, ReadZ( iPoint ) );
     else
       return QgsPoint( QgsWkbTypes::Point, ReadX( iPoint ), ReadY( iPoint ) );
@@ -258,10 +258,10 @@ const QgsPointSequence QgsMssqlGeometryParser::readPointSequence( int iPoint, in
 
 std::unique_ptr< QgsPoint > QgsMssqlGeometryParser::readPoint( int iFigure )
 {
-  if ( iFigure < nNumFigures )
+  if ( iFigure < mNumFigures )
   {
     int iPoint = PointOffset( iFigure );
-    if ( iPoint < nNumPoints )
+    if ( iPoint < mNumPoints )
     {
       return qgis::make_unique< QgsPoint >( readCoordinates( iPoint ) );
     }
@@ -276,7 +276,7 @@ std::unique_ptr< QgsPoint > QgsMssqlGeometryParser::readPoint( int iFigure )
 std::unique_ptr< QgsMultiPoint > QgsMssqlGeometryParser::readMultiPoint( int iShape )
 {
   std::unique_ptr< QgsMultiPoint > poMultiPoint = qgis::make_unique< QgsMultiPoint >();
-  for ( int i = iShape + 1; i < nNumShapes; i++ )
+  for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
     {
@@ -325,7 +325,7 @@ std::unique_ptr< QgsCircularString > QgsMssqlGeometryParser::readCircularString(
 std::unique_ptr< QgsMultiLineString > QgsMssqlGeometryParser::readMultiLineString( int iShape )
 {
   std::unique_ptr< QgsMultiLineString > poMultiLineString = qgis::make_unique< QgsMultiLineString >();
-  for ( int i = iShape + 1; i < nNumShapes; i++ )
+  for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
     {
@@ -367,7 +367,7 @@ std::unique_ptr< QgsPolygon > QgsMssqlGeometryParser::readPolygon( int iShape )
 std::unique_ptr< QgsMultiPolygon > QgsMssqlGeometryParser::readMultiPolygon( int iShape )
 {
   std::unique_ptr< QgsMultiPolygon > poMultiPolygon = qgis::make_unique< QgsMultiPolygon >();
-  for ( int i = iShape + 1; i < nNumShapes; i++ )
+  for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
     {
@@ -394,9 +394,9 @@ std::unique_ptr< QgsCompoundCurve > QgsMssqlGeometryParser::readCompoundCurve( i
 
   nPointsPrepared = 0;
   bool isCurve = false;
-  while ( iPoint < iNextPoint && iSegment < nNumSegments )
+  while ( iPoint < iNextPoint && mSegment < mNumSegments )
   {
-    switch ( SegmentType( iSegment ) )
+    switch ( SegmentType( mSegment ) )
     {
       case SMT_FIRSTLINE:
         if ( isCurve )
@@ -427,7 +427,7 @@ std::unique_ptr< QgsCompoundCurve > QgsMssqlGeometryParser::readCompoundCurve( i
         iPoint += 2;
         break;
     }
-    ++iSegment;
+    ++mSegment;
   }
 
   // adding the last curve
@@ -488,7 +488,7 @@ std::unique_ptr< QgsCurvePolygon > QgsMssqlGeometryParser::readCurvePolygon( int
 std::unique_ptr< QgsGeometryCollection > QgsMssqlGeometryParser::readGeometryCollection( int iShape )
 {
   std::unique_ptr< QgsGeometryCollection> poGeomColl = qgis::make_unique< QgsGeometryCollection >();
-  for ( int i = iShape + 1; i < nNumShapes; i++ )
+  for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
     {
@@ -544,38 +544,38 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
     return nullptr;
   }
 
-  pszData = pszInput;
+  mData = pszInput;
 
   /* store the SRS id for further use */
-  nSRSId = ReadInt32( 0 );
+  mSRSId = ReadInt32( 0 );
 
-  chVersion = ReadByte( 4 );
+  mVersion = ReadByte( 4 );
 
-  if ( chVersion == 0 || chVersion > 2 )
+  if ( mVersion == 0 || mVersion > 2 )
   {
     QgsDebugMsg( QStringLiteral( "ParseSqlGeometry corrupt data" ) );
     DumpMemoryToLog( "Corrupt data", pszInput, nLen );
     return nullptr;
   }
 
-  chProps = ReadByte( 5 );
+  mProps = ReadByte( 5 );
 
-  if ( chProps & SP_HASZVALUES && chProps & SP_HASMVALUES )
-    nPointSize = 32;
-  else if ( chProps & SP_HASZVALUES || chProps & SP_HASMVALUES )
-    nPointSize = 24;
+  if ( mProps & SP_HASZVALUES && mProps & SP_HASMVALUES )
+    mPointSize = 32;
+  else if ( mProps & SP_HASZVALUES || mProps & SP_HASMVALUES )
+    mPointSize = 24;
   else
-    nPointSize = 16;
+    mPointSize = 16;
 
   std::unique_ptr< QgsAbstractGeometry> poGeom;
 
-  if ( chProps & SP_ISSINGLEPOINT )
+  if ( mProps & SP_ISSINGLEPOINT )
   {
     // single point geometry
-    nNumPoints = 1;
-    nPointPos = 6;
+    mNumPoints = 1;
+    mPointPos = 6;
 
-    if ( nLen < 6 + nPointSize )
+    if ( nLen < 6 + mPointSize )
     {
       QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
@@ -584,13 +584,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 
     poGeom = qgis::make_unique< QgsPoint >( readCoordinates( 0 ) );
   }
-  else if ( chProps & SP_ISSINGLELINESEGMENT )
+  else if ( mProps & SP_ISSINGLELINESEGMENT )
   {
     // single line segment with 2 points
-    nNumPoints = 2;
-    nPointPos = 6;
+    mNumPoints = 2;
+    mPointPos = 6;
 
-    if ( nLen < 6 + 2 * nPointSize )
+    if ( nLen < 6 + 2 * mPointSize )
     {
       QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
@@ -602,67 +602,67 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
   else
   {
     // complex geometries
-    nNumPoints = ReadInt32( 6 );
+    mNumPoints = ReadInt32( 6 );
 
-    if ( nNumPoints <= 0 )
+    if ( mNumPoints <= 0 )
     {
       return nullptr;
     }
 
     // position of the point array
-    nPointPos = 10;
+    mPointPos = 10;
 
     // position of the figures
-    nFigurePos = nPointPos + nPointSize * nNumPoints + 4;
+    mFigurePos = mPointPos + mPointSize * mNumPoints + 4;
 
-    if ( nLen < nFigurePos )
+    if ( nLen < mFigurePos )
     {
       QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
 
-    nNumFigures = ReadInt32( nFigurePos - 4 );
+    mNumFigures = ReadInt32( mFigurePos - 4 );
 
-    if ( nNumFigures <= 0 )
+    if ( mNumFigures <= 0 )
     {
       return nullptr;
     }
 
     // position of the shapes
-    nShapePos = nFigurePos + 5 * nNumFigures + 4;
+    mShapePos = mFigurePos + 5 * mNumFigures + 4;
 
-    if ( nLen < nShapePos )
+    if ( nLen < mShapePos )
     {
       QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
 
-    nNumShapes = ReadInt32( nShapePos - 4 );
+    mNumShapes = ReadInt32( mShapePos - 4 );
 
-    if ( nLen < nShapePos + 9 * nNumShapes )
+    if ( nLen < mShapePos + 9 * mNumShapes )
     {
       QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
 
-    if ( nNumShapes <= 0 )
+    if ( mNumShapes <= 0 )
     {
       return nullptr;
     }
 
     // position of the segments (for complex curve figures)
-    if ( chVersion == 0x02 )
+    if ( mVersion == 0x02 )
     {
-      iSegment = 0;
-      nSegmentPos = nShapePos + 9 * nNumShapes + 4;
-      if ( nLen > nSegmentPos )
+      mSegment = 0;
+      mSegmentPos = mShapePos + 9 * mNumShapes + 4;
+      if ( nLen > mSegmentPos )
       {
         // segment array is present
-        nNumSegments = ReadInt32( nSegmentPos - 4 );
-        if ( nLen < nSegmentPos + nNumSegments )
+        mNumSegments = ReadInt32( mSegmentPos - 4 );
+        if ( nLen < mSegmentPos + mNumSegments )
         {
           QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
           DumpMemoryToLog( "Not enough data", pszInput, nLen );

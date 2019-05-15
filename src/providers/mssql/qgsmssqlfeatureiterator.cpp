@@ -34,7 +34,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
 {
   mClosed = false;
 
-  mParser.IsGeography = mSource->mIsGeography;
+  mParser.mIsGeography = mSource->mIsGeography;
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
@@ -522,7 +522,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   : mFields( p->mAttributeFields )
   , mFidColName( p->mFidColName )
   , mSRId( p->mSRId )
-  , mIsGeography( p->mParser.IsGeography )
+  , mIsGeography( p->mParser.mIsGeography )
   , mGeometryColName( p->mGeometryColName )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )

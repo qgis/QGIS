@@ -41,26 +41,26 @@ class QgsMssqlGeometryParser
 {
 
   protected:
-    unsigned char *pszData = nullptr;
+    unsigned char *mData = nullptr;
     /* version information */
-    char chVersion = 0;
+    char mVersion = 0;
     /* serialization properties */
-    char chProps = 0;
+    char mProps = 0;
     /* point array */
-    int nPointSize = 0;
-    int nPointPos = 0;
-    int nNumPoints = 0;
+    int mPointSize = 0;
+    int mPointPos = 0;
+    int mNumPoints = 0;
     /* figure array */
-    int nFigurePos = 0;
-    int nNumFigures = 0;
+    int mFigurePos = 0;
+    int mNumFigures = 0;
     /* shape array */
-    int nShapePos = 0;
-    int nNumShapes = 0;
+    int mShapePos = 0;
+    int mNumShapes = 0;
     /* segmenttype array */
-    int nSegmentPos = 0;
-    int nNumSegments = 0;
-    int iSegment = 0;
-    int nSRSId = 0;
+    int mSegmentPos = 0;
+    int mNumSegments = 0;
+    int mSegment = 0;
+    int mSRSId = 0;
 
   protected:
     QgsPoint readCoordinates( int iPoint );
@@ -81,10 +81,10 @@ class QgsMssqlGeometryParser
   public:
     QgsMssqlGeometryParser();
     std::unique_ptr<QgsAbstractGeometry> parseSqlGeometry( unsigned char *pszInput, int nLen );
-    int GetSRSId() { return nSRSId; }
+    int GetSRSId() { return mSRSId; }
     void DumpMemoryToLog( const char *pszMsg, unsigned char *pszInput, int nLen );
     /* sql geo type */
-    bool IsGeography = false;
+    bool mIsGeography = false;
 };
 
 

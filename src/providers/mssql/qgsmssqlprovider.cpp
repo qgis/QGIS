@@ -348,7 +348,7 @@ void QgsMssqlProvider::loadFields()
       {
         mGeometryColName = colName;
         mGeometryColType = sqlTypeName;
-        mParser.IsGeography = sqlTypeName == QLatin1String( "geography" );
+        mParser.mIsGeography = sqlTypeName == QLatin1String( "geography" );
       }
       else
       {
