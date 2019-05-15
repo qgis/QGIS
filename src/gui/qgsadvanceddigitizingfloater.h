@@ -32,6 +32,7 @@ class QgsAdvancedDigitizingDockWidget;
 * \brief The QgsAdvancedDigitizingFloater class is widget that floats
 * next to the mouse pointer, and allow interaction with the AdvancedDigitizing
 * feature. It proxies display and actions to QgsMapToolAdvancedDigitizingDockWidget.
+* \note This class is a technology preview and unstable API.
 * \since QGIS 3.8
 */
 class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsAdvancedDigitizingFloaterBase

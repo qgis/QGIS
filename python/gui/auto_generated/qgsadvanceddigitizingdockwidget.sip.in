@@ -339,56 +339,60 @@ Updates canvas item that displays constraints on the ma
 
     void setX( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the X ``value`` on the widget.
+Set the X value on the widget.
 Can be used to set constraints by external widgets.
 
 :param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
 
 .. note::
 
-   The value is a QString, as it could be an expression.
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
 
     void setY( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the Y ``value`` on the widget.
+Set the Y value on the widget.
 Can be used to set constraints by external widgets.
 
 :param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
 
 .. note::
 
-   The value is a QString, as it could be an expression.
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
 
     void setAngle( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the angle ``value`` on the widget.
+Set the angle value on the widget.
 Can be used to set constraints by external widgets.
 
 :param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
 
 .. note::
 
-   The value is a QString, as it could be an expression.
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
 
     void setDistance( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the distance ``value`` on the widget.
+Set the distance value on the widget.
 Can be used to set constraints by external widgets.
 
 :param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
 
 .. note::
 
-   The value is a QString, as it could be an expression.
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
@@ -422,7 +426,11 @@ when a constraint is toggled.
 %Docstring
 Emitted whenever CAD is enabled or disabled
 
-:param enabled: Whether CAD is enabled or not.
+:param enabled: Whether CAD is enabled or not
+
+.. note::
+
+   unstable API (will likely change).
 
 .. versionadded:: 3.8
 %End
@@ -432,6 +440,10 @@ Emitted whenever CAD is enabled or disabled
 Emitted whenever the X ``value`` changes (either the mouse moved, or the user changed the input).
 Could be used by widgets that must reflect the current advanced digitizing state.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -439,6 +451,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 %Docstring
 Emitted whenever the Y ``value`` changes (either the mouse moved, or the user changed the input).
 Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
@@ -448,6 +464,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 Emitted whenever the angle ``value`` changes (either the mouse moved, or the user changed the input).
 Could be used by widgets that must reflect the current advanced digitizing state.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -455,6 +475,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 %Docstring
 Emitted whenever the distance ``value`` changes (either the mouse moved, or the user changed the input).
 Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
@@ -464,6 +488,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 Emitted whenever the X parameter is ``locked``.
 Could be used by widgets that must reflect the current advanced digitizing state.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -472,6 +500,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 Emitted whenever the Y parameter is ``locked``.
 Could be used by widgets that must reflect the current advanced digitizing state.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -479,12 +511,22 @@ Could be used by widgets that must reflect the current advanced digitizing state
 %Docstring
 Emitted whenever the angle parameter is ``locked``.
 Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
 %End
 
     void lockDistanceChanged( bool locked );
 %Docstring
 Emitted whenever the distance parameter is ``locked``.
 Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
@@ -496,6 +538,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
 :param relative: Whether the X parameter is relative or not.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -506,6 +552,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
 :param relative: Whether the Y parameter is relative or not.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -515,6 +565,10 @@ Emitted whenever the angleX parameter is toggled between absolute and relative.
 Could be used by widgets that must reflect the current advanced digitizing state.
 
 :param relative: Whether the angle parameter is relative or not.
+
+.. note::
+
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
@@ -528,6 +582,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
 :param enabled: Whether the X parameter is enabled or not.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -538,6 +596,10 @@ do not make sense (e.g. you need a previous point to define a distance).
 Could be used by widgets that must reflect the current advanced digitizing state.
 
 :param enabled: Whether the Y parameter is enabled or not.
+
+.. note::
+
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
@@ -550,6 +612,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
 :param enabled: Whether the angle parameter is enabled or not.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -561,6 +627,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
 :param enabled: Whether the distance parameter is enabled or not.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -568,6 +638,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 %Docstring
 Emitted whenever the X field should get the focus using the shortcuts (X).
 Could be used by widgets to capture the focus when a field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End
@@ -577,6 +651,10 @@ Could be used by widgets to capture the focus when a field is being edited.
 Emitted whenever the Y field should get the focus using the shortcuts (Y).
 Could be used by widgets to capture the focus when a field is being edited.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -585,6 +663,10 @@ Could be used by widgets to capture the focus when a field is being edited.
 Emitted whenever the angle field should get the focus using the shortcuts (A).
 Could be used by widgets to capture the focus when a field is being edited.
 
+.. note::
+
+   unstable API (will likely change)
+
 .. versionadded:: 3.8
 %End
 
@@ -592,6 +674,10 @@ Could be used by widgets to capture the focus when a field is being edited.
 %Docstring
 Emitted whenever the distance field should get the focus using the shortcuts (D).
 Could be used by widgets to capture the focus when a field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
 
 .. versionadded:: 3.8
 %End

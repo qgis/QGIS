@@ -76,6 +76,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Type of interaction to simulate when editing values from external widget
+     * \note unstable API (will likely change)
+     * \since QGIS 3.8
      */
     enum WidgetSetMode
     {
@@ -352,37 +354,41 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void updateCadPaintItem();
 
     /**
-    * Set the X \a value on the widget.
+    * Set the X value on the widget.
     * Can be used to set constraints by external widgets.
     * \param mode What type of interaction to emulate
-    * \note The value is a QString, as it could be an expression.
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void setX( const QString &value, WidgetSetMode mode );
 
     /**
-    * Set the Y \a value on the widget.
+    * Set the Y value on the widget.
     * Can be used to set constraints by external widgets.
     * \param mode What type of interaction to emulate
-    * \note The value is a QString, as it could be an expression.
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void setY( const QString &value, WidgetSetMode mode );
 
     /**
-    * Set the angle \a value on the widget.
+    * Set the angle value on the widget.
     * Can be used to set constraints by external widgets.
     * \param mode What type of interaction to emulate
-    * \note The value is a QString, as it could be an expression.
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void setAngle( const QString &value, WidgetSetMode mode );
 
     /**
-    * Set the distance \a value on the widget.
+    * Set the distance value on the widget.
     * Can be used to set constraints by external widgets.
     * \param mode What type of interaction to emulate
-    * \note The value is a QString, as it could be an expression.
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void setDistance( const QString &value, WidgetSetMode mode );
@@ -416,7 +422,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever CAD is enabled or disabled
     *
-    * \param enabled Whether CAD is enabled or not.
+    * \param enabled Whether CAD is enabled or not
+    * \note unstable API (will likely change).
     * \since QGIS 3.8
     */
     void cadEnabledChanged( bool enabled );
@@ -424,6 +431,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the X \a value changes (either the mouse moved, or the user changed the input).
     * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void valueXChanged( const QString &value );
@@ -431,6 +439,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the Y \a value changes (either the mouse moved, or the user changed the input).
     * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void valueYChanged( const QString &value );
@@ -438,6 +447,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the angle \a value changes (either the mouse moved, or the user changed the input).
     * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void valueAngleChanged( const QString &value );
@@ -445,6 +455,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the distance \a value changes (either the mouse moved, or the user changed the input).
     * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void valueDistanceChanged( const QString &value );
@@ -452,6 +463,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the X parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void lockXChanged( bool locked );
@@ -459,6 +471,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the Y parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void lockYChanged( bool locked );
@@ -466,12 +479,15 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the angle parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
     */
     void lockAngleChanged( bool locked );
 
     /**
     * Emitted whenever the distance parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void lockDistanceChanged( bool locked );
@@ -481,6 +497,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Could be used by widgets that must reflect the current advanced digitizing state.
     *
     * \param relative Whether the X parameter is relative or not.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void relativeXChanged( bool relative );
@@ -490,6 +507,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Could be used by widgets that must reflect the current advanced digitizing state.
     *
     * \param relative Whether the Y parameter is relative or not.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void relativeYChanged( bool relative );
@@ -499,6 +517,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Could be used by widgets that must reflect the current advanced digitizing state.
     *
     * \param relative Whether the angle parameter is relative or not.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void relativeAngleChanged( bool relative );
@@ -511,6 +530,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Could be used by widgets that must reflect the current advanced digitizing state.
     *
     * \param enabled Whether the X parameter is enabled or not.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void enabledChangedX( bool enabled );
@@ -521,6 +541,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Could be used by widgets that must reflect the current advanced digitizing state.
     *
     * \param enabled Whether the Y parameter is enabled or not.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void enabledChangedY( bool enabled );
@@ -531,6 +552,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Could be used by widgets that must reflect the current advanced digitizing state.
     *
     * \param enabled Whether the angle parameter is enabled or not.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void enabledChangedAngle( bool enabled );
@@ -541,6 +563,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Could be used by widgets that must reflect the current advanced digitizing state.
     *
     * \param enabled Whether the distance parameter is enabled or not.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void enabledChangedDistance( bool enabled );
@@ -548,6 +571,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the X field should get the focus using the shortcuts (X).
     * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void focusOnXRequested();
@@ -555,6 +579,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the Y field should get the focus using the shortcuts (Y).
     * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void focusOnYRequested();
@@ -562,6 +587,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the angle field should get the focus using the shortcuts (A).
     * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void focusOnAngleRequested();
@@ -569,6 +595,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
     * Emitted whenever the distance field should get the focus using the shortcuts (D).
     * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
     * \since QGIS 3.8
     */
     void focusOnDistanceRequested();
