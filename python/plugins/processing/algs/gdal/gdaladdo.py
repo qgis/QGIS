@@ -54,7 +54,7 @@ class gdaladdo(GdalAlgorithm):
         self.methods = ((self.tr('Nearest neighbour'), 'nearest'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Gaussian'), 'gauss'),
-                        (self.tr('Cubic convolution.'), 'cubic'),
+                        (self.tr('Cubic convolution'), 'cubic'),
                         (self.tr('B-Spline convolution'), 'cubicspline'),
                         (self.tr('Lanczos windowed sinc'), 'lanczos'),
                         (self.tr('Average MP'), 'average_mp'),
