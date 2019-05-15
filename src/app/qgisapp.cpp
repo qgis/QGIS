@@ -4254,6 +4254,13 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
   // Get canonical absolute path
   QgsWelcomePageItemsModel::RecentProjectData projectData;
   projectData.path = QgsProject::instance()->absoluteFilePath();
+  QString templateDirName = QgsSettings().value( QStringLiteral( "qgis/projectTemplateDir" ),
+                            QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+
+  // We don't want the template path to appear in the recent projects list. Never.
+  if ( projectData.path.startsWith( templateDirName ) )
+    return;
+
   if ( projectData.path.isEmpty() )  // in case of custom project storage
     projectData.path = QgsProject::instance()->fileName();
   projectData.title = QgsProject::instance()->title();
@@ -14430,6 +14437,36 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
 {
   menu->clear();
   const QList<QgsProjectStorage *> storages = QgsApplication::projectStorageRegistry()->projectStorages();
+  QAction *action = menu->addAction( tr( "Templates" ) + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
+  connect( action, &QAction::triggered, this, [ this ]
+  {
+    QgsSettings settings;
+    QString templateDirName = settings.value( QStringLiteral( "qgis/projectTemplateDir" ),
+        QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+
+    const QString originalFilename = QgsProject::instance()->fileName();
+    const QString templateName = QFileInfo( originalFilename ).baseName();
+    const QString filePath = templateDirName + QDir::separator() + templateName + QStringLiteral( ".qgz" );
+    if ( QFileInfo( filePath ).exists() )
+    {
+      QMessageBox msgBox( this );
+      msgBox.setWindowTitle( tr( "Overwrite template" ) );
+      msgBox.setText( tr( "The template %1 already exists, do you want to replace it?" ).arg( templateName ) );
+      msgBox.addButton( tr( "Overwrite" ), QMessageBox::YesRole );
+      auto cancelButton = msgBox.addButton( QMessageBox::Cancel );
+      msgBox.setIcon( QMessageBox::Question );
+      msgBox.exec();
+      if ( msgBox.clickedButton() == cancelButton )
+      {
+        return;
+      }
+    }
+
+    QgsProject::instance()->write( filePath );
+    QgsProject::instance()->setFileName( originalFilename );
+    messageBar()->pushInfo( tr( "Template saved" ), tr( "Template %1 was saved" ).arg( templateName ) );
+
+  } );
   for ( QgsProjectStorage *storage : storages )
   {
     QString name = storage->visibleName();
