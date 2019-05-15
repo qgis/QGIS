@@ -165,57 +165,69 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode mode )
 {
   mXLineEdit->setText( value );
-  if( mode == WidgetSetMode::ReturnPressed){
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
     mXLineEdit->returnPressed();
   }
-  else if ( mode == WidgetSetMode::FocusOut){
-    QEvent *e = new QEvent(QEvent::FocusOut);
-    QCoreApplication::postEvent(mXLineEdit, e);
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mXLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited){
-    mXLineEdit->textEdited(value);
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mXLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode mode )
 {
   mYLineEdit->setText( value );
-  if( mode == WidgetSetMode::ReturnPressed){
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
     mYLineEdit->returnPressed();
   }
-  else if ( mode == WidgetSetMode::FocusOut){
-    QEvent *e = new QEvent(QEvent::FocusOut);
-    QCoreApplication::postEvent(mYLineEdit, e);
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mYLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited){
-    mYLineEdit->textEdited(value);
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mYLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setAngle( const QString &value, WidgetSetMode mode )
 {
   mAngleLineEdit->setText( value );
-  if( mode == WidgetSetMode::ReturnPressed){
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
     mAngleLineEdit->returnPressed();
   }
-  else if ( mode == WidgetSetMode::FocusOut){
-    QEvent *e = new QEvent(QEvent::FocusOut);
-    QCoreApplication::postEvent(mAngleLineEdit, e);
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mAngleLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited){
-    mAngleLineEdit->textEdited(value);
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mAngleLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setDistance( const QString &value, WidgetSetMode mode )
 {
   mDistanceLineEdit->setText( value );
-  if( mode == WidgetSetMode::ReturnPressed){
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
     mDistanceLineEdit->returnPressed();
   }
-  else if ( mode == WidgetSetMode::FocusOut){
-    QEvent *e = new QEvent(QEvent::FocusOut);
-    QCoreApplication::postEvent(mDistanceLineEdit, e);
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mDistanceLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited){
-    mDistanceLineEdit->textEdited(value);
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mDistanceLineEdit->textEdited( value );
   }
 }
 

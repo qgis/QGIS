@@ -77,7 +77,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Type of interaction to simulate when editing values from external widget
      */
-    enum WidgetSetMode {
+    enum WidgetSetMode
+    {
       ReturnPressed, FocusOut, TextEdited
     };
 

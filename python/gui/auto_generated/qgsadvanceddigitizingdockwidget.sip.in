@@ -42,6 +42,11 @@ by implementing filters called from QgsMapToolAdvancedDigitizing.
       Parallel
     };
 
+    enum WidgetSetMode
+    {
+      ReturnPressed,
+    };
+
 
     class CadConstraint
 {
@@ -332,10 +337,12 @@ Updates canvas item that displays constraints on the ma
 .. versionadded:: 3.0
 %End
 
-    void setX( const QString &value );
+    void setX( const QString &value, WidgetSetMode mode );
 %Docstring
-Set and lock the X ``value``.
-Can be used to set constraints.
+Set the X ``value`` on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
 
 .. note::
 
@@ -344,10 +351,12 @@ Can be used to set constraints.
 .. versionadded:: 3.8
 %End
 
-    void setY( const QString &value );
+    void setY( const QString &value, WidgetSetMode mode );
 %Docstring
-Set and lock the Y ``value``.
-Can be used to set constraints.
+Set the Y ``value`` on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
 
 .. note::
 
@@ -356,10 +365,12 @@ Can be used to set constraints.
 .. versionadded:: 3.8
 %End
 
-    void setAngle( const QString &value );
+    void setAngle( const QString &value, WidgetSetMode mode );
 %Docstring
-Set and lock the angle ``value``.
-Can be used to set constraints.
+Set the angle ``value`` on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
 
 .. note::
 
@@ -368,10 +379,12 @@ Can be used to set constraints.
 .. versionadded:: 3.8
 %End
 
-    void setDistance( const QString &value );
+    void setDistance( const QString &value, WidgetSetMode mode );
 %Docstring
-Set and lock the distance ``value``.
-Can be used to set constraints.
+Set the distance ``value`` on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
 
 .. note::
 
@@ -379,6 +392,8 @@ Can be used to set constraints.
 
 .. versionadded:: 3.8
 %End
+
+
 
   signals:
 

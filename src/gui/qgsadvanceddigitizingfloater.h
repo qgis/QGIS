@@ -32,6 +32,7 @@ class QgsAdvancedDigitizingDockWidget;
 * \brief The QgsAdvancedDigitizingFloater class is widget that floats
 * next to the mouse pointer, and allow interaction with the AdvancedDigitizing
 * feature. It proxies display and actions to QgsMapToolAdvancedDigitizingDockWidget.
+* \since QGIS 3.8
 */
 class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsAdvancedDigitizingFloaterBase
 {
@@ -53,9 +54,9 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     /**
     * Set whether the floater should be active or not.
     * Note that the floater may be active but not visible (e.g. if the mouse is not over the canvas).
-    * \since QGIS 3.8
     *
     * \param active
+    * \since QGIS 3.8
     */
     void setActive( bool active );
 
@@ -97,7 +98,7 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     bool eventFilter( QObject *obj, QEvent *event ) override SIP_SKIP;
 
     /**
-    * Move the widget to a new cursor position. A hard-coded offet will be added.
+    * Move the widget to a new cursor position. A hard-coded offset will be added.
     * \param pos position of the cursor
     */
     void updatePos( const QPoint &pos );
