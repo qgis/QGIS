@@ -48,7 +48,6 @@ from qgis.core import (QgsProcessing,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-
 class Climb(QgisAlgorithm):
 
     INPUT = 'INPUT'
@@ -141,24 +140,40 @@ class Climb(QgisAlgorithm):
         thefields = QgsFields()
         climbindex = -1
         descentindex = -1
+        minelevindex = -1
+        maxelevindex = -1
         fieldnumber = 0
 
         # Skip fields with names that are equal to the generated ones
         for field in source.fields():
             if field.name() == self.CLIMBATTRIBUTE:
-                feedback.pushWarning(self.tr(
-                                '{attr_name} attribute found and removed'.format(
-                                    attr_name=self.CLIMBATTRIBUTE)
-                                    )
-                                )
+                feedback.pushInfo(self.tr(
+                    '{attr_name} attribute found and removed'.format(
+                        attr_name=self.CLIMBATTRIBUTE)
+                )
+                )
                 climbindex = fieldnumber
             elif field.name() == self.DESCENTATTRIBUTE:
-                feedback.pushWarning(self.tr(
-                                '{attr_name} attribute found and removed'.format(
-                                    attr_name=self.DESCENTATTRIBUTE)
-                                    )
-                                )
+                feedback.pushInfo(self.tr(
+                    '{attr_name} attribute found and removed'.format(
+                        attr_name=self.DESCENTATTRIBUTE)
+                )
+                )
                 descentindex = fieldnumber
+            elif field.name() == self.MINELEVATTRIBUTE:
+                feedback.pushInfo(self.tr(
+                    '{attr_name} attribute found and removed'.format(
+                        attr_name=self.MINELEVATTRIBUTE)
+                )
+                )
+                minelevindex = fieldnumber
+            elif field.name() == self.MAXELEVATTRIBUTE:
+                feedback.pushInfo(self.tr(
+                    '{attr_name} attribute found and removed'.format(
+                        attr_name=self.MAXELEVATTRIBUTE)
+                )
+                )
+                maxelevindex = fieldnumber
             else:
                 thefields.append(field)
             fieldnumber = fieldnumber + 1
@@ -196,6 +211,7 @@ class Climb(QgisAlgorithm):
             maxelev = float('-Infinity')
             # In case of multigeometries we need to do the parts
             parts = feature.geometry().constParts()
+            partnumber = 0
             for part in parts:
                 # Calculate the climb
                 first = True
@@ -203,7 +219,13 @@ class Climb(QgisAlgorithm):
                 for idx, v in enumerate(part.vertices()):
                     zval = v.z()
                     if math.isnan(zval):
-                        no_z_nodes.append(idx)
+                        no_z_nodes.append(self.tr(
+                            'Feature: {feature_id}, part: {part_id}, point: {point_id}'.format(
+                                feature_id=feature.id(),
+                                part_id=partnumber,
+                                point_id=idx)
+                        )
+                        )
                         continue
                     if first:
                         prevz = zval
@@ -223,6 +245,7 @@ class Climb(QgisAlgorithm):
                     prevz = zval
                 totalclimb = totalclimb + climb
                 totaldescent = totaldescent + descent
+                partnumber += 1
             # Set the attribute values
             attrs = feature.attributes()
             outattrs = []
@@ -231,7 +254,9 @@ class Climb(QgisAlgorithm):
                 # Skip attributes from the input layer that had names
                 # that were equal to the generated ones
                 if not (attrindex == climbindex or
-                        attrindex == descentindex):
+                        attrindex == descentindex or
+                        attrindex == minelevindex or
+                        attrindex == maxelevindex):
                     outattrs.append(attr)
                 attrindex = attrindex + 1
             # feature.setAttributes(outattrs + [climb, descent])
@@ -240,9 +265,9 @@ class Climb(QgisAlgorithm):
             # Add a feature to the sink
             sink.addFeature(feature, QgsFeatureSink.FastInsert)
             if minelevation > minelev:
-                    minelevation = minelev
+                minelevation = minelev
             if maxelevation < maxelev:
-                    maxelevation = maxelev
+                maxelevation = maxelev
             # Update the progress bar
             if fcount > 0:
                 feedback.setProgress(int(100 * current / fcount))
