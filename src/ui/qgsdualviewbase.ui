@@ -144,6 +144,9 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
+           <property name="spacing">
+            <number>1</number>
+           </property>
            <item>
             <widget class="QToolButton" name="mFirstFeatureButton">
              <property name="maximumSize">
@@ -256,71 +259,64 @@
             </spacer>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <property name="spacing">
-              <number>0</number>
+            <widget class="QToolButton" name="mFlashButton">
+             <property name="toolTip">
+              <string>Highlight currently edited feature on map</string>
              </property>
-             <item>
-              <widget class="QToolButton" name="mFlashButton">
-               <property name="toolTip">
-                <string>Highlight currently edited feature on map</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/mActionHighlightFeature.svg</normaloff>:/images/themes/default/mActionHighlightFeature.svg</iconset>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="mAutoPanButton">
-               <property name="toolTip">
-                <string>Automatically pan to currently edited feature</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/mActionPanToSelected.svg</normaloff>:/images/themes/default/mActionPanToSelected.svg</iconset>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="mAutoZoomButton">
-               <property name="toolTip">
-                <string>Automatically zoom to currently edited feature</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionHighlightFeature.svg</normaloff>:/images/themes/default/mActionHighlightFeature.svg</iconset>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="autoRaise">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mAutoPanButton">
+             <property name="toolTip">
+              <string>Automatically pan to currently edited feature</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionPanTo.svg</normaloff>:/images/themes/default/mActionPanTo.svg</iconset>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="autoRaise">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mAutoZoomButton">
+             <property name="toolTip">
+              <string>Automatically zoom to currently edited feature</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionZoomTo.svg</normaloff>:/images/themes/default/mActionZoomTo.svg</iconset>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="autoRaise">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>

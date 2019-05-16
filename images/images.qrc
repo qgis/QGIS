@@ -329,6 +329,7 @@
         <file>themes/default/mActionOffsetPointSymbols.svg</file>
         <file>themes/default/mActionOptions.svg</file>
         <file>themes/default/mActionPan.svg</file>
+        <file>themes/default/mActionPanTo.svg</file>
         <file>themes/default/mActionPanToSelected.svg</file>
         <file>themes/default/mActionPinLabels.svg</file>
         <file>themes/default/mActionProcessSelected.svg</file>
@@ -408,6 +409,7 @@
         <file>themes/default/mActionZoomLast.svg</file>
         <file>themes/default/mActionZoomNext.svg</file>
         <file>themes/default/mActionZoomOut.svg</file>
+        <file>themes/default/mActionZoomTo.svg</file>
         <file>themes/default/mActionZoomToBookmark.svg</file>
         <file>themes/default/mActionZoomToLayer.svg</file>
         <file>themes/default/mActionZoomToSelected.svg</file>
