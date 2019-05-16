@@ -908,7 +908,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       {
         connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh );
       }
-      contextCopy = QgsExpressionContext( mLayoutLegendContext );
+      QgsExpressionContext contextCopy = QgsExpressionContext( mLayoutLegendContext );
       if ( symnode )
         name = symnode->evaluateLabel( contextCopy ); // removed name input; existing symbol/model tree have distinct names
       else
