@@ -6,7 +6,6 @@ IF(WITH_QSPATIALITE)
 ENDIF(WITH_QSPATIALITE)
 
 SET(SPATIALITE_SRCS
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   qgsspatialiteprovider.cpp
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
