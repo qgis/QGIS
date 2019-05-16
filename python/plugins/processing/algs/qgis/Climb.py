@@ -268,7 +268,11 @@ class Climb(QgisAlgorithm):
             if fcount > 0:
                 feedback.setProgress(int(100 * current / fcount))
 
-        feedback.pushInfo(self.tr('Following nodes miss Z value ') + str(no_z_nodes))
+        feedback.pushInfo(self.tr(
+            'The following points to not have Z values: {no_z_report}'.format(
+                no_z_report=str(no_z_nodes))
+        )
+        )
         # Return the results
         return {self.OUTPUT: dest_id, self.TOTALCLIMB: totalclimb,
                 self.TOTALDESCENT: totaldescent,
