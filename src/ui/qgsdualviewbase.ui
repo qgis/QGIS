@@ -145,7 +145,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QPushButton" name="mFirstFeatureButton">
+            <widget class="QToolButton" name="mFirstFeatureButton">
              <property name="maximumSize">
               <size>
                <width>24</width>
@@ -159,13 +159,13 @@
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/mActionDoubleArrowLeft.svg</normaloff>:/images/themes/default/mActionDoubleArrowLeft.svg</iconset>
              </property>
-             <property name="flat">
+             <property name="autoRaise">
               <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="mPreviousFeatureButton">
+            <widget class="QToolButton" name="mPreviousFeatureButton">
              <property name="maximumSize">
               <size>
                <width>24</width>
@@ -179,13 +179,13 @@
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/mActionArrowLeft.svg</normaloff>:/images/themes/default/mActionArrowLeft.svg</iconset>
              </property>
-             <property name="flat">
+             <property name="autoRaise">
               <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="mNextFeatureButton">
+            <widget class="QToolButton" name="mNextFeatureButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -205,13 +205,13 @@
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/mActionArrowRight.svg</normaloff>:/images/themes/default/mActionArrowRight.svg</iconset>
              </property>
-             <property name="flat">
+             <property name="autoRaise">
               <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="mLastFeatureButton">
+            <widget class="QToolButton" name="mLastFeatureButton">
              <property name="maximumSize">
               <size>
                <width>24</width>
@@ -225,7 +225,7 @@
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/mActionDoubleArrowRight.svg</normaloff>:/images/themes/default/mActionDoubleArrowRight.svg</iconset>
              </property>
-             <property name="flat">
+             <property name="autoRaise">
               <bool>true</bool>
              </property>
             </widget>
@@ -275,12 +275,15 @@
                <property name="checkable">
                 <bool>true</bool>
                </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
-              <widget class="QToolButton" name="mAutoZoomButton">
+              <widget class="QToolButton" name="mAutoPanButton">
                <property name="toolTip">
-                <string>automatically zoom to currently edited feature</string>
+                <string>Automatically pan to currently edited feature</string>
                </property>
                <property name="text">
                 <string/>
@@ -292,12 +295,15 @@
                <property name="checkable">
                 <bool>true</bool>
                </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
-              <widget class="QToolButton" name="mAutoPanButton">
+              <widget class="QToolButton" name="mAutoZoomButton">
                <property name="toolTip">
-                <string>automatically pan to currently edited feature</string>
+                <string>Automatically zoom to currently edited feature</string>
                </property>
                <property name="text">
                 <string/>
@@ -307,6 +313,9 @@
                  <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
                </property>
                <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="autoRaise">
                 <bool>true</bool>
                </property>
               </widget>
