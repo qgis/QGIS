@@ -571,13 +571,13 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QString cacheKey;
     QgsExpression subExp( subExpression );
     QgsExpression filterExp( parameters.filter );
-    String filterExtent;
+    QString filterExtent;
     if ( !parameters.filter.isEmpty() )
     {
-      if ( parameters.filter.contains("map_extent") )
-        filterExtent = context.variable( "map_extent" ).asWkt();
-      else if ( parameters.filter.contains("atlas_geometry") )
-        filterExtent = context.variable( "atlas_geometry" ).asWkt();
+      if ( parameters.filter.contains( "map_extent" ) )
+        filterExtent = context->variable( "map_extent" ).asWkt();
+      else if ( parameters.filter.contains( "atlas_geometry" ) )
+        filterExtent = context->variable( "atlas_geometry" ).asWkt();
       else
         filterExtent = QString();
     }
@@ -586,7 +586,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
 
     QgsString symbolId;
     if ( context->indexOfScope( "Symbol scope" ) != -1 )
-      symbolId = context.variable( "symbol_id" )
+      symbolId = context->variable( "symbol_id" ).toString();
     else
       symbolId = QStringLiteral( "0" );
 
@@ -612,8 +612,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     subContext.appendScope( subScope );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
 
-    if ( context->indexOfScope( "Symbol scope" ) == -1 )
-      context->setCachedValue( cacheKey, result );
+    context->setCachedValue( cacheKey, result );
   }
   else
   {
@@ -717,10 +716,10 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   QString filterExtent;
   if ( !parameters.filter.isEmpty() )
   {
-    if ( parameters.filter.contains("map_extent") )
-      filterExtent = context.variable( "map_extent" ).asWkt();
-    else if ( parameters.filter.contains("atlas_geometry") )
-      filterExtent = context.variable( "atlas_geometry" ).asWkt();
+    if ( parameters.filter.contains( "map_extent" ) )
+      filterExtent = context->variable( "map_extent" ).asWkt();
+    else if ( parameters.filter.contains( "atlas_geometry" ) )
+      filterExtent = context->variable( "atlas_geometry" ).asWkt();
     else
       filterExtent = QString();
   }
@@ -729,7 +728,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
   QgsString symbolId;
   if ( context->indexOfScope( "Symbol scope" ) != -1 )
-    symbolId = context.variable( "symbol_id" )
+    symbolId = context->variable( "symbol_id" ).toString();
   else
     symbolId = QStringLiteral( "0" );
 
