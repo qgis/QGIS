@@ -828,19 +828,19 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   QString extent;
   if ( !parameters.filter.isEmpty() )
   {
-    if ( parameters.filter.contains("map_extent") )
-      extent = context.variable( "map_extent" ).asWkt();
-    else if ( parameters.filter.contains("atlas_geometry") )
-      extent = context.variable( "atlas_geometry" ).asWkt();
+    if ( parameters.filter.contains( "map_extent" ) )
+      extent = context->variable( "map_extent" ).toString();
+    else if ( parameters.filter.contains( "atlas_geometry" ) )
+      extent = context->variable( "atlas_geometry" ).toString();
     else
       extent = QString();
   }
   else
     extent = QString();
 
-  QgsString symbolId;
+  QString symbolId;
   if ( context->indexOfScope( "Symbol scope" ) != -1 )
-    symbolId = context.variable( "symbol_id" )
+    symbolId = context->variable( "symbol_id" ).toString();
   else
     symbolId = QStringLiteral( "0" );
   // build up filter with group by
