@@ -32,6 +32,7 @@ class QgsProject;
 class QgsServerApiContext;
 
 /**
+ * \ingroup server
  * Server API endpoint abstract base class.
  *
  * An API must have a name and a (possibly empty) version and define a
@@ -68,7 +69,12 @@ class SERVER_EXPORT QgsServerApi
 
   public:
 
+    /**
+     * Creates a QgsServerApi object
+     */
     QgsServerApi( ) = default;
+
+
     virtual ~QgsServerApi() = default;
 
     /**

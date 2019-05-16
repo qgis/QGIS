@@ -67,6 +67,8 @@ The registry takes ownership of services and will call 'delete' on cleanup
 Registers the :py:class:`QgsServerApi` ``api``
 
 The registry takes ownership of services and will call 'delete' on cleanup
+
+.. versionadded:: 3.10
 %End
 
     int unregisterApi( const QString &name, const QString &version = QString() );
@@ -80,8 +82,9 @@ Unregister API from its name and version
 
 If the version is not specified then all versions from the specified API
 are unloaded
-%End
 
+.. versionadded:: 3.10
+%End
 
 
     int unregisterService( const QString &name, const QString &version = QString() );

@@ -83,6 +83,7 @@ class SERVER_EXPORT QgsServiceRegistry
      * Registers the QgsServerApi \a api
      *
      * The registry takes ownership of services and will call 'delete' on cleanup
+     * \since QGIS 3.10
      */
     void registerApi( QgsServerApi *api SIP_TRANSFER );
 
@@ -95,10 +96,14 @@ class SERVER_EXPORT QgsServiceRegistry
      *
      * If the version is not specified then all versions from the specified API
      * are unloaded
+     * \since QGIS 3.10
      */
     int unregisterApi( const QString &name, const QString &version = QString() );
 
-
+    /**
+     * Searchs the API register for an API matching the \a request and returns a (possibly NULL) pointer to it.
+     * \since QGIS 3.10
+     */
     QgsServerApi *getApiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
 
     /**

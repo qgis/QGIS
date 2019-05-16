@@ -803,14 +803,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
 
     /**
-     * Retrieve a list of matching registered layers by layer short name with a specified layer type,
+     * Retrieve a list of matching registered layers by layer \a shortName with a specified layer type,
      * if layer's short name is empty a match with layer's name is attempted.
      *
      * \param shortName short name of layers to match,
-     * \note by default short name is equal to the layer name
      * \returns list of matching layers
      * \see mapLayer()
      * \see mapLayers()
+     * \see shortName()
      * \note not available in Python bindings
      * \since QGIS 3.10
      */

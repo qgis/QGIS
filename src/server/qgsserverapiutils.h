@@ -34,7 +34,11 @@ class QgsVectorLayer;
 using json = nlohmann::json;
 #endif
 
-
+/**
+ * \ingroup server
+ * The QgsServerApiUtils class contains helper functions to handle API common operations.
+ * \since QGIS 3.10
+ */
 class SERVER_EXPORT QgsServerApiUtils
 {
 

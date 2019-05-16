@@ -148,7 +148,7 @@ void CollectionsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiCon
 
   if ( context->project() )
   {
-    // TODO: inclue meshes?
+    // TODO: include meshes?
     for ( const auto &layer : context->project()->layers<QgsVectorLayer *>( ) )
     {
       const auto title { layer->title().isEmpty() ? layer->name().toStdString() : layer->title().toStdString() };

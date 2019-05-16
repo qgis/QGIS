@@ -24,11 +24,13 @@ class QgsServerInterface;
 class QgsProject;
 
 /**
+ * \ingroup server
  * The QgsServerApiContext class encapsulates the resources for a particular client request:
- * the request and response objects, the project (might be null) and the server interface.
+ * the request and response objects, the project (might be NULL) and the server interface.
  *
  * QgsServerApiContext is lightweight copyable object meant to be passed along the request handlers chain.
  *
+ * \since QGIS 3.10
  */
 class SERVER_EXPORT QgsServerApiContext
 {
@@ -38,18 +40,36 @@ class SERVER_EXPORT QgsServerApiContext
     * QgsServerApiContext constructor
     * \param request the incoming request
     * \param response the response
-    * \param project the project (might be null)
+    * \param project the project (might be NULL)
     * \param serverInterface the server interface
     */
     QgsServerApiContext( const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface );
 
+    /**
+     * Returns the server request object
+     */
     const QgsServerRequest *request() const;
 
+    /**
+     * Returns the server response object
+     */
     QgsServerResponse *response() const;
 
+    /**
+     * Returns the (possibly NULL) project
+     * \see setProject()
+     */
     const QgsProject *project() const;
+
+    /**
+     * Sets the project to \a project
+     * \see project()
+     */
     void setProject( const QgsProject *project );
 
+    /**
+     * Returns the server interface
+     */
     QgsServerInterface *serverInterface() const;
 
   private:

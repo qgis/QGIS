@@ -291,7 +291,7 @@ namespace QgsWfs3
     // Add extra path
     url.setPath( url.path() + extraPath );
 
-    // (re-)add extention
+    // (re-)add extension
     // JSON is the default anyway, we don'n need to add it
     if ( ! extension.isEmpty() &&  extension != QStringLiteral( "json" ) )
     {
