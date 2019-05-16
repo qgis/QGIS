@@ -202,8 +202,6 @@ namespace QgsWfs3
 
     private:
 
-      QgsServerInterface *mServerIface = nullptr;
-
       std::vector<std::unique_ptr<Handler>> mHandlers;
 
       // QgsServerApi interface

@@ -30,6 +30,7 @@
 class QgsServerResponse;
 class QgsProject;
 class QgsServerApiContext;
+class QgsServerInterface;
 
 /**
  * \ingroup server
@@ -52,8 +53,8 @@ class QgsServerApiContext;
  *     def executeRequest(self, request_context):
  *       request_context.response().write(b"\"Test API\"")
  *
- *   api = API()
  *   server = QgsServer()
+ *   api = API(server.serverInterface())
  *   server.serverInterface().serviceRegistry().registerApi(api)
  * \endcode
  *
@@ -72,8 +73,7 @@ class SERVER_EXPORT QgsServerApi
     /**
      * Creates a QgsServerApi object
      */
-    QgsServerApi( ) = default;
-
+    QgsServerApi( QgsServerInterface *serverIface );
 
     virtual ~QgsServerApi() = default;
 
@@ -103,7 +103,17 @@ class SERVER_EXPORT QgsServerApi
      */
     virtual void executeRequest( QgsServerApiContext *context ) const = 0;
 
+    /**
+     * Returns the server interface
+     */
+    QgsServerInterface *serverIface() const;
+
+  private:
+
+    QgsServerInterface *mServerIface = nullptr;
 };
 
 
 #endif // QGSSERVERAPI_H
+
+

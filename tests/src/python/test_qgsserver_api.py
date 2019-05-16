@@ -110,7 +110,7 @@ class QgsServerAPITest(QgsServerTestBase):
             def executeRequest(self, request_context):
                 request_context.response().write(b"\"Test API\"")
 
-        api = API()
+        api = API(self.server.serverInterface())
         self.server.serverInterface().serviceRegistry().registerApi(api)
         request = QgsBufferServerRequest('http://server.qgis.org/testapi')
         self.compareApi(request, None, 'test_api.json')

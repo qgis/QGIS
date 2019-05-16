@@ -56,8 +56,8 @@ namespace QgsWfs3
     mHandlers.emplace_back( std::move( handler ) );
   }
 
-  Api::Api( QgsServerInterface *serverIface )
-    : mServerIface( serverIface )
+  Api::Api( QgsServerInterface *serverIface ):
+    QgsServerApi( serverIface )
   {
     registerHandler<CollectionsItemsHandler>();
     registerHandler<CollectionsFeatureHandler>();
@@ -100,7 +100,6 @@ namespace QgsWfs3
   {
     return contentTypeToString( ct ).toLower();
   }
-
 
   void Handler::write( const json &data,  const QgsServerRequest *request, QgsServerResponse *response ) const
   {
