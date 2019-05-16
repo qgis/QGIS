@@ -1,0 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverapiutils.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsServerApiUtils
+{
+%Docstring
+The QgsServerApiUtils class contains helper functions to handle API common operations.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverapiutils.h"
+%End
+  public:
+
+    static QgsRectangle parseBbox( const QString &bbox );
+%Docstring
+Parses a comma separated ``bbox`` into a (possibily empty) :py:class:`QgsRectangle`
+
+.. note::
+
+   Z values (i.e. a 6 elements bbox) are silently discarded
+%End
+
+
+    static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
+%Docstring
+Pasrses the CRS URI ``bboxCrs`` (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
+%End
+
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverapiutils.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

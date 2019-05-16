@@ -1,0 +1,74 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverapicontext.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsServerApiContext
+{
+%Docstring
+The QgsServerApiContext class encapsulates the resources for a particular client request:
+the request and response objects, the project (might be NULL) and the server interface.
+
+QgsServerApiContext is lightweight copyable object meant to be passed along the request handlers chain.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsserverapicontext.h"
+%End
+  public:
+
+    QgsServerApiContext( const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface );
+%Docstring
+QgsServerApiContext constructor
+
+:param request: the incoming request
+:param response: the response
+:param project: the project (might be NULL)
+:param serverInterface: the server interface
+%End
+
+    const QgsServerRequest *request() const;
+%Docstring
+Returns the server request object
+%End
+
+    QgsServerResponse *response() const;
+%Docstring
+Returns the server response object
+%End
+
+    const QgsProject *project() const;
+%Docstring
+Returns the (possibly NULL) project
+
+.. seealso:: :py:func:`setProject`
+%End
+
+    void setProject( const QgsProject *project );
+%Docstring
+Sets the project to ``project``
+
+.. seealso:: :py:func:`project`
+%End
+
+    QgsServerInterface *serverInterface() const;
+%Docstring
+Returns the server interface
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverapicontext.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
