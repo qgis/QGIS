@@ -101,7 +101,7 @@ class SERVER_EXPORT QgsServiceRegistry
     int unregisterApi( const QString &name, const QString &version = QString() );
 
     /**
-     * Searchs the API register for an API matching the \a request and returns a (possibly NULL) pointer to it.
+     * Search the API register for an API matching the \a request and returns a (possibly NULL) pointer to it.
      * \since QGIS 3.10
      */
     QgsServerApi *getApiForRequest( const QgsServerRequest &request ) const SIP_SKIP;

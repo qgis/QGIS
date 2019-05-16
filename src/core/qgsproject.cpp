@@ -2715,8 +2715,15 @@ QList<QgsMapLayer *> QgsProject::mapLayersByShortName( const QString &shortName 
   const auto constMapLayers { mLayerStore->mapLayers() };
   for ( const auto &l : constMapLayers )
   {
-    if ( l->shortName() == shortName )
+    if ( ! l->shortName().isEmpty() )
+    {
+      if ( l->shortName() == shortName )
+        layers << l;
+    }
+    else if ( l->name() == shortName )
+    {
       layers << l;
+    }
   }
   return layers;
 }

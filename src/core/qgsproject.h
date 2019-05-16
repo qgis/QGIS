@@ -757,9 +757,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 
     /**
-     * Retrieve a list of matching registered layers by layer short name.
-     * \param shortName short name of layers to match,
-     * \note by default short name is equal to the layer name
+     * Retrieve a list of matching registered layers by layer \a shortName.
+     * If layer's short name is empty a match with layer's name is attempted.
+     *
      * \returns list of matching layers
      * \see mapLayer()
      * \see mapLayers()
@@ -810,7 +810,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \returns list of matching layers
      * \see mapLayer()
      * \see mapLayers()
-     * \see shortName()
      * \note not available in Python bindings
      * \since QGIS 3.10
      */

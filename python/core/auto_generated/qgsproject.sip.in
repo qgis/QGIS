@@ -749,13 +749,8 @@ Retrieve a list of matching registered layers by layer name.
 
     QList<QgsMapLayer *> mapLayersByShortName( const QString &shortName ) const;
 %Docstring
-Retrieve a list of matching registered layers by layer short name.
-
-:param shortName: short name of layers to match,
-
-.. note::
-
-   by default short name is equal to the layer name
+Retrieve a list of matching registered layers by layer ``shortName``.
+If layer's short name is empty a match with layer's name is attempted.
 
 :return: list of matching layers
 
