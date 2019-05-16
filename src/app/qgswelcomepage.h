@@ -19,6 +19,7 @@
 #include <QWidget>
 #include <QTextBrowser>
 #include <QStandardItemModel>
+#include <QFileSystemWatcher>
 
 #include "qgsrecentprojectsitemsmodel.h"
 
@@ -43,8 +44,10 @@ class QgsWelcomePage : public QWidget
 
   private slots:
     void recentProjectItemActivated( const QModelIndex &index );
+    void templateProjectItemActivated( const QModelIndex &index );
     void versionInfoReceived();
     void showContextMenuForProjects( QPoint point );
+    void showContextMenuForTemplates( QPoint point );
 
   private:
     QgsRecentProjectItemsModel *mRecentProjectsModel = nullptr;

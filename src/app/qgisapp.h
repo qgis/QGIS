@@ -1062,6 +1062,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void triggerCrashHandler();
 
+    //! Create a new file from a template project
+    bool fileNewFromTemplate( const QString &fileName );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -1316,8 +1319,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileOpenAfterLaunch();
     //! After project read, set any auto-opened project as successful
     void fileOpenedOKAfterLaunch();
-    //! Create a new file from a template project
-    bool fileNewFromTemplate( const QString &fileName );
     void fileNewFromTemplateAction( QAction *qAction );
     void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones

@@ -23,12 +23,14 @@
 #include "qgsnative.h"
 #include "qgsstringutils.h"
 #include "qgsfileutils.h"
+#include "qgstemplateprojectsmodel.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
 #include <QDesktopServices>
 #include <QTextBrowser>
+#include <QMessageBox>
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
@@ -68,26 +70,29 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   centerLayout->addWidget( mRecentProjectsListView, 1, 0 );
 
-  layout->addWidget(centerContainer);
+  layout->addWidget( centerContainer );
 
   QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Templates" ) ) );
   templatesTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
   centerLayout->addWidget( templatesTitle, 0, 1 );
 
-  mTemplateProjectsModel = new QStandardItemModel;
+  mTemplateProjectsModel = new QgsTemplateProjectsModel( this );
   mTemplateProjectsListView = new QListView();
   mTemplateProjectsListView->setResizeMode( QListView::Adjust );
   mTemplateProjectsListView->setModel( mTemplateProjectsModel );
+  mTemplateProjectsListView->setItemDelegate( new QgsRecentProjectItemDelegate( mTemplateProjectsListView ) );
+  mTemplateProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mTemplateProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForTemplates );
   centerLayout->addWidget( mTemplateProjectsListView, 1, 1 );
 
   mVersionInformation = new QTextBrowser;
   mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
   mVersionInformation->setReadOnly( true );
   mVersionInformation->setOpenExternalLinks( true );
-  mVersionInformation->setStyleSheet( QStringLiteral("QTextEdit { background-color: #dff0d8; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+  mVersionInformation->setStyleSheet( QStringLiteral( "QTextEdit { background-color: #dff0d8; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
                                       "QScrollBar { background-color: rgba(0,0,0,0); } "
                                       "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
-                                      "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } ") );
+                                      "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " ) );
 
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
@@ -101,6 +106,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   }
 
   connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::recentProjectItemActivated );
+  connect( mTemplateProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::templateProjectItemActivated );
 }
 
 QgsWelcomePage::~QgsWelcomePage()
@@ -116,6 +122,11 @@ void QgsWelcomePage::setRecentProjects( const QList<QgsRecentProjectItemsModel::
 void QgsWelcomePage::recentProjectItemActivated( const QModelIndex &index )
 {
   QgisApp::instance()->openProject( mRecentProjectsModel->data( index, Qt::ToolTipRole ).toString() );
+}
+
+void QgsWelcomePage::templateProjectItemActivated( const QModelIndex &index )
+{
+  QgisApp::instance()->fileNewFromTemplate( index.data( QgsRecentProjectItemsModel::NativePathRole ).toString() );
 }
 
 void QgsWelcomePage::versionInfoReceived()
@@ -204,4 +215,39 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   menu->addAction( removeProjectAction );
 
   menu->popup( mapToGlobal( point ) );
+  connect( menu, &QMenu::aboutToHide, menu, &QMenu::deleteLater );
+}
+
+void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
+{
+  QModelIndex index = mTemplateProjectsListView->indexAt( point );
+  if ( !index.isValid() )
+    return;
+
+  QFileInfo fileInfo( index.data( QgsRecentProjectItemsModel::NativePathRole ).toString() );
+
+  QMenu *menu = new QMenu();
+
+  if ( fileInfo.isWritable() )
+  {
+    QAction *deleteFileAction = new QAction( tr( "Delete template" ) );
+    connect( deleteFileAction, &QAction::triggered, this, [this, fileInfo, index]
+    {
+      QMessageBox msgBox( this );
+      msgBox.setWindowTitle( tr( "Delete template" ) );
+      msgBox.setText( tr( "Do you want to delete the template %1? This action can not be undone." ).arg( index.data( QgsRecentProjectItemsModel::TitleRole ).toString() ) );
+      auto deleteButton = msgBox.addButton( tr( "Delete" ), QMessageBox::YesRole );
+      msgBox.addButton( QMessageBox::Cancel );
+      msgBox.setIcon( QMessageBox::Question );
+      msgBox.exec();
+      if ( msgBox.clickedButton() == deleteButton )
+      {
+        QFile file( fileInfo.filePath() );
+        file.remove();
+      }
+    } );
+    menu->addAction( deleteFileAction );
+  }
+
+  menu->popup( mTemplateProjectsListView->mapToGlobal( point ) );
 }

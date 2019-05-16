@@ -72,6 +72,7 @@ SET(QGIS_APP_SRCS
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
+  qgstemplateprojectsmodel.cpp
   qgsvectorlayerloadstyledialog.cpp
   qgsversioninfo.cpp
   qgsrecentprojectsitemsmodel.cpp
@@ -310,6 +311,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsstatusbarcoordinateswidget.h
   qgsstatusbarmagnifierwidget.h
   qgsstatusbarscalewidget.h
+  qgstemplateprojectsmodel.h
   qgsvectorlayerloadstyledialog.h
   qgsversioninfo.h
   qgsrecentprojectsitemsmodel.h

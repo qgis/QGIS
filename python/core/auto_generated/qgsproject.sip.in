@@ -976,6 +976,8 @@ Returns the current auxiliary storage.
 .. versionadded:: 3.0
 %End
 
+
+
     const QgsProjectMetadata &metadata() const;
 %Docstring
 Returns a reference to the project's metadata store.
@@ -1391,6 +1393,7 @@ Emitted when the project dirty status changes.
 
 .. versionadded:: 3.2
 %End
+
 
   public slots:
 
