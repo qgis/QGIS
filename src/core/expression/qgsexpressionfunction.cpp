@@ -588,7 +588,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     if ( context->indexOfScope( "Symbol scope" ) != -1 )
       symbolId = context->variable( "symbol_id" ).toString();
     else
-      symbolId = QStringLiteral( "0" );
+      symbolId = QString();
 
     if ( filterExp.referencedVariables().contains( QStringLiteral( "parent" ) )
          || filterExp.referencedVariables().contains( QString() )
@@ -730,7 +730,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   if ( context->indexOfScope( "Symbol scope" ) != -1 )
     symbolId = context->variable( "symbol_id" ).toString();
   else
-    symbolId = QStringLiteral( "0" );
+    symbolId = QString();
 
   FEAT_FROM_CONTEXT( context, f );
   parameters.filter = relation.getRelatedFeaturesFilter( f );
