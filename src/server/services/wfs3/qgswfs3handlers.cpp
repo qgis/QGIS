@@ -24,6 +24,8 @@
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QMimeDatabase>
+
 APIHandler::APIHandler()
 {
   path.setPattern( QStringLiteral( R"re(/api)re" ) );
@@ -319,6 +321,8 @@ void CollectionsItemsHandler::handleRequest( const QgsWfs3::Api *api, QgsServerA
     {
       throw QgsServerApiBadRequestError( QStringLiteral( "CRS is not valid" ) );
     }
+    // Apparently the standard set limits 0-10000 (and does not implement paging,
+    // so we do our own paging with "offset")
     auto offset { context->request()->queryParameter( QStringLiteral( "offset" ), QStringLiteral( "0" ) ).toInt( &ok ) };
     if ( offset < 0 || !ok )
     {
@@ -422,7 +426,7 @@ void CollectionsFeatureHandler::handleRequest( const QgsWfs3::Api *api, QgsServe
 
 StaticHandler::StaticHandler()
 {
-  path.setPattern( QStringLiteral( R"re(/static/(?<staticPath>.*)$)re" ) );
+  path.setPattern( QStringLiteral( R"re(/static/(?<staticFilePath>.*)$)re" ) );
   operationId = "static";
   linkTitle = "Serves static files";
   summary = "Serves static files";
@@ -433,5 +437,32 @@ StaticHandler::StaticHandler()
 
 void StaticHandler::handleRequest( const QgsWfs3::Api *api, QgsServerApiContext *context ) const
 {
+  Q_UNUSED( api );
 
+  const auto match { path.match( context->request()->url().path( ) ) };
+  if ( ! match.hasMatch() )
+  {
+    throw QgsServerApiNotFoundError( QStringLiteral( "Static file was not found" ) );
+  }
+
+  const auto staticFilePath { match.captured( QStringLiteral( "staticFilePath" ) ) };
+  // Calculate real path
+  const auto filePath { staticPath() + '/' + staticFilePath };
+  if ( ! QFile::exists( filePath ) )
+  {
+    throw QgsServerApiNotFoundError( QStringLiteral( "Static file %1 was not found" ).arg( staticFilePath ) );
+  }
+
+  QFile f( filePath );
+  if ( ! f.open( QIODevice::ReadOnly ) )
+  {
+    throw QgsServerApiInternalServerError( QStringLiteral( "Could not open static file %1" ).arg( staticFilePath ) );
+  }
+
+  const auto size { f.size() };
+  const auto content { f.readAll() };
+  const auto mimeType { QMimeDatabase().mimeTypeForFile( filePath )};
+  context->response()->setHeader( QStringLiteral( "Content-Type" ), mimeType.name() );
+  context->response()->setHeader( QStringLiteral( "Content-Length" ), QString::number( size ) );
+  context->response()->write( content );
 }

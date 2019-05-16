@@ -63,6 +63,7 @@ namespace QgsWfs3
     registerHandler<CollectionsFeatureHandler>();
     registerHandler<CollectionsHandler>();
     registerHandler<ConformanceHandler>();
+    registerHandler<StaticHandler>();
     registerHandler<APIHandler>();
     registerHandler<LandingPageHandler>();
   }
@@ -103,7 +104,7 @@ namespace QgsWfs3
 
   void Handler::write( const json &data,  const QgsServerRequest *request, QgsServerResponse *response ) const
   {
-    // TODO: accept GML
+    // TODO: accept GML and XML?
     const auto contentType { contentTypeFromRequest( request ) };
 
     switch ( contentType )

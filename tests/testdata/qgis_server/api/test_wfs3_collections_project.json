@@ -3,20 +3,27 @@ Content-Type: application/json
 {
   "collections": [
     {
-      "CRS": "TODO",
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "http://www.opengis.net/def/crs/EPSG/0/4326"
+      ],
       "description": "A test vector layer with unicode òà",
-      "extent": "TODO",
+      "extent": {
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
+      },
       "links": [
         {
-          "href": "http://www.acme.com/wfs3/collections/testlayer%20%C3%A8%C3%A9/items",
+          "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items",
           "rel": "item",
-          "title": "A test vector layer",
-          "type": "application/geo+json"
-        },
-        {
-          "href": "http://www.acme.com/wfs3/collections/testlayer%20%C3%A8%C3%A9/concepts",
-          "rel": "item",
-          "title": "Describe A test vector layer",
+          "title": "A test vector layer as GeoJSON",
           "type": "application/geo+json"
         }
       ],
@@ -24,20 +31,27 @@ Content-Type: application/json
       "title": "A test vector layer"
     },
     {
-      "CRS": "TODO",
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "http://www.opengis.net/def/crs/EPSG/0/4326"
+      ],
       "description": "",
-      "extent": "TODO",
+      "extent": {
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
+      },
       "links": [
         {
-          "href": "http://www.acme.com/wfs3/collections/testlayer3/items",
+          "href": "http://server.qgis.org/wfs3/collections/testlayer3/items",
           "rel": "item",
-          "title": "testlayer3",
-          "type": "application/geo+json"
-        },
-        {
-          "href": "http://www.acme.com/wfs3/collections/testlayer3/concepts",
-          "rel": "item",
-          "title": "Describe testlayer3",
+          "title": "testlayer3 as GeoJSON",
           "type": "application/geo+json"
         }
       ],
@@ -45,20 +59,27 @@ Content-Type: application/json
       "title": "testlayer3"
     },
     {
-      "CRS": "TODO",
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "http://www.opengis.net/def/crs/EPSG/0/4326"
+      ],
       "description": "",
-      "extent": "TODO",
+      "extent": {
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
+      },
       "links": [
         {
-          "href": "http://www.acme.com/wfs3/collections/testlayer2/items",
+          "href": "http://server.qgis.org/wfs3/collections/testlayer2/items",
           "rel": "item",
-          "title": "testlayer2",
-          "type": "application/geo+json"
-        },
-        {
-          "href": "http://www.acme.com/wfs3/collections/testlayer2/concepts",
-          "rel": "item",
-          "title": "Describe testlayer2",
+          "title": "testlayer2 as GeoJSON",
           "type": "application/geo+json"
         }
       ],
@@ -66,41 +87,55 @@ Content-Type: application/json
       "title": "testlayer2"
     },
     {
-      "CRS": "TODO",
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "http://www.opengis.net/def/crs/EPSG/0/4326"
+      ],
       "description": "A Layer with an abstract",
-      "extent": "TODO",
+      "extent": {
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
+      },
       "links": [
         {
-          "href": "http://www.acme.com/wfs3/collections/layer_with_short_name/items",
+          "href": "http://server.qgis.org/wfs3/collections/layer_with_short_name/items",
           "rel": "item",
-          "title": "A Layer with a short name",
-          "type": "application/geo+json"
-        },
-        {
-          "href": "http://www.acme.com/wfs3/collections/layer_with_short_name/concepts",
-          "rel": "item",
-          "title": "Describe A Layer with a short name",
+          "title": "A Layer with a short name as GeoJSON",
           "type": "application/geo+json"
         }
       ],
-      "name": "testlayer",
+      "name": "layer_with_short_name",
       "title": "A Layer with a short name"
     },
     {
-      "CRS": "TODO",
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "http://www.opengis.net/def/crs/EPSG/0/4326"
+      ],
       "description": "A test vector layer with unicode òà",
-      "extent": "TODO",
+      "extent": {
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
+      },
       "links": [
         {
-          "href": "http://www.acme.com/wfs3/collections/exclude_attribute/items",
+          "href": "http://server.qgis.org/wfs3/collections/exclude_attribute/items",
           "rel": "item",
-          "title": "A test vector layer",
-          "type": "application/geo+json"
-        },
-        {
-          "href": "http://www.acme.com/wfs3/collections/exclude_attribute/concepts",
-          "rel": "item",
-          "title": "Describe A test vector layer",
+          "title": "A test vector layer as GeoJSON",
           "type": "application/geo+json"
         }
       ],
@@ -108,20 +143,27 @@ Content-Type: application/json
       "title": "A test vector layer"
     },
     {
-      "CRS": "TODO",
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "http://www.opengis.net/def/crs/EPSG/0/4326"
+      ],
       "description": "A test vector layer with unicode òà",
-      "extent": "TODO",
+      "extent": {
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "spatial": [
+          [
+            8.203459307036344,
+            44.90139483904469,
+            8.203546993993488,
+            44.901482526001836
+          ]
+        ]
+      },
       "links": [
         {
-          "href": "http://www.acme.com/wfs3/collections/fields_alias/items",
+          "href": "http://server.qgis.org/wfs3/collections/fields_alias/items",
           "rel": "item",
-          "title": "A test vector layer",
-          "type": "application/geo+json"
-        },
-        {
-          "href": "http://www.acme.com/wfs3/collections/fields_alias/concepts",
-          "rel": "item",
-          "title": "Describe A test vector layer",
+          "title": "A test vector layer as GeoJSON",
           "type": "application/geo+json"
         }
       ],
@@ -129,14 +171,18 @@ Content-Type: application/json
       "title": "A test vector layer"
     }
   ],
+  "crs": [
+    "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+    "http://www.opengis.net/def/crs/EPSG/0/4326"
+  ],
   "links": [
     {
-      "href": "http://www.acme.com/wfs3/collections",
+      "href": "http://server.qgis.org/wfs3/collections",
       "rel": "data",
       "title": "this document as JSON"
     },
     {
-      "href": "http://www.acme.com/wfs3/collections.html",
+      "href": "http://server.qgis.org/wfs3/collections.html",
       "rel": "alternate",
       "title": "this document as HTML"
     }

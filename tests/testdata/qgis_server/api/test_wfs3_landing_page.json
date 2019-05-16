@@ -3,25 +3,25 @@ Content-Type: application/json
 {
   "links": [
     {
-      "href": "http://www.acme.com/wfs3",
+      "href": "http://server.qgis.org/wfs3",
       "rel": "self",
       "title": "Landing page",
       "type": "text/html"
     },
     {
-      "href": "http://www.acme.com/wfs3/collections",
+      "href": "http://server.qgis.org/wfs3/collections",
       "rel": "data",
       "title": "Metadata about the feature collections",
       "type": "application/json"
     },
     {
-      "href": "http://www.acme.com/wfs3/conformance",
+      "href": "http://server.qgis.org/wfs3/conformance",
       "rel": "conformance",
       "title": "WFS 3.0 conformance classes",
       "type": "application/json"
     },
     {
-      "href": "http://www.acme.com/wfs3/api",
+      "href": "http://server.qgis.org/wfs3/api",
       "rel": "service",
       "title": "API definition",
       "type": "application/openapi+json;version=3.0"

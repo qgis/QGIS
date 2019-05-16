@@ -34,7 +34,8 @@ struct APIHandler: public QgsWfs3::Handler
 
 
 /**
- * The StaticHandler struct serves static files from resources/server/api/wfs3/static
+ * The StaticHandler struct serves static files from the static path (resources/server/api/wfs3/static)
+ * \see staticPath()
  */
 struct StaticHandler: public QgsWfs3::Handler
 {

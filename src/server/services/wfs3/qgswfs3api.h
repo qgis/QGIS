@@ -136,6 +136,7 @@ namespace QgsWfs3
 
     /**
      * Returns the absolute path to the directory where static resources for this handler are stored
+     * TODO: make this path configurable by env and/or settings
      */
     const QString staticPath() const;
 

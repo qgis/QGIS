@@ -32,7 +32,35 @@ class QgsProject;
 class QgsServerApiContext;
 
 /**
- * Server API endpoint abstract base class
+ * Server API endpoint abstract base class.
+ *
+ * An API must have a name and a (possibly empty) version and define a
+ * (possibly empty) root path (e.g. "/wfs3").
+ *
+ * After the API has been registered to the server API registry:
+ *
+ * \code{.py}
+ *   class API(QgsServerApi):
+ *
+ *     def name(self):
+ *       return "Test API"
+ *
+ *     def rootPath(self):
+ *       return "/testapi"
+ *
+ *     def executeRequest(self, request_context):
+ *       request_context.response().write(b"\"Test API\"")
+ *
+ *   api = API()
+ *   server = QgsServer()
+ *   server.serverInterface().serviceRegistry().registerApi(api)
+ * \endcode
+ *
+ * the incoming calls with an URL path starting with the API root path
+ * will be routed to the first matching API and executeRequest() method
+ * of the API will be invoked.
+ *
+ *
  * \since QGIS 3.10
  */
 class SERVER_EXPORT QgsServerApi
@@ -44,18 +72,18 @@ class SERVER_EXPORT QgsServerApi
     virtual ~QgsServerApi() = default;
 
     /**
-     * \returns the name of the API
+     * Returns the API name
      */
     virtual const QString name() const = 0;
 
     /**
-     * \returns the version of the service
+     * Returns the version of the service
      * \note the default implementation returns an empty string
      */
     virtual const QString version() const { return QString(); }
 
     /**
-     * \returns the root path for the API
+     * Returns the root path for the API
      */
     virtual const QString rootPath() const = 0;
 
@@ -65,8 +93,7 @@ class SERVER_EXPORT QgsServerApi
     virtual bool allowMethod( QgsServerRequest::Method ) const { return true; }
 
     /**
-     * executeRequest executes a request by passing the given \a context to the handlers.
-     * \note the method does not take ownership of the context
+     * Executes a request by passing the given \a context to the handlers.
      */
     virtual void executeRequest( QgsServerApiContext *context ) const = 0;
 
