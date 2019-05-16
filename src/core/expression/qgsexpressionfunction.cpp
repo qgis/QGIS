@@ -596,11 +596,11 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
          || subExp.referencedVariables().contains( QString() ) )
     {
       cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5%6:%7:%8:%9" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
-                 QString::number( context->feature().id() ), QString( qHash( context->feature() ) ), orderBy, filterExtent, SymbolId );
+                 QString::number( context->feature().id() ), QString( qHash( context->feature() ) ), orderBy, filterExtent, symbolId );
     }
     else
     {
-      cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5:%6:%7" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter, orderBy, filterExtent, SymbolId );
+      cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5:%6:%7" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter, orderBy, filterExtent, symbolId );
     }
 
     if ( context && context->hasCachedValue( cacheKey ) )
@@ -713,35 +713,14 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
     }
   }
 
-  QString filterExtent;
-  if ( !parameters.filter.isEmpty() )
-  {
-    if ( parameters.filter.contains( "map_extent" ) )
-      filterExtent = context->variable( "map_extent" ).toString();
-    else if ( parameters.filter.contains( "atlas_geometry" ) )
-      filterExtent = context->variable( "atlas_geometry" ).toString();
-    else
-      filterExtent = QString();
-  }
-  else
-    filterExtent = QString();
-
-  QString symbolId;
-  if ( context->indexOfScope( "Symbol scope" ) != -1 )
-    symbolId = context->variable( "symbol_id" ).toString();
-  else
-    symbolId = QString();
-
   FEAT_FROM_CONTEXT( context, f );
   parameters.filter = relation.getRelatedFeaturesFilter( f );
 
-  QString cacheKey = QStringLiteral( "relagg:%1:%2:%3:%4:%5:%6:%7" ).arg( vl->id(),
+  QString cacheKey = QStringLiteral( "relagg:%1:%2:%3:%4:%5" ).arg( vl->id(),
                      QString::number( static_cast< int >( aggregate ) ),
                      subExpression,
                      parameters.filter,
-                     orderBy,
-                     filterExtent,
-                     SymbolId );
+                     orderBy );
   if ( context && context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
 
@@ -866,7 +845,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
                      orderBy,
                      extent,
                      symbolId );
-  if ( context && context->hasCachedValue( cacheKey ) && context->indexOfScope( "Symbol scope" ) != -1 )
+  if ( context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
 
   QgsExpressionContext subContext( *context );
@@ -879,7 +858,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   }
 
   // cache value
-  if ( context && context->indexOfScope( "Symbol scope" ) == -1 )
+  if ( context )
     context->setCachedValue( cacheKey, result );
 
   return result;
