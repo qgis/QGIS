@@ -82,9 +82,6 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         if ( zip_fread( file, buf.get(), len ) != -1 )
         {
           QString fileName( stat.name );
-          // remove leading `/` e.g. `/project.qgs` -> `project.qgs`
-          while ( fileName.startsWith( QDir::separator() ) )
-            fileName.remove( 0, 1 );
           QFileInfo newFile( QDir( dir ), fileName );
 
           // Create path for a new file if it does not exist.
@@ -132,7 +129,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
   return true;
 }
 
-bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files, const QString &root )
+bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
 {
   if ( zipFilename.isEmpty() )
   {
@@ -156,22 +153,15 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files, con
         return false;
       }
 
-      const QByteArray filePathUtf8 = file.toUtf8();
-      zip_source *src = zip_source_file( z, filePathUtf8.constData(), 0, 0 );
+      const QByteArray fileNamePtr = file.toUtf8();
+      zip_source *src = zip_source_file( z, fileNamePtr.constData(), 0, 0 );
       if ( src )
       {
-        QString fileName;
-        if ( root.isEmpty() || !file.startsWith( root ) )
-          fileName = fileInfo.fileName();
-        else
-          fileName = file.right( file.length() - root.length() );
-
-
-        const QByteArray fileNameUtf8 = fileName.toUtf8();
+        const QByteArray fileInfoPtr = fileInfo.fileName().toUtf8();
 #if LIBZIP_VERSION_MAJOR < 1
-        int rc = ( int ) zip_add( z, fileNameUtf8.constData(), src );
+        int rc = ( int ) zip_add( z, fileInfoPtr.constData(), src );
 #else
-        int rc = ( int ) zip_file_add( z, fileNameUtf8.constData(), src, 0 );
+        int rc = ( int ) zip_file_add( z, fileInfoPtr.constData(), src, 0 );
 #endif
         if ( rc == -1 )
         {

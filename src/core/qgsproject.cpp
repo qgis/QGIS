@@ -2763,25 +2763,9 @@ bool QgsProject::zip( const QString &filename )
     return false;
   }
 
-  QgsStringMap attachedFiles;
-  emit collectAttachedFiles( attachedFiles );
-
   // create the archive
   archive->addFile( qgsFile.fileName() );
   archive->addFile( asFileName );
-
-  // add additional collected attachment files
-  auto attachedFilesIterator = attachedFiles.constBegin();
-  while ( attachedFilesIterator != attachedFiles.constEnd() )
-  {
-    QString filepath = info.path() + QDir::separator() + attachedFilesIterator.key();
-    QDir().mkpath( QFileInfo( filepath ).dir().path() );
-    if ( QFile::copy( attachedFilesIterator.value(), filepath ) )
-      archive->addFile( filepath );
-    else
-      QgsMessageLog::logMessage( QStringLiteral( "Could not copy file '%1' to '%2'" ).arg( attachedFilesIterator.value(), filepath ) );
-    ++attachedFilesIterator;
-  }
 
   // zip
   if ( !archive->zip( filename ) )
@@ -2970,21 +2954,6 @@ const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 {
   return mAuxiliaryStorage.get();
-}
-
-QString QgsProject::attachedFile( const QString &fileName ) const
-{
-  return mArchive->dir() + QDir::separator() + fileName;
-}
-
-QgsStringMap QgsProject::attachedFiles() const
-{
-  QgsStringMap files;
-  QString dir = mArchive->dir();
-  const QStringList tempFiles = mArchive->files();
-  for ( const QString &tempFile : tempFiles )
-    files.insert( tempFile, dir + QDir::separator() + tempFile );
-  return files;
 }
 
 const QgsProjectMetadata &QgsProject::metadata() const
