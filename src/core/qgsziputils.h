@@ -54,10 +54,9 @@ namespace QgsZipUtils
    *  also returned.
    * \param zip The zip filename
    * \param files The absolute path to files to embed within the zip
-   * \param root The root path in which the files are located. This is used to determine the relative path inside the zip file.
    * \since QGIS 3.0
    */
-  CORE_EXPORT bool zip( const QString &zip, const QStringList &files, const QString &root = QString() );
+  CORE_EXPORT bool zip( const QString &zip, const QStringList &files );
 };
 
 #endif //QGSZIPUTILS_H

@@ -967,25 +967,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsAuxiliaryStorage *auxiliaryStorage();
 
     /**
-     * Returns the path to an attached file known by \a fileName.
-     *
-     * \note Attached files are only supported by QGZ file based projects
-     * \see collectAttachedFiles()
-     * \since QGIS 3.8
-     */
-    QString attachedFile( const QString &fileName ) const;
-
-    /**
-     * Returns a map of all attached files with relative paths and real paths.
-     *
-     * \note Attached files are only supported by QGZ file based projects
-     * \see collectAttachedFiles()
-     * \see attachedFile()
-     * \since QGIS 3.8
-     */
-    QgsStringMap attachedFiles() const;
-
-    /**
      * Returns a reference to the project's metadata store.
      * \see setMetadata()
      * \see metadataChanged()
@@ -1347,26 +1328,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
      */
     void isDirtyChanged( bool dirty );
-
-    /**
-     * Emitted whenever the project is saved to a qgz file.
-     * This can be used to package additional files into the qgz file by modifying the \a files map.
-     *
-     * Map keys represent relative paths inside the qgz file, map values represent the path to
-     * the source file.
-     *
-     * In python, append additional files to the map and return the modified map.
-     *
-     * \code{.py}
-     *   QgsProject.instance().collectAttachedFiles.connect(lambda files: files + ['/absolute/path/to/my/attachment.txt'])
-     * \endcode
-     *
-     * \note Only will be emitted with QGZ project files
-     * \see attachedFiles()
-     * \see attachedFile()
-     * \since QGIS 3.8
-     */
-    void collectAttachedFiles( QgsStringMap &files SIP_INOUT );
 
   public slots:
 
