@@ -908,9 +908,9 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       {
         connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh );
       }
-
+      contextCopy = QgsExpressionContext( mLayoutLegendContext );
       if ( symnode )
-        name = symnode->evaluateLabel( mLayoutLegendContext ); // removed name input; existing symbol/model tree have distinct names
+        name = symnode->evaluateLabel( contextCopy ); // removed name input; existing symbol/model tree have distinct names
       else
       {
         const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
@@ -919,11 +919,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
           for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
           {
             if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
-              symnode->evaluateLabel( mLayoutLegendContext );
+              symnode->evaluateLabel( contextCopy );
           }
         }
         else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-          name = symnode->evaluateLabel( mLayoutLegendContext, name );
+          name = symnode->evaluateLabel( contextCopy, name );
       }
     }
     return name;
