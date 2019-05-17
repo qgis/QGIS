@@ -910,16 +910,19 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 
     if ( evaluate || name.contains( "[%" ) )
     {
+      QgsExpressionContext expressionContext;
       if ( vlayer )
         connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh );
 
       if ( mLayoutLegend )
-        QgsExpressionContext context = mLayoutLegend->createExpressionContext();
+        expressionContext = mLayoutLegend->createExpressionContext();
+      else if ( vlayer )
+        expressionContext = vlayer->createExpressionContext();
       else
-        QgsExpressionContext context = vlayer->createExpressionContext();
+        expressionContext = QgsExpressionContext();
 
       if ( symnode )
-        name = symnode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
+        name = symnode->evaluateLabel( expressionContext ); // removed name input; existing symbol/model tree have distinct names
       else
       {
         const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
@@ -929,7 +932,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
           {
             if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
             {
-              symnode->evaluateLabel( context );
+              symnode->evaluateLabel( expressionContext );
               context.clearCachedValues();
             }
           }
