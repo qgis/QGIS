@@ -51,14 +51,14 @@ class gdaladdo(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'nearest'),
+        self.methods = ((self.tr('Nearest Neighbour'), 'nearest'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Gaussian'), 'gauss'),
-                        (self.tr('Cubic convolution'), 'cubic'),
-                        (self.tr('B-Spline convolution'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Cubic Convolution'), 'cubic'),
+                        (self.tr('B-Spline Convolution'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
                         (self.tr('Average MP'), 'average_mp'),
-                        (self.tr('Average in mag/phase space'), 'average_magphase'),
+                        (self.tr('Average in Mag/Phase Space'), 'average_magphase'),
                         (self.tr('Mode'), 'mode'))
 
         self.formats = (self.tr('Internal (if possible)'),
