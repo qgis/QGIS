@@ -924,7 +924,10 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
           for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
           {
             if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
+            {
               symnode->evaluateLabel( context );
+              context.clearCachedValues();
+            }
           }
         }
         else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
