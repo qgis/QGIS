@@ -29,6 +29,11 @@ Overrides some functionality of QgsLayerTreeModel to better fit the needs of lay
 Construct the model based on the given layer tree
 %End
 
+QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0, QgsLayoutItemLegend *layout = 0 );
+%Docstring
+Constructor used within QgsItemLegend to link the two
+%End
+
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
 

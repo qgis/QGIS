@@ -859,6 +859,14 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayo
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 }
 
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout )
+  : QgsLayerTreeModel( rootNode )
+  , mLayoutLegend( layout )
+{
+  setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
+  setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+}
+
 QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
