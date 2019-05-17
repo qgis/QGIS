@@ -912,8 +912,12 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     {
       if ( vlayer )
         connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh );
+
       if ( mLayoutLegend )
         QgsExpressionContext context = mLayoutLegend->createExpressionContext();
+      else
+        QgsExpressionContext context = vlayer->createExpressionContext();
+
       if ( symnode )
         name = symnode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
       else
