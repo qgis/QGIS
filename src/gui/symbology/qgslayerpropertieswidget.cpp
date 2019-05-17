@@ -319,7 +319,7 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
     mLayer->paintEffect()->setEnabled( false );
     paintEffectToggled = true;
   }
-  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 80, 80 ) ) );
+  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 60, 60 ) ) );
   if ( paintEffectToggled )
   {
     mLayer->paintEffect()->setEnabled( true );
