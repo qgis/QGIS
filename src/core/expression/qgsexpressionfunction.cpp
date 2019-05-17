@@ -56,7 +56,6 @@
 #include "qgsexpressioncontextutils.h"
 
 
-
 const QString QgsExpressionFunction::helpText() const
 {
   return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText;
@@ -571,7 +570,6 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QString cacheKey;
     QgsExpression subExp( subExpression );
     QgsExpression filterExp( parameters.filter );
-
     if ( filterExp.referencedVariables().contains( QStringLiteral( "parent" ) )
          || filterExp.referencedVariables().contains( QString() )
          || subExp.referencedVariables().contains( QStringLiteral( "parent" ) )
@@ -695,6 +693,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
     }
   }
 
+
   FEAT_FROM_CONTEXT( context, f );
   parameters.filter = relation.getRelatedFeaturesFilter( f );
 
@@ -770,8 +769,6 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
       parameters.filter = node->dump();
   }
 
-  QVariant result;
-  bool ok = false;
   //optional order by node, if supported
   QString orderBy;
   if ( orderByPos >= 0 && values.count() > orderByPos )
@@ -785,6 +782,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
       parameters.orderBy << QgsFeatureRequest::OrderByClause( orderBy );
     }
   }
+
   // build up filter with group by
 
   // find current group by value
@@ -801,13 +799,16 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
       parameters.filter = groupByClause;
   }
 
-  QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%6" ).arg( vl->id(),
+  QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(),
                      QString::number( static_cast< int >( aggregate ) ),
                      subExpression,
                      parameters.filter,
                      orderBy );
-  if ( context->hasCachedValue( cacheKey ) )
+  if ( context && context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
+
+  QVariant result;
+  bool ok = false;
 
   QgsExpressionContext subContext( *context );
   result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
@@ -821,7 +822,6 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   // cache value
   if ( context )
     context->setCachedValue( cacheKey, result );
-
   return result;
 }
 
