@@ -107,6 +107,16 @@ class SERVER_EXPORT QgsServiceRegistry
     QgsServerApi *getApiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
 
     /**
+     * Retrieve an API from its name
+     * \param name the name of the API
+     * \param version the version string (optional)
+     * \returns QgsServerApi
+     *
+     * If the version is not provided the higher version of the service is returned
+     */
+    QgsServerApi *getApi( const QString &name, const QString &version = QString() );
+
+    /**
      * Unregister service from its name and version
      *
      * \param name the name of the service
@@ -141,8 +151,10 @@ class SERVER_EXPORT QgsServiceRegistry
     QgsServiceNativeLoader mNativeLoader;
 
     ServiceTable mServices;
-    VersionTable mVersions;
+    VersionTable mServiceVersions;
     ApiTable mApis;
+    VersionTable mApiVersions;
+
 };
 
 #endif

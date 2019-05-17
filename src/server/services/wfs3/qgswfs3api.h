@@ -175,6 +175,7 @@ namespace QgsWfs3
       Api( QgsServerInterface *serverIface );
 
       const QString name() const override { return QStringLiteral( "WFS3" ); }
+      const QString description() const override { return QStringLiteral( "Implementation of the OGC WFS3 Draft" ); }
       const QString version() const override { return QStringLiteral( "1.0.0" ); }
       const QString rootPath() const override { return QStringLiteral( "/wfs3" ); }
 

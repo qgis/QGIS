@@ -18,7 +18,13 @@ import os
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse, QgsServerApi, QgsServerApiUtils
+from qgis.server import (
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServerApi,
+    QgsServerApiUtils,
+    QgsServiceRegistry
+)
 from qgis.core import QgsProject, QgsRectangle
 from qgis.testing import unittest
 from utilities import unitTestDataPath
@@ -63,6 +69,25 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         self.assertFalse(crs.isValid())
 
 
+class API(QgsServerApi):
+
+    def __init__(self, iface, version='1.0'):
+        super().__init__(iface)
+        self._version = version
+
+    def name(self):
+        return "TEST"
+
+    def version(self):
+        return self._version
+
+    def rootPath(self):
+        return "/testapi"
+
+    def executeRequest(self, request_context):
+        request_context.response().write(b"\"Test API\"")
+
+
 class QgsServerAPITest(QgsServerTestBase):
     """ QGIS API server tests"""
 
@@ -98,23 +123,66 @@ class QgsServerAPITest(QgsServerTestBase):
         cls.maxDiff = None
 
     def test_api(self):
-
-        class API(QgsServerApi):
-
-            def name(self):
-                return "Test API"
-
-            def rootPath(self):
-                return "/testapi"
-
-            def executeRequest(self, request_context):
-                request_context.response().write(b"\"Test API\"")
+        """Test API registeri"""
 
         api = API(self.server.serverInterface())
         self.server.serverInterface().serviceRegistry().registerApi(api)
         request = QgsBufferServerRequest('http://server.qgis.org/testapi')
         self.compareApi(request, None, 'test_api.json')
         self.server.serverInterface().serviceRegistry().unregisterApi(api.name())
+
+    def test_0_version_registration(self):
+
+        reg = QgsServiceRegistry()
+        api = API(self.server.serverInterface())
+        api1 = API(self.server.serverInterface(), '1.1')
+
+        # 1.1 comes first
+        reg.registerApi(api1)
+        reg.registerApi(api)
+
+        rapi = reg.getApi("TEST")
+        self.assertIsNotNone(rapi)
+        self.assertEqual(rapi.version(), "1.1")
+
+        rapi = reg.getApi("TEST", "2.0")
+        self.assertIsNotNone(rapi)
+        self.assertEqual(rapi.version(), "1.1")
+
+        rapi = reg.getApi("TEST", "1.0")
+        self.assertIsNotNone(rapi)
+        self.assertEqual(rapi.version(), "1.0")
+
+    def test_1_unregister_services(self):
+
+        reg = QgsServiceRegistry()
+        api = API(self.server.serverInterface(), '1.0a')
+        api1 = API(self.server.serverInterface(), '1.0b')
+        api2 = API(self.server.serverInterface(), '1.0c')
+
+        reg.registerApi(api)
+        reg.registerApi(api1)
+        reg.registerApi(api2)
+
+        # Check we get the default version
+        rapi = reg.getApi("TEST")
+        self.assertEqual(rapi.version(), "1.0a")
+
+        # Remove one service
+        removed = reg.unregisterApi("TEST", "1.0a")
+        self.assertEqual(removed, 1)
+
+        # Check that we get the highest version
+        rapi = reg.getApi("TEST")
+        self.assertEqual(rapi.version(), "1.0c")
+
+        # Remove all services
+        removed = reg.unregisterApi("TEST")
+        self.assertEqual(removed, 2)
+
+        # Check that there is no more services available
+        api = reg.getApi("TEST")
+        self.assertIsNone(api)
 
     def test_wfs3_landing_page(self):
         """Test WFS3 API landing page in HTML format"""

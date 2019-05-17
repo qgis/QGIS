@@ -374,7 +374,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // Project is mandatory for OWS at this point
         if ( ! project )
         {
-          throw QgsServerException( QStringLiteral( "Project file error: could not load project!" ) );
+          throw QgsServerException( QStringLiteral( "Project file error" ) );
         }
 
         if ( ! params.fileName().isEmpty() )

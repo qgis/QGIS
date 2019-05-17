@@ -801,7 +801,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       return mLayerStore->layers<T>();
     }
 
-
     /**
      * Retrieve a list of matching registered layers by layer \a shortName with a specified layer type,
      * if layer's short name is empty a match with layer's name is attempted.

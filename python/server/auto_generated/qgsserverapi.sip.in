@@ -63,6 +63,11 @@ Creates a QgsServerApi object
 Returns the API name
 %End
 
+    virtual const QString description() const = 0;
+%Docstring
+Returns the API decription
+%End
+
     virtual const QString version() const;
 %Docstring
 Returns the version of the service

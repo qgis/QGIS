@@ -87,6 +87,18 @@ are unloaded
 %End
 
 
+    QgsServerApi *getApi( const QString &name, const QString &version = QString() );
+%Docstring
+Retrieve an API from its name
+
+:param name: the name of the API
+:param version: the version string (optional)
+
+:return: :py:class:`QgsServerApi`
+
+If the version is not provided the higher version of the service is returned
+%End
+
     int unregisterService( const QString &name, const QString &version = QString() );
 %Docstring
 Unregister service from its name and version

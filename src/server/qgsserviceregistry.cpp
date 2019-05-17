@@ -92,8 +92,8 @@ QgsService *QgsServiceRegistry::getService( const QString &name, const QString &
   QString key;
 
   // Check that we have a service of that name
-  VersionTable::const_iterator v = mVersions.constFind( name );
-  if ( v != mVersions.constEnd() )
+  VersionTable::const_iterator v = mServiceVersions.constFind( name );
+  if ( v != mServiceVersions.constEnd() )
   {
     key = version.isEmpty() ? v->second : makeServiceKey( name, version );
     ServiceTable::const_iterator it = mServices.constFind( key );
@@ -103,7 +103,7 @@ QgsService *QgsServiceRegistry::getService( const QString &name, const QString &
     }
     else
     {
-      // Return the dofault version
+      // Return the default version
       QgsMessageLog::logMessage( QString( "Service %1 %2 not found, returning default" ).arg( name, version ) );
       service = mServices[v->second].get();
     }
@@ -136,11 +136,11 @@ void QgsServiceRegistry::registerService( QgsService *service )
   // is the default one.
   // this will ensure that native services are always
   // the defaults.
-  VersionTable::const_iterator v = mVersions.constFind( name );
-  if ( v == mVersions.constEnd() )
+  VersionTable::const_iterator v = mServiceVersions.constFind( name );
+  if ( v == mServiceVersions.constEnd() )
   {
     // Insert the service as the default one
-    mVersions.insert( name, VersionTable::mapped_type( version, key ) );
+    mServiceVersions.insert( name, VersionTable::mapped_type( version, key ) );
   }
   /*
   if ( v != mVersions.constEnd() )
@@ -161,24 +161,67 @@ void QgsServiceRegistry::registerService( QgsService *service )
 
 int QgsServiceRegistry::unregisterApi( const QString &name, const QString &version )
 {
-  const auto key { makeServiceKey( name, version ) };
-  if ( ! version.isEmpty() )
+
+  // Check that we have an API of that name
+  int removed = 0;
+  VersionTable::const_iterator v = mApiVersions.constFind( name );
+  if ( v != mApiVersions.constEnd() )
   {
-    return mApis.remove( key );
-  }
-  else
-  {
-    auto removed { 0 };
-    const auto constKeys { mApis.keys() };
-    for ( const auto &k : constKeys )
+    if ( version.isEmpty() )
     {
-      if ( k.startsWith( key ) )
+      // No version specified, remove all versions
+      ApiTable::iterator it = mApis.begin();
+      while ( it != mApis.end() )
       {
-        removed += mApis.remove( k );
+        if ( ( *it )->name() == name )
+        {
+          QgsMessageLog::logMessage( QString( "Unregistering API %1 %2" ).arg( name, ( *it )->version() ) );
+          it = mApis.erase( it );
+          ++removed;
+        }
+        else
+        {
+          ++it;
+        }
+      }
+      // Remove from version table
+      mApiVersions.remove( name );
+    }
+    else
+    {
+      QString key = makeServiceKey( name, version );
+      ApiTable::iterator found = mApis.find( key );
+      if ( found != mApis.end() )
+      {
+        QgsMessageLog::logMessage( QString( "Unregistering API %1 %2" ).arg( name, version ) );
+        mApis.erase( found );
+        removed = 1;
+
+        // Find if we have other services of that name
+        // but with different version
+        //
+        QString maxVer;
+        std::function < void ( const ApiTable::mapped_type & ) >
+        findGreaterVersion = [name, &maxVer]( const ApiTable::mapped_type & api )
+        {
+          if ( api->name() == name &&
+               ( maxVer.isEmpty() || isVersionGreater( api->version(), maxVer ) ) )
+            maxVer = api->version();
+        };
+
+        mApiVersions.remove( name );
+
+        std::for_each( mApis.constBegin(), mApis.constEnd(), findGreaterVersion );
+        if ( !maxVer.isEmpty() )
+        {
+          // Set the new default service
+          QString key = makeServiceKey( name, maxVer );
+          mApiVersions.insert( name, VersionTable::mapped_type( version, key ) );
+        }
       }
     }
-    return removed;
   }
+  return removed;
 }
 
 QgsServerApi *QgsServiceRegistry::getApiForRequest( const QgsServerRequest &request ) const
@@ -196,12 +239,41 @@ QgsServerApi *QgsServiceRegistry::getApiForRequest( const QgsServerRequest &requ
   return nullptr;
 }
 
+QgsServerApi *QgsServiceRegistry::getApi( const QString &name, const QString &version )
+{
+  QgsServerApi *api = nullptr;
+  QString key;
+
+  // Check that we have an API of that name
+  VersionTable::const_iterator v = mApiVersions.constFind( name );
+  if ( v != mApiVersions.constEnd() )
+  {
+    key = version.isEmpty() ? v->second : makeServiceKey( name, version );
+    ApiTable::const_iterator it = mApis.constFind( key );
+    if ( it != mApis.constEnd() )
+    {
+      api = it->get();
+    }
+    else
+    {
+      // Return the default version
+      QgsMessageLog::logMessage( QString( "API %1 %2 not found, returning default" ).arg( name, version ) );
+      api = mApis[v->second].get();
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QString( "API %1 is not registered" ).arg( name ) );
+  }
+  return api;
+}
+
 int QgsServiceRegistry::unregisterService( const QString &name, const QString &version )
 {
   // Check that we have a service of that name
   int removed = 0;
-  VersionTable::const_iterator v = mVersions.constFind( name );
-  if ( v != mVersions.constEnd() )
+  VersionTable::const_iterator v = mServiceVersions.constFind( name );
+  if ( v != mServiceVersions.constEnd() )
   {
     if ( version.isEmpty() )
     {
@@ -221,7 +293,7 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
         }
       }
       // Remove from version table
-      mVersions.remove( name );
+      mServiceVersions.remove( name );
     }
     else
     {
@@ -245,14 +317,14 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
             maxVer = service->version();
         };
 
-        mVersions.remove( name );
+        mServiceVersions.remove( name );
 
         std::for_each( mServices.constBegin(), mServices.constEnd(), findGreaterVersion );
         if ( !maxVer.isEmpty() )
         {
           // Set the new default service
           QString key = makeServiceKey( name, maxVer );
-          mVersions.insert( name, VersionTable::mapped_type( version, key ) );
+          mServiceVersions.insert( name, VersionTable::mapped_type( version, key ) );
         }
       }
     }
@@ -268,7 +340,7 @@ void QgsServiceRegistry::init( const QString &nativeModulePath, QgsServerInterfa
 void QgsServiceRegistry::cleanUp()
 {
   // Release all services
-  mVersions.clear();
+  mServiceVersions.clear();
   mServices.clear();
   mApis.clear();
   mNativeLoader.unloadModules();
@@ -276,18 +348,30 @@ void QgsServiceRegistry::cleanUp()
 
 void QgsServiceRegistry::registerApi( QgsServerApi *api )
 {
-  const QString name { api->name() };
-  const QString version { api->version() };
 
-  // Test if API is already registered
-  const auto key { makeServiceKey( name, version ) };
-  if ( mApis.contains( key ) )
+  QString name    = api->name();
+  QString version = api->version();
+
+  // Test if service is already registered
+  QString key = makeServiceKey( name, version );
+  if ( mApis.constFind( key ) != mApis.constEnd() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error API %1 %2 is already registered" ).arg( name, version ), QStringLiteral( "Server" ), Qgis::Warning );
+    QgsMessageLog::logMessage( QStringLiteral( "Error API %1 %2 is already registered" ).arg( name, version ) );
     return;
   }
 
-  QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2 - %3" ).arg( name, version, api->rootPath() ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2" ).arg( name, version ) );
   mApis.insert( key, std::shared_ptr<QgsServerApi>( api ) );
-}
 
+  // Check the default version
+  // The first inserted service of a given name
+  // is the default one.
+  // this will ensure that native services are always
+  // the defaults.
+  VersionTable::const_iterator v = mApiVersions.constFind( name );
+  if ( v == mApiVersions.constEnd() )
+  {
+    // Insert the service as the default one
+    mApiVersions.insert( name, VersionTable::mapped_type( version, key ) );
+  }
+}
