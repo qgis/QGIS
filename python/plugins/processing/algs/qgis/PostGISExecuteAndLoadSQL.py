@@ -23,10 +23,6 @@ __author__ = 'Anita Graser'
 __date__ = 'May 2018'
 __copyright__ = '(C) 2018, Anita Graser'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (Qgis,
                        QgsProcessingException,
                        QgsProcessingParameterString,

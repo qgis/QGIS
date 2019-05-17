@@ -20,8 +20,6 @@
 __author__ = 'Jürgen E. Fischer'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Jürgen E. Fischer'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import warnings
 from PyQt5.uic.Compiler import indenter, compiler

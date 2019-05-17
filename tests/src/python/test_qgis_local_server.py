@@ -16,8 +16,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Larry Shaffer'
 __date__ = '2014/02/16'
 __copyright__ = 'Copyright 2014, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import sys

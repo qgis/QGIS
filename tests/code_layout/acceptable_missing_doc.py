@@ -20,8 +20,6 @@
 __author__ = 'Stéphane Brunner'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Stéphane Brunner'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 # -*- coding: utf-8 -*-
 """
@@ -30,8 +28,6 @@ The list of acceptable documentation missing
 __author__ = 'Stéphane Brunner'
 __date__ = '18/03/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 ACCEPTABLE_MISSING_DOCS = {
     "CharacterWidget": ['updateFontMerging(bool enable)'],

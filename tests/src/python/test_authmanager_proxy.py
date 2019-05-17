@@ -24,8 +24,6 @@ from qgis.testing import start_app, unittest
 __author__ = 'Alessandro Pasotti'
 __date__ = '27/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()

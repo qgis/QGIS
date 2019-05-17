@@ -20,10 +20,6 @@ __author__ = 'Michael Douchin'
 __date__ = 'July 2014'
 __copyright__ = '(C) 2014, Michael Douchin'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsExpression,
                        QgsProcessing,
                        QgsVectorLayer,

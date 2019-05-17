@@ -21,10 +21,6 @@ __author__ = 'Marco Bernasocchi'
 __date__ = 'June 2016'
 __copyright__ = '(C) 2016, Marco Bernasocchi'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 from qgis.PyQt.QtWidgets import (QGroupBox,
                                  QPushButton,

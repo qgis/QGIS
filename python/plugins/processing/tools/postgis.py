@@ -21,10 +21,6 @@ __author__ = 'Martin Dobias'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Martin Dobias'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import psycopg2
 import psycopg2.extensions  # For isolation levels
 import re
