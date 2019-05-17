@@ -21,6 +21,7 @@
 #include <QGroupBox>
 #include <QInputDialog>
 #include <QTimer>
+#include <QShortcut>
 
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
@@ -62,10 +63,20 @@ QgsDualView::QgsDualView( QWidget *parent )
   connect( mActionExpressionPreview, &QAction::triggered, this, &QgsDualView::previewExpressionBuilder );
   connect( mFeatureListView, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::previewExpressionChanged );
 
+  // browsing toolbar
   connect( mNextFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editNextFeature );
   connect( mPreviousFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editPreviousFeature );
   connect( mFirstFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editFirstFeature );
   connect( mLastFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editLastFeature );
+
+  QShortcut *prevSC = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Left" ) ), this );
+  connect( prevSC, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editPreviousFeature );
+  QShortcut *nextSC = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Right" ) ), this );
+  connect( nextSC, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editNextFeature );
+  QShortcut *firstSC = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Up" ) ), this );
+  connect( firstSC, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editFirstFeature );
+  QShortcut *lastSC = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Down" ) ), this );
+  connect( lastSC, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editLastFeature );
 
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->setExclusive( false );
