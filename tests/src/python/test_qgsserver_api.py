@@ -14,6 +14,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import json
 
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
@@ -114,8 +115,18 @@ class QgsServerAPITest(QgsServerTestBase):
             f.write(result)
             f.close()
             print("Reference file %s regenerated!" % path)
+
+        def __normalize_json(content):
+            reference_content = content.split('\n')
+            json_content = json.dumps(json.loads(''.join(reference_content[reference_content.index('') + 1:])))
+            headers_content = '\n'.join(reference_content[:reference_content.index('') + 1])
+            return headers_content + '\n' + json_content
+
         with open(path, 'r') as f:
-            self.assertEqual(f.read(), result)
+            if reference_file.endswith('json'):
+                self.assertEqual(__normalize_json(result), __normalize_json(f.read()))
+            else:
+                self.assertEqual(f.read(), result)
 
     @classmethod
     def setUpClass(cls):
