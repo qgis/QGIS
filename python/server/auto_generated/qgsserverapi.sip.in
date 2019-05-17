@@ -65,7 +65,7 @@ Returns the API name
 
     virtual const QString description() const = 0;
 %Docstring
-Returns the API decription
+Returns the API description
 %End
 
     virtual const QString version() const;

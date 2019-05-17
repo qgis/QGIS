@@ -83,7 +83,7 @@ class SERVER_EXPORT QgsServerApi
     virtual const QString name() const = 0;
 
     /**
-     * Returns the API decription
+     * Returns the API description
      */
     virtual const QString description() const = 0;
 
