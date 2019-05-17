@@ -933,7 +933,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
             if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
             {
               symnode->evaluateLabel( expressionContext );
-              context.clearCachedValues();
+              expressionContext.clearCachedValues();
             }
           }
         }
