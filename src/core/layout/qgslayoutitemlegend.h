@@ -45,18 +45,11 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr, QgsLayoutItemLegend *layout = nullptr );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-
-    /**
-     * Set the pointer to the layoutlegend expressioncontext
-     * \param expressionContext pointer to the context
-     * \since QGIS 3.8
-     */
-    void setLayoutExpressionContext( QgsExpressionContext expressionContext );
 
   signals:
 
@@ -77,12 +70,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
   private:
 
     /**
-     * Cached QgsExpressionContext
-     * \since QGIS 3.8
-     */
-    QgsExpressionContext mLayoutLegendContext;
-
-    /**
      * Returns filtered list of active legend nodes attached to a particular layer node
      * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
      * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
@@ -90,6 +77,12 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \since QGIS 3.8
      */
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
+
+    /**
+     * Pointer to the QgsLayoutItemLegend class that made the model.
+     * \since QGIS 3.8
+     */
+    QgsLayoutItemLegend *mLayoutLegend;
 
 };
 

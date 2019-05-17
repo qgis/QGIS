@@ -24,7 +24,7 @@ Overrides some functionality of QgsLayerTreeModel to better fit the needs of lay
 #include "qgslayoutitemlegend.h"
 %End
   public:
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0 );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0, QgsLayoutItemLegend *layout = 0 );
 %Docstring
 Construct the model based on the given layer tree
 %End
@@ -34,15 +34,6 @@ Construct the model based on the given layer tree
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-
-    void setLayoutExpressionContext( QgsExpressionContext expressionContext );
-%Docstring
-Set the pointer to the layoutlegend expressioncontext
-
-:param expressionContext: pointer to the context
-
-.. versionadded:: 3.8
-%End
 
   signals:
 

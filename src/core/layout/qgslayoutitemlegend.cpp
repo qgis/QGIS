@@ -38,14 +38,13 @@
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
-  , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot() ) )
+  , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot(), this ) )
 {
 #if 0 //no longer required?
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
 #endif
 
   mTitle = mSettings.title();
-  mLegendModel->setLayoutExpressionContext( createExpressionContext() );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
@@ -685,8 +684,6 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
 
   updateFilterByMap();
 
-  mLegendModel->setLayoutExpressionContext( createExpressionContext() );
-
 }
 
 void QgsLayoutItemLegend::invalidateCurrentMap()
@@ -854,8 +851,9 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerlegend.h"
 
-QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayoutItemLegend *layout )
   : QgsLayerTreeModel( rootNode, parent )
+  , mLayoutLegend( layout )
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
@@ -905,12 +903,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     if ( evaluate || name.contains( "[%" ) )
     {
       if ( vlayer )
-      {
         connect( vlayer, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsLegendModel::forceRefresh );
-      }
-      QgsExpressionContext contextCopy = QgsExpressionContext( mLayoutLegendContext );
+      if ( mLayoutLegend )
+        QgsExpressionContext context = mLayoutLegend->createExpressionContext();
       if ( symnode )
-        name = symnode->evaluateLabel( contextCopy ); // removed name input; existing symbol/model tree have distinct names
+        name = symnode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
       else
       {
         const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
@@ -919,11 +916,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
           for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
           {
             if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
-              symnode->evaluateLabel( contextCopy );
+              symnode->evaluateLabel( context );
           }
         }
         else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-          name = symnode->evaluateLabel( contextCopy, name );
+          name = symnode->evaluateLabel( context, name );
       }
     }
     return name;
@@ -951,12 +948,6 @@ QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerT
     lst.prepend( data.embeddedNodeInParent );
   return lst;
 }
-
-void QgsLegendModel::setLayoutExpressionContext( QgsExpressionContext expressionContext )
-{
-  mLayoutLegendContext = expressionContext;
-}
-
 
 void QgsLegendModel::forceRefresh()
 {
