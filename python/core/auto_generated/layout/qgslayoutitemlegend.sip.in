@@ -29,7 +29,7 @@ Overrides some functionality of QgsLayerTreeModel to better fit the needs of lay
 Construct the model based on the given layer tree
 %End
 
-QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0, QgsLayoutItemLegend *layout = 0 );
+    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
 %Docstring
 Constructor used within QgsItemLegend to link the two
 %End
