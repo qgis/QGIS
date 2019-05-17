@@ -56,7 +56,7 @@ qgis:checkvalidity: >
 qgis:climbalongline: >
   This algorithm calculates the total climb and descent along line geometries.
 
-  It works only if the geometries have Z values. If it does not, and you have a DEM, you can use the Drape (set z-value from raster) algorithm to add Z values.
+  Input layers must have Z values present. If Z values are not available, the "Drape" (set Z value from raster) algorithm may be used to add Z values from a DEM layer.
 
   The output layer is a copy of the input layer with additional fields that contain the total climb, total descent, the minimum elevation and the maximum elevation for each line geometry. If the input layer contains fields with the same names as these added fields, they will be overwritten.
 

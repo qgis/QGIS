@@ -38,6 +38,8 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputNumber,
+                       QgsProcessingException,
+                       QgsProcessingUtils,
                        QgsWkbTypes,
                        QgsFields,
                        QgsField)
@@ -127,12 +129,13 @@ class Climb(QgisAlgorithm):
         )
 
         fcount = source.featureCount()
+        source_fields = source.fields()
 
         hasZ = QgsWkbTypes.hasZ(source.wkbType())
 
         if not hasZ:
-            feedback.reportError(self.tr('The layer does not have Z values. If you have a DEM, use the Drape algorithm to extract Z values.'))
-            return
+            raise QgsProcessingException(self.tr('The layer does not have Z values. If you have a DEM, use the Drape algorithm to extract Z values.'))
+            return {}
 
         thefields = QgsFields()
         climbindex = -1
@@ -141,51 +144,21 @@ class Climb(QgisAlgorithm):
         maxelevindex = -1
         fieldnumber = 0
 
-        # Skip fields with names that are equal to the generated ones
-        for field in source.fields():
-            if field.name() == self.CLIMBATTRIBUTE:
-                feedback.pushInfo(self.tr(
-                    '{attr_name} attribute found and removed'.format(
-                        attr_name=self.CLIMBATTRIBUTE)
-                )
-                )
-                climbindex = fieldnumber
-            elif field.name() == self.DESCENTATTRIBUTE:
-                feedback.pushInfo(self.tr(
-                    '{attr_name} attribute found and removed'.format(
-                        attr_name=self.DESCENTATTRIBUTE)
-                )
-                )
-                descentindex = fieldnumber
-            elif field.name() == self.MINELEVATTRIBUTE:
-                feedback.pushInfo(self.tr(
-                    '{attr_name} attribute found and removed'.format(
-                        attr_name=self.MINELEVATTRIBUTE)
-                )
-                )
-                minelevindex = fieldnumber
-            elif field.name() == self.MAXELEVATTRIBUTE:
-                feedback.pushInfo(self.tr(
-                    '{attr_name} attribute found and removed'.format(
-                        attr_name=self.MAXELEVATTRIBUTE)
-                )
-                )
-                maxelevindex = fieldnumber
-            else:
-                thefields.append(field)
-            fieldnumber = fieldnumber + 1
-
         # Create new fields for climb and descent
         thefields.append(QgsField(self.CLIMBATTRIBUTE, QVariant.Double))
         thefields.append(QgsField(self.DESCENTATTRIBUTE, QVariant.Double))
         thefields.append(QgsField(self.MINELEVATTRIBUTE, QVariant.Double))
         thefields.append(QgsField(self.MAXELEVATTRIBUTE, QVariant.Double))
 
+        # combine all the vector fields
+        out_fields = QgsProcessingUtils.combineFields(source_fields, thefields)
+
         layerwithz = source
 
         (sink, dest_id) = self.parameterAsSink(parameters,
                                                self.OUTPUT,
-                                               context, thefields,
+                                               context,
+                                               out_fields,
                                                layerwithz.wkbType(),
                                                source.sourceCrs())
 
@@ -197,6 +170,7 @@ class Climb(QgisAlgorithm):
         maxelevation = float('-Infinity')
 
         no_z_nodes = []
+        no_geometry = []
 
         for current, feature in enumerate(features):
             if feedback.isCanceled():
@@ -208,6 +182,12 @@ class Climb(QgisAlgorithm):
             # In case of multigeometries we need to do the parts
             parts = feature.geometry().constParts()
             partnumber = 0
+            if not feature.hasGeometry():
+                no_geometry.append(self.tr(
+                    'Feature: {feature_id}'.format(
+                        feature_id=feature.id())
+                )
+                )
             for part in parts:
                 # Calculate the climb
                 first = True
@@ -244,20 +224,14 @@ class Climb(QgisAlgorithm):
                 partnumber += 1
             # Set the attribute values
             attrs = feature.attributes()
-            outattrs = []
-            attrindex = 0
-            for attr in attrs:
-                # Skip attributes from the input layer that had names
-                # that were equal to the generated ones
-                if not (attrindex == climbindex or
-                        attrindex == descentindex or
-                        attrindex == minelevindex or
-                        attrindex == maxelevindex):
-                    outattrs.append(attr)
-                attrindex = attrindex + 1
-            # feature.setAttributes(outattrs + [climb, descent])
-            feature.setAttributes(outattrs +
-                                  [climb, descent, minelev, maxelev])
+            # Append the attributes to the end of the existing ones
+            attrs.append(climb)
+            attrs.append(descent)
+            attrs.append(minelev)
+            attrs.append(maxelev)
+
+            # Set the final attribute list
+            feature.setAttributes(attrs)
             # Add a feature to the sink
             sink.addFeature(feature, QgsFeatureSink.FastInsert)
             if minelevation > minelev:
@@ -269,7 +243,13 @@ class Climb(QgisAlgorithm):
                 feedback.setProgress(int(100 * current / fcount))
 
         feedback.pushInfo(self.tr(
-            'The following points to not have Z values: {no_z_report}'.format(
+            'The following features do not have geometry: {no_geometry_report}'.format(
+                no_geometry_report=str(no_geometry))
+        )
+        )
+
+        feedback.pushInfo(self.tr(
+            'The following points do not have Z values: {no_z_report}'.format(
                 no_z_report=str(no_z_nodes))
         )
         )
