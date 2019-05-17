@@ -80,11 +80,11 @@ class buildvrt(GdalAlgorithm):
             def defaultFileExtension(self):
                 return 'vrt'
 
-        self.RESAMPLING_OPTIONS = ((self.tr('Nearest neighbour'), 'nearest'),
+        self.RESAMPLING_OPTIONS = ((self.tr('Nearest Neighbour'), 'nearest'),
                                    (self.tr('Bilinear'), 'bilinear'),
-                                   (self.tr('Cubic convolution'), 'cubic'),
-                                   (self.tr('B-Spline convolution'), 'cubicspline'),
-                                   (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                                   (self.tr('Cubic Convolution'), 'cubic'),
+                                   (self.tr('B-Spline Convolution'), 'cubicspline'),
+                                   (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
                                    (self.tr('Average'), 'average'),
                                    (self.tr('Mode'), 'mode'))
 

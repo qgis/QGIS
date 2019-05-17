@@ -69,18 +69,18 @@ class warp(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'near'),
+        self.methods = ((self.tr('Nearest Neighbour'), 'near'),
                         (self.tr('Bilinear'), 'bilinear'),
                         (self.tr('Cubic'), 'cubic'),
-                        (self.tr('Cubic spline'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Cubic Spline'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Mode'), 'mode'),
                         (self.tr('Maximum'), 'max'),
                         (self.tr('Minimum'), 'min'),
                         (self.tr('Median'), 'med'),
-                        (self.tr('First quartile'), 'q1'),
-                        (self.tr('Third quartile'), 'q3'))
+                        (self.tr('First Quartile'), 'q1'),
+                        (self.tr('Third Quartile'), 'q3'))
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterCrs(self.SOURCE_CRS,
