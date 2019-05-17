@@ -63,18 +63,18 @@ class warp(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'near'),
+        self.methods = ((self.tr('Nearest Neighbour'), 'near'),
                         (self.tr('Bilinear'), 'bilinear'),
                         (self.tr('Cubic'), 'cubic'),
-                        (self.tr('Cubic spline'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Cubic Spline'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Mode'), 'mode'),
                         (self.tr('Maximum'), 'max'),
                         (self.tr('Minimum'), 'min'),
                         (self.tr('Median'), 'med'),
-                        (self.tr('First quartile'), 'q1'),
-                        (self.tr('Third quartile'), 'q3'))
+                        (self.tr('First Quartile'), 'q1'),
+                        (self.tr('Third Quartile'), 'q3'))
 
         self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
