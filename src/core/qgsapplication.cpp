@@ -1024,7 +1024,7 @@ QString QgsApplication::userLoginName()
 
   if ( GetUserName( ( TCHAR * )name, &size ) )
   {
-    sUserName = QString( name );
+    sUserName = QString::fromLocal8Bit( name );
   }
 
 #elif QT_CONFIG(process)
@@ -1060,7 +1060,7 @@ QString QgsApplication::userFullName()
   //note - this only works for accounts connected to domain
   if ( GetUserNameEx( NameDisplay, ( TCHAR * )name, &size ) )
   {
-    sUserFullName = QString( name );
+    sUserFullName = QString::fromLocal8Bit( name );
   }
 
   //fall back to login name
