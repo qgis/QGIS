@@ -230,7 +230,7 @@ void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
 
   if ( fileInfo.isWritable() )
   {
-    QAction *deleteFileAction = new QAction( tr( "Delete template" ) );
+    QAction *deleteFileAction = new QAction( tr( "Delete Template…" ), menu );
     connect( deleteFileAction, &QAction::triggered, this, [this, fileInfo, index]
     {
       QMessageBox msgBox( this );
