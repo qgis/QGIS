@@ -31,7 +31,7 @@ Construct the model based on the given layer tree
 
     QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
 %Docstring
-Constructor used within QgsItemLegend to link the two
+ Constructor used in QgsLayoutItemLegend, allows access to host class
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
