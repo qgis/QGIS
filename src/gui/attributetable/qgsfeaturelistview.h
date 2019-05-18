@@ -246,6 +246,8 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 
     QTimer mUpdateEditSelectionTimer;
+
+    friend class QgsDualView;
 };
 
 #endif

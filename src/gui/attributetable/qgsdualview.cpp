@@ -69,14 +69,30 @@ QgsDualView::QgsDualView( QWidget *parent )
   connect( mFirstFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editFirstFeature );
   connect( mLastFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editLastFeature );
 
-  QShortcut *prevSC = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Left" ) ), this );
-  connect( prevSC, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editPreviousFeature );
-  QShortcut *nextSC = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Right" ) ), this );
-  connect( nextSC, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editNextFeature );
-  QShortcut *firstSC = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Up" ) ), this );
-  connect( firstSC, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editFirstFeature );
-  QShortcut *lastSC = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+Down" ) ), this );
-  connect( lastSC, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editLastFeature );
+  auto createShortcuts = [ = ]( const QString & sequence, QgsFeatureListView::PositionInList change )
+  {
+    QShortcut *sc = new QShortcut( QKeySequence( sequence ), this );
+    sc->setContext( Qt::ApplicationShortcut );
+    switch ( change )
+    {
+      case QgsFeatureListView::First:
+        connect( sc, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editFirstFeature );
+        break;
+      case QgsFeatureListView::Previous:
+        connect( sc, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editPreviousFeature );
+        break;
+      case QgsFeatureListView::Next:
+        connect( sc, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editNextFeature );
+        break;
+      case QgsFeatureListView::Last:
+        connect( sc, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editLastFeature );
+        break;
+    }
+  };
+  createShortcuts( QStringLiteral( "Ctrl+Up" ), QgsFeatureListView::First );
+  createShortcuts( QStringLiteral( "Ctrl+Left" ), QgsFeatureListView::Previous );
+  createShortcuts( QStringLiteral( "Ctrl+Right" ), QgsFeatureListView::Next );
+  createShortcuts( QStringLiteral( "Ctrl+Down" ), QgsFeatureListView::Last );
 
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->setExclusive( false );
