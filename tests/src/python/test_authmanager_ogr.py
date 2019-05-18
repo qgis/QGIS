@@ -28,8 +28,6 @@ from qgis.testing import (
 __author__ = 'Alessandro Pasotti'
 __date__ = '14/11/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 qgis_app = start_app()

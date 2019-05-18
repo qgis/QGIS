@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import re
 from qgis.PyQt.QtCore import QCoreApplication, QVariant

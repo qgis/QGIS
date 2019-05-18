@@ -22,10 +22,6 @@ __author__ = 'Rashad Kanavath'
 __date__ = 'June 2017'
 __copyright__ = "(C) 2017,2018 by CS Systemes d'information (CS SI), Centre National d'Etudes et spatiales (CNES)"
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication

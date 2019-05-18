@@ -21,10 +21,6 @@ __author__ = 'Bernhard Ströbl'
 __date__ = 'January 2017'
 __copyright__ = '(C) 2017, Bernhard Ströbl'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon

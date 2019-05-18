@@ -22,10 +22,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'December 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsProcessingParameterRasterDestination
 from processing.core.parameters import getParameterFromString

@@ -20,8 +20,6 @@
 __author__ = 'Martin Dobias'
 __date__ = 'January 2007'
 __copyright__ = '(C) 2007, Martin Dobias'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from builtins import zip
 import os

@@ -21,10 +21,6 @@ __author__ = 'Marcel Dancak'
 __date__ = 'April 2019'
 __copyright__ = '(C) 2019 by Lutra Consulting Limited'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import math
 from uuid import uuid4

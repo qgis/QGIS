@@ -38,7 +38,6 @@
 __author__ = 'Radim Blazek'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Radim Blazek'
-__revision__ = '$Format:%H$'
 
 import os
 import sys

@@ -13,8 +13,6 @@ from builtins import object
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-27'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.core import (
     QgsApplication,

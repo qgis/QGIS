@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-04-11'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import shutil

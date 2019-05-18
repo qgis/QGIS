@@ -130,8 +130,6 @@ from qgis.server import (QgsBufferServerRequest, QgsBufferServerResponse,
 __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all
