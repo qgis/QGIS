@@ -344,7 +344,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     * \param context extra QgsExpressionContext to use for evaluation
     * \since QGIS 3.8
     */
-    QString evaluateLabelExpression( const QString &label, QgsExpressionContext &context ) const;
+    QString evaluateLabelExpression( const QString &label, const QgsExpressionContext &context ) const;
 
 
   private:
