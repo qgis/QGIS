@@ -106,19 +106,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   mRequestedSrid = mUri.srid();
   mRequestedGeomType = mUri.wkbType();
 
-  if ( mUri.hasParam( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
-  {
-
-    if ( mUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).compare( QLatin1String( "0" ) )  == 0 )
-    {
-      mCheckPrimaryKeyUnicity = false;
-    }
-    else
-    {
-      mCheckPrimaryKeyUnicity = true;
-    }
-  }
-
   if ( mSchemaName.isEmpty() && mTableName.startsWith( '(' ) && mTableName.endsWith( ')' ) )
   {
     mIsQuery = true;
@@ -143,12 +130,15 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
   mSelectAtIdDisabled = mUri.selectAtIdDisabled();
 
+  mCheckPrimaryKeyUnicity = !mUri.hasParam( QStringLiteral( "checkPrimaryKeyUnicity" ) ) || mUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).compare( QLatin1String( "0" ) ) != 0;
+
   QgsDebugMsg( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ) );
   QgsDebugMsg( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ) );
   QgsDebugMsg( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ) );
   QgsDebugMsg( QStringLiteral( "Table name is: %1" ).arg( mTableName ) );
   QgsDebugMsg( QStringLiteral( "Query is: %1" ).arg( mQuery ) );
   QgsDebugMsg( QStringLiteral( "Where clause is: %1" ).arg( mSqlWhereClause ) );
+  QgsDebugMsg( QStringLiteral( "Using estimated metadata: %1" ).arg( mUseEstimatedMetadata ) );
 
   // no table/query passed, the provider could be used to get tables
   if ( mQuery.isEmpty() )
@@ -705,14 +695,6 @@ QString QgsPostgresProvider::endianString()
 }
 
 
-struct PGTypeInfo
-{
-  QString typeName;
-  QString typeType;
-  QString typeElem;
-  int typeLen;
-};
-
 bool QgsPostgresProvider::loadFields()
 {
 
@@ -743,24 +725,6 @@ bool QgsPostgresProvider::loadFields()
   QString sql = QStringLiteral( "SELECT * FROM %1 LIMIT 0" ).arg( mQuery );
 
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-
-  // Collect type info
-  sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
-  QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
-
-  QMap<int, PGTypeInfo> typeMap;
-  for ( int i = 0; i < typeResult.PQntuples(); ++i )
-  {
-    PGTypeInfo typeInfo =
-    {
-      /* typeName = */ typeResult.PQgetvalue( i, 1 ),
-      /* typeType = */ typeResult.PQgetvalue( i, 2 ),
-      /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
-      /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
-    };
-    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toInt(), typeInfo );
-  }
-
 
   QMap<int, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap;
   QMap<int, QMap<int, int> > attTypeIdMap;
@@ -840,12 +804,13 @@ bool QgsPostgresProvider::loadFields()
     int attnum = result.PQftablecol( i );
     int atttypid = attTypeIdMap[tableoid][attnum];
 
-    const PGTypeInfo &typeInfo = typeMap.value( fldtyp );
+    const QgsPostgresConn::PGTypeInfo &typeInfo = connectionRO()->type( fldtyp );
     QString fieldTypeName = typeInfo.typeName;
     QString fieldTType = typeInfo.typeType;
     int fieldSize = typeInfo.typeLen;
 
-    bool isDomain = ( typeMap.value( atttypid ).typeType == QLatin1String( "d" ) );
+    const QgsPostgresConn::PGTypeInfo &attTypeInfo = connectionRO()->type( atttypid );
+    bool isDomain = ( attTypeInfo.typeType == QLatin1String( "d" ) );
 
     QString formattedFieldType = fmtFieldTypeMap[tableoid][attnum];
     QString originalFormattedFieldType = formattedFieldType;
@@ -1792,7 +1757,8 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
   enumValues.clear();
 
   //is it a domain type with a check constraint?
-  QString domainSql = QStringLiteral( "SELECT domain_name, domain_schema FROM information_schema.columns WHERE table_name=%1 AND column_name=%2" ).arg( quotedValue( mTableName ), quotedValue( attributeName ) );
+  QString domainSql = QStringLiteral( "SELECT domain_name,domain_schema FROM information_schema.columns WHERE table_schema=%1 AND table_name=%2 AND column_name=%3" )
+                      .arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( attributeName ) );
   QgsPostgresResult domainResult( connectionRO()->PQexec( domainSql ) );
   if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 && !domainResult.PQgetvalue( 0, 0 ).isNull() )
   {
@@ -3410,7 +3376,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       result = connectionRO()->PQexec( sql );
       if ( tableoid > 0 && PGRES_TUPLES_OK == result.PQresultStatus() )
       {
-        sql = QStringLiteral( "SELECT pg_namespace.nspname,pg_class.relname FROM pg_class,pg_namespace WHERE pg_class.relnamespace=pg_namespace.oid AND pg_class.oid=%1" ).arg( tableoid );
+        sql = QStringLiteral( "SELECT pg_namespace.nspname,pg_class.relname FROM pg_class JOIN pg_namespace ON pg_class.relnamespace=pg_namespace.oid WHERE pg_class.oid=%1" ).arg( tableoid );
         result = connectionRO()->PQexec( sql );
 
         if ( PGRES_TUPLES_OK == result.PQresultStatus() && 1 == result.PQntuples() )
@@ -3418,7 +3384,7 @@ bool QgsPostgresProvider::getGeometryDetails()
           schemaName = result.PQgetvalue( 0, 0 );
           tableName = result.PQgetvalue( 0, 1 );
 
-          sql = QStringLiteral( "SELECT a.attname, t.typname FROM pg_attribute a, pg_type t WHERE a.attrelid=%1 AND a.attnum=%2 AND a.atttypid = t.oid" ).arg( tableoid ).arg( column );
+          sql = QStringLiteral( "SELECT a.attname, t.typname FROM pg_attribute a JOIN pg_type t ON a.atttypid = t.oid WHERE a.attrelid=%1 AND a.attnum=%2" ).arg( tableoid ).arg( column );
           result = connectionRO()->PQexec( sql );
           if ( PGRES_TUPLES_OK == result.PQresultStatus() && 1 == result.PQntuples() )
           {
@@ -3567,11 +3533,12 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     if ( mSpatialColType == SctNone )
     {
-      sql = QString( "SELECT t.typname FROM "
-                     "pg_attribute a, pg_class c, pg_namespace n, pg_type t "
-                     "WHERE a.attrelid=c.oid AND c.relnamespace=n.oid "
-                     "AND a.atttypid=t.oid "
-                     "AND n.nspname=%3 AND c.relname=%1 AND a.attname=%2" )
+      sql = QString( "SELECT t.typname"
+                     " FROM pg_attribute a"
+                     " JOIN pg_class c ON a.attrelid=c.oid"
+                     " JOIN pg_namespace n ON c.relnamespace=n.oid"
+                     " JOIN pg_type t ON a.atttypid=t.oid"
+                     " WHERE n.nspname=%3 AND c.relname=%1 AND a.attname=%2" )
             .arg( quotedValue( tableName ),
                   quotedValue( geomCol ),
                   quotedValue( schemaName ) );

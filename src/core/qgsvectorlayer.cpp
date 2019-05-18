@@ -773,7 +773,6 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-
   if ( !mValidExtent && mLazyExtent && mDataProvider && !mDataProvider->hasMetadata() && mReadExtentFromXml && !mXmlExtent.isNull() )
   {
     mExtent = mXmlExtent;
@@ -781,7 +780,7 @@ QgsRectangle QgsVectorLayer::extent() const
     mLazyExtent = false;
   }
 
-  if ( !mValidExtent && mLazyExtent && mDataProvider && mDataProvider->isValid() )
+  if ( !mValidExtent && mLazyExtent && !mReadExtentFromXml && mDataProvider && mDataProvider->isValid() )
   {
     // get the extent
     QgsRectangle mbr = mDataProvider->extent();
@@ -812,7 +811,7 @@ QgsRectangle QgsVectorLayer::extent() const
 
     // get the extent of the layer from the provider
     // but only when there are some features already
-    if ( mDataProvider->featureCount() != 0 )
+    if ( !mReadExtentFromXml && mDataProvider->featureCount() != 0 )
     {
       QgsRectangle r = mDataProvider->extent();
       rect.combineExtentWith( r );
