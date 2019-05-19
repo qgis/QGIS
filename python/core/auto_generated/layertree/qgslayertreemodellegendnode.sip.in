@@ -319,7 +319,7 @@ Create an expressionContextScope containing symbol related variables
 .. versionadded:: 3.8
 %End
 
-    QString evaluateLabel( const QgsExpressionContext context = QgsExpressionContext(), const QString label = QString() );
+    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), const QString label = QString() );
 %Docstring
 Evaluates  and returns the text label of the current node
 
