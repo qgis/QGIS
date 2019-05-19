@@ -612,7 +612,7 @@ void QgsSymbolLegendNode::updateLabel()
   emit dataChanged();
 }
 
-QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const QString label )
+QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext context, const QString label )
 {
   if ( !mLayerNode )
     return QString();
@@ -626,9 +626,9 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
       context.appendScope( vl->createExpressionContextScope() );
       const QString symLabel = symbolLabel();
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        mLabel = evaluateLabelExpression( "[%" + mLayerNode->labelExpression() + "%]", context );
+        mLabel = internalLabelEvaluation( "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( mLabel.contains( "[%" ) )
-        mLabel = evaluateLabelExpression( symLabel, context );
+        mLabel = internalLabelEvaluation( symLabel, context );
     }
     return mLabel;
   }
@@ -639,9 +639,9 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const 
     {
       context.appendScope( vl->createExpressionContextScope() );
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        eLabel = evaluateLabelExpression( label + "[%" + mLayerNode->labelExpression() + "%]", context );
+        eLabel = internalLabelEvaluation( label + "[%" + mLayerNode->labelExpression() + "%]", context );
       else if ( label.contains( "[%" ) )
-        eLabel = evaluateLabelExpression( label, context );
+        eLabel = internalLabelEvaluation( label, context );
     }
     return eLabel;
   }
@@ -670,11 +670,11 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
   return scope;
 }
 
-QString QgsSymbolLegendNode::evaluateLabelExpression( const QString &label, QgsExpressionContext &context ) const
+QString QgsSymbolLegendNode::internalLabelEvaluation( const QString &label, QgsExpressionContext &context ) const
 {
   QgsExpressionContextScope *symbolScope = createSymbolScope();
   context.appendScope( symbolScope );
-  QString eLabel = QgsExpression().replaceExpressionText( label, &context );
+  QString eLabel = QgsExpression::.replaceExpressionText( label, &context );
   return eLabel;
 }
 

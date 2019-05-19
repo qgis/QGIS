@@ -307,7 +307,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param label text to evaluate instead of the layer layertree string
      * \since QGIS 3.8
      */
-    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), const QString label = QString() );
+    QString evaluateLabel( const QgsExpressionContext context = QgsExpressionContext(), const QString label = QString() );
 
   public slots:
 
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     * \param context extra QgsExpressionContext to use for evaluation
     * \since QGIS 3.8
     */
-    QString evaluateLabelExpression( const QString &label, QgsExpressionContext &context ) const;
+    QString internalLabelEvaluation( const QString &label, QgsExpressionContext &context ) const;
 
 
   private:
