@@ -674,7 +674,7 @@ QString QgsSymbolLegendNode::internalLabelEvaluation( const QString &label, QgsE
 {
   QgsExpressionContextScope *symbolScope = createSymbolScope();
   context.appendScope( symbolScope );
-  QString eLabel = QgsExpression::.replaceExpressionText( label, &context );
+  QString eLabel = QgsExpression::replaceExpressionText( label, &context );
   return eLabel;
 }
 
