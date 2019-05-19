@@ -612,7 +612,7 @@ void QgsSymbolLegendNode::updateLabel()
   emit dataChanged();
 }
 
-QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext context, const QString label )
+QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const QString label )
 {
   if ( !mLayerNode )
     return QString();
