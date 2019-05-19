@@ -60,8 +60,15 @@ Note that the floater may be active but not visible (e.g. if the mouse is not ov
 %End
 
   private:
-    //! event filter to track mouse position
-    bool eventFilter( QObject *obj, QEvent *event );
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
+%Docstring
+event filter to track mouse position
+
+.. note::
+
+   defined as private in Python bindings
+%End
 };
 
 /************************************************************************

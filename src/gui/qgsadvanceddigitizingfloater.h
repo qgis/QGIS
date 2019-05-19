@@ -102,7 +102,7 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     * event filter to track mouse position
     * \note defined as private in Python bindings
     */
-    bool eventFilter( QObject *obj, QEvent *event ) override SIP_SKIP;
+    bool eventFilter( QObject *obj, QEvent *event ) override SIP_FORCE;
 
     /**
     * Move the widget to a new cursor position. A hard-coded offset will be added.
@@ -117,12 +117,6 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
 
     //! Whether the floater is enabled.
     bool mActive = false;
-
-  private:
-#ifdef SIP_RUN
-    //! event filter to track mouse position
-    bool eventFilter( QObject *obj, QEvent *event );
-#endif
 };
 
 #endif // QGSADVANCEDDIGITIZINGFLOATER_H
