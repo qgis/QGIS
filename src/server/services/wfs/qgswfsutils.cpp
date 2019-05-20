@@ -100,7 +100,7 @@ namespace QgsWfs
     return nullptr;
   }
 
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project )
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project, QStringList *serverFids )
   {
     QgsFeatureRequest request;
 
@@ -108,7 +108,8 @@ namespace QgsWfs
     QDomNodeList goidNodes = filterElem.elementsByTagName( QStringLiteral( "GmlObjectId" ) );
     if ( !fidNodes.isEmpty() )
     {
-      QgsFeatureIds fids;
+      // Get the server feature ids in filter element
+      QStringList collectedServerFids;
       QDomElement fidElem;
       for ( int f = 0; f < fidNodes.size(); f++ )
       {
@@ -118,30 +119,29 @@ namespace QgsWfs
           throw QgsRequestNotWellFormedException( "FeatureId element without fid attribute" );
         }
 
-        QString fid = fidElem.attribute( QStringLiteral( "fid" ) );
-        if ( fid.contains( QLatin1String( "." ) ) )
+        QString serverFid = fidElem.attribute( QStringLiteral( "fid" ) );
+        if ( serverFid.contains( QLatin1String( "." ) ) )
         {
-          if ( fid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+          if ( serverFid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
             continue;
-          fid = fid.section( QStringLiteral( "." ), 1, 1 );
+          serverFid = serverFid.section( QStringLiteral( "." ), 1, 1 );
         }
-        fids.insert( fid.toInt() );
+        collectedServerFids << serverFid;
       }
-
-      if ( !fids.isEmpty() )
-      {
-        request.setFilterFids( fids );
-      }
-      else
+      // No server feature ids found
+      if ( collectedServerFids.isEmpty() )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element correctly parse against typeName '%1'" ).arg( typeName ) );
       }
+      // update server feature ids
+      serverFids->append( collectedServerFids );
       request.setFlags( QgsFeatureRequest::NoFlags );
       return request;
     }
     else if ( !goidNodes.isEmpty() )
     {
-      QgsFeatureIds fids;
+      // Get the server feature idsin filter element
+      QStringList collectedServerFids;
       QDomElement goidElem;
       for ( int f = 0; f < goidNodes.size(); f++ )
       {
@@ -151,26 +151,24 @@ namespace QgsWfs
           throw QgsRequestNotWellFormedException( "GmlObjectId element without gml:id attribute" );
         }
 
-        QString fid = goidElem.attribute( QStringLiteral( "id" ) );
-        if ( fid.isEmpty() )
-          fid = goidElem.attribute( QStringLiteral( "gml:id" ) );
-        if ( fid.contains( QLatin1String( "." ) ) )
+        QString serverFid = goidElem.attribute( QStringLiteral( "id" ) );
+        if ( serverFid.isEmpty() )
+          serverFid = goidElem.attribute( QStringLiteral( "gml:id" ) );
+        if ( serverFid.contains( QLatin1String( "." ) ) )
         {
-          if ( fid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+          if ( serverFid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
             continue;
-          fid = fid.section( QStringLiteral( "." ), 1, 1 );
+          serverFid = serverFid.section( QStringLiteral( "." ), 1, 1 );
         }
-        fids.insert( fid.toInt() );
+        collectedServerFids << serverFid;
       }
-
-      if ( !fids.isEmpty() )
-      {
-        request.setFilterFids( fids );
-      }
-      else
+      // No server feature ids found
+      if ( collectedServerFids.isEmpty() )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "No GmlObjectId element correctly parse against typeName '%1'" ).arg( typeName ) );
       }
+      // update server feature ids
+      serverFids->append( collectedServerFids );
       request.setFlags( QgsFeatureRequest::NoFlags );
       return request;
     }
@@ -192,6 +190,7 @@ namespace QgsWfs
         }
         childElem = childElem.nextSiblingElement();
       }
+
       request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
       return request;
     }
@@ -202,9 +201,22 @@ namespace QgsWfs
       QDomElement childElem = filterElem.firstChildElement().firstChildElement();
       while ( !childElem.isNull() )
       {
+        // Create a filter element to parse And child
         QDomElement childFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+        // Clone And child
         childFilterElement.appendChild( childElem.cloneNode( true ) );
-        QgsFeatureRequest childRequest = parseFilterElement( typeName, childFilterElement );
+
+        // Parse the filter element with the cloned And child
+        QStringList collectedServerFids;
+        QgsFeatureRequest childRequest = parseFilterElement( typeName, childFilterElement, project, &collectedServerFids );
+
+        // Update server feature ids
+        if ( !collectedServerFids.isEmpty() )
+        {
+          serverFids->append( collectedServerFids );
+        }
+
+        // Update request based on BBOX
         if ( childElem.tagName() == QLatin1String( "BBOX" ) )
         {
           if ( request.filterRect().isEmpty() )
@@ -216,6 +228,7 @@ namespace QgsWfs
             request.setFilterRect( request.filterRect().intersect( childRequest.filterRect() ) );
           }
         }
+        // Update expression
         else
         {
           if ( !request.filterExpression() )
@@ -224,11 +237,7 @@ namespace QgsWfs
           }
           else
           {
-            QgsExpressionNode *opLeft = request.filterExpression()->rootNode()->clone();
-            QgsExpressionNode *opRight = childRequest.filterExpression()->rootNode()->clone();
-            std::unique_ptr<QgsExpressionNodeBinaryOperator> node = qgis::make_unique<QgsExpressionNodeBinaryOperator>( QgsExpressionNodeBinaryOperator::boAnd, opLeft, opRight );
-            QgsExpression expr( node->dump() );
-            request.setFilterExpression( expr );
+            request.setFilterExpression( QStringLiteral( "( %1 ) AND ( %2 )" ).arg( request.filterExpression()->expression(), childRequest.filterExpression()->expression() ) );
           }
         }
         childElem = childElem.nextSiblingElement();
