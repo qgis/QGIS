@@ -612,39 +612,41 @@ void QgsSymbolLegendNode::updateLabel()
   emit dataChanged();
 }
 
-QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, const QString label )
+QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext context, const QString &label )
 {
   if ( !mLayerNode )
     return QString();
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  if ( label.isEmpty() )
+  if ( vl )
   {
-    if ( vl )
+    QgsExpressionContext contextCopy = QgsExpressionContext( context );
+    QgsExpressionContextScope *symbolScope = createSymbolScope();
+    contextCopy.appendScope( symbolScope );
+    contextCopy.appendScope( vl->createExpressionContextScope() );
+    if ( label.isEmpty() )
     {
-      context.appendScope( vl->createExpressionContextScope() );
-      const QString symLabel = symbolLabel();
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        mLabel = internalLabelEvaluation( "[%" + mLayerNode->labelExpression() + "%]", context );
+        mLabel = QgsExpression::replaceExpressionText( "[%" + mLayerNode->labelExpression() + "%]", contextCopy );
       else if ( mLabel.contains( "[%" ) )
-        mLabel = internalLabelEvaluation( symLabel, context );
+      {
+        const QString symLabel = symbolLabel();
+        mLabel = QgsExpression::replaceExpressionText(  symLabel, contextCopy );
+      }
+      return mLabel;
     }
-    return mLabel;
-  }
-  else
-  {
-    QString eLabel;
-    if ( vl )
+    else
     {
-      context.appendScope( vl->createExpressionContextScope() );
+      QString eLabel;
       if ( ! mLayerNode->labelExpression().isEmpty() )
-        eLabel = internalLabelEvaluation( label + "[%" + mLayerNode->labelExpression() + "%]", context );
+        eLabel = QgsExpression::replaceExpressionText(  label + "[%" + mLayerNode->labelExpression() + "%]", contextCopy );
       else if ( label.contains( "[%" ) )
-        eLabel = internalLabelEvaluation( label, context );
+        eLabel = QgsExpression::replaceExpressionText(  label, contextCopy );
+      return eLabel;
     }
-    return eLabel;
   }
+  return mLabel;
 }
 
 QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
@@ -668,14 +670,6 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
   }
   return scope;
-}
-
-QString QgsSymbolLegendNode::internalLabelEvaluation( const QString &label, QgsExpressionContext &context ) const
-{
-  QgsExpressionContextScope *symbolScope = createSymbolScope();
-  context.appendScope( symbolScope );
-  QString eLabel = QgsExpression::replaceExpressionText( label, &context );
-  return eLabel;
 }
 
 // -------------------------------------------------------------------------
