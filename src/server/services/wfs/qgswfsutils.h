@@ -58,9 +58,9 @@ namespace QgsWfs
   QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName );
 
   /**
-   * Transform a Filter element to a feature request
+   * Transform a Filter element to a feature request and update server feature ids
    */
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project = nullptr );
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project = nullptr, QStringList *serverFids = new QStringList() );
 
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );
