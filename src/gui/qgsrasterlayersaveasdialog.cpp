@@ -920,9 +920,8 @@ bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
     uri = outputFileName();
   }
 
-  std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
-  std::unique_ptr< QgsVectorLayer > vectLayer( new QgsVectorLayer( uri, "", QStringLiteral( "ogr" ) ) );
-  return ( rastLayer->isValid() || vectLayer->isValid() );
+  QgsRasterLayer rastLayer( uri, QString( ), QStringLiteral( "gdal" ) );
+  return rastLayer.isValid();
 }
 
 void QgsRasterLayerSaveAsDialog::accept()
