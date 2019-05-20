@@ -7164,6 +7164,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
   QgsMapLayerType layerType( layer->type() );
 
   QgsDataSourceSelectDialog dlg( mBrowserModel, true, layerType );
+  dlg.setDescription( tr( "Original source URI: %1" ).arg( layer->publicSource() ) );
 
   if ( dlg.exec() == QDialog::Accepted )
   {

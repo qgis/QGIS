@@ -16,7 +16,6 @@
 #ifndef QGSDATASOURCESELECTDIALOG_H
 #define QGSDATASOURCESELECTDIALOG_H
 
-#include <QObject>
 #include "ui_qgsdatasourceselectdialog.h"
 
 #include "qgis_gui.h"
@@ -25,6 +24,8 @@
 #include "qgsbrowsermodel.h"
 #include "qgsbrowserproxymodel.h"
 
+#include <QObject>
+#include <QLabel>
 
 /**
  * \ingroup gui
@@ -69,6 +70,14 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     void setLayerTypeFilter( QgsMapLayerType layerType );
 
     /**
+     * Sets a description label
+     * \param description a description string
+     * \note the description will be displayed at the bottom of the dialog
+     * \since 3.8
+     */
+    void setDescription( const QString description );
+
+    /**
      * Returns the (possibly invalid) uri of the selected data source
      */
     QgsMimeDataUtils::Uri uri() const;
@@ -98,6 +107,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     std::unique_ptr<QgsBrowserModel> mBrowserModel;
     bool mOwnModel = true;
     QgsMimeDataUtils::Uri mUri;
+    QLabel *mDescriptionLabel = nullptr;
 
 };
 
