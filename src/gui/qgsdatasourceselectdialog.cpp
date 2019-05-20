@@ -162,6 +162,30 @@ void QgsDataSourceSelectDialog::showFilterWidget( bool visible )
   }
 }
 
+void QgsDataSourceSelectDialog::setDescription( const QString description )
+{
+  if ( !description.isEmpty() )
+  {
+    if ( !mDescriptionLabel )
+    {
+      mDescriptionLabel = new QLabel();
+      mDescriptionLabel->setWordWrap( true );
+      mDescriptionLabel->setMargin( 4 );
+      verticalLayout->insertWidget( 1, mDescriptionLabel );
+    }
+    mDescriptionLabel->setText( description );
+  }
+  else
+  {
+    if ( mDescriptionLabel )
+    {
+      verticalLayout->removeWidget( mDescriptionLabel );
+      delete mDescriptionLabel;
+      mDescriptionLabel = nullptr;
+    }
+  }
+}
+
 void QgsDataSourceSelectDialog::setFilter()
 {
   QString filter = mLeFilter->text();

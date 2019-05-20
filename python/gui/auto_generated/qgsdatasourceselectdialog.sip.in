@@ -52,6 +52,19 @@ Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
 Sets layer type filter to ``layerType`` and activates the filtering
 %End
 
+    void setDescription( const QString description );
+%Docstring
+Sets a description label
+
+:param description: a description string
+
+.. note::
+
+   the description will be displayed at the bottom of the dialog
+
+.. versionadded:: 3.8
+%End
+
     QgsMimeDataUtils::Uri uri() const;
 %Docstring
 Returns the (possibly invalid) uri of the selected data source
