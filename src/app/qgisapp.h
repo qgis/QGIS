@@ -1441,7 +1441,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void selectByForm();
 
     //! refresh map canvas
-    void refreshMapCanvas();
+    void refreshMapCanvas( bool redrawAllLayers = false );
 
     //! start "busy" progress bar
     void canvasRefreshStarted();
