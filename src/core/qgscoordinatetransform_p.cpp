@@ -284,9 +284,16 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 #if PROJ_VERSION_MAJOR>=6
 #if PROJ_VERSION_MINOR>=1
   QgsProjUtils::proj_pj_unique_ptr transform( proj_create_crs_to_crs( context, mSourceProjString.toUtf8().constData(), mDestProjString.toUtf8().constData(), nullptr ) );
+  if ( !transform )
+  {
+    // ouch!
+    return nullptr;
+  }
+
   // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
   ProjData res = proj_normalize_for_visualization( context, transform.get() );
   mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
+
 #else
   // proj 6.0 does not have proj_normalize_for_visualization - we have to handle this manually and inefficiently!
   ProjData res = proj_create_crs_to_crs( context, mSourceProjString.toUtf8().constData(), mDestProjString.toUtf8().constData(), nullptr );
