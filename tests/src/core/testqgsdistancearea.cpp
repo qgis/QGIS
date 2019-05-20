@@ -120,18 +120,29 @@ void TestQgsDistanceArea::cache()
   // warm cache
   QVERIFY( da.setEllipsoid( QStringLiteral( "Ganymede2000" ) ) );
   QVERIFY( da.willUseEllipsoid() );
+  // different definition under proj 6, neither is incorrect!
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( da.ellipsoidSemiMajor(), 2632345.0 );
+  QCOMPARE( da.ellipsoidSemiMinor(), 2632345.0 );
+#else
   QCOMPARE( da.ellipsoidSemiMajor(), 2632400.0 );
   QCOMPARE( da.ellipsoidSemiMinor(), 2632350.0 );
   QCOMPARE( da.ellipsoidInverseFlattening(), 52648.0 );
+#endif
   QCOMPARE( da.ellipsoid(), QStringLiteral( "Ganymede2000" ) );
 
   // a second time, so ellipsoid is fetched from cache
   QgsDistanceArea da2;
   QVERIFY( da2.setEllipsoid( QStringLiteral( "Ganymede2000" ) ) );
   QVERIFY( da2.willUseEllipsoid() );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( da2.ellipsoidSemiMajor(), 2632345.0 );
+  QCOMPARE( da2.ellipsoidSemiMinor(), 2632345.0 );
+#else
   QCOMPARE( da2.ellipsoidSemiMajor(), 2632400.0 );
   QCOMPARE( da2.ellipsoidSemiMinor(), 2632350.0 );
   QCOMPARE( da2.ellipsoidInverseFlattening(), 52648.0 );
+#endif
   QCOMPARE( da2.ellipsoid(), QStringLiteral( "Ganymede2000" ) );
 
   // using parameters
