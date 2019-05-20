@@ -32,6 +32,7 @@ SET(QGIS_SERVER_SRCS
   qgsserverinterfaceimpl.cpp
   qgsserverlogger.cpp
   qgsserverprojectutils.cpp
+  qgsserverfeatureid.cpp
   qgsserverrequest.cpp
   qgsserverresponse.cpp
   qgsserversettings.cpp

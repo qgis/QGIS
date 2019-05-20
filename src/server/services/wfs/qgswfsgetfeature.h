@@ -34,6 +34,8 @@ namespace QgsWfs
 
     QgsFeatureRequest featureRequest;
 
+    QStringList serverFids;
+
     QStringList propertyList;
   };
 
