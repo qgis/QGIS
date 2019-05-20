@@ -364,16 +364,6 @@ class QgsPostgresConn : public QObject
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
 
-    struct PGTypeInfo
-    {
-      QString typeName;
-      QString typeType;
-      QString typeElem;
-      int typeLen;
-    };
-
-    const PGTypeInfo &type( int oid ) const;
-
   private:
     QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
     ~QgsPostgresConn() override;
@@ -445,8 +435,6 @@ class QgsPostgresConn : public QObject
     bool mShared; //!< Whether the connection is shared by more providers (must not be if going to be used in worker threads)
 
     bool mTransaction;
-
-    mutable QMap<int, PGTypeInfo> mTypeMap;
 
     mutable QMutex mLock;
 };

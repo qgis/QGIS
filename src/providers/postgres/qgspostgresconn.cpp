@@ -149,9 +149,8 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 
   // This is called from may places where shared parameter cannot be forced to false (QgsVectorLayerExporter)
   // and which is run in a different thread (drag and drop in browser)
-  if ( shared && QApplication::instance()->thread() != QThread::currentThread() )
+  if ( QApplication::instance()->thread() != QThread::currentThread() )
   {
-    QgsDebugMsg( QStringLiteral( "Connection cannot be shared between threads" ) );
     shared = false;
   }
 
@@ -170,6 +169,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   }
 
   QgsPostgresConn *conn = new QgsPostgresConn( conninfo, readonly, shared, transaction );
+
   if ( conn->mRef == 0 )
   {
     delete conn;
@@ -1932,32 +1932,4 @@ QString QgsPostgresConn::currentDatabase() const
   }
 
   return database;
-}
-
-const QgsPostgresConn::PGTypeInfo &QgsPostgresConn::type( int oid ) const
-{
-  if ( mTypeMap.isEmpty() )
-  {
-    QMutexLocker locker( &mLock );
-    if ( mTypeMap.isEmpty() )
-    {
-      QString sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
-      QgsPostgresResult typeResult( PQexec( sql ) );
-
-      for ( int i = 0; i < typeResult.PQntuples(); ++i )
-      {
-        PGTypeInfo typeInfo =
-        {
-          /* typeName = */ typeResult.PQgetvalue( i, 1 ),
-          /* typeType = */ typeResult.PQgetvalue( i, 2 ),
-          /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
-          /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
-        };
-        mTypeMap.insert( typeResult.PQgetvalue( i, 0 ).toInt(), typeInfo );
-      }
-      QgsDebugMsg( "types retrieved" );
-    }
-  }
-
-  return mTypeMap[oid];
 }

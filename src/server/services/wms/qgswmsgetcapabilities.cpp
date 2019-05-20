@@ -1062,10 +1062,10 @@ namespace QgsWms
             if ( l->type() == QgsMapLayerType::VectorLayer )
             {
               QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
-              if ( vl && ( project->trustLayerMetadata() || vl->featureCount() == 0 ) )
+              if ( vl && vl->featureCount() == 0 )
               {
-                // if we trust the project or there's no feature, use the wms
-                // extent defined in the project...
+                // if there's no feature, use the wms extent defined in the
+                // project...
                 extent = QgsServerProjectUtils::wmsExtent( *project );
                 if ( extent.isNull() )
                 {
