@@ -85,6 +85,10 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mGeometryGenerator, &QgsCodeEditorExpression::textChanged, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
+  connect( mPriorityDDBtn, &QgsPropertyOverrideButton::changed, [ = ]
+  {
+    mPrioritySlider->setDisabled( mPriorityDDBtn->isActive() );
+  } );
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
