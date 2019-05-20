@@ -47,17 +47,21 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   mainLayout->addLayout( layout );
 
-  QWidget *centerContainer = new QWidget;
-  QGridLayout *centerLayout = new QGridLayout;
-  centerContainer->setLayout( centerLayout );
-
-  centerLayout->setContentsMargins( 0, 0, 0, 0 );
-  centerLayout->setMargin( 0 );
+  QTabWidget *centerTabWidget = new QTabWidget;
 
   int titleSize = QApplication::fontMetrics().height() * 1.4;
-  QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
-  recentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
-  centerLayout->addWidget( recentProjectsTitle, 0, 0 );
+
+  centerTabWidget->setStyleSheet( QStringLiteral( "QTabBar { font-size: %1pt } " ).arg( titleSize ) );
+
+  mTemplateProjectsModel = new QgsTemplateProjectsModel( this );
+  mTemplateProjectsListView = new QListView();
+  mTemplateProjectsListView->setResizeMode( QListView::Adjust );
+  mTemplateProjectsListView->setModel( mTemplateProjectsModel );
+  mTemplateProjectsListView->setItemDelegate( new QgsRecentProjectItemDelegate( mTemplateProjectsListView ) );
+  mTemplateProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mTemplateProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForTemplates );
+
+  centerTabWidget->addTab( mTemplateProjectsListView, tr( "Project Templates" ) );
 
   mRecentProjectsListView = new QListView();
   mRecentProjectsListView->setResizeMode( QListView::Adjust );
@@ -68,22 +72,12 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mRecentProjectsListView->setModel( mRecentProjectsModel );
   mRecentProjectsListView->setItemDelegate( new QgsRecentProjectItemDelegate( mRecentProjectsListView ) );
 
-  centerLayout->addWidget( mRecentProjectsListView, 1, 0 );
+  centerTabWidget->addTab( mRecentProjectsListView, tr( "Recent Projects" ) );
 
-  layout->addWidget( centerContainer );
+  centerTabWidget->setCurrentIndex( QgsSettings().value( QStringLiteral( "qgis/welcome_screen_page" ), 0 ).toInt() );
+  connect( centerTabWidget, &QTabWidget::currentChanged, this, []( int index ) { QgsSettings().setValue( QStringLiteral( "qgis/welcome_screen_page" ), index ); } );
 
-  QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Templates" ) ) );
-  templatesTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
-  centerLayout->addWidget( templatesTitle, 0, 1 );
-
-  mTemplateProjectsModel = new QgsTemplateProjectsModel( this );
-  mTemplateProjectsListView = new QListView();
-  mTemplateProjectsListView->setResizeMode( QListView::Adjust );
-  mTemplateProjectsListView->setModel( mTemplateProjectsModel );
-  mTemplateProjectsListView->setItemDelegate( new QgsRecentProjectItemDelegate( mTemplateProjectsListView ) );
-  mTemplateProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mTemplateProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForTemplates );
-  centerLayout->addWidget( mTemplateProjectsListView, 1, 1 );
+  mainLayout->addWidget( centerTabWidget );
 
   mVersionInformation = new QTextBrowser;
   mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
