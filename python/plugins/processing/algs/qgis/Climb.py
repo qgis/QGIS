@@ -22,9 +22,6 @@ __author__ = 'Håvard Tveite'
 __date__ = '2019-03-01'
 __copyright__ = '(C) 2019 by Håvard Tveite'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
 
 import os
 import math
@@ -80,7 +77,7 @@ class Climb(QgisAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input (line) layer'),
+                self.tr('Line layer'),
                 [QgsProcessing.TypeVectorLine]
             )
         )
@@ -135,7 +132,6 @@ class Climb(QgisAlgorithm):
 
         if not hasZ:
             raise QgsProcessingException(self.tr('The layer does not have Z values. If you have a DEM, use the Drape algorithm to extract Z values.'))
-            return {}
 
         thefields = QgsFields()
         climbindex = -1
@@ -151,7 +147,7 @@ class Climb(QgisAlgorithm):
         thefields.append(QgsField(self.MAXELEVATTRIBUTE, QVariant.Double))
 
         # combine all the vector fields
-        out_fields = QgsProcessingUtils.combineFields(source_fields, thefields)
+        out_fields = QgsProcessingUtils.combineFields(thefields, source_fields)
 
         layerwithz = source
 
@@ -223,12 +219,13 @@ class Climb(QgisAlgorithm):
                 totaldescent = totaldescent + descent
                 partnumber += 1
             # Set the attribute values
-            attrs = feature.attributes()
+            attrs = []
             # Append the attributes to the end of the existing ones
             attrs.append(climb)
             attrs.append(descent)
             attrs.append(minelev)
             attrs.append(maxelev)
+            attrs.extend(feature.attributes())
 
             # Set the final attribute list
             feature.setAttributes(attrs)
