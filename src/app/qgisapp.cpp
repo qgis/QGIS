@@ -2185,7 +2185,7 @@ void QgisApp::createActions()
   connect( mActionZoomActualSize, &QAction::triggered, this, &QgisApp::zoomActualSize );
   connect( mActionMapTips, &QAction::toggled, this, &QgisApp::toggleMapTips );
   connect( mActionNewBookmark, &QAction::triggered, this, &QgisApp::newBookmark );
-  connect( mActionDraw, &QAction::triggered, this, &QgisApp::refreshMapCanvas );
+  connect( mActionDraw, &QAction::triggered, this, [this] { refreshMapCanvas( true ); } );
   connect( mActionTextAnnotation, &QAction::triggered, this, &QgisApp::addTextAnnotation );
   connect( mActionFormAnnotation, &QAction::triggered, this, &QgisApp::addFormAnnotation );
   connect( mActionHtmlAnnotation, &QAction::triggered, this, &QgisApp::addHtmlAnnotation );
@@ -9398,14 +9398,17 @@ void QgisApp::copyFeatures( QgsFeatureStore &featureStore )
   clipboard()->replaceWithCopyOf( featureStore );
 }
 
-void QgisApp::refreshMapCanvas()
+void QgisApp::refreshMapCanvas( bool redrawAllLayers )
 {
   const auto canvases = mapCanvases();
   for ( QgsMapCanvas *canvas : canvases )
   {
     //stop any current rendering
     canvas->stopRendering();
-    canvas->refreshAllLayers();
+    if ( redrawAllLayers )
+      canvas->refreshAllLayers();
+    else
+      canvas->refresh();
   }
 }
 
@@ -12353,7 +12356,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
     if ( provider )
     {
       connect( provider, &QgsDataProvider::dataChanged, layer, [layer] { layer->triggerRepaint(); } );
-      connect( provider, &QgsDataProvider::dataChanged, this, &QgisApp::refreshMapCanvas );
+      connect( provider, &QgsDataProvider::dataChanged, this, [this] { refreshMapCanvas(); } );
     }
   }
 }
