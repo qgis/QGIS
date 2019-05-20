@@ -898,15 +898,15 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   return image;
 }
 
-void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
+bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
   // TODO: optimize to avoid writing to QImage
-  QImage *image = draw( viewExtent, pixelWidth, pixelHeight, feedback );
+  std::unique_ptr< QImage > image( draw( viewExtent, pixelWidth, pixelHeight, feedback ) );
   if ( !image )   // should not happen
   {
     QgsMessageLog::logMessage( tr( "image is NULL" ), tr( "WMS" ) );
-    return;
+    return false;
   }
 
   QgsDebugMsg( QStringLiteral( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ) );
@@ -915,8 +915,7 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   if ( myExpectedSize != myImageSize )   // should not happen
   {
     QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WMS" ) );
-    delete image;
-    return;
+    return false;
   }
 
   uchar *ptr = image->bits();
@@ -924,9 +923,12 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   {
     // If image is too large, ptr can be NULL
     memcpy( block, ptr, myExpectedSize );
+    return true;
   }
-
-  delete image;
+  else
+  {
+    return false;
+  }
 }
 
 QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight )
