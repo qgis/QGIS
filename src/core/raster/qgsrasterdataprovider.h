@@ -538,15 +538,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Read block of data
      * \note not available in Python bindings
      */
-    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data ) SIP_SKIP
-    { Q_UNUSED( bandNo ); Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); }
+    virtual bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) SIP_SKIP
+    { Q_UNUSED( bandNo ) Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); return false; }
 
     /**
      * Read block of data using give extent and size
      * \note not available in Python bindings
      */
-    virtual void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP
-    { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); }
+    virtual bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP
+    { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); return false; }
 
     //! Returns true if user no data contains value
     bool userNoDataValuesContains( int bandNo, double value ) const;
