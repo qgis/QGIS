@@ -4608,6 +4608,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
   QList<QgsMapLayer *> layersToAdd;
   QList<QgsMapLayer *> addedLayers;
   QgsSettings settings;
+  bool userAskedToAddLayers = false;
 
   for ( QString src : layerQStringList )
   {
@@ -4679,6 +4680,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
 
     if ( layer->isValid() )
     {
+      userAskedToAddLayers = true;
       layer->setProviderEncoding( enc );
 
       QStringList sublayers = layer->dataProvider()->subLayers();
@@ -4734,7 +4736,9 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
   // make sure at least one layer was successfully added
   if ( layersToAdd.isEmpty() )
   {
-    return !addedLayers.isEmpty();
+    // we also return true if we asked the user for sublayers, but they choose none. In this case nothing
+    // went wrong, so we shouldn't return false and cause GUI warnings to appear
+    return userAskedToAddLayers || !addedLayers.isEmpty();
   }
 
   // Register this layer with the layers registry
