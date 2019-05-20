@@ -904,7 +904,11 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   if ( err != CPLE_None )
   {
-    QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+    if ( feedback )
+      feedback->appendError( lastError );
+
+    QgsLogger::warning( "RasterIO error: " + lastError );
     qgsFree( tmpBlock );
     return false;
   }

@@ -272,6 +272,12 @@ bool QgsRasterLayerRenderer::render()
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mPainter, mRasterViewPort, mMapToPixel, mFeedback );
 
+  const QStringList errors = mFeedback->errors();
+  for ( const QString &error : errors )
+  {
+    mErrors.append( error );
+  }
+
   QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 
   return true;

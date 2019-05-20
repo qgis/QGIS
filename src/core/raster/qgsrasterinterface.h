@@ -76,6 +76,23 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
      */
     void setRenderPartialOutput( bool enable ) { mRenderPartialOutput = enable; }
 
+    /**
+     * Appends an error message to the stored list of errors. Should be called
+     * whenever an error is encountered while retrieving a raster block.
+     *
+     * \see errors()
+     * \since QGIS 3.8.0
+     */
+    void appendError( const QString &error ) { mErrors.append( error ); }
+
+    /**
+     * Returns a list of any errors encountered while retrieving the raster block.
+     *
+     * \see appendError()
+     * \since QGIS 3.8.0
+     */
+    QStringList errors() const { return mErrors; }
+
   private:
 
     /**
@@ -86,6 +103,9 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
     //! Whether our painter is drawing to a temporary image used just by this layer
     bool mRenderPartialOutput = false;
+
+    //! List of errors encountered while retrieving block
+    QStringList mErrors;
 };
 
 
