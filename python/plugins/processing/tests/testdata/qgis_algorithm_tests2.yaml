@@ -1240,6 +1240,9 @@ tests:
       OUTPUT:
         name: expected/geodesic_hub_no_split.shp
         type: vector
+        compare:
+          geometry:
+            precision: 6
 
   - algorithm: native:hublines
     name: Hub lines, geodesic, split
@@ -1261,7 +1264,10 @@ tests:
       OUTPUT:
         name: expected/geodesic_hub_split.shp
         type: vector
-
+        compare:
+          geometry:
+            precision: 6
+            
   - algorithm: qgis:pointstopath
     name: Points to path (non grouped)
     params:
