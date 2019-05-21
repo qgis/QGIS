@@ -53,6 +53,7 @@ matrix:
       # CODE LAYOUT
       ##########################################################
     - os: linux
+      dist: xenial
       name: code layout 👗
       if: type != cron
       env:
@@ -61,7 +62,6 @@ matrix:
         apt:
           sources:
             - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
-            - sourceline: 'ppa:sergey-dryabzhinsky/packages' # doxygen
           packages:
             - doxygen
             - graphviz
