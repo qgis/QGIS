@@ -32,7 +32,7 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
 fi
 
 if [[ -n $1 ]]; then
-  modules=($1)
+  modules=("$1")
 else
   modules=(core gui analysis server)
 fi

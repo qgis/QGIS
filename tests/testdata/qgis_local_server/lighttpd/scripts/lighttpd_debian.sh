@@ -26,7 +26,7 @@ SCRIPTNAME=$NAME
 
 export QGIS_SERVER_TEMP_DIR=$3
 
-if[[ -n $4 ]]; then
+if [[ -n $4 ]]; then
     DAEMON_OPTS="-f ${4}"
 fi
 

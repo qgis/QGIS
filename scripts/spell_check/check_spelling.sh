@@ -85,7 +85,7 @@ declare -A GLOBREP_IGNORE=()
 ERRORFOUND=NO
 
 for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
-  ( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
+  { [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]]; } && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
   SPELLFILE=spelling$I~
   ${GP}sed -i '/^#/d' $SPELLFILE
 
