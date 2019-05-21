@@ -326,9 +326,12 @@ void QgsPointDistanceRenderer::stopRender( QgsRenderContext &context )
 
   //printInfoDisplacementGroups(); //just for debugging
 
-  Q_FOREACH ( const ClusteredGroup &group, mClusteredGroups )
+  if ( !context.renderingStopped() )
   {
-    drawGroup( group, context );
+    Q_FOREACH ( const ClusteredGroup &group, mClusteredGroups )
+    {
+      drawGroup( group, context );
+    }
   }
 
   mClusteredGroups.clear();
