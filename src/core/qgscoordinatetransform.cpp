@@ -736,6 +736,14 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   if ( !src.isValid() || !dest.isValid() )
     return false;
 
+  const QString sourceKey = src.authid().isEmpty() ?
+                            src.toWkt() : src.authid();
+  const QString destKey = dest.authid().isEmpty() ?
+                          dest.toWkt() : dest.authid();
+
+  if ( sourceKey.isEmpty() || destKey.isEmpty() )
+    return false;
+
   sCacheLock.lockForRead();
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( src.authid(), dest.authid() ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
@@ -768,8 +776,16 @@ void QgsCoordinateTransform::addToCache()
   if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
     return;
 
+  const QString sourceKey = d->mSourceCRS.authid().isEmpty() ?
+                            d->mSourceCRS.toWkt() : d->mSourceCRS.authid();
+  const QString destKey = d->mDestCRS.authid().isEmpty() ?
+                          d->mDestCRS.toWkt() : d->mDestCRS.authid();
+
+  if ( sourceKey.isEmpty() || destKey.isEmpty() )
+    return;
+
   sCacheLock.lockForWrite();
-  sTransforms.insertMulti( qMakePair( d->mSourceCRS.authid(), d->mDestCRS.authid() ), *this );
+  sTransforms.insertMulti( qMakePair( sourceKey, destKey ), *this );
   sCacheLock.unlock();
 }
 
