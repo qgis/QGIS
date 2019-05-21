@@ -124,7 +124,14 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
   //transform the QPolygonF to screen coordinates
   if ( ct.isValid() )
   {
-    ct.transformPolygon( pts );
+    try
+    {
+      ct.transformPolygon( pts );
+    }
+    catch ( QgsCsException & )
+    {
+      // we don't abort the rendering here, instead we remove any invalid points and just plot those which ARE valid
+    }
   }
 
   // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
@@ -176,7 +183,14 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   //transform the QPolygonF to screen coordinates
   if ( ct.isValid() )
   {
-    ct.transformPolygon( poly );
+    try
+    {
+      ct.transformPolygon( poly );
+    }
+    catch ( QgsCsException & )
+    {
+      // we don't abort the rendering here, instead we remove any invalid points and just plot those which ARE valid
+    }
   }
 
   // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
