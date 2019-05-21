@@ -1147,6 +1147,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     int pointNum = 0;
     for ( int i = 0; i < symbolPoints.size(); ++ i )
     {
+      if ( context.renderContext().renderingStopped() )
+        break;
+
       const QPointF pt = symbolPoints[i];
       const QPointF startPt = angleStartPoints[i];
       const QPointF endPt = angleEndPoints[i];
@@ -1169,6 +1172,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     QPointF lastPt = points[0];
     for ( int i = 1; i < points.count(); ++i )
     {
+      if ( context.renderContext().renderingStopped() )
+        break;
+
       const QPointF &pt = points[i];
 
       if ( lastPt == pt ) // must not be equal!
@@ -1259,6 +1265,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     int pointNum = 0;
     while ( context.renderContext().geometry()->nextVertex( vId, vPoint ) )
     {
+      if ( context.renderContext().renderingStopped() )
+        break;
+
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
 
       if ( ( placement == QgsTemplatedLineSymbolLayerBase::Vertex && vId.type == QgsVertexId::SegmentVertex )

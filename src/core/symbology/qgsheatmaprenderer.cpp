@@ -148,6 +148,9 @@ bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderCont
     int pointY = pixel.y() / mRenderQuality;
     for ( int x = std::max( pointX - mRadiusPixels, 0 ); x < std::min( pointX + mRadiusPixels, width ); ++x )
     {
+      if ( context.renderingStopped() )
+        break;
+
       for ( int y = std::max( pointY - mRadiusPixels, 0 ); y < std::min( pointY + mRadiusPixels, height ); ++y )
       {
         int index = y * width + x;
@@ -221,7 +224,7 @@ void QgsHeatmapRenderer::stopRender( QgsRenderContext &context )
 
 void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
 {
-  if ( !context.painter() || !mGradientRamp )
+  if ( !context.painter() || !mGradientRamp || context.renderingStopped() )
   {
     return;
   }
@@ -238,6 +241,9 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
   QColor pixColor;
   for ( int heightIndex = 0; heightIndex < image.height(); ++heightIndex )
   {
+    if ( context.renderingStopped() )
+      break;
+
     QRgb *scanLine = reinterpret_cast< QRgb * >( image.scanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {

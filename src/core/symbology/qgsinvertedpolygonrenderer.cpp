@@ -247,6 +247,11 @@ bool QgsInvertedPolygonRenderer::renderFeature( const QgsFeature &feature, QgsRe
 void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
+  if ( context.renderingStopped() )
+  {
+    mSubRenderer->stopRender( mContext );
+    return;
+  }
 
   if ( !mSubRenderer )
   {
