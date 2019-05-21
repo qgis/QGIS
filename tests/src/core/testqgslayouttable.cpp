@@ -31,6 +31,9 @@
 #include "qgsrelationmanager.h"
 #include "qgsreadwritecontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslayoutmanager.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutatlas.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -60,6 +63,7 @@ class TestQgsLayoutTable : public QObject
     void attributeTableExtend();
     void attributeTableRepeat();
     void attributeTableAtlasSource(); //test attribute table in atlas feature mode
+    void attributeTableRestoreAtlasSource();
     void attributeTableRelationSource(); //test attribute table in relation mode
     void contentsContainsRow(); //test the contentsContainsRow function
     void removeDuplicates(); //test removing duplicate rows
@@ -608,6 +612,23 @@ void TestQgsLayoutTable::attributeTableAtlasSource()
   QgsProject::instance()->removeMapLayer( vectorLayer->id() );
   table->refreshAttributes();
 
+}
+
+void TestQgsLayoutTable::attributeTableRestoreAtlasSource()
+{
+  const QString projectPath = QStringLiteral( TEST_DATA_DIR ) + "/layout_atlas_table.qgs";
+  QgsProject p;
+  p.read( projectPath );
+
+  QgsPrintLayout *l = dynamic_cast< QgsPrintLayout *>( p.layoutManager()->layouts().at( 0 ) );
+  QgsLayoutItemAttributeTable *table = qobject_cast< QgsLayoutItemAttributeTable * >( l->multiFrames().at( 0 ) );
+  QCOMPARE( table->source(), QgsLayoutItemAttributeTable::AtlasFeature );
+  QVERIFY( l->atlas()->coverageLayer() );
+  QVERIFY( l->atlas()->coverageLayer()->isValid() );
+  QCOMPARE( table->sourceLayer(), l->atlas()->coverageLayer() );
+  QCOMPARE( table->columns().count(), 2 );
+  QCOMPARE( table->columns().at( 0 )->attribute(), QStringLiteral( "Heading" ) );
+  QCOMPARE( table->columns().at( 1 )->attribute(), QStringLiteral( "Staff" ) );
 }
 
 
