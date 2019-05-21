@@ -1019,6 +1019,9 @@ void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF &points, 
   int pointNum = 0;
   for ( int i = 1; i < points.count(); ++i )
   {
+    if ( context.renderContext().renderingStopped() )
+      break;
+
     const QPointF &pt = points[i];
 
     if ( lastPt == pt ) // must not be equal!
@@ -1044,6 +1047,9 @@ void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF &points, 
     // while we're not at the end of line segment, draw!
     while ( lengthLeft > painterUnitInterval )
     {
+      if ( context.renderContext().renderingStopped() )
+        break;
+
       // "c" is 1 for regular point or in interval (0,1] for begin of line segment
       lastPt += c * diff;
       lengthLeft -= painterUnitInterval;
@@ -1108,6 +1114,9 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF &points, Qg
     int pointNum = 0;
     while ( context.renderContext().geometry()->nextVertex( vId, vPoint ) )
     {
+      if ( context.renderContext().renderingStopped() )
+        break;
+
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
 
       if ( ( placement == Vertex && vId.type == QgsVertexId::SegmentVertex )

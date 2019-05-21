@@ -611,12 +611,12 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     /* distance transform of a 1d function using squared distance */
     void distanceTransform1d( double *f, int n, int *v, double *z, double *d );
     /* distance transform of 2d function using squared distance */
-    void distanceTransform2d( double *im, int width, int height );
+    void distanceTransform2d( double *im, int width, int height, QgsRenderContext &context );
     /* distance transform of a binary QImage */
-    double *distanceTransform( QImage *im );
+    double *distanceTransform( QImage *im, QgsRenderContext &context );
 
     /* fills a QImage with values from an array of doubles containing squared distance transform values */
-    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
+    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
 
 #ifdef SIP_RUN
     QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );

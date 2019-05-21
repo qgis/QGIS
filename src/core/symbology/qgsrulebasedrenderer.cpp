@@ -929,26 +929,29 @@ void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )
   //
 
   // go through all levels
-  Q_FOREACH ( const RenderLevel &level, mRenderQueue )
+  if ( !context.renderingStopped() )
   {
-    //QgsDebugMsg(QString("level %1").arg(level.zIndex));
-    // go through all jobs at the level
-    Q_FOREACH ( const RenderJob *job, level.jobs )
+    Q_FOREACH ( const RenderLevel &level, mRenderQueue )
     {
-      context.expressionContext().setFeature( job->ftr.feat );
-      //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
-      // render feature - but only with symbol layers with specified zIndex
-      QgsSymbol *s = job->symbol;
-      int count = s->symbolLayerCount();
-      for ( int i = 0; i < count; i++ )
+      //QgsDebugMsg(QString("level %1").arg(level.zIndex));
+      // go through all jobs at the level
+      Q_FOREACH ( const RenderJob *job, level.jobs )
       {
-        // TODO: better solution for this
-        // renderFeatureWithSymbol asks which symbol layer to draw
-        // but there are multiple transforms going on!
-        if ( s->symbolLayer( i )->renderingPass() == level.zIndex )
+        context.expressionContext().setFeature( job->ftr.feat );
+        //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
+        // render feature - but only with symbol layers with specified zIndex
+        QgsSymbol *s = job->symbol;
+        int count = s->symbolLayerCount();
+        for ( int i = 0; i < count; i++ )
         {
-          int flags = job->ftr.flags;
-          renderFeatureWithSymbol( job->ftr.feat, job->symbol, context, i, flags & FeatIsSelected, flags & FeatDrawMarkers );
+          // TODO: better solution for this
+          // renderFeatureWithSymbol asks which symbol layer to draw
+          // but there are multiple transforms going on!
+          if ( s->symbolLayer( i )->renderingPass() == level.zIndex )
+          {
+            int flags = job->ftr.flags;
+            renderFeatureWithSymbol( job->ftr.feat, job->symbol, context, i, flags & FeatIsSelected, flags & FeatDrawMarkers );
+          }
         }
       }
     }
