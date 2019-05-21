@@ -46,7 +46,7 @@ Direct copies are forbidden. Use clone() instead.
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 
 %Docstring
 Renders a given feature.
