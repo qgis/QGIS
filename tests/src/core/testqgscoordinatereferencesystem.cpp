@@ -523,6 +523,10 @@ void TestQgsCoordinateReferenceSystem::fromProj4()
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
   myCrs = QgsCoordinateReferenceSystem::fromProj4( QString() );
   QVERIFY( !myCrs.isValid() );
+
+
+  myCrs = QgsCoordinateReferenceSystem::fromProj4( "+proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" );
+  QCOMPARE( myCrs.authid(), QStringLiteral( "EPSG:20936" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::proj4Cache()
