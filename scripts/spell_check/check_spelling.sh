@@ -336,7 +336,7 @@ for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
 
 done
 
-( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && echo
+{ [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]]; } && echo
 
 if [[ "$ERRORFOUND" =~ YES ]]; then
   echo -e "\x1B[1msome errors have been found.\x1B[0m" >&2
