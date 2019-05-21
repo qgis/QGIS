@@ -11,6 +11,7 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
   && apt-get update \
+  && DEBIAN_FRONTEND=noninteractive \
   && apt-get install -y \
     apt-transport-https \
     bison \
