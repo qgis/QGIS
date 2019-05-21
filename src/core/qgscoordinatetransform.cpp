@@ -346,15 +346,15 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
     polyData++;
   }
 
+  QString err;
   try
   {
     transformCoords( nVertices, x.data(), y.data(), z.data(), direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException &e )
   {
-    // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
-    throw;
+    // record the exception, but don't rethrow it until we've recorded the coordinates we *could* transform
+    err = e.what();
   }
 
   QPointF *destPoint = poly.data();
@@ -366,6 +366,10 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
     destPoint->ry() = *srcY++;
     destPoint++;
   }
+
+  // rethrow the exception
+  if ( !err.isEmpty() )
+    throw QgsCsException( err );
 }
 
 void QgsCoordinateTransform::transformInPlace(
