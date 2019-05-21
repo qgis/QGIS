@@ -99,7 +99,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool readOnlySelector() { return mReadOnlySelector; }
     void setReadOnlySelector( bool readOnly );
 
-    //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
+    //! determines if the widget offers the possibility to select the related feature on the map (using a dedicated map tool)
     bool allowMapIdentification() { return mAllowMapIdentification; }
     void setAllowMapIdentification( bool allowMapIdentification );
 

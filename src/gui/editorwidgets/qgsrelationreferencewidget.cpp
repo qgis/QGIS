@@ -40,7 +40,8 @@
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistcombobox.h"
-
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeaturefiltermodel.h"
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   : QWidget( parent )
@@ -744,7 +745,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
   }
   else
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( feature.id(), QgsAttributeTableModel::FeatureIdRole ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mReferencedFieldIdx ), QgsFeatureFilterModel::Role::IdentifierValueRole ) );
     mFeature = feature;
   }
 
