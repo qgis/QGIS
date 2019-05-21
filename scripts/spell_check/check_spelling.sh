@@ -136,10 +136,10 @@ for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
   RUN_IGNORECASE=OFF
   RUN_CASEMATCH=OFF
 
-  if [[ ! -z "${IGNORECASE}" ]]; then
+  if [[ -n "${IGNORECASE}" ]]; then
     RUN_IGNORECASE=ON
   fi
-  if [[ ! -z "${CASEMATCH}"  ]]; then
+  if [[ -n "${CASEMATCH}"  ]]; then
     RUN_CASEMATCH=ON
   fi
 
