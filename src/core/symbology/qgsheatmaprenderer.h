@@ -45,7 +45,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     //reimplemented methods
     QgsHeatmapRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
-    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
     void stopRender( QgsRenderContext &context ) override;
     //! \note symbolForFeature2 in Python bindings
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
