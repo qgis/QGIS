@@ -599,8 +599,8 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   {
     groupScale->setChecked( true );
     // caution: rule uses scale denom, scale widget uses true scales
-    mScaleRangeWidget->setMaximumScale( std::max( rule->maximumScale(), 0.0 ) );
-    mScaleRangeWidget->setMinimumScale( std::max( rule->minimumScale(), 0.0 ) );
+    mScaleRangeWidget->setScaleRange( std::max( rule->minimumScale(), 0.0 ),
+                                      std::max( rule->maximumScale(), 0.0 ) );
   }
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
 
