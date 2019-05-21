@@ -186,7 +186,16 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromOgcWmsCrs( const 
 
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromEpsgId( long epsg )
 {
-  return fromOgcWmsCrs( "EPSG:" + QString::number( epsg ) );
+  QgsCoordinateReferenceSystem res = fromOgcWmsCrs( "EPSG:" + QString::number( epsg ) );
+  if ( res.isValid() )
+    return res;
+
+  // pre proj6 builds allowed use of ESRI: codes here (e.g. 54030), so we need to keep compatibility
+  res = fromOgcWmsCrs( "ESRI:" + QString::number( epsg ) );
+  if ( res.isValid() )
+    return res;
+
+  return QgsCoordinateReferenceSystem();
 }
 
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProj4( const QString &proj4 )

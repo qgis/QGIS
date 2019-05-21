@@ -209,6 +209,13 @@ void TestQgsCoordinateReferenceSystem::fromEpsgId()
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
   myCrs = QgsCoordinateReferenceSystem::fromEpsgId( -999 );
   QVERIFY( !myCrs.isValid() );
+
+  // using an ESRI: code. This worked in pre-proj 6 builds, so we need to keep compatibility
+  myCrs = QgsCoordinateReferenceSystem::fromEpsgId( 54030 );
+  QVERIFY( myCrs.isValid() );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( myCrs.authid(), QStringLiteral( "ESRI:54030" ) );
+#endif
 }
 void TestQgsCoordinateReferenceSystem::createFromOgcWmsCrs()
 {
