@@ -848,6 +848,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
         {
           // prefer EPSG codes for compatibility with earlier qgis conversions
           QgsProjUtils::proj_pj_unique_ptr candidateCrs( proj_list_get( QgsProjContext::get(), crsList, i ) );
+          candidateCrs = QgsProjUtils::crsToSingleCrs( candidateCrs.get() );
           const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
           if ( confidence[i] > bestConfidence || authName == QLatin1String( "EPSG" ) )
           {
