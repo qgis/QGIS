@@ -636,6 +636,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #if PROJ_VERSION_MAJOR>=6
   const bool sourceAxisOrderSwapped =  direction == ForwardTransform ? d->mSourceAxisOrderSwapped : d->mDestAxisOrderSwapped;
 
+  proj_errno_reset( projData );
   proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
                       !sourceAxisOrderSwapped ? x : y, sizeof( double ), numPoints,
                       !sourceAxisOrderSwapped ? y : x, sizeof( double ), numPoints,
