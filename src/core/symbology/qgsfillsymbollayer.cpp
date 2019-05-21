@@ -1239,11 +1239,11 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   imgPainter.end();
 
   //apply distance transform to image, uses the current color ramp to calculate final pixel colors
-  double *dtArray = distanceTransform( fillImage.get() );
+  double *dtArray = distanceTransform( fillImage.get(), context.renderContext() );
 
   //copy distance transform values back to QImage, shading by appropriate color ramp
   dtArrayToQImage( dtArray, fillImage.get(), mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor ? twoColorGradientRamp.get() : mGradientRamp.get(),
-                   context.opacity(), useWholeShape, outputPixelMaxDist );
+                   context.renderContext(), context.opacity(), useWholeShape, outputPixelMaxDist );
 
   //clean up some variables
   delete [] dtArray;
@@ -1316,7 +1316,7 @@ void QgsShapeburstFillSymbolLayer::distanceTransform1d( double *f, int n, int *v
 }
 
 /* distance transform of 2d function using squared distance */
-void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, int height )
+void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, int height, QgsRenderContext &context )
 {
   int maxDimension = std::max( width, height );
   double *f = new double[ maxDimension ];
@@ -1327,6 +1327,9 @@ void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, i
   // transform along columns
   for ( int x = 0; x < width; x++ )
   {
+    if ( context.renderingStopped() )
+      break;
+
     for ( int y = 0; y < height; y++ )
     {
       f[y] = im[ x + y * width ];
@@ -1341,6 +1344,9 @@ void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, i
   // transform along rows
   for ( int y = 0; y < height; y++ )
   {
+    if ( context.renderingStopped() )
+      break;
+
     for ( int x = 0; x < width; x++ )
     {
       f[x] = im[  x + y * width ];
@@ -1359,7 +1365,7 @@ void QgsShapeburstFillSymbolLayer::distanceTransform2d( double *im, int width, i
 }
 
 /* distance transform of a binary QImage */
-double *QgsShapeburstFillSymbolLayer::distanceTransform( QImage *im )
+double *QgsShapeburstFillSymbolLayer::distanceTransform( QImage *im, QgsRenderContext &context )
 {
   int width = im->width();
   int height = im->height();
@@ -1371,6 +1377,9 @@ double *QgsShapeburstFillSymbolLayer::distanceTransform( QImage *im )
   int idx = 0;
   for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
   {
+    if ( context.renderingStopped() )
+      break;
+
     const QRgb *scanLine = reinterpret_cast< const QRgb * >( im->constScanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < width; ++widthIndex )
     {
@@ -1390,12 +1399,12 @@ double *QgsShapeburstFillSymbolLayer::distanceTransform( QImage *im )
   }
 
   //calculate squared distance transform
-  distanceTransform2d( dtArray, width, height );
+  distanceTransform2d( dtArray, width, height, context );
 
   return dtArray;
 }
 
-void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, double layerAlpha, bool useWholeShape, int maxPixelDistance )
+void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, double layerAlpha, bool useWholeShape, int maxPixelDistance )
 {
   int width = im->width();
   int height = im->height();
@@ -1433,6 +1442,9 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
 
   for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
   {
+    if ( context.renderingStopped() )
+      break;
+
     QRgb *scanLine = reinterpret_cast< QRgb * >( im->scanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < width; ++widthIndex )
     {

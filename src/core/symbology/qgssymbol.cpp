@@ -764,6 +764,9 @@ class GeometryRestorer
 
 void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, double currentVertexMarkerSize )
 {
+  if ( context.renderingStopped() )
+    return;
+
   const QgsGeometry geom = feature.geometry();
   if ( geom.isNull() )
   {
@@ -918,6 +921,9 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
       for ( int i = 0; i < mp.numGeometries(); ++i )
       {
+        if ( context.renderingStopped() )
+          break;
+
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
         if ( needsExpressionContext )
           mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
@@ -948,6 +954,9 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       const unsigned int num = geomCollection.numGeometries();
       for ( unsigned int i = 0; i < num; ++i )
       {
+        if ( context.renderingStopped() )
+          break;
+
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
         if ( needsExpressionContext )
           mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
@@ -999,6 +1008,9 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         const QList<unsigned int> &listPartIndex = iter->second;
         for ( int idx = 0; idx < listPartIndex.size(); ++idx )
         {
+          if ( context.renderingStopped() )
+            break;
+
           const unsigned i = listPartIndex[idx];
           mSymbolRenderContext->setGeometryPartNum( i + 1 );
           if ( needsExpressionContext )
@@ -1046,7 +1058,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
   if ( drawVertexMarker )
   {
-    if ( !markers.isEmpty() )
+    if ( !markers.isEmpty() && !context.renderingStopped() )
     {
       const auto constMarkers = markers;
       for ( QPointF marker : constMarkers )
@@ -1590,6 +1602,9 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *symbolLayer : constMLayers )
   {
+    if ( context.renderingStopped() )
+      break;
+
     if ( !symbolLayer->enabled() )
       continue;
 
@@ -1826,6 +1841,9 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *symbolLayer : constMLayers )
   {
+    if ( context.renderingStopped() )
+      break;;
+
     if ( !symbolLayer->enabled() )
       continue;
 
@@ -1908,6 +1926,9 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, QList<QPolygonF> *ri
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *symbolLayer : constMLayers )
   {
+    if ( context.renderingStopped() )
+      break;
+
     if ( !symbolLayer->enabled() )
       continue;
 
