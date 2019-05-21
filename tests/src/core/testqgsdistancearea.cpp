@@ -367,7 +367,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   // test converting the resultant area
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareYards );
   QgsDebugMsg( QStringLiteral( "measured %1 in sq yrds" ).arg( area ) );
-  QGSCOMPARENEAR( area, 222237.185213, 0.3 );
+  QGSCOMPARENEAR( area, 222237.185213, 1.0 );
 }
 
 void TestQgsDistanceArea::emptyPolygon()
