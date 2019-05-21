@@ -368,6 +368,12 @@ class TilesXYZAlgorithmMBTiles(TilesXYZAlgorithmBase):
     def displayName(self):
         return self.tr('Generate XYZ tiles (MBTiles)')
 
+    def group(self):
+        return self.tr('Raster tools')
+
+    def groupId(self):
+        return 'rastertools'
+
     def processAlgorithm(self, parameters, context, feedback):
         output_file = self.parameterAsString(parameters, self.OUTPUT_FILE, context)
         if not output_file:
@@ -471,6 +477,12 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
 
     def displayName(self):
         return self.tr('Generate XYZ tiles (Directory)')
+
+    def group(self):
+        return self.tr('Raster tools')
+
+    def groupId(self):
+        return 'rastertools'
 
     def processAlgorithm(self, parameters, context, feedback):
         is_tms = self.parameterAsBoolean(parameters, self.TMS_CONVENTION, context)
