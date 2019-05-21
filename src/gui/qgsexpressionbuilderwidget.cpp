@@ -633,7 +633,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   QString casestring = QStringLiteral( "CASE WHEN condition THEN result END" );
   registerItem( QStringLiteral( "Conditionals" ), QStringLiteral( "CASE" ), casestring );
 
-  registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "NULL" ), QStringLiteral( "NULL" ) );
+  // use -1 as sort order here -- NULL should always show before the field list
+  registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "NULL" ), QStringLiteral( "NULL" ), QString(), QgsExpressionItem::ExpressionNode, false, -1 );
 
   // Load the functions from the QgsExpression class
   int count = QgsExpression::functionCount();
