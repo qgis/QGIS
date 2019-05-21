@@ -350,7 +350,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.name(), 'new name2')
         self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiLineString)
-        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        # depending on proj version, the projection for this layer is either 4326 or 4030
+        self.assertIn(layer.crs().authid(), ('EPSG:4326', 'EPSG:4030'))
         self.assertIn(lines_path, layer.dataProvider().dataSourceUri())
         self.assertEqual(len(spy), 2)
 
