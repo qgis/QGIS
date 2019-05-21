@@ -8,7 +8,7 @@ cache:
   pip: true
   directories:
     - ${HOME}/.ccache_testing
-    - ${HOME}/.ccache_docker_build_cosmic
+    - ${HOME}/.ccache_docker_build_disco
     - ${HOME}/.ccache_docker_build_bionic
   timeout: 1000
 if: NOT branch =~ /^(cherry-pick-)?backport-\d+-/ AND NOT branch =~ /-patch-\d+$/
@@ -114,7 +114,7 @@ matrix:
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
       ##########################################################
-      # COSMIC DOCKER BUILD ON CRON OR TAG
+      # DISCO DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
       name: disco docker build 🐠
