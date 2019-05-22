@@ -883,7 +883,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( _buffer_size != static_cast<qint64>( bufferSize ) )
   {
     QgsDebugMsg( QStringLiteral( "Integer overflow calculating buffer size on a 32 bit system." ) );
-    return;
+    return false;
   }
 #endif
   char *tmpBlock = static_cast<char *>( qgsMalloc( bufferSize ) );
