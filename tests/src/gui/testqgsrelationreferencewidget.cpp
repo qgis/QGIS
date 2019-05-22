@@ -359,13 +359,13 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   QTimer::singleShot( 300, [&] { loop.quit(); } );
   loop.exec();
   QgsFeature feature;
-  mLayer2->getFeatures( QStringLiteral( R"(pk = %1)" ).arg( 11 ) ).nextFeature( feature );
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );
   QVERIFY( feature.isValid() );
   QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 11 );
   w.featureIdentified( feature );
   QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 11 );
 
-  mLayer2->getFeatures( QStringLiteral( R"(pk = %1)" ).arg( 10 ) ).nextFeature( feature );
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 10 ) ).nextFeature( feature );
   QVERIFY( feature.isValid() );
   QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 10 );
   w.featureIdentified( feature );
