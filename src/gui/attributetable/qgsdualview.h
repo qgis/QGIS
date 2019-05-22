@@ -30,6 +30,8 @@ class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;
 class QgsScrollArea;
+class QgsHighlight;
+
 
 /**
  * \ingroup gui
@@ -72,7 +74,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     enum FeatureListBrowsingAction
     {
       NoAction = 0, //!< No action is done
-      FlashFeature, //!< The feature is highlighted with a flash
       PanToFeature, //!< The map is panned to the center of the feature bounding-box
       ZoomToFeature, //!< The map is zoomed to contained the feature bounding-box
     };
@@ -83,6 +84,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \param parent  The parent widget
      */
     explicit QgsDualView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsDualView() override;
 
     /**
      * Has to be called to initialize the dual view.
@@ -288,6 +290,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void formModeChanged( QgsAttributeEditorContext::Mode mode );
 
     /**
+     * Emitted when the mode of the view changes
+     * \param mode the new mode
+     * \since QGIS 3.8
+     */
+    void viewModeChanged( QgsDualView::ViewMode mode );
+
+    /**
      * Emitted when selecting context menu on the feature list to create the context menu individually
      * \param menu context menu
      * \param fid feature id of the selected feature
@@ -372,6 +381,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void panZoomGroupButtonToggled( QAbstractButton *button, bool checked );
 
+    void highlightFeatureButtonClicked( bool clicked );
+
   private:
 
     /**
@@ -386,6 +397,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void insertRecentlyUsedDisplayExpression( const QString &expression );
     void updateEditSelectionProgress( int progress, int count );
     void panOrZoomToFeature( const QgsFeatureIds &featureset );
+    void highlightFeature();
+    void deleteHighlight();
+    void onCurrentViewChanged( int index );
 
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel *mMasterModel = nullptr;
@@ -407,6 +421,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     // If the current feature is set, while the form is still not initialized
     // we will temporarily save it in here and set it on init
     QgsFeature mTempAttributeFormFeature;
+    QgsHighlight *mHighlight = nullptr;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

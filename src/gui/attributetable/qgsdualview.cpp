@@ -42,12 +42,15 @@
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsshortcutsmanager.h"
+#include "qgshighlight.h"
+#include "qgsidentifymenu.h"
 
 
 QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
 {
   setupUi( this );
+  connect( this, &QgsDualView::currentChanged, this, &QgsDualView::onCurrentViewChanged );
   connect( mFeatureListView, &QgsFeatureListView::aboutToChangeEditSelection, this, &QgsDualView::featureListAboutToChangeEditSelection );
   connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionChanged, this, &QgsDualView::featureListCurrentEditSelectionChanged );
   connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionProgressChanged, this, &QgsDualView::updateEditSelectionProgress );
@@ -83,14 +86,20 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->setExclusive( false );
-  buttonGroup->addButton( mFlashButton, FlashFeature );
   buttonGroup->addButton( mAutoPanButton, PanToFeature );
   buttonGroup->addButton( mAutoZoomButton, ZoomToFeature );
-  FeatureListBrowsingAction action = QgsSettings().enumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), FlashFeature );
+  FeatureListBrowsingAction action = QgsSettings().enumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), NoAction );
   QAbstractButton *bt = buttonGroup->button( static_cast<int>( action ) );
   if ( bt )
     bt->setChecked( true );
   connect( buttonGroup, qgis::overload< QAbstractButton *, bool >::of( &QButtonGroup::buttonToggled ), this, &QgsDualView::panZoomGroupButtonToggled );
+  mHighlightButton->setChecked( QgsSettings().value( QStringLiteral( "/qgis/attributeTable/featureListHighlightFeature" ), true ).toBool() );
+  connect( mHighlightButton, &QToolButton::clicked, this, &QgsDualView::highlightFeatureButtonClicked );
+}
+
+QgsDualView::~QgsDualView()
+{
+  deleteHighlight();
 }
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request,
@@ -452,20 +461,70 @@ void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
       QTimer::singleShot( 0, this, [ = ]()
     {
       canvas->panToFeatureIds( mLayer, featureset, false );
-      canvas->flashFeatureIds( mLayer, featureset );
     } );
     else if ( mAutoZoomButton->isChecked() )
       QTimer::singleShot( 0, this, [ = ]()
     {
       canvas->zoomToFeatureIds( mLayer, featureset );
-      canvas->flashFeatureIds( mLayer, featureset );
-    } );
-    else if ( mFlashButton->isChecked() )
-      QTimer::singleShot( 0, this, [ = ]()
-    {
-      canvas->flashFeatureIds( mLayer, featureset );
     } );
   }
+}
+
+void QgsDualView::highlightFeatureButtonClicked( bool clicked )
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/attributeTable/featureListHighlightFeature" ), clicked );
+  highlightFeature();
+}
+
+void QgsDualView::highlightFeature()
+{
+  if ( !mHighlightButton->isChecked() )
+    return;
+
+  QgsMapCanvas *canvas = mFilterModel->mapCanvas();
+  if ( !canvas )
+    return;
+
+  deleteHighlight();
+
+  QgsFeatureIds fids = mFeatureListView->currentEditSelection();
+  QgsFeature feature;
+  QgsFeatureIterator it = mLayerCache->getFeatures( QgsFeatureRequest( fids ) );
+  it.nextFeature( feature );
+
+  QgsDebugMsg( feature.geometry().asWkt( ) );
+
+  mHighlight = new QgsHighlight( canvas, feature, mLayer );
+  QgsIdentifyMenu::styleHighlight( mHighlight );
+  mHighlight->show();
+}
+
+void QgsDualView::deleteHighlight()
+{
+  if ( mHighlight )
+  {
+    mHighlight->hide();
+    delete mHighlight;
+  }
+  mHighlight = nullptr;
+}
+
+void QgsDualView::onCurrentViewChanged( int index )
+{
+  ViewMode mode = static_cast<QgsDualView::ViewMode>( index );
+
+  switch ( mode )
+  {
+    case QgsDualView::AttributeTable:
+      deleteHighlight();
+      break;
+
+    case QgsDualView::AttributeEditor:
+      highlightFeature();
+      break;
+  }
+
+  emit viewModeChanged( mode );
 }
 
 void QgsDualView::panZoomGroupButtonToggled( QAbstractButton *button, bool checked )
@@ -474,18 +533,10 @@ void QgsDualView::panZoomGroupButtonToggled( QAbstractButton *button, bool check
   {
     QgsSettings().setEnumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), PanToFeature );
     mAutoZoomButton->setChecked( false );
-    mFlashButton->setChecked( false );
   }
   else if ( button == mAutoZoomButton && checked )
   {
     QgsSettings().setEnumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), ZoomToFeature );
-    mAutoPanButton->setChecked( false );
-    mFlashButton->setChecked( false );
-  }
-  else if ( button == mFlashButton && checked )
-  {
-    QgsSettings().setEnumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), FlashFeature );
-    mAutoZoomButton->setChecked( false );
     mAutoPanButton->setChecked( false );
   }
   else
@@ -517,6 +568,7 @@ void QgsDualView::featureListCurrentEditSelectionChanged( const QgsFeature &feat
     setCurrentEditSelection( featureset );
 
     panOrZoomToFeature( featureset );
+    highlightFeature();
   }
   else
   {

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsDualView : QStackedWidget
 {
 %Docstring
@@ -38,7 +39,6 @@ and the attributes for the currently selected feature are shown in a form.
     enum FeatureListBrowsingAction
     {
       NoAction,
-      FlashFeature,
       PanToFeature,
       ZoomToFeature,
     };
@@ -49,6 +49,7 @@ Constructor
 
 :param parent: The parent widget
 %End
+    ~QgsDualView();
 
     void init( QgsVectorLayer *layer,
                QgsMapCanvas *mapCanvas,
@@ -263,6 +264,15 @@ Emitted when a filter expression is set using the view.
 Emitted when the form changes mode.
 
 :param mode: new mode
+%End
+
+    void viewModeChanged( QgsDualView::ViewMode mode );
+%Docstring
+Emitted when the mode of the view changes
+
+:param mode: the new mode
+
+.. versionadded:: 3.8
 %End
 
     void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
