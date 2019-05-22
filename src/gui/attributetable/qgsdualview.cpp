@@ -21,6 +21,7 @@
 #include <QGroupBox>
 #include <QInputDialog>
 #include <QTimer>
+#include <QShortcut>
 
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
@@ -40,6 +41,7 @@
 #include "qgsscrollarea.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsshortcutsmanager.h"
 
 
 QgsDualView::QgsDualView( QWidget *parent )
@@ -62,10 +64,22 @@ QgsDualView::QgsDualView( QWidget *parent )
   connect( mActionExpressionPreview, &QAction::triggered, this, &QgsDualView::previewExpressionBuilder );
   connect( mFeatureListView, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::previewExpressionChanged );
 
+  // browsing toolbar
   connect( mNextFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editNextFeature );
   connect( mPreviousFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editPreviousFeature );
   connect( mFirstFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editFirstFeature );
   connect( mLastFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editLastFeature );
+
+  auto createShortcuts = [ = ]( const QString & objectName, void ( QgsFeatureListView::* slot )() )
+  {
+    QShortcut *sc = QgsGui::shortcutsManager()->shortcutByName( objectName );
+    Q_ASSERT( sc ); // the shortcut must have been registered in the shortcuts manager
+    connect( sc, &QShortcut::activated, mFeatureListView, slot );
+  };
+  createShortcuts( QStringLiteral( "mAttributeTableFirstEditedFeature" ), &QgsFeatureListView::editFirstFeature );
+  createShortcuts( QStringLiteral( "mAttributeTablePreviousEditedFeature" ), &QgsFeatureListView::editPreviousFeature );
+  createShortcuts( QStringLiteral( "mAttributeTableNextEditedFeature" ), &QgsFeatureListView::editNextFeature );
+  createShortcuts( QStringLiteral( "mAttributeTableLastEditedFeature" ), &QgsFeatureListView::editLastFeature );
 
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->setExclusive( false );
