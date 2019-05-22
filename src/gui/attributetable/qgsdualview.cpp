@@ -89,10 +89,10 @@ QgsDualView::QgsDualView( QWidget *parent )
         break;
     }
   };
-  createShortcuts( QStringLiteral( "Ctrl+Alt+Up" ), QgsFeatureListView::First );
-  createShortcuts( QStringLiteral( "Ctrl+Alt+Left" ), QgsFeatureListView::Previous );
-  createShortcuts( QStringLiteral( "Ctrl+Alt+Right" ), QgsFeatureListView::Next );
-  createShortcuts( QStringLiteral( "Ctrl+Alt+Down" ), QgsFeatureListView::Last );
+  createShortcuts( QStringLiteral( "Ctrl+Alt+{" ), QgsFeatureListView::First );
+  createShortcuts( QStringLiteral( "Ctrl+Alt+[" ), QgsFeatureListView::Previous );
+  createShortcuts( QStringLiteral( "Ctrl+Alt+]" ), QgsFeatureListView::Next );
+  createShortcuts( QStringLiteral( "Ctrl+Alt+}" ), QgsFeatureListView::Last );
 
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->setExclusive( false );
