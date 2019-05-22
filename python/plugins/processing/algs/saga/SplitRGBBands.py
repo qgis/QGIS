@@ -56,7 +56,10 @@ class SplitRGBBands(SagaAlgorithmBase):
         return self.tr('Split RGB bands')
 
     def group(self):
-        return self.tr('Image tools')
+        return self.tr('Raster tools')
+
+    def groupId(self):
+        return 'rastertools'
 
     def processAlgorithm(self, parameters, context, feedback):
         # TODO: check correct num of bands
