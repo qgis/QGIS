@@ -25,6 +25,7 @@
 
 class QgsVersionInfo;
 class QListView;
+class QLabel;
 
 class QgsWelcomePage : public QWidget
 {
@@ -50,10 +51,13 @@ class QgsWelcomePage : public QWidget
     void showContextMenuForTemplates( QPoint point );
 
   private:
+    void updateRecentProjectsVisibility();
+
     QgsRecentProjectItemsModel *mRecentProjectsModel = nullptr;
     QTextBrowser *mVersionInformation = nullptr;
     QgsVersionInfo *mVersionInfo = nullptr;
     QListView *mRecentProjectsListView = nullptr;
+    QLabel *mRecentProjectsTitle = nullptr;
     QListView *mTemplateProjectsListView = nullptr;
     QStandardItemModel *mTemplateProjectsModel = nullptr;
 };

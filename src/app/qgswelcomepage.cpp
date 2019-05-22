@@ -56,9 +56,9 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   centerLayout->setMargin( 0 );
 
   int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.4 );
-  QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
-  recentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
-  centerLayout->addWidget( recentProjectsTitle, 0, 0 );
+  mRecentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
+  mRecentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
+  centerLayout->addWidget( mRecentProjectsTitle, 0, 0 );
 
   mRecentProjectsListView = new QListView();
   mRecentProjectsListView->setResizeMode( QListView::Adjust );
@@ -121,6 +121,7 @@ QgsWelcomePage::~QgsWelcomePage()
 void QgsWelcomePage::setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects )
 {
   mRecentProjectsModel->setRecentProjects( recentProjects );
+  updateRecentProjectsVisibility();
 }
 
 void QgsWelcomePage::recentProjectItemActivated( const QModelIndex &index )
@@ -254,4 +255,11 @@ void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
   }
 
   menu->popup( mTemplateProjectsListView->mapToGlobal( point ) );
+}
+
+void QgsWelcomePage::updateRecentProjectsVisibility()
+{
+  bool visible = mRecentProjectsModel->rowCount() > 0;
+  mRecentProjectsListView->setVisible( visible );
+  mRecentProjectsTitle->setVisible( visible );
 }
