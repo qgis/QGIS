@@ -38,6 +38,16 @@ from qgis.PyQt.QtCore import QCoreApplication
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 
 
+class DbError(Exception):
+
+    def __init__(self, message, query=None):
+        self.message = str(message)
+        self.query = (str(query) if query is not None else None)
+
+    def __str__(self):
+        return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
+
+
 def uri_from_name(conn_name):
     settings = QgsSettings()
     settings.beginGroup(u"/PostgreSQL/connections/%s" % conn_name)
@@ -862,7 +872,7 @@ class GeoDB(object):
         if not schema:
             return self._quote(table)
         else:
-            return u'%s.%s' % (self._quote(schema), self._quote(table))
+            return u'"%s"."%s"' % (self._quote(schema), self._quote(table))
 
 
 # For debugging / testing
