@@ -24,6 +24,7 @@
 #include "qgsstringutils.h"
 #include "qgsfileutils.h"
 #include "qgstemplateprojectsmodel.h"
+#include "qgsprojectlistitemdelegate.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -49,7 +50,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   QTabWidget *centerTabWidget = new QTabWidget;
 
-  int titleSize = QApplication::fontMetrics().height() * 1.4;
+  int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.4 );
 
   centerTabWidget->setStyleSheet( QStringLiteral( "QTabBar { font-size: %1pt } " ).arg( titleSize ) );
 
@@ -57,7 +58,8 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mTemplateProjectsListView = new QListView();
   mTemplateProjectsListView->setResizeMode( QListView::Adjust );
   mTemplateProjectsListView->setModel( mTemplateProjectsModel );
-  mTemplateProjectsListView->setItemDelegate( new QgsRecentProjectItemDelegate( mTemplateProjectsListView ) );
+  QgsProjectListItemDelegate *recentProjectsDelegate = new QgsProjectListItemDelegate( mTemplateProjectsListView );
+  mTemplateProjectsListView->setItemDelegate( recentProjectsDelegate );
   mTemplateProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTemplateProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForTemplates );
 
@@ -70,7 +72,9 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   mRecentProjectsModel = new QgsRecentProjectItemsModel( mRecentProjectsListView );
   mRecentProjectsListView->setModel( mRecentProjectsModel );
-  mRecentProjectsListView->setItemDelegate( new QgsRecentProjectItemDelegate( mRecentProjectsListView ) );
+  QgsProjectListItemDelegate *templateProjectsDelegate = new QgsProjectListItemDelegate( mRecentProjectsListView );
+  templateProjectsDelegate->setShowPath( false );
+  mRecentProjectsListView->setItemDelegate( templateProjectsDelegate );
 
   centerTabWidget->addTab( mRecentProjectsListView, tr( "Recent Projects" ) );
 
@@ -120,7 +124,7 @@ void QgsWelcomePage::recentProjectItemActivated( const QModelIndex &index )
 
 void QgsWelcomePage::templateProjectItemActivated( const QModelIndex &index )
 {
-  QgisApp::instance()->fileNewFromTemplate( index.data( QgsRecentProjectItemsModel::NativePathRole ).toString() );
+  QgisApp::instance()->fileNewFromTemplate( index.data( QgsProjectListItemDelegate::NativePathRole ).toString() );
 }
 
 void QgsWelcomePage::versionInfoReceived()
@@ -143,8 +147,8 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   if ( !index.isValid() )
     return;
 
-  bool pin = mRecentProjectsModel->data( index, QgsRecentProjectItemsModel::PinRole ).toBool();
-  QString path = mRecentProjectsModel->data( index, QgsRecentProjectItemsModel::PathRole ).toString();
+  bool pin = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PinRole ).toBool();
+  QString path = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PathRole ).toString();
   if ( path.isEmpty() )
     return;
 
@@ -218,7 +222,7 @@ void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
   if ( !index.isValid() )
     return;
 
-  QFileInfo fileInfo( index.data( QgsRecentProjectItemsModel::NativePathRole ).toString() );
+  QFileInfo fileInfo( index.data( QgsProjectListItemDelegate::NativePathRole ).toString() );
 
   QMenu *menu = new QMenu();
 

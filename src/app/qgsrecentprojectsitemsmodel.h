@@ -22,51 +22,11 @@
 
 class QgsMapCanvas;
 
-class QgsProjectPreviewImage
-{
-  public:
-    QgsProjectPreviewImage();
-    QgsProjectPreviewImage( const QString &path );
-    QgsProjectPreviewImage( const QImage &image );
-
-    void loadImageFromFile( const QString &path );
-    void setImage( const QImage &image );
-    QPixmap pixmap() const;
-
-    bool isNull() const;
-
-  private:
-    QImage mImage;
-};
-
-class QgsRecentProjectItemDelegate : public QStyledItemDelegate
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsRecentProjectItemDelegate( QObject *parent = nullptr );
-    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-
-  private:
-
-    int mRoundedRectSizePixels = 5;
-};
-
 class QgsRecentProjectItemsModel : public QAbstractListModel
 {
     Q_OBJECT
 
   public:
-    enum Role
-    {
-      TitleRole = Qt::UserRole + 1,
-      PathRole = Qt::UserRole + 2,
-      NativePathRole = Qt::UserRole + 3,
-      CrsRole = Qt::UserRole + 4,
-      PinRole = Qt::UserRole + 5
-    };
-
     struct RecentProjectData
     {
       bool operator==( const RecentProjectData &other ) const { return other.path == this->path; }

@@ -64,6 +64,7 @@ SET(QGIS_APP_SRCS
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
+  qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
@@ -305,6 +306,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaplayerstyleguiutils.h
   qgsmapsavedialog.h
   qgspuzzlewidget.h
+  qgsprojectlistitemdelegate.h
   qgsrulebasedlabelingwidget.h
   qgssnappinglayertreemodel.h
   qgssnappingwidget.h

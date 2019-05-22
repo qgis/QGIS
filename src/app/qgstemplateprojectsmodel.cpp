@@ -18,7 +18,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgis.h"
-#include "qgsrecentprojectsitemsmodel.h"
+#include "qgsprojectlistitemdelegate.h"
 
 #include <QStandardPaths>
 #include <QDir>
@@ -51,7 +51,7 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
 
   QStandardItem *emptyProjectItem = new QStandardItem();
 
-  emptyProjectItem->setData( tr( "New empty project" ), QgsRecentProjectItemsModel::TitleRole );
+  emptyProjectItem->setData( tr( "New empty project" ), QgsProjectListItemDelegate::TitleRole );
   QSize previewSize( 250, 177 );
   QImage image( previewSize, QImage::Format_ARGB32 );
   image.fill( Qt::white );
@@ -69,7 +69,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
   // Remove any template from this directory)
   for ( int i = rowCount() - 1; i >= 0; --i )
   {
-    if ( index( i, 0 ).data( QgsRecentProjectItemsModel::NativePathRole ).toString().startsWith( path ) )
+    if ( index( i, 0 ).data( QgsProjectListItemDelegate::NativePathRole ).toString().startsWith( path ) )
     {
       removeRow( i );
     }
@@ -95,8 +95,8 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
     {
       item->setData( thumbnail.pixmap(), Qt::DecorationRole );
     }
-    item->setData( file.baseName(), QgsRecentProjectItemsModel::TitleRole );
-    item->setData( file.filePath(), QgsRecentProjectItemsModel::NativePathRole );
+    item->setData( file.baseName(), QgsProjectListItemDelegate::TitleRole );
+    item->setData( file.filePath(), QgsProjectListItemDelegate::NativePathRole );
 
     item->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
     appendRow( item.release() );
