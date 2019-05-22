@@ -21,11 +21,21 @@ SET client_min_messages = warning;
 
 CREATE EXTENSION IF NOT EXISTS postgis;
 
+--- Create qgis_test schema
 DROP SCHEMA IF EXISTS qgis_test CASCADE;
 CREATE SCHEMA qgis_test;
 GRANT ALL ON SCHEMA qgis_test TO public;
 ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON TABLES TO public;
 ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON SEQUENCES TO public;
+
+
+--- Create "CamelCaseSchema" schema
+DROP SCHEMA IF EXISTS "CamelCaseSchema" CASCADE;
+CREATE SCHEMA "CamelCaseSchema";
+GRANT ALL ON SCHEMA "CamelCaseSchema" TO public;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCaseSchema" GRANT ALL ON TABLES TO public;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCaseSchema" GRANT ALL ON SEQUENCES TO public;
+
 
 SET default_tablespace = '';
 
