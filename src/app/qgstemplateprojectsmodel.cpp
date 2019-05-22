@@ -52,9 +52,18 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   QStandardItem *emptyProjectItem = new QStandardItem();
 
   emptyProjectItem->setData( tr( "New empty project" ), QgsProjectListItemDelegate::TitleRole );
+  emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
   QSize previewSize( 250, 177 );
   QImage image( previewSize, QImage::Format_ARGB32 );
   image.fill( Qt::white );
+  QPainter painter( &image );
+  painter.setOpacity( 0.5 );
+  QRect rect( 20, 20, 210, 137 );
+  QPen pen;
+  pen.setStyle( Qt::DashLine );
+  pen.setColor( Qt::gray );
+  painter.setPen( pen );
+  painter.drawRect( rect );
   QgsProjectPreviewImage previewImage( image );
   emptyProjectItem->setData( previewImage.pixmap(), Qt::DecorationRole );
 
