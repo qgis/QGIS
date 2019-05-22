@@ -69,12 +69,17 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mRecentProjectsListView->setModel( mRecentProjectsModel );
   QgsProjectListItemDelegate *recentProjectsDelegate = new QgsProjectListItemDelegate( mRecentProjectsListView );
   mRecentProjectsListView->setItemDelegate( recentProjectsDelegate );
+  connect( mRecentProjectsModel, &QAbstractItemModel::rowsRemoved, this, [this]
+  {
+    updateRecentProjectsVisibility();
+  }
+         );
 
   centerLayout->addWidget( mRecentProjectsListView, 1, 0 );
 
   layout->addWidget( centerContainer );
 
-  QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Templates" ) ) );
+  QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Project Templates" ) ) );
   templatesTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
   centerLayout->addWidget( templatesTitle, 0, 1 );
 
