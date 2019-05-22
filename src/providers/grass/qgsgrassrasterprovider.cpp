@@ -174,7 +174,7 @@ QgsRasterInterface *QgsGrassRasterProvider::clone() const
   return provider;
 }
 
-void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
+bool QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
   Q_UNUSED( xBlock )
   clearLastError();
@@ -214,6 +214,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
     QgsDebugMsg( error );
     appendError( error );
     // We don't set mValid to false, because the raster can be recreated and work next time
+    return false;
   }
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
   // byteCount() in Qt >= 4.6
@@ -228,9 +229,11 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
     size = size < data.size() ? size : data.size();
   }
   memcpy( block, data.data(), size );
+
+  return true;
 }
 
-void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
+bool QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( feedback )
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
@@ -239,7 +242,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExt
   clearLastError();
 
   if ( pixelWidth <= 0 || pixelHeight <= 0 )
-    return;
+    return false;
 
   QStringList arguments;
   arguments.append( "map=" +  mMapName + "@" + mMapset );
@@ -264,7 +267,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExt
     appendError( error );
 
     // We don't set mValid to false, because the raster can be recreated and work next time
-    return;
+    return false;
   }
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
   // byteCount() in Qt >= 4.6
@@ -278,6 +281,8 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExt
     size = size < data.size() ? size : data.size();
   }
   memcpy( block, data.data(), size );
+
+  return true;
 }
 
 QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback * )
