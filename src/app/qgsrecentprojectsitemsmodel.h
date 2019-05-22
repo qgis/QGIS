@@ -43,7 +43,7 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
 
     void setRecentProjects( const QList<RecentProjectData> &recentProjects );
 
-    int rowCount( const QModelIndex &parent ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
