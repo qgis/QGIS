@@ -118,23 +118,8 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
 
-    // getting scale from bbox or default size
-    QgsLegendSettings settings = mWmsParameters.legendSettings();
-    if ( !mWmsParameters.bbox().isEmpty() )
-    {
-      QgsMapSettings mapSettings;
-      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
-      configureMapSettings( tmp.get(), mapSettings );
-      settings.setMapScale( mapSettings.scale() );
-      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
-    }
-    else
-    {
-      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
-      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
-    }
-
     // init renderer
+    QgsLegendSettings settings = legendSettings();
     QgsLegendRenderer renderer( &model, settings );
 
     // create image
@@ -142,7 +127,7 @@ namespace QgsWms
     const qreal dpmm = mContext.dotsPerMm();
     const QSizeF minSize = renderer.minimumSize();
     const QSize size( minSize.width() * dpmm, minSize.height() * dpmm );
-    image.reset( createImage( size.width(), size.height(), false ) );
+    image.reset( createImage( size ) );
 
     // configure painter
     std::unique_ptr<QPainter> painter;
@@ -167,26 +152,9 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
 
-    // getting scale from bbox
-    QgsLegendSettings settings = mWmsParameters.legendSettings();
-    if ( !mWmsParameters.bbox().isEmpty() )
-    {
-      QgsMapSettings mapSettings;
-      std::unique_ptr<QImage> tmp( createImage( width(), height(), false ) );
-      configureMapSettings( tmp.get(), mapSettings );
-      settings.setMapScale( mapSettings.scale() );
-      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
-    }
-    else
-    {
-      double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
-      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
-    }
-
     // create image
-    const int width = mWmsParameters.widthAsInt();
-    const int height = mWmsParameters.heightAsInt();
-    std::unique_ptr<QImage> image( createImage( width, height, false ) );
+    const QSize size( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() );
+    std::unique_ptr<QImage> image( createImage( size ) );
 
     // configure painter
     const qreal dpmm = mContext.dotsPerMm();
@@ -196,11 +164,12 @@ namespace QgsWms
     painter->scale( dpmm, dpmm );
 
     // rendering
+    QgsLegendSettings settings = legendSettings();
     QgsLayerTreeModelLegendNode::ItemContext ctx;
     ctx.painter = painter.get();
     ctx.labelXOffset = 0;
     ctx.point = QPointF();
-    nodeModel.drawSymbol( settings, &ctx, height / dpmm );
+    nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
     painter->end();
 
     return image.release();
@@ -257,7 +226,11 @@ namespace QgsWms
   QgsRenderer::HitTest QgsRenderer::symbols()
   {
     // check size
-    checkMaximumWidthHeight();
+    if ( ! mContext.isValidWidthHeight() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    QStringLiteral( "The requested map size is too large" ) );
+    }
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -270,7 +243,7 @@ namespace QgsWms
 
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
-    std::unique_ptr<QImage> image( createImage() );
+    std::unique_ptr<QImage> image( createImage( mContext.mapSize() ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
@@ -763,7 +736,11 @@ namespace QgsWms
   QImage *QgsRenderer::getMap()
   {
     // check size
-    checkMaximumWidthHeight();
+    if ( ! mContext.isValidWidthHeight() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    QStringLiteral( "The requested map size is too large" ) );
+    }
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -777,7 +754,7 @@ namespace QgsWms
 
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
-    std::unique_ptr<QImage> image( createImage() );
+    std::unique_ptr<QImage> image( createImage( mContext.mapSize() ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
@@ -909,16 +886,7 @@ namespace QgsWms
     }
 
     // create the mapSettings and the output image
-    int imageWidth = mWmsParameters.widthAsInt();
-    int imageHeight = mWmsParameters.heightAsInt();
-
-    if ( !( imageWidth && imageHeight ) &&  ! mWmsParameters.infoFormatIsImage() )
-    {
-      imageWidth = 10;
-      imageHeight = 10;
-    }
-
-    std::unique_ptr<QImage> outputImage( createImage( imageWidth, imageHeight ) );
+    std::unique_ptr<QImage> outputImage( createImage( mContext.mapSize() ) );
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -966,61 +934,8 @@ namespace QgsWms
     return ba;
   }
 
-  QImage *QgsRenderer::createImage( int width, int height, bool useBbox ) const
+  QImage *QgsRenderer::createImage( const QSize &size ) const
   {
-    if ( width < 0 )
-      width = this->width();
-
-    if ( height < 0 )
-      height = this->height();
-
-    //Adapt width / height if the aspect ratio does not correspond with the BBOX.
-    //Required by WMS spec. 1.3.
-    if ( useBbox && mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
-    {
-      QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
-      if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
-      {
-        throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                      mWmsParameters[QgsWmsParameter::BBOX] );
-      }
-
-      QString crs = mWmsParameters.crs();
-      if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
-      {
-        crs = QString( "EPSG:4326" );
-        mapExtent.invert();
-      }
-      QgsCoordinateReferenceSystem outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-      if ( outputCRS.hasAxisInverted() )
-      {
-        mapExtent.invert();
-      }
-      if ( !mapExtent.isEmpty() && height > 0 && width > 0 )
-      {
-        double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
-        double imageWidthHeightRatio = static_cast<double>( width ) / static_cast<double>( height );
-        if ( !qgsDoubleNear( mapWidthHeightRatio, imageWidthHeightRatio, 0.0001 ) )
-        {
-          // inspired by MapServer, mapdraw.c L115
-          double cellsize = ( mapExtent.width() / static_cast<double>( width ) ) * 0.5 + ( mapExtent.height() / static_cast<double>( height ) ) * 0.5;
-          width = mapExtent.width() / cellsize;
-          height = mapExtent.height() / cellsize;
-        }
-      }
-    }
-
-    if ( width <= 0 )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    mWmsParameters[QgsWmsParameter::WIDTH] );
-    }
-    else if ( height <= 0 )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    mWmsParameters[QgsWmsParameter::HEIGHT] );
-    }
-
     std::unique_ptr<QImage> image;
 
     // use alpha channel only if necessary because it slows down performance
@@ -1029,12 +944,12 @@ namespace QgsWms
 
     if ( transparent && format != QgsWmsParameters::JPG )
     {
-      image = qgis::make_unique<QImage>( width, height, QImage::Format_ARGB32_Premultiplied );
+      image = qgis::make_unique<QImage>( size, QImage::Format_ARGB32_Premultiplied );
       image->fill( 0 );
     }
     else
     {
-      image = qgis::make_unique<QImage>( width, height, QImage::Format_RGB32 );
+      image = qgis::make_unique<QImage>( size, QImage::Format_RGB32 );
       image->fill( mWmsParameters.backgroundColorAsColor() );
     }
 
@@ -1883,84 +1798,6 @@ namespace QgsWms
         concatString.clear();
         startGroup = -1;
       }
-    }
-  }
-
-  void QgsRenderer::checkMaximumWidthHeight() const
-  {
-    //test if maxWidth / maxHeight are set in the project or as an env variable
-    //and WIDTH / HEIGHT parameter is in the range allowed range
-    //WIDTH
-    int wmsMaxWidthProj = QgsServerProjectUtils::wmsMaxWidth( *mProject );
-    int wmsMaxWidthEnv = mContext.settings().wmsMaxWidth();
-    int wmsMaxWidth;
-    if ( wmsMaxWidthEnv != -1 && wmsMaxWidthProj != -1 )
-    {
-      // both are set, so we take the more conservative one
-      wmsMaxWidth = std::min( wmsMaxWidthProj, wmsMaxWidthEnv );
-    }
-    else
-    {
-      // none or one are set, so we take the bigger one which is the one set or -1
-      wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
-    }
-
-    int width = this->width();
-    if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    QStringLiteral( "The requested map width is too large" ) );
-    }
-
-    //HEIGHT
-    int wmsMaxHeightProj = QgsServerProjectUtils::wmsMaxHeight( *mProject );
-    int wmsMaxHeightEnv = mContext.settings().wmsMaxHeight();
-    int wmsMaxHeight;
-    if ( wmsMaxHeightEnv != -1 && wmsMaxHeightProj != -1 )
-    {
-      // both are set, so we take the more conservative one
-      wmsMaxHeight = std::min( wmsMaxHeightProj, wmsMaxHeightEnv );
-    }
-    else
-    {
-      // none or one are set, so we take the bigger one which is the one set or -1
-      wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
-    }
-
-    int height = this->height();
-    if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    QStringLiteral( "The requested map height is too large" ) );
-    }
-
-
-    // Sanity check from internal QImage checks (see qimage.cpp)
-    // this is to report a meaningful error message in case of
-    // image creation failure and to differentiate it from out
-    // of memory conditions.
-
-    // depth for now it cannot be anything other than 32, but I don't like
-    // to hardcode it: I hope we will support other depths in the future.
-    uint depth = 32;
-    switch ( mWmsParameters.format() )
-    {
-      case QgsWmsParameters::Format::JPG:
-      case QgsWmsParameters::Format::PNG:
-      default:
-        depth = 32;
-    }
-
-    const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
-
-    if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( width )
-         || bytes_per_line <= 0
-         || height <= 0
-         || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height )
-         || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    QStringLiteral( "The requested map size is too large" ) );
     }
   }
 
@@ -2873,12 +2710,12 @@ namespace QgsWms
 
   QImage *QgsRenderer::scaleImage( const QImage *image ) const
   {
-    //test if width / height ratio of image is the same as the ratio of
+    // Test if width / height ratio of image is the same as the ratio of
     // WIDTH / HEIGHT parameters. If not, the image has to be scaled (required
     // by WMS spec)
     QImage *scaledImage = nullptr;
-    int width = this->width();
-    int height = this->height();
+    const int width = mWmsParameters.widthAsInt();
+    const int height = mWmsParameters.heightAsInt();
     if ( width != image->width() || height != image->height() )
     {
       scaledImage = new QImage( image->scaled( width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
@@ -2905,24 +2742,6 @@ namespace QgsWms
         throw QgsException( QStringLiteral( "Rendering error : '%1' in layer %2" ).arg( e.message ).arg( e.layerID ) );
       }
     }
-  }
-
-  int QgsRenderer::height() const
-  {
-    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
-           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
-         mWmsParameters.srcHeightAsInt() > 0 )
-      return mWmsParameters.srcHeightAsInt();
-    return mWmsParameters.heightAsInt();
-  }
-
-  int QgsRenderer::width() const
-  {
-    if ( ( mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphic" ), Qt::CaseInsensitive ) == 0 ||
-           mWmsParameters.request().compare( QStringLiteral( "GetLegendGraphics" ), Qt::CaseInsensitive ) == 0 ) &&
-         mWmsParameters.srcWidthAsInt() > 0 )
-      return mWmsParameters.srcWidthAsInt();
-    return mWmsParameters.widthAsInt();
   }
 
   void QgsRenderer::configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings )
@@ -3004,5 +2823,27 @@ namespace QgsWms
     QString err;
     layer->readSld( sld, err );
     layer->setCustomProperty( "readSLD", true );
+  }
+
+  QgsLegendSettings QgsRenderer::legendSettings() const
+  {
+    // getting scale from bbox or default size
+    QgsLegendSettings settings = mWmsParameters.legendSettings();
+
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      settings.setMapScale( mapSettings.scale() );
+      settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+    }
+    else
+    {
+      const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
+    }
+
+    return settings;
   }
 } // namespace QgsWms

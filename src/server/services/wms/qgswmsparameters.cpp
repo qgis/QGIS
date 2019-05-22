@@ -552,6 +552,11 @@ namespace QgsWms
     return mWmsParameters[name];
   }
 
+  void QgsWmsParameters::set( QgsWmsParameter::Name name, const QVariant &value )
+  {
+    mWmsParameters[name].mValue = value;
+  }
+
   bool QgsWmsParameters::loadParameter( const QString &key, const QString &value )
   {
     bool loaded = false;
