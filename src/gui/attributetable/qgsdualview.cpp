@@ -41,6 +41,7 @@
 #include "qgsscrollarea.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsshortcutsmanager.h"
 
 
 QgsDualView::QgsDualView( QWidget *parent )
@@ -69,30 +70,16 @@ QgsDualView::QgsDualView( QWidget *parent )
   connect( mFirstFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editFirstFeature );
   connect( mLastFeatureButton, &QToolButton::clicked, mFeatureListView, &QgsFeatureListView::editLastFeature );
 
-  auto createShortcuts = [ = ]( const QString & sequence, QgsFeatureListView::PositionInList change )
+  auto createShortcuts = [ = ]( const QString & objectName, void ( QgsFeatureListView::* slot )() )
   {
-    QShortcut *sc = new QShortcut( QKeySequence( sequence ), this );
-    sc->setContext( Qt::ApplicationShortcut );
-    switch ( change )
-    {
-      case QgsFeatureListView::First:
-        connect( sc, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editFirstFeature );
-        break;
-      case QgsFeatureListView::Previous:
-        connect( sc, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editPreviousFeature );
-        break;
-      case QgsFeatureListView::Next:
-        connect( sc, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editNextFeature );
-        break;
-      case QgsFeatureListView::Last:
-        connect( sc, &QShortcut::activated, mFeatureListView, &QgsFeatureListView::editLastFeature );
-        break;
-    }
+    QShortcut *sc = QgsGui::shortcutsManager()->shortcutByName( objectName );
+    Q_ASSERT( sc ); // the shortcut must have been registered in the shortcuts manager
+    connect( sc, &QShortcut::activated, mFeatureListView, slot );
   };
-  createShortcuts( QStringLiteral( "Ctrl+Alt+{" ), QgsFeatureListView::First );
-  createShortcuts( QStringLiteral( "Ctrl+Alt+[" ), QgsFeatureListView::Previous );
-  createShortcuts( QStringLiteral( "Ctrl+Alt+]" ), QgsFeatureListView::Next );
-  createShortcuts( QStringLiteral( "Ctrl+Alt+}" ), QgsFeatureListView::Last );
+  createShortcuts( QStringLiteral( "mAttributeTableFirstEditedFeature" ), &QgsFeatureListView::editFirstFeature );
+  createShortcuts( QStringLiteral( "mAttributeTablePreviousEditedFeature" ), &QgsFeatureListView::editPreviousFeature );
+  createShortcuts( QStringLiteral( "mAttributeTableNextEditedFeature" ), &QgsFeatureListView::editNextFeature );
+  createShortcuts( QStringLiteral( "mAttributeTableLastEditedFeature" ), &QgsFeatureListView::editLastFeature );
 
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->setExclusive( false );

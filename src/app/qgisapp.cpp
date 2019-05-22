@@ -1410,6 +1410,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsGui::shortcutsManager()->registerAllChildren( this );
   QgsGui::shortcutsManager()->registerAllChildren( mSnappingWidget );
 
+  // register additional action
+  auto registerShortcuts = [ = ]( const QString & sequence, const QString & objectName, const QString & whatsThis )
+  {
+    QShortcut *sc = new QShortcut( QKeySequence( sequence ), this );
+    sc->setContext( Qt::ApplicationShortcut );
+    sc->setObjectName( objectName );
+    sc->setWhatsThis( whatsThis );
+    QgsGui::shortcutsManager()->registerShortcut( sc, sequence );
+  };
+  registerShortcuts( QStringLiteral( "Ctrl+Alt+{" ), QStringLiteral( "mAttributeTableFirstEditedFeature" ), tr( "Edit first feature in attribute table" ) );
+  registerShortcuts( QStringLiteral( "Ctrl+Alt+[" ), QStringLiteral( "mAttributeTablePreviousEditedFeature" ), tr( "Edit previous feature in attribute table" ) );
+  registerShortcuts( QStringLiteral( "Ctrl+Alt+]" ), QStringLiteral( "mAttributeTableNextEditedFeature" ), tr( "Edit next feature in attribute table" ) );
+  registerShortcuts( QStringLiteral( "Ctrl+Alt+}" ), QStringLiteral( "mAttributeTableLastEditedFeature" ), tr( "Edit last feature in attribute table" ) );
+
   QgsProviderRegistry::instance()->registerGuis( this );
 
   setupLayoutManagerConnections();
