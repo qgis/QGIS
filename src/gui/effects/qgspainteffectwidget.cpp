@@ -117,12 +117,16 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
 {
   setupUi( this );
   connect( mBlurTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBlurWidget::mBlurTypeCombo_currentIndexChanged );
-  connect( mBlurStrengthSpnBx, static_cast< void ( QSpinBox::* )( int ) >( &QSpinBox::valueChanged ), this, &QgsBlurWidget::mBlurStrengthSpnBx_valueChanged );
+  connect( mBlurStrengthSpnBx, static_cast< void ( QDoubleSpinBox::* )( double ) >( &QDoubleSpinBox::valueChanged ), this, &QgsBlurWidget::mBlurStrengthSpnBx_valueChanged );
+  connect( mBlurUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsBlurWidget::mBlurUnitWidget_changed );
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBlurWidget::mDrawModeComboBox_currentIndexChanged );
   connect( mBlendCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBlurWidget::mBlendCmbBx_currentIndexChanged );
 
-  mBlurTypeCombo->addItem( tr( "Stack blur (fast)" ), QgsBlurEffect::StackBlur );
-  mBlurTypeCombo->addItem( tr( "Gaussian blur (quality)" ), QgsBlurEffect::GaussianBlur );
+  mBlurTypeCombo->addItem( tr( "Stack blur (fast, doesn't support high dpi)" ), QgsBlurEffect::StackBlur );
+  mBlurTypeCombo->addItem( tr( "Gaussian blur (quality, supports high dpi)" ), QgsBlurEffect::GaussianBlur );
+
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   initGui();
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsBlurWidget::opacityChanged );
@@ -187,12 +191,24 @@ void QgsBlurWidget::mBlurTypeCombo_currentIndexChanged( int index )
   emit changed();
 }
 
-void QgsBlurWidget::mBlurStrengthSpnBx_valueChanged( int value )
+void QgsBlurWidget::mBlurStrengthSpnBx_valueChanged( double value )
 {
   if ( !mEffect )
     return;
 
   mEffect->setBlurLevel( value );
+  emit changed();
+}
+
+void QgsBlurWidget::mBlurUnitWidget_changed()
+{
+  if ( !mEffect )
+  {
+    return;
+  }
+
+  mEffect->setBlurUnit( mBlurUnitWidget->unit() );
+  mEffect->setBlurMapUnitScale( mBlurUnitWidget->getMapUnitScale() );
   emit changed();
 }
 
@@ -244,7 +260,8 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   connect( mShadowColorBtn, &QgsColorButton::colorChanged, this, &QgsShadowEffectWidget::mShadowColorBtn_colorChanged );
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsShadowEffectWidget::mDrawModeComboBox_currentIndexChanged );
   connect( mShadowBlendCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsShadowEffectWidget::mShadowBlendCmbBx_currentIndexChanged );
-  connect( mShadowRadiuSpnBx, static_cast< void ( QSpinBox::* )( int ) >( &QSpinBox::valueChanged ), this, &QgsShadowEffectWidget::mShadowRadiuSpnBx_valueChanged );
+  connect( mShadowRadiuSpnBx, static_cast< void ( QDoubleSpinBox::* )( double ) >( &QDoubleSpinBox::valueChanged ), this, &QgsShadowEffectWidget::mShadowRadiuSpnBx_valueChanged );
+  connect( mBlurUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsShadowEffectWidget::mBlurUnitWidget_changed );
 
   mShadowColorBtn->setAllowOpacity( false );
   mShadowColorBtn->setColorDialogTitle( tr( "Select Shadow Color" ) );
@@ -253,6 +270,8 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
 
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   initGui();
 
@@ -283,6 +302,8 @@ void QgsShadowEffectWidget::initGui()
   mOffsetUnitWidget->setUnit( mEffect->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mEffect->offsetMapUnitScale() );
   mShadowRadiuSpnBx->setValue( mEffect->blurLevel() );
+  mBlurUnitWidget->setUnit( mEffect->blurUnit() );
+  mBlurUnitWidget->setMapUnitScale( mEffect->blurMapUnitScale() );
   mOpacityWidget->setOpacity( mEffect->opacity() );
   mShadowColorBtn->setColor( mEffect->color() );
   mShadowBlendCmbBx->setBlendMode( mEffect->blendMode() );
@@ -298,6 +319,7 @@ void QgsShadowEffectWidget::blockSignals( const bool block )
   mShadowOffsetSpnBx->blockSignals( block );
   mOffsetUnitWidget->blockSignals( block );
   mShadowRadiuSpnBx->blockSignals( block );
+  mBlurUnitWidget->blockSignals( block );
   mOpacityWidget->blockSignals( block );
   mShadowColorBtn->blockSignals( block );
   mShadowBlendCmbBx->blockSignals( block );
@@ -361,12 +383,24 @@ void QgsShadowEffectWidget::mShadowColorBtn_colorChanged( const QColor &color )
   emit changed();
 }
 
-void QgsShadowEffectWidget::mShadowRadiuSpnBx_valueChanged( int value )
+void QgsShadowEffectWidget::mShadowRadiuSpnBx_valueChanged( double value )
 {
   if ( !mEffect )
     return;
 
   mEffect->setBlurLevel( value );
+  emit changed();
+}
+
+void QgsShadowEffectWidget::mBlurUnitWidget_changed()
+{
+  if ( !mEffect )
+  {
+    return;
+  }
+
+  mEffect->setBlurUnit( mBlurUnitWidget->unit() );
+  mEffect->setBlurMapUnitScale( mBlurUnitWidget->getMapUnitScale() );
   emit changed();
 }
 
@@ -408,7 +442,8 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   connect( mColorBtn, &QgsColorButton::colorChanged, this, &QgsGlowWidget::mColorBtn_colorChanged );
   connect( mBlendCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGlowWidget::mBlendCmbBx_currentIndexChanged );
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGlowWidget::mDrawModeComboBox_currentIndexChanged );
-  connect( mBlurRadiusSpnBx, static_cast< void ( QSpinBox::* )( int ) >( &QSpinBox::valueChanged ), this, &QgsGlowWidget::mBlurRadiusSpnBx_valueChanged );
+  connect( mBlurRadiusSpnBx, static_cast< void ( QDoubleSpinBox::* )( double ) >( &QDoubleSpinBox::valueChanged ), this, &QgsGlowWidget::mBlurRadiusSpnBx_valueChanged );
+  connect( mBlurUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGlowWidget::mBlurUnitWidget_changed );
 
   mColorBtn->setAllowOpacity( false );
   mColorBtn->setColorDialogTitle( tr( "Select Glow Color" ) );
@@ -416,6 +451,8 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnColorRamp->setShowGradientOnly( true );
 
@@ -538,12 +575,24 @@ void QgsGlowWidget::mColorBtn_colorChanged( const QColor &color )
   emit changed();
 }
 
-void QgsGlowWidget::mBlurRadiusSpnBx_valueChanged( int value )
+void QgsGlowWidget::mBlurRadiusSpnBx_valueChanged( double value )
 {
   if ( !mEffect )
     return;
 
   mEffect->setBlurLevel( value );
+  emit changed();
+}
+
+void QgsGlowWidget::mBlurUnitWidget_changed()
+{
+  if ( !mEffect )
+  {
+    return;
+  }
+
+  mEffect->setBlurUnit( mBlurUnitWidget->unit() );
+  mEffect->setBlurMapUnitScale( mBlurUnitWidget->getMapUnitScale() );
   emit changed();
 }
 
