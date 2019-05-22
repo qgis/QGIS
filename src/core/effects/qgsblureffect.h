@@ -61,22 +61,66 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     QgsBlurEffect *clone() const override SIP_FACTORY;
 
     /**
-     * Sets blur level (strength)
+     * Sets blur level (radius)
      * \param level blur level. Depending on the current blurMethod(), this parameter
      * has different effects
      * \see blurLevel
-     * \see blurMethod
+     * \see setBlurUnit
+     * \see setBlurMapUnitScale
+     * \see setBlurMethod
      */
-    void setBlurLevel( const int level ) { mBlurLevel = level; }
+    void setBlurLevel( const double level ) { mBlurLevel = level; }
 
     /**
-     * Returns the blur level (strength)
+     * Returns the blur level (radius)
      * \returns blur level. Depending on the current blurMethod(), this parameter
      * has different effects
      * \see setBlurLevel
+     * \see blurUnit
+     * \see blurMapUnitScale
      * \see blurMethod
      */
-    int blurLevel() const { return mBlurLevel; }
+    double blurLevel() const { return mBlurLevel; }
+
+    /**
+     * Sets the units used for the blur level (radius).
+     * \param unit units for blur level
+     * \see blurUnit
+     * \see setBlurLevel
+     * \see setBlurMapUnitScale
+     * \since QGIS 3.4.9
+     */
+    void setBlurUnit( const QgsUnitTypes::RenderUnit unit ) { mBlurUnit = unit; }
+
+    /**
+     * Returns the units used for the blur level (radius).
+     * \returns units for blur level
+     * \see setBlurUnit
+     * \see blurLevel
+     * \see blurMapUnitScale
+     * \since QGIS 3.4.9
+     */
+    QgsUnitTypes::RenderUnit blurUnit() const { return mBlurUnit; }
+
+    /**
+     * Sets the map unit scale used for the blur strength (radius).
+     * \param scale map unit scale for blur strength
+     * \see blurMapUnitScale
+     * \see setBlurLevel
+     * \see setBlurUnit
+     * \since QGIS 3.4.9
+     */
+    void setBlurMapUnitScale( const QgsMapUnitScale &scale ) { mBlurMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale used for the blur strength (radius).
+     * \returns map unit scale for blur strength
+     * \see setBlurMapUnitScale
+     * \see blurLevel
+     * \see blurUnit
+     * \since QGIS 3.4.9
+     */
+    const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
 
     /**
      * Sets the blur method (algorithm) to use for performing the blur.
@@ -131,7 +175,9 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
 
   private:
 
-    int mBlurLevel = 10;
+    double mBlurLevel = 2.645;
+    QgsUnitTypes::RenderUnit mBlurUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mBlurMapUnitScale;
     BlurMethod mBlurMethod = StackBlur;
     double mOpacity = 1.0;
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;

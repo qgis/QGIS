@@ -43,7 +43,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setOpacity(0.5)
         s.setJoinStyle(Qt.RoundJoin)
         s.setBlendMode(QPainter.CompositionMode_Difference)
-        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '10', 'enabled': '1'}))
+        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '2.0', 'blur_unit': QgsUnitTypes.encodeUnit(QgsUnitTypes.RenderMillimeters), 'enabled': '1'}))
         return s
 
     def checkBufferSettings(self, s):
@@ -58,7 +58,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.joinStyle(), Qt.RoundJoin)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_Difference)
         self.assertTrue(s.paintEffect())
-        self.assertEqual(s.paintEffect().blurLevel(), 10)
+        self.assertEqual(s.paintEffect().blurLevel(), 2.0)
 
     def createBackgroundSettings(self):
         s = QgsTextBackgroundSettings()
@@ -85,7 +85,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setStrokeWidth(7)
         s.setStrokeWidthUnit(QgsUnitTypes.RenderMapUnits)
         s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
-        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '6', 'enabled': '1'}))
+        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '6.0', 'blur_unit': QgsUnitTypes.encodeUnit(QgsUnitTypes.RenderMillimeters), 'enabled': '1'}))
         return s
 
     def checkBackgroundSettings(self, s):
@@ -114,7 +114,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.strokeWidthUnit(), QgsUnitTypes.RenderMapUnits)
         self.assertEqual(s.strokeWidthMapUnitScale(), QgsMapUnitScale(25, 26))
         self.assertTrue(s.paintEffect())
-        self.assertEqual(s.paintEffect().blurLevel(), 6)
+        self.assertEqual(s.paintEffect().blurLevel(), 6.0)
 
     def createShadowSettings(self):
         s = QgsTextShadowSettings()
