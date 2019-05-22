@@ -117,7 +117,7 @@ matrix:
       # DISCO DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
-      name: disco docker build 🐠
+      name: disco docker build 💃
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       env:
