@@ -176,23 +176,11 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       if ( filename.isEmpty() )
         return QVariant();
 
-      QImage thumbnail( filename );
+      QgsProjectPreviewImage thumbnail( filename );
       if ( thumbnail.isNull() )
         return QVariant();
 
-      //nicely round corners so users don't get paper cuts
-      QImage previewImage( thumbnail.size(), QImage::Format_ARGB32 );
-      previewImage.fill( Qt::transparent );
-      QPainter previewPainter( &previewImage );
-      previewPainter.setRenderHint( QPainter::Antialiasing, true );
-      previewPainter.setPen( Qt::NoPen );
-      previewPainter.setBrush( Qt::black );
-      previewPainter.drawRoundedRect( 0, 0, previewImage.width(), previewImage.height(), 8, 8 );
-      previewPainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
-      previewPainter.drawImage( 0, 0, thumbnail );
-      previewPainter.end();
-
-      return QPixmap::fromImage( previewImage );
+      return thumbnail.pixmap();
     }
 
     case Qt::ToolTipRole:
@@ -253,4 +241,47 @@ void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );
   projectData.exists = QFile::exists( ( projectData.path ) );
   projectData.checkedExists = true;
+}
+
+QgsProjectPreviewImage::QgsProjectPreviewImage() = default;
+
+QgsProjectPreviewImage::QgsProjectPreviewImage( const QString &path )
+{
+  loadImageFromFile( path );
+}
+
+QgsProjectPreviewImage::QgsProjectPreviewImage( const QImage &image )
+{
+  mImage = image;
+}
+
+void QgsProjectPreviewImage::loadImageFromFile( const QString &path )
+{
+  mImage = QImage( path );
+}
+
+void QgsProjectPreviewImage::setImage( const QImage &image )
+{
+  mImage = image;
+}
+
+QPixmap QgsProjectPreviewImage::pixmap() const
+{
+  //nicely round corners so users don't get paper cuts
+  QImage previewImage( mImage.size(), QImage::Format_ARGB32 );
+  previewImage.fill( Qt::transparent );
+  QPainter previewPainter( &previewImage );
+  previewPainter.setRenderHint( QPainter::Antialiasing, true );
+  previewPainter.setPen( Qt::NoPen );
+  previewPainter.setBrush( Qt::black );
+  previewPainter.drawRoundedRect( 0, 0, previewImage.width(), previewImage.height(), 8, 8 );
+  previewPainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
+  previewPainter.drawImage( 0, 0, mImage );
+  previewPainter.end();
+  return QPixmap::fromImage( previewImage );
+}
+
+bool QgsProjectPreviewImage::isNull() const
+{
+  return mImage.isNull();
 }

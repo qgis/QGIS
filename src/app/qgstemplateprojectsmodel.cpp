@@ -48,6 +48,17 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   connect( &mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsTemplateProjectsModel::scanDirectory );
 
   setColumnCount( 1 );
+
+  QStandardItem *emptyProjectItem = new QStandardItem();
+
+  emptyProjectItem->setData( tr( "New empty project" ), QgsRecentProjectItemsModel::TitleRole );
+  QSize previewSize( 250, 177 );
+  QImage image( previewSize, QImage::Format_ARGB32 );
+  image.fill( Qt::white );
+  QgsProjectPreviewImage previewImage( image );
+  emptyProjectItem->setData( previewImage.pixmap(), Qt::DecorationRole );
+
+  appendRow( emptyProjectItem );
 }
 
 void QgsTemplateProjectsModel::scanDirectory( const QString &path )
@@ -78,21 +89,11 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
 
     QString filename( mTemporaryDir.filePath( fileId ) + QDir::separator() + QStringLiteral( "preview.png" ) );
 
-    QImage thumbnail( filename );
+    QgsProjectPreviewImage thumbnail( filename );
+
     if ( !thumbnail.isNull() )
     {
-      //nicely round corners so users don't get paper cuts
-      QImage previewImage( thumbnail.size(), QImage::Format_ARGB32 );
-      previewImage.fill( Qt::transparent );
-      QPainter previewPainter( &previewImage );
-      previewPainter.setRenderHint( QPainter::Antialiasing, true );
-      previewPainter.setPen( Qt::NoPen );
-      previewPainter.setBrush( Qt::black );
-      previewPainter.drawRoundedRect( 0, 0, previewImage.width(), previewImage.height(), 8, 8 );
-      previewPainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
-      previewPainter.drawImage( 0, 0, thumbnail );
-      previewPainter.end();
-      item->setData( QPixmap::fromImage( previewImage ), Qt::DecorationRole );
+      item->setData( thumbnail.pixmap(), Qt::DecorationRole );
     }
     item->setData( file.baseName(), QgsRecentProjectItemsModel::TitleRole );
     item->setData( file.filePath(), QgsRecentProjectItemsModel::NativePathRole );

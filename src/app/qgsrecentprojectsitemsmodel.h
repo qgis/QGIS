@@ -20,6 +20,25 @@
 #include <QStringList>
 #include <QStyledItemDelegate>
 
+class QgsMapCanvas;
+
+class QgsProjectPreviewImage
+{
+  public:
+    QgsProjectPreviewImage();
+    QgsProjectPreviewImage( const QString &path );
+    QgsProjectPreviewImage( const QImage &image );
+
+    void loadImageFromFile( const QString &path );
+    void setImage( const QImage &image );
+    QPixmap pixmap() const;
+
+    bool isNull() const;
+
+  private:
+    QImage mImage;
+};
+
 class QgsRecentProjectItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
