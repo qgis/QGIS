@@ -43,9 +43,10 @@ class TestQgsDistanceArea(unittest.TestCase):
 
         self.assertFalse(da.ellipsoidCrs().isValid())
         da.setEllipsoid("GRS80")
-        self.assertEqual(da.ellipsoidCrs().authid(), 'EPSG:4019')
+        # depends on proj version
+        self.assertIn(da.ellipsoidCrs().toProj4(), ('+proj=longlat +ellps=GRS80 +no_defs', '+proj=longlat +a=6378137 +rf=298.25722210100002 +no_defs'))
         da.setEllipsoid("WGS84")
-        self.assertEqual(da.ellipsoidCrs().authid(), 'EPSG:4030')
+        self.assertIn(da.ellipsoidCrs().toProj4(), ('+proj=longlat +ellps=WGS84 +no_defs', '+proj=longlat +a=6378137 +rf=298.25722356300003 +no_defs'))
 
     def testMeasureLine(self):
         #   +-+
