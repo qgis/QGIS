@@ -796,6 +796,14 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
 {
   d.detach();
 
+  if ( proj4String.trimmed().isEmpty() )
+  {
+    d->mIsValid = false;
+    d->mWkt.clear();
+    d->mProj4.clear();
+    return false;
+  }
+
   sProj4CacheLock.lockForRead();
   QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sProj4Cache.constFind( proj4String );
   if ( crsIt != sProj4Cache.constEnd() )
