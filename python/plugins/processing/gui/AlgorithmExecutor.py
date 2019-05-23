@@ -28,10 +28,13 @@ from qgis.core import (Qgis,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
                        QgsMessageLog,
+                       QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingFeatureSourceDefinition,
                        QgsProcessingFeatureSource,
                        QgsProcessingParameters,
+                       QgsProcessingOutputLayerDefinition,
+                       QgsProperty,
                        QgsProject,
                        QgsFeatureRequest,
                        QgsFeature,
@@ -329,8 +332,15 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
             if out.name() not in outputs:
                 continue
 
-            o = outputs[out.name()]
-            parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
+            o = outputs[out.name()]            
+            if isinstance(o, QgsProperty):
+                dest = o.valueAsString(context.expressionContext())[0]
+            elif isinstance(o, QgsProcessingOutputLayerDefinition):
+                dest = o.sink.valueAsString(context.expressionContext())[0]
+            else:
+                dest = str(o)
+            if dest != QgsProcessing.TEMPORARY_OUTPUT:
+                parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
         feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i + 1, len(sink_list)))
         feedback.setProgress(i * 100 / len(sink_list))
         ret, results = execute(alg, parameters, context, feedback)
