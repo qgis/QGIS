@@ -8,7 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
-__copyright__ = 'Copyright 2018, The QGIS Project'
+__copyright__ = 'Copyright 2019, The QGIS Project'
 
 import re
 
