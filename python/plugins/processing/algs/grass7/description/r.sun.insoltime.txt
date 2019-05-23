@@ -1,5 +1,5 @@
 r.sun
-Solar irradiance and irradiation model.
+r.sun.insoltime - Solar irradiance and irradiation model (daily sums).
 Raster (r.*)
 QgsProcessingParameterRasterLayer|elevation|Elevation layer [meters]|None|False
 QgsProcessingParameterRasterLayer|aspect|Aspect layer [decimal degrees]|None|False
@@ -23,9 +23,8 @@ QgsProcessingParameterNumber|day|No. of day of the year (1-365)|QgsProcessingPar
 *QgsProcessingParameterNumber|civil_time|Civil time zone value, if none, the time will be local solar time|QgsProcessingParameterNumber.Double|None|True|0.0|None
 QgsProcessingParameterBoolean|-p|Do not incorporate the shadowing effect of terrain|False
 *QgsProcessingParameterBoolean|-m|Use the low-memory version of the program|False
-QgsProcessingParameterRasterDestination|incidout|incidence angle raster map|None|True 
-QgsProcessingParameterRasterDestination|beam_rad|Irradiation [Wh.m-2.day-1]|None|True
 QgsProcessingParameterRasterDestination|insol_time|Insolation time [h] |None|True
-QgsProcessingParameterRasterDestination|diff_rad|Diffuse irradiation [Wh.m-2.day-1]|None|True
-QgsProcessingParameterRasterDestination|refl_rad|Ground reflected irradiation [Wh.m-2.day-1]|None|True 
-QgsProcessingParameterRasterDestination|glob_rad|Global (total) irradiance/irradiation [Wh.m-2.day-1]|None|True
+QgsProcessingParameterRasterDestination|beam_rad|Irradiation raster map [Wh.m-2.day-1]|None|True
+QgsProcessingParameterRasterDestination|diff_rad|Irradiation raster map [Wh.m-2.day-1]|None|True
+QgsProcessingParameterRasterDestination|refl_rad|Irradiation raster map [Wh.m-2.day-1]|None|True
+QgsProcessingParameterRasterDestination|glob_rad|Irradiance/irradiation raster map [Wh.m-2.day-1]|None|True
