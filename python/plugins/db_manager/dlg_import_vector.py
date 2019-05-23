@@ -70,6 +70,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.cboSchema.currentIndexChanged.connect(self.populateTables)
         self.widgetSourceSrid.setCrs(QgsProject.instance().crs())
         self.widgetTargetSrid.setCrs(QgsProject.instance().crs())
+        self.updateInputLayer()
 
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
