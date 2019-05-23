@@ -509,6 +509,9 @@ void TestQgsCoordinateReferenceSystem::srsIdCache()
 void TestQgsCoordinateReferenceSystem::createFromProj4()
 {
   QgsCoordinateReferenceSystem myCrs;
+  QVERIFY( !myCrs.createFromProj4( QString() ) );
+  QVERIFY( !myCrs.isValid() );
+
   QVERIFY( myCrs.createFromProj4( GEOPROJ4 ) );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
