@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 from pprint import pformat
 import time
 
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QDialogButtonBox
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 
 from qgis.core import (QgsProcessingParameterDefinition,
@@ -65,6 +65,18 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
         self.setMainWidget(BatchPanel(self, self.algorithm()))
         self.hideShortHelp()
+
+        self.btnRunSingle = QPushButton(self.tr("Run as Single Process…"))
+        self.btnRunSingle.clicked.connect(self.runAsSingle)
+        self.buttonBox().addButton(self.btnRunSingle, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
+
+    def runAsSingle(self):
+        self.close()
+
+        from processing.gui.AlgorithmDialog import AlgorithmDialog
+        dlg = AlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
+        dlg.show()
+        dlg.exec_()
 
     def runAlgorithm(self):
         alg_parameters = []
