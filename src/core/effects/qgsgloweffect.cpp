@@ -78,7 +78,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   dtProps.ramp = ramp;
   QgsImageOperation::distanceTransform( im, dtProps );
 
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  int blurLevel = std::floor( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   if ( blurLevel <= 16 )
   {
     QgsImageOperation::stackBlur( im, blurLevel );

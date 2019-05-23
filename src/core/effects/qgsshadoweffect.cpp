@@ -46,7 +46,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
   QgsImageOperation::overlayColor( colorisedIm, mColor );
 
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  int blurLevel = std::floor( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   if ( blurLevel <= 16 )
   {
     QgsImageOperation::stackBlur( colorisedIm, blurLevel );
@@ -168,7 +168,7 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
 QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   //blur radius and offset distance
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  int blurLevel = std::floor( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += blurLevel * 2 + 10;

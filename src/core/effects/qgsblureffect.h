@@ -19,6 +19,8 @@
 
 #include "qgis_core.h"
 #include "qgspainteffect.h"
+#include "qgsunittypes.h"
+#include "qgsmapunitscale.h"
 #include "qgis.h"
 #include <QPainter>
 
