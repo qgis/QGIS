@@ -51,11 +51,17 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
 
   QStandardItem *emptyProjectItem = new QStandardItem();
 
-  emptyProjectItem->setData( tr( "New empty project" ), QgsProjectListItemDelegate::TitleRole );
+  emptyProjectItem->setData( tr( "New Empty Project" ), QgsProjectListItemDelegate::TitleRole );
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().description(), QgsProjectListItemDelegate::CrsRole ); } );
+  emptyProjectItem->setData( QgsProject::instance()->crs().description(), QgsProjectListItemDelegate::CrsRole );
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
   QSize previewSize( 250, 177 );
   QImage image( previewSize, QImage::Format_ARGB32 );
-  image.fill( Qt::white );
+  QgsSettings settings;
+  int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+  int myGreen = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+  int myBlue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+  image.fill( QColor( myRed, myGreen, myBlue ) );
   QPainter painter( &image );
   painter.setOpacity( 0.5 );
   QRect rect( 20, 20, 210, 137 );
@@ -75,7 +81,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
   QDir dir = QDir( path );
   const QFileInfoList files = dir.entryInfoList( QStringList() << QStringLiteral( "*.qgs" ) << QStringLiteral( "*.qgz" ) );
 
-  // Remove any template from this directory)
+  // Remove any template from this directory
   for ( int i = rowCount() - 1; i >= 0; --i )
   {
     if ( index( i, 0 ).data( QgsProjectListItemDelegate::NativePathRole ).toString().startsWith( path ) )
