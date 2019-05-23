@@ -1655,11 +1655,12 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
   {
     bool initialized = false;
 
-    long srsid = srsNode.namedItem( QStringLiteral( "srsid" ) ).toElement().text().toLong();
+    bool ok = false;
+    long srsid = srsNode.namedItem( QStringLiteral( "srsid" ) ).toElement().text().toLong( &ok );
 
     QDomNode myNode;
 
-    if ( srsid < USER_CRS_START_ID )
+    if ( ok && srsid > 0 && srsid < USER_CRS_START_ID )
     {
       myNode = srsNode.namedItem( QStringLiteral( "authid" ) );
       if ( !myNode.isNull() )
@@ -1688,13 +1689,13 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     if ( !initialized )
     {
       myNode = srsNode.namedItem( QStringLiteral( "proj4" ) );
+      const QString proj4 = myNode.toElement().text();
 
-      if ( !createFromProj4( myNode.toElement().text() ) )
+      if ( !createFromProj4( proj4 ) )
       {
         // Setting from elements one by one
-
-        myNode = srsNode.namedItem( QStringLiteral( "proj4" ) );
-        setProj4String( myNode.toElement().text() );
+        if ( !proj4.trimmed().isEmpty() )
+          setProj4String( myNode.toElement().text() );
 
         myNode = srsNode.namedItem( QStringLiteral( "srsid" ) );
         setInternalId( myNode.toElement().text().toLong() );
@@ -1731,7 +1732,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       // this behavior was changed in order to separate creation and saving.
       // Not sure if it necessary to save it here, should be checked by someone
       // familiar with the code (should also give a more descriptive name to the generated CRS)
-      if ( d->mSrsId == 0 )
+      if ( isValid() && d->mSrsId == 0 )
       {
         QString myName = QStringLiteral( " * %1 (%2)" )
                          .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),

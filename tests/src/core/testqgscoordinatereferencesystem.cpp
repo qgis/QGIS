@@ -634,6 +634,19 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QDomDocument document( "test" );
   QDomElement node = document.createElement( QStringLiteral( "crs" ) );
   document.appendChild( node );
+
+  // start with invalid node
+  QgsCoordinateReferenceSystem badCrs;
+  QVERIFY( !badCrs.readXml( node ) );
+  QVERIFY( !badCrs.isValid() );
+  QDomElement badSrsElement  = document.createElement( QStringLiteral( "spatialrefsys" ) );
+  QDomElement badNode = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( badNode );
+  badNode.appendChild( badSrsElement );
+  // should return true, because it's ok to write/read invalid crs to xml
+  QVERIFY( badCrs.readXml( badNode ) );
+  QVERIFY( !badCrs.isValid() );
+
   QVERIFY( myCrs.writeXml( node, document ) );
   QgsCoordinateReferenceSystem myCrs2;
   QVERIFY( myCrs2.readXml( node ) );
