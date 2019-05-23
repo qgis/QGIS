@@ -714,15 +714,12 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(fract, 0.5341836295552418, 5)
 
         # calculation should be ellipsoid dependent!
-        da.setEllipsoid("Phobos2000")
-        ####
-        #### THIS FAILS UNDER PROJ 6 -- we need to set the sourceCrs to a Phobos based CRS. (which is...?)
-        ####
+        da.setEllipsoid('PARAMETER:6370997:6370997')
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-175.15030911497356669, 8.59851183021221033),
                                                             QgsPointXY(175.76717768974583578,
                                                                        8.93749416467257873))
-        self.assertAlmostEqual(lat, 8.836479503936307, 5)
-        self.assertAlmostEqual(fract, 0.5340663534958514, 5)
+        self.assertAlmostEqual(lat, 8.806658717133244, 5)
+        self.assertAlmostEqual(fract, 0.5341851152000393, 5)
 
         # no ellipsoid
         da.setEllipsoid("NONE")
@@ -775,14 +772,11 @@ class TestQgsDistanceArea(unittest.TestCase):
                          'MultiLineString ((121.4 6.4, 130.40033 7.32484, 139.43407 8.06935, 148.49637 8.61432, 157.57946 8.9455, 166.67342 9.05419, 175.76718 8.93749, -175.15031 8.59851, -166.08891 8.04617, -157.05629 7.29488, -148.0572 6.36403, -139.09301 5.2773, -130.16168 4.06195, -121.6 2.8))')
 
         # different ellipsoid, should be respected
-        da.setEllipsoid("Phobos2000")
-        ####
-        #### THIS FAILS UNDER PROJ 6 -- we need to set the sourceCrs to a Phobos based CRS. (which is...?)
-        ####
+        da.setEllipsoid('PARAMETER:6370997:6370997')
         g = QgsGeometry.fromMultiPolylineXY(da.geodesicLine(QgsPointXY(121.4, 6.4), QgsPointXY(-121.6, 2.8),
                                                             1000000, False))
         self.assertEqual(g.asWkt(5),
-                         'MultiLineString ((121.4 6.4, 82.62887 -29.40012, -121.6 2.8))')
+                         'MultiLineString ((121.4 6.4, 130.41144 7.31297, 139.45604 8.04667, 148.52889 8.58224, 157.62221 8.90571, 166.72609 9.0086, 175.82954 8.88819, -175.07842 8.54766, -166.00754 7.99595, -156.96541 7.24741, -147.95669 6.32128, -138.98271 5.24103, -130.04141 4.03364, -121.6 2.8))')
 
         da.setEllipsoid("WGS84")
         # with reprojection
@@ -855,12 +849,9 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertEqual(g.asWkt(3), 'MultiLineStringZ ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10),(-170 -5 1, -181 10 5))')
 
         # different ellipsoid - should change intersection latitude
-        da.setEllipsoid("Phobos2000")
-        ####
-        #### THIS FAILS UNDER PROJ 6 -- we need to set the sourceCrs to a Phobos based CRS. (which is...?)
-        ####
+        da.setEllipsoid('PARAMETER:6370997:6370997')
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(179 10, -179 -20)'))
-        self.assertEqual(g.asWkt(3), 'MultiLineString ((179 10, 180 -5.459),(-180 -5.459, -179 -20))')
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((179 10, 180 -5.361),(-180 -5.361, -179 -20))')
 
         # with reprojection
         da.setEllipsoid("WGS84")
