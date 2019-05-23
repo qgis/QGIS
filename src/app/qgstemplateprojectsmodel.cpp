@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgis.h"
 #include "qgsprojectlistitemdelegate.h"
+#include "qgsproject.h"
 
 #include <QStandardPaths>
 #include <QDir>
