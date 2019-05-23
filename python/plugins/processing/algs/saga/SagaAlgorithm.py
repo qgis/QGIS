@@ -225,7 +225,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     for i, layer in enumerate(layers):
                         if layer.source().lower().endswith('sdat'):
                             files.append(layer.source()[:-4] + 'sgrd')
-                        if layer.source().lower().endswith('sgrd'):
+                        elif layer.source().lower().endswith('sgrd'):
                             files.append(layer.source())
                         else:
                             exportCommand = self.exportRasterLayer(param.name(), layer)
