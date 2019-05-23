@@ -3856,6 +3856,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         break;
       }
 
+      case QgsWkbTypes::MultiSurface:
+        tempGeom = geom->segmentize();
+        if ( !tempGeom )
+          break;
+        FALLTHROUGH
       case QgsWkbTypes::MultiPolygon:
       {
         if ( !qgsDoubleNear( offset, 0.0 ) )
@@ -3899,9 +3904,14 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         writePolygon( tempGeom->coordinateSequence().at( 0 ), layer, QStringLiteral( "SOLID" ), brushColor );
         break;
 
+      case QgsWkbTypes::MultiSurface:
+        tempGeom = tempGeom->segmentize();
+        if ( !tempGeom )
+          break;
+        FALLTHROUGH
       case QgsWkbTypes::MultiPolygon:
       {
-        const QgsCoordinateSequence &cs = geom->coordinateSequence();
+        const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
         {
           writePolygon( cs.at( i ), layer, QStringLiteral( "SOLID" ), brushColor );
