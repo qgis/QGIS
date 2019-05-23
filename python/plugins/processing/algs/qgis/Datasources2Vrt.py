@@ -24,6 +24,7 @@ __copyright__ = '(C) 2015, Luigi Pirelli'
 import codecs
 import xml.sax.saxutils
 
+import os
 import warnings
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -34,7 +35,8 @@ from qgis.core import (QgsProcessingFeedback,
                        QgsProcessing,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputString,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsProviderRegistry)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -125,11 +127,17 @@ class Datasources2Vrt(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-            inFile = layer.source()
+            inFile = layer.source()            
             srcDS = ogr.Open(inFile, 0)
             if srcDS is None:
-                raise QgsProcessingException(
-                    self.tr('Invalid datasource: {}'.format(inFile)))
+                #might be a shapefile loaded as a directory of shapefiles. We try to resolve the uri to a filepath
+                sourceParts = QgsProviderRegistry.instance().decodeUri('ogr', inFile)
+                if sourceParts.get("layerName"):
+                    inFile = os.path.join(sourceParts.get("path"), sourceParts.get("layerName") + ".shp")
+                    srcDS = ogr.Open(inFile, 0)
+                if srcDS is None:
+                    raise QgsProcessingException(
+                        self.tr('Invalid datasource: {}'.format(inFile)))
 
             if schema:
                 inFile = '@dummy@'
