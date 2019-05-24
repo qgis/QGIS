@@ -997,15 +997,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     long featureCount( const QString &legendKey ) const;
 
     /**
-     * List of Id of features rendered with specified legend key. Features must be first
-     * calculated by countSymbolFeatures()
-     * \returns List of Id of features rendered by symbol or an empty list of not counted or symbol not in the list.
-     *
-     * \since QGIS 3.8
-     */
-    const QgsFeatureIds featureIds( const QString &legendKey ) const;
-
-    /**
      * Determines if this vector layer has features.
      *
      * \warning when a layer is editable and some features

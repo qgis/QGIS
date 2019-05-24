@@ -696,14 +696,6 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
-const QgsFeatureIds QgsVectorLayer::featureIds( const QString &legendKey ) const
-{
-  if ( !mSymbolFeatureCounted )
-    return QgsFeatureIds();
-
-  return mSymbolIdMap.value( legendKey, QgsFeatureIds() );
-}
-
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
 
@@ -3930,7 +3922,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   {
     if ( context->indexOfScope( "Symbol scope" ) != -1 )
     {
-      const QgsFeatureIds ids = featureIds( context->variable( "symbol_id" ).toString() );
+      const QgsFeatureIds ids = mSymbolIdMap.value( legendKeycontext->variable( "symbol_id" ).toString(), QgsFeatureIds() );
       Q_UNUSED( ids );
     }
   }
