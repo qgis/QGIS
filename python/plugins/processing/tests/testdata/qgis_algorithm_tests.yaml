@@ -1740,6 +1740,26 @@ tests:
             fid_2: skip
 
   - algorithm: native:lineintersections
+    name: Line intersections all fields (custom prefix)
+    params:
+      INPUT:
+        name: custom/line_intersection1.gml
+        type: vector
+      INTERSECT:
+        name: custom/line_intersection2.gml
+        type: vector
+      INTERSECT_FIELDS_PREFIX: pre_
+    results:
+      OUTPUT:
+        name: expected/line_intersection_prefix.gml
+        type: vector
+        pk: [ name, pre_name ]
+        compare:
+          fields:
+            fid: skip
+            pre_fid: skip
+
+  - algorithm: native:lineintersections
     name: Line intersections some fields
     params:
       INPUT:
