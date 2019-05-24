@@ -21,8 +21,11 @@ __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
+import os
 from qgis.core import (NULL,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProviderRegistry,
+                       QgsVectorFileWriter)
 
 
 def resolveFieldIndex(source, attr):
@@ -111,3 +114,20 @@ def checkMinDistance(point, index, distance, points):
             return False
 
     return True
+
+
+def resolveSourceToFilepath(source):
+    #Tries to resolve a uri-like source (i.e /path/|layername=points) to a valid filepath (/path/points.shp)
+    sourceParts = QgsProviderRegistry.instance().decodeUri('ogr', source)
+    folder = sourceParts.get("path")
+    layerName = sourceParts.get("layerName")
+    if layerName:
+        if os.path.exists(folder):
+            if os.path.isdir(folder):
+                for ext in QgsVectorFileWriter.supportedFormatExtensions():
+                    f = os.path.join(folder, "%s.%s" % (layerName, ext))
+                    if os.path.exists(f):
+                        return f
+            else:
+                return folder
+    return source

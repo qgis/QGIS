@@ -38,6 +38,7 @@ from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingException,
                        QgsProviderRegistry)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools.vector import resolveSourceToFilepath
 
 
 class Datasources2Vrt(QgisAlgorithm):
@@ -127,14 +128,11 @@ class Datasources2Vrt(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-            inFile = layer.source()            
+            inFile = layer.source()
             srcDS = ogr.Open(inFile, 0)
             if srcDS is None:
-                #might be a shapefile loaded as a directory of shapefiles. We try to resolve the uri to a filepath
-                sourceParts = QgsProviderRegistry.instance().decodeUri('ogr', inFile)
-                if sourceParts.get("layerName"):
-                    inFile = os.path.join(sourceParts.get("path"), sourceParts.get("layerName") + ".shp")
-                    srcDS = ogr.Open(inFile, 0)
+                inFile = resolveSourceToFilepath(inFile)
+                srcDS = ogr.Open(inFile, 0)
                 if srcDS is None:
                     raise QgsProcessingException(
                         self.tr('Invalid datasource: {}'.format(inFile)))
