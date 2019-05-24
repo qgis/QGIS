@@ -168,7 +168,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
     }
     catch ( std::exception &e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsgLevel( QStringLiteral( "Ignoring feature %1 due PAL exception:" ).arg( feature->id() ) + QString::fromLatin1( e.what() ), 4 );
       continue;
     }
@@ -293,7 +293,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
   catch ( std::exception &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsgLevel( "PAL EXCEPTION :-( " + QString::fromLatin1( e.what() ), 4 );
     return;
   }
@@ -403,7 +403,8 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
 QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLayerSettings::PredefinedPointPosition> &positions )
 {
   QStringList predefinedOrderString;
-  Q_FOREACH ( QgsPalLayerSettings::PredefinedPointPosition position, positions )
+  const auto constPositions = positions;
+  for ( QgsPalLayerSettings::PredefinedPointPosition position : constPositions )
   {
     switch ( position )
     {
@@ -452,7 +453,8 @@ QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePr
 {
   QVector<QgsPalLayerSettings::PredefinedPointPosition> result;
   QStringList predefinedOrderList = positionString.split( ',' );
-  Q_FOREACH ( const QString &position, predefinedOrderList )
+  const auto constPredefinedOrderList = predefinedOrderList;
+  for ( const QString &position : constPredefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
     if ( cleaned == QLatin1String( "TL" ) )

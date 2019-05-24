@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 
 #ifdef HAVE_GUI
 #include "qgsdb2newconnection.h"
@@ -137,7 +138,8 @@ void QgsDb2ConnectionItem::refresh()
   QVector<QgsDataItem *> items = createChildren();
 
   // Add new items
-  Q_FOREACH ( QgsDataItem *item, items )
+  const auto constItems = items;
+  for ( QgsDataItem *item : constItems )
   {
     // Is it present in children?
     int index = findItem( mChildren, item );
@@ -202,7 +204,8 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   while ( db2GC.populateLayerProperty( layer ) )
   {
     QgsDb2SchemaItem *schemaItem = nullptr;
-    Q_FOREACH ( QgsDataItem *child, children )
+    const auto constChildren = children;
+    for ( QgsDataItem *child : constChildren )
     {
       if ( child->name() == layer.schemaName )
       {
@@ -296,7 +299,7 @@ void QgsDb2ConnectionItem::refreshConnection()
 {
   QString errMsg;
   QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errMsg );
-  Q_UNUSED( db );
+  Q_UNUSED( db )
   if ( errMsg.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "successful get db2 connection on refresh" ) );
@@ -325,7 +328,8 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     if ( u.layerType != QLatin1String( "vector" ) )
     {
@@ -336,7 +340,8 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
 
     QgsDebugMsg( QStringLiteral( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
     // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey, options );
 
     if ( srcLayer->isValid() )
     {
@@ -415,7 +420,8 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
   QVector<QgsDataItem *> connections;
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
-  Q_FOREACH ( const QString &connName, settings.childGroups() )
+  const auto constChildGroups = settings.childGroups();
+  for ( const QString &connName : constChildGroups )
   {
     connections << new QgsDb2ConnectionItem( this, connName, mPath + "/" + connName );
   }
@@ -498,7 +504,8 @@ QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
 
   QVector<QgsDataItem *>items;
 
-  Q_FOREACH ( QgsDataItem *child, this->children() )
+  const auto constChildren = this->children();
+  for ( QgsDataItem *child : constChildren )
   {
     items.append( ( ( QgsDb2LayerItem * )child )->createClone() );
   }
@@ -508,7 +515,8 @@ QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
 void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )
 {
   // Add new items
-  Q_FOREACH ( QgsDataItem *child, newLayers->children() )
+  const auto constChildren = newLayers->children();
+  for ( QgsDataItem *child : constChildren )
   {
     // Is it present in children?
     if ( findItem( mChildren, child ) >= 0 )

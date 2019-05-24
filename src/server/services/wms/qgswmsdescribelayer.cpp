@@ -40,7 +40,7 @@ namespace QgsWms
   QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                               const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -108,6 +108,8 @@ namespace QgsWms
     // access control
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
 #endif
     // Use layer ids
     bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );

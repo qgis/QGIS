@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 import os
 
@@ -150,7 +146,7 @@ class hillshade(GdalAlgorithm):
         arguments.append('-s')
         arguments.append(str(self.parameterAsDouble(parameters, self.SCALE, context)))
 
-        multidirectional = self.parameterAsBool(parameters, self.MULTIDIRECTIONAL, context)
+        multidirectional = self.parameterAsBoolean(parameters, self.MULTIDIRECTIONAL, context)
         # azimuth and multidirectional are mutually exclusive
         if not multidirectional:
             arguments.append('-az')
@@ -159,14 +155,14 @@ class hillshade(GdalAlgorithm):
         arguments.append('-alt')
         arguments.append(str(self.parameterAsDouble(parameters, self.ALTITUDE, context)))
 
-        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        if self.parameterAsBool(parameters, self.ZEVENBERGEN, context):
+        if self.parameterAsBoolean(parameters, self.ZEVENBERGEN, context):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 
-        if self.parameterAsBool(parameters, self.COMBINED, context):
+        if self.parameterAsBoolean(parameters, self.COMBINED, context):
             arguments.append('-combined')
 
         if multidirectional:

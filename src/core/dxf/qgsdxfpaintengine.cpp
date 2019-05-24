@@ -29,7 +29,7 @@ QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxf
 
 bool QgsDxfPaintEngine::begin( QPaintDevice *pdev )
 {
-  Q_UNUSED( pdev );
+  Q_UNUSED( pdev )
   return true;
 }
 
@@ -45,9 +45,9 @@ QPaintEngine::Type QgsDxfPaintEngine::type() const
 
 void QgsDxfPaintEngine::drawPixmap( const QRectF &r, const QPixmap &pm, const QRectF &sr )
 {
-  Q_UNUSED( r );
-  Q_UNUSED( pm );
-  Q_UNUSED( sr );
+  Q_UNUSED( r )
+  Q_UNUSED( pm )
+  Q_UNUSED( sr )
 }
 
 void QgsDxfPaintEngine::updateState( const QPaintEngineState &state )
@@ -76,7 +76,7 @@ void QgsDxfPaintEngine::setRing( QgsPointSequence &polyline, const QPointF *poin
 
 void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, PolygonDrawMode mode )
 {
-  Q_UNUSED( mode );
+  Q_UNUSED( mode )
   if ( !mDxf || !mPaintDevice )
     return;
 

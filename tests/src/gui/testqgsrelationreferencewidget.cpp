@@ -47,6 +47,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testChainFilterDeleteForeignKey();
     void testInvalidRelation();
     void testSetGetForeignKey();
+    void testIdentifyOnMap();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -338,6 +339,39 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   w.setForeignKey( QVariant( QVariant::Int ) );
   Q_ASSERT( w.foreignKey().isNull() );
   QCOMPARE( spy.count(), 3 );
+}
+
+
+// Test issue https://issues.qgis.org/issues/22071
+// Relation reference widget wrong feature when "on map identification"
+void TestQgsRelationReferenceWidget::testIdentifyOnMap()
+{
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+  QVERIFY( mLayer1->startEditing() );
+  w.setRelation( *mRelation, true );
+  w.setAllowMapIdentification( true );
+  w.init();
+  QEventLoop loop;
+  // Populate model (I tried to listen to signals but the module reload() runs twice
+  // (the first load triggers a second one which does the population of the combo)
+  // and I haven't fin a way to properly wait for it.
+  QTimer::singleShot( 300, [&] { loop.quit(); } );
+  loop.exec();
+  QgsFeature feature;
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 11 );
+  w.featureIdentified( feature );
+  QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 11 );
+
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 10 ) ).nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 10 );
+  w.featureIdentified( feature );
+  QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 10 );
+
+  mLayer1->rollBack();
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

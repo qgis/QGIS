@@ -358,7 +358,8 @@ QVector<QgsDataItem *>QgsGrassLocationItem::createChildren()
   QDir dir( mDirPath );
 
   QStringList entries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
-  Q_FOREACH ( const QString &name, entries )
+  const auto constEntries = entries;
+  for ( const QString &name : constEntries )
   {
     QString path = dir.absoluteFilePath( name );
 
@@ -449,7 +450,8 @@ void QgsGrassMapsetItem::setState( State state )
 
 bool QgsGrassMapsetItem::objectInImports( const QgsGrassObject &grassObject )
 {
-  Q_FOREACH ( QgsGrassImport *import, sImports )
+  const auto constSImports = sImports;
+  for ( QgsGrassImport *import : constSImports )
   {
     if ( !import )
     {
@@ -474,7 +476,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
   QVector<QgsDataItem *> items;
 
   QStringList vectorNames = QgsGrass::vectors( mDirPath );
-  Q_FOREACH ( const QString &name, vectorNames )
+  const auto constVectorNames = vectorNames;
+  for ( const QString &name : constVectorNames )
   {
     if ( mRefreshLater )
     {
@@ -559,7 +562,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
       //map->setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
       map = new QgsGrassVectorItem( this, vectorObject, mapPath );
     }
-    Q_FOREACH ( const QString &layerName, layerNames )
+    const auto constLayerNames = layerNames;
+    for ( const QString &layerName : constLayerNames )
     {
       // don't use QDir::separator(), windows work with '/' and backslash may be lost if
       // somewhere not properly escaped (there was bug in QgsMimeDataUtils for example)
@@ -598,7 +602,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
 
   QStringList rasterNames = QgsGrass::rasters( mDirPath );
 
-  Q_FOREACH ( const QString &name, rasterNames )
+  const auto constRasterNames = rasterNames;
+  for ( const QString &name : constRasterNames )
   {
     if ( mRefreshLater )
     {
@@ -621,7 +626,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
   }
 
   QStringList groupNames = QgsGrass::groups( mDirPath );
-  Q_FOREACH ( const QString &name, groupNames )
+  const auto constGroupNames = groupNames;
+  for ( const QString &name : constGroupNames )
   {
     if ( mRefreshLater )
     {
@@ -637,7 +643,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
     items.append( layer );
   }
 
-  Q_FOREACH ( QgsGrassImport *import, sImports )
+  const auto constSImports = sImports;
+  for ( QgsGrassImport *import : constSImports )
   {
     if ( mRefreshLater )
     {
@@ -652,7 +659,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
     {
       continue;
     }
-    Q_FOREACH ( const QString &name, import->names() )
+    const auto constNames = import->names();
+    for ( const QString &name : constNames )
     {
       QString path = mPath + "/" + import->grassObject().elementName() + "/" + name;
       items.append( new QgsGrassImportItem( this, name, path, import ) );
@@ -679,7 +687,8 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
   QStringList existingRasters = QgsGrass::rasters( mGrassObject.mapsetPath() );
   QStringList existingVectors = QgsGrass::vectors( mGrassObject.mapsetPath() );
   // add currently being imported
-  Q_FOREACH ( QgsGrassImport *import, sImports )
+  const auto constSImports = sImports;
+  for ( QgsGrassImport *import : constSImports )
   {
     if ( import && import->grassObject().type() == QgsGrassObject::Raster )
     {
@@ -694,7 +703,8 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
   QStringList errors;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
 
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     if ( u.layerType != QLatin1String( "raster" ) && u.layerType != QLatin1String( "vector" ) )
     {
@@ -878,7 +888,8 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
 
     // delete existing files (confirmed before in dialog)
     bool deleteOk = true;
-    Q_FOREACH ( const QString &name, import->names() )
+    const auto constNames = import->names();
+    for ( const QString &name : constNames )
     {
       QgsGrassObject obj( import->grassObject() );
       obj.setName( name );
@@ -1145,7 +1156,7 @@ void QgsGrassImportItemWidget::setHtml( const QString &html )
 
 void QgsGrassImportItemWidget::onProgressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value )
 {
-  Q_UNUSED( allHtml );
+  Q_UNUSED( allHtml )
   if ( !recentHtml.isEmpty() )
   {
     mTextEdit->append( recentHtml );

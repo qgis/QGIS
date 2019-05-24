@@ -53,7 +53,8 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   QVariant res = rl->dataProvider()->property( "resolutions" );
 
   mResolutions.clear();
-  Q_FOREACH ( const QVariant &r, res.toList() )
+  const auto constToList = res.toList();
+  for ( const QVariant &r : constToList )
   {
     QgsDebugMsg( QStringLiteral( "found resolution: %1" ).arg( r.toDouble() ) );
     mResolutions << r.toDouble();
@@ -76,7 +77,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
 
 void QgsTileScaleWidget::scaleChanged( double scale )
 {
-  Q_UNUSED( scale );
+  Q_UNUSED( scale )
 
   if ( mResolutions.isEmpty() )
     return;

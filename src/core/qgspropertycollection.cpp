@@ -366,7 +366,7 @@ QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollect
 {
   clear();
 
-  Q_FOREACH ( QgsPropertyCollection *collection, other.mStack )
+  for ( QgsPropertyCollection *collection : qgis::as_const( other.mStack ) )
   {
     mStack << new QgsPropertyCollection( *collection );
   }
@@ -377,7 +377,7 @@ QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsProp
   setName( other.name() );
   clear();
 
-  Q_FOREACH ( QgsPropertyCollection *collection, other.mStack )
+  for ( QgsPropertyCollection *collection : qgis::as_const( other.mStack ) )
   {
     mStack << new QgsPropertyCollection( *collection );
   }
@@ -413,7 +413,8 @@ const QgsPropertyCollection *QgsPropertyCollectionStack::at( int index ) const
 
 QgsPropertyCollection *QgsPropertyCollectionStack::collection( const QString &name )
 {
-  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
+  const auto constMStack = mStack;
+  for ( QgsPropertyCollection *collection : constMStack )
   {
     if ( collection->name() == name )
       return collection;
@@ -423,7 +424,8 @@ QgsPropertyCollection *QgsPropertyCollectionStack::collection( const QString &na
 
 bool QgsPropertyCollectionStack::hasActiveProperties() const
 {
-  Q_FOREACH ( const QgsPropertyCollection *collection, mStack )
+  const auto constMStack = mStack;
+  for ( const QgsPropertyCollection *collection : constMStack )
   {
     if ( collection->hasActiveProperties() )
       return true;
@@ -433,7 +435,8 @@ bool QgsPropertyCollectionStack::hasActiveProperties() const
 
 bool QgsPropertyCollectionStack::hasDynamicProperties() const
 {
-  Q_FOREACH ( const QgsPropertyCollection *collection, mStack )
+  const auto constMStack = mStack;
+  for ( const QgsPropertyCollection *collection : constMStack )
   {
     if ( collection->hasDynamicProperties() )
       return true;
@@ -476,7 +479,8 @@ QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext 
 QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context ) const
 {
   QSet< QString > cols;
-  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
+  const auto constMStack = mStack;
+  for ( QgsPropertyCollection *collection : constMStack )
   {
     cols.unite( collection->referencedFields( context ) );
   }
@@ -486,7 +490,8 @@ QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressio
 bool QgsPropertyCollectionStack::prepare( const QgsExpressionContext &context ) const
 {
   bool result = true;
-  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
+  const auto constMStack = mStack;
+  for ( QgsPropertyCollection *collection : constMStack )
   {
     result = result && collection->prepare( context );
   }
@@ -496,7 +501,8 @@ bool QgsPropertyCollectionStack::prepare( const QgsExpressionContext &context ) 
 QSet<int> QgsPropertyCollectionStack::propertyKeys() const
 {
   QSet<int> keys;
-  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
+  const auto constMStack = mStack;
+  for ( QgsPropertyCollection *collection : constMStack )
   {
     keys.unite( collection->propertyKeys() );
   }
@@ -505,7 +511,8 @@ QSet<int> QgsPropertyCollectionStack::propertyKeys() const
 
 bool QgsPropertyCollectionStack::hasProperty( int key ) const
 {
-  Q_FOREACH ( QgsPropertyCollection *collection, mStack )
+  const auto constMStack = mStack;
+  for ( QgsPropertyCollection *collection : constMStack )
   {
     if ( collection->hasProperty( key ) )
       return true;
@@ -521,7 +528,8 @@ QVariant QgsPropertyCollectionStack::toVariant( const QgsPropertiesDefinition &d
 
   QVariantList properties;
 
-  Q_FOREACH ( QgsPropertyCollection *child, mStack )
+  const auto constMStack = mStack;
+  for ( QgsPropertyCollection *child : constMStack )
   {
     properties.append( child->toVariant( definitions ) );
   }
@@ -541,7 +549,8 @@ bool QgsPropertyCollectionStack::loadVariant( const QVariant &collection, const 
 
   QVariantList properties = collectionMap.value( QStringLiteral( "properties" ) ).toList();
 
-  Q_FOREACH ( const QVariant &property, properties )
+  const auto constProperties = properties;
+  for ( const QVariant &property : constProperties )
   {
     QgsPropertyCollection *propertyCollection = new QgsPropertyCollection();
     propertyCollection->loadVariant( property.toMap(), definitions );

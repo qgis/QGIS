@@ -123,7 +123,8 @@ QgsRendererAbstractMetadata *QgsRendererRegistry::rendererMetadata( const QStrin
 QStringList QgsRendererRegistry::renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes ) const
 {
   QStringList renderers;
-  Q_FOREACH ( const QString &renderer, mRenderersOrder )
+  const auto constMRenderersOrder = mRenderersOrder;
+  for ( const QString &renderer : constMRenderersOrder )
   {
     QgsRendererAbstractMetadata *r = mRenderers.value( renderer );
     if ( r && r->compatibleLayerTypes() & layerTypes )

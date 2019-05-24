@@ -18,8 +18,6 @@ from builtins import next
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import psycopg2
@@ -441,7 +439,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         ft1 = vl.getFeatures('pk=1')
         self.assertFalse(ft1.nextFeature(f))
 
-    def testTransactionConstrains(self):
+    def testTransactionConstraints(self):
         # create a vector layer based on postgres
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."check_constraints" sql=', 'test', 'postgres')
         self.assertTrue(vl.isValid())
@@ -626,7 +624,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         fi = vl.getFeatures(QgsFeatureRequest())
         f = QgsFeature()
 
-        #test list
+        # test list
         fi.nextFeature(f)
         value_idx = vl.fields().lookupField('jvalue')
         self.assertIsInstance(f.attributes()[value_idx], list)
@@ -638,7 +636,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[value_idx], [4, 5, 6])
         self.assertEqual(f.attributes()[value_idx], [4.0, 5.0, 6.0])
 
-        #test dict
+        # test dict
         fi.nextFeature(f)
         value_idx = vl.fields().lookupField('jvalue')
         self.assertIsInstance(f.attributes()[value_idx], dict)
@@ -1097,6 +1095,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl2.extent(), originalExtent)
 
+    def testCheckPkUnicityOnView(self):
+        # vector layer based on view
+
+        # This is valid
+        vl0 = QgsVectorLayer(self.dbconn + ' checkPrimaryKeyUnicity=\'0\'  sslmode=disable key=\'pk\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl0.isValid())
+
+        geom = vl0.getFeature(1).geometry().asWkt()
+
+        # This is NOT valid
+        vl0 = QgsVectorLayer(self.dbconn + ' checkPrimaryKeyUnicity=\'1\' sslmode=disable key=\'an_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertFalse(vl0.isValid())
+
+        # This is NOT valid because the default is to check unicity
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'an_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertFalse(vl0.isValid())
+
+        # This is valid because the readExtentFromXml option is set
+        options = QgsVectorLayer.LayerOptions(True, True)  # loadDefaultStyle, readExtentFromXml
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'an_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres', options)
+        self.assertTrue(vl0.isValid())
+
+        # Valid because a_unique_int is unique and default is to check unicity
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'a_unique_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertEqual(vl0.getFeature(1).geometry().asWkt(), geom)
+
+        # Valid because a_unique_int is unique
+        vl0 = QgsVectorLayer(self.dbconn + ' checkPrimaryKeyUnicity=\'1\' sslmode=disable key=\'a_unique_int\' srid=0 type=POINT table="qgis_test"."b21839_pk_unicity_view" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl0.isValid())
+        self.assertEqual(vl0.getFeature(1).geometry().asWkt(), geom)
+
     def testNotify(self):
         vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
         vl0.dataProvider().setListening(True)
@@ -1247,6 +1276,12 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
     def partiallyCompiledFilters(self):
         return set([])
+
+    def testConstraints(self):
+        for key in ["key1", "key2"]:
+            idx = self.vl.dataProvider().fieldNameIndex(key)
+            self.assertTrue(idx >= 0)
+            self.assertFalse(self.vl.dataProvider().fieldConstraints(idx) & QgsFieldConstraints.ConstraintUnique)
 
 
 if __name__ == '__main__':

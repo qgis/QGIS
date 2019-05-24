@@ -190,7 +190,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \returns An expression used as where clause
      */
-    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ); return QString(); }
+    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ) return QString(); }
 
     /**
      * Returns a list of attributes required by this renderer. Attributes not listed in here may
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \see startRender()
      * \see stopRender()
      */
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) SIP_THROW( QgsCsException );
 
     //! Returns debug information about this renderer
     virtual QString dump() const;
@@ -468,12 +468,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * specify if it should be rendered as selected and \a drawVertexMarker
      * to specify if vertex markers should be rendered.
      */
-    void renderFeatureWithSymbol( const QgsFeature &feature,
-                                  QgsSymbol *symbol,
-                                  QgsRenderContext &context,
-                                  int layer,
-                                  bool selected,
-                                  bool drawVertexMarker );
+    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker ) SIP_THROW( QgsCsException );
 
     //! render editing vertex marker at specified point
     void renderVertexMarker( QPointF pt, QgsRenderContext &context );

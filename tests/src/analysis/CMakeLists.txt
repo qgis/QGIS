@@ -26,6 +26,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/test
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/analysis

@@ -202,7 +202,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
 
 void QgsMeshCalculatorDialog::toggleExtendMask( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   if ( useMaskCb->checkState() == Qt::Checked )
   {
     extendBox->setVisible( false );
@@ -247,7 +247,7 @@ void QgsMeshCalculatorDialog::mExpressionTextEdit_textChanged()
   }
   else
   {
-    mExpressionValidLabel->setText( tr( "Expression invalid" ) );
+    mExpressionValidLabel->setText( tr( "Expression invalid or datasets type not supported" ) );
   }
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }

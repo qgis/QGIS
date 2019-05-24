@@ -123,7 +123,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param capabilities Optionally existing parsed capabilities for the given URI
      *
      */
-    QgsWmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, const QgsWmsCapabilities *capabilities = nullptr );
+    QgsWmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, const QgsWmsCapabilities *capabilities = nullptr );
 
 
     ~QgsWmsProvider() override;
@@ -146,7 +146,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     void setConnectionName( QString const &connName );
 
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
     QgsRectangle extent() const override;

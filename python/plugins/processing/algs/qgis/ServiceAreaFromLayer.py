@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'December 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from collections import OrderedDict
 
@@ -199,7 +195,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
 
         include_bounds = True # default to true to maintain 3.0 API
         if self.INCLUDE_BOUNDS in parameters:
-            include_bounds = self.parameterAsBool(parameters, self.INCLUDE_BOUNDS, context)
+            include_bounds = self.parameterAsBoolean(parameters, self.INCLUDE_BOUNDS, context)
 
         fields = startPoints.fields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))

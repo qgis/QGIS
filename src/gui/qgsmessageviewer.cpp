@@ -112,7 +112,7 @@ void QgsMessageViewer::setCheckBoxQgsSettingsLabel( const QString &label )
 
 void QgsMessageViewer::checkBox_toggled( bool toggled )
 {
-  Q_UNUSED( toggled );
+  Q_UNUSED( toggled )
   if ( !mCheckBoxQgsSettingsLabel.isEmpty() )
   {
     QgsSettings settings;

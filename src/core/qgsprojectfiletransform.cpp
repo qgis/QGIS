@@ -70,7 +70,7 @@ QgsProjectFileTransform::TransformItem QgsProjectFileTransform::sTransformers[] 
 
 bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersion )
 {
-  Q_UNUSED( newVersion );
+  Q_UNUSED( newVersion )
   bool returnValue = false;
 
   if ( !mDom.isNull() )
@@ -340,7 +340,7 @@ void QgsProjectFileTransform::transform0110to1000()
       QString providerKey = providerNode.toElement().text();
 
       //create the layer to get the provider for int->fieldName conversion
-      QgsVectorLayer::LayerOptions options;
+      QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
       options.loadDefaultStyle = false;
       QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QString(), providerKey, options );
       if ( !layer->isValid() )
@@ -1189,8 +1189,8 @@ void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument &doc, c
 void QgsProjectFileTransform::transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QDomElement &rendererElem )
 {
   //soon...
-  Q_UNUSED( doc );
-  Q_UNUSED( orig );
-  Q_UNUSED( rendererElem );
+  Q_UNUSED( doc )
+  Q_UNUSED( orig )
+  Q_UNUSED( rendererElem )
 }
 

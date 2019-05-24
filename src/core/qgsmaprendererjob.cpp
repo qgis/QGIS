@@ -209,7 +209,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     QgsDebugMsg( QStringLiteral( "Transform error caught" ) );
     extent = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
     r2     = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
@@ -229,7 +229,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
   if ( mCache )
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
-    Q_UNUSED( cacheValid );
+    Q_UNUSED( cacheValid )
     QgsDebugMsgLevel( QStringLiteral( "CACHE VALID: %1" ).arg( cacheValid ), 4 );
   }
 
@@ -419,7 +419,8 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
 
     if ( job.renderer )
     {
-      Q_FOREACH ( const QString &message, job.renderer->errors() )
+      const auto constErrors = job.renderer->errors();
+      for ( const QString &message : constErrors )
         mErrors.append( Error( job.renderer->layerId(), message ) );
 
       delete job.renderer;
@@ -516,14 +517,16 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const Lab
     return;
 
   QMultiMap<int, QString> elapsed;
-  Q_FOREACH ( const LayerRenderJob &job, jobs )
+  const auto constJobs = jobs;
+  for ( const LayerRenderJob &job : constJobs )
     elapsed.insert( job.renderingTime, job.layer ? job.layer->id() : QString() );
 
   elapsed.insert( labelJob.renderingTime, tr( "Labeling" ) );
 
   QList<int> tt( elapsed.uniqueKeys() );
   std::sort( tt.begin(), tt.end(), std::greater<int>() );
-  Q_FOREACH ( int t, tt )
+  const auto constTt = tt;
+  for ( int t : constTt )
   {
     QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( QStringLiteral( ", " ) ) ), tr( "Rendering" ) );
   }

@@ -18,6 +18,7 @@
 #include "qgswmsparameters.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
+#include "qgswmsserviceexception.h"
 
 const QString EXTERNAL_LAYER_PREFIX = QStringLiteral( "EXTERNAL_WMS:" );
 
@@ -43,6 +44,11 @@ namespace QgsWms
   {
     const QString msg = QString( "%1 ('%2') cannot be converted into %3" ).arg( name( mName ), toString(), typeName() );
     QgsServerParameterDefinition::raiseError( msg );
+  }
+
+  QStringList QgsWmsParameter::toStyleList( const char delimiter ) const
+  {
+    return QgsServerParameterDefinition::toStringList( delimiter, false );
   }
 
   QList<QgsGeometry> QgsWmsParameter::toGeomList( const char delimiter ) const
@@ -182,6 +188,11 @@ namespace QgsWms
     }
 
     return val;
+  }
+
+  QString QgsWmsParameter::name() const
+  {
+    return QgsWmsParameter::name( mName );
   }
 
   QString QgsWmsParameter::name( const QgsWmsParameter::Name name )
@@ -534,6 +545,16 @@ namespace QgsWms
         loadParameter( QgsWmsParameter::name( QgsWmsParameter::SLD_BODY ), sldBody );
       }
     }
+  }
+
+  QgsWmsParameter QgsWmsParameters::operator[]( QgsWmsParameter::Name name ) const
+  {
+    return mWmsParameters[name];
+  }
+
+  void QgsWmsParameters::set( QgsWmsParameter::Name name, const QVariant &value )
+  {
+    mWmsParameters[name].mValue = value;
   }
 
   bool QgsWmsParameters::loadParameter( const QString &key, const QString &value )
@@ -1123,6 +1144,16 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::ITEMFONTSIZE ].toDouble();
   }
 
+  QString QgsWmsParameters::itemFontColor() const
+  {
+    return mWmsParameters[ QgsWmsParameter::ITEMFONTCOLOR ].toString();
+  }
+
+  QColor QgsWmsParameters::itemFontColorAsColor() const
+  {
+    return mWmsParameters[ QgsWmsParameter::ITEMFONTCOLOR ].toColor();
+  }
+
   QFont QgsWmsParameters::layerFont() const
   {
     QFont font;
@@ -1176,6 +1207,18 @@ namespace QgsWms
     settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Top, layerSpaceAsDouble() );
     settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Bottom, layerTitleSpaceAsDouble() );
     settings.rstyle( QgsLegendStyle::Style::Subgroup ).setFont( layerFont() );
+
+    if ( !itemFontColor().isEmpty() )
+    {
+      settings.setFontColor( itemFontColorAsColor() );
+    }
+
+    // Ok, this is tricky: because QgsLegendSettings's layerFontColor was added to the API after
+    // fontColor, to fix regressions #21871 and #21870 and the previous behavior was to use fontColor
+    // for the whole legend we need to preserve that behavior.
+    // But, the 2.18 server parameters ITEMFONTCOLOR did not have effect on the layer titles too, so
+    // we set explicitly layerFontColor to black if it's not overridden by LAYERFONTCOLOR argument.
+    settings.setLayerFontColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
 
     settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setFont( itemFont() );
     settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpaceAsDouble() );
@@ -1357,8 +1400,8 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::allStyles() const
   {
-    QStringList style = mWmsParameters[ QgsWmsParameter::STYLE ].toStringList();
-    const QStringList styles = mWmsParameters[ QgsWmsParameter::STYLES ].toStringList();
+    QStringList style = mWmsParameters[ QgsWmsParameter::STYLE ].toStyleList();
+    const QStringList styles = mWmsParameters[ QgsWmsParameter::STYLES ].toStyleList();
     return style << styles;
   }
 
@@ -1393,16 +1436,18 @@ namespace QgsWms
       {
         // filter format: "LayerName,LayerName2:filterString;LayerName3:filterString2;..."
         // several filters can be defined for one layer
-        const QStringList splits = f.split( ':' );
-        if ( splits.size() == 2 )
+        const int colonIndex = f.indexOf( ':' );
+        if ( colonIndex != -1 )
         {
-          const QStringList layers = splits[0].split( ',' );
-          for ( const QString &layer : layers )
+          const QString layers = f.section( ':', 0, 0 );
+          const QString filter = f.section( ':', 1 );
+          const QStringList layersList = layers.split( ',' );
+          for ( const QString &layer : layersList )
           {
-            QgsWmsParametersFilter filter;
-            filter.mFilter = splits[1];
-            filter.mType = QgsWmsParametersFilter::SQL;
-            filters.insert( layer, filter );
+            QgsWmsParametersFilter parametersFilter;
+            parametersFilter.mFilter = filter;
+            parametersFilter.mType = QgsWmsParametersFilter::SQL;
+            filters.insert( layer, parametersFilter );
           }
         }
         else
@@ -1662,7 +1707,7 @@ namespace QgsWms
     wmsParam = idParameter( QgsWmsParameter::STYLES, mapId );
     if ( wmsParam.isValid() )
     {
-      styles = wmsParam.toStringList();
+      styles = wmsParam.toStyleList();
     }
 
     QList<QgsWmsParametersLayer> lParams;
@@ -1820,7 +1865,7 @@ namespace QgsWms
 
   void QgsWmsParameters::raiseError( const QString &msg ) const
   {
-    throw QgsBadRequestException( QStringLiteral( "Invalid WMS Parameter" ), msg );
+    throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, msg );
   }
 
   QgsWmsParameter QgsWmsParameters::idParameter( const QgsWmsParameter::Name name, const int id ) const

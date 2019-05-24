@@ -42,6 +42,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.cpp
   )
 
   SET(MDAL_LIB_HDRS
@@ -54,6 +55,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.hpp
   )
 
   IF(HDF5_FOUND)
@@ -91,12 +93,14 @@ IF (WITH_INTERNAL_MDAL)
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.cpp
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.hpp
     )
     SET (HAVE_NETCDF TRUE)
   ENDIF(NETCDF_FOUND)
@@ -148,6 +152,7 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui

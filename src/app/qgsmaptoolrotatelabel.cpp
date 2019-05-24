@@ -148,7 +148,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   if ( !mLabelRubberBand ) //no rubber band created (most likely because the current label cannot be rotated )
   {

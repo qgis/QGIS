@@ -21,9 +21,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QMutex>
 
 //#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgslayermetadata.h"
 #include "qgserror.h"
 
@@ -90,11 +92,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /**
      * Setting options for creating vector data providers.
+     *
+     * \note coordinateTransformContext was added in QGIS 3.8
+     *
      * \since QGIS 3.2
      */
     struct ProviderOptions
     {
-      int unused; //!< @todo remove me once there are actual members here (breaks SIP <4.19)
+      QgsCoordinateTransformContext transformContext;
     };
 
     /**
@@ -102,11 +107,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Additional creation options are specified within the \a options value.
      */
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() )
-      : mDataSourceURI( uri )
-    {
-      Q_UNUSED( options );
-    }
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
 
     /**
      * Returns the coordinate system for the data source.
@@ -114,7 +115,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * QgsCoordinateReferenceSystem will be returned.
      */
     virtual QgsCoordinateReferenceSystem crs() const = 0;
-
 
     /**
      * Set the data source specification. This may be a path or database
@@ -200,8 +200,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true )
     {
       // NOP by default
-      Q_UNUSED( subset );
-      Q_UNUSED( updateFeatureCount );
+      Q_UNUSED( subset )
+      Q_UNUSED( updateFeatureCount )
       return false;
     }
 
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Invalidate connections corresponding to specified name
      * \since QGIS 2.16
      */
-    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ); }
+    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ) }
 
     /**
      * Enter update mode.
@@ -520,7 +520,28 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \see layerMetadata()
      * \since QGIS 3.0
     */
-    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ); return false; }
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ) return false; }
+
+    /**
+     * Returns data provider coordinate transform context
+     *
+     * \see setTransformContext()
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    QgsCoordinateTransformContext transformContext() const SIP_SKIP;
+
+    /**
+     * Sets data coordinate transform context to \a transformContext
+     *
+     * The default implementation is a simple setter, subclasses may override to perform
+     * additional actions required by a change of coordinate transform context.
+     *
+     * \see transformContext()
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
 
   signals:
 
@@ -581,6 +602,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QString mDataSourceURI;
 
     QMap< int, QVariant > mProviderProperties;
+
+    QgsDataProvider::ProviderOptions mOptions;
+
+    /**
+     * Protects options from being accessed concurrently
+     */
+    mutable QMutex mOptionsMutex;
+
 };
 
 

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-03-18'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for the py layerprovider.
@@ -23,8 +21,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 import os

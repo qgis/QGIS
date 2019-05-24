@@ -47,8 +47,8 @@ QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRen
 
 QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( feature );
+  Q_UNUSED( context )
+  Q_UNUSED( feature )
   return mSymbol.get();
 }
 
@@ -123,7 +123,7 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, co
 
 QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QgsSymbolList lst;
   lst.append( mSymbol.get() );
   return lst;
@@ -318,14 +318,14 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
 
 QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  Q_UNUSED( feature );
-  Q_UNUSED( context );
+  Q_UNUSED( feature )
+  Q_UNUSED( context )
   return QSet< QString >() << QStringLiteral( "0" );
 }
 
 void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
-  Q_UNUSED( key );
+  Q_UNUSED( key )
   setSymbol( symbol );
 }
 

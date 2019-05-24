@@ -19,8 +19,6 @@
 __author__ = 'Luigi Pirelli'
 __date__ = 'December 2018'
 __copyright__ = '(C) 2018, Luigi Pirelli'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -438,7 +436,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertOpacity(root, '1.1')
 
-        # check gamma properties from [-100:0] streched to [0:1]
+        # check gamma properties from [-100:0] stretched to [0:1]
         #  and (0:100] stretche dto (1:100]
         # dom, root = self.rendererToSld(rasterRenderer, {'contrast': '-100'})
         # self.assertGamma(root, '0')

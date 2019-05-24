@@ -471,10 +471,12 @@ QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &
   if ( !mDiagram )
     return referenced;
 
-  Q_FOREACH ( const QString &att, diagramAttributes() )
+  const auto constDiagramAttributes = diagramAttributes();
+  for ( const QString &att : constDiagramAttributes )
   {
     QgsExpression *expression = mDiagram->getExpression( att, context );
-    Q_FOREACH ( const QString &field, expression->referencedColumns() )
+    const auto constReferencedColumns = expression->referencedColumns();
+    for ( const QString &field : constReferencedColumns )
     {
       referenced << field;
     }
@@ -509,7 +511,7 @@ int QgsDiagramRenderer::dpiPaintDevice( const QPainter *painter )
 
 void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   mDiagram.reset();
   QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
   if ( diagramType == QLatin1String( "Pie" ) )
@@ -529,8 +531,8 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
 
 void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( doc );
-  Q_UNUSED( context );
+  Q_UNUSED( doc )
+  Q_UNUSED( context )
 
   if ( mDiagram )
   {
@@ -546,7 +548,7 @@ QgsSingleCategoryDiagramRenderer *QgsSingleCategoryDiagramRenderer::clone() cons
 
 bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature &, const QgsRenderContext &c, QgsDiagramSettings &s ) const
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
   s = mSettings;
   return true;
 }
@@ -632,7 +634,8 @@ QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const Qg
   if ( mInterpolationSettings.classificationAttributeIsExpression )
   {
     QgsExpression *expression = mDiagram->getExpression( mInterpolationSettings.classificationAttributeExpression, context );
-    Q_FOREACH ( const QString &field, expression->referencedColumns() )
+    const auto constReferencedColumns = expression->referencedColumns();
+    for ( const QString &field : constReferencedColumns )
     {
       referenced << field;
     }
@@ -777,7 +780,8 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     if ( ddSizeLegend.classes().isEmpty() )
     {
       // automatic class creation if the classes are not defined manually
-      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
+      const auto prettyBreaks { QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) };
+      for ( double v : prettyBreaks )
       {
         double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
         sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( v ) );
@@ -786,7 +790,8 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     else
     {
       // manual classes need to get size scaled because the QgsSizeScaleTransformer is not used in diagrams :-(
-      Q_FOREACH ( const QgsDataDefinedSizeLegend::SizeClass &sc, ddSizeLegend.classes() )
+      const auto constClasses = ddSizeLegend.classes();
+      for ( const QgsDataDefinedSizeLegend::SizeClass &sc : constClasses )
       {
         double size = mDiagram->legendSize( sc.size, mSettings, mInterpolationSettings );
         sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, sc.label );
@@ -794,7 +799,8 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     }
     ddSizeLegend.setClasses( sizeClasses );
 
-    Q_FOREACH ( const QgsLegendSymbolItem &si, ddSizeLegend.legendSymbolList() )
+    const auto constLegendSymbolList = ddSizeLegend.legendSymbolList();
+    for ( const QgsLegendSymbolItem &si : constLegendSymbolList )
     {
       if ( si.dataDefinedSizeLegendSettings() )
         nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *si.dataDefinedSizeLegendSettings() );

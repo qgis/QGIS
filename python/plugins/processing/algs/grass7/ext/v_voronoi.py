@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 def processInputs(alg, parameters, context, feedback):
     if 'input' in alg.exportedLayers:
@@ -40,7 +36,7 @@ def processOutputs(alg, parameters, context, feedback):
     grassName = '{}{}'.format('output', alg.uniqueSuffix)
     dataType = 'auto'
     # if we export a graph, output type will be a line
-    if alg.parameterAsBool(parameters, '-l', context):
+    if alg.parameterAsBoolean(parameters, '-l', context):
         dataType = 'line'
 
     alg.exportVectorLayer(grassName, fileName, dataType=dataType)

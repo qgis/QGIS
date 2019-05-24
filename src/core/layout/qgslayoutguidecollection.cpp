@@ -435,14 +435,15 @@ void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
   mBlockUndoCommands = true;
   QgsLayoutItemPage *page = mPageCollection->page( sourcePage );
   // remove other page's guides
-  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  const auto constMGuides = mGuides;
+  for ( QgsLayoutGuide *guide : constMGuides )
   {
     if ( guide->page() != page )
       removeGuide( guide );
   }
 
   // remaining guides belong to source page - clone them to other pages
-  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  for ( QgsLayoutGuide *guide : qgis::as_const( mGuides ) )
   {
     for ( int p = 0; p < mPageCollection->pageCount(); ++p )
     {
@@ -464,7 +465,8 @@ void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
 
 void QgsLayoutGuideCollection::update()
 {
-  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  const auto constMGuides = mGuides;
+  for ( QgsLayoutGuide *guide : constMGuides )
   {
     guide->update();
   }
@@ -478,7 +480,8 @@ QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides()
 QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( Qt::Orientation orientation, int page )
 {
   QList<QgsLayoutGuide *> res;
-  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  const auto constMGuides = mGuides;
+  for ( QgsLayoutGuide *guide : constMGuides )
   {
     if ( guide->orientation() == orientation && guide->item()->isVisible() &&
          ( page < 0 || mPageCollection->page( page ) == guide->page() ) )
@@ -490,7 +493,8 @@ QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( Qt::Orientation orient
 QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guidesOnPage( int page )
 {
   QList<QgsLayoutGuide *> res;
-  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  const auto constMGuides = mGuides;
+  for ( QgsLayoutGuide *guide : constMGuides )
   {
     if ( mPageCollection->page( page ) == guide->page() )
       res << guide;
@@ -514,7 +518,8 @@ void QgsLayoutGuideCollection::setVisible( bool visible )
 void QgsLayoutGuideCollection::pageAboutToBeRemoved( int pageNumber )
 {
   mBlockUndoCommands = true;
-  Q_FOREACH ( QgsLayoutGuide *guide, guidesOnPage( pageNumber ) )
+  const auto constGuidesOnPage = guidesOnPage( pageNumber );
+  for ( QgsLayoutGuide *guide : constGuidesOnPage )
   {
     removeGuide( guide );
   }
@@ -525,7 +530,8 @@ bool QgsLayoutGuideCollection::writeXml( QDomElement &parentElement, QDomDocumen
 {
   QDomElement element = document.createElement( QStringLiteral( "GuideCollection" ) );
   element.setAttribute( QStringLiteral( "visible" ), mGuidesVisible );
-  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  const auto constMGuides = mGuides;
+  for ( QgsLayoutGuide *guide : constMGuides )
   {
     QDomElement guideElement = document.createElement( QStringLiteral( "Guide" ) );
     guideElement.setAttribute( QStringLiteral( "orientation" ), guide->orientation() );

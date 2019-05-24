@@ -46,7 +46,8 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
     QUrl url( uri );
     // Transform all param keys to lowercase
     QList<queryItem> items( url.queryItems() );
-    Q_FOREACH ( const queryItem &item, items )
+    const auto constItems = items;
+    for ( const queryItem &item : constItems )
     {
       url.removeQueryItem( item.first );
       url.addQueryItem( item.first.toLower(), item.second );
@@ -106,7 +107,8 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
     {
       somethingChanged = false;
       QList<queryItem> items( url.queryItems() );
-      Q_FOREACH ( const queryItem &item, items )
+      const auto constItems = items;
+      for ( const queryItem &item : constItems )
       {
         const QString lowerName( item.first.toLower() );
         if ( lowerName == QgsWFSConstants::URI_PARAM_OUTPUTFORMAT )

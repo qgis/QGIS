@@ -300,7 +300,8 @@ void QgsCurveEditorWidget::updateHistogram()
 void QgsCurveEditorWidget::updatePlot()
 {
   // remove existing markers
-  Q_FOREACH ( QwtPlotMarker *marker, mMarkers )
+  const auto constMMarkers = mMarkers;
+  for ( QwtPlotMarker *marker : constMMarkers )
   {
     marker->detach();
     delete marker;
@@ -311,7 +312,8 @@ void QgsCurveEditorWidget::updatePlot()
   QVector< double > x;
 
   int i = 0;
-  Q_FOREACH ( const QgsPointXY &point, mCurve.controlPoints() )
+  const auto constControlPoints = mCurve.controlPoints();
+  for ( const QgsPointXY &point : constControlPoints )
   {
     x << point.x();
     addPlotMarker( point.x(), point.y(), mCurrentPlotMarkerIndex == i );

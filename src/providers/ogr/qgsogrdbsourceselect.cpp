@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsquerybuilder.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QMessageBox>
 
@@ -184,7 +185,7 @@ void QgsOgrDbSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStr
 
 void QgsOgrDbSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -369,7 +370,8 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
 
-  std::unique_ptr<QgsVectorLayer> vlayer( new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "ogr" ) ) );
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr<QgsVectorLayer> vlayer = qgis::make_unique<QgsVectorLayer>( layerURI( idx ), tableName, QStringLiteral( "ogr" ), options );
 
   if ( !vlayer->isValid() )
   {
@@ -416,7 +418,7 @@ void QgsOgrDbSourceSelect::setConnectionListPosition()
 
 void QgsOgrDbSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsOgrDbSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

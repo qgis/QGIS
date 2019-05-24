@@ -455,18 +455,22 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
   return QgsRasterIdentifyResult( format, entries );
 }
 
-void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
+bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( feedback );  // TODO: make use of the feedback object
+  Q_UNUSED( feedback )  // TODO: make use of the feedback object
 
   // TODO: optimize to avoid writing to QImage
   draw( viewExtent, width, height );
   if ( mCachedImage.width() != width || mCachedImage.height() != height )
   {
+    if ( feedback )
+      feedback->appendError( tr( "Unexpected image size for block" ) );
+
     QgsDebugMsg( QStringLiteral( "Unexpected image size for block" ) );
-    return;
+    return false;
   }
   std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );
+  return true;
 }
 
 #ifdef HAVE_GUI

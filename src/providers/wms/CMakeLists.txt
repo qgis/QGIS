@@ -39,6 +39,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/core
@@ -73,6 +74,8 @@ IF (WITH_GUI)
     qgis_gui
   )
 ENDIF ()
+
+TARGET_COMPILE_DEFINITIONS(wmsprovider PRIVATE "-DQT_NO_FOREACH")
 
 INSTALL (TARGETS wmsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

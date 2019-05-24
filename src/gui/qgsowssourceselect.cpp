@@ -386,7 +386,8 @@ void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
 void QgsOWSSourceSelect::mChangeCRSButton_clicked()
 {
   QStringList layers;
-  Q_FOREACH ( QTreeWidgetItem *item, mLayersTreeWidget->selectedItems() )
+  const auto constSelectedItems = mLayersTreeWidget->selectedItems();
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     QString layer = item->data( 0, Qt::UserRole + 0 ).toString();
     if ( !layer.isEmpty() )
@@ -472,7 +473,7 @@ void QgsOWSSourceSelect::clearCrs()
 
 void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( item )
 
   QTableWidgetItem *rowItem = mTilesetsTableWidget->item( mTilesetsTableWidget->currentRow(), 0 );
   bool wasSelected = mCurrentTileset == rowItem;

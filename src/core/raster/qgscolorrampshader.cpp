@@ -471,10 +471,10 @@ bool QgsColorRampShader::shade( double redValue, double greenValue,
                                 int *returnRedValue, int *returnGreenValue,
                                 int *returnBlueValue, int *returnAlphaValue ) const
 {
-  Q_UNUSED( redValue );
-  Q_UNUSED( greenValue );
-  Q_UNUSED( blueValue );
-  Q_UNUSED( alphaValue );
+  Q_UNUSED( redValue )
+  Q_UNUSED( greenValue )
+  Q_UNUSED( blueValue )
+  Q_UNUSED( alphaValue )
 
   *returnRedValue = 0;
   *returnGreenValue = 0;

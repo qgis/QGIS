@@ -80,7 +80,7 @@ QSize QgsLayerTreeOpacityWidget::sizeHint() const
 
 void QgsLayerTreeOpacityWidget::sliderValueChanged( int value )
 {
-  Q_UNUSED( value );
+  Q_UNUSED( value )
 
   if ( mTimer->isActive() )
     return;
@@ -133,7 +133,7 @@ QString QgsLayerTreeOpacityWidget::Provider::name() const
 
 QgsLayerTreeOpacityWidget *QgsLayerTreeOpacityWidget::Provider::createWidget( QgsMapLayer *layer, int widgetIndex )
 {
-  Q_UNUSED( widgetIndex );
+  Q_UNUSED( widgetIndex )
   return new QgsLayerTreeOpacityWidget( layer );
 }
 

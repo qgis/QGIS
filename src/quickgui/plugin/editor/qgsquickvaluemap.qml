@@ -28,26 +28,23 @@ Item {
 
   id: fieldItem
   enabled: !readOnly
-  height: customStyle.height
+  height: customStyle.fields.height
   anchors {
     left: parent.left
     right: parent.right
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  ComboBox {
-    id: comboBox
-
+  QgsQuick.EditorWidgetComboBox {
+    // Reversed to model's key-value map. It is used to find index according current value
     property var reverseConfig: ({})
     property var currentValue: value
-    property var currentMap
-    property var currentKey
-    height: parent.height
-    anchors { left: parent.left; right: parent.right }
-    currentIndex: find(reverseConfig[value])
 
-    ListModel {
-        id: listModel
+    comboStyle: customStyle.fields
+    textRole: 'text'
+    height: parent.height
+    model: ListModel {
+      id: listModel
     }
 
     Component.onCompleted: {
@@ -58,29 +55,28 @@ Item {
           //it's a list (>=QGIS3.0)
           for(var i=0; i<config['map'].length; i++)
           {
-            currentMap = config['map'][i]
-            currentKey = Object.keys(currentMap)[0]
+            var currentMap = config['map'][i]
+            var currentKey = Object.keys(currentMap)[0]
             listModel.append( { text: currentKey } )
             reverseConfig[currentMap[currentKey]] = currentKey;
           }
-          model=listModel
-          textRole = 'text'
         }
         else
         {
           //it's a map (<=QGIS2.18)
-          model = Object.keys(config['map']);
+          var currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
+          var currentKey = Object.keys(currentMap)[0]
           for(var key in config['map']) {
+            listModel.append( { text: key } )
             reverseConfig[config['map'][key]] = key;
           }
         }
       }
-
       currentIndex = find(reverseConfig[value])
     }
 
     onCurrentTextChanged: {
-      currentMap= config['map'].length ? config['map'][currentIndex] : config['map']
+      var currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
       valueChanged(currentMap[currentText], false)
     }
 
@@ -89,53 +85,5 @@ Item {
       currentIndex = find(reverseConfig[value])
     }
 
-    MouseArea {
-      anchors.fill: parent
-      propagateComposedEvents: true
-
-      onClicked: mouse.accepted = false
-      onPressed: { forceActiveFocus(); mouse.accepted = false; }
-      onReleased: mouse.accepted = false;
-      onDoubleClicked: mouse.accepted = false;
-      onPositionChanged: mouse.accepted = false;
-      onPressAndHold: mouse.accepted = false;
-    }
-
-    // [hidpi fixes]
-    delegate: ItemDelegate {
-      width: comboBox.width
-      height: comboBox.height * 0.8
-      text: config['map'].length ? model.text : modelData
-      font.weight: comboBox.currentIndex === index ? Font.DemiBold : Font.Normal
-      font.pixelSize: customStyle.fontPixelSize
-      highlighted: comboBox.highlightedIndex == index
-      leftPadding: 5 * QgsQuick.Utils.dp
-    }
-
-    contentItem: Text {
-      height: comboBox.height * 0.8
-      text: comboBox.displayText
-      font.pixelSize: customStyle.fontPixelSize
-      horizontalAlignment: Text.AlignLeft
-      verticalAlignment: Text.AlignVCenter
-      elide: Text.ElideRight
-      leftPadding: 5 * QgsQuick.Utils.dp
-      color: customStyle.fontColor
-    }
-
-    background: Item {
-      implicitWidth: 120 * QgsQuick.Utils.dp
-      implicitHeight: comboBox.height * 0.8
-
-      Rectangle {
-        anchors.fill: parent
-        id: backgroundRect
-        border.color: comboBox.pressed ? customStyle.activeColor : customStyle.normalColor
-        border.width: comboBox.visualFocus ? 2 : 1
-        color: customStyle.backgroundColor
-        radius: customStyle.cornerRadius
-      }
-    }
-    // [/hidpi fixes]
   }
 }

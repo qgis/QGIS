@@ -683,7 +683,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
 
 void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( points );
+  Q_UNUSED( points )
 
   if ( !context.renderContext().painter() )
   {
@@ -727,6 +727,9 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
     {
       for ( int pIdx = 0; pIdx < points.size() - 1; pIdx += 2 )
       {
+        if ( context.renderContext().renderingStopped() )
+          break;
+
         mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1, true ) );
         _resolveDataDefined( context );
 
@@ -778,6 +781,9 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
       // only straight arrows
       for ( int pIdx = 0; pIdx < points.size() - 1; pIdx++ )
       {
+        if ( context.renderContext().renderingStopped() )
+          break;
+
         mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1, true ) );
         _resolveDataDefined( context );
 

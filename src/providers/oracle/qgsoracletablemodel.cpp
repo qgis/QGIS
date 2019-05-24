@@ -114,7 +114,8 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     childItemList << selItem;
     childItemList << sqlItem;
 
-    Q_FOREACH ( QStandardItem *item, childItemList )
+    const auto constChildItemList = childItemList;
+    for ( QStandardItem *item : constChildItemList )
     {
       if ( tip.isEmpty() )
       {

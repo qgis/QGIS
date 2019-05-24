@@ -33,7 +33,7 @@
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mExtentLayer( qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), QStringLiteral( "overview" ), QStringLiteral( "memory" ) ) )
+  , mExtentLayer( qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), QStringLiteral( "overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
 {
   createDefaultFrameSymbol();
 }
@@ -177,7 +177,7 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, c
 
 bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   if ( itemElem.isNull() )
   {
     return false;

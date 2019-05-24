@@ -22,10 +22,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import shutil
 import importlib
@@ -180,7 +176,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 if isinstance(parameters[param.name()], str):
                     if parameters[param.name()].lower().endswith('sdat'):
                         self.exportedLayers[param.name()] = parameters[param.name()][:-4] + 'sgrd'
-                    if parameters[param.name()].lower().endswith('sgrd'):
+                    elif parameters[param.name()].lower().endswith('sgrd'):
                         self.exportedLayers[param.name()] = parameters[param.name()]
                     else:
                         layer = self.parameterAsRasterLayer(parameters, param.name(), context)
@@ -225,7 +221,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     for i, layer in enumerate(layers):
                         if layer.source().lower().endswith('sdat'):
                             files.append(layer.source()[:-4] + 'sgrd')
-                        if layer.source().lower().endswith('sgrd'):
+                        elif layer.source().lower().endswith('sgrd'):
                             files.append(layer.source())
                         else:
                             exportCommand = self.exportRasterLayer(param.name(), layer)
@@ -273,7 +269,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 if parameters[param.name()]: # parameter may have been an empty list
                     command += ' -{} "{}"'.format(param.name(), ';'.join(self.exportedLayers[param.name()]))
             elif isinstance(param, QgsProcessingParameterBoolean):
-                if self.parameterAsBool(parameters, param.name(), context):
+                if self.parameterAsBoolean(parameters, param.name(), context):
                     command += ' -{} true'.format(param.name().strip())
                 else:
                     command += ' -{} false'.format(param.name().strip())

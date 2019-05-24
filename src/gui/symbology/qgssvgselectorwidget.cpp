@@ -83,7 +83,8 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
   if ( path.isEmpty() )
   {
     QStringList svgPaths = QgsApplication::svgPaths();
-    Q_FOREACH ( const QString &svgPath, svgPaths )
+    const auto constSvgPaths = svgPaths;
+    for ( const QString &svgPath : constSvgPaths )
     {
       if ( mCanceled )
         return;
@@ -107,7 +108,8 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
 
     loadImages( path );
 
-    Q_FOREACH ( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    const auto constEntryList = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+    for ( const QString &item : constEntryList )
     {
       if ( mCanceled )
         return;
@@ -122,7 +124,8 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
 void QgsSvgSelectorLoader::loadImages( const QString &path )
 {
   QDir dir( path );
-  Q_FOREACH ( const QString &item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+  const auto constEntryList = dir.entryList( QStringList( "*.svg" ), QDir::Files );
+  for ( const QString &item : constEntryList )
   {
     if ( mCanceled )
       return;
@@ -196,7 +199,8 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 
   mTraversedPaths.insert( canonicalPath );
 
-  Q_FOREACH ( const QString &item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  const auto constEntryList = parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+  for ( const QString &item : constEntryList )
   {
     if ( mCanceled )
       return;
@@ -234,7 +238,7 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString
 
 int QgsSvgSelectorListModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mSvgFiles.count();
 }
 
@@ -477,7 +481,7 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
   : QDialog( parent, fl )
 {
   // TODO: pass 'orientation' to QgsSvgSelectorWidget for customizing its layout, once implemented
-  Q_UNUSED( orientation );
+  Q_UNUSED( orientation )
 
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );

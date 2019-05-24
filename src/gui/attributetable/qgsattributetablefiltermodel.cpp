@@ -125,7 +125,7 @@ int QgsAttributeTableFilterModel::actionColumnIndex() const
 
 int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mColumnMapping.count();
 }
 
@@ -141,7 +141,8 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   }
 
   QVector<int> newColumnMapping;
-  Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
+  const auto constColumns = mConfig.columns();
+  for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
   {
     // Hidden? Forget about this column
     if ( columnConfig.hidden )
@@ -324,7 +325,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
 
 bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  Q_UNUSED( sourceParent );
+  Q_UNUSED( sourceParent )
   switch ( mFilterMode )
   {
     case ShowAll:
@@ -504,7 +505,8 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  Q_FOREACH ( const QModelIndex &idx, masterModel()->idToIndexList( fid ) )
+  const auto constIdToIndexList = masterModel()->idToIndexList( fid );
+  for ( const QModelIndex &idx : constIdToIndexList )
   {
     indexes.append( mapFromMaster( idx ) );
   }

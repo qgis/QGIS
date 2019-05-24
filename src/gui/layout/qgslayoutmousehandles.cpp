@@ -57,8 +57,8 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
 
 void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-  Q_UNUSED( option );
-  Q_UNUSED( widget );
+  Q_UNUSED( option )
+  Q_UNUSED( widget )
 
   if ( !mLayout->renderContext().isPreviewRender() )
   {
@@ -540,7 +540,7 @@ void QgsLayoutMouseHandles::hoverMoveEvent( QGraphicsSceneHoverEvent *event )
 
 void QgsLayoutMouseHandles::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   setViewportCursor( Qt::ArrowCursor );
 }
 
@@ -795,7 +795,7 @@ void QgsLayoutMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 void QgsLayoutMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 }
 
 QSizeF QgsLayoutMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )

@@ -3074,7 +3074,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
       QgsDebugMsgLevel( QStringLiteral( "Ignoring feature due to transformation exception" ), 4 );
       return QgsGeometry();
     }
@@ -3101,7 +3101,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
       }
       catch ( QgsCsException &cse )
       {
-        Q_UNUSED( cse );
+        Q_UNUSED( cse )
         QgsDebugMsgLevel( QStringLiteral( "Ignoring feature due to transformation exception" ), 4 );
         return QgsGeometry();
       }

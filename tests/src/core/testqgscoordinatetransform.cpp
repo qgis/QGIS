@@ -38,6 +38,8 @@ class TestQgsCoordinateTransform: public QObject
     void contextShared();
     void scaleFactor();
     void scaleFactor_data();
+    void transform_data();
+    void transform();
 
   private:
 
@@ -223,9 +225,7 @@ void TestQgsCoordinateTransform::scaleFactor()
   QFETCH( double, factor );
 
   QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
-
-  // qDebug() << QString::number(ct.scaleFactor( rect ), 'g', 17) ;
-  QVERIFY( qgsDoubleNear( ct.scaleFactor( rect ), factor ) );
+  QGSCOMPARENEAR( ct.scaleFactor( rect ), factor, 0.00000001 );
 }
 
 void TestQgsCoordinateTransform::scaleFactor_data()
@@ -250,6 +250,63 @@ void TestQgsCoordinateTransform::scaleFactor_data()
       << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
       << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
       << 1.0;
+}
+
+void TestQgsCoordinateTransform::transform_data()
+{
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "sourceCrs" );
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "destCrs" );
+  QTest::addColumn<double>( "x" );
+  QTest::addColumn<double>( "y" );
+  QTest::addColumn<int>( "direction" );
+  QTest::addColumn<double>( "outX" );
+  QTest::addColumn<double>( "outY" );
+  QTest::addColumn<double>( "precision" );
+
+  QTest::newRow( "To geographic" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 2545059.0 << 2393190.0 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 145.512750 << -37.961375 << 0.000001;
+  QTest::newRow( "From geographic" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << 145.512750 <<  -37.961375 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 2545059.0 << 2393190.0 << 0.1;
+  QTest::newRow( "From geographic to geographic" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4164 )
+      << 145.512750 <<  -37.961375 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 145.510966 <<  -37.961741 << 0.0001;
+  QTest::newRow( "To geographic (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << 145.512750 <<  -37.961375 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 2545059.0 << 2393190.0 << 0.1;
+  QTest::newRow( "From geographic (reverse)" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << 2545058.9675128171 << 2393190.0509782173 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 145.512750 << -37.961375 << 0.000001;
+  QTest::newRow( "From geographic to geographic reverse" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4164 )
+      << 145.510966 <<  -37.961741 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) <<  145.512750 <<  -37.961375 << 0.0001;
+
+}
+
+void TestQgsCoordinateTransform::transform()
+{
+  QFETCH( QgsCoordinateReferenceSystem, sourceCrs );
+  QFETCH( QgsCoordinateReferenceSystem, destCrs );
+  QFETCH( double, x );
+  QFETCH( double, y );
+  QFETCH( int, direction );
+  QFETCH( double, outX );
+  QFETCH( double, outY );
+  QFETCH( double, precision );
+
+  double z = 0;
+  QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
+
+  ct.transformInPlace( x, y, z, static_cast<  QgsCoordinateTransform::TransformDirection >( direction ) );
+  QGSCOMPARENEAR( x, outX, precision );
+  QGSCOMPARENEAR( y, outY, precision );
 }
 
 void TestQgsCoordinateTransform::transformBoundingBox()

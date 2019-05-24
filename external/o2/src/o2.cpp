@@ -219,7 +219,7 @@ void O2::link() {
         QUrl url(tokenUrl_);
         QNetworkRequest tokenRequest(url);
         tokenRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-        QNetworkReply *tokenReply = manager_->post(tokenRequest, payload);
+        QNetworkReply *tokenReply = getManager()->post(tokenRequest, payload);
 
         connect(tokenReply, SIGNAL(finished()), this, SLOT(onTokenReplyFinished()), Qt::QueuedConnection);
         connect(tokenReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
@@ -268,7 +268,7 @@ void O2::onVerificationReceived(const QMap<QString, QString> response) {
 
         qDebug() << QString("O2::onVerificationReceived: Exchange access code data:\n%1").arg(QString(data));
 
-        QNetworkReply *tokenReply = manager_->post(tokenRequest, data);
+        QNetworkReply *tokenReply = getManager()->post(tokenRequest, data);
         timedReplies_.add(tokenReply);
         connect(tokenReply, SIGNAL(finished()), this, SLOT(onTokenReplyFinished()), Qt::QueuedConnection);
         connect(tokenReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
@@ -390,6 +390,11 @@ void O2::setExpires(int v) {
     store_->setValue(key, QString::number(v));
 }
 
+QNetworkAccessManager *O2::getManager()
+{
+    return manager_;
+}
+
 QString O2::refreshToken() {
     QString key = QString(O2_KEY_REFRESH_TOKEN).arg(clientId_);
     return store_->value(key);
@@ -424,7 +429,7 @@ void O2::refresh() {
     parameters.insert(O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_REFRESH_TOKEN);
 
     QByteArray data = buildRequestBody(parameters);
-    QNetworkReply *refreshReply = manager_->post(refreshRequest, data);
+    QNetworkReply *refreshReply = getManager()->post(refreshRequest, data);
     timedReplies_.add(refreshReply);
     connect(refreshReply, SIGNAL(finished()), this, SLOT(onRefreshFinished()), Qt::QueuedConnection);
     connect(refreshReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRefreshError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
@@ -437,7 +442,9 @@ void O2::onRefreshFinished() {
         QVariantMap tokens = parseTokenResponse(reply);
         setToken(tokens.value(O2_OAUTH2_ACCESS_TOKEN).toString());
         setExpires(QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value(O2_OAUTH2_EXPIRES_IN).toInt());
-        setRefreshToken(tokens.value(O2_OAUTH2_REFRESH_TOKEN).toString());
+        const QString refreshToken = tokens.value(O2_OAUTH2_REFRESH_TOKEN).toString();
+        if ( !refreshToken.isEmpty() )
+          setRefreshToken(refreshToken);
         timedReplies_.remove(refreshReply);
         setLinked(true);
         Q_EMIT linkingSucceeded();

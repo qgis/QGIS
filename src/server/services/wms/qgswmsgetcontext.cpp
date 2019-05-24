@@ -54,18 +54,15 @@ namespace QgsWms
                         const QString &version, const QgsServerRequest &request,
                         QgsServerResponse &response )
   {
-    QgsAccessControl *accessControl = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
 
     QDomDocument doc;
     const QDomDocument *contextDocument = nullptr;
 
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    cacheManager = serverIface->cacheManager();
-#endif
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       contextDocument = &doc;
@@ -80,7 +77,9 @@ namespace QgsWms
       }
       contextDocument = &doc;
     }
-
+#else
+    doc = getContext( serverIface, project, version, request );
+#endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( contextDocument->toByteArray() );
   }
@@ -89,7 +88,7 @@ namespace QgsWms
   QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
                            const QString &version, const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
@@ -261,13 +260,13 @@ namespace QgsWms
           {
             continue;
           }
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
           QgsAccessControl *accessControl = serverIface->accessControls();
           if ( accessControl && !accessControl->layerReadPermission( l ) )
           {
             continue;
           }
-
+#endif
           QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
 
           // queryable layer
@@ -442,7 +441,7 @@ namespace QgsWms
           }
           catch ( const QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
 
           if ( parentLayer.hasChildNodes() )

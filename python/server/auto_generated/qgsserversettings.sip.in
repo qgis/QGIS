@@ -119,6 +119,42 @@ Returns the cache directory.
 :return: the directory.
 %End
 
+    QString overrideSystemLocale() const;
+%Docstring
+Overrides system locale
+
+:return: the optional override for system locale.
+
+.. versionadded:: 3.8
+%End
+
+    bool showGroupSeparator() const;
+%Docstring
+Show group (thousand) separator
+
+:return: if group separator must be shown, default to ``False``.
+
+.. versionadded:: 3.8
+%End
+
+    int wmsMaxHeight() const;
+%Docstring
+Returns the server-wide max height of a WMS GetMap request. The lower one of this and the project configuration is used.
+
+:return: the max height of a WMS GetMap request.
+
+.. versionadded:: 3.8
+%End
+
+    int wmsMaxWidth() const;
+%Docstring
+Returns the server-wide max width of a WMS GetMap request. The lower one of this and the project configuration is used.
+
+:return: the max width of a WMS GetMap request.
+
+.. versionadded:: 3.8
+%End
+
 };
 
 /************************************************************************

@@ -459,7 +459,46 @@ the dynamic parameter.
 .. seealso:: :py:func:`setDynamicPropertyDefinition`
 %End
 
+    QStringList additionalExpressionContextVariables() const;
+%Docstring
+Returns a list of additional expression context variables which are available for use when evaluating
+this parameter.
+
+The additional variables will be added to the variables exposed from the usual expression
+context available to the parameter. They can be used to expose variables which are ONLY available
+to this parameter.
+
+The returned list should contain the variable names only, without the usual "@" prefix.
+
+.. seealso:: :py:func:`setAdditionalExpressionContextVariables`
+
+.. versionadded:: 3.8
+%End
+
+    void setAdditionalExpressionContextVariables( const QStringList &variables );
+%Docstring
+Sets a list of additional expression context ``variables`` which are available for use when evaluating
+this parameter.
+
+The additional variables will be added to the variables exposed from the usual expression
+context available to the parameter. They can be used to expose variables which are ONLY available
+to this parameter.
+
+The ``variables`` list should contain the variable names only, without the usual "@" prefix.
+
+.. note::
+
+   Specifying variables via this method is for metadata purposes only. It is the algorithm's responsibility
+   to correctly set the value of these additional variables in all expression context used when evaluating the parameter,
+   in whichever way is appropriate for that particular variable.
+
+.. seealso:: :py:func:`additionalExpressionContextVariables`
+
+.. versionadded:: 3.8
+%End
+
   protected:
+
 
 
 
@@ -599,11 +638,25 @@ Evaluates the parameter with matching ``definition`` and ``value`` to list of en
 Evaluates the parameter with matching ``definition`` to a static boolean value.
 %End
 
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a static boolean value.
+
+.. versionadded:: 3.8
+%End
+
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a static boolean value.
 
 .. versionadded:: 3.4
+%End
+
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static boolean value.
+
+.. versionadded:: 3.8
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,

@@ -51,7 +51,8 @@ QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString 
 
   // make Author items
   QgsCptCityDirectoryItem *dirItem = nullptr;
-  Q_FOREACH ( const QString &path, QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ) )
+  const auto constEntryList = QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
+  for ( const QString &path : constEntryList )
   {
     if ( path == QLatin1String( "selections" ) )
       continue;
@@ -92,9 +93,11 @@ QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString 
 
 QgsCptCityArchive::~QgsCptCityArchive()
 {
-  Q_FOREACH ( QgsCptCityDataItem *item, mRootItems )
+  const auto constMRootItems = mRootItems;
+  for ( QgsCptCityDataItem *item : constMRootItems )
     delete item;
-  Q_FOREACH ( QgsCptCityDataItem *item, mSelectionItems )
+  const auto constMSelectionItems = mSelectionItems;
+  for ( QgsCptCityDataItem *item : constMSelectionItems )
     delete item;
   mRootItems.clear();
   mSelectionItems.clear();
@@ -523,7 +526,8 @@ void QgsCptCityDataItem::populate()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QVector<QgsCptCityDataItem *> children = createChildren();
-  Q_FOREACH ( QgsCptCityDataItem *child, children )
+  const auto constChildren = children;
+  for ( QgsCptCityDataItem *child : constChildren )
   {
     // initialization, do not refresh! That would result in infinite loop (beginInsertItems->rowCount->populate)
     addChildItem( child );
@@ -546,7 +550,8 @@ int QgsCptCityDataItem::leafCount() const
     return 0;
 
   int count = 0;
-  Q_FOREACH ( QgsCptCityDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsCptCityDataItem *child : constMChildren )
   {
     if ( child )
       count += child->leafCount();
@@ -645,19 +650,22 @@ void QgsCptCityDataItem::refresh()
 
   // Remove no more present items
   QVector<QgsCptCityDataItem *> remove;
-  Q_FOREACH ( QgsCptCityDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsCptCityDataItem *child : constMChildren )
   {
     if ( findItem( items, child ) >= 0 )
       continue;
     remove.append( child );
   }
-  Q_FOREACH ( QgsCptCityDataItem *child, remove )
+  const auto constRemove = remove;
+  for ( QgsCptCityDataItem *child : constRemove )
   {
     deleteChildItem( child );
   }
 
   // Add new items
-  Q_FOREACH ( QgsCptCityDataItem *item, items )
+  const auto constItems = items;
+  for ( QgsCptCityDataItem *item : constItems )
   {
     // Is it present in children?
     if ( findItem( mChildren, item ) >= 0 )
@@ -781,7 +789,8 @@ QIcon QgsCptCityColorRampItem::icon()
 
 QIcon QgsCptCityColorRampItem::icon( QSize size )
 {
-  Q_FOREACH ( const QIcon &icon, mIcons )
+  const auto constMIcons = mIcons;
+  for ( const QIcon &icon : constMIcons )
   {
     if ( icon.availableSizes().contains( size ) )
       return icon;
@@ -828,7 +837,8 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   populate();
 
   // recursively add children
-  Q_FOREACH ( QgsCptCityDataItem *childItem, children() )
+  const auto constChildren = children();
+  for ( QgsCptCityDataItem *childItem : constChildren )
   {
     QgsCptCityCollectionItem *collectionItem = dynamic_cast<QgsCptCityCollectionItem *>( childItem );
     QgsCptCityColorRampItem *rampItem = dynamic_cast<QgsCptCityColorRampItem *>( childItem );
@@ -854,7 +864,8 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   }
 
   // delete invalid items - this is not efficient, but should only happens once
-  Q_FOREACH ( QgsCptCityDataItem *deleteItem, deleteItems )
+  const auto constDeleteItems = deleteItems;
+  for ( QgsCptCityDataItem *deleteItem : constDeleteItems )
   {
     QgsDebugMsg( QStringLiteral( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
     int i = mChildren.indexOf( deleteItem );
@@ -912,7 +923,8 @@ QVector<QgsCptCityDataItem *> QgsCptCityDirectoryItem::createChildren()
   }
 
   // add children dirs
-  Q_FOREACH ( const QString &childPath, dirEntries() )
+  const auto constDirEntries = dirEntries();
+  for ( const QString &childPath : constDirEntries )
   {
     QgsCptCityDataItem *childItem =
       QgsCptCityDirectoryItem::dataItem( this, childPath, mPath + '/' + childPath );
@@ -1148,7 +1160,8 @@ QVector<QgsCptCityDataItem *> QgsCptCitySelectionItem::createChildren()
   QgsDebugMsg( "name= " + mName + " path= " + mPath );
 
   // add children archives
-  Q_FOREACH ( QString childPath, mSelectionsList )
+  const auto constMSelectionsList = mSelectionsList;
+  for ( QString childPath : constMSelectionsList )
   {
     QgsDebugMsg( "childPath = " + childPath + " name= " + QFileInfo( childPath ).baseName() );
     if ( childPath.endsWith( '/' ) )
@@ -1272,7 +1285,8 @@ QVector<QgsCptCityDataItem *> QgsCptCityAllRampsItem::createChildren()
   QVector<QgsCptCityDataItem *> children;
 
   // add children ramps of each item
-  Q_FOREACH ( QgsCptCityDataItem *item, mItems )
+  const auto constMItems = mItems;
+  for ( QgsCptCityDataItem *item : constMItems )
   {
     QgsCptCityCollectionItem *colItem = dynamic_cast< QgsCptCityCollectionItem * >( item );
     if ( colItem )
@@ -1388,7 +1402,7 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
 
 QVariant QgsCptCityBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  Q_UNUSED( section );
+  Q_UNUSED( section )
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     if ( section == 0 )
@@ -1428,7 +1442,7 @@ bool QgsCptCityBrowserModel::hasChildren( const QModelIndex &parent ) const
 
 int QgsCptCityBrowserModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -1493,10 +1507,11 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString &path )
       // if we are using a selection collection, search for target in the mapping in this group
       if ( item->type() == QgsCptCityDataItem::Selection )
       {
-        const QgsCptCitySelectionItem *selItem = dynamic_cast<const QgsCptCitySelectionItem *>( item );
+        const QgsCptCitySelectionItem *selItem = qobject_cast<const QgsCptCitySelectionItem *>( item );
         if ( selItem )
         {
-          Q_FOREACH ( QString childPath, selItem->selectionsList() )
+          const auto constSelectionsList = selItem->selectionsList();
+          for ( QString childPath : constSelectionsList )
           {
             if ( childPath.endsWith( '/' ) )
               childPath.chop( 1 );
@@ -1672,7 +1687,8 @@ QStringList QgsCptCityBrowserModel::mimeTypes() const
 QMimeData *QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( index.isValid() )
     {
@@ -1687,8 +1703,8 @@ QMimeData *QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) co
 
 bool QgsCptCityBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
+  Q_UNUSED( row )
+  Q_UNUSED( column )
 
   QgsCptCityDataItem *destItem = dataItem( parent );
   if ( !destItem )

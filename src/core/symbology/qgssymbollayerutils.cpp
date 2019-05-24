@@ -1499,7 +1499,7 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
 
 bool QgsSymbolLayerUtils::needPointPatternFill( QDomElement &element )
 {
-  Q_UNUSED( element );
+  Q_UNUSED( element )
   return false;
 }
 
@@ -2103,7 +2103,7 @@ void QgsSymbolLayerUtils::externalGraphicToSld( QDomDocument &doc, QDomElement &
   createOnlineResourceElement( doc, externalGraphicElem, path, mime );
 
   //TODO: missing a way to handle svg color. Should use <se:ColorReplacement>
-  Q_UNUSED( color );
+  Q_UNUSED( color )
 
   if ( size >= 0 )
   {
@@ -2181,7 +2181,7 @@ bool QgsSymbolLayerUtils::externalGraphicFromSld( QDomElement &element,
     QColor &color, double &size )
 {
   QgsDebugMsg( QStringLiteral( "Entered." ) );
-  Q_UNUSED( color );
+  Q_UNUSED( color )
 
   QDomElement externalGraphicElem = element.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
   if ( externalGraphicElem.isNull() )
@@ -3714,12 +3714,14 @@ QStringList QgsSymbolLayerUtils::listSvgFiles()
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    Q_FOREACH ( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    const auto svgSubPaths = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+    for ( const QString &item : svgSubPaths )
     {
       svgPaths.insert( i + 1, dir.path() + '/' + item );
     }
 
-    Q_FOREACH ( const QString &item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    const auto svgFiles = dir.entryList( QStringList( "*.svg" ), QDir::Files );
+    for ( const QString &item : svgFiles )
     {
       // TODO test if it is correct SVG
       list.append( dir.path() + '/' + item );
@@ -3740,12 +3742,14 @@ QStringList QgsSymbolLayerUtils::listSvgFilesAt( const QString &directory )
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    Q_FOREACH ( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    const auto svgSubPaths = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+    for ( const QString &item : svgSubPaths )
     {
       svgPaths.insert( i + 1, dir.path() + '/' + item );
     }
 
-    Q_FOREACH ( const QString &item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    const auto svgFiles = dir.entryList( QStringList( "*.svg" ), QDir::Files );
+    for ( const QString &item : svgFiles )
     {
       list.append( dir.path() + '/' + item );
     }

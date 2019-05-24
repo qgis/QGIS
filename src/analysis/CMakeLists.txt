@@ -28,6 +28,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmboundary.cpp
   processing/qgsalgorithmboundingbox.cpp
   processing/qgsalgorithmbuffer.cpp
+  processing/qgsalgorithmcalculateoverlaps.cpp
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmclip.cpp
@@ -60,6 +61,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
+  processing/qgsalgorithmjoinbynearest.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmkmeansclustering.cpp
   processing/qgsalgorithmlineintersection.cpp
@@ -353,6 +355,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/analysis
@@ -432,6 +435,7 @@ IF(HAVE_OPENCL)
     TARGET_LINK_LIBRARIES(qgis_analysis ${OpenCL_LIBRARIES})
 ENDIF(HAVE_OPENCL)
 
+TARGET_COMPILE_DEFINITIONS(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

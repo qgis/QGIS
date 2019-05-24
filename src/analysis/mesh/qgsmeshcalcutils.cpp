@@ -61,11 +61,13 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
         for ( int value_i = 0; value_i < count; ++value_i )
           ds->values[value_i] = block.value( value_i );
 
-        const QgsMeshDataBlock active = dp->areFacesActive( index, 0, dp->faceCount() );
-        Q_ASSERT( active.count() == dp->faceCount() );
-        for ( int value_i = 0; value_i < dp->faceCount(); ++value_i )
-          ds->active[value_i] = active.active( value_i );
-
+        if ( grp->type == QgsMeshDatasetGroupMetadata::DataOnVertices )
+        {
+          const QgsMeshDataBlock active = dp->areFacesActive( index, 0, dp->faceCount() );
+          Q_ASSERT( active.count() == dp->faceCount() );
+          for ( int value_i = 0; value_i < dp->faceCount(); ++value_i )
+            ds->active[value_i] = active.active( value_i );
+        }
         grp->addDataset( ds );
       }
 

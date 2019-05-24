@@ -152,10 +152,11 @@ Item {
     signal reset
   }
 
-  Item {
+  Rectangle {
     id: container
 
     clip: true
+    color: form.style.tabs.backgroundColor
 
     anchors {
       top: toolbar.bottom
@@ -180,6 +181,12 @@ Item {
         id: tabRow
         visible: model.hasTabs
         height: form.style.tabs.height
+        spacing: form.style.tabs.spacing
+
+        background: Rectangle {
+          anchors.fill: parent
+          color: form.style.tabs.backgroundColor
+        }
 
         Connections {
           target: master
@@ -199,9 +206,10 @@ Item {
             text: Name
             leftPadding: 8 * QgsQuick.Utils.dp
             rightPadding: 8 * QgsQuick.Utils.dp
+            anchors.bottom: parent.bottom
 
             width: contentItem.width + leftPadding + rightPadding
-            height: form.style.tabs.height
+            height: form.style.tabs.buttonHeight
 
             contentItem: Text {
               // Make sure the width is derived from the text so we can get wider
@@ -214,6 +222,11 @@ Item {
 
               horizontalAlignment: Text.AlignHCenter
               verticalAlignment: Text.AlignVCenter
+            }
+
+            background: Rectangle {
+              color: !tabButton.enabled ? form.style.tabs.disabledBackgroundColor : tabButton.down ||
+                                                 tabButton.checked ? form.style.tabs.activeBackgroundColor : form.style.tabs.normalBackgroundColor
             }
           }
         }
@@ -253,19 +266,34 @@ Item {
             id: content
             anchors.fill: parent
             clip: true
+            spacing: form.style.group.spacing
             section.property: "Group"
             section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
             section.delegate: Component {
-              // section header: group box name
-              Rectangle {
+
+            // section header: group box name
+            Rectangle {
                 width: parent.width
                 height: section === "" ? 0 : form.style.group.height
-                color: form.style.group.backgroundColor
+                color: form.style.group.marginColor
 
-                Text {
-                  anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
-                  font.bold: true
-                  text: section
+                Rectangle {
+                  anchors.fill: parent
+                  anchors {
+                    leftMargin: form.style.group.leftMargin
+                    rightMargin: form.style.group.rightMargin
+                    topMargin: form.style.group.topMargin
+                    bottomMargin: form.style.group.bottomMargin
+                  }
+                  color: form.style.group.backgroundColor
+
+                  Text {
+                    anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
+                    font.bold: true
+                    font.pixelSize: form.style.group.fontPixelSize
+                    text: section
+                    color: form.style.group.fontColor
+                  }
                 }
               }
             }
@@ -345,7 +373,7 @@ Item {
           property var field: Field
           property var constraintValid: ConstraintValid
           property var homePath: form.project ? form.project.homePath : ""
-          property var customStyle: form.style.fields
+          property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
 
@@ -358,6 +386,26 @@ Item {
           target: attributeEditorLoader.item
           onValueChanged: {
             AttributeValue = isNull ? undefined : value
+          }
+        }
+
+        Connections {
+          target: form
+          ignoreUnknownSignals: true
+          onSaved: {
+            if (typeof attributeEditorLoader.item.callbackOnSave === "function") {
+              attributeEditorLoader.item.callbackOnSave()
+            }
+          }
+        }
+
+        Connections {
+          target: form
+          ignoreUnknownSignals: true
+          onCanceled: {
+            if (typeof attributeEditorLoader.item.callbackOnCancel === "function") {
+              attributeEditorLoader.item.callbackOnCancel()
+            }
           }
         }
       }

@@ -224,7 +224,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED
     {
-      Q_UNUSED( crs );
+      Q_UNUSED( crs )
       return false;
     }
 

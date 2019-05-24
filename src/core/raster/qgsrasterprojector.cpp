@@ -59,13 +59,24 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 
 /// @cond PRIVATE
 
-
-void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, int srcDatumTransform, int destDatumTransform )
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS,
+                                 const QgsCoordinateReferenceSystem &destCRS,
+                                 int srcDatumTransform,
+                                 int destDatumTransform )
 {
   mSrcCRS = srcCRS;
   mDestCRS = destCRS;
   mSrcDatumTransform = srcDatumTransform;
   mDestDatumTransform = destDatumTransform;
+}
+
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, QgsCoordinateTransformContext transformContext )
+{
+  mSrcCRS = srcCRS;
+  mDestCRS = destCRS;
+  const auto ctPair { transformContext.calculateDatumTransforms( srcCRS, destCRS ) };
+  mSrcDatumTransform = ctPair.sourceTransformId;
+  mDestDatumTransform = ctPair.destinationTransformId;
 }
 
 
@@ -180,8 +191,8 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
     }
   }
   QgsDebugMsgLevel( QStringLiteral( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ), 4 );
-  mDestRowsPerMatrixRow = static_cast< float >( mDestRows ) / ( mCPRows - 1 );
-  mDestColsPerMatrixCol = static_cast< float >( mDestCols ) / ( mCPCols - 1 );
+  mDestRowsPerMatrixRow = static_cast< double >( mDestRows ) / ( mCPRows - 1 );
+  mDestColsPerMatrixCol = static_cast< double >( mDestCols ) / ( mCPCols - 1 );
 
   QgsDebugMsgLevel( QStringLiteral( "CPMatrix:" ), 5 );
   QgsDebugMsgLevel( cpToString(), 5 );
@@ -601,7 +612,7 @@ void ProjectorData::calcCP( int row, int col, const QgsCoordinateTransform &ct )
   }
   catch ( QgsCsException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     // Caught an error in transform
     mCPLegalMatrix[row][col] = false;
   }
@@ -665,7 +676,7 @@ bool ProjectorData::checkCols( const QgsCoordinateTransform &ct )
       }
       catch ( QgsCsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // Caught an error in transform
         return false;
       }
@@ -710,7 +721,7 @@ bool ProjectorData::checkRows( const QgsCoordinateTransform &ct )
       }
       catch ( QgsCsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // Caught an error in transform
         return false;
       }
@@ -753,8 +764,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
-  QgsCoordinateTransform inverseCt( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform );
-
+  const QgsCoordinateTransform inverseCt { mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform };
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 
   QgsDebugMsgLevel( QStringLiteral( "srcExtent:\n%1" ).arg( pd.srcExtent().toString() ), 4 );
@@ -774,7 +784,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return new QgsRasterBlock();
   }
 
-  qgssize pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
+  qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( inputBlock->dataType(), width, height ) );
   if ( inputBlock->hasNoDataValue() )
@@ -814,7 +824,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
       if ( !inside ) continue; // we have everything set to no data
 
-      qgssize srcIndex = static_cast< qgssize >( srcRow ) * pd.srcCols() + srcCol;
+      qgssize srcIndex = static_cast< qgssize >( srcRow * pd.srcCols() + srcCol );
 
       // isNoData() may be slow so we check doNoData first
       if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
@@ -823,7 +833,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
         continue;
       }
 
-      qgssize destIndex = static_cast< qgssize >( i ) * width + j;
+      qgssize destIndex = static_cast< qgssize >( i * width + j );
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
@@ -851,8 +861,7 @@ bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcX
   {
     return false;
   }
-  QgsCoordinateTransform ct( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform );
-
+  const QgsCoordinateTransform ct { mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform };
   return extentSize( ct, srcExtent, srcXSize, srcYSize, destExtent, destXSize, destYSize );
 }
 

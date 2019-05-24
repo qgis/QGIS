@@ -37,13 +37,13 @@ QgsLayoutMultiFrame::~QgsLayoutMultiFrame()
 
 QSizeF QgsLayoutMultiFrame::fixedFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( 0, 0 );
 }
 
 QSizeF QgsLayoutMultiFrame::minFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( 0, 0 );
 }
 

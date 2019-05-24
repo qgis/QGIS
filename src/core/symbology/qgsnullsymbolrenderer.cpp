@@ -99,15 +99,15 @@ QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & ) const
 
 QgsFeatureRenderer *QgsNullSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( element );
-  Q_UNUSED( context );
+  Q_UNUSED( element )
+  Q_UNUSED( context )
   QgsNullSymbolRenderer *r = new QgsNullSymbolRenderer();
   return r;
 }
 
 QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "nullSymbol" ) );
   return rendererElem;
@@ -115,6 +115,6 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteCo
 
 QgsNullSymbolRenderer *QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  Q_UNUSED( renderer );
+  Q_UNUSED( renderer )
   return new QgsNullSymbolRenderer();
 }

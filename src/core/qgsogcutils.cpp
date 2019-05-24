@@ -1027,7 +1027,7 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode &envelopeNode
     }
   }
 
-  Q_UNUSED( srsDimension );
+  Q_UNUSED( srsDimension )
 
   bString = elem.text();
   double xmax = bString.section( ' ', 0, 0 ).toDouble( &conversionSuccess );
@@ -1156,7 +1156,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
   }
   catch ( const QgsWkbException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     // WKB exception while reading header
     return QDomElement();
   }
@@ -1498,7 +1498,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
   }
   catch ( const QgsWkbException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     return QDomElement();
   }
 }
@@ -2112,7 +2112,8 @@ QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsE
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
   QDomElement leftNode = expressionNodeToOgcFilter( node->node(), expression, context );
 
-  Q_FOREACH ( QgsExpressionNode *n, node->list()->list() )
+  const auto constList = node->list()->list();
+  for ( QgsExpressionNode *n : constList )
   {
     QDomElement listNode = expressionNodeToOgcFilter( n, expression, context );
     if ( !mErrorMessage.isEmpty() )
@@ -2317,7 +2318,8 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
   // this is somehow wrong - we are just hoping that the other side supports the same functions as we do...
   QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
   funcElem.setAttribute( QStringLiteral( "name" ), fd->name() );
-  Q_FOREACH ( QgsExpressionNode *n, node->args()->list() )
+  const auto constList = node->args()->list();
+  for ( QgsExpressionNode *n : constList )
   {
     QDomElement childElem = expressionNodeToOgcFilter( n, expression, context );
     if ( !mErrorMessage.isEmpty() )
@@ -2563,7 +2565,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
   QDomElement leftNode = toOgcFilter( node->node() );
 
-  Q_FOREACH ( QgsSQLStatement::Node *n, node->list()->list() )
+  const auto constList = node->list()->list();
+  for ( QgsSQLStatement::Node *n : constList )
   {
     QDomElement listNode = toOgcFilter( n );
     if ( !mErrorMessage.isEmpty() )
@@ -2615,7 +2618,8 @@ static QString mapBinarySpatialToOgc( const QString &name )
   QStringList spatialOps;
   spatialOps << QStringLiteral( "BBOX" ) << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "Crosses" ) << QStringLiteral( "Equals" )
              << QStringLiteral( "Disjoint" ) << QStringLiteral( "Overlaps" ) << QStringLiteral( "Touches" ) << QStringLiteral( "Within" );
-  Q_FOREACH ( QString op, spatialOps )
+  const auto constSpatialOps = spatialOps;
+  for ( QString op : constSpatialOps )
   {
     if ( nameCompare.compare( op, Qt::CaseInsensitive ) == 0 )
       return op;
@@ -2643,7 +2647,8 @@ QString QgsOgcUtilsSQLStatementToFilter::getGeometryColumnSRSName( const QgsSQLS
   const QgsSQLStatement::NodeColumnRef *col = static_cast<const QgsSQLStatement::NodeColumnRef *>( node );
   if ( !col->tableName().isEmpty() )
   {
-    Q_FOREACH ( QgsOgcUtils::LayerProperties prop, mLayerProperties )
+    const auto constMLayerProperties = mLayerProperties;
+    for ( QgsOgcUtils::LayerProperties prop : constMLayerProperties )
     {
       if ( prop.mName.compare( mMapTableAliasToNames[col->tableName()], Qt::CaseInsensitive ) == 0 &&
            prop.mGeometryAttribute.compare( col->name(), Qt::CaseInsensitive ) == 0 )
@@ -2863,7 +2868,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
     //if( ogcName == "Intersects" && mFilterVersion == QgsOgcUtils::FILTER_OGC_1_0 )
     //  ogcName = "Intersect";
     QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":" + ogcName );
-    Q_FOREACH ( QgsSQLStatement::Node *n, args )
+    const auto constArgs = args;
+    for ( QgsSQLStatement::Node *n : constArgs )
     {
       QDomElement childElem = toOgcFilter( n );
       if ( !mErrorMessage.isEmpty() )
@@ -2972,7 +2978,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   // Other function
   QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
   funcElem.setAttribute( QStringLiteral( "name" ), node->name() );
-  Q_FOREACH ( QgsSQLStatement::Node *n, node->args()->list() )
+  const auto constList = node->args()->list();
+  for ( QgsSQLStatement::Node *n : constList )
   {
     QDomElement childElem = toOgcFilter( n );
     if ( !mErrorMessage.isEmpty() )
@@ -2993,7 +3000,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   QList<QDomElement> listElem;
-  Q_FOREACH ( const QString &columnName, node->usingColumns() )
+  const auto constUsingColumns = node->usingColumns();
+  for ( const QString &columnName : constUsingColumns )
   {
     QDomElement eqElem = mDoc.createElement( mFilterPrefix + ":PropertyIsEqualTo" );
     QDomElement propElem1 = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
@@ -3012,7 +3020,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   else if ( listElem.size() > 1 )
   {
     QDomElement andElem = mDoc.createElement( mFilterPrefix + ":And" );
-    Q_FOREACH ( const QDomElement &elem, listElem )
+    const auto constListElem = listElem;
+    for ( const QDomElement &elem : constListElem )
     {
       andElem.appendChild( elem );
     }
@@ -3046,11 +3055,13 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   // Register all table name aliases
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef *table, node->tables() )
+  const auto constTables = node->tables();
+  for ( QgsSQLStatement::NodeTableDef *table : constTables )
   {
     visit( table );
   }
-  Q_FOREACH ( QgsSQLStatement::NodeJoin *join, node->joins() )
+  const auto constJoins = node->joins();
+  for ( QgsSQLStatement::NodeJoin *join : constJoins )
   {
     visit( join->tableDef() );
   }
@@ -3058,7 +3069,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   // Process JOIN conditions
   QList< QgsSQLStatement::NodeTableDef *> nodeTables = node->tables();
   QString leftTable = nodeTables.at( nodeTables.length() - 1 )->name();
-  Q_FOREACH ( QgsSQLStatement::NodeJoin *join, node->joins() )
+  for ( QgsSQLStatement::NodeJoin *join : constJoins )
   {
     QDomElement joinElem = toOgcFilter( join, leftTable );
     if ( !mErrorMessage.isEmpty() )
@@ -3084,7 +3095,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   else if ( listElem.size() > 1 )
   {
     QDomElement andElem = mDoc.createElement( mFilterPrefix + ":And" );
-    Q_FOREACH ( const QDomElement &elem, listElem )
+    const auto constListElem = listElem;
+    for ( const QDomElement &elem : constListElem )
     {
       andElem.appendChild( elem );
     }

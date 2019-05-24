@@ -10,8 +10,6 @@ from builtins import str
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -47,7 +45,10 @@ from qgis.core import (QgsRaster,
                        QgsSingleBandPseudoColorRenderer,
                        QgsLimitedRandomColorRamp,
                        QgsGradientColorRamp,
-                       QgsHueSaturationFilter)
+                       QgsHueSaturationFilter,
+                       QgsCoordinateTransformContext,
+                       QgsCoordinateReferenceSystem
+                       )
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
@@ -1030,6 +1031,62 @@ class TestQgsRasterLayer(unittest.TestCase):
         return dom, root, errorMessage
 
 
+class TestQgsRasterLayerTransformContext(unittest.TestCase):
+
+    def setUp(self):
+        """Prepare tc"""
+        super(TestQgsRasterLayerTransformContext, self).setUp()
+        self.ctx = QgsCoordinateTransformContext()
+        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        self.rpath = os.path.join(unitTestDataPath(), 'landsat.tif')
+
+    def testTransformContextIsSetInCtor(self):
+        """Test transform context can be set from ctor"""
+
+        rl = QgsRasterLayer(self.rpath, 'raster')
+        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        options = QgsRasterLayer.LayerOptions(transformContext=self.ctx)
+        rl = QgsRasterLayer(self.rpath, 'raster', 'gdal', options)
+        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+    def testTransformContextInheritsFromProject(self):
+        """Test that when a layer is added to a project it inherits its context"""
+
+        rl = QgsRasterLayer(self.rpath, 'raster')
+        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p = QgsProject()
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p.addMapLayers([rl])
+        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+    def testTransformContextIsSyncedFromProject(self):
+        """Test that when a layer is synced when project context changes"""
+
+        rl = QgsRasterLayer(self.rpath, 'raster')
+        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p = QgsProject()
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p.addMapLayers([rl])
+        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        # Now change the project context
+        tc2 = QgsCoordinateTransformContext()
+        p.setTransformContext(tc2)
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+
 if __name__ == '__main__':
     unittest.main()
-rule

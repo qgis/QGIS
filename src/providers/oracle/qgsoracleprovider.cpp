@@ -181,7 +181,8 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
       Q_ASSERT( mPrimaryKeyType != PktInt || mPrimaryKeyAttrs.size() == 1 );
 
       QString delim;
-      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+      const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
+      for ( int idx : constMPrimaryKeyAttrs )
       {
         Q_ASSERT( idx >= 0 && idx < mAttributeFields.size() );
         key += delim + mAttributeFields.at( idx ).name();
@@ -344,7 +345,8 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
       QVariant pkValsVariant = mShared->lookupKey( fid );
       if ( !pkValsVariant.isNull() )
       {
-        Q_FOREACH ( const QVariant &v, pkValsVariant.toList() )
+        const auto constToList = pkValsVariant.toList();
+        for ( const QVariant &v : constToList )
         {
           QgsDebugMsgLevel( QStringLiteral( "addBindValue pk %1" ).arg( FID_TO_STRING( fid ) ), 4 );
           qry.addBindValue( v );
@@ -431,7 +433,8 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields &fi
 QString QgsOracleUtils::whereClause( QgsFeatureIds featureIds, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &args )
 {
   QStringList whereClauses;
-  Q_FOREACH ( const QgsFeatureId featureId, featureIds )
+  const auto constFeatureIds = featureIds;
+  for ( const QgsFeatureId featureId : constFeatureIds )
   {
     whereClauses << whereClause( featureId, fields, primaryKeyType, primaryKeyAttrs, sharedData, args );
   }
@@ -969,7 +972,8 @@ bool QgsOracleProvider::determinePrimaryKey()
 
   mValid = mPrimaryKeyType != PktUnknown;
 
-  Q_FOREACH ( int fieldIdx, mPrimaryKeyAttrs )
+  const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
+  for ( int fieldIdx : constMPrimaryKeyAttrs )
   {
     //primary keys are unique, not null
     QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
@@ -983,7 +987,7 @@ bool QgsOracleProvider::determinePrimaryKey()
 
 bool QgsOracleProvider::uniqueData( QString query, QString colName )
 {
-  Q_UNUSED( query );
+  Q_UNUSED( query )
   // Check to see if the given column contains unique data
   QSqlQuery qry( *mConnection );
 
@@ -1228,7 +1232,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     {
       QString keys, kdelim;
 
-      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+      const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
+      for ( int idx : constMPrimaryKeyAttrs )
       {
         QgsField fld = field( idx );
         insert += delim + quotedIdentifier( fld.name() );
@@ -1344,7 +1349,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
               throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
 
             int col = 0;
-            Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+            const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
+            for ( int idx : constMPrimaryKeyAttrs )
             {
               QgsField fld = field( idx );
 
@@ -1382,7 +1388,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
           {
             QVariantList primaryKeyVals;
 
-            Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+            const auto constMPrimaryKeyAttrs = mPrimaryKeyAttrs;
+            for ( int idx : constMPrimaryKeyAttrs )
             {
               primaryKeyVals << attributevec[ idx ];
             }
@@ -1565,7 +1572,8 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds &ids )
     QList<int> idsList = ids.values();
     std::sort( idsList.begin(), idsList.end(), qGreater<int>() );
 
-    Q_FOREACH ( int id, idsList )
+    const auto constIdsList = idsList;
+    for ( int id : constIdsList )
     {
       QgsField fld = mAttributeFields.at( id );
 
@@ -1751,7 +1759,8 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         throw OracleException( tr( "Could not prepare update statement." ), qry );
       }
 
-      Q_FOREACH ( int idx, params )
+      const auto constParams = params;
+      for ( int idx : constParams )
       {
         const QgsField &fld = field( idx );
 
@@ -2611,8 +2620,8 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   QString *errorMessage,
   const QMap<QString, QVariant> *options )
 {
-  Q_UNUSED( wkbType );
-  Q_UNUSED( options );
+  Q_UNUSED( wkbType )
+  Q_UNUSED( options )
 
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
@@ -3081,7 +3090,7 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   return new QgsOracleRootItem( parentItem, "Oracle", "oracle:" );
 }
 

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Vincent Mora'
 __date__ = '09/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -700,6 +698,16 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(set(indexed_columns), set(['name', 'number']))
         con.close()
+
+    def testSubsetStringRegexp(self):
+        """Check that the provider supports the REGEXP syntax"""
+
+        testPath = "dbname=%s table='test_filter' (geometry) key='id'" % self.dbname
+        vl = QgsVectorLayer(testPath, 'test', 'spatialite')
+        self.assertTrue(vl.isValid())
+        vl.setSubsetString('"name" REGEXP \'[txe]\'')
+        self.assertEqual(vl.featureCount(), 4)
+        del(vl)
 
     def testSubsetStringExtent_bug17863(self):
         """Check that the extent is correct when applied in the ctor and when

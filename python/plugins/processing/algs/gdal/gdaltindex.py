@@ -21,10 +21,6 @@ __author__ = 'Pedro Venancio'
 __date__ = 'February 2015'
 __copyright__ = '(C) 2015, Pedro Venancio'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -135,10 +131,10 @@ class gdaltindex(GdalAlgorithm):
         arguments.append('-tileindex')
         arguments.append(self.parameterAsString(parameters, self.PATH_FIELD_NAME, context))
 
-        if self.parameterAsBool(parameters, self.ABSOLUTE_PATH, context):
+        if self.parameterAsBoolean(parameters, self.ABSOLUTE_PATH, context):
             arguments.append('-write_absolute_path')
 
-        if self.parameterAsBool(parameters, self.PROJ_DIFFERENCE, context):
+        if self.parameterAsBoolean(parameters, self.PROJ_DIFFERENCE, context):
             arguments.append('-skip_different_projection')
 
         if crs_field:

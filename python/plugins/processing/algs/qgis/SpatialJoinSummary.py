@@ -21,11 +21,8 @@ __author__ = 'Nyall Dawson'
 __date__ = 'September 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+import math
 
 from collections import defaultdict
 
@@ -164,7 +161,7 @@ class SpatialJoinSummary(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.JOIN))
 
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
-        discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
+        discard_nomatch = self.parameterAsBoolean(parameters, self.DISCARD_NONMATCHING, context)
         summaries = [self.statistics[i][0] for i in
                      sorted(self.parameterAsEnums(parameters, self.SUMMARIES, context))]
 
@@ -274,9 +271,6 @@ class SpatialJoinSummary(QgisAlgorithm):
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
-        # bounding box transform
-        bbox_transform = QgsCoordinateTransform(source.sourceCrs(), join_source.sourceCrs(), context.project())
-
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -293,12 +287,11 @@ class SpatialJoinSummary(QgisAlgorithm):
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                 continue
 
-            bbox = bbox_transform.transformBoundingBox(f.geometry().boundingBox())
             engine = None
 
             values = []
 
-            request = QgsFeatureRequest().setFilterRect(bbox).setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs(), context.transformContext())
+            request = QgsFeatureRequest().setFilterRect(f.geometry().boundingBox()).setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs(), context.transformContext())
             for test_feat in join_source.getFeatures(request):
                 if feedback.isCanceled():
                     break
@@ -342,7 +335,8 @@ class SpatialJoinSummary(QgisAlgorithm):
                         stat.finalize()
                         for s in numeric_fields:
                             if s[0] in summaries:
-                                attrs.append(getattr(stat, s[2])())
+                                val = getattr(stat, s[2])()
+                                attrs.append(val if not math.isnan(val) else NULL)
                     elif field_type == 'datetime':
                         stat = QgsDateTimeStatisticalSummary()
                         stat.calculate(attribute_values)

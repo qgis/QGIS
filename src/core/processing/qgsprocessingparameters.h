@@ -515,6 +515,40 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     void setDynamicLayerParameterName( const QString &name ) { mDynamicLayerParameterName = name; }
 
+    /**
+     * Returns a list of additional expression context variables which are available for use when evaluating
+     * this parameter.
+     *
+     * The additional variables will be added to the variables exposed from the usual expression
+     * context available to the parameter. They can be used to expose variables which are ONLY available
+     * to this parameter.
+     *
+     * The returned list should contain the variable names only, without the usual "@" prefix.
+     *
+     * \see setAdditionalExpressionContextVariables()
+     * \since QGIS 3.8
+     */
+    QStringList additionalExpressionContextVariables() const { return mAdditionalExpressionVariables; }
+
+    /**
+     * Sets a list of additional expression context \a variables which are available for use when evaluating
+     * this parameter.
+     *
+     * The additional variables will be added to the variables exposed from the usual expression
+     * context available to the parameter. They can be used to expose variables which are ONLY available
+     * to this parameter.
+     *
+     * The \a variables list should contain the variable names only, without the usual "@" prefix.
+     *
+     * \note Specifying variables via this method is for metadata purposes only. It is the algorithm's responsibility
+     * to correctly set the value of these additional variables in all expression context used when evaluating the parameter,
+     * in whichever way is appropriate for that particular variable.
+     *
+     * \see additionalExpressionContextVariables()
+     * \since QGIS 3.8
+     */
+    void setAdditionalExpressionContextVariables( const QStringList &variables ) { mAdditionalExpressionVariables = variables; }
+
   protected:
 
     //! Parameter name
@@ -543,6 +577,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Linked vector layer parameter name for dynamic properties
     QString mDynamicLayerParameterName;
+
+    //! Additional expression context variables exposed for use by this parameter
+    QStringList mAdditionalExpressionVariables;
 
     // To allow access to mAlgorithm. We don't want a public setter for this!
     friend class QgsProcessingAlgorithm;
@@ -667,10 +704,23 @@ class CORE_EXPORT QgsProcessingParameters
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition to a static boolean value.
+     *
+     * \since QGIS 3.8
+     */
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition and \a value to a static boolean value.
      * \since QGIS 3.4
      */
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a static boolean value.
+     * \since QGIS 3.8
+     */
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a feature sink.

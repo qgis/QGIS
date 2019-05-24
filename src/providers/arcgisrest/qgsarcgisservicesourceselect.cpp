@@ -310,9 +310,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
   {
     try
     {
-      Q_NOWARN_DEPRECATED_PUSH
-      extent = QgsCoordinateTransform( canvasCrs, pCrs ).transform( extent );
-      Q_NOWARN_DEPRECATED_POP
+      extent = QgsCoordinateTransform( canvasCrs, pCrs, QgsProject::instance()->transformContext() ).transform( extent );
       QgsDebugMsg( QStringLiteral( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
                    .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }
@@ -404,7 +402,7 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
 
 void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 

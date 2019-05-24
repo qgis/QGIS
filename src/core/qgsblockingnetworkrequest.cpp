@@ -333,7 +333,8 @@ void QgsBlockingNetworkRequest::replyFinished()
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
-          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+          const auto constRawHeaders = cmd.rawHeaders();
+          for ( const QNetworkCacheMetaData::RawHeader &h : constRawHeaders )
           {
             if ( h.first != "Cache-Control" )
               hl.append( h );

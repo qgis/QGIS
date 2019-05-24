@@ -21,19 +21,15 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from .i import verifyRasterNum
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    if alg.parameterAsBool(parameters, '-m', context):
+    if alg.parameterAsBoolean(parameters, '-m', context):
         return verifyRasterNum(alg, parameters, context, 'input', 7)
-    elif alg.parameterAsBool(parameters, '-n', context):
+    elif alg.parameterAsBoolean(parameters, '-n', context):
         return verifyRasterNum(alg, parameters, context, 'input', 2)
-    elif (alg.parameterAsBool(parameters, '-l', context)
-          or alg.parameterAsBool(parameters, '-a', context)):
+    elif (alg.parameterAsBoolean(parameters, '-l', context)
+          or alg.parameterAsBoolean(parameters, '-a', context)):
         return verifyRasterNum(alg, parameters, context, 'input', 6)
     return True, None

@@ -153,7 +153,8 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
 
   QgsDebugMsg( QStringLiteral( "nullValue: %1" ).arg( nullValue ) );
 
-  Q_FOREACH ( const QVariant &var, values )
+  const auto constValues = values;
+  for ( const QVariant &var : constValues )
   {
     QString value;
     if ( var.isNull() )
@@ -352,12 +353,12 @@ void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 
 void QgsQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
-  QVariant value = index.data( Qt::DisplayRole );
+  QVariant value = index.data( Qt::UserRole + 1 );
   if ( value.isNull() )
     txtSQL->insertText( QStringLiteral( "NULL" ) );
   else if ( value.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
     txtSQL->insertText( '\'' + value.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) ) + '\'' );
-  else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
+  else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong || value.type() == QVariant::Bool )
     txtSQL->insertText( value.toString() );
   else
     txtSQL->insertText( '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'' );

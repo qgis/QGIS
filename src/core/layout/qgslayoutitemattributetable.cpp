@@ -183,10 +183,15 @@ void QgsLayoutItemAttributeTable::atlasLayerChanged( QgsVectorLayer *layer )
     disconnect( mCurrentAtlasLayer, &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
   }
 
+  const bool mustRebuildColumns = static_cast< bool >( mCurrentAtlasLayer ) || mColumns.empty();
   mCurrentAtlasLayer = layer;
 
-  //rebuild column list to match all columns from layer
-  resetColumns();
+  if ( mustRebuildColumns )
+  {
+    //rebuild column list to match all columns from layer
+    resetColumns();
+  }
+
   refreshAttributes();
 
   //listen for modifications to layer and refresh table when they occur
@@ -430,7 +435,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       }
       catch ( QgsCsException &cse )
       {
-        Q_UNUSED( cse );
+        Q_UNUSED( cse )
         return false;
       }
     }

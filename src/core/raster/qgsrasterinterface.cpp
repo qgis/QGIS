@@ -101,7 +101,8 @@ bool QgsRasterInterface::hasStatistics( int bandNo,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, bandNo, stats, extent, sampleSize );
 
-  Q_FOREACH ( const QgsRasterBandStats &stats, mStatistics )
+  const auto constMStatistics = mStatistics;
+  for ( const QgsRasterBandStats &stats : constMStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -124,7 +125,8 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, bandNo, stats, extent, sampleSize );
 
-  Q_FOREACH ( const QgsRasterBandStats &stats, mStatistics )
+  const auto constMStatistics = mStatistics;
+  for ( const QgsRasterBandStats &stats : constMStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -380,7 +382,8 @@ bool QgsRasterInterface::hasHistogram( int bandNo,
   QgsRasterHistogram myHistogram;
   initHistogram( myHistogram, bandNo, binCount, minimum, maximum, extent, sampleSize, includeOutOfRange );
 
-  Q_FOREACH ( const QgsRasterHistogram &histogram, mHistograms )
+  const auto constMHistograms = mHistograms;
+  for ( const QgsRasterHistogram &histogram : constMHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -404,7 +407,8 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
   initHistogram( myHistogram, bandNo, binCount, minimum, maximum, extent, sampleSize, includeOutOfRange );
 
   // Find cached
-  Q_FOREACH ( const QgsRasterHistogram &histogram, mHistograms )
+  const auto constMHistograms = mHistograms;
+  for ( const QgsRasterHistogram &histogram : constMHistograms )
   {
     if ( histogram == myHistogram )
     {

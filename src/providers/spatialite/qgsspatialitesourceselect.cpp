@@ -26,6 +26,7 @@ email                : a.furieri@lqt.it
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
+#include "qgsproject.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -230,7 +231,7 @@ void QgsSpatiaLiteSourceSelect::mSearchColumnComboBox_currentIndexChanged( const
 
 void QgsSpatiaLiteSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -482,7 +483,8 @@ void QgsSpatiaLiteSourceSelect::btnConnect_clicked()
   mTableModel.setSqliteDb( subKey );
 
   QList<QgsSpatiaLiteConnection::TableEntry> tables = conn.tables();
-  Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry &table, tables )
+  const auto constTables = tables;
+  for ( const QgsSpatiaLiteConnection::TableEntry &table : constTables )
   {
     mTableModel.addTableEntry( table.type, table.tableName, table.column, QString() );
   }
@@ -521,7 +523,8 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ), options );
 
   if ( !vlayer->isValid() )
   {
@@ -580,7 +583,7 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 
 void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )

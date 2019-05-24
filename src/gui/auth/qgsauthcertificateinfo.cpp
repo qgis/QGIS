@@ -42,7 +42,8 @@ static void setItemBold_( QTreeWidgetItem *item )
 
 static void removeChildren_( QTreeWidgetItem *item )
 {
-  Q_FOREACH ( QTreeWidgetItem *child, item->takeChildren() )
+  const auto constTakeChildren = item->takeChildren();
+  for ( QTreeWidgetItem *child : constTakeChildren )
   {
     delete child;
   }
@@ -115,7 +116,7 @@ void QgsAuthCertInfo::setupError( const QString &msg )
 
 void QgsAuthCertInfo::currentCertItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   updateCurrentCert( current );
 }
 
@@ -144,7 +145,8 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
   }
   if ( !mConnectionCAs.isEmpty() )
   {
-    Q_FOREACH ( const QSslCertificate &cert, mConnectionCAs )
+    const auto constMConnectionCAs = mConnectionCAs;
+    for ( const QSslCertificate &cert : constMConnectionCAs )
     {
       QCA::ConvertResult res;
       QCA::Certificate acert = QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) );
@@ -201,7 +203,8 @@ bool QgsAuthCertInfo::populateCertChain()
   }
 
   // mirror chain to QSslCertificate
-  Q_FOREACH ( QCA::Certificate cert, mACertChain )
+  const auto constMACertChain = mACertChain;
+  for ( QCA::Certificate cert : constMACertChain )
   {
     QSslCertificate qcert;
     if ( !cert.isNull() )
@@ -777,7 +780,8 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   QStringList keyusage;
   QStringList extkeyusage;
   QList<QCA::ConstraintType> certconsts = mCurrentACert.constraints();
-  Q_FOREACH ( const QCA::ConstraintType &certconst, certconsts )
+  const auto constCertconsts = certconsts;
+  for ( const QCA::ConstraintType &certconst : constCertconsts )
   {
     if ( certconst.section() == QCA::ConstraintType::KeyUsage )
     {

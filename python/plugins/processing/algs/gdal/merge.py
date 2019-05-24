@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -131,10 +127,10 @@ class merge(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
-        if self.parameterAsBool(parameters, self.PCT, context):
+        if self.parameterAsBoolean(parameters, self.PCT, context):
             arguments.append('-pct')
 
-        if self.parameterAsBool(parameters, self.SEPARATE, context):
+        if self.parameterAsBoolean(parameters, self.SEPARATE, context):
             arguments.append('-separate')
 
         if self.NODATA_INPUT in parameters and parameters[self.NODATA_INPUT] is not None:

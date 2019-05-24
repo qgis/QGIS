@@ -109,21 +109,63 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     const QgsMapUnitScale &spreadMapUnitScale() const { return mSpreadMapUnitScale; }
 
     /**
-     * Sets blur level (strength) for the glow. This can be used to smooth the
+     * Sets blur level (radius) for the glow. This can be used to smooth the
      * output from the glow effect.
-     * \param level blur level. Values between 0 and 16 are valid, with larger
-     * values indicating greater blur strength.
+     * \param level blur level.
      * \see blurLevel
+     * \see setBlurUnit
+     * \see setBlurMapUnitScale
      */
-    void setBlurLevel( const int level ) { mBlurLevel = level; }
+    void setBlurLevel( const double level ) { mBlurLevel = level; }
 
     /**
-     * Returns the blur level (strength) for the glow.
-     * \returns blur level. Value will be between 0 and 16, with larger
-     * values indicating greater blur strength.
+     * Returns the blur level (radius) for the glow.
+     * \returns blur level.
      * \see setBlurLevel
+     * \see blurUnit
+     * \see blurMapUnitScale
      */
-    int blurLevel() const { return mBlurLevel; }
+    double blurLevel() const { return mBlurLevel; }
+
+    /**
+     * Sets the units used for the glow blur level (radius).
+     * \param unit units for blur level
+     * \see blurUnit
+     * \see setBlurLevel
+     * \see setBlurMapUnitScale
+     * \since QGIS 3.4.9
+     */
+    void setBlurUnit( const QgsUnitTypes::RenderUnit unit ) { mBlurUnit = unit; }
+
+    /**
+     * Returns the units used for the glow blur level (radius).
+     * \returns units for blur level
+     * \see setBlurUnit
+     * \see blurLevel
+     * \see blurMapUnitScale
+     * \since QGIS 3.4.9
+     */
+    QgsUnitTypes::RenderUnit blurUnit() const { return mBlurUnit; }
+
+    /**
+     * Sets the map unit scale used for the glow blur strength (radius).
+     * \param scale map unit scale for blur strength
+     * \see blurMapUnitScale
+     * \see setBlurLevel
+     * \see setBlurUnit
+     * \since QGIS 3.4.9
+     */
+    void setBlurMapUnitScale( const QgsMapUnitScale &scale ) { mBlurMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale used for the glow blur strength (radius).
+     * \returns map unit scale for blur strength
+     * \see setBlurMapUnitScale
+     * \see blurLevel
+     * \see blurUnit
+     * \since QGIS 3.4.9
+     */
+    const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
 
     /**
      * Sets the \a opacity for the effect.
@@ -235,7 +277,9 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QgsUnitTypes::RenderUnit mSpreadUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSpreadMapUnitScale;
     QgsColorRamp *mRamp = nullptr;
-    int mBlurLevel = 3;
+    double mBlurLevel = 2.645;
+    QgsUnitTypes::RenderUnit mBlurUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mBlurMapUnitScale;
     double mOpacity = 0.5;
     QColor mColor;
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;

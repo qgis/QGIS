@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'René-Luc Dhont'
 __date__ = '19/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -91,6 +89,10 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (
             query_string, request))
         return header, body
+
+    def test_operation_not_supported(self):
+        qs = '?MAP=%s&SERVICE=WFS&VERSION=1.1.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)
+        self._assert_status_code(501, qs)
 
     def test_project_wfs(self):
         """Test some WFS request"""

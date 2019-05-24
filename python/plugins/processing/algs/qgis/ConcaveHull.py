@@ -21,10 +21,6 @@ __author__ = 'Piotr Pociask'
 __date__ = 'May 2014'
 __copyright__ = '(C) 2014, Piotr Pociask'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication
 from math import sqrt
 
@@ -93,8 +89,8 @@ class ConcaveHull(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         alpha = self.parameterAsDouble(parameters, self.ALPHA, context)
-        holes = self.parameterAsBool(parameters, self.HOLES, context)
-        no_multigeom = self.parameterAsBool(parameters, self.NO_MULTIGEOMETRY, context)
+        holes = self.parameterAsBoolean(parameters, self.HOLES, context)
+        no_multigeom = self.parameterAsBoolean(parameters, self.NO_MULTIGEOMETRY, context)
 
         # Delaunay triangulation from input point layer
         feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Creating Delaunay triangles…'))

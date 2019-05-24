@@ -75,7 +75,8 @@ bool QgsColorSchemeList::saveColorsToScheme()
 void QgsColorSchemeList::removeSelection()
 {
   QList<int> rows;
-  Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+  const auto constSelectedIndexes = selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     rows << index.row();
   }
@@ -84,7 +85,8 @@ void QgsColorSchemeList::removeSelection()
 
   //remove rows in descending order
   std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
-  Q_FOREACH ( int row, rowsToRemove )
+  const auto constRowsToRemove = rowsToRemove;
+  for ( int row : constRowsToRemove )
   {
     mModel->removeRow( row );
   }
@@ -116,7 +118,8 @@ void QgsColorSchemeList::pasteColors()
 void QgsColorSchemeList::copyColors()
 {
   QList<int> rows;
-  Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+  const auto constSelectedIndexes = selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     rows << index.row();
   }
@@ -124,7 +127,8 @@ void QgsColorSchemeList::copyColors()
   QList<int> rowsToCopy = QList<int>::fromSet( rows.toSet() );
 
   QgsNamedColorList colorsToCopy;
-  Q_FOREACH ( int row, rowsToCopy )
+  const auto constRowsToCopy = rowsToCopy;
+  for ( int row : constRowsToCopy )
   {
     colorsToCopy << mModel->colors().at( row );
   }
@@ -198,7 +202,8 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
   if ( ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
   {
     QList<int> rows;
-    Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+    const auto constSelectedIndexes = selectedIndexes();
+    for ( const QModelIndex &index : constSelectedIndexes )
     {
       rows << index.row();
     }
@@ -207,7 +212,8 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
 
     //remove rows in descending order
     std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
-    Q_FOREACH ( int row, rowsToRemove )
+    const auto constRowsToRemove = rowsToRemove;
+    for ( int row : constRowsToRemove )
     {
       mModel->removeRow( row );
     }
@@ -330,7 +336,7 @@ QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &
 
 QModelIndex QgsColorSchemeModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level
   return QModelIndex();
@@ -351,7 +357,7 @@ int QgsColorSchemeModel::rowCount( const QModelIndex &parent ) const
 
 int QgsColorSchemeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -408,7 +414,7 @@ Qt::ItemFlags QgsColorSchemeModel::flags( const QModelIndex &index ) const
 
 bool QgsColorSchemeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !mScheme || !mScheme->isEditable() )
     return false;
@@ -516,7 +522,7 @@ QMimeData *QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
 
 bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   if ( !mScheme || !mScheme->isEditable() )
   {
@@ -621,7 +627,7 @@ bool QgsColorSchemeModel::removeRows( int row, int count, const QModelIndex &par
 
 bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
 
   if ( !mScheme || !mScheme->isEditable() )
   {
@@ -741,7 +747,7 @@ QPixmap QgsColorSwatchDelegate::transparentBackground() const
 
 QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.width( 'X' ) * 4;
   return QSize( iconSize, iconSize * 32 / 30.0 );
@@ -749,7 +755,7 @@ QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem &option, cons
 
 bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( event->type() == QEvent::MouseButtonDblClick )
   {
     if ( !index.model()->flags( index ).testFlag( Qt::ItemIsEditable ) )

@@ -288,7 +288,7 @@ void QgsFontButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsFontButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   updatePreview();
 }
@@ -544,7 +544,8 @@ void QgsFontButton::prepareMenu()
   mMenu->addAction( sizeAction );
 
   QMenu *recentFontMenu = new QMenu( tr( "Recent Fonts" ), mMenu );
-  Q_FOREACH ( const QString &family, QgsFontUtils::recentFontFamilies() )
+  const auto recentFontFamilies { QgsFontUtils::recentFontFamilies() };
+  for ( const QString &family : recentFontFamilies )
   {
     QAction *fontAction = new QAction( family, recentFontMenu );
     QFont f = fontAction->font();

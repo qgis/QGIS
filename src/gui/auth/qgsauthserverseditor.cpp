@@ -106,7 +106,8 @@ void QgsAuthServersEditor::setupSslConfigsTree()
 
 static void removeChildren_( QTreeWidgetItem *item )
 {
-  Q_FOREACH ( QTreeWidgetItem *child, item->takeChildren() )
+  const auto constTakeChildren = item->takeChildren();
+  for ( QTreeWidgetItem *child : constTakeChildren )
   {
     delete child;
   }
@@ -194,7 +195,8 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
   QBrush redb( QgsAuthGuiUtils::redColor() );
 
   // Columns: Common Name, Host, Expiry Date
-  Q_FOREACH ( const QgsAuthConfigSslServer &config, configs )
+  const auto constConfigs = configs;
+  for ( const QgsAuthConfigSslServer &config : constConfigs )
   {
     QSslCertificate cert( config.sslCertificate() );
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
@@ -221,8 +223,8 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
 
 void QgsAuthServersEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   checkSelection();
 }
 
@@ -249,7 +251,7 @@ void QgsAuthServersEditor::checkSelection()
 
 void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
 {
-  Q_UNUSED( col );
+  Q_UNUSED( col )
   bool isconfig = true;
 
   switch ( ( QgsAuthServersEditor::ConfigType )item->type() )

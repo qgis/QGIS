@@ -21,10 +21,6 @@ __author__ = 'Luigi Pirelli'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Luigi Pirelli'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import codecs
 import xml.sax.saxutils
 
@@ -94,7 +90,7 @@ class Datasources2Vrt(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         input_layers = self.parameterAsLayerList(parameters, self.INPUT, context)
-        unioned = self.parameterAsBool(parameters, self.UNIONED, context)
+        unioned = self.parameterAsBoolean(parameters, self.UNIONED, context)
         vrtPath = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         vrtString = self.mergeDataSources2Vrt(input_layers,

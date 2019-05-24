@@ -137,7 +137,8 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
   QString connectionInfo = QStringLiteral( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', QLatin1String( "\\'" ) ) );
   QgsDataSourceUri uri( connectionInfo );
 
-  Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry &entry, connection.tables() )
+  const auto constTables = connection.tables();
+  for ( const QgsSpatiaLiteConnection::TableEntry &entry : constTables )
   {
     uri.setDataSource( QString(), entry.tableName, entry.column, QString(), QString() );
     QgsSLLayerItem *layer = new QgsSLLayerItem( this, entry.tableName, mPath + '/' + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
@@ -203,7 +204,8 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     // open the source layer
     bool owner;
@@ -367,6 +369,6 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   return new QgsSLRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
 }

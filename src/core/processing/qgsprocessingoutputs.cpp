@@ -55,6 +55,10 @@ QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QgsProcessingOutputBoolean::QgsProcessingOutputBoolean( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}
+
 QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}

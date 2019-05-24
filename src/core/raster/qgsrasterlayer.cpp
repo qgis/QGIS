@@ -121,7 +121,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setProviderType( providerKey );
 
-  QgsDataProvider::ProviderOptions providerOptions;
+  QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
@@ -137,7 +137,12 @@ QgsRasterLayer::~QgsRasterLayer()
 
 QgsRasterLayer *QgsRasterLayer::clone() const
 {
-  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey );
+  QgsRasterLayer::LayerOptions options;
+  if ( mDataProvider )
+  {
+    options.transformContext = mDataProvider->transformContext();
+  }
+  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
 
   // do not clone data provider which is the first element in pipe
@@ -267,7 +272,7 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCrs( rasterViewPort->mSrcCRS, rasterViewPort->mDestCRS, rasterViewPort->mSrcDatumTransform, rasterViewPort->mDestDatumTransform );
+    projector->setCrs( rasterViewPort->mSrcCRS, rasterViewPort->mDestCRS, rasterViewPort->mTransformContext );
   }
 
   // Drawer to pipe?
@@ -975,7 +980,8 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     return;
   }
 
-  Q_FOREACH ( int myBand, myBands )
+  const auto constMyBands = myBands;
+  for ( int myBand : constMyBands )
   {
     if ( myBand != -1 )
     {
@@ -1286,7 +1292,7 @@ QDateTime QgsRasterLayer::timestamp() const
 
 bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props ) const
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
 
   QgsStringMap localProps = QgsStringMap( props );
   if ( hasScaleBasedVisibility() )
@@ -1509,6 +1515,12 @@ void QgsRasterLayer::showStatusMessage( QString const &message )
   emit statusChanged( message );
 }
 
+void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
+}
+
 QStringList QgsRasterLayer::subLayers() const
 {
   return mDataProvider->subLayers();
@@ -1583,7 +1595,7 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage,
                                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement rasterRendererElem;
@@ -1745,7 +1757,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
 
-  QgsDataProvider::ProviderOptions providerOptions;
+  QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
   setDataProvider( mProviderKey, providerOptions );
 
   if ( ! mDataProvider )
@@ -1830,7 +1842,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage,
                                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement layerElement = layer_node.toElement();
@@ -1900,7 +1912,8 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     noDataRangeList.setAttribute( QStringLiteral( "bandNo" ), bandNo );
     noDataRangeList.setAttribute( QStringLiteral( "useSrcNoData" ), mDataProvider->useSourceNoDataValue( bandNo ) );
 
-    Q_FOREACH ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
+    const auto constUserNoDataValues = mDataProvider->userNoDataValues( bandNo );
+    for ( QgsRasterRange range : constUserNoDataValues )
     {
       QDomElement noDataRange = document.createElement( QStringLiteral( "noDataRange" ) );
 

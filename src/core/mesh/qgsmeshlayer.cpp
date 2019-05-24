@@ -34,23 +34,26 @@
 #include "qgsstyle.h"
 #include "qgstriangularmesh.h"
 
+
+
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
-                            const LayerOptions & )
+                            const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
 {
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions;
+    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataProvider( providerKey, providerOptions );
   }
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
   setDefaultRendererSettings();
 } // QgsMeshLayer ctor
+
 
 void QgsMeshLayer::setDefaultRendererSettings()
 {
@@ -85,7 +88,12 @@ const QgsMeshDataProvider *QgsMeshLayer::dataProvider() const
 
 QgsMeshLayer *QgsMeshLayer::clone() const
 {
-  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey );
+  QgsMeshLayer::LayerOptions options;
+  if ( mDataProvider )
+  {
+    options.transformContext = mDataProvider->transformContext();
+  }
+  QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey,  options );
   QgsMapLayer::clone( layer );
   return layer;
 }
@@ -202,6 +210,12 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
   return value;
 }
 
+void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
+}
+
 void QgsMeshLayer::fillNativeMesh()
 {
   Q_ASSERT( !mNativeMesh );
@@ -286,7 +300,7 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
 bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
                                   QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement elem = node.toElement();
@@ -315,7 +329,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
 bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                                    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement elem = node.toElement();
@@ -441,6 +455,27 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   // renderer specific settings
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg, context );
+}
+
+void QgsMeshLayer::reload()
+{
+  if ( mDataProvider && mDataProvider->isValid() )
+  {
+
+    mDataProvider->reloadData();
+
+    //reload the mesh structure
+    if ( !mNativeMesh )
+      mNativeMesh.reset( new QgsMesh );
+
+    dataProvider()->populateMesh( mNativeMesh.get() );
+
+    //clear the TriangularMesh
+    mTriangularMesh.reset( new QgsTriangularMesh() );
+
+    //clear the rendererCache
+    mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  }
 }
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )

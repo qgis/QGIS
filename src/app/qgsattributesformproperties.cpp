@@ -166,7 +166,8 @@ void QgsAttributesFormProperties::initFormLayoutTree()
   mFormLayoutTree->setAcceptDrops( true );
   mFormLayoutTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  Q_FOREACH ( QgsAttributeEditorElement *wdg, mLayer->editFormConfig().tabs() )
+  const auto constTabs = mLayer->editFormConfig().tabs();
+  for ( QgsAttributeEditorElement *wdg : constTabs )
   {
     loadAttributeEditorTreeItem( wdg, mFormLayoutTree->invisibleRootItem(), mFormLayoutTree );
   }
@@ -320,7 +321,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
     constraints.setConstraint( QgsFieldConstraints::ConstraintExpression );
   }
 
-  constraints.setConstraintExpression( mAttributeTypeDialog->constraintExpressionDescription(), mAttributeTypeDialog->constraintExpression() );
+  constraints.setConstraintExpression( mAttributeTypeDialog->constraintExpression(), mAttributeTypeDialog->constraintExpressionDescription() );
 
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, mAttributeTypeDialog->notNullEnforced() ?
                                      QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
@@ -550,7 +551,7 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
 
 void QgsAttributesFormProperties::onInvertSelectionButtonClicked( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   const auto selectedItemList { mFormLayoutTree->selectedItems() };
   const auto rootItem { mFormLayoutTree->invisibleRootItem() };
   for ( int i = 0; i < rootItem->childCount(); ++i )
@@ -1036,7 +1037,8 @@ QMimeData *DnDTree::mimeData( const QList<QTreeWidgetItem *> items ) const
   QByteArray encoded;
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QTreeWidgetItem *item, items )
+  const auto constItems = items;
+  for ( const QTreeWidgetItem *item : constItems )
   {
     if ( item )
     {

@@ -398,7 +398,7 @@ void QgsAttributeTableDialog::updateTitle()
 
 void QgsAttributeTableDialog::updateButtonStatus( const QString &fieldName, bool isValid )
 {
-  Q_UNUSED( fieldName );
+  Q_UNUSED( fieldName )
   mRunFieldCalc->setEnabled( isValid );
 }
 
@@ -428,7 +428,8 @@ bool QgsAttributeTableDialog::eventFilter( QObject *object, QEvent *ev )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  Q_FOREACH ( QAction *a, mFilterColumnsMenu->actions() )
+  const auto constActions = mFilterColumnsMenu->actions();
+  for ( QAction *a : constActions )
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
@@ -448,7 +449,8 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   const QList<QgsField> fields = mLayer->fields().toList();
 
-  Q_FOREACH ( const QgsField &field, fields )
+  const auto constFields = fields;
+  for ( const QgsField &field : constFields )
   {
     int idx = mLayer->fields().lookupField( field.name() );
     if ( idx < 0 )
@@ -932,7 +934,8 @@ void QgsAttributeTableDialog::editingToggled()
   else
   {
     QMenu *actionMenu = new QMenu();
-    Q_FOREACH ( const QgsAction &action, actions )
+    const auto constActions = actions;
+    for ( const QgsAction &action : constActions )
     {
       if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
@@ -1236,6 +1239,6 @@ QgsAttributeTableDock::QgsAttributeTableDock( const QString &title, QWidget *par
 
 void QgsAttributeTableDock::closeEvent( QCloseEvent *ev )
 {
-  Q_UNUSED( ev );
+  Q_UNUSED( ev )
   deleteLater();
 }

@@ -100,7 +100,7 @@ QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
 
 int QgsMeshDatasetGroupTreeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 
@@ -193,7 +193,7 @@ QVariant QgsMeshDatasetGroupTreeModel::headerData( int section,
     Qt::Orientation orientation,
     int role ) const
 {
-  Q_UNUSED( section );
+  Q_UNUSED( section )
 
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
     return tr( "Groups" );
@@ -317,7 +317,7 @@ void QgsMeshDatasetGroupTreeModel::addTreeItem( const QString &groupName, bool i
 
 QModelIndex QgsMeshDatasetGroupTreeModel::groupIndexToModelIndex( int groupIndex )
 {
-  if ( groupIndex < 0 )
+  if ( groupIndex < 0 || !mDatasetGroupIndexToItem.contains( groupIndex ) )
     return QModelIndex();
 
   const auto item = mDatasetGroupIndexToItem[groupIndex];

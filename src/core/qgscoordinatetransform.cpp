@@ -32,13 +32,13 @@
 #include <QStringList>
 #include <QVector>
 
-extern "C"
-{
-#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#include "qgsprojutils.h"
+#else
 #include <proj_api.h>
-}
+#endif
+
 #include <sqlite3.h>
 
 // if defined shows all information about transform to stdout
@@ -50,20 +50,6 @@ QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTra
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
   d = new QgsCoordinateTransformPrivate();
-}
-
-QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
-{
-  d = new QgsCoordinateTransformPrivate( source, destination, QgsCoordinateTransformContext() );
-
-  if ( !d->checkValidity() )
-    return;
-
-  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
-  {
-    d->initialize();
-    addToCache();
-  }
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
@@ -360,15 +346,15 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
     polyData++;
   }
 
+  QString err;
   try
   {
     transformCoords( nVertices, x.data(), y.data(), z.data(), direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException &e )
   {
-    // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
-    throw;
+    // record the exception, but don't rethrow it until we've recorded the coordinates we *could* transform
+    err = e.what();
   }
 
   QPointF *destPoint = poly.data();
@@ -380,6 +366,10 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
     destPoint->ry() = *srcY++;
     destPoint++;
   }
+
+  // rethrow the exception
+  if ( !err.isEmpty() )
+    throw QgsCsException( err );
 }
 
 void QgsCoordinateTransform::transformInPlace(
@@ -625,21 +615,49 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
-  QPair<projPJ, projPJ> projData = d->threadLocalProjData();
+  ProjData projData = d->threadLocalProjData();
+#if PROJ_VERSION_MAJOR<6
+  bool sourceIsLatLong = false;
+  bool destIsLatLong = false;
+
   projPJ sourceProj = projData.first;
   projPJ destProj = projData.second;
+  sourceIsLatLong = pj_is_latlong( sourceProj );
+  destIsLatLong = pj_is_latlong( destProj );
 
-  if ( ( pj_is_latlong( destProj ) && ( direction == ReverseTransform ) )
-       || ( pj_is_latlong( sourceProj ) && ( direction == ForwardTransform ) ) )
+  if ( ( destIsLatLong && ( direction == ReverseTransform ) )
+       || ( sourceIsLatLong && ( direction == ForwardTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
       x[i] *= DEG_TO_RAD;
       y[i] *= DEG_TO_RAD;
     }
-
   }
-  int projResult;
+#endif
+
+  int projResult = 0;
+#if PROJ_VERSION_MAJOR>=6
+  const bool sourceAxisOrderSwapped =  direction == ForwardTransform ? d->mSourceAxisOrderSwapped : d->mDestAxisOrderSwapped;
+
+  proj_errno_reset( projData );
+  proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
+                      !sourceAxisOrderSwapped ? x : y, sizeof( double ), numPoints,
+                      !sourceAxisOrderSwapped ? y : x, sizeof( double ), numPoints,
+                      z, sizeof( double ), numPoints,
+                      nullptr, sizeof( double ), 0 );
+  projResult = proj_errno( projData );
+  // ewww - this logic is gross. We should drop support for PROJ 6.0 as quickly as possible and dump this code (in favour of built in methods used for >=6.1 builds)
+  if ( projResult == 0 && ( d->mSourceAxisOrderSwapped != d->mDestAxisOrderSwapped ) )
+  {
+    size_t size = sizeof( double ) * numPoints;
+    void *tmp = malloc( size );
+    memcpy( tmp, x, size );
+    memcpy( x, y, size );
+    memcpy( y, tmp, size );
+    free( tmp );
+  }
+#else
   if ( direction == ReverseTransform )
   {
     projResult = pj_transform( destProj, sourceProj, numPoints, 0, x, y, z );
@@ -650,6 +668,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     Q_ASSERT( destProj );
     projResult = pj_transform( sourceProj, destProj, numPoints, 0, x, y, z );
   }
+#endif
 
   if ( projResult != 0 )
   {
@@ -664,12 +683,28 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       }
       else
       {
+#if PROJ_VERSION_MAJOR>=6
+        points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
+#else
         points += QStringLiteral( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG, 0, 'f' ).arg( y[i] * RAD_TO_DEG, 0, 'f' );
+#endif
       }
     }
 
     QString dir = ( direction == ForwardTransform ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
 
+#if PROJ_VERSION_MAJOR>=6
+    QgsProjUtils::proj_pj_unique_ptr src( proj_get_source_crs( QgsProjContext::get(), projData ) );
+    QgsProjUtils::proj_pj_unique_ptr dest( proj_get_source_crs( QgsProjContext::get(), projData ) );
+    QString msg = QObject::tr( "%1 of\n"
+                               "%2"
+                               "PROJ: %3\n"
+                               "Error: %4" )
+                  .arg( dir,
+                        points,
+                        proj_as_proj_string( QgsProjContext::get(), projData, PJ_PROJ_5, nullptr ),
+                        QString::fromUtf8( proj_errno_string( projResult ) ) );
+#else
     char *srcdef = pj_get_def( sourceProj, 0 );
     char *dstdef = pj_get_def( destProj, 0 );
 
@@ -684,6 +719,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     pj_dalloc( srcdef );
     pj_dalloc( dstdef );
+#endif
 
     QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
     QgsDebugMsg( QStringLiteral( "throwing exception" ) );
@@ -691,10 +727,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     throw QgsCsException( msg );
   }
 
+#if PROJ_VERSION_MAJOR<6
   // if the result is lat/long, convert the results from radians back
   // to degrees
-  if ( ( pj_is_latlong( destProj ) && ( direction == ForwardTransform ) )
-       || ( pj_is_latlong( sourceProj ) && ( direction == ReverseTransform ) ) )
+  if ( ( destIsLatLong && ( direction == ForwardTransform ) )
+       || ( sourceIsLatLong && ( direction == ReverseTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
@@ -702,6 +739,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       y[i] *= RAD_TO_DEG;
     }
   }
+#endif
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( QStringLiteral( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
                .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
@@ -726,7 +764,7 @@ const char *finder( const char *name )
   proj = QApplication::applicationDirPath()
          + "/share/proj/" + QString( name );
 #else
-  Q_UNUSED( name );
+  Q_UNUSED( name )
 #endif
   return proj.toUtf8();
 }
@@ -734,6 +772,14 @@ const char *finder( const char *name )
 bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, int srcDatumTransform, int destDatumTransform )
 {
   if ( !src.isValid() || !dest.isValid() )
+    return false;
+
+  const QString sourceKey = src.authid().isEmpty() ?
+                            src.toWkt() : src.authid();
+  const QString destKey = dest.authid().isEmpty() ?
+                          dest.toWkt() : dest.authid();
+
+  if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return false;
 
   sCacheLock.lockForRead();
@@ -768,8 +814,16 @@ void QgsCoordinateTransform::addToCache()
   if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
     return;
 
+  const QString sourceKey = d->mSourceCRS.authid().isEmpty() ?
+                            d->mSourceCRS.toWkt() : d->mSourceCRS.authid();
+  const QString destKey = d->mDestCRS.authid().isEmpty() ?
+                          d->mDestCRS.toWkt() : d->mDestCRS.authid();
+
+  if ( sourceKey.isEmpty() || destKey.isEmpty() )
+    return;
+
   sCacheLock.lockForWrite();
-  sTransforms.insertMulti( qMakePair( d->mSourceCRS.authid(), d->mDestCRS.authid() ), *this );
+  sTransforms.insertMulti( qMakePair( sourceKey, destKey ), *this );
   sCacheLock.unlock();
 }
 

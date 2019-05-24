@@ -1,0 +1,80 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingfloater.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAdvancedDigitizingFloater : QWidget
+{
+%Docstring
+The QgsAdvancedDigitizingFloater class is widget that floats
+next to the mouse pointer, and allow interaction with the AdvancedDigitizing
+feature. It proxies display and actions to QgsMapToolAdvancedDigitizingDockWidget.
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsadvanceddigitizingfloater.h"
+%End
+  public:
+
+    explicit QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+%Docstring
+Create an advanced digitizing floater widget
+
+:param canvas: The map canvas on which the widget operates
+:param cadDockWidget: The cadDockWidget to which the floater belongs
+
+.. versionadded:: 3.8
+%End
+
+    bool active();
+%Docstring
+Whether the floater is active or not.
+Note that the floater may be active but not visible (e.g. if the mouse is not over the canvas).
+
+.. versionadded:: 3.8
+%End
+
+  public slots:
+
+    void setActive( bool active );
+%Docstring
+Set whether the floater should be active or not.
+Note that the floater may be active but not visible (e.g. if the mouse is not over the canvas).
+
+:param active:
+
+.. versionadded:: 3.8
+%End
+
+  private:
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
+%Docstring
+event filter to track mouse position
+
+.. note::
+
+   defined as private in Python bindings
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingfloater.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-10-17'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -108,6 +106,20 @@ class TestPyQgsDBManagerSpatialite(unittest.TestCase):
         except:
             pass
         self.assertFalse(connection_succeeded, 'exception should have been raised')
+
+    def testExecuteRegExp(self):
+        """This test checks for REGEXP syntax support, which is enabled in Qgis.utils' spatialite_connection()"""
+
+        connection_name = 'testListLayer'
+        plugin = createDbPlugin('spatialite')
+        uri = QgsDataSourceUri()
+        uri.setDatabase(self.test_spatialite)
+        self.assertTrue(plugin.addConnection(connection_name, uri))
+
+        connection = createDbPlugin('spatialite', connection_name)
+        connection.connect()
+        db = connection.database()
+        db.connector._execute(None, 'SELECT \'ABC\' REGEXP \'[CBA]\'')
 
     def testListLayer(self):
         connection_name = 'testListLayer'

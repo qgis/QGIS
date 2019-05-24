@@ -85,8 +85,8 @@ QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( const QgsFeature &featu
 
 QSet< QString > QgsFeatureRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  Q_UNUSED( feature );
-  Q_UNUSED( context );
+  Q_UNUSED( feature )
+  Q_UNUSED( context )
   return QSet< QString >();
 }
 
@@ -142,7 +142,7 @@ QString QgsFeatureRenderer::dump() const
 
 QgsSymbolList QgsFeatureRenderer::symbols( QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   return QgsSymbolList();
 }
 
@@ -183,7 +183,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsRea
 
 QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
@@ -316,19 +316,19 @@ bool QgsFeatureRenderer::legendSymbolItemsCheckable() const
 
 bool QgsFeatureRenderer::legendSymbolItemChecked( const QString &key )
 {
-  Q_UNUSED( key );
+  Q_UNUSED( key )
   return false;
 }
 
 void QgsFeatureRenderer::checkLegendSymbolItem( const QString &key, bool state )
 {
-  Q_UNUSED( key );
-  Q_UNUSED( state );
+  Q_UNUSED( key )
+  Q_UNUSED( state )
 }
 
 void QgsFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
-  Q_UNUSED( key );
+  Q_UNUSED( key )
   delete symbol;
 }
 
@@ -358,20 +358,24 @@ void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &conte
 
 void QgsFeatureRenderer::renderVertexMarkerPolyline( QPolygonF &pts, QgsRenderContext &context )
 {
-  Q_FOREACH ( QPointF pt, pts )
+  const auto constPts = pts;
+  for ( QPointF pt : constPts )
     renderVertexMarker( pt, context );
 }
 
 void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF &pts, QList<QPolygonF> *rings, QgsRenderContext &context )
 {
-  Q_FOREACH ( QPointF pt, pts )
+  const auto constPts = pts;
+  for ( QPointF pt : constPts )
     renderVertexMarker( pt, context );
 
   if ( rings )
   {
-    Q_FOREACH ( const QPolygonF &ring, *rings )
+    const auto constRings = *rings;
+    for ( const QPolygonF &ring : constRings )
     {
-      Q_FOREACH ( QPointF pt, ring )
+      const auto constRing = ring;
+      for ( QPointF pt : constRing )
         renderVertexMarker( pt, context );
     }
   }
@@ -387,8 +391,8 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( const QgsFeature &feature, 
 
 void QgsFeatureRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context )
 {
-  Q_UNUSED( extent );
-  Q_UNUSED( context );
+  Q_UNUSED( extent )
+  Q_UNUSED( context )
 }
 
 QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const

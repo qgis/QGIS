@@ -214,6 +214,7 @@ SET(QGIS_GUI_SRCS
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
+  qgsadvanceddigitizingfloater.cpp
   qgsaggregatetoolbutton.cpp
   qgsattributedialog.cpp
   qgsattributeform.cpp
@@ -277,6 +278,7 @@ SET(QGIS_GUI_SRCS
   qgsfilecontentsourcelineedit.cpp
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
+  qgsfindfilesbypatternwidget.cpp
   qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
   qgsfontbutton.cpp
@@ -400,6 +402,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgisinterface.h
   qgsactionmenu.h
   qgsadvanceddigitizingdockwidget.h
+  qgsadvanceddigitizingfloater.h
   qgsaggregatetoolbutton.h
   qgsattributedialog.h
   qgsattributeform.h
@@ -452,6 +455,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
+  qgsfindfilesbypatternwidget.h
   qgsfeaturelistcombobox.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
@@ -964,6 +968,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/native
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -1063,6 +1068,8 @@ TARGET_LINK_LIBRARIES(qgis_gui
 IF(ENABLE_MODELTEST)
   TARGET_LINK_LIBRARIES(qgis_gui ${Qt5Test_LIBRARIES})
 ENDIF(ENABLE_MODELTEST)
+
+TARGET_COMPILE_DEFINITIONS(qgis_gui PRIVATE "-DQT_NO_FOREACH")
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)

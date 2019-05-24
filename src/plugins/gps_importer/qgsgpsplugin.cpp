@@ -662,7 +662,7 @@ void QgsGpsPlugin::setupBabel()
 //! Sets icons to the current theme
 void QgsGpsPlugin::setCurrentTheme( const QString &themeName )
 {
-  Q_UNUSED( themeName );
+  Q_UNUSED( themeName )
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer/";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/gps_importer/";
   QString myQrcPath = QStringLiteral( ":/" );

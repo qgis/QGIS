@@ -867,11 +867,15 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 #include "qgsmarkersymbollayer.h"
 %End
   public:
+
     QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
-                              QChar chr = DEFAULT_FONTMARKER_CHR,
+                              QString chr = DEFAULT_FONTMARKER_CHR,
                               double pointSize = DEFAULT_FONTMARKER_SIZE,
                               const QColor &color = DEFAULT_FONTMARKER_COLOR,
                               double angle = DEFAULT_FONTMARKER_ANGLE );
+%Docstring
+Constructs a font marker symbol layer.
+%End
 
     ~QgsFontMarkerSymbolLayer();
 
@@ -923,16 +927,16 @@ Sets the font ``family`` for the font which will be used to render the point.
 .. seealso:: :py:func:`fontFamily`
 %End
 
-    QChar character() const;
+    QString character() const;
 %Docstring
-Returns the character used when rendering points.
+Returns the character(s) used when rendering points.
 
 .. seealso:: :py:func:`setCharacter`
 %End
 
-    void setCharacter( QChar ch );
+    void setCharacter( QString chr );
 %Docstring
-Sets the character used when rendering points.
+Sets the character(s) used when rendering points.
 
 .. seealso:: :py:func:`character`
 %End

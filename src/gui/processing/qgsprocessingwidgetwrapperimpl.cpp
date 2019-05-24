@@ -171,7 +171,8 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
          << QgsProcessingOutputFile::typeName()
          << QgsProcessingOutputRasterLayer::typeName()
          << QgsProcessingOutputVectorLayer::typeName()
-         << QgsProcessingOutputString::typeName();
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputBoolean::typeName();
 }
 
 QList<int> QgsProcessingBooleanWidgetWrapper::compatibleDataTypes() const
@@ -2205,7 +2206,10 @@ void QgsProcessingPointPanel::clear()
 
 void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
 {
-  QString newText = QStringLiteral( "%1,%2" ).arg( point.x() ).arg( point.y() );
+  QString newText = QStringLiteral( "%1,%2" )
+                    .arg( QString::number( point.x(), 'f' ) )
+                    .arg( QString::number( point.y(), 'f' ) );
+
   mCrs = crs;
   if ( mCrs.isValid() )
   {

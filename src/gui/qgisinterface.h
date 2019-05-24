@@ -52,7 +52,6 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMessageBar;
 class QgsPluginManagerInterface;
 class QgsRasterLayer;
-class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsOptionsWidgetFactory;
@@ -550,7 +549,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param categories an int as a flag value of QgsAppScreenShots::Categories
      * \since QGIS 3.4
      */
-    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ); Q_UNUSED( categories );}
+    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ) Q_UNUSED( categories );}
 
   public slots: // TODO: do these functions really need to be slots?
 

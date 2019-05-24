@@ -195,8 +195,8 @@ void QgsImageOperation::convertToGrayscale( QImage &image, const GrayscaleMode m
 
 void QgsImageOperation::GrayscalePixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
   switch ( mMode )
   {
     case GrayscaleOff:
@@ -250,8 +250,8 @@ void QgsImageOperation::adjustBrightnessContrast( QImage &image, const int brigh
 
 void QgsImageOperation::BrightnessContrastPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
   int red = adjustColorComponent( qRed( rgb ), mBrightness, mContrast );
   int blue = adjustColorComponent( qBlue( rgb ), mBrightness, mContrast );
   int green = adjustColorComponent( qGreen( rgb ), mBrightness, mContrast );
@@ -274,8 +274,8 @@ void QgsImageOperation::adjustHueSaturation( QImage &image, const double saturat
 
 void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
   QColor tmpColor( rgb );
   int h, s, l;
   tmpColor.getHsl( &h, &s, &l );
@@ -346,8 +346,8 @@ void QgsImageOperation::multiplyOpacity( QImage &image, const double factor )
 
 void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
   rgb = qRgba( qRed( rgb ), qGreen( rgb ), qBlue( rgb ), qBound( 0.0, std::round( mFactor * qAlpha( rgb ) ), 255.0 ) );
 }
 

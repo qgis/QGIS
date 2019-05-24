@@ -1003,7 +1003,7 @@ void QgsDxfExport::writeEntities()
 
     auto scopePopper = [&ctx]( QgsExpressionContextScope * scope )
     {
-      Q_UNUSED( scope );
+      Q_UNUSED( scope )
       delete ctx.expressionContext().popScope();
     };
     std::unique_ptr<QgsExpressionContextScope, decltype( scopePopper ) > layerScope( QgsExpressionContextUtils::layerScope( ml ), scopePopper );
@@ -3722,13 +3722,13 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   if ( !fet->hasGeometry() )
     return;
 
-  std::unique_ptr<QgsAbstractGeometry> geom( fet->geometry().constGet()->clone() );
+  QgsGeometry geom( fet->geometry() );
   if ( ct.isValid() )
   {
-    geom->transform( ct );
+    geom.transform( ct );
   }
 
-  QgsWkbTypes::Type geometryType = geom->wkbType();
+  QgsWkbTypes::Type geometryType = geom.wkbType();
 
   QColor penColor;
   QColor brushColor;
@@ -3764,13 +3764,13 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   // single point
   if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::Point )
   {
-    writePoint( geom->coordinateSequence().at( 0 ).at( 0 ).at( 0 ), layer, penColor, ctx, symbolLayer, symbol, angle );
+    writePoint( geom.constGet()->coordinateSequence().at( 0 ).at( 0 ).at( 0 ), layer, penColor, ctx, symbolLayer, symbol, angle );
     return;
   }
 
   if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiPoint )
   {
-    const QgsCoordinateSequence &cs = geom->coordinateSequence();
+    const QgsCoordinateSequence &cs = geom.constGet()->coordinateSequence();
     for ( int i = 0; i < cs.size(); i++ )
     {
       writePoint( cs.at( i ).at( 0 ).at( 0 ), layer, penColor, ctx, symbolLayer, symbol, angle );
@@ -3780,49 +3780,52 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
 
   if ( penStyle != Qt::NoPen )
   {
-    const QgsAbstractGeometry *tempGeom = geom.get();
+    const QgsAbstractGeometry *sourceGeom = geom.constGet();
+    std::unique_ptr< QgsAbstractGeometry > tempGeom;
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
       case QgsWkbTypes::CircularString:
       case QgsWkbTypes::CompoundCurve:
-        tempGeom = geom->segmentize();
+        tempGeom.reset( geom.constGet()->segmentize() );
+        sourceGeom = tempGeom.get();
         if ( !tempGeom )
           break;
         FALLTHROUGH
       case QgsWkbTypes::LineString:
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
-          QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.get() )
-            delete tempGeom;
-          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok
-          if ( !tempGeom )
-            tempGeom = geom.get();
+          QgsGeos geos( sourceGeom );
+          tempGeom.reset( geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 ) );  //#spellok
+          if ( tempGeom )
+            sourceGeom = tempGeom.get();
+          else
+            sourceGeom = geom.constGet();
         }
 
-        writePolyline( tempGeom->coordinateSequence().at( 0 ).at( 0 ), layer, lineStyleName, penColor, width );
+        writePolyline( sourceGeom->coordinateSequence().at( 0 ).at( 0 ), layer, lineStyleName, penColor, width );
 
         break;
 
       case QgsWkbTypes::MultiCurve:
-        tempGeom = geom->segmentize();
+        tempGeom.reset( geom.constGet()->segmentize() );
         if ( !tempGeom )
           break;
+        sourceGeom = tempGeom.get();
         FALLTHROUGH
       case QgsWkbTypes::MultiLineString:
       {
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
-          QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.get() )
-            delete tempGeom;
-          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok
-          if ( !tempGeom )
-            tempGeom = geom.get();
+          QgsGeos geos( sourceGeom );
+          tempGeom.reset( geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 ) );  //#spellok
+          if ( tempGeom )
+            sourceGeom = tempGeom.get();
+          else
+            sourceGeom = geom.constGet();
         }
 
-        const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
+        const QgsCoordinateSequence &cs = sourceGeom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
         {
           writePolyline( cs.at( i ).at( 0 ), layer, lineStyleName, penColor, width );
@@ -3832,23 +3835,24 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
       }
 
       case QgsWkbTypes::CurvePolygon:
-        tempGeom = geom->segmentize();
+        tempGeom.reset( geom.constGet()->segmentize() );
         if ( !tempGeom )
           break;
+        sourceGeom = tempGeom.get();
         FALLTHROUGH
       case QgsWkbTypes::Polygon:
       {
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
-          QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.get() )
-            delete tempGeom;
-          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok
-          if ( !tempGeom )
-            tempGeom = geom.get();
+          QgsGeos geos( sourceGeom );
+          tempGeom.reset( geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 ) );  //#spellok
+          if ( tempGeom )
+            sourceGeom = tempGeom.get();
+          else
+            sourceGeom = geom.constGet();
         }
 
-        const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
+        const QgsCoordinateSequence &cs = sourceGeom->coordinateSequence();
         for ( int i = 0; i < cs.at( 0 ).size(); i++ )
         {
           writePolyline( cs.at( 0 ).at( i ), layer, lineStyleName, penColor, width );
@@ -3857,19 +3861,25 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         break;
       }
 
+      case QgsWkbTypes::MultiSurface:
+        tempGeom.reset( geom.constGet()->segmentize() );
+        if ( !tempGeom )
+          break;
+        sourceGeom = tempGeom.get();
+        FALLTHROUGH
       case QgsWkbTypes::MultiPolygon:
       {
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
-          QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.get() )
-            delete tempGeom;
-          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok
-          if ( !tempGeom )
-            tempGeom = geom.get();
+          QgsGeos geos( sourceGeom );
+          tempGeom.reset( geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 ) );  //#spellok
+          if ( tempGeom )
+            sourceGeom = tempGeom.get();
+          else
+            sourceGeom = geom.constGet();
         }
 
-        const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
+        const QgsCoordinateSequence &cs = sourceGeom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
           for ( int j = 0; j < cs.at( i ).size(); j++ )
             writePolyline( cs.at( i ).at( j ), layer, lineStyleName, penColor, width );
@@ -3881,28 +3891,34 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         break;
     }
 
-    if ( tempGeom != geom.get() )
-      delete tempGeom;
   }
 
   if ( brushStyle != Qt::NoBrush )
   {
-    const QgsAbstractGeometry *tempGeom = geom.get();
+    const QgsAbstractGeometry *sourceGeom = geom.constGet();
+    std::unique_ptr< QgsAbstractGeometry > tempGeom;
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
       case QgsWkbTypes::CurvePolygon:
-        tempGeom = tempGeom->segmentize();
+        tempGeom.reset( geom.constGet()->segmentize() );
         if ( !tempGeom )
           break;
+        sourceGeom = tempGeom.get();
         FALLTHROUGH
       case QgsWkbTypes::Polygon:
-        writePolygon( tempGeom->coordinateSequence().at( 0 ), layer, QStringLiteral( "SOLID" ), brushColor );
+        writePolygon( sourceGeom->coordinateSequence().at( 0 ), layer, QStringLiteral( "SOLID" ), brushColor );
         break;
 
+      case QgsWkbTypes::MultiSurface:
+        tempGeom.reset( geom.constGet()->segmentize() );
+        if ( !tempGeom )
+          break;
+        sourceGeom = tempGeom.get();
+        FALLTHROUGH
       case QgsWkbTypes::MultiPolygon:
       {
-        const QgsCoordinateSequence &cs = geom->coordinateSequence();
+        const QgsCoordinateSequence &cs = sourceGeom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
         {
           writePolygon( cs.at( i ), layer, QStringLiteral( "SOLID" ), brushColor );
@@ -3914,9 +3930,6 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         break;
 
     }
-
-    if ( tempGeom != geom.get() )
-      delete tempGeom;
   }
 }
 
@@ -4408,7 +4421,7 @@ QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
 
 void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( !settings.drawLabels )
     return;

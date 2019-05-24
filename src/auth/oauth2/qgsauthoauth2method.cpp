@@ -156,7 +156,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
       o2->refresh();
 
       // block request update until asynchronous linking loop is quit
-      rloop.exec();
+      rloop.exec( QEventLoop::ExcludeUserInputEvents );
 
       // refresh result should set o2 to (un)linked
     }
@@ -390,6 +390,12 @@ void QgsAuthOAuth2Method::onReplyFinished()
 {
   QgsMessageLog::logMessage( tr( "Network reply finished" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  if ( !reply )
+  {
+    QString msg = tr( "Network reply finished but no reply object accessible" );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    return;
+  }
   QgsMessageLog::logMessage( tr( "Results: %1" ).arg( QString( reply->readAll() ) ),
                              AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 }
@@ -413,12 +419,22 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
 
   // TODO: update debug messages to output to QGIS
 
-  int status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
-  msg = tr( "Network error, HTTP status: %1" ).arg(
-          reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString() );
-  QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isValid() )
+  {
+    msg = tr( "Network error but no reply object attributes found" );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    return;
+  }
+  QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+  if ( phrase.isValid() )
+  {
+    msg = tr( "Network error, HTTP status: %1" ).arg( phrase.toString() );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+  }
 
-  if ( status == 401 )
+
+  if ( status.toInt() == 401 )
   {
     msg = tr( "Attempting token refresh…" );
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
@@ -454,6 +470,12 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
 void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  if ( !reply )
+  {
+    QString msg = tr( "Token refresh finished but no reply object accessible" );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    return;
+  }
   if ( err != QNetworkReply::NoError )
   {
     QgsMessageLog::logMessage( tr( "Token refresh error: %1" ).arg( reply->errorString() ),

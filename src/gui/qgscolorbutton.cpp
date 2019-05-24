@@ -26,7 +26,6 @@
 #include "qgsguiutils.h"
 
 #include <QPainter>
-#include <QTemporaryFile>
 #include <QMouseEvent>
 #include <QMenu>
 #include <QClipboard>
@@ -403,7 +402,7 @@ void QgsColorButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsColorButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   setButtonBackground();
 }

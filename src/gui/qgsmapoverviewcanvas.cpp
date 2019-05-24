@@ -227,14 +227,16 @@ void QgsMapOverviewCanvas::setBackgroundColor( const QColor &color )
 
 void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 {
-  Q_FOREACH ( QgsMapLayer *ml, mSettings.layers() )
+  const auto oldLayers = mSettings.layers();
+  for ( QgsMapLayer *ml : oldLayers )
   {
     disconnect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
 
   mSettings.setLayers( layers );
 
-  Q_FOREACH ( QgsMapLayer *ml, mSettings.layers() )
+  const auto newLayers = mSettings.layers();
+  for ( QgsMapLayer *ml : newLayers )
   {
     connect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
@@ -300,7 +302,7 @@ void QgsPanningWidget::setPolygon( const QPolygon &p )
 
 void QgsPanningWidget::paintEvent( QPaintEvent *pe )
 {
-  Q_UNUSED( pe );
+  Q_UNUSED( pe )
 
   QPainter p;
   p.begin( this );

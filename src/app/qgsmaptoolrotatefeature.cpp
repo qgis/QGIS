@@ -385,7 +385,8 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   }
 
   int i = 0;
-  Q_FOREACH ( QgsFeatureId id, mRotatedFeatures )
+  const auto constMRotatedFeatures = mRotatedFeatures;
+  for ( QgsFeatureId id : constMRotatedFeatures )
   {
     QgsFeature feat;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );

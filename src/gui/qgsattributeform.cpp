@@ -239,7 +239,8 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
 
 void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &value, const QString &hintText )
 {
-  Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
+  const auto constMWidgets = mWidgets;
+  for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww && eww->field().name() == field )
@@ -265,7 +266,8 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
 
       synchronizeEnabledState();
 
-      Q_FOREACH ( QgsAttributeFormInterface *iface, mInterfaces )
+      const auto constMInterfaces = mInterfaces;
+      for ( QgsAttributeFormInterface *iface : constMInterfaces )
       {
         iface->featureChanged();
       }
@@ -329,7 +331,8 @@ bool QgsAttributeForm::saveEdits()
 
     updatedFeature.setAttributes( dst );
 
-    Q_FOREACH ( QgsAttributeFormInterface *iface, mInterfaces )
+    const auto constMInterfaces = mInterfaces;
+    for ( QgsAttributeFormInterface *iface : constMInterfaces )
     {
       if ( !iface->acceptChanges( updatedFeature ) )
       {
@@ -570,7 +573,8 @@ bool QgsAttributeForm::saveMultiEdits()
 
   bool success = true;
 
-  Q_FOREACH ( QgsFeatureId fid, mMultiEditFeatureIds )
+  const auto constMMultiEditFeatureIds = mMultiEditFeatureIds;
+  for ( QgsFeatureId fid : constMMultiEditFeatureIds )
   {
     QgsAttributeMap::const_iterator aIt = newAttributeValues.constBegin();
     for ( ; aIt != newAttributeValues.constEnd(); ++aIt )
@@ -660,7 +664,8 @@ bool QgsAttributeForm::save()
 void QgsAttributeForm::resetValues()
 {
   mValuesInitialized = false;
-  Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
+  const auto constMWidgets = mWidgets;
+  for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     ww->setFeature( mFeature );
   }
@@ -670,7 +675,8 @@ void QgsAttributeForm::resetValues()
 
 void QgsAttributeForm::resetSearch()
 {
-  Q_FOREACH ( QgsAttributeFormEditorWidget *w, findChildren<  QgsAttributeFormEditorWidget * >() )
+  const auto widgets { findChildren<  QgsAttributeFormEditorWidget * >() };
+  for ( QgsAttributeFormEditorWidget *w : widgets )
   {
     w->resetSearch();
   }
@@ -728,7 +734,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
     {
       Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
-      Q_NOWARN_DEPRECATED_PUSH
+      Q_NOWARN_DEPRECATED_POP
       emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
 
       signalEmitted = true;
@@ -767,14 +773,15 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
   {
     Q_NOWARN_DEPRECATED_PUSH
     emit attributeChanged( eww->field().name(), value );
-    Q_NOWARN_DEPRECATED_PUSH
+    Q_NOWARN_DEPRECATED_POP
     emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
   }
 }
 
 void QgsAttributeForm::updateAllConstraints()
 {
-  Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
+  const auto constMWidgets = mWidgets;
+  for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
@@ -1471,7 +1478,7 @@ void QgsAttributeForm::init()
     if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
     {
       QToolButton *filterButton = new QToolButton();
-      filterButton->setText( tr( "Filter features" ) );
+      filterButton->setText( tr( "Filter Features" ) );
       filterButton->setPopupMode( QToolButton::MenuButtonPopup );
       filterButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
       connect( filterButton, &QToolButton::clicked, this, &QgsAttributeForm::filterTriggered );
@@ -1511,7 +1518,8 @@ void QgsAttributeForm::init()
   connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeForm::resetValues );
 
 
-  Q_FOREACH ( QgsAttributeFormInterface *iface, mInterfaces )
+  const auto constMInterfaces = mInterfaces;
+  for ( QgsAttributeFormInterface *iface : constMInterfaces )
   {
     iface->initForm();
   }
@@ -1873,7 +1881,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
 void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper *eww )
 {
-  Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
+  const auto constMWidgets = mWidgets;
+  for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     QgsEditorWidgetWrapper *meww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( meww )
@@ -1895,7 +1904,8 @@ void QgsAttributeForm::createWrappers()
   QList<QWidget *> myWidgets = findChildren<QWidget *>();
   const QList<QgsField> fields = mLayer->fields().toList();
 
-  Q_FOREACH ( QWidget *myWidget, myWidgets )
+  const auto constMyWidgets = myWidgets;
+  for ( QWidget *myWidget : constMyWidgets )
   {
     // Check the widget's properties for a relation definition
     QVariant vRel = myWidget->property( "qgisRelation" );
@@ -1914,7 +1924,8 @@ void QgsAttributeForm::createWrappers()
     }
     else
     {
-      Q_FOREACH ( const QgsField &field, fields )
+      const auto constFields = fields;
+      for ( const QgsField &field : constFields )
       {
         if ( field.name() == myWidget->objectName() )
         {
@@ -1932,7 +1943,8 @@ void QgsAttributeForm::afterWidgetInit()
 {
   bool isFirstEww = true;
 
-  Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
+  const auto constMWidgets = mWidgets;
+  for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
 
@@ -2053,7 +2065,8 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
   QgsFeature firstFeature;
   fit.nextFeature( firstFeature );
 
-  Q_FOREACH ( int field, mixedValueFields )
+  const auto constMixedValueFields = mixedValueFields;
+  for ( int field : constMixedValueFields )
   {
     if ( QgsAttributeFormEditorWidget *w = mFormEditorWidgets.value( field, nullptr ) )
     {
@@ -2135,7 +2148,8 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
     return;
 
   const QString hint = tr( "No feature joined" );
-  Q_FOREACH ( const QgsVectorLayerJoinInfo *info, infos )
+  const auto constInfos = infos;
+  for ( const QgsVectorLayerJoinInfo *info : constInfos )
   {
     if ( !info->isDynamicFormEnabled() )
       continue;
@@ -2148,7 +2162,8 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
     {
       const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *info );
 
-      Q_FOREACH ( const QString &field, subsetNames )
+      const auto constSubsetNames = subsetNames;
+      for ( const QString &field : constSubsetNames )
       {
         QString prefixedName = info->prefixedFieldName( field );
         QVariant val;

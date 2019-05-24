@@ -21,8 +21,6 @@ from builtins import str
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
 __copyright__ = '(C) 2012, Giuseppe Sucameli'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 

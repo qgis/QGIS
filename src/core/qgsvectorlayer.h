@@ -401,9 +401,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false )
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false )
         : loadDefaultStyle( loadDefaultStyle )
         , readExtentFromXml( readExtentFromXml )
+      {}
+
+      /**
+       * Constructor for LayerOptions.
+       * \since QGIS 3.8
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext,
+                             bool loadDefaultStyle = true,
+                             bool readExtentFromXml = false
+                           )
+        : loadDefaultStyle( loadDefaultStyle )
+        , readExtentFromXml( readExtentFromXml )
+        , transformContext( transformContext )
       {}
 
       //! Set to TRUE if the default layer style should be loaded
@@ -414,6 +428,38 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * project file). If FALSE, the extent will be determined by the provider on layer load.
        */
       bool readExtentFromXml = false;
+
+      /**
+       * Coordinate transform context
+       * \since QGIS 3.8
+       */
+      QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
+
+      /**
+       * Fallback geometry type.
+       *
+       * This may be set for layers where the geometry type is known in advance, and where
+       * the layer path may not be initially resolvable. (E.g. layers with a URI pointing
+       * to a non-existent file). It is only ever used if the layer cannot be resolved,
+       * otherwise the actual layer geometry type will be detected and used for the layer.
+       *
+       * \see fallbackCrs
+       * \since QGIS 3.8
+       */
+      QgsWkbTypes::Type fallbackWkbType = QgsWkbTypes::Unknown;
+
+      /**
+       * Fallback layer coordinate reference system.
+       *
+       * This may be set for layers where the coordinate reference system is known in advance, and where
+       * the layer path may not be initially resolvable. (E.g. layers with a URI pointing
+       * to a non-existent file). It is only ever used if the layer cannot be resolved,
+       * otherwise the actual layer CRS will be detected and used for the layer.
+       *
+       * \see fallbackWkbType
+       * \since QGIS 3.8
+       */
+      QgsCoordinateReferenceSystem fallbackCrs;
 
     };
 
@@ -432,7 +478,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
-
 
     ~QgsVectorLayer() override;
 
@@ -2070,6 +2115,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setAllowCommit( bool allowCommit ) SIP_SKIP;
 
+
   public slots:
 
     /**
@@ -2138,6 +2184,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see rollBack()
      */
     bool startEditing();
+
+    /**
+     * Sets the coordinate transform context to \a transformContext
+     *
+     * \since QGIS 3.8
+     */
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
   signals:
 

@@ -38,6 +38,7 @@ Constructor for QgsExpressionLineEdit.
 
 :param parent: parent widget
 %End
+    ~QgsExpressionLineEdit();
 
     void setExpressionDialogTitle( const QString &title );
 %Docstring

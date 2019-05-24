@@ -44,7 +44,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
      * \param uri file name
      * \param options generic provider options
      */
-    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
     ~QgsMdalProvider() override;
 
     bool isValid() const override;
@@ -77,6 +77,8 @@ class QgsMdalProvider : public QgsMeshDataProvider
                               const QVector<double> &times
                             ) override;
 
+    void reloadData() override;
+
     /**
      * Returns file filters for meshes and datasets to be used in Open File Dialogs
      * \param fileMeshFiltersString file mesh filters
@@ -102,6 +104,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
   private:
     QVector<QgsMeshVertex> vertices( ) const;
     QVector<QgsMeshFace> faces( ) const;
+    void loadData();
     MeshH mMeshH;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;

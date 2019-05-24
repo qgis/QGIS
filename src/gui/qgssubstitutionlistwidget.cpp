@@ -39,7 +39,8 @@ void QgsSubstitutionListWidget::setSubstitutions( const QgsStringReplacementColl
 {
   mTableSubstitutions->blockSignals( true );
   mTableSubstitutions->clearContents();
-  Q_FOREACH ( const QgsStringReplacement &replacement, substitutions.replacements() )
+  const auto constReplacements = substitutions.replacements();
+  for ( const QgsStringReplacement &replacement : constReplacements )
   {
     addSubstitution( replacement );
   }

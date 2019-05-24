@@ -75,7 +75,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   mClickedFeature = feature;
   createPreviewItem( mMarkerSymbol.get() );
   mOffsetItem->setPointLocation( snappedPoint );
@@ -87,7 +87,8 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol *mar
 {
   bool ok = false;
 
-  Q_FOREACH ( QgsSymbolLayer *layer, markerSymbol->symbolLayers() )
+  const auto constSymbolLayers = markerSymbol->symbolLayers();
+  for ( QgsSymbolLayer *layer : constSymbolLayers )
   {
     if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
@@ -129,7 +130,7 @@ void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   if ( mOffsetting && mActiveLayer )
   {
@@ -181,7 +182,8 @@ void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol *markerSymb
 QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const
 {
   QMap<int, QVariant> newAttrValues;
-  Q_FOREACH ( QgsSymbolLayer *layer, mMarkerSymbol->symbolLayers() )
+  const auto constSymbolLayers = mMarkerSymbol->symbolLayers();
+  for ( QgsSymbolLayer *layer : constSymbolLayers )
   {
     if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;

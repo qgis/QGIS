@@ -267,7 +267,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   QStringList layersWithFeaturesInBBox;
 
   mMutex.lock();
-  Q_FOREACH ( Layer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( Layer *layer : constMLayers )
   {
     if ( !layer )
     {
@@ -332,7 +333,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   if ( isCanceled() )
   {
-    Q_FOREACH ( Feats *feat, *fFeats )
+    const auto constFFeats = *fFeats;
+    for ( Feats *feat : constFFeats )
     {
       qDeleteAll( feat->lPos );
       feat->lPos.clear();
@@ -396,7 +398,8 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   {
     if ( isCanceled() )
     {
-      Q_FOREACH ( Feats *feat, *fFeats )
+      const auto constFFeats = *fFeats;
+      for ( Feats *feat : constFFeats )
       {
         qDeleteAll( feat->lPos );
         feat->lPos.clear();

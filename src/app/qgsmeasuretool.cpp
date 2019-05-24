@@ -139,7 +139,8 @@ void QgsMeasureTool::updateSettings()
     mDone = lastDone;
     QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
-    Q_FOREACH ( const QgsPointXY &previousPoint, points )
+    const auto constPoints = points;
+    for ( const QgsPointXY &previousPoint : constPoints )
     {
       try
       {
@@ -180,7 +181,7 @@ void QgsMeasureTool::updateSettings()
 
 void QgsMeasureTool::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent *e )

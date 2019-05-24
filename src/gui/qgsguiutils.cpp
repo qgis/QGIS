@@ -32,7 +32,7 @@ namespace QgsGuiUtils
       QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll )
   {
-    Q_UNUSED( enc );
+    Q_UNUSED( enc )
 
     QgsSettings settings;
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
@@ -90,7 +90,8 @@ namespace QgsGuiUtils
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
-    Q_FOREACH ( const QByteArray &format, QImageWriter::supportedImageFormats() )
+    const auto supportedImageFormats { QImageWriter::supportedImageFormats() };
+    for ( const QByteArray &format : supportedImageFormats )
     {
       //svg doesn't work so skip it
       if ( format == "svg" )
@@ -247,6 +248,33 @@ namespace QgsGuiUtils
     return static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
   }
 
+  QSize iconSize( bool dockableToolbar )
+  {
+    QgsSettings s;
+    int w = s.value( QStringLiteral( "/qgis/iconSize" ), 32 ).toInt();
+    QSize size( w, w );
+
+    if ( dockableToolbar )
+    {
+      size = panelIconSize( size );
+    }
+
+    return size;
+  }
+
+  QSize panelIconSize( QSize size )
+  {
+    int adjustedSize = 16;
+    if ( size.width() > 32 )
+    {
+      adjustedSize = size.width() - 16;
+    }
+    else if ( size.width() == 32 )
+    {
+      adjustedSize = 24;
+    }
+    return QSize( adjustedSize, adjustedSize );
+  }
 }
 
 //

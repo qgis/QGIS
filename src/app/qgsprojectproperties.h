@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgsguiutils.h"
+#include "qgsscalewidget.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
 
@@ -203,6 +204,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsStyle *mStyle = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
     QgsLayerCapabilitiesModel *mLayerCapabilitiesModel = nullptr;
+
+    QDoubleSpinBox *mWMSDefaultMapUnitsPerMm = nullptr;
+    QgsScaleWidget *mWMSDefaultMapUnitScale = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
 

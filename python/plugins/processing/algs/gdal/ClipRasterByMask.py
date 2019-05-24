@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -65,12 +61,13 @@ class ClipRasterByMask(GdalAlgorithm):
     MULTITHREADING = 'MULTITHREADING'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
-
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+
+        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.MASK,
@@ -188,13 +185,13 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
-        if self.parameterAsBool(parameters, self.KEEP_RESOLUTION, context):
+        if self.parameterAsBoolean(parameters, self.KEEP_RESOLUTION, context):
             arguments.append('-tr')
             arguments.append(str(inLayer.rasterUnitsPerPixelX()))
             arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
             arguments.append('-tap')
 
-        if self.parameterAsBool(parameters, self.SET_RESOLUTION, context):
+        if self.parameterAsBoolean(parameters, self.SET_RESOLUTION, context):
             arguments.append('-tr')
             if self.X_RESOLUTION in parameters and parameters[self.X_RESOLUTION] is not None:
                 xres = self.parameterAsDouble(parameters, self.X_RESOLUTION, context)
@@ -211,16 +208,16 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append('-cutline')
         arguments.append(maskLayer)
 
-        if self.parameterAsBool(parameters, self.CROP_TO_CUTLINE, context):
+        if self.parameterAsBoolean(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append('-crop_to_cutline')
 
-        if self.parameterAsBool(parameters, self.ALPHA_BAND, context):
+        if self.parameterAsBoolean(parameters, self.ALPHA_BAND, context):
             arguments.append('-dstalpha')
 
         if nodata is not None:
             arguments.append('-dstnodata {}'.format(nodata))
 
-        if self.parameterAsBool(parameters, self.MULTITHREADING, context):
+        if self.parameterAsBoolean(parameters, self.MULTITHREADING, context):
             arguments.append('-multi')
 
         if options:

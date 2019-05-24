@@ -3,7 +3,6 @@
 
 SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
-
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -1247,6 +1246,7 @@ INCLUDE_DIRECTORIES(
   metadata
   mesh
   validity
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
@@ -1320,6 +1320,7 @@ ENDIF(HAVE_OPENCL)
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+  INSTALL(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
 ELSE(NOT APPLE)
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
@@ -1405,6 +1406,8 @@ IF (Qt5Positioning_FOUND)
     Qt5::Positioning
   )
 ENDIF (Qt5Positioning_FOUND)
+
+TARGET_COMPILE_DEFINITIONS(qgis_core PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

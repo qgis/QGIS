@@ -21,8 +21,6 @@ from builtins import map
 __author__ = 'Hugo Mercier'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Hugo Mercier'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 # keywords

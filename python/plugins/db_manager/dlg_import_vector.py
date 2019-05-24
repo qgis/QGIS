@@ -74,6 +74,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.cboSchema.currentIndexChanged.connect(self.populateTables)
         self.widgetSourceSrid.setCrs(QgsProject.instance().crs())
         self.widgetTargetSrid.setCrs(QgsProject.instance().crs())
+        self.updateInputLayer()
 
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
@@ -160,6 +161,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         settings.setValue("/db_manager/lastUsedDir", QFileInfo(filename).filePath())
         settings.setValue("/UI/lastVectorFileFilter", lastVectorFormat)
 
+        self.cboInputLayer.setCurrentIndex(-1)
         self.cboInputLayer.setEditText(filename)
 
     def reloadInputLayer(self):

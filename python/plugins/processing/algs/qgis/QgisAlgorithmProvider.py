@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import warnings
 
@@ -134,6 +130,7 @@ from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .TextToFloat import TextToFloat
+from .TilesXYZ import TilesXYZAlgorithmDirectory, TilesXYZAlgorithmMBTiles
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
@@ -244,6 +241,8 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 StatisticsByCategories(),
                 SumLines(),
                 TextToFloat(),
+                TilesXYZAlgorithmDirectory(),
+                TilesXYZAlgorithmMBTiles(),
                 TinInterpolation(),
                 TopoColor(),
                 TruncateTable(),

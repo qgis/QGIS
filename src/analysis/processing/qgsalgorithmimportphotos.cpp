@@ -257,7 +257,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
     throw QgsProcessingException( QObject::tr( "Directory %1 does not exist!" ).arg( folder ) );
   }
 
-  bool recurse = parameterAsBool( parameters, QStringLiteral( "RECURSIVE" ), context );
+  bool recurse = parameterAsBoolean( parameters, QStringLiteral( "RECURSIVE" ), context );
 
   QgsFields outFields;
   outFields.append( QgsField( QStringLiteral( "photo" ), QVariant::String ) );
@@ -330,7 +330,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
                << fi.completeBaseName()
                << QDir::toNativeSeparators( fi.absolutePath() );
 
-    gdal::dataset_unique_ptr hDS( GDALOpen( file.toLocal8Bit().constData(), GA_ReadOnly ) );
+    gdal::dataset_unique_ptr hDS( GDALOpen( file.toUtf8().constData(), GA_ReadOnly ) );
     if ( !hDS )
     {
       feedback->reportError( QObject::tr( "Could not open %1" ).arg( QDir::toNativeSeparators( file ) ) );

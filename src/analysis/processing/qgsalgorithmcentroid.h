@@ -50,7 +50,7 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
     QString outputName() const override;
     QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Point; }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ) return QgsWkbTypes::Point; }
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

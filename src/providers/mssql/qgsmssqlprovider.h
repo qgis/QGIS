@@ -50,7 +50,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsMssqlProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsMssqlProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsMssqlProvider() override;
 
@@ -134,7 +134,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
 
     QgsCoordinateReferenceSystem crs() const override;

@@ -21,8 +21,6 @@
 __author__ = 'Juergen E. Fischer'
 __date__ = 'June 2013'
 __copyright__ = '(C) 2013, Juergen E. Fischer'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import sys
 import struct

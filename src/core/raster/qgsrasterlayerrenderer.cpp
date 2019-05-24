@@ -163,6 +163,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     mRasterViewPort->mDestCRS = rendererContext.coordinateTransform().destinationCrs();
     mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform().sourceDatumTransformId();
     mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform().destinationDatumTransformId();
+    mRasterViewPort->mTransformContext = rendererContext.transformContext();
   }
   else
   {
@@ -263,13 +264,19 @@ bool QgsRasterLayerRenderer::render()
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mSrcDatumTransform, mRasterViewPort->mDestDatumTransform );
+    projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mTransformContext );
   }
 
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mPainter, mRasterViewPort, mMapToPixel, mFeedback );
+
+  const QStringList errors = mFeedback->errors();
+  for ( const QString &error : errors )
+  {
+    mErrors.append( error );
+  }
 
   QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 

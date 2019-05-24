@@ -64,7 +64,8 @@ QgsColorRamp *QgsGradientColorRamp::create( const QgsStringMap &props )
   QgsGradientStopsList stops;
   if ( props.contains( QStringLiteral( "stops" ) ) )
   {
-    Q_FOREACH ( const QString &stop, props["stops"].split( ':' ) )
+    const auto constSplit = props["stops"].split( ':' );
+    for ( const QString &stop : constSplit )
     {
       int i = stop.indexOf( ';' );
       if ( i == -1 )
@@ -419,7 +420,7 @@ int QgsRandomColorRamp::count() const
 
 double QgsRandomColorRamp::value( int index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return 0.0;
 }
 
@@ -809,7 +810,8 @@ bool QgsCptCityColorRamp::loadFile()
 
 QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QList<QColor> &colors )
 {
-  Q_FOREACH ( const QColor &color, colors )
+  const auto constColors = colors;
+  for ( const QColor &color : constColors )
   {
     mColors << qMakePair( color, color.name() );
   }

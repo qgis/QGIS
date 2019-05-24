@@ -111,7 +111,7 @@ void QgsAuthConfigIdEdit::btnLock_toggled( bool checked )
 
 void QgsAuthConfigIdEdit::leAuthCfg_textChanged( const QString &txt )
 {
-  Q_UNUSED( txt );
+  Q_UNUSED( txt )
   validate();
 }
 

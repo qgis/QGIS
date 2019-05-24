@@ -189,13 +189,13 @@ QString QgsNewHttpConnection::url() const
 
 void QgsNewHttpConnection::nameChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
 }
 
 void QgsNewHttpConnection::urlChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 }

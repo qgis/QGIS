@@ -91,7 +91,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // fixed parameters
-  bool dissolve = parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
+  bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
   int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
   QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
   QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );

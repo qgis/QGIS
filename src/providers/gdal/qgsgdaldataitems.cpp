@@ -276,7 +276,8 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
   if ( !sExtensions.contains( suffix ) )
   {
     bool matches = false;
-    Q_FOREACH ( const QString &wildcard, sWildcards )
+    const auto constSWildcards = sWildcards;
+    for ( const QString &wildcard : constSWildcards )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )

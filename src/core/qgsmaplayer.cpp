@@ -110,7 +110,8 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 {
   layer->setBlendMode( blendMode() );
 
-  Q_FOREACH ( const QString &s, styleManager()->styles() )
+  const auto constStyles = styleManager()->styles();
+  for ( const QString &s : constStyles )
   {
     layer->styleManager()->addStyle( s, styleManager()->style( s ) );
   }
@@ -387,8 +388,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
 
 bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
-  Q_UNUSED( layer_node );
-  Q_UNUSED( context );
+  Q_UNUSED( layer_node )
+  Q_UNUSED( context )
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -597,9 +598,9 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
 
 bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( layer_node );
-  Q_UNUSED( document );
-  Q_UNUSED( context );
+  Q_UNUSED( layer_node )
+  Q_UNUSED( document )
+  Q_UNUSED( context )
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -607,14 +608,14 @@ bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const 
 
 QString QgsMapLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   return source;
 }
 
 QString QgsMapLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( dataProvider );
+  Q_UNUSED( context )
+  Q_UNUSED( dataProvider )
   return source;
 }
 
@@ -662,7 +663,7 @@ bool QgsMapLayer::isValid() const
 #if 0
 void QgsMapLayer::connectNotify( const char *signal )
 {
-  Q_UNUSED( signal );
+  Q_UNUSED( signal )
   QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
 } //  QgsMapLayer::connectNotify
 #endif
@@ -751,14 +752,14 @@ QStringList QgsMapLayer::subLayers() const
 
 void QgsMapLayer::setLayerOrder( const QStringList &layers )
 {
-  Q_UNUSED( layers );
+  Q_UNUSED( layers )
   // NOOP
 }
 
 void QgsMapLayer::setSubLayerVisibility( const QString &name, bool vis )
 {
-  Q_UNUSED( name );
-  Q_UNUSED( vis );
+  Q_UNUSED( name )
+  Q_UNUSED( vis )
   // NOOP
 }
 
@@ -779,6 +780,11 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 
   if ( emitSignal )
     emit crsChanged();
+}
+
+QgsCoordinateTransformContext QgsMapLayer::transformContext() const
+{
+  return dataProvider() ? dataProvider()->transformContext() : QgsCoordinateTransformContext();
 }
 
 QString QgsMapLayer::formatLayerName( const QString &name )
@@ -1588,31 +1594,31 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
 
 bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  Q_UNUSED( node );
-  Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
-  Q_UNUSED( categories );
+  Q_UNUSED( node )
+  Q_UNUSED( errorMessage )
+  Q_UNUSED( context )
+  Q_UNUSED( categories )
   return false;
 }
 
 bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                               const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  Q_UNUSED( node );
-  Q_UNUSED( doc );
-  Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
-  Q_UNUSED( categories );
+  Q_UNUSED( node )
+  Q_UNUSED( doc )
+  Q_UNUSED( errorMessage )
+  Q_UNUSED( context )
+  Q_UNUSED( categories )
   return false;
 }
 
 void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-  Q_UNUSED( dataSource );
-  Q_UNUSED( baseName );
-  Q_UNUSED( provider );
-  Q_UNUSED( options );
-  Q_UNUSED( loadDefaultStyleFlag );
+  Q_UNUSED( dataSource )
+  Q_UNUSED( baseName )
+  Q_UNUSED( provider )
+  Q_UNUSED( options )
+  Q_UNUSED( loadDefaultStyleFlag )
 }
 
 
@@ -1821,7 +1827,8 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   QList<const QgsMapLayer *> lst;
   if ( vl == that )
   {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, layers )
+    const auto constLayers = layers;
+    for ( const QgsMapLayerDependency &dep : constLayers )
     {
       if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1829,7 +1836,8 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   }
   else
   {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, vl->dependencies() )
+    const auto constDependencies = vl->dependencies();
+    for ( const QgsMapLayerDependency &dep : constDependencies )
     {
       if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1845,7 +1853,8 @@ static bool _depHasCycleDFS( const QgsMapLayer *n, QHash<const QgsMapLayer *, in
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( const QgsMapLayer *m, _depOutEdges( n, that, layers ) )
+    const auto depOutEdges { _depOutEdges( n, that, layers ) };
+    for ( const QgsMapLayer *m : depOutEdges )
     {
       if ( _depHasCycleDFS( m, mark, that, layers ) )
         return true;
@@ -1889,7 +1898,8 @@ QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
 bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsMapLayerDependency &dep, oDeps )
+  const auto constODeps = oDeps;
+  for ( const QgsMapLayerDependency &dep : constODeps )
   {
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;

@@ -425,7 +425,8 @@ void QgsMssqlProvider::loadFields()
         mFidColName = query.value( 3 ).toString();
         return;
       }
-      Q_FOREACH ( const QString &pk, pkCandidates )
+      const auto constPkCandidates = pkCandidates;
+      for ( const QString &pk : constPkCandidates )
       {
         query.clear();
         query.setForwardOnly( true );
@@ -1703,7 +1704,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
     QString *errorMessage,
     const QMap<QString, QVariant> *options )
 {
-  Q_UNUSED( options );
+  Q_UNUSED( options )
 
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
@@ -2018,7 +2019,7 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
 }
 

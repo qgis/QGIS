@@ -253,7 +253,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       QStringList allExts = metadata.ext.split( ' ', QString::SkipEmptyParts );
       bool found = false;
-      Q_FOREACH ( const QString &ext, allExts )
+      const auto constAllExts = allExts;
+      for ( const QString &ext : constAllExts )
       {
         if ( vectorFileName.endsWith( '.' + ext, Qt::CaseInsensitive ) )
         {
@@ -277,7 +278,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         {
           QFileInfoList fileList = dir.entryInfoList(
                                      QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst );
-          Q_FOREACH ( const QFileInfo &info, fileList )
+          const auto constFileList = fileList;
+          for ( const QFileInfo &info : constFileList )
           {
             QFile::remove( info.absoluteFilePath() );
           }
@@ -542,7 +544,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
           case QVariant::String:
             ogrType = OFTString;
-            if ( ogrWidth <= 0 || ogrWidth > 255 )
+            if ( ( ogrWidth <= 0 || ogrWidth > 255 ) && mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
               ogrWidth = 255;
             break;
 
@@ -593,6 +595,28 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           case QVariant::ByteArray:
             ogrType = OFTBinary;
             break;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+          case QVariant::List:
+            // only string list supported at the moment, fall through to default for other types
+            if ( attrField.subType() == QVariant::String )
+            {
+              const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+              if ( pszDataTypes && strstr( pszDataTypes, "StringList" ) )
+              {
+                ogrType = OFTStringList;
+                supportsStringList = true;
+              }
+              else
+              {
+                ogrType = OFTString;
+                ogrWidth = 255;
+              }
+              break;
+            }
+            //intentional fall-through
+            FALLTHROUGH
+#endif
 
           default:
             //assert(0 && "invalid variant type!");
@@ -2137,7 +2161,7 @@ bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRe
 gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeature &feature )
 {
   QgsLocaleNumC l; // Make sure the decimal delimiter is a dot
-  Q_UNUSED( l );
+  Q_UNUSED( l )
 
   gdal::ogr_feature_unique_ptr poFeature( OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) ) );
 
@@ -2251,6 +2275,39 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
       case QVariant::Invalid:
         break;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+      case QVariant::List:
+        // only string list supported at the moment, fall through to default for other types
+        if ( field.subType() == QVariant::String )
+        {
+          QStringList list = attrValue.toStringList();
+          if ( supportsStringList )
+          {
+            int count = list.count();
+            char **lst = new char *[count + 1];
+            if ( count > 0 )
+            {
+              int pos = 0;
+              for ( QString string : list )
+              {
+                lst[pos] = mCodec->fromUnicode( string ).data();
+                pos++;
+              }
+            }
+            lst[count] = nullptr;
+            OGR_F_SetFieldStringList( poFeature.get(), ogrField, lst );
+          }
+          else
+          {
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( list.join( ',' ) ).constData() );
+          }
+          break;
+        }
+        //intentional fall-through
+        FALLTHROUGH
+#endif
+
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
                         .arg( mFields.at( fldIdx ).name() )
@@ -2438,9 +2495,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   QgsCoordinateTransform ct;
   if ( destCRS.isValid() && layer )
   {
-    Q_NOWARN_DEPRECATED_PUSH
-    ct = QgsCoordinateTransform( layer->crs(), destCRS );
-    Q_NOWARN_DEPRECATED_POP
+    ct = QgsCoordinateTransform( layer->crs(), destCRS, layer->transformContext() );
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
@@ -2502,7 +2557,7 @@ QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat( QgsVectorLayer *layer, const QgsVectorFileWriter::SaveVectorOptions &options, QgsVectorFileWriter::PreparedWriterDetails &details )
 {
-  if ( !layer )
+  if ( !layer || !layer->isValid() )
   {
     return ErrInvalidLayer;
   }
@@ -2880,14 +2935,15 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString &fileName )
   QDir dir = fi.dir();
 
   QStringList filter;
-  const char *suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix", ".qpj" };
+  const char *suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix", ".qpj", ".cpg", ".sbn", ".sbx", ".idm", ".ind" };
   for ( std::size_t i = 0; i < sizeof( suffixes ) / sizeof( *suffixes ); i++ )
   {
     filter << fi.completeBaseName() + suffixes[i];
   }
 
   bool ok = true;
-  Q_FOREACH ( const QString &file, dir.entryList( filter ) )
+  const auto constEntryList = dir.entryList( filter );
+  for ( const QString &file : constEntryList )
   {
     QFile f( dir.canonicalPath() + '/' + file );
     if ( !f.remove() )
@@ -3142,7 +3198,8 @@ QString QgsVectorFileWriter::driverForExtension( const QString &extension )
         QString drvName = GDALGetDriverShortName( drv );
         QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
 
-        Q_FOREACH ( const QString &driver, driverExtensions )
+        const auto constDriverExtensions = driverExtensions;
+        for ( const QString &driver : constDriverExtensions )
         {
           if ( driver.compare( ext, Qt::CaseInsensitive ) == 0 )
             return drvName;
@@ -3585,7 +3642,8 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString &datasetName,
   }
   bool ret = false;
   OGRFeatureDefnH defn = OGR_L_GetLayerDefn( hLayer );
-  Q_FOREACH ( int idx, attributes )
+  const auto constAttributes = attributes;
+  for ( int idx : constAttributes )
   {
     QgsField fld = layer->fields().at( idx );
     if ( OGR_FD_GetFieldIndex( defn, fld.name().toUtf8().constData() ) < 0 )

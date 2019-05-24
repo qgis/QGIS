@@ -658,6 +658,7 @@ ENDIF(MSVC)
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/libdxfrw
   ${CMAKE_SOURCE_DIR}/external/nmea
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
@@ -827,6 +828,8 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_native
   libdxfrw
 )
+
+TARGET_COMPILE_DEFINITIONS(qgis_app PRIVATE "-DQT_NO_FOREACH")
 
 IF(ENABLE_MODELTEST)
   TARGET_LINK_LIBRARIES(qgis_app ${Qt5Test_LIBRARIES})

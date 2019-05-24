@@ -41,7 +41,7 @@ email                : jef at norbit dot de
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
 
   QString tableName = index.sibling( index.row(), QgsOracleTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
@@ -418,7 +418,7 @@ void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const 
 
 void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -467,7 +467,8 @@ void QgsOracleSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
-  Q_FOREACH ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  const auto constIndexes = mTablesTreeView->selectionModel()->selection().indexes();
+  for ( QModelIndex idx : constIndexes )
   {
     if ( idx.column() != QgsOracleTableModel::DbtmTable )
       continue;
@@ -648,7 +649,7 @@ void QgsOracleSourceSelect::setConnectionListPosition()
 
 void QgsOracleSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsOracleSourceSelect::loadTableFromCache()
@@ -662,7 +663,8 @@ void QgsOracleSourceSelect::loadTableFromCache()
   if ( !QgsOracleTableCache::loadFromCache( connName, _currentFlags( connName, uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() ), layers ) )
     return;
 
-  Q_FOREACH ( const QgsOracleLayerProperty &layerProperty, layers )
+  const auto constLayers = layers;
+  for ( const QgsOracleLayerProperty &layerProperty : constLayers )
     mTableModel.addTableEntry( layerProperty );
 
   QApplication::setOverrideCursor( Qt::BusyCursor );

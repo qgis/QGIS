@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'March 2019'
 __copyright__ = '(C) 2019, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -56,11 +52,11 @@ class pansharp(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = ((self.tr('Nearest neighbour'), 'nearest'),
+        self.methods = ((self.tr('Nearest Neighbour'), 'nearest'),
                         (self.tr('Bilinear'), 'bilinear'),
                         (self.tr('Cubic'), 'cubic'),
-                        (self.tr('Cubic spline'), 'cubicspline'),
-                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Cubic Spline'), 'cubicspline'),
+                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
                         (self.tr('Average'), 'average'))
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.SPECTRAL,

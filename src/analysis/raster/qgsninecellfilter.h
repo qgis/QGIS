@@ -121,7 +121,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      */
     virtual void addExtraRasterParams( std::vector<float> &params )
     {
-      Q_UNUSED( params );
+      Q_UNUSED( params )
     }
 
     virtual const QString openClProgramBaseName() const

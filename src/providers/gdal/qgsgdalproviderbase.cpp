@@ -261,14 +261,23 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 
 GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
 {
+  bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
+  {
+    CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
+  }
   GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
+  if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
+  {
+    CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  }
   return hDS;
 }
 
 int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
-  Q_UNUSED( dfComplete );
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( dfComplete )
+  Q_UNUSED( pszMessage )
 
   QgsRasterBlockFeedback *feedback = static_cast<QgsRasterBlockFeedback *>( pProgressArg );
   return !feedback->isCanceled();

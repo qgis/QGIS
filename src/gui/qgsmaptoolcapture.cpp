@@ -359,7 +359,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
     return 2;
   }
@@ -811,9 +811,8 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsMapMouseEvent &e ) const
     if ( e.isSnapped() )
     {
       const QgsPointLocator::Match match = e.mapPointMatch();
-      const QgsWkbTypes::Type snappedType = match.layer()->wkbType();
 
-      if ( QgsWkbTypes::hasZ( snappedType ) )
+      if ( match.layer() && QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
       {
         const QgsFeature ft = match.layer()->getFeature( match.featureId() );
         newPoint.setZ( ft.geometry().vertexAt( match.vertexIndex() ).z() );

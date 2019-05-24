@@ -272,7 +272,9 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   {
     return false;
   }
-  QgsVectorLayer *layer = new QgsVectorLayer( file, QFileInfo( file ).baseName(), QStringLiteral( "ogr" ) );
+
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( file, QFileInfo( file ).baseName(), QStringLiteral( "ogr" ), options );
   if ( !layer->isValid() )
   {
     delete layer;
@@ -299,7 +301,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   QStringList toRemove;
   for ( QgsMapLayer *maplayer : QgsProject::instance()->mapLayers() )
   {
-    if ( dynamic_cast<QgsVectorLayer *>( maplayer ) &&
+    if ( qobject_cast<QgsVectorLayer *>( maplayer ) &&
          static_cast<QgsVectorLayer *>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
     {
       toRemove.append( maplayer->id() );

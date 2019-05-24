@@ -186,7 +186,8 @@ class Raytracer
 
 QgsSnapIndex::GridRow::~GridRow()
 {
-  Q_FOREACH ( const QgsSnapIndex::Cell &cell, mCells )
+  const auto constMCells = mCells;
+  for ( const QgsSnapIndex::Cell &cell : constMCells )
   {
     qDeleteAll( cell );
   }
@@ -373,7 +374,7 @@ QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &p, const QgsPoint 
     {
       continue;
     }
-    Q_FOREACH ( const SnapItem *item, *cell )
+    for ( const SnapItem *item : *cell )
     {
       if ( item->type == SnapSegment )
       {
@@ -415,7 +416,8 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double t
   QgsSnapIndex::SegmentSnapItem *snapSegment = nullptr;
   QgsSnapIndex::PointSnapItem *snapPoint = nullptr;
 
-  Q_FOREACH ( QgsSnapIndex::SnapItem *item, items )
+  const auto constItems = items;
+  for ( QgsSnapIndex::SnapItem *item : constItems )
   {
     if ( ( ! endPointOnly && item->type == SnapPoint ) || item->type == SnapEndPoint )
     {
@@ -510,7 +512,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
                     QgsPoint( geometry.constGet()->boundingBox().center() );
 
   QgsSnapIndex refSnapIndex( center, 10 * snapTolerance );
-  Q_FOREACH ( const QgsGeometry &geom, referenceGeometries )
+  for ( const QgsGeometry &geom : referenceGeometries )
   {
     refSnapIndex.addGeometry( geom.constGet() );
   }
@@ -624,7 +626,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   origSubjSnapIndex->addGeometry( origSubjGeom.get() );
 
   // Pass 2: add missing vertices to subject geometry
-  Q_FOREACH ( const QgsGeometry &refGeom, referenceGeometries )
+  for ( const QgsGeometry &refGeom : referenceGeometries )
   {
     for ( int iPart = 0, nParts = refGeom.constGet()->partCount(); iPart < nParts; ++iPart )
     {
@@ -760,7 +762,8 @@ QgsGeometry QgsInternalGeometrySnapper::snapFeature( const QgsFeature &feature )
     if ( !refFeatureIds.isEmpty() )
     {
       QList< QgsGeometry > refGeometries;
-      Q_FOREACH ( QgsFeatureId id, refFeatureIds )
+      const auto constRefFeatureIds = refFeatureIds;
+      for ( QgsFeatureId id : constRefFeatureIds )
       {
         refGeometries << mProcessedGeometries.value( id );
       }

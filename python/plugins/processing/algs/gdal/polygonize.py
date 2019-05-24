@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -102,7 +98,7 @@ class polygonize(GdalAlgorithm):
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
         arguments.append(output)
 
-        if self.parameterAsBool(parameters, self.EIGHT_CONNECTEDNESS, context):
+        if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):
             arguments.append('-8')
 
         arguments.append('-b')

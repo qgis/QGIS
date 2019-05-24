@@ -45,7 +45,18 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   }
 
   QgsImageOperation::overlayColor( colorisedIm, mColor );
-  QgsImageOperation::stackBlur( colorisedIm, mBlurLevel );
+
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  if ( blurLevel <= 16 )
+  {
+    QgsImageOperation::stackBlur( colorisedIm, blurLevel );
+  }
+  else
+  {
+    QImage *imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel );
+    colorisedIm = QImage( *imb );
+    delete imb;
+  }
 
   double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
 
@@ -88,6 +99,8 @@ QgsStringMap QgsShadowEffect::properties() const
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
   props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
+  props.insert( QStringLiteral( "blur_unit" ), QgsUnitTypes::encodeUnit( mBlurUnit ) );
+  props.insert( QStringLiteral( "blur_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mBlurMapUnitScale ) );
   props.insert( QStringLiteral( "offset_angle" ), QString::number( mOffsetAngle ) );
   props.insert( QStringLiteral( "offset_distance" ), QString::number( mOffsetDist ) );
   props.insert( QStringLiteral( "offset_unit" ), QgsUnitTypes::encodeUnit( mOffsetUnit ) );
@@ -122,11 +135,18 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
-  int level = props.value( QStringLiteral( "blur_level" ) ).toInt( &ok );
+  double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
   if ( ok )
   {
     mBlurLevel = level;
+    if ( !props.contains( QStringLiteral( "blur_unit" ) ) )
+    {
+      // deal with pre blur unit era by assuming 96 dpi and converting pixel values as millimeters
+      mBlurLevel *= 0.2645;
+    }
   }
+  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ) );
+  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ) );
   int angle = props.value( QStringLiteral( "offset_angle" ) ).toInt( &ok );
   if ( ok )
   {
@@ -147,10 +167,11 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
 
 QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  //offset distance
+  //blur radius and offset distance
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
-  spread += mBlurLevel * 2 + 10;
+  spread += blurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
 }
 

@@ -122,7 +122,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * Additional creation options are specified within the \a options value.
      */
-    QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
+    QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
 
     /**
      * Returns feature source object that can be used for querying provider's data. The returned feature source
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param index the index of the attribute
      * \param enumList reference to the list to fill
      */
-    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ); enumList.clear(); }
+    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ) enumList.clear(); }
 
     bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = nullptr ) override;
 
@@ -588,7 +588,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param value The metadata value
      * \returns The translated metadata value
      */
-    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ); return value.toString(); }
+    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ) return value.toString(); }
 
     /**
      * Returns TRUE if the data source has metadata, FALSE otherwise.

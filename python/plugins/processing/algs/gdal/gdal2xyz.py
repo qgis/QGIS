@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
@@ -84,7 +80,7 @@ class gdal2xyz(GdalAlgorithm):
         arguments.append('-band')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.CSV, context):
+        if self.parameterAsBoolean(parameters, self.CSV, context):
             arguments.append('-csv')
 
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)

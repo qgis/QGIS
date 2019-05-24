@@ -387,6 +387,7 @@ void TestQgsVertexTool::testAddVertexAtEndpoint()
   mouseMove( 1, 3 ); // first we need to move to the vertex
   mouseClick( 1, 3 + offsetInMapUnits, Qt::LeftButton );
   mouseClick( 2, 3, Qt::LeftButton );
+  mouseClick( 2, 3, Qt::RightButton ); // we need a right click to stop adding new nodes
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3, 2 3)" ) );
@@ -401,10 +402,30 @@ void TestQgsVertexTool::testAddVertexAtEndpoint()
   mouseMove( 2, 1 ); // first we need to move to the vertex
   mouseClick( 2 + offsetInMapUnits, 1, Qt::LeftButton );
   mouseClick( 2, 2, Qt::LeftButton );
+  mouseClick( 2, 2, Qt::RightButton ); // we need a right click to stop adding new nodes
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 2, 2 1, 1 1, 1 3)" ) );
 
+  mLayerLine->undoStack()->undo();
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+
+  // add three vertices at once
+
+  mouseMove( 2, 1 ); // first we need to move to the vertex
+  mouseClick( 2 + offsetInMapUnits, 1, Qt::LeftButton );
+  mouseClick( 2, 2, Qt::LeftButton );
+  mouseClick( 2, 3, Qt::LeftButton );
+  mouseClick( 2, 4, Qt::LeftButton );
+  mouseClick( 2, 2, Qt::RightButton ); // we need a right click to stop adding new nodes
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 4 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 4, 2 3, 2 2, 2 1, 1 1, 1 3)" ) );
+
+  mLayerLine->undoStack()->undo();
+  mLayerLine->undoStack()->undo();
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 

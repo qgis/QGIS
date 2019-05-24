@@ -13,10 +13,9 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
+import json
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
@@ -57,13 +56,26 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         header, body = self._execute_request(query_string)
         return (header, body, query_string)
 
-    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False):
+    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False, normalizeJson=False):
         response_header, response_body, query_string = self.wms_request(request, extra, project, version)
         response = response_header + response_body
         reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
         self.store_reference(reference_path, response)
         f = open(reference_path, 'rb')
         expected = f.read()
+
+        def _n(r):
+            lines = r.split(b'\n')
+            b = lines[2:]
+            h = lines[:2]
+            try:
+                return b'\n'.join(h) + json.dumps(json.loads(b'\n'.join(b))).encode('utf8')
+            except:
+                return r
+
+        response = _n(response)
+        expected = _n(expected)
+
         f.close()
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
@@ -87,6 +99,10 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
 
     def test_getcontext(self):
         self.wms_request_compare('GetContext')
+
+    def test_operation_not_supported(self):
+        qs = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)
+        self._assert_status_code(501, qs)
 
     def test_describelayer(self):
         # Test DescribeLayer

@@ -20,19 +20,20 @@
 #include "qgsapplication.h"
 #include "qgsreadwritelocker.h"
 
-extern "C"
-{
-#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
+#if PROJ_VERSION_MAJOR>=6
+#include "qgsprojutils.h"
+#include <proj.h>
+#else
 #include <proj_api.h>
-}
+#endif
+
 #include <sqlite3.h>
 
 #include <QStringList>
 
 /// @cond PRIVATE
 
+#if PROJ_VERSION_MAJOR<6
 #ifdef USE_THREAD_LOCAL
 thread_local QgsProjContextStore QgsCoordinateTransformPrivate::mProjContext;
 #else
@@ -48,6 +49,8 @@ QgsProjContextStore::~QgsProjContextStore()
 {
   pj_ctx_free( context );
 }
+
+#endif
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
 {
@@ -81,6 +84,8 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mDestCRS( other.mDestCRS )
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
+  , mSourceAxisOrderSwapped( other.mSourceAxisOrderSwapped )
+  , mDestAxisOrderSwapped( other.mDestAxisOrderSwapped )
 {
   //must reinitialize to setup mSourceProjection and mDestinationProjection
   initialize();
@@ -163,17 +168,35 @@ bool QgsCoordinateTransformPrivate::initialize()
   }
 
   // create proj projections for current thread
-  QPair<projPJ, projPJ> res = threadLocalProjData();
+  ProjData res = threadLocalProjData();
+
+#if PROJ_VERSION_MAJOR>=6
+#if PROJ_VERSION_MINOR<1
+  // because proj 6.0 does not have proj_normalize_for_visualization - we have to handle this manually and inefficiently!
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr sourceCrs( proj_get_source_crs( context, res ) );
+  if ( sourceCrs )
+    mSourceAxisOrderSwapped = QgsProjUtils::axisOrderIsSwapped( sourceCrs.get() );
+  QgsProjUtils::proj_pj_unique_ptr destCrs( proj_get_target_crs( context, res ) );
+  if ( destCrs )
+    mDestAxisOrderSwapped = QgsProjUtils::axisOrderIsSwapped( destCrs.get() );
+#endif
+#endif
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
   QgsDebugMsg( "To proj   : " + mDestCRS.toProj4() );
 #endif
 
+#if PROJ_VERSION_MAJOR>=6
+  if ( !res )
+    mIsValid = false;
+#else
   if ( !res.first || !res.second )
   {
     mIsValid = false;
   }
+#endif
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   if ( mIsValid )
@@ -224,10 +247,14 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
   mDestinationDatumTransform = transforms.destinationTransformId;
 }
 
-QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
+ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
 
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( context ) );
+#else
 #ifdef USE_THREAD_LOCAL
   QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( mProjContext.get() ) );
 #else
@@ -243,16 +270,36 @@ QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
   }
   QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( pContext ) );
 #endif
+#endif
 
   if ( it != mProjProjections.constEnd() )
   {
-    QPair<projPJ, projPJ> res = it.value();
+    ProjData res = it.value();
     return res;
   }
 
   // proj projections don't exist yet, so we need to create
   locker.changeMode( QgsReadWriteLocker::Write );
 
+#if PROJ_VERSION_MAJOR>=6
+#if PROJ_VERSION_MINOR>=1
+  QgsProjUtils::proj_pj_unique_ptr transform( proj_create_crs_to_crs( context, mSourceProjString.toUtf8().constData(), mDestProjString.toUtf8().constData(), nullptr ) );
+  if ( !transform )
+  {
+    // ouch!
+    return nullptr;
+  }
+
+  // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
+  ProjData res = proj_normalize_for_visualization( context, transform.get() );
+  mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
+
+#else
+  // proj 6.0 does not have proj_normalize_for_visualization - we have to handle this manually and inefficiently!
+  ProjData res = proj_create_crs_to_crs( context, mSourceProjString.toUtf8().constData(), mDestProjString.toUtf8().constData(), nullptr );
+  mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
+#endif
+#else
 #ifdef USE_THREAD_LOCAL
   QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
                                          pj_init_plus_ctx( mProjContext.get(), mDestProjString.toUtf8() ) );
@@ -261,6 +308,7 @@ QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
   QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( pContext, mSourceProjString.toUtf8() ),
                                          pj_init_plus_ctx( pContext, mDestProjString.toUtf8() ) );
   mProjProjections.insert( reinterpret_cast< uintptr_t>( pContext ), res );
+#endif
 #endif
   return res;
 }
@@ -331,11 +379,15 @@ void QgsCoordinateTransformPrivate::setFinder()
 void QgsCoordinateTransformPrivate::freeProj()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
-  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constBegin();
+  QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constBegin();
   for ( ; it != mProjProjections.constEnd(); ++it )
   {
+#if PROJ_VERSION_MAJOR>=6
+    proj_destroy( it.value() );
+#else
     pj_free( it.value().first );
     pj_free( it.value().second );
+#endif
   }
   mProjProjections.clear();
 }

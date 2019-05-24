@@ -10,11 +10,14 @@ SET(QGIS_QUICK_PLUGIN_SRC
 )
 
 SET(QGIS_QUICK_PLUGIN_RESOURCES
+  components/qgsquickicontextitem.qml
+  editor/qgsquickeditorwidgetcombobox.qml
   editor/qgsquickcheckbox.qml
   editor/qgsquickdatetime.qml
   editor/qgsquickexternalresource.qml
   editor/qgsquicktextedit.qml
   editor/qgsquickvaluemap.qml
+  editor/qgsquickvaluerelation.qml
   qgsquickfeatureform.qml
   qgsquickfeatureformstyling.qml
   qgsquickmapcanvas.qml

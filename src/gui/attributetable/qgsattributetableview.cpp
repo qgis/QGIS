@@ -89,7 +89,8 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
   int i = 0;
-  Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, config.columns() )
+  const auto constColumns = config.columns();
+  for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
   {
     if ( columnConfig.hidden )
       continue;
@@ -201,7 +202,8 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 
   // first add user created layer actions
   QList<QgsAction> actions = mFilterModel->layer()->actions()->actions( QStringLiteral( "Feature" ) );
-  Q_FOREACH ( const QgsAction &action, actions )
+  const auto constActions = actions;
+  for ( const QgsAction &action : constActions )
   {
     if ( !mFilterModel->layer()->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
@@ -219,10 +221,9 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
       defaultAction = act;
   }
 
+  const auto mapLayerActions {QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), QgsMapLayerAction::SingleFeature ) };
   // next add any registered actions for this layer
-  Q_FOREACH ( QgsMapLayerAction *mapLayerAction,
-              QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(),
-                  QgsMapLayerAction::SingleFeature ) )
+  for ( QgsMapLayerAction *mapLayerAction : mapLayerActions )
   {
     QAction *action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), container );
     action->setData( "map_layer_action" );
@@ -240,7 +241,8 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   if ( !defaultAction && !actionList.isEmpty() )
     defaultAction = actionList.at( 0 );
 
-  Q_FOREACH ( QAction *act, actionList )
+  const auto constActionList = actionList;
+  for ( QAction *act : constActionList )
   {
     if ( attributeTableConfig.actionWidgetStyle() == QgsAttributeTableConfig::DropDown )
     {
@@ -275,7 +277,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   QgsSettings settings;
   settings.setValue( QStringLiteral( "BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
 }
@@ -325,7 +327,8 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
 
 void QgsAttributeTableView::repaintRequested( const QModelIndexList &indexes )
 {
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     update( index );
   }

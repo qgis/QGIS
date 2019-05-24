@@ -20,24 +20,24 @@ MDAL::Driver3Di *MDAL::Driver3Di::create()
   return new Driver3Di();
 }
 
-MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( const NetCDFFile &ncFile )
+MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
 {
   CFDimensions dims;
   size_t count;
   int ncid;
 
   // 2D Mesh
-  ncFile.getDimension( "nMesh2D_nodes", &count, &ncid );
+  mNcFile.getDimension( "nMesh2D_nodes", &count, &ncid );
   dims.setDimension( CFDimensions::Face2D, count, ncid );
 
-  ncFile.getDimension( "nCorner_Nodes", &count, &ncid );
+  mNcFile.getDimension( "nCorner_Nodes", &count, &ncid );
   dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
 
   // Vertices count is populated later in populateFacesAndVertices
   // it is not known from the array dimensions
 
   // Time
-  ncFile.getDimension( "time", &count, &ncid );
+  mNcFile.getDimension( "time", &count, &ncid );
   dims.setDimension( CFDimensions::Time, count, ncid );
 
   return dims;
@@ -111,7 +111,7 @@ void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces
   mDimensions.setDimension( CFDimensions::Vertex2D, vertices.size() );
 }
 
-void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
+void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
 {
   assert( mesh );
   if ( 0 == mesh->facesCount() )
@@ -187,12 +187,6 @@ std::set<std::string> MDAL::Driver3Di::ignoreNetCDFVariables()
   }
 
   return ignore_variables;
-}
-
-std::string MDAL::Driver3Di::nameSuffix( MDAL::CFDimensions::Type type )
-{
-  MDAL_UNUSED( type );
-  return "";
 }
 
 void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )

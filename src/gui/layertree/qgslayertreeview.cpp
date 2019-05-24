@@ -168,7 +168,8 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
     if ( expandedNodeKeys.isEmpty() )
       return;
 
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ), true ) )
+    const auto constLayerLegendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ), true );
+    for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
       QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
       if ( expandedNodeKeys.contains( ruleKey ) )
@@ -272,7 +273,8 @@ void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode *node )
   QModelIndex idx = layerTreeModel()->node2index( node );
   setExpanded( idx, node->isExpanded() );
 
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
     updateExpandedStateFromNode( child );
 }
 
@@ -338,7 +340,8 @@ QList<QgsLayerTreeNode *> QgsLayerTreeView::selectedNodes( bool skipInternal ) c
 QList<QgsLayerTreeLayer *> QgsLayerTreeView::selectedLayerNodes() const
 {
   QList<QgsLayerTreeLayer *> layerNodes;
-  Q_FOREACH ( QgsLayerTreeNode *node, selectedNodes() )
+  const auto constSelectedNodes = selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     if ( QgsLayerTree::isLayer( node ) )
       layerNodes << QgsLayerTree::toLayer( node );
@@ -349,7 +352,8 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeView::selectedLayerNodes() const
 QList<QgsMapLayer *> QgsLayerTreeView::selectedLayers() const
 {
   QList<QgsMapLayer *> list;
-  Q_FOREACH ( QgsLayerTreeLayer *node, selectedLayerNodes() )
+  const auto constSelectedLayerNodes = selectedLayerNodes();
+  for ( QgsLayerTreeLayer *node : constSelectedLayerNodes )
   {
     if ( node->layer() )
       list << node->layer();
@@ -402,7 +406,8 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
   QStringList lst;
   if ( expanded )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, model->layerLegendNodes( nodeLayer, true ) )
+    const auto constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
+    for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
       QString parentKey = legendNode->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
       if ( !parentKey.isEmpty() && !lst.contains( parentKey ) )
@@ -415,7 +420,8 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
 
 static void _expandAllNodes( QgsLayerTreeGroup *parent, bool expanded, QgsLayerTreeModel *model )
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, parent->children() )
+  const auto constChildren = parent->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     node->setExpanded( expanded );
     if ( QgsLayerTree::isGroup( node ) )

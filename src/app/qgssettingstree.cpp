@@ -234,7 +234,8 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 {
   int dividerIndex = 0;
 
-  Q_FOREACH ( const QString &group, mSettings->childGroups() )
+  const auto constChildGroups = mSettings->childGroups();
+  for ( const QString &group : constChildGroups )
   {
     QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, group, dividerIndex );
@@ -258,7 +259,8 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     mSettings->endGroup();
   }
 
-  Q_FOREACH ( const QString &key, mSettings->childKeys() )
+  const auto constChildKeys = mSettings->childKeys();
+  for ( const QString &key : constChildKeys )
   {
     QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, key, 0 );

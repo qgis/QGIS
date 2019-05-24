@@ -476,7 +476,7 @@ void QgsWcsProvider::setQueryItem( QUrl &url, const QString &item, const QString
   url.addQueryItem( item, value );
 }
 
-void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
+bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   // TODO: set block to null values, move that to function and call only if fails
   memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) );
@@ -486,7 +486,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   // (higher level checks) but it is better to do check here as well
   if ( !viewExtent.intersects( mCoverageExtent ) )
   {
-    return;
+    return false;
   }
 
   // Can we reuse the previously cached coverage?
@@ -532,7 +532,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
         // If it happens, it would be possible to rescale the portion we get
         // to only part of the data block, but it is better to left it
         // blank, so that the problem may be discovered in its origin.
-        return;
+        return false;
       }
     }
 
@@ -554,7 +554,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
       if ( ! tmpData )
       {
         QgsDebugMsg( QStringLiteral( "Couldn't allocate memory of %1 bytes" ).arg( size ) );
-        return;
+        return false;
       }
       if ( GDALRasterIO( gdalBand, GF_Read, 0, 0, width, height, tmpData, width, height, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 ) != CE_None )
       {
@@ -592,11 +592,12 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
       QgsMessageLog::logMessage( tr( "Received coverage has wrong size %1 x %2 (expected %3 x %4)" ).arg( width ).arg( height ).arg( pixelWidth ).arg( pixelHeight ), tr( "WCS" ) );
     }
   }
+  return true;
 }
 
 void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, QString crs, QgsRasterBlockFeedback *feedback ) const
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   // delete cached data
   clearCache();
 
@@ -795,12 +796,13 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
 
 // For stats only, maybe change QgsRasterDataProvider::bandStatistics() to
 // use standard readBlock with extent
-void QgsWcsProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
+bool QgsWcsProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
 
   QgsDebugMsg( QStringLiteral( "xBlock = %1 yBlock = %2" ).arg( xBlock ).arg( yBlock ) );
 
-  if ( !mHasSize ) return;
+  if ( !mHasSize )
+    return false;
 
   double xRes = mCoverageExtent.width() / mWidth;
   double yRes = mCoverageExtent.height() / mHeight;
@@ -815,7 +817,7 @@ void QgsWcsProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block 
 
   QgsRectangle extent( xMin, yMin, xMax, yMax );
 
-  readBlock( bandNo, extent, mXBlockSize, mYBlockSize, block, nullptr );
+  return readBlock( bandNo, extent, mXBlockSize, mYBlockSize, block, nullptr );
 }
 
 
@@ -1069,9 +1071,7 @@ bool QgsWcsProvider::calculateExtent() const
       //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
       //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
 
-      Q_NOWARN_DEPRECATED_PUSH
-      mCoordinateTransform = QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
-      Q_NOWARN_DEPRECATED_POP
+      mCoordinateTransform = QgsCoordinateTransform( qgisSrsSource, qgisSrsDest, transformContext() );
     }
 
     QgsDebugMsg( "mCoverageSummary.wgs84BoundingBox= " + mCoverageSummary.wgs84BoundingBox.toString() );
@@ -1083,7 +1083,7 @@ bool QgsWcsProvider::calculateExtent() const
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
       return false;
     }
 
@@ -1296,7 +1296,8 @@ QString QgsWcsProvider::htmlMetadata()
 
   // Dialog takes too long to open if there are too many coverages (1000 for example)
   int count = 0;
-  Q_FOREACH ( const QgsWcsCoverageSummary &c, mCapabilities.coverages() )
+  const auto constCoverages = mCapabilities.coverages();
+  for ( const QgsWcsCoverageSummary &c : constCoverages )
   {
     metadata += coverageMetadata( c );
     count++;
@@ -1897,8 +1898,8 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
 
 void QgsWcsDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  Q_UNUSED( bytesReceived );
-  Q_UNUSED( bytesTotal );
+  Q_UNUSED( bytesReceived )
+  Q_UNUSED( bytesTotal )
   QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
 }
 

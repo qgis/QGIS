@@ -60,32 +60,32 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
     // http://linfiniti.com/2011/05/gdal-efficiency-of-various-compression-algorithms/
     // big: no compression | medium: reasonable size/speed tradeoff | small: smallest size
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_1big" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "No compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "No Compression" )
         << QStringLiteral( "COMPRESS=NONE BIGTIFF=IF_NEEDED" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_2medium" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low Compression" )
         << QStringLiteral( "COMPRESS=PACKBITS" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_3small" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High Compression" )
         << QStringLiteral( "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_4jpeg" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG Compression" )
         << QStringLiteral( "COMPRESS=JPEG JPEG_QUALITY=75" ) );
 
     // overview compression schemes for GTiff format, see
     // http://www.gdal.org/gdaladdo.html and http://www.gdal.org/frmt_gtiff.html
     // TODO - should we offer GDAL_TIFF_OVR_BLOCKSIZE option here or in QgsRasterPyramidsOptionsWidget ?
     sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_1big" )] =
-      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "No compression" )
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "No Compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=NONE BIGTIFF_OVERVIEW=IF_NEEDED" ) );
     sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_2medium" )] =
-      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "Low compression" )
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "Low Compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=PACKBITS" ) );
     sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_3small" )] =
-      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "High compression" )
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "High Compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9" ) ); // how to set zlevel?
     sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_4jpeg" )] =
-      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "JPEG compression" )
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "JPEG Compression" )
         << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
@@ -126,10 +126,12 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   if ( ( type == Table ) || ( type == LineEdit ) )
   {
     // hide all controls, except stacked widget
-    Q_FOREACH ( QWidget *widget, widgets )
+    const auto constWidgets = widgets;
+    for ( QWidget *widget : constWidgets )
       widget->setVisible( false );
     mOptionsStackedWidget->setVisible( true );
-    Q_FOREACH ( QWidget *widget, mOptionsStackedWidget->findChildren<QWidget *>() )
+    const auto children { mOptionsStackedWidget->findChildren<QWidget *>() };
+    for ( QWidget *widget : children )
       widget->setVisible( true );
 
     // show relevant page
@@ -141,7 +143,8 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   else
   {
     // show all widgets, except profile buttons (unless Full)
-    Q_FOREACH ( QWidget *widget, widgets )
+    const auto constWidgets = widgets;
+    for ( QWidget *widget : constWidgets )
       widget->setVisible( true );
     if ( type != Full )
       mProfileButtons->setVisible( false );
@@ -182,7 +185,8 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   mOptionsMap.clear();
   mProfileComboBox->blockSignals( true );
   mProfileComboBox->clear();
-  Q_FOREACH ( const QString &profileKey, profileKeys )
+  const auto constProfileKeys = profileKeys;
+  for ( const QString &profileKey : constProfileKeys )
   {
     QString profileName, profileOptions;
     profileOptions = createOptions( profileKey );
@@ -626,7 +630,7 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
 
 void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
   QgsDebugMsg( QStringLiteral( "done" ) );
 }
@@ -638,7 +642,8 @@ void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )
 
   QStringList values;
   QStringList optionsList = options.trimmed().split( ' ', QString::SkipEmptyParts );
-  Q_FOREACH ( const QString &opt, optionsList )
+  const auto constOptionsList = optionsList;
+  for ( const QString &opt : constOptionsList )
   {
     int rowCount = mOptionsTable->rowCount();
     mOptionsTable->insertRow( rowCount );

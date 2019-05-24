@@ -209,7 +209,8 @@ QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<Q
 
   // iterate through all incoming CRSs
 
-  Q_FOREACH ( const QString &auth_id, *crsFilter )
+  const auto authIds { *crsFilter };
+  for ( const QString &auth_id : authIds )
   {
     QStringList parts = auth_id.split( ':' );
 
@@ -797,7 +798,7 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
 
 void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
@@ -832,7 +833,7 @@ void QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged( QTreeWidget
 
 void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 

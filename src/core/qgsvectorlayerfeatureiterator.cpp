@@ -174,7 +174,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     QSet<int> providerSubset;
     QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
     int nPendingFields = mSource->mFields.count();
-    Q_FOREACH ( int attrIndex, subset )
+    const auto constSubset = subset;
+    for ( int attrIndex : constSubset )
     {
       if ( attrIndex < 0 || attrIndex >= nPendingFields )
         continue;
@@ -202,7 +203,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
     const bool needsGeom = mProviderRequest.filterExpression()->needsGeometry();
-    Q_FOREACH ( const QString &field, mProviderRequest.filterExpression()->referencedColumns() )
+    const auto constReferencedColumns = mProviderRequest.filterExpression()->referencedColumns();
+    for ( const QString &field : constReferencedColumns )
     {
       int idx = source->mFields.lookupField( field );
 
@@ -627,7 +629,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 
   int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
-  QgsExpression *exp = new QgsExpression( exps[oi].cachedExpression );
+  std::unique_ptr<QgsExpression> exp = qgis::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
   da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
@@ -637,18 +639,17 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   exp->setAreaUnits( QgsProject::instance()->areaUnits() );
 
   exp->prepare( mExpressionContext.get() );
-  Q_FOREACH ( const QString &col, exp->referencedColumns() )
+  const auto referencedColumns = exp->referencedColumns();
+  for ( const QString &col : referencedColumns )
   {
     if ( mSource->fields().lookupField( col ) == fieldIdx )
     {
       // circular reference - expression depends on column itself
-      delete exp;
       return;
     }
   }
-  mExpressionFieldInfo.insert( fieldIdx, exp );
 
-  Q_FOREACH ( const QString &col, exp->referencedColumns() )
+  for ( const QString &col : referencedColumns )
   {
     int dependentFieldIdx = mSource->mFields.lookupField( col );
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -664,6 +665,8 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   {
     mRequest.setFlags( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
   }
+
+  mExpressionFieldInfo.insert( fieldIdx, exp.release() );
 }
 
 void QgsVectorLayerFeatureIterator::prepareFields()
@@ -900,13 +903,13 @@ void QgsVectorLayerFeatureIterator::addExpressionAttribute( QgsFeature &f, int a
 
 bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
-  Q_UNUSED( simplifyMethod );
+  Q_UNUSED( simplifyMethod )
   return false;
 }
 
 bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const
 {
-  Q_UNUSED( methodType );
+  Q_UNUSED( methodType )
   return false;
 }
 
@@ -1084,7 +1087,7 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 
 bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
 {
-  Q_UNUSED( orderBys );
+  Q_UNUSED( orderBys )
   return true;
 }
 

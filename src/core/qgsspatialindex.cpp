@@ -44,7 +44,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
       : mList( list ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ); }
+    { Q_UNUSED( n ) }
 
     void visitData( const IData &d ) override
     {
@@ -52,7 +52,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ); }
+    { Q_UNUSED( v ) }
 
   private:
     QList<QgsFeatureId> &mList;
@@ -70,7 +70,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
       : mNewIndex( newIndex ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ); }
+    { Q_UNUSED( n ) }
 
     void visitData( const IData &d ) override
     {
@@ -81,7 +81,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ); }
+    { Q_UNUSED( v ) }
 
   private:
     SpatialIndex::ISpatialIndex *mNewIndex = nullptr;
@@ -94,13 +94,20 @@ class QgsNearestNeighborComparator : public INearestNeighborComparator
 
     QgsNearestNeighborComparator( const QHash< QgsFeatureId, QgsGeometry > *geometries, const QgsPointXY &point, double maxDistance )
       : mGeometries( geometries )
-      , mPoint( QgsGeometry::fromPointXY( point ) )
+      , mGeom( QgsGeometry::fromPointXY( point ) )
+      , mMaxDistance( maxDistance )
+    {
+    }
+
+    QgsNearestNeighborComparator( const QHash< QgsFeatureId, QgsGeometry > *geometries, const QgsGeometry &geometry, double maxDistance )
+      : mGeometries( geometries )
+      , mGeom( geometry )
       , mMaxDistance( maxDistance )
     {
     }
 
     const QHash< QgsFeatureId, QgsGeometry > *mGeometries = nullptr;
-    QgsGeometry mPoint;
+    QgsGeometry mGeom;
     double mMaxDistance = 0;
     QSet< QgsFeatureId > mFeaturesOutsideMaxDistance;
 
@@ -125,7 +132,7 @@ class QgsNearestNeighborComparator : public INearestNeighborComparator
       if ( mGeometries && ( mMaxDistance <= 0.0 || dist <= mMaxDistance ) )
       {
         QgsGeometry other = mGeometries->value( data.getIdentifier() );
-        dist = other.distance( mPoint );
+        dist = other.distance( mGeom );
       }
 
       if ( mMaxDistance > 0 && dist > mMaxDistance )
@@ -430,12 +437,12 @@ bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
   }
   catch ( Tools::Exception &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
   }
   catch ( const std::exception &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
   }
   catch ( ... )
@@ -485,6 +492,31 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, c
   QgsNearestNeighborComparator nnc( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ? &d->mGeometries : nullptr,
                                     point, maxDistance );
   d->mRTree->nearestNeighborQuery( neighbors, p, visitor, nnc );
+
+  if ( maxDistance > 0 )
+  {
+    // trim features outside of max distance
+    list.erase( std::remove_if( list.begin(), list.end(),
+                                [&nnc]( QgsFeatureId id )
+    {
+      return nnc.mFeaturesOutsideMaxDistance.contains( id );
+    } ), list.end() );
+  }
+
+  return list;
+}
+
+QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsGeometry &geometry, int neighbors, double maxDistance ) const
+{
+  QList<QgsFeatureId> list;
+  QgisVisitor visitor( list );
+
+  SpatialIndex::Region r = rectToRegion( geometry.boundingBox() );
+
+  QMutexLocker locker( &d->mMutex );
+  QgsNearestNeighborComparator nnc( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ? &d->mGeometries : nullptr,
+                                    geometry, maxDistance );
+  d->mRTree->nearestNeighborQuery( neighbors, r, visitor, nnc );
 
   if ( maxDistance > 0 )
   {

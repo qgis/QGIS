@@ -21,10 +21,6 @@ __author__ = 'René-Luc Dhont'
 __date__ = 'November 2015'
 __copyright__ = '(C) 2015, René-Luc Dhont'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.utils import spatialite_connect
 import sqlite3 as sqlite
 import re

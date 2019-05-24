@@ -207,7 +207,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
 
-  Q_FOREACH ( QgsVectorLayer *layer, QgsProject::instance()->layers<QgsVectorLayer *>() )
+  const auto layers { QgsProject::instance()->layers<QgsVectorLayer *>() };
+  for ( QgsVectorLayer *layer : layers )
   {
     if ( layer->isEditable() )
     {
@@ -353,7 +354,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QStringList myScales = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
   if ( !myScales.isEmpty() )
   {
-    Q_FOREACH ( const QString &scale, myScales )
+    const auto constMyScales = myScales;
+    for ( const QString &scale : constMyScales )
     {
       addScaleToScaleList( scale );
     }
@@ -373,8 +375,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mLayerCapabilitiesTree->selectionModel(), &QItemSelectionModel::selectionChanged, this,
            [ = ]( const QItemSelection & selected, const QItemSelection & deselected )
   {
-    Q_UNUSED( selected );
-    Q_UNUSED( deselected );
+    Q_UNUSED( selected )
+    Q_UNUSED( deselected )
     bool hasSelection = !mLayerCapabilitiesTree->selectionModel()->selectedIndexes().isEmpty();
     mLayerCapabilitiesToggleSelectionButton->setEnabled( hasSelection );
   } );
@@ -390,7 +392,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( mLayerCapabilitiesToggleSelectionButton, &QToolButton::clicked, this, [ = ]( bool clicked )
   {
-    Q_UNUSED( clicked );
+    Q_UNUSED( clicked )
     const QModelIndexList indexes = mLayerCapabilitiesTree->selectionModel()->selectedIndexes();
     mLayerCapabilitiesModel->toggleSelectedItems( indexes );
     mLayerCapabilitiesTree->repaint();
@@ -584,7 +586,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      Q_FOREACH ( const QString &value, values )
+      const auto constValues = values;
+      for ( const QString &value : constValues )
       {
         list << QStringLiteral( "EPSG:%1" ).arg( value );
       }
@@ -642,6 +645,25 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
 
   mWMSMaxAtlasFeaturesSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 ) );
+
+  QString defaultValueToolTip = tr( "In case of no other information to evaluate the map unit sized symbols, it uses default scale (on projected CRS) or default map units per mm (on geographic CRS)." );
+  mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
+  mWMSDefaultMapUnitsPerMm->setDecimals( 4 );
+  mWMSDefaultMapUnitsPerMm->setSingleStep( 0.001 );
+  mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
+  mWMSDefaultMapUnitsPerMm->setToolTip( defaultValueToolTip );
+  mWMSDefaultMapUnitScale = new QgsScaleWidget();
+  mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters ) );
+  mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
+  if ( QgsProject::instance()->crs().isGeographic() )
+  {
+    mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitsPerMm );
+  }
+  else
+  {
+    mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitScale );
+    mWMSDefaultMapUnitsPerMmLabel->setText( tr( "Default scale for legend" ) );
+  }
 
   mWMTSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), QString() ) );
   mWMTSMinScaleLineEdit->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), 5000 ) );
@@ -865,7 +887,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mTabRelations->layout()->addWidget( mRelationManagerDlg );
 
   QList<QgsVectorLayer *> vectorLayers;
-  Q_FOREACH ( QgsMapLayer *mapLayer, mapLayers )
+  const auto constMapLayers = mapLayers;
+  for ( QgsMapLayer *mapLayer : constMapLayers )
   {
     if ( QgsMapLayerType::VectorLayer == mapLayer->type() )
     {
@@ -972,6 +995,8 @@ void QgsProjectProperties::apply()
   // Set the project title
   QgsProject::instance()->setTitle( title() );
   QgsProject::instance()->setPresetHomePath( QDir::fromNativeSeparators( mProjectHomeLineEdit->text() ) );
+
+  // DB-related options
   QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
@@ -1045,7 +1070,8 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), canvasColor.green() );
   QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), canvasColor.blue() );
 
-  Q_FOREACH ( QgsMapCanvas *canvas, QgisApp::instance()->mapCanvases() )
+  const auto constMapCanvases = QgisApp::instance()->mapCanvases();
+  for ( QgsMapCanvas *canvas : constMapCanvases )
   {
     canvas->setCanvasColor( canvasColor );
     canvas->setSelectionColor( selectionColor );
@@ -1300,6 +1326,18 @@ void QgsProjectProperties::apply()
   int maxAtlasFeatures = mWMSMaxAtlasFeaturesSpinBox->value();
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), maxAtlasFeatures );
 
+  double defaultMapUnitsPerMm;
+  if ( QgsProject::instance()->crs().isGeographic() )
+  {
+    defaultMapUnitsPerMm = mWMSDefaultMapUnitsPerMm->value();
+  }
+  else
+  {
+    defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters );
+  }
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
+
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), mWMTSUrlLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), mWMTSMinScaleLineEdit->value() );
   bool wmtsProject = false;
@@ -1444,7 +1482,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
 
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
-  Q_FOREACH ( QgsMapCanvas *canvas, QgisApp::instance()->mapCanvases() )
+  for ( QgsMapCanvas *canvas : constMapCanvases )
   {
     canvas->refresh();
   }
@@ -1459,7 +1497,7 @@ void QgsProjectProperties::showProjectionsTab()
 
 void QgsProjectProperties::lwWmsRowsInserted( const QModelIndex &parent, int first, int last )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   for ( int i = first; i <= last; i++ )
   {
     QString crsStr = mWMSList->item( i )->text();
@@ -1470,9 +1508,9 @@ void QgsProjectProperties::lwWmsRowsInserted( const QModelIndex &parent, int fir
 
 void QgsProjectProperties::lwWmsRowsRemoved( const QModelIndex &parent, int first, int last )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( first );
-  Q_UNUSED( last );
+  Q_UNUSED( parent )
+  Q_UNUSED( first )
+  Q_UNUSED( last )
   QStringList crslist;
   for ( int i = 0; i < mWMSList->count(); i++ )
   {
@@ -1713,7 +1751,8 @@ void QgsProjectProperties::pbnWMSAddSRS_clicked()
 
 void QgsProjectProperties::pbnWMSRemoveSRS_clicked()
 {
-  Q_FOREACH ( QListWidgetItem *item, mWMSList->selectedItems() )
+  const auto constSelectedItems = mWMSList->selectedItems();
+  for ( QListWidgetItem *item : constSelectedItems )
   {
     delete item;
   }
@@ -1871,7 +1910,8 @@ void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 
   QStringList duplicateNames, regExpMessages;
   QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  Q_FOREACH ( const QString &name, owsNames )
+  const auto constOwsNames = owsNames;
+  for ( const QString &name : constOwsNames )
   {
     if ( !snRegExp.exactMatch( name ) )
       regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
@@ -1956,7 +1996,8 @@ void QgsProjectProperties::pbnImportScales_clicked()
     QgsDebugMsg( msg );
   }
 
-  Q_FOREACH ( const QString &scale, myScales )
+  const auto constMyScales = myScales;
+  for ( const QString &scale : constMyScales )
   {
     addScaleToScaleList( scale );
   }
@@ -2264,7 +2305,7 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
     }
   }
   gridItem->setData( 4, Qt::DisplayRole, scaleDenominator );
@@ -2332,7 +2373,8 @@ void QgsProjectProperties::populateEllipsoidList()
   myItem.semiMinor = 6370997.0;
   mEllipsoidList.append( myItem );
 
-  Q_FOREACH ( const QgsEllipsoidUtils::EllipsoidDefinition &def, QgsEllipsoidUtils::definitions() )
+  const auto definitions {QgsEllipsoidUtils::definitions()};
+  for ( const QgsEllipsoidUtils::EllipsoidDefinition &def : definitions )
   {
     myItem.acronym = def.acronym;
     myItem.description = def.description;
@@ -2345,7 +2387,8 @@ void QgsProjectProperties::populateEllipsoidList()
   }
   // Add all items to selector
 
-  Q_FOREACH ( const EllipsoidDefs &i, mEllipsoidList )
+  const auto constMEllipsoidList = mEllipsoidList;
+  for ( const EllipsoidDefs &i : constMEllipsoidList )
   {
     cmbEllipsoid->addItem( i.description );
   }

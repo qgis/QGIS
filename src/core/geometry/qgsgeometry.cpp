@@ -17,6 +17,7 @@ email                : morb at ozemail dot com dot au
 #include <cstdarg>
 #include <cstdio>
 #include <cmath>
+#include <nlohmann/json.hpp>
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -1261,11 +1262,17 @@ QString QgsGeometry::asWkt( int precision ) const
 
 QString QgsGeometry::asJson( int precision ) const
 {
+  return QString::fromStdString( asJsonObject( precision ).dump() );
+}
+
+json QgsGeometry::asJsonObject( int precision ) const
+{
   if ( !d->geometry )
   {
-    return QStringLiteral( "null" );
+    return nullptr;
   }
-  return d->geometry->asJson( precision );
+  return d->geometry->asJsonObject( precision );
+
 }
 
 QgsGeometry QgsGeometry::convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart ) const

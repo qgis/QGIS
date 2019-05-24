@@ -21,10 +21,6 @@ __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
 __copyright__ = '(C) 2015, Giovanni Manghi'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterDefinition,
@@ -112,7 +108,7 @@ class Buffer(GdalAlgorithm):
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
+        dissolve = self.parameterAsBoolean(parameters, self.DISSOLVE, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
@@ -147,7 +143,7 @@ class Buffer(GdalAlgorithm):
 
         arguments.append(sql)
 
-        if self.parameterAsBool(parameters, self.EXPLODE_COLLECTIONS, context):
+        if self.parameterAsBoolean(parameters, self.EXPLODE_COLLECTIONS, context):
             arguments.append('-explodecollections')
 
         if options:

@@ -25,8 +25,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -258,6 +256,12 @@ class QgsServerTestBase(unittest.TestCase):
         for k in rk:
             headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
+
+    def _assert_status_code(self, status_code, qs, requestMethod=QgsServerRequest.GetMethod, data=None, project=None):
+        request = QgsBufferServerRequest(qs, requestMethod, {}, data)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        assert response.statusCode() == status_code, "%s != %s" % (response.statusCode(), status_code)
 
 
 class TestQgsServerTestBase(unittest.TestCase):

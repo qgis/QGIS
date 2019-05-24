@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from random import seed, uniform
 from math import sqrt
@@ -102,8 +98,8 @@ class RegularPoints(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         spacing = self.parameterAsDouble(parameters, self.SPACING, context)
         inset = self.parameterAsDouble(parameters, self.INSET, context)
-        randomize = self.parameterAsBool(parameters, self.RANDOMIZE, context)
-        isSpacing = self.parameterAsBool(parameters, self.IS_SPACING, context)
+        randomize = self.parameterAsBoolean(parameters, self.RANDOMIZE, context)
+        isSpacing = self.parameterAsBoolean(parameters, self.IS_SPACING, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         extent = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
 

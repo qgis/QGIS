@@ -66,7 +66,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( mMeshLayer, &QgsMeshLayer::dataChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
 
 #ifdef HAVE_3D
-  mVector3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, QgisApp::instance()->mapCanvas(), mOptsPage_3DView );
+  mVector3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, canvas, mOptsPage_3DView );
 
   mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
   mOptsPage_3DView->layout()->addWidget( mVector3DWidget );

@@ -1304,8 +1304,13 @@ void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry
   // re-run validation for the feature
   validateGeometry( layer, fid );
 
-  if ( mVertexEditor && mLockedFeature && mLockedFeature->featureId() == fid && mLockedFeature->layer() == layer )
-    mVertexEditor->updateEditor( mLockedFeature.get() );
+  if ( mLockedFeature && mLockedFeature->featureId() == fid && mLockedFeature->layer() == layer )
+  {
+    mLockedFeature->geometryChanged( fid, geom );
+    if ( mVertexEditor )
+      mVertexEditor->updateEditor( mLockedFeature.get() );
+    updateLockedFeatureVertices();
+  }
 }
 
 void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
@@ -1318,6 +1323,12 @@ void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
 
   // refresh highlighted vertices - some may have been deleted
   setHighlightedVertices( mSelectedVertices );
+
+  if ( mLockedFeature && mLockedFeature->featureId() == fid && mLockedFeature->layer() == layer )
+  {
+    mLockedFeature->featureDeleted( fid );
+    updateLockedFeatureVertices();
+  }
 }
 
 void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid )
@@ -1401,6 +1412,7 @@ void QgsVertexTool::cleanupVertexEditor()
 {
   mLockedFeature.reset();
   mVertexEditor.reset();
+  updateLockedFeatureVertices();
 }
 
 void QgsVertexTool::cleanupLockedFeature()
@@ -2022,11 +2034,24 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     }
   }
 
+  updateLockedFeatureVertices();
   if ( mVertexEditor )
     mVertexEditor->updateEditor( mLockedFeature.get() );
 
   setHighlightedVertices( mSelectedVertices );  // update positions of existing highlighted vertices
   setHighlightedVerticesVisible( true );  // time to show highlighted vertices again
+
+  // restart startDraggingAddVertexAtEndpoint right after it finishes
+  if ( addingAtEndpoint )
+  {
+    if ( mMouseAtEndpoint->vertexId != 0 )
+    {
+      // If we were adding at the end of the feature, we need to update the index
+      mMouseAtEndpoint.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId + 1 ) );
+    }
+    // And then we just restart the drag
+    startDraggingAddVertexAtEndpoint( mapPoint );
+  }
 }
 
 
@@ -2663,7 +2688,7 @@ QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureI
 void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
 {
   // nothing to do here for now...
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )

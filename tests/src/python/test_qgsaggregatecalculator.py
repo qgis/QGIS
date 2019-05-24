@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '16/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -21,6 +19,7 @@ from qgis.core import (QgsAggregateCalculator,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
                        QgsGeometry,
+                       QgsFeatureRequest,
                        NULL
                        )
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
@@ -151,6 +150,20 @@ class TestQgsAggregateCalculator(unittest.TestCase):
             val, ok = agg.calculate(t, 'flddbl')
             self.assertFalse(ok)
 
+        # with order by
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        self.assertEqual(val, [4, 2, 3, 2, 5, NULL, 8])
+        params = QgsAggregateCalculator.AggregateParameters()
+        params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('fldint')])
+        agg.setParameters(params)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        self.assertEqual(val, [2, 2, 3, 4, 5, 8, NULL])
+        params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('flddbl')])
+        agg.setParameters(params)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        self.assertEqual(val, [2, 2, 4, 8, 3, 5, NULL])
+
     def testString(self):
         """ Test calculation of aggregates on string fields"""
 
@@ -188,6 +201,9 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
         self.assertTrue(ok)
         self.assertEqual(val, 'cc,aaaa,bbbbbbbb,aaaa,eeee,,eeee,,dddd')
+        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenateUnique, 'fldstring')
+        self.assertTrue(ok)
+        self.assertEqual(val, 'cc,aaaa,bbbbbbbb,eeee,,dddd')
 
         # bad tests - the following stats should not be calculatable for string fields
         for t in [QgsAggregateCalculator.Sum,
@@ -204,6 +220,18 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                   ]:
             val, ok = agg.calculate(t, 'fldstring')
             self.assertFalse(ok)
+
+        # with order by
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldstring')
+        self.assertEqual(val, ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', '', 'dddd'])
+        params = QgsAggregateCalculator.AggregateParameters()
+        params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('fldstring')])
+        agg.setParameters(params)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldstring')
+        self.assertEqual(val, ['', '', 'aaaa', 'aaaa', 'bbbbbbbb', 'cc', 'dddd', 'eeee', 'eeee'])
+        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
+        self.assertEqual(val, 'aaaaaaaabbbbbbbbccddddeeeeeeee')
 
     def testDateTime(self):
         """ Test calculation of aggregates on date/datetime fields"""
@@ -458,6 +486,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.StringMinimumLength, 'min_length'],
                  [QgsAggregateCalculator.StringMaximumLength, 'max_length'],
                  [QgsAggregateCalculator.StringConcatenate, 'concatenate'],
+                 [QgsAggregateCalculator.StringConcatenateUnique, 'concatenate_unique'],
                  [QgsAggregateCalculator.GeometryCollect, 'collect']]
 
         for t in tests:

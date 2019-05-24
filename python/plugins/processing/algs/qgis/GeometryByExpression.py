@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'October 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive323
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsWkbTypes,
                        QgsExpression,
                        QgsGeometry,
@@ -92,9 +88,9 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
             self.wkb_type = QgsWkbTypes.LineString
         else:
             self.wkb_type = QgsWkbTypes.Point
-        if self.parameterAsBool(parameters, self.WITH_Z, context):
+        if self.parameterAsBoolean(parameters, self.WITH_Z, context):
             self.wkb_type = QgsWkbTypes.addZ(self.wkb_type)
-        if self.parameterAsBool(parameters, self.WITH_M, context):
+        if self.parameterAsBoolean(parameters, self.WITH_M, context):
             self.wkb_type = QgsWkbTypes.addM(self.wkb_type)
 
         self.expression = QgsExpression(self.parameterAsString(parameters, self.EXPRESSION, context))

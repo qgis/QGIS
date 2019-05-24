@@ -334,7 +334,7 @@ qgis:polygoncentroids: >
   NOTE: This algorithm is deprecated and the generic "centroids" algorithm (which works for line and multi geometry layers) should be used instead.
 
 qgis:polygonfromlayerextent: >
-  This algorithm takes a map layer and generates a new vector layer with the minimum bounding box (rectangle with N-S orientation) that covers the input layer.
+  This algorithm takes a map layer and generates a new vector layer with the minimum bounding box (rectangle polygon with N-S orientation) that covers the input layer. Optionally, the extent can be enlarged to a rounded value.
 
 qgis:polygonize:  >
   This algorithm takes a lines layer and creates a polygon layer, with polygons generated from the lines in the input layer.
@@ -508,6 +508,13 @@ qgis:sumlinelengths: >
 
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
+
+qgis:tilesxyz: >
+  This algorithm generates raster XYZ tiles of map canvas content.
+
+  Tile images can be saved as individual images in directory structure, or as single file in MBTiles format.
+
+  Tile size is fixed to 256x256.
 
 qgis:topologicalcoloring: >
   This algorithm assigns a color index to polygon features in such a way that no adjacent polygons share the same color index, whilst minimizing the number of colors required.

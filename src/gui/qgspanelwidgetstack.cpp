@@ -166,7 +166,8 @@ void QgsPanelWidgetStack::keyPressEvent( QKeyEvent *e )
 void QgsPanelWidgetStack::updateBreadcrumb()
 {
   QString breadcrumb;
-  Q_FOREACH ( QString title, mTitles )
+  const auto constMTitles = mTitles;
+  for ( QString title : constMTitles )
   {
     breadcrumb += QStringLiteral( " %1 >" ).arg( title );
   }

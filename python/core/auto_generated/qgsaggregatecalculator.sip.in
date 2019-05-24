@@ -56,7 +56,8 @@ to a data provider for remote calculation.
       StringMaximumLength,
       StringConcatenate,
       GeometryCollect,
-      ArrayAggregate
+      ArrayAggregate,
+      StringConcatenateUnique
     };
 
     struct AggregateParameters
@@ -65,6 +66,8 @@ to a data provider for remote calculation.
       QString filter;
 
       QString delimiter;
+
+      QgsFeatureRequest::OrderBy orderBy;
     };
 
     QgsAggregateCalculator( const QgsVectorLayer *layer );

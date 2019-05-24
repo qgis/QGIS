@@ -21,10 +21,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthias Kuhn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
 import os
 import sys
 import mock

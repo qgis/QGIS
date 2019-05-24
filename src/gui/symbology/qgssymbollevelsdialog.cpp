@@ -45,7 +45,8 @@ QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool
   if ( mRenderer )
   {
     // only consider entries with symbols
-    Q_FOREACH ( const QgsLegendSymbolItem &item, mRenderer->legendSymbolItems() )
+    const auto constLegendSymbolItems = mRenderer->legendSymbolItems();
+    for ( const QgsLegendSymbolItem &item : constLegendSymbolItems )
     {
       if ( item.symbol() )
         mList << item;

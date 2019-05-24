@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -161,10 +157,10 @@ class contour(GdalAlgorithm):
         arguments.append('-i')
         arguments.append(str(self.parameterAsDouble(parameters, self.INTERVAL, context)))
 
-        if self.parameterAsBool(parameters, self.CREATE_3D, context):
+        if self.parameterAsBoolean(parameters, self.CREATE_3D, context):
             arguments.append('-3d')
 
-        if self.parameterAsBool(parameters, self.IGNORE_NODATA, context):
+        if self.parameterAsBoolean(parameters, self.IGNORE_NODATA, context):
             arguments.append('-inodata')
 
         if nodata is not None:

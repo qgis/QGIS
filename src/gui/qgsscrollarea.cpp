@@ -16,6 +16,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include "qgsscrollarea.h"
+#include <QScrollBar>
 
 // milliseconds to swallow child wheel events for after a scroll occurs
 #define TIMEOUT 1000
@@ -34,6 +35,13 @@ void QgsScrollArea::wheelEvent( QWheelEvent *e )
   QScrollArea::wheelEvent( e );
 }
 
+void QgsScrollArea::resizeEvent( QResizeEvent *event )
+{
+  if ( mVerticalOnly && widget() )
+    widget()->setFixedWidth( event->size().width() );
+  QScrollArea::resizeEvent( event );
+}
+
 void QgsScrollArea::scrollOccurred()
 {
   mTimer.setSingleShot( true );
@@ -43,6 +51,16 @@ void QgsScrollArea::scrollOccurred()
 bool QgsScrollArea::hasScrolled() const
 {
   return mTimer.isActive();
+}
+
+void QgsScrollArea::setVerticalOnly( bool verticalOnly )
+{
+  mVerticalOnly = verticalOnly;
+  if ( mVerticalOnly )
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+
+  if ( mVerticalOnly && widget() )
+    widget()->setFixedWidth( size().width() );
 }
 
 ///@cond PRIVATE
@@ -103,7 +121,8 @@ void ScrollAreaFilter::addChild( QObject *child )
     child->installEventFilter( this );
 
     // also install filter on existing children
-    Q_FOREACH ( QObject *c, child->children() )
+    const auto constChildren = child->children();
+    for ( QObject *c : constChildren )
     {
       addChild( c );
     }
@@ -117,7 +136,8 @@ void ScrollAreaFilter::removeChild( QObject *child )
     child->removeEventFilter( this );
 
     // also remove filter on existing children
-    Q_FOREACH ( QObject *c, child->children() )
+    const auto constChildren = child->children();
+    for ( QObject *c : constChildren )
     {
       removeChild( c );
     }

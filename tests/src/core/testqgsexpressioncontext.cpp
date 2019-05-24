@@ -551,12 +551,14 @@ void TestQgsExpressionContext::highlighted()
   QgsExpressionContext context;
   QVERIFY( !context.isHighlightedFunction( QStringLiteral( "x" ) ) );
   QVERIFY( !context.isHighlightedVariable( QStringLiteral( "x" ) ) );
+  QVERIFY( context.highlightedVariables().isEmpty() );
   context.setHighlightedFunctions( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) );
   QVERIFY( context.isHighlightedFunction( QStringLiteral( "x" ) ) );
   QVERIFY( context.isHighlightedFunction( QStringLiteral( "y" ) ) );
   QVERIFY( !context.isHighlightedFunction( QStringLiteral( "z" ) ) );
   QVERIFY( !context.isHighlightedVariable( QStringLiteral( "x" ) ) );
   context.setHighlightedVariables( QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  QCOMPARE( context.highlightedVariables(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
   QVERIFY( context.isHighlightedVariable( QStringLiteral( "a" ) ) );
   QVERIFY( context.isHighlightedVariable( QStringLiteral( "b" ) ) );
   QVERIFY( !context.isHighlightedVariable( QStringLiteral( "c" ) ) );
@@ -565,6 +567,7 @@ void TestQgsExpressionContext::highlighted()
   context.setHighlightedVariables( QStringList() );
   QVERIFY( !context.isHighlightedFunction( QStringLiteral( "x" ) ) );
   QVERIFY( !context.isHighlightedVariable( QStringLiteral( "a" ) ) );
+  QVERIFY( context.highlightedVariables().isEmpty() );
 }
 
 void TestQgsExpressionContext::globalScope()

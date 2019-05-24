@@ -136,7 +136,8 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   qreal maxColumnWidth = 0;
   if ( mSettings.equalColumnWidth() )
   {
-    Q_FOREACH ( const Atom &atom, atomList )
+    const auto constAtomList = atomList;
+    for ( const Atom &atom : constAtomList )
     {
       maxColumnWidth = std::max( atom.size.width(), maxColumnWidth );
     }
@@ -153,7 +154,8 @@ QSizeF QgsLegendRenderer::paintAndDetermineSizeInternal( QgsRenderContext *conte
   double columnMaxHeight = 0;
   qreal columnWidth = 0;
   int column = 0;
-  Q_FOREACH ( const Atom &atom, atomList )
+  const auto constAtomList = atomList;
+  for ( const Atom &atom : constAtomList )
   {
     if ( atom.column > column )
     {
@@ -234,7 +236,8 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 
   if ( !parentGroup ) return atoms;
 
-  Q_FOREACH ( QgsLayerTreeNode *node, parentGroup->children() )
+  const auto constChildren = parentGroup->children();
+  for ( QgsLayerTreeNode *node : constChildren )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -348,7 +351,8 @@ void QgsLegendRenderer::setColumns( QList<Atom> &atomList )
   // Divide atoms to columns
   double totalHeight = 0;
   qreal maxAtomHeight = 0;
-  Q_FOREACH ( const Atom &atom, atomList )
+  const auto constAtomList = atomList;
+  for ( const Atom &atom : constAtomList )
   {
     totalHeight += spaceAboveAtom( atom );
     totalHeight += atom.size.height();
@@ -551,7 +555,7 @@ QSizeF QgsLegendRenderer::drawAtomInternal( const Atom &atom, QgsRenderContext *
 {
   bool first = true;
   QSizeF size = QSizeF( atom.size );
-  Q_FOREACH ( const Nucleon &nucleon, atom.nucleons )
+  for ( const Nucleon &nucleon : qgis::as_const( atom.nucleons ) )
   {
     if ( QgsLayerTreeGroup *groupItem = qobject_cast<QgsLayerTreeGroup *>( nucleon.item ) )
     {
@@ -657,9 +661,9 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   double y = point.y();
 
   if ( context && context->painter() )
-    context->painter()->setPen( mSettings.fontColor() );
+    context->painter()->setPen( mSettings.layerFontColor() );
   else if ( painter )
-    painter->setPen( mSettings.fontColor() );
+    painter->setPen( mSettings.layerFontColor() );
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 

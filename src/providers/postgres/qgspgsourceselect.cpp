@@ -29,6 +29,7 @@ email                : sherman at mrcc.com
 #include "qgscolumntypethread.h"
 #include "qgssettings.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -41,7 +42,7 @@ email                : sherman at mrcc.com
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
 
   QString tableName = index.sibling( index.row(), QgsPgTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
@@ -82,7 +83,8 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
       QStandardItemModel *model = new QStandardItemModel( values.size(), 1, cb );
 
       int row = 0;
-      Q_FOREACH ( const QString &value, values )
+      const auto constValues = values;
+      for ( const QString &value : constValues )
       {
         QStandardItem *item = new QStandardItem( value );
         item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
@@ -121,7 +123,8 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
     {
       QStringList cols = index.data( Qt::UserRole + 2 ).toStringList();
 
-      Q_FOREACH ( const QString &col, cols )
+      const auto constCols = cols;
+      for ( const QString &col : constCols )
       {
         QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
         for ( int idx = 0; idx < cbm->rowCount(); idx++ )
@@ -453,7 +456,7 @@ void QgsPgSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QString
 
 void QgsPgSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -501,7 +504,8 @@ void QgsPgSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
-  Q_FOREACH ( const QModelIndex &idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  const auto constIndexes = mTablesTreeView->selectionModel()->selection().indexes();
+  for ( const QModelIndex &idx : constIndexes )
   {
     if ( idx.column() != QgsPgTableModel::DbtmTable )
       continue;
@@ -628,7 +632,8 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, QStringLiteral( "postgres" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, QStringLiteral( "postgres" ), options );
   if ( !vlayer->isValid() )
   {
     delete vlayer;
@@ -673,7 +678,7 @@ void QgsPgSourceSelect::setConnectionListPosition()
 
 void QgsPgSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsPgSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

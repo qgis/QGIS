@@ -92,7 +92,8 @@ QString QgsPageSizeRegistry::find( const QgsLayoutSize &size ) const
 {
   //try to match to existing page size
   QgsLayoutMeasurementConverter converter;
-  Q_FOREACH ( const QgsPageSize &pageSize, mPageSizes )
+  const auto constMPageSizes = mPageSizes;
+  for ( const QgsPageSize &pageSize : constMPageSizes )
   {
     // convert passed size to same units
     QgsLayoutSize xSize = converter.convert( size, pageSize.size.units() );

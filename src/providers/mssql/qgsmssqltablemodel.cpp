@@ -135,7 +135,8 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
     if ( detailsFromThread )
       flags |= Qt::ItemIsEnabled;
 
-    Q_FOREACH ( QStandardItem *item, childItemList )
+    const auto constChildItemList = childItemList;
+    for ( QStandardItem *item : constChildItemList )
     {
       item->setFlags( item->flags() & ~flags );
     }
@@ -254,7 +255,8 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         row[ DbtmSrid ]->setText( tr( "Enter…" ) );
         row[ DbtmSrid ]->setFlags( row[ DbtmSrid ]->flags() | Qt::ItemIsEditable );
 
-        Q_FOREACH ( QStandardItem *item, row )
+        const auto constRow = row;
+        for ( QStandardItem *item : constRow )
         {
           item->setFlags( item->flags() | Qt::ItemIsEnabled );
         }

@@ -28,10 +28,10 @@ Map canvas is a class for displaying all GIS data types on a canvas.
 #include "qgsmapcanvas.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
+    if ( qobject_cast<QgsMapCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMapCanvas;
     else
-      sipType = NULL;
+      sipType = nullptr;
 %End
   public:
 
@@ -232,12 +232,13 @@ Set canvas extent to the bounding box of a set of features
 :param ids: the feature ids*
 %End
 
-    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
+    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter = true );
 %Docstring
 Centers canvas extent to feature ids
 
 :param layer: the vector layer
-:param ids: the feature ids*
+:param ids: the feature ids
+:param alwaysRecenter: if false, the canvas is recentered only if the bounding box is not contained within the current extent
 %End
 
     void panToSelected( QgsVectorLayer *layer = 0 );

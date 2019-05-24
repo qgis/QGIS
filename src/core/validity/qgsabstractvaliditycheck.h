@@ -136,8 +136,8 @@ class CORE_EXPORT QgsAbstractValidityCheck
      */
     virtual bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback )
     {
-      Q_UNUSED( context );
-      Q_UNUSED( feedback );
+      Q_UNUSED( context )
+      Q_UNUSED( feedback )
       return true;
     }
 

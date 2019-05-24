@@ -19,7 +19,6 @@
 #include <QWidget>
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
-#include "qgsdistancearea.h"
 #include "qgis_gui.h"
 #include <memory>
 
@@ -57,6 +56,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * \param parent parent widget
      */
     explicit QgsExpressionLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsExpressionLineEdit() override;
 
     /**
      * Sets the title used in the expression builder dialog

@@ -34,8 +34,8 @@ QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObjec
 
 QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
-  Q_UNUSED( index );
+  Q_UNUSED( option )
+  Q_UNUSED( index )
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
@@ -150,7 +150,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QObje
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 5;
 }
 
@@ -252,7 +252,8 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
       return;
     }
   }
-  Q_FOREACH ( QgsVectorLayer *vl, mProject->snappingConfig().individualLayerSettings().keys() )
+  const auto constKeys = mProject->snappingConfig().individualLayerSettings().keys();
+  for ( QgsVectorLayer *vl : constKeys )
   {
     if ( !oldSettings.contains( vl ) )
     {
@@ -270,7 +271,8 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    const auto constChildren = node->children();
+    for ( QgsLayerTreeNode *child : constChildren )
     {
       hasRowchanged( child, oldSettings );
     }
@@ -314,7 +316,8 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
     return false;
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    const auto constChildren = node->children();
+    for ( QgsLayerTreeNode *child : constChildren )
     {
       if ( nodeShown( child ) )
       {

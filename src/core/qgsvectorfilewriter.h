@@ -718,7 +718,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     ~QgsVectorFileWriter() override;
 
     /**
-     * Delete a shapefile (and its accompanying shx / dbf / prf)
+     * Delete a shapefile (and its accompanying shx / dbf / prj / qix / qpj / cpg / sbn / sbx / idm / ind)
      * \param fileName /path/to/file.shp
      * \returns bool TRUE if the file was deleted successfully
      */
@@ -888,6 +888,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QgsRenderContext mRenderContext;
 
     bool mUsingTransaction = false;
+    bool supportsStringList = false;
 
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
     gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );

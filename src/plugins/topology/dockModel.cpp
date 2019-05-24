@@ -21,20 +21,20 @@
 
 DockModel::DockModel( ErrorList &errorList, QObject *parent = nullptr ) : mErrorlist( errorList )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );
 
 }
 
 int DockModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mErrorlist.count();
 }
 
 int DockModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 3;
 }
 
@@ -105,9 +105,9 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
 
 bool DockModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( index );
-  Q_UNUSED( value );
-  Q_UNUSED( role );
+  Q_UNUSED( index )
+  Q_UNUSED( value )
+  Q_UNUSED( role )
   return false;
 }
 

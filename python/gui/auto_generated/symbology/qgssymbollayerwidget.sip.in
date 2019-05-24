@@ -125,6 +125,9 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
 
     void updatePatternIcon();
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+
 };
 
 
@@ -374,6 +377,43 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
 
 };
 
+
+
+
+class QgsHashedLineSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring
+Widget for controlling the properties of a :py:class:`QgsHashedLineSymbolLayer`.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsHashedLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsHashedLineSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsHashedLineSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+
+};
 
 
 
@@ -655,7 +695,22 @@ Set stroke color.
 %End
     void setSize( double size );
     void setAngle( double angle );
+
     void setCharacter( QChar chr );
+%Docstring
+Set the font marker character from char.
+
+:param chr: the char
+%End
+
+    void setCharacterFromText( const QString &text );
+%Docstring
+Set the font marker character from a text string.
+
+:param text: the text string
+
+.. versionadded:: 3.8
+%End
 
   protected:
 

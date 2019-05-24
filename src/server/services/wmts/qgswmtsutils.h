@@ -43,6 +43,10 @@ namespace QgsWmts
 
     QgsUnitTypes::DistanceUnit unit = QgsUnitTypes::DistanceMeters;
 
+    bool hasAxisInverted = false;
+
+    double resolution = 0.0;
+
     double scaleDenominator = 0.0;
 
     int lastLevel = -1;
@@ -70,6 +74,8 @@ namespace QgsWmts
     QgsRectangle extent;
 
     QgsUnitTypes::DistanceUnit unit;
+
+    bool hasAxisInverted = false;
 
     QList< tileMatrixDef > tileMatrixList;
   };

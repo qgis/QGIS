@@ -174,7 +174,8 @@ void QgsHandleBadLayers::selectionChanged()
 
   mRows.clear();
 
-  Q_FOREACH ( QTableWidgetItem *item, mLayerList->selectedItems() )
+  const auto constSelectedItems = mLayerList->selectedItems();
+  for ( QTableWidgetItem *item : constSelectedItems )
   {
     if ( item->column() != 0 )
       continue;
@@ -303,7 +304,8 @@ void QgsHandleBadLayers::browseClicked()
       return;
     }
 
-    Q_FOREACH ( int row, mRows )
+    const auto constMRows = mRows;
+    for ( int row : constMRows )
     {
       bool providerFileBased = mLayerList->item( row, 1 )->data( Qt::UserRole + 0 ).toBool();
       if ( !providerFileBased )
@@ -362,7 +364,6 @@ void QgsHandleBadLayers::editAuthCfg()
 void QgsHandleBadLayers::apply()
 {
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
-  buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
   QHash<QString, QString> baseChange;
 
 
@@ -413,11 +414,22 @@ void QgsHandleBadLayers::apply()
     if ( QgsProject::instance()->mapLayer( layerId ) )
     {
       QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
-      if ( mapLayer )
+      QgsDataProvider::ProviderOptions options;
+      const auto absolutePath { QgsProject::instance()->pathResolver().readPath( datasource ) };
+      mapLayer->setDataSource( absolutePath, name, provider, options );
+      dataSourceFixed  = mapLayer->isValid();
+      if ( dataSourceFixed )
       {
-        QgsDataProvider::ProviderOptions options;
-        mapLayer->setDataSource( datasource, name, provider, options );
-        dataSourceFixed  = mapLayer->isValid();
+        QString errorMsg;
+        QgsReadWriteContext context;
+        context.setPathResolver( QgsProject::instance()->pathResolver() );
+        context.setProjectTranslator( QgsProject::instance() );
+        if ( ! mapLayer->readSymbology( node, errorMsg, context ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from node XML for layer %1: %2" )
+                       .arg( mapLayer->name( ) )
+                       .arg( errorMsg ) );
+        }
       }
     }
 

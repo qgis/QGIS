@@ -30,6 +30,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -39,7 +40,7 @@
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( index.column() == QgsDb2TableModel::DbtmSql )
   {
     QLineEdit *le = new QLineEdit( parent );
@@ -384,7 +385,7 @@ void QgsDb2SourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStrin
 
 void QgsDb2SourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -593,7 +594,8 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDb2TableModel::DbtmTable ) )->text();
 
-  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer >( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer >( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ), options );
 
   if ( !vlayer->isValid() )
   {
@@ -654,7 +656,7 @@ void QgsDb2SourceSelect::setConnectionListPosition()
 
 void QgsDb2SourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )

@@ -48,7 +48,7 @@ QgsMapToolPinLabels::~QgsMapToolPinLabels()
 
 void QgsMapToolPinLabels::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
@@ -203,7 +203,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       {
         continue;
       }
-      QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
       {
         QgsDebugMsg( QStringLiteral( "Failed to cast to vector layer" ) );
@@ -223,7 +223,8 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
 void QgsMapToolPinLabels::removePinnedHighlights()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
-  Q_FOREACH ( QgsRubberBand *rb, mHighlights )
+  const auto constMHighlights = mHighlights;
+  for ( QgsRubberBand *rb : constMHighlights )
   {
     delete rb;
   }

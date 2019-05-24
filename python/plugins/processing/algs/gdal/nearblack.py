@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -114,7 +110,7 @@ class nearblack(GdalAlgorithm):
         arguments.append('-near')
         arguments.append(str(self.parameterAsInt(parameters, self.NEAR, context)))
 
-        if self.parameterAsBool(parameters, self.WHITE, context):
+        if self.parameterAsBoolean(parameters, self.WHITE, context):
             arguments.append('-white')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)

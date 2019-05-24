@@ -75,10 +75,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
+    if ( qobject_cast<QgsMapCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMapCanvas;
     else
-      sipType = NULL;
+      sipType = nullptr;
     SIP_END
 #endif
 
@@ -253,9 +253,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Centers canvas extent to feature ids
-        \param layer the vector layer
-        \param ids the feature ids*/
-    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
+     * \param layer the vector layer
+     * \param ids the feature ids
+     * \param alwaysRecenter if false, the canvas is recentered only if the bounding box is not contained within the current extent
+     */
+    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter = true );
 
     //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer *layer = nullptr );

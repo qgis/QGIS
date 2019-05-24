@@ -128,6 +128,7 @@ class CORE_EXPORT QgsWkbTypes
       MultiLineString25D,
       MultiPolygon25D
     };
+    Q_ENUM( Type )
 
     /**
      * The geometry types are used to group QgsWkbTypes::Type in a

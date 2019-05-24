@@ -172,7 +172,8 @@ void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunct
   if ( !mError )
   {
     bool foundMatch = false;
-    Q_FOREACH ( const QgsWfsCapabilities::Function &f, mSpatialPredicatesList )
+    const auto constMSpatialPredicatesList = mSpatialPredicatesList;
+    for ( const QgsWfsCapabilities::Function &f : constMSpatialPredicatesList )
     {
       if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 ||
            ( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
@@ -180,7 +181,8 @@ void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunct
         foundMatch = true;
       }
     }
-    Q_FOREACH ( const QgsWfsCapabilities::Function &f, mFunctionList )
+    const auto constMFunctionList = mFunctionList;
+    for ( const QgsWfsCapabilities::Function &f : constMFunctionList )
     {
       if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 )
       {
@@ -284,7 +286,8 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     QString parserErrorString( sql.parserErrorString() );
     QStringList parts( parserErrorString.split( ',' ) );
     parserErrorString.clear();
-    Q_FOREACH ( const QString &part, parts )
+    const auto constParts = parts;
+    for ( const QString &part : constParts )
     {
       QString newPart( part );
       if ( part == QLatin1String( "syntax error" ) )
@@ -331,7 +334,8 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   QList< QString> typenameList;
   bool severalTablesWithSameNameButDifferentPrefix = false;
   QSet< QString > unprefixTypenames;
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef *table, tables )
+  const auto constTables = tables;
+  for ( QgsSQLStatement::NodeTableDef *table : constTables )
   {
     QString prefixedTypename( mShared->mCaps.addPrefixIfNeeded( table->name() ) );
     if ( prefixedTypename.isEmpty() )
@@ -365,7 +369,8 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   }
 
   QList<QgsSQLStatement::NodeJoin *> joins = select->joins();
-  Q_FOREACH ( QgsSQLStatement::NodeJoin *join, joins )
+  const auto constJoins = joins;
+  for ( QgsSQLStatement::NodeJoin *join : constJoins )
   {
     QgsSQLStatement::NodeTableDef *table = join->tableDef();
     QString prefixedTypename( mShared->mCaps.addPrefixIfNeeded( table->name() ) );
@@ -412,7 +417,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   }
 
   QString concatenatedTypenames;
-  Q_FOREACH ( const QString &typeName, typenameList )
+  for ( const QString &typeName : qgis::as_const( typenameList ) )
   {
     if ( !concatenatedTypenames.isEmpty() )
       concatenatedTypenames += QLatin1String( "," );
@@ -459,7 +464,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   mShared->mLayerPropertiesList.clear();
   QMap < QString, QgsFields > mapTypenameToFields;
   QMap < QString, QString > mapTypenameToGeometryAttribute;
-  Q_FOREACH ( const QString &typeName, typenameList )
+  for ( const QString &typeName : qgis::as_const( typenameList ) )
   {
     QString geometryAttribute;
     QgsFields fields;
@@ -520,7 +525,8 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   QList<QgsSQLStatement::NodeSelectedColumn *> columns = select->columns();
   QMap< QString, QPair<QString, QString> > mapFieldNameToSrcLayerNameFieldName;
   mShared->mFields.clear();
-  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn *selectedcolumn, columns )
+  const auto constColumns = columns;
+  for ( QgsSQLStatement::NodeSelectedColumn *selectedcolumn : constColumns )
   {
     QgsSQLStatement::Node *column = selectedcolumn->column();
     if ( column->nodeType() != QgsSQLStatement::ntColumnRef )
@@ -576,7 +582,8 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       else
       {
         // * syntax
-        Q_FOREACH ( const QString &typeName, typenameList )
+        const auto constTypenameList = typenameList;
+        for ( const QString &typeName : constTypenameList )
         {
           const QgsFields tableFields = mapTypenameToFields[typeName];
           for ( int i = 0; i < tableFields.size(); i++ )
@@ -925,7 +932,8 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     QStringList idList = insertedFeatureIds( serverResponse );
     /* Fix issue with GeoServer and shapefile feature stores when no real
        feature id are returned but new0 returned instead of the featureId*/
-    Q_FOREACH ( const QString &v, idList )
+    const auto constIdList = idList;
+    for ( const QString &v : constIdList )
     {
       if ( v.startsWith( QLatin1String( "new" ) ) )
       {
@@ -1811,10 +1819,7 @@ bool QgsWFSProvider::getCapabilities()
         if ( mShared->mCaps.featureTypes[i].bboxSRSIsWGS84 )
         {
           QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
-          Q_NOWARN_DEPRECATED_PUSH
-          QgsCoordinateTransform ct( src, mShared->mSourceCRS );
-          Q_NOWARN_DEPRECATED_POP
-
+          QgsCoordinateTransform ct( src, mShared->mSourceCRS, transformContext() );
           QgsDebugMsgLevel( "latlon ext:" + r.toString(), 4 );
           QgsDebugMsgLevel( "src:" + src.authid(), 4 );
           QgsDebugMsgLevel( "dst:" + mShared->mSourceCRS.authid(), 4 );
@@ -1857,7 +1862,7 @@ bool QgsWFSProvider::getCapabilities()
 
 QgsWkbTypes::Type QgsWFSProvider::geomTypeFromPropertyType( const QString &attName, const QString &propType )
 {
-  Q_UNUSED( attName );
+  Q_UNUSED( attName )
 
   QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType geometry attribute \"%1\" type is \"%2\"" )
                     .arg( attName, propType ), 4 );

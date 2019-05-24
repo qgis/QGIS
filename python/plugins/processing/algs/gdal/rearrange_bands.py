@@ -21,10 +21,6 @@ __author__ = 'Mathieu Pellerin'
 __date__ = 'August 2018'
 __copyright__ = '(C) 2018, Mathieu Pellerin'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import re
 
@@ -52,12 +48,13 @@ class rearrange_bands(GdalAlgorithm):
     DATA_TYPE = 'DATA_TYPE'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
-
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+
+        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BANDS,
                                                      self.tr('Selected band(s)'),

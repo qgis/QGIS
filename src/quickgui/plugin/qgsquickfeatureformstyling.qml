@@ -23,14 +23,28 @@ QtObject {
 
   property QtObject group: QtObject {
     property color backgroundColor: "lightGray"
-    property real height: 30 * QgsQuick.Utils.dp
+    property color marginColor: "black"
+    property real leftMargin: 1 * QgsQuick.Utils.dp
+    property real rightMargin: 1 * QgsQuick.Utils.dp
+    property real topMargin: 1 * QgsQuick.Utils.dp
+    property real bottomMargin: 1 * QgsQuick.Utils.dp
+    property real height: 64 * QgsQuick.Utils.dp
+    property color fontColor: "black"
+    property int spacing: 10 * QgsQuick.Utils.dp
+    property int fontPixelSize: 24 * QgsQuick.Utils.dp
   }
 
   property QtObject tabs: QtObject {
     property color normalColor: "#4CAF50"
     property color activeColor: "#1B5E20"
-    property color disabledColor: "#999999"
+    property color disabledColor: "#FFFFFF"
+    property color backgroundColor: "#999999"
+    property color normalBackgroundColor: "#FFFFFF"
+    property color activeBackgroundColor: "#4CAF50"
+    property color disabledBackgroundColor: "#999999"
     property real height: 48 * QgsQuick.Utils.dp
+    property real buttonHeight: height * 0.8
+    property real spacing: 0
   }
 
   property QtObject constraint: QtObject {
@@ -57,4 +71,14 @@ QtObject {
       property int fontPixelSize: 48 * QgsQuick.Utils.dp
 
     }
+
+  property QtObject icons: QtObject {
+    property var camera: QgsQuick.Utils.getThemeIcon("ic_camera")
+    property var remove: QgsQuick.Utils.getThemeIcon("ic_delete_forever_white")
+    property var gallery: QgsQuick.Utils.getThemeIcon("ic_gallery")
+    property var brokenImage: QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
+    property var notAvailable: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
+    property var today: QgsQuick.Utils.getThemeIcon("ic_today")
+  }
+
 }

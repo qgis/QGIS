@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.core import (QgsRasterFileWriter,
@@ -108,7 +104,7 @@ class roughness(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
+        if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)

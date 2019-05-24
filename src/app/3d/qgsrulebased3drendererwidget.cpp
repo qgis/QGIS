@@ -150,7 +150,8 @@ void QgsRuleBased3DRendererWidget::editRule( const QModelIndex &index )
 void QgsRuleBased3DRendererWidget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
-  Q_FOREACH ( const QItemSelectionRange &range, sel )
+  const auto constSel = sel;
+  for ( const QItemSelectionRange &range : constSel )
   {
     if ( range.isValid() )
       mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
@@ -405,7 +406,8 @@ QMimeData *QgsRuleBased3DRendererModel::mimeData( const QModelIndexList &indexes
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )
@@ -433,7 +435,7 @@ QMimeData *QgsRuleBased3DRendererModel::mimeData( const QModelIndexList &indexes
 
 bool QgsRuleBased3DRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   if ( action == Qt::IgnoreAction )
     return true;

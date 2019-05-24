@@ -227,7 +227,7 @@ void QgsBookmarks::deleteClicked()
 
 void QgsBookmarks::lstBookmarks_doubleClicked( const QModelIndex &index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   zoomToBookmark();
 }
 
@@ -325,7 +325,8 @@ void QgsBookmarks::importFromXml()
   QStringList queriesList = queries.split( ';' );
   QSqlQuery query( mQgisModel->database() );
 
-  Q_FOREACH ( const QString &queryTxt, queriesList )
+  const auto constQueriesList = queriesList;
+  for ( const QString &queryTxt : constQueriesList )
   {
     if ( queryTxt.trimmed().isEmpty() )
     {
@@ -460,13 +461,13 @@ QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel( QObject *parent )
 
 int QgsProjectBookmarksTableModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
 }
 
 int QgsProjectBookmarksTableModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 8;
 }
 
@@ -500,7 +501,7 @@ QVariant QgsProjectBookmarksTableModel::data( const QModelIndex &index, int role
 
 bool QgsProjectBookmarksTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
   Q_ASSERT( role == Qt::EditRole );
 
   switch ( index.column() )
@@ -533,8 +534,8 @@ bool QgsProjectBookmarksTableModel::setData( const QModelIndex &index, const QVa
 
 bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( row );
+  Q_UNUSED( parent )
+  Q_UNUSED( row )
   // append
   int oldCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
   beginInsertRows( parent, oldCount, oldCount + count );
@@ -545,7 +546,7 @@ bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModel
 
 bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   beginRemoveRows( parent, row, row + count );
   for ( int newRow = row ; newRow < rowCount() - count ; newRow++ )
   {

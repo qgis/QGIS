@@ -126,7 +126,8 @@ QList< QgsMapLayerAction * > QgsMapLayerActionRegistry::mapLayerActions( QgsMapL
 {
   QList< QgsMapLayerAction * > validActions;
 
-  Q_FOREACH ( QgsMapLayerAction *action, mMapLayerActionList )
+  const auto constMMapLayerActionList = mMapLayerActionList;
+  for ( QgsMapLayerAction *action : constMMapLayerActionList )
   {
     if ( action->canRunUsingLayer( layer ) && ( targets & action->targets() ) )
     {

@@ -116,7 +116,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *                otherwise we contact the host directly.
      * \param options generic data provider options
      */
-    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
 
     ~QgsWcsProvider() override;
@@ -144,9 +144,9 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     // TODO: Document this better.
 
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    void readBlock( int bandNo, int xBlock, int yBlock, void *block ) override;
+    bool readBlock( int bandNo, int xBlock, int yBlock, void *block ) override;
 
     //! Download cache
     void getCache( int bandNo, QgsRectangle  const &viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback *feedback = nullptr ) const;

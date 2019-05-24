@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.core import (QgsProcessingAlgorithm,
@@ -111,7 +107,7 @@ class fillnodata(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.parameterAsBool(parameters, self.NO_MASK, context):
+        if self.parameterAsBoolean(parameters, self.NO_MASK, context):
             arguments.append('-nomask')
 
         mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)

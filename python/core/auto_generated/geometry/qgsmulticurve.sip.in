@@ -35,8 +35,6 @@ Multi curve geometry collection.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
-
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );

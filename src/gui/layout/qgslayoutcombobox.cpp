@@ -87,7 +87,7 @@ QgsMasterLayoutInterface *QgsLayoutComboBox::currentLayout() const
 
 void QgsLayoutComboBox::indexChanged( int i )
 {
-  Q_UNUSED( i );
+  Q_UNUSED( i )
   emit layoutChanged( currentLayout() );
 }
 

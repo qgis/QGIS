@@ -480,7 +480,7 @@ QDomDocument QgsCompositionConverter::convertCompositionTemplate( const QDomDocu
 
 bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *layoutItem, const QDomElement &itemElem, const QgsProject *project )
 {
-  Q_UNUSED( project );
+  Q_UNUSED( project )
   if ( itemElem.isNull() )
   {
     return false;
@@ -541,7 +541,7 @@ bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *layoutItem, cons
 
 bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, const QDomElement &itemElem, const QgsProject *project )
 {
-  Q_UNUSED( project );
+  Q_UNUSED( project )
   layoutItem->setShapeType( static_cast<QgsLayoutItemShape::Shape>( itemElem.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() ) );
   layoutItem->setCornerRadius( QgsLayoutMeasurement( itemElem.attribute( QStringLiteral( "cornerRadius" ), QStringLiteral( "0" ) ).toDouble() ) );
 
@@ -1010,7 +1010,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
 
 bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem, const QDomElement &itemElem, const QgsProject *project, const QgsStringMap &mapId2Uuid )
 {
-  Q_UNUSED( project );
+  Q_UNUSED( project )
   restoreGeneralComposeItemProperties( layoutItem, itemElem );
 
   layoutItem->setHeight( itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble() );
@@ -1326,7 +1326,7 @@ bool QgsCompositionConverter::readAtlasXml( QgsLayoutAtlas *atlasItem, const QDo
 
 bool QgsCompositionConverter::readHtmlXml( QgsLayoutItemHtml *layoutItem, const QDomElement &itemElem, const QgsProject *project )
 {
-  Q_UNUSED( project );
+  Q_UNUSED( project )
   readOldComposerObjectXml( layoutItem, itemElem );
 
   //first create the frames
@@ -1375,7 +1375,7 @@ bool QgsCompositionConverter::readHtmlXml( QgsLayoutItemHtml *layoutItem, const 
 bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutItem, const QDomElement &itemElem, const QgsProject *project )
 {
 
-  Q_UNUSED( project );
+  Q_UNUSED( project )
   readOldComposerObjectXml( layoutItem, itemElem );
 
   //first create the frames

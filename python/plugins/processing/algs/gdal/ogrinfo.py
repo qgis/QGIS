@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
@@ -76,9 +72,9 @@ class ogrinfo(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['-al']
 
-        if self.parameterAsBool(parameters, self.SUMMARY_ONLY, context):
+        if self.parameterAsBoolean(parameters, self.SUMMARY_ONLY, context):
             arguments.append('-so')
-        if self.parameterAsBool(parameters, self.NO_METADATA, context):
+        if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
             arguments.append('-nomd')
 
         inLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)

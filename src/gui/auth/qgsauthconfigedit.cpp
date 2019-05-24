@@ -102,7 +102,8 @@ void QgsAuthConfigEdit::populateAuthMethods()
 
   // sort by auth method description attribute, then populate
   QMap<QString, QgsAuthMethod *> descmap;
-  Q_FOREACH ( const QString &authMethodKey, authMethodKeys )
+  const auto constAuthMethodKeys = authMethodKeys;
+  for ( const QString &authMethodKey : constAuthMethodKeys )
   {
     QgsAuthMethod *authmethod = QgsApplication::authManager()->authMethod( authMethodKey );
     if ( !authmethod )
@@ -366,7 +367,7 @@ void QgsAuthConfigEdit::validateAuth()
 
 void QgsAuthConfigEdit::leName_textChanged( const QString &txt )
 {
-  Q_UNUSED( txt );
+  Q_UNUSED( txt )
   validateAuth();
 }
 

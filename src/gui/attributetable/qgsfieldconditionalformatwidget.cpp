@@ -202,7 +202,8 @@ void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyl
 {
   mPresets.clear();
   mPresetsModel->clear();
-  Q_FOREACH ( const QgsConditionalStyle &style, styles )
+  const auto constStyles = styles;
+  for ( const QgsConditionalStyle &style : constStyles )
   {
     if ( style.isValid() )
     {
@@ -302,7 +303,8 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
 {
   mModel->clear();
 
-  Q_FOREACH ( const QgsConditionalStyle &style, getStyles() )
+  const auto constGetStyles = getStyles();
+  for ( const QgsConditionalStyle &style : constGetStyles )
   {
     QStandardItem *item = new QStandardItem( style.displayText() );
     item->setIcon( QIcon( style.renderPreview() ) );
@@ -312,7 +314,7 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
 
 void QgsFieldConditionalFormatWidget::fieldChanged( const QString &fieldName )
 {
-  Q_UNUSED( fieldName );
+  Q_UNUSED( fieldName )
   reloadStyles();
 }
 

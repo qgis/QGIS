@@ -21,10 +21,6 @@ __author__ = 'Joshua Arnott'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Joshua Arnott'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -156,7 +152,7 @@ class SpatialJoin(QgisAlgorithm):
 
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
         method = self.parameterAsEnum(parameters, self.METHOD, context)
-        discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
+        discard_nomatch = self.parameterAsBoolean(parameters, self.DISCARD_NONMATCHING, context)
         prefix = self.parameterAsString(parameters, self.PREFIX, context)
 
         source_fields = source.fields()

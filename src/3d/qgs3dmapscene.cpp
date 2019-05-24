@@ -50,6 +50,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
+#include "qgslinematerial_p.h"
+
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
@@ -569,6 +571,18 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( newEntity );
         newEntity->addComponent( picker );
         connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &Qgs3DMapScene::onLayerEntityPickEvent );
+      }
+
+      // this is probably not the best place for material-specific configuration,
+      // maybe this could be more generalized when other materials need some specific treatment
+      for ( QgsLineMaterial *lm : newEntity->findChildren<QgsLineMaterial *>() )
+      {
+        connect( mCameraController, &QgsCameraController::viewportChanged, lm, [lm, this]
+        {
+          lm->setViewportSize( mCameraController->viewport().size() );
+        } );
+
+        lm->setViewportSize( cameraController()->viewport().size() );
       }
     }
   }

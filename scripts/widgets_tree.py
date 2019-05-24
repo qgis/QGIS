@@ -21,8 +21,6 @@
 __author__ = 'Martin Dobias'
 __date__ = 'May 2011'
 __copyright__ = '(C) 2011, Martin Dobias'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 """
 Reads .ui files from ../src/ui/ directory and write to stdout an XML describing

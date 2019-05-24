@@ -55,7 +55,8 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
 {
-  Q_FOREACH ( QgsProcessingProvider *p, mProviders )
+  const auto constMProviders = mProviders;
+  for ( QgsProcessingProvider *p : constMProviders )
   {
     removeProvider( p );
   }
@@ -137,7 +138,8 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
   QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
   for ( ; it != mProviders.constEnd(); ++it )
   {
-    Q_FOREACH ( const QgsProcessingAlgorithm *alg, it.value()->algorithms() )
+    const auto constAlgorithms = it.value()->algorithms();
+    for ( const QgsProcessingAlgorithm *alg : constAlgorithms )
       if ( alg->id() == id )
         return alg;
   }

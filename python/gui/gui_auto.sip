@@ -54,6 +54,7 @@
 %Include auto_generated/qgisinterface.sip
 %Include auto_generated/qgsactionmenu.sip
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip
+%Include auto_generated/qgsadvanceddigitizingfloater.sip
 %Include auto_generated/qgsaggregatetoolbutton.sip
 %Include auto_generated/qgsattributedialog.sip
 %Include auto_generated/qgsattributeform.sip
@@ -113,6 +114,7 @@
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
 %Include auto_generated/qgsfieldexpressionwidget.sip
+%Include auto_generated/qgsfindfilesbypatternwidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfieldvalidator.sip
 %Include auto_generated/qgsfieldvalueslineedit.sip

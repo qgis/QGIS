@@ -70,7 +70,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      * \param   newDataset  handle of newly created dataset.
      *
      */
-    QgsGdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, bool update = false, GDALDatasetH newDataset = nullptr );
+    QgsGdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, bool update = false, GDALDatasetH newDataset = nullptr );
 
     //! Create invalid provider with error
     QgsGdalProvider( const QString &uri, const QgsError &error );
@@ -120,8 +120,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     double bandScale( int bandNo ) const override;
     double bandOffset( int bandNo ) const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
@@ -170,6 +170,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool setNoDataValue( int bandNo, double noDataValue ) override;
     bool remove() override;
+
+    void reloadData() override;
 
     QString validateCreationOptions( const QStringList &createOptions, const QString &format ) override;
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,

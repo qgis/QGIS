@@ -49,8 +49,8 @@ Qt::ItemFlags QgsLayerTreeModelLegendNode::flags() const
 
 bool QgsLayerTreeModelLegendNode::setData( const QVariant &value, int role )
 {
-  Q_UNUSED( value );
-  Q_UNUSED( role );
+  Q_UNUSED( value )
+  Q_UNUSED( role )
   return false;
 }
 
@@ -419,6 +419,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   QgsRenderContext context;
   context.setScaleFactor( settings.dpi() / 25.4 );
   context.setRendererScale( settings.mapScale() );
+  context.setFlag( QgsRenderContext::Antialiasing, true );
   context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
   context.setForceVectorOutput( true );
   context.setPainter( ctx ? ctx->painter : nullptr );
@@ -469,7 +470,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     double dotsPerMM = context.scaleFactor();
 
     int opacity = 255;
-    if ( QgsVectorLayer *vectorLayer = dynamic_cast<QgsVectorLayer *>( layerNode()->layer() ) )
+    if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layerNode()->layer() ) )
       opacity = ( 255 * vectorLayer->opacity() );
 
     p->save();
@@ -484,6 +485,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );
       tempImage.fill( Qt::transparent );
       QPainter imagePainter( &tempImage );
+      imagePainter.setRenderHint( QPainter::Antialiasing );
       context.setPainter( &imagePainter );
       s->drawPreviewIcon( &imagePainter, tempImageSize, &context );
       context.setPainter( ctx->painter );
@@ -537,7 +539,7 @@ void QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings,
   QImage img( pix.toImage().convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
 
   int opacity = 255;
-  if ( QgsVectorLayer *vectorLayer = dynamic_cast<QgsVectorLayer *>( layerNode()->layer() ) )
+  if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layerNode()->layer() ) )
     opacity = ( 255 * vectorLayer->opacity() );
 
   if ( opacity != 255 )
@@ -653,7 +655,7 @@ QVariant QgsImageLegendNode::data( int role ) const
 
 QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
-  Q_UNUSED( itemHeight );
+  Q_UNUSED( itemHeight )
 
   if ( ctx && ctx->painter )
   {
@@ -702,7 +704,7 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings,
   if ( ctx && ctx->painter )
   {
     QColor itemColor = mColor;
-    if ( QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( layerNode()->layer() ) )
+    if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layerNode()->layer() ) )
     {
       if ( QgsRasterRenderer *rasterRenderer = rasterLayer->renderer() )
         itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
@@ -737,7 +739,7 @@ void QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &set
   painter.setRenderHint( QPainter::Antialiasing );
 
   QColor itemColor = mColor;
-  if ( QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( layerNode()->layer() ) )
+  if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layerNode()->layer() ) )
   {
     if ( QgsRasterRenderer *rasterRenderer = rasterLayer->renderer() )
       itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
@@ -823,7 +825,7 @@ QVariant QgsWmsLegendNode::data( int role ) const
 
 QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
-  Q_UNUSED( itemHeight );
+  Q_UNUSED( itemHeight )
 
   if ( ctx && ctx->painter )
   {

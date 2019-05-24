@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
                        QgsExpressionContext,
@@ -104,7 +100,7 @@ class FieldsCalculator(QgisAlgorithm):
         field_type = self.TYPES[self.parameterAsEnum(parameters, self.FIELD_TYPE, context)]
         width = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
         precision = self.parameterAsInt(parameters, self.FIELD_PRECISION, context)
-        new_field = self.parameterAsBool(parameters, self.NEW_FIELD, context)
+        new_field = self.parameterAsBoolean(parameters, self.NEW_FIELD, context)
         formula = self.parameterAsString(parameters, self.FORMULA, context)
 
         expression = QgsExpression(formula)
@@ -158,7 +154,7 @@ class FieldsCalculator(QgisAlgorithm):
         return {self.OUTPUT: dest_id}
 
     def checkParameterValues(self, parameters, context):
-        newField = self.parameterAsBool(parameters, self.NEW_FIELD, context)
+        newField = self.parameterAsBoolean(parameters, self.NEW_FIELD, context)
         fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context).strip()
         if newField and len(fieldName) == 0:
             return False, self.tr('Field name is not set. Please enter a field name')

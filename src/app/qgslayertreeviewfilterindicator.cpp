@@ -35,7 +35,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
     return;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-  if ( !vlayer )
+  if ( !vlayer || vlayer->isEditable() )
     return;
 
   // launch the query builder
@@ -47,7 +47,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
 
 QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return QStringLiteral( "/mIndicatorFilter.svg" );
 }
 

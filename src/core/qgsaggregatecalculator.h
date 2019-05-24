@@ -22,6 +22,7 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
+#include "qgsfeaturerequest.h"
 #include <QVariant>
 
 
@@ -81,7 +82,8 @@ class CORE_EXPORT QgsAggregateCalculator
       StringMaximumLength, //!< Maximum length of string (string fields only)
       StringConcatenate, //!< Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
       GeometryCollect, //!< Create a multipart geometry from aggregated geometries
-      ArrayAggregate //!< Create an array of values
+      ArrayAggregate, //!< Create an array of values
+      StringConcatenateUnique //!< Concatenate unique values with a joining string (string fields only). Specify the delimiter using setDelimiter().
     };
 
     //! A bundle of parameters controlling aggregate calculation
@@ -102,6 +104,12 @@ class CORE_EXPORT QgsAggregateCalculator
        * \see QgsAggregateCalculator::delimiter()
        */
       QString delimiter;
+
+      /**
+       * Optional order by clauses.
+       * \since QGIS 3.8
+       */
+      QgsFeatureRequest::OrderBy orderBy;
     };
 
     /**
@@ -182,6 +190,9 @@ class CORE_EXPORT QgsAggregateCalculator
     //! Filter expression, or empty for no filter
     QString mFilterExpression;
 
+    //! Order by clause
+    QgsFeatureRequest::OrderBy mOrderBy;
+
     //! Delimiter to use for concatenate aggregate
     QString mDelimiter;
 
@@ -207,7 +218,7 @@ class CORE_EXPORT QgsAggregateCalculator
                                const QString &delimiter,
                                QgsExpressionContext *context, bool *ok = nullptr );
     static QVariant concatenateStrings( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
-                                        QgsExpressionContext *context, const QString &delimiter );
+                                        QgsExpressionContext *context, const QString &delimiter, bool unique = false );
 
     QVariant defaultValue( Aggregate aggregate ) const;
 };

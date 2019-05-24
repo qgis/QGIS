@@ -233,9 +233,27 @@ class CORE_EXPORT QgsRenderContext
      * should never be used to determine the actual visible extent of a map render.
      *
      * \see setExtent()
+     * \see mapExtent()
      */
     const QgsRectangle &extent() const { return mExtent; }
 
+    /**
+     * Returns the original extent of the map being rendered.
+     *
+     * Unlike extent(), this extent is always in the final destination CRS for the map
+     * render and represents the exact bounds of the map being rendered.
+     *
+     * \see extent()
+     * \see setMapExtent()
+     * \since QGIS 3.4.8
+     */
+    QgsRectangle mapExtent() const { return mOriginalMapExtent; }
+
+    /**
+     * Returns the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+     *
+     * \see setMapToPixel()
+     */
     const QgsMapToPixel &mapToPixel() const {return mMapToPixel;}
 
     /**
@@ -246,8 +264,20 @@ class CORE_EXPORT QgsRenderContext
      */
     double scaleFactor() const {return mScaleFactor;}
 
+    /**
+     * Returns TRUE if the rendering operation has been stopped and any ongoing
+     * rendering should be canceled immediately.
+     *
+     * \see setRenderingStopped()
+     */
     bool renderingStopped() const {return mRenderingStopped;}
 
+    /**
+     * Returns TRUE if rendering operations should use vector operations instead
+     * of any faster raster shortcuts.
+     *
+     * \see setForceVectorOutput()
+     */
     bool forceVectorOutput() const;
 
     /**
@@ -260,6 +290,11 @@ class CORE_EXPORT QgsRenderContext
      */
     void setUseAdvancedEffects( bool enabled );
 
+    /**
+     * Returns TRUE if edit markers should be drawn during the render operation.
+     *
+     * \see setDrawEditingInformation()
+     */
     bool drawEditingInformation() const;
 
     /**
@@ -275,6 +310,11 @@ class CORE_EXPORT QgsRenderContext
      */
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
 
+    /**
+     * Returns the color to use when rendering selected features.
+     *
+     * \see setSelectionColor()
+     */
     QColor selectionColor() const { return mSelectionColor; }
 
     /**
@@ -300,6 +340,11 @@ class CORE_EXPORT QgsRenderContext
      */
     void setCoordinateTransform( const QgsCoordinateTransform &t );
 
+    /**
+     * Sets the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+     *
+     * \see mapToPixel()
+     */
     void setMapToPixel( const QgsMapToPixel &mtp ) {mMapToPixel = mtp;}
 
     /**
@@ -312,11 +357,35 @@ class CORE_EXPORT QgsRenderContext
      * entire visible area.
      *
      * \see setExtent()
+     * \see setMapExtent()
      */
     void setExtent( const QgsRectangle &extent ) {mExtent = extent;}
 
+    /**
+     * Sets the original \a extent of the map being rendered.
+     *
+     * Unlike setExtent(), this extent is always in the final destination CRS for the map
+     * render and represents the exact bounds of the map being rendered.
+     *
+     * \see mapExtent()
+     * \see setExtent()
+     * \since QGIS 3.4.8
+     */
+    void setMapExtent( const QgsRectangle &extent ) { mOriginalMapExtent = extent; }
+
+    /**
+     * Sets whether edit markers should be drawn during the render operation.
+     *
+     * \see drawEditingInformation()
+     */
     void setDrawEditingInformation( bool b );
 
+    /**
+     * Sets whether the rendering operation has been \a stopped and any ongoing
+     * rendering should be canceled immediately.
+     *
+     * \see renderingStopped()
+     */
     void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
 
     /**
@@ -349,6 +418,12 @@ class CORE_EXPORT QgsRenderContext
      */
     void setPainter( QPainter *p ) {mPainter = p;}
 
+    /**
+     * Sets whether rendering operations should use vector operations instead
+     * of any faster raster shortcuts.
+     *
+     * \see forceVectorOutput()
+     */
     void setForceVectorOutput( bool force );
 
     /**
@@ -356,6 +431,12 @@ class CORE_EXPORT QgsRenderContext
      * \note not available in Python bindings
      */
     void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; } SIP_SKIP
+
+    /**
+     * Sets the \a color to use when rendering selected features.
+     *
+     * \see selectionColor()
+     */
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
 
     /**
@@ -511,6 +592,7 @@ class CORE_EXPORT QgsRenderContext
     QgsDistanceArea mDistanceArea;
 
     QgsRectangle mExtent;
+    QgsRectangle mOriginalMapExtent;
 
     QgsMapToPixel mMapToPixel;
 

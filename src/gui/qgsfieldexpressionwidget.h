@@ -25,13 +25,13 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsdistancearea.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfieldproxymodel.h"
 
 
 class QgsMapLayer;
 class QgsVectorLayer;
+class QgsExpressionContextGenerator;
 
 
 /**

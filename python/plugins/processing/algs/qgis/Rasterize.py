@@ -47,10 +47,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2016-10-05'
 __copyright__ = '(C) 2016 by OPENGIS.ch'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 class RasterizeAlgorithm(QgisAlgorithm):
 
@@ -182,7 +178,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
             self.TILE_SIZE,
             context)
 
-        make_trans = self.parameterAsBool(
+        make_trans = self.parameterAsBoolean(
             parameters,
             self.MAKE_BACKGROUND_TRANSPARENT,
             context)

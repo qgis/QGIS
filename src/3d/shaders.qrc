@@ -3,5 +3,8 @@
         <file>shaders/instanced.frag</file>
         <file>shaders/instanced.vert</file>
         <file>shaders/light.inc.frag</file>
+        <file>shaders/lines.vert</file>
+        <file>shaders/lines.geom</file>
+        <file>shaders/lines.frag</file>
     </qresource>
 </RCC>

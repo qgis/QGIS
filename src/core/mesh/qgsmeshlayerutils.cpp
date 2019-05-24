@@ -123,10 +123,25 @@ double QgsMeshLayerUtils::interpolateFromFacesData( const QgsPointXY &p1, const 
 
 QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
 {
-  QgsRectangle bbox;
-  bbox.combineExtentWith( p1.x(), p1.y() );
-  bbox.combineExtentWith( p2.x(), p2.y() );
-  bbox.combineExtentWith( p3.x(), p3.y() );
+  // p1
+  double xMin = p1.x();
+  double xMax = p1.x();
+  double yMin = p1.y();
+  double yMax = p1.y();
+
+  //p2
+  xMin = ( ( xMin < p2.x() ) ? xMin : p2.x() );
+  xMax = ( ( xMax > p2.x() ) ? xMax : p2.x() );
+  yMin = ( ( yMin < p2.y() ) ? yMin : p2.y() );
+  yMax = ( ( yMax > p2.y() ) ? yMax : p2.y() );
+
+  // p3
+  xMin = ( ( xMin < p3.x() ) ? xMin : p3.x() );
+  xMax = ( ( xMax > p3.x() ) ? xMax : p3.x() );
+  yMin = ( ( yMin < p3.y() ) ? yMin : p3.y() );
+  yMax = ( ( yMax > p3.y() ) ? yMax : p3.y() );
+
+  QgsRectangle bbox( xMin,  yMin,  xMax,  yMax );
   return bbox;
 }
 

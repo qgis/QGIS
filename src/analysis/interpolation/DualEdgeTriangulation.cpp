@@ -1654,7 +1654,7 @@ void DualEdgeTriangulation::ruppertRefinement()
           {
             //split segment
             int pointno = splitHalfEdge( i, 0.5 );
-            Q_UNUSED( pointno );
+            Q_UNUSED( pointno )
             stop = false;
           }
         }

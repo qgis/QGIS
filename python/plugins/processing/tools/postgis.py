@@ -21,10 +21,6 @@ __author__ = 'Martin Dobias'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Martin Dobias'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import psycopg2
 import psycopg2.extensions  # For isolation levels
 import re
@@ -40,6 +36,16 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 # Use unicode!
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+
+
+class DbError(Exception):
+
+    def __init__(self, message, query=None):
+        self.message = str(message)
+        self.query = (str(query) if query is not None else None)
+
+    def __str__(self):
+        return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
 
 
 def uri_from_name(conn_name):
@@ -150,8 +156,8 @@ class TableField(object):
         ALTER TABLE command.
         """
 
-        data_type = (self.data_type if not self.modifier or self.modifier <
-                     0 else '%s(%d)' % (self.data_type, self.modifier))
+        data_type = (self.data_type if not self.modifier or self.modifier
+                     < 0 else '%s(%d)' % (self.data_type, self.modifier))
         txt = '%s %s %s' % (self._quote(self.name), data_type,
                             self.is_null_txt())
         if self.default and len(self.default) > 0:
@@ -715,20 +721,20 @@ class GeoDB(object):
 
         table_name = self._table_name(schema, table)
         idx_name = self._quote(name)
-        sql = 'CREATE INDEX %s ON %s (%s)' % (idx_name, table_name,
-                                              self._quote(column))
+        sql = 'CREATE INDEX "%s" ON %s (%s)' % (idx_name, table_name,
+                                                self._quote(column))
         self._exec_sql_and_commit(sql)
 
     def create_spatial_index(self, table, schema=None, geom_column='the_geom'):
         table_name = self._table_name(schema, table)
         idx_name = self._quote(u"sidx_%s_%s" % (table, geom_column))
-        sql = 'CREATE INDEX %s ON %s USING GIST(%s)' % (idx_name, table_name,
-                                                        self._quote(geom_column))
+        sql = 'CREATE INDEX "%s" ON %s USING GIST(%s)' % (idx_name, table_name,
+                                                          self._quote(geom_column))
         self._exec_sql_and_commit(sql)
 
     def delete_index(self, name, schema=None):
         index_name = self._table_name(schema, name)
-        sql = 'DROP INDEX %s' % index_name
+        sql = 'DROP INDEX "%s"' % index_name
         self._exec_sql_and_commit(sql)
 
     def get_database_privileges(self):
@@ -825,8 +831,8 @@ class GeoDB(object):
         try:
             cursor.execute(sql)
         except psycopg2.Error as e:
-            raise QgsProcessingException(str(e) + ' QUERY: ' +
-                                         e.cursor.query.decode(e.cursor.connection.encoding))
+            raise QgsProcessingException(str(e) + ' QUERY: '
+                                         + e.cursor.query.decode(e.cursor.connection.encoding))
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
@@ -866,7 +872,7 @@ class GeoDB(object):
         if not schema:
             return self._quote(table)
         else:
-            return u'%s.%s' % (self._quote(schema), self._quote(table))
+            return u'"%s"."%s"' % (self._quote(schema), self._quote(table))
 
 
 # For debugging / testing

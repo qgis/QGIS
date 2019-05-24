@@ -139,8 +139,8 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyFillStyle, //!< Fill style (eg solid, dots)
       PropertyJoinStyle, //!< Line join style
       PropertySecondaryColor, //!< Secondary color (eg for gradient fills)
-      PropertyLineAngle, //!< Line angle
-      PropertyLineDistance, //!< Distance between lines
+      PropertyLineAngle, //!< Line angle, or angle of hash lines for hash line symbols
+      PropertyLineDistance, //!< Distance between lines, or length of lines for hash line symbols
       PropertyGradientType, //!< Gradient fill type
       PropertyCoordinateMode, //!< Gradient coordinate mode
       PropertyGradientSpread, //!< Gradient spread mode
@@ -165,6 +165,7 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyPlacement, //!< Line marker placement
       PropertyInterval, //!< Line marker interval
       PropertyOffsetAlongLine, //!< Offset along line
+      PropertyAverageAngleLength, //!< Length to average symbol angles over
       PropertyHorizontalAnchor, //!< Horizontal anchor point
       PropertyVerticalAnchor, //!< Vertical anchor point
       PropertyLayerEnabled, //!< Whether symbol layer is enabled
@@ -174,6 +175,8 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyArrowHeadThickness, //!< Arrow head thickness
       PropertyArrowHeadType, //!< Arrow head type
       PropertyArrowType, //!< Arrow type
+      PropertyOffsetX, //!< Horizontal offset
+      PropertyOffsetY, //!< Vertical offset
     };
 
     /**
@@ -213,7 +216,7 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Set stroke color. Supported by marker and fill layers.
      * \since QGIS 2.1 */
-    virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ); }
+    virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ) }
 
     /**
      * Gets stroke color. Supported by marker and fill layers.
@@ -223,7 +226,7 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Set fill color. Supported by marker and fill layers.
      * \since QGIS 2.1 */
-    virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ); }
+    virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ) }
 
     /**
      * Gets fill color. Supported by marker and fill layers.
@@ -245,9 +248,9 @@ class CORE_EXPORT QgsSymbolLayer
     virtual QgsSymbolLayer *clone() const = 0 SIP_FACTORY;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
-    { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
+    { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
-    virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ); Q_UNUSED( mapUnitScaleFactor ); return QString(); }
+    virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ) Q_UNUSED( mapUnitScaleFactor ); return QString(); }
 
     /**
      * Should be reimplemented by subclasses to return a string map that
@@ -280,7 +283,7 @@ class CORE_EXPORT QgsSymbolLayer
       drawn with an stroke will draw half the width
       of the stroke outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
-    virtual double estimateMaxBleed( const QgsRenderContext &context ) const { Q_UNUSED( context ); return 0; }
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const { Q_UNUSED( context ) return 0; }
 
     /**
      * Sets the units to use for sizes and widths within the symbol layer. Individual
@@ -290,7 +293,7 @@ class CORE_EXPORT QgsSymbolLayer
      * \param unit output units
      * \see outputUnit()
      */
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit ) { Q_UNUSED( unit ); }
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit ) { Q_UNUSED( unit ) }
 
     /**
      * Returns the units to use for sizes and widths within the symbol layer. Individual
@@ -302,12 +305,24 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
 
-    virtual void setMapUnitScale( const QgsMapUnitScale &scale ) { Q_UNUSED( scale ); }
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale ) { Q_UNUSED( scale ) }
     virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }
 
-    // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
-    void setRenderingPass( int renderingPass ) { mRenderingPass = renderingPass; }
-    int renderingPass() const { return mRenderingPass; }
+    /**
+     * Specifies the rendering pass in which this symbol layer should be rendered.
+     * The lower the number, the lower the symbol will be rendered.
+     * 0: first pass, 1: second pass, ...
+     * Defaults to 0
+     */
+    void setRenderingPass( int renderingPass );
+
+    /**
+     * Specifies the rendering pass in which this symbol layer should be rendered.
+     * The lower the number, the lower the symbol will be rendered.
+     * 0: first pass, 1: second pass, ...
+     * Defaults to 0
+     */
+    int renderingPass() const;
 
     /**
      * Returns the set of attributes referenced by the layer. This includes attributes
@@ -416,7 +431,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     bool mLocked;
     QColor mColor;
-    int mRenderingPass;
+    int mRenderingPass = 0;
 
     QgsPropertyCollection mDataDefinedProperties;
 
@@ -531,7 +546,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setSizeUnit()
      * \see setSizeMapUnitScale()
      */
-    void setSize( double size ) { mSize = size; }
+    virtual void setSize( double size ) { mSize = size; }
 
     /**
      * Returns the symbol size. Units are specified by sizeUnit().
@@ -684,7 +699,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \param props symbol layer definition (see properties())
      */
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
-    { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
+    { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -786,10 +801,42 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
       InteriorRingsOnly, //!< Render the interior rings only
     };
 
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
+    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+
+    /**
+     * Renders the line symbol layer along the line joining \a points, using the given render \a context.
+     * \see renderPolygonStroke()
+     */
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;
 
+    /**
+     * Renders the line symbol layer along the outline of polygon, using the given render \a context.
+     *
+     * The exterior ring of the polygon is specified in \a points. Optionally, interior
+     * rings are set via the \a rings argument.
+     *
+     * \see renderPolyline()
+     */
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
+    /**
+     * Sets the \a width of the line symbol layer.
+     *
+     * Calling this method updates the width of the line symbol layer, without
+     * changing the existing width units. It has different effects depending
+     * on the line symbol layer subclass, e.g. for a simple line layer it
+     * changes the stroke width of the line, for a marker line layer it
+     * changes the size of the markers used to draw the line.
+     *
+     * \see width()
+     * \warning Since the width units vary, this method is useful for changing the
+     * relative width of a line symbol layer only.
+     */
     virtual void setWidth( double width ) { mWidth = width; }
 
     /**
@@ -815,8 +862,62 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      */
     virtual double width( const QgsRenderContext &context ) const;
 
+    /**
+     * Returns the line's offset.
+     *
+     * Offset units can be retrieved by calling offsetUnit().
+     *
+     * \see setOffset()
+     * \see offsetUnit()
+     * \see offsetMapUnitScale()
+     */
     double offset() const { return mOffset; }
+
+    /**
+     * Sets the line's \a offset.
+     *
+     * Offset units are set via setOffsetUnit().
+     *
+     * \see offset()
+     * \see setOffsetUnit()
+     * \see setOffsetMapUnitScale()
+     */
     void setOffset( double offset ) { mOffset = offset; }
+
+    /**
+     * Sets the \a unit for the line's offset.
+     * \see offsetUnit()
+     * \see setOffset()
+     * \see setOffsetMapUnitScale()
+    */
+    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+
+    /**
+     * Returns the units for the line's offset.
+     * \see setOffsetUnit()
+     * \see offset()
+     * \see offsetMapUnitScale()
+    */
+    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+
+    /**
+     * Sets the map unit \a scale for the line's offset.
+     * \see offsetMapUnitScale()
+     * \see setOffset()
+     * \see setOffsetUnit()
+    */
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the line's offset.
+     * \see setOffsetMapUnitScale()
+     * \see offset()
+     * \see offsetUnit()
+    */
+    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+
+    // TODO QGIS 4.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
+    // only apply to simple line symbol layers and do not belong here.
 
     /**
      * Sets the units for the line's width.
@@ -833,32 +934,6 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 
     void setWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWidthMapUnitScale = scale; }
     const QgsMapUnitScale &widthMapUnitScale() const { return mWidthMapUnitScale; }
-
-    /**
-     * Sets the units for the line's offset.
-     * \param unit offset units
-     * \see offsetUnit()
-    */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
-
-    /**
-     * Returns the units for the line's offset.
-     * \see setOffsetUnit()
-    */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
-
-    void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
-    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
-
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
-
-    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
-    QgsMapUnitScale mapUnitScale() const override;
-
-    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
-
-    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
 
     /**
      * Returns the line symbol layer's ring filter, which controls which rings are

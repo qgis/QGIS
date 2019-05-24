@@ -135,7 +135,7 @@ void QgsDwgImportDialog::mDatabaseFileWidget_textChanged( const QString &filenam
 
 void QgsDwgImportDialog::leLayerGroup_textChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   updateUI();
 }
 
@@ -148,7 +148,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   bool lblVisible = false;
 
-  QgsVectorLayer::LayerOptions options;
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.loadDefaultStyle = false;
   std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( d && d->isValid() )
@@ -263,7 +263,7 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
 
 QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const QString &layerFilter, const QString &table )
 {
-  QgsVectorLayer::LayerOptions options;
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.loadDefaultStyle = false;
   QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( mDatabaseFileWidget->filePath(), table ), table, QStringLiteral( "ogr" ), options );
   l->setSubsetString( QStringLiteral( "%1space=0 AND block=-1" ).arg( layerFilter ) );
@@ -289,7 +289,8 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
   if ( !layers.isEmpty() )
   {
     QStringList exprlist;
-    Q_FOREACH ( QString layer, layers )
+    const auto constLayers = layers;
+    for ( QString layer : constLayers )
     {
       exprlist.append( QStringLiteral( "'%1'" ).arg( layer.replace( QLatin1String( "'" ), QLatin1String( "''" ) ) ) );
     }
@@ -506,7 +507,8 @@ void QgsDwgImportDialog::buttonBox_accepted()
     QgsLayerTreeGroup *dwgGroup = QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup()->addGroup( leLayerGroup->text() );
     Q_ASSERT( dwgGroup );
 
-    Q_FOREACH ( const QString &layer, layers.keys() )
+    const auto constKeys = layers.keys();
+    for ( const QString &layer : constKeys )
     {
       createGroup( dwgGroup, layer, QStringList( layer ), layers[layer] );
     }

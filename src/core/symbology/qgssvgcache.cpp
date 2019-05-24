@@ -421,7 +421,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput )
 {
-  Q_UNUSED( forceVectorOutput );
+  Q_UNUSED( forceVectorOutput )
   if ( !entry )
   {
     return;

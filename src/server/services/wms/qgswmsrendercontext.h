@@ -46,7 +46,8 @@ namespace QgsWms
         SetAccessControl       = 0x40,
         AddQueryLayers         = 0x80,
         UseWfsLayersOnly       = 0x100,
-        AddExternalLayers      = 0x200
+        AddExternalLayers      = 0x200,
+        UseSrcWidthHeight      = 0x400
       };
       Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -179,6 +180,12 @@ namespace QgsWms
        */
       qreal dotsPerMm() const;
 
+      /**
+       * Returns a list of query layer names where group names are replaced by the names of their layer components.
+       * \since QGIS 3.8
+       */
+      QStringList flattenedQueryLayers() const;
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
       /**
@@ -186,6 +193,36 @@ namespace QgsWms
        */
       QgsAccessControl *accessControl() const;
 #endif
+
+      /**
+       * Returns a map having layer group names as keys and a list of layers as values.
+       * \since QGIS 3.8
+       */
+      QMap<QString, QList<QgsMapLayer *> > layerGroups() const;
+
+      /**
+       * Returns the size (in pixels) of the map to render, according to width
+       * and height WMS parameters as well as the \a aspectRatio option.
+       * \since QGIS 3.8
+       */
+      QSize mapSize( bool aspectRatio = true ) const;
+
+      /**
+       * Returns true if width and height are valid according to the maximum
+       * values defined within the project, false otherwise.
+       * \since QGIS 3.8
+       */
+      bool isValidWidthHeight() const;
+
+      /**
+       * Returns WIDTH or SRCWIDTH according to \a UseSrcWidthHeight flag.
+       */
+      int mapWidth() const;
+
+      /**
+       * Returns HEIGHT or SRCHEIGHT according to \a UseSrcWidthHeight flag.
+       */
+      int mapHeight() const;
 
     private:
       void initNicknameLayers();

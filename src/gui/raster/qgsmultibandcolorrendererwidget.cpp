@@ -204,7 +204,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
 
 void QgsMultiBandColorRendererWidget::onBandChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   QList<int> myBands;
   myBands.append( mRedBandComboBox->currentBand() );

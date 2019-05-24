@@ -21,10 +21,6 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Arnaud Morvan'
 
-# This will get replaced with a git SHA1 when you do a git archive323
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -116,7 +112,7 @@ class CheckValidity(QgisAlgorithm):
         return self.tr('Check validity')
 
     def processAlgorithm(self, parameters, context, feedback):
-        ignore_ring_self_intersection = self.parameterAsBool(parameters, self.IGNORE_RING_SELF_INTERSECTION, context)
+        ignore_ring_self_intersection = self.parameterAsBoolean(parameters, self.IGNORE_RING_SELF_INTERSECTION, context)
         method_param = self.parameterAsEnum(parameters, self.METHOD, context)
         if method_param == 0:
             settings = QgsSettings()

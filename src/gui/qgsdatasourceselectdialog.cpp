@@ -16,10 +16,12 @@
 
 #include "qgsdatasourceselectdialog.h"
 #include "ui_qgsdatasourceselectdialog.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
+
 #include "qgis.h"
 #include "qgsbrowsermodel.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
 #include <QMenu>
@@ -105,6 +107,8 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsDataSourceSelectDialog::setFilter );
   connect( group, &QActionGroup::triggered, this, &QgsDataSourceSelectDialog::setFilterSyntax );
 
+  mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+
   if ( QgsSettings().value( QStringLiteral( "datasourceSelectFilterVisible" ), false, QgsSettings::Section::Gui ).toBool() )
   {
     mActionShowFilter->trigger();
@@ -155,6 +159,30 @@ void QgsDataSourceSelectDialog::showFilterWidget( bool visible )
   else
   {
     mLeFilter->setFocus();
+  }
+}
+
+void QgsDataSourceSelectDialog::setDescription( const QString description )
+{
+  if ( !description.isEmpty() )
+  {
+    if ( !mDescriptionLabel )
+    {
+      mDescriptionLabel = new QLabel();
+      mDescriptionLabel->setWordWrap( true );
+      mDescriptionLabel->setMargin( 4 );
+      verticalLayout->insertWidget( 1, mDescriptionLabel );
+    }
+    mDescriptionLabel->setText( description );
+  }
+  else
+  {
+    if ( mDescriptionLabel )
+    {
+      verticalLayout->removeWidget( mDescriptionLabel );
+      delete mDescriptionLabel;
+      mDescriptionLabel = nullptr;
+    }
   }
 }
 

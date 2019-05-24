@@ -232,7 +232,8 @@ bool QgsWcsCapabilities::retrieveServerCapabilities()
     versions << QStringLiteral( "1.0.0" ) << QStringLiteral( "1.1.0,1.0.0" );
   }
 
-  Q_FOREACH ( const QString &v, versions )
+  const auto constVersions = versions;
+  for ( const QString &v : constVersions )
   {
     if ( retrieveServerCapabilities( v ) )
     {
@@ -514,7 +515,8 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
     capabilities.abstract = domElementText( docElem, QStringLiteral( "ServiceIdentification.Abstract" ) );
 
     QList<QDomElement> operationElements = domElements( docElem, QStringLiteral( "OperationsMetadata.Operation" ) );
-    Q_FOREACH ( const QDomElement &el, operationElements )
+    const auto constOperationElements = operationElements;
+    for ( const QDomElement &el : constOperationElements )
     {
       if ( el.attribute( QStringLiteral( "name" ) ) == QLatin1String( "GetCoverage" ) )
       {
@@ -596,7 +598,8 @@ QStringList QgsWcsCapabilities::domElementsTexts( const QDomElement &element, co
   QStringList list;
   QList<QDomElement> elems = domElements( element, path );
 
-  Q_FOREACH ( const QDomElement &el, elems )
+  const auto constElems = elems;
+  for ( const QDomElement &el : constElems )
   {
     list << el.text();
   }
@@ -702,7 +705,7 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const &e, QgsWcsCover
 
 void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   coverageSummary.orderId = ++mCoverageCount;
 
   coverageSummary.identifier = firstChildText( e, QStringLiteral( "name" ) );
@@ -870,7 +873,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   QgsDebugMsg( QStringLiteral( "%1 envelopeElements found" ).arg( envelopeElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &el, envelopeElements )
+  const auto constEnvelopeElements = envelopeElements;
+  for ( const QDomElement &el : constEnvelopeElements )
   {
     QString srsName = el.attribute( QStringLiteral( "srsName" ) );
 
@@ -897,7 +901,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   QgsDebugMsg( QStringLiteral( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &el, timePeriodElements )
+  const auto constTimePeriodElements = timePeriodElements;
+  for ( const QDomElement &el : constTimePeriodElements )
   {
     QString beginPosition = domElementText( el, QStringLiteral( "beginPosition" ) );
     QString endPosition = domElementText( el, QStringLiteral( "endPosition" ) );
@@ -973,7 +978,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   QgsDebugMsg( QStringLiteral( "%1 BoundingBox found" ).arg( boundingBoxElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &el, boundingBoxElements )
+  const auto constBoundingBoxElements = boundingBoxElements;
+  for ( const QDomElement &el : constBoundingBoxElements )
   {
     QString authid = crsUrnToAuthId( el.attribute( QStringLiteral( "crs" ) ) );
     QList<double> low = parseDoubles( domElementText( el, QStringLiteral( "LowerCorner" ) ) );
@@ -1025,7 +1031,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   QgsDebugMsg( QStringLiteral( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &el, timePeriodElements )
+  const auto constTimePeriodElements = timePeriodElements;
+  for ( const QDomElement &el : constTimePeriodElements )
   {
     QString beginPosition = domElementText( el, QStringLiteral( "beginTime" ) );
     QString endPosition = domElementText( el, QStringLiteral( "endTime" ) );
@@ -1061,7 +1068,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   QStringList crss = domElementsTexts( docElem, QStringLiteral( "CoverageDescription.SupportedCRS" ) );
   QSet<QString> authids; // Set, in case one CRS is in more formats (URN, non URN)
-  Q_FOREACH ( const QString &crs, crss )
+  const auto constCrss = crss;
+  for ( const QString &crs : constCrss )
   {
     authids.insert( crsUrnToAuthId( crs ) );
   }

@@ -220,7 +220,7 @@ void QgsCustomizationDialog::cancel()
 
 void QgsCustomizationDialog::actionSave_triggered( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   QSettings mySettings;
   QString lastDir = mySettings.value( mLastDirSettingsName, QDir::homePath() ).toString();
 
@@ -247,7 +247,7 @@ void QgsCustomizationDialog::actionSave_triggered( bool checked )
 
 void QgsCustomizationDialog::actionLoad_triggered( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   QSettings mySettings;
   QString lastDir = mySettings.value( mLastDirSettingsName, QDir::homePath() ).toString();
 
@@ -266,22 +266,23 @@ void QgsCustomizationDialog::actionLoad_triggered( bool checked )
 
 void QgsCustomizationDialog::actionExpandAll_triggered( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   treeWidget->expandAll();
 }
 
 void QgsCustomizationDialog::actionCollapseAll_triggered( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   treeWidget->collapseAll();
 }
 
 void QgsCustomizationDialog::actionSelectAll_triggered( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   QList<QTreeWidgetItem *> items = treeWidget->findItems( QStringLiteral( "*" ), Qt::MatchWildcard | Qt::MatchRecursive, 0 );
 
-  Q_FOREACH ( QTreeWidgetItem *item, items )
+  const auto constItems = items;
+  for ( QTreeWidgetItem *item : constItems )
     item->setCheckState( 0, Qt::Checked );
 }
 
@@ -379,7 +380,7 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
 
 bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   if ( !actionCatch->isChecked() )
     return false;
 
@@ -537,13 +538,10 @@ void QgsCustomization::createTreeItemMenus()
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
   QMenuBar *menubar = QgisApp::instance()->menuBar();
-  Q_FOREACH ( QObject *obj, menubar->children() )
+  const auto menus = menubar->findChildren<QMenu *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QMenu *menu : menus )
   {
-    if ( obj->inherits( "QMenu" ) )
-    {
-      QMenu *menu = qobject_cast<QMenu *>( obj );
-      addTreeItemMenu( topItem, menu );
-    }
+    addTreeItemMenu( topItem, menu );
   }
 
   mMainWindowItems << topItem;
@@ -556,20 +554,16 @@ void QgsCustomization::createTreeItemToolbars()
 
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
-  QMainWindow *mw = QgisApp::instance();
-  Q_FOREACH ( QObject *obj, mw->children() )
+  const auto toolbars = QgisApp::instance()->findChildren<QToolBar *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QToolBar *tb : toolbars )
   {
-    if ( obj->inherits( "QToolBar" ) )
-    {
-      QToolBar *tb = qobject_cast<QToolBar *>( obj );
-      QStringList tbstrs;
-      tbstrs << tb->objectName() << tb->windowTitle();
-      QTreeWidgetItem *tbItem = new QTreeWidgetItem( topItem, tbstrs );
-      tbItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-      tbItem->setCheckState( 0, Qt::Checked );
+    QStringList tbstrs;
+    tbstrs << tb->objectName() << tb->windowTitle();
+    QTreeWidgetItem *tbItem = new QTreeWidgetItem( topItem, tbstrs );
+    tbItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+    tbItem->setCheckState( 0, Qt::Checked );
 
-      addTreeItemActions( tbItem, tb->actions() );
-    }
+    addTreeItemActions( tbItem, tb->actions() );
   }
 
   mMainWindowItems << topItem;
@@ -583,17 +577,14 @@ void QgsCustomization::createTreeItemDocks()
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
   QMainWindow *mw = QgisApp::instance();
-  Q_FOREACH ( QObject *obj, mw->children() )
+  const auto dockWidgets = mw->findChildren<QDockWidget *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QDockWidget *dw : dockWidgets )
   {
-    if ( obj->inherits( "QDockWidget" ) )
-    {
-      QDockWidget *dw = qobject_cast<QDockWidget *>( obj );
-      QStringList dwstrs;
-      dwstrs << dw->objectName() << dw->windowTitle();
-      QTreeWidgetItem *dwItem = new QTreeWidgetItem( topItem, dwstrs );
-      dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-      dwItem->setCheckState( 0, Qt::Checked );
-    }
+    QStringList dwstrs;
+    dwstrs << dw->objectName() << dw->windowTitle();
+    QTreeWidgetItem *dwItem = new QTreeWidgetItem( topItem, dwstrs );
+    dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+    dwItem->setCheckState( 0, Qt::Checked );
   }
 
   mMainWindowItems << topItem;
@@ -609,12 +600,13 @@ void QgsCustomization::createTreeItemStatus()
   topItem->setCheckState( 0, Qt::Checked );
 
   QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
-  Q_FOREACH ( QObject *obj, sb->children() )
+  const auto children = sb->findChildren<QWidget *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QWidget *child : children )
   {
-    if ( obj->inherits( "QWidget" ) && !obj->objectName().isEmpty() )
+    if ( !child->objectName().isEmpty() )
     {
       QStringList strs;
-      strs << obj->objectName();
+      strs << child->objectName();
       QTreeWidgetItem *item = new QTreeWidgetItem( topItem, strs );
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
       item->setCheckState( 0, Qt::Checked );
@@ -662,11 +654,11 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
 
   // hide menus and menu actions
 
-  Q_FOREACH ( QObject *obj, menubar->children() )
+  const auto menus = menubar->findChildren<QMenu *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QMenu *menu : menus )
   {
-    if ( obj->inherits( "QMenu" ) && !obj->objectName().isEmpty() )
+    if ( !menu->objectName().isEmpty() )
     {
-      QMenu *menu = qobject_cast<QMenu *>( obj );
       bool visible = mSettings->value( menu->objectName(), true ).toBool();
       if ( !visible )
       {
@@ -684,11 +676,11 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
   // remove toolbars, toolbar actions
 
   mSettings->beginGroup( QStringLiteral( "Customization/Toolbars" ) );
-  Q_FOREACH ( QObject *obj, mw->children() )
+  const auto toolbars = mw->findChildren<QToolBar *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QToolBar *tb : toolbars )
   {
-    if ( obj->inherits( "QToolBar" ) && !obj->objectName().isEmpty() )
+    if ( !tb->objectName().isEmpty() )
     {
-      QToolBar *tb = qobject_cast<QToolBar *>( obj );
       bool visible = mSettings->value( tb->objectName(), true ).toBool();
       if ( !visible )
       {
@@ -700,7 +692,8 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
       {
         mSettings->beginGroup( tb->objectName() );
         // hide individual toolbar actions
-        Q_FOREACH ( QAction *action, tb->actions() )
+        const auto constActions = tb->actions();
+        for ( QAction *action : constActions )
         {
           if ( action->objectName().isEmpty() )
           {
@@ -720,14 +713,15 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
   // remove dock widgets
 
   mSettings->beginGroup( QStringLiteral( "Customization/Docks" ) );
-  Q_FOREACH ( QObject *obj, mw->children() )
+  const auto dockWidgets = mw->findChildren<QDockWidget *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QDockWidget *dw : dockWidgets )
   {
-    if ( obj->inherits( "QDockWidget" ) && !obj->objectName().isEmpty() )
+    if ( !dw->objectName().isEmpty() )
     {
-      bool visible = mSettings->value( obj->objectName(), true ).toBool();
+      bool visible = mSettings->value( dw->objectName(), true ).toBool();
       if ( !visible )
       {
-        mw->removeDockWidget( qobject_cast<QDockWidget *>( obj ) );
+        mw->removeDockWidget( dw );
       }
     }
   }
@@ -741,19 +735,15 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
     mSettings->beginGroup( QStringLiteral( "Customization/StatusBar" ) );
 
     QgsStatusBar *sb = mw->statusBarIface();
-    Q_FOREACH ( QObject *obj, sb->children() )
+    const auto children = sb->findChildren<QWidget *>();
+    for ( QWidget *child : children )
     {
-      if ( obj->inherits( "QWidget" ) && !obj->objectName().isEmpty() )
+      if ( !child->objectName().isEmpty() )
       {
-        QWidget *widget = qobject_cast<QWidget *>( obj );
-        if ( widget->objectName().isEmpty() )
-        {
-          continue;
-        }
-        bool visible = mSettings->value( widget->objectName(), true ).toBool();
+        bool visible = mSettings->value( child->objectName(), true ).toBool();
         if ( !visible )
         {
-          sb->removeWidget( widget );
+          sb->removeWidget( child );
         }
       }
     }
@@ -771,7 +761,8 @@ void QgsCustomization::updateMenu( QMenu *menu, QSettings *settings )
 {
   settings->beginGroup( menu->objectName() );
   // hide individual menu actions and call recursively on visible submenus
-  Q_FOREACH ( QAction *action, menu->actions() )
+  const auto constActions = menu->actions();
+  for ( QAction *action : constActions )
   {
     QString objName = ( action->menu() ? action->menu()->objectName() : action->objectName() );
     if ( objName.isEmpty() )
@@ -803,7 +794,7 @@ void QgsCustomization::openDialog( QWidget *parent )
 
 void QgsCustomization::customizeWidget( QWidget *widget, QEvent *event, QSettings *settings )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   // Test if the widget is child of QDialog
   if ( !widget->inherits( "QDialog" ) )
     return;

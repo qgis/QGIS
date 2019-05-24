@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -119,7 +115,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
+        dissolve = self.parameterAsBoolean(parameters, self.DISSOLVE, context)
         segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
         end_cap_style = self.parameterAsEnum(parameters, self.END_CAP_STYLE, context) + 1
         join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1

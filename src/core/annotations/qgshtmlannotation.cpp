@@ -83,8 +83,16 @@ void QgsHtmlAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
     return;
   }
 
+  // scale painter back to 96 dpi, so layout prints match screen rendering
+  context.painter()->save();
+  const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
+  context.painter()->scale( scaleFactor, scaleFactor );
+  size /= scaleFactor;
+
   mWebPage->setViewportSize( size.toSize() );
   mWebPage->mainFrame()->render( context.painter() );
+
+  context.painter()->restore();
 }
 
 QSizeF QgsHtmlAnnotation::minimumFrameSize() const

@@ -27,6 +27,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressioncontextgenerator.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
@@ -337,10 +338,10 @@ void QgsFieldExpressionWidget::currentFieldChanged()
 
 void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 {
-  QPalette palette = mCombo->lineEdit()->palette();
+  QString stylesheet;
   if ( !isEnabled() )
   {
-    palette.setColor( QPalette::Text, Qt::gray );
+    stylesheet = QStringLiteral( "QLineEdit { color: %1; } Qt::gray );" ).arg( QColor( Qt::gray ).name() );
   }
   else
   {
@@ -360,14 +361,10 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 
     if ( isExpression && !isValid )
     {
-      palette.setColor( QPalette::Text, Qt::red );
-    }
-    else
-    {
-      palette.setColor( QPalette::Text, Qt::black );
+      stylesheet = QStringLiteral( "QLineEdit { color: %1; } Qt::gray );" ).arg( QColor( Qt::red ).name() );
     }
   }
-  mCombo->lineEdit()->setPalette( palette );
+  mCombo->lineEdit()->setStyleSheet( stylesheet );
 }
 
 bool QgsFieldExpressionWidget::isExpressionValid( const QString &expressionStr )

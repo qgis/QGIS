@@ -356,13 +356,15 @@ void QgsRelationEditorWidget::addFeature()
       QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
 
       QgsAttributeMap linkAttributes;
-      Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
+      const auto constFieldPairs = mRelation.fieldPairs();
+      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       {
         int index = fields.indexOf( fieldPair.first );
         linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
       }
 
-      Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mNmRelation.fieldPairs() )
+      const auto constNmFieldPairs = mNmRelation.fieldPairs();
+      for ( const QgsRelation::FieldPair &fieldPair : constNmFieldPairs )
       {
         int index = fields.indexOf( fieldPair.first );
         linkAttributes.insert( index, f.attribute( fieldPair.second ) );
@@ -378,7 +380,8 @@ void QgsRelationEditorWidget::addFeature()
   {
     QgsFields fields = mRelation.referencingLayer()->fields();
 
-    Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
+    const auto constFieldPairs = mRelation.fieldPairs();
+    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
     }
@@ -418,7 +421,8 @@ void QgsRelationEditorWidget::linkFeature()
       QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
 
       QgsAttributeMap linkAttributes;
-      Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
+      const auto constFieldPairs = mRelation.fieldPairs();
+      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       {
         int index = fields.indexOf( fieldPair.first );
         linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
@@ -426,7 +430,8 @@ void QgsRelationEditorWidget::linkFeature()
 
       while ( it.nextFeature( relatedFeature ) )
       {
-        Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mNmRelation.fieldPairs() )
+        const auto constFieldPairs = mNmRelation.fieldPairs();
+        for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
         {
           int index = fields.indexOf( fieldPair.first );
           linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
@@ -438,7 +443,8 @@ void QgsRelationEditorWidget::linkFeature()
 
       mRelation.referencingLayer()->addFeatures( newFeatures );
       QgsFeatureIds ids;
-      Q_FOREACH ( const QgsFeature &f, newFeatures )
+      const auto constNewFeatures = newFeatures;
+      for ( const QgsFeature &f : constNewFeatures )
         ids << f.id();
       mRelation.referencingLayer()->selectByIds( ids );
 
@@ -448,14 +454,16 @@ void QgsRelationEditorWidget::linkFeature()
     else
     {
       QMap<int, QVariant> keys;
-      Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
+      const auto constFieldPairs = mRelation.fieldPairs();
+      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       {
         int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
         QVariant val = mFeature.attribute( fieldPair.referencedField() );
         keys.insert( idx, val );
       }
 
-      Q_FOREACH ( QgsFeatureId fid, selectionDlg.selectedFeatures() )
+      const auto constSelectedFeatures = selectionDlg.selectedFeatures();
+      for ( QgsFeatureId fid : constSelectedFeatures )
       {
         QMapIterator<int, QVariant> it( keys );
         while ( it.hasNext() )
@@ -636,7 +644,8 @@ void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
   else
   {
     QMap<int, QgsField> keyFields;
-    Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
+    const auto constFieldPairs = mRelation.fieldPairs();
+    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
       int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
       if ( idx < 0 )
@@ -648,7 +657,8 @@ void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
       keyFields.insert( idx, fld );
     }
 
-    Q_FOREACH ( QgsFeatureId fid, featureids )
+    const auto constFeatureids = featureids;
+    for ( QgsFeatureId fid : constFeatureids )
     {
       QMapIterator<int, QgsField> it( keyFields );
       while ( it.hasNext() )

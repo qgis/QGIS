@@ -21,10 +21,6 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'February 2017'
 __copyright__ = '(C) 2017, Arnaud Morvan'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import (
     QItemSelectionModel,
     QAbstractTableModel,
@@ -125,7 +121,7 @@ class AggregatesModel(FieldsMappingModel):
             default_aggregate = 'sum'
         if field.type() == QVariant.DateTime:
             default_aggregate = ''
-        if field.type() == QVariant.String:
+        if field.type() == QVariant.String or (field.type() == QVariant.List and field.subType() == QVariant.String):
             default_aggregate = 'concatenate'
 
         return {

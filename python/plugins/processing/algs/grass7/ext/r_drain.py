@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
@@ -39,7 +35,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
         return False, alg.tr("You need to set either start coordinates OR a start points vector layer!")
 
     paramscore = [f for f in ['-c', '-a', '-n']
-                  if alg.parameterAsBool(parameters, f, context)]
+                  if alg.parameterAsBoolean(parameters, f, context)]
     if len(paramscore) > 1:
         return False, alg.tr("-c, -a, -n parameters are mutually exclusive!")
     return True, None

@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/external
   ../../../core
   ../../../core/expression
   ../../../core/geometry

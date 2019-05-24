@@ -23,10 +23,6 @@ __author__ = 'Detlev Neumann'
 __date__ = 'November 2014'
 __copyright__ = '(C) 2014, Detlev Neumann'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os.path
 import math
 
