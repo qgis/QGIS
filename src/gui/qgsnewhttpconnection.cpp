@@ -165,9 +165,9 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
 void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
 {
-  cbxWfsFeaturePaging->setEnabled( index == 0 || index == 3 );
-  lblPageSize->setEnabled( index == 0 || index == 3 );
-  txtPageSize->setEnabled( index == 0 || index == 3 );
+  cbxWfsFeaturePaging->setEnabled( index == 0 || index >= 3 );
+  lblPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == 0 || index >= 3 ) );
+  txtPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == 0 || index >= 3 ) );
   cbxWfsIgnoreAxisOrientation->setEnabled( index != 1 );
 }
 
@@ -321,9 +321,11 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   txtPageSize->setText( settings.value( wfsKey + "/pagesize" ).toString() );
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
 
-  txtPageSize->setEnabled( pagingEnabled );
-  lblPageSize->setEnabled( pagingEnabled );
-  cbxWfsFeaturePaging->setEnabled( pagingEnabled );
+  // Enable/disable these items per WFS versions
+  txtPageSize->setEnabled( pagingEnabled && ( versionIdx == 0 || versionIdx >= 3 ) );
+  lblPageSize->setEnabled( pagingEnabled && ( versionIdx == 0 || versionIdx >= 3 ) );
+  cbxWfsFeaturePaging->setEnabled( versionIdx == 0 || versionIdx >= 3 );
+  cbxWfsIgnoreAxisOrientation->setEnabled( versionIdx != 1 );
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const
