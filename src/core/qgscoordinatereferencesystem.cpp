@@ -1258,6 +1258,29 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
   if ( !d->mIsValid )
     return QgsRectangle();
 
+#if PROJ_VERSION_MAJOR>=6
+  if ( !d->mPj )
+    return QgsRectangle();
+
+  double westLon = 0;
+  double southLat = 0;
+  double eastLon = 0;
+  double northLat = 0;
+
+  if ( !proj_get_area_of_use( QgsProjContext::get(), d->mPj.get(),
+                              &westLon, &southLat, &eastLon, &northLat, nullptr ) )
+    return QgsRectangle();
+
+
+  // don't use the constructor which normalizes!
+  QgsRectangle rect;
+  rect.setXMinimum( westLon );
+  rect.setYMinimum( southLat );
+  rect.setXMaximum( eastLon );
+  rect.setYMaximum( northLat );
+  return rect;
+
+#else
   //check the db is available
   QString databaseFileName = QgsApplication::srsDatabaseFilePath();
 
@@ -1291,8 +1314,8 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
       rect.setYMaximum( north );
     }
   }
-
   return rect;
+#endif
 }
 
 
