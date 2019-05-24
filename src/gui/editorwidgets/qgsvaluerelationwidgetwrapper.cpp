@@ -25,6 +25,7 @@
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsattributeform.h"
 #include "qgsattributes.h"
+#include "qgsjsonutils.h"
 
 #include <QHeaderView>
 #include <QComboBox>
@@ -32,6 +33,10 @@
 #include <QTableWidget>
 #include <QStringListModel>
 #include <QCompleter>
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -70,21 +75,26 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
-    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
+    QVariantList vl;
+    //store as QVariantList because it's json
+    for ( const QString &s : qgis::as_const( selection ) )
     {
-      QVariantList vl;
-      //store as QVariantList because it's json
-      for ( const QString &s : qgis::as_const( selection ) )
+      // Convert to proper type
+      const QVariant::Type type { fkType() };
+      switch ( type )
       {
-        vl << s;
+        case QVariant::Type::Int:
+          vl.push_back( s.toInt() );
+          break;
+        case QVariant::Type::LongLong:
+          vl.push_back( s.toLongLong() );
+          break;
+        default:
+          vl.push_back( s );
+          break;
       }
-      v = vl;
     }
-    else
-    {
-      //store as hstore string
-      v = selection.join( ',' ).prepend( '{' ).append( '}' );
-    }
+    v = vl;
   }
 
   if ( mLineEdit )
@@ -287,6 +297,21 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 int QgsValueRelationWidgetWrapper::columnCount() const
 {
   return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
+}
+
+QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
+{
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( config().value( QStringLiteral( "Layer" ) ).toString() );
+  if ( layer )
+  {
+    QgsFields fields = layer->fields();
+    int idx { fields.lookupField( config().value( QStringLiteral( "Key" ) ).toString() )  };
+    if ( idx >= 0 )
+    {
+      return fields.at( idx ).type();
+    }
+  }
+  return QVariant::Type::Invalid;
 }
 
 void QgsValueRelationWidgetWrapper::populate( )
