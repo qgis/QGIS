@@ -106,7 +106,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   backgroundColor = mWidget->palette().base().color().name();
   strokeColor = mWidget->palette().shadow().color().name();
-  mWidget->setStyleSheet( QString(
+  mWidget->setStyleSheet( QStringLiteral(
                             ".QWidget{"
                             "border: 1px solid %1;"
                             "background-color: %2;}" ).arg(
@@ -126,17 +126,16 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
     return;
   }
 
-  bodyStyle = QString(
+  bodyStyle = QStringLiteral(
                 "background-color: %1;"
                 "margin: 0;"
-                "white-space: nowrap;"
                 "font: %2pt \"%3\";" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily );
 
-  containerStyle = QString(
+  containerStyle = QStringLiteral(
                      "display: inline-block;"
                      "margin: 0px" );
 
-  tipHtml = QString(
+  tipHtml = QStringLiteral(
               "<html>"
               "<body style='%1'>"
               "<div id='QgsWebViewContainer' style='%2'>%3</div>"
