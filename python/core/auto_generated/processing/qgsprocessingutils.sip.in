@@ -244,7 +244,7 @@ The ``preferredFormat`` argument is used to specify to desired file extension to
 layer export is required. This defaults to shapefiles.
 %End
 
-    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB );
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() );
 %Docstring
 Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
 
