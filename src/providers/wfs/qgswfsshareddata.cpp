@@ -33,6 +33,8 @@
 #include <cpl_conv.h>
 #include <ogr_api.h>
 
+#include <set>
+
 #include <sqlite3.h>
 
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
@@ -230,6 +232,7 @@ bool QgsWFSSharedData::createCache()
   Q_ASSERT( !QFile::exists( mCacheDbname ) );
 
   QgsFields cacheFields;
+  std::set<QString> setSQLiteColumnNameUpperCase;
   for ( const QgsField &field : qgis::as_const( mFields ) )
   {
     QVariant::Type type = field.type();
@@ -240,7 +243,19 @@ bool QgsWFSSharedData::createCache()
       // it to a String
       type = QVariant::LongLong;
     }
-    cacheFields.append( QgsField( field.name(), type, field.typeName() ) );
+
+    // Make sure we don't have several field names that only differ by their case
+    QString sqliteFieldName( field.name() );
+    int counter = 2;
+    while ( setSQLiteColumnNameUpperCase.find( sqliteFieldName.toUpper() ) != setSQLiteColumnNameUpperCase.end() )
+    {
+      sqliteFieldName = field.name() + QStringLiteral( "%1" ).arg( counter );
+      counter++;
+    }
+    setSQLiteColumnNameUpperCase.insert( sqliteFieldName.toUpper() );
+    mMapGMLFieldNameToSQLiteColumnName[field.name()] = sqliteFieldName;
+
+    cacheFields.append( QgsField( sqliteFieldName, type, field.typeName() ) );
   }
   // Add some field for our internal use
   cacheFields.append( QgsField( QgsWFSConstants::FIELD_GEN_COUNTER, QVariant::Int, QStringLiteral( "int" ) ) );
@@ -384,6 +399,7 @@ bool QgsWFSSharedData::createCache()
     {
       mCacheTablename = QStringLiteral( "features" );
       sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
+
       for ( const QgsField &field : qgis::as_const( cacheFields ) )
       {
         QString type( QStringLiteral( "VARCHAR" ) );
@@ -393,6 +409,7 @@ bool QgsWFSSharedData::createCache()
           type = QStringLiteral( "BIGINT" );
         else if ( field.type() == QVariant::Double )
           type = QStringLiteral( "REAL" );
+
         sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
       }
       sql += QLatin1String( ")" );
@@ -867,7 +884,7 @@ bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &att
     QgsAttributeMap newAttrMap;
     for ( QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter )
     {
-      int idx = dataProviderFields.indexFromName( mFields.at( siter.key() ).name() );
+      int idx = dataProviderFields.indexFromName( mMapGMLFieldNameToSQLiteColumnName[mFields.at( siter.key() ).name()] );
       Q_ASSERT( idx >= 0 );
       if ( siter.value().type() == QVariant::DateTime && !siter.value().isNull() )
         newAttrMap[idx] = QVariant( siter.value().toDateTime().toMSecsSinceEpoch() );
@@ -985,7 +1002,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
     //and the attributes
     for ( int i = 0; i < mFields.size(); i++ )
     {
-      int idx = dataProviderFields.indexFromName( mFields.at( i ).name() );
+      int idx = dataProviderFields.indexFromName( mMapGMLFieldNameToSQLiteColumnName[mFields.at( i ).name()] );
       if ( idx >= 0 )
       {
         const QVariant &v = gmlFeature.attributes().value( i );

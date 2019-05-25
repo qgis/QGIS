@@ -22,6 +22,8 @@
 #include "qgsogcutils.h"
 #include "qgssqliteutils.h"
 
+#include <map>
+
 /**
  * This class holds data, and logic, shared between QgsWFSProvider, QgsWFSFeatureIterator
  *  and QgsWFSFeatureDownloader. It manages the on-disk cache, as a SpatiaLite
@@ -239,6 +241,10 @@ class QgsWFSSharedData : public QObject
 
     //! Tablename of the on-disk cache
     QString mCacheTablename;
+
+    //! Map each GML field name to the column name in the spatialite DB cache
+    // This is useful when there are GML fields with same name, but different case
+    std::map<QString, QString> mMapGMLFieldNameToSQLiteColumnName;
 
     //! Spatial index of requested cached regions
     QgsSpatialIndex mCachedRegions;
