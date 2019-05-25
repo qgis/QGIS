@@ -25,10 +25,10 @@ cp -r ${CCACHE_DIR} ${TRAVIS_BUILD_DIR}/.ccache_image_build
 DIR=$(git rev-parse --show-toplevel)/.docker
 pushd "${DIR}"
 echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
-docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
-             --cache-from "qgis/qgis:${DOCKER_TAG}" \
-             -t "qgis/qgis:${DOCKER_TAG}" \
-             -f qgis.dockerfile ..
+DOCKER_BUILDKIT=1 docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
+                               --cache-from "qgis/qgis:${DOCKER_TAG}" \
+                               -t "qgis/qgis:${DOCKER_TAG}" \
+                               -f qgis.dockerfile ..
 echo "${bold}Pushing image to docker hub...${endbold}"
 docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 docker push "qgis/qgis:${DOCKER_TAG}"
