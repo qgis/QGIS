@@ -49,17 +49,17 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   int count = proj_list_get_count( ops );
   for ( int i = 0; i < count; ++i )
   {
-    PJ *op = proj_list_get( pjContext, ops, i );
+    QgsProjUtils::proj_pj_unique_ptr op( proj_list_get( pjContext, ops, i ) );
     if ( !op )
       continue;
 
     TransformDetails details;
-    details.proj = QString( proj_as_proj_string( pjContext, op, PJ_PROJ_5, nullptr ) );
-    details.name = QString( proj_get_name( op ) );
-    details.accuracy = proj_coordoperation_get_accuracy( pjContext, op );
-    details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op );
+    details.proj = QString( proj_as_proj_string( pjContext, op.get(), PJ_PROJ_5, nullptr ) );
+    details.name = QString( proj_get_name( op.get() ) );
+    details.accuracy = proj_coordoperation_get_accuracy( pjContext, op.get() );
+    details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op.get() );
 
-    for ( int j = 0; j < proj_coordoperation_get_grid_used_count( pjContext, op ); ++j )
+    for ( int j = 0; j < proj_coordoperation_get_grid_used_count( pjContext, op.get() ); ++j )
     {
       const char *shortName = nullptr;
       const char *fullName = nullptr;
@@ -68,7 +68,7 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
       int directDownload = 0;
       int openLicense = 0;
       int isAvailable = 0;
-      proj_coordoperation_get_grid_used( pjContext, op, j, &shortName, &fullName, &packageName, &url, &directDownload, &openLicense, &isAvailable );
+      proj_coordoperation_get_grid_used( pjContext, op.get(), j, &shortName, &fullName, &packageName, &url, &directDownload, &openLicense, &isAvailable );
       GridDetails gridDetails;
       gridDetails.shortName = QString( shortName );
       gridDetails.fullName = QString( fullName );
