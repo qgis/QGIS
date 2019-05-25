@@ -18,6 +18,7 @@
 #define QGSDATUMTRANSFORM_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QString>
 
 class QgsCoordinateReferenceSystem;
@@ -39,6 +40,7 @@ class CORE_EXPORT QgsDatumTransform
 
     /**
      * Contains datum transform information.
+     * \deprecated Not used for builds based on Proj >= 6.0
      * \since QGIS 3.0
      */
     struct TransformPair
@@ -79,7 +81,7 @@ class CORE_EXPORT QgsDatumTransform
 
     /**
      * Contains datum transform information.
-     * \since QGIS 3.0
+     * \deprecated Not used on builds based on Proj >= 6.0
      */
     struct TransformInfo
     {
@@ -119,23 +121,29 @@ class CORE_EXPORT QgsDatumTransform
      * Returns a list of datum transformations which are available for the given \a source and \a destination CRS.
      * \see datumTransformToProj()
      * \see datumTransformInfo()
+     *
+     * \deprecated Not used for builds based on Proj >= 6.0
      */
-    static QList< QgsDatumTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+    Q_DECL_DEPRECATED static QList< QgsDatumTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) SIP_DEPRECATED;
 
     /**
      * Returns a proj string representing the specified \a datumTransformId datum transform ID.
      * \see datumTransformations()
      * \see datumTransformInfo()
      * \see projStringToDatumTransformId()
+     *
+     * \deprecated Not used for builds based on Proj >= 6.0
      */
-    static QString datumTransformToProj( int datumTransformId );
+    Q_DECL_DEPRECATED static QString datumTransformToProj( int datumTransformId ) SIP_DEPRECATED;
 
     /**
      * Returns the datum transform ID corresponding to a specified proj \a string.
      * Returns -1 if matching datum ID was not found.
      * \see datumTransformToProj()
+     *
+     * \deprecated Not used for builds based on Proj >= 6.0
      */
-    static int projStringToDatumTransformId( const QString &string );
+    Q_DECL_DEPRECATED static int projStringToDatumTransformId( const QString &string ) SIP_DEPRECATED;
 
     /**
      * Returns detailed information about the specified \a datumTransformId.
@@ -143,8 +151,10 @@ class CORE_EXPORT QgsDatumTransform
      * -1 will be returned.
      * \see datumTransformations()
      * \see datumTransformToProj()
+     *
+     * \deprecated Not used for builds based on Proj >= 6.0
     */
-    static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId );
+    Q_DECL_DEPRECATED static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId ) SIP_DEPRECATED;
 
   private:
 

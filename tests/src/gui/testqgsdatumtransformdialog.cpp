@@ -67,6 +67,7 @@ void TestQgsDatumTransformDialog::cleanup()
 
 void TestQgsDatumTransformDialog::defaultTransform()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26742" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 
   QgsDatumTransformDialog::TransformInfo def = dlg.defaultDatumTransform();
@@ -89,6 +90,7 @@ void TestQgsDatumTransformDialog::defaultTransform()
   QCOMPARE( QgsDatumTransform::datumTransformToProj( def.sourceTransformId ), QString() );
   QCOMPARE( QgsDatumTransform::datumTransformToProj( def.destinationTransformId ), QStringLiteral( "+towgs84=-10,158,187" ) );
 
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsDatumTransformDialog::shouldAskUser()
@@ -120,7 +122,9 @@ void TestQgsDatumTransformDialog::applyDefaultTransform()
   dlg2.applyDefaultTransform();
 
   QVERIFY( !QgsProject::instance()->transformContext().sourceDestinationDatumTransforms().isEmpty() );
+  Q_NOWARN_DEPRECATED_PUSH
   QCOMPARE( QgsDatumTransform::datumTransformToProj( QgsProject::instance()->transformContext().calculateDatumTransforms( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26742" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ).sourceTransformId ), QStringLiteral( "+towgs84=-10,158,187" ) );
+  Q_NOWARN_DEPRECATED_POP
   QgsProject::instance()->clear();
 }
 
@@ -134,7 +138,9 @@ void TestQgsDatumTransformDialog::runDialog()
   QVERIFY( QgsDatumTransformDialog::run( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26742" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
 
   QVERIFY( !QgsProject::instance()->transformContext().sourceDestinationDatumTransforms().isEmpty() );
+  Q_NOWARN_DEPRECATED_PUSH
   QCOMPARE( QgsDatumTransform::datumTransformToProj( QgsProject::instance()->transformContext().calculateDatumTransforms( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26742" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ).sourceTransformId ), QStringLiteral( "+towgs84=-10,158,187" ) );
+  Q_NOWARN_DEPRECATED_POP
   QgsProject::instance()->clear();
   QVERIFY( QgsDatumTransformDialog::run( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26742" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
 }

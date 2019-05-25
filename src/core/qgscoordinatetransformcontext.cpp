@@ -211,6 +211,7 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
     QString value1 = transformElem.attribute( QStringLiteral( "sourceTransform" ) );
     QString value2 = transformElem.attribute( QStringLiteral( "destTransform" ) );
 
+    Q_NOWARN_DEPRECATED_PUSH
     int datumId1 = -1;
     int datumId2 = -1;
     //warn if value1 or value2 is non-empty, yet no matching transform was found
@@ -232,6 +233,7 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
         missingTransforms << value2;
       }
     }
+    Q_NOWARN_DEPRECATED_POP
 
     d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsDatumTransform::TransformPair( datumId1, datumId2 ) );
   }
@@ -284,8 +286,10 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
     QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "srcDest" ) );
     transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
     transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
+    Q_NOWARN_DEPRECATED_PUSH
     transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().sourceTransformId < 0 ? QString() : QgsDatumTransform::datumTransformToProj( it.value().sourceTransformId ) );
     transformElem.setAttribute( QStringLiteral( "destTransform" ), it.value().destinationTransformId < 0 ? QString() : QgsDatumTransform::datumTransformToProj( it.value().destinationTransformId ) );
+    Q_NOWARN_DEPRECATED_POP
     contextElem.appendChild( transformElem );
   }
 
@@ -347,7 +351,9 @@ void QgsCoordinateTransformContext::readSettings()
       }
 
       QString proj = settings.value( *pkeyIt ).toString();
+      Q_NOWARN_DEPRECATED_PUSH
       int datumId = QgsDatumTransform::projStringToDatumTransformId( proj );
+      Q_NOWARN_DEPRECATED_POP
       if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) )
       {
         transforms[ qMakePair( srcAuthId, destAuthId )].first = datumId;
@@ -390,12 +396,14 @@ void QgsCoordinateTransformContext::writeSettings()
     QString destAuthId = transformIt.key().second;
     int sourceDatumTransform = transformIt.value().sourceTransformId;
     QString sourceDatumProj;
+    Q_NOWARN_DEPRECATED_PUSH
     if ( sourceDatumTransform >= 0 )
       sourceDatumProj = QgsDatumTransform::datumTransformToProj( sourceDatumTransform );
     int destinationDatumTransform = transformIt.value().destinationTransformId;
     QString destinationDatumProj;
     if ( destinationDatumTransform >= 0 )
       destinationDatumProj = QgsDatumTransform::datumTransformToProj( destinationDatumTransform );
+    Q_NOWARN_DEPRECATED_POP
 
     settings.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumProj );
     settings.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumProj );
