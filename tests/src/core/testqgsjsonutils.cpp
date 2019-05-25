@@ -97,13 +97,13 @@ class TestQgsJsonUtils : public QObject
     void testExportAttributesJson()
     {
 
-      QFETCH( enum JsonAlgs, JsonAlgs );
+      QFETCH( enum JsonAlgs, jsonAlg );
 
       QgsVectorLayer vl { QStringLiteral( "Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
       QgsFeature feature { vl.fields() };
       feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
 
-      if ( JsonAlgs == JsonAlgs::Json )  // 0.0022
+      if ( jsonAlg == JsonAlgs::Json )  // 0.0022
       {
         QBENCHMARK
         {
