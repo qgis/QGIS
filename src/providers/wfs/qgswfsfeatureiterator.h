@@ -227,7 +227,7 @@ class QgsWFSFeatureIterator : public QObject,
     bool fetchFeature( QgsFeature &f ) override;
 
     //! Copies feature attributes / geometry from srcFeature to dstFeature
-    void copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature );
+    void copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature, bool srcIsCache );
 
     std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 

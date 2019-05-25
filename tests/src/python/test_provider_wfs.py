@@ -4018,6 +4018,100 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
         req.setExpressionContext(ctx)
         qgis_feat = next(vl.getFeatures(req))
 
+    def testWFSFieldWithSameNameButDifferentCase(self):
+        """Test a layer with field foo and FOO """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_FieldWithSameNameButDifferentCase'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0'), 'wb') as f:
+            f.write("""
+<WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <SRS>EPSG:32631</SRS>
+      <!-- in WFS 1.0, LatLongBoundingBox is in SRS units, not necessarily lat/long... -->
+      <LatLongBoundingBox minx="400000" miny="5400000" maxx="450000" maxy="5500000"/>
+    </FeatureType>
+  </FeatureTypeList>
+</WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="foo" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FOO" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FOO2" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometry" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
+            f.write("""
+  <wfs:FeatureCollection
+                      xmlns:wfs="http://www.opengis.net/wfs"
+                      xmlns:gml="http://www.opengis.net/gml"
+                      xmlns:my="http://my">
+  <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
+  <gml:featureMember>
+  <my:typename fid="typename.0">
+    <my:foo>1</my:foo>
+    <my:FOO>2</my:FOO>
+    <my:FOO2>3</my:FOO2>
+  </my:typename>
+  </gml:featureMember>
+  </wfs:FeatureCollection>""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 3)
+
+        values = [f['foo'] for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        values = [f['FOO'] for f in vl.getFeatures()]
+        self.assertEqual(values, [2])
+
+        values = [f['FOO2'] for f in vl.getFeatures()]
+        self.assertEqual(values, [3])
+
+        # Also test that on file iterator works
+        os.environ['QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD'] = '0'
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        values = [f['foo'] for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        values = [f['FOO'] for f in vl.getFeatures()]
+        self.assertEqual(values, [2])
+
+        values = [f['FOO2'] for f in vl.getFeatures()]
+        self.assertEqual(values, [3])
+
+        del os.environ['QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD']
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        request = QgsFeatureRequest().setFilterExpression('FOO = 2')
+        values = [f['FOO'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [2])
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        request = QgsFeatureRequest().setSubsetOfAttributes(['FOO'], vl.fields())
+        values = [f['FOO'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [2])
+
 
 if __name__ == '__main__':
     unittest.main()
