@@ -111,8 +111,9 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   //get list of datum transforms
   mSourceCrs = sourceCrs;
   mDestinationCrs = destinationCrs;
+  Q_NOWARN_DEPRECATED_PUSH
   mDatumTransforms = QgsDatumTransform::datumTransformations( sourceCrs, destinationCrs );
-
+  Q_NOWARN_DEPRECATED_POP
   mLabelSrcDescription->clear();
   mLabelDstDescription->clear();
 
@@ -126,6 +127,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
   int row = 0;
   int preferredInitialRow = -1;
 
+  Q_NOWARN_DEPRECATED_PUSH
   for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
   {
     bool itemDisabled = false;
@@ -218,6 +220,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms )
 
     row++;
   }
+  Q_NOWARN_DEPRECATED_POP
 
   if ( mDatumTransformTableWidget->currentRow() < 0 )
     mDatumTransformTableWidget->selectRow( preferredInitialRow >= 0 ? preferredInitialRow : 0 );
@@ -308,6 +311,7 @@ QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::defaultDatumTran
   fallback.destinationCrs = mDestinationCrs;
   bool foundFallback = false;
 
+  Q_NOWARN_DEPRECATED_PUSH
   for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
   {
     if ( transform.sourceTransformId == -1 && transform.destinationTransformId == -1 )
@@ -343,6 +347,7 @@ QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::defaultDatumTran
       foundFallback = true;
     }
   }
+  Q_NOWARN_DEPRECATED_POP
   if ( foundPreferredNonDeprecated )
     return preferredNonDeprecated;
   else if ( foundPreferred )
@@ -467,7 +472,9 @@ void QgsDatumTransformDialog::tableCurrentItemChanged( QTableWidgetItem *, QTabl
 void QgsDatumTransformDialog::setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs )
 {
   mSourceCrs = sourceCrs;
+  Q_NOWARN_DEPRECATED_PUSH
   mDatumTransforms = QgsDatumTransform::datumTransformations( mSourceCrs, mDestinationCrs );
+  Q_NOWARN_DEPRECATED_POP
   load();
   setOKButtonEnabled();
 }
@@ -475,7 +482,9 @@ void QgsDatumTransformDialog::setSourceCrs( const QgsCoordinateReferenceSystem &
 void QgsDatumTransformDialog::setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs )
 {
   mDestinationCrs = destinationCrs;
+  Q_NOWARN_DEPRECATED_PUSH
   mDatumTransforms = QgsDatumTransform::datumTransformations( mSourceCrs, mDestinationCrs );
+  Q_NOWARN_DEPRECATED_POP
   load();
   setOKButtonEnabled();
 }
