@@ -477,15 +477,15 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
   QString fileName( tmpFile.fileName( ) );
   options.driverName = "GPKG";
   options.layerName = "test";
-  QString errorMessage;
+  QString newFilename;
   QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormat(
       &ml,
       fileName,
       options,
-      &errorMessage ) );
+      &newFilename ) );
 
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
-  QCOMPARE( errorMessage, fileName );
+  QCOMPARE( newFilename, fileName );
   QgsVectorLayer vl( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl.isValid() );
   QgsVectorFileWriter::prepareWriteAsVectorFormat( &vl, options, details );
@@ -500,11 +500,6 @@ void TestQgsVectorFileWriter::testTextFieldLength()
   QString fileName( tmpFile.fileName( ) );
   QgsVectorLayer vl( "Point?field=firstfield:string(1024)", "test", "memory" );
   QCOMPARE( vl.fields().at( 0 ).length(), 1024 );
-  QgsVectorFileWriter w( fileName,
-                         QStringLiteral( "UTF-8" ),
-                         vl.fields(),
-                         QgsWkbTypes::Point,
-                         vl.crs() );
   QgsFeature f { vl.fields() };
   f.setAttribute( 0, QString( 1024, 'x' ) );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(9 45)" ) ) );
@@ -513,14 +508,14 @@ void TestQgsVectorFileWriter::testTextFieldLength()
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = "GPKG";
   options.layerName = "test";
-  QString errorMessage;
+  QString newFilename;
   QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormat(
       &vl,
       fileName,
       options,
-      &errorMessage ) );
+      &newFilename ) );
   QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
-  QCOMPARE( errorMessage, fileName );
+  QCOMPARE( newFilename, fileName );
   QgsVectorLayer vl2( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl2.isValid() );
   QCOMPARE( vl2.featureCount(), 1L );
