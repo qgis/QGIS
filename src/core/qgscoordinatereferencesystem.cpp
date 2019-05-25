@@ -2971,7 +2971,7 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 }
 
 #if PROJ_VERSION_MAJOR>=6
-PJ *QgsCoordinateReferenceSystem::projObject()
+PJ *QgsCoordinateReferenceSystem::projObject() const
 {
   return d->mPj.get();
 }

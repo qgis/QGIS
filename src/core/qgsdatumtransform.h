@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QString>
+#include <QList>
 
 class QgsCoordinateReferenceSystem;
 
@@ -116,6 +117,74 @@ class CORE_EXPORT QgsDatumTransform
       bool deprecated = false;
 
     };
+
+
+    /**
+     * Contains information about a projection transformation grid file.
+     * \since QGIS 3.8
+     */
+    struct GridDetails
+    {
+      //! Short name of transform grid
+      QString shortName;
+      //! Full name of transform grid
+      QString fullName;
+      //! Name of package the grid is included within
+      QString packageName;
+      //! Url to download grid from
+      QString url;
+      //! TRUE if direct download of grid is possible
+      bool directDownload = false;
+      //! TRUE if grid is available under an open license
+      bool openLicense = false;
+      //! TRUE if grid is currently available for use
+      bool isAvailable = false;
+    };
+
+    /**
+     * Contains information about a coordinate transformation operation.
+     * \since QGIS 3.8
+     */
+    struct TransformDetails
+    {
+      //! Proj representation of transform operation
+      QString proj;
+      //! Display name of transform operation
+      QString name;
+      //! Transformation accuracy (in meters)
+      double accuracy = 0;
+
+      /**
+       * TRUE if operation is available.
+       *
+       * If FALSE, it likely means a transform grid is required which is not
+       * available.
+       */
+      bool isAvailable = false;
+
+      /**
+       * Contains a list of transform grids used by the operation.
+       */
+      QList< QgsDatumTransform::GridDetails > grids;
+    };
+
+    /**
+     * Returns a list of coordinate operations available for transforming
+     * coordinates from the \a source to \a destination CRS.
+     *
+     * This list is sorted in order of preference, with the most preferable
+     * operation listed first.
+     *
+     * Not all operations may be available for use. Check QgsDatumTransform::TransformDetails::isAvailable
+     * first. Operations may require grid transformation files which are not available on the local
+     * install.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return an empty list,
+     * and the deprecated API from QgsDatumTransform must be used instead.
+     *
+     * \since QGIS 3.8
+     */
+    static QList< QgsDatumTransform::TransformDetails > operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 
     /**
      * Returns a list of datum transformations which are available for the given \a source and \a destination CRS.

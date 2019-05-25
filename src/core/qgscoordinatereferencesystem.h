@@ -660,7 +660,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.8
      * \note Not available in Python bindings.
      */
-    PJ *projObject();
+    PJ *projObject() const;
 #endif
 #endif
 
