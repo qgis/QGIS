@@ -98,20 +98,12 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertEqual(len(ops[3].grids), 1)
         self.assertEqual(ops[3].grids[0].shortName, 'GDA94_GDA2020_conformal_cocos_island.gsb')
         self.assertEqual(ops[3].grids[0].fullName, '')
-        self.assertEqual(ops[3].grids[0].packageName, '')
-        self.assertEqual(ops[3].grids[0].url, '')
-        self.assertFalse(ops[3].grids[0].directDownload)
-        self.assertFalse(ops[3].grids[0].openLicense)
         self.assertTrue(ops[4].name)
         self.assertEqual(ops[4].proj, '+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_christmas_island.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1')
         self.assertEqual(ops[4].accuracy, 0.05) # actually incorrect in EPSG registry, may need updating
         self.assertEqual(len(ops[4].grids), 1)
         self.assertEqual(ops[4].grids[0].shortName, 'GDA94_GDA2020_conformal_christmas_island.gsb')
         self.assertEqual(ops[4].grids[0].fullName, '')
-        self.assertEqual(ops[4].grids[0].packageName, '')
-        self.assertEqual(ops[4].grids[0].url, '')
-        self.assertFalse(ops[4].grids[0].directDownload)
-        self.assertFalse(ops[4].grids[0].openLicense)
 
         # uses a pivot datum
         ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem('EPSG:3111'),
