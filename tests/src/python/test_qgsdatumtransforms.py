@@ -105,7 +105,7 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertEqual(ops[4].grids[0].shortName, 'GDA94_GDA2020_conformal_christmas_island.gsb')
         self.assertEqual(ops[4].grids[0].fullName, '')
 
-        # uses a pivot datum
+        # uses a pivot datum (technically a proj test, but this will help me sleep at night ;)
         ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem('EPSG:3111'),
                                            QgsCoordinateReferenceSystem('EPSG:7899'))
         self.assertEqual(len(ops), 3)
