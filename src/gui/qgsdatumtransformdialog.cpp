@@ -257,13 +257,14 @@ void QgsDatumTransformDialog::accept()
     QString destAuthId = dt.destinationCrs.authid();
     int sourceDatumTransform = dt.sourceTransformId;
     QString sourceDatumProj;
+    Q_NOWARN_DEPRECATED_PUSH
     if ( sourceDatumTransform >= 0 )
       sourceDatumProj = QgsDatumTransform::datumTransformToProj( sourceDatumTransform );
     int destinationDatumTransform = dt.destinationTransformId;
     QString destinationDatumProj;
     if ( destinationDatumTransform >= 0 )
       destinationDatumProj = QgsDatumTransform::datumTransformToProj( destinationDatumTransform );
-
+    Q_NOWARN_DEPRECATED_POP
     settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_srcTransform" ), sourceDatumProj );
     settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_destTransform" ), destinationDatumProj );
   }
