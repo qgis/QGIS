@@ -28,8 +28,7 @@ class QgsWFSDescribeFeatureType : public QgsWfsRequest
     //! Issue the request
     bool requestFeatureType( const QString &WFSVersion,
                              const QString &typeName,
-                             const QgsWfsCapabilities::Capabilities &caps,
-                             bool bUsePlural );
+                             const QgsWfsCapabilities::Capabilities &caps );
 
   protected:
     QString errorMessageWithReason( const QString &reason ) override;

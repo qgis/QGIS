@@ -1352,16 +1352,14 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
   {
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
   }
-  else
-  {
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
-  }
+  getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
 
   QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
   if ( !namespaceValue.isEmpty() )
   {
-    getFeatureUrl.addQueryItem( WFSVersion.startsWith( QLatin1String( "2.0" ) ) ?
-                                QStringLiteral( "NAMESPACES" ) : QStringLiteral( "NAMESPACE" ), namespaceValue );
+    if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
   }
 
   if ( !filter.isEmpty() )
@@ -1422,14 +1420,14 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
-  else
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+  getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
 
   QString namespaceValue( mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, mUri.typeName() ) );
   if ( !namespaceValue.isEmpty() )
   {
-    getFeatureUrl.addQueryItem( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) ?
-                                QStringLiteral( "NAMESPACES" ) : QStringLiteral( "NAMESPACE" ), namespaceValue );
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
   }
 
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
