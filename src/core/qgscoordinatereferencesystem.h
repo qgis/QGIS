@@ -657,8 +657,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * This object is only valid for the lifetime of the QgsCoordinateReferenceSystem.
      *
-     * \since QGIS 3.8
      * \note Not available in Python bindings.
+     * \since QGIS 3.8
      */
     PJ *projObject() const;
 #endif
