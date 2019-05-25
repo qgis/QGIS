@@ -2970,6 +2970,13 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
   }
 }
 
+#if PROJ_VERSION_MAJOR>=6
+PJ *QgsCoordinateReferenceSystem::projObject()
+{
+  return d->mPj.get();
+}
+#endif
+
 QStringList QgsCoordinateReferenceSystem::recentProjections()
 {
   QStringList projections;
