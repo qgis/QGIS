@@ -1,7 +1,7 @@
 language: python # This lets us use newer python versions from virtualenv
 python: "3.5"
 compiler: clang
-dist: trusty
+dist: xenial
 sudo: false
 cache:
   apt: true
@@ -53,7 +53,6 @@ matrix:
       # CODE LAYOUT
       ##########################################################
     - os: linux
-      dist: xenial
       name: code layout 👗
       if: type != cron
       env:
