@@ -28,7 +28,10 @@
 QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
   QList< QgsDatumTransform::TransformDetails > res;
-#if PROJ_VERSION_MAJOR>=6
+#if PROJ_VERSION_MAJOR<6
+  Q_UNUSED( source )
+  Q_UNUSED( destination )
+#else
   if ( !source.projObject() || !destination.projObject() )
     return res;
 
