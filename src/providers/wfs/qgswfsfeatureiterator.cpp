@@ -1032,7 +1032,7 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
     QgsAttributeList cacheSubSet;
     Q_FOREACH ( int i, mRequest.subsetOfAttributes() )
     {
-      int idx = dataProviderFields.indexFromName( mShared->mFields.at( i ).name() );
+      int idx = dataProviderFields.indexFromName( mShared->mMapGMLFieldNameToSQLiteColumnName[mShared->mFields.at( i ).name()] );
       if ( idx >= 0 )
         cacheSubSet.append( idx );
       idx = mShared->mFields.indexFromName( mShared->mFields.at( i ).name() );
@@ -1045,7 +1045,7 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
     {
       Q_FOREACH ( const QString &field, mRequest.filterExpression()->referencedColumns() )
       {
-        int idx = dataProviderFields.indexFromName( field );
+        int idx = dataProviderFields.indexFromName( mShared->mMapGMLFieldNameToSQLiteColumnName[field] );
         if ( idx >= 0 && !cacheSubSet.contains( idx ) )
           cacheSubSet.append( idx );
         idx = mShared->mFields.indexFromName( field );
@@ -1255,7 +1255,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
       continue;
     }
 
-    copyFeature( cachedFeature, f );
+    copyFeature( cachedFeature, f, true );
     geometryToDestinationCrs( f, mTransform );
 
     // Retrieve the user-visible id from the Spatialite cache database Id
@@ -1349,7 +1349,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
           continue;
         }
 
-        copyFeature( feat, f );
+        copyFeature( feat, f, false );
         return true;
       }
 
@@ -1436,7 +1436,7 @@ bool QgsWFSFeatureIterator::close()
 }
 
 
-void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature )
+void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature, bool srcIsCache )
 {
   //copy the geometry
   QgsGeometry geometry = srcFeature.geometry();
@@ -1457,7 +1457,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeatur
 
   auto setAttr = [ & ]( const int i )
   {
-    int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
+    int idx = srcFeature.fields().indexFromName( srcIsCache ? mShared->mMapGMLFieldNameToSQLiteColumnName[fields.at( i ).name()] : fields.at( i ).name() );
     if ( idx >= 0 )
     {
       const QVariant &v = srcFeature.attributes().value( idx );
