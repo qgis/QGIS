@@ -189,6 +189,7 @@ void TestQgsCoordinateTransform::contextShared()
 {
   //test implicit sharing of QgsCoordinateTransformContext
   QgsCoordinateTransformContext original;
+  Q_NOWARN_DEPRECATED_PUSH
   original.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 1, 2 );
 
   QgsCoordinateTransformContext copy( original );
@@ -215,6 +216,8 @@ void TestQgsCoordinateTransform::contextShared()
   QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
   expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QgsDatumTransform::TransformPair( 3, 4 ) );
   QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
+
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsCoordinateTransform::scaleFactor()

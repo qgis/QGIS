@@ -45,7 +45,9 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
     {
       const TransformInfo dt = dlg.selectedDatumTransform();
       QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+      Q_NOWARN_DEPRECATED_PUSH
       context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+      Q_NOWARN_DEPRECATED_POP
       QgsProject::instance()->setTransformContext( context );
       return true;
     }
@@ -364,7 +366,9 @@ void QgsDatumTransformDialog::applyDefaultTransform()
   {
     QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
     const TransformInfo dt = defaultDatumTransform();
+    Q_NOWARN_DEPRECATED_PUSH
     context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+    Q_NOWARN_DEPRECATED_POP
     QgsProject::instance()->setTransformContext( context );
   }
 }

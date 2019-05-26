@@ -81,12 +81,19 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
 
 void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
 {
+  removeCoordinateOperation( sourceCrs, destinationCrs );
+}
+
+void QgsCoordinateTransformContext::removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
+{
   d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
 }
 
 bool QgsCoordinateTransformContext::hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair t = calculateDatumTransforms( source, destination );
+  Q_NOWARN_DEPRECATED_POP
   // calculateDatumTransforms already takes care of switching source and destination
   return t.sourceTransformId != -1 || t.destinationTransformId != -1;
 }

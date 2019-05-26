@@ -46,7 +46,7 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
     }
     if ( sourceCrs.isValid() && destinationCrs.isValid() )
     {
-      mTransformContext.removeSourceDestinationDatumTransform( sourceCrs, destinationCrs );
+      mTransformContext.removeCoordinateOperation( sourceCrs, destinationCrs );
       reset();
       break;
     }
@@ -57,7 +57,9 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
 int QgsDatumTransformTableModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
+  Q_NOWARN_DEPRECATED_PUSH
   return mTransformContext.sourceDestinationDatumTransforms().count();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 int QgsDatumTransformTableModel::columnCount( const QModelIndex &parent ) const
@@ -73,10 +75,14 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
   int sourceTransform = -1;
   int destinationTransform = -1;
 
+  Q_NOWARN_DEPRECATED_PUSH
   QPair< QString, QString> crses = mTransformContext.sourceDestinationDatumTransforms().keys().at( index.row() );
+  Q_NOWARN_DEPRECATED_POP
   sourceCrs = crses.first;
   destinationCrs = crses.second;
+  Q_NOWARN_DEPRECATED_PUSH
   const QgsDatumTransform::TransformPair transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
+  Q_NOWARN_DEPRECATED_POP
   sourceTransform = transforms.sourceTransformId;
   destinationTransform = transforms.destinationTransformId;
 
@@ -194,7 +200,9 @@ void QgsDatumTransformTableWidget::addDatumTransform()
   {
     const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
     QgsCoordinateTransformContext context = mModel->transformContext();
+    Q_NOWARN_DEPRECATED_PUSH
     context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+    Q_NOWARN_DEPRECATED_POP
     mModel->setTransformContext( context );
     selectionChanged();
   }
@@ -248,7 +256,9 @@ void QgsDatumTransformTableWidget::editDatumTransform()
         const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
         QgsCoordinateTransformContext context = mModel->transformContext();
         // QMap::insert takes care of replacing existing value
+        Q_NOWARN_DEPRECATED_PUSH
         context.addSourceDestinationDatumTransform( sourceCrs, destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+        Q_NOWARN_DEPRECATED_POP
         mModel->setTransformContext( context );
       }
     }

@@ -94,8 +94,10 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * to determine this.
      *
      * \see addSourceDestinationDatumTransform()
+     *
+     * \deprecated Has no effect on builds based on Proj 6.0 or later
      */
-    QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const;
+    Q_DECL_DEPRECATED QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const SIP_DEPRECATED;
 
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
@@ -111,19 +113,27 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \see sourceDestinationDatumTransforms()
      * \see removeSourceDestinationDatumTransform()
+     *
+     * \deprecated Has no effect on builds based on Proj 6.0 or later
      */
-    bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        int sourceTransformId,
-        int destinationTransformId );
+    Q_DECL_DEPRECATED bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) SIP_DEPRECATED;
 
     /**
      * Removes the source to destination datum transform pair for the specified \a sourceCrs and
      * \a destinationCrs.
      * \see addSourceDestinationDatumTransform()
+     *
+     * \deprecated Use removeCoordinateOperation() instead
      */
-    void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs );
+    Q_DECL_DEPRECATED void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_DEPRECATED ;
+
+    /**
+     * Removes the source to destination datum coordinated operation for the specified \a sourceCrs and
+     * \a destinationCrs.
+     *
+     * \since QGIS 3.8
+     */
+    void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
     /**
      * Returns TRUE if the context has a valid datum transform to use
@@ -141,9 +151,9 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * destination.
      *
      * \note source and destination are reversible.
+     * \deprecated Has no effect on builds based on Proj 6.0 or later
      */
-    QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
-        const QgsCoordinateReferenceSystem &destination ) const;
+    Q_DECL_DEPRECATED QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const SIP_DEPRECATED;
 
     /**
      * Reads the context's state from a DOM \a element.
