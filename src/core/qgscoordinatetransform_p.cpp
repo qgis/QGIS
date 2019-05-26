@@ -244,7 +244,9 @@ bool QgsCoordinateTransformPrivate::initialize()
 void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTransformContext &context )
 {
   // recalculate datum transforms from context
+  Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
+  Q_NOWARN_DEPRECATED_POP
   mSourceDatumTransform = transforms.sourceTransformId;
   mDestinationDatumTransform = transforms.destinationTransformId;
 }
