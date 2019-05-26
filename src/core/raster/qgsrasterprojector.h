@@ -114,13 +114,15 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     QgsCoordinateReferenceSystem mDestCRS;
 
     //! Source datum transformation id (or -1 if none)
-    int mSrcDatumTransform = -1;
+    Q_DECL_DEPRECATED int mSrcDatumTransform = -1;
 
     //! Destination datum transformation id (or -1 if none)
-    int mDestDatumTransform = -1;
+    Q_DECL_DEPRECATED int mDestDatumTransform = -1;
 
     //! Requested precision
     Precision mPrecision = Approximate;
+
+    QgsCoordinateTransformContext mTransformContext;
 
 };
 
