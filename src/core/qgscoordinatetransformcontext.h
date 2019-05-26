@@ -40,16 +40,9 @@ class QDomElement;
  * \ingroup core
  * Contains information about the context in which a coordinate transform is executed.
  *
- * The context stores various information regarding which coordinate transforms should
+ * The context stores various information regarding which coordinate operations should
  * be used when transforming points from a source to destination coordinate reference
  * system.
- *
- * The highest priority transforms are those set using addSourceDestinationDatumTransform()
- * and which the transform has a matching source to destination CRS pair.
- *
- * Failing this, if the source CRS has a matching transform specified by
- * addSourceDatumTransform() then this datum transform will be used. The same logic
- * applies for destination CRS transforms set using addDestinationDatumTransform().
  *
  * \note QgsCoordinateTransformContext objects are thread safe for read and write.
  *
@@ -88,94 +81,6 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * Clears all stored transform information from the context.
      */
     void clear();
-
-
-#if 0
-//singlesourcedest
-
-    /**
-     * Returns the stored mapping for source CRS to associated datum transform to use.
-     * The map keys will be QgsCoordinateReferenceSystems::authid()s.
-     *
-     * A datum transform of -1 indicates that no datum transform is required for the
-     * source CRS.
-     *
-     * \warning This method should not be used to calculate the corresponding datum transforms
-     * to use for a coordinate transform. Instead, always use calculateDatumTransforms()
-     * to determine this.
-     *
-     * \see addSourceDatumTransform()
-     * \see destinationDatumTransforms()
-     */
-    QMap<QString, int> sourceDatumTransforms() const;
-
-    /**
-     * Adds a new \a transform to use when projecting coordinates from the specified source
-     * \a crs.
-     *
-     * A datum \a transform of -1 indicates that no datum transform is required for the
-     * source CRS.
-     *
-     * Returns TRUE if the new transform was added successfully.
-     *
-     * \warning Transforms set using this method may be overridden by specific source/destination
-     * transforms set by addSourceDestinationDatumTransform().
-     *
-     * \see sourceDatumTransforms()
-     * \see addDestinationDatumTransform()
-     * \see removeSourceDatumTransform()
-     */
-    bool addSourceDatumTransform( const QgsCoordinateReferenceSystem &crs, int transform );
-
-    /**
-     * Removes the source datum transform for the specified \a crs.
-     * \see addSourceDatumTransform()
-     * \see removeDestinationDatumTransform()
-     */
-    void removeSourceDatumTransform( const QgsCoordinateReferenceSystem &crs );
-
-    /**
-     * Returns the stored mapping for destination CRS to associated datum transform to use.
-     * The map keys will be QgsCoordinateReferenceSystems::authid()s.
-     *
-     * A datum transform of -1 indicates that no datum transform is required for the
-     * destination CRS.
-     *
-     * \warning This method should not be used to calculate the corresponding datum transforms
-     * to use for a coordinate transform. Instead, always use calculateDatumTransforms()
-     * to determine this.
-     *
-     * \see addDestinationDatumTransform()
-     * \see sourceDatumTransforms()
-     */
-    QMap< QString, int > destinationDatumTransforms() const;
-
-    /**
-     * Adds a new \a transform to use when projecting coordinates to the specified destination
-     * \a crs.
-     *
-     * A datum \a transform of -1 indicates that no datum transform is required for the
-     * destination CRS.
-     *
-     * Returns TRUE if the new transform was added successfully.
-     *
-     * \warning Transforms set using this method may be overridden by specific source/destination
-     * transforms set by addSourceDestinationDatumTransform().
-     *
-     * \see destinationDatumTransforms()
-     * \see addSourceDatumTransform()
-     * \see removeDestinationDatumTransform()
-     */
-    bool addDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs, int transform );
-
-    /**
-     * Removes the destination datum transform for the specified \a crs.
-     * \see addDestinationDatumTransform()
-     * \see removeSourceDatumTransform()
-     */
-    void removeDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs );
-
-#endif
 
     /**
      * Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.

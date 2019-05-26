@@ -14,7 +14,6 @@ import qgis  # NOQA
 
 from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsCoordinateTransformContext,
-                       QgsCoordinateTransform,
                        QgsDatumTransform,
                        QgsReadWriteContext,
                        QgsProject,
@@ -36,70 +35,6 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
         QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
         QgsSettings().clear()
-
-    @unittest.skip('ifdefed out in c++ until required')
-    def testSourceDatumTransforms(self):
-        context = QgsCoordinateTransformContext()
-        self.assertEqual(context.sourceDatumTransforms(), {})
-        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1})
-        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 2))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
-        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 3))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
-        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem(28356), 3))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
-
-        # invalid crs should fail
-        self.assertFalse(context.addSourceDatumTransform(QgsCoordinateReferenceSystem(), 4))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
-
-        # indicate no transform required
-        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem(28357), -1))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3, 'EPSG:28357': -1})
-
-        # removing non-existing
-        context.removeSourceDatumTransform(QgsCoordinateReferenceSystem(28354))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3, 'EPSG:28357': -1})
-
-        # remove existing
-        context.removeSourceDatumTransform(QgsCoordinateReferenceSystem(28356))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28357': -1})
-
-        context.clear()
-        self.assertEqual(context.sourceDatumTransforms(), {})
-
-    @unittest.skip('ifdefed out in c++ until required')
-    def testDestDatumTransforms(self):
-        context = QgsCoordinateTransformContext()
-        self.assertEqual(context.destinationDatumTransforms(), {})
-        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1})
-        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 2))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
-        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 3))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
-        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem(28356), 3))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
-
-        # invalid crs should fail
-        self.assertFalse(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem(), 4))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
-
-        # indicate no transform required
-        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem(28357), -1))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3, 'EPSG:28357': -1})
-
-        # removing non-existing
-        context.removeSourceDatumTransform(QgsCoordinateReferenceSystem(28354))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3, 'EPSG:28357': -1})
-
-        # remove existing
-        context.removeDestinationDatumTransform(QgsCoordinateReferenceSystem(28356))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28357': -1})
-
-        context.clear()
-        self.assertEqual(context.destinationDatumTransforms(), {})
 
     def testSourceDestinationDatumTransforms(self):
         context = QgsCoordinateTransformContext()
@@ -190,53 +125,6 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         context.clear()
         self.assertEqual(context.sourceDestinationDatumTransforms(), {})
 
-    @unittest.skip('ifdefed out in c++ until required')
-    def testCalculate(self):
-        context = QgsCoordinateTransformContext()
-
-        #empty context
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
-                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
-                         (-1, -1))
-
-        #add src transform
-        context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 1)
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
-                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
-                         (-1, -1))
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:28356'),
-                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
-                         (1, -1))
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:4283'),
-                                                          QgsCoordinateReferenceSystem('EPSG:28356')),
-                         (-1, -1))
-
-        #add dest transform
-        context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:4283'), 2)
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
-                                                          QgsCoordinateReferenceSystem('EPSG:4326')),
-                         (-1, -1))
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
-                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
-                         (-1, 2))
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:4283'),
-                                                          QgsCoordinateReferenceSystem('EPSG:3111')),
-                         (-1, -1))
-
-        #add specific source/dest pair - should take precedence
-        context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
-                                                   QgsCoordinateReferenceSystem('EPSG:4283'),
-                                                   3, 4)
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:28356'),
-                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
-                         (3, 4))
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
-                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
-                         (-1, 2))
-        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:28356'),
-                                                          QgsCoordinateReferenceSystem('EPSG:3111')),
-                         (1, -1))
-
     def testCalculateSourceDest(self):
         context = QgsCoordinateTransformContext()
 
@@ -262,39 +150,6 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:4283'),
                                                           QgsCoordinateReferenceSystem('EPSG:28356')),
                          QgsDatumTransform.TransformPair(4, 3))
-
-    @unittest.skip('ifdefed out in c++ until required')
-    def testWriteReadXmlSingleVariant(self):
-        # setup a context
-        context = QgsCoordinateTransformContext()
-        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1))
-        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 2))
-        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3113'), 11))
-        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28355'), 12))
-        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'),
-                                                                   QgsCoordinateReferenceSystem('EPSG:4283'), 1, 2))
-        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
-                                                                   QgsCoordinateReferenceSystem(4283), 3, 4))
-
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3113': 11, 'EPSG:28355': 12})
-        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
-                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4)})
-
-        # save to xml
-        doc = QDomDocument("testdoc")
-        elem = doc.createElement("test")
-        context.writeXml(elem, QgsReadWriteContext())
-
-        # restore from xml
-        context2 = QgsCoordinateTransformContext()
-        context2.readXml(elem, QgsReadWriteContext())
-
-        # check result
-        self.assertEqual(context2.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
-        self.assertEqual(context2.destinationDatumTransforms(), {'EPSG:3113': 11, 'EPSG:28355': 12})
-        self.assertEqual(context2.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
-                                                                       ('EPSG:28356', 'EPSG:4283'): (3, 4)})
 
     def testWriteReadXml(self):
         # setup a context

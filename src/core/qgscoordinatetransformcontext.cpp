@@ -55,68 +55,8 @@ void QgsCoordinateTransformContext::clear()
   // play it safe
   d->mLock.lockForWrite();
   d->mSourceDestDatumTransforms.clear();
-#if 0
-  d->mSourceDatumTransforms.clear();
-  d->mDestDatumTransforms.clear();
-#endif
   d->mLock.unlock();
 }
-
-#ifdef singlesourcedest
-QMap<QString, int> QgsCoordinateTransformContext::sourceDatumTransforms() const
-{
-  d->mLock.lockForRead();
-  auto res = d->mSourceDatumTransforms;
-  res.detach();
-  d->mLock.unlock();
-  return res;
-}
-
-bool QgsCoordinateTransformContext::addSourceDatumTransform( const QgsCoordinateReferenceSystem &crs, int transform )
-{
-  if ( !crs.isValid() )
-    return false;
-
-  d.detach();
-  d->mLock.lockForWrite();
-  d->mSourceDatumTransforms.insert( crs.authid(), transform );
-  d->mLock.unlock();
-  return true;
-}
-
-void QgsCoordinateTransformContext::removeSourceDatumTransform( const QgsCoordinateReferenceSystem &crs )
-{
-  d->mSourceDatumTransforms.remove( crs.authid() );
-}
-
-QMap<QString, int> QgsCoordinateTransformContext::destinationDatumTransforms() const
-{
-  d->mLock.lockForRead();
-  auto res = d->mDestDatumTransforms;
-  res.detach();
-  d->mLock.unlock();
-  return res;
-}
-
-bool QgsCoordinateTransformContext::addDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs, int transform )
-{
-  if ( !crs.isValid() )
-    return false;
-
-  d.detach();
-
-  d->mLock.lockForWrite();
-  d->mDestDatumTransforms.insert( crs.authid(), transform );
-  d->mLock.unlock();
-  return true;
-}
-
-void QgsCoordinateTransformContext::removeDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs )
-{
-  d->mDestDatumTransforms.remove( crs.authid() );
-}
-
-#endif
 
 QMap<QPair<QString, QString>, QgsDatumTransform::TransformPair> QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
 {
@@ -167,14 +107,6 @@ QgsDatumTransform::TransformPair QgsCoordinateTransformContext::calculateDatumTr
   }
   d->mLock.unlock();
   return res;
-
-#ifdef singlesourcedest
-  // fallback to checking src and dest separately
-  int srcTransform = d->mSourceDatumTransforms.value( srcKey, -1 );
-  int destTransform = d->mDestDatumTransforms.value( destKey, -1 );
-  d->mLock.unlock();
-  return qMakePair( srcTransform, destTransform );
-#endif
 }
 
 bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const QgsReadWriteContext &, QStringList &missingTransforms )
@@ -183,10 +115,6 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
   d->mLock.lockForWrite();
 
   d->mSourceDestDatumTransforms.clear();
-#if 0
-  d->mSourceDatumTransforms.clear();
-  d->mDestDatumTransforms.clear();
-#endif
 
   const QDomNodeList contextNodes = element.elementsByTagName( QStringLiteral( "transformContext" ) );
   if ( contextNodes.count() < 1 )
@@ -238,38 +166,6 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
     d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsDatumTransform::TransformPair( datumId1, datumId2 ) );
   }
 
-#if 0
-  // src transforms
-  const QDomNodeList srcNodes = contextElem.elementsByTagName( QStringLiteral( "source" ) );
-  for ( int i = 0; i < srcNodes .size(); ++i )
-  {
-    const QDomElement transformElem = srcNodes.at( i ).toElement();
-    QString key = transformElem.attribute( QStringLiteral( "crs" ) );
-    QString value = transformElem.attribute( QStringLiteral( "transform" ) );
-    if ( value.isEmpty() )
-      continue;
-
-    int datumId = QgsCoordinateTransform::projStringToDatumTransformId( value );
-    //TODO - throw warning if datumId is -1
-    d->mSourceDatumTransforms.insert( key, datumId );
-  }
-
-  // dest transforms
-  const QDomNodeList destNodes = contextElem.elementsByTagName( QStringLiteral( "dest" ) );
-  for ( int i = 0; i < destNodes.size(); ++i )
-  {
-    const QDomElement transformElem = destNodes.at( i ).toElement();
-    QString key = transformElem.attribute( QStringLiteral( "crs" ) );
-    QString value = transformElem.attribute( QStringLiteral( "transform" ) );
-    if ( value.isEmpty() )
-      continue;
-
-    int datumId = QgsCoordinateTransform::projStringToDatumTransformId( value );
-    //TODO - throw warning if datumId is -1
-    d->mDestDatumTransforms.insert( key, datumId );
-  }
-#endif
-
   d->mLock.unlock();
   return result;
 }
@@ -293,26 +189,6 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
     contextElem.appendChild( transformElem );
   }
 
-#if 0
-  // src transforms
-  for ( auto it = d->mSourceDatumTransforms.constBegin(); it != d->mSourceDatumTransforms.constEnd(); ++ it )
-  {
-    QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "source" ) );
-    transformElem.setAttribute( QStringLiteral( "crs" ), it.key() );
-    transformElem.setAttribute( QStringLiteral( "transform" ), it.value() < 0 ? QString() : it.value() );
-    contextElem.appendChild( transformElem );
-  }
-
-  // dest transforms
-  for ( auto it = d->mDestDatumTransforms.constBegin(); it != d->mDestDatumTransforms.constEnd(); ++ it )
-  {
-    QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "dest" ) );
-    transformElem.setAttribute( QStringLiteral( "crs" ), it.key() );
-    transformElem.setAttribute( QStringLiteral( "transform" ), it.value() < 0 ? QString() : it.value() );
-    contextElem.appendChild( transformElem );
-  }
-#endif
-
   element.appendChild( contextElem );
   d->mLock.unlock();
 }
@@ -323,10 +199,6 @@ void QgsCoordinateTransformContext::readSettings()
   d->mLock.lockForWrite();
 
   d->mSourceDestDatumTransforms.clear();
-#if 0
-  d->mSourceDatumTransforms.clear();
-  d->mDestDatumTransforms.clear();
-#endif
 
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/Projections" ) );

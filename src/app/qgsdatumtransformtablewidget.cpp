@@ -57,12 +57,7 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
 int QgsDatumTransformTableModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return mTransformContext.sourceDestinationDatumTransforms().count()
-#ifdef singlesourcedest
-         + mTransformContext.sourceDatumTransforms().count()
-         + mTransformContext.destinationDatumTransforms().count()
-#endif
-         ;
+  return mTransformContext.sourceDestinationDatumTransforms().count();
 }
 
 int QgsDatumTransformTableModel::columnCount( const QModelIndex &parent ) const
@@ -78,19 +73,12 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
   int sourceTransform = -1;
   int destinationTransform = -1;
 
-#ifdef singlesourcedest
-  if ( index.row() < mTransformContext.sourceDestinationDatumTransforms().count() )
-  {
-#endif
-    QPair< QString, QString> crses = mTransformContext.sourceDestinationDatumTransforms().keys().at( index.row() );
-    sourceCrs = crses.first;
-    destinationCrs = crses.second;
-    const QgsDatumTransform::TransformPair transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
-    sourceTransform = transforms.sourceTransformId;
-    destinationTransform = transforms.destinationTransformId;
-#ifdef singlesourcedest
-  }
-#endif
+  QPair< QString, QString> crses = mTransformContext.sourceDestinationDatumTransforms().keys().at( index.row() );
+  sourceCrs = crses.first;
+  destinationCrs = crses.second;
+  const QgsDatumTransform::TransformPair transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
+  sourceTransform = transforms.sourceTransformId;
+  destinationTransform = transforms.destinationTransformId;
 
   switch ( role )
   {
