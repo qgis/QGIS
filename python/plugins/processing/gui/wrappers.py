@@ -1341,7 +1341,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             except:
                 return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.value()
+            return self.widget.getValue()
         else:
             def validator(v):
                 if not bool(v):
