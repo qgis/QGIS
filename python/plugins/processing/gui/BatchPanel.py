@@ -525,16 +525,9 @@ class BatchPanel(BASE, WIDGET):
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
                 continue
 
-            if isinstance(param, (QgsProcessingParameterMapLayer, QgsProcessingParameterRasterLayer,
-                                  QgsProcessingParameterVectorLayer, QgsProcessingParameterMeshLayer,
-                                  QgsProcessingParameterFile)):
-                self.tblParameters.setCellWidget(
-                    row, column, BatchInputSelectionPanel(
-                        param, row, column, self.parent))
-            else:
-                wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
-                wrappers[param.name()] = wrapper
-                self.setCellWrapper(row, column, wrapper, context)
+            wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
+            wrappers[param.name()] = wrapper
+            self.setCellWrapper(row, column, wrapper, context)
 
             column += 1
 
