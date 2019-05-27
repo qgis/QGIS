@@ -1626,10 +1626,108 @@
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
+               <item row="2" column="0">
+                <widget class="QgsCollapsibleGroupBox" name="grpProjectProjection">
+                 <property name="title">
+                  <string>CRS for New Projects</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_27" columnstretch="0,1">
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QLabel" name="label_42">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>When a new project is created</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>5</height>
+                     </size>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QRadioButton" name="radProjectUseDefaultCrs">
+                    <property name="text">
+                     <string>&amp;Use a default CRS</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="2">
+                   <widget class="QRadioButton" name="radProjectUseCrsOfFirstLayer">
+                    <property name="text">
+                     <string>Use CRS from first layer added</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
                <item row="4" column="0">
+                <widget class="QgsCollapsibleGroupBox" name="mDefaultDatumTransformGroupBox">
+                 <property name="title">
+                  <string>Default Datum Transformations</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_10">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_40">
+                    <property name="text">
+                     <string>Enter default datum transformations which will be used in any newly created project</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="mShowDatumTransformDialogCheckBox">
+                    <property name="text">
+                     <string>Ask for datum transformation if several are available</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="Line" name="line_2">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QgsDatumTransformTableWidget" name="mDefaultDatumTransformTableWidget" native="true"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="3" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehavior">
                  <property name="title">
-                  <string>CRS for new layers</string>
+                  <string>CRS for New Layers</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
                   <item row="0" column="0" colspan="2">
@@ -1681,79 +1779,6 @@
                   </item>
                  </layout>
                 </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QgsCollapsibleGroupBox" name="mDefaultDatumTransformGroupBox">
-                 <property name="title">
-                  <string>Default datum transformations</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_10">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_40">
-                    <property name="text">
-                     <string>Enter default datum transformations which will be used in any newly created project</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QCheckBox" name="mShowDatumTransformDialogCheckBox">
-                    <property name="text">
-                     <string>Ask for datum transformation if several are available</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="Line" name="line_2">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QgsDatumTransformTableWidget" name="mDefaultDatumTransformTableWidget" native="true"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="2" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,1">
-                 <property name="topMargin">
-                  <number>3</number>
-                 </property>
-                 <item>
-                  <widget class="QLabel" name="label_16">
-                   <property name="text">
-                    <string>Default CRS for new projects</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>5</height>
-                    </size>
-                   </property>
-                   <property name="focusPolicy">
-                    <enum>Qt::StrongFocus</enum>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </item>
               </layout>
              </widget>
@@ -5581,6 +5606,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mCurrentVariablesTable</tabstop>
   <tabstop>mCurrentVariablesQGISChxBx</tabstop>
   <tabstop>mOptionsScrollArea_08</tabstop>
+  <tabstop>radProjectUseCrsOfFirstLayer</tabstop>
+  <tabstop>radProjectUseDefaultCrs</tabstop>
   <tabstop>leProjectGlobalCrs</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
@@ -5737,37 +5764,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUInfoTextBrowser</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

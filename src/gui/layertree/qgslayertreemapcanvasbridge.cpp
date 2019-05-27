@@ -22,6 +22,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgsgui.h"
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )
@@ -101,7 +103,16 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( mFirstCRS.isValid() && firstLayers )
   {
-    QgsProject::instance()->setCrs( mFirstCRS );
+    const QgsGui::ProjectCrsBehavior projectCrsBehavior = QgsSettings().enumValue( QStringLiteral( "/projections/newProjectCrsBehavior" ),  QgsGui::UseCrsOfFirstLayerAdded, QgsSettings::App );
+    switch ( projectCrsBehavior )
+    {
+      case QgsGui::UseCrsOfFirstLayerAdded:
+        QgsProject::instance()->setCrs( mFirstCRS );
+        break;
+
+      case QgsGui::UsePresetCrs:
+        break;
+    }
   }
 
   mHasLayersLoaded = currentSpatialLayerCount;
