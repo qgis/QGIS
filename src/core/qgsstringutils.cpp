@@ -414,7 +414,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available, but we need one which works within the limitation of QRegExp
   static QRegExp urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
-  static QRegExp protoRegEx( "^(?:f|ht)tps?://" );
+  static QRegExp protoRegEx( "^(?:f|ht)tps?://|file://" );
   static QRegExp emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
 
   int offset = 0;
