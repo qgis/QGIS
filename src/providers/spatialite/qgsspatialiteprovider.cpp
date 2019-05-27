@@ -4418,7 +4418,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
             jRepr = QString::fromStdString( jObj.dump( ) );
             sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ),  QgsSqliteUtils::quotedString( jRepr ) );
           }
-          catch ( json::exception ex )
+          catch ( json::exception &ex )
           {
             const auto errM { tr( "Field type is JSON but the value cannot be converted to JSON array: %1" ).arg( ex.what() ) };
             auto msgPtr { static_cast<char *>( sqlite3_malloc( errM.length() + 1 ) ) };

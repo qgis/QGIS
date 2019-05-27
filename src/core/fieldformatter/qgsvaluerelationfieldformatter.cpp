@@ -201,7 +201,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
           }
         }
       }
-      catch ( json::parse_error ex )
+      catch ( json::parse_error &ex )
       {
         qDebug() << QString::fromStdString( ex.what() );
       }
@@ -210,6 +210,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
   else if ( value.type() == QVariant::List )
   {
     QVariantList valuesList( value.toList( ) );
+    checkList.reserve( valuesList.size() );
     for ( const QVariant &listItem : qgis::as_const( valuesList ) )
     {
       QString v( listItem.toString( ) );

@@ -373,7 +373,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
       }
     }
   }
-  catch ( json::parse_error ex )
+  catch ( json::parse_error &ex )
   {
     errorMessage = ex.what();
     QgsLogger::warning( QStringLiteral( "Cannot parse json (%1): %2" ).arg( ex.what(), json ) );
