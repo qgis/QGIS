@@ -53,8 +53,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
 
-    ~QgsAttributeTableDialog() override;
-
     QgsExpressionContext createExpressionContext() const override;
 
   public slots:
@@ -229,8 +227,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QgsDockWidget *mDock = nullptr;
     QDialog *mDialog = nullptr;
-    QgsDistanceArea *myDa = nullptr;
-
 
     QMenu *mFilterColumnsMenu = nullptr;
     QSignalMapper *mFilterActionMapper = nullptr;
