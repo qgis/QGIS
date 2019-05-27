@@ -108,6 +108,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
 
       void clear();
       QString addPrefixIfNeeded( const QString &name ) const;
+      QString getNamespaceForTypename( const QString &name ) const;
+      QString getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const;
     };
 
     //! Returns parsed capabilities - requestCapabilities() must be called before

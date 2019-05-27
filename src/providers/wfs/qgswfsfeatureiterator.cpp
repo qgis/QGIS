@@ -222,22 +222,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
   if ( mShared->mLayerPropertiesList.isEmpty() )
   {
     typenames = mShared->mURI.typeName();
-
-    // Add NAMESPACES parameter for server that declare a namespace in the FeatureType of GetCapabilities response
-    // See https://issues.qgis.org/issues/14685
-    Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, mShared->mCaps.featureTypes )
-    {
-      if ( f.name == typenames )
-      {
-        if ( !f.nameSpace.isEmpty() && f.name.contains( ':' ) )
-        {
-          QString prefixOfTypename = f.name.section( ':', 0, 0 );
-          namespaces = "xmlns(" + prefixOfTypename + "," + f.nameSpace + ")";
-        }
-        break;
-      }
-    }
-
+    namespaces = mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, typenames );
   }
   else
   {
@@ -250,8 +235,8 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
   }
   if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ),  typenames );
-  else
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
+  getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
+
   if ( forHits )
   {
     getFeatureUrl.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
@@ -408,8 +393,9 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
 
   if ( !namespaces.isEmpty() )
   {
-    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ),
-                                namespaces );
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaces );
+    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaces );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString( ) ), 2 );

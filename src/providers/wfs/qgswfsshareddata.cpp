@@ -1274,8 +1274,7 @@ int QgsWFSSharedData::getFeatureCount( bool issueRequestIfNeeded )
   {
     mGetFeatureHitsIssued = true;
     QgsWFSFeatureHitsRequest request( mURI );
-    int featureCount = request.getFeatureCount( mWFSVersion, mWFSFilter );
-
+    int featureCount = request.getFeatureCount( mWFSVersion, mWFSFilter, mCaps );
     {
       QMutexLocker locker( &mMutex );
       // Check the return value. Might be -1 in case of error, or might be
@@ -1347,14 +1346,26 @@ QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri )
 }
 
 int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
-    const QString &filter )
+    const QString &filter, const QgsWfsCapabilities::Capabilities &caps )
 {
+  QString typeName = mUri.typeName();
+
   QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  WFSVersion );
   if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
-  else
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+  {
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
+  }
+  getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+
+  QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
+  if ( !namespaceValue.isEmpty() )
+  {
+    if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+  }
+
   if ( !filter.isEmpty() )
   {
     getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), filter );
@@ -1413,8 +1424,16 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
-  else
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+  getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+
+  QString namespaceValue( mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, mUri.typeName() ) );
+  if ( !namespaceValue.isEmpty() )
+  {
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+  }
+
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "COUNT" ), QString::number( 1 ) );
   else
