@@ -63,6 +63,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   if ( !d->checkValidity() )
     return;
 
+  Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
 #else
@@ -72,6 +73,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project )
@@ -86,6 +88,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   if ( !d->checkValidity() )
     return;
 
+  Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
 #else
@@ -95,6 +98,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destinationDatumTransform )
@@ -107,6 +111,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   if ( !d->checkValidity() )
     return;
 
+  Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
 #else
@@ -116,6 +121,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o )
@@ -147,6 +153,7 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
     return;
 
   d->calculateTransforms( mContext );
+  Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
 #else
@@ -156,6 +163,7 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -165,6 +173,7 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
     return;
 
   d->calculateTransforms( mContext );
+  Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
 #else
@@ -174,6 +183,7 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &context )
@@ -187,6 +197,7 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
     return;
 
   d->calculateTransforms( mContext );
+  Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
 #else
@@ -196,6 +207,7 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateTransformContext QgsCoordinateTransform::context() const
@@ -861,6 +873,7 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( src.authid(), dest.authid() ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     if ( ( *valIt ).sourceDatumTransformId() == srcDatumTransform &&
          ( *valIt ).destinationDatumTransformId() == destDatumTransform )
     {
@@ -879,6 +892,7 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
 
       return true;
     }
+    Q_NOWARN_DEPRECATED_POP
   }
   sCacheLock.unlock();
   return false;

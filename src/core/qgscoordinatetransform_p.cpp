@@ -342,8 +342,10 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 #endif
 #else
 #ifdef USE_THREAD_LOCAL
+  Q_NOWARN_DEPRECATED_PUSH
   QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
                                          pj_init_plus_ctx( mProjContext.get(), mDestProjString.toUtf8() ) );
+  Q_NOWARN_DEPRECATED_POP
   mProjProjections.insert( reinterpret_cast< uintptr_t>( mProjContext.get() ), res );
 #else
   QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( pContext, mSourceProjString.toUtf8() ),
