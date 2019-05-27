@@ -82,7 +82,7 @@ QMap<QPair<QString, QString>, QString> QgsCoordinateTransformContext::coordinate
   d->mLock.unlock();
   return res;
 #else
-  return QMap<QPair<QString, QString>, QgsDatumTransform::TransformDetails>();
+  return QMap<QPair<QString, QString>, QString>();
 #endif
 }
 
@@ -114,8 +114,7 @@ bool QgsCoordinateTransformContext::addCoordinateOperation( const QgsCoordinateR
   d->mLock.unlock();
   return true;
 #else
-  Q_UNUSED( sourceTransform )
-  Q_UNUSED( destinationTransform )
+  Q_UNUSED( coordinateOperationProjString )
   return false;
 #endif
 }
