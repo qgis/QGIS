@@ -573,6 +573,20 @@ void TestQgsRasterCalculator::findNodes()
   QCOMPARE( _test( QStringLiteral( "2 + 3" ), QgsRasterCalcNode::Type::tNumber ).length(), 2 );
   QCOMPARE( _test( QStringLiteral( "2 + 3" ), QgsRasterCalcNode::Type::tOperator ).length(), 1 );
 
+  // Test parser with valid and invalid expressions
+  QString errorString;
+  const QgsRasterCalcNode *node { QgsRasterCalcNode::parseRasterCalcString( QString( ), errorString ) };
+  QVERIFY( ! node );
+  QVERIFY( ! errorString.isEmpty() );
+  errorString = QString();
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "log10(2)" ), errorString );
+  QVERIFY( node );
+  QVERIFY( errorString.isEmpty() );
+  errorString = QString();
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "not_a_function(2)" ), errorString );
+  QVERIFY( ! node );
+  QVERIFY( ! errorString.isEmpty() );
+
 }
 
 void TestQgsRasterCalculator::testRasterEntries()
