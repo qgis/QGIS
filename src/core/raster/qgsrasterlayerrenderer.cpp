@@ -161,16 +161,12 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   {
     mRasterViewPort->mSrcCRS = layer->crs();
     mRasterViewPort->mDestCRS = rendererContext.coordinateTransform().destinationCrs();
-    mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform().sourceDatumTransformId();
-    mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform().destinationDatumTransformId();
     mRasterViewPort->mTransformContext = rendererContext.transformContext();
   }
   else
   {
     mRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
     mRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
-    mRasterViewPort->mSrcDatumTransform = -1;
-    mRasterViewPort->mDestDatumTransform = -1;
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)

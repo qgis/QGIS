@@ -19,6 +19,8 @@
 #include "qgscoordinatetransformcontext_p.h"
 #include "qgscoordinatetransform.h"
 #include "qgssettings.h"
+#include "qgsprojutils.h"
+
 
 QgsCoordinateTransformContext::QgsCoordinateTransformContext()
   : d( new QgsCoordinateTransformContextPrivate() )
@@ -60,23 +62,62 @@ void QgsCoordinateTransformContext::clear()
 
 QMap<QPair<QString, QString>, QgsDatumTransform::TransformPair> QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
 {
+#if PROJ_VERSION_MAJOR>=6
+  return QMap<QPair<QString, QString>, QgsDatumTransform::TransformPair>();
+#else
   d->mLock.lockForRead();
   auto res = d->mSourceDestDatumTransforms;
   res.detach();
   d->mLock.unlock();
   return res;
+#endif
+}
+
+QMap<QPair<QString, QString>, QString> QgsCoordinateTransformContext::coordinateOperations() const
+{
+#if PROJ_VERSION_MAJOR>=6
+  d->mLock.lockForRead();
+  auto res = d->mSourceDestDatumTransforms;
+  res.detach();
+  d->mLock.unlock();
+  return res;
+#else
+  return QMap<QPair<QString, QString>, QgsDatumTransform::TransformDetails>();
+#endif
 }
 
 bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransform, int destinationTransform )
 {
   if ( !sourceCrs.isValid() || !destinationCrs.isValid() )
     return false;
-
+#if PROJ_VERSION_MAJOR>=6
+  Q_UNUSED( sourceTransform )
+  Q_UNUSED( destinationTransform )
+  return false;
+#else
   d.detach();
   d->mLock.lockForWrite();
   d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), QgsDatumTransform::TransformPair( sourceTransform, destinationTransform ) );
   d->mLock.unlock();
   return true;
+#endif
+}
+
+bool QgsCoordinateTransformContext::addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString )
+{
+  if ( !sourceCrs.isValid() || !destinationCrs.isValid() )
+    return false;
+#if PROJ_VERSION_MAJOR>=6
+  d.detach();
+  d->mLock.lockForWrite();
+  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), coordinateOperationProjString );
+  d->mLock.unlock();
+  return true;
+#else
+  Q_UNUSED( sourceTransform )
+  Q_UNUSED( destinationTransform )
+  return false;
+#endif
 }
 
 void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
@@ -91,15 +132,25 @@ void QgsCoordinateTransformContext::removeCoordinateOperation( const QgsCoordina
 
 bool QgsCoordinateTransformContext::hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
+#if PROJ_VERSION_MAJOR>=6
+  const QString t = calculateCoordinateOperation( source, destination );
+  return !t.isEmpty();
+#else
   Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair t = calculateDatumTransforms( source, destination );
   Q_NOWARN_DEPRECATED_POP
   // calculateDatumTransforms already takes care of switching source and destination
   return t.sourceTransformId != -1 || t.destinationTransformId != -1;
+#endif
 }
 
 QgsDatumTransform::TransformPair QgsCoordinateTransformContext::calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
+#if PROJ_VERSION_MAJOR>=6
+  Q_UNUSED( source )
+  Q_UNUSED( destination )
+  return QgsDatumTransform::TransformPair( -1, -1 );
+#else
   QString srcKey = source.authid();
   QString destKey = destination.authid();
 
@@ -114,6 +165,29 @@ QgsDatumTransform::TransformPair QgsCoordinateTransformContext::calculateDatumTr
   }
   d->mLock.unlock();
   return res;
+#endif
+}
+
+QString QgsCoordinateTransformContext::calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
+{
+#if PROJ_VERSION_MAJOR>=6
+  const QString srcKey = source.authid();
+  const QString destKey = destination.authid();
+
+  d->mLock.lockForRead();
+  QString res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QString() );
+  if ( res.isEmpty() )
+  {
+    // try to reverse
+    res = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QString() );
+  }
+  d->mLock.unlock();
+  return res;
+#else
+  Q_UNUSED( source )
+  Q_UNUSED( destination )
+  return QString();
+#endif
 }
 
 bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const QgsReadWriteContext &, QStringList &missingTransforms )
@@ -140,9 +214,23 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
   for ( int i = 0; i < srcDestNodes.size(); ++i )
   {
     const QDomElement transformElem = srcDestNodes.at( i ).toElement();
-    QString key1 = transformElem.attribute( QStringLiteral( "source" ) );
-    QString key2 = transformElem.attribute( QStringLiteral( "dest" ) );
+    const QString key1 = transformElem.attribute( QStringLiteral( "source" ) );
+    const QString key2 = transformElem.attribute( QStringLiteral( "dest" ) );
 
+#if PROJ_VERSION_MAJOR>=6
+    const QString coordinateOp = transformElem.attribute( QStringLiteral( "coordinateOp" ) );
+
+    // try to instantiate operation, and check for missing grids
+    if ( !QgsProjUtils::coordinateOperationIsAvailable( coordinateOp ) )
+    {
+      // not possible in current Proj 6 api!
+      // missingTransforms.append( QgsProjUtils::nonAvailableGrids( coordinateOp ) );
+      missingTransforms.append( coordinateOp ); // yuck, we don't want to expose this string to users!
+      result = false;
+    }
+
+    d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), coordinateOp );
+#else
     QString value1 = transformElem.attribute( QStringLiteral( "sourceTransform" ) );
     QString value2 = transformElem.attribute( QStringLiteral( "destTransform" ) );
 
@@ -171,6 +259,7 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
     Q_NOWARN_DEPRECATED_POP
 
     d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsDatumTransform::TransformPair( datumId1, datumId2 ) );
+#endif
   }
 
   d->mLock.unlock();
@@ -189,10 +278,14 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
     QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "srcDest" ) );
     transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
     transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
+#if PROJ_VERSION_MAJOR>=6
+    transformElem.setAttribute( QStringLiteral( "coordinateOp" ), it.value() );
+#else
     Q_NOWARN_DEPRECATED_PUSH
     transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().sourceTransformId < 0 ? QString() : QgsDatumTransform::datumTransformToProj( it.value().sourceTransformId ) );
     transformElem.setAttribute( QStringLiteral( "destTransform" ), it.value().destinationTransformId < 0 ? QString() : QgsDatumTransform::datumTransformToProj( it.value().destinationTransformId ) );
     Q_NOWARN_DEPRECATED_POP
+#endif
     contextElem.appendChild( transformElem );
   }
 
@@ -212,10 +305,32 @@ void QgsCoordinateTransformContext::readSettings()
   QStringList projectionKeys = settings.allKeys();
 
   //collect src and dest entries that belong together
+#if PROJ_VERSION_MAJOR>=6
+  QMap< QPair< QString, QString >, QString > transforms;
+#else
   QMap< QPair< QString, QString >, QPair< int, int > > transforms;
+#endif
   QStringList::const_iterator pkeyIt = projectionKeys.constBegin();
   for ( ; pkeyIt != projectionKeys.constEnd(); ++pkeyIt )
   {
+#if PROJ_VERSION_MAJOR>=6
+    if ( pkeyIt->contains( QLatin1String( "coordinateOp" ) ) )
+    {
+      QStringList split = pkeyIt->split( '/' );
+      QString srcAuthId, destAuthId;
+      if ( ! split.isEmpty() )
+      {
+        srcAuthId = split.at( 0 );
+      }
+      if ( split.size() > 1 )
+      {
+        destAuthId = split.at( 1 ).split( '_' ).at( 0 );
+      }
+
+      const QString proj = settings.value( *pkeyIt ).toString();
+      transforms[ qMakePair( srcAuthId, destAuthId )] = proj;
+    }
+#else
     if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) || pkeyIt->contains( QLatin1String( "destTransform" ) ) )
     {
       QStringList split = pkeyIt->split( '/' );
@@ -242,13 +357,18 @@ void QgsCoordinateTransformContext::readSettings()
         transforms[ qMakePair( srcAuthId, destAuthId )].second = datumId;
       }
     }
+#endif
   }
 
   // add transforms to context
-  QMap< QPair< QString, QString >, QPair< int, int > >::const_iterator transformIt = transforms.constBegin();
+  auto transformIt = transforms.constBegin();
   for ( ; transformIt != transforms.constEnd(); ++transformIt )
   {
+#if PROJ_VERSION_MAJOR>=6
+    d->mSourceDestDatumTransforms.insert( transformIt.key(), transformIt.value() );
+#else
     d->mSourceDestDatumTransforms.insert( transformIt.key(), QgsDatumTransform::TransformPair( transformIt.value().first, transformIt.value().second ) );
+#endif
   }
 
   d->mLock.unlock();
@@ -263,7 +383,7 @@ void QgsCoordinateTransformContext::writeSettings()
   QStringList::const_iterator groupKeyIt = groupKeys.constBegin();
   for ( ; groupKeyIt != groupKeys.constEnd(); ++groupKeyIt )
   {
-    if ( groupKeyIt->contains( QLatin1String( "srcTransform" ) ) || groupKeyIt->contains( QLatin1String( "destTransform" ) ) )
+    if ( groupKeyIt->contains( QLatin1String( "srcTransform" ) ) || groupKeyIt->contains( QLatin1String( "destTransform" ) ) || groupKeyIt->contains( QLatin1String( "coordinateOp" ) ) )
     {
       settings.remove( *groupKeyIt );
     }
@@ -271,8 +391,13 @@ void QgsCoordinateTransformContext::writeSettings()
 
   for ( auto transformIt = d->mSourceDestDatumTransforms.constBegin(); transformIt != d->mSourceDestDatumTransforms.constEnd(); ++transformIt )
   {
-    QString srcAuthId = transformIt.key().first;
-    QString destAuthId = transformIt.key().second;
+    const QString srcAuthId = transformIt.key().first;
+    const QString destAuthId = transformIt.key().second;
+
+#if PROJ_VERSION_MAJOR>=6
+    const QString proj = transformIt.value();
+    settings.setValue( srcAuthId + "//" + destAuthId + "_coordinateOp", proj );
+#else
     int sourceDatumTransform = transformIt.value().sourceTransformId;
     QString sourceDatumProj;
     Q_NOWARN_DEPRECATED_PUSH
@@ -286,6 +411,7 @@ void QgsCoordinateTransformContext::writeSettings()
 
     settings.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumProj );
     settings.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumProj );
+#endif
   }
 
   settings.endGroup();

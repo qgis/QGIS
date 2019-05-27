@@ -176,5 +176,42 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
   return nullptr;
 }
 
+bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
+{
+  if ( projDef.isEmpty() )
+    return true;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr coordinateOperation( proj_create( context, projDef.toUtf8().constData() ) );
+  if ( !coordinateOperation )
+    return false;
+
+  return static_cast< bool >( proj_coordoperation_is_instantiable( context, coordinateOperation.get() ) );
+}
+
+#if 0
+QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
+{
+  if ( projDef.isEmpty() )
+    return QStringList();
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr op( proj_create( context, projDef.toUtf8().constData() ) ); < ---- - this always fails if grids are missing
+  if ( !op )
+      return QStringList();
+
+  QStringList res;
+  for ( int j = 0; j < proj_coordoperation_get_grid_used_count( context, op.get() ); ++j )
+  {
+    const char *shortName = nullptr;
+    int isAvailable = 0;
+    proj_coordoperation_get_grid_used( context, op.get(), j, &shortName, nullptr, nullptr, nullptr, nullptr, nullptr, &isAvailable );
+    if ( !isAvailable )
+      res << QString( shortName );
+  }
+  return res;
+}
+#endif
+
 #endif
 

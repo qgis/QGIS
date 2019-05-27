@@ -67,9 +67,6 @@ struct CORE_EXPORT QgsRasterViewPort
   //! \brief Target coordinate system
   QgsCoordinateReferenceSystem mDestCRS;
 
-  int mSrcDatumTransform;
-  int mDestDatumTransform;
-
   /**
    * Coordinate transform context
    */
