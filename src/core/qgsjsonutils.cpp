@@ -315,28 +315,70 @@ QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLaye
 
 QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type )
 {
-  QJsonParseError error;
-  const QJsonDocument jsonDoc = QJsonDocument::fromJson( json.toUtf8(), &error );
+  QString errorMessage;
   QVariantList result;
-  if ( error.error != QJsonParseError::NoError )
+  try
   {
-    QgsLogger::warning( QStringLiteral( "Cannot parse json (%1): %2" ).arg( error.errorString(), json ) );
-    return result;
+    const auto jObj { json::parse( json.toStdString() ) };
+    if ( ! jObj.is_array() )
+    {
+      throw json::parse_error::create( 0, 0, QStringLiteral( "JSON value must be an array" ).toStdString() );
+    }
+    for ( const auto &item : jObj )
+    {
+      // Create a QVariant from the array item
+      QVariant v;
+      if ( item.is_number_integer() )
+      {
+        v = item.get<int>();
+      }
+      else if ( item.is_number_unsigned() )
+      {
+        v = item.get<unsigned>();
+      }
+      else if ( item.is_number_float() )
+      {
+        // Note: it's a double and not a float on purpose
+        v = item.get<double>();
+      }
+      else if ( item.is_string() )
+      {
+        v = QString::fromStdString( item.get<std::string>() );
+      }
+      else if ( item.is_null() )
+      {
+        // Fallback to int
+        v = QVariant( type == QVariant::Type::Invalid ? QVariant::Type::Int : type );
+      }
+      else
+      {
+        // do nothing and discard the item
+      }
+
+      // If a destination type was specified (it's not invalid), try to convert
+      if ( type != QVariant::Invalid )
+      {
+        if ( ! v.convert( static_cast<int>( type ) ) )
+        {
+          QgsLogger::warning( QStringLiteral( "Cannot convert json array element to specified type, ignoring: %1" ).arg( v.toString() ) );
+        }
+        else
+        {
+          result.push_back( v );
+        }
+      }
+      else
+      {
+        result.push_back( v );
+      }
+    }
   }
-  if ( !jsonDoc.isArray() )
+  catch ( json::parse_error ex )
   {
-    QgsLogger::warning( QStringLiteral( "Cannot parse json (%1) as array: %2" ).arg( error.errorString(), json ) );
-    return result;
+    errorMessage = ex.what();
+    QgsLogger::warning( QStringLiteral( "Cannot parse json (%1): %2" ).arg( ex.what(), json ) );
   }
-  const auto constArray = jsonDoc.array();
-  for ( const QJsonValue &cur : constArray )
-  {
-    QVariant curVariant = cur.toVariant();
-    if ( curVariant.convert( type ) )
-      result.append( curVariant );
-    else
-      QgsLogger::warning( QStringLiteral( "Cannot convert json array element: %1" ).arg( cur.toString() ) );
-  }
+
   return result;
 }
 

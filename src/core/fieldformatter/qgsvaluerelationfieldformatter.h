@@ -66,7 +66,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const override;
 
     /**
-     * Utility to convert an array or a string representation of an array \a value to a string list
+     * Utility to convert a list or a string representation of an (hstore style: {1,2...}) list in \a value to a string list
      * \since QGIS 3.2
      */
     static QStringList valueToStringList( const QVariant &value );

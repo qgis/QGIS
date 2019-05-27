@@ -59,7 +59,7 @@ Constructor for QgsValueRelationFieldFormatter.
 
     static QStringList valueToStringList( const QVariant &value );
 %Docstring
-Utility to convert an array or a string representation of an array ``value`` to a string list
+Utility to convert a list or a string representation of an (hstore style: {1,2...}) list in ``value`` to a string list
 
 .. versionadded:: 3.2
 %End

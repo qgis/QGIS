@@ -328,18 +328,20 @@ class CORE_EXPORT QgsJsonUtils
         const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() ) SIP_SKIP;
 
     /**
-     * Parse a simple array (depth=1).
+     * Parse a simple array (depth=1)
      * \param json the JSON to parse
-     * \param type the type of the elements
+     * \param type optional variant type of the elements, if specified (and not Invalid),
+     *        the array items will be converted to the type, and discarded if
+     *        the conversion is not possible.
      * \since QGIS 3.0
      */
-    static QVariantList parseArray( const QString &json, QVariant::Type type );
+    static QVariantList parseArray( const QString &json, QVariant::Type type = QVariant::Invalid );
 
 
     /**
      * Converts a QVariant \a v to a json object
      * \note Not available in Python bindings
-     * \since QGIS 3.10
+     * \since QGIS 3.8
      */
     static json jsonFromVariant( const QVariant &v ) SIP_SKIP;
 
