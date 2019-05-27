@@ -347,7 +347,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
       }
       else if ( item.is_null() )
       {
-        // do nothing: the default is null
+        v = QVariant( type );
       }
       else
       {

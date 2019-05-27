@@ -878,12 +878,10 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   vl_json->changeAttributeValue( 1, fk_field_idx, w_favoriteauthors.value() );
   // check if stored correctly
   vl_json->commitChanges();
-  QVariantList expected_vl;
-  expected_vl << "1gamma" << "2helm,comma" << "3johnson\"quote" << "5adams'singlequote";
   QgsFeature f = vl_json->getFeature( 1 );
   QVariant attribute = f.attribute( fk_field );
-  QList<QVariant> value = attribute.toList();
-  QCOMPARE( value, expected_vl );
+  QVariantList value = attribute.toList();
+  QCOMPARE( value, QVariantList( { "1gamma", "2helm,comma", "3johnson\"quote", "5adams'singlequote" } ) );
 
   // FEATURE 2
   w_favoriteauthors.setFeature( vl_json->getFeature( 2 ) );
