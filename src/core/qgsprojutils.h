@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgsconfig.h"
 #include <memory>
+#include <QStringList>
 
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
 #include <QThreadStorage>
@@ -74,7 +75,7 @@ class CORE_EXPORT QgsProjUtils
     using proj_pj_unique_ptr = std::unique_ptr< PJ, ProjPJDeleter >;
 
     /**
-     * Returns true if the given proj coordinate system uses angular units. \a projDef must be
+     * Returns TRUE if the given proj coordinate system uses angular units. \a projDef must be
      * a proj string defining a CRS object.
      */
     static bool usesAngularUnit( const QString &projDef );
@@ -82,7 +83,7 @@ class CORE_EXPORT QgsProjUtils
     //TODO - remove when proj 6.1 is minimum supported version, and replace with proj_normalize_for_visualization
 
     /**
-     * Returns true if the given proj coordinate system uses requires y/x coordinate
+     * Returns TRUE if the given proj coordinate system uses requires y/x coordinate
      * order instead of x/y.
      */
     static bool axisOrderIsSwapped( const PJ *crs );
@@ -93,6 +94,19 @@ class CORE_EXPORT QgsProjUtils
      */
     static proj_pj_unique_ptr crsToSingleCrs( const PJ *crs );
 
+    /**
+     * Returns TRUE if a coordinate operation (specified via proj string) is available.
+     */
+    static bool coordinateOperationIsAvailable( const QString &projDef );
+
+#if 0 // not possible in current Proj 6 API
+
+    /**
+     * Given a coordinate operation (specified via proj string), returns a list of
+     * any required grids which are not currently available for use.
+     */
+    static QStringList nonAvailableGrids( const QString &projDef );
+#endif
 #endif
 #endif
 };

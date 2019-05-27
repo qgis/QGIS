@@ -95,9 +95,26 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \see addSourceDestinationDatumTransform()
      *
-     * \deprecated Has no effect on builds based on Proj 6.0 or later
+     * \deprecated Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
      */
     Q_DECL_DEPRECATED QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const SIP_DEPRECATED;
+
+    /**
+     * Returns the stored mapping for source to destination CRS pairs to associated coordinate operation to use
+     * (as a proj string). The map keys will be QgsCoordinateReferenceSystems::authid()s.
+     *
+     * \warning This method should not be used to calculate the corresponding coordinate operation
+     * to use for a coordinate transform. Instead, always use calculateCoordinateOperation()
+     * to determine this.
+     *
+     * \see addCoordinateOperation()
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return an empty list,
+     * and the deprecated sourceDestinationDatumTransforms() method must be used instead.
+     *
+     * \since QGIS 3.8
+     */
+    QMap< QPair< QString, QString>, QString > coordinateOperations() const;
 
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
@@ -108,15 +125,32 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * Returns TRUE if the new transform pair was added successfully.
      *
-     * \note Transforms set using this method will override any specific source or destination
-     * transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
-     *
      * \see sourceDestinationDatumTransforms()
      * \see removeSourceDestinationDatumTransform()
      *
-     * \deprecated Has no effect on builds based on Proj 6.0 or later
+     * \deprecated Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
      */
     Q_DECL_DEPRECATED bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) SIP_DEPRECATED;
+
+    /**
+     * Adds a new \a coordinateOperationProjString to use when projecting coordinates
+     * from the specified \a sourceCrs to the specified \a destinationCrs.
+     *
+     * \a coordinateOperationProjString should be set to a valid Proj coordinate operation
+     * string. If \a coordinateOperationProjString is empty, then the default Proj operation
+     * will be used when transforming between the coordinate reference systems.
+     *
+     * Returns TRUE if the new coordinate operation was added successfully.
+     *
+     * \see coordinateOperations()
+     * \see removeCoordinateOperation()
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
+     * and the deprecated addSourceDestinationDatumTransform() method must be used instead.
+     *
+     * \since QGIS 3.8
+     */
+    bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString );
 
     /**
      * Removes the source to destination datum transform pair for the specified \a sourceCrs and
@@ -128,15 +162,14 @@ class CORE_EXPORT QgsCoordinateTransformContext
     Q_DECL_DEPRECATED void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_DEPRECATED ;
 
     /**
-     * Removes the source to destination datum coordinated operation for the specified \a sourceCrs and
-     * \a destinationCrs.
+     * Removes the coordinate operation for the specified \a sourceCrs and \a destinationCrs.
      *
      * \since QGIS 3.8
      */
     void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
     /**
-     * Returns TRUE if the context has a valid datum transform to use
+     * Returns TRUE if the context has a valid coordinate operation to use
      * when transforming from the specified \a source CRS to \a destination CRS.
      * \note source and destination are reversible.
      */
@@ -151,9 +184,26 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * destination.
      *
      * \note source and destination are reversible.
-     * \deprecated Has no effect on builds based on Proj 6.0 or later
+     * \deprecated Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead.
      */
     Q_DECL_DEPRECATED QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const SIP_DEPRECATED;
+
+    /**
+     * Returns the Proj coordinate operation string to use when transforming
+     * from the specified \a source CRS to \a destination CRS.
+     *
+     * Returns an empty string if no specific coordinate operation is set for the source to
+     * destination pair, in which case the default Proj coordinate operation should
+     * be used.
+     *
+     * \note source and destination are reversible.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+     * an empty string, and the deprecated calculateDatumTransforms() method should be used instead.
+     *
+     * \since QGIS 3.8
+     */
+    QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 
     /**
      * Reads the context's state from a DOM \a element.

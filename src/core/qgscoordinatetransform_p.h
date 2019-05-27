@@ -120,11 +120,12 @@ class QgsCoordinateTransformPrivate : public QSharedData
     //! QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system
     QgsCoordinateReferenceSystem mDestCRS;
 
-    QString mSourceProjString;
-    QString mDestProjString;
+    Q_DECL_DEPRECATED QString mSourceProjString;
+    Q_DECL_DEPRECATED QString mDestProjString;
 
-    int mSourceDatumTransform = -1;
-    int mDestinationDatumTransform = -1;
+    Q_DECL_DEPRECATED int mSourceDatumTransform = -1;
+    Q_DECL_DEPRECATED int mDestinationDatumTransform = -1;
+    QString mProjCoordinateOperation;
 
     bool mSourceAxisOrderSwapped = false;
     bool mDestAxisOrderSwapped = false;
@@ -148,11 +149,13 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
   private:
 
+#if PROJ_VERSION_MAJOR<6
     //! Removes +nadgrids and +towgs84 from proj4 string
-    QString stripDatumTransform( const QString &proj4 ) const;
+    Q_DECL_DEPRECATED  QString stripDatumTransform( const QString &proj4 ) const;
 
     //! In certain situations, null grid shifts have to be added to src / dst proj string
-    void addNullGridShifts( QString &srcProjString, QString &destProjString, int sourceDatumTransform, int destinationDatumTransform ) const;
+    Q_DECL_DEPRECATED void addNullGridShifts( QString &srcProjString, QString &destProjString, int sourceDatumTransform, int destinationDatumTransform ) const;
+#endif
 
     void setFinder();
 

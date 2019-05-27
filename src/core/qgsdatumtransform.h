@@ -143,6 +143,8 @@ class CORE_EXPORT QgsDatumTransform
 
     /**
      * Contains information about a coordinate transformation operation.
+     *
+     * \note Only used in builds based on on Proj >= 6.0
      * \since QGIS 3.8
      */
     struct TransformDetails
