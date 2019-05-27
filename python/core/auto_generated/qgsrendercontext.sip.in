@@ -220,7 +220,7 @@ per millimeter.
 
     bool renderingStopped() const;
 %Docstring
-Returns ``True`` if the rendering operation has been stopped and any ongoing
+Returns TRUE if the rendering operation has been stopped and any ongoing
 rendering should be canceled immediately.
 
 .. seealso:: :py:func:`setRenderingStopped`
@@ -228,7 +228,7 @@ rendering should be canceled immediately.
 
     bool forceVectorOutput() const;
 %Docstring
-Returns ``True`` if rendering operations should use vector operations instead
+Returns TRUE if rendering operations should use vector operations instead
 of any faster raster shortcuts.
 
 .. seealso:: :py:func:`setForceVectorOutput`
@@ -246,7 +246,7 @@ Used to enable or disable advanced effects such as blend modes
 
     bool drawEditingInformation() const;
 %Docstring
-Returns ``True`` if edit markers should be drawn during the render operation.
+Returns TRUE if edit markers should be drawn during the render operation.
 
 .. seealso:: :py:func:`setDrawEditingInformation`
 %End
