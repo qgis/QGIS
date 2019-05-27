@@ -72,7 +72,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     enum FeatureListBrowsingAction
     {
       NoAction = 0, //!< No action is done
-      FlashFeature, //!< The feature is highlighted with a flash
       PanToFeature, //!< The map is panned to the center of the feature bounding-box
       ZoomToFeature, //!< The map is zoomed to contained the feature bounding-box
     };
@@ -371,6 +370,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void rebuildFullLayerCache();
 
     void panZoomGroupButtonToggled( QAbstractButton *button, bool checked );
+
+    void flashButtonClicked( bool clicked );
 
   private:
 
