@@ -28,7 +28,6 @@
 #include <QGridLayout>
 #include "qgis_gui.h"
 
-class QgsDistanceArea;
 class QgsHighlight;
 
 /**
