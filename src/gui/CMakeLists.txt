@@ -454,6 +454,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
+  qgsgui.h
   qgshistogramwidget.h
   qgshighlight.h
   qgsidentifymenu.h
@@ -770,7 +771,6 @@ SET(QGIS_GUI_HDRS
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsgeometryrubberband.h
-  qgsgui.h
   qgsguiutils.h
   qgshelp.h
   qgshighlight.h
