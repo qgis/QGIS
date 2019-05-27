@@ -278,7 +278,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
 
   QCOMPARE( w_municipality.mTableWidget->rowCount(), 1 );
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
-  QCOMPARE( w_municipality.value(), QVariantList( { 1 } ) );
+  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 1 } ) ) );
 
   // Filter by geometry
   cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 1 ), $geometry)" );
@@ -312,7 +312,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
 
   // Check with passing a variant list
   w_municipality.setValue( QVariantList( {1, 2} ) );
-  QCOMPARE( w_municipality.value(), QVariantList( { 2, 1 } ) );
+  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
 
   // Check values are checked
   f3.setAttribute( QStringLiteral( "fk_municipality" ), QStringLiteral( "{1,2}" ) );
@@ -322,7 +322,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
-  QCOMPARE( w_municipality.value(), QVariantList( {2, 1 } ) );
+  QCOMPARE( w_municipality.value(), QVariant( QVariantList( {2, 1 } ) ) );
 
 }
 
@@ -694,7 +694,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
 
   // FEATURE 1
   w_favoriteauthors.setFeature( vl_json->getFeature( 1 ) );
-  QCOMPARE( w_favoriteauthors.value(), QVariantList() << 1 << 3 );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { 1, 3 } ) ) );
   //check if first feature checked correctly (1,3)                                          pk
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );   // 1
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked ); // 2
@@ -709,7 +709,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   w_favoriteauthors.mTableWidget->item( 4, 0 )->setCheckState( Qt::Checked );
 
   //check if first feature checked correctly (1,2,3,5)
-  QCOMPARE( w_favoriteauthors.value(), QVariantList( {1, 2, 3, 5} ) );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( {1, 2, 3, 5} ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Checked );
@@ -730,7 +730,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
 
   // FEATURE 2
   w_favoriteauthors.setFeature( vl_json->getFeature( 2 ) );
-  QCOMPARE( w_favoriteauthors.value(), QVariantList( {2, 5} ) );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( {2, 5} ) ) );
   //check if second feature checked correctly
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
@@ -743,7 +743,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   // FEATURE 4
   w_favoriteauthors.setFeature( vl_json->getFeature( 4 ) );
   //check if first feature checked correctly (NULL)
-  QCOMPARE( w_favoriteauthors.value(), QVariantList() );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList() ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Unchecked );
@@ -755,7 +755,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   // FEATURE 5
   w_favoriteauthors.setFeature( vl_json->getFeature( 5 ) );
   //check if first feature checked correctly (blank)
-  QCOMPARE( w_favoriteauthors.value(), QVariantList( ) );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Unchecked );
@@ -851,7 +851,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 
   // FEATURE 1
   w_favoriteauthors.setFeature( vl_json->getFeature( 1 ) );
-  QCOMPARE( w_favoriteauthors.value(), QVariantList( ) << "1gamma" << "3johnson\"quote" );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { "1gamma", "3johnson\"quote" } ) ) );
   //check if first feature checked correctly (1,3)                                          pk
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );   // 1
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked ); // 2
@@ -866,7 +866,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   w_favoriteauthors.mTableWidget->item( 4, 0 )->setCheckState( Qt::Checked );
 
   //check if first feature checked correctly (1,2,3,5)
-  QCOMPARE( w_favoriteauthors.value(), QVariantList() << "1gamma" << "2helm,comma" << "3johnson\"quote" << "5adams'singlequote" );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { "1gamma", "2helm,comma", "3johnson\"quote", "5adams'singlequote" } ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Checked );
@@ -887,7 +887,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
 
   // FEATURE 2
   w_favoriteauthors.setFeature( vl_json->getFeature( 2 ) );
-  QCOMPARE( w_favoriteauthors.value(), QVariantList() << "2helm,comma" <<  "5adams'singlequote" );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( { "2helm,comma", "5adams'singlequote" } ) ) );
   //check if second feature checked correctly
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
@@ -900,7 +900,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   // FEATURE 4
   w_favoriteauthors.setFeature( vl_json->getFeature( 4 ) );
   //check if first feature checked correctly (NULL)
-  QCOMPARE( w_favoriteauthors.value(), QVariantList( ) );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Unchecked );
@@ -912,7 +912,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   // FEATURE 5
   w_favoriteauthors.setFeature( vl_json->getFeature( 5 ) );
   //check if first feature checked correctly (blank)
-  QCOMPARE( w_favoriteauthors.value(), QVariantList() );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList() ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 2, 0 )->checkState(), Qt::Unchecked );
