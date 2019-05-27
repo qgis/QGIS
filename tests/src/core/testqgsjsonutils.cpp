@@ -91,19 +91,17 @@ void TestQgsJsonUtils::testJsonArray()
   QCOMPARE( QgsJsonUtils::parseArray( R"([])", QVariant::Int ), QVariantList() );
   QCOMPARE( QgsJsonUtils::parseArray( "", QVariant::Int ), QVariantList() );
   // Nulls
-  QCOMPARE( QgsJsonUtils::parseArray( R"([null, null])" ), QVariantList() << QVariant() << QVariant() );
-  QVERIFY( QVariant().isValid() );
   for ( const QVariant &value : QgsJsonUtils::parseArray( R"([null, null])" ) )
   {
     QVERIFY( value.isNull() );
-    // This would fail because the expected type is not set and an invalid QVariant is created:
-    // QVERIFY( value.isValid() );
+    QVERIFY( value.isValid() );
+    QCOMPARE( value, QVariant( QVariant::Type::Int ) );
   }
-  QCOMPARE( QgsJsonUtils::parseArray( R"([null, null])", QVariant::Type::Int ), QVariantList() << QVariant( QVariant::Type::Int ) << QVariant( QVariant::Type::Int ) );
-  for ( const QVariant &value : QgsJsonUtils::parseArray( R"([null, null])", QVariant::Type::Int ) )
+  for ( const QVariant &value : QgsJsonUtils::parseArray( R"([null, null])", QVariant::Type::Double ) )
   {
     QVERIFY( value.isNull() );
     QVERIFY( value.isValid() );
+    QCOMPARE( value, QVariant( QVariant::Type::Double ) );
   }
 }
 

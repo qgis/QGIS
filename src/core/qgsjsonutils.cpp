@@ -347,7 +347,8 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
       }
       else if ( item.is_null() )
       {
-        v = QVariant( type );
+        // Fallback to int
+        v = QVariant( type == QVariant::Type::Invalid ? QVariant::Type::Int : type );
       }
       else
       {
