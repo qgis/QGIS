@@ -52,6 +52,7 @@
 #include "qgsoptionswidgetfactory.h"
 #include "qgslocatorwidget.h"
 #include "qgslocatoroptionswidget.h"
+#include "qgsgui.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -90,7 +91,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 {
   setupUi( this );
   connect( cbxProjectDefaultNew, &QCheckBox::toggled, this, &QgsOptions::cbxProjectDefaultNew_toggled );
-  connect( leProjectGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leProjectGlobalCrs_crsChanged );
   connect( leLayerGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leLayerGlobalCrs_crsChanged );
   connect( lstGdalDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstGdalDrivers_itemDoubleClicked );
   connect( mProjectOnLaunchCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged );
@@ -444,7 +444,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // log rendering events, for userspace debugging
   mLogCanvasRefreshChkBx->setChecked( mSettings->value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() );
 
-  //set the default projection behavior radio buttongs
+  //set the default projection behavior radio buttons
   if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
   {
     radPromptForProjection->setChecked( true );
@@ -461,10 +461,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
-  QString myDefaultCrs = mSettings->value( QStringLiteral( "/Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myDefaultCrs );
-  leProjectGlobalCrs->setCrs( mDefaultCrs );
+  const QString defaultProjectCrs = mSettings->value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString();
+  leProjectGlobalCrs->setCrs( QgsCoordinateReferenceSystem( defaultProjectCrs ) );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
+  const QgsGui::ProjectCrsBehavior projectCrsBehavior = mSettings->enumValue( QStringLiteral( "/projections/newProjectCrsBehavior" ),  QgsGui::UseCrsOfFirstLayerAdded, QgsSettings::App );
+  switch ( projectCrsBehavior )
+  {
+    case QgsGui::UseCrsOfFirstLayerAdded:
+      radProjectUseCrsOfFirstLayer->setChecked( true );
+      break;
+
+    case QgsGui::UsePresetCrs:
+      radProjectUseDefaultCrs->setChecked( true );
+      break;
+  }
 
   mShowDatumTransformDialogCheckBox->setChecked( mSettings->value( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), false, QgsSettings::App ).toBool() );
 
@@ -1539,8 +1549,8 @@ void QgsOptions::saveOptions()
   }
 
   mSettings->setValue( QStringLiteral( "/Projections/layerDefaultCrs" ), mLayerDefaultCrs.authid() );
-  mSettings->setValue( QStringLiteral( "/Projections/projectDefaultCrs" ), mDefaultCrs.authid() );
-
+  mSettings->setValue( QStringLiteral( "/projections/defaultProjectCrs" ), leProjectGlobalCrs->crs().authid(), QgsSettings::App );
+  mSettings->setEnumValue( QStringLiteral( "/projections/newProjectCrsBehavior" ), radProjectUseCrsOfFirstLayer->isChecked() ? QgsGui::UseCrsOfFirstLayerAdded : QgsGui::UsePresetCrs, QgsSettings::App );
   mSettings->setValue( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), mShowDatumTransformDialogCheckBox->isChecked(), QgsSettings::App );
 
   //measurement settings
@@ -1782,11 +1792,6 @@ void QgsOptions::mFontFamilyComboBox_currentFontChanged( const QFont &font )
     mStyleSheetNewOpts.insert( QStringLiteral( "fontFamily" ), QVariant( font.family() ) );
     mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
   }
-}
-
-void QgsOptions::leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )
-{
-  mDefaultCrs = crs;
 }
 
 void QgsOptions::leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )

@@ -10,7 +10,7 @@
 
 
 
-class QgsGui
+class QgsGui : QObject
 {
 %Docstring
 QgsGui is a singleton class containing various registry and other global members
@@ -23,6 +23,12 @@ related to GUI classes.
 #include "qgsgui.h"
 %End
   public:
+
+    enum ProjectCrsBehavior
+    {
+      UseCrsOfFirstLayerAdded,
+      UsePresetCrs,
+    };
 
 
 
