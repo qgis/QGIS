@@ -168,10 +168,6 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 
 QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &value )
 {
-  // Note: the recommended way to pass a value is QVariant::StringList but
-  //       for back compatibility a string representation either in the form
-  //       of a JSON array or in the form of {"quoted_str", 1, ... } is
-  //       also accepted
   QStringList checkList;
   if ( value.type() == QVariant::StringList )
   {
@@ -183,7 +179,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     auto newVal { value };
     if ( newVal.toString().trimmed().startsWith( '{' ) )
     {
-      newVal = QVariant( newVal.toString().trimmed().mid( 1 ).chopped( 1 ).prepend( '[' ).append( ']' ) );
+      newVal = QVariant( newVal.toString().trimmed().mid( 1 ).mid( 0, newVal.toString().length() - 2 ).prepend( '[' ).append( ']' ) );
     }
     if ( newVal.toString().trimmed().startsWith( '[' ) )
     {
