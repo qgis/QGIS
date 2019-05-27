@@ -247,7 +247,7 @@ void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
     {
       QMessageBox msgBox( this );
       msgBox.setWindowTitle( tr( "Delete Template" ) );
-      msgBox.setText( tr( "Do you want to delete the template %1? This action can not be undone." ).arg( index.data( QgsRecentProjectItemsModel::TitleRole ).toString() ) );
+      msgBox.setText( tr( "Do you want to delete the template %1? This action can not be undone." ).arg( index.data( QgsProjectListItemDelegate::TitleRole ).toString() ) );
       auto deleteButton = msgBox.addButton( tr( "Delete" ), QMessageBox::YesRole );
       msgBox.addButton( QMessageBox::Cancel );
       msgBox.setIcon( QMessageBox::Question );
