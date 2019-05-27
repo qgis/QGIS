@@ -36,6 +36,7 @@
   #ifdef _MSC_VER
   #define YY_NO_UNISTD_H
   #endif
+
 %}
 
 white       [ \t\r\n]+
@@ -80,7 +81,11 @@ raster_band_ref_quoted  \"(\\.|[^"])*\"
 {raster_band_ref_quoted} { return RASTER_BAND_REF; }
 
 {white}    /* skip blanks and tabs */
+
+[a-z][a-z0-9_]* { return yytext[0]; } /* other unknown tokens */
+
 %%
+
 
 void set_raster_input_buffer(const char* buffer)
 {
