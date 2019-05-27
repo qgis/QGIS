@@ -302,11 +302,11 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "2" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "1" ) );
-  QCOMPARE( w_municipality.value(), QVariantList( { 1 } ) );
+  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 1 } ) ) );
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
   w_municipality.setValue( QStringLiteral( "{1,2}" ) );
-  QCOMPARE( w_municipality.value(), QVariantList( { 2, 1 } ) );
+  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
 
