@@ -803,10 +803,11 @@ QString QgsMapLayer::baseURI( PropertyType type ) const
   // as in these cases URI may contain layer name and/or additional
   // information. This also strips prefix in case if VSIFILE mechanism
   // is used
-  if ( providerType() == QLatin1String( "ogr" ) || providerType() == QLatin1String( "delimitedtext" ) ||
-       providerType() == QLatin1String( "spatialite" ) )
+  QString providerType = dataProvider()->name();
+  if ( providerType == QLatin1String( "ogr" ) || providerType == QLatin1String( "delimitedtext" ) ||
+       providerType == QLatin1String( "spatialite" ) )
   {
-    QVariantMap components = QgsProviderRegistry::instance()->decodeUri( providerType(), myURI );
+    QVariantMap components = QgsProviderRegistry::instance()->decodeUri( providerType, myURI );
     myURI = components["path"].toString();
   }
 
