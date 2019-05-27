@@ -113,12 +113,6 @@ double MDAL::toDouble( const std::string &str )
   return atof( str.c_str() );
 }
 
-bool MDAL::isNumber( const std::string &str )
-{
-  // https://stackoverflow.com/a/16465826/2838364
-  return ( strspn( str.c_str(), "-.0123456789" ) == str.size() );
-}
-
 int MDAL::toInt( const std::string &str )
 {
   return atoi( str.c_str() );
