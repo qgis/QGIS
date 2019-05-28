@@ -965,12 +965,14 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
 }
 
 
-LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, double *path_distances, int &orientation, int index, double distance, bool &reversed, bool &flip )
+LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, double *path_distances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip )
 {
-  // Same thing, checking if we go off the end
-  while ( index < path_positions->nbPoints && distance > path_distances[index] )
+  double offsetAlongSegment = offsetAlongLine;
+  int index = 1;
+  // Find index of segment corresponding to starting offset
+  while ( index < path_positions->nbPoints && offsetAlongSegment > path_distances[index] )
   {
-    distance -= path_distances[index];
+    offsetAlongSegment -= path_distances[index];
     index += 1;
   }
   if ( index >= path_positions->nbPoints )
@@ -982,7 +984,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
 
   double string_height = li->label_height;
 
-  double segment_length = path_distances[index];
+  const double segment_length = path_distances[index];
   if ( qgsDoubleNear( segment_length, 0.0 ) )
   {
     // Not allowed to place across on 0 length segments or discontinuities
@@ -993,7 +995,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
   {
     // Calculate the orientation based on the angle of the path segment under consideration
 
-    double _distance = distance;
+    double _distance = offsetAlongSegment;
     int endindex = index;
 
     for ( int i = 0; i < li->char_num; i++ )
@@ -1051,7 +1053,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
       continue;
 
     double start_x, start_y, end_x, end_y;
-    if ( !nextCharPosition( ci.width, path_distances[index], path_positions, index, distance, start_x, start_y, end_x, end_y ) )
+    if ( !nextCharPosition( ci.width, path_distances[index], path_positions, index, offsetAlongSegment, start_x, start_y, end_x, end_y ) )
     {
       delete slp;
       return nullptr;
@@ -1119,7 +1121,6 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     if ( render_angle > M_PI_2 && render_angle < 1.5 * M_PI )
       slp->incrementUpsideDownCharCount();
   }
-  // END FOR
 
   return slp;
 }
@@ -1179,7 +1180,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     flags = FLAG_ON_LINE; // default flag
 
   // generate curved labels
-  for ( double i = 0; i < total_distance; i += delta )
+  for ( double distanceAlongLineToStartCandidate = 0; distanceAlongLineToStartCandidate < total_distance; distanceAlongLineToStartCandidate += delta )
   {
     bool flip = false;
     // placements may need to be reversed if using map orientation and the line has right-to-left direction
@@ -1194,7 +1195,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
       orientation = 1;
     }
 
-    LabelPosition *slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, 1, i, reversed, flip );
+    LabelPosition *slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip );
     if ( !slp )
       continue;
 
@@ -1206,7 +1207,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
       {
         delete slp;
         orientation = -orientation;
-        slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, 1, i, reversed, flip );
+        slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip );
       }
     }
     if ( !slp )
@@ -1237,7 +1238,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     if ( cost < 0.0001 ) cost = 0.0001;
 
     // penalize positions which are further from the line's midpoint
-    double labelCenter = i + getLabelWidth() / 2;
+    double labelCenter = distanceAlongLineToStartCandidate + getLabelWidth() / 2;
     double costCenter = std::fabs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
     cost += costCenter / 1000;  // < 0, 0.0005 >
     slp->setCost( cost );
@@ -1744,38 +1745,38 @@ bool FeaturePart::showUprightLabels() const
   return uprightLabel;
 }
 
-bool FeaturePart::nextCharPosition( double charWidth, double segment_length, PointSet *path_positions, int &index, double &distance,
-                                    double &start_x, double &start_y, double &end_x, double &end_y ) const
+bool FeaturePart::nextCharPosition( double charWidth, double segmentLength, PointSet *path_positions, int &index, double &currentDistanceAlongSegment,
+                                    double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY ) const
 {
   // Coordinates this character will start at
-  if ( qgsDoubleNear( segment_length, 0.0 ) )
+  if ( qgsDoubleNear( segmentLength, 0.0 ) )
   {
     // Not allowed to place across on 0 length segments or discontinuities
     return false;
   }
 
-  double old_x = path_positions->x[index - 1];
-  double old_y = path_positions->y[index - 1];
+  double segmentStartX = path_positions->x[index - 1];
+  double segmentStartY = path_positions->y[index - 1];
 
-  double new_x = path_positions->x[index];
-  double new_y = path_positions->y[index];
+  double segmentEndX = path_positions->x[index];
+  double segmentEndY = path_positions->y[index];
 
-  double dx = new_x - old_x;
-  double dy = new_y - old_y;
+  double segmentDx = segmentEndX - segmentStartX;
+  double segmentDy = segmentEndY - segmentStartY;
 
-  start_x = old_x + dx * distance / segment_length;
-  start_y = old_y + dy * distance / segment_length;
+  characterStartX = segmentStartX + segmentDx * currentDistanceAlongSegment / segmentLength;
+  characterStartY = segmentStartY + segmentDy * currentDistanceAlongSegment / segmentLength;
 
   // Coordinates this character ends at, calculated below
-  end_x = 0;
-  end_y = 0;
+  characterEndX = 0;
+  characterEndY = 0;
 
-  if ( segment_length - distance >= charWidth )
+  if ( segmentLength - currentDistanceAlongSegment >= charWidth )
   {
     // if the distance remaining in this segment is enough, we just go further along the segment
-    distance += charWidth;
-    end_x = old_x + dx * distance / segment_length;
-    end_y = old_y + dy * distance / segment_length;
+    currentDistanceAlongSegment += charWidth;
+    characterEndX = segmentStartX + segmentDx * currentDistanceAlongSegment / segmentLength;
+    characterEndY = segmentStartY + segmentDy * currentDistanceAlongSegment / segmentLength;
   }
   else
   {
@@ -1783,25 +1784,25 @@ bool FeaturePart::nextCharPosition( double charWidth, double segment_length, Poi
     // then we need to search until we find the line segment that ends further than ci.width away
     do
     {
-      old_x = new_x;
-      old_y = new_y;
+      segmentStartX = segmentEndX;
+      segmentStartY = segmentEndY;
       index++;
       if ( index >= path_positions->nbPoints ) // Bail out if we run off the end of the shape
       {
         return false;
       }
-      new_x = path_positions->x[index];
-      new_y = path_positions->y[index];
-      dx = new_x - old_x;
-      dy = new_y - old_y;
+      segmentEndX = path_positions->x[index];
+      segmentEndY = path_positions->y[index];
+      segmentDx = segmentEndX - segmentStartX;
+      segmentDy = segmentEndY - segmentStartY;
     }
-    while ( std::sqrt( std::pow( start_x - new_x, 2 ) + std::pow( start_y - new_y, 2 ) ) < charWidth ); // Distance from start_ to new_
+    while ( std::sqrt( std::pow( characterStartX - segmentEndX, 2 ) + std::pow( characterStartY - segmentEndY, 2 ) ) < charWidth ); // Distance from start_ to new_
 
     // Calculate the position to place the end of the character on
-    GeomFunction::findLineCircleIntersection( start_x, start_y, charWidth, old_x, old_y, new_x, new_y, end_x, end_y );
+    GeomFunction::findLineCircleIntersection( characterStartX, characterStartY, charWidth, segmentStartX, segmentStartY, segmentEndX, segmentEndY, characterEndX, characterEndY );
 
     // Need to calculate distance on the new segment
-    distance = std::sqrt( std::pow( old_x - end_x, 2 ) + std::pow( old_y - end_y, 2 ) );
+    currentDistanceAlongSegment = std::sqrt( std::pow( segmentStartX - characterEndX, 2 ) + std::pow( segmentStartY - characterEndY, 2 ) );
   }
   return true;
 }
