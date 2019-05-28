@@ -3091,22 +3091,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   const QgsMapToPixel &m2p = context.mapToPixel();
   if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
   {
-    QgsPointXY center = context.extent().center();
-
-    if ( ct.isValid() && !ct.isShortCircuited() )
-    {
-      try
-      {
-        center = ct.transform( center );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse )
-        QgsDebugMsgLevel( QStringLiteral( "Ignoring feature due to transformation exception" ), 4 );
-        return QgsGeometry();
-      }
-    }
-
+    QgsPointXY center = context.mapExtent().center();
     if ( geom.rotate( m2p.mapRotation(), center ) )
     {
       QgsDebugMsg( QStringLiteral( "Error rotating geometry" ).arg( geom.asWkt() ) );
