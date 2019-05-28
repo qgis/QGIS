@@ -3,7 +3,6 @@
 %Include auto_generated/qgsdetaileditemdata.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
 %Include auto_generated/qgsgeometryrubberband.sip
-%Include auto_generated/qgsgui.sip
 %Include auto_generated/qgshelp.sip
 %Include auto_generated/qgshighlight.sip
 %Include auto_generated/qgsmapcanvasitem.sip
@@ -122,6 +121,7 @@
 %Include auto_generated/qgsgradientcolorrampdialog.sip
 %Include auto_generated/qgsgradientstopeditor.sip
 %Include auto_generated/qgsgroupwmsdatadialog.sip
+%Include auto_generated/qgsgui.sip
 %Include auto_generated/qgshistogramwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
