@@ -1173,6 +1173,18 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     return 0;
   }
 
+  double totalCharacterWidth = 0;
+  for ( int i = 0; i < li->char_num; ++i )
+    totalCharacterWidth += li->char_info[ i ].width;
+
+  if ( totalCharacterWidth > total_distance )
+  {
+    // label doesn't fit on this line, don't waste time trying to make candidates
+    // TODO - in future allow this, and allow label to overlap end of line
+    delete[] path_distances;
+    return 0;
+  }
+
   QLinkedList<LabelPosition *> positions;
   double delta = std::max( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
