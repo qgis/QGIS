@@ -454,6 +454,13 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=does_not_exist&",
                                  'wfs_describeFeatureType_1_1_0_typename_wrong', project_file=project_file)
 
+    def test_describeFeatureTypeVirtualFields(self):
+        """Test DescribeFeatureType with virtual fields: bug GH-29767"""
+
+        project_file = "bug_gh29767_double_vfield.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "",
+                                 'wfs_describeFeatureType_1_1_0_virtual_fields', project_file=project_file)
+
     def test_getFeatureFeature_0_nulls(self):
         """Test that 0 and null in integer columns are reported correctly"""
 

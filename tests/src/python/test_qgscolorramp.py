@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsVectorColorRamps.
+"""QGIS Unit tests for ColorRamps.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,14 +17,15 @@ from qgis.core import (QgsGradientColorRamp,
                        QgsLimitedRandomColorRamp,
                        QgsRandomColorRamp,
                        QgsColorBrewerColorRamp,
+                       QgsCptCityColorRamp,
                        QgsPresetSchemeColorRamp)
 from qgis.PyQt.QtGui import QColor, QGradient
 from qgis.testing import unittest
 
 
-class PyQgsVectorColorRamp(unittest.TestCase):
+class PyQgsColorRamp(unittest.TestCase):
 
-    def testQgsVectorGradientRampV2(self):
+    def testQgsGradientColorRamp(self):
         # test QgsGradientStop
         stop = QgsGradientStop(0.9, QColor(200, 150, 100))
         self.assertEqual(stop.offset, 0.9)
@@ -176,7 +177,16 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(r.color(0.5), QColor(128, 128, 128))
         self.assertEqual(r.color(0.8), QColor(255, 255, 255))
 
-    def testQgsLimitedRandomColorRampV2(self):
+        # test invalid value range
+        r = QgsGradientColorRamp(color1=QColor(0, 0, 255), color2=QColor(0, 255, 0), discrete=False)
+        self.assertEqual(r.color(0), QColor(0, 0, 255))
+        self.assertEqual(r.color(1), QColor(0, 255, 0))
+        self.assertEqual(r.color(0.5).name(), QColor(0, 128, 128).name())
+        self.assertEqual(r.color(2), QColor(0, 255, 0))
+        self.assertEqual(r.color(-1), QColor(0, 0, 255))
+        self.assertEqual(r.color(float('nan')), QColor(0, 255, 0))
+
+    def testQgsLimitedRandomColorRamp(self):
         # test random color ramp
         r = QgsLimitedRandomColorRamp(5)
         self.assertEqual(r.type(), 'random')
@@ -256,7 +266,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
                 self.assertTrue(c.value() >= 150)
                 self.assertTrue(c.value() <= 180)
 
-    def testQgsRandomColorRampV2(self):
+    def testQgsRandomColorRamp(self):
         # test random colors
         r = QgsRandomColorRamp()
         self.assertEqual(r.type(), 'randomcolors')
@@ -330,7 +340,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(r.color(0), QColor(0, 255, 0))
         self.assertEqual(r.color(1), QColor(255, 0, 0))
 
-    def testQgsColorBrewerColorRampV2(self):
+    def testQgsColorBrewerColorRamp(self):
         # test color brewer color ramps
         r = QgsColorBrewerColorRamp('OrRd', 6)
         self.assertEqual(r.type(), 'colorbrewer')
@@ -414,6 +424,35 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(len(QgsColorBrewerColorRamp.listSchemeVariants('bad scheme')), 0)
         variants = QgsColorBrewerColorRamp.listSchemeVariants('Reds')
         self.assertEqual(variants, [3, 4, 5, 6, 7, 8, 9])
+
+        # test invalid value range
+        r = QgsColorBrewerColorRamp("Spectral", 5)
+        self.assertEqual(r.color(0), QColor(215, 25, 28))
+        self.assertEqual(r.color(1), QColor(43, 131, 186))
+        self.assertEqual(r.color(0.5), QColor(255, 255, 191))
+        self.assertFalse(r.color(2).isValid())
+        self.assertFalse(r.color(-1).isValid())
+        self.assertFalse(r.color(float('nan')).isValid())
+
+    def testCptCityColorRamp(self):
+        """Test Cpt-city color ramp"""
+        r = QgsCptCityColorRamp("cb/div/BrBG_", "05")
+        self.assertTrue(r)
+
+        # color scheme name
+        self.assertEqual(r.schemeName(), "cb/div/BrBG_")
+        self.assertEqual(r.variantName(), "05")
+
+        # number of colors
+        self.assertEqual(r.count(), 6)
+
+        # color for value
+        self.assertEqual(r.color(0), QColor(166, 97, 26))
+        self.assertEqual(r.color(1), QColor(1, 133, 113))
+        self.assertEqual(r.color(0.5), QColor(245, 245, 245))
+        self.assertEqual(r.color(2), QColor(1, 133, 113))
+        self.assertEqual(r.color(-1), QColor(166, 97, 26))
+        self.assertEqual(r.color(float('nan')), QColor(1, 133, 113))
 
 
 if __name__ == '__main__':

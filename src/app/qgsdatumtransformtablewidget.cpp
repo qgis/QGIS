@@ -109,7 +109,9 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case SourceTransformColumn:
           if ( sourceTransform != -1 )
           {
+            Q_NOWARN_DEPRECATED_PUSH
             return QgsDatumTransform::datumTransformToProj( sourceTransform );
+            Q_NOWARN_DEPRECATED_POP
           }
           break;
         case DestinationCrsColumn:
@@ -117,7 +119,9 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case DestinationTransformColumn:
           if ( destinationTransform != -1 )
           {
+            Q_NOWARN_DEPRECATED_PUSH
             return QgsDatumTransform::datumTransformToProj( destinationTransform );
+            Q_NOWARN_DEPRECATED_POP
           }
           break;
         default:

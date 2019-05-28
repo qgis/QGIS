@@ -22,7 +22,6 @@
 
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributetablefiltermodel.h"
-#include "qgsdistancearea.h"
 #include "qgsattributeform.h"
 #include "qgis_gui.h"
 
@@ -72,7 +71,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     enum FeatureListBrowsingAction
     {
       NoAction = 0, //!< No action is done
-      FlashFeature, //!< The feature is highlighted with a flash
       PanToFeature, //!< The map is panned to the center of the feature bounding-box
       ZoomToFeature, //!< The map is zoomed to contained the feature bounding-box
     };
@@ -372,6 +370,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void panZoomGroupButtonToggled( QAbstractButton *button, bool checked );
 
+    void flashButtonClicked( bool clicked );
+
   private:
 
     /**
@@ -400,7 +400,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QPointer< QgsVectorLayer > mLayer = nullptr;
     QProgressDialog *mProgressDlg = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
-    QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
     QgsScrollArea *mAttributeEditorScrollArea = nullptr;

@@ -839,7 +839,7 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   }
 }
 
-QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB )
+QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix )
 {
   QgsFields outFields = fieldsA;
   QSet< QString > usedNames;
@@ -850,25 +850,25 @@ QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const Qgs
 
   for ( const QgsField &f : fieldsB )
   {
-    if ( usedNames.contains( f.name().toLower() ) )
+    QgsField newField = f;
+    newField.setName( fieldsBPrefix + f.name() );
+    if ( usedNames.contains( newField.name().toLower() ) )
     {
       int idx = 2;
-      QString newName = f.name() + '_' + QString::number( idx );
+      QString newName = newField.name() + '_' + QString::number( idx );
       while ( usedNames.contains( newName.toLower() ) )
       {
         idx++;
-        newName = f.name() + '_' + QString::number( idx );
+        newName = newField.name() + '_' + QString::number( idx );
       }
-      QgsField newField = f;
       newField.setName( newName );
       outFields.append( newField );
-      usedNames.insert( newName.toLower() );
     }
     else
     {
-      usedNames.insert( f.name().toLower() );
-      outFields.append( f );
+      outFields.append( newField );
     }
+    usedNames.insert( newField.name() );
   }
 
   return outFields;

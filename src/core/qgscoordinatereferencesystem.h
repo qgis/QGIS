@@ -40,6 +40,13 @@ class QDomNode;
 class QDomDocument;
 class QgsCoordinateReferenceSystemPrivate;
 
+#if PROJ_VERSION_MAJOR>=6
+#ifndef SIP_RUN
+struct PJconsts;
+typedef struct PJconsts PJ;
+#endif
+#endif
+
 // forward declaration for sqlite3
 typedef struct sqlite3 sqlite3 SIP_SKIP;
 
@@ -640,6 +647,22 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
+
+#ifndef SIP_RUN
+#if PROJ_VERSION_MAJOR>=6
+
+    /**
+     * Returns the underlying PROJ PJ object corresponding to the CRS, or NULLPTR
+     * if the CRS is invalid.
+     *
+     * This object is only valid for the lifetime of the QgsCoordinateReferenceSystem.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.8
+     */
+    PJ *projObject() const;
+#endif
+#endif
 
     /**
      * Returns a list of recently used projections

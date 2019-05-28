@@ -44,6 +44,9 @@ email                : a.furieri@lqt.it
 #include <QDir>
 #include <QRegularExpression>
 
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 
 const QString SPATIALITE_KEY = QStringLiteral( "spatialite" );
 const QString SPATIALITE_DESCRIPTION = QStringLiteral( "SpatiaLite data provider" );
@@ -662,6 +665,10 @@ static TypeSubType getVariantType( const QString &type )
     TypeSubType subType = getVariantType( type.mid( SPATIALITE_ARRAY_PREFIX.length(),
                                           type.length() - SPATIALITE_ARRAY_PREFIX.length() - SPATIALITE_ARRAY_SUFFIX.length() ) );
     return TypeSubType( subType.first == QVariant::String ? QVariant::StringList : QVariant::List, subType.first );
+  }
+  else if ( type == QLatin1String( "jsonarray" ) )
+  {
+    return TypeSubType( QVariant::List, QVariant::Invalid );
   }
   else
     // for sure any SQLite value can be represented as SQLITE_TEXT
@@ -4385,6 +4392,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
           first = false;
 
         QVariant::Type type = fld.type();
+        const auto typeName { fld.typeName() };
 
         if ( val.isNull() || !val.isValid() )
         {
@@ -4398,8 +4406,27 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         }
         else if ( type == QVariant::StringList || type == QVariant::List )
         {
-          // binding an array value
-          sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( QgsJsonUtils::encodeValue( val ) ) );
+          // binding an array value, parse JSON
+          QString jRepr;
+          try
+          {
+            const auto jObj { QgsJsonUtils::jsonFromVariant( val ) };
+            if ( ! jObj.is_array() )
+            {
+              throw json::parse_error::create( 0, 0, tr( "JSON value must be an array" ).toStdString() );
+            }
+            jRepr = QString::fromStdString( jObj.dump( ) );
+            sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ),  QgsSqliteUtils::quotedString( jRepr ) );
+          }
+          catch ( json::exception &ex )
+          {
+            const auto errM { tr( "Field type is JSON but the value cannot be converted to JSON array: %1" ).arg( ex.what() ) };
+            auto msgPtr { static_cast<char *>( sqlite3_malloc( errM.length() + 1 ) ) };
+            strcpy( static_cast<char *>( msgPtr ), errM.toStdString().c_str() );
+            errMsg = msgPtr;
+            handleError( jRepr, errMsg, true );
+            return false;
+          }
         }
         else
         {

@@ -222,22 +222,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
   if ( mShared->mLayerPropertiesList.isEmpty() )
   {
     typenames = mShared->mURI.typeName();
-
-    // Add NAMESPACES parameter for server that declare a namespace in the FeatureType of GetCapabilities response
-    // See https://issues.qgis.org/issues/14685
-    Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, mShared->mCaps.featureTypes )
-    {
-      if ( f.name == typenames )
-      {
-        if ( !f.nameSpace.isEmpty() && f.name.contains( ':' ) )
-        {
-          QString prefixOfTypename = f.name.section( ':', 0, 0 );
-          namespaces = "xmlns(" + prefixOfTypename + "," + f.nameSpace + ")";
-        }
-        break;
-      }
-    }
-
+    namespaces = mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, typenames );
   }
   else
   {
@@ -250,8 +235,8 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
   }
   if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ),  typenames );
-  else
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
+  getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
+
   if ( forHits )
   {
     getFeatureUrl.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
@@ -408,8 +393,9 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
 
   if ( !namespaces.isEmpty() )
   {
-    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ),
-                                namespaces );
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaces );
+    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaces );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString( ) ), 2 );
@@ -1034,7 +1020,7 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
     const auto subsetOfAttributes = mRequest.subsetOfAttributes();
     for ( int i : subsetOfAttributes )
     {
-      int idx = dataProviderFields.indexFromName( mShared->mFields.at( i ).name() );
+      int idx = dataProviderFields.indexFromName( mShared->mMapGMLFieldNameToSQLiteColumnName[mShared->mFields.at( i ).name()] );
       if ( idx >= 0 )
         cacheSubSet.append( idx );
       idx = mShared->mFields.indexFromName( mShared->mFields.at( i ).name() );
@@ -1048,7 +1034,7 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
       const auto referencedColumns = mRequest.filterExpression()->referencedColumns();
       for ( const QString &field : referencedColumns )
       {
-        int idx = dataProviderFields.indexFromName( field );
+        int idx = dataProviderFields.indexFromName( mShared->mMapGMLFieldNameToSQLiteColumnName[field] );
         if ( idx >= 0 && !cacheSubSet.contains( idx ) )
           cacheSubSet.append( idx );
         idx = mShared->mFields.indexFromName( field );
@@ -1262,7 +1248,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
       continue;
     }
 
-    copyFeature( cachedFeature, f );
+    copyFeature( cachedFeature, f, true );
     geometryToDestinationCrs( f, mTransform );
 
     // Retrieve the user-visible id from the Spatialite cache database Id
@@ -1356,7 +1342,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
           continue;
         }
 
-        copyFeature( feat, f );
+        copyFeature( feat, f, false );
         return true;
       }
 
@@ -1443,7 +1429,7 @@ bool QgsWFSFeatureIterator::close()
 }
 
 
-void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature )
+void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature, bool srcIsCache )
 {
   //copy the geometry
   QgsGeometry geometry = srcFeature.geometry();
@@ -1464,7 +1450,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeatur
 
   auto setAttr = [ & ]( const int i )
   {
-    int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
+    int idx = srcFeature.fields().indexFromName( srcIsCache ? mShared->mMapGMLFieldNameToSQLiteColumnName[fields.at( i ).name()] : fields.at( i ).name() );
     if ( idx >= 0 )
     {
       const QVariant &v = srcFeature.attributes().value( idx );

@@ -142,6 +142,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   // init the projections (destination and source)
   freeProj();
 
+  Q_NOWARN_DEPRECATED_PUSH
   mSourceProjString = mSourceCRS.toProj4();
   if ( !useDefaultDatumTransform )
   {
@@ -161,6 +162,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   {
     mDestProjString += ( ' ' +  QgsDatumTransform::datumTransformToProj( destDatumTransform ) );
   }
+  Q_NOWARN_DEPRECATED_POP
 
   if ( !useDefaultDatumTransform )
   {

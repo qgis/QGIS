@@ -287,7 +287,7 @@ class CORE_EXPORT QgsProcessingUtils
      * length of field names, so be aware that the results of calling this method may
      * be truncated when saving to these formats.
      */
-    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB );
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() );
 
     /**
      * Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.

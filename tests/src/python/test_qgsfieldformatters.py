@@ -130,7 +130,12 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         _test([1, 2, 3], ["1", "2", "3"])
         _test("{1,2,3}", ["1", "2", "3"])
         _test(['1', '2', '3'], ["1", "2", "3"])
-        _test('not an array', ['not an array'])
+        _test('not an array', [])
+        _test('[1,2,3]', ["1", "2", "3"])
+        _test('{1,2,3}', ["1", "2", "3"])
+        _test('{"1","2","3"}', ["1", "2", "3"])
+        _test('["1","2","3"]', ["1", "2", "3"])
+        _test(r'["a string,comma","a string\"quote", "another string[]"]', ['a string,comma', 'a string"quote', 'another string[]'])
 
     def test_expressionRequiresFormScope(self):
 

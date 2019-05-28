@@ -799,24 +799,15 @@ QString QgsMapLayer::baseURI( PropertyType type ) const
 {
   QString myURI = publicSource();
 
-  // if file is using the VSIFILE mechanism, remove the prefix
-  if ( myURI.startsWith( QLatin1String( "/vsigzip/" ), Qt::CaseInsensitive ) )
+  // first get base path for delimited text, spatialite and OGR layers,
+  // as in these cases URI may contain layer name and/or additional
+  // information. This also strips prefix in case if VSIFILE mechanism
+  // is used
+  if ( providerType() == QLatin1String( "ogr" ) || providerType() == QLatin1String( "delimitedtext" ) ||
+       providerType() == QLatin1String( "spatialite" ) )
   {
-    myURI.remove( 0, 9 );
-  }
-  else if ( myURI.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) &&
-            myURI.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
-  {
-    // ideally we should look for .qml file inside zip file
-    myURI.remove( 0, 8 );
-  }
-  else if ( myURI.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) &&
-            ( myURI.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
-              myURI.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
-              myURI.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) ) )
-  {
-    // ideally we should look for .qml file inside tar file
-    myURI.remove( 0, 8 );
+    QVariantMap components = QgsProviderRegistry::instance()->decodeUri( providerType(), myURI );
+    myURI = components["path"].toString();
   }
 
   QFileInfo myFileInfo( myURI );

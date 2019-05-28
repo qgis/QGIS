@@ -22,6 +22,10 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 #include <QSettings>
 
 bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
@@ -166,12 +170,47 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
 {
   QStringList checkList;
   if ( value.type() == QVariant::StringList )
+  {
     checkList = value.toStringList();
+  }
   else if ( value.type() == QVariant::String )
-    checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
+  {
+    // This must be an array representation
+    auto newVal { value };
+    if ( newVal.toString().trimmed().startsWith( '{' ) )
+    {
+      newVal = QVariant( newVal.toString().trimmed().mid( 1 ).mid( 0, newVal.toString().length() - 2 ).prepend( '[' ).append( ']' ) );
+    }
+    if ( newVal.toString().trimmed().startsWith( '[' ) )
+    {
+      try
+      {
+        for ( auto &element : json::parse( newVal.toString().toStdString() ) )
+        {
+          if ( element.is_number_integer() )
+          {
+            checkList << QString::number( element.get<int>() );
+          }
+          else if ( element.is_number_unsigned() )
+          {
+            checkList << QString::number( element.get<unsigned>() );
+          }
+          else if ( element.is_string() )
+          {
+            checkList << QString::fromStdString( element.get<std::string>() );
+          }
+        }
+      }
+      catch ( json::parse_error &ex )
+      {
+        qDebug() << QString::fromStdString( ex.what() );
+      }
+    }
+  }
   else if ( value.type() == QVariant::List )
   {
     QVariantList valuesList( value.toList( ) );
+    checkList.reserve( valuesList.size() );
     for ( const QVariant &listItem : qgis::as_const( valuesList ) )
     {
       QString v( listItem.toString( ) );
