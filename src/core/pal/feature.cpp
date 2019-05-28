@@ -966,18 +966,6 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
 
 LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, double *path_distances, int &orientation, int index, double distance, bool &reversed, bool &flip )
 {
-  // Check that the given distance is on the given index and find the correct index and distance if not
-  while ( distance < 0 && index > 1 )
-  {
-    index--;
-    distance += path_distances[index];
-  }
-
-  if ( index <= 1 && distance < 0 ) // We've gone off the start, fail out
-  {
-    return nullptr;
-  }
-
   // Same thing, checking if we go off the end
   while ( index < path_positions->nbPoints && distance > path_distances[index] )
   {
