@@ -591,9 +591,6 @@
    <property name="toolTip">
     <string>Delete field (Ctrl+L)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+L</string>
-   </property>
   </action>
   <action name="mActionAddAttribute">
    <property name="icon">

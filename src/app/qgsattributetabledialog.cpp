@@ -1193,6 +1193,18 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
     updateTitle();
+
+    // To prevent "QAction::event: Ambiguous shortcut overload"
+    QgsDebugMsg( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ) );
+    mActionCopySelectedRows->setShortcut( QKeySequence() );
+    mActionPasteFeatures->setShortcut( QKeySequence() );
+    mActionCutSelectedRows->setShortcut( QKeySequence() );
+    mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
+    mActionRemoveSelection->setShortcut( QKeySequence() );
+    mActionSelectAll->setShortcut( QKeySequence() );
+    // duplicated on Main Window, with different semantics
+    mActionPanMapToSelectedRows->setShortcut( QKeySequence() );
+    mActionSearchForm->setShortcut( QKeySequence() );
   }
   else
   {
@@ -1221,6 +1233,19 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     updateTitle();
     mDialog->restoreGeometry( QgsSettings().value( QStringLiteral( "Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
     mDialog->show();
+
+    // restore attribute table shortcuts in window mode
+    QgsDebugMsg( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ) );
+    // duplicated on Main Window
+    mActionCopySelectedRows->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+C", Q_NULLPTR ) );
+    mActionPasteFeatures->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+V", Q_NULLPTR ) );
+    mActionCutSelectedRows->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+X", Q_NULLPTR ) );
+    mActionZoomMapToSelectedRows->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+J", nullptr ) );
+    mActionRemoveSelection->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+Shift+A", Q_NULLPTR ) );
+    mActionSelectAll->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+A", Q_NULLPTR ) );
+    // duplicated on Main Window, with different semantics
+    mActionPanMapToSelectedRows->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+P", Q_NULLPTR ) );
+    mActionSearchForm->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+F", Q_NULLPTR ) );
   }
 }
 
