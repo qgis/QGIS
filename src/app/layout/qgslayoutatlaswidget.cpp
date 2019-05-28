@@ -65,14 +65,6 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   }
   connect( mAtlasFileFormat, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { changeFileFormat(); } );
 
-  // Disconnect when layout is destroyed
-  connect( layout, &QgsPrintLayout::destroyed, [ = ]
-  {
-    disconnect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mAtlasSortExpressionWidget, &QgsFieldExpressionWidget::setLayer );
-    disconnect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mPageNameWidget, &QgsFieldExpressionWidget::setLayer );
-    disconnect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutAtlasWidget::changeCoverageLayer );
-  } );
-
   updateGuiElements();
 }
 
