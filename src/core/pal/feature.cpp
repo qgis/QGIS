@@ -1243,7 +1243,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     // penalize positions which are further from the line's midpoint
     double labelCenter = distanceAlongLineToStartCandidate + getLabelWidth() / 2;
     double costCenter = std::fabs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
-    cost += costCenter / 1000;  // < 0, 0.0005 >
+    cost += costCenter / 100;  // < 0, 0.005 >
     slp->setCost( cost );
 
     // average angle is calculated with respect to periodicity of angles
