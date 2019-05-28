@@ -1160,10 +1160,10 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     return 0;
 
   // distance calculation
-  double *path_distances = new double[mapShape->nbPoints];
+  std::unique_ptr< double [] > path_distances = qgis::make_unique<double[]>( mapShape->nbPoints );
   double total_distance = 0;
   double old_x = -1.0, old_y = -1.0;
-  for ( int i = 0; i < mapShape->nbPoints; i++ )
+  for ( std::size_t i = 0; i < mapShape->nbPoints; i++ )
   {
     if ( i == 0 )
       path_distances[i] = 0;
@@ -1177,7 +1177,6 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
 
   if ( qgsDoubleNear( total_distance, 0.0 ) )
   {
-    delete[] path_distances;
     return 0;
   }
 
@@ -1189,7 +1188,6 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   {
     // label doesn't fit on this line, don't waste time trying to make candidates
     // TODO - in future allow this, and allow label to overlap end of line
-    delete[] path_distances;
     return 0;
   }
 
@@ -1216,7 +1214,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
       orientation = 1;
     }
 
-    LabelPosition *slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
+    LabelPosition *slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, 1, i, reversed, flip );
     if ( !slp )
       continue;
 
@@ -1228,7 +1226,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
       {
         delete slp;
         orientation = -orientation;
-        slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
+        slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, 1, i, reversed, flip );
       }
     }
     if ( !slp )
@@ -1313,8 +1311,6 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   {
     lPos << positions.takeFirst();
   }
-
-  delete[] path_distances;
 
   return nbp;
 }
