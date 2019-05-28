@@ -345,8 +345,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
   PageExportDetails pageDetails;
   pageDetails.directory = fi.path();
-  pageDetails.baseName = fi.baseName();
-  pageDetails.extension = fi.completeSuffix();
+  pageDetails.baseName = fi.completeBaseName();
+  pageDetails.extension = fi.suffix();
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
   ( void )restorer;
