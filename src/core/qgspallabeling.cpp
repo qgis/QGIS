@@ -1646,9 +1646,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && fitInPolygonOnly )
   {
     permissibleZone = geom;
-    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry() ) )
+    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
-      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry() );
+      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines );
     }
   }
 
@@ -1661,9 +1661,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   geos::unique_ptr geos_geom_clone;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry() ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry() );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines );
 
     if ( geom.isNull() )
       return;
@@ -1672,9 +1672,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   if ( isObstacle )
   {
-    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry() ) )
+    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
-      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry() ) );
+      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) );
     }
   }
 
@@ -2170,9 +2170,9 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
   geos::unique_ptr geos_geom_clone;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
 
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom, mergeLines ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom, mergeLines );
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
@@ -2984,11 +2984,16 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer *layer )
 }
 
 
-bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry )
+bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry, bool mergeLines )
 {
   if ( geometry.isNull() )
   {
     return false;
+  }
+
+  if ( geometry.type() == QgsWkbTypes::LineGeometry && geometry.isMultipart() && mergeLines )
+  {
+    return true;
   }
 
   //requires reprojection
@@ -3056,7 +3061,7 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
   return graphemes;
 }
 
-QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry )
+QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry, bool mergeLines )
 {
   if ( geometry.isNull() )
   {
@@ -3065,6 +3070,11 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
 
   //don't modify the feature's geometry so that geometry based expressions keep working
   QgsGeometry geom = geometry;
+
+  if ( geom.type() == QgsWkbTypes::LineGeometry && geom.isMultipart() && mergeLines )
+  {
+    geom = geom.mergeLines();
+  }
 
   //reproject the geometry if necessary
   if ( ct.isValid() && !ct.isShortCircuited() )
