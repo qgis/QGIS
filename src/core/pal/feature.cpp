@@ -1000,7 +1000,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     {
       LabelInfo::CharacterInfo &ci = li->char_info[i];
       double start_x, start_y, end_x, end_y;
-      if ( !nextCharPosition( ci.width, path_distances[index], path_positions, endindex, _distance, start_x, start_y, end_x, end_y ) )
+      if ( !nextCharPosition( ci.width, path_distances[endindex], path_positions, endindex, _distance, start_x, start_y, end_x, end_y ) )
       {
         return nullptr;
       }
