@@ -1793,8 +1793,6 @@ bool FeaturePart::nextCharPosition( double charWidth, double segmentLength, Poin
       }
       segmentEndX = path_positions->x[index];
       segmentEndY = path_positions->y[index];
-      segmentDx = segmentEndX - segmentStartX;
-      segmentDy = segmentEndY - segmentStartY;
     }
     while ( std::sqrt( std::pow( characterStartX - segmentEndX, 2 ) + std::pow( characterStartY - segmentEndY, 2 ) ) < charWidth ); // Distance from start_ to new_
 
