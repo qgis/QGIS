@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>556</width>
-                <height>885</height>
+                <width>843</width>
+                <height>915</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1085,8 +1085,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>544</width>
-                <height>1095</height>
+                <width>543</width>
+                <height>1094</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1621,7 +1621,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>556</width>
+                <width>555</width>
                 <height>369</height>
                </rect>
               </property>
@@ -1788,8 +1788,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>496</width>
-                <height>753</height>
+                <width>500</width>
+                <height>747</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2118,7 +2118,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>675</width>
+                <width>674</width>
                 <height>1052</height>
                </rect>
               </property>
@@ -2869,7 +2869,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>507</width>
+                <width>506</width>
                 <height>314</height>
                </rect>
               </property>
@@ -3181,7 +3181,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>613</width>
-                <height>641</height>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3624,7 +3624,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>153</width>
+                <width>154</width>
                 <height>271</height>
                </rect>
               </property>
@@ -3792,7 +3792,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>547</width>
+                <width>843</width>
                 <height>873</height>
                </rect>
               </property>
@@ -4233,10 +4233,10 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <enum>Qt::LeftToRight</enum>
                     </property>
                     <property name="minimum">
-                     <number>0.4</number>
+                     <double>0.000000000000000</double>
                     </property>
                     <property name="singleStep">
-                     <number>0.2</number>
+                     <double>0.010000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -4401,7 +4401,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>474</width>
+                <width>473</width>
                 <height>606</height>
                </rect>
               </property>
@@ -5737,37 +5737,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUInfoTextBrowser</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
