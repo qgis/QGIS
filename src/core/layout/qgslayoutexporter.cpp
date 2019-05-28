@@ -346,7 +346,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   PageExportDetails pageDetails;
   pageDetails.directory = fi.path();
   pageDetails.baseName = fi.baseName();
-  pageDetails.extension = fi.completeSuffix();
+  pageDetails.extension = fi.suffix();
+  // Deal with multiple dots, issue GH-29980
+  const auto completeSuffix { fi.completeSuffix() };
+  if ( completeSuffix != pageDetails.extension )
+  {
+    pageDetails.baseName = pageDetails.baseName + '.' + completeSuffix.left( completeSuffix.length() - 1 - pageDetails.extension.length() );
+  }
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
   ( void )restorer;
