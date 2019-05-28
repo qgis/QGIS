@@ -998,22 +998,31 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     double _distance = offsetAlongSegment;
     int endindex = index;
 
+    double startLabelX = 0;
+    double startLabelY = 0;
+    double endLabelX = 0;
+    double endLabelY = 0;
     for ( int i = 0; i < li->char_num; i++ )
     {
       LabelInfo::CharacterInfo &ci = li->char_info[i];
-      double start_x, start_y, end_x, end_y;
-      if ( !nextCharPosition( ci.width, path_distances[endindex], path_positions, endindex, _distance, start_x, start_y, end_x, end_y ) )
+      double start_x, start_y;
+      if ( !nextCharPosition( ci.width, path_distances[endindex], path_positions, endindex, _distance, start_x, start_y, endLabelX, endLabelY ) )
       {
         return nullptr;
+      }
+      if ( i == 0 )
+      {
+        startLabelX = start_x;
+        startLabelY = start_y;
       }
     }
 
     // Determine the angle of the path segment under consideration
-    double dx = path_positions->x[endindex] - path_positions->x[index];
-    double dy = path_positions->y[endindex] - path_positions->y[index];
-    double line_angle = std::atan2( -dy, dx );
+    double dx = endLabelX - startLabelX;
+    double dy = endLabelY - startLabelY;
+    const double lineAngle = std::atan2( -dy, dx ) * 180 / M_PI;
 
-    bool isRightToLeft = ( line_angle > 0.55 * M_PI || line_angle < -0.45 * M_PI );
+    bool isRightToLeft = ( lineAngle > 90 || lineAngle < -90 );
     reversed = isRightToLeft;
     orientation = isRightToLeft ? -1 : 1;
   }
@@ -1175,7 +1184,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   QLinkedList<LabelPosition *> positions;
   double delta = std::max( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
-  unsigned long flags = mLF->layer()->arrangementFlags();
+  pal::LineArrangementFlags flags = mLF->layer()->arrangementFlags();
   if ( flags == 0 )
     flags = FLAG_ON_LINE; // default flag
 
