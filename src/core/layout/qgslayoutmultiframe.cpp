@@ -385,7 +385,7 @@ void QgsLayoutMultiFrame::handlePageChange()
     }
   }
 
-  if ( mFrameItems.count( ) )
+  if ( !mFrameItems.empty() )
   {
     //page number of the last item
     QgsLayoutFrame *lastFrame = mFrameItems.last();
