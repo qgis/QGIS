@@ -1023,10 +1023,11 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
      * \param clipGeometry geometry to clip features to, if applicable
+     * \param mergeLines TRUE if touching lines from this layer will be merged and treated as single features during labeling
      * \returns prepared geometry
      * \since QGIS 2.9
      */
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() ) SIP_FACTORY;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) SIP_FACTORY;
 
     /**
      * Checks whether a geometry requires preparation before registration with PAL
@@ -1034,10 +1035,11 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
      * \param clipGeometry geometry to clip features to, if applicable
+     * \param mergeLines TRUE if touching lines from this layer will be merged and treated as single features during labeling
      * \returns TRUE if geometry requires preparation
      * \since QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
+    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
 
     /**
      * Splits a \a text string to a list of separate lines, using a specified wrap character (\a wrapCharacter).
