@@ -1237,15 +1237,15 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     // restore attribute table shortcuts in window mode
     QgsDebugMsg( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ) );
     // duplicated on Main Window
-    mActionCopySelectedRows->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+C", Q_NULLPTR ) );
-    mActionPasteFeatures->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+V", Q_NULLPTR ) );
-    mActionCutSelectedRows->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+X", Q_NULLPTR ) );
-    mActionZoomMapToSelectedRows->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+J", nullptr ) );
-    mActionRemoveSelection->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+Shift+A", Q_NULLPTR ) );
-    mActionSelectAll->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+A", Q_NULLPTR ) );
+    mActionCopySelectedRows->setShortcut( QKeySequence( QKeySequence::Copy ) );
+    mActionPasteFeatures->setShortcut( QKeySequence( QKeySequence::Paste ) );
+    mActionCutSelectedRows->setShortcut( QKeySequence( QKeySequence::Cut ) );
+    mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
+    mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
+    mActionSelectAll->setShortcut( QStringLiteral( "Ctrl+A" ) );
     // duplicated on Main Window, with different semantics
-    mActionPanMapToSelectedRows->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+P", Q_NULLPTR ) );
-    mActionSearchForm->setShortcut( QApplication::translate( "QgsAttributeTableDialog", "Ctrl+F", Q_NULLPTR ) );
+    mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
+    mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
   }
 }
 
