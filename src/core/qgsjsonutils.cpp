@@ -319,7 +319,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
   QVariantList result;
   try
   {
-    const auto jObj { json::parse( json.toStdString() ) };
+    const auto jObj( json::parse( json.toStdString() ) );
     if ( ! jObj.is_array() )
     {
       throw json::parse_error::create( 0, 0, QStringLiteral( "JSON value must be an array" ).toStdString() );

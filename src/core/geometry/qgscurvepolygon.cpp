@@ -403,7 +403,7 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
 
 json QgsCurvePolygon::asJsonObject( int precision ) const
 {
-  json coordinates { json::array( )};
+  json coordinates( json::array( ) );
   if ( exteriorRing() )
   {
     std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );

@@ -1200,7 +1200,7 @@ QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int prec
 
 json QgsGeometryUtils::pointsToJson( const QgsPointSequence &points, int precision )
 {
-  json coordinates { json::array() };
+  json coordinates( json::array() );
   for ( const QgsPoint &p : points )
   {
     if ( p.is3D() )

@@ -13956,7 +13956,7 @@ void TestQgsGeometry::multiSurface()
   QGSCOMPAREGML( elemToString( QgsMultiSurface().asGml3( doc ) ), expectedGML3empty );
 
   // as JSON
-  QString expectedSimpleJson( "{\"coordinates\":[[[7.0,17.0],[7.0,13.0],[3.0,13.0],[7.0,17.0]],[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]]],\"type\":\"MultiPolygon\"}" );
+  QString expectedSimpleJson( "{\"coordinates\":[[[[7.0,17.0],[7.0,13.0],[3.0,13.0],[7.0,17.0]]],[[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]]]],\"type\":\"MultiPolygon\"}" );
   res = exportC.asJson( 1 );
   QCOMPARE( res, expectedSimpleJson );
 
@@ -13964,7 +13964,7 @@ void TestQgsGeometry::multiSurface()
   part.addInteriorRing( lineRing.clone() );
   exportC.addGeometry( part.clone() );
 
-  QString expectedJsonWithRings( "{\"coordinates\":[[[7.0,17.0],[7.0,13.0],[3.0,13.0],[7.0,17.0]],[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]],[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]],[[17.0,27.0],[17.0,28.0],[18.0,28.0],[17.0,27.0]]],\"type\":\"MultiPolygon\"}" );
+  QString expectedJsonWithRings( "{\"coordinates\":[[[[7.0,17.0],[7.0,13.0],[3.0,13.0],[7.0,17.0]]],[[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]]],[[[27.0,37.0],[27.0,43.0],[43.0,43.0],[27.0,37.0]],[[17.0,27.0],[17.0,28.0],[18.0,28.0],[17.0,27.0]]]],\"type\":\"MultiPolygon\"}" );
   res = exportC.asJson( 1 );
   QCOMPARE( res, expectedJsonWithRings );
 
@@ -13974,7 +13974,7 @@ void TestQgsGeometry::multiSurface()
   part.setExteriorRing( lineRing.clone() );
   exportFloat.addGeometry( part.clone() );
 
-  QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[[[0.123,0.123],[0.123,1.234],[1.234,1.234],[0.123,0.123]]],\"type\":\"MultiPolygon\"}" ) );
+  QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[[[[0.123,0.123],[0.123,1.234],[1.234,1.234],[0.123,0.123]]]],\"type\":\"MultiPolygon\"}" ) );
   res = exportFloat.asJson( 3 );
   QCOMPARE( res, expectedJsonPrec3 );
 
