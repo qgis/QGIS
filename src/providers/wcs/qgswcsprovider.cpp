@@ -355,6 +355,63 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
   QgsDebugMsg( QStringLiteral( "Constructed OK, provider valid." ) );
 }
 
+QgsWcsProvider::QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
+  : QgsRasterDataProvider( other.dataSourceUri(), providerOptions )
+  , mHttpUri( other.mHttpUri )
+  , mBaseUrl( other.mBaseUrl )
+  , mIdentifier( other.mIdentifier )
+  , mTime( other.mTime )
+  , mFormat( other.mFormat )
+  , mValid( other.mValid )
+  , mCapabilities( other.mCapabilities )
+  , mCoverageSummary( other.mCoverageSummary )
+  , mSrid( other.mSrid )
+  , mCoverageExtent( other.mCoverageExtent )
+  , mWidth( other.mWidth )
+  , mHeight( other.mHeight )
+  , mXBlockSize( other.mXBlockSize )
+  , mYBlockSize( other.mYBlockSize )
+  , mHasSize( other.mHasSize )
+  , mBandCount( other.mBandCount )
+  , mGdalDataType( other.mGdalDataType )
+  , mSrcGdalDataType( other.mSrcGdalDataType )
+  , mColorTables( other.mColorTables )
+  , mExtentForLayer( other.mExtentForLayer )
+  , mCrsForLayer( other.mCrsForLayer )
+  , mQueryableForLayer( other.mQueryableForLayer )
+  , mCoverageCrs( other.mCoverageCrs )
+    // intentionally omitted:
+    // - mCachedData
+    // - mCachedMemFilename
+    // - mCachedMemFile
+    // - mCachedGdalDataset
+    // - mCachedError
+    // - mCachedViewExtent
+    // - mCachedViewWidth
+    // - mCachedViewHeight
+  , mMaxWidth( other.mMaxWidth )
+  , mMaxHeight( other.mMaxHeight )
+    // intentionally omitted:
+    // - mErrorCaption
+    // - mError
+    // - mErrorFormat
+  , mCoordinateTransform( other.mCoordinateTransform )
+  , mExtentDirty( other.mExtentDirty )
+  , mGetFeatureInfoUrlBase( other.mGetFeatureInfoUrlBase )
+  , mServiceMetadataURL( other.mServiceMetadataURL )
+  , mAuth( other.mAuth )
+  , mIgnoreGetCoverageUrl( other.mIgnoreGetCoverageUrl )
+  , mIgnoreAxisOrientation( other.mIgnoreAxisOrientation )
+  , mInvertAxisOrientation( other.mInvertAxisOrientation )
+  , mCrs( other.mCrs )
+  , mFixBox( other.mFixBox )
+  , mFixRotate( other.mFixRotate )
+  , mCacheLoadControl( other.mCacheLoadControl )
+{
+  mCachedMemFilename = QStringLiteral( "/vsimem/qgis/wcs/%0.dat" ).arg( reinterpret_cast<std::uintptr_t>( this ) );
+}
+
+
 bool QgsWcsProvider::parseUri( const QString &uriString )
 {
 
@@ -431,7 +488,8 @@ QgsWcsProvider::~QgsWcsProvider()
 QgsWcsProvider *QgsWcsProvider::clone() const
 {
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsWcsProvider *provider = new QgsWcsProvider( dataSourceUri(), providerOptions );
+  providerOptions.transformContext = transformContext();
+  QgsWcsProvider *provider = new QgsWcsProvider( *this, providerOptions );
   provider->copyBaseSettings( *this );
   return provider;
 }

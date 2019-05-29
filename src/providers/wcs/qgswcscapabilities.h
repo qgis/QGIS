@@ -91,6 +91,8 @@ class QgsWcsCapabilities : public QObject
      *
      */
     explicit QgsWcsCapabilities( QgsDataSourceUri const &uri );
+    //! copy constructor
+    explicit QgsWcsCapabilities( const QgsWcsCapabilities &other );
     QgsWcsCapabilities() = default;
 
     void setUri( QgsDataSourceUri const &uri );
