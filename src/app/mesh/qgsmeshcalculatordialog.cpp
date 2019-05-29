@@ -464,6 +464,9 @@ void QgsMeshCalculatorDialog::useAllTimesFromLayer()
 
 QString QgsMeshCalculatorDialog::currentDatasetGroup() const
 {
+  if ( mDatasetsListWidget->count() == 0 )
+    return QString();
+
   const QList<QListWidgetItem *> items = mDatasetsListWidget->selectedItems();
   if ( !items.empty() )
     return items[0]->text();
