@@ -922,7 +922,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   if ( symmetric )
   {
     double angle = a3 - a1;
-    if ( angle < 0 ) angle += M_PI * 2;
+    // angle == 0 when full circle
+    if ( angle <= 0 ) angle += M_PI * 2;
 
     /* Number of segments in output */
     int segs = ceil( angle / increment );
@@ -931,7 +932,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   }
 
   /* Adjust a3 up so we can increment from a1 to a3 cleanly */
-  if ( a3 < a1 )
+  // a3 == a1 when full circle
+  if ( a3 <= a1 )
     a3 += 2.0 * M_PI;
   if ( a2 < a1 )
     a2 += 2.0 * M_PI;
