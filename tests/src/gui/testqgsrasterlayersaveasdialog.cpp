@@ -1,5 +1,5 @@
 /***************************************************************************
-    testqgsrasterlayersavesdialog.cpp
+    testqgsrasterlayersaveasdialog.cpp
      --------------------------------------
     Date                 : May 2019
     Copyright            : (C) 2019 Alessandro Pasotti
@@ -92,11 +92,20 @@ void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
   fileWriter.setPyramidsResampling( d.pyramidsResamplingMethod() );
   fileWriter.setPyramidsFormat( d.pyramidsFormat() );
   fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
-  fileWriter.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs(), rl.transformContext() );
+  fileWriter.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs() );
   {
     QVERIFY( QgsRasterLayer( rasterUri, QStringLiteral( "my_raster2" ) ).isValid() );
   }
   QVERIFY( d.outputLayerExists() );
+  // Now try to save with the same name of the existing vector layer
+  d.mLayerName->setText( QStringLiteral( "test_vector_layer" ) );
+  QVERIFY( d.outputLayerExists() );
+  auto fileWriter2 { QgsRasterFileWriter( d.outputFileName() ) };
+  fileWriter2.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs() );
+  {
+    auto rasterUri2 { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
+    QVERIFY( ! QgsRasterLayer( rasterUri2, QStringLiteral( "my_raster2" ) ).isValid() );
+  }
 }
 
 QString TestQgsRasterLayerSaveAsDialog::prepareDb()
@@ -106,7 +115,7 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   tmpFile.setAutoRemove( false );
   tmpFile.open();
   QString fileName( tmpFile.fileName( ) );
-  QgsVectorLayer vl( QStringLiteral( "Point?field=firstfield:string(1024)" ), "test_layer", "memory" );
+  QgsVectorLayer vl( QStringLiteral( "Point?field=firstfield:string(1024)" ), "test_vector_layer", "memory" );
   QgsVectorFileWriter w( fileName,
                          QStringLiteral( "UTF-8" ),
                          vl.fields(),
@@ -119,18 +128,18 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   vl.addFeature( f );
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = QStringLiteral( "GPKG" );
-  options.layerName = QStringLiteral( "test_layer" );
+  options.layerName = QStringLiteral( "test_vector_layer" );
   QString errorMessage;
   QgsVectorFileWriter::writeAsVectorFormat(
     &vl,
     fileName,
     options,
     &errorMessage );
-  QgsVectorLayer vl2( QStringLiteral( "%1|layername=test_layer" ).arg( fileName ), "src_test", "ogr" );
+  QgsVectorLayer vl2( QStringLiteral( "%1|layername=test_vector_layer" ).arg( fileName ), "test_vector_layer", "ogr" );
   Q_ASSERT( vl2.isValid() );
   return tmpFile.fileName( );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayerSaveAsDialog )
 
-#include "testqgsrasterlayersavesdialog.moc"
+#include "testqgsrasterlayersaveasdialog.moc"
