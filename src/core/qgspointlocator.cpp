@@ -668,13 +668,17 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
     }
 
-    SpatialIndex::Region r( rect2region( f.geometry().boundingBox() ) );
-    dataList << new RTree::Data( 0, nullptr, r, f.id() );
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
+    {
+      SpatialIndex::Region r( rect2region( bbox ) );
+      dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
-    if ( mGeoms.contains( f.id() ) )
-      delete mGeoms.take( f.id() );
-    mGeoms[f.id()] = new QgsGeometry( f.geometry() );
-    ++indexedCount;
+      if ( mGeoms.contains( f.id() ) )
+        delete mGeoms.take( f.id() );
+      mGeoms[f.id()] = new QgsGeometry( f.geometry() );
+      ++indexedCount;
+    }
 
     if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
     {
@@ -777,8 +781,8 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       }
     }
 
-    QgsRectangle bbox = f.geometry().boundingBox();
-    if ( !bbox.isNull() )
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
     {
       SpatialIndex::Region r( rect2region( bbox ) );
       mRTree->insertData( 0, nullptr, r, f.id() );
