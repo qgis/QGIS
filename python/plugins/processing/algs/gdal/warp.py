@@ -84,7 +84,7 @@ class warp(GdalAlgorithm):
                                                     optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Target CRS'),
-                                                    'EPSG:4326'))
+                                                    optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.RESAMPLING,
                                                      self.tr('Resampling method to use'),
                                                      options=[i[0] for i in self.methods],
