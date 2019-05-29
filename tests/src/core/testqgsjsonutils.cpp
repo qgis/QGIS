@@ -139,7 +139,7 @@ void TestQgsJsonUtils::testDoubleList()
 
 void TestQgsJsonUtils::testExportAttributesJson_data()
 {
-  QTest::addColumn<JsonAlgs>( "JsonAlgs" );
+  QTest::addColumn<JsonAlgs>( "jsonAlg" );
   QTest::newRow( "Use json" ) << JsonAlgs::Json;
   QTest::newRow( "Use old string concat" ) << JsonAlgs::String;
 }
@@ -147,17 +147,17 @@ void TestQgsJsonUtils::testExportAttributesJson_data()
 void TestQgsJsonUtils::testExportAttributesJson()
 {
 
-  QFETCH( enum JsonAlgs, JsonAlgs );
+  QFETCH( enum JsonAlgs, jsonAlg );
 
   QgsVectorLayer vl { QStringLiteral( "Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
   QgsFeature feature { vl.fields() };
   feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
 
-  if ( JsonAlgs == JsonAlgs::Json )  // 0.0022
+  if ( jsonAlg == JsonAlgs::Json )  // 0.0022
   {
     QBENCHMARK
     {
-      json j { QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) };
+      json j( QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) );
       QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral( R"raw({"flddbl":2.0,"fldint":1,"fldtxt":"a value"})raw" ) );
     }
   }
@@ -188,7 +188,7 @@ void TestQgsJsonUtils::testExportFeatureJson()
                             ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
                             ",\"type\":\"Feature\"}" ) };
 
-  const auto j { exporter.exportFeatureToJsonObject( feature ) };
+  const auto j( exporter.exportFeatureToJsonObject( feature ) );
   QCOMPARE( QString::fromStdString( j.dump() ),  expectedJson );
   const auto json { exporter.exportFeature( feature ) };
   QCOMPARE( json, expectedJson );

@@ -420,7 +420,7 @@ QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, con
 
 json QgsGeometryCollection::asJsonObject( int precision ) const
 {
-  json coordinates { json::array( ) };
+  json coordinates( json::array( ) );
   for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
     coordinates.push_back( geom->asJsonObject( precision ) );
