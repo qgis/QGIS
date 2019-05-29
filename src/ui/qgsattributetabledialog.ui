@@ -393,9 +393,6 @@
    <property name="toolTip">
     <string>Save edits (Ctrl+S)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
   </action>
   <action name="mActionReload">
    <property name="icon">
@@ -590,9 +587,6 @@
    </property>
    <property name="toolTip">
     <string>Delete field (Ctrl+L)</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+L</string>
    </property>
   </action>
   <action name="mActionAddAttribute">
