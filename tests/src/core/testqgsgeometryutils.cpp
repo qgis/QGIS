@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <math.h>
+
 #include "qgstest.h"
 #include <QObject>
 #include "qgsgeometryutils.h"
@@ -71,6 +73,9 @@ class TestQgsGeometryUtils: public QObject
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
     void interpolatePointOnArc();
+    void testSegmentizeArcHalfCircle();
+    void testSegmentizeArcHalfCircleOtherDirection();
+    void testSegmentizeArcFullCircle();
 };
 
 
@@ -1269,6 +1274,75 @@ void TestQgsGeometryUtils::interpolatePointOnArc()
   p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 3.141592 * 3 );
   QGSCOMPARENEAR( p.x(), 8.0, 0.00001 );
   QGSCOMPARENEAR( p.y(), -2.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcHalfCircle()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 1, yoff + 1 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   points, 0.1,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1 - sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1 + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcHalfCircleOtherDirection()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 1, yoff - 1 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   points, 0.1,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1 - sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + -sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + -1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1 + sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + -sqrt( 2 ) / 2, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
+}
+
+void TestQgsGeometryUtils::testSegmentizeArcFullCircle()
+{
+  QgsPointSequence points;
+  const double xoff = 1;
+  const double yoff = 100;
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
+                                   QgsPoint( xoff + 2, yoff + 0 ),
+                                   QgsPoint( xoff + 0, yoff + 0 ),
+                                   points, 0.4,
+                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QCOMPARE( points.size(), 5 );
+  QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[1].y(), yoff + -1.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].x(), xoff + 2.0, 0.00001 );
+  QGSCOMPARENEAR( points[2].y(), yoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].x(), xoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[3].y(), yoff + 1.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].x(), xoff + 0.0, 0.00001 );
+  QGSCOMPARENEAR( points[4].y(), yoff + 0.0, 0.00001 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
