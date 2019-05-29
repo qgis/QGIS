@@ -330,7 +330,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
 void TestQgsValueRelationWidgetWrapper::testZeroIndexInRelatedTable()
 {
   // findData fails to tell a 0 from a NULL
-  // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+  // See: "Value relation, value 0 = NULL" - https://github.com/qgis/QGIS/issues/27803
 
   // create a vector layer
   QgsVectorLayer vl1( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );

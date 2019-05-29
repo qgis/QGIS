@@ -132,7 +132,7 @@ void TestQgsRangeWidgetWrapper::cleanup()
 void TestQgsRangeWidgetWrapper::test_setDoubleRange()
 {
   // Test setting scale range with doubles and NULL values, default range
-  // See https://issues.qgis.org/issues/17878
+  // See https://github.com/qgis/QGIS/issues/25773
   // QGIS 3 Vector Layer Fields Garbled when Clicking the Toggle Editing Icon
 
   QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );

@@ -1873,7 +1873,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   // Without the below hack, the length of the first added field would have
   // been reset to zero, and QgsVectorLayerEditBuffer::commitChanges() would
   // error out because of this.
-  // See https://issues.qgis.org/issues/19009
+  // See https://github.com/qgis/QGIS/issues/26840
   for ( auto field : oldFields )
   {
     int idx = mAttributeFields.lookupField( field.name() );
@@ -3726,7 +3726,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   // GPKG/SQLite fid
   // For GPKG and SQLITE drivers PK fields are not exposed as real fields, (and OGR_F_GetFID only
   // works with GPKG), so we are adding an extra column that will become index 0
-  // See https://issues.qgis.org/issues/21311
+  // See https://github.com/qgis/QGIS/issues/29129
   if ( ( mGDALDriverName == QLatin1String( "GPKG" ) || mGDALDriverName == QLatin1String( "SQLite" ) )
        && mFirstFieldIsFid && index == 0 )
   {

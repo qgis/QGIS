@@ -638,7 +638,7 @@ bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, 
   return resultFlag;
 }
 
-// See https://issues.qgis.org/issues/15507
+// See https://github.com/qgis/QGIS/issues/23431
 void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
 {
   QgsPalLayerSettings settings;
@@ -750,7 +750,7 @@ void TestQgsLabelingEngine::testParallelLabelSmallFeature()
   // This test assumes that NO label is drawn in this situation. In future we may want
   // to revisit this and e.g. draw a centered horizontal label over the feature -- in which
   // case the reference image here should be freely revised. But for now, we just don't
-  // want a hang/crash such as described in https://issues.qgis.org/issues/18283
+  // want a hang/crash such as described in https://github.com/qgis/QGIS/issues/26174
 
   QgsPalLayerSettings settings;
   setDefaultLabelParams( settings );

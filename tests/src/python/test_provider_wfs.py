@@ -115,7 +115,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     <xsd:complexContent>
       <xsd:extension base="gml:AbstractFeatureType">
         <xsd:sequence>
-          <!-- add a trailing space to the name to test https://issues.qgis.org/issues/3426 -->
+          <!-- add a trailing space to the name to test https://github.com/qgis/QGIS/issues/13486 -->
           <xsd:element maxOccurs="1" minOccurs="0" name="pk  " nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="cnt" nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
@@ -2963,7 +2963,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual((got.x(), got.y()), (426858.0, 5427937.0))
 
     def testGetFeatureWithNamespaces(self):
-        ''' test https://issues.qgis.org/issues/14685 '''
+        ''' test https://github.com/qgis/QGIS/issues/22649 '''
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_getfeature_with_namespaces'
 
@@ -3552,7 +3552,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
     def testGeometryCollectionAsMultiLineString(self):
-        """Test https://issues.qgis.org/issues/19571 """
+        """Test https://github.com/qgis/QGIS/issues/27398 """
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_gc_as_mls'
 
@@ -3807,7 +3807,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         pass # skip this feature source test -- provider is not affected
 
     def testFilteredFeatureRequests(self):
-        """Test https://issues.qgis.org/issues/21077 """
+        """Test https://github.com/qgis/QGIS/issues/28895 """
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_filtered_feature_requests'
 

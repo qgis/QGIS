@@ -929,7 +929,7 @@ void TestQgsGeometryChecks::testSelfContactCheck()
 
   cleanupTestContext( testContext );
 
-  // https://issues.qgis.org/issues/20408
+  // https://github.com/qgis/QGIS/issues/28228
   // test with a linestring which collapses to an empty linestring
   QgsGeometryCheckContext context( 1, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
   QgsGeometrySelfContactCheck check2( &context, QVariantMap() );
