@@ -217,7 +217,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
   else if ( mComboBox )
   {
     // findData fails to tell a 0 from a NULL
-    // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+    // See: "Value relation, value 0 = NULL" - https://github.com/qgis/QGIS/issues/27803
     int idx = -1; // default to not found
     for ( int i = 0; i < mComboBox->count(); i++ )
     {

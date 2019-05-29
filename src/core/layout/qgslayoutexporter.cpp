@@ -186,7 +186,7 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
   {
     // specified image size is wrong aspect ratio for paper rect - so ignore it and just use dpi
     // this can happen e.g. as a result of data defined page sizes
-    // see https://issues.qgis.org/issues/18534
+    // see https://github.com/qgis/QGIS/issues/26422
     imageSize = QSize();
   }
 

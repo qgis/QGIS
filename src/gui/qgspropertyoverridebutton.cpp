@@ -665,7 +665,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
 {
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
-  // build sensible initial expression text - see https://issues.qgis.org/issues/18638
+  // build sensible initial expression text - see https://github.com/qgis/QGIS/issues/26526
   QString currentExpression = ( mProperty.propertyType() == QgsProperty::StaticProperty && !mProperty.staticValue().isValid() ) ? QString()
                               : mProperty.asExpression();
 

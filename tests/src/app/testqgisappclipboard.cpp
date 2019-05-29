@@ -209,7 +209,7 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( point->y(), 30.0 );
 
   // be sure parsing does not consider attached parameters that
-  // can change geometryType as in https://issues.qgis.org/issues/16870
+  // can change geometryType as in https://github.com/qgis/QGIS/issues/24769
   mQgisApp->clipboard()->setText( QStringLiteral( "POINT (111 30)\t GoodFieldValue\nPOINT (125 10)\t(WrongFieldValue)" ) );
 
   features = mQgisApp->clipboard()->copyOf();

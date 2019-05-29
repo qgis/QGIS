@@ -84,25 +84,25 @@ class TestQgsVectorFileWriter: public QObject
     void polygonGridTest();
     //! As above but using a projected CRS
     void projectedPlygonGridTest();
-    //! This is a regression test ticket 1141 (broken Polish characters support since r8592) https://issues.qgis.org/issues/1141
+    //! This is a regression test ticket 1141 (broken Polish characters support since r8592) https://github.com/qgis/QGIS/issues/11201
     void regression1141();
     //! Test prepareWriteAsVectorFormat
     void prepareWriteAsVectorFormat();
     //! Test regression #21714 (Exported GeoPackages have wrong field definitions)
     void testTextFieldLength();
-    //! Test https://issues.qgis.org/issues/22005
+    //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxPoint();
-    //! Test https://issues.qgis.org/issues/22005
+    //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxPointTrackPoints();
-    //! Test https://issues.qgis.org/issues/22005
+    //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxPointRoutePoints();
-    //! Test https://issues.qgis.org/issues/22005
+    //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxLineString();
-    //! Test https://issues.qgis.org/issues/22005
+    //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxLineStringForceTrack();
-    //! Test https://issues.qgis.org/issues/22005
+    //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxMultiLineString();
-    //! Test https://issues.qgis.org/issues/22005
+    //! Test https://github.com/qgis/QGIS/issues/29819
     void testExportToGpxMultiLineStringForceRoute();
 
   private:

@@ -423,7 +423,7 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
       sf = QStringLiteral( "TRUE" );
     }
     // If we have more than 50 rules (to stay on the safe side) make a binary tree or SQLITE will fail,
-    // see: http://issues.qgis.org/issues/19441
+    // see: https://github.com/qgis/QGIS/issues/27269
     else if ( subfilters.count() > 50 )
     {
       std::function<QString( const QStringList & )>bt = [ &bt ]( const QStringList & subf )
