@@ -119,7 +119,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     connect( removePageAction, &QAction::triggered, this, [layout, page]()
     {
       if ( QMessageBox::question( nullptr, tr( "Remove Page" ),
-                                  tr( "Remove page from layout?" ),
+                                  tr( "Remove page from layout? The items will be moved to the first page." ),
                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
       {
         layout->pageCollection()->deletePage( page );
