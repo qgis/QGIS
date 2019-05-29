@@ -1152,7 +1152,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   std::unique_ptr< double [] > path_distances = qgis::make_unique<double[]>( mapShape->nbPoints );
   double total_distance = 0;
   double old_x = -1.0, old_y = -1.0;
-  for ( std::size_t i = 0; i < mapShape->nbPoints; i++ )
+  for ( int i = 0; i < mapShape->nbPoints; i++ )
   {
     if ( i == 0 )
       path_distances[i] = 0;
