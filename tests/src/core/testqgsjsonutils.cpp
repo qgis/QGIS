@@ -77,7 +77,8 @@ void TestQgsJsonUtils::testJsonArray()
   QCOMPARE( QgsJsonUtils::parseArray( R"([1.234567,2.00003e+4,-3.01234e-02])" ), QVariantList() << 1.234567 << 2.00003e+4 << -3.01234e-2 );
   // Strings
   QCOMPARE( QgsJsonUtils::parseArray( R"(["one", "two", "three"])" ), QVariantList() << "one" << "two" << "three" );
-  QCOMPARE( QgsJsonUtils::parseArray( R"(["one,comma", "two[]brackets", "three\"escaped"])" ), QVariantList() << "one,comma" << "two[]brackets" << "three\"escaped" );
+  // VC++ doesn't like \" in raw strings
+  QCOMPARE( QgsJsonUtils::parseArray( "[\"one,comma\", \"two[]brackets\", \"three\\\"escaped\"]" ), QVariantList() << "one,comma" << "two[]brackets" << "three\"escaped" );
   // Nested (not implemented: discard deeper levels)
   //QCOMPARE( QgsJsonUtils::parseArray( R"([1.0,[2.0,5.0],3.0])" ), QVariantList() << 1.0 << 3.0 );
   // Mixed types
@@ -183,10 +184,10 @@ void TestQgsJsonUtils::testExportFeatureJson()
   QgsJsonExporter exporter { &vl };
 
   const auto expectedJson { QStringLiteral( "{\"bbox\":[[1.12,1.12,5.45,5.33]],\"geometry\":{\"coordinates\":"
-                            "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
-                            "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
-                            ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
-                            ",\"type\":\"Feature\"}" ) };
+        "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+        "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+        ",\"id\":0,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+        ",\"type\":\"Feature\"}" ) };
 
   const auto j( exporter.exportFeatureToJsonObject( feature ) );
   QCOMPARE( QString::fromStdString( j.dump() ),  expectedJson );
