@@ -4690,6 +4690,28 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
     return false;
   }
 
+  // handle deletion of views
+  QString sqlViewCheck = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" )
+                         .arg( QgsPostgresConn::quotedValue( schemaTableName ) );
+  QgsPostgresResult resViewCheck( conn->PQexec( sqlViewCheck ) );
+  QString type = resViewCheck.PQgetvalue( 0, 0 );
+  if ( type == QLatin1String( "v" ) || type == QLatin1String( "m" ) )
+  {
+    QString sql = QString( "DROP VIEW %1" ).arg( schemaTableName );
+    QgsPostgresResult result( conn->PQexec( sql ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      errCause = QObject::tr( "Unable to delete view %1: \n%2" )
+                 .arg( schemaTableName,
+                       result.PQresultErrorMessage() );
+      conn->unref();
+      return false;
+    }
+    conn->unref();
+    return true;
+  }
+
+
   // check the geometry column count
   QString sql = QString( "SELECT count(*) "
                          "FROM geometry_columns, pg_class, pg_namespace "
