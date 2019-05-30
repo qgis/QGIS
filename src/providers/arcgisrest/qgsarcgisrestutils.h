@@ -64,7 +64,7 @@ class QgsArcGisRestUtils
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
                                    const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
     static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
-    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
+    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr );
     static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
 
     static std::unique_ptr< QgsPoint > parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType );
