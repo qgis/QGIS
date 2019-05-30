@@ -11,6 +11,9 @@ __date__ = '31/01/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
+import tempfile
+import os
+import shutil
 
 from qgis.PyQt.QtCore import QVariant, QLocale
 from qgis.PyQt.QtGui import QValidator
@@ -29,8 +32,12 @@ class TestQgsFieldValidator(unittest.TestCase):
 
     def setUp(self):
         """Run before each test."""
-        testPath = TEST_DATA_DIR + '/' + 'bug_17878.gpkg|layername=bug_17878'
-        self.vl = QgsVectorLayer(testPath, "test_data", "ogr")
+        testPath = TEST_DATA_DIR + '/' + 'bug_17878.gpkg'
+        # Copy it
+        tempdir = tempfile.mkdtemp()
+        testPathCopy = os.path.join(tempdir, 'bug_17878.gpkg')
+        shutil.copy(testPath, testPathCopy)
+        self.vl = QgsVectorLayer(testPathCopy + '|layername=bug_17878', "test_data", "ogr")
         assert self.vl.isValid()
 
     def tearDown(self):
