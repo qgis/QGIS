@@ -313,6 +313,7 @@ QgsVertexTool::~QgsVertexTool()
   delete mVertexBand;
   delete mEdgeBand;
   delete mEndpointMarker;
+  delete mVertexEditor;
 }
 
 void QgsVertexTool::activate()
@@ -1391,12 +1392,12 @@ void QgsVertexTool::showVertexEditor()  //#spellok
 {
   if ( !mVertexEditor )
   {
-    mVertexEditor.reset( new QgsVertexEditor( mCanvas ) );
-    if ( !QgisApp::instance()->restoreDockWidget( mVertexEditor.get() ) )
-      QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
+    mVertexEditor = new QgsVertexEditor( mCanvas );
+    if ( !QgisApp::instance()->restoreDockWidget( mVertexEditor ) )
+      QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor );
 
-    connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
-    connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
+    connect( mVertexEditor, &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
+    connect( mVertexEditor, &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
 
     // timer required as showing/raising the vertex editor in the same function following restoreDockWidget fails
     QTimer::singleShot( 200, this, [ = ] { mVertexEditor->show(); mVertexEditor->raise(); } );
@@ -1411,7 +1412,10 @@ void QgsVertexTool::showVertexEditor()  //#spellok
 void QgsVertexTool::cleanupVertexEditor()
 {
   mLockedFeature.reset();
-  mVertexEditor.reset();
+  // do not delete immediately because vertex editor
+  // can be still used in the qt event loop
+  mVertexEditor->deleteLater();
+
   updateLockedFeatureVertices();
 }
 
