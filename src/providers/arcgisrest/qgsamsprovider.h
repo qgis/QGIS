@@ -56,6 +56,8 @@ class QgsAmsProvider : public QgsRasterDataProvider
   public:
     QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
+    explicit QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
+
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
     QString name() const override { return QStringLiteral( "mapserver" ); }
