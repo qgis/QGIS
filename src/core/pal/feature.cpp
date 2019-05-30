@@ -1005,15 +1005,15 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     for ( int i = 0; i < li->char_num; i++ )
     {
       LabelInfo::CharacterInfo &ci = li->char_info[i];
-      double start_x, start_y;
-      if ( !nextCharPosition( ci.width, path_distances[endindex], path_positions, endindex, _distance, start_x, start_y, endLabelX, endLabelY ) )
+      double characterStartX, characterStartY;
+      if ( !nextCharPosition( ci.width, path_distances[endindex], path_positions, endindex, _distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
       {
         return nullptr;
       }
       if ( i == 0 )
       {
-        startLabelX = start_x;
-        startLabelY = start_y;
+        startLabelX = characterStartX;
+        startLabelY = characterStartY;
       }
     }
 
@@ -1177,7 +1177,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   if ( totalCharacterWidth > total_distance )
   {
     // label doesn't fit on this line, don't waste time trying to make candidates
-    // TODO - in future allow this, and allow label to overlap end of line
+    // TODO: in future allow this, and allow label to overlap end of line
     return 0;
   }
 
