@@ -50,9 +50,11 @@ void QgsAmsLegendFetcher::start()
   // http://resources.arcgis.com/en/help/rest/apiref/mslegend.html
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/CommunityAddressing/MapServer/legend?f=pjson
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
+  const QString authCfg = dataSource.authConfigId();
+
   QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/legend" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  mQuery->start( queryUrl, &mQueryReply );
+  mQuery->start( queryUrl, authCfg, &mQueryReply );
 }
 
 void QgsAmsLegendFetcher::handleError( const QString &errorTitle, const QString &errorMsg )
@@ -261,7 +263,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     return;
   }
   QgsDataSourceUri dataSource( dataSourceUri() );
-  const QString authcfg = dataSource.param( QStringLiteral( "authcfg" ) );
+  const QString authcfg = dataSource.authConfigId();
 
   // Use of tiles currently only implemented if service CRS is meter based
   if ( mServiceInfo[QStringLiteral( "singleFusedMapCache" )].toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
@@ -322,7 +324,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
         queries[( iy - iyStart ) * ixCount + ( ix - ixStart )] = QUrl( dataSource.param( QStringLiteral( "url" ) ) + QStringLiteral( "/tile/%1/%2/%3" ).arg( level ).arg( iy ).arg( ix ) );
       }
     }
-    QgsArcGisAsyncParallelQuery query;
+    QgsArcGisAsyncParallelQuery query( authcfg );
     QEventLoop evLoop;
     connect( &query, &QgsArcGisAsyncParallelQuery::finished, &evLoop, &QEventLoop::quit );
     query.start( queries, &results, true );
@@ -404,7 +406,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
   queryUrl.addQueryItem( QStringLiteral( "mapExtent" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum(), 0, 'f' ).arg( extent.yMinimum(), 0, 'f' ).arg( extent.xMaximum(), 0, 'f' ).arg( extent.yMaximum(), 0, 'f' ) );
   queryUrl.addQueryItem( QStringLiteral( "tolerance" ), QStringLiteral( "10" ) );
 
-  const QString authcfg = dataSource.param( QStringLiteral( "authcfg" ) );
+  const QString authcfg = dataSource.authConfigId();
   const QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, authcfg, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
 
   QMap<int, QVariant> entries;
