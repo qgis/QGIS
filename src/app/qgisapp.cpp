@@ -6277,6 +6277,7 @@ void QgisApp::fileSaveAs()
     // add this to the list of recently used project files
     saveRecentProjectPath();
     mProjectLastModified = fullPath.lastModified();
+    emit newProject();
   }
   else
   {
