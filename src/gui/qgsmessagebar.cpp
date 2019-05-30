@@ -276,10 +276,18 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   popWidget( item );
   showItem( item );
 
-  // Log all messages that are sent to the message bar into the message log so the
+  // Log all (non-empty) messages that are sent to the message bar into the message log so the
   // user can get them back easier.
-  QString formattedTitle = QStringLiteral( "%1 : %2" ).arg( item->title(), item->text() );
-  QgsMessageLog::logMessage( formattedTitle, tr( "Messages" ), item->level() );
+  QString formattedTitle;
+  if ( !item->title().isEmpty() && !item->text().isEmpty() )
+    formattedTitle = QStringLiteral( "%1 : %2" ).arg( item->title(), item->text() );
+  else if ( !item->title().isEmpty() )
+    formattedTitle = item->title();
+  else if ( !item->text().isEmpty() )
+    formattedTitle = item->text();
+
+  if ( !formattedTitle.isEmpty() )
+    QgsMessageLog::logMessage( formattedTitle, tr( "Messages" ), item->level() );
 }
 
 QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, Qgis::MessageLevel level, int duration )
