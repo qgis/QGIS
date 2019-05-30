@@ -60,6 +60,7 @@
 #endif
 #include <QStatusBar>
 #include <QStringList>
+#include <QSysInfo>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QtGlobal>
@@ -4498,6 +4499,10 @@ void QgisApp::about()
 #ifdef QGISDEBUG
     versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
+
+    versionString += QLatin1String( "</tr><tr>" );
+
+    versionString += "<td>" + tr( "OS Version" ) + "</td><td>" + QSysInfo::prettyProductName() + "</td>";
 
     versionString += QLatin1String( "</tr></table></div></body></html>" );
 
