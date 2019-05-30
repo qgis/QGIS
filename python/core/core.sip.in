@@ -107,8 +107,28 @@ done:
 %Include core_auto.sip
 
 %VirtualErrorHandler processing_exception_handler
-    QString trace = getTraceback();
-    QgsLogger::critical( trace );
+    PyObject *exception, *value, *traceback;
+    // if an explicit QgsProcessingException was raised, we don't retrieve
+    // and append the trace. It's too noisy for these "expected" type errors.
+    // For all other exceptions, it's likely a coding error in the algorithm,
+    // so we DO retrieve the full traceback for debugging.
+    PyTypeObject* err = reinterpret_cast< PyTypeObject* >( PyErr_Occurred() );
+    QString what;
+    if ( err && QString( err->tp_name ) == QStringLiteral( "QgsProcessingException" ) )
+    {
+      PyObject *type, *value, *traceback;
+      PyErr_Fetch( &type, &value, &traceback );
+      PyObject* str = PyObject_Str( value );
+      what = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
+      Py_XDECREF( str );
+      PyErr_Restore( type, value, traceback );
+    }
+    else
+    {
+      QString trace = getTraceback();
+      QgsLogger::critical( trace );
+      what = trace;
+    }
     SIP_RELEASE_GIL( sipGILState );
-    throw QgsProcessingException( trace );
+    throw QgsProcessingException( what );
 %End
