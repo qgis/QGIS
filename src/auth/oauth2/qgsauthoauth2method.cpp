@@ -266,8 +266,10 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
   {
     case QgsAuthOAuth2Config::Header:
       request.setRawHeader( O2_HTTP_AUTHORIZATION_HEADER, QStringLiteral( "Bearer %1" ).arg( o2->token() ).toAscii() );
+#ifdef QGISDEBUG
       msg = QStringLiteral( "Updated request HEADER with access token for authcfg: %1" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+      QgsDebugMsgLevel( msg, 2 );
+#endif
       break;
     case QgsAuthOAuth2Config::Form:
       // FIXME: what to do here if the parent request is not POST?
@@ -281,13 +283,17 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         query.addQueryItem( O2_OAUTH2_ACCESS_TOKEN, o2->token() );
         url.setQuery( query );
         request.setUrl( url );
+#ifdef QGISDEBUG
         msg = QStringLiteral( "Updated request QUERY with access token for authcfg: %1" ).arg( authcfg );
+#endif
       }
       else
       {
+#ifdef QGISDEBUG
         msg = QStringLiteral( "Updated request QUERY with access token SKIPPED (existing token) for authcfg: %1" ).arg( authcfg );
+#endif
       }
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+      QgsDebugMsgLevel( msg, 2 );
       break;
   }
 
@@ -319,8 +325,10 @@ bool QgsAuthOAuth2Method::updateNetworkReply( QNetworkReply *reply, const QStrin
   //connect( reply, static_cast<void ( QNetworkReply::* )( QNetworkReply::NetworkError )>( &QNetworkReply::error ),
   //         this, &QgsAuthOAuth2Method::onNetworkError, Qt::QueuedConnection );
 
+#ifdef QGISDEBUG
   QString msg = QStringLiteral( "Updated reply with token refresh connection for authcfg: %1" ).arg( authcfg );
-  QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+  QgsDebugMsgLevel( msg, 2 );
+#endif
 
   return true;
 }
@@ -432,7 +440,7 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     return;
   }
-  if ( err != QNetworkReply::NoError )
+  if ( err != QNetworkReply::NoError && err != QNetworkReply::OperationCanceledError )
   {
     msg = tr( "Network error: %1" ).arg( reply->errorString() );
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
@@ -443,8 +451,11 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
   QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
   if ( !status.isValid() )
   {
-    msg = tr( "Network error but no reply object attributes found" );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    if ( err != QNetworkReply::OperationCanceledError )
+    {
+      msg = tr( "Network error but no reply object attributes found" );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    }
     return;
   }
   QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
