@@ -391,8 +391,7 @@ QgsDataItem *QgsAfsDataItemProvider::createDataItem( const QString &path, QgsDat
     QString connectionName = path.split( '/' ).last();
     if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgisfeatureserver" ) ).contains( connectionName ) )
     {
-      QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), connectionName );
-      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
+      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connectionName );
     }
   }
 

@@ -60,27 +60,6 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
-  if ( path.isEmpty() )
-  {
-    return new QgsAmsRootItem( parentItem, QStringLiteral( "ArcGisMapServer" ), QStringLiteral( "arcgismapserver:" ) );
-  }
-
-  // path schema: ams:/connection name (used by OWS)
-  if ( path.startsWith( QLatin1String( "ams:/" ) ) )
-  {
-    QString connectionName = path.split( '/' ).last();
-    if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgismapserver" ) ).contains( connectionName ) )
-    {
-      QgsOwsConnection connection( QStringLiteral( "arcgismapserver" ), connectionName );
-      return new QgsAmsConnectionItem( parentItem, QStringLiteral( "ArcGisMapServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
-    }
-  }
-
-  return nullptr;
-}
-
 QGISEXTERN QVariantMap decodeUri( const QString &uri )
 {
   QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
