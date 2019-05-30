@@ -39,6 +39,7 @@
 #include "qgsblockingnetworkrequest.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QImageReader>
 
 QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldType )
 {
@@ -1328,9 +1329,28 @@ void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QSt
   }
 }
 
-void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl )
+void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl )
 {
   const QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
+
+  QString format = QStringLiteral( "jpg" );
+  bool found = false;
+  const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
+  for ( const QString &encoding : supportedImageFormatTypes )
+  {
+    for ( const QByteArray &fmt : supportedFormats )
+    {
+      if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
+      {
+        format = encoding;
+        found = true;
+        break;
+      }
+    }
+    if ( found )
+      break;
+  }
 
   const QVariantList layerInfoList = serviceData.value( QStringLiteral( "layers" ) ).toList();
   for ( const QVariant &layerInfo : layerInfoList )
@@ -1343,11 +1363,11 @@ void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString
 
     if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
     {
-      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString() );
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString(), format );
     }
     else
     {
-      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid );
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid, format );
     }
   }
 }
