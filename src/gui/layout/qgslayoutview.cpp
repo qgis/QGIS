@@ -339,7 +339,7 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
     else if ( QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item ) )
     {
       // copy multiframe too
-      if ( !copiedMultiFrames.contains( frame->multiFrame() ) )
+      if ( frame->multiFrame() && !copiedMultiFrames.contains( frame->multiFrame() ) )
       {
         frame->multiFrame()->writeXml( documentElement, doc, context );
         copiedMultiFrames.insert( frame->multiFrame() );
