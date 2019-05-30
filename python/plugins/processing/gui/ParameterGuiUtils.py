@@ -81,7 +81,7 @@ def getFileFilter(param):
         return param.fileFilter() + ';;' + tr('All files (*.*)')
     elif param.type() == 'mesh':
         return tr('All files (*.*)')
-    if hasattr(param, 'defaultFileExtension') and param.defaultFileExtension():
+    if param.defaultFileExtension():
         return tr('Default extension') + ' (*.' + param.defaultFileExtension() + ')'
     else:
         return ''
