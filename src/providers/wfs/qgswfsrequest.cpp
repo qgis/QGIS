@@ -27,8 +27,6 @@
 #include <QFuture>
 #include <QtConcurrent>
 
-const qint64 READ_BUFFER_SIZE_HINT = 1024 * 1024;
-
 QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : mUri( uri )
   , mErrorCode( QgsWfsRequest::NoError )
@@ -143,7 +141,6 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     success = true;
     mReply = QgsNetworkAccessManager::instance()->get( request );
 
-    mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
     if ( !mUri.auth().setAuthorizationReply( mReply ) )
     {
       mErrorCode = QgsWfsRequest::NetworkError;
@@ -264,7 +261,6 @@ bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader,
   request.setHeader( QNetworkRequest::ContentTypeHeader, contentTypeHeader );
 
   mReply = QgsNetworkAccessManager::instance()->post( request, data );
-  mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
   if ( !mUri.auth().setAuthorizationReply( mReply ) )
   {
     mErrorCode = QgsWfsRequest::NetworkError;
@@ -356,7 +352,6 @@ void QgsWfsRequest::replyFinished()
 
           QgsDebugMsgLevel( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 4 );
           mReply = QgsNetworkAccessManager::instance()->get( request );
-          mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
           if ( !mUri.auth().setAuthorizationReply( mReply ) )
           {
             mResponse.clear();
