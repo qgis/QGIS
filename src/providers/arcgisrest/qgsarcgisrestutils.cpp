@@ -1126,10 +1126,15 @@ QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
     mReply->deleteLater();
 }
 
-void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache )
+void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache, const QgsStringMap &headers )
 {
   mResult = result;
   QNetworkRequest request( url );
+
+  for ( auto it = headers.constBegin(); it != headers.constEnd(); ++it )
+  {
+    request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+  }
 
   if ( !authCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, authCfg ) )
   {
@@ -1179,9 +1184,10 @@ void QgsArcGisAsyncQuery::handleReply()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( const QString &authcfg, QObject *parent )
+QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsStringMap &requestHeaders, QObject *parent )
   : QObject( parent )
   , mAuthCfg( authcfg )
+  , mRequestHeaders( requestHeaders )
 {
 }
 
@@ -1195,6 +1201,11 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
     QNetworkRequest request( urls[i] );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
     QgsSetRequestInitiatorId( request, QString::number( i ) );
+
+    for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
+    {
+      request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+    }
     if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
     {
       const QString error = tr( "network request update failed for authentication config" );

@@ -74,7 +74,7 @@ void QgsAmsRootItem::onConnectionsChanged()
 
 void QgsAmsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
   nc.setWindowTitle( tr( "Create a New ArcGIS Map Server Connection" ) );
 
   if ( nc.exec() )
@@ -98,11 +98,15 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
   const QgsOwsConnection connection( QStringLiteral( "ARCGISMAPSERVER" ), mConnName );
   const QString url = connection.uri().param( QStringLiteral( "url" ) );
   const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
+  const QString referer = connection.uri().param( QStringLiteral( "referer" ) );
+  QgsStringMap headers;
+  if ( ! referer.isEmpty() )
+    headers[ QStringLiteral( "Referer" )] = referer;
 
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
 
-  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, authcfg, errorTitle,  errorMessage );
+  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, authcfg, errorTitle,  errorMessage, headers );
   if ( serviceData.isEmpty() )
   {
     if ( !errorMessage.isEmpty() )
@@ -140,7 +144,7 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
     QString id = layerInfoMap[QStringLiteral( "id" )].toString();
-    QgsAmsLayerItem *layer = new QgsAmsLayerItem( this, mName, url, id, layerInfoMap[QStringLiteral( "name" )].toString(), authid, format, authcfg );
+    QgsAmsLayerItem *layer = new QgsAmsLayerItem( this, mName, url, id, layerInfoMap[QStringLiteral( "name" )].toString(), authid, format, authcfg, headers );
     layers.append( layer );
   }
 
@@ -177,7 +181,7 @@ QList<QAction *> QgsAmsConnectionItem::actions( QWidget *parent )
 
 void QgsAmsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName, QgsNewHttpConnection::FlagShowHttpSettings );
   nc.setWindowTitle( tr( "Modify ArcGIS Map Server Connection" ) );
 
   if ( nc.exec() )
@@ -195,12 +199,14 @@ void QgsAmsConnectionItem::deleteConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg )
+QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsStringMap &headers )
   : QgsLayerItem( parent, title, url + '/' + id, QString(), QgsLayerItem::Raster, QStringLiteral( "arcgismapserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, url );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+  if ( !headers.value( QStringLiteral( "Referer" ) ).isEmpty() )
+    mUri += QStringLiteral( " referer='%1'" ).arg( headers.value( QStringLiteral( "Referer" ) ) );
   setState( Populated );
   mIconName = QStringLiteral( "mIconAms.svg" );
   setToolTip( mPath );
