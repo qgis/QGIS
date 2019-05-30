@@ -31,6 +31,8 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 #include <QEventLoop>
 #include <QNetworkRequest>
@@ -1122,10 +1124,18 @@ QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
     mReply->deleteLater();
 }
 
-void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allowCache )
+void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache )
 {
   mResult = result;
   QNetworkRequest request( url );
+
+  if ( !authCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, authCfg ) )
+  {
+    const QString error = tr( "network request update failed for authentication config" );
+    emit failed( QStringLiteral( "Network" ), error );
+    return;
+  }
+
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
   if ( allowCache )
   {
@@ -1167,8 +1177,9 @@ void QgsArcGisAsyncQuery::handleReply()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject *parent )
+QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( const QString &authcfg, QObject *parent )
   : QObject( parent )
+  , mAuthCfg( authcfg )
 {
 }
 
@@ -1182,6 +1193,14 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
     QNetworkRequest request( urls[i] );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
     QgsSetRequestInitiatorId( request, QString::number( i ) );
+    if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+    {
+      const QString error = tr( "network request update failed for authentication config" );
+      mErrors.append( error );
+      QgsMessageLog::logMessage( error, tr( "Network" ) );
+      continue;
+    }
+
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
     if ( allowCache )
     {
