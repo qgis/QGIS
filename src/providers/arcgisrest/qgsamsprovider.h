@@ -88,7 +88,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
   protected:
     bool readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    void draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight );
+    void draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback = nullptr );
 
   private:
     bool mValid = false;

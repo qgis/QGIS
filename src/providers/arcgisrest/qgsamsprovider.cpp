@@ -59,6 +59,8 @@ void QgsAmsLegendFetcher::start()
 
 void QgsAmsLegendFetcher::handleError( const QString &errorTitle, const QString &errorMsg )
 {
+  mErrorTitle = errorTitle;
+  mError = errorMsg;
   emit error( errorTitle + ": " + errorMsg );
 }
 
@@ -256,7 +258,7 @@ QString QgsAmsProvider::htmlMetadata()
   return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
 }
 
-void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight )
+void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback )
 {
   if ( !mCachedImage.isNull() && mCachedImageExtent == viewExtent )
   {
@@ -287,7 +289,6 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     if ( lodEntries.isEmpty() )
     {
       mCachedImage = QImage();
-      mCachedImage.fill( Qt::transparent );
       return;
     }
     int level = 0;
@@ -355,11 +356,49 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     requestUrl.addQueryItem( QStringLiteral( "layers" ), QStringLiteral( "show:%1" ).arg( dataSource.param( QStringLiteral( "layer" ) ) ) );
     requestUrl.addQueryItem( QStringLiteral( "transparent" ), QStringLiteral( "true" ) );
     requestUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "image" ) );
-    QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError );
-    mCachedImage = QImage::fromData( reply, dataSource.param( QStringLiteral( "format" ) ).toLatin1() );
-    if ( mCachedImage.format() != QImage::Format_ARGB32 )
+    mError.clear();
+    mErrorTitle.clear();
+    QString contentType;
+    QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, QgsStringMap(), feedback, &contentType );
+    if ( !mError.isEmpty() )
     {
-      mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
+      mCachedImage = QImage();
+      if ( feedback )
+        feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
+    }
+    else if ( contentType.startsWith( QLatin1String( "application/json" ) ) )
+    {
+      // if we get a JSON response, something went wrong (e.g. authentication error)
+      mCachedImage = QImage();
+
+      QJsonParseError err;
+      QJsonDocument doc = QJsonDocument::fromJson( reply, &err );
+      if ( doc.isNull() )
+      {
+        mErrorTitle = QObject::tr( "Error" );
+        mError = reply;
+      }
+      else
+      {
+        const QVariantMap res = doc.object().toVariantMap();
+        if ( res.contains( QStringLiteral( "error" ) ) )
+        {
+          const QVariantMap error = res.value( QStringLiteral( "error" ) ).toMap();
+          mError = error.value( QStringLiteral( "message" ) ).toString();
+          mErrorTitle = QObject::tr( "Error %1" ).arg( error.value( QStringLiteral( "code" ) ).toString() );
+        }
+      }
+
+      if ( feedback )
+        feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
+    }
+    else
+    {
+      mCachedImage = QImage::fromData( reply, dataSource.param( QStringLiteral( "format" ) ).toLatin1() );
+      if ( mCachedImage.format() != QImage::Format_ARGB32 )
+      {
+        mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
+      }
     }
   }
 }
@@ -459,20 +498,26 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
 
 bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( feedback )  // TODO: make use of the feedback object
-
   // TODO: optimize to avoid writing to QImage
-  draw( viewExtent, width, height );
-  if ( mCachedImage.width() != width || mCachedImage.height() != height )
+  draw( viewExtent, width, height, feedback );
+  if ( mCachedImage.isNull() )
   {
-    if ( feedback )
-      feedback->appendError( tr( "Unexpected image size for block" ) );
-
-    QgsDebugMsg( QStringLiteral( "Unexpected image size for block" ) );
     return false;
   }
-  std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );
-  return true;
+  else if ( mCachedImage.width() != width || mCachedImage.height() != height )
+  {
+    const QString error = tr( "Unexpected image size for block. Expected %1x%2, got %3x%4" ).arg( width ).arg( height ).arg( mCachedImage.width() ).arg( mCachedImage.height() );
+    if ( feedback )
+      feedback->appendError( error );
+
+    QgsDebugMsg( error );
+    return false;
+  }
+  else
+  {
+    std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );
+    return true;
+  }
 }
 
 #ifdef HAVE_GUI

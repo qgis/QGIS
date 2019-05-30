@@ -490,7 +490,7 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
   return ids;
 }
 
-QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
+QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback, QString *contentType )
 {
   QUrl url = parseUrl( u );
 
@@ -518,6 +518,8 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authc
   }
 
   const QgsNetworkReplyContent content = networkRequest.reply();
+  if ( contentType )
+    *contentType = content.rawHeader( "Content-Type" );
   return content.content();
 }
 
