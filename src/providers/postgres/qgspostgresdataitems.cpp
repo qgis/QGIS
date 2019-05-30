@@ -340,7 +340,9 @@ QList<QAction *> QgsPGLayerItem::actions( QWidget *parent )
 
 void QgsPGLayerItem::deleteLayer()
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
+  QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
+
+  if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),
                               QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
@@ -349,11 +351,11 @@ void QgsPGLayerItem::deleteLayer()
   bool res = ::deleteLayer( mUri, errCause );
   if ( !res )
   {
-    QMessageBox::warning( nullptr, tr( "Delete Table" ), errCause );
+    QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errCause );
   }
   else
   {
-    QMessageBox::information( nullptr, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
+    QMessageBox::information( nullptr, tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ) );
     if ( mParent )
       mParent->refresh();
   }
