@@ -18,6 +18,7 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsowsconnection.h"
 #include "qgsproviderregistry.h"
+#include "qgslogger.h"
 
 #ifdef HAVE_GUI
 #include "qgsamssourceselect.h"
@@ -104,6 +105,13 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
   QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, authcfg, errorTitle,  errorMessage );
   if ( serviceData.isEmpty() )
   {
+    if ( !errorMessage.isEmpty() )
+    {
+      std::unique_ptr< QgsErrorItem > error = qgis::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
+      error->setToolTip( errorMessage );
+      layers.append( error.release() );
+      QgsDebugMsg( "Connection failed - " + errorMessage );
+    }
     return layers;
   }
 
