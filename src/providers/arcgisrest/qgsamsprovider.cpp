@@ -164,6 +164,29 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   mValid = true;
 }
 
+QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
+  : QgsRasterDataProvider( other.dataSourceUri(), providerOptions )
+  , mValid( other.mValid )
+// intentionally omitted:
+// - mLegendFetcher
+  , mServiceInfo( other.mServiceInfo )
+  , mLayerInfo( other.mLayerInfo )
+  , mCrs( other.mCrs )
+  , mExtent( other.mExtent )
+  , mSubLayers( other.mSubLayers )
+  , mSubLayerVisibilities( other.mSubLayerVisibilities )
+// intentionally omitted:
+// - mErrorTitle
+// - mError
+// - mCachedImage
+// - mCachedImageExtent
+{
+  mLegendFetcher = new QgsAmsLegendFetcher( this );
+
+  // is this needed?
+  mTimestamp = QDateTime::currentDateTime();
+}
+
 QStringList QgsAmsProvider::subLayerStyles() const
 {
   QStringList styles;
@@ -221,7 +244,8 @@ void QgsAmsProvider::reloadData()
 QgsRasterInterface *QgsAmsProvider::clone() const
 {
   QgsDataProvider::ProviderOptions options;
-  QgsAmsProvider *provider = new QgsAmsProvider( dataSourceUri(), options );
+  options.transformContext = transformContext();
+  QgsAmsProvider *provider = new QgsAmsProvider( *this, options );
   provider->copyBaseSettings( *this );
   return provider;
 }
