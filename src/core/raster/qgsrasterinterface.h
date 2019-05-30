@@ -378,8 +378,8 @@ class CORE_EXPORT QgsRasterInterface
       maximum = PyFloat_AsDouble( a3 );
     }
 
-    QgsRasterHistogram h = sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 );
-    sipRes = &h;
+    QgsRasterHistogram *h = new QgsRasterHistogram( sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 ) );
+    sipRes = h;
     % End
 #endif
 
