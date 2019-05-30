@@ -18,6 +18,8 @@
 
 #include <memory>
 
+#include <QPointer>
+
 #include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsgeometry.h"
@@ -447,7 +449,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Locked feature for the vertex editor
     std::unique_ptr<QgsLockedFeature> mLockedFeature;
     //! Dock widget which allows editing vertices
-    std::unique_ptr<QgsVertexEditor> mVertexEditor;
+    QPointer<QgsVertexEditor> mVertexEditor;
 
     /**
      * Data structure that stores alternative features to the currently selected (locked) feature.
