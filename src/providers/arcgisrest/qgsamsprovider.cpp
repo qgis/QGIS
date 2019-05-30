@@ -24,6 +24,7 @@
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 #include "qgsapplication.h"
+#include "qgsamsdataitems.h"
 
 #ifdef HAVE_GUI
 #include "qgsamssourceselect.h"
@@ -568,6 +569,29 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
 
   *providers
       << new QgsAmsSourceSelectProvider;
+
+  return providers;
+}
+#endif
+
+
+QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
+{
+  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+
+  *providers
+      << new QgsAmsDataItemProvider;
+
+  return providers;
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QList<QgsDataItemGuiProvider *> *dataItemGuiProviders()
+{
+  QList<QgsDataItemGuiProvider *> *providers = new QList<QgsDataItemGuiProvider *>();
+
+  *providers
+      << new QgsAmsItemGuiProvider();
 
   return providers;
 }

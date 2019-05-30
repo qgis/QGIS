@@ -22,6 +22,9 @@
 #ifdef HAVE_GUI
 #include "qgsamssourceselect.h"
 #include "qgsnewhttpconnection.h"
+#include <QMenu>
+#include <QAction>
+#include <QDesktopServices>
 #endif
 
 #include <QImageReader>
@@ -41,9 +44,8 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
   const QStringList connectionList = QgsOwsConnection::connectionList( QStringLiteral( "ARCGISMAPSERVER" ) );
   for ( const QString &connName : connectionList )
   {
-    QgsOwsConnection connection( QStringLiteral( "ARCGISMAPSERVER" ), connName );
     QString path = "ams:/" + connName;
-    connections.append( new QgsAmsConnectionItem( this, connName, path, connection.uri().param( QStringLiteral( "url" ) ) ) );
+    connections.append( new QgsAmsConnectionItem( this, connName, path, connName ) );
   }
   return connections;
 }
@@ -83,22 +85,23 @@ void QgsAmsRootItem::newConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &url )
+QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &connectionName )
   : QgsDataCollectionItem( parent, name, path )
-  , mUrl( url )
+  , mConnName( connectionName )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
 }
 
 QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
 {
+  const QgsOwsConnection connection( QStringLiteral( "ARCGISMAPSERVER" ), mConnName );
+  const QString url = connection.uri().param( QStringLiteral( "url" ) );
+  const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
+
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
 
-  QgsOwsConnection connection( QStringLiteral( "ARCGISMAPSERVER" ), mName );
-
-  const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
-  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, authcfg, errorTitle,  errorMessage );
+  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, authcfg, errorTitle,  errorMessage );
   if ( serviceData.isEmpty() )
   {
     return layers;
@@ -129,7 +132,7 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
     QString id = layerInfoMap[QStringLiteral( "id" )].toString();
-    QgsAmsLayerItem *layer = new QgsAmsLayerItem( this, mName, mUrl, id, layerInfoMap[QStringLiteral( "name" )].toString(), authid, format, authcfg );
+    QgsAmsLayerItem *layer = new QgsAmsLayerItem( this, mName, url, id, layerInfoMap[QStringLiteral( "name" )].toString(), authid, format, authcfg );
     layers.append( layer );
   }
 
@@ -140,6 +143,12 @@ bool QgsAmsConnectionItem::equal( const QgsDataItem *other )
 {
   const QgsAmsConnectionItem *o = qobject_cast<const QgsAmsConnectionItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
+}
+
+QString QgsAmsConnectionItem::url() const
+{
+  const QgsOwsConnection connection( QStringLiteral( "ARCGISMAPSERVER" ), mConnName );
+  return connection.uri().param( QStringLiteral( "url" ) );
 }
 
 #ifdef HAVE_GUI
@@ -178,12 +187,73 @@ void QgsAmsConnectionItem::deleteConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg )
-  : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Raster, QStringLiteral( "arcgismapserver" ) )
+QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg )
+  : QgsLayerItem( parent, title, url + '/' + id, QString(), QgsLayerItem::Raster, QStringLiteral( "arcgismapserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, url );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
   setState( Populated );
   mIconName = QStringLiteral( "mIconAms.svg" );
+  setToolTip( mPath );
 }
+
+//
+// QgsAmsDataItemProvider
+//
+
+QgsDataItem *QgsAmsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  if ( path.isEmpty() )
+  {
+    return new QgsAmsRootItem( parentItem, QStringLiteral( "ArcGisMapServer" ), QStringLiteral( "arcgismapserver:" ) );
+  }
+
+  // path schema: ams:/connection name (used by OWS)
+  if ( path.startsWith( QLatin1String( "ams:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgismapserver" ) ).contains( connectionName ) )
+    {
+      return new QgsAmsConnectionItem( parentItem, QStringLiteral( "ArcGisMapServer" ), path, connectionName );
+    }
+  }
+
+  return nullptr;
+}
+
+#ifdef HAVE_GUI
+
+//
+// QgsAmsItemGuiProvider
+//
+
+QString QgsAmsItemGuiProvider::name()
+{
+  return QStringLiteral( "ams_items" );
+}
+
+void QgsAmsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+{
+  if ( QgsAmsConnectionItem *connectionItem = qobject_cast< QgsAmsConnectionItem * >( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [ = ]
+    {
+      QDesktopServices::openUrl( QUrl( connectionItem->url() ) );
+    } );
+    menu->addAction( viewInfo );
+  }
+  else if ( QgsAmsLayerItem *layerItem = qobject_cast< QgsAmsLayerItem * >( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [ = ]
+    {
+      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
+    } );
+    menu->addAction( viewInfo );
+    menu->addSeparator();
+  }
+}
+
+#endif
