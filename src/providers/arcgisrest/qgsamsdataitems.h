@@ -66,10 +66,43 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+    void refreshConnection();
 #endif
 
   private:
     QString mConnName;
+};
+
+
+class QgsAmsFolderItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAmsFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mFolder;
+    QString mBaseUrl;
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
+};
+
+
+class QgsAmsServiceItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAmsServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mFolder;
+    QString mBaseUrl;
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
 };
 
 class QgsAmsLayerItem : public QgsLayerItem
