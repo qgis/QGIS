@@ -291,13 +291,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /**
      * Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     QString symbolLabel() const;
 
     /**
      * Create an expressionContextScope containing symbol related variables
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     QgsExpressionContextScope *createSymbolScope() const;
 
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Evaluates  and returns the text label of the current node
      * \param context extra QgsExpressionContext to use for evaluating the expression
      * \param label text to evaluate instead of the layer layertree string
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
 

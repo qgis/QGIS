@@ -131,14 +131,14 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     /**
      * set the expression to evaluate
      *
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     void setLabelExpression( const QString &expression );
 
     /**
      * Returns the expression member of the LayerTreeNode
      *
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     QString labelExpression() const { return mLabelExpression; }
 

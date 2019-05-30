@@ -68,7 +68,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      *
      * \see symbolFeatureCountMap
      * \note Not available in Python bindings.
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     QHash<QString, QgsFeatureIds> symbolFeatureIdMap() const SIP_SKIP;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      * If run() has not yet been executed, run() will be called.
      * If the key has not been found an empty QSet will be returned.
      *
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     QgsFeatureIds featureIds( const QString &symbolkey ) const;
 

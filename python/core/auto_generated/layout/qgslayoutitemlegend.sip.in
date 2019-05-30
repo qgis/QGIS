@@ -46,7 +46,7 @@ Constructor used in :py:class:`QgsLayoutItemLegend`, allows access to host class
 %Docstring
 Emitted to refresh the legend once counting is done.
 
-.. versionadded:: 3.8
+.. versionadded:: 3.10
 %End
 
 };

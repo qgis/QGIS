@@ -50,7 +50,7 @@ Returns the feature Ids for a particular ``legendKey``.
 If run() has not yet been executed, run() will be called.
 If the key has not been found an empty QSet will be returned.
 
-.. versionadded:: 3.8
+.. versionadded:: 3.10
 %End
 
   signals:

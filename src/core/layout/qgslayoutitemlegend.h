@@ -59,7 +59,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
     /**
      * Emitted to refresh the legend once counting is done.
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     void refreshLegend();
 
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
     /**
      * Handle incoming signal to refresh the legend.
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     void forceRefresh();
 
@@ -78,13 +78,13 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
      * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
      * \see layerOriginalLegendNodes()
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
 
     /**
      * Pointer to the QgsLayoutItemLegend class that made the model.
-     * \since QGIS 3.8
+     * \since QGIS 3.10
      */
     QgsLayoutItemLegend *mLayoutLegend;
 
