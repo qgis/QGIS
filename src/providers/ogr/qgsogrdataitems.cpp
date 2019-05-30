@@ -336,7 +336,9 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-  OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource );
+  QString driverName = QString::fromUtf8( GDALGetDriverShortName( hDriver ) );
+  OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( driverName, hLayer );
   QgsWkbTypes::Type wkbType = QgsOgrProviderUtils::qgisTypeFromOgrType( ogrType );
   switch ( QgsWkbTypes::geometryType( wkbType ) )
   {

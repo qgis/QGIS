@@ -19,7 +19,7 @@ import osgeo.gdal
 import osgeo.ogr
 import sys
 
-from qgis.core import QgsSettings, QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
+from qgis.core import QgsSettings, QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsWkbTypes
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -700,6 +700,18 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # This was failing in bug 17863
         self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+    def testMultipatch(self):
+        """Check that we can deal with multipatch shapefiles, returned natively by OGR as GeometryCollection of TIN"""
+
+        testPath = TEST_DATA_DIR + '/' + 'multipatch.shp'
+        vl = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiPolygonZ)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.MultiPolygonZ)
+        self.assertEqual(f.geometry().constGet().asWkt(),
+                         'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 -1 0, 1 -1 0, 0 0 0)),((0 0 0, 1 -1 0, 1 0 0, 0 0 0)))')
 
 
 if __name__ == '__main__':

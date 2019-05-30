@@ -967,7 +967,7 @@ void QgsOgrProvider::setEncoding( const QString &e )
 }
 
 // This is reused by dataItem
-OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
+OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( const QString &driverName, OGRLayerH ogrLayer )
 {
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   OGRwkbGeometryType geomType = wkbUnknown;
@@ -998,6 +998,15 @@ OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
         if ( geometry )
         {
           geomType = OGR_G_GetGeometryType( geometry );
+
+          // Shapefile MultiPatch can be reported as GeometryCollectionZ of TINZ
+          if ( wkbFlatten( geomType ) == wkbGeometryCollection &&
+               driverName == QLatin1String( "ESRI Shapefile" )  &&
+               OGR_G_GetGeometryCount( geometry ) >= 1 &&
+               wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geometry, 0 ) ) ) == wkbTIN )
+          {
+            geomType = wkbMultiPolygon25D;
+          }
         }
         if ( geomType != wkbNone )
           break;
@@ -1026,7 +1035,7 @@ void QgsOgrProvider::loadFields()
     QMutex *mutex = nullptr;
     OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
     QMutexLocker locker( mutex );
-    mOGRGeomType = getOgrGeomType( ogrLayer );
+    mOGRGeomType = getOgrGeomType( mGDALDriverName, ogrLayer );
   }
   QgsOgrFeatureDefn &fdef = mOgrLayer->GetLayerDefn();
 
@@ -1395,18 +1404,18 @@ size_t QgsOgrProvider::layerCount() const
  */
 QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 {
-  QgsWkbTypes::Type wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType );
+  QgsWkbTypes::Type wkb = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( mOGRGeomType );
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && ( wkb == QgsWkbTypes::LineString || wkb == QgsWkbTypes::Polygon ) )
   {
     wkb = QgsWkbTypes::multiType( wkb );
   }
-  if ( wkb % 1000 == 15 ) // is PolyhedralSurface, PolyhedralSurfaceZ, PolyhedralSurfaceM or PolyhedralSurfaceZM => map to MultiPolygon
+  if ( mOGRGeomType % 1000 == wkbPolyhedralSurface ) // is PolyhedralSurface, PolyhedralSurfaceZ, PolyhedralSurfaceM or PolyhedralSurfaceZM => map to MultiPolygon
   {
-    wkb = static_cast<QgsWkbTypes::Type>( wkb - 9 );
+    wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType - ( wkbPolyhedralSurface - wkbMultiPolygon ) );
   }
-  else if ( wkb % 1000 == 16 ) // is TIN, TINZ, TINM or TINZM => map to MultiPolygon
+  else if ( mOGRGeomType % 1000 == wkbTIN ) // is TIN, TINZ, TINM or TINZM => map to MultiPolygon
   {
-    wkb = static_cast<QgsWkbTypes::Type>( wkb - 10 );
+    wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType - ( wkbTIN - wkbMultiPolygon ) );
   }
   return wkb;
 }

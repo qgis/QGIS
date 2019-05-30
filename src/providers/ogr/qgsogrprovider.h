@@ -152,7 +152,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool doesStrictFeatureTypeCheck() const override;
 
     //! Returns OGR geometry type
-    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
+    static OGRwkbGeometryType getOgrGeomType( const QString &driverName, OGRLayerH ogrLayer );
 
     //! Gets single flatten geometry type
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );

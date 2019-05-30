@@ -1686,14 +1686,14 @@ void TestQgsProcessing::createFeatureSink()
   // no extension, should default to shp
   destination = QDir::tempPath() + "/create_feature_sink2";
   prevDest = QDir::tempPath() + "/create_feature_sink2.gpkg";
-  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Point25D, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
   QVERIFY( sink.get() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(1 2 3)" ) ) );
   QVERIFY( sink->addFeature( f ) );
   QCOMPARE( destination, prevDest );
   sink.reset( nullptr );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
-  QCOMPARE( layer->wkbType(), QgsWkbTypes::Point25D );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::PointZ );
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 2 );
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "fid" ) );

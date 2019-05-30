@@ -247,6 +247,13 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.2
      */
     static QStringList cStringListToQStringList( char **stringList );
+
+    /**
+     * Converts a OGRwkbGeometryType to QgsWkbTypes::Type
+     *
+     * \since QGIS 3.4.9
+     */
+    static QgsWkbTypes::Type ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType );
 };
 
 #endif // QGSOGRUTILS_H
