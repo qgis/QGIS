@@ -52,10 +52,14 @@ void QgsAmsLegendFetcher::start()
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/CommunityAddressing/MapServer/legend?f=pjson
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
   const QString authCfg = dataSource.authConfigId();
+  const QString referer = dataSource.param( QStringLiteral( "referer" ) );
+  QgsStringMap headers;
+  if ( !referer.isEmpty() )
+    headers[ QStringLiteral( "Referer" )] = referer;
 
   QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/legend" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  mQuery->start( queryUrl, authCfg, &mQueryReply );
+  mQuery->start( queryUrl, authCfg, &mQueryReply, false, headers );
 }
 
 void QgsAmsLegendFetcher::handleError( const QString &errorTitle, const QString &errorMsg )
@@ -134,13 +138,18 @@ void QgsAmsLegendFetcher::handleFinished()
 QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &options )
   : QgsRasterDataProvider( uri, options )
 {
+  QgsDataSourceUri dataSource( dataSourceUri() );
+  const QString referer = dataSource.param( QStringLiteral( "referer" ) );
+  if ( !referer.isEmpty() )
+    mRequestHeaders[ QStringLiteral( "Referer" )] = referer;
+
   mLegendFetcher = new QgsAmsLegendFetcher( this );
 
-  QgsDataSourceUri dataSource( dataSourceUri() );
+
   const QString authcfg = dataSource.authConfigId();
 
-  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( dataSource.param( QStringLiteral( "url" ) ), authcfg, mErrorTitle, mError );
-  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) ), authcfg, mErrorTitle, mError );
+  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( dataSource.param( QStringLiteral( "url" ) ), authcfg, mErrorTitle, mError, mRequestHeaders );
+  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) ), authcfg, mErrorTitle, mError, mRequestHeaders );
 
   const QVariantMap extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
   mExtent.setXMinimum( extentData[QStringLiteral( "xmin" )].toDouble() );
@@ -176,6 +185,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
   , mExtent( other.mExtent )
   , mSubLayers( other.mSubLayers )
   , mSubLayerVisibilities( other.mSubLayerVisibilities )
+  , mRequestHeaders( other.mRequestHeaders )
 // intentionally omitted:
 // - mErrorTitle
 // - mError
@@ -350,7 +360,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
         queries[( iy - iyStart ) * ixCount + ( ix - ixStart )] = QUrl( dataSource.param( QStringLiteral( "url" ) ) + QStringLiteral( "/tile/%1/%2/%3" ).arg( level ).arg( iy ).arg( ix ) );
       }
     }
-    QgsArcGisAsyncParallelQuery query( authcfg );
+    QgsArcGisAsyncParallelQuery query( authcfg, mRequestHeaders );
     QEventLoop evLoop;
     connect( &query, &QgsArcGisAsyncParallelQuery::finished, &evLoop, &QEventLoop::quit );
     query.start( queries, &results, true );
@@ -384,7 +394,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     mError.clear();
     mErrorTitle.clear();
     QString contentType;
-    QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, QgsStringMap(), feedback, &contentType );
+    QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, mRequestHeaders, feedback, &contentType );
     if ( !mError.isEmpty() )
     {
       mCachedImage = QImage();

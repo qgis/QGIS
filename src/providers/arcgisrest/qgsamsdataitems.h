@@ -77,7 +77,7 @@ class QgsAmsLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg );
+    QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsStringMap &headers );
 };
 
 

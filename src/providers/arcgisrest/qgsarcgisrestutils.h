@@ -107,7 +107,7 @@ class QgsArcGisAsyncQuery : public QObject
     QgsArcGisAsyncQuery( QObject *parent = nullptr );
     ~QgsArcGisAsyncQuery() override;
 
-    void start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache = false );
+    void start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache = false, const QgsStringMap &headers = QgsStringMap() );
   signals:
     void finished();
     void failed( QString errorTitle, QString errorName );
@@ -123,7 +123,7 @@ class QgsArcGisAsyncParallelQuery : public QObject
 {
     Q_OBJECT
   public:
-    QgsArcGisAsyncParallelQuery( const QString &authcfg, QObject *parent = nullptr );
+    QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsStringMap &requestHeaders, QObject *parent = nullptr );
     void start( const QVector<QUrl> &urls, QVector<QByteArray> *results, bool allowCache = false );
 
   signals:
@@ -136,6 +136,7 @@ class QgsArcGisAsyncParallelQuery : public QObject
     int mPendingRequests = 0;
     QStringList mErrors;
     QString mAuthCfg;
+    QgsStringMap mRequestHeaders;
 };
 
 #endif // QGSARCGISRESTUTILS_H

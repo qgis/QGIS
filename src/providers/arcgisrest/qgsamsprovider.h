@@ -105,6 +105,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QString mError;
     QImage mCachedImage;
     QgsRectangle mCachedImageExtent;
+    QgsStringMap mRequestHeaders;
 };
 
 #endif // QGSMAPSERVERPROVIDER_H
