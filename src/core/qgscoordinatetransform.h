@@ -448,8 +448,8 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setCustomMissingPreferredGridHandler()
      * \see setCustomCoordinateOperationCreationErrorHandler()
      *
-     * \since QGIS 3.8
      * \note Not available in Python bindings
+     * \since QGIS 3.8
      */
     static void setCustomMissingRequiredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
@@ -467,8 +467,8 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setCustomMissingRequiredGridHandler()
      * \see setCustomCoordinateOperationCreationErrorHandler()
      *
-     * \since QGIS 3.8
      * \note Not available in Python bindings
+     * \since QGIS 3.8
      */
     static void setCustomMissingPreferredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
@@ -483,8 +483,8 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setCustomMissingRequiredGridHandler()
      * \see setCustomMissingPreferredGridHandler()
      *
-     * \since QGIS 3.8
      * \note Not available in Python bindings
+     * \since QGIS 3.8
      */
     static void setCustomCoordinateOperationCreationErrorHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
