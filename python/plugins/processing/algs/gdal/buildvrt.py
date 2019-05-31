@@ -76,6 +76,9 @@ class buildvrt(GdalAlgorithm):
             def defaultFileExtension(self):
                 return 'vrt'
 
+            def parameterAsOutputLayer(self, definition, value, context):
+                return super(QgsProcessingParameterRasterDestination, self).parameterAsOutputLayer(definition, value, context)
+
         self.RESAMPLING_OPTIONS = ((self.tr('Nearest Neighbour'), 'nearest'),
                                    (self.tr('Bilinear'), 'bilinear'),
                                    (self.tr('Cubic Convolution'), 'cubic'),
