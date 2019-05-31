@@ -30,6 +30,7 @@ class Qgs3DMapTool;
 class QgsWindow3DEngine;
 class QgsCameraController;
 class QgsPointXY;
+class Qgs3DNavigationWidget;
 
 
 class Qgs3DMapCanvas : public QWidget
@@ -95,6 +96,9 @@ class Qgs3DMapCanvas : public QWidget
 
     //! Active map tool that receives events (if NULLPTR then mouse/keyboard events are used for camera manipulation)
     Qgs3DMapTool *mMapTool = nullptr;
+
+    //! On-Screen Navigation widget.
+    Qgs3DNavigationWidget *mNavigationWidget = nullptr;
 };
 
 #endif // QGS3DMAPCANVAS_H

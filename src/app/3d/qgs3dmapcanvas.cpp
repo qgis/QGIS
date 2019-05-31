@@ -19,12 +19,14 @@
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QRenderCapture>
 #include <QMouseEvent>
+#include <QPushButton>
 
 #include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmaptool.h"
 #include "qgswindow3dengine.h"
+#include "qgs3dnavigationwidget.h"
 
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
@@ -40,9 +42,13 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
 
+  mNavigationWidget = new Qgs3DNavigationWidget();
+  mNavigationWidget->setParent(this);
+
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setMargin( 0 );
   hLayout->addWidget( mContainer, 1 );
+  hLayout->addWidget( mNavigationWidget );
 
   mEngine->window()->setCursor( Qt::OpenHandCursor );
 }
