@@ -53,6 +53,13 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
 
+  QAction *toggleOnScreenNavigation = toolBar->addAction(
+              QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
+              tr( "Toggle On-Screen Navigation" ), this, &Qgs3DMapCanvasDockWidget::toggleNavigationWidget );
+
+  toggleOnScreenNavigation->setCheckable(true);
+  toggleOnScreenNavigation->setChecked(true);
+
   toolBar->addSeparator();
 
   QAction *actionIdentify = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionIdentify.svg" ) ),
@@ -145,6 +152,15 @@ void Qgs3DMapCanvasDockWidget::identify()
     return;
 
   mCanvas->setMapTool( action->isChecked() ? mMapToolIdentify : nullptr );
+}
+
+void Qgs3DMapCanvasDockWidget::toggleNavigationWidget()
+{
+    QAction *action = qobject_cast<QAction *>( sender() );
+    if ( !action )
+      return;
+
+    mCanvas->setOnScreenNavigationVisibility( action->isChecked() );
 }
 
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )

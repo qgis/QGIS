@@ -166,3 +166,8 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
   }
   return false;
 }
+
+
+void Qgs3DMapCanvas::setOnScreenNavigationVisibility(bool visibility){
+    mNavigationWidget->setVisible(visibility);
+}

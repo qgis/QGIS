@@ -42,6 +42,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(QWidget *parent) : QWidget(parent)
     gridLayout->addWidget(mZoomInButton, 0, 3);
     gridLayout->addWidget(mZoomOutButton, 3, 3);
     gridLayout->addWidget(mRotateSceneDial, 1, 1, 2, 2);
+    gridLayout->setAlignment(Qt::AlignTop);
 
 }
 
