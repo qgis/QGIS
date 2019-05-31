@@ -2236,6 +2236,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *pjContext = QgsProjContext::get();
+
   PROJ_STRING_LIST authorities = proj_get_authorities_from_database( pjContext );
 
   int nextSrId = 520000000;
