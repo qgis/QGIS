@@ -24,21 +24,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 from pprint import pformat
 import time
 
-from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QDialogButtonBox
+from qgis.PyQt.QtWidgets import QPushButton, QDialogButtonBox
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 
-from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingParameterRasterDestination,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputLayerDefinition,
-                       QgsProcessingOutputHtml,
+from qgis.core import (QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
                        QgsProcessingOutputBoolean,
                        QgsProject,
                        QgsProcessingMultiStepFeedback,
-                       Qgis,
                        QgsScopedProxyProgressTask)
 
 from qgis.gui import QgsProcessingAlgorithmDialogBase
@@ -104,7 +98,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             try:
                 self.showLog()
                 self.repaint()
-            except:
+            except Exception:  # FIXME which one?
                 pass
 
             start_time = time.time()
