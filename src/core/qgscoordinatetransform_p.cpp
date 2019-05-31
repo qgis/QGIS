@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsreadwritelocker.h"
+#include "qgsmessagelog.h"
 
 #if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
@@ -315,6 +316,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   if ( !mProjCoordinateOperation.isEmpty() )
     transform.reset( proj_create( context, mProjCoordinateOperation.toUtf8().constData() ) );
 
+  QString nonAvailableError;
   if ( !transform ) // fallback on default proj pathway
   {
     if ( !mSourceCRS.projObject() || ! mDestCRS.projObject() )
@@ -322,17 +324,144 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 
     PJ_OPERATION_FACTORY_CONTEXT *operationContext = proj_create_operation_factory_context( context, nullptr );
 
+    // We want to check ALL grids, not just those available for use
+    proj_operation_factory_context_set_grid_availability_use( context, operationContext, PROJ_GRID_AVAILABILITY_IGNORED );
+
     // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
     proj_operation_factory_context_set_spatial_criterion( context, operationContext, PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
 
     if ( PJ_OBJ_LIST *ops = proj_create_operations( context, mSourceCRS.projObject(), mDestCRS.projObject(), operationContext ) )
     {
       int count = proj_list_get_count( ops );
-      if ( count > 0 )
+      if ( count < 1 )
+      {
+        // huh?
+        if ( int errNo = proj_context_errno( context ) )
+        {
+          nonAvailableError = QString( proj_errno_string( errNo ) );
+        }
+        else
+        {
+          nonAvailableError = QObject::tr( "No coordinate operations are available" );
+        }
+      }
+      else if ( count == 1 )
+      {
+        // only a single operation available. Can we use it?
         transform.reset( proj_list_get( context, ops, 0 ) );
+        if ( transform )
+        {
+          if ( !proj_coordoperation_is_instantiable( context, transform.get() ) )
+          {
+            // uh oh :( something is missing! find what it is
+            for ( int j = 0; j < proj_coordoperation_get_grid_used_count( context, transform.get() ); ++j )
+            {
+              const char *shortName = nullptr;
+              const char *fullName = nullptr;
+              const char *packageName = nullptr;
+              const char *url = nullptr;
+              int directDownload = 0;
+              int openLicense = 0;
+              int isAvailable = 0;
+              proj_coordoperation_get_grid_used( context, transform.get(), j, &shortName, &fullName, &packageName, &url, &directDownload, &openLicense, &isAvailable );
+              if ( !isAvailable )
+              {
+                // found it!
+                if ( sMissingRequiredGridHandler )
+                {
+                  QgsDatumTransform::GridDetails gridDetails;
+                  gridDetails.shortName = QString( shortName );
+                  gridDetails.fullName = QString( fullName );
+                  gridDetails.packageName = QString( packageName );
+                  gridDetails.url = QString( url );
+                  gridDetails.directDownload = directDownload;
+                  gridDetails.openLicense = openLicense;
+                  gridDetails.isAvailable = isAvailable;
+                  sMissingRequiredGridHandler( mSourceCRS, mDestCRS, gridDetails );
+                }
+                else
+                {
+                  const QString err = QObject::tr( "Cannot create transform between %1 and %2, missing required grid %3" ).arg( mSourceCRS.authid() )
+                                      .arg( mDestCRS.authid() )
+                                      .arg( shortName );
+                  QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        // multiple operations available. Can we use the best one?
+        QgsDatumTransform::TransformDetails preferred;
+        bool missingPreferred = false;
+        for ( int i = 0; i < count; ++ i )
+        {
+          transform.reset( proj_list_get( context, ops, i ) );
+          const bool isInstantiable = transform && proj_coordoperation_is_instantiable( context, transform.get() );
+          if ( i == 0 && transform && !isInstantiable )
+          {
+            // uh oh :( something is missing blocking us from the preferred operation!
+            missingPreferred = true;
+            preferred = QgsDatumTransform::transformDetailsFromPj( transform.get() );
+          }
+          if ( transform && isInstantiable )
+          {
+            // found one
+            break;
+          }
+          transform.reset();
+        }
+
+        if ( transform && missingPreferred )
+        {
+          // found a transform, but it's not the preferred
+          QgsDatumTransform::TransformDetails available = QgsDatumTransform::transformDetailsFromPj( transform.get() );
+          if ( sMissingPreferredGridHandler )
+          {
+            sMissingPreferredGridHandler( mSourceCRS, mDestCRS, preferred, available );
+          }
+          else
+          {
+            const QString err = QObject::tr( "Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4." ).arg( mSourceCRS.authid() )
+                                .arg( mDestCRS.authid() )
+                                .arg( available.proj, preferred.proj );
+            QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+          }
+        }
+      }
       proj_list_destroy( ops );
     }
     proj_operation_factory_context_destroy( operationContext );
+  }
+
+  if ( !transform && nonAvailableError.isEmpty() )
+  {
+    if ( int errNo = proj_context_errno( context ) )
+    {
+      nonAvailableError = QString( proj_errno_string( errNo ) );
+    }
+    else
+    {
+      nonAvailableError = QObject::tr( "No coordinate operations are available" );
+    }
+  }
+
+  if ( !nonAvailableError.isEmpty() )
+  {
+    if ( sCoordinateOperationCreationErrorHandler )
+    {
+      sCoordinateOperationCreationErrorHandler( mSourceCRS, mDestCRS, nonAvailableError );
+    }
+    else
+    {
+      const QString err = QObject::tr( "Cannot create transform between %1 and %2: %3" ).arg( mSourceCRS.authid() )
+                          .arg( mDestCRS.authid() )
+                          .arg( nonAvailableError );
+      QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+    }
   }
 
   if ( !transform )
