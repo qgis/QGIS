@@ -33,6 +33,9 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool de
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/MessageViewer/geometry" ) ).toByteArray() );
+
+  txtMessage->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  txtMessage->setOpenExternalLinks( true );
 }
 
 QgsMessageViewer::~QgsMessageViewer()
