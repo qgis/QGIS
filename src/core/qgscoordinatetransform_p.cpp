@@ -33,6 +33,19 @@
 
 /// @cond PRIVATE
 
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                     const QgsCoordinateReferenceSystem &destinationCrs,
+                     const QgsDatumTransform::GridDetails &grid )> QgsCoordinateTransformPrivate::sMissingRequiredGridHandler = nullptr;
+
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                     const QgsCoordinateReferenceSystem &destinationCrs,
+                     const QgsDatumTransform::TransformDetails &preferredOperation,
+                     const QgsDatumTransform::TransformDetails &availableOperation )> QgsCoordinateTransformPrivate::sMissingPreferredGridHandler = nullptr;
+
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                     const QgsCoordinateReferenceSystem &destinationCrs,
+                     const QString &error )> QgsCoordinateTransformPrivate::sCoordinateOperationCreationErrorHandler = nullptr;
+
 #if PROJ_VERSION_MAJOR<6
 #ifdef USE_THREAD_LOCAL
 thread_local QgsProjContextStore QgsCoordinateTransformPrivate::mProjContext;
@@ -351,6 +364,21 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 #endif
 #endif
   return res;
+}
+
+void QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
+{
+  sMissingRequiredGridHandler = handler;
+}
+
+void QgsCoordinateTransformPrivate::setCustomMissingPreferredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails &, const QgsDatumTransform::TransformDetails & )> &handler )
+{
+  sMissingPreferredGridHandler = handler;
+}
+
+void QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
+{
+  sCoordinateOperationCreationErrorHandler = handler;
 }
 
 #if PROJ_VERSION_MAJOR<6

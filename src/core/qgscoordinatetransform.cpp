@@ -964,3 +964,18 @@ double QgsCoordinateTransform::scaleFactor( const QgsRectangle &ReferenceExtent 
   double distDestUnits = std::sqrt( dest1.sqrDist( dest2 ) );
   return distDestUnits / distSourceUnits;
 }
+
+void QgsCoordinateTransform::setCustomMissingRequiredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler( handler );
+}
+
+void QgsCoordinateTransform::setCustomMissingPreferredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails &, const QgsDatumTransform::TransformDetails & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setCustomMissingPreferredGridHandler( handler );
+}
+
+void QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHandler( handler );
+}
