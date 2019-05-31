@@ -239,8 +239,8 @@ class CORE_EXPORT QgsDatumTransform
     /**
      * Returns the transform details for a Proj coordinate operation \a op.
      *
-     * \since QGIS 3.8
      * \note Requires Proj 6.0 or later
+     * \since QGIS 3.8
      */
     static QgsDatumTransform::TransformDetails transformDetailsFromPj( PJ *op );
 #endif
