@@ -145,11 +145,17 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
     gridMessage = "<ul>" + gridMessage + "</ul>";
   }
 
+  QString accuracyMessage;
+  if ( availableOperation.accuracy >= 0 && preferredOperation.accuracy >= 0 )
+    accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an accuracy of %2 meters, while the preferred transformation “<i>%3</i>” has accuracy %4 meters.</p>" ).arg( availableOperation.name )
+                      .arg( availableOperation.accuracy ).arg( preferredOperation.name ).arg( preferredOperation.accuracy );
+  else if ( preferredOperation.accuracy >= 0 )
+    accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an unknown accuracy, while the preferred transformation “<i>%2</i>” has accuracy %3 meters.</p>" ).arg( availableOperation.name )
+                      .arg( preferredOperation.name ).arg( preferredOperation.accuracy );
+
   const QString longMessage = tr( "<p>The preferred transform between <i>%1</i> and <i>%2</i> is not available for use on the system.</p>" ).arg( displayIdentifierForCrs( sourceCrs ),
                               displayIdentifierForCrs( destinationCrs ) )
-                              + gridMessage +
-                              tr( "<p>Current transform “<i>%1</i>” has an accuracy of %2 meters, while the preferred transformation “<i>%3</i>” has accuracy %4 meters.</p>" ).arg( availableOperation.name )
-                              .arg( availableOperation.accuracy ).arg( preferredOperation.name ).arg( preferredOperation.accuracy );
+                              + gridMessage + accuracyMessage;
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
