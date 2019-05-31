@@ -347,7 +347,7 @@ Returns a band histogram. Histograms are cached in providers.
     }
 
     QgsRasterHistogram *h = new QgsRasterHistogram( sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 ) );
-    sipRes = h;
+    return sipConvertFromType( h, sipType_QgsRasterHistogram, Py_None );
 %End
 
 
