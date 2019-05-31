@@ -1718,6 +1718,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       */
     void newProject();
 
+
+    /**
+     * Emitted when a project is saved to a new \a path
+     */
+    void projectSavedAs( const QString &path );
+
     /**
      * Signal emitted when the current theme is changed so plugins
      * can change there tool button icons. */
