@@ -216,6 +216,8 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
   qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
   qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+  qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
+  qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
 
   ( void ) resolvePkgPath();
 

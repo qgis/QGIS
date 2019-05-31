@@ -335,6 +335,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdatasourcemanagerdialog.h"
 #include "qgsappwindowmanager.h"
 #include "qgsvaliditycheckregistry.h"
+#include "qgsappcoordinateoperationhandlers.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1406,6 +1407,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     QgsGui::instance()->nativePlatformInterface()->setApplicationBadgeCount( count );
   } );
+
+  ( void )new QgsAppMissingGridHandler( this );
 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsGui::shortcutsManager()->registerAllChildren( this );
