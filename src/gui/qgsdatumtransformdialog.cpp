@@ -150,7 +150,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
   Q_UNUSED( selectedDatumTransforms )
   for ( const QgsDatumTransform::TransformDetails &transform : qgis::as_const( mDatumTransforms ) )
   {
-    bool itemDisabled = false;
+    bool itemDisabled = !transform.isAvailable;
 
     std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
     item->setData( ProjRole, transform.proj );
@@ -166,7 +166,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
       item->setForeground( QBrush( QColor( 0, 120, 0 ) ) );
     }
 
-    if ( preferredInitialRow < 0 )
+    if ( preferredInitialRow < 0 && transform.isAvailable )
     {
       // try to select a "preferred" entry by default
       preferredInitialRow = row;
@@ -174,7 +174,7 @@ void QgsDatumTransformDialog::load( QPair<int, int> selectedDatumTransforms, con
 
     const QString toolTipString = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( transform.name, transform.proj );
     item->setToolTip( toolTipString );
-    if ( !transform.isAvailable )
+    if ( itemDisabled )
     {
       item->setFlags( Qt::NoItemFlags );
     }
