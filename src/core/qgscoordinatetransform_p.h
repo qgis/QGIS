@@ -157,8 +157,6 @@ class QgsCoordinateTransformPrivate : public QSharedData
     Q_DECL_DEPRECATED void addNullGridShifts( QString &srcProjString, QString &destProjString, int sourceDatumTransform, int destinationDatumTransform ) const;
 #endif
 
-    void setFinder();
-
     void freeProj();
 };
 

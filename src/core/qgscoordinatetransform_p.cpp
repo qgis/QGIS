@@ -55,7 +55,6 @@ QgsProjContextStore::~QgsProjContextStore()
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
 {
-  setFinder();
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -66,7 +65,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   : mSourceCRS( source )
   , mDestCRS( destination )
 {
-  setFinder();
   calculateTransforms( context );
 }
 Q_NOWARN_DEPRECATED_POP
@@ -78,7 +76,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mSourceDatumTransform( sourceDatumTransform )
   , mDestinationDatumTransform( destDatumTransform )
 {
-  setFinder();
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )
@@ -404,22 +401,6 @@ void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, Q
   }
 }
 #endif
-
-void QgsCoordinateTransformPrivate::setFinder()
-{
-#if 0
-  // Attention! It should be possible to set PROJ_LIB
-  // but it can happen that it was previously set by installer
-  // (version 0.7) and the old installation was deleted
-
-  // Another problem: PROJ checks if pj_finder was set before
-  // PROJ_LIB environment variable. pj_finder is probably set in
-  // GRASS gproj library when plugin is loaded, consequently
-  // PROJ_LIB is ignored
-
-  pj_set_finder( finder );
-#endif
-}
 
 void QgsCoordinateTransformPrivate::freeProj()
 {
