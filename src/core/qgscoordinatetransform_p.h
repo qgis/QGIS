@@ -147,6 +147,44 @@ class QgsCoordinateTransformPrivate : public QSharedData
     QReadWriteLock mProjLock;
     QMap < uintptr_t, ProjData > mProjProjections;
 
+    /**
+     * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
+     * \a destinationCrs, yet the coordinate operation requires a transform \a grid which is not present
+     * on the system.
+     *
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingRequiredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::GridDetails &grid )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
+     * \a destinationCrs, yet a preferred (more accurate?) operation is available which could not
+     * be created on the system (e.g. due to missing transform grids).
+     *
+     * \a preferredOperation gives the details of the preferred coordinate operation, and
+     * \a availableOperation gives the details of the actual operation to be used during the
+     * transform.
+     *
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingPreferredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::TransformDetails &preferredOperation,
+        const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate transform was required between \a sourceCrs and
+     * \a destinationCrs, yet the coordinate operation could not be created. The \a error argument
+     * specifies the error message obtained.
+     *
+     * \since QGIS 3.8
+     */
+    static void setCustomCoordinateOperationCreationErrorHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QString &error )> &handler );
+
   private:
 
 #if PROJ_VERSION_MAJOR<6
@@ -158,6 +196,19 @@ class QgsCoordinateTransformPrivate : public QSharedData
 #endif
 
     void freeProj();
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QgsDatumTransform::GridDetails &grid )> sMissingRequiredGridHandler;
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QgsDatumTransform::TransformDetails &preferredOperation,
+                                const QgsDatumTransform::TransformDetails &availableOperation )> sMissingPreferredGridHandler;
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QString &error )> sCoordinateOperationCreationErrorHandler;
 };
 
 /// @endcond

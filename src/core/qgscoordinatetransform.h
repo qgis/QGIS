@@ -438,6 +438,60 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     double scaleFactor( const QgsRectangle &referenceExtent ) const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
+     * \a destinationCrs, yet the coordinate operation requires a transform \a grid which is not present
+     * on the system.
+     *
+     * \see setCustomMissingPreferredGridHandler()
+     * \see setCustomCoordinateOperationCreationErrorHandler()
+     *
+     * \since QGIS 3.8
+     * \note Not available in Python bindings
+     */
+    static void setCustomMissingRequiredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::GridDetails &grid )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
+     * \a destinationCrs, yet a preferred (more accurate?) operation is available which could not
+     * be created on the system (e.g. due to missing transform grids).
+     *
+     * \a preferredOperation gives the details of the preferred coordinate operation, and
+     * \a availableOperation gives the details of the actual operation to be used during the
+     * transform.
+     *
+     * \see setCustomMissingRequiredGridHandler()
+     * \see setCustomCoordinateOperationCreationErrorHandler()
+     *
+     * \since QGIS 3.8
+     * \note Not available in Python bindings
+     */
+    static void setCustomMissingPreferredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::TransformDetails &preferredOperation,
+        const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate transform was required between \a sourceCrs and
+     * \a destinationCrs, yet the coordinate operation could not be created. The \a error argument
+     * specifies the error message obtained.
+     *
+     * \see setCustomMissingRequiredGridHandler()
+     * \see setCustomMissingPreferredGridHandler()
+     *
+     * \since QGIS 3.8
+     * \note Not available in Python bindings
+     */
+    static void setCustomCoordinateOperationCreationErrorHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QString &error )> &handler );
+
+#endif
+
   private:
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
