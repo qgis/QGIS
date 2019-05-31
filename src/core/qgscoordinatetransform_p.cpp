@@ -336,13 +336,14 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       if ( count < 1 )
       {
         // huh?
-        if ( int errNo = proj_context_errno( context ) )
+        int errNo = proj_context_errno( context );
+        if ( errNo && errNo != -61 )
         {
           nonAvailableError = QString( proj_errno_string( errNo ) );
         }
         else
         {
-          nonAvailableError = QObject::tr( "No coordinate operations are available" );
+          nonAvailableError = QObject::tr( "No coordinate operations are available between these two reference systems" );
         }
       }
       else if ( count == 1 )
@@ -439,13 +440,14 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 
   if ( !transform && nonAvailableError.isEmpty() )
   {
-    if ( int errNo = proj_context_errno( context ) )
+    int errNo = proj_context_errno( context );
+    if ( errNo && errNo != -61 )
     {
       nonAvailableError = QString( proj_errno_string( errNo ) );
     }
     else
     {
-      nonAvailableError = QObject::tr( "No coordinate operations are available" );
+      nonAvailableError = QObject::tr( "No coordinate operations are available between these two reference systems" );
     }
   }
 
@@ -470,7 +472,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     return nullptr;
   }
 
-  // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
+// transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
   ProjData res = proj_normalize_for_visualization( context, transform.get() );
   mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
 
