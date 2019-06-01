@@ -414,13 +414,8 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
     else if ( hasShift && !hasCtrl )
     {
       // rotate/tilt using keyboard (camera moves as it rotates around its view center)
-      float pitch = mCameraPose.pitchAngle();
-      float yaw = mCameraPose.headingAngle();
-      pitch -= ty;   // down key = moving camera toward terrain
-      yaw -= tx;     // right key = moving camera clockwise
-      mCameraPose.setPitchAngle( pitch );
-      mCameraPose.setHeadingAngle( yaw );
-      updateCameraFromPose();
+      tiltUpAroundViewCenter(ty);
+      rotateAroundViewCenter(tx);
     }
     else if ( hasCtrl && !hasShift )
     {
@@ -449,4 +444,27 @@ void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
 void QgsCameraController::onPickerMousePressed( Qt3DRender::QPickEvent *pick )
 {
   mLastPressedHeight = pick->worldIntersection().y();
+}
+
+void QgsCameraController::tiltUpAroundViewCenter(float deltaPitch){
+    // Tilt up the view by deltaPitch around the view center (camera moves)
+    float pitch = mCameraPose.pitchAngle();
+    pitch -= deltaPitch;   // down key = moving camera toward terrain
+    mCameraPose.setPitchAngle( pitch );
+    updateCameraFromPose();
+}
+
+void QgsCameraController::rotateAroundViewCenter(float deltaYaw){
+    // Rotate clockwise the view by deltaYaw around the view center (camera moves)
+    float yaw = mCameraPose.headingAngle();
+    yaw -= deltaYaw;     // right key = moving camera clockwise
+    mCameraPose.setHeadingAngle( yaw );
+    updateCameraFromPose();
+    qInfo() << "Delta yaw: " << deltaYaw;
+    qInfo() << "Yaw: " << yaw;
+}
+
+void QgsCameraController::setCameraHeadingAngle(float angle){
+    mCameraPose.setHeadingAngle( angle );
+    updateCameraFromPose();
 }

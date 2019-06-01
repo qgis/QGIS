@@ -2,6 +2,7 @@
 #include <QPushButton>
 #include <QDial>
 #include <QObject>
+#include <QDebug>
 
 #include "qgs3dnavigationwidget.h"
 #include "qgscameracontroller.h"
@@ -44,17 +45,46 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     mTiltUpButton->setToolTip(QStringLiteral("Tilt Up"));
     mTiltUpButton->setAutoRepeat(true);
 
+    QObject::connect(
+        mTiltUpButton,
+        &QPushButton::clicked,
+        parent,
+        [ = ]{
+            parent->cameraController()->tiltUpAroundViewCenter(1);
+    }
+    );
+
     // Tilt down button
     mTiltDownButton = new QPushButton(this);
     mTiltDownButton ->setText(QString::fromUtf8("\u25BD"));
     mTiltDownButton->setToolTip(QStringLiteral("Tilt Down"));
     mTiltDownButton->setAutoRepeat(true);
 
+    QObject::connect(
+        mTiltDownButton,
+        &QPushButton::clicked,
+        parent,
+        [ = ]{
+            parent->cameraController()->tiltUpAroundViewCenter(-1);
+    }
+    );
+
     // Rotate scene dial
     mRotateSceneDial = new QDial(this);
+    mRotateSceneDial->setToolTip(QStringLiteral("Rotate view"));
     mRotateSceneDial->setWrapping(true);
     mRotateSceneDial->setMaximum(359);
     mRotateSceneDial->setValue(180);
+
+    QObject::connect(
+        mRotateSceneDial,
+        &QDial::valueChanged,
+        parent,
+        [ = ]{
+            qInfo() << "Dial value: " << mRotateSceneDial->value();
+            parent->cameraController()->setCameraHeadingAngle(mRotateSceneDial->value());
+    }
+    );
 
     QGridLayout *gridLayout = new QGridLayout(this);
     gridLayout->addWidget(mTiltUpButton, 0, 0);
