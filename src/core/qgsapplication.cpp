@@ -51,6 +51,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
+#include "qgsprojutils.h"
 #include "qgsvaliditycheckregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
@@ -90,6 +91,11 @@
 #include <ogr_api.h>
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
+
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#endif
+
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
@@ -294,6 +300,20 @@ void QgsApplication::init( QString profileFolder )
     }
   }
   ABISYM( mSystemEnvVars ) = systemEnvVarMap;
+
+#if PROJ_VERSION_MAJOR>=6
+  // append local user-writable folder as a proj search path
+  QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
+  currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
+  const char **newPaths = new const char *[currentProjSearchPaths.length()];
+  for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
+  {
+    newPaths[i] = currentProjSearchPaths.at( i ).toUtf8().constData();
+  }
+  proj_context_set_search_paths( nullptr, currentProjSearchPaths.count(), newPaths );
+  delete [] newPaths;
+#endif
+
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );

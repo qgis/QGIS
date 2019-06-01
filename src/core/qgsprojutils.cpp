@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojutils.h"
+#include "qgis.h"
 #include <QString>
+#include <QSet>
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
@@ -215,3 +217,32 @@ QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
 
 #endif
 
+QStringList QgsProjUtils::searchPaths()
+{
+#if PROJ_VERSION_MAJOR >= 6
+  const QString path( proj_info().searchpath );
+  QStringList paths;
+// #ifdef Q_OS_WIN
+#if 1 // -- see https://github.com/OSGeo/proj.4/pull/1497
+  paths = path.split( ';' );
+#else
+  paths = path.split( ':' );
+#endif
+
+  QSet<QString> existing;
+  // thin out duplicates from paths -- see https://github.com/OSGeo/proj.4/pull/1498
+  QStringList res;
+  res.reserve( paths.count() );
+  for ( const QString &p : qgis::as_const( paths ) )
+  {
+    if ( existing.contains( p ) )
+      continue;
+
+    existing.insert( p );
+    res << p;
+  }
+  return res;
+#else
+  return QStringList();
+#endif
+}

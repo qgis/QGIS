@@ -29,6 +29,16 @@ Utility functions for working with the proj library.
 Returns the proj library major version number.
 %End
 
+    static QStringList searchPaths();
+%Docstring
+Returns the current list of Proj file search paths.
+
+.. note::
+
+   Only available on builds based on Proj >= 6.0. Builds based on
+   earlier Proj versions will always return an empty list.
+%End
+
 };
 
 /************************************************************************

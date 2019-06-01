@@ -53,6 +53,14 @@ class CORE_EXPORT QgsProjUtils
       return PROJ_VERSION_MAJOR;
     }
 
+    /**
+     * Returns the current list of Proj file search paths.
+     *
+     * \note Only available on builds based on Proj >= 6.0. Builds based on
+     * earlier Proj versions will always return an empty list.
+     */
+    static QStringList searchPaths();
+
 #ifndef SIP_RUN
 #if PROJ_VERSION_MAJOR >= 6
 
