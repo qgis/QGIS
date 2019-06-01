@@ -406,14 +406,14 @@ class GdalUtils:
     def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
         listFile = QgsProcessingUtils.generateTempFilename(filename)
 
-        layers = []
-        for l in alg.parameterAsLayerList(parameters, parameter_name, context):
-            if quote:
-                layers.append('"' + l.source() + '"')
-            else:
-                layers.append(l.source())
-
         if executing:
+            layers = []
+            for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                if quote:
+                    layers.append('"' + l.source() + '"')
+                else:
+                    layers.append(l.source())
+
             with open(listFile, 'w') as f:
                 f.write('\n'.join(layers))
 
