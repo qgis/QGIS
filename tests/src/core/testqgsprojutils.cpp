@@ -35,6 +35,7 @@ class TestQgsProjUtils: public QObject
     void threadSafeContext();
     void usesAngularUnits();
     void axisOrderIsSwapped();
+    void searchPath();
 
 };
 
@@ -94,6 +95,15 @@ void TestQgsProjUtils::axisOrderIsSwapped()
   QVERIFY( !QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4326" ) );
   QVERIFY( QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
+#endif
+}
+
+void TestQgsProjUtils::searchPath()
+{
+#if PROJ_VERSION_MAJOR>=6
+  // ensure local user-writable path is present in Proj search paths
+  const QStringList paths = QgsProjUtils::searchPaths();
+  QVERIFY( paths.contains( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "proj" ) ) );
 #endif
 }
 
