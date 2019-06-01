@@ -21,11 +21,14 @@
 #include <QDial>
 #include <QGridLayout>
 
+#include "qgs3dmapcanvas.h"
+#include "qgscameracontroller.h"
+
 class Qgs3DNavigationWidget : public QWidget
 {
     Q_OBJECT
 public:
-    Qgs3DNavigationWidget(QWidget *parent = nullptr);
+    Qgs3DNavigationWidget(Qgs3DMapCanvas *parent = nullptr);
     ~Qgs3DNavigationWidget();
 
 signals:

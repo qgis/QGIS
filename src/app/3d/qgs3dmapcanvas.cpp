@@ -41,9 +41,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   } );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
-
-  mNavigationWidget = new Qgs3DNavigationWidget();
-  mNavigationWidget->setParent(this);
+  mNavigationWidget = new Qgs3DNavigationWidget(this);
 
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setMargin( 0 );

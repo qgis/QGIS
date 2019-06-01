@@ -1,10 +1,12 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QDial>
+#include <QObject>
 
 #include "qgs3dnavigationwidget.h"
+#include "qgscameracontroller.h"
 
-Qgs3DNavigationWidget::Qgs3DNavigationWidget(QWidget *parent) : QWidget(parent)
+Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(parent)
 {
     // Zoom in button
     mZoomInButton = new QPushButton(this);
@@ -12,11 +14,29 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(QWidget *parent) : QWidget(parent)
     mZoomInButton->setToolTip(QStringLiteral("Zoom In"));
     mZoomInButton->setAutoRepeat(true);
 
+    QObject::connect(
+        mZoomInButton,
+        &QPushButton::clicked,
+        parent,
+        [ = ]{
+            parent->cameraController()->zoom(5);
+    }
+    );
+
     // Zoom out button
     mZoomOutButton = new QPushButton(this);
     mZoomOutButton->setText(QStringLiteral("-"));
     mZoomOutButton->setToolTip(QStringLiteral("Zoom Out"));
     mZoomOutButton->setAutoRepeat(true);
+
+    QObject::connect(
+        mZoomOutButton,
+        &QPushButton::clicked,
+        parent,
+        [ = ]{
+            parent->cameraController()->zoom(-5);
+    }
+    );
 
     // Tilt up button
     mTiltUpButton = new QPushButton(this);

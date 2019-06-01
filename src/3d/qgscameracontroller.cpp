@@ -327,14 +327,18 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
   }
   else if ( hasRightButton && !hasShift && !hasCtrl )
   {
-    // zoom in/out
-    float dist = mCameraPose.distanceFromCenterPoint();
-    dist -= dist * dy * 0.01f;
-    mCameraPose.setDistanceFromCenterPoint( dist );
-    updateCameraFromPose();
+    zoom(dy);
   }
 
   mMousePos = QPoint( mouse->x(), mouse->y() );
+}
+
+void QgsCameraController::zoom(float factor){
+    // zoom in/out
+    float dist = mCameraPose.distanceFromCenterPoint();
+    dist -= dist * factor * 0.01f;
+    mCameraPose.setDistanceFromCenterPoint( dist );
+    updateCameraFromPose();
 }
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
