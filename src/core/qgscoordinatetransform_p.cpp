@@ -100,8 +100,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mDestCRS( other.mDestCRS )
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
-  , mSourceAxisOrderSwapped( other.mSourceAxisOrderSwapped )
-  , mDestAxisOrderSwapped( other.mDestAxisOrderSwapped )
 {
   //must reinitialize to setup mSourceProjection and mDestinationProjection
   initialize();
@@ -192,19 +190,6 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   // create proj projections for current thread
   ProjData res = threadLocalProjData();
-
-#if PROJ_VERSION_MAJOR>=6
-#if PROJ_VERSION_MINOR<1
-  // because proj 6.0 does not have proj_normalize_for_visualization - we have to handle this manually and inefficiently!
-  PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr sourceCrs( proj_get_source_crs( context, res ) );
-  if ( sourceCrs )
-    mSourceAxisOrderSwapped = QgsProjUtils::axisOrderIsSwapped( sourceCrs.get() );
-  QgsProjUtils::proj_pj_unique_ptr destCrs( proj_get_target_crs( context, res ) );
-  if ( destCrs )
-    mDestAxisOrderSwapped = QgsProjUtils::axisOrderIsSwapped( destCrs.get() );
-#endif
-#endif
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
@@ -311,7 +296,6 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   locker.changeMode( QgsReadWriteLocker::Write );
 
 #if PROJ_VERSION_MAJOR>=6
-#if PROJ_VERSION_MINOR>=1
   QgsProjUtils::proj_pj_unique_ptr transform;
   if ( !mProjCoordinateOperation.isEmpty() )
     transform.reset( proj_create( context, mProjCoordinateOperation.toUtf8().constData() ) );
@@ -493,12 +477,6 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 
   ProjData res = transform.release();
   mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
-
-#else
-  // proj 6.0 does not have proj_normalize_for_visualization - we have to handle this manually and inefficiently!
-  ProjData res = proj_create_crs_to_crs( context, mSourceProjString.toUtf8().constData(), mDestProjString.toUtf8().constData(), nullptr );
-  mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
-#endif
 #else
 #ifdef USE_THREAD_LOCAL
   Q_NOWARN_DEPRECATED_PUSH
