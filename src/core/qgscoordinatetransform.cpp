@@ -652,7 +652,18 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
   ProjData projData = d->threadLocalProjData();
-#if PROJ_VERSION_MAJOR<6
+
+  int projResult = 0;
+#if PROJ_VERSION_MAJOR>=6
+  proj_errno_reset( projData );
+  proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
+                      x, sizeof( double ), numPoints,
+                      y, sizeof( double ), numPoints,
+                      z, sizeof( double ), numPoints,
+                      nullptr, sizeof( double ), 0 );
+  projResult = proj_errno( projData );
+  // ewww - this logic is gross. We should drop support for PROJ 6.0 as quickly as possible and dump this code (in favour of built in methods used for >=6.1 builds)
+#else
   bool sourceIsLatLong = false;
   bool destIsLatLong = false;
 
@@ -672,28 +683,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   }
 #endif
 
-  int projResult = 0;
-#if PROJ_VERSION_MAJOR>=6
-  const bool sourceAxisOrderSwapped =  direction == ForwardTransform ? d->mSourceAxisOrderSwapped : d->mDestAxisOrderSwapped;
-
-  proj_errno_reset( projData );
-  proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
-                      !sourceAxisOrderSwapped ? x : y, sizeof( double ), numPoints,
-                      !sourceAxisOrderSwapped ? y : x, sizeof( double ), numPoints,
-                      z, sizeof( double ), numPoints,
-                      nullptr, sizeof( double ), 0 );
-  projResult = proj_errno( projData );
-  // ewww - this logic is gross. We should drop support for PROJ 6.0 as quickly as possible and dump this code (in favour of built in methods used for >=6.1 builds)
-  if ( projResult == 0 && ( d->mSourceAxisOrderSwapped != d->mDestAxisOrderSwapped ) )
-  {
-    size_t size = sizeof( double ) * numPoints;
-    void *tmp = malloc( size );
-    memcpy( tmp, x, size );
-    memcpy( x, y, size );
-    memcpy( y, tmp, size );
-    free( tmp );
-  }
-#else
+#if PROJ_VERSION_MAJOR<6
   if ( direction == ReverseTransform )
   {
     projResult = pj_transform( destProj, sourceProj, numPoints, 0, x, y, z );

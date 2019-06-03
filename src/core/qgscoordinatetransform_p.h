@@ -127,9 +127,6 @@ class QgsCoordinateTransformPrivate : public QSharedData
     Q_DECL_DEPRECATED int mDestinationDatumTransform = -1;
     QString mProjCoordinateOperation;
 
-    bool mSourceAxisOrderSwapped = false;
-    bool mDestAxisOrderSwapped = false;
-
 #if PROJ_VERSION_MAJOR<6
 
     /**
