@@ -781,6 +781,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for getting number of user CRS already in db
     long getRecordCount();
 
+#if PROJ_VERSION_MAJOR>=6
+    bool loadFromAuthCode( const QString &auth, const QString &code );
+#endif
+
     /**
      * Initialize the CRS object by looking up CRS database in path given in db argument,
      * using first CRS entry where expression = 'value'

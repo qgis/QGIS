@@ -701,7 +701,7 @@ void TestQgsCoordinateReferenceSystem::ellipsoidAcronym()
   myCrs.createFromSrid( GEOSRID );
   QString myAcronym = myCrs.ellipsoidAcronym();
   debugPrint( myCrs );
-  QVERIFY( myAcronym == "WGS84" );
+  QCOMPARE( myAcronym, QStringLiteral( "WGS84" ) );
 }
 void TestQgsCoordinateReferenceSystem::toWkt()
 {
