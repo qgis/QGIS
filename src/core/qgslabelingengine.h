@@ -181,7 +181,7 @@ class CORE_EXPORT QgsLabelingEngine
     QgsLabelingEngine &operator=( const QgsLabelingEngine &rh ) = delete;
 
     //! Associate map settings instance
-    void setMapSettings( const QgsMapSettings &mapSettings ) { mMapSettings = mapSettings; }
+    void setMapSettings( const QgsMapSettings &mapSettings );
     //! Gets associated map settings
     const QgsMapSettings &mapSettings() const { return mMapSettings; }
 
