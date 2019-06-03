@@ -45,7 +45,7 @@ void QgsLabelSearchTree::label( const QgsPointXY &point, QList<QgsLabelPosition 
   QList<QgsLabelPosition *>::const_iterator resultIt = searchResults.constBegin();
   for ( ; resultIt != searchResults.constEnd(); ++resultIt )
   {
-    if ( ( *resultIt )->labelRect.contains( p ) )
+    if ( ( *resultIt )->labelGeometry.contains( &p ) )
     {
       posList.push_back( *resultIt );
     }
@@ -68,7 +68,10 @@ void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosi
   QList<QgsLabelPosition *>::const_iterator resultIt = searchResults.constBegin();
   for ( ; resultIt != searchResults.constEnd(); ++resultIt )
   {
-    posList.push_back( *resultIt );
+    if ( ( *resultIt )->labelGeometry.intersects( r ) )
+    {
+      posList.push_back( *resultIt );
+    }
   }
 }
 
@@ -79,30 +82,32 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
     return false;
   }
 
-  double c_min[2];
-  double c_max[2];
-  labelPos->getBoundingBox( c_min, c_max );
-
-  // we have to transform the bounding box to convert pre-rotated label positions back to real world locations
-  double x1, y1;
-  double x2, y2;
-  mTransform.map( c_min[0], c_min[1], &x1, &y1 );
-  mTransform.map( c_max[0], c_max[1], &x2, &y2 );
-  c_min[0] = std::min( x1, x2 );
-  c_min[1] = std::min( y1, y2 );
-  c_max[0] = std::max( x1, x2 );
-  c_max[1] = std::max( y1, y2 );
-
   QVector<QgsPointXY> cornerPoints;
   cornerPoints.reserve( 4 );
+  double xMin = std::numeric_limits< double >::max();
+  double yMin = std::numeric_limits< double >::max();
+  double xMax = std::numeric_limits< double >::lowest();
+  double yMax = std::numeric_limits< double >::lowest();
   for ( int i = 0; i < 4; ++i )
   {
+    // we have to transform the bounding box to convert pre-rotated label positions back to real world locations
     QPointF res = mTransform.map( QPointF( labelPos->getX( i ), labelPos->getY( i ) ) );
     cornerPoints.push_back( QgsPointXY( res ) );
+    xMin = std::min( xMin, res.x() );
+    xMax = std::max( xMax, res.x() );
+    yMin = std::min( yMin, res.y() );
+    yMax = std::max( yMax, res.y() );
   }
+  double c_min[2];
+  double c_max[2];
+  c_min[0] = xMin;
+  c_min[1] = yMin;
+  c_max[0] = xMax;
+  c_max[1] = yMax;
 
+  QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
   std::unique_ptr< QgsLabelPosition > newEntry = qgis::make_unique< QgsLabelPosition >( featureId, labelPos->getAlpha() + mMapSettings.rotation(), cornerPoints, QgsRectangle( c_min[0], c_min[1], c_max[0], c_max[1] ),
-      labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId );
+      labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry );
   mSpatialIndex.Insert( c_min, c_max, newEntry.get() );
   mOwnedPositions.emplace_back( std::move( newEntry ) );
   return true;
