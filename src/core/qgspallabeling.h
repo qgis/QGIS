@@ -79,6 +79,24 @@ class QgsExpressionContext;
 class CORE_EXPORT QgsLabelPosition
 {
   public:
+
+    /**
+     * Constructor for QgsLabelPosition.
+     * \param id associated feature ID
+     * \param r label rotation in degrees clockwise
+     * \param corners corner points of label bounding box, in map units
+     * \param rect label bounding box, in map units
+     * \param w width of label, in map units
+     * \param h height of label, in map units
+     * \param layer ID of associated map layer
+     * \param labeltext text rendered for label
+     * \param labelfont font used to render label
+     * \param upside_down TRUE if label is upside down
+     * \param diagram TRUE if label is a diagram
+     * \param pinned TRUE if label has pinned placement
+     * \param providerId ID of associated label provider
+     * \param labelGeometry polygon geometry of label boundary
+     */
     QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
                       const QgsGeometry &labelGeometry = QgsGeometry() )
       : featureId( id )
