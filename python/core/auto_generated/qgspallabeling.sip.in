@@ -19,25 +19,39 @@ class QgsLabelPosition
 #include "qgspallabeling.h"
 %End
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString() );
+    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
+                      const QgsGeometry &labelGeometry = QgsGeometry() );
 
     QgsLabelPosition();
 %Docstring
 Constructor for QgsLabelPosition
 %End
 
-    int featureId;
+    QgsFeatureId featureId;
+
     double rotation;
+
     QVector< QgsPointXY > cornerPoints;
     QgsRectangle labelRect;
+
+    QgsGeometry labelGeometry;
+
     double width;
+
     double height;
+
     QString layerID;
+
     QString labelText;
+
     QFont labelFont;
+
     bool upsideDown;
+
     bool isDiagram;
+
     bool isPinned;
+
     QString providerID;
 };
 
