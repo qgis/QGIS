@@ -787,10 +787,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool loadFromDatabase( const QString &db, const QString &expression, const QString &value );
 
+#if PROJ_VERSION_MAJOR<6 // not used for proj >= 6.0
     static bool loadIds( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
+
     //! Update datum shift definitions from GDAL data. Used by syncDb()
     static bool syncDatumTransform( const QString &dbPath );
+#endif
 
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
