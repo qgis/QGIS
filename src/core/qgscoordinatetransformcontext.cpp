@@ -223,8 +223,7 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
     if ( !QgsProjUtils::coordinateOperationIsAvailable( coordinateOp ) )
     {
       // not possible in current Proj 6 api!
-      // missingTransforms.append( QgsProjUtils::nonAvailableGrids( coordinateOp ) );
-      missingTransforms.append( coordinateOp ); // yuck, we don't want to expose this string to users!
+      // QgsCoordinateTransform will alert users to this, we don't need to use missingTransforms here
       result = false;
     }
 

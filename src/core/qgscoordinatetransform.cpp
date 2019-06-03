@@ -969,3 +969,8 @@ void QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( c
 {
   QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHandler( handler );
 }
+
+void QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( handler );
+}

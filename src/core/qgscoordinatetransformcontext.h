@@ -205,6 +205,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
      */
     QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 
+    // TODO QGIS 4.0 - remove missingTransforms, not used for Proj >= 6.0 builds
+
     /**
      * Reads the context's state from a DOM \a element.
      *
