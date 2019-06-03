@@ -662,7 +662,6 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                       z, sizeof( double ), numPoints,
                       nullptr, sizeof( double ), 0 );
   projResult = proj_errno( projData );
-  // ewww - this logic is gross. We should drop support for PROJ 6.0 as quickly as possible and dump this code (in favour of built in methods used for >=6.1 builds)
 #else
   bool sourceIsLatLong = false;
   bool destIsLatLong = false;
