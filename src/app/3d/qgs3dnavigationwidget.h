@@ -17,9 +17,9 @@
 #define QGS3DNAVIGATIONWIDGET_H
 
 #include <QWidget>
-#include <QPushButton>
 #include <QDial>
 #include <QGridLayout>
+#include <QToolButton>
 
 #include "qgs3dmapcanvas.h"
 #include "qgscameracontroller.h"
@@ -36,10 +36,10 @@ signals:
 public slots:
 
 private:
-    QPushButton *mZoomInButton = nullptr;
-    QPushButton *mZoomOutButton = nullptr;
-    QPushButton *mTiltUpButton = nullptr;
-    QPushButton *mTiltDownButton = nullptr;
+    QToolButton *mZoomInButton = nullptr;
+    QToolButton *mZoomOutButton = nullptr;
+    QToolButton *mTiltUpButton = nullptr;
+    QToolButton *mTiltDownButton = nullptr;
     QDial *mRotateSceneDial = nullptr;
 };
 

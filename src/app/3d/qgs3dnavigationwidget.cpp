@@ -1,5 +1,5 @@
 #include <QGridLayout>
-#include <QPushButton>
+#include <QToolButton>
 #include <QDial>
 #include <QObject>
 #include <QDebug>
@@ -12,14 +12,15 @@
 Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(parent)
 {
     // Zoom in button
-    mZoomInButton = new QPushButton(this);
+    mZoomInButton = new QToolButton(this);
     mZoomInButton->setToolTip(QStringLiteral("Zoom In"));
     mZoomInButton->setAutoRepeat(true);
     mZoomInButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
+    mZoomInButton->setAutoRaise(true);
 
     QObject::connect(
         mZoomInButton,
-        &QPushButton::clicked,
+        &QToolButton::clicked,
         parent,
         [ = ]{
             parent->cameraController()->zoom(5);
@@ -27,14 +28,15 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     );
 
     // Zoom out button
-    mZoomOutButton = new QPushButton(this);
+    mZoomOutButton = new QToolButton(this);
     mZoomOutButton->setToolTip(QStringLiteral("Zoom Out"));
     mZoomOutButton->setAutoRepeat(true);
     mZoomOutButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ) );
+    mZoomOutButton->setAutoRaise(true);
 
     QObject::connect(
         mZoomOutButton,
-        &QPushButton::clicked,
+        &QToolButton::clicked,
         parent,
         [ = ]{
             parent->cameraController()->zoom(-5);
@@ -42,14 +44,15 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     );
 
     // Tilt up button
-    mTiltUpButton = new QPushButton(this);
+    mTiltUpButton = new QToolButton(this);
     mTiltUpButton->setToolTip(QStringLiteral("Tilt Up"));
     mTiltUpButton->setAutoRepeat(true);
     mTiltUpButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowUp.svg" ) ) );
+    mTiltUpButton->setAutoRaise(true);
 
     QObject::connect(
         mTiltUpButton,
-        &QPushButton::clicked,
+        &QToolButton::clicked,
         parent,
         [ = ]{
             parent->cameraController()->tiltUpAroundViewCenter(1);
@@ -57,14 +60,15 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     );
 
     // Tilt down button
-    mTiltDownButton = new QPushButton(this);
+    mTiltDownButton = new QToolButton(this);
     mTiltDownButton->setToolTip(QStringLiteral("Tilt Down"));
     mTiltDownButton->setAutoRepeat(true);
     mTiltDownButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowDown.svg" ) ) );
+    mTiltDownButton->setAutoRaise(true);
 
     QObject::connect(
         mTiltDownButton,
-        &QPushButton::clicked,
+        &QToolButton::clicked,
         parent,
         [ = ]{
             parent->cameraController()->tiltUpAroundViewCenter(-1);
