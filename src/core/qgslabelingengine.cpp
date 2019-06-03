@@ -82,6 +82,13 @@ QgsLabelingEngine::~QgsLabelingEngine()
   qDeleteAll( mSubProviders );
 }
 
+void QgsLabelingEngine::setMapSettings( const QgsMapSettings &mapSettings )
+{
+  mMapSettings = mapSettings;
+  if ( mResults )
+    mResults->setMapSettings( mapSettings );
+}
+
 QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
 {
   QSet< QgsMapLayer * > layers;

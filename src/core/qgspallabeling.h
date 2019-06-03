@@ -988,12 +988,18 @@ class CORE_EXPORT QgsLabelingResults
     //! Returns infos about labels within a given (map) rectangle
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 
+    /**
+     * Sets the map \a settings associated with the labeling run.
+     * \since QGIS 3.4.8
+     */
+    void setMapSettings( const QgsMapSettings &settings );
+
   private:
 #ifdef SIP_RUN
     QgsLabelingResults( const QgsLabelingResults & );
 #endif
 
-    QgsLabelSearchTree *mLabelSearchTree = nullptr;
+    std::unique_ptr< QgsLabelSearchTree > mLabelSearchTree;
 
     friend class QgsPalLabeling;
     friend class QgsVectorLayerLabelProvider;
