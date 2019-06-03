@@ -68,13 +68,12 @@ void QgsMapToolLabel::createRubberBands()
   delete mFeatureRubberBand;
 
   //label rubber band
-  QgsRectangle rect = mCurrentLabel.pos.labelRect;
   mLabelRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
-  mLabelRubberBand->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-  mLabelRubberBand->addPoint( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
-  mLabelRubberBand->addPoint( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
-  mLabelRubberBand->addPoint( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
-  mLabelRubberBand->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
+  mLabelRubberBand->addPoint( mCurrentLabel.pos.cornerPoints.at( 0 ) );
+  mLabelRubberBand->addPoint( mCurrentLabel.pos.cornerPoints.at( 1 ) );
+  mLabelRubberBand->addPoint( mCurrentLabel.pos.cornerPoints.at( 2 ) );
+  mLabelRubberBand->addPoint( mCurrentLabel.pos.cornerPoints.at( 3 ) );
+  mLabelRubberBand->addPoint( mCurrentLabel.pos.cornerPoints.at( 0 ) );
   mLabelRubberBand->setColor( QColor( 0, 255, 0, 65 ) );
   mLabelRubberBand->setWidth( 3 );
   mLabelRubberBand->show();

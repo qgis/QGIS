@@ -1331,18 +1331,19 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
   QGSCOMPARENEAR( labels.at( 0 ).width, 167961, 500 ); // tolerance will probably need tweaking, to account for cross-platform font diffs
   QGSCOMPARENEAR( labels.at( 0 ).height, 295119, 500 );
-#if 0 // TODO
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -779822, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -611861, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6897647, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 7192767, 500 );
-#endif
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -865622, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -526060, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6898697, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 7191716, 500 );
   QCOMPARE( labels.at( 0 ).rotation, 60 );
 
+  // should fall outside of rotated bounding box!
   labels = results->labelsAtPosition( QgsPointXY( -769822, 6927647 ) );
-  QCOMPARE( labels.count(), 1 );
-  QCOMPARE( labels.at( 0 ).featureId, 1 );
+  QCOMPARE( labels.count(), 0 );
   labels = results->labelsAtPosition( QgsPointXY( -615861, 7132767 ) );
+  QCOMPARE( labels.count(), 0 );
+  // just on corner, should only work if rotation of label's bounding box is handled correctly
+  labels = results->labelsAtPosition( QgsPointXY( -610000, 6898800 ) );
   QCOMPARE( labels.count(), 1 );
   QCOMPARE( labels.at( 0 ).featureId, 1 );
 
@@ -1352,12 +1353,10 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "8888" ) );
   QGSCOMPARENEAR( labels.at( 0 ).width, 671844, 500 ); // tolerance will probably need tweaking, to account for cross-platform font diffs
   QGSCOMPARENEAR( labels.at( 0 ).height, 295119, 500 );
-#if 0 // TODO
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -2779386, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -2107542, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 9240403, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 9535523, 500 );
-#endif
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -2739216, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -2147712, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 9023266, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 9752660, 500 );
   QCOMPARE( labels.at( 0 ).rotation, 60 );
   labels = results->labelsAtPosition( QgsPointXY( -1383, 6708478 ) );
   QCOMPARE( labels.count(), 1 );
@@ -1365,12 +1364,10 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "33333" ) );
   QGSCOMPARENEAR( labels.at( 0 ).width, 839805, 500 ); // tolerance will probably need tweaking, to account for cross-platform font diffs
   QGSCOMPARENEAR( labels.at( 0 ).height, 295119, 500 );
-#if 0 // TODO
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -433112, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), 406692, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6563006, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 6858125, 500 );
-#endif
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -350952, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), 324531, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6273139, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 7147992, 500 );
   QCOMPARE( labels.at( 0 ).rotation, 60 );
   labels = results->labelsAtPosition( QgsPointXY( -2463392, 6708478 ) );
   QCOMPARE( labels.count(), 0 );
