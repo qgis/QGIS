@@ -79,11 +79,13 @@ class QgsExpressionContext;
 class CORE_EXPORT QgsLabelPosition
 {
   public:
-    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString() )
+    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
+                      const QgsGeometry &labelGeometry = QgsGeometry() )
       : featureId( id )
       , rotation( r )
       , cornerPoints( corners )
       , labelRect( rect )
+      , labelGeometry( labelGeometry )
       , width( w )
       , height( h )
       , layerID( layer )
@@ -98,19 +100,69 @@ class CORE_EXPORT QgsLabelPosition
     //! Constructor for QgsLabelPosition
     QgsLabelPosition() = default;
 
+    /**
+     * ID of feature associated with this label.
+     */
     QgsFeatureId featureId = FID_NULL;
+
+    /**
+     * Rotation of label, in degrees clockwise.
+     */
     double rotation = 0;
+
     QVector< QgsPointXY > cornerPoints;
     QgsRectangle labelRect;
+
+    /**
+     * A polygon geometry representing the label's bounds in map coordinates.
+     * \since QGIS 3.4.9
+     */
+    QgsGeometry labelGeometry;
+
+    /**
+     * Width of label bounding box, in map units.
+     */
     double width = 0;
+
+    /**
+     * Heeght of label bounding box, in map units.
+     */
     double height = 0;
+
+    /**
+     * ID of associated map layer.
+     */
     QString layerID;
+
+    /**
+     * String shown in label.
+     */
     QString labelText;
+
+    /**
+     * Font which the label is rendered using.
+     */
     QFont labelFont;
+
+    /**
+     * TRUE if label is upside down.
+     */
     bool upsideDown = false;
+
+    /**
+     * TRUE if label is a diagram.
+     */
     bool isDiagram = false;
+
+    /**
+     * TRUE if label position has been pinned.
+     */
     bool isPinned = false;
-    //! \since QGIS 2.14
+
+    /**
+     * ID of the associated label provider.
+     * \since QGIS 2.14
+     */
     QString providerID;
 };
 
