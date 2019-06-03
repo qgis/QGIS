@@ -2064,6 +2064,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   return myRecordCount;
 }
 
+#if PROJ_VERSION_MAJOR<6
 // adapted from gdal/ogr/ogr_srs_dict.cpp
 bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const char *filename )
 {
@@ -2195,6 +2196,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
   return true;
 }
+#endif
 
 int QgsCoordinateReferenceSystem::syncDatabase()
 {
@@ -2750,6 +2752,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return updated + inserted;
 }
 
+#if PROJ_VERSION_MAJOR<6
 bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
 {
   const char *filename = CSVFilename( "datum_shift.csv" );
@@ -2946,6 +2949,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
 
   return true;
 }
+#endif
 
 QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
