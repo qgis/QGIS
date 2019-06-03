@@ -756,6 +756,7 @@
         <file>themes/default/mActionNewVirtualLayer.svg</file>
         <file>themes/default/mActionDoubleArrowRight.svg</file>
         <file>themes/default/mActionDoubleArrowLeft.svg</file>
+        <file>themes/default/mAction3DNavigation.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

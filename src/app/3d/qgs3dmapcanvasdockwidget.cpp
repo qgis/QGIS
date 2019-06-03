@@ -54,7 +54,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
 
   QAction *toggleOnScreenNavigation = toolBar->addAction(
-              QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
+              QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
               tr( "Toggle On-Screen Navigation" ), this, &Qgs3DMapCanvasDockWidget::toggleNavigationWidget );
 
   toggleOnScreenNavigation->setCheckable(true);
