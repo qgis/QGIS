@@ -391,6 +391,17 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
               }
             }
           }
+          else
+          {
+
+            // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
+            transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
+            if ( !transform )
+            {
+              const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid() )
+                                  .arg( mDestCRS.authid() );
+            }
+          }
         }
       }
       else
@@ -432,6 +443,14 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
             QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
           }
         }
+
+        // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
+        transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
+        if ( !transform )
+        {
+          const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid() )
+                              .arg( mDestCRS.authid() );
+        }
       }
       proj_list_destroy( ops );
     }
@@ -472,8 +491,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     return nullptr;
   }
 
-// transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
-  ProjData res = proj_normalize_for_visualization( context, transform.get() );
+  ProjData res = transform.release();
   mProjProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
 
 #else

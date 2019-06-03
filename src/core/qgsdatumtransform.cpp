@@ -313,7 +313,13 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
   if ( !op )
     return details;
 
-  details.proj = QString( proj_as_proj_string( pjContext, op, PJ_PROJ_5, nullptr ) );
+#if PROJ_VERSION_MINOR >= 1 // really, QGIS is pretty broken on PROJ 6.0 due to the absence of proj_normalize_for_visualization. Just don't use it.
+  QgsProjUtils::proj_pj_unique_ptr normalized( proj_normalize_for_visualization( pjContext, op ) );
+  if ( normalized )
+    details.proj = QString( proj_as_proj_string( pjContext, normalized.get(), PJ_PROJ_5, nullptr ) );
+#endif
+  if ( details.proj.isEmpty() )
+    details.proj = QString( proj_as_proj_string( pjContext, op, PJ_PROJ_5, nullptr ) );
   details.name = QString( proj_get_name( op ) );
   details.accuracy = proj_coordoperation_get_accuracy( pjContext, op );
   details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op );
