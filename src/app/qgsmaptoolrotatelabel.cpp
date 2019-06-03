@@ -42,71 +42,6 @@ QgsMapToolRotateLabel::~QgsMapToolRotateLabel()
   delete mRotationPreviewBox;
 }
 
-void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
-{
-  deleteRubberBands();
-
-  QgsLabelPosition labelPos;
-  if ( !labelAtPosition( e, labelPos ) )
-  {
-    mCurrentLabel = LabelDetails();
-    return;
-  }
-
-  mCurrentLabel = LabelDetails( labelPos );
-
-  if ( !mCurrentLabel.valid )
-    return;
-
-  // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
-
-  if ( !mCurrentLabel.pos.isPinned
-       && mCurrentLabel.settings.placement != QgsPalLayerSettings::OverPoint )
-  {
-    return;
-  }
-
-  // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
-  if ( !currentLabelRotationPoint( mRotationPoint, false, !mCurrentLabel.pos.isPinned ) )
-  {
-    return;
-  }
-
-  {
-    mCurrentMouseAzimuth = convertAzimuth( mRotationPoint.azimuth( toMapCoordinates( e->pos() ) ) );
-
-    bool hasRotationValue;
-    int rotationCol;
-
-    if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
-    {
-      QgsPalIndexes indexes;
-      if ( createAuxiliaryFields( indexes ) )
-        return;
-
-      if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
-        return;
-    }
-
-    if ( currentLabelDataDefinedRotation( mCurrentRotation, hasRotationValue, rotationCol, true ) )
-    {
-      if ( !hasRotationValue )
-      {
-        mCurrentRotation = 0;
-      }
-      mStartRotation = mCurrentRotation;
-      createRubberBands();
-
-      mRotationPreviewBox = createRotationPreviewBox();
-
-      mRotationItem = new QgsPointRotationItem( mCanvas );
-      mRotationItem->setOrientation( QgsPointRotationItem::Clockwise );
-      mRotationItem->setPointLocation( mRotationPoint );
-      mRotationItem->setSymbolRotation( mCurrentRotation );
-    }
-  }
-}
-
 void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
@@ -133,7 +68,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
     }
     else
     {
-      displayValue = ( int )( mCurrentRotation );
+      displayValue = static_cast< int >( mCurrentRotation );
       mCtrlPressed = false;
     }
 
@@ -148,46 +83,145 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e )
-
-  if ( !mLabelRubberBand ) //no rubber band created (most likely because the current label cannot be rotated )
+  if ( !mLabelRubberBand )
   {
-    return;
+    if ( e->button() != Qt::LeftButton )
+      return;
+
+    // first click starts rotation tool
+    deleteRubberBands();
+
+    QgsLabelPosition labelPos;
+    if ( !labelAtPosition( e, labelPos ) )
+    {
+      mCurrentLabel = LabelDetails();
+      return;
+    }
+
+    mCurrentLabel = LabelDetails( labelPos );
+
+    if ( !mCurrentLabel.valid )
+      return;
+
+    // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+
+    if ( !mCurrentLabel.pos.isPinned
+         && mCurrentLabel.settings.placement != QgsPalLayerSettings::OverPoint )
+    {
+      return;
+    }
+
+    // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
+    if ( !currentLabelRotationPoint( mRotationPoint, false, !mCurrentLabel.pos.isPinned ) )
+    {
+      return;
+    }
+
+    {
+      mCurrentMouseAzimuth = convertAzimuth( mRotationPoint.azimuth( toMapCoordinates( e->pos() ) ) );
+
+      bool hasRotationValue;
+      int rotationCol;
+
+      if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
+      {
+        QgsPalIndexes indexes;
+        if ( createAuxiliaryFields( indexes ) )
+          return;
+
+        if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
+          return;
+      }
+
+      if ( currentLabelDataDefinedRotation( mCurrentRotation, hasRotationValue, rotationCol, true ) )
+      {
+        if ( !hasRotationValue )
+        {
+          mCurrentRotation = 0;
+        }
+        mStartRotation = mCurrentRotation;
+        createRubberBands();
+
+        mRotationPreviewBox = createRotationPreviewBox();
+
+        mRotationItem = new QgsPointRotationItem( mCanvas );
+        mRotationItem->setOrientation( QgsPointRotationItem::Clockwise );
+        mRotationItem->setPointLocation( mRotationPoint );
+        mRotationItem->setSymbolRotation( static_cast< int >( mCurrentRotation ) );
+      }
+    }
   }
-
-  deleteRubberBands();
-  delete mRotationItem;
-  mRotationItem = nullptr;
-  delete mRotationPreviewBox;
-  mRotationPreviewBox = nullptr;
-
-  QgsVectorLayer *vlayer = mCurrentLabel.layer;
-  if ( !vlayer )
+  else
   {
-    return;
-  }
+    switch ( e->button() )
+    {
+      case Qt::RightButton:
+      {
+        // right click is cancel
+        deleteRubberBands();
+        delete mRotationItem;
+        mRotationItem = nullptr;
+        delete mRotationPreviewBox;
+        mRotationPreviewBox = nullptr;
+        return;
+      }
 
-  int rotationCol;
-  if ( !labelIsRotatable( vlayer, mCurrentLabel.settings, rotationCol ) )
+      case Qt::LeftButton:
+      {
+        // second click locks in rotation
+        deleteRubberBands();
+        delete mRotationItem;
+        mRotationItem = nullptr;
+        delete mRotationPreviewBox;
+        mRotationPreviewBox = nullptr;
+
+        QgsVectorLayer *vlayer = mCurrentLabel.layer;
+        if ( !vlayer )
+        {
+          return;
+        }
+
+        int rotationCol;
+        if ( !labelIsRotatable( vlayer, mCurrentLabel.settings, rotationCol ) )
+        {
+          return;
+        }
+
+        double rotation = mCtrlPressed ? roundTo15Degrees( mCurrentRotation ) : mCurrentRotation;
+        if ( qgsDoubleNear( rotation, mStartRotation ) ) //mouse button pressed / released, but no rotation
+        {
+          return;
+        }
+
+        vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+        vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation );
+        vlayer->endEditCommand();
+        vlayer->triggerRepaint();
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+}
+
+void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mLabelRubberBand && e->key() == Qt::Key_Escape )
   {
-    return;
+    // escape is cancel
+    deleteRubberBands();
+    delete mRotationItem;
+    mRotationItem = nullptr;
+    delete mRotationPreviewBox;
+    mRotationPreviewBox = nullptr;
   }
-
-  double rotation = mCtrlPressed ? roundTo15Degrees( mCurrentRotation ) : mCurrentRotation;
-  if ( rotation == mStartRotation ) //mouse button pressed / released, but no rotation
-  {
-    return;
-  }
-
-  vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
-  vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation );
-  vlayer->endEditCommand();
-  vlayer->triggerRepaint();
 }
 
 int QgsMapToolRotateLabel::roundTo15Degrees( double n )
 {
-  int m = ( int )( n / 15.0 + 0.5 );
+  int m = static_cast< int >( n / 15.0 + 0.5 );
   return ( m * 15 );
 }
 
