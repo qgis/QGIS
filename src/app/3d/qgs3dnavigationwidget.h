@@ -40,6 +40,10 @@ private:
     QToolButton *mZoomOutButton = nullptr;
     QToolButton *mTiltUpButton = nullptr;
     QToolButton *mTiltDownButton = nullptr;
+    QToolButton *mMoveUpButton = nullptr;
+    QToolButton *mMoveRightButton = nullptr;
+    QToolButton *mMoveDownButton = nullptr;
+    QToolButton *mMoveLeftButton = nullptr;
     QDial *mRotateSceneDial = nullptr;
 };
 

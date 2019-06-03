@@ -395,21 +395,7 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
   {
     if ( !hasShift && !hasCtrl )
     {
-      float yaw = mCameraPose.headingAngle();
-      float dist = mCameraPose.distanceFromCenterPoint();
-      float x = tx * dist * 0.02f;
-      float y = -ty * dist * 0.02f;
-
-      // moving with keyboard - take into account yaw of camera
-      float t = sqrt( x * x + y * y );
-      float a = atan2( y, x ) - yaw * M_PI / 180;
-      float dx = cos( a ) * t;
-      float dy = sin( a ) * t;
-
-      QgsVector3D center = mCameraPose.centerPoint();
-      center.set( center.x() + dx, center.y(), center.z() + dy );
-      mCameraPose.setCenterPoint( center );
-      updateCameraFromPose( true );
+        moveView(tx, ty);
     }
     else if ( hasShift && !hasCtrl )
     {
@@ -467,4 +453,22 @@ void QgsCameraController::rotateAroundViewCenter(float deltaYaw){
 void QgsCameraController::setCameraHeadingAngle(float angle){
     mCameraPose.setHeadingAngle( angle );
     updateCameraFromPose();
+}
+
+void QgsCameraController::moveView(float tx, float ty){
+    float yaw = mCameraPose.headingAngle();
+    float dist = mCameraPose.distanceFromCenterPoint();
+    float x = tx * dist * 0.02f;
+    float y = -ty * dist * 0.02f;
+
+    // moving with keyboard - take into account yaw of camera
+    float t = sqrt( x * x + y * y );
+    float a = atan2( y, x ) - yaw * M_PI / 180;
+    float dx = cos( a ) * t;
+    float dy = sin( a ) * t;
+
+    QgsVector3D center = mCameraPose.centerPoint();
+    center.set( center.x() + dx, center.y(), center.z() + dy );
+    mCameraPose.setCenterPoint( center );
+    updateCameraFromPose( true );
 }

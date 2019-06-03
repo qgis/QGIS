@@ -92,14 +92,81 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     }
     );
 
+    // Move up button
+    mMoveUpButton = new QToolButton(this);
+    mMoveUpButton->setToolTip(QStringLiteral("Move up"));
+    mMoveUpButton->setAutoRepeat(true);
+    mMoveUpButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowUp.svg" ) ) );
+    mMoveUpButton->setAutoRaise(true);
+
+    QObject::connect(
+        mMoveUpButton,
+        &QToolButton::clicked,
+        parent,
+        [ = ]{
+            parent->cameraController()->moveView(0, 1);
+    }
+    );
+
+    // Move right button
+    mMoveRightButton = new QToolButton(this);
+    mMoveRightButton->setToolTip(QStringLiteral("Move right"));
+    mMoveRightButton->setAutoRepeat(true);
+    mMoveRightButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowRight.svg" ) ) );
+    mMoveRightButton->setAutoRaise(true);
+
+    QObject::connect(
+        mMoveRightButton,
+        &QToolButton::clicked,
+        parent,
+        [ = ]{
+            parent->cameraController()->moveView(1, 0);
+    }
+    );
+
+    // Move down button
+    mMoveDownButton = new QToolButton(this);
+    mMoveDownButton->setToolTip(QStringLiteral("Move down"));
+    mMoveDownButton->setAutoRepeat(true);
+    mMoveDownButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowDown.svg" ) ) );
+    mMoveDownButton->setAutoRaise(true);
+
+    QObject::connect(
+        mMoveDownButton,
+        &QToolButton::clicked,
+        parent,
+        [ = ]{
+            parent->cameraController()->moveView(0, -1);
+    }
+    );
+
+    // Move left button
+    mMoveLeftButton = new QToolButton(this);
+    mMoveLeftButton->setToolTip(QStringLiteral("Move left"));
+    mMoveLeftButton->setAutoRepeat(true);
+    mMoveLeftButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowLeft.svg" ) ) );
+    mMoveLeftButton->setAutoRaise(true);
+
+    QObject::connect(
+        mMoveLeftButton,
+        &QToolButton::clicked,
+        parent,
+        [ = ]{
+            parent->cameraController()->moveView(-1, 0);
+    }
+    );
+
     QGridLayout *gridLayout = new QGridLayout(this);
     gridLayout->addWidget(mTiltUpButton, 0, 0);
     gridLayout->addWidget(mTiltDownButton, 3, 0);
     gridLayout->addWidget(mZoomInButton, 0, 3);
     gridLayout->addWidget(mZoomOutButton, 3, 3);
     gridLayout->addWidget(mRotateSceneDial, 1, 1, 2, 2);
+    gridLayout->addWidget(mMoveUpButton, 0, 1, 1, 2, Qt::AlignCenter);
+    gridLayout->addWidget(mMoveRightButton, 1, 3, 2, 1, Qt::AlignCenter);
+    gridLayout->addWidget(mMoveDownButton, 3, 1, 1, 2, Qt::AlignCenter);
+    gridLayout->addWidget(mMoveLeftButton, 1, 0, 2, 1, Qt::AlignCenter);
     gridLayout->setAlignment(Qt::AlignTop);
-
 }
 
 Qgs3DNavigationWidget::~Qgs3DNavigationWidget()
