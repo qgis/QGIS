@@ -3671,15 +3671,11 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *p
 }
 
 QgsLabelingResults::QgsLabelingResults()
+  : mLabelSearchTree( qgis::make_unique< QgsLabelSearchTree >() )
 {
-  mLabelSearchTree = new QgsLabelSearchTree();
 }
 
-QgsLabelingResults::~QgsLabelingResults()
-{
-  delete mLabelSearchTree;
-  mLabelSearchTree = nullptr;
-}
+QgsLabelingResults::~QgsLabelingResults() = default;
 
 QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPointXY &p ) const
 {
@@ -3715,4 +3711,9 @@ QList<QgsLabelPosition> QgsLabelingResults::labelsWithinRect( const QgsRectangle
   }
 
   return positions;
+}
+
+void QgsLabelingResults::setMapSettings( const QgsMapSettings &settings )
+{
+  mLabelSearchTree->setMapSettings( settings );
 }
