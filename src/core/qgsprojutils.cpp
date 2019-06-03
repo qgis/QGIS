@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include <QString>
 #include <QSet>
+#include <QRegularExpression>
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
@@ -189,6 +190,40 @@ bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
     return false;
 
   return static_cast< bool >( proj_coordoperation_is_instantiable( context, coordinateOperation.get() ) );
+}
+
+QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &proj )
+{
+  static QRegularExpression sRegex( QStringLiteral( "\\+(?:nad)?grids=(.*?)\\s" ) );
+
+  QList< QgsDatumTransform::GridDetails > grids;
+  QRegularExpressionMatchIterator matches = sRegex.globalMatch( proj );
+  while ( matches.hasNext() )
+  {
+    const QRegularExpressionMatch match = matches.next();
+    const QString gridName = match.captured( 1 );
+    QgsDatumTransform::GridDetails grid;
+    grid.shortName = gridName;
+#if PROJ_VERSION_MAJOR >= 6
+#if PROJ_VERSION_MINOR >= 2
+    const char *fullName = nullptr;
+    const char *packageName = nullptr;
+    const char *url = nullptr;
+    int directDownload = 0;
+    int openLicense = 0;
+    int available = 0;
+    proj_grid_get_info_from_database( QgsProjContext::get(), gridName.toUtf8().constData(), &fullName, &packageName, &url, &directDownload, &openLicense, &available );
+    grid.fullName = QString( fullName );
+    grid.packageName = QString( packageName );
+    grid.url = QString( url );
+    grid.directDownload = directDownload;
+    grid.openLicense = openLicense;
+    grid.isAvailable = available;
+#endif
+#endif
+    grids.append( grid );
+  }
+  return grids;
 }
 
 #if 0
