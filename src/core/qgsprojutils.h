@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgsconfig.h"
+#include "qgsdatumtransform.h"
 #include <memory>
 #include <QStringList>
 
@@ -106,6 +107,12 @@ class CORE_EXPORT QgsProjUtils
      * Returns TRUE if a coordinate operation (specified via proj string) is available.
      */
     static bool coordinateOperationIsAvailable( const QString &projDef );
+
+    /**
+     * Returns a list of grids used by the given \a proj string.
+     */
+    static QList< QgsDatumTransform::GridDetails > gridsUsed( const QString &proj );
+
 
 #if 0 // not possible in current Proj 6 API
 
