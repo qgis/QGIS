@@ -1284,7 +1284,7 @@ void TestQgsLabelingEngine::labelingResults()
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -611861, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6897647, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 7192767, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 0 );
+  QCOMPARE( labels.at( 0 ).rotation, 0.0 );
 
   labels = results->labelsAtPosition( QgsPointXY( -769822, 6927647 ) );
   QCOMPARE( labels.count(), 1 );
@@ -1303,7 +1303,7 @@ void TestQgsLabelingEngine::labelingResults()
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -2107542, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 9240403, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 9535523, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 0 );
+  QCOMPARE( labels.at( 0 ).rotation, 0.0 );
   labels = results->labelsAtPosition( QgsPointXY( -1383, 6708478 ) );
   QCOMPARE( labels.count(), 1 );
   QCOMPARE( labels.at( 0 ).featureId, 3 );
@@ -1314,7 +1314,7 @@ void TestQgsLabelingEngine::labelingResults()
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), 406692, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6563006, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 6858125, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 0 );
+  QCOMPARE( labels.at( 0 ).rotation, 0.0 );
   labels = results->labelsAtPosition( QgsPointXY( -2463392, 6708478 ) );
   QCOMPARE( labels.count(), 0 );
 
@@ -1335,7 +1335,7 @@ void TestQgsLabelingEngine::labelingResults()
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -526060, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6898697, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 7191716, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 60 );
+  QCOMPARE( labels.at( 0 ).rotation, 60.0 );
 
   // should fall outside of rotated bounding box!
   labels = results->labelsAtPosition( QgsPointXY( -769822, 6927647 ) );
@@ -1357,7 +1357,7 @@ void TestQgsLabelingEngine::labelingResults()
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -2147712, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 9023266, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 9752660, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 60 );
+  QCOMPARE( labels.at( 0 ).rotation, 60.0 );
   labels = results->labelsAtPosition( QgsPointXY( -1383, 6708478 ) );
   QCOMPARE( labels.count(), 1 );
   QCOMPARE( labels.at( 0 ).featureId, 3 );
@@ -1368,7 +1368,7 @@ void TestQgsLabelingEngine::labelingResults()
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), 324531, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6273139, 500 );
   QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 7147992, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 60 );
+  QCOMPARE( labels.at( 0 ).rotation, 60.0 );
   labels = results->labelsAtPosition( QgsPointXY( -2463392, 6708478 ) );
   QCOMPARE( labels.count(), 0 );
 }
