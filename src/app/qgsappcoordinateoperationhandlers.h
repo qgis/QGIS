@@ -45,6 +45,10 @@ class QgsAppMissingGridHandler : public QObject
                                            const QgsCoordinateReferenceSystem &destinationCrs,
                                            const QString &error );
 
+    void missingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs,
+                                          const QgsCoordinateReferenceSystem &destinationCrs,
+                                          const QgsDatumTransform::TransformDetails &desired );
+
   private slots:
 
     void onMissingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs,
@@ -59,11 +63,17 @@ class QgsAppMissingGridHandler : public QObject
     void onCoordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
         const QString &error );
+
+    void onMissingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs,
+                                            const QgsCoordinateReferenceSystem &destinationCrs,
+                                            const QgsDatumTransform::TransformDetails &desired );
   private:
 
     bool shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
+    bool shouldWarnAboutPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
 
     QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairs;
+    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairsForProject;
 
 };
 

@@ -1232,7 +1232,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   mCrs = projectCrs;
 
   QStringList datumErrors;
-  if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) )
+  if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) && !datumErrors.empty() )
   {
     emit missingDatumTransforms( datumErrors );
   }

@@ -182,6 +182,17 @@ class QgsCoordinateTransformPrivate : public QSharedData
         const QgsCoordinateReferenceSystem &destinationCrs,
         const QString &error )> &handler );
 
+    /**
+     * Sets a custom handler to use when a coordinate operation was specified for use between \a sourceCrs and
+     * \a destinationCrs by the transform context, yet the coordinate operation could not be created. The \a desiredOperation argument
+     * specifies the desired transform details as specified by the context.
+     *
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingGridUsedByContextHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
+
   private:
 
 #if PROJ_VERSION_MAJOR<6
@@ -206,6 +217,10 @@ class QgsCoordinateTransformPrivate : public QSharedData
     static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
                                 const QString &error )> sCoordinateOperationCreationErrorHandler;
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QgsDatumTransform::TransformDetails &desiredOperation )> sMissingGridUsedByContextHandler;
 };
 
 /// @endcond

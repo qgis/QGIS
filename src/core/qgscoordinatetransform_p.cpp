@@ -47,6 +47,10 @@ std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                      const QgsCoordinateReferenceSystem &destinationCrs,
                      const QString &error )> QgsCoordinateTransformPrivate::sCoordinateOperationCreationErrorHandler = nullptr;
 
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                     const QgsCoordinateReferenceSystem &destinationCrs,
+                     const QgsDatumTransform::TransformDetails &desiredOperation )> QgsCoordinateTransformPrivate::sMissingGridUsedByContextHandler = nullptr;
+
 #if PROJ_VERSION_MAJOR<6
 #ifdef USE_THREAD_LOCAL
 thread_local QgsProjContextStore QgsCoordinateTransformPrivate::mProjContext;
@@ -298,7 +302,29 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 #if PROJ_VERSION_MAJOR>=6
   QgsProjUtils::proj_pj_unique_ptr transform;
   if ( !mProjCoordinateOperation.isEmpty() )
+  {
     transform.reset( proj_create( context, mProjCoordinateOperation.toUtf8().constData() ) );
+    if ( !transform || !proj_coordoperation_is_instantiable( context, transform.get() ) )
+    {
+      if ( sMissingGridUsedByContextHandler )
+      {
+        QgsDatumTransform::TransformDetails desired;
+        desired.proj = mProjCoordinateOperation;
+        desired.accuracy = -1; //unknown, can't retrieve from proj as we can't instantiate the op
+        desired.grids = QgsProjUtils::gridsUsed( mProjCoordinateOperation );
+        sMissingGridUsedByContextHandler( mSourceCRS, mDestCRS, desired );
+      }
+      else
+      {
+        const QString err = QObject::tr( "Could not use operation specified in project between %1 and %2. (Wanted to use: %3)." ).arg( mSourceCRS.authid() )
+                            .arg( mDestCRS.authid() )
+                            .arg( mProjCoordinateOperation );
+        QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+      }
+
+      transform.reset();
+    }
+  }
 
   QString nonAvailableError;
   if ( !transform ) // fallback on default proj pathway
@@ -506,6 +532,11 @@ void QgsCoordinateTransformPrivate::setCustomMissingPreferredGridHandler( const 
 void QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
 {
   sCoordinateOperationCreationErrorHandler = handler;
+}
+
+void QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
+{
+  sMissingGridUsedByContextHandler = handler;
 }
 
 #if PROJ_VERSION_MAJOR<6
