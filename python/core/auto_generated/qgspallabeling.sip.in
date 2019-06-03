@@ -518,6 +518,13 @@ Returns infos about labels at a given (map) position
 Returns infos about labels within a given (map) rectangle
 %End
 
+    void setMapSettings( const QgsMapSettings &settings );
+%Docstring
+Sets the map ``settings`` associated with the labeling run.
+
+.. versionadded:: 3.4.8
+%End
+
   private:
     QgsLabelingResults( const QgsLabelingResults & );
 };
