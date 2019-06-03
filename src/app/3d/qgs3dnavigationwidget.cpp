@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QDebug>
 
+#include "qgsapplication.h"
+
 #include "qgs3dnavigationwidget.h"
 #include "qgscameracontroller.h"
 
@@ -11,9 +13,9 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 {
     // Zoom in button
     mZoomInButton = new QPushButton(this);
-    mZoomInButton->setText(QStringLiteral("+"));
     mZoomInButton->setToolTip(QStringLiteral("Zoom In"));
     mZoomInButton->setAutoRepeat(true);
+    mZoomInButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
 
     QObject::connect(
         mZoomInButton,
@@ -26,9 +28,9 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Zoom out button
     mZoomOutButton = new QPushButton(this);
-    mZoomOutButton->setText(QStringLiteral("-"));
     mZoomOutButton->setToolTip(QStringLiteral("Zoom Out"));
     mZoomOutButton->setAutoRepeat(true);
+    mZoomOutButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ) );
 
     QObject::connect(
         mZoomOutButton,
@@ -41,9 +43,9 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Tilt up button
     mTiltUpButton = new QPushButton(this);
-    mTiltUpButton->setText(QString::fromUtf8("\u25B3"));
     mTiltUpButton->setToolTip(QStringLiteral("Tilt Up"));
     mTiltUpButton->setAutoRepeat(true);
+    mTiltUpButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowUp.svg" ) ) );
 
     QObject::connect(
         mTiltUpButton,
@@ -56,9 +58,9 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Tilt down button
     mTiltDownButton = new QPushButton(this);
-    mTiltDownButton ->setText(QString::fromUtf8("\u25BD"));
     mTiltDownButton->setToolTip(QStringLiteral("Tilt Down"));
     mTiltDownButton->setAutoRepeat(true);
+    mTiltDownButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowDown.svg" ) ) );
 
     QObject::connect(
         mTiltDownButton,
