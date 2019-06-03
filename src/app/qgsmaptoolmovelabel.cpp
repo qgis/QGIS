@@ -24,8 +24,6 @@
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
   : QgsMapToolLabel( canvas )
-  , mClickOffsetX( 0 )
-  , mClickOffsetY( 0 )
 {
   mToolName = tr( "Move label" );
 
@@ -34,69 +32,6 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
 
   mDiagramProperties << QgsDiagramLayerSettings::PositionX;
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
-}
-
-void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
-{
-  deleteRubberBands();
-
-  QgsLabelPosition labelPos;
-  if ( !labelAtPosition( e, labelPos ) )
-  {
-    mCurrentLabel = LabelDetails();
-    return;
-  }
-
-  mCurrentLabel = LabelDetails( labelPos );
-
-  QgsVectorLayer *vlayer = mCurrentLabel.layer;
-  if ( !vlayer )
-  {
-    return;
-  }
-
-  int xCol = -1, yCol = -1;
-
-  if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
-  {
-    QgsPalIndexes indexes;
-
-    if ( createAuxiliaryFields( indexes ) )
-      return;
-
-    if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
-      return;
-
-    xCol = indexes[ QgsPalLayerSettings::PositionX ];
-    yCol = indexes[ QgsPalLayerSettings::PositionY ];
-  }
-  else if ( mCurrentLabel.pos.isDiagram && !diagramMoveable( vlayer, xCol, yCol ) )
-  {
-    QgsDiagramIndexes indexes;
-
-    if ( createAuxiliaryFields( indexes ) )
-      return;
-
-    if ( !diagramMoveable( vlayer, xCol, yCol ) )
-      return;
-
-    xCol = indexes[ QgsDiagramLayerSettings::PositionX ];
-    yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
-  }
-
-  if ( xCol >= 0 && yCol >= 0 )
-  {
-    mStartPointMapCoords = toMapCoordinates( e->pos() );
-    QgsPointXY referencePoint;
-    if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
-    {
-      referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
-      referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
-    }
-    mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
-    mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
-    createRubberBands();
-  }
 }
 
 void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
@@ -119,80 +54,169 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mLabelRubberBand )
   {
-    return;
-  }
+    if ( e->button() != Qt::LeftButton )
+      return;
 
-  deleteRubberBands();
+    // first click starts move
+    deleteRubberBands();
 
-  QgsVectorLayer *vlayer = mCurrentLabel.layer;
-  if ( !vlayer )
-  {
-    return;
-  }
+    QgsLabelPosition labelPos;
+    if ( !labelAtPosition( e, labelPos ) )
+    {
+      mCurrentLabel = LabelDetails();
+      return;
+    }
 
-  QgsPointXY releaseCoords = toMapCoordinates( e->pos() );
-  double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
-  double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
+    mCurrentLabel = LabelDetails( labelPos );
 
-  int xCol, yCol;
-  double xPosOrig, yPosOrig;
-  bool xSuccess, ySuccess;
+    QgsVectorLayer *vlayer = mCurrentLabel.layer;
+    if ( !vlayer )
+    {
+      return;
+    }
 
-  if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
-  {
-    return;
-  }
+    int xCol = -1, yCol = -1;
 
-  double xPosNew, yPosNew;
+    if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+    {
+      QgsPalIndexes indexes;
 
-  if ( !xSuccess || !ySuccess )
-  {
-    xPosNew = releaseCoords.x() - mClickOffsetX;
-    yPosNew = releaseCoords.y() - mClickOffsetY;
+      if ( createAuxiliaryFields( indexes ) )
+        return;
+
+      if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+        return;
+
+      xCol = indexes[ QgsPalLayerSettings::PositionX ];
+      yCol = indexes[ QgsPalLayerSettings::PositionY ];
+    }
+    else if ( mCurrentLabel.pos.isDiagram && !diagramMoveable( vlayer, xCol, yCol ) )
+    {
+      QgsDiagramIndexes indexes;
+
+      if ( createAuxiliaryFields( indexes ) )
+        return;
+
+      if ( !diagramMoveable( vlayer, xCol, yCol ) )
+        return;
+
+      xCol = indexes[ QgsDiagramLayerSettings::PositionX ];
+      yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
+    }
+
+    if ( xCol >= 0 && yCol >= 0 )
+    {
+      mStartPointMapCoords = toMapCoordinates( e->pos() );
+      QgsPointXY referencePoint;
+      if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
+      {
+        referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
+        referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
+      }
+      mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
+      mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
+      createRubberBands();
+    }
   }
   else
   {
-    //transform to map crs first, because xdiff,ydiff are in map coordinates
-    const QgsMapSettings &ms = mCanvas->mapSettings();
-    QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
-    xPosOrig = transformedPoint.x();
-    yPosOrig = transformedPoint.y();
-    xPosNew = xPosOrig + xdiff;
-    yPosNew = yPosOrig + ydiff;
-  }
-
-  //transform back to layer crs
-  if ( mCanvas )
-  {
-    const QgsMapSettings &s = mCanvas->mapSettings();
-    QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
-    xPosNew = transformedPoint.x();
-    yPosNew = transformedPoint.y();
-  }
-
-  vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
-  vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, xPosNew );
-  vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, yPosNew );
-
-  // set rotation to that of label, if data-defined and no rotation set yet
-  // honor whether to preserve preexisting data on pin
-  // must come after setting x and y positions
-  if ( !mCurrentLabel.pos.isDiagram
-       && !mCurrentLabel.pos.isPinned
-       && !currentLabelPreserveRotation() )
-  {
-    double defRot;
-    bool rSuccess;
-    int rCol;
-    if ( currentLabelDataDefinedRotation( defRot, rSuccess, rCol ) )
+    switch ( e->button() )
     {
-      double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
-      vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rCol, labelRot );
+      case Qt::RightButton:
+      {
+        // right click is cancel
+        deleteRubberBands();
+        return;
+      }
+
+      case Qt::LeftButton:
+      {
+        // second click drops label
+        deleteRubberBands();
+        QgsVectorLayer *vlayer = mCurrentLabel.layer;
+        if ( !vlayer )
+        {
+          return;
+        }
+
+        QgsPointXY releaseCoords = toMapCoordinates( e->pos() );
+        double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
+        double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
+
+        int xCol, yCol;
+        double xPosOrig, yPosOrig;
+        bool xSuccess, ySuccess;
+
+        if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+        {
+          return;
+        }
+
+        double xPosNew, yPosNew;
+
+        if ( !xSuccess || !ySuccess )
+        {
+          xPosNew = releaseCoords.x() - mClickOffsetX;
+          yPosNew = releaseCoords.y() - mClickOffsetY;
+        }
+        else
+        {
+          //transform to map crs first, because xdiff,ydiff are in map coordinates
+          const QgsMapSettings &ms = mCanvas->mapSettings();
+          QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
+          xPosOrig = transformedPoint.x();
+          yPosOrig = transformedPoint.y();
+          xPosNew = xPosOrig + xdiff;
+          yPosNew = yPosOrig + ydiff;
+        }
+
+        //transform back to layer crs
+        if ( mCanvas )
+        {
+          const QgsMapSettings &s = mCanvas->mapSettings();
+          QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
+          xPosNew = transformedPoint.x();
+          yPosNew = transformedPoint.y();
+        }
+
+        vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+        vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, xPosNew );
+        vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, yPosNew );
+
+        // set rotation to that of label, if data-defined and no rotation set yet
+        // honor whether to preserve preexisting data on pin
+        // must come after setting x and y positions
+        if ( !mCurrentLabel.pos.isDiagram
+             && !mCurrentLabel.pos.isPinned
+             && !currentLabelPreserveRotation() )
+        {
+          double defRot;
+          bool rSuccess;
+          int rCol;
+          if ( currentLabelDataDefinedRotation( defRot, rSuccess, rCol ) )
+          {
+            double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
+            vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rCol, labelRot );
+          }
+        }
+        vlayer->endEditCommand();
+
+        vlayer->triggerRepaint();
+        break;
+      }
+      default:
+        break;
     }
   }
-  vlayer->endEditCommand();
+}
 
-  vlayer->triggerRepaint();
+void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mLabelRubberBand && e->key() == Qt::Key_Escape )
+  {
+    // escape is cancel
+    deleteRubberBands();
+  }
 }
 
 

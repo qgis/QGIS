@@ -29,19 +29,17 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
   public:
     QgsMapToolMoveLabel( QgsMapCanvas *canvas );
 
-    void canvasPressEvent( QgsMapMouseEvent *e ) override;
-
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
   protected:
 
     //! Start point of the move in map coordinates
     QgsPointXY mStartPointMapCoords;
 
-    double mClickOffsetX;
-    double mClickOffsetY;
+    double mClickOffsetX = 0;
+    double mClickOffsetY = 0;
 };
 
 #endif // QGSMAPTOOLMOVELABEL_H
