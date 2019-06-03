@@ -456,7 +456,13 @@ void QgsDatumTransformDialog::applyDefaultTransform()
     Q_NOWARN_DEPRECATED_PUSH
     context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
     Q_NOWARN_DEPRECATED_POP
+
+#if PROJ_VERSION_MAJOR>=6
+    // on proj 6 builds, removing a coordinate operation falls back to default
+    context.removeCoordinateOperation( dt.sourceCrs, dt.destinationCrs );
+#else
     context.addCoordinateOperation( dt.sourceCrs, dt.destinationCrs, dt.proj );
+#endif
     QgsProject::instance()->setTransformContext( context );
   }
 }
