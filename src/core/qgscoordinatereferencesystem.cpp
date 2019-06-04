@@ -2428,6 +2428,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   PROJ_STRING_LIST authorities = proj_get_authorities_from_database( pjContext );
 
+  int nextSrsId = 60000;
   int nextSrId = 520000000;
   for ( auto authIter = authorities; authIter && *authIter; ++authIter )
   {
@@ -2467,7 +2468,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       if ( proj4.isEmpty() )
       {
         QgsDebugMsg( QStringLiteral( "No proj4 for '%1:%2'" ).arg( authority, code ) );
-        continue;
+        // satisfy not null constraint
+        proj4 = "";
       }
 
       const bool deprecated = proj_is_deprecated( crs.get() );
@@ -2520,8 +2522,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       }
       else
       {
-        QString operation;
-        QString ellps;
+        // there's a not-null contraint on these columns, so we must use empty strings instead
+        QString operation = "";
+        QString ellps = "";
         getOperationAndEllipsoidFromProjString( proj4, operation, ellps );
         const bool isGeographic = testIsGeographic( crs.get() );
 
@@ -2539,6 +2542,11 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         {
           srId = QString::number( nextSrId );
           nextSrId++;
+        }
+        if ( srsId.isEmpty() )
+        {
+          srsId = QString::number( nextSrsId );
+          nextSrsId++;
         }
 
         if ( !srsId.isEmpty() )
