@@ -44,6 +44,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
     context.setFlag( QgsWmsRenderContext::AddExternalLayers );
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setFlag( QgsWmsRenderContext::UseTileBuffer );
     context.setParameters( parameters );
 
     // rendering

@@ -223,6 +223,11 @@ namespace QgsWms
                                     QVariant( 0 ) );
     save( pQuality );
 
+    const QgsWmsParameter pTiled( QgsWmsParameter::TILED,
+                                  QVariant::Bool,
+                                  QVariant( false ) );
+    save( pTiled );
+
     const QgsWmsParameter pBoxSpace( QgsWmsParameter::BOXSPACE,
                                      QVariant::Double,
                                      QVariant( 2.0 ) );
@@ -942,6 +947,16 @@ namespace QgsWms
   int QgsWmsParameters::imageQualityAsInt() const
   {
     return mWmsParameters[ QgsWmsParameter::IMAGE_QUALITY ].toInt();
+  }
+
+  QString QgsWmsParameters::tiled() const
+  {
+    return mWmsParameters[ QgsWmsParameter::TILED ].toString();
+  }
+
+  bool QgsWmsParameters::tiledAsBool() const
+  {
+    return mWmsParameters[ QgsWmsParameter::TILED ].toBool();
   }
 
   QString QgsWmsParameters::showFeatureCount() const

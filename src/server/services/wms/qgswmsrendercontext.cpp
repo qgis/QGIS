@@ -24,7 +24,6 @@
 using namespace QgsWms;
 
 const double OGC_PX_M = 0.00028; // OGC reference pixel size in meter
-
 QgsWmsRenderContext::QgsWmsRenderContext( const QgsProject *project, QgsServerInterface *interface )
   : mProject( project )
   , mInterface( interface )
@@ -130,6 +129,17 @@ int QgsWmsRenderContext::imageQuality() const
   }
 
   return imageQuality;
+}
+
+int QgsWmsRenderContext::tileBuffer() const
+{
+  int tileBuffer = 0;
+
+  if ( mParameters.tiledAsBool() )
+  {
+    tileBuffer = QgsServerProjectUtils::wmsTileBuffer( *mProject );
+  }
+  return tileBuffer;
 }
 
 int QgsWmsRenderContext::precision() const
@@ -638,22 +648,40 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
   return true;
 }
 
+QgsRectangle QgsWmsRenderContext::mapExtent() const
+{
+  QgsRectangle extent = mParameters.bboxAsRectangle();
+  if ( !mParameters.bbox().isEmpty() && extent.isEmpty() )
+  {
+    throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                  mParameters[QgsWmsParameter::BBOX] );
+  }
+  const double extentWidth = extent.width();
+  const double extentHeight = extent.height();
+  const int width = mapWidth();
+  const int height = mapHeight();
+  const double resolutionX = extentWidth / width;
+  const double resolutionY = extentHeight / height;
+  const int tBuffer = mFlags & UseTileBuffer ? tileBuffer() : 0;
+  const double xMin = extent.xMinimum() - tBuffer * resolutionX;
+  const double yMin = extent.yMinimum() - tBuffer * resolutionY;
+  const double xMax = extent.xMaximum() + tBuffer * resolutionX;
+  const double yMax = extent.yMaximum() + tBuffer * resolutionY;
+  return QgsRectangle( xMin, yMin, xMax, yMax );
+}
+
 QSize QgsWmsRenderContext::mapSize( const bool aspectRatio ) const
 {
-  int width = mapWidth();
-  int height = mapHeight();
+  int tBuffer = mFlags & UseTileBuffer ? tileBuffer() : 0;
+  int width = mapWidth() + tBuffer * 2;
+  int height = mapHeight() + tBuffer * 2;
 
   // Adapt width / height if the aspect ratio does not correspond with the BBOX.
   // Required by WMS spec. 1.3.
   if ( aspectRatio
        && mParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
   {
-    QgsRectangle extent = mParameters.bboxAsRectangle();
-    if ( !mParameters.bbox().isEmpty() && extent.isEmpty() )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    mParameters[QgsWmsParameter::BBOX] );
-    }
+    QgsRectangle extent = mapExtent();
 
     QString crs = mParameters.crs();
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
