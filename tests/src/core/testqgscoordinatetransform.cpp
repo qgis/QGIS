@@ -225,7 +225,7 @@ void TestQgsCoordinateTransform::scaleFactor()
   QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
 
   // qDebug() << QString::number(ct.scaleFactor( rect ), 'g', 17) ;
-  QVERIFY( qgsDoubleNear( ct.scaleFactor( rect ), factor ) );
+  QGSCOMPARENEAR( ct.scaleFactor( rect ), factor, 0.000001 );
 }
 
 void TestQgsCoordinateTransform::scaleFactor_data()
@@ -241,10 +241,10 @@ void TestQgsCoordinateTransform::scaleFactor_data()
       << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
       << 1.1223316038381985e-5;
   QTest::newRow( "Same map units" )
-      << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
-      << QgsCoordinateReferenceSystem::fromEpsgId( 21781 )
-      << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
-      << 1.0000000000248837;
+      << QgsCoordinateReferenceSystem::fromEpsgId( 3111 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 28355 )
+      << QgsRectangle( 2560536.7, 2331787.5, 2653161.1, 2427370.4 )
+      << 0.999632;
   QTest::newRow( "Same CRS" )
       << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
       << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
