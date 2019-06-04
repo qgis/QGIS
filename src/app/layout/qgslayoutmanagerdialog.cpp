@@ -94,12 +94,12 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 
   mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
   QMap<QString, QString> userTemplateMap = defaultTemplates( true );
-  this->addTemplates( userTemplateMap );
+  addTemplates( userTemplateMap );
 
   mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
   QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
-  this->addTemplates( defaultTemplateMap );
-  this->addTemplates( this->otherTemplates() );
+  addTemplates( defaultTemplateMap );
+  addTemplates( otherTemplates() );
 
   toggleButtons();
 }
@@ -186,13 +186,12 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
     return templateMap;
   }
 
-  QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
-  QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
-  for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
+  const QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
+  for ( const QFileInfo &info : fileInfoList )
   {
-    if ( infoIt->suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
+    if ( info.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
     {
-      templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
+      templateMap.insert( info.baseName(), info.absoluteFilePath() );
     }
   }
   return templateMap;
