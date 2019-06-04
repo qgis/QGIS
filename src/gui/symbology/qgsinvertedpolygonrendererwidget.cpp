@@ -120,6 +120,13 @@ void QgsInvertedPolygonRendererWidget::setContext( const QgsSymbolWidgetContext 
     mEmbeddedRendererWidget->setContext( context );
 }
 
+void QgsInvertedPolygonRendererWidget::setDockMode( bool dockMode )
+{
+  QgsRendererWidget::setDockMode( dockMode );
+  if ( mEmbeddedRendererWidget )
+    mEmbeddedRendererWidget->setDockMode( dockMode );
+}
+
 void QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
@@ -129,6 +136,8 @@ void QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged( in
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer *>( mRenderer->embeddedRenderer() )->clone() ) );
     connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsInvertedPolygonRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );
+    mEmbeddedRendererWidget->setDockMode( this->dockMode() );
+    connect( mEmbeddedRendererWidget.get(), &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
     if ( layout()->count() > 2 )
     {
