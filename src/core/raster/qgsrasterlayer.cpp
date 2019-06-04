@@ -50,6 +50,7 @@ email                : tim at linfiniti.com
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
+#include "qgsgdalprovider.h"
 
 #include <cmath>
 #include <cstdio>
@@ -68,7 +69,6 @@ email                : tim at linfiniti.com
 #include <QFrame>
 #include <QImage>
 #include <QLabel>
-#include <QLibrary>
 #include <QList>
 #include <QMatrix>
 #include <QMessageBox>
@@ -77,9 +77,6 @@ email                : tim at linfiniti.com
 #include <QRegExp>
 #include <QSlider>
 #include <QTime>
-
-// typedefs for provider plugin functions of interest
-typedef bool isvalidrasterfilename_t( QString const &fileNameQString, QString &retErrMsg );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
@@ -163,14 +160,7 @@ QgsRasterLayer *QgsRasterLayer::clone() const
 
 bool QgsRasterLayer::isValidRasterFileName( const QString &fileNameQString, QString &retErrMsg )
 {
-  isvalidrasterfilename_t *pValid = reinterpret_cast< isvalidrasterfilename_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) ) );
-  if ( ! pValid )
-  {
-    QgsDebugMsg( QStringLiteral( "Could not resolve isValidRasterFileName in gdal provider library" ) );
-    return false;
-  }
-
-  bool myIsValid = pValid( fileNameQString, retErrMsg );
+  bool myIsValid = QgsGdalProvider::isValidRasterFileName( fileNameQString, retErrMsg );
   return myIsValid;
 }
 

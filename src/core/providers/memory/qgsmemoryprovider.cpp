@@ -643,5 +643,4 @@ QString QgsMemoryProvider::description() const
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-
 ///@endcond

@@ -390,7 +390,7 @@ QList<QAction *> QgsWMSRootItem::actions( QWidget *parent )
 
 QWidget *QgsWMSRootItem::paramWidget()
 {
-  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, nullptr, QgsAbstractDataSourceWidgetMode::Manager );
   return select;
 }
 
@@ -408,17 +408,6 @@ void QgsWMSRootItem::newConnection()
 
 // ---------------------------------------------------------------------------
 
-#ifdef HAVE_GUI
-QGISEXTERN void registerGui( QMainWindow *mainWindow )
-{
-  QgsTileScaleWidget::showTileScale( mainWindow );
-}
-
-QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsWMSSourceSelect( parent, fl, widgetMode );
-}
-#endif
 
 QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -440,17 +429,6 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
   }
 
   return nullptr;
-}
-
-QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
-{
-  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
-
-  *providers
-      << new QgsWmsDataItemProvider
-      << new QgsXyzTileDataItemProvider;
-
-  return providers;
 }
 
 // ---------------------------------------------------------------------------

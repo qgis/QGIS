@@ -33,6 +33,7 @@ entire layer to the destination provider.
     enum ExportError
     {
       NoError,
+      ErrNotImplemented,
       ErrCreateDataSource,
       ErrCreateLayer,
       ErrAttributeTypeUnsupported,

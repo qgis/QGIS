@@ -51,7 +51,7 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     enum ServiceType { MapService, FeatureService };
 
     //! Constructor
-    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
 
     //! Destructor
     ~QgsArcGisServiceSourceSelect() override;

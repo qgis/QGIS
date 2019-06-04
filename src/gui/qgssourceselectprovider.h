@@ -83,8 +83,7 @@ class GUI_EXPORT QgsSourceSelectProvider
      * Create a new instance of QgsAbstractDataSourceWidget (or NULLPTR).
      * Caller takes responsibility of deleting created.
      */
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 SIP_FACTORY;
-
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Embedded ) const = 0 SIP_FACTORY;
 };
 
 

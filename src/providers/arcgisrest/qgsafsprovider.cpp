@@ -347,7 +347,6 @@ bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
 }
 
 #ifdef HAVE_GUI
-
 //! Provider for AFS layers source select
 class QgsAfsSourceSelectProvider : public QgsSourceSelectProvider
 {
@@ -357,43 +356,69 @@ class QgsAfsSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "ArcGIS Feature Server" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Embedded ) const override
     {
       return new QgsAfsSourceSelect( parent, fl, widgetMode );
     }
 };
 
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+QList<QgsSourceSelectProvider *> QgsAfsProviderGuiMetadata::sourceSelectProviders()
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsAfsSourceSelectProvider;
-
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsAfsSourceSelectProvider;
   return providers;
 }
 
-QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
+QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
 {
-  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+  QList<QgsDataItemProvider *> providers;
 
-  *providers
+  providers
       << new QgsAfsDataItemProvider;
 
   return providers;
 }
 
-#ifdef HAVE_GUI
-QGISEXTERN QList<QgsDataItemGuiProvider *> *dataItemGuiProviders()
+QVariantMap QgsAfsProviderMetadata::decodeUri( const QString &uri )
 {
-  QList<QgsDataItemGuiProvider *> *providers = new QList<QgsDataItemGuiProvider *>();
+  QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
-  *providers
-      << new QgsAfsItemGuiProvider();
+  QVariantMap components;
+  components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  return components;
+}
 
+QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+{
+  return new QgsAfsProvider( *uri, options );
+}
+
+QgsAfsProviderGuiMetadata::QgsAfsProviderGuiMetadata()
+  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+{
+}
+
+QList<QgsDataItemGuiProvider *> QgsAfsProviderGuiMetadata::dataItemGuiProviders()
+{
+  QList<QgsDataItemGuiProvider *> providers;
+  providers << new QgsAfsItemGuiProvider();
   return providers;
 }
 #endif
 
+QgsAfsProviderMetadata::QgsAfsProviderMetadata():
+  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+{
+}
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsAfsProviderMetadata();
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
+{
+  return new QgsAfsProviderGuiMetadata();
+}
 #endif

@@ -21,10 +21,25 @@
 
 
 #include <QString>
+#include <QVariantMap>
+#include <QMap>
+#include <QList>
+#include <memory>
+#include <QPair>
+
 #include "qgis_sip.h"
 #include "qgsdataprovider.h"
 #include "qgis_core.h"
 #include <functional>
+#include "qgsvectorlayerexporter.h"
+#include "qgsfields.h"
+
+class QgsDataItem;
+class QgsDataItemProvider;
+class QgsTransaction;
+
+class QgsRasterDataProvider;
+
 
 /**
  * \ingroup core
@@ -50,15 +65,32 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Typedef for data provider creation function.
      * \since QGIS 3.0
+     * \deprecated QGIS 3.10
      */
     SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions & ) > CreateDataProviderFunction;
 
-    QgsProviderMetadata( const QString &_key, const QString &_description, const QString &_library );
+    /**
+     * Constructor for provider metadata
+     * \param key provider key
+     * \param description provider description
+     * \param provider plugin library name
+     *
+     * \deprecated QGIS 3.10
+     */
+    QgsProviderMetadata( const QString &key, const QString &description, const QString &library );
+
+    /**
+     * Constructor for provider metadata
+     * \param key provider key
+     * \param description provider description
+     */
+    QgsProviderMetadata( const QString &key, const QString &description );
 
     /**
      * Metadata for provider with direct provider creation function pointer, where
      * no library is involved.
      * \since QGIS 3.0
+     * \deprecated QGIS 3.10
      */
 #ifndef SIP_RUN
     QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
@@ -104,24 +136,29 @@ class CORE_EXPORT QgsProviderMetadata
     % End
 #endif
 
+    //! dtor
+    virtual ~QgsProviderMetadata();
+
     /**
      * This returns the unique key associated with the provider
-
-        This key string is used for the associative container in QgsProviderRegistry
+     *
+     * This key string is used for the associative container in QgsProviderRegistry
      */
     QString key() const;
 
     /**
      * This returns descriptive text for the provider
-
-        This is used to provide a descriptive list of available data providers.
+     *
+     * This is used to provide a descriptive list of available data providers.
      */
     QString description() const;
 
     /**
      * This returns the library file name
-
-        This is used to QLibrary calls to load the data provider.
+     *
+     * This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
+     *
+     * \deprecated QGIS 3.10
      */
     QString library() const;
 
@@ -130,23 +167,157 @@ class CORE_EXPORT QgsProviderMetadata
      * by the provider.
      * \note not available in Python bindings
      * \since QGIS 3.0
+     * \deprecated QGIS 3.10
      */
     SIP_SKIP CreateDataProviderFunction createFunction() const;
+
+    /**
+      * Initialize the provider
+      * \since QGIS 3.10
+      */
+    virtual void initProvider();
+
+    /**
+     * Cleanup the provider
+     * \since QGIS 3.10
+     */
+    virtual void cleanupProvider();
+
+    /**
+     * Type of file filters
+     * \since QGIS 3.10
+     */
+    enum FilterType
+    {
+      VectorFilter = 1,
+      RasterFilter,
+      MeshFilter,
+      MeshDatasetFilter
+    };
+
+    /**
+     * Builds the list of file filter strings (supported formats)
+     *
+     * Suitable for use in a QFileDialog::getOpenFileNames() call.
+     *
+     * \since QGIS 3.10
+     */
+    virtual QString filters( FilterType type );
+
+    /**
+     * Class factory to return a pointer to a newly created QgsDataProvider object
+     * \since QGIS 3.0
+     */
+    virtual QgsDataProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
+
+    /**
+     * Creates new empty vector layer
+     * \since QGIS 3.10
+     */
+    virtual QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options );
+
+    /**
+     * Creates a new instance of the raster data provider.
+     * \since QGIS 3.10
+     */
+    virtual QgsRasterDataProvider *createRasterDataProvider(
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
+      const QStringList &createOptions = QStringList() ) SIP_FACTORY;
+
+    /**
+     * Returns pyramid resampling methods available for provider
+     * \since QGIS 3.10
+     */
+    virtual QList<QPair<QString, QString> > pyramidResamplingMethods();
+
+    /**
+     * Decodes URI
+     * \since QGIS 3.10
+     */
+    virtual QVariantMap decodeUri( const QString &uri );
+
+    /**
+     * Returns data item providers. Caller is responsible for ownership of the item providers
+     * \see QgsProviderGuiMetadata::dataItemGuiProviders()
+     * \since QGIS 3.10
+     */
+    virtual QList< QgsDataItemProvider * > dataItemProviders() const;
+
+    /**
+     * Lists stored layer styles in the provider defined by \a uri
+     * \returns -1 if not implemented by provider, otherwise number of styles stored
+     * \since QGIS 3.10
+     */
+    virtual int listStyles( const QString &uri, QStringList &ids, QStringList &names,
+                            QStringList &descriptions, QString &errCause );
+
+    /**
+     * Gets a layer style defined by \a uri
+     * \since QGIS 3.10
+     */
+    virtual QString getStyleById( const QString &uri, QString styleId, QString &errCause );
+
+    /**
+     * Deletes a layer style defined by \a styleId
+     * \since QGIS 3.10
+     */
+    virtual bool deleteStyleById( const QString &uri, QString styleId, QString &errCause );
+
+    /**
+     * Saves a layer style to provider
+     * \since QGIS 3.10
+     */
+    virtual bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                            const QString &styleName, const QString &styleDescription,
+                            const QString &uiFileContent, bool useAsDefault, QString &errCause );
+
+    /**
+     * Loads a layer style defined by \a uri
+     * \since QGIS 3.10
+     */
+    virtual QString loadStyle( const QString &uri, QString &errCause );
+
+    /**
+     * Creates database by the provider on the path
+     * \since QGIS 3.10
+     */
+    virtual bool createDb( const QString &dbPath, QString &errCause );
+
+    /**
+     * Returns new instance of transaction. Ownership is transferred to the caller
+     * \since QGIS 3.10
+     */
+    virtual QgsTransaction *createTransaction( const QString &connString ) SIP_FACTORY;
+
 
   private:
 
     /// unique key for data provider
-    QString key_;
+    QString mKey;
 
     /// associated terse description
-    QString description_;
+    QString mDescription;
 
     /// file path
-    QString library_;
+    /// deprecated QGIS 3.10
+    QString mLibrary;
 
-    CreateDataProviderFunction mCreateFunc = nullptr;
-
+    CreateDataProviderFunction mCreateFunction = nullptr;
 };
 
 #endif //QGSPROVIDERMETADATA_H
-

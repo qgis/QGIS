@@ -42,7 +42,7 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
 
   public:
 
-    QgsGeoNodeSourceSelect( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsGeoNodeSourceSelect( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
     ~QgsGeoNodeSourceSelect() override;
 
   public slots:
@@ -94,7 +94,7 @@ class QgsGeoNodeSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "GeoNode" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderGeoCmsProvider + 10; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeonodeLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Embedded ) const override
     {
       return new QgsGeoNodeSourceSelect( parent, fl, widgetMode );
     }

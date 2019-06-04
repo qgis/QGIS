@@ -90,6 +90,20 @@ GUI.
 .. versionadded:: 3.6
 %End
 
+    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() /KeepReference/;
+%Docstring
+Returns the global data item GUI project storage registry
+
+.. versionadded:: 3.10
+%End
+
+    static QgsProviderGuiRegistry *providerGuiRegistry() /KeepReference/;
+%Docstring
+Returns the global data item GUI project storage registry
+
+.. versionadded:: 3.10
+%End
+
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
 Register the widget to allow its position to be automatically saved and restored when open and closed.

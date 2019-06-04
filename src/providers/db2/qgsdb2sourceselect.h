@@ -99,7 +99,7 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     static void deleteConnection( const QString &key );
 
     //! Constructor
-    QgsDb2SourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsDb2SourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
 
     ~QgsDb2SourceSelect() override;
     //! Populate the connection list combo box

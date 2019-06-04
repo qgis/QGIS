@@ -15,31 +15,56 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QList>
+
 #include "qgis.h"
+#include "qgsprovidermetadata.h"
+#ifdef HAVE_GUI
+#include "qgsproviderguimetadata.h"
+#include "qgsgeonodedataitems.h"
+#include "qgsgeonodesourceselect.h"
+#endif
 
+static const QString PROVIDER_KEY = QStringLiteral( "geonode" );
+static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GeoNode provider" );
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
+class QgsGeonodeProviderMetadata: public QgsProviderMetadata
 {
-  return QStringLiteral( "geonode" );
+  public:
+    QgsGeonodeProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+#ifdef HAVE_GUI
+    QList<QgsDataItemProvider *> dataItemProviders() const override
+    {
+      QList<QgsDataItemProvider *> providers;
+      providers << new QgsGeoNodeDataItemProvider();
+      return providers;
+    }
+#endif
+};
+
+#ifdef HAVE_GUI
+class QgsGeonodeProviderGuiMetadata: public QgsProviderGuiMetadata
+{
+  public:
+    QgsGeonodeProviderGuiMetadata(): QgsProviderGuiMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
+    {
+      QList<QgsSourceSelectProvider *> providers;
+      providers << new QgsGeoNodeSourceSelectProvider;
+      return providers;
+    }
+};
+#endif
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsGeonodeProviderMetadata();
 }
 
-/**
- * Required description function
- */
-QGISEXTERN QString description()
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
-  return QStringLiteral( "GeoNode provider" );
+  return new QgsGeonodeProviderGuiMetadata();
 }
+#endif
 
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-
-QGISEXTERN bool isProvider()
-{
-  return true;
-}

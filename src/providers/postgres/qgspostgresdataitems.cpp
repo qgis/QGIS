@@ -37,8 +37,134 @@
 #include <QProgressDialog>
 #include <climits>
 
-QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause );
-QGISEXTERN bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade = false );
+static bool deleteLayer( const QString &uri, QString &errCause )
+{
+  QgsDebugMsg( "deleting layer " + uri );
+
+  QgsDataSourceUri dsUri( uri );
+  QString schemaName = dsUri.schema();
+  QString tableName = dsUri.table();
+  QString geometryCol = dsUri.geometryColumn();
+
+  QString schemaTableName;
+  if ( !schemaName.isEmpty() )
+  {
+    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + '.';
+  }
+  schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  // handle deletion of views
+  QString sqlViewCheck = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" )
+                         .arg( QgsPostgresConn::quotedValue( schemaTableName ) );
+  QgsPostgresResult resViewCheck( conn->PQexec( sqlViewCheck ) );
+  QString type = resViewCheck.PQgetvalue( 0, 0 );
+  if ( type == QLatin1String( "v" ) || type == QLatin1String( "m" ) )
+  {
+    QString sql = QString( "DROP VIEW %1" ).arg( schemaTableName );
+    QgsPostgresResult result( conn->PQexec( sql ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      errCause = QObject::tr( "Unable to delete view %1: \n%2" )
+                 .arg( schemaTableName,
+                       result.PQresultErrorMessage() );
+      conn->unref();
+      return false;
+    }
+    conn->unref();
+    return true;
+  }
+
+
+  // check the geometry column count
+  QString sql = QString( "SELECT count(*) "
+                         "FROM geometry_columns, pg_class, pg_namespace "
+                         "WHERE f_table_name=relname AND f_table_schema=nspname "
+                         "AND pg_class.relnamespace=pg_namespace.oid "
+                         "AND f_table_schema=%1 AND f_table_name=%2" )
+                .arg( QgsPostgresConn::quotedValue( schemaName ),
+                      QgsPostgresConn::quotedValue( tableName ) );
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
+               .arg( schemaTableName,
+                     result.PQresultErrorMessage() );
+    conn->unref();
+    return false;
+  }
+
+  int count = result.PQgetvalue( 0, 0 ).toInt();
+
+  if ( !geometryCol.isEmpty() && count > 1 )
+  {
+    // the table has more geometry columns, drop just the geometry column
+    sql = QStringLiteral( "SELECT DropGeometryColumn(%1,%2,%3)" )
+          .arg( QgsPostgresConn::quotedValue( schemaName ),
+                QgsPostgresConn::quotedValue( tableName ),
+                QgsPostgresConn::quotedValue( geometryCol ) );
+  }
+  else
+  {
+    // drop the table
+    sql = QStringLiteral( "SELECT DropGeometryTable(%1,%2)" )
+          .arg( QgsPostgresConn::quotedValue( schemaName ),
+                QgsPostgresConn::quotedValue( tableName ) );
+  }
+
+  result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
+               .arg( schemaTableName,
+                     result.PQresultErrorMessage() );
+    conn->unref();
+    return false;
+  }
+
+  conn->unref();
+  return true;
+}
+
+static bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade = false )
+{
+  QgsDebugMsg( "deleting schema " + schema );
+
+  if ( schema.isEmpty() )
+    return false;
+
+  QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  // drop the schema
+  QString sql = QStringLiteral( "DROP SCHEMA %1 %2" )
+                .arg( schemaName, cascade ? QStringLiteral( "CASCADE" ) : QString() );
+
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    errCause = QObject::tr( "Unable to delete schema %1: \n%2" )
+               .arg( schemaName,
+                     result.PQresultErrorMessage() );
+    conn->unref();
+    return false;
+  }
+
+  conn->unref();
+  return true;
+}
 
 
 // ---------------------------------------------------------------------------
@@ -839,7 +965,7 @@ QList<QAction *> QgsPGRootItem::actions( QWidget *parent )
 
 QWidget *QgsPGRootItem::paramWidget()
 {
-  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, nullptr, QgsAbstractDataSourceWidgetMode::Manager );
   connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::onConnectionsChanged );
   return select;
 }
@@ -861,7 +987,8 @@ void QgsPGRootItem::newConnection()
 
 QMainWindow *QgsPGRootItem::sMainWindow = nullptr;
 
-QGISEXTERN void registerGui( QMainWindow *mainWindow )
+QgsDataItem *QgsPostgresDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
-  QgsPGRootItem::sMainWindow = mainWindow;
+  Q_UNUSED( pathIn )
+  return new QgsPGRootItem( parentItem, QStringLiteral( "PostGIS" ), QStringLiteral( "pg:" ) );
 }

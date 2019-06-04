@@ -25,9 +25,7 @@ QgsGui.instance()->dataItemGuiProviderRegistry().
 #include "qgsdataitemguiproviderregistry.h"
 %End
   public:
-
-    QgsDataItemGuiProviderRegistry();
-
+    QgsDataItemGuiProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
     ~QgsDataItemGuiProviderRegistry();
 
 

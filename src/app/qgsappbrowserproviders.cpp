@@ -59,9 +59,9 @@ QString QgsQlrDataItemProvider::name()
   return QStringLiteral( "QLR" );
 }
 
-int QgsQlrDataItemProvider::capabilities()
+Qgis::DataCapabilities QgsQlrDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataCapability::File;
 }
 
 QgsDataItem *QgsQlrDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -95,9 +95,9 @@ QString QgsQptDataItemProvider::name()
   return QStringLiteral( "QPT" );
 }
 
-int QgsQptDataItemProvider::capabilities()
+Qgis::DataCapabilities QgsQptDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataCapability::File;
 }
 
 QgsDataItem *QgsQptDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -237,9 +237,9 @@ QString QgsPyDataItemProvider::name()
   return QStringLiteral( "py" );
 }
 
-int QgsPyDataItemProvider::capabilities()
+Qgis::DataCapabilities QgsPyDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataCapability::File;
 }
 
 QgsDataItem *QgsPyDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -361,9 +361,9 @@ QString QgsStyleXmlDataItemProvider::name()
   return QStringLiteral( "style_xml" );
 }
 
-int QgsStyleXmlDataItemProvider::capabilities()
+Qgis::DataCapabilities QgsStyleXmlDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::File;
 }
 
 QgsDataItem *QgsStyleXmlDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
@@ -513,9 +513,9 @@ QString QgsProjectDataItemProvider::name()
   return QStringLiteral( "project_item" );
 }
 
-int QgsProjectDataItemProvider::capabilities()
+Qgis::DataCapabilities QgsProjectDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File;
+  return Qgis::DataCapability::File;
 }
 
 QgsDataItem *QgsProjectDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

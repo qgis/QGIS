@@ -36,7 +36,7 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     Q_OBJECT
 
   public:
-    QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
 
   public slots:
     //! Triggered when the provider's connections need to be refreshed

@@ -37,7 +37,7 @@
 #include <QImageReader>
 #include "qgshelp.h"
 
-QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
   , mServiceName( serviceName )
   , mServiceType( serviceType )

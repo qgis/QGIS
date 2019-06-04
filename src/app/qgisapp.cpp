@@ -79,9 +79,11 @@
 #include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsgeometryvalidationservice.h"
+#include "qgssourceselectproviderregistry.h"
+#include "qgssourceselectprovider.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -271,6 +273,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsproviderregistry.h"
+#include "qgsproviderguiregistry.h"
 #include "qgspythonrunner.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsquerybuilder.h"
@@ -1045,7 +1048,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
   endProfile();
 
-  mBrowserModel = new QgsBrowserModel( this );
+  mBrowserModel = new QgsBrowserGuiModel( this );
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   mBrowserWidget->setMessageBar( mInfoBar );
@@ -1427,7 +1430,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerShortcuts( QStringLiteral( "Ctrl+Alt+]" ), QStringLiteral( "mAttributeTableNextEditedFeature" ), tr( "Edit next feature in attribute table" ) );
   registerShortcuts( QStringLiteral( "Ctrl+Alt+}" ), QStringLiteral( "mAttributeTableLastEditedFeature" ), tr( "Edit last feature in attribute table" ) );
 
-  QgsProviderRegistry::instance()->registerGuis( this );
+  QgsGui::providerGuiRegistry()->registerGuis( this );
 
   setupLayoutManagerConnections();
 
@@ -1896,7 +1899,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
   }
 }
 
-QgsBrowserModel *QgisApp::browserModel()
+QgsBrowserGuiModel *QgisApp::browserModel()
 {
   return mBrowserModel;
 }
@@ -5366,7 +5369,7 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
 void QgisApp::addVirtualLayer()
 {
   // show the virtual layer dialog
-  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "virtual" ), this ) );
+  QDialog *dts = dynamic_cast<QDialog *>( QgsGui::sourceSelectProviderRegistry()->createSelectionWidget( QStringLiteral( "virtual" ), this, Qt::Widget, QgsAbstractDataSourceWidgetMode::Embedded ) );
   if ( !dts )
   {
     QMessageBox::warning( this, tr( "Add Virtual Layer" ), tr( "Cannot get virtual layer select dialog from provider." ) );

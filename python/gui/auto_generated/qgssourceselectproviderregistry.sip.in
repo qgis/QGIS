@@ -8,6 +8,7 @@
 
 
 
+
 class QgsSourceSelectProviderRegistry
 {
 %Docstring
@@ -17,12 +18,6 @@ When created, it automatically adds providers from data provider plugins (e.g. P
 QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsGui.sourceSelectProviderRegistry()`
 
-.. note::
-
-   This class access to QgsProviderRegistry instance to initialize, but QgsProviderRegistry is
-   typically initialized after QgsGui is constructed, for this reason a delayed initialization has been
-   implemented in the class.
-
 .. versionadded:: 3.0
 %End
 
@@ -31,7 +26,7 @@ QgsSourceSelectProviderRegistry is not usually directly created, but rather acce
 %End
   public:
 
-    QgsSourceSelectProviderRegistry();
+    QgsSourceSelectProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 %Docstring
 Constructor for QgsSourceSelectProviderRegistry.
 %End
@@ -66,7 +61,19 @@ Returns a provider by ``name`` or ``None`` if not found
 Returns a (possibly empty) list of providers by data ``providerkey``
 %End
 
+    QgsAbstractDataSourceWidget *createSelectionWidget(
+      const QString &name,
+      QWidget *parent,
+      Qt::WindowFlags fl,
+      QgsAbstractDataSourceWidgetMode widgetMode
+    );
+%Docstring
+Gets select widget from provider with ``name``
 
+The function is replacement of  QgsProviderRegistry.createSelectionWidget() from QGIS 3.8
+
+.. versionadded:: 3.10
+%End
   private:
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh );
 };

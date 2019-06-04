@@ -21,7 +21,7 @@
 #include "qgsproviderregistry.h"
 #include "ogr/qgsogrhelperfunctions.h"
 
-QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
+QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
@@ -51,9 +51,4 @@ void QgsMdalSourceSelect::addButtonClicked()
   {
     emit addMeshLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "mdal" ) );
   }
-}
-
-QGISEXTERN QgsMdalSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsMdalSourceSelect( parent, fl, widgetMode );
 }

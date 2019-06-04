@@ -53,7 +53,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mService( service )
 
@@ -93,7 +93,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   // 'Prefer network' is the default noted in the combobox's tool tip
   mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Manager )
   {
     //set the current project CRS if available
     QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();

@@ -73,6 +73,25 @@ class CORE_EXPORT Qgis
     };
 
     /**
+     * \brief Data provider capability
+     *
+     * Used in browser model to understand
+     * which items for which providers should
+     * be populated
+     *
+     * \since QGIS 3.10
+     */
+    enum DataCapability : int
+    {
+      NoDataCapabilities  = 0,
+      File                = 1,
+      Dir                 = 1 << 1,
+      Database            = 1 << 2,
+      Net                 = 1 << 3  // Internet source
+    };
+    Q_DECLARE_FLAGS( DataCapabilities, DataCapability )
+
+    /**
      * Raster data types.
      *  This is modified and extended copy of GDALDataType.
      */
@@ -150,6 +169,7 @@ class CORE_EXPORT Qgis
     */
     static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

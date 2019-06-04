@@ -21,6 +21,7 @@
 #include <QList>
 
 class QgsDataItemGuiProvider;
+class QgsProviderGuiRegistry;
 
 /**
  * \class QgsDataItemGuiProviderRegistry
@@ -36,9 +37,7 @@ class QgsDataItemGuiProvider;
 class GUI_EXPORT QgsDataItemGuiProviderRegistry
 {
   public:
-
-    QgsDataItemGuiProviderRegistry();
-
+    QgsDataItemGuiProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
     ~QgsDataItemGuiProviderRegistry();
 
     //! QgsDataItemGuiProviderRegistry cannot be copied.

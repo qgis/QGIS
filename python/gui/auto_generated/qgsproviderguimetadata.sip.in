@@ -1,0 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproviderguimetadata.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProviderGuiMetadata
+{
+%Docstring
+Holds data for GUI part of the data providers
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsproviderguimetadata.h"
+%End
+  public:
+
+    QgsProviderGuiMetadata( const QString &key, const QString &description );
+%Docstring
+Constructor for provider gui metadata
+%End
+
+    virtual ~QgsProviderGuiMetadata();
+
+    virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders();
+%Docstring
+Data GUI item
+
+.. seealso:: :py:func:`QgsProviderBrowserMetadata.dataItemProviders`
+%End
+
+    virtual void registerGui( QMainWindow *widget );
+%Docstring
+Assigns parent to widget
+%End
+
+    virtual QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders();
+%Docstring
+Returns project storage gui providers
+%End
+
+    virtual QList<QgsSourceSelectProvider *> sourceSelectProviders();
+%Docstring
+Returns source select providers
+%End
+
+    QString key() const;
+%Docstring
+Returns unique provider key
+%End
+
+    QString description() const;
+%Docstring
+Returns provider description
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproviderguimetadata.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

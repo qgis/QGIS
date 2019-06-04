@@ -54,12 +54,31 @@ class CORE_EXPORT QgsGdalUtils
      */
     static gdal::dataset_unique_ptr createSingleBandTiffDataset( QString filename, GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
+
     /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
      * Ideally the source dataset should cover the whole area or the destination dataset.
      * \since QGIS 3.8
      */
     static void resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
+
+    /**
+     * Gets creation options metadata for a given format
+     * \since QGIS 3.10
+     */
+    static QString helpCreationOptionsFormat( QString format );
+
+    /**
+     * Validates creation options for a given format, regardless of layer.
+     * \since QGIS 3.10
+     */
+    static QString validateCreationOptionsFormat( const QStringList &createOptions, QString format );
+
+    /**
+     * Helper function
+     * \since QGIS 3.10
+     */
+    static char **papszFromStringList( const QStringList &list );
 };
 
 #endif // QGSGDALUTILS_H

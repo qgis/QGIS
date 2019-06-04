@@ -19,13 +19,13 @@
 #include "qgsabstractdatasourcewidget.h"
 #include <QPushButton>
 
-QgsAbstractDataSourceWidget::QgsAbstractDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
+QgsAbstractDataSourceWidget::QgsAbstractDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode ):
   QDialog( parent, fl ),
   mWidgetMode( widgetMode )
 {
 }
 
-QgsProviderRegistry::WidgetMode QgsAbstractDataSourceWidget::widgetMode() const
+QgsAbstractDataSourceWidgetMode QgsAbstractDataSourceWidget::widgetMode() const
 {
   return mWidgetMode;
 }

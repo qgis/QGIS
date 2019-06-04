@@ -25,7 +25,7 @@
 #include <QMessageBox>
 
 
-QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode )
   : QgsArcGisServiceSourceSelect( QStringLiteral( "ARCGISMAPSERVER" ), QgsArcGisServiceSourceSelect::MapService, parent, fl, widgetMode )
 {
 

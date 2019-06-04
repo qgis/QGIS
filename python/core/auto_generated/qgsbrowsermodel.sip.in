@@ -69,8 +69,6 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
     virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
 
-    virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
-
     virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
     virtual bool canFetchMore( const QModelIndex &parent ) const;

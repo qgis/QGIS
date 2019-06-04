@@ -54,7 +54,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
 
   public:
     //! Constructor
-    QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
 
   private:
     QgsWcsCapabilities mCapabilities;

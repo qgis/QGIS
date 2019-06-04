@@ -11,6 +11,13 @@
 
 
 
+enum class QgsAbstractDataSourceWidgetMode
+  {
+  None,
+  Embedded,
+  Manager,
+};
+
 class QgsAbstractDataSourceWidget : QDialog
 {
 %Docstring
@@ -27,7 +34,7 @@ and add layers.
 %End
   public:
 
-    void setMapCanvas( const QgsMapCanvas *mapCanvas );
+    void setMapCanvas( const QgsMapCanvas * mapCanvas );
 %Docstring
 Store a pointer to the map canvas to retrieve extent and CRS
 Used to select an appropriate CRS and possibly to retrieve data only in the current extent
@@ -48,7 +55,6 @@ Triggered when the add button is clicked, the add layer signal is emitted
 Concrete classes should implement the right behavior depending on the layer
 being added.
 %End
-
 
   signals:
 
@@ -122,12 +128,12 @@ Emitted when the ok/add buttons should be enabled/disabled
 
   protected:
 
-    QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
 %Docstring
 Constructor
 %End
 
-    QgsProviderRegistry::WidgetMode widgetMode() const;
+    QgsAbstractDataSourceWidgetMode widgetMode() const;
 %Docstring
 Returns the widget mode
 %End

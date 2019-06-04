@@ -403,12 +403,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
 
       QgsDebugMsg( "Loaded library: " + myLib->fileName() );
-
-      // Don't bother with libraries that are providers
-      //if(!myLib->resolve( "isProvider" ) )
-
-      //MH: Replaced to allow for plugins that are linked to providers
-      //type is only used in non-provider plugins
+      //Type is only used in non-provider plugins, so data providers are not picked
       if ( !myLib->resolve( "type" ) )
       {
         delete myLib;

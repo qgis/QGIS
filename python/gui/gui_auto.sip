@@ -5,6 +5,9 @@
 %Include auto_generated/qgsdetaileditemdata.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
 %Include auto_generated/qgsgeometryrubberband.sip
+%Include auto_generated/qgsproviderguimetadata.sip
+%Include auto_generated/qgsproviderguiregistry.sip
+%Include auto_generated/qgsprojectstorageguiregistry.sip
 %Include auto_generated/qgshelp.sip
 %Include auto_generated/qgshighlight.sip
 %Include auto_generated/qgsmapcanvasitem.sip
@@ -23,6 +26,7 @@
 %Include auto_generated/qgssourceselectprovider.sip
 %Include auto_generated/qgssourceselectproviderregistry.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
+%Include auto_generated/qgsprojectstorageguiprovider.sip
 %Include auto_generated/attributetable/qgsfeaturemodel.sip
 %Include auto_generated/auth/qgsauthauthoritieseditor.sip
 %Include auto_generated/auth/qgsauthcertificateinfo.sip
@@ -62,6 +66,7 @@
 %Include auto_generated/qgsattributeformwidget.sip
 %Include auto_generated/qgsattributetypeloaddialog.sip
 %Include auto_generated/qgsblendmodecombobox.sip
+%Include auto_generated/qgsbrowserguimodel.sip
 %Include auto_generated/qgsbrowsertreeview.sip
 %Include auto_generated/qgsbusyindicatordialog.sip
 %Include auto_generated/qgscharacterselectordialog.sip

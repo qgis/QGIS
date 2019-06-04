@@ -119,7 +119,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     model->setData( index, le->text() );
 }
 
-QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
@@ -140,7 +140,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlSourceSelect::showHelp );
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::None )
   {
     mHoldDialogOpen->hide();
   }
@@ -153,7 +153,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Manager )
   {
 
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
@@ -460,7 +460,7 @@ void QgsMssqlSourceSelect::addButtonClicked()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "mssql" ) );
-    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsAbstractDataSourceWidgetMode::None )
     {
       accept();
     }

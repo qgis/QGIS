@@ -1139,53 +1139,19 @@ QString  QgsDelimitedTextProvider::description() const
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-QGISEXTERN QVariantMap decodeUri( const QString &uri )
+QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri )
 {
   QVariantMap components;
   components.insert( QStringLiteral( "path" ), QUrl( uri ).toLocalFile() );
   return components;
 }
 
-/**
- * Class factory to return a pointer to a newly created
- * QgsDelimitedTextProvider object
- */
-QGISEXTERN QgsDelimitedTextProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
   return new QgsDelimitedTextProvider( *uri, options );
 }
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
-{
-  return TEXT_PROVIDER_KEY;
-}
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return TEXT_PROVIDER_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
-
 #ifdef HAVE_GUI
-QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
-}
-
 //! Provider for delimited text source select
 class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 {
@@ -1195,23 +1161,41 @@ class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "Delimited Text" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 30; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Embedded ) const override
     {
       return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
     }
 };
 
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+QgsDelimitedTextProviderGuiMetadata::QgsDelimitedTextProviderGuiMetadata()
+  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+}
 
-  *providers
-      << new QgsDelimitedTextSourceSelectProvider;
-
+QList<QgsSourceSelectProvider *> QgsDelimitedTextProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsDelimitedTextSourceSelectProvider;
   return providers;
 }
 
+#endif
+
+QgsDelimitedTextProviderMetadata::QgsDelimitedTextProviderMetadata():
+  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+{
+}
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsDelimitedTextProviderMetadata();
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
+{
+  return new QgsDelimitedTextProviderGuiMetadata();
+}
 #endif
 
 

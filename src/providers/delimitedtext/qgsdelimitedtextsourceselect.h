@@ -33,7 +33,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     Q_OBJECT
 
   public:
-    QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
     ~QgsDelimitedTextSourceSelect() override;
 
     QStringList splitLine( QString line );

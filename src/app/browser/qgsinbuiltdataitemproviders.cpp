@@ -25,7 +25,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagelog.h"
 #include "qgsnewnamedialog.h"
-#include "qgsbrowsermodel.h"
+#include "qgsbrowserguimodel.h"
 #include "qgsbrowserdockwidget_p.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgsrasterlayer.h"

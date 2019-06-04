@@ -853,7 +853,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param names the list in which will be stored the style names
      * \param descriptions the list in which will be stored the style descriptions
      * \param msgError
-     * \returns the number of styles related to current layer
+     * \returns the number of styles related to current layer (-1 on not implemented)
      * \note Since QGIS 3.2 Styles related to the layer are ordered with the default style first then by update time for Postgres, MySQL and Spatialite.
      */
     virtual int listStylesInDatabase( QStringList &ids SIP_OUT, QStringList &names SIP_OUT,

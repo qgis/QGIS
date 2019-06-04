@@ -35,6 +35,8 @@ class QgsProcessingGuiRegistry;
 class QgsProcessingRecentAlgorithmLog;
 class QgsWindowManagerInterface;
 class QgsDataItemGuiProviderRegistry;
+class QgsProviderGuiRegistry;
+class QgsProjectStorageGuiRegistry;
 
 /**
  * \ingroup gui
@@ -126,6 +128,18 @@ class GUI_EXPORT QgsGui : public QObject
     static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the global data item GUI project storage registry
+     * \since QGIS 3.10
+     */
+    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the global data item GUI project storage registry
+     * \since QGIS 3.10
+     */
+    static QgsProviderGuiRegistry *providerGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
      * Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
      */
@@ -168,6 +182,7 @@ class GUI_EXPORT QgsGui : public QObject
 
     QgsGui();
 
+    QgsProviderGuiRegistry *mProviderGuiRegistry = nullptr;
     QgsWidgetStateHelper *mWidgetStateHelper = nullptr;
     QgsNative *mNative = nullptr;
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
@@ -179,6 +194,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
     QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
+    QgsProjectStorageGuiRegistry *mProjectStorageGuiRegistry = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 
 #ifdef SIP_RUN

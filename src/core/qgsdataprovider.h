@@ -29,8 +29,6 @@
 #include "qgslayermetadata.h"
 #include "qgserror.h"
 
-typedef int dataCapabilities_t(); // SIP_SKIP
-
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 
@@ -65,16 +63,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     Q_OBJECT
 
   public:
-
-    enum DataCapability
-    {
-      NoDataCapabilities  = 0,
-      File                = 1,
-      Dir                 = 1 << 1,
-      Database            = 1 << 2,
-      Net                 = 1 << 3  // Internet source
-    };
-    Q_ENUM( DataCapability )
 
     /**
      * Properties are used to pass custom configuration options into data providers.

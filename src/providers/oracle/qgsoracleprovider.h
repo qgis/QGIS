@@ -25,6 +25,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
 #include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#ifdef HAVE_GUI
+#include "qgsproviderguimetadata.h"
+#endif
 
 #include <QVector>
 #include <QQueue>
@@ -358,5 +362,34 @@ class QgsOracleSharedData
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
 };
 
+class QgsOracleProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsOracleProviderMetadata();
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
+                    const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    void cleanupProvider();
+    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
+        const QgsFields &fields, QgsWkbTypes::Type wkbType,
+        const QgsCoordinateReferenceSystem *srs, bool overwrite,
+        QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
+        const QMap<QString, QVariant> *options ) override;
+
+    QgsOracleProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList<QgsDataItemProvider *> *dataItemProviders() const override;
+};
+
+#ifdef HAVE_GUI
+class QgsOracleProviderGuiMetadata: public QgsProviderGuiMetadata
+{
+  public:
+    QgsOracleProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> *sourceSelectProviders() override;
+    void registerGui( QMainWindow *mainWindow ) override;
+};
+#endif
 
 #endif

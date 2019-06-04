@@ -46,7 +46,7 @@ enum
   MODEL_IDX_SQL
 };
 
-QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
@@ -56,7 +56,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWFSSourceSelect::showHelp );
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::None )
   {
     mHoldDialogOpen->hide();
   }
@@ -404,7 +404,7 @@ void QgsWFSSourceSelect::addButtonClicked()
     emit addVectorLayer( mUri, layerName );
   }
 
-  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
+  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsAbstractDataSourceWidgetMode::None )
   {
     accept();
   }

@@ -97,7 +97,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QModelIndex parent( const QModelIndex &index ) const override;
     QStringList mimeTypes() const override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
     bool canFetchMore( const QModelIndex &parent ) const override;
     void fetchMore( const QModelIndex &parent ) override;

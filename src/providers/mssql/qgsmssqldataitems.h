@@ -21,8 +21,9 @@
 #define QGSMSSQLDATAITEMS_H
 
 #include "qgsdataitem.h"
-
+#include "qgsdataitemprovider.h"
 #include "qgsmssqltablemodel.h"
+
 class QgsMssqlGeomColumnTypeThread;
 
 class QgsMssqlRootItem;
@@ -149,6 +150,17 @@ class QgsMssqlLayerItem : public QgsLayerItem
   private:
     QgsMssqlLayerProperty mLayerProperty;
     bool mDisableInvalidGeometryHandling = false;
+};
+
+//! Provider for GDAL root data item
+class QgsMssqlDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "MSSQL" ); }
+
+    Qgis::DataCapabilities capabilities() const override { return Qgis::DataCapability::Database; }
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSMSSQLDATAITEMS_H

@@ -39,7 +39,7 @@ enum
   MODEL_IDX_WEB_SERVICE
 };
 
-QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
@@ -469,14 +469,4 @@ void QgsGeoNodeSourceSelect::updateButtonStateForAvailableConnections()
 QgsGeoNodeConnection QgsGeoNodeSourceSelect::currentConnection() const
 {
   return QgsGeoNodeConnection( cmbConnections->currentText() );
-}
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsGeoNodeSourceSelectProvider;
-
-  return providers;
 }

@@ -59,27 +59,11 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 {
   mProvider = nullptr;
 
-  QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
-
-  std::unique_ptr< QLibrary > myLib( pReg->createProviderLibrary( providerKey ) );
-  if ( !myLib )
-  {
-    mError = ErrInvalidProvider;
-    mErrorMessage = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
-    return;
-  }
-
-  createEmptyLayer_t *pCreateEmpty = reinterpret_cast< createEmptyLayer_t * >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
-  if ( !pCreateEmpty )
-  {
-    mError = ErrProviderUnsupportedFeature;
-    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, QStringLiteral( "createEmptyLayer" ) );
-    return;
-  }
-
   // create an empty layer
   QString errMsg;
-  mError = pCreateEmpty( uri, fields, geometryType, crs, overwrite, &mOldToNewAttrIdx, &errMsg, !options.isEmpty() ? &options : nullptr );
+  QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
+  mError = pReg->createEmptyLayer( providerKey, uri, fields, geometryType, crs, overwrite, mOldToNewAttrIdx,
+                                   errMsg, !options.isEmpty() ? &options : nullptr );
   if ( errorCode() )
   {
     mErrorMessage = errMsg;

@@ -27,7 +27,7 @@
 
 #include <QWidget>
 
-QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode )
   : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, widgetMode )
 {
 

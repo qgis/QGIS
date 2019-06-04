@@ -45,6 +45,9 @@
 #include <QPainter>
 #include <QNetworkCacheMetaData>
 
+static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mapserver" );
+static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS MapServer data provider" );
+
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest
 {
@@ -316,6 +319,10 @@ QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities
 {
   return QgsRasterDataProvider::ReadLayerMetadata;
 }
+
+QString QgsAmsProvider::name() const { return TEXT_PROVIDER_KEY; }
+
+QString QgsAmsProvider::description() const { return TEXT_PROVIDER_DESCRIPTION; }
 
 QStringList QgsAmsProvider::subLayerStyles() const
 {
@@ -1216,43 +1223,70 @@ class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Embedded ) const override
     {
       return new QgsAmsSourceSelect( parent, fl, widgetMode );
     }
 };
 
-
-QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+QList<QgsSourceSelectProvider *> QgsAmsProviderGuiMetadata::sourceSelectProviders()
 {
-  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
-
-  *providers
-      << new QgsAmsSourceSelectProvider;
-
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsAmsSourceSelectProvider;
   return providers;
 }
 #endif
 
 
-QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
+QList<QgsDataItemProvider *> QgsAmsProviderMetadata::dataItemProviders() const
 {
-  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
-
-  *providers
-      << new QgsAmsDataItemProvider;
-
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsAmsDataItemProvider;
   return providers;
 }
 
-#ifdef HAVE_GUI
-QGISEXTERN QList<QgsDataItemGuiProvider *> *dataItemGuiProviders()
+QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  QList<QgsDataItemGuiProvider *> *providers = new QList<QgsDataItemGuiProvider *>();
+  return new QgsAmsProvider( *uri, options );
+}
 
-  *providers
-      << new QgsAmsItemGuiProvider();
+QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
+{
+  QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
+  QVariantMap components;
+  components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  return components;
+}
+
+#ifdef HAVE_GUI
+QgsAmsProviderGuiMetadata::QgsAmsProviderGuiMetadata()
+  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+{
+
+}
+
+QList<QgsDataItemGuiProvider *> QgsAmsProviderGuiMetadata::dataItemGuiProviders()
+{
+  QList<QgsDataItemGuiProvider *> providers;
+  providers << new QgsAmsItemGuiProvider();
   return providers;
+}
+#endif
+
+QgsAmsProviderMetadata::QgsAmsProviderMetadata()
+  : QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+{
+}
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsAmsProviderMetadata();
+}
+
+#ifdef HAVE_GUI
+QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
+{
+  return new QgsAmsProviderGuiMetadata();
 }
 #endif

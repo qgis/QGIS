@@ -33,7 +33,7 @@
 
 const int MAX_SAMPLE_LENGTH = 200;
 
-QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mFile( new QgsDelimitedTextFile() )
   , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
@@ -215,7 +215,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   mFileWidget->setFilePath( QString() );
   txtLayerName->setText( QString() );
 
-  if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() == QgsAbstractDataSourceWidgetMode::None )
   {
     accept();
   }

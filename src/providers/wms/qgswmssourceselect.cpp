@@ -53,7 +53,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
 {
@@ -87,7 +87,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   mImageFormatGroup = new QButtonGroup;
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Manager )
   {
 
     QHBoxLayout *layout = new QHBoxLayout;

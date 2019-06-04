@@ -43,7 +43,6 @@ class QgsMapToPixel;
 class QgsRasterRenderer;
 class QgsRectangle;
 class QImage;
-class QLibrary;
 class QPixmap;
 class QSlider;
 

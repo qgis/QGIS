@@ -63,7 +63,7 @@ QList<QAction *> QgsAfsRootItem::actions( QWidget *parent )
 
 QWidget *QgsAfsRootItem::paramWidget()
 {
-  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( nullptr, nullptr, QgsAbstractDataSourceWidgetMode::Manager );
   connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAfsRootItem::onConnectionsChanged );
   return select;
 }

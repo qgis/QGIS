@@ -22,11 +22,12 @@
 #include "qgsrasterprojector.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-
+#include "qgsdataitemprovider.h"
 #include "qgsgrassprovidermodule.h"
 #include "qgsgrassprovider.h"
 #include "qgsgrass.h"
 #include "qgsgrassvector.h"
+#include "qgsprovidermetadata.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewnamedialog.h"
@@ -1247,75 +1248,73 @@ QIcon QgsGrassImportItem::icon()
 
 //-------------------------------------------------------------------------
 
-QGISEXTERN int dataCapabilities()
-{
-  return QgsDataProvider::Dir;
-}
+static const QString PROVIDER_KEY = QStringLiteral( "grass" );
+static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GRASS %1 vector provider" ).arg( GRASS_VERSION_MAJOR );
 
-QGISEXTERN QgsDataItem *dataItem( QString dirPath, QgsDataItem *parentItem )
+class QgsGrassDataItemProvider : public QgsDataItemProvider
 {
-  if ( !QgsGrass::init() )
-  {
-    return nullptr;
-  }
-  if ( QgsGrass::isLocation( dirPath ) )
-  {
-    QString path;
-    QDir dir( dirPath );
-    QString dirName = dir.dirName();
-    if ( parentItem )
+  public:
+    QString name() override { return QStringLiteral( "GRASS" ); }
+
+    int capabilities() const override { return QgsDataProvider::Dir; }
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override
     {
-      path = parentItem->path();
+      if ( !QgsGrass::init() )
+      {
+        return nullptr;
+      }
+      if ( QgsGrass::isLocation( dirPath ) )
+      {
+        QString path;
+        QDir dir( dirPath );
+        QString dirName = dir.dirName();
+        if ( parentItem )
+        {
+          path = parentItem->path();
+        }
+        else
+        {
+          dir.cdUp();
+          path = dir.path();
+        }
+        path = path + "/" + "grass:" + dirName;
+        QgsGrassLocationItem *location = new QgsGrassLocationItem( parentItem, dirPath, path );
+        return location;
+      }
+      return nullptr;
     }
-    else
+};
+
+class QgsGrassProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsGrassProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+    QgsGrassProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override
     {
-      dir.cdUp();
-      path = dir.path();
+      return new QgsGrassProvider( uri );
     }
-    path = path + "/" + "grass:" + dirName;
-    QgsGrassLocationItem *location = new QgsGrassLocationItem( parentItem, dirPath, path );
-    return location;
-  }
-  return nullptr;
-}
+    QList< QgsDataItemProvider * > *dataItemProviders() const override
+    {
+      QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
+      *providers << new QgsGrassDataItemProvider;
+      return providers;
+    }
 
-/**
-* Class factory to return a pointer to a newly created
-* QgsGrassProvider object
-*/
-QGISEXTERN QgsGrassProvider *classFactory( const QString *uri )
-{
-  return new QgsGrassProvider( *uri );
-}
+    void initProvider() override
+    {
+      // Init GRASS in the first function called by provider registry so that it is called
+      // on main thread, not sure but suspicious that init in thread is causing problems,
+      // at least on Windows, not that dataItem() is called in thread
+      if ( !QgsGrass::init() )
+      {
+        QgsDebugMsg( "init failed" );
+      }
+      return true;
+    }
+};
 
-/**
- * Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  return QStringLiteral( "grass" );
-}
-
-/**
-* Required description function
-*/
-QGISEXTERN QString description()
-{
-  return QStringLiteral( "GRASS %1 vector provider" ).arg( GRASS_VERSION_MAJOR );
-}
-
-/**
-* Required isProvider function. Used to determine if this shared library
-* is a data provider plugin
-*/
-QGISEXTERN bool isProvider()
-{
-  // Init GRASS in the first function called by provider registry so that it is called
-  // on main thread, not sure but suspicious that init in thread is causing problems,
-  // at least on Windows, not that dataItem() is called in thread
-  if ( !QgsGrass::init() )
-  {
-    QgsDebugMsg( "init failed" );
-  }
-  return true;
+  return new QgsGrassProviderMetadata();
 }

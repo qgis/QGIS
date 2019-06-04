@@ -810,7 +810,7 @@ QList<QAction *> QgsMssqlRootItem::actions( QWidget *parent )
 
 QWidget *QgsMssqlRootItem::paramWidget()
 {
-  QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, nullptr, QgsAbstractDataSourceWidgetMode::Manager );
   connect( select, &QgsMssqlSourceSelect::connectionsChanged, this, &QgsMssqlRootItem::onConnectionsChanged );
   return select;
 }
@@ -829,3 +829,9 @@ void QgsMssqlRootItem::newConnection()
   }
 }
 #endif
+
+QgsDataItem *QgsMssqlDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn )
+  return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
+}

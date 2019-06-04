@@ -125,13 +125,13 @@ void QgsBrowserModel::addRootItems()
 #endif
 
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
-  QMap<int, QgsDataItem *> providerMap;
+  QMap<Qgis::DataCapabilities, QgsDataItem *> providerMap;
 
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *pr : constProviders )
   {
-    int capabilities = pr->capabilities();
-    if ( capabilities == QgsDataProvider::NoDataCapabilities )
+    Qgis::DataCapabilities capabilities = pr->capabilities();
+    if ( capabilities == Qgis::DataCapability::NoDataCapabilities )
     {
       QgsDebugMsgLevel( pr->name() + " does not have any dataCapabilities", 4 );
       continue;
@@ -150,7 +150,7 @@ void QgsBrowserModel::addRootItems()
 
   // add as sorted groups by QgsDataProvider::DataCapability enum
   const auto constUniqueKeys = providerMap.uniqueKeys();
-  for ( int key : constUniqueKeys )
+  for ( Qgis::DataCapabilities key : constUniqueKeys )
   {
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )
@@ -590,21 +590,6 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     }
   }
   return QgsMimeDataUtils::encodeUriList( lst );
-}
-
-bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
-{
-  Q_UNUSED( row )
-  Q_UNUSED( column )
-
-  QgsDataItem *destItem = dataItem( parent );
-  if ( !destItem )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "DROP PROBLEM!" ), 4 );
-    return false;
-  }
-
-  return destItem->handleDrop( data, action );
 }
 
 QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const

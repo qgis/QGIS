@@ -70,12 +70,11 @@ Ordering: the source select provider registry will be able to sort
 the source selects (ascending) using this integer value
 %End
 
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 /Factory/;
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::Widget, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Embedded ) const = 0 /Factory/;
 %Docstring
 Create a new instance of :py:class:`QgsAbstractDataSourceWidget` (or ``None``).
 Caller takes responsibility of deleting created.
 %End
-
 };
 
 
