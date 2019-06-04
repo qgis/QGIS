@@ -55,6 +55,7 @@ class TestQgsInvertedPolygon : public QObject
     void preprocess();
     void projectionTest();
     void curvedPolygons();
+    void rotationTest();
 
   private:
     bool mTestHasError =  false ;
@@ -154,7 +155,6 @@ void TestQgsInvertedPolygon::projectionTest()
   mMapSettings.setDestinationCrs( mpPolysLayer->crs() );
 }
 
-// This test relies on GDAL support of curved polygons
 void TestQgsInvertedPolygon::curvedPolygons()
 {
   QString myCurvedPolysFileName = mTestDataDir + "curved_polys.gpkg";
@@ -169,6 +169,16 @@ void TestQgsInvertedPolygon::curvedPolygons()
   QVERIFY( imageCheck( "inverted_polys_curved" ) );
   mMapSettings.setLayers( QList< QgsMapLayer * >() << mpPolysLayer );
 }
+
+void TestQgsInvertedPolygon::rotationTest()
+{
+  mReport += QLatin1String( "<h2>Inverted polygon renderer, rotation test</h2>\n" );
+  mMapSettings.setRotation( 45 );
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
+  QVERIFY( imageCheck( "inverted_polys_rotation" ) );
+  mMapSettings.setRotation( 0 );
+}
+
 
 //
 // Private helper functions not called directly by CTest
