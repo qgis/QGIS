@@ -43,7 +43,8 @@ from qgis.core import (QgsProcessingException,
                        QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
-                       QgsMapRendererCustomPainterJob)
+                       QgsMapRendererCustomPainterJob,
+                       QgsLabelingEngineSettings)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -196,6 +197,11 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         if self.tile_format == 'PNG':
             settings.setBackgroundColor(QColor(Qt.transparent))
 
+        # disable partial labels (they would be cut at the edge of tiles)
+        labeling_engine_settings = settings.labelingEngineSettings()
+        labeling_engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        settings.setLabelingEngineSettings(labeling_engine_settings)
+
         self.wgs_extent = src_to_wgs.transformBoundingBox(extent)
         self.wgs_extent = [self.wgs_extent.xMinimum(), self.wgs_extent.yMinimum(), self.wgs_extent.xMaximum(),
                            self.wgs_extent.yMaximum()]
@@ -232,17 +238,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                 extent = QgsRectangle(*metatile.extent())
                 settings.setExtent(wgs_to_dest.transformBoundingBox(extent))
                 settings.setOutputSize(size)
-
-                if hasattr(settings, 'setLabelBoundaryGeometry'):
-                    label_area = QgsRectangle(settings.extent())
-                    lab_buffer = label_area.width() * (lab_buffer_px / size.width())
-                    label_area.set(
-                        label_area.xMinimum() + lab_buffer,
-                        label_area.yMinimum() + lab_buffer,
-                        label_area.xMaximum() - lab_buffer,
-                        label_area.yMaximum() - lab_buffer
-                    )
-                    settings.setLabelBoundaryGeometry(QgsGeometry.fromRect(label_area))
 
                 image = QImage(size, QImage.Format_ARGB32_Premultiplied)
                 image.fill(Qt.transparent)
