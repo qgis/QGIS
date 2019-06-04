@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgswmsutils.h"
 #include "qgsjsonutils.h"
 #include "qgswmsrenderer.h"
@@ -770,6 +769,12 @@ namespace QgsWms
     // painting is terminated
     painter->end();
 
+    if ( mContext.testFlag( QgsWmsRenderContext::UseTileBuffer ) )
+    {
+      QRect rect( mContext.tileBuffer(), mContext.tileBuffer(), mContext.mapWidth(), mContext.mapHeight() );
+      image.reset( new QImage( image.get()->copy( rect ) ) );
+    }
+
     // scale output image if necessary (required by WMS spec)
     QImage *scaledImage = scaleImage( image.get() );
     if ( scaledImage )
@@ -976,12 +981,7 @@ namespace QgsWms
     mapSettings.setOutputDpi( paintDevice->logicalDpiX() );
 
     //map extent
-    QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
-    if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
-    {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    mWmsParameters[QgsWmsParameter::BBOX] );
-    }
+    QgsRectangle mapExtent = mContext.mapExtent();
 
     QString crs = mWmsParameters.crs();
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
