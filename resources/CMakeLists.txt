@@ -5,6 +5,12 @@ INSTALL(FILES srs.db
               customization.xml
               2to3migration.txt
               qgis_global_settings.ini
+              compdcs.csv
+              datum_shift.csv
+              gcs.csv
+              geoccs.csv
+              pcs.csv
+              vertcs.csv
         DESTINATION ${QGIS_DATA_DIR}/resources)
 INSTALL(DIRECTORY cpt-city-qgis-min DESTINATION ${QGIS_DATA_DIR}/resources)
 INSTALL(DIRECTORY themes DESTINATION ${QGIS_DATA_DIR}/resources)

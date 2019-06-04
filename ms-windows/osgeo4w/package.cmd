@@ -400,6 +400,12 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/resources/palettes/" ^
 	"apps/%PACKAGENAME%/resources/2to3migration.txt" ^
 	"apps/%PACKAGENAME%/resources/qgis_global_settings.ini" ^
+	"apps/%PACKAGENAME%/resources/compdcs.csv" ^
+	"apps/%PACKAGENAME%/resources/datum_shift.csv" ^
+	"apps/%PACKAGENAME%/resources/gcs.csv" ^
+	"apps/%PACKAGENAME%/resources/geoccs.csv" ^
+	"apps/%PACKAGENAME%/resources/pcs.csv" ^
+	"apps/%PACKAGENAME%/resources/vertcs.csv" ^
 	"apps/%PACKAGENAME%/qgiscrashhandler.exe" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
 	"bin/%PACKAGENAME%-designer.bat.tmpl" ^
