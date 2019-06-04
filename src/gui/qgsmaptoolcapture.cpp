@@ -31,6 +31,7 @@
 #include "qgsvertexmarker.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QAction>
 #include <QCursor>
@@ -584,6 +585,12 @@ void QgsMapToolCapture::undo()
     vertexToRemove.vertex = size() - 1;
     mCaptureCurve.deleteVertex( vertexToRemove );
     mSnappingMatches.removeAt( vertexToRemove.vertex );
+
+    // If Cad is enabled, update the points accordingly
+    if ( mCadDockWidget->cadEnabled() )
+    {
+      mCadDockWidget->removePreviousPoint();
+    }
 
     validateGeometry();
   }
