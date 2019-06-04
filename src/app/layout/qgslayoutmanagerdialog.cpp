@@ -101,6 +101,8 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   addTemplates( defaultTemplateMap );
   addTemplates( otherTemplates() );
 
+  mTemplatesDefaultDirBtn->setToolTip( tr( "Use <i>Settings --> Options --> Layouts --> Layout Paths</i> to configure the folders in which QGIS will search for print layout templates." ) );
+
   toggleButtons();
 }
 
@@ -148,6 +150,7 @@ void QgsLayoutManagerDialog::addTemplates( const QMap<QString, QString> &templat
 
 void QgsLayoutManagerDialog::activate()
 {
+  updateTemplateButtonEnabledState();
   raise();
   setWindowState( windowState() & ~Qt::WindowMinimized );
   activateWindow();
@@ -284,7 +287,14 @@ void QgsLayoutManagerDialog::mTemplate_currentIndexChanged( int indx )
 
 void QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed()
 {
-  openLocalDirectory( mDefaultTemplatesDir );
+  if ( QDir( mDefaultTemplatesDir ).exists() )
+    openLocalDirectory( mDefaultTemplatesDir );
+  else
+  {
+    const QStringList paths = QgsApplication::layoutTemplatePaths();
+    if ( !paths.empty() )
+      openLocalDirectory( paths.at( 0 ) );
+  }
 }
 
 void QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed()
@@ -328,6 +338,11 @@ void QgsLayoutManagerDialog::openLocalDirectory( const QString &localDirPath )
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( localDirPath ) );
   }
+}
+
+void QgsLayoutManagerDialog::updateTemplateButtonEnabledState()
+{
+  mTemplatesDefaultDirBtn->setEnabled( QDir( mDefaultTemplatesDir ).exists() || !QgsApplication::layoutTemplatePaths().empty() );
 }
 
 #ifdef Q_OS_MAC
