@@ -1122,7 +1122,6 @@ namespace QgsWms
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
     }
-    QgsRectangle mapExtent = mContext.mapExtent();
 
     QString crs = mWmsParameters.crs();
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
