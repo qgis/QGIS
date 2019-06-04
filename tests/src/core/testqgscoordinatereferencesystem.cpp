@@ -354,8 +354,10 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
 
   return QString();
 }
+
 void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 {
+#if PJ_VERSION < 600 // The ESRI fix no longer has any impact on Proj >= 6, GDAL >= 3.0
   QString msg;
   QgsCoordinateReferenceSystem myCrs;
   const char *configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
@@ -442,7 +444,10 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   }
 
   //  QVERIFY( bOK );
+#endif
 }
+
+
 void TestQgsCoordinateReferenceSystem::createFromSrId()
 {
   QgsCoordinateReferenceSystem myCrs;
