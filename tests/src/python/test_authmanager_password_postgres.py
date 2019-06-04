@@ -32,6 +32,7 @@ import subprocess
 import tempfile
 
 from shutil import rmtree
+from contextlib import contextmanager
 
 from utilities import unitTestDataPath
 from qgis.core import (
@@ -91,6 +92,35 @@ host       all           all             ::1/32                 trust
 """
 
 
+@contextmanager
+def ScopedCertAuthority(username, password, sslrootcert_path=None):
+    """
+    Sets up the certificate authority in the authentication manager
+    for the lifetime of this class and removes it when the class is deleted.
+    """
+    authm = QgsApplication.authManager()
+    auth_config = QgsAuthMethodConfig("Basic")
+    auth_config.setConfig('username', username)
+    auth_config.setConfig('password', password)
+    auth_config.setName('test_password_auth_config')
+    if sslrootcert_path:
+        sslrootcert = QSslCertificate.fromPath(sslrootcert_path)
+        assert sslrootcert is not None
+        authm.storeCertAuthorities(sslrootcert)
+        authm.rebuildCaCertsCache()
+        authm.rebuildTrustedCaCertsCache()
+        authm.rebuildCertTrustCache()
+    assert (authm.storeAuthenticationConfig(auth_config)[0])
+    assert auth_config.isValid()
+    yield auth_config
+    if sslrootcert_path:
+        for cert in sslrootcert:
+            authm.removeCertAuthority(cert)
+    authm.rebuildCaCertsCache()
+    authm.rebuildTrustedCaCertsCache()
+    authm.rebuildCertTrustCache()
+
+
 class TestAuthManager(unittest.TestCase):
 
     @classmethod
@@ -100,22 +130,10 @@ class TestAuthManager(unittest.TestCase):
         assert (authm.setMasterPassword('masterpassword', True))
         cls.pg_conf = os.path.join(cls.tempfolder, 'postgresql.conf')
         cls.pg_hba = os.path.join(cls.tempfolder, 'pg_hba.conf')
-        # Client side
+
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
         assert os.path.isfile(cls.sslrootcert_path)
         os.chmod(cls.sslrootcert_path, stat.S_IRUSR)
-        cls.auth_config = QgsAuthMethodConfig("Basic")
-        cls.auth_config.setConfig('username', cls.username)
-        cls.auth_config.setConfig('password', cls.password)
-        cls.auth_config.setName('test_password_auth_config')
-        cls.sslrootcert = QSslCertificate.fromPath(cls.sslrootcert_path)
-        assert cls.sslrootcert is not None
-        authm.storeCertAuthorities(cls.sslrootcert)
-        authm.rebuildCaCertsCache()
-        authm.rebuildTrustedCaCertsCache()
-        authm.rebuildCertTrustCache()
-        assert (authm.storeAuthenticationConfig(cls.auth_config)[0])
-        assert cls.auth_config.isValid()
 
         # Server side
         cls.server_cert = os.path.join(cls.certsdata_path, 'localhost_ssl_cert.pem')
@@ -201,7 +219,7 @@ class TestAuthManager(unittest.TestCase):
         pass
 
     @classmethod
-    def _getPostGISLayer(cls, type_name, layer_name=None, authcfg=None):
+    def _getPostGISLayer(cls, type_name, layer_name=None, authcfg=None, sslmode=QgsDataSourceUri.SslVerifyFull):
         """
         PG layer factory
         """
@@ -209,7 +227,7 @@ class TestAuthManager(unittest.TestCase):
             layer_name = 'pg_' + type_name
         uri = QgsDataSourceUri()
         uri.setWkbType(QgsWkbTypes.Point)
-        uri.setConnection("localhost", cls.port, cls.dbname, "", "", QgsDataSourceUri.SslVerifyFull, authcfg)
+        uri.setConnection("localhost", cls.port, cls.dbname, "", "", sslmode, authcfg)
         uri.setKeyColumn('pk')
         uri.setSrid('EPSG:4326')
         uri.setDataSource('qgis_test', 'someData', "geom", "", "pk")
@@ -221,15 +239,35 @@ class TestAuthManager(unittest.TestCase):
         """
         Access the protected layer with valid credentials
         """
-        pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=self.auth_config.id())
-        self.assertTrue(pg_layer.isValid())
+        with ScopedCertAuthority(self.username, self.password, self.sslrootcert_path) as auth_config:
+            pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=auth_config.id())
+            self.assertTrue(pg_layer.isValid())
 
     def testInvalidAuthAccess(self):
         """
         Access the protected layer with not valid credentials
         """
-        pg_layer = self._getPostGISLayer('testlayer_èé')
-        self.assertFalse(pg_layer.isValid())
+        with ScopedCertAuthority(self.username, self.password, self.sslrootcert_path) as auth_config:
+            pg_layer = self._getPostGISLayer('testlayer_èé')
+            self.assertFalse(pg_layer.isValid())
+
+    def testSslRequireNoCaCheck(self):
+        """
+        Access the protected layer with valid credentials and ssl require but without the required cert authority.
+        This should work.
+        """
+        with ScopedCertAuthority(self.username, self.password) as auth_config:
+            pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=auth_config.id(), sslmode=QgsDataSourceUri.SslRequire)
+            self.assertTrue(pg_layer.isValid())
+
+    def testSslVerifyFullCaCheck(self):
+        """
+        Access the protected layer with valid credentials and ssl verify full but without the required cert authority.
+        This should not work.
+        """
+        with ScopedCertAuthority(self.username, self.password) as auth_config:
+            pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=auth_config.id())
+            self.assertFalse(pg_layer.isValid())
 
 
 if __name__ == '__main__':

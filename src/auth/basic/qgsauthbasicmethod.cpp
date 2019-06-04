@@ -106,7 +106,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   }
 
   QString sslMode = QStringLiteral( "prefer" );
-  int sslModeIdx = connectionItems.indexOf( QRegExp( "^sslmode='.*" ) );
+  int sslModeIdx = connectionItems.indexOf( QRegExp( "^sslmode=.*" ) );
   if ( sslModeIdx != -1 )
   {
     sslMode = connectionItems.at( sslModeIdx ).split( '=' ).at( 1 );
