@@ -170,7 +170,8 @@ namespace QgsWms
         WITH_MAPTIP,
         WMTVER,
         SRCWIDTH,
-        SRCHEIGHT
+        SRCHEIGHT,
+        TILED
       };
       Q_ENUM( Name )
 
@@ -581,6 +582,20 @@ namespace QgsWms
        * \since QGIS 3.4
        */
       int imageQualityAsInt() const;
+
+      /**
+       * Returns TILED parameter or an empty string if not
+       * defined.
+       * \since QGIS 3.10
+       */
+      QString tiled() const;
+
+      /**
+       * Returns TILED parameter as a boolean.
+       * \throws QgsBadRequestException
+       * \since QGIS 3.10
+       */
+      bool tiledAsBool() const;
 
       /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the

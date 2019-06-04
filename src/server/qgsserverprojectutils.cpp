@@ -111,6 +111,16 @@ int QgsServerProjectUtils::wmsImageQuality( const QgsProject &project )
   return project.readNumEntry( QStringLiteral( "WMSImageQuality" ), QStringLiteral( "/" ), -1 );
 }
 
+int QgsServerProjectUtils::wmsTileBuffer( const QgsProject &project )
+{
+  return project.readNumEntry( QStringLiteral( "WMSTileBuffer" ), QStringLiteral( "/" ), 0 );
+}
+
+int QgsServerProjectUtils::wmsMaxAtlasFeatures( const QgsProject &project )
+{
+  return project.readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 );
+}
+
 double QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( const QgsProject &project )
 {
   return project.readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 );

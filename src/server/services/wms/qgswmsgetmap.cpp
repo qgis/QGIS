@@ -37,6 +37,24 @@ namespace QgsWms
 
     QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
     QgsRenderer renderer( serverIface, project, wmsParameters );
+    // get wms parameters from query
+    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+
+    // prepare render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::UpdateExtent );
+    context.setFlag( QgsWmsRenderContext::UseOpacity );
+    context.setFlag( QgsWmsRenderContext::UseFilter );
+    context.setFlag( QgsWmsRenderContext::UseSelection );
+    context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
+    context.setFlag( QgsWmsRenderContext::AddExternalLayers );
+    context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setFlag( QgsWmsRenderContext::UseTileBuffer );
+    context.setParameters( parameters );
+
+    // rendering
+    QgsRenderer renderer( context );
+    std::unique_ptr<QImage> result( renderer.getMap() );
 
     std::unique_ptr<QImage> result( renderer.getMap() );
     if ( result )

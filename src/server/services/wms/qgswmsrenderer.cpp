@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgswmsutils.h"
 #include "qgswmsrenderer.h"
 #include "qgsfilterrestorer.h"
@@ -746,6 +745,12 @@ namespace QgsWms
     // painting is terminated
     painter->end();
 
+    if ( mContext.testFlag( QgsWmsRenderContext::UseTileBuffer ) )
+    {
+      QRect rect( mContext.tileBuffer(), mContext.tileBuffer(), mContext.mapWidth(), mContext.mapHeight() );
+      image.reset( new QImage( image.get()->copy( rect ) ) );
+    }
+
     // scale output image if necessary (required by WMS spec)
     QImage *scaledImage = scaleImage( image.get() );
     if ( scaledImage )
@@ -1117,6 +1122,7 @@ namespace QgsWms
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
     }
+    QgsRectangle mapExtent = mContext.mapExtent();
 
     QString crs = mWmsParameters.crs();
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
