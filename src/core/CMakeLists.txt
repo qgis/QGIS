@@ -318,6 +318,7 @@ SET(QGIS_CORE_SRCS
   qgstessellator.cpp
   qgstextlabelfeature.cpp
   qgstextrenderer.cpp
+  qgstilecache.cpp
   qgstolerance.cpp
   qgstracer.cpp
   qgstranslationcontext.cpp
@@ -975,6 +976,7 @@ SET(QGIS_CORE_HDRS
   qgstextrenderer.h
   qgstextrenderer_p.h
   qgsthreadingutils.h
+  qgstilecache.h
   qgstracer.h
   qgstranslationcontext.h
 

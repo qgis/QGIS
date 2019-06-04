@@ -3952,6 +3952,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
         if ( mSmoothPixmapTransform )
           p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
+        p.end();
 #if 0
         myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
         p.drawRect( dst ); // show tile bounds
