@@ -431,19 +431,26 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void setParserError( bool parserError );
 
+    void loadFieldValues( const QVariantMap &values );
+
+    void loadFieldsAndValues( const QMap<QString, QVariantMap> &fieldValues );
+
     bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
-    QStandardItemModel *mModel = nullptr;
-    QStringListModel *mValuesModel = nullptr;
-    QSortFilterProxyModel *mProxyValues = nullptr;
-    QgsExpressionItemSearchProxy *mProxyModel = nullptr;
+    std::unique_ptr<QStandardItemModel> mModel;
+    // Will hold items with
+    // * a display string that matches the represented field values
+    // * custom data in Qt::UserRole + 1 that contains a ready to use expression literal ('quoted string' or NULL or a plain number )
+    std::unique_ptr<QStandardItemModel> mValuesModel;
+    std::unique_ptr<QSortFilterProxyModel> mProxyValues;
+    std::unique_ptr<QgsExpressionItemSearchProxy> mProxyModel;
     QMap<QString, QgsExpressionItem *> mExpressionGroups;
     QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
     QgsDistanceArea mDa;
     QString mRecentKey;
-    QMap<QString, QStringList> mFieldValues;
+    QMap<QString, QVariantMap>  mFieldValues;
     QgsExpressionContext mExpressionContext;
     QPointer< QgsProject > mProject;
     bool mEvalError = true;
