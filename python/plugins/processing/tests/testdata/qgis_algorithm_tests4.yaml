@@ -2134,7 +2134,6 @@ tests:
       ZOOM_MIN: 1
       ZOOM_MAX: 3
       TILE_FORMAT: 0     # png
-      ALPHA: 0 # fully transparent
       TMS_CONVENTION: false
       TILE_WIDTH: 256
       TILE_HEIGHT: 256

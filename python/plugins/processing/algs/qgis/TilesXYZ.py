@@ -43,8 +43,7 @@ from qgis.core import (QgsProcessingException,
                        QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
-                       QgsMapRendererCustomPainterJob,
-                       QgsProject)
+                       QgsMapRendererCustomPainterJob)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -130,7 +129,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
     ZOOM_MAX = 'ZOOM_MAX'
     DPI = 'DPI'
     TILE_FORMAT = 'TILE_FORMAT'
-    TRANSPARENT = 'TRANSPARENT'
     QUALITY = 'QUALITY'
 
     def initAlgorithm(self, config=None):
@@ -155,9 +153,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                      self.tr('Tile format'),
                                                      self.formats,
                                                      defaultValue=0))
-        self.addParameter(QgsProcessingParameterBoolean(self.TRANSPARENT,
-                                                        self.tr('Use transparent background (PNG only)'),
-                                                        defaultValue=True))
         self.addParameter(QgsProcessingParameterNumber(self.QUALITY,
                                                        self.tr('Quality (JPG only)'),
                                                        minValue=1,
@@ -178,7 +173,6 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.max_zoom = self.parameterAsInt(parameters, self.ZOOM_MAX, context)
         dpi = self.parameterAsInt(parameters, self.DPI, context)
         self.tile_format = self.formats[self.parameterAsEnum(parameters, self.TILE_FORMAT, context)]
-        transparent = self.parameterAsBool(parameters, self.TRANSPARENT, context)
         quality = self.parameterAsInt(parameters, self.QUALITY, context)
         try:
             tile_width = self.parameterAsInt(parameters, self.TILE_WIDTH, context)
@@ -199,13 +193,8 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         settings.setDestinationCrs(dest_crs)
         settings.setLayers(self.layers)
         settings.setOutputDpi(dpi)
-        canvas_red = QgsProject.instance().readNumEntry('Gui', '/CanvasColorRedPart', 255)[0]
-        canvas_green = QgsProject.instance().readNumEntry('Gui', '/CanvasColorGreenPart', 255)[0]
-        canvas_blue = QgsProject.instance().readNumEntry('Gui', '/CanvasColorBluePart', 255)[0]
-        color = QColor(canvas_red, canvas_green, canvas_blue, 255)
-        if self.tile_format == 'PNG' and transparent:
-            color.setAlpha(0)
-        settings.setBackgroundColor(color)
+        if self.tile_format == 'PNG':
+            settings.setBackgroundColor(QColor(Qt.transparent))
 
         self.wgs_extent = src_to_wgs.transformBoundingBox(extent)
         self.wgs_extent = [self.wgs_extent.xMinimum(), self.wgs_extent.yMinimum(), self.wgs_extent.xMaximum(),
