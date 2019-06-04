@@ -279,6 +279,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void addPoint( const QgsPointXY &point );
 
     /**
+     * Remove previous point in the CAD point list
+     * \since QGIS 3.8
+     */
+    void removePreviousPoint();
+
+    /**
      * Configures list of current CAD points
      *
      * Some map tools may find it useful to override list of CAD points that is otherwise
@@ -426,8 +432,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     //! update the current point in the CAD point list
     void updateCurrentPoint( const QgsPointXY &point );
-    //! remove previous point in the CAD point list
-    void removePreviousPoint();
+
 
     /**
      * filters key press
