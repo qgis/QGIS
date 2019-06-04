@@ -25,6 +25,11 @@
 #include "qgsgeometry.h"
 #include "qgsapplication.h"
 #include "qgsamsdataitems.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
+#include "qgsmessagelog.h"
+#include "qgsauthmanager.h"
+#include "qgstilecache.h"
 
 #ifdef HAVE_GUI
 #include "qgsamssourceselect.h"
@@ -37,6 +42,22 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QPainter>
+#include <QNetworkCacheMetaData>
+
+//! a helper class for ordering tile requests according to the distance from view center
+struct LessThanTileRequest
+{
+  QgsPointXY center;
+  bool operator()( const QgsAmsProvider::TileRequest &req1, const QgsAmsProvider::TileRequest &req2 )
+  {
+    QPointF p1 = req1.mapExtent.center();
+    QPointF p2 = req2.mapExtent.center();
+    // using chessboard distance (loading order more natural than euclidean/manhattan distance)
+    double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
+    double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
+    return d1 < d2;
+  }
+};
 
 QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider )
   : QgsImageFetcher( provider ), mProvider( provider )
@@ -162,6 +183,8 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
     appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AMSProvider" ) ) );
     return;
   }
+  mTiled = mServiceInfo.value( QStringLiteral( "singleFusedMapCache" ) ).toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters;
+
   const QVariantList subLayersList = mLayerInfo.value( QStringLiteral( "subLayers" ) ).toList();
   mSubLayers.reserve( subLayersList.size() );
   for ( const QVariant &sublayer : subLayersList )
@@ -186,6 +209,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
   , mSubLayers( other.mSubLayers )
   , mSubLayerVisibilities( other.mSubLayerVisibilities )
   , mRequestHeaders( other.mRequestHeaders )
+  , mTiled( other.mTiled )
 // intentionally omitted:
 // - mErrorTitle
 // - mError
@@ -252,6 +276,14 @@ void QgsAmsProvider::reloadData()
   mCachedImage = QImage();
 }
 
+bool QgsAmsProvider::renderInPreview( const QgsDataProvider::PreviewContext &context )
+{
+  if ( mTiled )
+    return true;
+
+  return QgsRasterDataProvider::renderInPreview( context );
+}
+
 QgsRasterInterface *QgsAmsProvider::clone() const
 {
   QgsDataProvider::ProviderOptions options;
@@ -293,18 +325,23 @@ QString QgsAmsProvider::htmlMetadata()
   return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
 }
 
-void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback )
+static bool _fuzzyContainsRect( const QRectF &r1, const QRectF &r2 )
 {
-  if ( !mCachedImage.isNull() && mCachedImageExtent == viewExtent )
-  {
-    return;
-  }
+  double significantDigits = std::log10( std::max( r1.width(), r1.height() ) );
+  double epsilon = std::pow( 10.0, significantDigits - 5 ); // floats have 6-9 significant digits
+  return r1.contains( r2.adjusted( epsilon, epsilon, -epsilon, -epsilon ) );
+}
+
+QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback )
+{
   QgsDataSourceUri dataSource( dataSourceUri() );
   const QString authcfg = dataSource.authConfigId();
 
   // Use of tiles currently only implemented if service CRS is meter based
   if ( mServiceInfo[QStringLiteral( "singleFusedMapCache" )].toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
   {
+    mTileReqNo++;
+
     // Compute ideal resolution
     // - Measure distance in meters along lower and upper edge of bounding box
     // - Target resolution is the coarser resolution (resolution = distMeters / pixelWidth)
@@ -323,67 +360,193 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     const QList<QVariant> lodEntries = tileInfo[QStringLiteral( "lods" )].toList();
     if ( lodEntries.isEmpty() )
     {
-      mCachedImage = QImage();
-      return;
+      return QImage();
     }
     int level = 0;
     double resolution = lodEntries.front().toMap()[QStringLiteral( "resolution" )].toDouble();
+    int foundLevel = -1;
+
+    QMap< int, double > levelToResMap;
     for ( const QVariant &lodEntry : lodEntries )
     {
       QVariantMap lodEntryMap = lodEntry.toMap();
+
       level = lodEntryMap[QStringLiteral( "level" )].toInt();
       resolution = lodEntryMap[QStringLiteral( "resolution" )].toDouble();
-      if ( lodEntryMap[QStringLiteral( "resolution" )].toDouble() <= 1.5 * targetRes )
+      levelToResMap.insert( level, resolution );
+      if ( foundLevel < 0 && resolution <= 1.5 * targetRes )
       {
-        break;
+        foundLevel = level;
       }
     }
+    level = foundLevel;
 
-    // Get necessary tiles to fill extent
-    // tile_x = ox + i * (resolution * tileWidth)
-    // tile_y = oy - j * (resolution * tileHeight)
-    int ixStart = std::floor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) );
-    int iyStart = std::floor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) );
-    int ixEnd = std::ceil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) );
-    int iyEnd = std::ceil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) );
-    double imX = ( viewExtent.xMinimum() - ox ) / resolution;
-    double imY = ( oy - viewExtent.yMaximum() ) / resolution;
-
-    // Query tiles
-    int ixCount = ( ixEnd - ixStart + 1 );
-    QVector<QByteArray> results( ixCount * ( iyEnd - iyStart + 1 ) );
-    QVector<QUrl> queries( ixCount * ( iyEnd - iyStart + 1 ) );
-    for ( int iy = iyStart; iy <= iyEnd; ++iy )
+    auto getRequests = [&levelToResMap, &viewExtent, tileWidth, tileHeight, ox, oy, targetRes, &dataSource]( int level, TileRequests & requests )
     {
-      for ( int ix = ixStart; ix <= ixEnd; ++ix )
-      {
-        queries[( iy - iyStart ) * ixCount + ( ix - ixStart )] = QUrl( dataSource.param( QStringLiteral( "url" ) ) + QStringLiteral( "/tile/%1/%2/%3" ).arg( level ).arg( iy ).arg( ix ) );
-      }
-    }
-    QgsArcGisAsyncParallelQuery query( authcfg, mRequestHeaders );
-    QEventLoop evLoop;
-    connect( &query, &QgsArcGisAsyncParallelQuery::finished, &evLoop, &QEventLoop::quit );
-    query.start( queries, &results, true );
-    evLoop.exec( QEventLoop::ExcludeUserInputEvents );
+      const double resolution = levelToResMap.value( level );
 
-    // Fill image
-    mCachedImage = QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
-    mCachedImage.fill( Qt::transparent );
-    QPainter painter( &mCachedImage );
-    painter.setRenderHint( QPainter::SmoothPixmapTransform, true );
-    double resScale = resolution / targetRes;
-    painter.scale( resScale, resScale );
-    for ( int iy = iyStart; iy <= iyEnd; ++iy )
-    {
-      for ( int ix = ixStart; ix <= ixEnd; ++ix )
+      // Get necessary tiles to fill extent
+      // tile_x = ox + i * (resolution * tileWidth)
+      // tile_y = oy - j * (resolution * tileHeight)
+      int ixStart = std::floor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) );
+      int iyStart = std::floor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) );
+      int ixEnd = std::ceil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) );
+      int iyEnd = std::ceil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) );
+      double imX = ( viewExtent.xMinimum() - ox ) / resolution;
+      double imY = ( oy - viewExtent.yMaximum() ) / resolution;
+
+      int i = 0;
+      const double resScale = resolution / targetRes;
+      for ( int iy = iyStart; iy <= iyEnd; ++iy )
       {
-        QImage image = QImage::fromData( results[( iy - iyStart ) * ixCount + ( ix - ixStart )], tileInfo[QStringLiteral( "format" )].toByteArray() );
-        painter.drawImage( QPointF( ix * tileWidth - imX, iy * tileHeight - imY ), image );
+        for ( int ix = ixStart; ix <= ixEnd; ++ix )
+        {
+          const QUrl url = QUrl( dataSource.param( QStringLiteral( "url" ) ) + QStringLiteral( "/tile/%1/%2/%3" ).arg( level ).arg( iy ).arg( ix ) );
+          const QRectF tileImageRect( ( ix * tileWidth - imX ) * resScale,
+                                      ( iy * tileHeight - imY ) * resScale,
+                                      tileWidth * resScale,
+                                      tileHeight * resScale );
+
+          const QRectF worldRect( ox + ix * ( resolution * tileWidth ), oy - iy * ( resolution * tileHeight ), tileWidth * resolution, tileHeight * resolution );
+
+          requests.push_back( TileRequest( url, tileImageRect, i, worldRect ) );
+          i++;
+        }
+      }
+    };
+
+    // Get necessary tiles at ideal level to fill extent
+    TileRequests requests;
+    getRequests( level, requests );
+
+    QList<TileImage> tileImages;  // in the correct resolution
+    QList<QRectF> missing;  // rectangles (in map coords) of missing tiles for this view
+
+    QImage image( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
+    image.fill( Qt::transparent );
+
+    TileRequests requestsFinal;
+    for ( const TileRequest &r : qgis::as_const( requests ) )
+    {
+      QImage localImage;
+      if ( QgsTileCache::tile( r.url, localImage ) )
+      {
+        tileImages << TileImage( r.rect, localImage );
+      }
+      else
+      {
+        missing << r.rect;
+
+        // need to make a request
+        requestsFinal << r;
       }
     }
+
+    QPainter p( &image );
+
+    // draw other res tiles if preview
+    if ( feedback && feedback->isPreviewOnly() && missing.count() > 0 )
+    {
+      // some tiles are still missing, so let's see if we have any cached tiles
+      // from lower or higher resolution available to give the user a bit of context
+      // while loading the right resolution
+      p.setCompositionMode( QPainter::CompositionMode_Source );
+
+      auto fetchOtherResTiles = [&getRequests]( int otherLevel, QList< TileImage> &otherResTiles, QList< QRectF > &missingRects )
+      {
+        TileRequests otherRequests;
+        getRequests( otherLevel, otherRequests );
+        QList<QRectF> missingRectsToDelete;
+        for ( const TileRequest &r : qgis::as_const( otherRequests ) )
+        {
+          QImage localImage;
+          if ( ! QgsTileCache::tile( r.url, localImage ) )
+            continue;
+
+          otherResTiles << TileImage( r.rect, localImage );
+
+          // see if there are any missing rects that are completely covered by this tile
+          for ( const QRectF &missingRect : qgis::as_const( missingRects ) )
+          {
+            // we need to do a fuzzy "contains" check because the coordinates may not align perfectly
+            // due to numerical errors and/or transform of coords from double to floats
+            if ( _fuzzyContainsRect( r.rect, missingRect ) )
+            {
+              missingRectsToDelete << missingRect;
+            }
+          }
+        }
+
+        // remove all the rectangles we have completely covered by tiles from this resolution
+        // so we will not use tiles from multiple resolutions for one missing tile (to save time)
+        for ( const QRectF &rectToDelete : qgis::as_const( missingRectsToDelete ) )
+        {
+          missingRects.removeOne( rectToDelete );
+        }
+      };
+
+      QList<TileImage> lowerResTiles, lowerResTiles2, higherResTiles;
+      // first we check lower resolution tiles: one level back, then two levels back (if there is still some are not covered),
+      // finally (in the worst case we use one level higher resolution tiles). This heuristic should give
+      // good overviews while not spending too much time drawing cached tiles from resolutions far away.
+      fetchOtherResTiles( level - 1, lowerResTiles, missing );
+      fetchOtherResTiles( level - 2, lowerResTiles2, missing );
+      fetchOtherResTiles( level + 1, higherResTiles, missing );
+
+      // draw the cached tiles lowest to highest resolution
+      const auto constLowerResTiles2 = lowerResTiles2;
+      for ( const TileImage &ti : constLowerResTiles2 )
+      {
+        p.drawImage( ti.rect, ti.img );
+      }
+      const auto constLowerResTiles = lowerResTiles;
+      for ( const TileImage &ti : constLowerResTiles )
+      {
+        p.drawImage( ti.rect, ti.img );
+      }
+      const auto constHigherResTiles = higherResTiles;
+      for ( const TileImage &ti : constHigherResTiles )
+      {
+        p.drawImage( ti.rect, ti.img );
+      }
+    }
+
+    // draw composite in this resolution
+    for ( const TileImage &ti : qgis::as_const( tileImages ) )
+    {
+      p.drawImage( ti.rect, ti.img );
+    }
+
+    p.end();
+
+    if ( feedback && feedback->isPreviewOnly() )
+    {
+      // preview job only, so don't request any new tiles
+    }
+    else if ( !requestsFinal.isEmpty() )
+    {
+      // let the feedback object know about the tiles we have already
+      if ( feedback && feedback->renderPartialOutput() )
+        feedback->onNewData();
+
+      // order tile requests according to the distance from view center
+      LessThanTileRequest cmp;
+      cmp.center = viewExtent.center();
+      std::sort( requestsFinal.begin(), requestsFinal.end(), cmp );
+
+      QgsAmsTiledImageDownloadHandler handler( authcfg, mRequestHeaders, mTileReqNo, requestsFinal, &image, viewExtent, feedback );
+      handler.downloadBlocking();
+    }
+
+    return image;
   }
   else
   {
+    if ( !mCachedImage.isNull() && mCachedImageExtent == viewExtent )
+    {
+      return mCachedImage;
+    }
+
     QUrl requestUrl( dataSource.param( QStringLiteral( "url" ) ) + "/export" );
     requestUrl.addQueryItem( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( viewExtent.xMinimum(), 0, 'f', -1 ).arg( viewExtent.yMinimum(), 0, 'f', -1 ).arg( viewExtent.xMaximum(), 0, 'f', -1 ).arg( viewExtent.yMaximum(), 0, 'f', -1 ) );
     requestUrl.addQueryItem( QStringLiteral( "size" ), QStringLiteral( "%1,%2" ).arg( pixelWidth ).arg( pixelHeight ) );
@@ -400,6 +563,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
       mCachedImage = QImage();
       if ( feedback )
         feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
+      return QImage();
     }
     else if ( contentType.startsWith( QLatin1String( "application/json" ) ) )
     {
@@ -426,6 +590,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
 
       if ( feedback )
         feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
+      return QImage();
     }
     else
     {
@@ -434,6 +599,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
       {
         mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
       }
+      return mCachedImage;
     }
   }
 }
@@ -534,14 +700,14 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
 bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
 {
   // TODO: optimize to avoid writing to QImage
-  draw( viewExtent, width, height, feedback );
-  if ( mCachedImage.isNull() )
+  QImage res = draw( viewExtent, width, height, feedback );
+  if ( res.isNull() )
   {
     return false;
   }
-  else if ( mCachedImage.width() != width || mCachedImage.height() != height )
+  else if ( res.width() != width || res.height() != height )
   {
-    const QString error = tr( "Unexpected image size for block. Expected %1x%2, got %3x%4" ).arg( width ).arg( height ).arg( mCachedImage.width() ).arg( mCachedImage.height() );
+    const QString error = tr( "Unexpected image size for block. Expected %1x%2, got %3x%4" ).arg( width ).arg( height ).arg( res.width() ).arg( res.height() );
     if ( feedback )
       feedback->appendError( error );
 
@@ -550,9 +716,325 @@ bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
   }
   else
   {
-    std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );
+    std::memcpy( data, res.constBits(), res.bytesPerLine() * res.height() );
     return true;
   }
+}
+
+
+//
+// QgsAmsTiledImageDownloadHandler
+//
+
+QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler( const QString &auth,  const QgsStringMap &requestHeaders, int tileReqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback )
+  : mAuth( auth )
+  , mRequestHeaders( requestHeaders )
+  , mImage( image )
+  , mViewExtent( viewExtent )
+  , mEventLoop( new QEventLoop )
+  , mTileReqNo( tileReqNo )
+  , mFeedback( feedback )
+{
+  if ( feedback )
+  {
+    connect( feedback, &QgsFeedback::canceled, this, &QgsAmsTiledImageDownloadHandler::canceled, Qt::QueuedConnection );
+
+    // rendering could have been canceled before we started to listen to canceled() signal
+    // so let's check before doing the download and maybe quit prematurely
+    if ( feedback->isCanceled() )
+      return;
+  }
+
+  for ( const QgsAmsProvider::TileRequest &r : requests )
+  {
+    QNetworkRequest request( r.url );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsAmsTiledImageDownloadHandler" ) );
+    QgsSetRequestInitiatorId( request, QString::number( r.index ) );
+    for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
+    {
+      request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+    }
+    if ( !mAuth.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuth ) )
+    {
+      const QString error = tr( "network request update failed for authentication config" );
+      // mErrors.append( error );
+      QgsMessageLog::logMessage( error, tr( "Network" ) );
+      continue;
+    }
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), r.index );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r.rect );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
+
+    QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
+    connect( reply, &QNetworkReply::finished, this, &QgsAmsTiledImageDownloadHandler::tileReplyFinished );
+
+    mReplies << reply;
+  }
+}
+
+QgsAmsTiledImageDownloadHandler::~QgsAmsTiledImageDownloadHandler()
+{
+  delete mEventLoop;
+}
+
+void QgsAmsTiledImageDownloadHandler::downloadBlocking()
+{
+  if ( mFeedback && mFeedback->isCanceled() )
+    return; // nothing to do
+
+  mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
+
+  Q_ASSERT( mReplies.isEmpty() );
+}
+
+
+void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+
+  if ( QgsNetworkAccessManager::instance()->cache() )
+  {
+    QNetworkCacheMetaData cmd = QgsNetworkAccessManager::instance()->cache()->metaData( reply->request().url() );
+
+    QNetworkCacheMetaData::RawHeaderList hl;
+    const auto constRawHeaders = cmd.rawHeaders();
+    for ( const QNetworkCacheMetaData::RawHeader &h : constRawHeaders )
+    {
+      if ( h.first != "Cache-Control" )
+        hl.append( h );
+    }
+    cmd.setRawHeaders( hl );
+
+    QgsDebugMsg( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+    if ( cmd.expirationDate().isNull() )
+    {
+      QgsSettings s;
+      cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "qgis/defaultTileExpiry" ), "24" ).toInt() * 60 * 60 ) );
+    }
+
+    QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
+  }
+
+  int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
+  int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+  QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
+
+  if ( reply->error() == QNetworkReply::NoError )
+  {
+    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( !redirect.isNull() )
+    {
+      QNetworkRequest request( redirect.toUrl() );
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsAmsTiledImageDownloadHandler" ) );
+      QgsSetRequestInitiatorId( request, QString::number( tileReqNo ) );
+      for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
+      {
+        request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+      }
+      if ( !mAuth.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuth ) )
+      {
+        const QString error = tr( "network request update failed for authentication config" );
+        // mErrors.append( error );
+        QgsMessageLog::logMessage( error, tr( "Network" ) );
+      }
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), tileReqNo );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileIndex ), tileNo );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r );
+      request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
+
+      mReplies.removeOne( reply );
+      reply->deleteLater();
+
+      QgsDebugMsg( QStringLiteral( "redirected gettile: %1" ).arg( redirect.toString() ) );
+      reply = QgsNetworkAccessManager::instance()->get( request );
+      mReplies << reply;
+
+      connect( reply, &QNetworkReply::finished, this, &QgsAmsTiledImageDownloadHandler::tileReplyFinished );
+
+      return;
+    }
+
+    QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    if ( !status.isNull() && status.toInt() >= 400 )
+    {
+      QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+      mReplies.removeOne( reply );
+      reply->deleteLater();
+
+      if ( mReplies.isEmpty() )
+        finish();
+
+      return;
+    }
+
+    QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    QgsDebugMsg( "contentType: " + contentType );
+    if ( !contentType.isEmpty() && !contentType.startsWith( QLatin1String( "image/" ), Qt::CaseInsensitive ) &&
+         contentType.compare( QLatin1String( "application/octet-stream" ), Qt::CaseInsensitive ) != 0 )
+    {
+      QByteArray text = reply->readAll();
+      QString errorTitle, errorText;
+      if ( contentType.startsWith( QLatin1String( "application/json" ), Qt::CaseInsensitive ) )
+      {
+        // if we get a JSON response, something went wrong (e.g. authentication error)
+        QJsonParseError err;
+        QJsonDocument doc = QJsonDocument::fromJson( text, &err );
+        if ( doc.isNull() )
+        {
+          errorTitle = QObject::tr( "Error" );
+          errorText = text;
+        }
+        else
+        {
+          const QVariantMap res = doc.object().toVariantMap();
+          if ( res.contains( QStringLiteral( "error" ) ) )
+          {
+            const QVariantMap error = res.value( QStringLiteral( "error" ) ).toMap();
+            errorText = error.value( QStringLiteral( "message" ) ).toString();
+            errorTitle = QObject::tr( "Error %1" ).arg( error.value( QStringLiteral( "code" ) ).toString() );
+          }
+        }
+
+        if ( mFeedback )
+          mFeedback->appendError( QStringLiteral( "%1: %2" ).arg( errorTitle, errorText ) );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)" )
+                                   .arg( status.toString(),
+                                         contentType )
+                                   .arg( text.size() )
+                                   .arg( reply->url().toString() ), tr( "WMS" ) );
+#ifdef QGISDEBUG
+        QFile file( QDir::tempPath() + "/broken-image.png" );
+        if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+        {
+          file.write( text );
+          file.close();
+        }
+#endif
+      }
+
+      mReplies.removeOne( reply );
+      reply->deleteLater();
+
+      if ( mReplies.isEmpty() )
+        finish();
+
+      return;
+    }
+
+    // only take results from current request number
+    if ( mTileReqNo == tileReqNo )
+    {
+      QgsDebugMsg( QStringLiteral( "tile reply: length %1" ).arg( reply->bytesAvailable() ) );
+
+      QImage myLocalImage = QImage::fromData( reply->readAll() );
+
+      if ( !myLocalImage.isNull() )
+      {
+        QPainter p( mImage );
+        p.drawImage( r, myLocalImage );
+        p.end();
+
+        QgsTileCache::insertTile( reply->url(), myLocalImage );
+
+        if ( mFeedback )
+          mFeedback->onNewData();
+      }
+      else
+      {
+        QString errorText = tr( "Returned image is flawed [Content-Type: %1; URL: %2]" )
+                            .arg( contentType, reply->url().toString() );
+        if ( mFeedback )
+          mFeedback->appendError( errorText );
+      }
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Reply too late [%1]" ).arg( reply->url().toString() ) );
+    }
+
+    mReplies.removeOne( reply );
+    reply->deleteLater();
+
+    if ( mReplies.isEmpty() )
+      finish();
+
+  }
+  else
+  {
+    if ( !( mFeedback && mFeedback->isPreviewOnly() ) )
+    {
+      // report any errors except for the one we have caused by canceling the request
+      if ( reply->error() != QNetworkReply::OperationCanceledError )
+      {
+        // if we reached timeout, let's try again (e.g. in case of slow connection or slow server)
+        if ( reply->error() == QNetworkReply::TimeoutError )
+          repeatTileRequest( reply->request() );
+      }
+    }
+
+    mReplies.removeOne( reply );
+    reply->deleteLater();
+
+    if ( mReplies.isEmpty() )
+      finish();
+  }
+}
+
+void QgsAmsTiledImageDownloadHandler::canceled()
+{
+  QgsDebugMsg( QStringLiteral( "Caught canceled() signal" ) );
+  const auto constMReplies = mReplies;
+  for ( QNetworkReply *reply : constMReplies )
+  {
+    QgsDebugMsg( QStringLiteral( "Aborting tiled network request" ) );
+    reply->abort();
+  }
+}
+
+
+void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &oldRequest )
+{
+  QNetworkRequest request( oldRequest );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsAmsTiledImageDownloadHandler" ) );
+
+  QString url = request.url().toString();
+  int tileReqNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
+  int tileNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+  int retry = request.attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
+  retry++;
+
+  QgsSettings s;
+  int maxRetry = s.value( QStringLiteral( "qgis/defaultTileMaxRetry" ), "3" ).toInt();
+  if ( retry > maxRetry )
+  {
+    return;
+  }
+
+  for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
+  {
+    request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
+  }
+  if ( !mAuth.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuth ) )
+  {
+    const QString error = tr( "network request update failed for authentication config" );
+    // mErrors.append( error );
+    QgsMessageLog::logMessage( error, tr( "Network" ) );
+    return;
+  }
+  QgsDebugMsg( QStringLiteral( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
+  request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
+
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
+  mReplies << reply;
+  connect( reply, &QNetworkReply::finished, this, &QgsAmsTiledImageDownloadHandler::tileReplyFinished );
 }
 
 #ifdef HAVE_GUI

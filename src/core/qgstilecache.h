@@ -16,12 +16,14 @@
 #ifndef QGSTILECACHE_H
 #define QGSTILECACHE_H
 
-
+#include "qgis_core.h"
 #include <QCache>
 #include <QMutex>
 
 class QImage;
 class QUrl;
+
+#define SIP_NO_FILE
 
 /**
  * A simple tile cache implementation. Tiles are cached according to their URL.
@@ -30,8 +32,11 @@ class QUrl;
  * uncompress data saved on the disk.
  *
  * The class is thread safe (its methods can be called from any thread).
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.8.0
  */
-class QgsTileCache
+class CORE_EXPORT QgsTileCache
 {
   public:
 
