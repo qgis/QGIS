@@ -88,7 +88,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
         parent,
         [ = ]{
             qInfo() << "Dial value: " << mRotateSceneDial->value();
-            parent->cameraController()->setCameraHeadingAngle(mRotateSceneDial->value());
+            parent->cameraController()->setCameraHeadingAngle(mRotateSceneDial->value() - 180);
     }
     );
 
