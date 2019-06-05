@@ -92,7 +92,7 @@ void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
   fileWriter.setPyramidsResampling( d.pyramidsResamplingMethod() );
   fileWriter.setPyramidsFormat( d.pyramidsFormat() );
   fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
-  fileWriter.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs() );
+  fileWriter.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs(), rl.transformContext() );
   {
     QVERIFY( QgsRasterLayer( rasterUri, QStringLiteral( "my_raster2" ) ).isValid() );
   }
@@ -101,7 +101,7 @@ void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
   d.mLayerName->setText( QStringLiteral( "test_vector_layer" ) );
   QVERIFY( d.outputLayerExists() );
   auto fileWriter2 { QgsRasterFileWriter( d.outputFileName() ) };
-  fileWriter2.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs() );
+  fileWriter2.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs(), rl.transformContext() );
   {
     auto rasterUri2 { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
     QVERIFY( ! QgsRasterLayer( rasterUri2, QStringLiteral( "my_raster2" ) ).isValid() );
