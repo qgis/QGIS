@@ -4,4 +4,6 @@ ADD auth_system/certs_keys/localhost_ssl_cert.pem /etc/ssl/certs/localhost_ssl_c
 ADD auth_system/certs_keys/localhost_ssl_key.pem /etc/ssl/private/localhost_ssl_key.pem
 ADD auth_system/certs_keys/chains_subissuer-issuer-root_issuer2-root2.pem /etc/ssl/certs/chains_subissuer-issuer-root_issuer2-root2.pem
 
+RUN chmod 400 /etc/ssl/private/localhost_ssl_key.pem
+
 ADD temp/setup-ssl.sh /
