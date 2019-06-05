@@ -586,11 +586,7 @@ void QgsMapToolCapture::undo()
     mCaptureCurve.deleteVertex( vertexToRemove );
     mSnappingMatches.removeAt( vertexToRemove.vertex );
 
-    // If Cad is enabled, update the points accordingly
-    if ( mCadDockWidget->cadEnabled() )
-    {
-      mCadDockWidget->removePreviousPoint();
-    }
+    mCadDockWidget->removePreviousPoint();
 
     validateGeometry();
   }
