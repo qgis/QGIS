@@ -98,7 +98,7 @@ class TestAuthManager(unittest.TestCase):
         authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys')
-        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
+        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'issuer_ca_cert.pem')
 
         def printMessage(tag, msg, level):
             with open('/tmp/fmt.log', 'a') as f:
