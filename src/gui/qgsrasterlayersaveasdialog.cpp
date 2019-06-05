@@ -924,17 +924,28 @@ bool QgsRasterLayerSaveAsDialog::validate() const
 
 bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
 {
-  QString uri;
+  QString vectorUri;
+  QString rasterUri;
   if ( outputFormat() == QStringLiteral( "GPKG" ) )
   {
-    uri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
+    rasterUri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
+    vectorUri = QStringLiteral( "%1|layername=%2" ).arg( outputFileName(), outputLayerName() );
   }
   else
   {
-    uri = outputFileName();
+    rasterUri = outputFileName();
   }
-  std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, QString( ), QStringLiteral( "gdal" ) ) );
-  return rastLayer->isValid();
+
+  QgsRasterLayer rasterLayer( rasterUri, QString( ), QStringLiteral( "gdal" ) );
+  if ( !vectorUri.isEmpty() )
+  {
+    QgsVectorLayer vectorLayer( vectorUri, QString( ), QStringLiteral( "ogr" ) );
+    return rasterLayer.isValid() || vectorLayer.isValid();
+  }
+  else
+  {
+    return rasterLayer.isValid();
+  }
 }
 
 void QgsRasterLayerSaveAsDialog::accept()
