@@ -158,6 +158,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     QTimer *mTimer = nullptr;
     QgsWFSFeatureHitsAsyncRequest mFeatureHitsAsyncRequest;
     qint64 mTotalDownloadedFeatureCount;
+    QMutex mMutexCreateProgressDialog;
 };
 
 //! Downloader thread
