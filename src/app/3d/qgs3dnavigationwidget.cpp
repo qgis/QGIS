@@ -47,7 +47,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     mTiltUpButton = new QToolButton(this);
     mTiltUpButton->setToolTip(QStringLiteral("Tilt Up"));
     mTiltUpButton->setAutoRepeat(true);
-    mTiltUpButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowUp.svg" ) ) );
+    mTiltUpButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionTiltUp.svg" ) ) );
     mTiltUpButton->setAutoRaise(true);
 
     QObject::connect(
@@ -63,7 +63,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     mTiltDownButton = new QToolButton(this);
     mTiltDownButton->setToolTip(QStringLiteral("Tilt Down"));
     mTiltDownButton->setAutoRepeat(true);
-    mTiltDownButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowDown.svg" ) ) );
+    mTiltDownButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionTiltDown.svg" ) ) );
     mTiltDownButton->setAutoRaise(true);
 
     QObject::connect(
