@@ -252,7 +252,7 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
   {
     clear();
   }
-  else
+  else if ( dateTime != QgsDateTimeEdit::dateTime() )
   {
     QDateTimeEdit::setDateTime( dateTime );
     changed( dateTime );
