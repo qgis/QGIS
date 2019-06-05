@@ -31,3 +31,8 @@ bool QgsFirstRunDialog::migrateSettings()
 {
   return ( mImportSettingsYes->isChecked() );
 }
+
+void QgsFirstRunDialog::hideMigration()
+{
+  mMigrationWidget->hide();
+}
