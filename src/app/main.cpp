@@ -1000,6 +1000,10 @@ int main( int argc, char *argv[] )
       if ( !settingsMigrationForce && showWelcome )
       {
         QgsFirstRunDialog dlg;
+        if ( ! QFile::exists( QSettings( "QGIS", "QGIS2" ).fileName() ) )
+        {
+          dlg.hideMigration();
+        }
         dlg.exec();
         runMigration = dlg.migrateSettings();
         migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
