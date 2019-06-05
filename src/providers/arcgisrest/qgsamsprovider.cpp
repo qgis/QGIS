@@ -337,8 +337,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
   QgsDataSourceUri dataSource( dataSourceUri() );
   const QString authcfg = dataSource.authConfigId();
 
-  // Use of tiles currently only implemented if service CRS is meter based
-  if ( mServiceInfo[QStringLiteral( "singleFusedMapCache" )].toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
+  if ( mTiled )
   {
     mTileReqNo++;
 
@@ -349,7 +348,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     double targetRes = width / ( pixelWidth );
 
     // Tiles available, assemble image from tiles
-    QVariantMap tileInfo = mServiceInfo[QStringLiteral( "tileInfo" )].toMap();
+    QVariantMap tileInfo = mServiceInfo.value( QStringLiteral( "tileInfo" ) ).toMap();
     int tileWidth = tileInfo[QStringLiteral( "cols" )].toInt();
     int tileHeight = tileInfo[QStringLiteral( "rows" )].toInt();
     QVariantMap origin = tileInfo[QStringLiteral( "origin" )].toMap();
@@ -388,10 +387,10 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
       // Get necessary tiles to fill extent
       // tile_x = ox + i * (resolution * tileWidth)
       // tile_y = oy - j * (resolution * tileHeight)
-      int ixStart = std::floor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) );
-      int iyStart = std::floor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) );
-      int ixEnd = std::ceil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) );
-      int iyEnd = std::ceil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) );
+      int ixStart = static_cast< int >( std::floor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) ) );
+      int iyStart = static_cast< int >( std::floor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) ) );
+      int ixEnd = static_cast< int >( std::ceil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) ) );
+      int iyEnd = static_cast< int >( std::ceil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) ) );
       double imX = ( viewExtent.xMinimum() - ox ) / resolution;
       double imY = ( oy - viewExtent.yMaximum() ) / resolution;
 
@@ -426,6 +425,9 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     image.fill( Qt::transparent );
 
     TileRequests requestsFinal;
+    tileImages.reserve( requests.size() );
+    missing.reserve( requests.size() );
+    requestsFinal.reserve( requests.size() );
     for ( const TileRequest &r : qgis::as_const( requests ) )
     {
       QImage localImage;
