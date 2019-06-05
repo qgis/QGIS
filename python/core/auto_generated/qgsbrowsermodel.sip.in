@@ -154,6 +154,7 @@ and on Linux the "/" root directory.
 %End
 
   signals:
+
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 %Docstring
 Emitted when item children fetch was finished
@@ -221,6 +222,7 @@ Delayed initialization, needed because the provider registry must be already pop
 
 .. seealso:: :py:func:`initialized`
 %End
+
 
   protected:
     void addRootItems();
