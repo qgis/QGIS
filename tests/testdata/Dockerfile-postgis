@@ -1,0 +1,5 @@
+FROM kartoza/postgis-11.0-2.5-1
+
+ADD auth_system/certs_keys/localhost_ssl_cert.pem /etc/ssl/certs/localhost_ssl_cert.pem
+ADD auth_system/certs_keys/localhost_ssl_key.pem /etc/ssl/private/localhost_ssl_key.pem
+ADD auth_system/certs_keys/chains_subissuer-issuer-root_issuer2-root2.pem /etc/ssl/certs/chains_subissuer-issuer-root_issuer2-root2.pem
