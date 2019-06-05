@@ -229,6 +229,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
       << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255, -1, -1 )
       << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255, -1, -1 )
       << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QVariant::String, -1, -1, -1, -1 )
 
       // date type
       << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
@@ -978,6 +979,7 @@ bool QgsPostgresProvider::loadFields()
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
+                fieldTypeName == QLatin1String( "citext" ) ||
                 fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
                 fieldTypeName == QLatin1String( "money" ) ||
