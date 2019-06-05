@@ -1,7 +1,7 @@
 version: '3'
 services:
   postgres:
-    image: kartoza/postgis:9.5-2.2
+    image: kartoza/postgis:11.0-2.5
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
 
