@@ -11,6 +11,7 @@
 
 Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(parent)
 {
+    mParent3DMapCanvas = parent;
     // Zoom in button
     mZoomInButton = new QToolButton(this);
     mZoomInButton->setToolTip(QStringLiteral("Zoom In"));
@@ -80,6 +81,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     mRotateSceneDial->setToolTip(QStringLiteral("Rotate view"));
     mRotateSceneDial->setWrapping(true);
     mRotateSceneDial->setMaximum(359);
+    // To make it pointing to the top
     mRotateSceneDial->setValue(180);
 
     QObject::connect(
@@ -87,7 +89,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
         &QDial::valueChanged,
         parent,
         [ = ]{
-            qInfo() << "Dial value: " << mRotateSceneDial->value();
+            // Subtract 180 since we "rotate" the QDial so that 0 is pointing at top.
             parent->cameraController()->setCameraHeadingAngle(mRotateSceneDial->value() - 180);
     }
     );
@@ -172,4 +174,9 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 Qgs3DNavigationWidget::~Qgs3DNavigationWidget()
 {
 
+}
+
+void Qgs3DNavigationWidget::updateRotateSceneDialAngle(){
+    // Adding 180 since we "rotate" the QDial so that 0 is pointing at top.
+    mRotateSceneDial->setValue((mParent3DMapCanvas->cameraController()->yaw() + 180));
 }

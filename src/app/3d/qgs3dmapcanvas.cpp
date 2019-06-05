@@ -86,6 +86,16 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   mMap = map;
 
   resetView();
+
+  // Connect the camera to the navigation widget.
+  QObject::connect(
+              this->cameraController(),
+              &QgsCameraController::cameraChanged,
+              mNavigationWidget,
+              [ = ]{
+                mNavigationWidget->updateFromCamera();
+                }
+   );
 }
 
 QgsCameraController *Qgs3DMapCanvas::cameraController()

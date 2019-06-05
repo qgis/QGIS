@@ -30,12 +30,14 @@ class Qgs3DNavigationWidget : public QWidget
 public:
     Qgs3DNavigationWidget(Qgs3DMapCanvas *parent = nullptr);
     ~Qgs3DNavigationWidget();
+    void updateRotateSceneDialAngle();
 
 signals:
 
 public slots:
 
 private:
+    Qgs3DMapCanvas *mParent3DMapCanvas = nullptr;
     QToolButton *mZoomInButton = nullptr;
     QToolButton *mZoomOutButton = nullptr;
     QToolButton *mTiltUpButton = nullptr;
