@@ -695,7 +695,7 @@ void QgsProject::clear()
 
   mFile.setFileName( QString() );
   mProperties.clearKeys();
-  mHomePath.clear();
+  setPresetHomePath( QString( ) );
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
@@ -1081,6 +1081,9 @@ bool QgsProject::read()
     //but delete the translator
     mTranslator.reset( nullptr );
   }
+
+  // Set home path
+  setPresetHomePath( homePath() );
 
   return rc;
 }
