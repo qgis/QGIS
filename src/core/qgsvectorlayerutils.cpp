@@ -495,7 +495,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
         // If the layer is filtered, get unique values from an unfiltered clone
         if ( ! layer->subsetString().isEmpty() )
         {
-          QgsVectorLayer *unfilteredClone { layer->clone( ) };
+          std::unique_ptr<QgsVectorLayer> unfilteredClone { layer->clone( ) };
           unfilteredClone->setSubsetString( QString( ) );
           uniqueValueCaches[ idx ] = unfilteredClone->uniqueValues( idx );
         }
