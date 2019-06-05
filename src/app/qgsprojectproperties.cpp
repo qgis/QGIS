@@ -1283,15 +1283,12 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSImageQuality" ), QStringLiteral( "/" ), imageQualityValue );
   }
 
-<<<<<<< HEAD
-=======
   // WMS TileBuffer
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSTileBuffer" ), QStringLiteral( "/" ), mWMSTileBufferSpinBox->value() );
 
   int maxAtlasFeatures = mWMSMaxAtlasFeaturesSpinBox->value();
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), maxAtlasFeatures );
 
->>>>>>> 35c4209bfd... New parameter for WMS service: tile_buffer [needs-docs][FEATURE]
   double defaultMapUnitsPerMm;
   if ( QgsProject::instance()->crs().isGeographic() )
   {
