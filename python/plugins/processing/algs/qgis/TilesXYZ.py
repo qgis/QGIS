@@ -410,13 +410,13 @@ LEAFLET_TEMPLATE = '''
    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
    crossorigin=""></script>
   <style type="text/css">
-    #map{{
-       left: 10px;
-       right: 10px;
-       top: 10px;
-       bottom: 10px;
-       width: 600px;
-       height: 400px;
+    body {{
+       margin: 0;
+       padding: 0;
+    }}
+    html, body, #map{{
+       width: 100%;
+       height: 100%;
     }}
   </style>
 </head>
