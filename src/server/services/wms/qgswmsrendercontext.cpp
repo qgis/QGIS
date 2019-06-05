@@ -656,12 +656,8 @@ QgsRectangle QgsWmsRenderContext::mapExtent() const
     throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                   mParameters[QgsWmsParameter::BBOX] );
   }
-  const double extentWidth = extent.width();
-  const double extentHeight = extent.height();
-  const int width = mapWidth();
-  const int height = mapHeight();
-  const double resolutionX = extentWidth / width;
-  const double resolutionY = extentHeight / height;
+  const double resolutionX = extent.width() / mapWidth();
+  const double resolutionY = extent.height() / mapHeight();
   const int tBuffer = mFlags & UseTileBuffer ? tileBuffer() : 0;
   const double xMin = extent.xMinimum() - tBuffer * resolutionX;
   const double yMin = extent.yMinimum() - tBuffer * resolutionY;
