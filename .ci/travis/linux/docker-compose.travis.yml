@@ -6,7 +6,7 @@ services:
       context: ../../../tests/testdata
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
-# The following files are added in Dopckerfile-postgis
+# The following files are added in Dockerfile-postgis
       - SSL_CERT_FILE=/etc/ssl/certs/localhost_ssl_cert.pem
       - SSL_KEY_FILE=/etc/ssl/private/localhost_ssl_key.pem
       - SSL_CA_FILE=/etc/ssl/certs/chains_subissuer-issuer-root_issuer2-root2.pem

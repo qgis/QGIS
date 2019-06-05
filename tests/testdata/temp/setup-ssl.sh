@@ -17,20 +17,22 @@ chown -R postgres /tmp/ssl-copy
 rm -r /etc/ssl
 mv /tmp/ssl-copy /etc/ssl
 
-# Needed under debian, wasnt needed under ubuntu
+# Needed under debian, was not needed under ubuntu
 mkdir -p ${PGSTAT_TMP}
 chmod 0777 ${PGSTAT_TMP}
 
+{
 # moved from setup.sh
-echo "ssl = true" >> $CONF
-#echo "ssl_ciphers = 'DEFAULT:!LOW:!EXP:!MD5:@STRENGTH' " >> $CONF
-#echo "ssl_renegotiation_limit = 512MB "  >> $CONF
-echo "ssl_cert_file = '${SSL_CERT_FILE}'" >> $CONF
-echo "ssl_key_file = '${SSL_KEY_FILE}'" >> $CONF
-if [ ! -z "${SSL_CA_FILE}" ]; then
-	echo "ssl_ca_file = '${SSL_CA_FILE}'                       # (change requires restart)" >> $CONF
+echo "ssl = true"
+#echo "ssl_ciphers = 'DEFAULT:!LOW:!EXP:!MD5:@STRENGTH' "
+#echo "ssl_renegotiation_limit = 512MB "  >>
+echo "ssl_cert_file = '${SSL_CERT_FILE}'"
+echo "ssl_key_file = '${SSL_KEY_FILE}'"
+if [ -n "${SSL_CA_FILE}" ]; then
+	echo "ssl_ca_file = '${SSL_CA_FILE}'                       # (change requires restart)"
 fi
-#echo "ssl_crl_file = ''" >> $CONF
+#echo "ssl_crl_file = ''"
+} >> $CONF
 
 # Put lock file to make sure conf was not reinitialized
 touch ${SETUP_LOCKFILE}
