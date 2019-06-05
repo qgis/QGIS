@@ -165,6 +165,12 @@ void QgsWFSFeatureDownloader::createProgressDialog()
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
+  // Make sure that the creation is done in an atomic way, so that the
+  // starting thread (running QgsWFSFeatureDownloader::run()) can be sure that
+  // this function has either run completely, or not at all (mStop == true),
+  // when it wants to destroy mProgressDialog
+  QMutexLocker locker( &mMutexCreateProgressDialog );
+
   if ( mStop )
     return;
   Q_ASSERT( !mProgressDialog );
@@ -834,7 +840,10 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     }
   }
 
-  mStop = true;
+  {
+    QMutexLocker locker( &mMutexCreateProgressDialog );
+    mStop = true;
+  }
 
   if ( serializeFeatures )
     mShared->endOfDownload( success, mTotalDownloadedFeatureCount, truncatedResponse, interrupted, mErrorMessage );
@@ -857,6 +866,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     mTimer->deleteLater();
     mTimer = nullptr;
   }
+
   // explicitly abort here so that mReply is destroyed within the right thread
   // otherwise will deadlock because deleteLayer() will not have a valid thread to post
   abort();
