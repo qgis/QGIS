@@ -1528,8 +1528,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "WIDTH": "512",
             "HEIGHT": "512",
             "LAYERS": "wms_tile_buffer_data",
-            "FORMAT": "image/png",
-            "TILED": "false"
+            "FORMAT": "image/png"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
