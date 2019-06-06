@@ -51,6 +51,8 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
+os.environ['PGSSLROOTCERT'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../testdata/auth_system_cert_keys/issuer_ca_cert.pem')
+
 qgis_app = start_app()
 
 
