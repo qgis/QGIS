@@ -127,6 +127,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     {
       caparam = "sslrootcert='" + caFilePath + "'";
     }
+    qWarning() << caparam;
   }
 
   // Branch for OGR
@@ -282,6 +283,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
       else
       {
         connectionItems.append( caparam );
+        qWarning() << QStringLiteral( "Connection items after appending" ).arg( connectionItems.join( "&" ) );
       }
     }
   }
