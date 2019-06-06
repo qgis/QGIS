@@ -690,7 +690,7 @@ void QgsGeorefPluginGui::localHistogramStretch()
 // Info slots
 void QgsGeorefPluginGui::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
 }
 
 // Comfort slots
