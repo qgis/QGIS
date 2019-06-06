@@ -332,7 +332,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
             if out.name() not in outputs:
                 continue
 
-            o = outputs[out.name()]            
+            o = outputs[out.name()]
             if isinstance(o, QgsProperty):
                 dest = o.valueAsString(context.expressionContext())[0]
             elif isinstance(o, QgsProcessingOutputLayerDefinition):
