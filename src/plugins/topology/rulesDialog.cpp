@@ -336,5 +336,5 @@ void rulesDialog::clearRules()
 
 void rulesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_topology_checker.html" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_topology_checker.html" ) );
 }
