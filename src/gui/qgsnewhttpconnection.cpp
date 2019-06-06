@@ -235,6 +235,11 @@ QPushButton *QgsNewHttpConnection::testConnectButton()
   return mTestConnectionButton;
 }
 
+QgsAuthSettingsWidget *QgsNewHttpConnection::authSettingsWidget()
+{
+  return mAuthSettings;
+}
+
 QPushButton *QgsNewHttpConnection::wfsVersionDetectButton()
 {
   return mWfsVersionDetectButton;
