@@ -10319,11 +10319,16 @@ void QgisApp::legendLayerZoomNative()
   if ( !currentLayer )
     return;
 
-  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
-  if ( layer )
+  if ( QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer ) )
   {
     QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
     QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
+
+    QList< double >nativeResolutions;
+    if ( layer->dataProvider() )
+    {
+      nativeResolutions = layer->dataProvider()->nativeResolutions();
+    }
 
     // get length of central canvas pixel width in source raster crs
     QgsRectangle e = mMapCanvas->extent();
@@ -10333,8 +10338,33 @@ void QgisApp::legendLayerZoomNative()
     QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs(), QgsProject::instance() );
     p1 = ct.transform( p1 );
     p2 = ct.transform( p2 );
-    double width = std::sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
-    mMapCanvas->zoomByFactor( std::sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
+    const double diagonalSize = std::sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
+    if ( !nativeResolutions.empty() )
+    {
+      // find closest native resolution
+      QList< double > diagonalNativeResolutions;
+      diagonalNativeResolutions.reserve( nativeResolutions.size() );
+      for ( double d : nativeResolutions )
+        diagonalNativeResolutions << std::sqrt( 2 * d * d );
+
+      int i;
+      for ( i = 0; i < diagonalNativeResolutions.size() && diagonalNativeResolutions.at( i ) < diagonalSize; i++ )
+      {
+        QgsDebugMsg( QStringLiteral( "test resolution %1: %2" ).arg( i ).arg( diagonalNativeResolutions.at( i ) ) );
+      }
+      if ( i == nativeResolutions.size() ||
+           ( i > 0 && ( ( diagonalNativeResolutions.at( i ) - diagonalSize ) > ( diagonalSize - diagonalNativeResolutions.at( i - 1 ) ) ) ) )
+      {
+        QgsDebugMsg( QStringLiteral( "previous resolution" ) );
+        i--;
+      }
+
+      mMapCanvas->zoomByFactor( diagonalNativeResolutions.at( i ) / diagonalSize );
+    }
+    else
+    {
+      mMapCanvas->zoomByFactor( std::sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / diagonalSize );
+    }
 
     mMapCanvas->refresh();
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
