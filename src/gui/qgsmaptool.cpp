@@ -34,7 +34,8 @@ QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
 
 QgsMapTool::~QgsMapTool()
 {
-  mCanvas->unsetMapTool( this );
+  if ( mCanvas )
+    mCanvas->unsetMapTool( this );
 }
 
 
