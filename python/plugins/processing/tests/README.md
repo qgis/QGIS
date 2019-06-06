@@ -196,7 +196,7 @@ OUTPUT:
 
 #### Directories
 
-You can compare the content of an output directory by an expected result reference directory
+You can compare the content of an output directory with an expected result reference directory
 
 ```yaml
 OUTPUT_DIR:
