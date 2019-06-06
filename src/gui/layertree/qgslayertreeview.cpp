@@ -26,6 +26,7 @@
 
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QHeaderView>
 
 #include "qgslayertreeviewindicator.h"
 #include "qgslayertreeviewitemdelegate.h"
@@ -42,6 +43,10 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setDropIndicatorShown( true );
   setEditTriggers( EditKeyPressed );
   setExpandsOnDoubleClick( false ); // normally used for other actions
+
+  // Ensure legend graphics are scrollable
+  header()->setStretchLastSection( false );
+  header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
