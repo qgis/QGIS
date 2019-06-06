@@ -1091,8 +1091,10 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsAmsTiledImageDownloadHandler" ) );
 
   QString url = request.url().toString();
+#ifdef QGISDEBUG
   int tileReqNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
   int tileNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
+#endif
   int retry = request.attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
   retry++;
 

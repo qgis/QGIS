@@ -34,6 +34,7 @@ class QUrl;
  * The class is thread safe (its methods can be called from any thread).
  *
  * \note Not available in Python bindings
+ * \ingroup core
  * \since QGIS 3.8.0
  */
 class CORE_EXPORT QgsTileCache
