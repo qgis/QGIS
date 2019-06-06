@@ -100,11 +100,6 @@ class TestAuthManager(unittest.TestCase):
         cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys')
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
 
-        def printMessage(tag, msg, level):
-            with open('/tmp/fmt.log', 'a') as f:
-                f.write('{}: {}'.format(tag, msg))
-        QgsApplication.instance().messageLog().messageReceived.connect(printMessage)
-
     def setUp(self):
         """Run before each test."""
         pass
