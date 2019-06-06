@@ -527,6 +527,16 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual int stepHeight() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT; }
 
+    /**
+     * Returns a list of native resolutions if available, i.e. map units per pixel at which the raster source
+     * was originally created.
+     *
+     * Resolutions are calculated in the provider's crs().
+     *
+     * \since QGIS 3.8.0
+     */
+    virtual QList< double > nativeResolutions() const;
+
   signals:
 
     /**

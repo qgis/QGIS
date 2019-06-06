@@ -92,6 +92,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) override;
     QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QList< double > nativeResolutions() const override;
 
     //! Helper struct for tile requests
     struct TileRequest
@@ -139,7 +140,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     int mTileReqNo = 0;
     bool mTiled = false;
     QgsLayerMetadata mLayerMetadata;
-    QVariantList mResolutions;
+    QList< double > mResolutions;
 };
 
 //! Handler for tiled MapServer requests, the data are written to the given image
