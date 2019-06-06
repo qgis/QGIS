@@ -695,7 +695,7 @@ void QgsProject::clear()
 
   mFile.setFileName( QString() );
   mProperties.clearKeys();
-  mHomePath.clear();
+  mHomePath = QString();
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
@@ -751,6 +751,7 @@ void QgsProject::clear()
   mRootGroup->clear();
 
   setDirty( false );
+  emit homePathChanged();
   emit cleared();
 }
 
@@ -1035,7 +1036,7 @@ bool QgsProject::read( const QString &filename )
 bool QgsProject::read()
 {
   QString filename = mFile.fileName();
-  bool rc;
+  bool returnValue;
 
   if ( QgsProjectStorage *storage = projectStorage() )
   {
@@ -1057,32 +1058,33 @@ bool QgsProject::read()
       setError( err );
       return false;
     }
-
-    return unzip( inDevice.fileName() );  // calls setError() if returning false
-  }
-
-  if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
-  {
-    rc = unzip( mFile.fileName() );
+    returnValue = unzip( inDevice.fileName() );  // calls setError() if returning false
   }
   else
   {
-    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
-    rc = readProjectFile( mFile.fileName() );
-  }
+    if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+    {
+      returnValue = unzip( mFile.fileName() );
+    }
+    else
+    {
+      mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
+      returnValue = readProjectFile( mFile.fileName() );
+    }
 
-  //on translation we should not change the filename back
-  if ( !mTranslator )
-  {
-    mFile.setFileName( filename );
+    //on translation we should not change the filename back
+    if ( !mTranslator )
+    {
+      mFile.setFileName( filename );
+    }
+    else
+    {
+      //but delete the translator
+      mTranslator.reset( nullptr );
+    }
   }
-  else
-  {
-    //but delete the translator
-    mTranslator.reset( nullptr );
-  }
-
-  return rc;
+  emit homePathChanged();
+  return returnValue;
 }
 
 bool QgsProject::readProjectFile( const QString &filename )
