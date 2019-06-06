@@ -50,6 +50,7 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
     QImage mLegendImage;
     QString mErrorTitle;
     QString mError;
+
 };
 
 class QgsAmsProvider : public QgsRasterDataProvider
@@ -60,7 +61,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     explicit QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
-
+    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const;
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
     QString name() const override { return QStringLiteral( "mapserver" ); }
@@ -73,7 +74,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     void setSubLayerVisibility( const QString &name, bool vis ) override;
     void reloadData() override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
-
+    QgsLayerMetadata layerMetadata() const override;
 
     /* Inherited from QgsRasterInterface */
     int bandCount() const override { return 1; }
@@ -137,6 +138,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QgsStringMap mRequestHeaders;
     int mTileReqNo = 0;
     bool mTiled = false;
+    QgsLayerMetadata mLayerMetadata;
 };
 
 //! Handler for tiled MapServer requests, the data are written to the given image

@@ -170,8 +170,10 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
 
   const QString authcfg = dataSource.authConfigId();
 
-  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( dataSource.param( QStringLiteral( "url" ) ), authcfg, mErrorTitle, mError, mRequestHeaders );
-  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) ), authcfg, mErrorTitle, mError, mRequestHeaders );
+  const QString serviceUrl = dataSource.param( QStringLiteral( "url" ) );
+  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
+  const QString layerUrl = dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) );
+  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
 
   const QVariantMap extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
   mExtent.setXMinimum( extentData[QStringLiteral( "xmin" )].toDouble() );
@@ -184,6 +186,15 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
     appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AMSProvider" ) ) );
     return;
   }
+
+  QgsLayerMetadata::SpatialExtent spatialExtent;
+  spatialExtent.bounds = QgsBox3d( mExtent );
+  spatialExtent.extentCrs = mCrs;
+  QgsLayerMetadata::Extent metadataExtent;
+  metadataExtent.setSpatialExtents( QList<  QgsLayerMetadata::SpatialExtent >() << spatialExtent );
+  mLayerMetadata.setExtent( metadataExtent );
+  mLayerMetadata.setCrs( mCrs );
+
   mTiled = mServiceInfo.value( QStringLiteral( "singleFusedMapCache" ) ).toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters;
 
   const QVariantList subLayersList = mLayerInfo.value( QStringLiteral( "subLayers" ) ).toList();
@@ -196,6 +207,34 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
 
   mTimestamp = QDateTime::currentDateTime();
   mValid = true;
+
+  // layer metadata
+
+  mLayerMetadata.setIdentifier( layerUrl );
+  mLayerMetadata.setParentIdentifier( serviceUrl );
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  mLayerMetadata.setTitle( mLayerInfo.value( QStringLiteral( "name" ) ).toString() );
+  mLayerMetadata.setAbstract( mLayerInfo.value( QStringLiteral( "description" ) ).toString() );
+  const QString copyright = mLayerInfo.value( QStringLiteral( "copyrightText" ) ).toString();
+  if ( !copyright.isEmpty() )
+    mLayerMetadata.setRights( QStringList() << copyright );
+  mLayerMetadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), layerUrl ) );
+  const QVariantMap docInfo = mServiceInfo.value( QStringLiteral( "documentInfo" ) ).toMap();
+  const QStringList keywords = docInfo.value( QStringLiteral( "Keywords" ) ).toString().split( ',' );
+  if ( !keywords.empty() )
+  {
+    mLayerMetadata.addKeywords( QStringLiteral( "keywords" ), keywords );
+  }
+  const QString category = docInfo.value( QStringLiteral( "Category" ) ).toString();
+  if ( !category.isEmpty() )
+    mLayerMetadata.setCategories( QStringList() << category );
+  const QString author = docInfo.value( QStringLiteral( "Author" ) ).toString();
+  if ( !author.isEmpty() )
+  {
+    QgsAbstractMetadataBase::Contact contact( author );
+    contact.role = QStringLiteral( "author" );
+    mLayerMetadata.addContact( contact );
+  }
 }
 
 QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
@@ -211,6 +250,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
   , mSubLayerVisibilities( other.mSubLayerVisibilities )
   , mRequestHeaders( other.mRequestHeaders )
   , mTiled( other.mTiled )
+  , mLayerMetadata( other.mLayerMetadata )
 // intentionally omitted:
 // - mErrorTitle
 // - mError
@@ -221,6 +261,11 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
 
   // is this needed?
   mTimestamp = QDateTime::currentDateTime();
+}
+
+QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities() const
+{
+  return QgsRasterDataProvider::ReadLayerMetadata;
 }
 
 QStringList QgsAmsProvider::subLayerStyles() const
@@ -283,6 +328,11 @@ bool QgsAmsProvider::renderInPreview( const QgsDataProvider::PreviewContext &con
     return true;
 
   return QgsRasterDataProvider::renderInPreview( context );
+}
+
+QgsLayerMetadata QgsAmsProvider::layerMetadata() const
+{
+  return mLayerMetadata;
 }
 
 QgsRasterInterface *QgsAmsProvider::clone() const
