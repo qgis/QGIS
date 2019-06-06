@@ -70,7 +70,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     /**
      * Constructor
      *
-     * \param type The type of the new element. Should never
+     * \param type The type of the new element.
      * \param name
      * \param parent
      */
