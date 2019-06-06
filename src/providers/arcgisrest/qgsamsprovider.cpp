@@ -235,6 +235,19 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
     contact.role = QStringLiteral( "author" );
     mLayerMetadata.addContact( contact );
   }
+
+  if ( mTiled )
+  {
+    const QVariantMap tileInfo = mServiceInfo.value( QStringLiteral( "tileInfo" ) ).toMap();
+    const QList<QVariant> lodEntries = tileInfo[QStringLiteral( "lods" )].toList();
+    for ( const QVariant &lodEntry : lodEntries )
+    {
+      const QVariantMap lodEntryMap = lodEntry.toMap();
+      mResolutions << lodEntryMap[QStringLiteral( "resolution" )].toDouble();
+    }
+    std::sort( mResolutions.begin(), mResolutions.end() );
+    setProperty( "resolutions", mResolutions );
+  }
 }
 
 QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
@@ -251,6 +264,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
   , mRequestHeaders( other.mRequestHeaders )
   , mTiled( other.mTiled )
   , mLayerMetadata( other.mLayerMetadata )
+  , mResolutions( other.mResolutions )
 // intentionally omitted:
 // - mErrorTitle
 // - mError
@@ -261,6 +275,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
 
   // is this needed?
   mTimestamp = QDateTime::currentDateTime();
+  setProperty( "resolutions", mResolutions );
 }
 
 QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities() const

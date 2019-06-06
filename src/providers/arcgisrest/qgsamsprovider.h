@@ -139,6 +139,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     int mTileReqNo = 0;
     bool mTiled = false;
     QgsLayerMetadata mLayerMetadata;
+    QVariantList mResolutions;
 };
 
 //! Handler for tiled MapServer requests, the data are written to the given image

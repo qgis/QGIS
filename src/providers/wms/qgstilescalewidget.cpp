@@ -47,10 +47,12 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   mSlider->setDisabled( true );
 
   QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rl || rl->providerType() != QLatin1String( "wms" ) || !rl->dataProvider() )
+  if ( !rl || !rl->dataProvider() )
     return;
 
-  QVariant res = rl->dataProvider()->property( "resolutions" );
+  const QVariant res = rl->dataProvider()->property( "resolutions" );
+  if ( res.toList().isEmpty() )
+    return;
 
   mResolutions.clear();
   const auto constToList = res.toList();
