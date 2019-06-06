@@ -105,18 +105,36 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     return false;
   }
 
+  QString sslMode = QStringLiteral( "prefer" );
+  int sslModeIdx = connectionItems.indexOf( QRegExp( "^sslmode=.*" ) );
+  if ( sslModeIdx != -1 )
+  {
+    sslMode = connectionItems.at( sslModeIdx ).split( '=' ).at( 1 );
+  }
+
   // SSL Extra CAs
   QString caparam;
   QList<QSslCertificate> cas;
-  cas = QgsApplication::authManager()->trustedCaCerts();
-  // save CAs to temp file
-  QString tempFileBase = QStringLiteral( "tmp_basic_%1.pem" );
-  QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
-                         tempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsAuthCertUtils::certsToPemText( cas ) );
-  if ( ! caFilePath.isEmpty() )
+  if ( sslMode.startsWith( QStringLiteral( "verify-" ) ) )
   {
-    caparam = "sslrootcert='" + caFilePath + "'";
+    cas = QgsApplication::authManager()->trustedCaCerts();
+    // save CAs to temp file
+    QString tempFileBase = QStringLiteral( "tmp_basic_%1.pem" );
+    QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                           tempFileBase.arg( QUuid::createUuid().toString() ),
+                           QgsAuthCertUtils::certsToPemText( cas ) );
+    if ( ! caFilePath.isEmpty() )
+    {
+      caparam = "sslrootcert='" + caFilePath + "'";
+    }
+    QFile f( caFilePath );
+    if ( !f.open( QFile::ReadOnly | QFile::Text ) )
+    {
+      qWarning() << "Could not open ca cert file!!";
+    }
+    QTextStream in( &f );
+    qWarning() << caparam;
+    qWarning() << f.size() << in.readAll();
   }
 
   // Branch for OGR
@@ -272,6 +290,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
       else
       {
         connectionItems.append( caparam );
+        qWarning() << QStringLiteral( "Connection items after appending %1" ).arg( connectionItems.join( "&" ) );
       }
     }
   }
