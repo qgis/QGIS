@@ -28,8 +28,8 @@
 class Qgs3DNavigationWidget : public QWidget
 {
     Q_OBJECT
-public:
-    Qgs3DNavigationWidget(Qgs3DMapCanvas *parent = nullptr);
+  public:
+    Qgs3DNavigationWidget( Qgs3DMapCanvas *parent = nullptr );
     ~Qgs3DNavigationWidget();
 
     /**
@@ -37,11 +37,11 @@ public:
      */
     void updateFromCamera();
 
-signals:
+  signals:
 
-public slots:
+  public slots:
 
-private:
+  private:
     Qgs3DMapCanvas *mParent3DMapCanvas = nullptr;
     QToolButton *mZoomInButton = nullptr;
     QToolButton *mZoomOutButton = nullptr;

@@ -135,11 +135,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Reads camera configuration from the given DOM element
     void readXml( const QDomElement &elem );
 
-    void zoom(float factor);
-    void tiltUpAroundViewCenter(float deltaPitch);
-    void rotateAroundViewCenter(float deltaYaw);
-    void setCameraHeadingAngle(float angle);
-    void moveView(float tx, float ty);
+    void zoom( float factor );
+    void tiltUpAroundViewCenter( float deltaPitch );
+    void rotateAroundViewCenter( float deltaYaw );
+    void setCameraHeadingAngle( float angle );
+    void moveView( float tx, float ty );
 
   private:
     void rotateCamera( float diffPitch, float diffYaw );

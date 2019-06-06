@@ -76,7 +76,7 @@ class Qgs3DMapCanvas : public QWidget
     /**
      * Set the visibility of on-screen navigation widget.
      */
-    void setOnScreenNavigationVisibility(bool visibility);
+    void setOnScreenNavigationVisibility( bool visibility );
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
