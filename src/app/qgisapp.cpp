@@ -4596,13 +4596,21 @@ static void setupVectorLayer( const QString &vectorLayerPath,
   }
 }
 
+
 bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )
 {
-  bool wasfrozen = mMapCanvas->isFrozen();
-  QList<QgsMapLayer *> myList;
-  QgsSettings settings;
+  return addVectorLayersPrivate( layerQStringList, enc, dataSourceType );
+}
 
-  Q_FOREACH ( QString src, layerQStringList )
+bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, const bool guiWarning )
+{
+  bool wasfrozen = mMapCanvas->isFrozen();
+  QList<QgsMapLayer *> layersToAdd;
+  QList<QgsMapLayer *> addedLayers;
+  QgsSettings settings;
+  bool userAskedToAddLayers = false;
+
+  for ( QString src : layerQStringList )
   {
     src = src.trimmed();
     QString baseName;
@@ -4672,6 +4680,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
     if ( layer->isValid() )
     {
+      userAskedToAddLayers = true;
       layer->setProviderEncoding( enc );
 
       QStringList sublayers = layer->dataProvider()->subLayers();
@@ -4681,7 +4690,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       // sublayers selection dialog so the user can select the sublayers to actually load.
       if ( sublayers.count() > 1 )
       {
-        askUserForOGRSublayers( layer );
+        addedLayers.append( askUserForOGRSublayers( layer ) );
 
         // The first layer loaded is not useful in that case. The user can select it in
         // the list if he wants to load it.
@@ -4693,12 +4702,15 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
         setupVectorLayer( src, sublayers, layer,
                           QStringLiteral( "ogr" ), options );
 
-        myList << layer;
+        layersToAdd << layer;
       }
       else
       {
-        QString msg = tr( "%1 doesn't have any layers." ).arg( src );
-        visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
+        if ( guiWarning )
+        {
+          QString msg = tr( "%1 doesn't have any layers." ).arg( src );
+          visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
+        }
         delete layer;
       }
     }
@@ -4712,9 +4724,9 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
            QMessageBox::question( this, tr( "Invalid Data Source" ),
                                   tr( "Download with \"Protocol\" source type has failed, do you want to try the \"File\" source type?" ) ) == QMessageBox::Yes )
       {
-        return addVectorLayers( QStringList() << src.replace( QLatin1String( "/vsicurl/" ), " " ), enc, dataSourceType );
+        return addVectorLayersPrivate( QStringList() << src.replace( QLatin1String( "/vsicurl/" ), " " ), enc, dataSourceType, guiWarning );
       }
-      else
+      else if ( guiWarning )
       {
         visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
       }
@@ -4722,14 +4734,16 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
   }
 
   // make sure at least one layer was successfully added
-  if ( myList.isEmpty() )
+  if ( layersToAdd.isEmpty() )
   {
-    return false;
+    // we also return true if we asked the user for sublayers, but they choose none. In this case nothing
+    // went wrong, so we shouldn't return false and cause GUI warnings to appear
+    return userAskedToAddLayers || !addedLayers.isEmpty();
   }
 
   // Register this layer with the layers registry
-  QgsProject::instance()->addMapLayers( myList );
-  Q_FOREACH ( QgsMapLayer *l, myList )
+  QgsProject::instance()->addMapLayers( layersToAdd );
+  for ( QgsMapLayer *l : qgis::as_const( layersToAdd ) )
   {
     bool ok;
     l->loadDefaultStyle( ok );
@@ -4744,16 +4758,17 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
     freezeCanvases( false );
     refreshMapCanvas();
   }
-// Let render() do its own cursor management
-//  QApplication::restoreOverrideCursor();
-
-  // statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
 
   return true;
-} // QgisApp::addVectorLayer()
+}
 
 
 QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
+{
+  return addMeshLayerPrivate( url, baseName, providerKey );
+}
+
+QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &baseName, const QString &providerKey, const bool guiWarning )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
   QgsSettings settings;
@@ -4773,8 +4788,11 @@ QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName
 
   if ( ! layer || !layer->isValid() )
   {
-    QString msg = tr( "%1 is not a valid or recognized data source." ).arg( url );
-    visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
+    if ( guiWarning )
+    {
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( url );
+      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
+    }
 
     // since the layer is bad, stomp on it
     return nullptr;
@@ -4798,7 +4816,7 @@ QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName
     refreshMapCanvas();
   }
   return layer.release();
-} // QgisApp::addMeshLayer()
+}
 
 // present a dialog to choose zipitem layers
 bool QgisApp::askUserForZipItemLayers( const QString &path )
@@ -4913,23 +4931,24 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
 }
 
 // present a dialog to choose GDAL raster sublayers
-void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
+QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 {
+  QList< QgsMapLayer * > result;
   if ( !layer )
-    return;
+    return result;
 
   QStringList sublayers = layer->subLayers();
   QgsDebugMsg( QStringLiteral( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
 
   if ( sublayers.empty() )
-    return;
+    return result;
 
   // if promptLayers=Load all, load all sublayers without prompting
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/promptForRasterSublayers" ), 1 ).toInt() == 3 )
   {
-    loadGDALSublayers( layer->source(), sublayers );
-    return;
+    result.append( loadGDALSublayers( layer->source(), sublayers ) );
+    return result;
   }
 
   // We initialize a selection dialog and display it.
@@ -5020,6 +5039,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
         {
           addRasterLayer( rlayer );
         }
+        result << rlayer;
       }
     }
 
@@ -5027,6 +5047,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     if ( addToGroup && ! newLayersVisible )
       group->setItemVisibilityCheckedRecursive( newLayersVisible );
   }
+  return result;
 }
 
 // should the GDAL sublayers dialog should be presented to the user?
@@ -5048,8 +5069,9 @@ bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
 
 // This method will load with GDAL the layers in parameter.
 // It is normally triggered by the sublayer selection dialog.
-void QgisApp::loadGDALSublayers( const QString &uri, const QStringList &list )
+QList< QgsMapLayer * > QgisApp::loadGDALSublayers( const QString &uri, const QStringList &list )
 {
+  QList< QgsMapLayer * > result;
   QString path, name;
   QgsRasterLayer *subLayer = nullptr;
   QgsSettings settings;
@@ -5069,6 +5091,7 @@ void QgisApp::loadGDALSublayers( const QString &uri, const QStringList &list )
     if ( subLayer )
     {
       if ( subLayer->isValid() )
+      {
         if ( addToGroup )
         {
           QgsProject::instance()->addMapLayer( subLayer, false );
@@ -5078,22 +5101,26 @@ void QgisApp::loadGDALSublayers( const QString &uri, const QStringList &list )
         {
           addRasterLayer( subLayer );
         }
+        result << subLayer;
+      }
       else
         delete subLayer;
     }
 
   }
+  return result;
 }
 
 // This method is the method that does the real job. If the layer given in
 // parameter is nullptr, then the method tries to act on the activeLayer.
-void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
+QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 {
+  QList<QgsMapLayer *> result;
   if ( !layer )
   {
     layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
     if ( !layer || layer->dataProvider()->name() != QLatin1String( "ogr" ) )
-      return;
+      return result;
   }
 
   QStringList sublayers = layer->dataProvider()->subLayers();
@@ -5138,7 +5165,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   chooseSublayersDialog.populateLayerTable( list );
 
   if ( !chooseSublayersDialog.exec() )
-    return;
+    return result;
 
   QString name = layer->name();
 
@@ -5149,7 +5176,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
   QString fileName = QFileInfo( uri ).baseName();
-  QList<QgsMapLayer *> myList;
   Q_FOREACH ( const QgsSublayersDialog::LayerDefinition &def, chooseSublayersDialog.selection() )
   {
     QString layerGeometryType = def.type;
@@ -5176,7 +5202,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
     if ( layer && layer->isValid() )
     {
-      myList << layer;
+      result << layer;
     }
     else
     {
@@ -5186,7 +5212,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
   }
 
-  if ( ! myList.isEmpty() )
+  if ( !result.isEmpty() )
   {
     QgsSettings settings;
     bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
@@ -5195,8 +5221,8 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     if ( addToGroup )
       group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, name );
 
-    QgsProject::instance()->addMapLayers( myList, ! addToGroup );
-    Q_FOREACH ( QgsMapLayer *l, myList )
+    QgsProject::instance()->addMapLayers( result, ! addToGroup );
+    for ( QgsMapLayer *l : qgis::as_const( result ) )
     {
       bool ok;
       l->loadDefaultStyle( ok );
@@ -5209,6 +5235,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     if ( addToGroup && ! newLayersVisible )
       group->setItemVisibilityCheckedRecursive( newLayersVisible );
   }
+  return result;
 }
 
 void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey )
@@ -5298,12 +5325,12 @@ void QgisApp::addVirtualLayer()
            this, SLOT( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
   dts->exec();
   delete dts;
-} // QgisApp::addVirtualLayer()
+}
 
 void QgisApp::addSelectedVectorLayer( const QString &uri, const QString &layerName, const QString &provider )
 {
   addVectorLayer( uri, layerName, provider );
-} // QgisApp:addSelectedVectorLayer
+}
 
 void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider )
 {
@@ -6355,24 +6382,17 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     else
       ok  = addRasterLayer( fileName, fileInfo.completeBaseName() );
   }
-  // TODO - should we really call isValidRasterFileName() before addRasterLayer()
-  //        this results in 2 calls to GDALOpen()
-  // I think (Radim) that it is better to test only first if valid,
-  // addRasterLayer() is really trying to add layer and gives error if fails
-  //
-  // if ( addRasterLayer( fileName, fileInfo.completeBaseName() ) )
-  // {
-  //   ok  = true );
-  // }
-  else // nope - try to load it as a shape/ogr
+
+  // try as a vector
+  if ( !ok )
   {
     if ( allowInteractive )
     {
-      ok = addVectorLayers( QStringList( fileName ), QStringLiteral( "System" ), QStringLiteral( "file" ) );
+      ok = addVectorLayersPrivate( QStringList( fileName ), QStringLiteral( "System" ), QStringLiteral( "file" ), false );
     }
     else
     {
-      ok = addVectorLayer( fileName, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      ok = addVectorLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "ogr" ), false );
     }
   }
 
@@ -6381,13 +6401,16 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   // Try to load as mesh layer after raster & vector
   if ( !ok )
   {
-    ok = addMeshLayer( fileName, fileInfo.completeBaseName(), "mdal" );
+    ok = static_cast< bool >( addMeshLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "mdal" ), false ) );
   }
 
   if ( !ok )
   {
     // we have no idea what this file is...
     QgsMessageLog::logMessage( tr( "Unable to load %1" ).arg( fileName ) );
+
+    const QString msg = tr( "%1 is not a valid or recognized data source." ).arg( fileName );
+    visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
   }
 
   return ok;
@@ -10836,6 +10859,11 @@ void QgisApp::showLayoutManager()
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
+  return addVectorLayerPrivate( vectorLayerPath, name, providerKey );
+}
+
+QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, const QString &name, const QString &providerKey, const bool guiWarning )
+{
   bool wasfrozen = mMapCanvas->isFrozen();
   QgsSettings settings;
 
@@ -10880,12 +10908,12 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
          ! vectorLayerPath.contains( QStringLiteral( "layerid=" ) ) &&
          ! vectorLayerPath.contains( QStringLiteral( "layername=" ) ) )
     {
-      askUserForOGRSublayers( layer );
+      QList< QgsMapLayer * > addedLayers = askUserForOGRSublayers( layer );
 
       // The first layer loaded is not useful in that case. The user can select it in
       // the list if he wants to load it.
       delete layer;
-      layer = nullptr;
+      layer = addedLayers.isEmpty() ? nullptr : qobject_cast< QgsVectorLayer * >( addedLayers.at( 0 ) );
     }
     else
     {
@@ -10909,9 +10937,12 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
   }
   else
   {
-    QString message = layer->dataProvider()->error().message( QgsErrorMessage::Text );
-    QString msg = tr( "The layer %1 is not a valid layer and can not be added to the map. Reason: %2" ).arg( vectorLayerPath, message );
-    visibleMessageBar()->pushMessage( tr( "Layer is not valid" ), msg, Qgis::Critical, messageTimeout() );
+    if ( guiWarning )
+    {
+      QString message = layer->dataProvider()->error().message( QgsErrorMessage::Text );
+      QString msg = tr( "The layer %1 is not a valid layer and can not be added to the map. Reason: %2" ).arg( vectorLayerPath, message );
+      visibleMessageBar()->pushMessage( tr( "Layer is not valid" ), msg, Qgis::Critical, messageTimeout() );
+    }
 
     delete layer;
     freezeCanvases( false );
@@ -10931,9 +10962,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
   return layer;
 
-} // QgisApp::addVectorLayer
-
-
+}
 
 void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
 {
@@ -12935,13 +12964,13 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
 
     if ( shouldAskUserForGDALSublayers( layer ) )
     {
-      askUserForGDALSublayers( layer );
+      QList< QgsMapLayer * > subLayers = askUserForGDALSublayers( layer );
       ok = true;
 
       // The first layer loaded is not useful in that case. The user can select it in
       // the list if he wants to load it.
       delete layer;
-      layer = nullptr;
+      layer = !subLayers.isEmpty() ? qobject_cast< QgsRasterLayer * >( subLayers.at( 0 ) ) : nullptr;
     }
   }
   else
