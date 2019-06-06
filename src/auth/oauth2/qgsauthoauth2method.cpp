@@ -23,6 +23,7 @@
 #include "qgso2.h"
 #include "qgsauthoauth2config.h"
 #include "qgsauthoauth2edit.h"
+#include "qgsguiutils.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -142,23 +143,50 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
 
     if ( expired )
     {
-      msg = QStringLiteral( "Token expired, attempting refresh for authcfg %1" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+      if ( o2->refreshToken().isEmpty() || o2->refreshTokenUrl().isEmpty() )
+      {
+        msg = QStringLiteral( "Token expired, but no refresh token or URL defined for authcfg %1" ).arg( authcfg );
+        QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
+        // clear any previous token session properties
+        o2->unlink();
+      }
+      else
+      {
+        msg = QStringLiteral( "Token expired, attempting refresh for authcfg %1" ).arg( authcfg );
+        QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
-      // Try to get a refresh token first
-      // go into local event loop and wait for a fired refresh-related slot
-      QEventLoop rloop( nullptr );
-      connect( o2, &QgsO2::refreshFinished, &rloop, &QEventLoop::quit );
+        // Try to get a refresh token first
+        // go into local event loop and wait for a fired refresh-related slot
+        QEventLoop rloop( nullptr );
+        connect( o2, &QgsO2::refreshFinished, &rloop, &QEventLoop::quit );
 
-      // Asynchronously attempt the refresh
-      // TODO: This already has a timed reply setup in O2 base class (and in QgsNetworkAccessManager!)
-      //       May need to address this or app crashes will occur!
-      o2->refresh();
+        // add singlshot timer to quit refresh after an alloted timeout
+        // this should keep the local event loop from blocking forever
+        QTimer r_timer( nullptr );
+        int r_reqtimeout = o2->oauth2config()->requestTimeout() * 1000;
+        r_timer.setInterval( r_reqtimeout );
+        r_timer.setSingleShot( true );
+        connect( &r_timer, &QTimer::timeout, &rloop, &QEventLoop::quit );
+        r_timer.start();
 
-      // block request update until asynchronous linking loop is quit
-      rloop.exec( QEventLoop::ExcludeUserInputEvents );
+        QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
-      // refresh result should set o2 to (un)linked
+        // Asynchronously attempt the refresh
+        // TODO: This already has a timed reply setup in O2 base class (and in QgsNetworkAccessManager!)
+        //       May need to address this or app crashes will occur!
+        o2->refresh();
+
+        // block request update until asynchronous linking loop is quit
+        rloop.exec();
+        if ( r_timer.isActive() )
+        {
+          r_timer.stop();
+        }
+
+        waitCursor.release();
+
+        // refresh result should set o2 to (un)linked
+      }
     }
   }
 
