@@ -246,7 +246,6 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
       mResolutions << lodEntryMap[QStringLiteral( "resolution" )].toDouble();
     }
     std::sort( mResolutions.begin(), mResolutions.end() );
-    setProperty( "resolutions", mResolutions );
   }
 }
 
@@ -275,7 +274,6 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
 
   // is this needed?
   mTimestamp = QDateTime::currentDateTime();
-  setProperty( "resolutions", mResolutions );
 }
 
 QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities() const
@@ -777,6 +775,11 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
     }
   }
   return QgsRasterIdentifyResult( format, entries );
+}
+
+QList<double> QgsAmsProvider::nativeResolutions() const
+{
+  return mResolutions;
 }
 
 bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )

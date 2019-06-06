@@ -502,6 +502,11 @@ QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability
   }
 }
 
+QList<double> QgsRasterDataProvider::nativeResolutions() const
+{
+  return QList< double >();
+}
+
 bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value ) const
 {
   QgsRasterRangeList rangeList = mUserNoDataValue.value( bandNo - 1 );

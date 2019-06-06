@@ -447,7 +447,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       break;
     }
 
-    QList<QVariant> resolutions;
+    mNativeResolutions.clear();
     if ( mCaps.mTileMatrixSets.contains( mSettings.mTileMatrixSetId ) )
     {
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
@@ -456,7 +456,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       const auto constKeys = keys;
       for ( double key : constKeys )
       {
-        resolutions << key;
+        mNativeResolutions << key;
       }
       if ( !mTileMatrixSet->tileMatrices.empty() )
       {
@@ -469,8 +469,6 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       QgsDebugMsg( QStringLiteral( "Expected tile matrix set '%1' not found." ).arg( mSettings.mTileMatrixSetId ) );
       mTileMatrixSet = nullptr;
     }
-
-    setProperty( "resolutions", resolutions );
 
     if ( !mTileLayer || !mTileMatrixSet )
     {
@@ -2300,11 +2298,8 @@ QString QgsWmsProvider::htmlMetadata()
                         tr( "Bottom" ),
                         tr( "Right" ) );
 
-      const auto constToList = property( "resolutions" ).toList();
-      for ( const QVariant &res : constToList )
+      for ( const double key : mNativeResolutions )
       {
-        double key = res.toDouble();
-
         QgsWmtsTileMatrix &tm = mTileMatrixSet->tileMatrices[ key ];
 
         double tw = key * tm.tileWidth;
@@ -3233,6 +3228,11 @@ bool QgsWmsProvider::renderInPreview( const QgsDataProvider::PreviewContext &con
     return true;
 
   return QgsRasterDataProvider::renderInPreview( context );
+}
+
+QList<double> QgsWmsProvider::nativeResolutions() const
+{
+  return mNativeResolutions;
 }
 
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
