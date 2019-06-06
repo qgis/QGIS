@@ -30,6 +30,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -42,6 +43,7 @@
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
 {
+  QgsSettings setting;
   setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
 
   QWidget *contentsWidget = new QWidget( this );
@@ -54,11 +56,13 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
 
   QAction *toggleOnScreenNavigation = toolBar->addAction(
-              QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
-              tr( "Toggle On-Screen Navigation" ), this, &Qgs3DMapCanvasDockWidget::toggleNavigationWidget );
+                                        QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
+                                        tr( "Toggle On-Screen Navigation" ), this, &Qgs3DMapCanvasDockWidget::toggleNavigationWidget );
 
-  toggleOnScreenNavigation->setCheckable(true);
-  toggleOnScreenNavigation->setChecked(true);
+  toggleOnScreenNavigation->setCheckable( true );
+  toggleOnScreenNavigation->setChecked(
+    setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
+  );
 
   toolBar->addSeparator();
 
@@ -156,11 +160,11 @@ void Qgs3DMapCanvasDockWidget::identify()
 
 void Qgs3DMapCanvasDockWidget::toggleNavigationWidget()
 {
-    QAction *action = qobject_cast<QAction *>( sender() );
-    if ( !action )
-      return;
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
 
-    mCanvas->setOnScreenNavigationVisibility( action->isChecked() );
+  mCanvas->setOnScreenNavigationVisibility( action->isChecked() );
 }
 
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
