@@ -127,7 +127,14 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     {
       caparam = "sslrootcert='" + caFilePath + "'";
     }
+    QFile f( caFilePath );
+    if ( !f.open( QFile::ReadOnly | QFile::Text ) )
+    {
+      qWarning() << "Could not open ca cert file!!";
+    }
+    QTextStream in( &f );
     qWarning() << caparam;
+    qWarning() << f.size() << in.readAll();
   }
 
   // Branch for OGR
@@ -283,7 +290,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
       else
       {
         connectionItems.append( caparam );
-        qWarning() << QStringLiteral( "Connection items after appending" ).arg( connectionItems.join( "&" ) );
+        qWarning() << QStringLiteral( "Connection items after appending %1" ).arg( connectionItems.join( "&" ) );
       }
     }
   }
