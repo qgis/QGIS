@@ -545,5 +545,5 @@ void eVisDatabaseConnectionGui::pbtnRunQuery_clicked()
 
 void eVisDatabaseConnectionGui::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#database-connection" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_evis.html#database-connection" ) );
 }
