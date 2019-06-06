@@ -1,8 +1,21 @@
+/***************************************************************************
+  qgs3dnavigationwidget.cpp
+  --------------------------------------
+  Date                 : June 2019
+  Copyright            : (C) 2019 by Ismail Sunni
+  Email                : imajimatika at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include <QGridLayout>
 #include <QToolButton>
-#include <QDial>
 #include <QObject>
-#include <QDebug>
 
 #include "qwt_compass.h"
 #include "qwt_dial_needle.h"
@@ -18,7 +31,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     mParent3DMapCanvas = parent;
     // Zoom in button
     mZoomInButton = new QToolButton(this);
-    mZoomInButton->setToolTip(QStringLiteral("Zoom In"));
+    mZoomInButton->setToolTip(tr("Zoom In"));
     mZoomInButton->setAutoRepeat(true);
     mZoomInButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
     mZoomInButton->setAutoRaise(true);
@@ -34,7 +47,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Zoom out button
     mZoomOutButton = new QToolButton(this);
-    mZoomOutButton->setToolTip(QStringLiteral("Zoom Out"));
+    mZoomOutButton->setToolTip(tr("Zoom Out"));
     mZoomOutButton->setAutoRepeat(true);
     mZoomOutButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ) );
     mZoomOutButton->setAutoRaise(true);
@@ -50,7 +63,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Tilt up button
     mTiltUpButton = new QToolButton(this);
-    mTiltUpButton->setToolTip(QStringLiteral("Tilt Up"));
+    mTiltUpButton->setToolTip(tr("Tilt Up"));
     mTiltUpButton->setAutoRepeat(true);
     mTiltUpButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionTiltUp.svg" ) ) );
     mTiltUpButton->setAutoRaise(true);
@@ -66,7 +79,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Tilt down button
     mTiltDownButton = new QToolButton(this);
-    mTiltDownButton->setToolTip(QStringLiteral("Tilt Down"));
+    mTiltDownButton->setToolTip(tr("Tilt Down"));
     mTiltDownButton->setAutoRepeat(true);
     mTiltDownButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionTiltDown.svg" ) ) );
     mTiltDownButton->setAutoRaise(true);
@@ -83,7 +96,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     // Compas
     QwtCompassMagnetNeedle *compasNeedle = new QwtCompassMagnetNeedle();
     mCompas = new QwtCompass(this);
-    mCompas->setToolTip(QStringLiteral("Rotate view"));
+    mCompas->setToolTip(tr("Rotate view"));
     mCompas->setWrapping(true);
     mCompas->setNeedle(compasNeedle);
 
@@ -98,7 +111,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Move up button
     mMoveUpButton = new QToolButton(this);
-    mMoveUpButton->setToolTip(QStringLiteral("Move up"));
+    mMoveUpButton->setToolTip(tr("Move up"));
     mMoveUpButton->setAutoRepeat(true);
     mMoveUpButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowUp.svg" ) ) );
     mMoveUpButton->setAutoRaise(true);
@@ -114,7 +127,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Move right button
     mMoveRightButton = new QToolButton(this);
-    mMoveRightButton->setToolTip(QStringLiteral("Move right"));
+    mMoveRightButton->setToolTip(tr("Move right"));
     mMoveRightButton->setAutoRepeat(true);
     mMoveRightButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowRight.svg" ) ) );
     mMoveRightButton->setAutoRaise(true);
@@ -130,7 +143,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Move down button
     mMoveDownButton = new QToolButton(this);
-    mMoveDownButton->setToolTip(QStringLiteral("Move down"));
+    mMoveDownButton->setToolTip(tr("Move down"));
     mMoveDownButton->setAutoRepeat(true);
     mMoveDownButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowDown.svg" ) ) );
     mMoveDownButton->setAutoRaise(true);
@@ -146,7 +159,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
 
     // Move left button
     mMoveLeftButton = new QToolButton(this);
-    mMoveLeftButton->setToolTip(QStringLiteral("Move left"));
+    mMoveLeftButton->setToolTip(tr("Move left"));
     mMoveLeftButton->setAutoRepeat(true);
     mMoveLeftButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowLeft.svg" ) ) );
     mMoveLeftButton->setAutoRaise(true);

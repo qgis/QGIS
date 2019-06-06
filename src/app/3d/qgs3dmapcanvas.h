@@ -73,6 +73,9 @@ class Qgs3DMapCanvas : public QWidget
      */
     Qgs3DMapTool *mapTool() const { return mMapTool; }
 
+    /**
+     * Set the visibility of on-screen navigation widget.
+     */
     void setOnScreenNavigationVisibility(bool visibility);
 
   signals:

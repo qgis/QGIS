@@ -1,9 +1,9 @@
 /***************************************************************************
   qgs3dnavigationwidget.h
   --------------------------------------
-  Date                 : July 2017
-  Copyright            : (C) 2017 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
+  Date                 : June 2019
+  Copyright            : (C) 2019 by Ismail Sunni
+  Email                : imajimatika at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 #define QGS3DNAVIGATIONWIDGET_H
 
 #include <QWidget>
-#include <QDial>
 #include <QGridLayout>
 #include <QToolButton>
+
 #include "qwt_compass.h"
 
 #include "qgs3dmapcanvas.h"
@@ -31,6 +31,10 @@ class Qgs3DNavigationWidget : public QWidget
 public:
     Qgs3DNavigationWidget(Qgs3DMapCanvas *parent = nullptr);
     ~Qgs3DNavigationWidget();
+
+    /**
+     * Update the state of navigation widget from camera's state
+     */
     void updateFromCamera();
 
 signals:
