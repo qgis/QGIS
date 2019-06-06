@@ -4,10 +4,14 @@
 #include <QObject>
 #include <QDebug>
 
+#include "qwt_compass.h"
+#include "qwt_dial_needle.h"
+
 #include "qgsapplication.h"
 
-#include "qgs3dnavigationwidget.h"
 #include "qgscameracontroller.h"
+#include "qgs3dnavigationwidget.h"
+
 
 Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(parent)
 {
@@ -76,21 +80,19 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     }
     );
 
-    // Rotate scene dial
-    mRotateSceneDial = new QDial(this);
-    mRotateSceneDial->setToolTip(QStringLiteral("Rotate view"));
-    mRotateSceneDial->setWrapping(true);
-    mRotateSceneDial->setMaximum(359);
-    // To make it pointing to the top
-    mRotateSceneDial->setValue(180);
+    // Compas
+    QwtCompassMagnetNeedle *compasNeedle = new QwtCompassMagnetNeedle();
+    mCompas = new QwtCompass(this);
+    mCompas->setToolTip(QStringLiteral("Rotate view"));
+    mCompas->setWrapping(true);
+    mCompas->setNeedle(compasNeedle);
 
     QObject::connect(
-        mRotateSceneDial,
-        &QDial::valueChanged,
+        mCompas,
+        &QwtDial::valueChanged,
         parent,
         [ = ]{
-            // Subtract 180 since we "rotate" the QDial so that 0 is pointing at top.
-            parent->cameraController()->setCameraHeadingAngle(mRotateSceneDial->value() - 180);
+            parent->cameraController()->setCameraHeadingAngle(float(mCompas->value()));
     }
     );
 
@@ -163,7 +165,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget(Qgs3DMapCanvas *parent) : QWidget(p
     gridLayout->addWidget(mTiltDownButton, 3, 0);
     gridLayout->addWidget(mZoomInButton, 0, 3);
     gridLayout->addWidget(mZoomOutButton, 3, 3);
-    gridLayout->addWidget(mRotateSceneDial, 1, 1, 2, 2);
+    gridLayout->addWidget(mCompas, 1, 1, 2, 2);
     gridLayout->addWidget(mMoveUpButton, 0, 1, 1, 2, Qt::AlignCenter);
     gridLayout->addWidget(mMoveRightButton, 1, 3, 2, 1, Qt::AlignCenter);
     gridLayout->addWidget(mMoveDownButton, 3, 1, 1, 2, Qt::AlignCenter);
@@ -176,7 +178,7 @@ Qgs3DNavigationWidget::~Qgs3DNavigationWidget()
 
 }
 
-void Qgs3DNavigationWidget::updateRotateSceneDialAngle(){
-    // Adding 180 since we "rotate" the QDial so that 0 is pointing at top.
-    mRotateSceneDial->setValue((mParent3DMapCanvas->cameraController()->yaw() + 180));
+void Qgs3DNavigationWidget::updateFromCamera(){
+    // Make sure the angle is between 0 - 359
+    mCompas->setValue((int(mParent3DMapCanvas->cameraController()->yaw()) % 360 + 360) % 360);
 }

@@ -20,6 +20,7 @@
 #include <QDial>
 #include <QGridLayout>
 #include <QToolButton>
+#include "qwt_compass.h"
 
 #include "qgs3dmapcanvas.h"
 #include "qgscameracontroller.h"
@@ -30,7 +31,7 @@ class Qgs3DNavigationWidget : public QWidget
 public:
     Qgs3DNavigationWidget(Qgs3DMapCanvas *parent = nullptr);
     ~Qgs3DNavigationWidget();
-    void updateRotateSceneDialAngle();
+    void updateFromCamera();
 
 signals:
 
@@ -46,7 +47,7 @@ private:
     QToolButton *mMoveRightButton = nullptr;
     QToolButton *mMoveDownButton = nullptr;
     QToolButton *mMoveLeftButton = nullptr;
-    QDial *mRotateSceneDial = nullptr;
+    QwtCompass *mCompas = nullptr;
 };
 
 #endif // QGS3DNAVIGATIONWIDGET_H
