@@ -51,8 +51,6 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-os.environ['PGSSLROOTCERT'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../testdata/auth_system_cert_keys/issuer_ca_cert.pem')
-
 qgis_app = start_app()
 
 
@@ -100,7 +98,7 @@ class TestAuthManager(unittest.TestCase):
         authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys')
-        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'issuer_ca_cert.pem')
+        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
 
         def printMessage(tag, msg, level):
             with open('/tmp/fmt.log', 'a') as f:
