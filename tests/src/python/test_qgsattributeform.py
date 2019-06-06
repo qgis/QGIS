@@ -87,7 +87,7 @@ class TestQgsAttributeForm(unittest.TestCase):
         """
         Note: this crashed two times for datetime (see GH #29937):
 
-        - first crash with inital NULL values, because widget's clear() triggered changed()
+        - first crash with initial NULL values, because widget's clear() triggered changed()
         - second crash when setting a value, because setDateTime() triggered changed()
 
         There are no assertions in this test because we are looking for a crash.
