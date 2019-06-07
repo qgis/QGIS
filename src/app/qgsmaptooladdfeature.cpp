@@ -69,12 +69,11 @@ void QgsMapToolAddFeature::digitized( QgsFeature &f )
 
     //use always topological editing for avoidIntersection.
     //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-    QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
-    bool avoidIntersection = !intersectionLayers.isEmpty();
-    if ( avoidIntersection ) //try to add topological points also to background layers
+    const QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
+
+    if ( !intersectionLayers.isEmpty() ) //try to add topological points also to background layers
     {
-      const auto constIntersectionLayers = intersectionLayers;
-      for ( QgsVectorLayer *vl : constIntersectionLayers )
+      for ( QgsVectorLayer *vl : intersectionLayers )
       {
         //can only add topological points if background layer is editable...
         if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
