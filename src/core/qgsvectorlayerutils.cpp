@@ -491,7 +491,19 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // Cache unique values
       if ( hasUniqueConstraint && ! uniqueValueCaches.contains( idx ) )
-        uniqueValueCaches[ idx ] = layer->uniqueValues( idx );
+      {
+        // If the layer is filtered, get unique values from an unfiltered clone
+        if ( ! layer->subsetString().isEmpty() )
+        {
+          std::unique_ptr<QgsVectorLayer> unfilteredClone { layer->clone( ) };
+          unfilteredClone->setSubsetString( QString( ) );
+          uniqueValueCaches[ idx ] = unfilteredClone->uniqueValues( idx );
+        }
+        else
+        {
+          uniqueValueCaches[ idx ] = layer->uniqueValues( idx );
+        }
+      }
 
       // 2. client side default expression
       // note - deliberately not using else if!
