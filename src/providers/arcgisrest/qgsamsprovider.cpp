@@ -108,7 +108,9 @@ void QgsAmsLegendFetcher::handleFinished()
   {
     QVariantMap queryResultMap = result.toMap();
     QString layerId = queryResultMap[QStringLiteral( "layerId" )].toString();
-    if ( layerId != dataSource.param( QStringLiteral( "layer" ) ) && !mProvider->subLayers().contains( layerId ) )
+    if ( !dataSource.param( QStringLiteral( "layer" ) ).isNull()
+         && layerId != dataSource.param( QStringLiteral( "layer" ) )
+         && !mProvider->subLayers().contains( layerId ) )
     {
       continue;
     }
