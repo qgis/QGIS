@@ -5000,7 +5000,17 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     // for hdf4 it would be best to get description, because the subdataset_index is not very practical
     if ( name.startsWith( QLatin1String( "netcdf" ), Qt::CaseInsensitive ) ||
          name.startsWith( QLatin1String( "hdf" ), Qt::CaseInsensitive ) )
+    {
       name = name.mid( name.indexOf( path ) + path.length() + 1 );
+    }
+    else if ( name.startsWith( QLatin1String( "GPKG" ), Qt::CaseInsensitive ) )
+    {
+      const auto parts { name.split( ':' ) };
+      if ( parts.count() >= 3 )
+      {
+        name = parts.at( parts.count( ) - 1 );
+      }
+    }
     else
     {
       // remove driver name and file name
@@ -6498,7 +6508,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   }
 
   // try as a vector
-  if ( !ok )
+  if ( !ok || fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
   {
     if ( allowInteractive )
     {
