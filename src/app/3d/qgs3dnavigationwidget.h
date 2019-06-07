@@ -30,7 +30,6 @@ class Qgs3DNavigationWidget : public QWidget
     Q_OBJECT
   public:
     Qgs3DNavigationWidget( Qgs3DMapCanvas *parent = nullptr );
-    ~Qgs3DNavigationWidget();
 
     /**
      * Update the state of navigation widget from camera's state

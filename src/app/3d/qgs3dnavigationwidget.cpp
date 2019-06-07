@@ -195,11 +195,6 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
   gridLayout->setAlignment( Qt::AlignTop );
 }
 
-Qgs3DNavigationWidget::~Qgs3DNavigationWidget()
-{
-
-}
-
 void Qgs3DNavigationWidget::updateFromCamera()
 {
   // Make sure the angle is between 0 - 359
