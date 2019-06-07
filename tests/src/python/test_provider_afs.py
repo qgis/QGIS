@@ -27,7 +27,8 @@ from qgis.core import (NULL,
                        QgsSettings,
                        QgsRectangle,
                        QgsCategorizedSymbolRenderer,
-                       QgsProviderRegistry
+                       QgsProviderRegistry,
+                       QgsWkbTypes
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -899,6 +900,227 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(vl.fields()[0].editorWidgetSetup().type())
         self.assertEqual(vl.fields()[1].editorWidgetSetup().type(), 'ValueMap')
         self.assertEqual(vl.fields()[1].editorWidgetSetup().config(), {'map': [{'Value 1': 1.0}, {'Value 2': 2.0}, {'Value 3': 3.0}]})
+
+    def testImageServer(self):
+        """
+        Test connecting to a image server endpoints works as a footprint featureserver
+        """
+        endpoint = self.basetestpath + '/imageserver_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {
+ "currentVersion": 10.51,
+ "serviceDescription": "test",
+ "name": "test",
+ "description": "test",
+ "extent": {
+  "xmin": 1,
+  "ymin": 1,
+  "xmax": 2,
+  "ymax": 2,
+  "spatialReference": {
+   "wkid": 102100,
+   "latestWkid": 3857
+  }
+ },
+ "initialExtent": {
+  "xmin": 1,
+  "ymin": 1,
+  "xmax": 2,
+  "ymax": 2,
+  "spatialReference": {
+   "wkid": 102100,
+   "latestWkid": 3857
+  }
+ },
+ "fullExtent": {
+  "xmin": 1,
+  "ymin": 1,
+  "xmax": 2,
+  "ymax": 2,
+  "spatialReference": {
+   "wkid": 102100,
+   "latestWkid": 3857
+  }
+ },
+ "heightModelInfo": {
+  "heightModel": "orthometric",
+  "heightUnit": "meter"
+ },
+ "pixelSizeX": 30,
+ "pixelSizeY": 30,
+ "bandCount": 1,
+ "pixelType": "U8",
+ "minPixelSize": 38,
+ "maxPixelSize": 156543,
+ "copyrightText": "",
+ "serviceDataType": "esriImageServiceDataTypeGeneric",
+ "minValues": [
+  0
+ ],
+ "maxValues": [
+  30
+ ],
+ "meanValues": [
+  5
+ ],
+ "stdvValues": [
+  4
+ ],
+ "objectIdField": "OBJECTID",
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID",
+   "domain": null
+  },
+  {
+   "name": "Shape",
+   "type": "esriFieldTypeGeometry",
+   "alias": "Shape",
+   "domain": null
+  },
+  {
+   "name": "Name",
+   "type": "esriFieldTypeString",
+   "alias": "Name",
+   "domain": null,
+   "length": 50
+  },
+  {
+   "name": "MinPS",
+   "type": "esriFieldTypeDouble",
+   "alias": "MinPS",
+   "domain": null
+  },
+  {
+   "name": "MaxPS",
+   "type": "esriFieldTypeDouble",
+   "alias": "MaxPS",
+   "domain": null
+  },
+  {
+   "name": "LowPS",
+   "type": "esriFieldTypeDouble",
+   "alias": "LowPS",
+   "domain": null
+  },
+  {
+   "name": "HighPS",
+   "type": "esriFieldTypeDouble",
+   "alias": "HighPS",
+   "domain": null
+  }
+ ],
+ "capabilities": "Catalog,Mensuration,Image,Metadata",
+ "defaultMosaicMethod": "Northwest",
+ "allowedMosaicMethods": "NorthWest,Center,LockRaster,ByAttribute,Nadir,Viewpoint,Seamline,None",
+ "sortField": "",
+ "sortValue": null,
+ "mosaicOperator": "First",
+ "maxDownloadSizeLimit": 4096,
+ "defaultCompressionQuality": 75,
+ "defaultResamplingMethod": "Nearest",
+ "maxImageHeight": 4100,
+ "maxImageWidth": 15000,
+ "maxRecordCount": 2147483647,
+ "maxDownloadImageCount": 200,
+ "maxMosaicImageCount": 2147483647,
+ "singleFusedMapCache": true,
+ "tileInfo": {
+  "rows": 256,
+  "cols": 256,
+  "dpi": 96,
+  "format": "MIXED",
+  "compressionQuality": 75,
+  "origin": {
+   "x": 2,
+   "y": 2
+  },
+  "spatialReference": {
+   "wkid": 102100,
+   "latestWkid": 3857
+  },
+  "lods": [
+   {
+    "level": 0,
+    "resolution": 156543.033928,
+    "scale": 5.91657527591555E8
+   },
+   {
+    "level": 1,
+    "resolution": 78271.5169639999,
+    "scale": 2.95828763795777E8
+   }
+  ]
+ },
+ "cacheType": "Map",
+ "allowRasterFunction": true,
+ "rasterFunctionInfos": [
+  {
+   "name": "Classified",
+   "description": "A raster function template.",
+   "help": ""
+  },
+  {
+   "name": "None",
+   "description": "",
+   "help": ""
+  }
+ ],
+ "rasterTypeInfos": [
+  {
+   "name": "Raster Dataset",
+   "description": "Supports all ArcGIS Raster Datasets",
+   "help": ""
+  }
+ ],
+ "mensurationCapabilities": "Basic",
+ "hasHistograms": true,
+ "hasColormap": false,
+ "hasRasterAttributeTable": false,
+ "minScale": 5,
+ "maxScale": 144447,
+ "exportTilesAllowed": false,
+ "hasMultidimensions": false,
+ "supportsStatistics": true,
+ "supportsAdvancedQueries": true,
+ "editFieldsInfo": null,
+ "ownershipBasedAccessControlForRasters": null,
+ "allowComputeTiePoints": false,
+ "useStandardizedQueries": true,
+ "advancedQueryCapabilities": {
+  "useStandardizedQueries": true,
+  "supportsStatistics": true,
+  "supportsOrderBy": true,
+  "supportsDistinct": true,
+  "supportsPagination": true
+ },
+ "spatialReference": {
+  "wkid": 102100,
+  "latestWkid": 3857
+ }
+}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1,
+          2,
+          3
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
 
 
 if __name__ == '__main__':
