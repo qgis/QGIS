@@ -57,12 +57,13 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   QAction *toggleOnScreenNavigation = toolBar->addAction(
                                         QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
-                                        tr( "Toggle On-Screen Navigation" ), this, &Qgs3DMapCanvasDockWidget::toggleNavigationWidget );
+                                        tr( "Toggle On-Screen Navigation" ));
 
   toggleOnScreenNavigation->setCheckable( true );
   toggleOnScreenNavigation->setChecked(
     setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
   );
+  QObject::connect(toggleOnScreenNavigation, &QAction::toggled, this, &Qgs3DMapCanvasDockWidget::toggleNavigationWidget);
 
   toolBar->addSeparator();
 
@@ -158,13 +159,9 @@ void Qgs3DMapCanvasDockWidget::identify()
   mCanvas->setMapTool( action->isChecked() ? mMapToolIdentify : nullptr );
 }
 
-void Qgs3DMapCanvasDockWidget::toggleNavigationWidget()
+void Qgs3DMapCanvasDockWidget::toggleNavigationWidget(bool visibility)
 {
-  QAction *action = qobject_cast<QAction *>( sender() );
-  if ( !action )
-    return;
-
-  mCanvas->setOnScreenNavigationVisibility( action->isChecked() );
+  mCanvas->setOnScreenNavigationVisibility( visibility );
 }
 
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
