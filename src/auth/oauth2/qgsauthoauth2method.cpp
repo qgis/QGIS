@@ -23,7 +23,6 @@
 #include "qgso2.h"
 #include "qgsauthoauth2config.h"
 #include "qgsauthoauth2edit.h"
-#include "qgsguiutils.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -169,8 +168,6 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         connect( &r_timer, &QTimer::timeout, &rloop, &QEventLoop::quit );
         r_timer.start();
 
-        QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
-
         // Asynchronously attempt the refresh
         // TODO: This already has a timed reply setup in O2 base class (and in QgsNetworkAccessManager!)
         //       May need to address this or app crashes will occur!
@@ -182,8 +179,6 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         {
           r_timer.stop();
         }
-
-        waitCursor.release();
 
         // refresh result should set o2 to (un)linked
       }
