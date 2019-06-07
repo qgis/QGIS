@@ -563,7 +563,7 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
                 ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
                 r.rect.width() / cr,
                 r.rect.height() / cr );
-    otherResTiles << TileImage( dst, localImage );
+    otherResTiles << TileImage( dst, localImage, false );
 
     // see if there are any missing rects that are completely covered by this tile
     Q_FOREACH ( const QRectF &missingRect, missingRects )
@@ -773,12 +773,13 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       if ( QgsTileCache::tile( r.url, localImage ) )
       {
         double cr = viewExtent.width() / image->width();
-
         QRectF dst( ( r.rect.left() - viewExtent.xMinimum() ) / cr,
                     ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
                     r.rect.width() / cr,
                     r.rect.height() / cr );
-        tileImages << TileImage( dst, localImage );
+        // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
+        bool disableSmoothing = ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
+        tileImages << TileImage( dst, localImage, !disableSmoothing );
       }
       else
       {
@@ -836,7 +837,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     // draw composite in this resolution
     Q_FOREACH ( const TileImage &ti, tileImages )
     {
-      if ( mSettings.mSmoothPixmapTransform )
+      if ( ti.smooth && mSettings.mSmoothPixmapTransform )
         p.setRenderHint( QPainter::SmoothPixmapTransform, true );
       p.drawImage( ti.rect, ti.img );
 
@@ -3943,7 +3944,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       if ( !myLocalImage.isNull() )
       {
         QPainter p( mImage );
-        if ( mSmoothPixmapTransform )
+        // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
+        const bool disableSmoothing = ( qgsDoubleNear( dst.width(), myLocalImage.width(), 2 ) && qgsDoubleNear( dst.height(), myLocalImage.height(), 2 ) );
+        if ( !disableSmoothing && mSmoothPixmapTransform )
           p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
 #if 0
