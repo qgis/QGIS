@@ -106,6 +106,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! convenient method to clean members
     void clean() override;
 
+    /**
+     * Returns the rubberBand currently owned by this map tool and
+     * transfers ownership to the caller.
+     *
+     * \since QGIS 3.8
+     */
+    QgsRubberBand *takeRubberBand() SIP_FACTORY;
+
   private slots:
     void addError( const QgsGeometry::Error &error );
     void currentLayerChanged( QgsMapLayer *layer );

@@ -61,6 +61,17 @@ class APP_EXPORT QgsFeatureAction : public QAction
      */
     void setForceSuppressFormPopup( bool force );
 
+  signals:
+
+    /**
+     * This signal is emitted when the add feature process is finished.
+     * Either during the call to addFeature() already or when the dialog is eventually
+     * closed (accepted or canceled).
+     *
+     * \since QGIS 3.8
+     */
+    void addFeatureFinished();
+
   private slots:
     void onFeatureSaved( const QgsFeature &feature );
 

@@ -292,6 +292,13 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   return true;
 }
 
+QgsRubberBand *QgsMapToolCapture::takeRubberBand()
+{
+  QgsRubberBand *rb = mRubberBand;
+  mRubberBand = nullptr;
+  return rb;
+}
+
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
