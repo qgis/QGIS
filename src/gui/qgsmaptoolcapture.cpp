@@ -622,17 +622,10 @@ bool QgsMapToolCapture::isCapturing() const
 
 void QgsMapToolCapture::stopCapturing()
 {
-  if ( mRubberBand )
-  {
-    delete mRubberBand;
-    mRubberBand = nullptr;
-  }
+  delete mRubberBand;
+  mRubberBand = nullptr;
 
-  if ( mTempRubberBand )
-  {
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
-  }
+  deleteTempRubberBand();
 
   while ( !mGeomErrorMarkers.isEmpty() )
   {
@@ -652,11 +645,8 @@ void QgsMapToolCapture::stopCapturing()
 
 void QgsMapToolCapture::deleteTempRubberBand()
 {
-  if ( mTempRubberBand )
-  {
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
-  }
+  delete mTempRubberBand;
+  mTempRubberBand = nullptr;
 }
 
 void QgsMapToolCapture::clean()
