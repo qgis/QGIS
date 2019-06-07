@@ -210,6 +210,11 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
 
   mTiled = mServiceInfo.value( QStringLiteral( "singleFusedMapCache" ) ).toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters;
 
+  if ( mServiceInfo.contains( QStringLiteral( "maxImageWidth" ) ) )
+    mMaxImageWidth = mServiceInfo.value( QStringLiteral( "maxImageWidth" ) ).toInt();
+  if ( mServiceInfo.contains( QStringLiteral( "maxImageHeight" ) ) )
+    mMaxImageHeight = mServiceInfo.value( QStringLiteral( "maxImageHeight" ) ).toInt();
+
   const QVariantList subLayersList = mLayerInfo.value( QStringLiteral( "subLayers" ) ).toList();
   mSubLayers.reserve( subLayersList.size() );
   for ( const QVariant &sublayer : subLayersList )
@@ -276,6 +281,8 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
   , mRequestHeaders( other.mRequestHeaders )
   , mTiled( other.mTiled )
   , mImageServer( other.mImageServer )
+  , mMaxImageWidth( other.mMaxImageWidth )
+  , mMaxImageHeight( other.mMaxImageHeight )
   , mLayerMetadata( other.mLayerMetadata )
   , mResolutions( other.mResolutions )
 // intentionally omitted:
@@ -641,60 +648,80 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
       return mCachedImage;
     }
 
-    QUrl requestUrl( dataSource.param( QStringLiteral( "url" ) ) + ( mImageServer ? "/exportImage" : "/export" ) );
-    requestUrl.addQueryItem( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( viewExtent.xMinimum(), 0, 'f', -1 ).arg( viewExtent.yMinimum(), 0, 'f', -1 ).arg( viewExtent.xMaximum(), 0, 'f', -1 ).arg( viewExtent.yMaximum(), 0, 'f', -1 ) );
-    requestUrl.addQueryItem( QStringLiteral( "size" ), QStringLiteral( "%1,%2" ).arg( pixelWidth ).arg( pixelHeight ) );
-    requestUrl.addQueryItem( QStringLiteral( "format" ), dataSource.param( QStringLiteral( "format" ) ) );
-    requestUrl.addQueryItem( QStringLiteral( "layers" ), QStringLiteral( "show:%1" ).arg( dataSource.param( QStringLiteral( "layer" ) ) ) );
-    requestUrl.addQueryItem( QStringLiteral( "transparent" ), QStringLiteral( "true" ) );
-    requestUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "image" ) );
-    mError.clear();
-    mErrorTitle.clear();
-    QString contentType;
-    QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, mRequestHeaders, feedback, &contentType );
-    if ( !mError.isEmpty() )
-    {
-      mCachedImage = QImage();
-      if ( feedback )
-        feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
-      return QImage();
-    }
-    else if ( contentType.startsWith( QLatin1String( "application/json" ) ) )
-    {
-      // if we get a JSON response, something went wrong (e.g. authentication error)
-      mCachedImage = QImage();
+    mCachedImage = QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
+    mCachedImage.fill( Qt::transparent );
+    QPainter p( &mCachedImage );
 
-      QJsonParseError err;
-      QJsonDocument doc = QJsonDocument::fromJson( reply, &err );
-      if ( doc.isNull() )
+    int maxWidth = mMaxImageWidth > 0 ? mMaxImageWidth : pixelWidth;
+    int maxHeight = mMaxImageHeight > 0 ? mMaxImageHeight : pixelHeight;
+    int nbStepWidth = std::ceil( ( float )pixelWidth / maxWidth );
+    int nbStepHeight = std::ceil( ( float )pixelHeight / maxHeight );
+    for ( int currentStepWidth = 0; currentStepWidth < nbStepWidth; currentStepWidth++ )
+    {
+      for ( int currentStepHeight = 0; currentStepHeight < nbStepHeight; currentStepHeight++ )
       {
-        mErrorTitle = QObject::tr( "Error" );
-        mError = reply;
-      }
-      else
-      {
-        const QVariantMap res = doc.object().toVariantMap();
-        if ( res.contains( QStringLiteral( "error" ) ) )
+        int width = currentStepWidth == nbStepWidth - 1 ? pixelWidth % maxWidth : maxWidth;
+        int height = currentStepHeight == nbStepHeight - 1 ? pixelHeight % maxHeight : maxHeight;
+        QgsRectangle extent;
+        extent.setXMinimum( viewExtent.xMinimum() + viewExtent.width() / pixelWidth * ( currentStepWidth * maxWidth ) );
+        extent.setXMaximum( viewExtent.xMinimum() + viewExtent.width() / pixelWidth * ( currentStepWidth * maxWidth + width ) );
+        extent.setYMinimum( viewExtent.yMinimum() + viewExtent.height() / pixelHeight * ( currentStepHeight * maxHeight ) );
+        extent.setYMaximum( viewExtent.yMinimum() + viewExtent.height() / pixelHeight * ( currentStepHeight * maxHeight + height ) );
+
+        QUrl requestUrl( dataSource.param( QStringLiteral( "url" ) ) + ( mImageServer ? "/exportImage" : "/export" ) );
+        requestUrl.addQueryItem( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum(), 0, 'f', -1 ).arg( extent.yMinimum(), 0, 'f', -1 ).arg( extent.xMaximum(), 0, 'f', -1 ).arg( extent.yMaximum(), 0, 'f', -1 ) );
+        requestUrl.addQueryItem( QStringLiteral( "size" ), QStringLiteral( "%1,%2" ).arg( width ).arg( height ) );
+        requestUrl.addQueryItem( QStringLiteral( "format" ), dataSource.param( QStringLiteral( "format" ) ) );
+        requestUrl.addQueryItem( QStringLiteral( "layers" ), QStringLiteral( "show:%1" ).arg( dataSource.param( QStringLiteral( "layer" ) ) ) );
+        requestUrl.addQueryItem( QStringLiteral( "transparent" ), QStringLiteral( "true" ) );
+        requestUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "image" ) );
+        mError.clear();
+        mErrorTitle.clear();
+        QString contentType;
+        QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, mRequestHeaders, feedback, &contentType );
+        if ( !mError.isEmpty() )
         {
-          const QVariantMap error = res.value( QStringLiteral( "error" ) ).toMap();
-          mError = error.value( QStringLiteral( "message" ) ).toString();
-          mErrorTitle = QObject::tr( "Error %1" ).arg( error.value( QStringLiteral( "code" ) ).toString() );
+          mCachedImage = QImage();
+          if ( feedback )
+            feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
+          return QImage();
+        }
+        else if ( contentType.startsWith( QLatin1String( "application/json" ) ) )
+        {
+          // if we get a JSON response, something went wrong (e.g. authentication error)
+          mCachedImage = QImage();
+
+          QJsonParseError err;
+          QJsonDocument doc = QJsonDocument::fromJson( reply, &err );
+          if ( doc.isNull() )
+          {
+            mErrorTitle = QObject::tr( "Error" );
+            mError = reply;
+          }
+          else
+          {
+            const QVariantMap res = doc.object().toVariantMap();
+            if ( res.contains( QStringLiteral( "error" ) ) )
+            {
+              const QVariantMap error = res.value( QStringLiteral( "error" ) ).toMap();
+              mError = error.value( QStringLiteral( "message" ) ).toString();
+              mErrorTitle = QObject::tr( "Error %1" ).arg( error.value( QStringLiteral( "code" ) ).toString() );
+            }
+          }
+
+          if ( feedback )
+            feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
+          return QImage();
+        }
+        else
+        {
+          QImage img = QImage::fromData( reply, dataSource.param( QStringLiteral( "format" ) ).toLatin1() );
+          p.drawImage( QPoint( currentStepWidth * maxWidth, currentStepHeight * maxHeight ), img );
         }
       }
-
-      if ( feedback )
-        feedback->appendError( QStringLiteral( "%1: %2" ).arg( mErrorTitle, mError ) );
-      return QImage();
     }
-    else
-    {
-      mCachedImage = QImage::fromData( reply, dataSource.param( QStringLiteral( "format" ) ).toLatin1() );
-      if ( mCachedImage.format() != QImage::Format_ARGB32 )
-      {
-        mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
-      }
-      return mCachedImage;
-    }
+    p.end();
+    return mCachedImage;
   }
 }
 
