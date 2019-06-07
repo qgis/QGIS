@@ -521,7 +521,6 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //   we give them precedence.
 
     // for each editable layer, select vertices
-    const auto layers = canvas()->layers();
     const auto editableLayers = editableVectorLayers();
     for ( QgsVectorLayer *vlayer : editableLayers )
     {

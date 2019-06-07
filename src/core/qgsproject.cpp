@@ -943,7 +943,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
         returnStatus = false;
       }
       const auto messages = context.takeMessages();
-      if ( messages.count() )
+      if ( !messages.isEmpty() )
       {
         emit loadingLayerMessageReceived( tr( "Loading layer %1" ).arg( name ), messages );
       }
@@ -3029,7 +3029,7 @@ void QgsProject::generateTsFile( const QString &locale )
   translationContext.setProject( this );
   translationContext.setFileName( QStringLiteral( "%1/%2.ts" ).arg( absolutePath(), baseName() ) );
 
-  emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
+  QgsApplication::instance()->collectTranslatableObjects( &translationContext );
 
   translationContext.writeTsFile( locale );
 }

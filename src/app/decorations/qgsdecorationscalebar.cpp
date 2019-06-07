@@ -187,7 +187,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   double scaleBarUnitsPerPixel = std::fabs( context.mapToPixel().mapUnitsPerPixel() );
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
-  if ( !mapSettings.layers().count() || !deviceWidth || !scaleBarUnitsPerPixel )
+  if ( mapSettings.layers().isEmpty() || !deviceWidth || !scaleBarUnitsPerPixel )
     return;
 
   double unitsPerSegment = mPreferredSize;

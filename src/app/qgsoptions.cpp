@@ -1108,7 +1108,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // Setup OpenCL Acceleration widget
 
-  connect( mGPUEnableCheckBox, &QCheckBox::toggled, [ = ]( bool checked )
+  connect( mGPUEnableCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
     if ( checked )
     {

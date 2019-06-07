@@ -1246,9 +1246,7 @@ void QgsVectorLayerProperties::aboutToShowStyleMenu()
 
 void QgsVectorLayerProperties::loadStyle()
 {
-
   QgsSettings settings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString errorMsg;
   QStringList ids, names, descriptions;

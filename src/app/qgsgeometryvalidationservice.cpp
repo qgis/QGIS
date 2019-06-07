@@ -422,7 +422,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 
   const QList<QgsGeometryCheck *> checks = mLayerChecks[layer].topologyChecks;
 
-  QMap<const QgsGeometryCheck *, QgsFeedback *> feedbacks;
+  QHash<const QgsGeometryCheck *, QgsFeedback *> feedbacks;
   for ( QgsGeometryCheck *check : checks )
     feedbacks.insert( check, new QgsFeedback() );
 
@@ -481,7 +481,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
     layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
     errorLocker.unlock();
-    qDeleteAll( feedbacks.values() );
+    qDeleteAll( feedbacks );
     futureWatcher->deleteLater();
     if ( mLayerChecks[layer].topologyCheckFutureWatcher == futureWatcher )
       mLayerChecks[layer].topologyCheckFutureWatcher = nullptr;

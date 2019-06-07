@@ -210,8 +210,8 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
   if ( !g )
     return true;
 
-  auto end = meta.extraOptions().cend();
-  for ( auto it = meta.extraOptions().cbegin(); it != end; ++it )
+  const auto extraOptions = meta.extraOptions();
+  for ( auto it = extraOptions.cbegin(); it != extraOptions.cend(); ++it )
   {
     MDAL_G_setMetadata( g, it.key().toStdString().c_str(), it.value().toStdString().c_str() );
   }

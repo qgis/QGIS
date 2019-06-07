@@ -947,7 +947,6 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
     QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
     if ( !status.isNull() && status.toInt() >= 400 )
     {
-      QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
       mReplies.removeOne( reply );
       reply->deleteLater();
 

@@ -321,7 +321,6 @@ void Layer::joinConnectedFeatures()
   int connectedFeaturesId = 0;
   for ( auto it = mConnectedHashtable.constBegin(); it != mConnectedHashtable.constEnd(); ++it )
   {
-    const QString labelTExt = it.key();
     QVector<FeaturePart *> parts = it.value();
     connectedFeaturesId++;
 

@@ -389,7 +389,7 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 
 void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
 {
-  QAction *action = dynamic_cast<QAction *>( sender() );
+  QAction *action = qobject_cast<QAction *>( sender() );
   int stat = action->data().toInt();
 
   QString settingsKey;

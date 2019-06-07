@@ -757,7 +757,7 @@ bool QgsMergedBookmarksTableModel::projectAvailable() const
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
   beginResetModel();
-  QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
+  QSqlTableModel *qgisModel = qobject_cast<QSqlTableModel *>( &modelTo );
   if ( !qgisModel )
   {
     modelTo.insertRow( -1 );
@@ -768,7 +768,7 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
         modelTo.index( modelTo.rowCount() - 1, column ),
         modelFrom.data( modelFrom.index( row, column ) ) );
     }
-    qgisModel = dynamic_cast<QSqlTableModel *>( &modelFrom );
+    qgisModel = qobject_cast<QSqlTableModel *>( &modelFrom );
     Q_ASSERT( qgisModel );
     qgisModel->removeRows( row, 1 );
     qgisModel->select();

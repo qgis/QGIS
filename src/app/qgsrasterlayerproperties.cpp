@@ -1427,7 +1427,7 @@ void QgsRasterLayerProperties::transparencyCellTextEdited( const QString &text )
   int nBands = renderer->usesBands().size();
   if ( nBands == 1 )
   {
-    QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+    QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
     if ( !lineEdit ) return;
     int row = -1;
     int column = -1;

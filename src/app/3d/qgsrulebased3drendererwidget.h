@@ -93,9 +93,6 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
     //! no transfer of ownership
     QgsRuleBased3DRenderer::Rule *rootRule() { return mRootRule; }
 
-  signals:
-    void widgetChanged();
-
   protected slots:
     void addRule();
     void editRule();

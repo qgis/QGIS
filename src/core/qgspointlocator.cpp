@@ -876,7 +876,7 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   }
 
   MatchList mlist = pointInPolygon( point );
-  if ( mlist.count() && mlist.at( 0 ).isValid() )
+  if ( !mlist.isEmpty() && mlist.at( 0 ).isValid() )
   {
     return mlist.at( 0 );
   }

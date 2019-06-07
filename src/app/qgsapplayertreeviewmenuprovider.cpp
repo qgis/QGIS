@@ -486,7 +486,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
   }
   else if ( QgsLayerTreeModelLegendNode *node = mView->layerTreeModel()->index2legendNode( idx ) )
   {
-    if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( node ) )
+    if ( QgsSymbolLegendNode *symbolNode = qobject_cast< QgsSymbolLegendNode * >( node ) )
     {
       // symbology item
       if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
@@ -774,7 +774,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   QString layerId = action->property( "layerId" ).toString();
   QString ruleKey = action->property( "ruleKey" ).toString();
 
-  QgsSymbolLegendNode *node = dynamic_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
@@ -809,7 +809,7 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   QString layerId = action->property( "layerId" ).toString();
   QString ruleKey = action->property( "ruleKey" ).toString();
 
-  QgsSymbolLegendNode *node = dynamic_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 

@@ -409,7 +409,6 @@ void QgsMeshCalculatorDialog::getDatasetGroupNames()
 
 bool QgsMeshCalculatorDialog::expressionValid() const
 {
-  QString errorString;
   QgsMeshCalculator::Result result = QgsMeshCalculator::expression_valid(
                                        formulaString(),
                                        meshLayer()

@@ -41,7 +41,7 @@ QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *paren
   : QAbstractTableModel( parent )
   , mCanvas( canvas )
 {
-  QWidget *parentWidget = dynamic_cast< QWidget * >( parent );
+  QWidget *parentWidget = qobject_cast< QWidget * >( parent );
   if ( parentWidget )
     mWidgetFont = parentWidget->font();
 }

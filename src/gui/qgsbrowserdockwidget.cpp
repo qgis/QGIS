@@ -253,7 +253,7 @@ void QgsBrowserDockWidget::addFavorite()
   if ( !item )
     return;
 
-  QgsDirectoryItem *dirItem = dynamic_cast<QgsDirectoryItem *>( item );
+  QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item );
   if ( !dirItem )
     return;
 

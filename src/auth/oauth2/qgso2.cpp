@@ -192,7 +192,7 @@ void QgsO2::link()
     parameters.append( qMakePair( O2_OAUTH2_STATE, state_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_API_KEY ), apiKey_ ) );
 
-    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( qMakePair( iter.key(), iter.value().toString() ) );
     }
@@ -221,7 +221,7 @@ void QgsO2::link()
     parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
 
 
-    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( O0RequestParameter( iter.key().toUtf8(), iter.value().toString().toUtf8() ) );
     }
