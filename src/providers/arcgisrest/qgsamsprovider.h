@@ -141,6 +141,8 @@ class QgsAmsProvider : public QgsRasterDataProvider
     int mTileReqNo = 0;
     bool mTiled = false;
     bool mImageServer = false;
+    int mMaxImageWidth = 4096;
+    int mMaxImageHeight = 4096;
     QgsLayerMetadata mLayerMetadata;
     QList< double > mResolutions;
 };
