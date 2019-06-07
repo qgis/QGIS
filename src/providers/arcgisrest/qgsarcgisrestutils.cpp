@@ -1314,7 +1314,7 @@ void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QSt
   {
     const QVariantMap serviceMap = service.toMap();
     const QString serviceType = serviceMap.value( QStringLiteral( "type" ) ).toString();
-    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
+    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "FeatureServer" ) && serviceType != QLatin1String( "ImageServer" ) )
       continue;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
@@ -1369,5 +1369,12 @@ void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString
     {
       visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid, format );
     }
+  }
+
+  if ( serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+  {
+    const QString name = serviceData.value( QStringLiteral( "name" ) ).toString();
+    const QString description = serviceData.value( QStringLiteral( "description" ) ).toString();
+    visitor( 0, 0, name, description, parentUrl, false, authid, format );
   }
 }

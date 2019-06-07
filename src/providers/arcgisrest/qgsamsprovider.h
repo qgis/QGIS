@@ -139,6 +139,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QgsStringMap mRequestHeaders;
     int mTileReqNo = 0;
     bool mTiled = false;
+    bool mImageServer = false;
     QgsLayerMetadata mLayerMetadata;
     QList< double > mResolutions;
 };
