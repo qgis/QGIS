@@ -10357,7 +10357,7 @@ void QgisApp::legendLayerZoomNative()
         i--;
       }
 
-      mMapCanvas->zoomByFactor( diagonalNativeResolutions.at( i ) / diagonalSize );
+      mMapCanvas->zoomByFactor( nativeResolutions.at( i ) / mMapCanvas->mapUnitsPerPixel() );
     }
     else
     {
