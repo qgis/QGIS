@@ -346,6 +346,14 @@ void TestQgsLayoutTable::attributeTableVisibleOnly()
 
   //retrieve rows and check
   compareTable( table, expectedRows );
+
+  // with rotation
+  map->setMapRotation( 90 );
+  expectedRows.clear();
+  row.clear();
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "90" ) << QStringLiteral( "3" ) << QStringLiteral( "2" ) << QStringLiteral( "0" ) << QStringLiteral( "2" );
+  expectedRows.append( row );
+  compareTable( table, expectedRows );
 }
 
 void TestQgsLayoutTable::attributeTableRender()
@@ -1444,7 +1452,7 @@ void TestQgsLayoutTable::wrappedText()
 
   QFont f;
   QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
-  QString wrapText = t->wrappedText( sourceText, 100 /*columnWidth*/, f );
+  QString wrapText = t->wrappedText( sourceText, 101 /*columnWidth*/, f );
   //there should be no line break before the last word (bug #20546)
   QVERIFY( !wrapText.endsWith( "\naliqua" ) );
 }

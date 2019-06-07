@@ -29,6 +29,7 @@
 #include "qgsexception.h"
 #include "qgsmapsettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgeometryengine.h"
 
 //QgsLayoutAttributeTableCompare
 
@@ -236,12 +237,14 @@ void QgsLayoutItemAttributeTable::setMap( QgsLayoutItemMap *map )
   {
     //disconnect from previous map
     disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
+    disconnect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
   }
   mMap = map;
   if ( mMap )
   {
     //listen out for extent changes in linked map
     connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
+    connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
   }
   refreshAttributes();
   emit changed();
@@ -422,9 +425,12 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   }
 
   QgsRectangle selectionRect;
+  QgsGeometry visibleRegion;
+  std::unique_ptr< QgsGeometryEngine > visibleMapEngine;
   if ( mMap && mShowOnlyVisibleFeatures )
   {
-    selectionRect = mMap->extent();
+    visibleRegion = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
+    selectionRect = visibleRegion.boundingBox();
     if ( layer )
     {
       //transform back to layer CRS
@@ -432,6 +438,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       try
       {
         selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
+        visibleRegion.transform( coordTransform, QgsCoordinateTransform::ReverseTransform );
       }
       catch ( QgsCsException &cse )
       {
@@ -439,6 +446,8 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
         return false;
       }
     }
+    visibleMapEngine.reset( QgsGeometry::createGeometryEngine( visibleRegion.constGet() ) );
+    visibleMapEngine->prepareGeometry();
   }
 
   if ( mSource == QgsLayoutItemAttributeTable::RelationChildren )
@@ -477,6 +486,17 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
         continue;
       }
     }
+
+    // check against exact map bounds
+    if ( visibleMapEngine )
+    {
+      if ( !f.hasGeometry() )
+        continue;
+
+      if ( !visibleMapEngine->intersects( f.geometry().constGet() ) )
+        continue;
+    }
+
     //check against atlas feature intersection
     if ( mFilterToAtlasIntersection )
     {
@@ -556,6 +576,7 @@ void QgsLayoutItemAttributeTable::finalizeRestoreFromXml()
     {
       //if we have found a valid map item, listen out to extent changes on it and refresh the table
       connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
+      connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
     }
   }
 }
@@ -736,6 +757,7 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   if ( mMap )
   {
     disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
+    disconnect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
     mMap = nullptr;
   }
   // setting new mMap occurs in finalizeRestoreFromXml
