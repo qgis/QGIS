@@ -434,13 +434,16 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     double oy = origin[QStringLiteral( "y" )].toDouble();
 
     // Search matching resolution (tile resolution <= targetRes)
-    const QList<QVariant> lodEntries = tileInfo[QStringLiteral( "lods" )].toList();
+    QList<QVariant> lodEntries = tileInfo[QStringLiteral( "lods" )].toList();
     if ( lodEntries.isEmpty() )
     {
       return QImage();
     }
+    std::sort( lodEntries.begin(), lodEntries.end(), []( const QVariant & a, const QVariant & b )
+    {
+      return a.toMap().value( QStringLiteral( "resolution" ) ).toDouble() > b.toMap().value( QStringLiteral( "resolution" ) ).toDouble();
+    } );
     int level = 0;
-    double resolution = lodEntries.front().toMap()[QStringLiteral( "resolution" )].toDouble();
     int foundLevel = -1;
 
     QMap< int, double > levelToResMap;
@@ -449,14 +452,22 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
       QVariantMap lodEntryMap = lodEntry.toMap();
 
       level = lodEntryMap[QStringLiteral( "level" )].toInt();
-      resolution = lodEntryMap[QStringLiteral( "resolution" )].toDouble();
+      double resolution = lodEntryMap[QStringLiteral( "resolution" )].toDouble();
       levelToResMap.insert( level, resolution );
       if ( foundLevel < 0 && resolution <= 1.5 * targetRes )
       {
         foundLevel = level;
       }
     }
-    level = foundLevel;
+    if ( foundLevel >= 0 )
+    {
+      level = foundLevel;
+    }
+    else
+    {
+      // just use best resolution available
+      level = lodEntries.constLast().toMap().value( QStringLiteral( "level" ) ).toInt();
+    }
 
     auto getRequests = [&levelToResMap, &viewExtent, tileWidth, tileHeight, ox, oy, targetRes, &dataSource]( int level, TileRequests & requests )
     {
