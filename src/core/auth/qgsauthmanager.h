@@ -874,6 +874,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QList<QSslCertificate> mTrustedCaCertsCache;
     // cache of SSL errors to be ignored in network connections, per sha-hostport
     QHash<QString, QSet<QSslError::SslError> > mIgnoredSslErrorsCache;
+
+    bool mHasCustomConfigByHost = false;
+    bool mHasCheckedIfCustomConfigByHostExists = false;
+    QMap< QString, QgsAuthConfigSslServer > mCustomConfigByHostCache;
 #endif
 
     //////////////////////////////////////////////////////////////////////////////
