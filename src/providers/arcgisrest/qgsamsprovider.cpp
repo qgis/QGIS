@@ -174,8 +174,19 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
 
   const QString serviceUrl = dataSource.param( QStringLiteral( "url" ) );
   mServiceInfo = QgsArcGisRestUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
-  const QString layerUrl = dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) );
-  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
+
+  QString layerUrl;
+  if ( mServiceInfo.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+  {
+    layerUrl = serviceUrl;
+    mLayerInfo = mServiceInfo;
+    mImageServer = true;
+  }
+  else
+  {
+    layerUrl = dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) );
+    mLayerInfo = QgsArcGisRestUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
+  }
 
   const QVariantMap extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
   mExtent.setXMinimum( extentData[QStringLiteral( "xmin" )].toDouble() );
@@ -264,6 +275,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
   , mSubLayerVisibilities( other.mSubLayerVisibilities )
   , mRequestHeaders( other.mRequestHeaders )
   , mTiled( other.mTiled )
+  , mImageServer( other.mImageServer )
   , mLayerMetadata( other.mLayerMetadata )
   , mResolutions( other.mResolutions )
 // intentionally omitted:
@@ -629,7 +641,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
       return mCachedImage;
     }
 
-    QUrl requestUrl( dataSource.param( QStringLiteral( "url" ) ) + "/export" );
+    QUrl requestUrl( dataSource.param( QStringLiteral( "url" ) ) + ( mImageServer ? "/exportImage" : "/export" ) );
     requestUrl.addQueryItem( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( viewExtent.xMinimum(), 0, 'f', -1 ).arg( viewExtent.yMinimum(), 0, 'f', -1 ).arg( viewExtent.xMaximum(), 0, 'f', -1 ).arg( viewExtent.yMaximum(), 0, 'f', -1 ) );
     requestUrl.addQueryItem( QStringLiteral( "size" ), QStringLiteral( "%1,%2" ).arg( pixelWidth ).arg( pixelHeight ) );
     requestUrl.addQueryItem( QStringLiteral( "format" ), dataSource.param( QStringLiteral( "format" ) ) );
