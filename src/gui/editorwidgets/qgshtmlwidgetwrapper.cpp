@@ -87,7 +87,7 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
   htmlExpression->setExpressionContext( expressionContext );
   mWidget->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   auto frame = mWidget->page()->mainFrame();
-  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, [ = ]
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [ = ]
   {
     frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), htmlExpression );
   } );

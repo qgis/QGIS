@@ -1067,7 +1067,7 @@ void QgsExpressionBuilderWidget::mValuesListView_doubleClicked( const QModelInde
 
 void QgsExpressionBuilderWidget::operatorButtonClicked()
 {
-  QPushButton *button = dynamic_cast<QPushButton *>( sender() );
+  QPushButton *button = qobject_cast<QPushButton *>( sender() );
 
   // Insert the button text or replace selected text
   txtExpressionString->insertText( ' ' + button->text() + ' ' );

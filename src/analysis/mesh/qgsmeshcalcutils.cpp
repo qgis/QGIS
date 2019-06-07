@@ -248,7 +248,6 @@ void QgsMeshCalcUtils::populateMaskFilter( QgsMeshMemoryDatasetGroup &filter, co
   std::shared_ptr<QgsMeshMemoryDataset> output = create( filter );
   output->time = mTimes[0];
 
-  const QVector<int> trianglesToNativeFaces = triangularMesh()->trianglesToNativeFaces();
   const QVector<QgsMeshVertex> &vertices = triangularMesh()->vertices();
 
   if ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnVertices )

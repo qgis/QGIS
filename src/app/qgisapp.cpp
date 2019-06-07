@@ -14482,7 +14482,7 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
       }
     }
     const QString filePath = templateDirName + QDir::separator() + templateName + QStringLiteral( ".qgz" );
-    if ( QFileInfo( filePath ).exists() )
+    if ( QFileInfo::exists( filePath ) )
     {
       QMessageBox msgBox( this );
       msgBox.setWindowTitle( tr( "Overwrite template" ) );

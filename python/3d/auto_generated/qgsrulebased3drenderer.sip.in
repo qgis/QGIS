@@ -60,7 +60,7 @@ Similar to rule-based 2D renderer and rule-based labeling, it allows specificati
   public:
 
     typedef QList<QgsRuleBased3DRenderer::Rule *> RuleList;
-    typedef QMap<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
+    typedef QHash<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
 
     class Rule
 {

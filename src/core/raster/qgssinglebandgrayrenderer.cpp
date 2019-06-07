@@ -221,8 +221,6 @@ QList<int> QgsSingleBandGrayRenderer::usesBands() const
 
 void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 
@@ -357,8 +355,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   }
 
   // create tags
-  QList< QPair< QString, QColor > >::ConstIterator it;
-  for ( it = colorMapping.begin(); it != colorMapping.constEnd() ; ++it )
+  for ( auto it = colorMapping.constBegin(); it != colorMapping.constEnd() ; ++it )
   {
     // set low level color mapping
     QDomElement lowColorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );

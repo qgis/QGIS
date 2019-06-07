@@ -378,7 +378,7 @@ void QgsAuthOAuth2Method::onCloseBrowser()
   QgsMessageLog::logMessage( tr( "Close browser requested" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
   // Bring focus back to QGIS app
-  if ( qobject_cast<QApplication *>( qApp ) )
+  if ( qApp )
   {
     const QList<QWidget *> widgets = QgsApplication::topLevelWidgets();
     for ( QWidget *topwdgt : widgets )

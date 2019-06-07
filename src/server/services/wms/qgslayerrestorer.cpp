@@ -29,7 +29,6 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
     QgsLayerSettings settings;
     settings.name = layer->name();
 
-    QString style = layer->styleManager()->currentStyle();
     settings.mNamedStyle = layer->styleManager()->currentStyle();
 
     // set a custom property allowing to keep in memory if a SLD file has
