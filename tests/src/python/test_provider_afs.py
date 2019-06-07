@@ -835,6 +835,71 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(features), 3)
         self.assertEqual([f.geometry().asWkt() for f in features], ['MultiPoint ((-70 66))', '', 'MultiPoint ((-68 70),(-22 21))'])
 
+    def testDomain(self):
+        """
+        Test fields with a domain are mapped to value map wrapper, for correct value display
+        """
+        endpoint = self.basetestpath + '/domain_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPoint","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"with_domain","type":"esriFieldTypeInteger","alias":"with_domain",
+        "domain": {
+        "type": "codedValue",
+        "name": "Test Domain",
+        "description": "",
+        "codedValues": [
+         {
+          "name": "Value 1",
+          "code": 1
+         },
+         {
+          "name": "Value 2",
+          "code": 2
+         },
+         {
+          "name": "Value 3",
+          "code": 3
+         }
+        ],
+        "mergePolicy": "esriMPTDefaultValue",
+        "splitPolicy": "esriSPTDefaultValue"
+       }
+       }],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1,
+          2,
+          3
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.fields()[0].editorWidgetSetup().type())
+        self.assertEqual(vl.fields()[1].editorWidgetSetup().type(), 'ValueMap')
+        self.assertEqual(vl.fields()[1].editorWidgetSetup().config(), {'map': [{'Value 1': 1.0}, {'Value 2': 2.0}, {'Value 3': 3.0}]})
+
 
 if __name__ == '__main__':
     unittest.main()
