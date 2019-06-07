@@ -935,7 +935,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
 
   QObject *obj = dynamic_cast< QObject * >( mMasterLayout );
   if ( obj )
-    connect( obj, &QObject::destroyed, [ = ]
+    connect( obj, &QObject::destroyed, this, [ = ]
   {
     this->close();
     QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
