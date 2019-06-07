@@ -241,13 +241,13 @@ class Climb(QgisAlgorithm):
 
         feedback.pushInfo(self.tr(
             'The following features do not have geometry: {no_geometry_report}'.format(
-                no_geometry_report=str(no_geometry))
+                no_geometry_report=(', '.join(no_geometry)))
         )
         )
 
         feedback.pushInfo(self.tr(
             'The following points do not have Z values: {no_z_report}'.format(
-                no_z_report=str(no_z_nodes))
+                no_z_report=(', '.join(no_z_nodes)))
         )
         )
         # Return the results
