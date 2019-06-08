@@ -48,7 +48,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void saveAsImage();
     void toggleAnimations();
     void identify();
-    void toggleNavigationWidget(bool visibility);
+    void toggleNavigationWidget( bool visibility );
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
