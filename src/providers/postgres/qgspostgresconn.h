@@ -284,6 +284,11 @@ class QgsPostgresConn : public QObject
     static QString quotedValue( const QVariant &value );
 
     /**
+     * Quote a json(b) value for placement in a SQL string.
+     */
+    static QString quotedJsonValue( const QVariant &value );
+
+    /**
      * Gets the list of supported layers
      * \param layers list to store layers in
      * \param searchGeometryColumnsOnly only look for geometry columns which are

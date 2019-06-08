@@ -617,36 +617,39 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
         self.assertTrue(vl.isValid())
 
-        fields = vl.dataProvider().fields()
-        self.assertEqual(fields.at(fields.indexFromName('jvalue')).type(), QVariant.Map)
-        self.assertEqual(fields.at(fields.indexFromName('jbvalue')).type(), QVariant.Map)
-
-        fi = vl.getFeatures(QgsFeatureRequest())
-        f = QgsFeature()
-
-        # test list
-        fi.nextFeature(f)
-        value_idx = vl.fields().lookupField('jvalue')
-        self.assertIsInstance(f.attributes()[value_idx], list)
-        self.assertEqual(f.attributes()[value_idx], [1, 2, 3])
-        self.assertEqual(f.attributes()[value_idx], [1.0, 2.0, 3.0])
-
-        value_idx = vl.fields().lookupField('jbvalue')
-        self.assertIsInstance(f.attributes()[value_idx], list)
-        self.assertEqual(f.attributes()[value_idx], [4, 5, 6])
-        self.assertEqual(f.attributes()[value_idx], [4.0, 5.0, 6.0])
-
-        # test dict
-        fi.nextFeature(f)
-        value_idx = vl.fields().lookupField('jvalue')
-        self.assertIsInstance(f.attributes()[value_idx], dict)
-        self.assertEqual(f.attributes()[value_idx], {'a': 1, 'b': 2})
-        self.assertEqual(f.attributes()[value_idx], {'a': 1.0, 'b': 2.0})
-
-        value_idx = vl.fields().lookupField('jbvalue')
-        self.assertIsInstance(f.attributes()[value_idx], dict)
-        self.assertEqual(f.attributes()[value_idx], {'c': 4, 'd': 5})
-        self.assertEqual(f.attributes()[value_idx], {'c': 4.0, 'd': 5.0})
+        attrs = (
+            123,
+            None,
+            1233.45,
+            [1, 2, 3.4, None],
+            [True, False],
+            {'a': 123, 'b': 123.34, 'c': 'a string', 'd': [1, 2, 3], 'e': {'a': 123, 'b': 123.45}}
+        )
+        json_idx = vl.fields().lookupField('jvalue')
+        jsonb_idx = vl.fields().lookupField('jbvalue')
+        for attr in attrs:
+            # Add a new feature
+            vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+            self.assertTrue(vl2.startEditing())
+            f = QgsFeature(vl2.fields())
+            f.setAttributes([None, attr, attr])
+            self.assertTrue(vl2.addFeatures([f]))
+            self.assertTrue(vl2.commitChanges())
+            # Read back
+            vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+            fid = [f.id() for f in vl2.getFeatures()][-1]
+            f = vl2.getFeature(fid)
+            self.assertEqual(f.attributes(), [fid, attr, attr])
+            # Change attribute values
+            vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+            fid = [f.id() for f in vl2.getFeatures()][-1]
+            self.assertTrue(vl2.startEditing())
+            self.assertTrue(vl2.changeAttributeValues(fid, {json_idx: attr, jsonb_idx: attr}))
+            self.assertTrue(vl2.commitChanges())
+            # Read back
+            vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+            f = vl2.getFeature(fid)
+            self.assertEqual(f.attributes(), [fid, attr, attr])
 
     def testStringArray(self):
         vl = QgsVectorLayer('%s table="qgis_test"."string_array" sql=' % (self.dbconn), "teststringarray", "postgres")

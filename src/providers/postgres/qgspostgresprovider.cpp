@@ -41,6 +41,7 @@
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgssettings.h"
+#include "qgsjsonutils.h"
 
 #ifdef HAVE_GUI
 #include "qgspgsourceselect.h"
@@ -2185,10 +2186,17 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
                     .arg( delim,
                           quotedValue( v.toString() ) );
         }
+        else if ( fieldTypeName == QLatin1String( "jsonb" ) )
+        {
+          values += delim + quotedJsonValue( v ) + QLatin1String( "::jsonb" );
+        }
+        else if ( fieldTypeName == QLatin1String( "json" ) )
+        {
+          values += delim + quotedJsonValue( v ) + QLatin1String( "::json" );
+        }
         //TODO: convert arrays and hstore to native types
         else
         {
-          //this should be for json/jsonb in future
           values += delim + quotedValue( v );
         }
       }
@@ -2733,6 +2741,16 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           {
             sql += QStringLiteral( "st_geographyfromewkt(%1)" )
                    .arg( quotedValue( siter->toString() ) );
+          }
+          else if ( fld.typeName() == QLatin1String( "jsonb" ) )
+          {
+            sql += QStringLiteral( "%1::jsonb" )
+                   .arg( quotedJsonValue( siter.value() ) );
+          }
+          else if ( fld.typeName() == QLatin1String( "json" ) )
+          {
+            sql += QStringLiteral( "%1::json" )
+                   .arg( quotedJsonValue( siter.value() ) );
           }
           else
           {
@@ -4316,11 +4334,7 @@ QVariant QgsPostgresProvider::parseHstore( const QString &txt )
 
 QVariant QgsPostgresProvider::parseJson( const QString &txt )
 {
-  QVariant result;
-  QJsonDocument jsonResponse = QJsonDocument::fromJson( txt.toUtf8() );
-  //it's null if no json format
-  result = jsonResponse.toVariant();
-  return result;
+  return QgsJsonUtils::parseJson( txt );
 }
 
 QVariant QgsPostgresProvider::parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName )

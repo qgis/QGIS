@@ -345,14 +345,14 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
       {
         v = QString::fromStdString( item.get<std::string>() );
       }
+      else if ( item.is_boolean() )
+      {
+        v = item.get<bool>();
+      }
       else if ( item.is_null() )
       {
         // Fallback to int
         v = QVariant( type == QVariant::Type::Invalid ? QVariant::Type::Int : type );
-      }
-      else
-      {
-        // do nothing and discard the item
       }
 
       // If a destination type was specified (it's not invalid), try to convert
@@ -384,6 +384,11 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
 
 json QgsJsonUtils::jsonFromVariant( const QVariant &val )
 {
+  if ( val.isNull() || ! val.isValid() )
+  {
+    return nullptr;
+  }
+  json j;
   if ( val.type() == QVariant::Type::Map )
   {
     const auto vMap { val.toMap() };
@@ -392,7 +397,7 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
     {
       jMap[ it.key().toStdString() ] = jsonFromVariant( it.value() );
     }
-    return jMap;
+    j = jMap;
   }
   else if ( val.type() == QVariant::Type::List )
   {
@@ -402,7 +407,7 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
     {
       jList.push_back( jsonFromVariant( v ) );
     }
-    return jList;
+    j = jList;
   }
   else
   {
@@ -412,14 +417,96 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
       case QMetaType::UInt:
       case QMetaType::LongLong:
       case QMetaType::ULongLong:
-        return val.toLongLong();
+        j = val.toLongLong();
+        break;
       case QMetaType::Double:
       case QMetaType::Float:
-        return val.toDouble();
+        j = val.toDouble();
+        break;
+      case QMetaType::Bool:
+        j = val.toBool();
+        break;
       default:
-        return  val.toString().toStdString();
+        j = val.toString().toStdString();
+        break;
     }
   }
+  return j;
+}
+
+QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
+{
+  std::function<QVariant( json )> _parser { [ & ]( json jObj ) -> QVariant {
+      QVariant result;
+      QString errorMessage;
+      if ( jObj.is_array() )
+      {
+        QVariantList results;
+        for ( const auto &item : jObj )
+        {
+          results.push_back( _parser( item ) );
+        }
+        result = results;
+      }
+      else if ( jObj.is_object() )
+      {
+        QVariantMap results;
+        for ( const auto  &item : jObj.items() )
+        {
+          const auto key { QString::fromStdString( item.key() ) };
+          const auto value {  _parser( item.value() ) };
+          results[ key ] = value;
+        }
+        result = results;
+      }
+      else
+      {
+        if ( jObj.is_number_integer() )
+        {
+          result = jObj.get<int>();
+        }
+        else if ( jObj.is_number_unsigned() )
+        {
+          result = jObj.get<unsigned>();
+        }
+        else if ( jObj.is_boolean() )
+        {
+          result = jObj.get<bool>();
+        }
+        else if ( jObj.is_number_float() )
+        {
+          // Note: it's a double and not a float on purpose
+          result = jObj.get<double>();
+        }
+        else if ( jObj.is_string() )
+        {
+          result = QString::fromStdString( jObj.get<std::string>() );
+        }
+        else if ( jObj.is_null() )
+        {
+          // Do nothing (leave invalid)
+        }
+      }
+      return result;
+    }
+  };
+
+  try
+  {
+    const json j = json::parse( jsonString );
+    return _parser( j );
+  }
+  catch ( json::parse_error &ex )
+  {
+    QgsLogger::warning( QStringLiteral( "Cannot parse json (%1): %2" ).arg( QString::fromStdString( ex.what() ),
+                        QString::fromStdString( jsonString ) ) );
+  }
+  return QVariant();
+}
+
+QVariant QgsJsonUtils::parseJson( const QString &jsonString )
+{
+  return parseJson( jsonString.toStdString() );
 }
 
 json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )

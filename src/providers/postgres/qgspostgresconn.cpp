@@ -27,11 +27,14 @@
 #include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"
 #include "qgssettings.h"
+#include "qgsjsonutils.h"
 
 #include <QApplication>
 #include <QThread>
 
 #include <climits>
+
+#include <nlohmann/json.hpp>
 
 // for htonl
 #ifdef Q_OS_WIN
@@ -992,7 +995,6 @@ static QString doubleQuotedMapValue( const QString &v )
 
 static QString quotedMap( const QVariantMap &map )
 {
-  //to store properly it should be decided if it's a hstore or a json/jsonb field here...
   QString ret;
   for ( QVariantMap::const_iterator i = map.constBegin(); i != map.constEnd(); ++i )
   {
@@ -1055,6 +1057,16 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
     default:
       return quotedString( value.toString() );
   }
+}
+
+QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
+{
+  if ( value.isNull() || !value.isValid() )
+    return QStringLiteral( "null" );
+  if ( value.type() == QVariant::Bool )
+    return value.toBool() ?  QStringLiteral( "true" ) : QStringLiteral( "false" );
+  const auto j { QgsJsonUtils::jsonFromVariant( value ) };
+  return QStringLiteral( "'%1'" ).arg( QString::fromStdString( j.dump() ) );
 }
 
 PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool retry ) const
