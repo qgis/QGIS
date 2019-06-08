@@ -350,7 +350,6 @@ class CORE_EXPORT QgsJsonUtils
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-
     static QVariant parseJson( const std::string &jsonString ) SIP_SKIP;
 
     /**
@@ -359,7 +358,6 @@ class CORE_EXPORT QgsJsonUtils
      * \since QGIS 3.8
      */
     static QVariant parseJson( const QString &jsonString ) SIP_SKIP;
-
 
 };
 
