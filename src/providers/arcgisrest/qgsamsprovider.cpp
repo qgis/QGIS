@@ -60,8 +60,10 @@ struct LessThanTileRequest
   }
 };
 
-QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider )
-  : QgsImageFetcher( provider ), mProvider( provider )
+QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider, const QImage &fetchedImage )
+  : QgsImageFetcher( provider )
+  , mProvider( provider )
+  , mLegendImage( fetchedImage )
 {
   mQuery = new QgsArcGisAsyncQuery( this );
   connect( mQuery, &QgsArcGisAsyncQuery::finished, this, &QgsAmsLegendFetcher::handleFinished );
@@ -70,18 +72,25 @@ QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider )
 
 void QgsAmsLegendFetcher::start()
 {
-  // http://resources.arcgis.com/en/help/rest/apiref/mslegend.html
-  // http://sampleserver5.arcgisonline.com/arcgis/rest/services/CommunityAddressing/MapServer/legend?f=pjson
-  QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
-  const QString authCfg = dataSource.authConfigId();
-  const QString referer = dataSource.param( QStringLiteral( "referer" ) );
-  QgsStringMap headers;
-  if ( !referer.isEmpty() )
-    headers[ QStringLiteral( "Referer" )] = referer;
+  if ( mLegendImage.isNull() )
+  {
+    // http://resources.arcgis.com/en/help/rest/apiref/mslegend.html
+    // http://sampleserver5.arcgisonline.com/arcgis/rest/services/CommunityAddressing/MapServer/legend?f=pjson
+    QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
+    const QString authCfg = dataSource.authConfigId();
+    const QString referer = dataSource.param( QStringLiteral( "referer" ) );
+    QgsStringMap headers;
+    if ( !referer.isEmpty() )
+      headers[ QStringLiteral( "Referer" )] = referer;
 
-  QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/legend" );
-  queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  mQuery->start( queryUrl, authCfg, &mQueryReply, false, headers );
+    QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/legend" );
+    queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
+    mQuery->start( queryUrl, authCfg, &mQueryReply, false, headers );
+  }
+  else
+  {
+    QTimer::singleShot( 1, this, &QgsAmsLegendFetcher::sendCachedImage );
+  }
 }
 
 void QgsAmsLegendFetcher::handleError( const QString &errorTitle, const QString &errorMsg )
@@ -89,6 +98,11 @@ void QgsAmsLegendFetcher::handleError( const QString &errorTitle, const QString 
   mErrorTitle = errorTitle;
   mError = errorMsg;
   emit error( errorTitle + ": " + errorMsg );
+}
+
+void QgsAmsLegendFetcher::sendCachedImage()
+{
+  emit finish( mLegendImage );
 }
 
 void QgsAmsLegendFetcher::handleFinished()
@@ -154,6 +168,7 @@ void QgsAmsLegendFetcher::handleFinished()
       ++i;
     }
   }
+  emit fetchedNew( mLegendImage );
   emit finish( mLegendImage );
 }
 
@@ -167,7 +182,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   if ( !referer.isEmpty() )
     mRequestHeaders[ QStringLiteral( "Referer" )] = referer;
 
-  mLegendFetcher = new QgsAmsLegendFetcher( this );
+  mLegendFetcher = new QgsAmsLegendFetcher( this, QImage() );
 
 
   const QString authcfg = dataSource.authConfigId();
@@ -291,7 +306,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
 // - mCachedImage
 // - mCachedImageExtent
 {
-  mLegendFetcher = new QgsAmsLegendFetcher( this );
+  mLegendFetcher = new QgsAmsLegendFetcher( this, other.mLegendFetcher->getImage() );
 
   // is this needed?
   mTimestamp = QDateTime::currentDateTime();
@@ -747,6 +762,7 @@ QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, co
   {
     return mLegendFetcher->getImage();
   }
+  mLegendFetcher->clear();
   QEventLoop evLoop;
   connect( mLegendFetcher, &QgsImageFetcher::finish, &evLoop, &QEventLoop::quit );
   connect( mLegendFetcher, &QgsImageFetcher::error, &evLoop, &QEventLoop::quit );
@@ -766,7 +782,12 @@ QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, co
 
 QgsImageFetcher *QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings * /*mapSettings*/ )
 {
-  return new QgsAmsLegendFetcher( this );
+  QgsAmsLegendFetcher *fetcher = new QgsAmsLegendFetcher( this, mLegendFetcher->getImage() );
+  connect( fetcher, &QgsAmsLegendFetcher::fetchedNew, this, [ = ]( const QImage & fetched )
+  {
+    mLegendFetcher->setImage( fetched );
+  } );
+  return fetcher;
 }
 
 QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent, int width, int height, int dpi )
