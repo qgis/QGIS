@@ -32,16 +32,23 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
 {
     Q_OBJECT
   public:
-    QgsAmsLegendFetcher( QgsAmsProvider *provider );
+    QgsAmsLegendFetcher( QgsAmsProvider *provider, const QImage &fetchedImage );
     void start() override;
     bool haveImage() const { return mLegendImage.isNull(); }
     QImage getImage() const { return mLegendImage; }
+    void setImage( const QImage &image ) { mLegendImage = image; }
+    void clear() { mLegendImage = QImage(); }
     const QString &errorTitle() const { return mErrorTitle; }
     const QString &errorMessage() const { return mError; }
+
+  signals:
+
+    void fetchedNew( const QImage &image );
 
   private slots:
     void handleFinished();
     void handleError( const QString &errorTitle, const QString &errorMsg );
+    void sendCachedImage();
 
   private:
     QgsAmsProvider *mProvider = nullptr;
