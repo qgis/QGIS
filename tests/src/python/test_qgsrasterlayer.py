@@ -47,7 +47,8 @@ from qgis.core import (QgsRaster,
                        QgsGradientColorRamp,
                        QgsHueSaturationFilter,
                        QgsCoordinateTransformContext,
-                       QgsCoordinateReferenceSystem
+                       QgsCoordinateReferenceSystem,
+                       QgsRasterHistogram,
                        )
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
@@ -1029,6 +1030,21 @@ class TestQgsRasterLayer(unittest.TestCase):
         errorMessage = ''
         layer.writeSld(root, dom, errorMessage, properties)
         return dom, root, errorMessage
+
+    def testHistogram(self):
+        """Test histogram bindings regression GH #29700"""
+
+        l = QgsRasterLayer(unitTestDataPath('raster/landcover.img'), 'landcover')
+        self.assertTrue(l.isValid())
+        p = l.dataProvider()
+        # Note that this is not a correct use of the API: there is no
+        # need to call initHistogram(): it is called internally
+        # from p.histogram()
+        p.initHistogram(QgsRasterHistogram(), 1, 100)
+        h = p.histogram(1)
+        self.assertTrue(len(h.histogramVector), 100)
+        # Check it twice because it crashed in some circumstances with the old implementation
+        self.assertTrue(len(h.histogramVector), 100)
 
 
 class TestQgsRasterLayerTransformContext(unittest.TestCase):
