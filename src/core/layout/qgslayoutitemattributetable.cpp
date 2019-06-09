@@ -449,6 +449,27 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     visibleMapEngine->prepareGeometry();
   }
 
+  QgsGeometry atlasGeometry;
+  std::unique_ptr< QgsGeometryEngine > atlasGeometryEngine;
+  if ( mFilterToAtlasIntersection )
+  {
+    atlasGeometry = mLayout->reportContext().currentGeometry( layer->crs() );
+    if ( !atlasGeometry.isNull() )
+    {
+      if ( selectionRect.isNull() )
+      {
+        selectionRect = atlasGeometry.boundingBox();
+      }
+      else
+      {
+        selectionRect = selectionRect.intersect( atlasGeometry.boundingBox() );
+      }
+
+      atlasGeometryEngine.reset( QgsGeometry::createGeometryEngine( atlasGeometry.constGet() ) );
+      atlasGeometryEngine->prepareGeometry();
+    }
+  }
+
   if ( mSource == QgsLayoutItemAttributeTable::RelationChildren )
   {
     QgsRelation relation = mLayout->project()->relationManager()->relation( mRelationId );
@@ -499,20 +520,17 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     //check against atlas feature intersection
     if ( mFilterToAtlasIntersection )
     {
-      if ( !f.hasGeometry() )
+      if ( !f.hasGeometry() || !atlasGeometryEngine )
       {
         continue;
       }
-      QgsFeature atlasFeature = mLayout->reportContext().feature();
-      if ( !atlasFeature.hasGeometry() ||
-           !f.geometry().intersects( atlasFeature.geometry() ) )
-      {
-        //feature falls outside current atlas feature
+
+      if ( !atlasGeometryEngine->intersects( f.geometry().constGet() ) )
         continue;
-      }
     }
 
     QgsLayoutTableRow currentRow;
+    currentRow.reserve( mColumns.count() );
 
     for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
     {
@@ -673,6 +691,7 @@ QVector<QPair<int, bool> > QgsLayoutItemAttributeTable::sortAttributes() const
 
   //generate list of column index, bool for sort direction (to match 2.0 api)
   QVector<QPair<int, bool> > attributesBySortRank;
+  attributesBySortRank.reserve( sortedColumns.size() );
   for ( auto &column : qgis::as_const( sortedColumns ) )
   {
     attributesBySortRank.append( qMakePair( column.first,
