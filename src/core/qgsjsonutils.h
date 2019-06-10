@@ -353,7 +353,7 @@ class CORE_EXPORT QgsJsonUtils
     static QVariant parseJson( const std::string &jsonString ) SIP_SKIP;
 
     /**
-     * Converts JSON std::string \a jsonString to a QVariant, in case of parsing error an invalid QVariant is returned.
+     * Converts JSON \a jsonString to a QVariant, in case of parsing error an invalid QVariant is returned.
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
