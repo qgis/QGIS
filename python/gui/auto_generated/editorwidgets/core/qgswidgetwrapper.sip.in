@@ -78,7 +78,7 @@ Access the widget managed by this wrapper
 %End
 
 
-    void setConfig( const QVariantMap &config );
+    virtual void setConfig( const QVariantMap &config );
 %Docstring
 Will set the config of this wrapper to the specified config.
 
