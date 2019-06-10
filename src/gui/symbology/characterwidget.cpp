@@ -131,12 +131,15 @@ void CharacterWidget::setCharacter( QChar character )
 void CharacterWidget::clearCharacter()
 {
   mLastKey = -1;
+<<<<<<< HEAD
   update();
 }
 
 void CharacterWidget::clearCharacter()
 {
   mLastKey = -1;
+=======
+>>>>>>> ee074d051169acea0229b972846f6e530ce94ad1
   update();
 }
 
@@ -203,6 +206,7 @@ void CharacterWidget::keyPressEvent( QKeyEvent *event )
     }
     setCharacter( QChar( next ) );
   }
+<<<<<<< HEAD
   else if ( event->key() == Qt::Key_Home )
   {
     int next = 0;
@@ -221,6 +225,8 @@ void CharacterWidget::keyPressEvent( QKeyEvent *event )
     }
     setCharacter( QChar( next ) );
   }
+=======
+>>>>>>> ee074d051169acea0229b972846f6e530ce94ad1
   else if ( !event->text().isEmpty() )
   {
     QChar chr = event->text().at( 0 );

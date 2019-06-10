@@ -703,11 +703,14 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+<<<<<<< HEAD
         mExpectedValue = False
         mValue = mSymbolLayer.pointOnAllParts()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+=======
+>>>>>>> ee074d051169acea0229b972846f6e530ce94ad1
         # test colors, need to make sure colors are passed/retrieved from subsymbol
         mSymbolLayer.setColor(QColor(150, 50, 100))
         self.assertEqual(mSymbolLayer.color(), QColor(150, 50, 100))
