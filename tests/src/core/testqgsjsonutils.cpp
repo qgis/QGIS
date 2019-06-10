@@ -38,6 +38,7 @@ class TestQgsJsonUtils : public QObject
   private slots:
     void testStringList();
     void testJsonArray();
+    void testParseJson();
     void testIntList();
     void testDoubleList();
     void testExportAttributesJson_data();
@@ -91,6 +92,8 @@ void TestQgsJsonUtils::testJsonArray()
   // Empty
   QCOMPARE( QgsJsonUtils::parseArray( R"([])", QVariant::Int ), QVariantList() );
   QCOMPARE( QgsJsonUtils::parseArray( "", QVariant::Int ), QVariantList() );
+  // Booleans
+  QCOMPARE( QgsJsonUtils::parseArray( "[true,false]", QVariant::Bool ), QVariantList() << true << false );
   // Nulls
   for ( const QVariant &value : QgsJsonUtils::parseArray( R"([null, null])" ) )
   {
@@ -104,6 +107,32 @@ void TestQgsJsonUtils::testJsonArray()
     QVERIFY( value.isValid() );
     QCOMPARE( value, QVariant( QVariant::Type::Double ) );
   }
+}
+
+void TestQgsJsonUtils::testParseJson()
+{
+  QStringList tests {{
+      "null",
+      "false",
+      "true",
+      "123",
+      "123.45",
+      R"j("a string")j",
+      "[1,2,3.4,null]",
+      R"j({"_bool":true,"_double":1234.45,"_int":123,"_list":[1,2,3.4,null],"_null":null,"_object":{"int":123}})j",
+    }};
+
+  for ( const auto &testJson : tests )
+  {
+    const auto parsed { QgsJsonUtils::parseJson( testJson ) };
+    QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( parsed ).dump() ), testJson );
+  }
+
+  // Test empty string: null
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "" ) ) ).dump() ), QString( "null" ) );
+  // invalid json -> null
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "invalid json" ) ) ).dump() ), QString( "null" ) );
+
 }
 
 void TestQgsJsonUtils::testIntList()
