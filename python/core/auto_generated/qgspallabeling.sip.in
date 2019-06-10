@@ -34,9 +34,9 @@ Constructor for QgsLabelPosition.
 :param layer: ID of associated map layer
 :param labeltext: text rendered for label
 :param labelfont: font used to render label
-:param upside_down: ``True`` if label is upside down
-:param diagram: ``True`` if label is a diagram
-:param pinned: ``True`` if label has pinned placement
+:param upside_down: TRUE if label is upside down
+:param diagram: TRUE if label is a diagram
+:param pinned: TRUE if label has pinned placement
 :param providerId: ID of associated label provider
 :param labelGeometry: polygon geometry of label boundary
 %End
