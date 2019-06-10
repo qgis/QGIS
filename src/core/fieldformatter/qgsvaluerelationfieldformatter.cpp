@@ -118,7 +118,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 {
   ValueRelationCache cache;
 
-  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( resolveLayer( config ) );
+  const QgsVectorLayer *layer = resolveLayer( config );
 
   if ( !layer )
     return cache;
@@ -274,25 +274,24 @@ bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expressi
   return true;
 }
 
-QString QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap &config )
+QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap &config )
 {
-  if ( QgsProject::instance()->mapLayer<QgsVectorLayer *>( config.value( QStringLiteral( "Layer" ) ).toString() ) )
+  auto layer { QgsProject::instance()->mapLayer<QgsVectorLayer *>( config.value( QStringLiteral( "Layer" ) ).toString() ) };
+  if ( ! layer )
   {
-    return config.value( QStringLiteral( "Layer" ) ).toString();
-  }
-  const auto name { config.value( QStringLiteral( "LayerName" ) ).toString() };
-  if ( ! name.isEmpty() )
-  {
-    const auto constLayers { QgsProject::instance()->mapLayers( true ) };
-    for ( const QgsMapLayer *l : constLayers )
+    const auto name { config.value( QStringLiteral( "LayerName" ) ).toString() };
+    if ( ! name.isEmpty() )
     {
-      const QgsVectorLayer *vl { qobject_cast<const QgsVectorLayer *>( l ) };
-      if ( vl && vl->name() == name )
+      for ( QgsMapLayer *l : QgsProject::instance()->mapLayers( true ) )
       {
-        return vl->id();
+        QgsVectorLayer *vl { qobject_cast<QgsVectorLayer *>( l ) };
+        if ( vl && vl->name() == name )
+        {
+          layer = vl;
+        }
       }
     }
   }
-  return QString();
+  return layer;
 }
 

@@ -120,10 +120,10 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     static bool expressionIsUsable( const QString &expression, const QgsFeature &feature );
 
     /**
-     * Returns the (possibly empty) layer ID from the widget \a config
+     * Returns the (possibly NULL) layer from the widget's \a config
      * \since QGIS 3.8
      */
-    static QString resolveLayer( const QVariantMap &config );
+    static QgsVectorLayer *resolveLayer( const QVariantMap &config );
 
 
 

@@ -121,9 +121,9 @@ Check whether the ``feature`` has all values required by the ``expression``
 .. versionadded:: 3.2
 %End
 
-    static QString resolveLayer( const QVariantMap &config );
+    static QgsVectorLayer *resolveLayer( const QVariantMap &config );
 %Docstring
-Returns the (possibly empty) layer ID from the widget ``config``
+Returns the (possibly NULL) layer from the widget's ``config``
 
 .. versionadded:: 3.8
 %End

@@ -71,7 +71,7 @@ QVariantMap QgsValueRelationConfigDlg::config()
 
 void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
 {
-  QgsVectorLayer *lyr = QgsProject::instance()->mapLayer<QgsVectorLayer *>( QgsValueRelationFieldFormatter::resolveLayer( config ) );
+  QgsVectorLayer *lyr = QgsValueRelationFieldFormatter::resolveLayer( config );
   mLayerName->setLayer( lyr );
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
