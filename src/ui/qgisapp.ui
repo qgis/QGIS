@@ -132,11 +132,11 @@
     <addaction name="mActionStatisticalSummary"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
-    <addaction name="mActionZoomToLayer"/>
     <addaction name="mActionZoomToSelected"/>
+    <addaction name="mActionZoomToLayer"/>
+    <addaction name="mActionZoomActualSize"/>
     <addaction name="mActionZoomLast"/>
     <addaction name="mActionZoomNext"/>
-    <addaction name="mActionZoomActualSize"/>
     <addaction name="separator"/>
     <addaction name="menuDecorations"/>
     <addaction name="mMenuPreviewMode"/>
@@ -507,10 +507,10 @@
    <addaction name="mActionPanToSelected"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
-   <addaction name="mActionZoomActualSize"/>
    <addaction name="mActionZoomFullExtent"/>
    <addaction name="mActionZoomToSelected"/>
    <addaction name="mActionZoomToLayer"/>
+   <addaction name="mActionZoomActualSize"/>
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
    <addaction name="mActionNewMapCanvas"/>
