@@ -44,7 +44,7 @@ class SelectByAttribute(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     OPERATORS = ['=',
-                 '≠',
+                 '<>',
                  '>',
                  '>=',
                  '<',
