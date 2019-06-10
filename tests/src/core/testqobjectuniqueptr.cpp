@@ -100,7 +100,7 @@ void TestQObjectUniquePtr::testOperatorArrow()
   QObject *o = new QObject();
   o->setObjectName( "Teddy" );
   QObjectUniquePtr<QObject> obj( o );
-  QCOMPARE( obj->objectName(), "Teddy" );
+  QCOMPARE( obj->objectName(), QStringLiteral( "Teddy" ) );
 }
 
 QGSTEST_MAIN( TestQObjectUniquePtr )
