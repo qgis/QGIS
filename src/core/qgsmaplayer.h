@@ -1133,6 +1133,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setOriginalXmlProperties( const QString &originalXmlProperties );
 
+    /**
+     * Generates an unique identifier for this layer, the generate ID is prefixed by \a layerName
+     * \since QGIS 3.8
+     */
+    static QString generateId( const QString &layerName );
+
+
   public slots:
 
     /**
