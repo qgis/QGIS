@@ -1063,8 +1063,6 @@ QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
 {
   if ( value.isNull() || !value.isValid() )
     return QStringLiteral( "null" );
-  if ( value.type() == QVariant::Bool )
-    return value.toBool() ?  QStringLiteral( "true" ) : QStringLiteral( "false" );
   const auto j { QgsJsonUtils::jsonFromVariant( value ) };
   return quotedString( QString::fromStdString( j.dump() ) );
 }

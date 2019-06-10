@@ -285,6 +285,7 @@ class QgsPostgresConn : public QObject
 
     /**
      * Quote a json(b) value for placement in a SQL string.
+     * \note a null value will be represented as a NULL and not as a json null.
      */
     static QString quotedJsonValue( const QVariant &value );
 

@@ -619,9 +619,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         attrs = (
             123,
-            None,
-            "String l'iteral with \"quotes\" and other funny chars ;#/",
             1233.45,
+            None,
+            True,
+            False,
+            r"String literal with \"quotes\" 'and' other funny chars []{};#/èé*",
             [1, 2, 3.4, None],
             [True, False],
             {'a': 123, 'b': 123.34, 'c': 'a string', 'd': [1, 2, 3], 'e': {'a': 123, 'b': 123.45}}
