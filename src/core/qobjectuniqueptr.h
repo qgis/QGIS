@@ -92,6 +92,14 @@ class QObjectUniquePtr
     }
 
     /**
+     * Returns the raw pointer to the managed QObject.
+     */
+    inline T *get() const
+    {
+      return static_cast<T *>( mPtr.data() );
+    }
+
+    /**
      * Returns a raw pointer to the managed QObject.
      */
     inline T *operator->() const
@@ -121,6 +129,11 @@ class QObjectUniquePtr
     inline bool isNull() const
     {
       return mPtr.isNull();
+    }
+
+    inline bool operator bool() const
+    {
+      return !mPtr.isNull();
     }
 
     inline void clear()

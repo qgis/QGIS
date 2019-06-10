@@ -43,9 +43,13 @@ void TestQObjectUniquePtr::testParentDeletedFirst()
 
   QObjectUniquePtr<QObject> obj( child );
   QVERIFY( !obj.isNull() );
+  QVERIFY( obj );
+  QCOMPARE( child, obj.get() );
+  QCOMPARE( child, obj.data() );
 
   delete parent;
   QVERIFY( obj.isNull() );
+  QVERIFY( !obj );
 }
 
 void TestQObjectUniquePtr::testParentDeletedAfter()
