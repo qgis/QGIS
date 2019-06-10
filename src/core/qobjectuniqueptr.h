@@ -21,6 +21,8 @@
 #ifndef QOBJECTUNIQUEPTR_H
 #define QOBJECTUNIQUEPTR_H
 
+#define SIP_NO_FILE
+
 #include <qsharedpointer.h>
 #include <qtypeinfo.h>
 
@@ -142,7 +144,7 @@ class QObjectUniquePtr
      * If it is not ``nullptr`` TRUE will be returned, if it is ``nullptr``
      * FALSE will be returned.
      */
-    inline bool operator bool() const
+    inline operator bool() const
     {
       return !mPtr.isNull();
     }
