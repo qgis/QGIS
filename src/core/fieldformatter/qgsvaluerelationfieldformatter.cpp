@@ -276,13 +276,14 @@ bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expressi
 
 QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap &config )
 {
-  auto layer { QgsProject::instance()->mapLayer<QgsVectorLayer *>( config.value( QStringLiteral( "Layer" ) ).toString() ) };
+  QgsVectorLayer *layer { QgsProject::instance()->mapLayer<QgsVectorLayer *>( config.value( QStringLiteral( "Layer" ) ).toString() ) };
   if ( ! layer )
   {
     const auto name { config.value( QStringLiteral( "LayerName" ) ).toString() };
     if ( ! name.isEmpty() )
     {
-      for ( QgsMapLayer *l : QgsProject::instance()->mapLayers( true ) )
+      const auto constLayers { QgsProject::instance()->mapLayers( true ) };
+      for ( QgsMapLayer *l : constLayers )
       {
         QgsVectorLayer *vl { qobject_cast<QgsVectorLayer *>( l ) };
         if ( vl && vl->name() == name )
