@@ -137,6 +137,11 @@ class QObjectUniquePtr
       return mPtr.isNull();
     }
 
+    /**
+     * Checks if the pointer managed by this object is ``nullptr``.
+     * If it is not ``nullptr`` TRUE will be returned, if it is ``nullptr``
+     * FALSE will be returned.
+     */
     inline bool operator bool() const
     {
       return !mPtr.isNull();

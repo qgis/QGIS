@@ -98,9 +98,9 @@ void TestQObjectUniquePtr::testSwap()
 void TestQObjectUniquePtr::testOperatorArrow()
 {
   QObject *o = new QObject();
-  o->setName( "Teddy" );
+  o->setObjectName( "Teddy" );
   QObjectUniquePtr<QObject> obj( o );
-  QCOMPARE( obj->name(), "Teddy" );
+  QCOMPARE( obj->objectName(), "Teddy" );
 }
 
 QGSTEST_MAIN( TestQObjectUniquePtr )
