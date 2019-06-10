@@ -26,9 +26,10 @@ class TestQObjectUniquePtr : public QObject
     void testMemLeak();
     void testParentDeletedFirst();
     void testParentDeletedAfter();
+    void testOperatorBool();
+    void testSwap();
+    void testOperatorArrow();
 };
-
-
 
 void TestQObjectUniquePtr::testMemLeak()
 {
@@ -68,6 +69,38 @@ void TestQObjectUniquePtr::testParentDeletedAfter()
   // Basically shouldn't crash because of double delete on this line
   delete parent;
   QVERIFY( observer.isNull() );
+}
+
+void TestQObjectUniquePtr::testOperatorBool()
+{
+  QObjectUniquePtr<QObject> obj;
+  QVERIFY( !obj );
+  QObjectUniquePtr<QObject> obj2( new QObject() );
+  QVERIFY( obj2 );
+}
+
+void TestQObjectUniquePtr::testSwap()
+{
+  QObject *o = new QObject();
+  QObjectUniquePtr<QObject> obj;
+  QObjectUniquePtr<QObject> obj2( o );
+  obj.swap( obj2 );
+  QCOMPARE( o, obj.get() );
+  QCOMPARE( nullptr, obj2.get() );
+
+  QObject *o2 = new QObject();
+  QObjectUniquePtr<QObject> obj3( o2 );
+  obj.swap( obj3 );
+  QCOMPARE( o, obj3.get() );
+  QCOMPARE( o2, obj.get() );
+}
+
+void TestQObjectUniquePtr::testOperatorArrow()
+{
+  QObject *o = new QObject();
+  o->setName( "Teddy" );
+  QObjectUniquePtr<QObject> obj( o );
+  QCOMPARE( obj->name(), "Teddy" );
 }
 
 QGSTEST_MAIN( TestQObjectUniquePtr )
