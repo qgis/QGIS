@@ -18,6 +18,16 @@
 
 #include "qgs3dmaptool.h"
 
+#include <memory>
+
+namespace Qt3DRender
+{
+  class QPickEvent;
+}
+
+class Qgs3DMapToolMeasureLinePickHandler;
+
+
 class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 {
     Q_OBJECT
@@ -26,12 +36,21 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas );
     ~Qgs3DMapToolMeasureLine() override;
 
-    void mousePressEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override { Q_UNUSED( event )};
     void mouseReleaseEvent( QMouseEvent *event ) override { Q_UNUSED( event )}
     void mouseMoveEvent( QMouseEvent *event ) override {Q_UNUSED( event )}
 
     void activate() override;
     void deactivate() override;
+
+  private slots:
+    void onTerrainPicked( Qt3DRender::QPickEvent *event );
+    void onTerrainEntityChanged();
+
+  private:
+    std::unique_ptr<Qgs3DMapToolMeasureLinePickHandler> mPickHandler;
+
+    friend class Qgs3DMapToolMeasureLinePickHandler;
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H
