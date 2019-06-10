@@ -30,6 +30,9 @@ class QVariant;
  * Keeps a pointer to a QObject and deletes it whenever this object is deleted.
  * It keeps a weak pointer to the QObject internally and will be set to ``nullptr``
  * whenever the QObject is deleted.
+ *
+ * \ingroup core
+ * \since QGIS 3.8
  */
 template <class T>
 class QObjectUniquePtr
@@ -72,6 +75,9 @@ class QObjectUniquePtr
       delete mPtr.data();
     }
 
+    /**
+     * Swaps the pointer managed by this instance with the pointer managed by \a other.
+     */
     inline void swap( QObjectUniquePtr &other )
     {
       mPtr.swap( other.mPtr );
@@ -136,11 +142,18 @@ class QObjectUniquePtr
       return !mPtr.isNull();
     }
 
+    /**
+     * Clears the pointer. The managed object is set to ``nullptr`` and will not be deleted.
+     */
     inline void clear()
     {
       mPtr.clear();
     }
 
+    /**
+     * Clears the pointer and returns it. The managed object will not be deleted and it is the callers
+     * responsibility to guarantee that no memory is leaked.
+     */
     inline T *release()
     {
       T *p = qobject_cast<T *>( mPtr.data() );
