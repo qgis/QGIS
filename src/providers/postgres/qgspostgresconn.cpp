@@ -1066,7 +1066,7 @@ QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
   if ( value.type() == QVariant::Bool )
     return value.toBool() ?  QStringLiteral( "true" ) : QStringLiteral( "false" );
   const auto j { QgsJsonUtils::jsonFromVariant( value ) };
-  return QStringLiteral( "'%1'" ).arg( QString::fromStdString( j.dump() ) );
+  return quotedString( QString::fromStdString( j.dump() ) );
 }
 
 PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool retry ) const

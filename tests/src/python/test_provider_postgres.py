@@ -620,6 +620,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         attrs = (
             123,
             None,
+            "String l'iteral with \"quotes\" and other funny chars ;#/",
             1233.45,
             [1, 2, 3.4, None],
             [True, False],
@@ -634,7 +635,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             f = QgsFeature(vl2.fields())
             f.setAttributes([None, attr, attr])
             self.assertTrue(vl2.addFeatures([f]))
-            self.assertTrue(vl2.commitChanges())
+            self.assertTrue(vl2.commitChanges(), attr)
             # Read back
             vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
             fid = [f.id() for f in vl2.getFeatures()][-1]
