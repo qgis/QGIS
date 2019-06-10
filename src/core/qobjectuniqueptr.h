@@ -1,3 +1,23 @@
+/***************************************************************************
+                                  qobjectuniqueptr.h
+
+                      A unique pointer to a QObject.
+
+                              -------------------
+  begin                : June 2019
+  copyright            : (C) 2009 by Matthias Kuhn
+  email                : matthias@opengis.ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QOBJECTUNIQUEPTR_H
 #define QOBJECTUNIQUEPTR_H
 
@@ -6,6 +26,11 @@
 
 class QVariant;
 
+/**
+ * Keeps a pointer to a QObject and deletes it whenever this object is deleted.
+ * It keeps a weak pointer to the QObject internally and will be set to ``nullptr``
+ * whenever the QObject is deleted.
+ */
 template <class T>
 class QObjectUniquePtr
 {
@@ -22,79 +47,166 @@ class QObjectUniquePtr
       typedef const QObject Type;
     };
     typedef typename TypeSelector<T>::Type QObjectType;
-    QWeakPointer<QObjectType> wp;
+    QWeakPointer<QObjectType> mPtr;
   public:
-    inline QObjectUniquePtr() { }
-    inline QObjectUniquePtr( T *p ) : wp( p ) { }
+
+    /**
+     * Creates a new empty QObjectUniquePtr.
+     */
+    inline QObjectUniquePtr()
+    { }
+
+    /**
+     * Takes a new QObjectUniquePtr and assigned \a p to it.
+     */
+    inline QObjectUniquePtr( T *p ) : mPtr( p )
+    { }
     // compiler-generated copy/move ctor/assignment operators are fine!
 
-    ~QObjectUniquePtr() { delete wp.data(); }
+    /**
+     * Will delete the contained QObject if it still exists.
+     */
+    ~QObjectUniquePtr()
+    {
+      // Will be a nullptr if the QObject has been deleted from somewhere else (e.g. through parent ownership)
+      delete mPtr.data();
+    }
 
-    inline void swap( QObjectUniquePtr &other ) { wp.swap( other.wp ); }
+    inline void swap( QObjectUniquePtr &other )
+    {
+      mPtr.swap( other.mPtr );
+    }
 
     inline QObjectUniquePtr<T> &operator=( T *p )
-    { wp.assign( static_cast<QObjectType *>( p ) ); return *this; }
+    {
+      mPtr.assign( static_cast<QObjectType *>( p ) );
+      return *this;
+    }
 
+    /**
+     * Returns the raw pointer to the managed QObject.
+     */
     inline T *data() const
-    { return static_cast<T *>( wp.data() ); }
-    inline T *operator->() const
-    { return data(); }
-    inline T &operator*() const
-    { return *data(); }
-    inline operator T *() const
-    { return data(); }
+    {
+      return static_cast<T *>( mPtr.data() );
+    }
 
+    /**
+     * Returns a raw pointer to the managed QObject.
+     */
+    inline T *operator->() const
+    {
+      return data();
+    }
+
+    /**
+     * Dereferences the managed QObject.
+     */
+    inline T &operator*() const
+    {
+      return *data();
+    }
+
+    /**
+     * Const getter for the managed raw pointer.
+     */
+    inline operator T *() const
+    {
+      return data();
+    }
+
+    /**
+     * Checks if the managed pointer is ``nullptr``.
+     */
     inline bool isNull() const
-    { return wp.isNull(); }
+    {
+      return mPtr.isNull();
+    }
 
     inline void clear()
-    { wp.clear(); }
+    {
+      mPtr.clear();
+    }
 
-    T *release() { T *p = qobject_cast<T *>( wp.data() ); wp.clear(); return p; }
+    inline T *release()
+    {
+      T *p = qobject_cast<T *>( mPtr.data() );
+      mPtr.clear();
+      return p;
+    }
 
-    void reset( T *p = nullptr ) { delete wp.data(); wp = p; }
+    /**
+     * Will reset the managed pointer to ``p``. If there is already a QObject managed currently
+     * it will be deleted. If ``p`` is not specified the managed QObject will be deleted and
+     * this object reset to ``nullptr``.
+     */
+    void reset( T *p = nullptr )
+    {
+      delete mPtr.data();
+      mPtr = p;
+    }
 };
 template <class T> Q_DECLARE_TYPEINFO_BODY( QObjectUniquePtr<T>, Q_MOVABLE_TYPE );
 
 template <class T>
 inline bool operator==( const T *o, const QObjectUniquePtr<T> &p )
-{ return o == p.operator->(); }
+{
+  return o == p.operator->();
+}
 
 template<class T>
 inline bool operator==( const QObjectUniquePtr<T> &p, const T *o )
-{ return p.operator->() == o; }
+{
+  return p.operator->() == o;
+}
 
 template <class T>
 inline bool operator==( T *o, const QObjectUniquePtr<T> &p )
-{ return o == p.operator->(); }
+{
+  return o == p.operator->();
+}
 
 template<class T>
 inline bool operator==( const QObjectUniquePtr<T> &p, T *o )
-{ return p.operator->() == o; }
+{
+  return p.operator->() == o;
+}
 
 template<class T>
 inline bool operator==( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T> &p2 )
-{ return p1.operator->() == p2.operator->(); }
+{
+  return p1.operator->() == p2.operator->();
+}
 
 template <class T>
 inline bool operator!=( const T *o, const QObjectUniquePtr<T> &p )
-{ return o != p.operator->(); }
+{
+  return o != p.operator->();
+}
 
 template<class T>
 inline bool operator!= ( const QObjectUniquePtr<T> &p, const T *o )
-{ return p.operator->() != o; }
+{
+  return p.operator->() != o;
+}
 
 template <class T>
 inline bool operator!=( T *o, const QObjectUniquePtr<T> &p )
-{ return o != p.operator->(); }
+{
+  return o != p.operator->();
+}
 
 template<class T>
 inline bool operator!= ( const QObjectUniquePtr<T> &p, T *o )
-{ return p.operator->() != o; }
+{
+  return p.operator->() != o;
+}
 
 template<class T>
 inline bool operator!= ( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T> &p2 )
-{ return p1.operator->() != p2.operator->() ; }
+{
+  return p1.operator->() != p2.operator->() ;
+}
 
 template<typename T>
 QObjectUniquePtr<T>
