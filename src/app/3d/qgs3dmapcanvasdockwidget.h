@@ -25,6 +25,7 @@ class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
+class Qgs3DMapToolMeasureLine;
 class QgsMapCanvas;
 
 
@@ -48,6 +49,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void saveAsImage();
     void toggleAnimations();
     void identify();
+    void measureLine();
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
@@ -60,6 +62,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     QProgressBar *mProgressPendingJobs = nullptr;
     QLabel *mLabelPendingJobs = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
+    Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

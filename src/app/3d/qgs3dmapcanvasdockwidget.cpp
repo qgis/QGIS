@@ -35,6 +35,7 @@
 #include "qgs3danimationwidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
+#include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dutils.h"
 
 
@@ -60,7 +61,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   actionIdentify->setCheckable( true );
 
   QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ),
-                                   tr( "Measurement Line" ), this, &Qgs3DMapCanvasDockWidget::identify );
+                                   tr( "Measurement Line" ), this, &Qgs3DMapCanvasDockWidget::measureLine );
   actionMeasurementTool->setCheckable( true );
 
   QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
@@ -86,6 +87,8 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   } );
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
+
+  mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -150,6 +153,16 @@ void Qgs3DMapCanvasDockWidget::identify()
 
   mCanvas->setMapTool( action->isChecked() ? mMapToolIdentify : nullptr );
 }
+
+void Qgs3DMapCanvasDockWidget::measureLine()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
+}
+
 
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
