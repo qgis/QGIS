@@ -55,6 +55,7 @@ QVariantMap QgsValueRelationConfigDlg::config()
   QVariantMap cfg;
 
   cfg.insert( QStringLiteral( "Layer" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
+  cfg.insert( QStringLiteral( "LayerName" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->name() : QString() );
   cfg.insert( QStringLiteral( "Key" ), mKeyColumn->currentField() );
   cfg.insert( QStringLiteral( "Value" ), mValueColumn->currentField() );
   cfg.insert( QStringLiteral( "AllowMulti" ), mAllowMulti->isChecked() );
@@ -70,6 +71,23 @@ QVariantMap QgsValueRelationConfigDlg::config()
 void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
 {
   QgsVectorLayer *lyr = QgsProject::instance()->mapLayer<QgsVectorLayer *>( config.value( QStringLiteral( "Layer" ) ).toString() );
+  // If layer is null, let's try to match it against name and provider
+  if ( ! lyr )
+  {
+    const auto name { config.value( QStringLiteral( "LayerName" ) ).toString() };
+    if ( ! name.isEmpty() )
+    {
+      for ( const auto &l : QgsProject::instance()->mapLayers( true ) )
+      {
+        QgsVectorLayer *vl { qobject_cast<QgsVectorLayer *>( l ) };
+        if ( vl && vl->name() == name )
+        {
+          lyr = vl;
+          break;
+        }
+      }
+    }
+  }
   mLayerName->setLayer( lyr );
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
