@@ -117,7 +117,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * \param config The config for this wrapper
      */
-    virtual void setConfig( const QVariantMap &config );
+    void setConfig( const QVariantMap &config );
 
     /**
      * Set the context in which this widget is shown

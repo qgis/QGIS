@@ -119,6 +119,14 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
      */
     static bool expressionIsUsable( const QString &expression, const QgsFeature &feature );
 
+    /**
+     * Returns the (possibly empty) layer ID from the widget \a config
+     * \since QGIS 3.8
+     */
+    static QString resolveLayer( const QVariantMap &config );
+
+
+
 };
 
 Q_DECLARE_METATYPE( QgsValueRelationFieldFormatter::ValueRelationCache )

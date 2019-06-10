@@ -73,9 +73,6 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
     void setEnabled( bool enabled ) override;
 
-    void setConfig( const QVariantMap &config ) override;
-
-
   protected:
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;

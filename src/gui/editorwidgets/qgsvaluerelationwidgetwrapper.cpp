@@ -302,7 +302,7 @@ int QgsValueRelationWidgetWrapper::columnCount() const
 
 QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
 {
-  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( config().value( QStringLiteral( "Layer" ) ).toString() );
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( QgsValueRelationFieldFormatter::resolveLayer( config() ) );
   if ( layer )
   {
     QgsFields fields = layer->fields();
@@ -434,26 +434,4 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
   }
   else
     QgsEditorWidgetWrapper::setEnabled( enabled );
-}
-
-void QgsValueRelationWidgetWrapper::setConfig( const QVariantMap &config )
-{
-  QVariantMap cfg { config };
-  if ( ! QgsProject::instance()->mapLayer<QgsVectorLayer *>( config.value( QStringLiteral( "Layer" ) ).toString() ) )
-  {
-    const auto name { config.value( QStringLiteral( "LayerName" ) ).toString() };
-    if ( ! name.isEmpty() )
-    {
-      for ( const auto &l : QgsProject::instance()->mapLayers( true ) )
-      {
-        QgsVectorLayer *vl { qobject_cast<QgsVectorLayer *>( l ) };
-        if ( vl && vl->name() == name )
-        {
-          cfg[ QStringLiteral( "Layer" ) ] = vl->id();
-          break;
-        }
-      }
-    }
-  }
-  QgsWidgetWrapper::setConfig( cfg );
 }

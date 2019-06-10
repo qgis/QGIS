@@ -18,6 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -70,24 +71,7 @@ QVariantMap QgsValueRelationConfigDlg::config()
 
 void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
 {
-  QgsVectorLayer *lyr = QgsProject::instance()->mapLayer<QgsVectorLayer *>( config.value( QStringLiteral( "Layer" ) ).toString() );
-  // If layer is null, let's try to match it against name and provider
-  if ( ! lyr )
-  {
-    const auto name { config.value( QStringLiteral( "LayerName" ) ).toString() };
-    if ( ! name.isEmpty() )
-    {
-      for ( const auto &l : QgsProject::instance()->mapLayers( true ) )
-      {
-        QgsVectorLayer *vl { qobject_cast<QgsVectorLayer *>( l ) };
-        if ( vl && vl->name() == name )
-        {
-          lyr = vl;
-          break;
-        }
-      }
-    }
-  }
+  QgsVectorLayer *lyr = QgsProject::instance()->mapLayer<QgsVectorLayer *>( QgsValueRelationFieldFormatter::resolveLayer( config ) );
   mLayerName->setLayer( lyr );
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
