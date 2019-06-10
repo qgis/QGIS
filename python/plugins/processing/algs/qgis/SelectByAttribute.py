@@ -82,9 +82,9 @@ class SelectByAttribute(QgisAlgorithm):
         self.operators = ['=',
                           '≠',
                           '>',
-                          '>=',
+                          '≥',
                           '<',
-                          '<=',
+                          '≤',
                           self.tr('begins with'),
                           self.tr('contains'),
                           self.tr('is null'),
@@ -104,14 +104,14 @@ class SelectByAttribute(QgisAlgorithm):
                                                       self.tr('Selection attribute'),
                                                       parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterEnum(self.OPERATOR,
-                                                     self.tr('Operator'), self.operators))
+                                                     self.tr('Operator'), self.operators, defaultValue=0))
         self.addParameter(QgsProcessingParameterString(self.VALUE,
                                                        self.tr('Value'),
                                                        optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
                                                      self.tr('Modify current selection by'),
                                                      self.methods,
-                                                     0))
+                                                     defaultValue=0))
 
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 
