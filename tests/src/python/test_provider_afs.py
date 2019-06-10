@@ -129,7 +129,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         cls.source = cls.vl.dataProvider()
 
         with open(sanitize(endpoint,
-                           '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID,pk,cnt,name,name2,num_char&returnM=false&returnZ=false'),
+                           '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'),
                   'wb') as f:
             f.write("""
         {
@@ -220,7 +220,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
          ]
         }""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID,pk,cnt,name,name2,num_char&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
 {
  "displayFieldName": "name",
@@ -311,7 +311,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 }""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '/query?f=json&objectIds=2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID,pk,cnt,name,name2,num_char&returnM=false&returnZ=false'),
+                           '/query?f=json&objectIds=2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'),
                   'wb') as f:
             f.write("""
         {
@@ -462,7 +462,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID1,pk,cnt&returnM=false&returnZ=false'), 'wb') as f:
+        with open(sanitize(endpoint, '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'), 'wb') as f:
             f.write("""
         {
          "displayFieldName": "LABEL",
@@ -537,7 +537,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(vl.isValid())
         with open(sanitize(endpoint,
-                           '/query?f=json&objectIds=1,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID,pk,dt&returnM=false&returnZ=false'), 'wb') as f:
+                           '/query?f=json&objectIds=1,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'), 'wb') as f:
             f.write("""
         {
          "displayFieldName": "name",
@@ -790,7 +790,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(vl.isValid())
         with open(sanitize(endpoint,
-                           '/query?f=json&objectIds=1,2,3&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID&returnM=false&returnZ=false'), 'wb') as f:
+                           '/query?f=json&objectIds=1,2,3&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'), 'wb') as f:
             f.write("""
         {
          "displayFieldName": "name",
