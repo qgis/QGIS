@@ -78,7 +78,6 @@
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayerundocommand.h"
 #include "qgsvectorlayerfeaturecounter.h"
-#include "qgsvirtuallayerdefinition.h"
 #include "qgspoint.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
