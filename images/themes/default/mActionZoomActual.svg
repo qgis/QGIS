@@ -1,14 +1,1 @@
-<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-<g transform="translate(0 -8)">
-<path d="m7.5000001 22.5c0 2 2 2 2 2 0 0-7 7-7 7l-2.00000001-2z" fill="#ffcc30" fill-rule="evenodd" stroke="#505050" stroke-linejoin="round"/>
-<path d="m17.96122 7a5.9612203 6.0742435 0 1 1 -11.9224403 0 5.9612203 6.0742435 0 1 1  11.9224403 0z" style="opacity:.8;fill:#e6e6e6;stroke:#505050;stroke-width:.75218332;stroke-linecap:round;stroke-linejoin:round;stroke-dashoffset:7" transform="matrix(1.3420071 0 0 1.3170365 -1.6040853 8.2791092)"/>
-<path d="m6.0000001 24l2-2 1.9999999 2-1.9999999 2z" fill-rule="evenodd" stroke="#505050" stroke-linejoin="round"/>
-<path d="m10 13c2-3 4.442248-3.398055 6-2 1.557752 1.398055-2 1-4 3-2 2 0 6-2 6-1.9999999 0-1.9999999-4 0-7z" fill="#fcffff" fill-rule="evenodd" opacity=".7"/>
-<path d="m2.0000001 29l4-4" opacity=".5" overflow="visible" stroke="#fcffff" stroke-linecap="round" stroke-linejoin="round"/>
-<g fill="#2e3436">
-<path d="m12.414538 21.098824h-1.509277v-5.687989c-.551435.51563-1.2013362.896978-1.949707 1.144043v-1.369629c.393879-.1289.8217757-.372389 1.283691-.730468.461912-.361647.778806-.782382.950684-1.262207h1.224609z"/>
-<path d="m13.768 16.903999v-1.509277h1.509278v1.509277zm0 4.194825v-1.509278h1.509278v1.509278z"/>
-<path d="m19.771413 21.098824h-1.509277v-5.687989c-.551435.51563-1.201336.896978-1.949707 1.144043v-1.369629c.393879-.1289.821776-.372389 1.283691-.730468.461912-.361647.778806-.782382.950684-1.262207h1.224609z"/>
-</g>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M2.5 2.646l13-.146v13h-13V2.646z" opacity=".99" fill="#eeeeec" stroke="#898b86" stroke-dashoffset=".96"/><path d="M7.5 14.5c0 2 2 2 2 2l-7 7-2-2z" fill="#ffcc30" fill-rule="evenodd" stroke="#505050" stroke-linejoin="round"/><path d="M17.961 7A5.961 6.074 0 1 1 6.04 7 5.961 6.074 0 1 1 17.96 7z" transform="matrix(1.342 0 0 1.31704 -1.604 .28)" opacity=".8" fill="#e6e6e6" stroke="#505050" stroke-width=".752" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="7"/><path d="M6 16l2-2 2 2-2 2z" fill-rule="evenodd" stroke="#505050" stroke-linejoin="round"/><path d="M10 5c2-3 4.442-3.398 6-2 1.558 1.398-2 1-4 3s0 6-2 6-2-4 0-7z" fill="#fcffff" fill-rule="evenodd" opacity=".7"/><path d="M2 21l4-4" opacity=".5" overflow="visible" stroke="#fcffff" stroke-linecap="round" stroke-linejoin="round"/><g fill="#2e3436"><path d="M12.415 13.099h-1.51V7.41a5.203 5.203 0 0 1-1.95 1.144v-1.37c.394-.129.822-.372 1.284-.73.462-.362.78-.783.95-1.262h1.226zM13.768 8.904v-1.51h1.51v1.51zm0 4.195v-1.51h1.51v1.51zM19.771 13.099h-1.509V7.41a5.203 5.203 0 0 1-1.95 1.144v-1.37c.394-.129.822-.372 1.284-.73.462-.362.779-.783.95-1.262h1.225z"/></g></svg>
