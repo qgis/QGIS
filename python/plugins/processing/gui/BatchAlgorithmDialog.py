@@ -137,7 +137,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     feedback.pushInfo(self.tr('Results:'))
                     feedback.pushCommandInfo(pformat(results))
                     feedback.pushInfo('')
-                    algorithm_results.append(results)
+                    algorithm_results.append({'parameters': parameters, 'results': results})
                 else:
                     break
 
@@ -151,7 +151,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def finish(self, algorithm_results):
         for count, results in enumerate(algorithm_results):
-            self.loadHTMLResults(results, count)
+            self.loadHTMLResults(results['results'], count)
 
         self.createSummaryTable(algorithm_results)
         self.mainWidget().setEnabled(True)
@@ -176,12 +176,24 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         outputFile = getTempFilename('html')
         with codecs.open(outputFile, 'w', encoding='utf-8') as f:
-            for res in algorithm_results:
-                f.write('<hr>\n')
+            for i, res in enumerate(algorithm_results):
+                results = res['results']
+                params = res['parameters']
+                if i > 0:
+                    f.write('<hr>\n')
+                f.write(self.tr('<h3>Parameters</h3>\n'))
+                f.write('<table>\n')
+                for param in self.algorithm().parameterDefinitions():
+                    if not param.isDestination():
+                        if param.name() in params:
+                            f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(param.description(), params[param.name()]))
+                f.write('</table>\n')
+                f.write(self.tr('<h3>Results</h3>\n'))
+                f.write('<table>\n')
                 for out in self.algorithm().outputDefinitions():
-                    if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString)) and out.name() in res:
-                        f.write('<p>{}: {}</p>\n'.format(out.description(), res[out.name()]))
-            f.write('<hr>\n')
+                    if out.name() in results:
+                        f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(out.description(), results[out.name()]))
+                f.write('</table>\n')
 
         resultsList.addResult(icon=self.algorithm().icon(),
                               name='{} [summary]'.format(self.algorithm().name()), timestamp=time.localtime(),
