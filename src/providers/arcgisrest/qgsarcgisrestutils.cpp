@@ -439,17 +439,16 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QStri
   QString wkid = crs.indexOf( QLatin1String( ":" ) ) >= 0 ? crs.split( ':' )[1] : QString();
   queryUrl.addQueryItem( QStringLiteral( "inSR" ), wkid );
   queryUrl.addQueryItem( QStringLiteral( "outSR" ), wkid );
-  QString outFields = fetchAttributes.join( QStringLiteral( "," ) );
-  if ( fetchGeometry )
-  {
-    queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "true" ) );
-    queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
-  }
+
+  queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), fetchGeometry ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+
+  QString outFields;
+  if ( fetchAttributes.isEmpty() )
+    outFields = QStringLiteral( "*" );
   else
-  {
-    queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "false" ) );
-    queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
-  }
+    outFields = fetchAttributes.join( ',' );
+  queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
+
   queryUrl.addQueryItem( QStringLiteral( "returnM" ), fetchM ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   queryUrl.addQueryItem( QStringLiteral( "returnZ" ), fetchZ ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   if ( !filterRect.isNull() )
