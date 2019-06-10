@@ -59,6 +59,10 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
                             tr( "Identify" ), this, &Qgs3DMapCanvasDockWidget::identify );
   actionIdentify->setCheckable( true );
 
+  QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ),
+                                   tr( "Measurement Line" ), this, &Qgs3DMapCanvasDockWidget::identify );
+  actionMeasurementTool->setCheckable( true );
+
   QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
                         tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
   actionAnim->setCheckable( true );
