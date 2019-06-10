@@ -21,6 +21,7 @@
 
 #include "gmath.h"
 #include "info.h"
+#include "nmeatime.h"
 #include "qgsgpsmarker.h"
 #include "qgsmaptoolcapture.h"
 #include <qwt_plot_curve.h>
@@ -115,6 +116,7 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     QIntValidator *mAcquisitionIntValidator = nullptr;
     QIntValidator *mDistanceThresholdValidator = nullptr;
     nmeaPOS mLastNmeaPosition;
+    nmeaTIME mLastNmeaTime;
     std::unique_ptr<QTimer> mAcquisitionTimer;
     bool mAcquisitionEnabled = true;
     unsigned int mAcquisitionInterval = 0;

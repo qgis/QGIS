@@ -683,11 +683,13 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
   QgsPointXY myNewCenter;
   nmeaPOS newNmeaPosition;
+  nmeaTIME newNmeaTime;
   if ( validFlag )
   {
     myNewCenter = QgsPointXY( info.longitude, info.latitude );
     newNmeaPosition.lat = nmea_degree2radian( info.latitude );
     newNmeaPosition.lon = nmea_degree2radian( info.longitude );
+    nmea_time_now( &newNmeaTime );
   }
   else
   {
@@ -773,6 +775,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   {
     mLastGpsPosition = myNewCenter;
     mLastNmeaPosition = newNmeaPosition;
+    mLastNmeaTime = newNmeaTime;
     // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
