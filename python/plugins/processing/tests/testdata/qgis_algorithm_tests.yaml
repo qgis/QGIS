@@ -1386,22 +1386,6 @@ tests:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
 
-  - algorithm: qgis:equidistancebuffer
-    name: Equidistance buffer test
-    params:
-      DISTANCE: 10000.0
-      END_CAP_STYLE: 0
-      INPUT:
-        name: points.gml|layername=points
-        type: vector
-      JOIN_STYLE: 0
-      MITER_LIMIT: 2.0
-      SEGMENTS: 8
-    results:
-      OUTPUT:
-        name: expected/equidistance_buffer_points.gml
-        type: vector
-        
   - algorithm: qgis:extractvertices
     name: Extract vertices from multipolygons
     params:
