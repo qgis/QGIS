@@ -467,11 +467,13 @@ std::unique_ptr< QgsCompoundCurve > QgsMssqlGeometryParser::readCompoundCurve( i
     switch ( SegmentType( mSegment ) )
     {
       case SMT_FIRSTLINE:
-        if ( isCurve )
-          poCompoundCurve->addCurve( readCircularString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
-        else
-          poCompoundCurve->addCurve( readLineString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
-
+        if (nPointsPrepared > 0)
+        {
+          if ( isCurve )
+            poCompoundCurve->addCurve( readCircularString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+          else
+            poCompoundCurve->addCurve( readLineString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+        }
         isCurve = false;
         nPointsPrepared = 1;
         ++iPoint;
@@ -481,11 +483,13 @@ std::unique_ptr< QgsCompoundCurve > QgsMssqlGeometryParser::readCompoundCurve( i
         ++iPoint;
         break;
       case SMT_FIRSTARC:
-        if ( isCurve )
-          poCompoundCurve->addCurve( readCircularString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
-        else
-          poCompoundCurve->addCurve( readLineString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
-
+        if ( nPointsPrepared > 0 )
+        {
+          if ( isCurve )
+            poCompoundCurve->addCurve( readCircularString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+          else
+            poCompoundCurve->addCurve( readLineString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+        }
         isCurve = true;
         nPointsPrepared = 2;
         iPoint += 2;
