@@ -1260,6 +1260,14 @@ The storage format for the XML is qlr
 .. versionadded:: 3.6
 %End
 
+    static QString generateId( const QString &layerName );
+%Docstring
+Generates an unique identifier for this layer, the generate ID is prefixed by ``layerName``
+
+.. versionadded:: 3.8
+%End
+
+
   public slots:
 
     void setMinimumScale( double scale );

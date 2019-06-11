@@ -78,24 +78,9 @@ QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
   , mRefreshTimer( new QTimer( this ) )
 {
-  //mShortName.replace( QRegExp( "[\\W]" ), "_" );
-
-  // Generate the unique ID of this layer
-  QString uuid = QUuid::createUuid().toString();
-  // trim { } from uuid
-  mID = lyrname + '_' + uuid.mid( 1, uuid.length() - 2 );
-
-  // Tidy the ID up to avoid characters that may cause problems
-  // elsewhere (e.g in some parts of XML). Replaces every non-word
-  // character (word characters are the alphabet, numbers and
-  // underscore) with an underscore.
-  // Note that the first backslashe in the regular expression is
-  // there for the compiler, so the pattern is actually \W
-  mID.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
-
+  mID = generateId( lyrname );
   connect( this, &QgsMapLayer::crsChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsMapLayer::nameChanged, this, &QgsMapLayer::configChanged );
-
   connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
 
@@ -1874,6 +1859,22 @@ QString QgsMapLayer::originalXmlProperties() const
 void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties )
 {
   mOriginalXmlProperties = originalXmlProperties;
+}
+
+QString QgsMapLayer::generateId( const QString &layerName )
+{
+  // Generate the unique ID of this layer
+  QString uuid = QUuid::createUuid().toString();
+  // trim { } from uuid
+  QString id = layerName + '_' + uuid.mid( 1, uuid.length() - 2 );
+  // Tidy the ID up to avoid characters that may cause problems
+  // elsewhere (e.g in some parts of XML). Replaces every non-word
+  // character (word characters are the alphabet, numbers and
+  // underscore) with an underscore.
+  // Note that the first backslash in the regular expression is
+  // there for the compiler, so the pattern is actually \W
+  id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
+  return id;
 }
 
 void QgsMapLayer::setProviderType( const QString &providerType )

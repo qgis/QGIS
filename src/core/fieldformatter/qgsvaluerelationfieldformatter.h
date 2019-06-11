@@ -119,6 +119,14 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
      */
     static bool expressionIsUsable( const QString &expression, const QgsFeature &feature );
 
+    /**
+     * Returns the (possibly NULL) layer from the widget's \a config and \a project
+     * \since QGIS 3.8
+     */
+    static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );
+
+
+
 };
 
 Q_DECLARE_METATYPE( QgsValueRelationFieldFormatter::ValueRelationCache )

@@ -299,9 +299,10 @@ int QgsValueRelationWidgetWrapper::columnCount() const
   return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
 }
 
+
 QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
 {
-  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( config().value( QStringLiteral( "Layer" ) ).toString() );
+  const QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config(), QgsProject::instance() );
   if ( layer )
   {
     QgsFields fields = layer->fields();
