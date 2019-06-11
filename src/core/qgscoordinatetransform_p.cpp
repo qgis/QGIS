@@ -104,9 +104,12 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mDestCRS( other.mDestCRS )
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
+  , mProjCoordinateOperation( other.mProjCoordinateOperation )
 {
+#if PROJ_VERSION_MAJOR < 6
   //must reinitialize to setup mSourceProjection and mDestinationProjection
   initialize();
+#endif
 }
 Q_NOWARN_DEPRECATED_POP
 
