@@ -1195,7 +1195,7 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     updateTitle();
 
     // To prevent "QAction::event: Ambiguous shortcut overload"
-    QgsDebugMsg( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
     mActionCopySelectedRows->setShortcut( QKeySequence() );
     mActionPasteFeatures->setShortcut( QKeySequence() );
     mActionCutSelectedRows->setShortcut( QKeySequence() );
