@@ -219,6 +219,7 @@ SET(TESTS
  testqgsmimedatautils.cpp
  testqgsofflineediting.cpp
  testqgstranslateproject.cpp
+ testqobjectuniqueptr.cpp
    )
 
 IF(WITH_QTWEBKIT)
