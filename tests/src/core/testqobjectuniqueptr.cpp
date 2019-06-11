@@ -106,8 +106,6 @@ void TestQObjectUniquePtr::testOperatorArrow()
 
 void TestQObjectUniquePtr::testDeleteLater()
 {
-  int argc;
-  QCoreApplication ca( argc, nullptr );
   QObject *o = new QObject();
   QObject *o2 = new QObject();
 
@@ -119,8 +117,8 @@ void TestQObjectUniquePtr::testDeleteLater()
 
   obj2.reset();
 
-  connect( o, &QObject::destroyed, &ca, &QCoreApplication::quit );
-  ca.exec();
+  connect( o, &QObject::destroyed, QgsApplication::instance(), &QgsApplication::quit );
+  QgsApplication::instance()->exec();
   QVERIFY( obj.isNull() );
   QVERIFY( obj2.isNull() );
 }
