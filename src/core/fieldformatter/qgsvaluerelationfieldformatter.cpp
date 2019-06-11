@@ -118,7 +118,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 {
   ValueRelationCache cache;
 
-  const QgsVectorLayer *layer = resolveLayer( config );
+  const QgsVectorLayer *layer = resolveLayer( config, QgsProject::instance() );
 
   if ( !layer )
     return cache;
@@ -274,12 +274,12 @@ bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expressi
   return true;
 }
 
-QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap &config )
+QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap &config, const QgsProject *project )
 {
   QgsVectorLayerRef ref { config.value( QStringLiteral( "Layer" ) ).toString(),
                           config.value( QStringLiteral( "LayerName" ) ).toString(),
                           config.value( QStringLiteral( "LayerSource" ) ).toString(),
                           config.value( QStringLiteral( "LayerProviderName" ) ).toString() };
-  return ref.resolveByIdOrNameOnly( QgsProject::instance() );
+  return ref.resolveByIdOrNameOnly( project );
 }
 

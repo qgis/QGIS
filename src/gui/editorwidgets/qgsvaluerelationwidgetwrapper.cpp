@@ -302,7 +302,7 @@ int QgsValueRelationWidgetWrapper::columnCount() const
 
 QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
 {
-  const QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config() );
+  const QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config(), QgsProject::instance() );
   if ( layer )
   {
     QgsFields fields = layer->fields();
