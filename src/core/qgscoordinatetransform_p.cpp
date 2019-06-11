@@ -268,6 +268,26 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
 #endif
 }
 
+#if PROJ_VERSION_MAJOR>=6
+static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
+{
+  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
+  dest->append( QString( message ) );
+}
+
+static void proj_logger( void *, int level, const char *message )
+{
+  if ( level == PJ_LOG_ERROR )
+  {
+    QgsDebugMsg( QString( message ) );
+  }
+  else if ( level == PJ_LOG_DEBUG )
+  {
+    QgsDebugMsgLevel( QString( message ), 3 );
+  }
+}
+#endif
+
 ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
@@ -303,6 +323,10 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   locker.changeMode( QgsReadWriteLocker::Write );
 
 #if PROJ_VERSION_MAJOR>=6
+  // use a temporary proj error collector
+  QStringList projErrors;
+  proj_log_func( context, &projErrors, proj_collecting_logger );
+
   QgsProjUtils::proj_pj_unique_ptr transform;
   if ( !mProjCoordinateOperation.isEmpty() )
   {
@@ -333,7 +357,10 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   if ( !transform ) // fallback on default proj pathway
   {
     if ( !mSourceCRS.projObject() || ! mDestCRS.projObject() )
+    {
+      proj_log_func( context, nullptr, nullptr );
       return nullptr;
+    }
 
     PJ_OPERATION_FACTORY_CONTEXT *operationContext = proj_create_operation_factory_context( context, nullptr );
 
@@ -481,9 +508,19 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     {
       nonAvailableError = QString( proj_errno_string( errNo ) );
     }
-    else
+    else if ( !projErrors.empty() )
+    {
+      nonAvailableError = projErrors.constLast();
+    }
+
+    if ( nonAvailableError.isEmpty() )
     {
       nonAvailableError = QObject::tr( "No coordinate operations are available between these two reference systems" );
+    }
+    else
+    {
+      // strip proj prefixes from error string, so that it's nicer for users
+      nonAvailableError = nonAvailableError.remove( QStringLiteral( "internal_proj_create_operations: " ) );
     }
   }
 
@@ -501,6 +538,9 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
     }
   }
+
+  // reset logger to terminal output
+  proj_log_func( context, nullptr, proj_logger );
 
   if ( !transform )
   {
