@@ -1773,7 +1773,12 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
   Q_FOREACH ( const QString &csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
   {
-    QString filename = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/" ) + csv;
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
+    const QString filename = CPLFindFile( "gdal", csv.toUtf8() );
+#else
+    const QString filename = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/" ) + csv;
+#endif
 
     QFile f( filename );
     if ( !f.open( QIODevice::ReadOnly ) )
@@ -2159,8 +2164,13 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
 bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
 {
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
+  const char *filename = CSVFilename( "datum_shift.csv" );
+  FILE *fp = VSIFOpen( filename, "rb" );
+#else
   const QString filename = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/datum_shift.csv" );
   FILE *fp = VSIFOpen( filename.toUtf8().constData(), "rb" );
+#endif
   if ( !fp )
   {
     return false;
