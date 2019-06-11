@@ -123,9 +123,17 @@ done:
     {
       PyObject *type, *value, *traceback;
       PyErr_Fetch( &type, &value, &traceback );
-      PyObject* str = PyObject_Str( value );
-      what = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
-      Py_XDECREF( str );
+      // check whether the object is already a unicode string
+      if ( PyUnicode_Check( value) )
+      {
+        what = QString::fromUtf8( PyUnicode_AsUTF8( value ) );
+      }
+      else
+      {
+        PyObject* str = PyObject_Str( value );
+        what = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
+        Py_XDECREF( str );
+      }
       PyErr_Restore( type, value, traceback );
       PyGILState_Release( gstate );
     }
