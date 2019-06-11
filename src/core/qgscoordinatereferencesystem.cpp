@@ -2385,6 +2385,20 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 }
 #endif
 
+#if PROJ_VERSION_MAJOR>=6
+static void sync_db_proj_logger( void * /* user_data */, int level, const char *message )
+{
+  if ( level == PJ_LOG_ERROR )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "PROJ: %1" ).arg( message ), 2 );
+  }
+  else if ( level == PJ_LOG_DEBUG )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "PROJ: %1" ).arg( message ), 3 );
+  }
+}
+#endif
+
 int QgsCoordinateReferenceSystem::syncDatabase()
 {
   setlocale( LC_ALL, "C" );
@@ -2425,6 +2439,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *pjContext = QgsProjContext::get();
+  // silence proj warnings
+  proj_log_func( pjContext, nullptr, sync_db_proj_logger );
 
   PROJ_STRING_LIST authorities = proj_get_authorities_from_database( pjContext );
 
@@ -2433,7 +2449,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   for ( auto authIter = authorities; authIter && *authIter; ++authIter )
   {
     const QString authority( *authIter );
-    QgsDebugMsgLevel( QStringLiteral( "Loading authority '%1'" ).arg( authority ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "Loading authority '%1'" ).arg( authority ), 2 );
     PROJ_STRING_LIST codes = proj_get_codes_from_database( pjContext, *authIter, PJ_TYPE_CRS, true );
 
     QStringList allCodes;
@@ -2467,7 +2483,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
       if ( proj4.isEmpty() )
       {
-        QgsDebugMsg( QStringLiteral( "No proj4 for '%1:%2'" ).arg( authority, code ) );
+        QgsDebugMsgLevel( QStringLiteral( "No proj4 for '%1:%2'" ).arg( authority, code ), 2 );
         // satisfy not null constraint
         proj4 = "";
       }
