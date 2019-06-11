@@ -108,13 +108,18 @@ done:
 
 %VirtualErrorHandler processing_exception_handler
     PyObject *exception, *value, *traceback;
+
     // if an explicit QgsProcessingException was raised, we don't retrieve
     // and append the trace. It's too noisy for these "expected" type errors.
     // For all other exceptions, it's likely a coding error in the algorithm,
     // so we DO retrieve the full traceback for debugging.
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
     PyTypeObject* err = reinterpret_cast< PyTypeObject* >( PyErr_Occurred() );
+    const bool isProcessingException = err && QString( err->tp_name ) == QStringLiteral( "QgsProcessingException" );
+
     QString what;
-    if ( err && QString( err->tp_name ) == QStringLiteral( "QgsProcessingException" ) )
+    if ( isProcessingException )
     {
       PyObject *type, *value, *traceback;
       PyErr_Fetch( &type, &value, &traceback );
@@ -122,9 +127,11 @@ done:
       what = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
       Py_XDECREF( str );
       PyErr_Restore( type, value, traceback );
+      PyGILState_Release( gstate );
     }
     else
     {
+      PyGILState_Release( gstate );
       QString trace = getTraceback();
       QgsLogger::critical( trace );
       what = trace;
