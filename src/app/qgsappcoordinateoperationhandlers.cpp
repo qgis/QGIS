@@ -186,11 +186,11 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
 
 void QgsAppMissingGridHandler::onCoordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error )
 {
-  if ( !shouldWarnAboutPair( sourceCrs, destinationCrs ) )
+  if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
     return;
 
   const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( displayIdentifierForCrs( sourceCrs, true ), displayIdentifierForCrs( destinationCrs, true ) );
-  const QString longMessage = tr( "<p>No transform is available between <i>%1</i> and <i>%2</i>.</p><p>%3</p>" ).arg( displayIdentifierForCrs( sourceCrs ), displayIdentifierForCrs( destinationCrs ), error );
+  const QString longMessage = tr( "<p>No transform is available between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">%3</p>" ).arg( displayIdentifierForCrs( sourceCrs ), displayIdentifierForCrs( destinationCrs ), error );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
