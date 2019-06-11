@@ -276,9 +276,10 @@ bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expressi
 
 QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap &config )
 {
-  QgsVectorLayerRef ref;
-  ref.layerId = config.value( QStringLiteral( "Layer" ) ).toString();
-  ref.name = config.value( QStringLiteral( "LayerName" ) ).toString();
+  QgsVectorLayerRef ref { config.value( QStringLiteral( "Layer" ) ).toString(),
+                          config.value( QStringLiteral( "LayerName" ) ).toString(),
+                          config.value( QStringLiteral( "LayerSource" ) ).toString(),
+                          config.value( QStringLiteral( "LayerProviderName" ) ).toString() };
   return ref.resolveByIdOrNameOnly( QgsProject::instance() );
 }
 

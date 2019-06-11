@@ -57,6 +57,10 @@ QVariantMap QgsValueRelationConfigDlg::config()
 
   cfg.insert( QStringLiteral( "Layer" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
   cfg.insert( QStringLiteral( "LayerName" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->name() : QString() );
+  cfg.insert( QStringLiteral( "LayerSource" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->publicSource() : QString() );
+  cfg.insert( QStringLiteral( "LayerProviderName" ), ( mLayerName->currentLayer() && mLayerName->currentLayer()->dataProvider() ) ?
+              mLayerName->currentLayer()->dataProvider()->name() :
+              QString() );
   cfg.insert( QStringLiteral( "Key" ), mKeyColumn->currentField() );
   cfg.insert( QStringLiteral( "Value" ), mValueColumn->currentField() );
   cfg.insert( QStringLiteral( "AllowMulti" ), mAllowMulti->isChecked() );
