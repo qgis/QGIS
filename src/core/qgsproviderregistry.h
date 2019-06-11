@@ -296,6 +296,13 @@ class CORE_EXPORT QgsProviderRegistry
      */
     QString mProtocolDrivers;
 
+    /**
+     * Returns TRUE if registry instance exists.
+     */
+    static bool exists();
+
+    friend class QgsApplication;
+
 }; // class QgsProviderRegistry
 
 #endif //QGSPROVIDERREGISTRY_H

@@ -2901,8 +2901,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return -1;
   }
 
-  Q_UNUSED( deleted )
-  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( QString::number( inserted ), QString::number( updated ), QString::number( deleted ), QString::number( errors ) ), 0 );
+  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( QString::number( inserted ), QString::number( updated ), QString::number( deleted ), QString::number( errors ) ), 4 );
 
   if ( errors > 0 )
     return -errors;

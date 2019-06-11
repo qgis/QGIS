@@ -1229,7 +1229,9 @@ void QgsApplication::exitQgis()
 
   delete QgsProject::instance();
 
-  delete QgsProviderRegistry::instance();
+  // avoid creating instance just to delete it!
+  if ( QgsProviderRegistry::exists() )
+    delete QgsProviderRegistry::instance();
 
   // invalidate coordinate cache while the PROJ context held by the thread-locale
   // QgsProjContextStore object is still alive. Otherwise if this later object
