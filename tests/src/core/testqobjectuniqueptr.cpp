@@ -29,6 +29,7 @@ class TestQObjectUniquePtr : public QObject
     void testOperatorBool();
     void testSwap();
     void testOperatorArrow();
+    void testDeleteLater();
 };
 
 void TestQObjectUniquePtr::testMemLeak()
@@ -101,6 +102,27 @@ void TestQObjectUniquePtr::testOperatorArrow()
   o->setObjectName( "Teddy" );
   QObjectUniquePtr<QObject> obj( o );
   QCOMPARE( obj->objectName(), QStringLiteral( "Teddy" ) );
+}
+
+void TestQObjectUniquePtr::testDeleteLater()
+{
+  int argc;
+  QCoreApplication ca( argc, nullptr );
+  QObject *o = new QObject();
+  QObject *o2 = new QObject();
+
+  QObjectUniquePtr<QObject> obj( o );
+  QObjectUniquePtr<QObject> obj2( o2 );
+
+  obj2->deleteLater();
+  obj->deleteLater();
+
+  obj2.reset();
+
+  connect( o, &QObject::destroyed, &ca, &QCoreApplication::quit );
+  ca.exec();
+  QVERIFY( obj.isNull() );
+  QVERIFY( obj2.isNull() );
 }
 
 QGSTEST_MAIN( TestQObjectUniquePtr )
