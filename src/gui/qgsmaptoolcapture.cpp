@@ -294,7 +294,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
 
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 {
-  return mTempRubberBand.release();
+  return mRubberBand.release();
 }
 
 
