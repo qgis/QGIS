@@ -21,7 +21,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsvectorlayerref.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -276,23 +276,9 @@ bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expressi
 
 QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap &config )
 {
-  QgsVectorLayer *layer { QgsProject::instance()->mapLayer<QgsVectorLayer *>( config.value( QStringLiteral( "Layer" ) ).toString() ) };
-  if ( ! layer )
-  {
-    const auto name { config.value( QStringLiteral( "LayerName" ) ).toString() };
-    if ( ! name.isEmpty() )
-    {
-      const auto constLayers { QgsProject::instance()->mapLayers( true ) };
-      for ( QgsMapLayer *l : constLayers )
-      {
-        QgsVectorLayer *vl { qobject_cast<QgsVectorLayer *>( l ) };
-        if ( vl && vl->name() == name )
-        {
-          layer = vl;
-        }
-      }
-    }
-  }
-  return layer;
+  QgsVectorLayerRef ref;
+  ref.layerId = config.value( QStringLiteral( "Layer" ) ).toString();
+  ref.name = config.value( QStringLiteral( "LayerName" ) ).toString();
+  return ref.resolveByIdOrNameOnly( QgsProject::instance() );
 }
 
