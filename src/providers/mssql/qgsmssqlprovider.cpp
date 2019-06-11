@@ -1681,6 +1681,14 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QStr
     geometryType = QStringLiteral( "MULTILINESTRING" );
   else if ( flatType == QgsWkbTypes::MultiPolygon )
     geometryType = QStringLiteral( "MULTIPOLYGON" );
+  else if ( flatType == QgsWkbTypes::GeometryCollection )
+      geometryType = QStringLiteral( "GEOMETRYCOLLECTION" );
+  else if ( flatType == QgsWkbTypes::CircularString )
+      geometryType = QStringLiteral( "CIRCULARSTRING" );
+  else if ( flatType == QgsWkbTypes::CompoundCurve )
+      geometryType = QStringLiteral( "COMPOUNDCURVE" );
+  else if ( flatType == QgsWkbTypes::CurvePolygon )
+      geometryType = QStringLiteral( "CURVEPOLYGON" );
   else if ( flatType == QgsWkbTypes::Unknown )
     geometryType = QStringLiteral( "GEOMETRY" );
   else
