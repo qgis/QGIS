@@ -467,7 +467,7 @@ std::unique_ptr< QgsCompoundCurve > QgsMssqlGeometryParser::readCompoundCurve( i
     switch ( SegmentType( mSegment ) )
     {
       case SMT_FIRSTLINE:
-        if (nPointsPrepared > 0)
+        if ( nPointsPrepared > 0 )
         {
           if ( isCurve )
             poCompoundCurve->addCurve( readCircularString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
