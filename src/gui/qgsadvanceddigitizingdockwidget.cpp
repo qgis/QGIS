@@ -1148,6 +1148,7 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
   }
 
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::removePreviousPoint()
@@ -1158,6 +1159,7 @@ void QgsAdvancedDigitizingDockWidget::removePreviousPoint()
   int i = pointsCount() > 1 ? 1 : 0;
   mCadPointList.removeAt( i );
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::clearPoints()
@@ -1166,6 +1168,7 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
   mSnappedSegment.clear();
 
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &point )
@@ -1179,6 +1182,7 @@ void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &poin
   {
     mCadPointList[0] = point;
   }
+  updateCadPaintItem();
 }
 
 
