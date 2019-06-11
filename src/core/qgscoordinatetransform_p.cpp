@@ -319,9 +319,9 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       }
       else
       {
-        const QString err = QObject::tr( "Could not use operation specified in project between %1 and %2. (Wanted to use: %3)." ).arg( mSourceCRS.authid() )
-                            .arg( mDestCRS.authid() )
-                            .arg( mProjCoordinateOperation );
+        const QString err = QObject::tr( "Could not use operation specified in project between %1 and %2. (Wanted to use: %3)." ).arg( mSourceCRS.authid(),
+                            mDestCRS.authid(),
+                            mProjCoordinateOperation );
         QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
       }
 
@@ -395,9 +395,9 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
                 }
                 else
                 {
-                  const QString err = QObject::tr( "Cannot create transform between %1 and %2, missing required grid %3" ).arg( mSourceCRS.authid() )
-                                      .arg( mDestCRS.authid() )
-                                      .arg( shortName );
+                  const QString err = QObject::tr( "Cannot create transform between %1 and %2, missing required grid %3" ).arg( mSourceCRS.authid(),
+                                      mDestCRS.authid(),
+                                      shortName );
                   QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
                 }
                 break;
@@ -411,8 +411,9 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
             transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
             if ( !transform )
             {
-              const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid() )
-                                  .arg( mDestCRS.authid() );
+              const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
+                                  mDestCRS.authid() );
+              QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
             }
           }
         }
@@ -450,9 +451,10 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
           }
           else
           {
-            const QString err = QObject::tr( "Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4." ).arg( mSourceCRS.authid() )
-                                .arg( mDestCRS.authid() )
-                                .arg( available.proj, preferred.proj );
+            const QString err = QObject::tr( "Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4." ).arg( mSourceCRS.authid(),
+                                mDestCRS.authid(),
+                                available.proj,
+                                preferred.proj );
             QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
           }
         }
@@ -462,8 +464,8 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
           transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
         if ( !transform )
         {
-          const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid() )
-                              .arg( mDestCRS.authid() );
+          const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
+                              mDestCRS.authid() );
           QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
         }
       }
@@ -493,9 +495,9 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     }
     else
     {
-      const QString err = QObject::tr( "Cannot create transform between %1 and %2: %3" ).arg( mSourceCRS.authid() )
-                          .arg( mDestCRS.authid() )
-                          .arg( nonAvailableError );
+      const QString err = QObject::tr( "Cannot create transform between %1 and %2: %3" ).arg( mSourceCRS.authid(),
+                          mDestCRS.authid(),
+                          nonAvailableError );
       QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
     }
   }
