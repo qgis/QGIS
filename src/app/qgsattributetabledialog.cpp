@@ -1235,7 +1235,7 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     mDialog->show();
 
     // restore attribute table shortcuts in window mode
-    QgsDebugMsg( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
     // duplicated on Main Window
     mActionCopySelectedRows->setShortcut( QKeySequence( QKeySequence::Copy ) );
     mActionPasteFeatures->setShortcut( QKeySequence( QKeySequence::Paste ) );
