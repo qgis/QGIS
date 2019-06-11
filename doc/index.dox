@@ -59,9 +59,8 @@ users and developers.
 
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a
-href="https://issues.qgis.org/projects/qgis">bug tracker</a>. When reporting bugs,
-please include some contact information in case we need help with replicating
-your issue.
+href="https://github.com/qgis/QGIS/issues">bug tracker</a>. When reporting bugs,
+please be available to follow up on your initial report.
 
 \section index_ircchannel IRC channel
 Some QGIS users and developers can also often be found in the 

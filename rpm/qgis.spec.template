@@ -51,7 +51,7 @@ Source5:        %{name}-server-README.fedora
 Source6:        %{name}-mime.xml
 
 # Fix builds on 64-bit machines
-# https://issues.qgis.org/issues/15602
+# https://github.com/qgis/QGIS/issues/23525
 # https://github.com/qgis/QGIS/commit/718581ffb12b723f9a3c0ae01b7ec2d8aed9d4bb.patch
 Patch0:         %{name}-lib64.patch
 
@@ -163,7 +163,7 @@ Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
 # This questions the sense of the libs package.
 # WARNING: Rebuild QGIS whenever a new version of GRASS is shipped! Even though
 # the soname might stay the same, it won't work anymore.
-# http://issues.qgis.org/issues/5274
+# https://github.com/qgis/QGIS/issues/14999
 Requires:       grass%{?_isa} = %{grass_version}
 
 %description grass

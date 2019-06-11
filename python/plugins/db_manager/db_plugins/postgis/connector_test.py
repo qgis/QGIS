@@ -48,8 +48,8 @@ class TestDBManagerPostgisConnector(unittest.TestCase):
         connector._close_cursor(r)
         return val
 
-    # See https://issues.qgis.org/issues/16625
-    # and https://issues.qgis.org/issues/10600
+    # See https://github.com/qgis/QGIS/issues/24525
+    # and https://github.com/qgis/QGIS/issues/19005
     def test_dbnameLessURI(self):
         c = PostGisDBConnector(QgsDataSourceUri())
         self.assertIsInstance(c, PostGisDBConnector)

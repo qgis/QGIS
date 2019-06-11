@@ -11,8 +11,8 @@ email=volayaf@gmail.com
 
 icon=:/images/themes/default/processingAlgorithm.svg
 
-homepage=http://qgis.org
-tracker=https://issues.qgis.org/projects/qgis/issues
+homepage=https://qgis.org
+tracker=https://github.com/qgis/QGIS/issues
 repository=https://github.com/qgis/QGIS
 
 hasProcessingProvider=yes

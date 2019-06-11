@@ -342,7 +342,7 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
 }
 
 
-// Test issue https://issues.qgis.org/issues/22071
+// Test issue https://github.com/qgis/QGIS/issues/29884
 // Relation reference widget wrong feature when "on map identification"
 void TestQgsRelationReferenceWidget::testIdentifyOnMap()
 {

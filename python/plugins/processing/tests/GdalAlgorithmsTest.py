@@ -2765,7 +2765,7 @@ class TestGdalOgrToPostGis(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
-    # See https://issues.qgis.org/issues/15706
+    # See https://github.com/qgis/QGIS/issues/23629
     def test_getConnectionString(self):
         obj = OgrToPostGis()
         obj.initAlgorithm({})

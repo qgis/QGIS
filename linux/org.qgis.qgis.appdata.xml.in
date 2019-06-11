@@ -10,7 +10,7 @@
 
   <metadata_license>MIT</metadata_license>
   <project_license>GPL-2.0+</project_license>
-  <url type="bugtracker">https://issues.qgis.org/projects/qgis/issues/</url>
+  <url type="bugtracker">https://github.com/qgis/QGIS/issues</url>
   <url type="donation">https://qgis.org/en/site/getinvolved/donations.html</url>
   <url type="faq">https://qgis.org/en/site/getinvolved/faq/index.html</url>
   <url type="help">https://qgis.org/en/docs/index.html</url>

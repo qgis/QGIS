@@ -138,7 +138,7 @@ void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteConte
 
   for ( QgsMapLayer *layer : qgis::as_const( mCustomLayerOrder ) )
   {
-    // Safety belt, see https://issues.qgis.org/issues/19145
+    // Safety belt, see https://github.com/qgis/QGIS/issues/26975
     // Crash when deleting an item from the layout legend
     if ( ! layer )
       continue;

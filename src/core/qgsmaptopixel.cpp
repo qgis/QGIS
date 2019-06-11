@@ -80,7 +80,7 @@ bool QgsMapToPixel::updateMatrix()
 {
   QTransform newMatrix = transform();
 
-  // https://issues.qgis.org/issues/12757
+  // https://github.com/qgis/QGIS/issues/20856
   if ( !newMatrix.isInvertible() )
     return false;
 

@@ -43,7 +43,7 @@ class TestQgsLayerDefinition: public QObject
 
     /**
      * test that export does not crash: regression #18981
-     * https://issues.qgis.org/issues/18981 - Save QLR crashes QGIS 3
+     * https://github.com/qgis/QGIS/issues/26812 - Save QLR crashes QGIS 3
      */
     void testExportDoesNotCrash();
 
