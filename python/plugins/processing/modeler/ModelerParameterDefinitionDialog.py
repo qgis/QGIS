@@ -373,6 +373,9 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.requiredCheck.setEnabled(False)
                 self.requiredCheck.setChecked(True)
 
+            self.advancedCheck.setEnabled(False)
+            self.advancedCheck.setChecked(False)
+
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel |
