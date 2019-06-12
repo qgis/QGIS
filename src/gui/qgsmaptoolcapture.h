@@ -21,6 +21,7 @@
 #include "qgspointlocator.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
+#include "qobjectuniqueptr.h"
 
 #include <QPoint>
 #include <QList>
@@ -105,6 +106,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! convenient method to clean members
     void clean() override;
+
+    /**
+     * Returns the rubberBand currently owned by this map tool and
+     * transfers ownership to the caller.
+     *
+     * \since QGIS 3.8
+     */
+    QgsRubberBand *takeRubberBand() SIP_FACTORY;
 
   private slots:
     void addError( const QgsGeometry::Error &error );
@@ -255,10 +264,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mCapturing = false;
 
     //! Rubber band for polylines and polygons
-    QgsRubberBand *mRubberBand = nullptr;
+    QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
     //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
-    QgsRubberBand *mTempRubberBand = nullptr;
+    QObjectUniquePtr<QgsRubberBand> mTempRubberBand;
 
     //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;

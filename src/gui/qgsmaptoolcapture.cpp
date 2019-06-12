@@ -292,6 +292,11 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   return true;
 }
 
+QgsRubberBand *QgsMapToolCapture::takeRubberBand()
+{
+  return mRubberBand.release();
+}
+
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
@@ -302,7 +307,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
   if ( !mTempRubberBand && mCaptureCurve.numPoints() > 0 )
   {
-    mTempRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true ) );
     QgsPoint pt = mCaptureCurve.endPoint();
     mTempRubberBand->addPoint( QgsPointXY( pt.x(), pt.y() ) );
     mTempRubberBand->addPoint( point );
@@ -444,12 +449,12 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 
   if ( !mRubberBand )
   {
-    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry ) );
   }
 
   if ( !mTempRubberBand )
   {
-    mTempRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true ) );
   }
   else
   {
@@ -500,7 +505,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 
   if ( !mRubberBand )
   {
-    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry ) );
   }
 
   QgsLineString *lineString = c->curveToLine();
@@ -515,7 +520,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 
   if ( !mTempRubberBand )
   {
-    mTempRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+    mTempRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true ) );
   }
   else
   {
@@ -622,23 +627,12 @@ bool QgsMapToolCapture::isCapturing() const
 
 void QgsMapToolCapture::stopCapturing()
 {
-  if ( mRubberBand )
-  {
-    delete mRubberBand;
-    mRubberBand = nullptr;
-  }
+  mRubberBand.reset();
 
-  if ( mTempRubberBand )
-  {
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
-  }
+  deleteTempRubberBand();
 
-  while ( !mGeomErrorMarkers.isEmpty() )
-  {
-    delete mGeomErrorMarkers.takeFirst();
-  }
-
+  qDeleteAll( mGeomErrorMarkers );
+  mGeomErrorMarkers.clear();
   mGeomErrors.clear();
 
   mTracingStartPoint = QgsPointXY();
@@ -652,11 +646,7 @@ void QgsMapToolCapture::stopCapturing()
 
 void QgsMapToolCapture::deleteTempRubberBand()
 {
-  if ( mTempRubberBand )
-  {
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
-  }
+  mTempRubberBand.reset();
 }
 
 void QgsMapToolCapture::clean()
