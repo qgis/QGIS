@@ -21,7 +21,7 @@
 #include "qgspointlocator.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
-#include "qobjectuniqueptr"
+#include "qobjectuniqueptr.h"
 
 #include <QPoint>
 #include <QList>
