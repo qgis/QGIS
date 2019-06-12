@@ -686,7 +686,12 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
   else
   {
     QString res = input.toString();
-    if ( res.startsWith( QLatin1String( "memory:" ) ) )
+    if ( res == QgsProcessing::TEMPORARY_OUTPUT )
+    {
+      // temporary outputs map to temporary outputs!
+      return QgsProcessing::TEMPORARY_OUTPUT;
+    }
+    else if ( res.startsWith( QLatin1String( "memory:" ) ) )
     {
       return res + '_' + id.toString();
     }
