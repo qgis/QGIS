@@ -232,9 +232,23 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   }, createRubberBand );
   northArrowMetadata->setItemCreationFunction( []( QgsLayout * layout )->QgsLayoutItem *
   {
+
+    // count how many existing north arrows are already in layout
+    QList< QgsLayoutItemPicture * > pictureItems;
+    layout->layoutItems( pictureItems );
+    int northArrowCount = 0;
+    for ( QgsLayoutItemPicture *p : qgis::as_const( pictureItems ) )
+    {
+      // look for pictures which use the default north arrow svg
+      if ( p->picturePath() == QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ) )
+        northArrowCount++;
+    }
+
     std::unique_ptr< QgsLayoutItemPicture > picture = qgis::make_unique< QgsLayoutItemPicture >( layout );
     picture->setNorthMode( QgsLayoutItemPicture::GridNorth );
     picture->setPicturePath( QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ) );
+    // set an id by default, so that north arrows are discernable in layout item lists
+    picture->setId( northArrowCount > 0 ? QObject::tr( "North Arrow %1" ).arg( northArrowCount + 1 ) : QObject::tr( "North Arrow" ) );
     return picture.release();
   } );
   northArrowMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
