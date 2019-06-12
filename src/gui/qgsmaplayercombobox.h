@@ -139,12 +139,26 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     //! Emitted whenever the currently selected layer changes.
     void layerChanged( QgsMapLayer *layer );
 
+  protected:
+
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void paintEvent( QPaintEvent *e ) override;
+
   protected slots:
     void indexChanged( int i );
     void rowsChanged();
 
   private:
     QgsMapLayerProxyModel *mProxyModel = nullptr;
+    bool mDragActive = false;
+
+    /**
+     * Returns a map layer, compatible with the filters set for the combo box, from
+     * the specified mime \a data (if possible!).
+     */
+    QgsMapLayer *compatibleMapLayerFromMimeData( const QMimeData *data ) const;
 };
 
 #endif // QGSMAPLAYERCOMBOBOX_H
