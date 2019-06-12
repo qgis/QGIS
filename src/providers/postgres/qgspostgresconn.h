@@ -170,7 +170,7 @@ class QgsPostgresResult
     int PQnfields();
     QString PQfname( int col );
     unsigned int PQftable( int col );
-    int PQftype( int col );
+    Oid PQftype( int col );
     int PQfmod( int col );
     int PQftablecol( int col );
     Oid PQoidValue();

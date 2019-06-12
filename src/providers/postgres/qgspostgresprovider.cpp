@@ -749,7 +749,7 @@ bool QgsPostgresProvider::loadFields()
   sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
   QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
 
-  QMap<unsigned int, PGTypeInfo> typeMap;
+  QMap<Oid, PGTypeInfo> typeMap;
   for ( int i = 0; i < typeResult.PQntuples(); ++i )
   {
     PGTypeInfo typeInfo =
@@ -763,16 +763,16 @@ bool QgsPostgresProvider::loadFields()
   }
 
 
-  QMap<int, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap;
-  QMap<int, QMap<int, int> > attTypeIdMap;
-  QMap<int, QMap<int, bool> > notNullMap, uniqueMap;
+  QMap<Oid, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap;
+  QMap<Oid, QMap<int, Oid> > attTypeIdMap;
+  QMap<Oid, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
   {
     // Collect table oids
     QSet<unsigned int> tableoids;
     for ( int i = 0; i < result.PQnfields(); i++ )
     {
-      unsigned int tableoid = result.PQftable( i );
+      Oid tableoid = result.PQftable( i );
       if ( tableoid > 0 )
       {
         tableoids.insert( tableoid );
@@ -783,7 +783,7 @@ bool QgsPostgresProvider::loadFields()
     {
       QStringList tableoidsList;
       const auto constTableoids = tableoids;
-      for ( int tableoid : constTableoids )
+      for ( Oid tableoid : constTableoids )
       {
         tableoidsList.append( QString::number( tableoid ) );
       }
@@ -805,12 +805,12 @@ bool QgsPostgresProvider::loadFields()
       QgsPostgresResult fmtFieldTypeResult( connectionRO()->PQexec( sql ) );
       for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
       {
-        int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
-        int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
+        Oid attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toUInt();
+        int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt(); // Int2
         QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
         QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
         QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
-        int attType = fmtFieldTypeResult.PQgetvalue( i, 5 ).toInt();
+        Oid attType = fmtFieldTypeResult.PQgetvalue( i, 5 ).toUInt();
         bool attNotNull = fmtFieldTypeResult.PQgetvalue( i, 6 ).toInt();
         bool uniqueConstraint = fmtFieldTypeResult.PQgetvalue( i, 7 ).toInt();
         QString attIdentity = connectionRO()->pgVersion() >= 100000 ? fmtFieldTypeResult.PQgetvalue( i, 8 ) : " ";
@@ -834,12 +834,12 @@ bool QgsPostgresProvider::loadFields()
     if ( fieldName == mGeometryColumn )
       continue;
 
-    int fldtyp = result.PQftype( i );
+    Oid fldtyp = result.PQftype( i );
     int fldMod = result.PQfmod( i );
     int fieldPrec = -1;
-    int tableoid = result.PQftable( i );
+    unsigned int tableoid = result.PQftable( i );
     int attnum = result.PQftablecol( i );
-    int atttypid = attTypeIdMap[tableoid][attnum];
+    Oid atttypid = attTypeIdMap[tableoid][attnum];
 
     const PGTypeInfo &typeInfo = typeMap.value( fldtyp );
     QString fieldTypeName = typeInfo.typeName;

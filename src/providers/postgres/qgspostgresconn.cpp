@@ -122,7 +122,7 @@ int QgsPostgresResult::PQftablecol( int col )
   return ::PQftablecol( mRes, col );
 }
 
-int QgsPostgresResult::PQftype( int col )
+Oid QgsPostgresResult::PQftype( int col )
 {
   Q_ASSERT( mRes );
   return ::PQftype( mRes, col );
