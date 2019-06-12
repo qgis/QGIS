@@ -3232,7 +3232,7 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
  */
 long QgsPostgresProvider::featureCount() const
 {
-  int featuresCounted = mShared->featuresCounted();
+  long featuresCounted = mShared->featuresCounted();
   if ( featuresCounted >= 0 )
     return featuresCounted;
 
