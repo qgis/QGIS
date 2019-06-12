@@ -50,8 +50,8 @@
 /**
  * Attempts to find the best guess at a map item to link \a referenceItem to,
  * by:
- * 1. Prioritising a selected map
- * 2. If no selection, prioritising the topmost map the item was drawn over
+ * 1. Prioritizing a selected map
+ * 2. If no selection, prioritizing the topmost map the item was drawn over
  * 3. If still none, use the layout's reference map (or biggest map)
  */
 QgsLayoutItemMap *findSensibleDefaultLinkedMapItem( QgsLayoutItem *referenceItem )
@@ -247,7 +247,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     std::unique_ptr< QgsLayoutItemPicture > picture = qgis::make_unique< QgsLayoutItemPicture >( layout );
     picture->setNorthMode( QgsLayoutItemPicture::GridNorth );
     picture->setPicturePath( QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ) );
-    // set an id by default, so that north arrows are discernable in layout item lists
+    // set an id by default, so that north arrows are discernible in layout item lists
     picture->setId( northArrowCount > 0 ? QObject::tr( "North Arrow %1" ).arg( northArrowCount + 1 ) : QObject::tr( "North Arrow" ) );
     return picture.release();
   } );
