@@ -507,9 +507,11 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 2. client side default expression
       // note - deliberately not using else if!
+      QgsDefaultValue defaultValueDefinition = layer->defaultValueDefinition( idx );
       if ( ( v.isNull() || ( hasUniqueConstraint
-                             && uniqueValueCaches[ idx ].contains( v ) ) )
-           && layer->defaultValueDefinition( idx ).isValid() )
+                             && uniqueValueCaches[ idx ].contains( v ) )
+             || defaultValueDefinition.applyOnUpdate() )
+           && defaultValueDefinition.isValid() )
       {
         // client side default expression set - takes precedence over all. Why? Well, this is the only default
         // which QGIS users have control over, so we assume that they're deliberately overriding any
