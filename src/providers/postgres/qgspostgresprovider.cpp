@@ -749,7 +749,7 @@ bool QgsPostgresProvider::loadFields()
   sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
   QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
 
-  QMap<int, PGTypeInfo> typeMap;
+  QMap<unsigned int, PGTypeInfo> typeMap;
   for ( int i = 0; i < typeResult.PQntuples(); ++i )
   {
     PGTypeInfo typeInfo =
@@ -759,7 +759,7 @@ bool QgsPostgresProvider::loadFields()
       /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
       /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
     };
-    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toInt(), typeInfo );
+    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toUInt(), typeInfo );
   }
 
 
@@ -769,10 +769,10 @@ bool QgsPostgresProvider::loadFields()
   if ( result.PQnfields() > 0 )
   {
     // Collect table oids
-    QSet<int> tableoids;
+    QSet<unsigned int> tableoids;
     for ( int i = 0; i < result.PQnfields(); i++ )
     {
-      int tableoid = result.PQftable( i );
+      unsigned int tableoid = result.PQftable( i );
       if ( tableoid > 0 )
       {
         tableoids.insert( tableoid );
