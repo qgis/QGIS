@@ -117,6 +117,8 @@ This method is protected because it should be a decision of the map tool and not
 .. versionadded:: 3.0
 %End
 
+
+
   public:
 
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
