@@ -31,7 +31,8 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsSettings,
-    QgsMapLayerType
+    QgsMapLayerType,
+    QgsWkbTypes
 )
 from ..db_plugins import createDbPlugin
 
@@ -522,8 +523,28 @@ class Database(DbItemObject):
     def tables(self, schema=None, sys_tables=False):
         tables = self.connector.getTables(schema.name if schema else None, sys_tables)
         if tables is not None:
-            tables = [self.tablesFactory(x, self, schema) for x in tables]
-        return tables
+            ret = []
+            for t in tables:
+                table = self.tablesFactory(t, self, schema)
+                ret.append(table)
+
+                # Similarly to what to browser does, if the geom type is generic geometry,
+                # we additionnly add three copies of the layer to allow importing
+                if isinstance(table, VectorTable):
+                    if table.geomType == 'GEOMETRY':
+                        point_table = self.tablesFactory(t, self, schema)
+                        point_table.geomType = 'POINT'
+                        ret.append(point_table)
+
+                        line_table = self.tablesFactory(t, self, schema)
+                        line_table.geomType = 'LINESTRING'
+                        ret.append(line_table)
+
+                        poly_table = self.tablesFactory(t, self, schema)
+                        poly_table.geomType = 'POLYGON'
+                        ret.append(poly_table)
+
+        return ret
 
     def createTable(self, table, fields, schema=None):
         field_defs = [x.definition() for x in fields]
@@ -692,6 +713,13 @@ class Table(DbItemObject):
         geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
         uniqueCol = self.getValidQgisUniqueFields(True) if self.isView else None
         uri.setDataSource(schema, self.name, geomCol if geomCol else None, None, uniqueCol.name if uniqueCol else "")
+        uri.setSrid(str(self.srid))
+        for f in self.fields():
+            if f.primaryKey:
+                uri.setKeyColumn(f.name)
+                break
+        uri.setWkbType(QgsWkbTypes.parseType(self.geomType))
+
         return uri
 
     def mimeUri(self):
