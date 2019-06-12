@@ -20,6 +20,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayout.h"
+#include "qgssettings.h"
 
 //
 // QgsLayoutScaleBarValidityCheck
@@ -101,14 +102,16 @@ bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckConte
   if ( !layoutContext )
     return false;
 
+  QgsSettings settings;
+  const QString defaultPath = settings.value( QStringLiteral( "LayoutDesigner/defaultNorthArrow" ), QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ), QgsSettings::Gui ).toString();
+
   QList< QgsLayoutItemPicture * > pictureItems;
   layoutContext->layout->layoutItems( pictureItems );
   for ( QgsLayoutItemPicture *picture : qgis::as_const( pictureItems ) )
   {
     // look for pictures which use the default north arrow svg, but aren't actually linked to maps.
     // alternatively identify them by looking for the default "North Arrow" string in their id
-    if ( !picture->linkedMap() && ( picture->picturePath() == QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" )
-                                    || picture->id().contains( QObject::tr( "North Arrow" ), Qt::CaseInsensitive ) ) )
+    if ( !picture->linkedMap() && ( picture->picturePath() == defaultPath || picture->id().contains( QObject::tr( "North Arrow" ), Qt::CaseInsensitive ) ) )
     {
       QgsValidityCheckResult res;
       res.type = QgsValidityCheckResult::Warning;
