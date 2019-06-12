@@ -42,7 +42,7 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
   mOrderBy = parameters.orderBy;
 }
 
-void QgsAggregateCalculator::setFidsFilter( const QgsFeatureIds fids )
+void QgsAggregateCalculator::setFidsFilter( const QgsFeatureIds &fids )
 {
   mFidsSet = true;
   mFidsFilter = fids;
@@ -96,8 +96,6 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
-  if ( mStackFilters )
-    ;//TODO
   if ( context )
     request.setExpressionContext( *context );
   //determine result type
