@@ -237,16 +237,20 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     QList< QgsLayoutItemPicture * > pictureItems;
     layout->layoutItems( pictureItems );
     int northArrowCount = 0;
+
+    QgsSettings settings;
+    const QString defaultPath = settings.value( QStringLiteral( "LayoutDesigner/defaultNorthArrow" ), QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ), QgsSettings::Gui ).toString();
+
     for ( QgsLayoutItemPicture *p : qgis::as_const( pictureItems ) )
     {
       // look for pictures which use the default north arrow svg
-      if ( p->picturePath() == QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ) )
+      if ( p->picturePath() == defaultPath )
         northArrowCount++;
     }
 
     std::unique_ptr< QgsLayoutItemPicture > picture = qgis::make_unique< QgsLayoutItemPicture >( layout );
     picture->setNorthMode( QgsLayoutItemPicture::GridNorth );
-    picture->setPicturePath( QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ) );
+    picture->setPicturePath( defaultPath );
     // set an id by default, so that north arrows are discernible in layout item lists
     picture->setId( northArrowCount > 0 ? QObject::tr( "North Arrow %1" ).arg( northArrowCount + 1 ) : QObject::tr( "North Arrow" ) );
     return picture.release();
