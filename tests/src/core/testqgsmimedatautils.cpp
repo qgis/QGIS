@@ -142,7 +142,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QVERIFY( !owner );
   QVERIFY( !error.isEmpty() );
 
-  // non existant layerId
+  // bad layerId
   QgsMimeDataUtils::Uri uri2( vl1 );
   uri2.layerId = QStringLiteral( "xcxxcv" );
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri2 );
@@ -158,7 +158,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QgsVectorLayer *points = new QgsVectorLayer( pointsFileName, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( points );
 
-  // non existant layerId, but valid data source (i.e. not a memory layer)
+  // bad layerId, but valid data source (i.e. not a memory layer)
   QgsMimeDataUtils::Uri uri3( points );
   uri3.layerId = QStringLiteral( "xcxxcv" );
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri3 );
