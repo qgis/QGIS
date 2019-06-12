@@ -105,8 +105,10 @@ bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckConte
   layoutContext->layout->layoutItems( pictureItems );
   for ( QgsLayoutItemPicture *picture : qgis::as_const( pictureItems ) )
   {
-    // look for pictures which use the default north arrow svg, but aren't actually linked to maps
-    if ( !picture->linkedMap() && picture->picturePath() == QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ) )
+    // look for pictures which use the default north arrow svg, but aren't actually linked to maps.
+    // alternatively identify them by looking for the default "North Arrow" string in their id
+    if ( !picture->linkedMap() && ( picture->picturePath() == QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" )
+                                    || picture->id().contains( QObject::tr( "North Arrow" ), Qt::CaseInsensitive ) ) )
     {
       QgsValidityCheckResult res;
       res.type = QgsValidityCheckResult::Warning;

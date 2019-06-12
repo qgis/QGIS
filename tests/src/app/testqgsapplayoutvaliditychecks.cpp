@@ -134,6 +134,24 @@ void TestQgsLayoutValidityChecks::testNorthArrowValidity()
   QVERIFY( check2.prepareCheck( &context, &f ) );
   res = check2.runCheck( &context, &f );
   QCOMPARE( res.size(), 0 );
+
+  // test with ID check
+  picture->setPicturePath( QStringLiteral( "a" ) );
+  picture->setId( QStringLiteral( "north arrow 2" ) );
+  picture->setLinkedMap( nullptr );
+
+  QgsLayoutNorthArrowValidityCheck check3;
+  QVERIFY( check3.prepareCheck( &context, &f ) );
+  res = check3.runCheck( &context, &f );
+  QCOMPARE( res.size(), 1 );
+  QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
+
+  // no longer looks like a north arrow
+  picture->setId( QStringLiteral( "a" ) );
+  QgsLayoutNorthArrowValidityCheck check4;
+  QVERIFY( check4.prepareCheck( &context, &f ) );
+  res = check4.runCheck( &context, &f );
+  QCOMPARE( res.size(), 0 );
 }
 
 void TestQgsLayoutValidityChecks::testOverviewValidity()
