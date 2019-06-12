@@ -31,7 +31,6 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsSettings,
-    QgsMapLayerType,
     QgsWkbTypes
 )
 from ..db_plugins import createDbPlugin
