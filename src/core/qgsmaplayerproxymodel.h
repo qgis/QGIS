@@ -162,6 +162,13 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      */
     QString filterString() const { return mFilterString; }
 
+    /**
+     * Returns TRUE if the proxy model accepts the specified map \a layer.
+     *
+     * \since QGIS 3.8
+     */
+    bool acceptsLayer( QgsMapLayer *layer ) const;
+
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 

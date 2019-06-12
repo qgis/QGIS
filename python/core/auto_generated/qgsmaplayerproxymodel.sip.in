@@ -162,6 +162,13 @@ Returns the current filter string, if set.
 .. versionadded:: 3.4
 %End
 
+    bool acceptsLayer( QgsMapLayer *layer ) const;
+%Docstring
+Returns ``True`` if the proxy model accepts the specified map ``layer``.
+
+.. versionadded:: 3.8
+%End
+
     virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
 
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
