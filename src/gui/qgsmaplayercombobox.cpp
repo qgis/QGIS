@@ -15,7 +15,9 @@
 
 #include "qgsmaplayercombobox.h"
 #include "qgsmaplayermodel.h"
-
+#include "qgsmimedatautils.h"
+#include <QDragEnterEvent>
+#include <QPainter>
 
 QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -26,6 +28,8 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsMapLayerComboBox::indexChanged );
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsMapLayerComboBox::rowsChanged );
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsMapLayerComboBox::rowsChanged );
+
+  setAcceptDrops( true );
 }
 
 void QgsMapLayerComboBox::setExcludedProviders( const QStringList &providers )
@@ -138,3 +142,74 @@ void QgsMapLayerComboBox::rowsChanged()
   }
 }
 
+QgsMapLayer *QgsMapLayerComboBox::compatibleMapLayerFromMimeData( const QMimeData *data ) const
+{
+  const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &u : uriList )
+  {
+    // is this uri from the current project?
+    if ( QgsMapLayer *layer = u.mapLayer() )
+    {
+      if ( mProxyModel->acceptsLayer( layer ) )
+        return layer;
+    }
+  }
+  return nullptr;
+}
+
+void QgsMapLayerComboBox::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+    return;
+
+  if ( compatibleMapLayerFromMimeData( event->mimeData() ) )
+  {
+    // dragged an acceptable layer, phew
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    mDragActive = true;
+    update();
+  }
+}
+
+void QgsMapLayerComboBox::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  QComboBox::dragLeaveEvent( event );
+  if ( mDragActive )
+  {
+    event->accept();
+    mDragActive = false;
+    update();
+  }
+}
+
+void QgsMapLayerComboBox::dropEvent( QDropEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+    return;
+
+  if ( QgsMapLayer *layer = compatibleMapLayerFromMimeData( event->mimeData() ) )
+  {
+    // dropped an acceptable layer, phew
+    setFocus( Qt::MouseFocusReason );
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+
+    setLayer( layer );
+  }
+  mDragActive = false;
+  update();
+}
+
+void QgsMapLayerComboBox::paintEvent( QPaintEvent *e )
+{
+  QComboBox::paintEvent( e );
+  if ( mDragActive )
+  {
+    QPainter p( this );
+    int width = 2;  // width of highlight rectangle inside frame
+    p.setPen( QPen( palette().highlight(), width ) );
+    QRect r = rect().adjusted( width, width, -width, -width );
+    p.drawRect( r );
+  }
+}
