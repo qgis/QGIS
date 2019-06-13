@@ -26,6 +26,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
+#include "qgsfeature.h"
 
 #include "qgs3dmapscenepickhandler.h"
 
@@ -56,9 +57,6 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   qInfo() << "Constructed";
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolMeasureLine::onTerrainEntityChanged );
   mPickHandler.reset( new Qgs3DMapToolMeasureLinePickHandler( this ) );
-  mLineLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326" ), QStringLiteral( "Measurement" ), QStringLiteral( "memory" ) );
-  mMeasurementLine = new QgsLineString();
-  mMeasurementLine->addZValue();
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -72,6 +70,24 @@ void Qgs3DMapToolMeasureLine::activate()
   }
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
+
+  // Initialize the measurement line
+  mMeasurementLine = new QgsLineString();
+  mMeasurementLine->addZValue();
+
+  // Initialize measurement feature
+  mMeasurementFeature = new QgsFeature( QgsFeatureId( 1 ) );
+  mMeasurementFeature->setGeometry( QgsGeometry( mMeasurementLine ) );
+
+  // Initialize the line layer
+  QString mapCRS = mCanvas->map()->crs().authid();
+  mMeasurementLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=" ) + mapCRS, QStringLiteral( "Measurement" ), QStringLiteral( "memory" ) );
+
+  // Add feature to layer
+  mMeasurementLayer->startEditing();
+  mMeasurementLayer->addFeature( *mMeasurementFeature );
+  mMeasurementLayer->commitChanges();
+
 }
 
 void Qgs3DMapToolMeasureLine::deactivate()
@@ -115,5 +131,18 @@ void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
 void Qgs3DMapToolMeasureLine::addPointToLine( QgsVector3D point3D )
 {
   mMeasurementLine->addVertex( QgsPoint( point3D.x(), point3D.y(), point3D.z() ) );
+
+//  mLineLayer->changeGeometry(mMeasurementFeature->id(), QgsGeometry(mMeasurementLine));
   qInfo() << "Current line " << mMeasurementLine->asWkt();
+  qInfo() << "Current feature " << mMeasurementFeature->geometry().asWkt();
+  qInfo() << "Current layer " << mMeasurementLayer;
+  qInfo() << "Current feature count: " << mMeasurementLayer->featureCount();
+  QgsFeature fs = mMeasurementLayer->getFeature( mMeasurementFeature->id() );
+  qInfo() << "feature from layer " << fs.geometry().asWkt();
+  QgsFeatureIterator it = mMeasurementLayer->getFeatures();
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    qInfo() << "[1] Current feature " << f.geometry().asWkt();
+  }
 }
