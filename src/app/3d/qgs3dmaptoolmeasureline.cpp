@@ -23,16 +23,19 @@
 #include "qgs3dutils.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapcanvas.h"
+#include "qgsvectorlayer.h"
+#include "qgslinestring.h"
+#include "qgspoint.h"
 
 #include "qgs3dmapscenepickhandler.h"
 
 class Qgs3DMapToolMeasureLinePickHandler : public Qgs3DMapScenePickHandler
 {
   public:
-    Qgs3DMapToolMeasureLinePickHandler( Qgs3DMapToolMeasureLine *measureLineTool ): mMesaureLineTool( measureLineTool ) {}
+    Qgs3DMapToolMeasureLinePickHandler( Qgs3DMapToolMeasureLine *measureLineTool ): mMeasureLineTool( measureLineTool ) {}
     void handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection ) override;
   private:
-    Qgs3DMapToolMeasureLine *mMesaureLineTool = nullptr;
+    Qgs3DMapToolMeasureLine *mMeasureLineTool = nullptr;
 };
 
 void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection )
@@ -41,12 +44,10 @@ void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer
   QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates(
                             QgsVector3D( worldIntersection.x(),
                                          worldIntersection.y(),
-                                         worldIntersection.z() ), mMesaureLineTool->mCanvas->map()->origin() );
+                                         worldIntersection.z() ), mMeasureLineTool->mCanvas->map()->origin() );
   QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
   qInfo() << "Coord (handlePickOnVectorLayer): " << pt.x() << " " << pt.y() << " " << pt.z();
-  //  QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
-  //  identifyTool2D->showResultsForFeature( vlayer, id, pt );
-
+  mMeasureLineTool->addPointToLine( mapCoords );
 }
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
@@ -55,6 +56,9 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   qInfo() << "Constructed";
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolMeasureLine::onTerrainEntityChanged );
   mPickHandler.reset( new Qgs3DMapToolMeasureLinePickHandler( this ) );
+  mLineLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326" ), QStringLiteral( "Measurement" ), QStringLiteral( "memory" ) );
+  mMeasurementLine = new QgsLineString();
+  mMeasurementLine->addZValue();
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -92,6 +96,7 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
                           worldIntersection.y(),
                           worldIntersection.z() ), mCanvas->map()->origin() );
   qInfo() << "Coord (onTerrainPicked): " << mapCoords.x() << " " << mapCoords.y() << " " << mapCoords.z();
+  addPointToLine( mapCoords );
   QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
 }
 
@@ -105,4 +110,10 @@ void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
   {
     connect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolMeasureLine::onTerrainPicked );
   }
+}
+
+void Qgs3DMapToolMeasureLine::addPointToLine( QgsVector3D point3D )
+{
+  mMeasurementLine->addVertex( QgsPoint( point3D.x(), point3D.y(), point3D.z() ) );
+  qInfo() << "Current line " << mMeasurementLine->asWkt();
 }

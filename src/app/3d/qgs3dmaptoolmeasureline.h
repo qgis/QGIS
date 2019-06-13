@@ -17,6 +17,9 @@
 #define QGS3DMAPTOOLMEASURELINE_H
 
 #include "qgs3dmaptool.h"
+#include "qgsvectorlayer.h"
+#include "qgsvector3d.h"
+#include "qgslinestring.h"
 
 #include <memory>
 
@@ -51,6 +54,11 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     std::unique_ptr<Qgs3DMapToolMeasureLinePickHandler> mPickHandler;
 
     friend class Qgs3DMapToolMeasureLinePickHandler;
+
+    QgsVectorLayer *mLineLayer = nullptr;
+    QgsLineString *mMeasurementLine = nullptr;
+
+    void addPointToLine( QgsVector3D point3D );
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H
