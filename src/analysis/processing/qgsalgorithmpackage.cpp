@@ -36,7 +36,7 @@ QString QgsPackageAlgorithm::displayName() const
 
 QStringList QgsPackageAlgorithm::tags() const
 {
-  return QObject::tr( "geopackage,collect,merge,combine" ).split( ',' );
+  return QObject::tr( "geopackage,collect,merge,combine,styles" ).split( ',' );
 }
 
 QString QgsPackageAlgorithm::group() const
@@ -145,7 +145,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
       case QgsMapLayerType::RasterLayer:
       {
         //not supported
-        feedback->pushDebugInfo( QObject::tr( "Raster layers are not currently supported." ) );
+        feedback->pushDebugInfo( QObject::tr( "Packaging raster layers is not supported." ) );
         errored = true;
         break;
       }
