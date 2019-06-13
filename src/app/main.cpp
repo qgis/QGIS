@@ -113,19 +113,15 @@ typedef SInt32 SRefCon;
  */
 void version( )
 {
-  QStringList msg;
-
-  msg
-      << QStringLiteral( "QGIS " ) << VERSION << QStringLiteral( " '" ) << RELEASE_NAME << QStringLiteral( "' (" )
-      << QGSVERSION << QStringLiteral( ")\n" );
+  const QString msg = QStringLiteral( "QGIS %1 '%2' (%3)\n" ).arg( VERSION ).arg( RELEASE_NAME ).arg( QGSVERSION );
 
 #ifdef Q_OS_WIN
   MessageBox( nullptr,
-              msg.join( QString() ).toLocal8Bit().constData(),
+              msg,
               "QGIS version",
               MB_OK );
 #else
-  std::cerr << msg.join( QString() ).toLocal8Bit().constData();
+  std::cerr << msg.toStdString();
 #endif
 
 } // version()
@@ -141,6 +137,7 @@ void usage( const QString &appName )
       << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
       << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
       << QStringLiteral( "  OPTION:\n" )
+      << QStringLiteral( "\t[--version]\tdisplay version information and exit\n" )
       << QStringLiteral( "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n" )
       << QStringLiteral( "\t[--width width]\twidth of snapshot to emit\n" )
       << QStringLiteral( "\t[--height height]\theight of snapshot to emit\n" )
