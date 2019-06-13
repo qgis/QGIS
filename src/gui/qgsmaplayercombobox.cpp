@@ -74,9 +74,13 @@ QStringList QgsMapLayerComboBox::additionalItems() const
 
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
+  if ( layer == currentLayer() )
+    return;
+
   if ( !layer )
   {
     setCurrentIndex( -1 );
+    emit layerChanged( nullptr );
     return;
   }
 
