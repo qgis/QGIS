@@ -1836,8 +1836,6 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
   else if ( providerType() == QLatin1String( "virtual" ) )
   {
     QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QUrl url = QUrl::fromEncoded( src.toLatin1() );
-    QUrl urlSourceLayer;
     QStringList theURIParts;
 
     QUrlQuery query = QUrlQuery( urlSource.query() );
@@ -1912,8 +1910,6 @@ QString QgsVectorLayer::decodedSource( const QString &source, const QString &pro
   else if ( provider == QLatin1String( "virtual" ) )
   {
     QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QUrl url = QUrl::fromEncoded( src.toLatin1() );
-    QUrl urlSourceLayer;
     QStringList theURIParts;
 
     QUrlQuery query = QUrlQuery( urlSource.query() );
