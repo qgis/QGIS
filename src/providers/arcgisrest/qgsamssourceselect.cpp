@@ -93,7 +93,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
       if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
-    }, serviceInfoMap, baseUrl );
+    }, serviceInfoMap, baseUrl, QgsArcGisRestUtils::Raster );
 
     QMap< QString, QList<QStandardItem *> > layerItems;
     QMap< QString, QString > parents;
@@ -123,7 +123,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
       mAvailableCRS[name] = QList<QString>()  << authid;
 
       layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
-    }, serviceInfoMap, baseItemUrl );
+    }, serviceInfoMap, baseItemUrl, QgsArcGisRestUtils::Raster );
 
     // create layer groups
     for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )

@@ -51,6 +51,17 @@ class QgsFeatureRenderer;
 class QgsArcGisRestUtils
 {
   public:
+
+    /**
+     * Service types
+     */
+    enum ServiceTypeFilter
+    {
+      AllTypes, //!< All types
+      Vector,   //!< Vector type
+      Raster   //!< Raster type
+    };
+
     static QVariant::Type mapEsriFieldType( const QString &esriFieldType );
     static QgsWkbTypes::Type mapEsriGeometryType( const QString &esriGeometryType );
     static std::unique_ptr< QgsAbstractGeometry > parseEsriGeoJSON( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs = nullptr );
@@ -96,8 +107,8 @@ class QgsArcGisRestUtils
     static QUrl parseUrl( const QUrl &url );
     static void adjustBaseUrl( QString &baseUrl, const QString name );
     static void visitFolderItems( const std::function<void ( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
-    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
-    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl );
+    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter = QgsArcGisRestUtils::AllTypes );
+    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter = QgsArcGisRestUtils::AllTypes );
 };
 
 class QgsArcGisAsyncQuery : public QObject
