@@ -208,7 +208,7 @@ void QgsMapLayerComboBox::dropEvent( QDropEvent *event )
 void QgsMapLayerComboBox::paintEvent( QPaintEvent *e )
 {
   QComboBox::paintEvent( e );
-  if ( mDragActive )
+  if ( mDragActive || mHighlight )
   {
     QPainter p( this );
     int width = 2;  // width of highlight rectangle inside frame

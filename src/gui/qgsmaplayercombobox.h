@@ -153,12 +153,15 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
   private:
     QgsMapLayerProxyModel *mProxyModel = nullptr;
     bool mDragActive = false;
+    bool mHighlight = false;
 
     /**
      * Returns a map layer, compatible with the filters set for the combo box, from
      * the specified mime \a data (if possible!).
      */
     QgsMapLayer *compatibleMapLayerFromMimeData( const QMimeData *data ) const;
+
+    friend class QgsProcessingMapLayerComboBox;
 };
 
 #endif // QGSMAPLAYERCOMBOBOX_H
