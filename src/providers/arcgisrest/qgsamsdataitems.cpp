@@ -104,7 +104,7 @@ void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &servic
   {
     std::unique_ptr< QgsAmsServiceItem > serviceItem = qgis::make_unique< QgsAmsServiceItem >( parent, name, url, url, authcfg, headers );
     items.append( serviceItem.release() );
-  }, serviceData, baseUrl );
+  }, serviceData, baseUrl, QgsArcGisRestUtils::Raster );
 }
 
 void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &parentUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent )
@@ -122,7 +122,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
     std::unique_ptr< QgsAmsLayerItem > layerItem = qgis::make_unique< QgsAmsLayerItem >( parent, name, url, id, name, authid, format, authcfg, headers );
     layerItems.insert( id, layerItem.release() );
 
-  }, serviceData, parentUrl );
+  }, serviceData, parentUrl, QgsArcGisRestUtils::Raster );
 
   // create groups
   for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )

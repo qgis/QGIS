@@ -1301,7 +1301,7 @@ void QgsArcGisRestUtils::visitFolderItems( const std::function< void( const QStr
   }
 }
 
-void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter )
 {
   QString base( baseUrl );
   bool baseChecked = false;
@@ -1313,7 +1313,11 @@ void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QSt
   {
     const QVariantMap serviceMap = service.toMap();
     const QString serviceType = serviceMap.value( QStringLiteral( "type" ) ).toString();
-    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "FeatureServer" ) && serviceType != QLatin1String( "ImageServer" ) )
+    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "ImageServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
+      continue;
+
+    // If the requested service type is raster, do not show vector-only services
+    if ( serviceType == QLatin1String( "FeatureServer" ) && filter == QgsArcGisRestUtils::Raster )
       continue;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
@@ -1328,7 +1332,7 @@ void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QSt
   }
 }
 
-void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl )
+void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter )
 {
   const QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
 
@@ -1350,6 +1354,13 @@ void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString
     if ( found )
       break;
   }
+  const QStringList capabilities = serviceData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
+
+  // If the requested layer type is vector, do not show raster-only layers (i.e. non query-able layers)
+  const bool serviceMayHaveQueryCapability = capabilities.contains( QStringLiteral( "Query" ) ) ||
+      serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
+  if ( filter == QgsArcGisRestUtils::Vector && !serviceMayHaveQueryCapability )
+    return;
 
   const QVariantList layerInfoList = serviceData.value( QStringLiteral( "layers" ) ).toList();
   for ( const QVariant &layerInfo : layerInfoList )

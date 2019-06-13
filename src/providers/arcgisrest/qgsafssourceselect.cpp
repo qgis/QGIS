@@ -82,7 +82,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
       if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
-    }, serviceInfoMap, baseUrl );
+    }, serviceInfoMap, baseUrl, QgsArcGisRestUtils::Vector );
 
     QMap< QString, QList<QStandardItem *> > layerItems;
     QMap< QString, QString > parents;
@@ -121,7 +121,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
         layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
       }
-    }, serviceInfoMap, baseItemUrl );
+    }, serviceInfoMap, baseItemUrl, QgsArcGisRestUtils::Vector );
 
     // create layer groups
     for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
