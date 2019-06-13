@@ -110,7 +110,7 @@ QString QgsPostgresResult::PQfname( int col )
   return QString::fromUtf8( ::PQfname( mRes, col ) );
 }
 
-int QgsPostgresResult::PQftable( int col )
+unsigned int QgsPostgresResult::PQftable( int col )
 {
   Q_ASSERT( mRes );
   return ::PQftable( mRes, col );
@@ -122,7 +122,7 @@ int QgsPostgresResult::PQftablecol( int col )
   return ::PQftablecol( mRes, col );
 }
 
-int QgsPostgresResult::PQftype( int col )
+Oid QgsPostgresResult::PQftype( int col )
 {
   Q_ASSERT( mRes );
   return ::PQftype( mRes, col );
