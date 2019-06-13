@@ -769,7 +769,7 @@ bool QgsPostgresProvider::loadFields()
   if ( result.PQnfields() > 0 )
   {
     // Collect table oids
-    QSet<unsigned int> tableoids;
+    QSet<Oid> tableoids;
     for ( int i = 0; i < result.PQnfields(); i++ )
     {
       Oid tableoid = result.PQftable( i );
@@ -837,7 +837,7 @@ bool QgsPostgresProvider::loadFields()
     Oid fldtyp = result.PQftype( i );
     int fldMod = result.PQfmod( i );
     int fieldPrec = -1;
-    unsigned int tableoid = result.PQftable( i );
+    Oid tableoid = result.PQftable( i );
     int attnum = result.PQftablecol( i );
     Oid atttypid = attTypeIdMap[tableoid][attnum];
 
