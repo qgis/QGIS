@@ -109,6 +109,28 @@ typedef SInt32 SRefCon;
 #endif
 
 /**
+ * Print QGIS version
+ */
+void version( )
+{
+  QStringList msg;
+
+  msg
+      << QStringLiteral( "QGIS " ) << VERSION << QStringLiteral( " '" ) << RELEASE_NAME << QStringLiteral( "' (" )
+      << QGSVERSION << QStringLiteral( ")\n" );
+
+#ifdef Q_OS_WIN
+  MessageBox( nullptr,
+              msg.join( QString() ).toLocal8Bit().constData(),
+              "QGIS version",
+              MB_OK );
+#else
+  std::cerr << msg.join( QString() ).toLocal8Bit().constData();
+#endif
+
+} // version()
+
+/**
  * Print usage text
  */
 void usage( const QString &appName )
@@ -116,8 +138,6 @@ void usage( const QString &appName )
   QStringList msg;
 
   msg
-      << QStringLiteral( "QGIS - " ) << VERSION << QStringLiteral( " '" ) << RELEASE_NAME << QStringLiteral( "' (" )
-      << QGSVERSION << QStringLiteral( ")\n" )
       << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
       << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
       << QStringLiteral( "  OPTION:\n" )
@@ -601,6 +621,11 @@ int main( int argc, char *argv[] )
         {
           usage( args[0] );
           return 2;
+        }
+        else if ( arg == QLatin1String( "--version" ) || arg == QLatin1String( "-v" ) )
+        {
+          version();
+          return EXIT_SUCCESS;
         }
         else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
         {
