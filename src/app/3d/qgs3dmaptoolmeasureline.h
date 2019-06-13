@@ -61,6 +61,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     QgsLineString *mMeasurementLine = nullptr;
 
     void addPointToLine( QgsVector3D point3D );
+    void renderMeasurementLine();
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H

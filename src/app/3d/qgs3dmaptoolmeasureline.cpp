@@ -27,6 +27,8 @@
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgsfeature.h"
+#include "qgsline3dsymbol.h"
+#include "qgsvectorlayer3drenderer.h"
 
 #include "qgs3dmapscenepickhandler.h"
 
@@ -88,6 +90,9 @@ void Qgs3DMapToolMeasureLine::activate()
   mMeasurementLayer->addFeature( *mMeasurementFeature );
   mMeasurementLayer->commitChanges();
 
+  // Add layer to canvas
+  mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
+
 }
 
 void Qgs3DMapToolMeasureLine::deactivate()
@@ -99,6 +104,7 @@ void Qgs3DMapToolMeasureLine::deactivate()
   }
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
+
 }
 
 void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
@@ -145,4 +151,17 @@ void Qgs3DMapToolMeasureLine::addPointToLine( QgsVector3D point3D )
   {
     qInfo() << "[1] Current feature " << f.geometry().asWkt();
   }
+  renderMeasurementLine();
+}
+
+void Qgs3DMapToolMeasureLine::renderMeasurementLine()
+{
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setRenderAsSimpleLines( true );
+  lineSymbol->setWidth( 10 );
+  QgsPhongMaterialSettings mat;
+  mat.setAmbient( Qt::red );
+  lineSymbol->setMaterial( mat );
+  mMeasurementLayer->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+  mMeasurementLayer->triggerRepaint();
 }
