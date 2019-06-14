@@ -121,7 +121,7 @@ void version( )
               "QGIS version",
               MB_OK );
 #else
-  std::cerr << msg.toStdString();
+  std::cout << msg.toStdString();
 #endif
 
 } // version()
@@ -185,7 +185,7 @@ void usage( const QString &appName )
               "QGIS command line options",
               MB_OK );
 #else
-  std::cerr << msg.join( QString() ).toLocal8Bit().constData();
+  std::cout << msg.join( QString() ).toLocal8Bit().constData();
 #endif
 
 } // usage()
@@ -617,7 +617,7 @@ int main( int argc, char *argv[] )
         if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-?" ) )
         {
           usage( args[0] );
-          return 2;
+          return EXIT_SUCCESS;
         }
         else if ( arg == QLatin1String( "--version" ) || arg == QLatin1String( "-v" ) )
         {
