@@ -21,6 +21,7 @@
 #include "qgsvector3d.h"
 #include "qgslinestring.h"
 #include "qgsfeature.h"
+#include "qgsline3dsymbol.h"
 
 #include <memory>
 
@@ -59,9 +60,11 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     QgsVectorLayer *mMeasurementLayer = nullptr;
     QgsFeature *mMeasurementFeature = nullptr;
     QgsLineString *mMeasurementLine = nullptr;
+    QgsLine3DSymbol *mLineSymbol = nullptr;
+
 
     void addPointToLine( QgsVector3D point3D );
-    void renderMeasurementLine();
+    void setMeasurementLayerRenderer( QgsVectorLayer *layer );
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H
