@@ -4783,7 +4783,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </column>
                     <column>
                      <property name="text">
-                      <string>extension</string>
+                      <string>Extension</string>
                      </property>
                     </column>
                     <column>
