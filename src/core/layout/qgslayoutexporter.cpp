@@ -490,6 +490,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  mLayout->renderContext().setFlags( settings.flags );
+
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
@@ -560,6 +562,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
     ( void )contextRestorer;
     iterator->layout()->renderContext().setDpi( settings.dpi );
+
+    iterator->layout()->renderContext().setFlags( settings.flags );
 
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
@@ -671,6 +675,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  mLayout->renderContext().setFlags( settings.flags );
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
@@ -730,6 +735,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
     ( void )contextRestorer;
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
+    iterator->layout()->renderContext().setFlags( settings.flags );
+
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
     // in items missing from the output
@@ -784,6 +791,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  mLayout->renderContext().setFlags( settings.flags );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
 
