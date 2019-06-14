@@ -3133,6 +3133,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().selectedFeaturesOnly );
   QVERIFY( combo->currentText().startsWith( vl->name() ) );
   QCOMPARE( spy.count(), 13 );
+  combo.reset();
+  param.reset();
 
   // setup a project with a range of layer types
   QgsProject::instance()->removeAllMapLayers();
@@ -3166,6 +3168,8 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), mesh );
   combo->setLayer( raster );
   QCOMPARE( combo->currentLayer(), raster );
+  combo.reset();
+  param.reset();
 
   // raster layer param, only raster types are acceptable
   param = qgis::make_unique< QgsProcessingParameterRasterLayer> ( QStringLiteral( "param" ), QString() );
@@ -3182,6 +3186,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( raster );
   QCOMPARE( combo->currentLayer(), raster );
+  combo.reset();
+  param.reset();
 
   // mesh layer parm, only mesh types are acceptable
   param = qgis::make_unique< QgsProcessingParameterMeshLayer> ( QStringLiteral( "param" ), QString() );
@@ -3198,6 +3204,8 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), mesh );
   combo->setLayer( raster );
   QVERIFY( !combo->currentLayer() );
+  combo.reset();
+  param.reset();
 
   // feature source and vector layer params
   // if not specified, the default is any vector layer with geometry
@@ -3229,6 +3237,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
 
   // point layer
   param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPoint );
@@ -3259,6 +3271,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
 
   // line layer
   param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorLine );
@@ -3289,6 +3305,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
 
   // polygon
   param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPolygon );
@@ -3319,6 +3339,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
 
   // no geom
   param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVector );
@@ -3349,6 +3373,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
 
   // any geom
   param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorAnyGeometry );
@@ -3379,6 +3407,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
 
   // combination point and line only
   param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine );
@@ -3409,6 +3441,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
 
   // optional
   param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>(), QVariant(), true );
@@ -3423,6 +3459,12 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setValue( QVariant(), context );
   QVERIFY( !combo->currentLayer() );
   QVERIFY( !combo->value().isValid() );
+
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestProcessingGui::cleanupTempDir()
