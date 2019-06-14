@@ -159,7 +159,16 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
         if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
-          setIndexWidget( index, provider->createWidget( layer, i ) );
+          QWidget *wdgt = provider->createWidget( layer, i );
+          // Since column is resized to contents, limit the expanded width of embedded widgets,
+          // if they are not already limited, e.g. have the defaut MAX value.
+          // Else, embedded widget may grow very wide due to large legend graphics.
+          // TODO: Max width could be a configured setting.
+          if ( wdgt->maximumWidth() == QWIDGETSIZE_MAX )
+          {
+            wdgt->setMaximumWidth( 250 );
+          }
+          setIndexWidget( index, wdgt );
         }
       }
     }
