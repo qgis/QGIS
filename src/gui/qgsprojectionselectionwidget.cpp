@@ -171,9 +171,11 @@ void QgsProjectionSelectionWidget::selectCrs()
   //find out crs id of current proj4 string
   QgsProjectionSelectionDialog dlg( this );
   dlg.setMessage( mMessage );
-  if ( mCrs.isValid() )
+  dlg.setCrs( mCrs );
+
+  if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
   {
-    dlg.setCrs( mCrs );
+    dlg.setShowNoProjection( true );
   }
 
   if ( dlg.exec() )
