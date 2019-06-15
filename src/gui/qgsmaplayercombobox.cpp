@@ -164,7 +164,10 @@ QgsMapLayer *QgsMapLayerComboBox::compatibleMapLayerFromMimeData( const QMimeDat
 void QgsMapLayerComboBox::dragEnterEvent( QDragEnterEvent *event )
 {
   if ( !( event->possibleActions() & Qt::CopyAction ) )
+  {
+    event->ignore();
     return;
+  }
 
   if ( compatibleMapLayerFromMimeData( event->mimeData() ) )
   {
@@ -174,23 +177,33 @@ void QgsMapLayerComboBox::dragEnterEvent( QDragEnterEvent *event )
     mDragActive = true;
     update();
   }
+  else
+  {
+    event->ignore();
+  }
 }
 
 void QgsMapLayerComboBox::dragLeaveEvent( QDragLeaveEvent *event )
 {
-  QComboBox::dragLeaveEvent( event );
   if ( mDragActive )
   {
     event->accept();
     mDragActive = false;
     update();
   }
+  else
+  {
+    event->ignore();
+  }
 }
 
 void QgsMapLayerComboBox::dropEvent( QDropEvent *event )
 {
   if ( !( event->possibleActions() & Qt::CopyAction ) )
+  {
+    event->ignore();
     return;
+  }
 
   if ( QgsMapLayer *layer = compatibleMapLayerFromMimeData( event->mimeData() ) )
   {
@@ -200,6 +213,10 @@ void QgsMapLayerComboBox::dropEvent( QDropEvent *event )
     event->accept();
 
     setLayer( layer );
+  }
+  else
+  {
+    event->ignore();
   }
   mDragActive = false;
   update();
