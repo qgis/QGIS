@@ -95,6 +95,8 @@ to create a new layer corresponding to the URI.
 
       QString pId;
 
+      QgsWkbTypes::Type wkbType;
+
       SIP_PYOBJECT __repr__();
 %MethodCode
       QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
