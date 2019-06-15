@@ -771,7 +771,7 @@ namespace QgsWfs
 
         QDomElement filterElem = filter.firstChildElement();
         QStringList serverFids;
-        query.featureRequest = parseFilterElement( query.typeName, filterElem, project, &serverFids );
+        query.featureRequest = parseFilterElement( query.typeName, filterElem, serverFids, project );
         query.serverFids = serverFids;
 
         if ( filterIt != filterList.constEnd() )
@@ -929,7 +929,7 @@ namespace QgsWfs
         }
         else if ( queryChildElem.tagName() == QLatin1String( "Filter" ) )
         {
-          featureRequest = parseFilterElement( typeName, queryChildElem, project, &serverFids );
+          featureRequest = parseFilterElement( typeName, queryChildElem, serverFids, project );
         }
         else if ( queryChildElem.tagName() == QLatin1String( "SortBy" ) )
         {

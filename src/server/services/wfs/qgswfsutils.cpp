@@ -101,7 +101,14 @@ namespace QgsWfs
     return nullptr;
   }
 
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project, QStringList *serverFids )
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project )
+  {
+    // Get the server feature ids in filter element
+    QStringList collectedServerFids;
+    return parseFilterElement( typeName, filterElem, collectedServerFids, project );
+  }
+
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QStringList &serverFids, const QgsProject *project )
   {
     QgsFeatureRequest request;
 
@@ -135,7 +142,7 @@ namespace QgsWfs
         throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element correctly parse against typeName '%1'" ).arg( typeName ) );
       }
       // update server feature ids
-      serverFids->append( collectedServerFids );
+      serverFids.append( collectedServerFids );
       request.setFlags( QgsFeatureRequest::NoFlags );
       return request;
     }
@@ -169,7 +176,7 @@ namespace QgsWfs
         throw QgsRequestNotWellFormedException( QStringLiteral( "No GmlObjectId element correctly parse against typeName '%1'" ).arg( typeName ) );
       }
       // update server feature ids
-      serverFids->append( collectedServerFids );
+      serverFids.append( collectedServerFids );
       request.setFlags( QgsFeatureRequest::NoFlags );
       return request;
     }
@@ -199,50 +206,69 @@ namespace QgsWfs
     else if ( filterElem.firstChildElement().tagName() == QLatin1String( "And" ) &&
               !filterElem.firstChildElement().firstChildElement( QLatin1String( "BBOX" ) ).isNull() )
     {
+      int nbChildElem = filterElem.firstChildElement().childNodes().size();
+
+      // Create a filter element to parse And child not BBOX
+      QDomElement childFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+      if ( nbChildElem > 2 )
+      {
+        QDomElement childAndElement = filterElem.ownerDocument().createElement( QLatin1String( "And" ) );
+        childFilterElement.appendChild( childAndElement );
+      }
+
+      // Create a filter element to parse  BBOX
+      QDomElement bboxFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+
       QDomElement childElem = filterElem.firstChildElement().firstChildElement();
       while ( !childElem.isNull() )
       {
-        // Create a filter element to parse And child
-        QDomElement childFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
-        // Clone And child
-        childFilterElement.appendChild( childElem.cloneNode( true ) );
-
-        // Parse the filter element with the cloned And child
-        QStringList collectedServerFids;
-        QgsFeatureRequest childRequest = parseFilterElement( typeName, childFilterElement, project, &collectedServerFids );
-
-        // Update server feature ids
-        if ( !collectedServerFids.isEmpty() )
-        {
-          serverFids->append( collectedServerFids );
-        }
-
         // Update request based on BBOX
         if ( childElem.tagName() == QLatin1String( "BBOX" ) )
         {
-          if ( request.filterRect().isEmpty() )
-          {
-            request.setFilterRect( childRequest.filterRect() );
-          }
-          else
-          {
-            request.setFilterRect( request.filterRect().intersect( childRequest.filterRect() ) );
-          }
+          // Clone BBOX
+          bboxFilterElement.appendChild( childElem.cloneNode( true ) );
         }
-        // Update expression
         else
         {
-          if ( !request.filterExpression() )
+          // Clone And child
+          if ( nbChildElem > 2 )
           {
-            request.setFilterExpression( childRequest.filterExpression()->expression() );
+            childFilterElement.firstChildElement().appendChild( childElem.cloneNode( true ) );
           }
           else
           {
-            request.setFilterExpression( QStringLiteral( "( %1 ) AND ( %2 )" ).arg( request.filterExpression()->expression(), childRequest.filterExpression()->expression() ) );
+            childFilterElement.appendChild( childElem.cloneNode( true ) );
           }
         }
         childElem = childElem.nextSiblingElement();
       }
+
+      // Parse the filter element with the cloned BBOX
+      QStringList collectedServerFids;
+      QgsFeatureRequest bboxRequest = parseFilterElement( typeName, bboxFilterElement, collectedServerFids, project );
+
+      // Update request based on BBOX
+      if ( request.filterRect().isEmpty() )
+      {
+        request.setFilterRect( bboxRequest.filterRect() );
+      }
+      else
+      {
+        request.setFilterRect( request.filterRect().intersect( bboxRequest.filterRect() ) );
+      }
+
+      // Parse the filter element with the cloned And child
+      QgsFeatureRequest childRequest = parseFilterElement( typeName, childFilterElement, collectedServerFids, project );
+
+      // Update server feature ids
+      if ( !collectedServerFids.isEmpty() )
+      {
+        serverFids.append( collectedServerFids );
+      }
+
+      // Update expression
+      request.setFilterExpression( childRequest.filterExpression()->expression() );
+
       request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
       return request;
     }
