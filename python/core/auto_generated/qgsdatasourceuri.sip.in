@@ -12,6 +12,12 @@
 
 class QgsDataSourceUri
 {
+%Docstring
+Class for storing the component parts of a RDBMS data source URI (e.g. a Postgres data source).
+
+This structure stores the database connection information, including host, database,
+user name, password, schema, password, and SQL where clause.
+%End
 
 %TypeHeaderCode
 #include "qgsdatasourceuri.h"
@@ -20,6 +26,7 @@ class QgsDataSourceUri
     static const QMetaObject staticMetaObject;
 
   public:
+
     enum SslMode
     {
       SslPrefer,
@@ -31,52 +38,52 @@ class QgsDataSourceUri
     };
 
     QgsDataSourceUri();
-%Docstring
-default constructor
-%End
 
-    QgsDataSourceUri( QString uri );
+    QgsDataSourceUri( const QString &uri );
 %Docstring
-constructor which parses input URI
+Constructor for QgsDataSourceUri which parses an input ``uri`` string.
 %End
 
 
     QString connectionInfo( bool expandAuthConfig = true ) const;
 %Docstring
-Returns connection part of URI
+Returns the connection part of the URI.
 %End
 
     QString uri( bool expandAuthConfig = true ) const;
 %Docstring
-Returns complete uri
+Returns the complete URI as a string.
 %End
 
     QByteArray encodedUri() const;
 %Docstring
-Returns complete encoded uri (generic mode)
+Returns the complete encoded URI as a byte array.
 %End
 
 
     void setEncodedUri( const QString &uri );
 %Docstring
-Sets complete encoded uri (generic mode)
+Sets the complete encoded ``uri`` from a string value.
 %End
 
     QString quotedTablename() const;
 %Docstring
-quoted table name
+Returns the URI's table name, escaped and quoted.
 %End
 
     void setParam( const QString &key, const QString &value );
 %Docstring
-Set generic param (generic mode)
+Sets a generic parameter ``value`` on the URI.
 
 .. note::
 
-   if key exists, another is inserted
+   If a parameter with the specified ``key`` already exists, another is inserted
+   and the existing value is left unchanged.
 %End
+
     void setParam( const QString &key, const QStringList &value ) /PyName=setParamList/;
 %Docstring
+Sets a generic parameter list ``value`` on the URI.
 
 .. note::
 
@@ -85,26 +92,26 @@ Set generic param (generic mode)
 
     int removeParam( const QString &key );
 %Docstring
-Remove generic param (generic mode)
+Removes a generic parameter by ``key``.
 
 .. note::
 
-   remove all occurrences of key, returns number of params removed
+   Calling this method removes all the occurrences of key, and returns the number of parameters removed.
 %End
 
     QString param( const QString &key ) const;
 %Docstring
-Gets generic param (generic mode)
+Returns a generic parameter value corresponding to the specified ``key``.
 %End
 
     QStringList params( const QString &key ) const;
 %Docstring
-Gets multiple generic param (generic mode)
+Returns multiple generic parameter values corresponding to the specified ``key``.
 %End
 
     bool hasParam( const QString &key ) const;
 %Docstring
-Test if param exists (generic mode)
+Returns ``True`` if a parameter with the specified ``key`` exists.
 %End
 
     void setConnection( const QString &aHost,
@@ -115,7 +122,7 @@ Test if param exists (generic mode)
                         SslMode sslmode = SslPrefer,
                         const QString &authConfigId = QString() );
 %Docstring
-Sets all connection related members at once
+Sets all connection related members at once.
 %End
 
     void setConnection( const QString &aService,
@@ -125,12 +132,12 @@ Sets all connection related members at once
                         SslMode sslmode = SslPrefer,
                         const QString &authConfigId = QString() );
 %Docstring
-Sets all connection related members at once (for the service case)
+Sets all connection related members at once (for a service case).
 %End
 
     void setDatabase( const QString &database );
 %Docstring
-Sets database
+Sets the URI database name.
 %End
 
     void setDataSource( const QString &aSchema,
@@ -139,144 +146,166 @@ Sets database
                         const QString &aSql = QString(),
                         const QString &aKeyColumn = QString() );
 %Docstring
-Sets all data source related members at once
+Sets all data source related members at once.
 %End
 
     void setAuthConfigId( const QString &authcfg );
 %Docstring
-Sets authentication configuration ID
+Sets the authentication configuration ID for the URI.
 %End
 
     void setUsername( const QString &username );
 %Docstring
-Sets username
+Sets the ``username`` for the URI.
 %End
 
     void setPassword( const QString &password );
 %Docstring
-Sets password
+Sets the ``password`` for the URI.
 %End
 
     static QString removePassword( const QString &aUri );
 %Docstring
-Removes password element from uris
+Removes the password element from a URI.
 %End
 
     QString authConfigId() const;
 %Docstring
-Any associated authentication configuration ID
+Returns any associated authentication configuration ID stored in the URI.
 %End
 
     QString username() const;
 %Docstring
-Returns the username
+Returns the username stored in the URI.
 %End
 
     QString schema() const;
 %Docstring
-Returns the schema
+Returns the schema stored in the URI.
 %End
 
     QString table() const;
 %Docstring
-Returns the table
+Returns the table name stored in the URI.
 %End
 
     QString sql() const;
 %Docstring
-Returns the SQL query
+Returns the SQL query stored in the URI, if set.
 %End
 
     QString geometryColumn() const;
 %Docstring
-Returns the name of the geometry column
+Returns the name of the geometry column stored in the URI, if set.
 %End
 
     void setUseEstimatedMetadata( bool flag );
 %Docstring
-Sets use Estimated Metadata
+Sets whether estimated metadata should be used for the connection.
 %End
 
     bool useEstimatedMetadata() const;
 %Docstring
-Returns ``True`` if estimated metadata are used
+Returns ``True`` if estimated metadata should be used for the connection.
 %End
 
     void disableSelectAtId( bool flag );
 %Docstring
-Sets to ``True`` to disable selection by id
+Set to ``True`` to disable selection by feature ID.
 %End
+
     bool selectAtIdDisabled() const;
 %Docstring
-Returns whether the selection by id is disabled
+Returns whether the selection by feature ID is disabled.
 %End
 
     void clearSchema();
 %Docstring
-Clears the schema
+Clears the schema stored in the URI.
 %End
 
     void setSchema( const QString &schema );
+%Docstring
+Sets the ``scheme`` for the URI.
+
+.. versionadded:: 2.12
+%End
 
     void setSql( const QString &sql );
 %Docstring
-Sets the SQL query
+Sets the SQL query for the URI.
 %End
 
     QString host() const;
 %Docstring
-Returns the host
+Returns the host name stored in the URI.
 %End
     QString database() const;
 %Docstring
-Returns the database
+Returns the database name stored in the URI.
 %End
     QString port() const;
 %Docstring
-Returns the port
+Returns the port stored in the URI.
 %End
+
     QString driver() const;
+%Docstring
+Returns the driver name stored in the URI
+
+.. versionadded:: 2.16
+%End
+
     void setDriver( const QString &driver );
+%Docstring
+Sets the ``driver`` name stored in the URI.
+
+.. versionadded:: 2.16
+%End
+
     QString password() const;
 %Docstring
-Returns the password
+Returns the password stored in the URI.
 %End
+
     SslMode sslMode() const;
 %Docstring
-Returns the SSL mode
+Returns the SSL mode associated with the URI.
 %End
 
     QString service() const;
 %Docstring
-Returns the service name
+Returns the service name associated with the URI.
 %End
 
     QString keyColumn() const;
 %Docstring
-Returns the name of the (primary) key column
+Returns the name of the (primary) key column for the referenced table.
 %End
+
     void setKeyColumn( const QString &column );
 %Docstring
-Sets the name of the (primary) key column
+Sets the name of the (primary) key ``column``.
 %End
 
     QgsWkbTypes::Type wkbType() const;
 %Docstring
-The wkb type.
+Returns the WKB type associated with the URI.
 %End
 
     void setWkbType( QgsWkbTypes::Type type );
 %Docstring
-Sets the wkb type
+Sets the WKB ``type`` associated with the URI.
 %End
 
     QString srid() const;
 %Docstring
-Returns the srid
+Returns the spatial reference ID associated with the URI.
 %End
+
     void setSrid( const QString &srid );
 %Docstring
-Sets the srid
+Sets the spatial reference ID associated with the URI.
 %End
 
     static SslMode decodeSslMode( const QString &sslMode );
