@@ -1094,7 +1094,7 @@ namespace QgsWfs
 
         QDomElement filterElem = filter.firstChildElement();
         QStringList serverFids;
-        action.featureRequest = parseFilterElement( action.typeName, filterElem, project, &serverFids );
+        action.featureRequest = parseFilterElement( action.typeName, filterElem, serverFids, project );
         action.serverFids = serverFids;
 
         if ( filterIt != filterList.constEnd() )
@@ -1155,7 +1155,7 @@ namespace QgsWfs
     }
 
     QStringList serverFids;
-    QgsFeatureRequest featureRequest = parseFilterElement( typeName, filterElem, project, &serverFids );
+    QgsFeatureRequest featureRequest = parseFilterElement( typeName, filterElem, serverFids, project );
 
     transactionDelete action;
     action.typeName = typeName;
@@ -1211,7 +1211,7 @@ namespace QgsWfs
     if ( filterNodeList.size() != 0 )
     {
       QDomElement filterElem = filterNodeList.at( 0 ).toElement();
-      featureRequest = parseFilterElement( typeName, filterElem, project, &serverFids );
+      featureRequest = parseFilterElement( typeName, filterElem, serverFids, project );
     }
     QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement: serverFids length %1" ).arg( serverFids.count() ), QStringLiteral( "Server" ), Qgis::Info );
 
