@@ -270,7 +270,36 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
            || mParameter->type() == QgsProcessingParameterVectorLayer::typeName()
            || mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
          && u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
-      return u.uri;
+    {
+      QList< int > dataTypes =  mParameter->type() == QgsProcessingParameterFeatureSource::typeName() ? static_cast< QgsProcessingParameterFeatureSource * >( mParameter )->dataTypes()
+                                : ( mParameter->type() == QgsProcessingParameterVectorLayer::typeName() ? static_cast<QgsProcessingParameterVectorLayer *>( mParameter )->dataTypes()
+                                    : QList< int >() );
+      switch ( QgsWkbTypes::geometryType( u.wkbType ) )
+      {
+        case QgsWkbTypes::UnknownGeometry:
+          return u.uri;
+
+        case QgsWkbTypes::PointGeometry:
+          if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
+            return u.uri;
+          break;
+
+        case QgsWkbTypes::LineGeometry:
+          if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorLine ) )
+            return u.uri;
+          break;
+
+        case QgsWkbTypes::PolygonGeometry:
+          if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
+            return u.uri;
+          break;
+
+        case QgsWkbTypes::NullGeometry:
+          if ( dataTypes.contains( QgsProcessing::TypeVector ) )
+            return u.uri;
+          break;
+      }
+    }
     else if ( ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName()
                 || mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
               && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
