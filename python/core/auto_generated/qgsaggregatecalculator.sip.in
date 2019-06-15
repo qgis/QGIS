@@ -98,6 +98,16 @@ Sets a filter to limit the features used during the aggregate calculation.
 .. seealso:: :py:func:`filter`
 %End
 
+    void setFidsFilter( const QgsFeatureIds &fids );
+%Docstring
+Sets a filter to limit the features used during the aggregate calculation.
+If an expression filter is set, it will override this filter.
+
+:param fids: feature ids for feature filtering, and empty list will return no features.
+
+.. seealso:: :py:func:`filter`
+%End
+
     QString filter() const;
 %Docstring
 Returns the filter which limits the features used during the aggregate calculation.
@@ -153,7 +163,6 @@ Structured information for available aggregates.
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

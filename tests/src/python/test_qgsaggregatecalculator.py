@@ -416,6 +416,19 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 5)
 
+        # test with subset
+        agg = QgsAggregateCalculator(layer)  # reset to remove expression filter
+        agg.setFidsFilter([1, 2])
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
+        self.assertTrue(ok)
+        self.assertEqual(val, 6.0)
+
+        # test with empty subset
+        agg.setFidsFilter(list())
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
+        self.assertTrue(ok)
+        self.assertEqual(val, 0.0)
+
     def testExpressionNoMatch(self):
         """ test aggregate calculation using an expression with no features """
 

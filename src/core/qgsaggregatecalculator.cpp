@@ -42,12 +42,19 @@ void QgsAggregateCalculator::setParameters( const AggregateParameters &parameter
   mOrderBy = parameters.orderBy;
 }
 
+void QgsAggregateCalculator::setFidsFilter( const QgsFeatureIds &fids )
+{
+  mFidsSet = true;
+  mFidsFilter = fids;
+}
+
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
-    const QString &fieldOrExpression,
-    QgsExpressionContext *context, bool *ok ) const
+    const QString &fieldOrExpression, QgsExpressionContext *context, bool *ok ) const
 {
   if ( ok )
     *ok = false;
+
+  QgsFeatureRequest request = QgsFeatureRequest();
 
   if ( !mLayer )
     return QVariant();
@@ -67,9 +74,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     expression.reset( new QgsExpression( fieldOrExpression ) );
 
     if ( expression->hasParserError() || !expression->prepare( context ) )
-    {
       return QVariant();
-    }
   }
 
   QSet<QString> lst;
@@ -78,18 +83,21 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   else
     lst = expression->referencedColumns();
 
-  QgsFeatureRequest request = QgsFeatureRequest()
-                              .setFlags( ( expression && expression->needsGeometry() ) ?
-                                         QgsFeatureRequest::NoFlags :
-                                         QgsFeatureRequest::NoGeometry )
-                              .setSubsetOfAttributes( lst, mLayer->fields() );
+  request.setFlags( ( expression && expression->needsGeometry() ) ?
+                    QgsFeatureRequest::NoFlags :
+                    QgsFeatureRequest::NoGeometry )
+  .setSubsetOfAttributes( lst, mLayer->fields() );
+
+  if ( mFidsSet )
+    request.setFilterFids( mFidsFilter );
+
   if ( !mOrderBy.empty() )
     request.setOrderBy( mOrderBy );
+
   if ( !mFilterExpression.isEmpty() )
     request.setFilterExpression( mFilterExpression );
   if ( context )
     request.setExpressionContext( *context );
-
   //determine result type
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )
@@ -113,9 +121,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     resultType = v.type();
   }
   else
-  {
     resultType = mLayer->fields().at( attrNum ).type();
-  }
 
   QgsFeatureIterator fit = mLayer->getFeatures( request );
   return calculate( aggregate, fit, resultType, attrNum, expression.get(), mDelimiter, context, ok );
@@ -846,3 +852,4 @@ QVariant QgsAggregateCalculator::calculateArrayAggregate( QgsFeatureIterator &fi
   }
   return array;
 }
+
