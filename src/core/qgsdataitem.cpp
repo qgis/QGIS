@@ -739,6 +739,30 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
   {
     case QgsMapLayerType::VectorLayer:
       u.layerType = QStringLiteral( "vector" );
+      switch ( mLayerType )
+      {
+        case Point:
+          u.wkbType = QgsWkbTypes::Point;
+          break;
+        case Line:
+          u.wkbType = QgsWkbTypes::LineString;
+          break;
+        case Polygon:
+          u.wkbType = QgsWkbTypes::Polygon;
+          break;
+        case TableLayer:
+          u.wkbType = QgsWkbTypes::NoGeometry;
+          break;
+
+        case Database:
+        case Table:
+        case NoType:
+        case Vector:
+        case Raster:
+        case Plugin:
+        case Mesh:
+          break;
+      }
       break;
     case QgsMapLayerType::RasterLayer:
       u.layerType = QStringLiteral( "raster" );

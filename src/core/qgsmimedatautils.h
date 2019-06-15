@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgswkbtypes.h"
 
 class QgsLayerItem;
 class QgsLayerTreeNode;
@@ -134,6 +135,14 @@ class CORE_EXPORT QgsMimeDataUtils
        * \since QGIS 3.8
        */
       QString pId;
+
+      /**
+       * WKB type, if associated with a vector layer, or QgsWkbTypes::Unknown if not
+       * yet known.
+       *
+       * \since QGIS 3.8
+       */
+      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
 
 #ifdef SIP_RUN
       SIP_PYOBJECT __repr__();

@@ -55,6 +55,8 @@ QgsMimeDataUtils::Uri::Uri( QString &encData )
     layerId = decoded.at( 6 );
   if ( decoded.size() > 7 )
     pId = decoded.at( 7 );
+  if ( decoded.size() > 8 )
+    wkbType = QgsWkbTypes::parseType( decoded.at( 8 ) );
 
   QgsDebugMsgLevel( QStringLiteral( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
                     .arg( layerType, providerKey, name, uri,
@@ -74,6 +76,7 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
     case QgsMapLayerType::VectorLayer:
     {
       layerType = QStringLiteral( "vector" );
+      wkbType = qobject_cast< QgsVectorLayer *>( layer )->wkbType();
       break;
     }
     case QgsMapLayerType::RasterLayer:
@@ -98,7 +101,7 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
 
 QString QgsMimeDataUtils::Uri::data() const
 {
-  return encode( QStringList() << layerType << providerKey << name << uri << encode( supportedCrs ) << encode( supportedFormats ) << layerId << pId );
+  return encode( QStringList() << layerType << providerKey << name << uri << encode( supportedCrs ) << encode( supportedFormats ) << layerId << pId << QgsWkbTypes::displayString( wkbType ) );
 }
 
 QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error ) const

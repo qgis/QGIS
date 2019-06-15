@@ -22,7 +22,7 @@
 #include "qgsproject.h"
 
 const QString TEST_ENCODED_DATA( "raster:wms:A Fancy WMS From Ciriè City:crs=EPSG\\:2036&dpiMode=7&format=image/png&layers=lidar&styles=default"
-                                 "&url=https\\://geoegl.msp.gouv.qc.:EPSG\\\\:2036\\:EPSG\\\\:3857:image/tiff\\:image/jpeg::" );
+                                 "&url=https\\://geoegl.msp.gouv.qc.:EPSG\\\\:2036\\:EPSG\\\\:3857:image/tiff\\:image/jpeg:::PointZ" );
 
 class TestQgsMimeDataUtils: public QObject
 {
@@ -73,6 +73,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   uri.supportedCrs << QStringLiteral( "EPSG:2036" ) <<  QStringLiteral( "EPSG:3857" ) ;
   uri.supportedFormats << QStringLiteral( "image/tiff" ) << QStringLiteral( "image/jpeg" );
   uri.uri = QStringLiteral( "crs=EPSG:2036&dpiMode=7&format=image/png&layers=lidar&styles=default&url=https://geoegl.msp.gouv.qc." );
+  uri.wkbType = QgsWkbTypes::PointZ;
 
   QVERIFY( !uri.mapLayer() );
 
@@ -88,6 +89,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   QCOMPARE( uriDecoded.supportedFormats, uri.supportedFormats );
   QCOMPARE( uriDecoded.uri, uri.uri );
   QCOMPARE( uriDecoded.supportedCrs, uri.supportedCrs );
+  QCOMPARE( uriDecoded.wkbType, QgsWkbTypes::PointZ );
 
   QgsMimeDataUtils::decodeUriList( mimeData );
 
@@ -120,6 +122,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
 
   QgsMimeDataUtils::Uri uriDecoded( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QCOMPARE( uriDecoded.mapLayer(), vl1 );
+  QCOMPARE( uriDecoded.wkbType, QgsWkbTypes::LineString );
   bool owner = false;
   QString error;
   QCOMPARE( uriDecoded.vectorLayer( owner, error ), vl1 );
@@ -164,6 +167,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri3 );
   QgsMimeDataUtils::Uri uriDecoded5( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QVERIFY( !uriDecoded5.mapLayer() );
+  QCOMPARE( uriDecoded5.wkbType, QgsWkbTypes::Point );
   QgsVectorLayer *res = uriDecoded5.vectorLayer( owner, error );
   QVERIFY( res );
   QVERIFY( res->isValid() );
