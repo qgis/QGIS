@@ -23,6 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint.h"
+//#include "qgs3dmeasuredialog.h"
 
 #include <memory>
 
@@ -32,6 +33,7 @@ namespace Qt3DRender
 }
 
 class Qgs3DMapToolMeasureLinePickHandler;
+class Qgs3DMeasureDialog;
 
 
 class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
@@ -90,6 +92,9 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     //! Set the line layer renderer
     void setMeasurementLayerRenderer( QgsVectorLayer *layer );
+
+    //! Dialog
+    Qgs3DMeasureDialog *mDialog = nullptr;
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H

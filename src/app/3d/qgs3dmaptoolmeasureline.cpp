@@ -31,6 +31,7 @@
 #include "qgsline3dsymbol.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmaplayer.h"
+#include "qgs3dmeasuredialog.h"
 
 #include "qgs3dmapscenepickhandler.h"
 
@@ -70,6 +71,9 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   phongMaterial.setAmbient( Qt::yellow );
   phongMaterial.setDiffuse( Qt::green );
   mLineSymbol->setMaterial( phongMaterial );
+
+  // Dialog
+  mDialog = new Qgs3DMeasureDialog( this );
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -109,6 +113,8 @@ void Qgs3DMapToolMeasureLine::activate()
   mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
   qInfo() << "Current layer after adding: " << mCanvas->map()->layers();
 
+  // Show dialog
+  mDialog->show();
 }
 
 void Qgs3DMapToolMeasureLine::deactivate()
@@ -127,6 +133,8 @@ void Qgs3DMapToolMeasureLine::deactivate()
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
 
+  // Hide dialog
+  mDialog->hide();
 }
 
 void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
