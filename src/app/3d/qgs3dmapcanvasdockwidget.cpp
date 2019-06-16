@@ -64,6 +64,12 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
                                    tr( "Measurement Line" ), this, &Qgs3DMapCanvasDockWidget::measureLine );
   actionMeasurementTool->setCheckable( true );
 
+  // Create action group to make the action exclusive
+  QActionGroup *actionGroup = new QActionGroup( this );
+  actionGroup->addAction( actionIdentify );
+  actionGroup->addAction( actionMeasurementTool );
+  actionGroup->setExclusive( true );
+
   QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
                         tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
   actionAnim->setCheckable( true );
