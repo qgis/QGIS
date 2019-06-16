@@ -68,7 +68,18 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   QActionGroup *actionGroup = new QActionGroup( this );
   actionGroup->addAction( actionIdentify );
   actionGroup->addAction( actionMeasurementTool );
-  actionGroup->setExclusive( true );
+
+  // Make the action only one active, from https://stackoverflow.com/a/55258745/1198772
+  connect( actionGroup, &QActionGroup::triggered, [lastAction = static_cast<QAction *>( nullptr )]( QAction * action ) mutable
+  {
+    if ( action == lastAction )
+    {
+      action->setChecked( false );
+      lastAction = nullptr;
+    }
+    else
+      lastAction = action;
+  } );
 
   QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
                         tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
