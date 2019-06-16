@@ -254,7 +254,17 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
     }
     else
     {
-      collected.addPart( g );
+      if ( g.isMultipart() )
+      {
+        for ( auto p = g.const_parts_begin(); p != g.const_parts_end(); ++p )
+        {
+          collected.addPart( ( *p )->clone() );
+        }
+      }
+      else
+      {
+        collected.addPart( g );
+      }
     }
   }
   return collected;
