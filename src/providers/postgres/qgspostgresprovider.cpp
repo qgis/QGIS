@@ -244,6 +244,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
       // boolean
       << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
+
+      // binary (bytea)
+      << QgsVectorDataProvider::NativeType( tr( "Binary object (bytea)" ), QStringLiteral( "bytea" ), QVariant::ByteArray, -1, -1, -1, -1 )
       ;
 
   if ( connectionRO()->pgVersion() >= 90200 )
@@ -372,6 +375,22 @@ void QgsPostgresProvider::disconnectDb()
     mConnectionRW->unref();
     mConnectionRW = nullptr;
   }
+}
+
+QString QgsPostgresProvider::quotedByteaValue( const QVariant &value )
+{
+  if ( value.isNull() )
+    return QStringLiteral( "NULL" );
+
+  const QByteArray ba = value.toByteArray();
+  const unsigned char *buf = reinterpret_cast< const unsigned char * >( ba.constData() );
+  QString param;
+  param.reserve( ba.length() * 4 );
+  for ( int i = 0; i < ba.length(); ++i )
+  {
+    param += QStringLiteral( "\\%1" ).arg( static_cast< int >( buf[i] ), 3, 8, QChar( '0' ) );
+  }
+  return QStringLiteral( "decode('%1','escape')" ).arg( param );
 }
 
 QString QgsPostgresProvider::storageType() const
@@ -951,6 +970,11 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == QLatin1String( "timestamp" ) )
       {
         fieldType = QVariant::DateTime;
+        fieldSize = -1;
+      }
+      else if ( fieldTypeName == QLatin1String( "bytea" ) )
+      {
+        fieldType = QVariant::ByteArray;
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
@@ -2191,11 +2215,15 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else if ( fieldTypeName == QLatin1String( "jsonb" ) )
         {
-          values += delim + quotedJsonValue( v ) + QLatin1String( "::jsonb" );
+          values += delim + quotedJsonValue( v ) + QStringLiteral( "::jsonb" );
         }
         else if ( fieldTypeName == QLatin1String( "json" ) )
         {
-          values += delim + quotedJsonValue( v ) + QLatin1String( "::json" );
+          values += delim + quotedJsonValue( v ) + QStringLiteral( "::json" );
+        }
+        else if ( fieldTypeName == QLatin1String( "bytea" ) )
+        {
+          values += delim + quotedByteaValue( v );
         }
         //TODO: convert arrays and hstore to native types
         else
@@ -2755,6 +2783,10 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
             sql += QStringLiteral( "%1::json" )
                    .arg( quotedJsonValue( siter.value() ) );
           }
+          else if ( fld.typeName() == QLatin1String( "bytea" ) )
+          {
+            sql += quotedByteaValue( siter.value() );
+          }
           else
           {
             sql += quotedValue( *siter );
@@ -3084,6 +3116,10 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           {
             sql += QStringLiteral( "st_geographyfromewkt(%1)" )
                    .arg( quotedValue( siter->toString() ) );
+          }
+          else if ( fld.typeName() == QLatin1String( "bytea" ) )
+          {
+            sql += quotedByteaValue( siter.value() );
           }
           else
           {

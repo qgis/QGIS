@@ -45,7 +45,7 @@ from qgis.core import (
     QgsGeometry
 )
 from qgis.gui import QgsGui, QgsAttributeForm
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray
 from qgis.PyQt.QtWidgets import QLabel
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
@@ -164,6 +164,64 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             1: True,
             2: False,
             3: NULL
+        }
+        self.assertEqual(values, expected)
+
+    def testByteaType(self):
+        vl = QgsVectorLayer('{} table="qgis_test"."byte_a_table" sql='.format(self.dbconn), "testbytea", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('fld1')).type(), QVariant.ByteArray)
+
+        values = {feat['id']: feat['fld1'] for feat in vl.getFeatures()}
+        expected = {
+            1: QByteArray(b'YmludmFsdWU='),
+            2: QByteArray()
+        }
+        self.assertEqual(values, expected)
+
+        # editing binary values
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test."byte_a_table_edit" CASCADE')
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."byte_a_table_edit" ( pk SERIAL NOT NULL PRIMARY KEY, blobby bytea)')
+        self.execSQLCommand("INSERT INTO qgis_test.\"byte_a_table_edit\" (pk, blobby) VALUES "
+                            "(1, encode('bbb', 'base64')::bytea)")
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable table="qgis_test"."byte_a_table_edit" sql=',
+            'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        values = {feat['pk']: feat['blobby'] for feat in vl.getFeatures()}
+        expected = {
+            1: QByteArray(b'YmJi')
+        }
+        self.assertEqual(values, expected)
+
+        # change attribute value
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {1: QByteArray(b'bbbvx')}}))
+        values = {feat['pk']: feat['blobby'] for feat in vl.getFeatures()}
+        expected = {
+            1: QByteArray(b'bbbvx')
+        }
+        self.assertEqual(values, expected)
+
+        # add feature
+        f = QgsFeature()
+        f.setAttributes([2, QByteArray(b'cccc')])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        values = {feat['pk']: feat['blobby'] for feat in vl.getFeatures()}
+        expected = {
+            1: QByteArray(b'bbbvx'),
+            2: QByteArray(b'cccc')
+        }
+        self.assertEqual(values, expected)
+
+        # change feature
+        self.assertTrue(vl.dataProvider().changeFeatures({2: {1: QByteArray(b'dddd')}}, {}))
+        values = {feat['pk']: feat['blobby'] for feat in vl.getFeatures()}
+        expected = {
+            1: QByteArray(b'bbbvx'),
+            2: QByteArray(b'dddd')
         }
         self.assertEqual(values, expected)
 
