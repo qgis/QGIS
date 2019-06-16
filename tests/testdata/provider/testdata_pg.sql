@@ -515,6 +515,22 @@ INSERT INTO qgis_test.boolean_table VALUES
 (2, FALSE),
 (3, NULL);
 
+
+--------------------------------------
+-- Table for bytea
+--
+
+CREATE TABLE qgis_test.byte_a_table
+(
+  id int PRIMARY KEY,
+  fld1 bytea
+);
+
+INSERT INTO qgis_test.byte_a_table VALUES
+(1, encode('binvalue', 'base64')::bytea),
+(2, NULL);
+
+
 -----------------------------
 -- Table for constraint tests
 --
