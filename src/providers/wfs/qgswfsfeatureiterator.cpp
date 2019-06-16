@@ -1270,6 +1270,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
       if ( stmt.step() == SQLITE_ROW )
       {
         f.setId( stmt.columnAsInt64( 0 ) );
+        Q_ASSERT( stmt.step() != SQLITE_ROW );
       }
     }
 

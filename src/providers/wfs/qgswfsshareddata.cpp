@@ -1057,6 +1057,8 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
       }
       else
       {
+        QString errorMsg;
+
         auto sql = QgsSqlite3Mprintf( "SELECT qgisId, dbId FROM id_cache WHERE gmlid = '%q'",
                                       gmlId.toUtf8().constData() );
         auto stmt = mCacheIdDb.prepare( sql, resultCode );
@@ -1067,11 +1069,16 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
           QgsFeatureId oldDbId = stmt.columnAsInt64( 1 );
           if ( dbId != oldDbId )
           {
+            sql = QgsSqlite3Mprintf( "UPDATE id_cache SET dbId = NULL WHERE dbId = %lld",
+                                     dbId );
+            if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
+            {
+              QgsMessageLog::logMessage( tr( "Problem when updating WFS id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), tr( "WFS" ) );
+            }
+
             sql = QgsSqlite3Mprintf( "UPDATE id_cache SET dbId = %lld WHERE gmlid = '%q'",
                                      dbId,
                                      gmlId.toUtf8().constData() );
-            //QgsDebugMsg( QStringLiteral( "%1" ).arg( sql ) );
-            QString errorMsg;
             if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
             {
               QgsMessageLog::logMessage( tr( "Problem when updating WFS id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), tr( "WFS" ) );
@@ -1080,14 +1087,19 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
         }
         else
         {
+          sql = QgsSqlite3Mprintf( "UPDATE id_cache SET dbId = NULL WHERE dbId = %lld",
+                                   dbId );
+          if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
+          {
+            QgsMessageLog::logMessage( tr( "Problem when updating WFS id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), tr( "WFS" ) );
+          }
+
           qgisId = mNextCachedIdQgisId;
           mNextCachedIdQgisId ++;
           sql = QgsSqlite3Mprintf( "INSERT INTO id_cache (gmlid, dbId, qgisId) VALUES ('%q', %lld, %lld)",
                                    gmlId.toUtf8().constData(),
                                    dbId,
                                    qgisId );
-          //QgsDebugMsg( QStringLiteral( "%1" ).arg( sql ) );
-          QString errorMsg;
           if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
           {
             QgsMessageLog::logMessage( tr( "Problem when updating WFS id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), tr( "WFS" ) );
