@@ -17,6 +17,7 @@
 
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
+#include <QKeyEvent>
 
 #include "qgsterrainentity_p.h"
 #include "qgs3dmaptoolmeasureline.h"
@@ -51,7 +52,7 @@ void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer
                                          worldIntersection.z() ), mMeasureLineTool->mCanvas->map()->origin() );
   QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
   qInfo() << "Coord (handlePickOnVectorLayer): " << pt.x() << " " << pt.y() << " " << pt.z();
-  mMeasureLineTool->addPointToLine( mapCoords );
+  mMeasureLineTool->addPoint( pt );
 }
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
@@ -139,8 +140,7 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
                           worldIntersection.y(),
                           worldIntersection.z() ), mCanvas->map()->origin() );
   qInfo() << "Coord (onTerrainPicked): " << mapCoords.x() << " " << mapCoords.y() << " " << mapCoords.z();
-  addPointToLine( mapCoords );
-  QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
+  addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
 }
 
 
@@ -155,9 +155,27 @@ void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
   }
 }
 
-void Qgs3DMapToolMeasureLine::addPointToLine( QgsVector3D point3D )
+void Qgs3DMapToolMeasureLine::setMeasurementLayerRenderer( QgsVectorLayer *layer )
 {
-  mMeasurementLine->addVertex( QgsPoint( point3D.x(), point3D.y(), point3D.z() ) );
+  layer->setRenderer3D( new QgsVectorLayer3DRenderer( mLineSymbol ) );
+}
+
+
+void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
+{
+  // don't add points with the same coordinates
+  if ( !mPoints.isEmpty() && mPoints.last() == point )
+  {
+    return;
+  }
+
+  QgsPoint addedPoint( point );
+  qInfo() << "Is 3D point? " << addedPoint.is3D();
+
+  // Append point
+  mPoints.append( addedPoint );
+
+  mMeasurementLine->addVertex( addedPoint );
 
   mMeasurementLayer->startEditing();
   QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
@@ -166,7 +184,58 @@ void Qgs3DMapToolMeasureLine::addPointToLine( QgsVector3D point3D )
   mMeasurementLayer->commitChanges();
 }
 
-void Qgs3DMapToolMeasureLine::setMeasurementLayerRenderer( QgsVectorLayer *layer )
+void Qgs3DMapToolMeasureLine::restart()
 {
-  layer->setRenderer3D( new QgsVectorLayer3DRenderer( mLineSymbol ) );
+  mPoints.clear();
+
+  mDone = true;
+  mMeasurementLine->clear();
+
+  mMeasurementLayer->startEditing();
+  QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
+  qInfo() << "Current line: " << newMeasurementLine->asWkt();
+  mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
+  mMeasurementLayer->commitChanges();
+}
+
+void Qgs3DMapToolMeasureLine::removeLastPoint()
+{
+
+  qInfo() << "Removing last point.";
+  if ( mPoints.empty() )
+  {
+    return;
+  }
+  if ( mPoints.size() == 1 )
+  {
+    //removing first point, so restart everything
+    restart();
+  }
+  else
+  {
+    mPoints.removeLast();
+    mMeasurementLine->deleteVertex( QgsVertexId( 0, 0, mMeasurementLine->numPoints() - 1 ) );
+
+    mMeasurementLayer->startEditing();
+    QgsGeometry *newMeasurementLine = new QgsGeometry( mMeasurementLine );
+    qInfo() << "Current line: " << newMeasurementLine->asWkt();
+    mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
+    mMeasurementLayer->commitChanges();
+  }
+}
+
+// TODO: this is not picking the event
+void Qgs3DMapToolMeasureLine::keyPressEvent( QKeyEvent *e )
+{
+  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  {
+    qInfo() << "Backspace or Delete key pressed";
+    if ( !mDone )
+    {
+      removeLastPoint();
+    }
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+  }
 }

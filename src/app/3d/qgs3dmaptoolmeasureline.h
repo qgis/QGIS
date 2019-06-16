@@ -22,6 +22,7 @@
 #include "qgslinestring.h"
 #include "qgsfeature.h"
 #include "qgsline3dsymbol.h"
+#include "qgspoint.h"
 
 #include <memory>
 
@@ -41,7 +42,26 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas );
     ~Qgs3DMapToolMeasureLine() override;
 
-    void mousePressEvent( QMouseEvent *event ) override { Q_UNUSED( event )};
+    //! When we have added our last point, and not following
+    bool done() const { return mDone; }
+
+    //! Reset and start new
+    void restart();
+
+    //! Add new point
+    void addPoint( const QgsPoint &point );
+
+    //! Removes the last point
+    void removeLastPoint();
+
+    //! Returns reference to array of the points
+    QVector<QgsPoint> points() const;
+
+    //! Catching key press event
+    void keyPressEvent( QKeyEvent *e );
+
+    // Inherited from Qgs3DMapTool
+    void mousePressEvent( QMouseEvent *event ) override { Q_UNUSED( event )}
     void mouseReleaseEvent( QMouseEvent *event ) override { Q_UNUSED( event )}
     void mouseMoveEvent( QMouseEvent *event ) override {Q_UNUSED( event )}
 
@@ -62,8 +82,13 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     QgsLineString *mMeasurementLine = nullptr;
     QgsLine3DSymbol *mLineSymbol = nullptr;
 
+    //! Store points
+    QVector<QgsPoint> mPoints;
 
-    void addPointToLine( QgsVector3D point3D );
+    //! Indicates whether we've just done a right mouse click
+    bool mDone = true;
+
+    //! Set the line layer renderer
     void setMeasurementLayerRenderer( QgsVectorLayer *layer );
 };
 
