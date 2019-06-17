@@ -151,14 +151,14 @@ QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType tole
 
 int QgsCurve::vertexCount( int part, int ring ) const
 {
-  Q_UNUSED( part );
-  Q_UNUSED( ring );
+  Q_UNUSED( part )
+  Q_UNUSED( ring )
   return numPoints();
 }
 
 int QgsCurve::ringCount( int part ) const
 {
-  Q_UNUSED( part );
+  Q_UNUSED( part )
   return numPoints() > 0 ? 1 : 0;
 }
 
@@ -260,7 +260,7 @@ QgsPoint QgsCurve::childPoint( int index ) const
   QgsVertexId::VertexType type;
   bool res = pointAt( index, point, type );
   Q_ASSERT( res );
-  Q_UNUSED( res );
+  Q_UNUSED( res )
   return point;
 }
 

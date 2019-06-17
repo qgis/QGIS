@@ -35,7 +35,7 @@ QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QWidget *parent )
 
 void QgsMesh3DSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol, QgsMeshLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
 
   spinHeight->setValue( symbol.height() );
   cboAltClamping->setCurrentIndex( static_cast<int>( symbol.altitudeClamping() ) );

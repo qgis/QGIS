@@ -100,7 +100,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
                                   const char *pszMessage,
                                   void *pProgressArg )
 {
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( pszMessage )
 
   static double sDfLastComplete = -1.0;
 
@@ -172,7 +172,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
   if ( !CPLGetConfigOption( "VRT_SHARED_SOURCE", nullptr ) )
   {
     // GDAL < 2.3 has issues with use of VRT in multi-threaded
-    // scenarios. See https://issues.qgis.org/issues/16507 /
+    // scenarios. See https://github.com/qgis/QGIS/issues/24413 /
     // https://trac.osgeo.org/gdal/ticket/6939
     CPLSetConfigOption( "VRT_SHARED_SOURCE", "NO" );
   }
@@ -644,9 +644,9 @@ QString QgsGdalProvider::htmlMetadata()
 
 QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
+  std::unique_ptr< QgsRasterBlock > block = qgis::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
   if ( !initIfNeeded() )
-    return block;
+    return block.release();
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
   {
     block->setNoDataValue( sourceNoDataValue( bandNo ) );
@@ -654,14 +654,14 @@ QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, 
 
   if ( block->isEmpty() )
   {
-    return block;
+    return block.release();
   }
 
   if ( !mExtent.intersects( extent ) )
   {
     // the requested extent is completely outside of the raster's extent - nothing to do
     block->setIsNoData();
-    return block;
+    return block.release();
   }
 
   if ( !mExtent.contains( extent ) )
@@ -669,18 +669,23 @@ QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, 
     QRect subRect = QgsRasterBlock::subRect( extent, width, height, mExtent );
     block->setIsNoDataExcept( subRect );
   }
-  readBlock( bandNo, extent, width, height, block->bits(), feedback );
+  if ( !readBlock( bandNo, extent, width, height, block->bits(), feedback ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Error occurred while reading block" ) );
+    block->setIsNoData();
+    return block.release();
+  }
   // apply scale and offset
   block->applyScaleOffset( bandScale( bandNo ), bandOffset( bandNo ) );
   block->applyNoDataValues( userNoDataValues( bandNo ) );
-  return block;
+  return block.release();
 }
 
-void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data )
+bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
-    return;
+    return false;
 
   // TODO!!!: Check data alignment!!! May it happen that nearest value which
   // is not nearest is assigned to an output cell???
@@ -694,14 +699,21 @@ void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data 
   // We have to read with correct data type consistent with other readBlock functions
   int xOff = xBlock * mXBlockSize;
   int yOff = yBlock * mYBlockSize;
-  gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, data, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 );
+  CPLErr err = gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, data, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 );
+  if ( err != CPLE_None )
+  {
+    QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+
+  return true;
 }
 
-void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pixelWidth, int pixelHeight, void *data, QgsRasterBlockFeedback *feedback )
+bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pixelWidth, int pixelHeight, void *data, QgsRasterBlockFeedback *feedback )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
-    return;
+    return false;
 
   QgsDebugMsgLevel( "pixelWidth = "  + QString::number( pixelWidth ), 5 );
   QgsDebugMsgLevel( "pixelHeight = "  + QString::number( pixelHeight ), 5 );
@@ -734,7 +746,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( rasterExtent.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "draw request outside view extent." ) );
-    return;
+    return false;
   }
   QgsDebugMsgLevel( "extent: " + mExtent.toString(), 5 );
   QgsDebugMsgLevel( "rasterExtent: " + rasterExtent.toString(), 5 );
@@ -871,14 +883,14 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( _buffer_size != static_cast<qint64>( bufferSize ) )
   {
     QgsDebugMsg( QStringLiteral( "Integer overflow calculating buffer size on a 32 bit system." ) );
-    return;
+    return false;
   }
 #endif
   char *tmpBlock = static_cast<char *>( qgsMalloc( bufferSize ) );
   if ( ! tmpBlock )
   {
     QgsDebugMsgLevel( QStringLiteral( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ), 5 );
-    return;
+    return false;
   }
   GDALRasterBandH gdalBand = getBand( bandNo );
   GDALDataType type = static_cast<GDALDataType>( mGdalDataType.at( bandNo - 1 ) );
@@ -892,9 +904,13 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   if ( err != CPLE_None )
   {
-    QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+    if ( feedback )
+      feedback->appendError( lastError );
+
+    QgsLogger::warning( "RasterIO error: " + lastError );
     qgsFree( tmpBlock );
-    return;
+    return false;
   }
 
   double tmpXRes = srcWidth * srcXRes / tmpWidth;
@@ -932,6 +948,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   }
 
   qgsFree( tmpBlock );
+  return true;
 }
 
 /**

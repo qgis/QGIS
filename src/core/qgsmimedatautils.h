@@ -20,12 +20,14 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgswkbtypes.h"
 
 class QgsLayerItem;
 class QgsLayerTreeNode;
 class QgsVectorLayer;
 class QgsRasterLayer;
 class QgsMeshLayer;
+class QgsMapLayer;
 
 /**
  * \ingroup core
@@ -41,6 +43,13 @@ class CORE_EXPORT QgsMimeDataUtils
       Uri() = default;
       //! Constructs URI from encoded data
       explicit Uri( QString &encData );
+
+      /**
+       * Constructs a URI corresponding to the specified \a layer.
+       *
+       * \since QGIS 3.8
+       */
+      explicit Uri( QgsMapLayer *layer );
 
       /**
        * Returns whether the object contains valid data
@@ -73,6 +82,17 @@ class CORE_EXPORT QgsMimeDataUtils
       QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
 
       /**
+       * Returns the layer from the active project corresponding to this uri (if possible),
+       * otherwise returns NULLPTR.
+       *
+       * Unlike vectorLayer(), rasterLayer(), or meshLayer(), this method will not attempt
+       * to create a new layer corresponding to the URI.
+       *
+       * \since QGIS 3.8
+       */
+      QgsMapLayer *mapLayer() const;
+
+      /**
        * Type of URI.
        *
        * Recognized types include
@@ -103,6 +123,27 @@ class CORE_EXPORT QgsMimeDataUtils
       QStringList supportedCrs;
       QStringList supportedFormats;
 
+      /**
+       * Layer ID, if uri is associated with a layer from a QgsProject.
+       * \since QGIS 3.8
+       */
+      QString layerId;
+
+      /**
+       * Unique ID associated with application instance. Can be used to identify
+       * if mime data was created inside the current application instance or not.
+       * \since QGIS 3.8
+       */
+      QString pId;
+
+      /**
+       * WKB type, if associated with a vector layer, or QgsWkbTypes::Unknown if not
+       * yet known.
+       *
+       * \since QGIS 3.8
+       */
+      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+
 #ifdef SIP_RUN
       SIP_PYOBJECT __repr__();
       % MethodCode
@@ -127,6 +168,14 @@ class CORE_EXPORT QgsMimeDataUtils
      * \since QGIS 3.0
      */
     static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes );
+
+    /**
+     * Returns TRUE if \a uri originated from the current QGIS application
+     * instance.
+     *
+     * \since QGIS 3.8
+     */
+    static bool hasOriginatedFromCurrentAppInstance( const QgsMimeDataUtils::Uri &uri );
 
   private:
     static QString encode( const QStringList &items );

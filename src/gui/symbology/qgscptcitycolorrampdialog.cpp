@@ -441,7 +441,7 @@ void QgsCptCityColorRampDialog::updateCopyingInfo( const QMap< QString, QString 
 
 void QgsCptCityColorRampDialog::cboVariantName_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( cboVariantName->currentIndex() != -1 )
     mRamp.setVariantName( cboVariantName->currentData( Qt::UserRole ).toString() );
   QgsDebugMsg( QStringLiteral( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
@@ -510,7 +510,7 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
   mListWidget->blockSignals( true );
   mListWidget->clear();
   mListRamps.clear();
-  QgsCptCityCollectionItem *colItem = dynamic_cast<QgsCptCityCollectionItem *>( item );
+  QgsCptCityCollectionItem *colItem = qobject_cast<QgsCptCityCollectionItem *>( item );
   if ( colItem )
   {
     QgsDebugMsg( "path= " + item->path() );
@@ -518,7 +518,7 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
     QVector<QgsCptCityDataItem *> childrenRamps = colItem->childrenRamps( true );
     for ( int i = 0; i < childrenRamps.count(); i++ )
     {
-      QgsCptCityColorRampItem *rampItem = dynamic_cast<QgsCptCityColorRampItem *>( childrenRamps[i] );
+      QgsCptCityColorRampItem *rampItem = qobject_cast<QgsCptCityColorRampItem *>( childrenRamps[i] );
       if ( ! rampItem )
       {
         QgsDebugMsg( "invalid item " + childrenRamps[i]->path() );
@@ -594,7 +594,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
     return false;
   }
   QgsCptCityColorRampItem *childItem =
-    dynamic_cast<QgsCptCityColorRampItem *>( mModel->dataItem( modelIndex ) );
+    qobject_cast<QgsCptCityColorRampItem *>( mModel->dataItem( modelIndex ) );
   if ( ! childItem )
     return false;
   if ( mRamp.schemeName() != childItem->ramp().schemeName() )

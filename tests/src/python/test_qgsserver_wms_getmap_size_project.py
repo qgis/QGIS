@@ -17,8 +17,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Marco Bernasocchi'
 __date__ = '01/04/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -45,7 +43,7 @@ class TestQgsServerWMSGetMapSizeProject(QgsServerTestBase):
         os.environ['QGIS_SERVER_WMS_MAX_HEIGHT'] = '6000'
         super(TestQgsServerWMSGetMapSizeProject, self).setUp()
         self.project = os.path.join(self.testdata_path, "test_project_with_size.qgs")
-        self.expected_too_big = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="InvalidParameterValue">The requested map height is too large</ServiceException>\n</ServiceExceptionReport>\n')
+        self.expected_too_big = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="InvalidParameterValue">The requested map size is too large</ServiceException>\n</ServiceExceptionReport>\n')
 
     def test_wms_getmap_invalid_size_project(self):
         # test the 6000 limit from server is overridden by the more conservative 5000 in the project

@@ -263,7 +263,7 @@ void QgsAttributeTableModel::updatedFields()
 void QgsAttributeTableModel::editCommandEnded()
 {
   // do not do reload(...) due would trigger (dataChanged) row sort
-  // giving issue: https://issues.qgis.org/issues/15976
+  // giving issue: https://github.com/qgis/QGIS/issues/23892
   bulkEditCommandEnded( );
 }
 
@@ -576,13 +576,13 @@ int QgsAttributeTableModel::fieldCol( int idx ) const
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mRowIdMap.size();
 }
 
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return std::max( 1, mFieldCount + mExtraColumns );  // if there are zero columns all model indices will be considered invalid
 }
 

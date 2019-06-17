@@ -42,9 +42,21 @@ class QgsDataItemGuiProviderRegistry;
  * related to GUI classes.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsGui
+class GUI_EXPORT QgsGui : public QObject
 {
+    Q_OBJECT
+
   public:
+
+    /**
+     * Defines the behavior to use when setting the CRS for a newly created project.
+     */
+    enum ProjectCrsBehavior
+    {
+      UseCrsOfFirstLayerAdded = 1, //!< Set the project CRS to the CRS of the first layer added to a new project
+      UsePresetCrs = 2, //!< Always set new projects to use a preset default CRS
+    };
+    Q_ENUM( ProjectCrsBehavior )
 
     //! QgsGui cannot be copied
     QgsGui( const QgsGui &other ) = delete;

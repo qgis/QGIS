@@ -43,7 +43,7 @@
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( index.column() == QgsMssqlTableModel::DbtmSql )
   {
     QLineEdit *le = new QLineEdit( parent );
@@ -384,7 +384,7 @@ void QgsMssqlSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStr
 
 void QgsMssqlSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -739,7 +739,7 @@ void QgsMssqlSourceSelect::setConnectionListPosition()
 
 void QgsMssqlSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )

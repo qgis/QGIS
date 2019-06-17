@@ -17,16 +17,9 @@ class QgsCoordinateTransformContext
 %Docstring
 Contains information about the context in which a coordinate transform is executed.
 
-The context stores various information regarding which coordinate transforms should
+The context stores various information regarding which coordinate operations should
 be used when transforming points from a source to destination coordinate reference
 system.
-
-The highest priority transforms are those set using addSourceDestinationDatumTransform()
-and which the transform has a matching source to destination CRS pair.
-
-Failing this, if the source CRS has a matching transform specified by
-addSourceDatumTransform() then this datum transform will be used. The same logic
-applies for destination CRS transforms set using addDestinationDatumTransform().
 
 .. note::
 
@@ -70,9 +63,7 @@ Copy constructor
 Clears all stored transform information from the context.
 %End
 
-
-
-    QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const;
+ QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const /Deprecated/;
 %Docstring
 Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
 The map keys will be :py:func:`QgsCoordinateReferenceSystems.authid()`s.
@@ -87,12 +78,35 @@ required for transformations for that source or destination.
    to determine this.
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
+
+
+.. deprecated:: Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
 %End
 
-    bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        int sourceTransformId,
-        int destinationTransformId );
+    QMap< QPair< QString, QString>, QString > coordinateOperations() const;
+%Docstring
+Returns the stored mapping for source to destination CRS pairs to associated coordinate operation to use
+(as a proj string). The map keys will be :py:func:`QgsCoordinateReferenceSystems.authid()`s.
+
+.. warning::
+
+   This method should not be used to calculate the corresponding coordinate operation
+   to use for a coordinate transform. Instead, always use calculateCoordinateOperation()
+   to determine this.
+
+.. seealso:: :py:func:`addCoordinateOperation`
+
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return an empty list,
+   and the deprecated sourceDestinationDatumTransforms() method must be used instead.
+
+
+.. versionadded:: 3.8
+%End
+
+ bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) /Deprecated/;
 %Docstring
 Adds a new ``sourceTransform`` and ``destinationTransform`` to use when projecting coordinates
 from the specified ``sourceCrs`` to the specified ``destinationCrs``.
@@ -102,29 +116,58 @@ required for transformations for that source or destination.
 
 Returns ``True`` if the new transform pair was added successfully.
 
-.. note::
-
-   Transforms set using this method will override any specific source or destination
-   transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
-
 .. seealso:: :py:func:`sourceDestinationDatumTransforms`
 
 .. seealso:: :py:func:`removeSourceDestinationDatumTransform`
+
+.. deprecated:: Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
 %End
 
-    void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs );
+    bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString );
+%Docstring
+Adds a new ``coordinateOperationProjString`` to use when projecting coordinates
+from the specified ``sourceCrs`` to the specified ``destinationCrs``.
+
+``coordinateOperationProjString`` should be set to a valid Proj coordinate operation
+string. If ``coordinateOperationProjString`` is empty, then the default Proj operation
+will be used when transforming between the coordinate reference systems.
+
+Returns ``True`` if the new coordinate operation was added successfully.
+
+.. seealso:: :py:func:`coordinateOperations`
+
+.. seealso:: :py:func:`removeCoordinateOperation`
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
+   and the deprecated addSourceDestinationDatumTransform() method must be used instead.
+
+
+.. versionadded:: 3.8
+%End
+
+ void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) /Deprecated/;
 %Docstring
 Removes the source to destination datum transform pair for the specified ``sourceCrs`` and
 ``destinationCrs``.
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
+
+.. deprecated:: Use removeCoordinateOperation() instead
+%End
+
+    void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
+%Docstring
+Removes the coordinate operation for the specified ``sourceCrs`` and ``destinationCrs``.
+
+.. versionadded:: 3.8
 %End
 
     bool hasTransform( const QgsCoordinateReferenceSystem &source,
                        const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
-Returns ``True`` if the context has a valid datum transform to use
+Returns ``True`` if the context has a valid coordinate operation to use
 when transforming from the specified ``source`` CRS to ``destination`` CRS.
 
 .. note::
@@ -132,8 +175,7 @@ when transforming from the specified ``source`` CRS to ``destination`` CRS.
    source and destination are reversible.
 %End
 
-    QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
-        const QgsCoordinateReferenceSystem &destination ) const;
+ QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const /Deprecated/;
 %Docstring
 Returns the pair of source and destination datum transforms to use
 for a transform from the specified ``source`` CRS to ``destination`` CRS.
@@ -144,7 +186,32 @@ destination.
 .. note::
 
    source and destination are reversible.
+
+.. deprecated:: Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead.
 %End
+
+    QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+%Docstring
+Returns the Proj coordinate operation string to use when transforming
+from the specified ``source`` CRS to ``destination`` CRS.
+
+Returns an empty string if no specific coordinate operation is set for the source to
+destination pair, in which case the default Proj coordinate operation should
+be used.
+
+.. note::
+
+   source and destination are reversible.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+   an empty string, and the deprecated calculateDatumTransforms() method should be used instead.
+
+
+.. versionadded:: 3.8
+%End
+
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context, QStringList &missingTransforms /Out/ );
 %Docstring

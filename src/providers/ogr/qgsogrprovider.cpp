@@ -967,7 +967,7 @@ void QgsOgrProvider::setEncoding( const QString &e )
 }
 
 // This is reused by dataItem
-OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
+OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( const QString &driverName, OGRLayerH ogrLayer )
 {
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   OGRwkbGeometryType geomType = wkbUnknown;
@@ -998,6 +998,15 @@ OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
         if ( geometry )
         {
           geomType = OGR_G_GetGeometryType( geometry );
+
+          // Shapefile MultiPatch can be reported as GeometryCollectionZ of TINZ
+          if ( wkbFlatten( geomType ) == wkbGeometryCollection &&
+               driverName == QLatin1String( "ESRI Shapefile" )  &&
+               OGR_G_GetGeometryCount( geometry ) >= 1 &&
+               wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geometry, 0 ) ) ) == wkbTIN )
+          {
+            geomType = wkbMultiPolygon25D;
+          }
         }
         if ( geomType != wkbNone )
           break;
@@ -1026,7 +1035,7 @@ void QgsOgrProvider::loadFields()
     QMutex *mutex = nullptr;
     OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
     QMutexLocker locker( mutex );
-    mOGRGeomType = getOgrGeomType( ogrLayer );
+    mOGRGeomType = getOgrGeomType( mGDALDriverName, ogrLayer );
   }
   QgsOgrFeatureDefn &fdef = mOgrLayer->GetLayerDefn();
 
@@ -1359,7 +1368,7 @@ QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
 
 bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
 {
-  Q_UNUSED( constraint );
+  Q_UNUSED( constraint )
   // If the field is a fid, skip in case it's the default value
   if ( fieldIndex == 0 && mFirstFieldIsFid )
   {
@@ -1395,18 +1404,18 @@ size_t QgsOgrProvider::layerCount() const
  */
 QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 {
-  QgsWkbTypes::Type wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType );
+  QgsWkbTypes::Type wkb = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( mOGRGeomType );
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && ( wkb == QgsWkbTypes::LineString || wkb == QgsWkbTypes::Polygon ) )
   {
     wkb = QgsWkbTypes::multiType( wkb );
   }
-  if ( wkb % 1000 == 15 ) // is PolyhedralSurface, PolyhedralSurfaceZ, PolyhedralSurfaceM or PolyhedralSurfaceZM => map to MultiPolygon
+  if ( mOGRGeomType % 1000 == wkbPolyhedralSurface ) // is PolyhedralSurface, PolyhedralSurfaceZ, PolyhedralSurfaceM or PolyhedralSurfaceZM => map to MultiPolygon
   {
-    wkb = static_cast<QgsWkbTypes::Type>( wkb - 9 );
+    wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType - ( wkbPolyhedralSurface - wkbMultiPolygon ) );
   }
-  else if ( wkb % 1000 == 16 ) // is TIN, TINZ, TINM or TINZM => map to MultiPolygon
+  else if ( mOGRGeomType % 1000 == wkbTIN ) // is TIN, TINZ, TINM or TINZM => map to MultiPolygon
   {
-    wkb = static_cast<QgsWkbTypes::Type>( wkb - 10 );
+    wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType - ( wkbTIN - wkbMultiPolygon ) );
   }
   return wkb;
 }
@@ -1864,7 +1873,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   // Without the below hack, the length of the first added field would have
   // been reset to zero, and QgsVectorLayerEditBuffer::commitChanges() would
   // error out because of this.
-  // See https://issues.qgis.org/issues/19009
+  // See https://github.com/qgis/QGIS/issues/26840
   for ( auto field : oldFields )
   {
     int idx = mAttributeFields.lookupField( field.name() );
@@ -3717,7 +3726,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   // GPKG/SQLite fid
   // For GPKG and SQLITE drivers PK fields are not exposed as real fields, (and OGR_F_GetFID only
   // works with GPKG), so we are adding an extra column that will become index 0
-  // See https://issues.qgis.org/issues/21311
+  // See https://github.com/qgis/QGIS/issues/29129
   if ( ( mGDALDriverName == QLatin1String( "GPKG" ) || mGDALDriverName == QLatin1String( "SQLite" ) )
        && mFirstFieldIsFid && index == 0 )
   {

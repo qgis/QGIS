@@ -73,8 +73,8 @@ QString QgsTextDiagram::diagramName() const
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
-  Q_UNUSED( c );
-  Q_UNUSED( attributes );
+  Q_UNUSED( c )
+  Q_UNUSED( attributes )
 
   return s.size;
 }

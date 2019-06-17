@@ -21,15 +21,11 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import warnings
 
 from qgis.core import QgsApplication
-from qgis.gui import QgsGui
+from qgis.gui import QgsGui, QgsHelp
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
@@ -61,6 +57,10 @@ class HistoryDialog(BASE, WIDGET):
         self.clearButton.setToolTip(self.tr('Clear history'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
+        self.helpButton = QPushButton(self.tr('Help'))
+        self.helpButton.setToolTip(self.tr('Show help'))
+        self.buttonBox.addButton(self.helpButton, QDialogButtonBox.HelpRole)
+
         self.saveButton = QPushButton(QCoreApplication.translate('HistoryDialog', 'Save As…'))
         self.saveButton.setToolTip(self.tr('Save history'))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
@@ -69,6 +69,7 @@ class HistoryDialog(BASE, WIDGET):
         self.tree.currentItemChanged.connect(self.changeText)
         self.clearButton.clicked.connect(self.clearLog)
         self.saveButton.clicked.connect(self.saveLog)
+        self.helpButton.clicked.connect(self.openHelp)
 
         self.tree.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self.showPopupMenu)
@@ -97,6 +98,9 @@ class HistoryDialog(BASE, WIDGET):
             fileName += '.log'
 
         ProcessingLog.saveLog(fileName)
+
+    def openHelp(self):
+        QgsHelp.openHelp("processing/history.html")
 
     def fillTree(self):
         self.tree.clear()

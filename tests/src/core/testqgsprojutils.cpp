@@ -35,6 +35,8 @@ class TestQgsProjUtils: public QObject
     void threadSafeContext();
     void usesAngularUnits();
     void axisOrderIsSwapped();
+    void searchPath();
+    void gridsUsed();
 
 };
 
@@ -94,6 +96,29 @@ void TestQgsProjUtils::axisOrderIsSwapped()
   QVERIFY( !QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4326" ) );
   QVERIFY( QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
+#endif
+}
+
+void TestQgsProjUtils::searchPath()
+{
+#if PROJ_VERSION_MAJOR>=6
+  // ensure local user-writable path is present in Proj search paths
+  const QStringList paths = QgsProjUtils::searchPaths();
+  QVERIFY( paths.contains( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "proj" ) ) );
+#endif
+}
+
+void TestQgsProjUtils::gridsUsed()
+{
+#if PROJ_VERSION_MAJOR>=6
+  // ensure local user-writable path is present in Proj search paths
+  const QList< QgsDatumTransform::GridDetails > grids = QgsProjUtils::gridsUsed( QStringLiteral( "+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1" ) );
+  QCOMPARE( grids.count(), 1 );
+  QCOMPARE( grids.at( 0 ).shortName, QStringLiteral( "GDA94_GDA2020_conformal_and_distortion.gsb" ) );
+#if PROJ_VERSION_MINOR>=2
+  QCOMPARE( grids.at( 0 ).packageName, QStringLiteral( "proj-datumgrid-oceania" ) );
+  QVERIFY( grids.at( 0 ).directDownload );
+#endif
 #endif
 }
 

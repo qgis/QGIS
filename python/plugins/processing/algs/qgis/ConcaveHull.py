@@ -21,10 +21,6 @@ __author__ = 'Piotr Pociask'
 __date__ = 'May 2014'
 __copyright__ = '(C) 2014, Piotr Pociask'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication
 from math import sqrt
 

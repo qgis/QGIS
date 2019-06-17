@@ -117,6 +117,12 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QPushButton *testConnectButton();
 
     /**
+     * Returns the current authentication settings widget.
+     * \since QGIS 3.8
+     */
+    QgsAuthSettingsWidget *authSettingsWidget() SIP_SKIP;
+
+    /**
      * Returns the "WFS version detect" button.
      * \since QGIS 3.2
      */

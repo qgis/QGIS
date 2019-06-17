@@ -137,7 +137,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // pyramids are not necessarily built every time
 
   mCrsSelector->setLayerCrs( mLayerCrs );
-  //default to layer CRS - see https://issues.qgis.org/issues/14209 for discussion
+  //default to layer CRS - see https://github.com/qgis/QGIS/issues/22211 for discussion
   mCrsSelector->setCrs( mLayerCrs );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged,
@@ -734,9 +734,9 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
 
 void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
 
-  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+  QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
   if ( !lineEdit ) return;
   int row = -1;
   int column = -1;
@@ -805,7 +805,7 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
 
 void QgsRasterLayerSaveAsDialog::mPyramidsGroupBox_toggled( bool toggled )
 {
-  Q_UNUSED( toggled );
+  Q_UNUSED( toggled )
   populatePyramidsLevels();
 }
 
@@ -924,20 +924,28 @@ bool QgsRasterLayerSaveAsDialog::validate() const
 
 bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
 {
-  QString uri;
+  QString vectorUri;
+  QString rasterUri;
   if ( outputFormat() == QStringLiteral( "GPKG" ) )
   {
-    uri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
+    rasterUri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
+    vectorUri = QStringLiteral( "%1|layername=%2" ).arg( outputFileName(), outputLayerName() );
   }
   else
   {
-    uri = outputFileName();
+    rasterUri = outputFileName();
   }
 
-  std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
-  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr< QgsVectorLayer > vectLayer = qgis::make_unique<QgsVectorLayer>( uri, QString(), QStringLiteral( "ogr" ),  options );
-  return ( rastLayer->isValid() || vectLayer->isValid() );
+  QgsRasterLayer rasterLayer( rasterUri, QString( ), QStringLiteral( "gdal" ) );
+  if ( !vectorUri.isEmpty() )
+  {
+    QgsVectorLayer vectorLayer( vectorUri, QString( ), QStringLiteral( "ogr" ) );
+    return rasterLayer.isValid() || vectorLayer.isValid();
+  }
+  else
+  {
+    return rasterLayer.isValid();
+  }
 }
 
 void QgsRasterLayerSaveAsDialog::accept()

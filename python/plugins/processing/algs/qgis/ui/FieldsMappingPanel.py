@@ -21,10 +21,6 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Arnaud Morvan'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from collections import OrderedDict
 

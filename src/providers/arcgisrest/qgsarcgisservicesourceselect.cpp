@@ -338,6 +338,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString layerTitle = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->text();  //layer title/id
     QString layerName = mModel->itemFromIndex( mModel->index( row, 1, idx.parent() ) )->text(); //layer name
     const QString layerUri = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( UrlRole ).toString();
+    const QString layerId = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IdRole ).toString();
     QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
@@ -348,7 +349,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     {
       layerExtent = extent;
     }
-    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent );
+    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent, layerId );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
     addServiceLayer( uri, layerName );
@@ -402,7 +403,7 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
 
 void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 

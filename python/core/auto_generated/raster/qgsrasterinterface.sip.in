@@ -63,6 +63,25 @@ Set whether our painter is drawing to a temporary image used just by this layer
 .. seealso:: :py:func:`renderPartialOutput`
 %End
 
+    void appendError( const QString &error );
+%Docstring
+Appends an error message to the stored list of errors. Should be called
+whenever an error is encountered while retrieving a raster block.
+
+.. seealso:: :py:func:`errors`
+
+.. versionadded:: 3.8.0
+%End
+
+    QStringList errors() const;
+%Docstring
+Returns a list of any errors encountered while retrieving the raster block.
+
+.. seealso:: :py:func:`appendError`
+
+.. versionadded:: 3.8.0
+%End
+
 };
 
 
@@ -327,8 +346,8 @@ Returns a band histogram. Histograms are cached in providers.
       maximum = PyFloat_AsDouble( a3 );
     }
 
-    QgsRasterHistogram h = sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 );
-    sipRes = &h;
+    QgsRasterHistogram *h = new QgsRasterHistogram( sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 ) );
+    return sipConvertFromType( h, sipType_QgsRasterHistogram, Py_None );
 %End
 
 

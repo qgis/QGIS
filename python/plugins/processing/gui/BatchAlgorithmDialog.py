@@ -21,27 +21,18 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from pprint import pformat
 import time
 
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QPushButton, QDialogButtonBox
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 
-from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingParameterRasterDestination,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputLayerDefinition,
-                       QgsProcessingOutputHtml,
+from qgis.core import (QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
+                       QgsProcessingOutputBoolean,
                        QgsProject,
                        QgsProcessingMultiStepFeedback,
-                       Qgis,
                        QgsScopedProxyProgressTask)
 
 from qgis.gui import QgsProcessingAlgorithmDialogBase
@@ -70,6 +61,18 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.setMainWidget(BatchPanel(self, self.algorithm()))
         self.hideShortHelp()
 
+        self.btnRunSingle = QPushButton(QCoreApplication.translate('BatchAlgorithmDialog', "Run as Single Process…"))
+        self.btnRunSingle.clicked.connect(self.runAsSingle)
+        self.buttonBox().addButton(self.btnRunSingle, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
+
+    def runAsSingle(self):
+        self.close()
+
+        from processing.gui.AlgorithmDialog import AlgorithmDialog
+        dlg = AlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
+        dlg.show()
+        dlg.exec_()
+
     def runAlgorithm(self):
         alg_parameters = []
 
@@ -95,7 +98,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             try:
                 self.showLog()
                 self.repaint()
-            except:
+            except Exception:  # FIXME which one?
                 pass
 
             start_time = time.time()
@@ -134,7 +137,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     feedback.pushInfo(self.tr('Results:'))
                     feedback.pushCommandInfo(pformat(results))
                     feedback.pushInfo('')
-                    algorithm_results.append(results)
+                    algorithm_results.append({'parameters': parameters, 'results': results})
                 else:
                     break
 
@@ -148,7 +151,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def finish(self, algorithm_results):
         for count, results in enumerate(algorithm_results):
-            self.loadHTMLResults(results, count)
+            self.loadHTMLResults(results['results'], count)
 
         self.createSummaryTable(algorithm_results)
         self.mainWidget().setEnabled(True)
@@ -164,7 +167,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         createTable = False
 
         for out in self.algorithm().outputDefinitions():
-            if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString)):
+            if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString, QgsProcessingOutputBoolean)):
                 createTable = True
                 break
 
@@ -173,12 +176,24 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         outputFile = getTempFilename('html')
         with codecs.open(outputFile, 'w', encoding='utf-8') as f:
-            for res in algorithm_results:
-                f.write('<hr>\n')
+            for i, res in enumerate(algorithm_results):
+                results = res['results']
+                params = res['parameters']
+                if i > 0:
+                    f.write('<hr>\n')
+                f.write(self.tr('<h3>Parameters</h3>\n'))
+                f.write('<table>\n')
+                for param in self.algorithm().parameterDefinitions():
+                    if not param.isDestination():
+                        if param.name() in params:
+                            f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(param.description(), params[param.name()]))
+                f.write('</table>\n')
+                f.write(self.tr('<h3>Results</h3>\n'))
+                f.write('<table>\n')
                 for out in self.algorithm().outputDefinitions():
-                    if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString)) and out.name() in res:
-                        f.write('<p>{}: {}</p>\n'.format(out.description(), res[out.name()]))
-            f.write('<hr>\n')
+                    if out.name() in results:
+                        f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(out.description(), results[out.name()]))
+                f.write('</table>\n')
 
         resultsList.addResult(icon=self.algorithm().icon(),
                               name='{} [summary]'.format(self.algorithm().name()), timestamp=time.localtime(),

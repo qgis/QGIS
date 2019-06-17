@@ -81,9 +81,9 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
      */
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
     {
-      Q_UNUSED( properties );
-      Q_UNUSED( pathResolver );
-      Q_UNUSED( saving );
+      Q_UNUSED( properties )
+      Q_UNUSED( pathResolver )
+      Q_UNUSED( saving )
     }
 
   private:
@@ -202,9 +202,9 @@ class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
      */
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
     {
-      Q_UNUSED( properties );
-      Q_UNUSED( pathResolver );
-      Q_UNUSED( saving );
+      Q_UNUSED( properties )
+      Q_UNUSED( pathResolver )
+      Q_UNUSED( saving )
     }
 
   private:

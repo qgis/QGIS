@@ -79,9 +79,6 @@ to ``p2`` will be used (i.e. winding the other way around the circle).
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
-
-
     virtual bool isEmpty() const;
 
     virtual int numPoints() const;

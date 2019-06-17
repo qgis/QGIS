@@ -40,6 +40,13 @@ class QDomNode;
 class QDomDocument;
 class QgsCoordinateReferenceSystemPrivate;
 
+#if PROJ_VERSION_MAJOR>=6
+#ifndef SIP_RUN
+struct PJconsts;
+typedef struct PJconsts PJ;
+#endif
+#endif
+
 // forward declaration for sqlite3
 typedef struct sqlite3 sqlite3 SIP_SKIP;
 
@@ -641,6 +648,22 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
 
+#ifndef SIP_RUN
+#if PROJ_VERSION_MAJOR>=6
+
+    /**
+     * Returns the underlying PROJ PJ object corresponding to the CRS, or NULLPTR
+     * if the CRS is invalid.
+     *
+     * This object is only valid for the lifetime of the QgsCoordinateReferenceSystem.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.8
+     */
+    PJ *projObject() const;
+#endif
+#endif
+
     /**
      * Returns a list of recently used projections
      * \returns list of srsid for recently used projections
@@ -758,16 +781,23 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for getting number of user CRS already in db
     long getRecordCount();
 
+#if PROJ_VERSION_MAJOR>=6
+    bool loadFromAuthCode( const QString &auth, const QString &code );
+#endif
+
     /**
      * Initialize the CRS object by looking up CRS database in path given in db argument,
      * using first CRS entry where expression = 'value'
      */
     bool loadFromDatabase( const QString &db, const QString &expression, const QString &value );
 
+#if PROJ_VERSION_MAJOR<6 // not used for proj >= 6.0
     static bool loadIds( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
+
     //! Update datum shift definitions from GDAL data. Used by syncDb()
     static bool syncDatumTransform( const QString &dbPath );
+#endif
 
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 

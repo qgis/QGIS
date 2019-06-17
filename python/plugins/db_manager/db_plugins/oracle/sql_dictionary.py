@@ -26,8 +26,6 @@ The content of this file is based on
 __author__ = 'Médéric RIBREUX'
 __date__ = 'August 2014'
 __copyright__ = '(C) 2014, Médéric RIBREUX'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 # keywords
 keywords = [

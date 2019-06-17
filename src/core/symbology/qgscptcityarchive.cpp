@@ -775,7 +775,7 @@ bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem *other )
     return false;
   }
   //const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *> ( other );
-  const QgsCptCityColorRampItem *o = dynamic_cast<const QgsCptCityColorRampItem *>( other );
+  const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *>( other );
   return o &&
          mPath == o->mPath &&
          mName == o->mName &&
@@ -840,8 +840,8 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   const auto constChildren = children();
   for ( QgsCptCityDataItem *childItem : constChildren )
   {
-    QgsCptCityCollectionItem *collectionItem = dynamic_cast<QgsCptCityCollectionItem *>( childItem );
-    QgsCptCityColorRampItem *rampItem = dynamic_cast<QgsCptCityColorRampItem *>( childItem );
+    QgsCptCityCollectionItem *collectionItem = qobject_cast<QgsCptCityCollectionItem *>( childItem );
+    QgsCptCityColorRampItem *rampItem = qobject_cast<QgsCptCityColorRampItem *>( childItem );
     QgsDebugMsgLevel( QStringLiteral( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
     if ( collectionItem && recursive )
     {
@@ -1288,7 +1288,7 @@ QVector<QgsCptCityDataItem *> QgsCptCityAllRampsItem::createChildren()
   const auto constMItems = mItems;
   for ( QgsCptCityDataItem *item : constMItems )
   {
-    QgsCptCityCollectionItem *colItem = dynamic_cast< QgsCptCityCollectionItem * >( item );
+    QgsCptCityCollectionItem *colItem = qobject_cast< QgsCptCityCollectionItem * >( item );
     if ( colItem )
       children += colItem->childrenRamps( true );
   }
@@ -1384,7 +1384,7 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
     return item->icon( mIconSize );
   }
   else if ( role == Qt::FontRole &&
-            dynamic_cast< QgsCptCityCollectionItem * >( item ) )
+            qobject_cast< QgsCptCityCollectionItem * >( item ) )
   {
     // collectionitems are larger and bold
     QFont font;
@@ -1402,7 +1402,7 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
 
 QVariant QgsCptCityBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  Q_UNUSED( section );
+  Q_UNUSED( section )
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     if ( section == 0 )
@@ -1442,7 +1442,7 @@ bool QgsCptCityBrowserModel::hasChildren( const QModelIndex &parent ) const
 
 int QgsCptCityBrowserModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -1703,8 +1703,8 @@ QMimeData *QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) co
 
 bool QgsCptCityBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
+  Q_UNUSED( row )
+  Q_UNUSED( column )
 
   QgsCptCityDataItem *destItem = dataItem( parent );
   if ( !destItem )

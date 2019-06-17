@@ -47,7 +47,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
 
 QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return QStringLiteral( "/mIndicatorFilter.svg" );
 }
 

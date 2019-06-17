@@ -183,7 +183,7 @@ void QgsLayoutItemLabel::contentChanged()
 
 void QgsLayoutItemLabel::loadingHtmlFinished( bool result )
 {
-  Q_UNUSED( result );
+  Q_UNUSED( result )
   mHtmlLoaded = true;
 }
 
@@ -363,6 +363,7 @@ bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem,
   fontColorElem.setAttribute( QStringLiteral( "red" ), mFontColor.red() );
   fontColorElem.setAttribute( QStringLiteral( "green" ), mFontColor.green() );
   fontColorElem.setAttribute( QStringLiteral( "blue" ), mFontColor.blue() );
+  fontColorElem.setAttribute( QStringLiteral( "alpha" ), mFontColor.alpha() );
   layoutLabelElem.appendChild( fontColorElem );
 
   return true;
@@ -408,7 +409,8 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
     int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
     int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
     int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
-    mFontColor = QColor( red, green, blue );
+    int alpha = fontColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
+    mFontColor = QColor( red, green, blue, alpha );
   }
   else
   {
@@ -580,7 +582,7 @@ QUrl QgsLayoutItemLabel::createStylesheetUrl() const
   QString stylesheet;
   stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( std::max( mMarginY * mHtmlUnitsToLayoutUnits, 0.0 ) ).arg( std::max( mMarginX * mHtmlUnitsToLayoutUnits, 0.0 ) );
   stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToLayoutUnits );
-  stylesheet += QStringLiteral( "color: %1;" ).arg( mFontColor.name() );
+  stylesheet += QStringLiteral( "color: rgba(%1,%2,%3,%4);" ).arg( mFontColor.red() ).arg( mFontColor.green() ).arg( mFontColor.blue() ).arg( QString::number( mFontColor.alphaF(), 'f', 4 ) );
   stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
 
   QByteArray ba;

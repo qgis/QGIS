@@ -22,7 +22,6 @@
 
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributetablefiltermodel.h"
-#include "qgsdistancearea.h"
 #include "qgsattributeform.h"
 #include "qgis_gui.h"
 
@@ -65,8 +64,17 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
        */
       AttributeEditor = 1
     };
-
     Q_ENUM( ViewMode )
+
+
+    //! Action on the map canvas when browsing the list of features
+    enum FeatureListBrowsingAction
+    {
+      NoAction = 0, //!< No action is done
+      PanToFeature, //!< The map is panned to the center of the feature bounding-box
+      ZoomToFeature, //!< The map is zoomed to contained the feature bounding-box
+    };
+    Q_ENUM( FeatureListBrowsingAction )
 
     /**
      * \brief Constructor
@@ -83,9 +91,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \param request    Use a modified request to limit the shown features
      * \param context    The context in which this view is shown
      * \param loadFeatures whether to initially load all features into the view. If set to
-     * FALSE, limited features can later be loaded using setFilterMode()
+     *                   FALSE, limited features can later be loaded using setFilterMode()
      */
-    void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+    void init( QgsVectorLayer *layer,
+               QgsMapCanvas *mapCanvas,
+               const QgsFeatureRequest &request = QgsFeatureRequest(),
+               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
                bool loadFeatures = true );
 
     /**
@@ -286,14 +297,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
   private slots:
 
-    void mFeatureList_aboutToChangeEditSelection( bool &ok );
+    void featureListAboutToChangeEditSelection( bool &ok );
 
     /**
      * Changes the currently visible feature within the attribute editor
      *
      * \param feat  The newly visible feature
      */
-    void mFeatureList_currentEditSelectionChanged( const QgsFeature &feat );
+    void featureListCurrentEditSelectionChanged( const QgsFeature &feat );
 
     void previewExpressionBuilder();
 
@@ -357,6 +368,10 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void rebuildFullLayerCache();
 
+    void panZoomGroupButtonToggled( QAbstractButton *button, bool checked );
+
+    void flashButtonClicked( bool clicked );
+
   private:
 
     /**
@@ -369,6 +384,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void saveRecentDisplayExpressions() const;
     void setDisplayExpression( const QString &expression );
     void insertRecentlyUsedDisplayExpression( const QString &expression );
+    void updateEditSelectionProgress( int progress, int count );
+    void panOrZoomToFeature( const QgsFeatureIds &featureset );
 
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel *mMasterModel = nullptr;
@@ -383,7 +400,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QPointer< QgsVectorLayer > mLayer = nullptr;
     QProgressDialog *mProgressDlg = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
-    QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
     QgsScrollArea *mAttributeEditorScrollArea = nullptr;

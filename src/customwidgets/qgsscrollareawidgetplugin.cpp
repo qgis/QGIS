@@ -60,7 +60,7 @@ bool QgsScrollAreaWidgetPlugin::isInitialized() const
 
 void QgsScrollAreaWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

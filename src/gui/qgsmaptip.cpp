@@ -131,7 +131,6 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   bodyStyle = QString(
                 "background-color: %1;"
                 "margin: 0;"
-                "white-space: nowrap;"
                 "font: %2pt \"%3\";" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily );
 
   containerStyle = QString(

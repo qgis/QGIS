@@ -44,7 +44,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWk
   }
   catch ( const QgsWkbException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( "WKB exception while reading header: " + e.what() );
     return nullptr;
   }
@@ -60,7 +60,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWk
     }
     catch ( const QgsWkbException &e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( "WKB exception: " + e.what() );
       geom.reset();
     }

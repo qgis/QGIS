@@ -59,7 +59,7 @@ Constructor for QgsValueRelationFieldFormatter.
 
     static QStringList valueToStringList( const QVariant &value );
 %Docstring
-Utility to convert an array or a string representation of an array ``value`` to a string list
+Utility to convert a list or a string representation of an (hstore style: {1,2...}) list in ``value`` to a string list
 
 .. versionadded:: 3.2
 %End
@@ -120,6 +120,15 @@ Check whether the ``feature`` has all values required by the ``expression``
 
 .. versionadded:: 3.2
 %End
+
+    static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );
+%Docstring
+Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
+
+.. versionadded:: 3.8
+%End
+
+
 
 };
 

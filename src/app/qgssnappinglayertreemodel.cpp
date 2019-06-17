@@ -34,8 +34,8 @@ QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObjec
 
 QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
-  Q_UNUSED( index );
+  Q_UNUSED( option )
+  Q_UNUSED( index )
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
@@ -150,7 +150,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QObje
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 5;
 }
 

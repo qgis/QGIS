@@ -79,7 +79,7 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement *
 
 QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
@@ -221,8 +221,6 @@ QList<int> QgsSingleBandGrayRenderer::usesBands() const
 
 void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 
@@ -357,8 +355,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   }
 
   // create tags
-  QList< QPair< QString, QColor > >::ConstIterator it;
-  for ( it = colorMapping.begin(); it != colorMapping.constEnd() ; ++it )
+  for ( auto it = colorMapping.constBegin(); it != colorMapping.constEnd() ; ++it )
   {
     // set low level color mapping
     QDomElement lowColorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );

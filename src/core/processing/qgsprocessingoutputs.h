@@ -57,6 +57,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputNumber;
     else if ( sipCpp->type() == QgsProcessingOutputString::typeName() )
       sipType = sipType_QgsProcessingOutputString;
+    else if ( sipCpp->type() == QgsProcessingOutputBoolean::typeName() )
+      sipType = sipType_QgsProcessingOutputBoolean;
     else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
     else if ( sipCpp->type() == QgsProcessingOutputFile::typeName() )
@@ -307,6 +309,28 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
     static QString typeName() { return QStringLiteral( "outputString" ); }
     QString type() const override { return typeName(); }
 
+};
+
+/**
+ * \class QgsProcessingOutputBoolean
+ * \ingroup core
+ * A boolean output for processing algorithms.
+  * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputNumber.
+     */
+    QgsProcessingOutputBoolean( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputBoolean" ); }
+    QString type() const override { return typeName(); }
 };
 
 /**

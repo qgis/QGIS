@@ -46,7 +46,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   QgsDebugMsgLevel( QStringLiteral( "bandNo = %1 width = %2 height = %3" ).arg( bandNo ).arg( width ).arg( height ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "boundingBox = %1" ).arg( boundingBox.toString() ), 4 );
 
-  QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
+  std::unique_ptr< QgsRasterBlock > block = qgis::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
   {
     block->setNoDataValue( sourceNoDataValue( bandNo ) );
@@ -55,7 +55,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   if ( block->isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Couldn't create raster block" ) );
-    return block;
+    return block.release();
   }
 
   // Read necessary extent only
@@ -65,7 +65,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   {
     QgsDebugMsg( QStringLiteral( "Extent outside provider extent" ) );
     block->setIsNoData();
-    return block;
+    return block.release();
   }
 
   double xRes = boundingBox.width() / width;
@@ -112,7 +112,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     {
       // Should not happen
       QgsDebugMsg( QStringLiteral( "Row or column limits out of range" ) );
-      return block;
+      return block.release();
     }
 
     // If lower source resolution is used, the extent must beS aligned to original
@@ -139,13 +139,18 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     QgsDebugMsgLevel( QStringLiteral( "Reading smaller block tmpWidth = %1 height = %2" ).arg( tmpWidth ).arg( tmpHeight ), 4 );
     QgsDebugMsgLevel( QStringLiteral( "tmpExtent = %1" ).arg( tmpExtent.toString() ), 4 );
 
-    QgsRasterBlock *tmpBlock = new QgsRasterBlock( dataType( bandNo ), tmpWidth, tmpHeight );
+    std::unique_ptr< QgsRasterBlock > tmpBlock = qgis::make_unique< QgsRasterBlock >( dataType( bandNo ), tmpWidth, tmpHeight );
     if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
     {
       tmpBlock->setNoDataValue( sourceNoDataValue( bandNo ) );
     }
 
-    readBlock( bandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback );
+    if ( !readBlock( bandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Error occurred while reading block" ) );
+      block->setIsNoData();
+      return block.release();
+    }
 
     int pixelSize = dataTypeSize( bandNo );
 
@@ -168,8 +173,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
         {
           QgsDebugMsg( QStringLiteral( "Source row or column limits out of range" ) );
           block->setIsNoData(); // so that the problem becomes obvious and fixed
-          delete tmpBlock;
-          return block;
+          return block.release();
         }
 
         qgssize tmpIndex = static_cast< qgssize >( tmpRow ) * static_cast< qgssize >( tmpWidth ) + tmpCol;
@@ -190,19 +194,22 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
         memcpy( bits, tmpBits, pixelSize );
       }
     }
-
-    delete tmpBlock;
   }
   else
   {
-    readBlock( bandNo, boundingBox, width, height, block->bits(), feedback );
+    if ( !readBlock( bandNo, boundingBox, width, height, block->bits(), feedback ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Error occurred while reading block" ) );
+      block->setIsNoData();
+      return block.release();
+    }
   }
 
   // apply scale and offset
   block->applyScaleOffset( bandScale( bandNo ), bandOffset( bandNo ) );
   // apply user no data values
   block->applyNoDataValues( userNoDataValues( bandNo ) );
-  return block;
+  return block.release();
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider()
@@ -493,6 +500,11 @@ QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability
     default:
       return NoCapabilities;
   }
+}
+
+QList<double> QgsRasterDataProvider::nativeResolutions() const
+{
+  return QList< double >();
 }
 
 bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value ) const

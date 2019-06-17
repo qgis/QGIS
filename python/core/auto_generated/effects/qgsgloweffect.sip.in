@@ -118,25 +118,91 @@ Returns the map unit scale used for the spread distance.
 .. seealso:: :py:func:`spreadUnit`
 %End
 
-    void setBlurLevel( const int level );
+    void setBlurLevel( const double level );
 %Docstring
-Sets blur level (strength) for the glow. This can be used to smooth the
+Sets blur level (radius) for the glow. This can be used to smooth the
 output from the glow effect.
 
-:param level: blur level. Values between 0 and 16 are valid, with larger
-              values indicating greater blur strength.
+:param level: blur level.
 
 .. seealso:: :py:func:`blurLevel`
+
+.. seealso:: :py:func:`setBlurUnit`
+
+.. seealso:: :py:func:`setBlurMapUnitScale`
 %End
 
-    int blurLevel() const;
+    double blurLevel() const;
 %Docstring
-Returns the blur level (strength) for the glow.
+Returns the blur level (radius) for the glow.
 
-:return: blur level. Value will be between 0 and 16, with larger
-         values indicating greater blur strength.
+:return: blur level.
 
 .. seealso:: :py:func:`setBlurLevel`
+
+.. seealso:: :py:func:`blurUnit`
+
+.. seealso:: :py:func:`blurMapUnitScale`
+%End
+
+    void setBlurUnit( const QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units used for the glow blur level (radius).
+
+:param unit: units for blur level
+
+.. seealso:: :py:func:`blurUnit`
+
+.. seealso:: :py:func:`setBlurLevel`
+
+.. seealso:: :py:func:`setBlurMapUnitScale`
+
+.. versionadded:: 3.4.9
+%End
+
+    QgsUnitTypes::RenderUnit blurUnit() const;
+%Docstring
+Returns the units used for the glow blur level (radius).
+
+:return: units for blur level
+
+.. seealso:: :py:func:`setBlurUnit`
+
+.. seealso:: :py:func:`blurLevel`
+
+.. seealso:: :py:func:`blurMapUnitScale`
+
+.. versionadded:: 3.4.9
+%End
+
+    void setBlurMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit scale used for the glow blur strength (radius).
+
+:param scale: map unit scale for blur strength
+
+.. seealso:: :py:func:`blurMapUnitScale`
+
+.. seealso:: :py:func:`setBlurLevel`
+
+.. seealso:: :py:func:`setBlurUnit`
+
+.. versionadded:: 3.4.9
+%End
+
+    const QgsMapUnitScale &blurMapUnitScale() const;
+%Docstring
+Returns the map unit scale used for the glow blur strength (radius).
+
+:return: map unit scale for blur strength
+
+.. seealso:: :py:func:`setBlurMapUnitScale`
+
+.. seealso:: :py:func:`blurLevel`
+
+.. seealso:: :py:func:`blurUnit`
+
+.. versionadded:: 3.4.9
 %End
 
     void setOpacity( const double opacity );

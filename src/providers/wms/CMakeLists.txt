@@ -3,7 +3,6 @@ SET (WMS_SRCS
   qgswmsprovider.cpp
   qgswmsconnection.cpp
   qgswmsdataitems.cpp
-  qgstilecache.cpp
   qgsxyzconnection.cpp
 )
 SET (WMS_MOC_HDRS
@@ -39,6 +38,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/core

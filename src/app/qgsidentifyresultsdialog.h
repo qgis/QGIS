@@ -244,8 +244,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void cbxAutoFeatureForm_toggled( bool checked );
 
-    void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ); expandAll(); }
-    void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
+    void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ) expandAll(); }
+    void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ) collapseAll(); }
 
     void mActionCopy_triggered( bool checked );
 

@@ -695,7 +695,7 @@ void QgsProject::clear()
 
   mFile.setFileName( QString() );
   mProperties.clearKeys();
-  mHomePath.clear();
+  mHomePath = QString();
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
@@ -751,6 +751,7 @@ void QgsProject::clear()
   mRootGroup->clear();
 
   setDirty( false );
+  emit homePathChanged();
   emit cleared();
 }
 
@@ -942,7 +943,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
         returnStatus = false;
       }
       const auto messages = context.takeMessages();
-      if ( messages.count() )
+      if ( !messages.isEmpty() )
       {
         emit loadingLayerMessageReceived( tr( "Loading layer %1" ).arg( name ), messages );
       }
@@ -1035,7 +1036,7 @@ bool QgsProject::read( const QString &filename )
 bool QgsProject::read()
 {
   QString filename = mFile.fileName();
-  bool rc;
+  bool returnValue;
 
   if ( QgsProjectStorage *storage = projectStorage() )
   {
@@ -1057,32 +1058,33 @@ bool QgsProject::read()
       setError( err );
       return false;
     }
-
-    return unzip( inDevice.fileName() );  // calls setError() if returning false
-  }
-
-  if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
-  {
-    rc = unzip( mFile.fileName() );
+    returnValue = unzip( inDevice.fileName() );  // calls setError() if returning false
   }
   else
   {
-    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
-    rc = readProjectFile( mFile.fileName() );
-  }
+    if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+    {
+      returnValue = unzip( mFile.fileName() );
+    }
+    else
+    {
+      mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
+      returnValue = readProjectFile( mFile.fileName() );
+    }
 
-  //on translation we should not change the filename back
-  if ( !mTranslator )
-  {
-    mFile.setFileName( filename );
+    //on translation we should not change the filename back
+    if ( !mTranslator )
+    {
+      mFile.setFileName( filename );
+    }
+    else
+    {
+      //but delete the translator
+      mTranslator.reset( nullptr );
+    }
   }
-  else
-  {
-    //but delete the translator
-    mTranslator.reset( nullptr );
-  }
-
-  return rc;
+  emit homePathChanged();
+  return returnValue;
 }
 
 bool QgsProject::readProjectFile( const QString &filename )
@@ -1232,7 +1234,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   mCrs = projectCrs;
 
   QStringList datumErrors;
-  if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) )
+  if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) && !datumErrors.empty() )
   {
     emit missingDatumTransforms( datumErrors );
   }
@@ -2422,7 +2424,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     if ( layer )
     {
       layer->resolveReferences( this );
-      layer->setItemVisibilityChecked( invisibleLayers.contains( layerId ) );
+      layer->setItemVisibilityChecked( !invisibleLayers.contains( layerId ) );
     }
   }
 
@@ -3027,7 +3029,7 @@ void QgsProject::generateTsFile( const QString &locale )
   translationContext.setProject( this );
   translationContext.setFileName( QStringLiteral( "%1/%2.ts" ).arg( absolutePath(), baseName() ) );
 
-  emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
+  QgsApplication::instance()->collectTranslatableObjects( &translationContext );
 
   translationContext.writeTsFile( locale );
 }

@@ -302,7 +302,7 @@ void QgsPanningWidget::setPolygon( const QPolygon &p )
 
 void QgsPanningWidget::paintEvent( QPaintEvent *pe )
 {
-  Q_UNUSED( pe );
+  Q_UNUSED( pe )
 
   QPainter p;
   p.begin( this );

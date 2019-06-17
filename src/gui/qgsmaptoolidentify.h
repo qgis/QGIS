@@ -33,7 +33,6 @@ class QgsMapCanvas;
 class QgsMeshLayer;
 class QgsHighlight;
 class QgsIdentifyMenu;
-class QgsDistanceArea;
 
 /**
  * \ingroup gui

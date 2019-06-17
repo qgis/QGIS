@@ -288,7 +288,7 @@ void QgsFontButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsFontButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   updatePreview();
 }

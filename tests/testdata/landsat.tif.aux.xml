@@ -23,6 +23,7 @@
       <MDI key="STATISTICS_MEAN">126.001725</MDI>
       <MDI key="STATISTICS_MINIMUM">122</MDI>
       <MDI key="STATISTICS_STDDEV">1.1294343825008</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
     </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="2">
@@ -49,6 +50,7 @@
       <MDI key="STATISTICS_MEAN">140.388625</MDI>
       <MDI key="STATISTICS_MINIMUM">133</MDI>
       <MDI key="STATISTICS_STDDEV">1.880437611136</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
     </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="3">
@@ -75,6 +77,7 @@
       <MDI key="STATISTICS_MEAN">111.602125</MDI>
       <MDI key="STATISTICS_MINIMUM">51</MDI>
       <MDI key="STATISTICS_STDDEV">7.6436882775513</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
     </Metadata>
   </PAMRasterBand>
   <PAMRasterBand band="4">

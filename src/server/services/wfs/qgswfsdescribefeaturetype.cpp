@@ -67,7 +67,7 @@ namespace QgsWfs
   QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -291,7 +291,7 @@ namespace QgsWfs
         }
         else if ( attributeType == QVariant::Double )
         {
-          if ( field.length() != 0 && field.precision() == 0 )
+          if ( field.length() > 0 && field.precision() == 0 )
             attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
           else
             attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );

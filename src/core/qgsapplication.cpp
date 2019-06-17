@@ -51,6 +51,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
+#include "qgsprojutils.h"
 #include "qgsvaliditycheckregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
@@ -90,6 +91,11 @@
 #include <ogr_api.h>
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
+
+#if PROJ_VERSION_MAJOR>=6
+#include <proj.h>
+#endif
+
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
@@ -209,6 +215,9 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
   qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
   qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
+  qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+  qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
+  qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
 
   ( void ) resolvePkgPath();
 
@@ -294,6 +303,20 @@ void QgsApplication::init( QString profileFolder )
   }
   ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 
+#if PROJ_VERSION_MAJOR>=6
+  // append local user-writable folder as a proj search path
+  QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
+  currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
+  const char **newPaths = new const char *[currentProjSearchPaths.length()];
+  for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
+  {
+    newPaths[i] = currentProjSearchPaths.at( i ).toUtf8().constData();
+  }
+  proj_context_set_search_paths( nullptr, currentProjSearchPaths.count(), newPaths );
+  delete [] newPaths;
+#endif
+
+
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
 
@@ -314,6 +337,16 @@ QgsApplication::~QgsApplication()
   delete mApplicationMembers;
   delete mQgisTranslator;
   delete mQtTranslator;
+
+  // invalidate coordinate cache while the PROJ context held by the thread-locale
+  // QgsProjContextStore object is still alive. Otherwise if this later object
+  // is destroyed before the static variables of the cache, we might use freed memory.
+
+  // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
+  // and there's just a *chance* that in between an exitQgis call and this destructor
+  // something else's destructor has caused a new entry in the caches...
+  QgsCoordinateTransform::invalidateCache();
+  QgsCoordinateReferenceSystem::invalidateCache();
 }
 
 QgsApplication *QgsApplication::instance()
@@ -1196,12 +1229,15 @@ void QgsApplication::exitQgis()
 
   delete QgsProject::instance();
 
-  delete QgsProviderRegistry::instance();
+  // avoid creating instance just to delete it!
+  if ( QgsProviderRegistry::exists() )
+    delete QgsProviderRegistry::instance();
 
   // invalidate coordinate cache while the PROJ context held by the thread-locale
   // QgsProjContextStore object is still alive. Otherwise if this later object
   // is destroyed before the static variables of the cache, we might use freed memory.
   QgsCoordinateTransform::invalidateCache();
+  QgsCoordinateReferenceSystem::invalidateCache();
 
   QgsStyle::cleanDefaultStyle();
 

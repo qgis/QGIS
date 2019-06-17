@@ -55,7 +55,7 @@ void QgsDxfRuleBasedLabelProvider::reinit( QgsVectorLayer *layer )
 QgsVectorLayerLabelProvider *QgsDxfRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {
   QgsDebugMsg( QStringLiteral( "Entering." ) );
-  Q_UNUSED( withFeatureLoop );
+  Q_UNUSED( withFeatureLoop )
   return new QgsDxfLabelProvider( layer, providerId, mDxfExport, settings );
 }
 

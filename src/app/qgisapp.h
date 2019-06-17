@@ -177,6 +177,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
+
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true,
              bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),
@@ -1467,7 +1468,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void selectByForm();
 
     //! refresh map canvas
-    void refreshMapCanvas();
+    void refreshMapCanvas( bool redrawAllLayers = false );
 
     //! start "busy" progress bar
     void canvasRefreshStarted();

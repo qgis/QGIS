@@ -102,7 +102,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
 
   action->setShortcut( sequence );
   action->setToolTip( "<b>" + action->toolTip() + "</b>" );
-  this->updateActionToolTip( action, sequence );
+  updateActionToolTip( action, sequence );
 
   return true;
 }

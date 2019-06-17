@@ -171,6 +171,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QMap<QString, QgsDirectoryItem *> driveItems() const;
 
   signals:
+
     //! Emitted when item children fetch was finished
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 
@@ -235,6 +236,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \see initialized()
      */
     void initialize();
+
 
   protected:
     //! Populates the model

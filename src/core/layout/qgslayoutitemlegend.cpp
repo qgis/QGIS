@@ -176,7 +176,7 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   }
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
-  legendRenderer.setLegendSize( mSizeToContents ? QSize() : rect().size() );
+  legendRenderer.setLegendSize( rect().size() );
 
   legendRenderer.drawLegend( context.renderContext() );
 

@@ -157,8 +157,8 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      */
     virtual bool checkReply( QNetworkReply *reply, const QString &path ) const
     {
-      Q_UNUSED( reply );
-      Q_UNUSED( path );
+      Q_UNUSED( reply )
+      Q_UNUSED( path )
       return true;
     }
 

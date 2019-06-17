@@ -15,7 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojutils.h"
+#include "qgis.h"
 #include <QString>
+#include <QSet>
+#include <QRegularExpression>
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
@@ -143,5 +146,138 @@ bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
   return false;
 }
 
+
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
+{
+  if ( !crs )
+    return nullptr;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  switch ( proj_get_type( crs ) )
+  {
+    case PJ_TYPE_BOUND_CRS:
+      return QgsProjUtils::proj_pj_unique_ptr( proj_get_source_crs( context, crs ) );
+
+    case PJ_TYPE_COMPOUND_CRS:
+    {
+      int i = 0;
+      QgsProjUtils::proj_pj_unique_ptr res( proj_crs_get_sub_crs( context, crs, i ) );
+      while ( res && ( proj_get_type( res.get() ) == PJ_TYPE_VERTICAL_CRS || proj_get_type( res.get() ) == PJ_TYPE_TEMPORAL_CRS ) )
+      {
+        i++;
+        res.reset( proj_crs_get_sub_crs( context, crs, i ) );
+      }
+      return res;
+    }
+
+    // maybe other types to handle??
+
+    default:
+      return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
+  }
+
+  return nullptr;
+}
+
+bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
+{
+  if ( projDef.isEmpty() )
+    return true;
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr coordinateOperation( proj_create( context, projDef.toUtf8().constData() ) );
+  if ( !coordinateOperation )
+    return false;
+
+  return static_cast< bool >( proj_coordoperation_is_instantiable( context, coordinateOperation.get() ) );
+}
+
+QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &proj )
+{
+  static QRegularExpression sRegex( QStringLiteral( "\\+(?:nad)?grids=(.*?)\\s" ) );
+
+  QList< QgsDatumTransform::GridDetails > grids;
+  QRegularExpressionMatchIterator matches = sRegex.globalMatch( proj );
+  while ( matches.hasNext() )
+  {
+    const QRegularExpressionMatch match = matches.next();
+    const QString gridName = match.captured( 1 );
+    QgsDatumTransform::GridDetails grid;
+    grid.shortName = gridName;
+#if PROJ_VERSION_MAJOR >= 6
+#if PROJ_VERSION_MINOR >= 2
+    const char *fullName = nullptr;
+    const char *packageName = nullptr;
+    const char *url = nullptr;
+    int directDownload = 0;
+    int openLicense = 0;
+    int available = 0;
+    proj_grid_get_info_from_database( QgsProjContext::get(), gridName.toUtf8().constData(), &fullName, &packageName, &url, &directDownload, &openLicense, &available );
+    grid.fullName = QString( fullName );
+    grid.packageName = QString( packageName );
+    grid.url = QString( url );
+    grid.directDownload = directDownload;
+    grid.openLicense = openLicense;
+    grid.isAvailable = available;
+#endif
+#endif
+    grids.append( grid );
+  }
+  return grids;
+}
+
+#if 0
+QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
+{
+  if ( projDef.isEmpty() )
+    return QStringList();
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr op( proj_create( context, projDef.toUtf8().constData() ) ); < ---- - this always fails if grids are missing
+  if ( !op )
+      return QStringList();
+
+  QStringList res;
+  for ( int j = 0; j < proj_coordoperation_get_grid_used_count( context, op.get() ); ++j )
+  {
+    const char *shortName = nullptr;
+    int isAvailable = 0;
+    proj_coordoperation_get_grid_used( context, op.get(), j, &shortName, nullptr, nullptr, nullptr, nullptr, nullptr, &isAvailable );
+    if ( !isAvailable )
+      res << QString( shortName );
+  }
+  return res;
+}
 #endif
 
+#endif
+
+QStringList QgsProjUtils::searchPaths()
+{
+#if PROJ_VERSION_MAJOR >= 6
+  const QString path( proj_info().searchpath );
+  QStringList paths;
+// #ifdef Q_OS_WIN
+#if 1 // -- see https://github.com/OSGeo/proj.4/pull/1497
+  paths = path.split( ';' );
+#else
+  paths = path.split( ':' );
+#endif
+
+  QSet<QString> existing;
+  // thin out duplicates from paths -- see https://github.com/OSGeo/proj.4/pull/1498
+  QStringList res;
+  res.reserve( paths.count() );
+  for ( const QString &p : qgis::as_const( paths ) )
+  {
+    if ( existing.contains( p ) )
+      continue;
+
+    existing.insert( p );
+    res << p;
+  }
+  return res;
+#else
+  return QStringList();
+#endif
+}

@@ -58,7 +58,7 @@ QgsProcessing::SourceType QgsTessellateAlgorithm::outputLayerType() const
 
 QgsWkbTypes::Type QgsTessellateAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  Q_UNUSED( inputWkbType );
+  Q_UNUSED( inputWkbType )
   return QgsWkbTypes::MultiPolygonZ;
 }
 

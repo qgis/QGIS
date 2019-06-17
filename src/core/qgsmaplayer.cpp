@@ -78,24 +78,9 @@ QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
   , mRefreshTimer( new QTimer( this ) )
 {
-  //mShortName.replace( QRegExp( "[\\W]" ), "_" );
-
-  // Generate the unique ID of this layer
-  QString uuid = QUuid::createUuid().toString();
-  // trim { } from uuid
-  mID = lyrname + '_' + uuid.mid( 1, uuid.length() - 2 );
-
-  // Tidy the ID up to avoid characters that may cause problems
-  // elsewhere (e.g in some parts of XML). Replaces every non-word
-  // character (word characters are the alphabet, numbers and
-  // underscore) with an underscore.
-  // Note that the first backslashe in the regular expression is
-  // there for the compiler, so the pattern is actually \W
-  mID.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
-
+  mID = generateId( lyrname );
   connect( this, &QgsMapLayer::crsChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsMapLayer::nameChanged, this, &QgsMapLayer::configChanged );
-
   connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
 
@@ -388,8 +373,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
 
 bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
-  Q_UNUSED( layer_node );
-  Q_UNUSED( context );
+  Q_UNUSED( layer_node )
+  Q_UNUSED( context )
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -598,9 +583,9 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
 
 bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( layer_node );
-  Q_UNUSED( document );
-  Q_UNUSED( context );
+  Q_UNUSED( layer_node )
+  Q_UNUSED( document )
+  Q_UNUSED( context )
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -608,14 +593,14 @@ bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const 
 
 QString QgsMapLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   return source;
 }
 
 QString QgsMapLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( dataProvider );
+  Q_UNUSED( context )
+  Q_UNUSED( dataProvider )
   return source;
 }
 
@@ -663,7 +648,7 @@ bool QgsMapLayer::isValid() const
 #if 0
 void QgsMapLayer::connectNotify( const char *signal )
 {
-  Q_UNUSED( signal );
+  Q_UNUSED( signal )
   QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
 } //  QgsMapLayer::connectNotify
 #endif
@@ -752,14 +737,14 @@ QStringList QgsMapLayer::subLayers() const
 
 void QgsMapLayer::setLayerOrder( const QStringList &layers )
 {
-  Q_UNUSED( layers );
+  Q_UNUSED( layers )
   // NOOP
 }
 
 void QgsMapLayer::setSubLayerVisibility( const QString &name, bool vis )
 {
-  Q_UNUSED( name );
-  Q_UNUSED( vis );
+  Q_UNUSED( name )
+  Q_UNUSED( vis )
   // NOOP
 }
 
@@ -799,24 +784,15 @@ QString QgsMapLayer::baseURI( PropertyType type ) const
 {
   QString myURI = publicSource();
 
-  // if file is using the VSIFILE mechanism, remove the prefix
-  if ( myURI.startsWith( QLatin1String( "/vsigzip/" ), Qt::CaseInsensitive ) )
+  // first get base path for delimited text, spatialite and OGR layers,
+  // as in these cases URI may contain layer name and/or additional
+  // information. This also strips prefix in case if VSIFILE mechanism
+  // is used
+  if ( providerType() == QLatin1String( "ogr" ) || providerType() == QLatin1String( "delimitedtext" ) ||
+       providerType() == QLatin1String( "spatialite" ) )
   {
-    myURI.remove( 0, 9 );
-  }
-  else if ( myURI.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) &&
-            myURI.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
-  {
-    // ideally we should look for .qml file inside zip file
-    myURI.remove( 0, 8 );
-  }
-  else if ( myURI.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) &&
-            ( myURI.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
-              myURI.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
-              myURI.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) ) )
-  {
-    // ideally we should look for .qml file inside tar file
-    myURI.remove( 0, 8 );
+    QVariantMap components = QgsProviderRegistry::instance()->decodeUri( providerType(), myURI );
+    myURI = components["path"].toString();
   }
 
   QFileInfo myFileInfo( myURI );
@@ -1594,31 +1570,31 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
 
 bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  Q_UNUSED( node );
-  Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
-  Q_UNUSED( categories );
+  Q_UNUSED( node )
+  Q_UNUSED( errorMessage )
+  Q_UNUSED( context )
+  Q_UNUSED( categories )
   return false;
 }
 
 bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                               const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  Q_UNUSED( node );
-  Q_UNUSED( doc );
-  Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
-  Q_UNUSED( categories );
+  Q_UNUSED( node )
+  Q_UNUSED( doc )
+  Q_UNUSED( errorMessage )
+  Q_UNUSED( context )
+  Q_UNUSED( categories )
   return false;
 }
 
 void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-  Q_UNUSED( dataSource );
-  Q_UNUSED( baseName );
-  Q_UNUSED( provider );
-  Q_UNUSED( options );
-  Q_UNUSED( loadDefaultStyleFlag );
+  Q_UNUSED( dataSource )
+  Q_UNUSED( baseName )
+  Q_UNUSED( provider )
+  Q_UNUSED( options )
+  Q_UNUSED( loadDefaultStyleFlag )
 }
 
 
@@ -1883,6 +1859,22 @@ QString QgsMapLayer::originalXmlProperties() const
 void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties )
 {
   mOriginalXmlProperties = originalXmlProperties;
+}
+
+QString QgsMapLayer::generateId( const QString &layerName )
+{
+  // Generate the unique ID of this layer
+  QString uuid = QUuid::createUuid().toString();
+  // trim { } from uuid
+  QString id = layerName + '_' + uuid.mid( 1, uuid.length() - 2 );
+  // Tidy the ID up to avoid characters that may cause problems
+  // elsewhere (e.g in some parts of XML). Replaces every non-word
+  // character (word characters are the alphabet, numbers and
+  // underscore) with an underscore.
+  // Note that the first backslash in the regular expression is
+  // there for the compiler, so the pattern is actually \W
+  id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
+  return id;
 }
 
 void QgsMapLayer::setProviderType( const QString &providerType )

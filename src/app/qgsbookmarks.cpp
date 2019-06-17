@@ -227,7 +227,7 @@ void QgsBookmarks::deleteClicked()
 
 void QgsBookmarks::lstBookmarks_doubleClicked( const QModelIndex &index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   zoomToBookmark();
 }
 
@@ -461,13 +461,13 @@ QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel( QObject *parent )
 
 int QgsProjectBookmarksTableModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
 }
 
 int QgsProjectBookmarksTableModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 8;
 }
 
@@ -501,7 +501,7 @@ QVariant QgsProjectBookmarksTableModel::data( const QModelIndex &index, int role
 
 bool QgsProjectBookmarksTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
   Q_ASSERT( role == Qt::EditRole );
 
   switch ( index.column() )
@@ -534,8 +534,8 @@ bool QgsProjectBookmarksTableModel::setData( const QModelIndex &index, const QVa
 
 bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( row );
+  Q_UNUSED( parent )
+  Q_UNUSED( row )
   // append
   int oldCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
   beginInsertRows( parent, oldCount, oldCount + count );
@@ -546,7 +546,7 @@ bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModel
 
 bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   beginRemoveRows( parent, row, row + count );
   for ( int newRow = row ; newRow < rowCount() - count ; newRow++ )
   {
@@ -757,7 +757,7 @@ bool QgsMergedBookmarksTableModel::projectAvailable() const
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
   beginResetModel();
-  QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
+  QSqlTableModel *qgisModel = qobject_cast<QSqlTableModel *>( &modelTo );
   if ( !qgisModel )
   {
     modelTo.insertRow( -1 );
@@ -768,7 +768,7 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
         modelTo.index( modelTo.rowCount() - 1, column ),
         modelFrom.data( modelFrom.index( row, column ) ) );
     }
-    qgisModel = dynamic_cast<QSqlTableModel *>( &modelFrom );
+    qgisModel = qobject_cast<QSqlTableModel *>( &modelFrom );
     Q_ASSERT( qgisModel );
     qgisModel->removeRows( row, 1 );
     qgisModel->select();

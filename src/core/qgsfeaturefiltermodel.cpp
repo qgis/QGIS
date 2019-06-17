@@ -116,7 +116,7 @@ QModelIndex QgsFeatureFilterModel::parent( const QModelIndex &child ) const
 
 int QgsFeatureFilterModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
 
   return mEntries.size();
 }

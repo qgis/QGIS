@@ -36,6 +36,7 @@
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingmaplayercombobox.h"
 #include "qgsnativealgorithms.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsxmlutils.h"
@@ -58,6 +59,8 @@
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutitemlabel.h"
 #include "qgsscalewidget.h"
+#include "mesh/qgsmeshlayer.h"
+#include "mesh/qgsmeshdataprovider.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -181,6 +184,7 @@ class TestProcessingGui : public QObject
     void testLayoutItemWrapper();
     void testPointPanel();
     void testPointWrapper();
+    void mapLayerComboBox();
 
   private:
 
@@ -3009,6 +3013,458 @@ void TestProcessingGui::testPointWrapper()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::mapLayerComboBox()
+{
+  QgsProject::instance()->removeAllMapLayers();
+  QgsProcessingContext context;
+  context.setProject( QgsProject::instance() );
+
+  // feature source param
+  std::unique_ptr< QgsProcessingParameterDefinition > param( new QgsProcessingParameterFeatureSource( QStringLiteral( "param" ), QString() ) );
+  std::unique_ptr< QgsProcessingMapLayerComboBox> combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+
+  QSignalSpy spy( combo.get(), &QgsProcessingMapLayerComboBox::valueChanged );
+  QVERIFY( !combo->value().isValid() );
+  combo->setValue( QStringLiteral( "file path" ), context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( combo->value().toString(), QStringLiteral( "file path" ) );
+  QVERIFY( !combo->currentLayer() );
+  QCOMPARE( spy.count(), 1 );
+  combo->setValue( QVariant(), context ); // not possible, it's not an optional param
+  QCOMPARE( combo->value().toString(), QStringLiteral( "file path" ) );
+  QVERIFY( !combo->currentLayer() );
+  QCOMPARE( spy.count(), 1 );
+  combo->setValue( QStringLiteral( "file path 2" ), context );
+  QCOMPARE( combo->value().toString(), QStringLiteral( "file path 2" ) );
+  QVERIFY( !combo->currentLayer() );
+  QCOMPARE( spy.count(), 2 );
+  combo->setValue( QStringLiteral( "file path" ), context );
+  QCOMPARE( combo->value().toString(), QStringLiteral( "file path" ) );
+  QVERIFY( !combo->currentLayer() );
+  QCOMPARE( spy.count(), 3 );
+  combo->setLayer( nullptr ); // not possible, not optional
+  QCOMPARE( combo->value().toString(), QStringLiteral( "file path" ) );
+  QVERIFY( !combo->currentLayer() );
+  QCOMPARE( spy.count(), 3 );
+
+  // project layers
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsFeature f;
+  vl->dataProvider()->addFeature( f );
+  QgsProject::instance()->addMapLayer( vl );
+  QVERIFY( vl->isValid() );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "l2" ), QStringLiteral( "memory" ) );
+  vl2->dataProvider()->addFeature( f );
+  QgsProject::instance()->addMapLayer( vl2 );
+  QVERIFY( vl2->isValid() );
+
+  QCOMPARE( combo->value().toString(), QStringLiteral( "file path" ) );
+  QVERIFY( !combo->currentLayer() );
+  QCOMPARE( spy.count(), 3 );
+
+  combo->setLayer( vl );
+  QCOMPARE( combo->currentLayer(), vl );
+  QCOMPARE( combo->value().toString(), vl->id() );
+  QVERIFY( combo->currentText().startsWith( vl->name() ) );
+  QCOMPARE( spy.count(), 4 );
+  combo->setLayer( vl );
+  QCOMPARE( spy.count(), 4 );
+
+  combo->setLayer( vl2 );
+  QCOMPARE( combo->value().toString(), vl2->id() );
+  QVERIFY( combo->currentText().startsWith( vl2->name() ) );
+  QCOMPARE( spy.count(), 5 );
+
+  combo->setValue( QStringLiteral( "file path" ), context );
+  QCOMPARE( combo->value().toString(), QStringLiteral( "file path" ) );
+  QVERIFY( !combo->currentLayer() );
+  QCOMPARE( spy.count(), 6 );
+
+  // setting feature source def, i.e. with selection
+  QgsProcessingFeatureSourceDefinition sourceDef( vl2->id(), false );
+  combo->setValue( sourceDef, context );
+  QCOMPARE( combo->value().toString(), vl2->id() );
+  QVERIFY( combo->currentText().startsWith( vl2->name() ) );
+  QCOMPARE( spy.count(), 7 );
+  // asking for selected features only, but no selection in layer, won't be allowed
+  sourceDef = QgsProcessingFeatureSourceDefinition( vl2->id(), true );
+  combo->setValue( sourceDef, context );
+  QCOMPARE( combo->value().toString(), vl2->id() );
+  QVERIFY( combo->currentText().startsWith( vl2->name() ) );
+  QCOMPARE( spy.count(), 7 ); // no change
+
+  // now make a selection in the layer, and repeat
+  vl2->selectAll();
+  combo->setValue( sourceDef, context );
+  QVERIFY( combo->value().canConvert< QgsProcessingFeatureSourceDefinition >() );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().source.staticValue().toString(), vl2->id() );
+  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().selectedFeaturesOnly );
+  QVERIFY( combo->currentText().startsWith( vl2->name() ) );
+  QCOMPARE( spy.count(), 8 );
+
+  // remove layer selection, and check result...
+  vl2->removeSelection();
+  QCOMPARE( combo->value().toString(), vl2->id() );
+  QVERIFY( combo->currentText().startsWith( vl2->name() ) );
+  QCOMPARE( spy.count(), 9 );
+
+  // phew, nearly there. Let's check another variation
+  vl2->selectAll();
+  combo->setValue( sourceDef, context );
+  QVERIFY( combo->value().canConvert< QgsProcessingFeatureSourceDefinition >() );
+  QCOMPARE( spy.count(), 10 );
+  combo->setValue( QVariant::fromValue( vl ), context );
+  QCOMPARE( combo->value().toString(), vl->id() );
+  QVERIFY( combo->currentText().startsWith( vl->name() ) );
+  QCOMPARE( spy.count(), 11 );
+
+  // one last variation - selection to selection
+  combo->setValue( sourceDef, context );
+  QCOMPARE( spy.count(), 12 );
+  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().selectedFeaturesOnly );
+  vl->selectAll();
+  sourceDef = QgsProcessingFeatureSourceDefinition( vl->id(), true );
+  combo->setValue( sourceDef, context );
+  // except "selected only" state to remain
+  QVERIFY( combo->value().canConvert< QgsProcessingFeatureSourceDefinition >() );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().source.staticValue().toString(), vl->id() );
+  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().selectedFeaturesOnly );
+  QVERIFY( combo->currentText().startsWith( vl->name() ) );
+  QCOMPARE( spy.count(), 13 );
+  combo.reset();
+  param.reset();
+
+  // setup a project with a range of layer types
+  QgsProject::instance()->removeAllMapLayers();
+  QgsVectorLayer *point = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( point );
+  QgsVectorLayer *line = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( line );
+  QgsVectorLayer *polygon = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( polygon );
+  QgsVectorLayer *noGeom = new QgsVectorLayer( QStringLiteral( "None" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( noGeom );
+  QgsMeshLayer *mesh = new QgsMeshLayer( QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle.2dm", QStringLiteral( "Triangle and Quad Mdal" ), QStringLiteral( "mdal" ) );
+  mesh->dataProvider()->addDataset( QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle_vertex_scalar_with_inactive_face.dat" );
+  QVERIFY( mesh->isValid() );
+  QgsProject::instance()->addMapLayer( mesh );
+  QgsRasterLayer *raster = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif", QStringLiteral( "band1_byte" ) );
+  QgsProject::instance()->addMapLayer( raster );
+
+  // map layer param, all types are acceptable
+  param = qgis::make_unique< QgsProcessingParameterMapLayer> ( QStringLiteral( "param" ), QString() );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  combo->setLayer( point );
+  QCOMPARE( combo->currentLayer(), point );
+  combo->setLayer( line );
+  QCOMPARE( combo->currentLayer(), line );
+  combo->setLayer( polygon );
+  QCOMPARE( combo->currentLayer(), polygon );
+  combo->setLayer( noGeom );
+  QCOMPARE( combo->currentLayer(), noGeom );
+  combo->setLayer( mesh );
+  QCOMPARE( combo->currentLayer(), mesh );
+  combo->setLayer( raster );
+  QCOMPARE( combo->currentLayer(), raster );
+  combo.reset();
+  param.reset();
+
+  // raster layer param, only raster types are acceptable
+  param = qgis::make_unique< QgsProcessingParameterRasterLayer> ( QStringLiteral( "param" ), QString() );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  combo->setLayer( point );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( line );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( raster );
+  QCOMPARE( combo->currentLayer(), raster );
+  combo.reset();
+  param.reset();
+
+  // mesh layer parm, only mesh types are acceptable
+  param = qgis::make_unique< QgsProcessingParameterMeshLayer> ( QStringLiteral( "param" ), QString() );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  combo->setLayer( point );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( line );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( mesh );
+  QCOMPARE( combo->currentLayer(), mesh );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo.reset();
+  param.reset();
+
+  // feature source and vector layer params
+  // if not specified, the default is any vector layer with geometry
+  param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ) );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  auto param2 = qgis::make_unique< QgsProcessingParameterFeatureSource> ( QStringLiteral( "param" ) );
+  auto combo2 = qgis::make_unique< QgsProcessingMapLayerComboBox >( param2.get() );
+  combo->setLayer( point );
+  QCOMPARE( combo->currentLayer(), point );
+  combo2->setLayer( point );
+  QCOMPARE( combo2->currentLayer(), point );
+  combo->setLayer( line );
+  QCOMPARE( combo->currentLayer(), line );
+  combo2->setLayer( line );
+  QCOMPARE( combo2->currentLayer(), line );
+  combo->setLayer( polygon );
+  QCOMPARE( combo->currentLayer(), polygon );
+  combo2->setLayer( polygon );
+  QCOMPARE( combo2->currentLayer(), polygon );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( noGeom );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( mesh );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+
+  // point layer
+  param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPoint );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  param2 = qgis::make_unique< QgsProcessingParameterFeatureSource> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPoint );
+  combo2 = qgis::make_unique< QgsProcessingMapLayerComboBox >( param2.get() );
+  combo->setLayer( point );
+  QCOMPARE( combo->currentLayer(), point );
+  combo2->setLayer( point );
+  QCOMPARE( combo2->currentLayer(), point );
+  combo->setLayer( line );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( line );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( polygon );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( noGeom );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( mesh );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+
+  // line layer
+  param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorLine );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  param2 = qgis::make_unique< QgsProcessingParameterFeatureSource> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorLine );
+  combo2 = qgis::make_unique< QgsProcessingMapLayerComboBox >( param2.get() );
+  combo->setLayer( point );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( point );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( line );
+  QCOMPARE( combo->currentLayer(), line );
+  combo2->setLayer( line );
+  QCOMPARE( combo2->currentLayer(), line );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( polygon );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( noGeom );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( mesh );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+
+  // polygon
+  param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPolygon );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  param2 = qgis::make_unique< QgsProcessingParameterFeatureSource> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPolygon );
+  combo2 = qgis::make_unique< QgsProcessingMapLayerComboBox >( param2.get() );
+  combo->setLayer( point );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( point );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( line );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( line );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( polygon );
+  QCOMPARE( combo->currentLayer(), polygon );
+  combo2->setLayer( polygon );
+  QCOMPARE( combo2->currentLayer(), polygon );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( noGeom );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( mesh );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+
+  // no geom
+  param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVector );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  param2 = qgis::make_unique< QgsProcessingParameterFeatureSource> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVector );
+  combo2 = qgis::make_unique< QgsProcessingMapLayerComboBox >( param2.get() );
+  combo->setLayer( point );
+  QCOMPARE( combo->currentLayer(), point );
+  combo2->setLayer( point );
+  QCOMPARE( combo2->currentLayer(), point );
+  combo->setLayer( line );
+  QCOMPARE( combo->currentLayer(), line );
+  combo2->setLayer( line );
+  QCOMPARE( combo2->currentLayer(), line );
+  combo->setLayer( polygon );
+  QCOMPARE( combo->currentLayer(), polygon );
+  combo2->setLayer( polygon );
+  QCOMPARE( combo2->currentLayer(), polygon );
+  combo->setLayer( noGeom );
+  QCOMPARE( combo->currentLayer(), noGeom );
+  combo2->setLayer( noGeom );
+  QCOMPARE( combo2->currentLayer(), noGeom );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( mesh );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+
+  // any geom
+  param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorAnyGeometry );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  param2 = qgis::make_unique< QgsProcessingParameterFeatureSource> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorAnyGeometry );
+  combo2 = qgis::make_unique< QgsProcessingMapLayerComboBox >( param2.get() );
+  combo->setLayer( point );
+  QCOMPARE( combo->currentLayer(), point );
+  combo2->setLayer( point );
+  QCOMPARE( combo2->currentLayer(), point );
+  combo->setLayer( line );
+  QCOMPARE( combo->currentLayer(), line );
+  combo2->setLayer( line );
+  QCOMPARE( combo2->currentLayer(), line );
+  combo->setLayer( polygon );
+  QCOMPARE( combo->currentLayer(), polygon );
+  combo2->setLayer( polygon );
+  QCOMPARE( combo2->currentLayer(), polygon );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( noGeom );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( mesh );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+
+  // combination point and line only
+  param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  param2 = qgis::make_unique< QgsProcessingParameterFeatureSource> ( QStringLiteral( "param" ), QString(), QList< int>() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine );
+  combo2 = qgis::make_unique< QgsProcessingMapLayerComboBox >( param2.get() );
+  combo->setLayer( point );
+  QCOMPARE( combo->currentLayer(), point );
+  combo2->setLayer( point );
+  QCOMPARE( combo2->currentLayer(), point );
+  combo->setLayer( line );
+  QCOMPARE( combo->currentLayer(), line );
+  combo2->setLayer( line );
+  QCOMPARE( combo2->currentLayer(), line );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( polygon );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( noGeom );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( mesh );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+
+  // optional
+  param = qgis::make_unique< QgsProcessingParameterVectorLayer> ( QStringLiteral( "param" ), QString(), QList< int>(), QVariant(), true );
+  combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  combo->setLayer( point );
+  QCOMPARE( combo->currentLayer(), point );
+  combo->setLayer( nullptr );
+  QVERIFY( !combo->currentLayer() );
+  QVERIFY( !combo->value().isValid() );
+  combo->setLayer( point );
+  QCOMPARE( combo->currentLayer(), point );
+  combo->setValue( QVariant(), context );
+  QVERIFY( !combo->currentLayer() );
+  QVERIFY( !combo->value().isValid() );
+
+  combo2.reset();
+  param2.reset();
+  combo.reset();
+  param.reset();
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestProcessingGui::cleanupTempDir()

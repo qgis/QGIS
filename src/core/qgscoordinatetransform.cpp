@@ -63,11 +63,17 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   if ( !d->checkValidity() )
     return;
 
+  Q_NOWARN_DEPRECATED_PUSH
+#if PROJ_VERSION_MAJOR>=6
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+#else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+#endif
   {
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project )
@@ -82,11 +88,17 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   if ( !d->checkValidity() )
     return;
 
+  Q_NOWARN_DEPRECATED_PUSH
+#if PROJ_VERSION_MAJOR>=6
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+#else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+#endif
   {
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destinationDatumTransform )
@@ -99,11 +111,17 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   if ( !d->checkValidity() )
     return;
 
+  Q_NOWARN_DEPRECATED_PUSH
+#if PROJ_VERSION_MAJOR>=6
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+#else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+#endif
   {
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o )
@@ -135,11 +153,17 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
     return;
 
   d->calculateTransforms( mContext );
+  Q_NOWARN_DEPRECATED_PUSH
+#if PROJ_VERSION_MAJOR>=6
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+#else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+#endif
   {
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -149,11 +173,17 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
     return;
 
   d->calculateTransforms( mContext );
+  Q_NOWARN_DEPRECATED_PUSH
+#if PROJ_VERSION_MAJOR>=6
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+#else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+#endif
   {
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &context )
@@ -167,11 +197,17 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
     return;
 
   d->calculateTransforms( mContext );
+  Q_NOWARN_DEPRECATED_PUSH
+#if PROJ_VERSION_MAJOR>=6
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+#else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+#endif
   {
     d->initialize();
     addToCache();
   }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsCoordinateTransformContext QgsCoordinateTransform::context() const
@@ -346,15 +382,15 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
     polyData++;
   }
 
+  QString err;
   try
   {
     transformCoords( nVertices, x.data(), y.data(), z.data(), direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException &e )
   {
-    // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
-    throw;
+    // record the exception, but don't rethrow it until we've recorded the coordinates we *could* transform
+    err = e.what();
   }
 
   QPointF *destPoint = poly.data();
@@ -366,6 +402,10 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
     destPoint->ry() = *srcY++;
     destPoint++;
   }
+
+  // rethrow the exception
+  if ( !err.isEmpty() )
+    throw QgsCsException( err );
 }
 
 void QgsCoordinateTransform::transformInPlace(
@@ -612,7 +652,17 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
   ProjData projData = d->threadLocalProjData();
-#if PROJ_VERSION_MAJOR<6
+
+  int projResult = 0;
+#if PROJ_VERSION_MAJOR>=6
+  proj_errno_reset( projData );
+  proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
+                      x, sizeof( double ), numPoints,
+                      y, sizeof( double ), numPoints,
+                      z, sizeof( double ), numPoints,
+                      nullptr, sizeof( double ), 0 );
+  projResult = proj_errno( projData );
+#else
   bool sourceIsLatLong = false;
   bool destIsLatLong = false;
 
@@ -632,27 +682,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   }
 #endif
 
-  int projResult = 0;
-#if PROJ_VERSION_MAJOR>=6
-  const bool sourceAxisOrderSwapped =  direction == ForwardTransform ? d->mSourceAxisOrderSwapped : d->mDestAxisOrderSwapped;
-
-  proj_trans_generic( projData, direction == ForwardTransform ? PJ_FWD : PJ_INV,
-                      !sourceAxisOrderSwapped ? x : y, sizeof( double ), numPoints,
-                      !sourceAxisOrderSwapped ? y : x, sizeof( double ), numPoints,
-                      z, sizeof( double ), numPoints,
-                      nullptr, sizeof( double ), 0 );
-  projResult = proj_errno( projData );
-  // ewww - this logic is gross. We should drop support for PROJ 6.0 as quickly as possible and dump this code (in favour of built in methods used for >=6.1 builds)
-  if ( projResult == 0 && ( d->mSourceAxisOrderSwapped != d->mDestAxisOrderSwapped ) )
-  {
-    size_t size = sizeof( double ) * numPoints;
-    void *tmp = malloc( size );
-    memcpy( tmp, x, size );
-    memcpy( x, y, size );
-    memcpy( y, tmp, size );
-    free( tmp );
-  }
-#else
+#if PROJ_VERSION_MAJOR<6
   if ( direction == ReverseTransform )
   {
     projResult = pj_transform( destProj, sourceProj, numPoints, 0, x, y, z );
@@ -752,6 +782,17 @@ bool QgsCoordinateTransform::isShortCircuited() const
   return !d->mIsValid || d->mShortCircuit;
 }
 
+QString QgsCoordinateTransform::coordinateOperation() const
+{
+  return d->mProjCoordinateOperation;
+}
+
+void QgsCoordinateTransform::setCoordinateOperation( const QString &operation ) const
+{
+  d.detach();
+  d->mProjCoordinateOperation = operation;
+}
+
 const char *finder( const char *name )
 {
   QString proj;
@@ -759,22 +800,30 @@ const char *finder( const char *name )
   proj = QApplication::applicationDirPath()
          + "/share/proj/" + QString( name );
 #else
-  Q_UNUSED( name );
+  Q_UNUSED( name )
 #endif
   return proj.toUtf8();
 }
 
-bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, int srcDatumTransform, int destDatumTransform )
+#if PROJ_VERSION_MAJOR>=6
+bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, const QString &coordinateOperationProj )
 {
   if ( !src.isValid() || !dest.isValid() )
     return false;
 
+  const QString sourceKey = src.authid().isEmpty() ?
+                            src.toWkt() : src.authid();
+  const QString destKey = dest.authid().isEmpty() ?
+                          dest.toWkt() : dest.authid();
+
+  if ( sourceKey.isEmpty() || destKey.isEmpty() )
+    return false;
+
   sCacheLock.lockForRead();
-  const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( src.authid(), dest.authid() ) );
+  const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( sourceKey, destKey ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
-    if ( ( *valIt ).sourceDatumTransformId() == srcDatumTransform &&
-         ( *valIt ).destinationDatumTransformId() == destDatumTransform )
+    if ( ( *valIt ).coordinateOperation() == coordinateOperationProj )
     {
       // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
       QgsCoordinateTransformContext context = mContext;
@@ -795,37 +844,96 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   sCacheLock.unlock();
   return false;
 }
+#else
+bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, int srcDatumTransform, int destDatumTransform )
+{
+  if ( !src.isValid() || !dest.isValid() )
+    return false;
+
+  const QString sourceKey = src.authid().isEmpty() ?
+                            src.toWkt() : src.authid();
+  const QString destKey = dest.authid().isEmpty() ?
+                          dest.toWkt() : dest.authid();
+
+  if ( sourceKey.isEmpty() || destKey.isEmpty() )
+    return false;
+
+  sCacheLock.lockForRead();
+  const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( src.authid(), dest.authid() ) );
+  for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( ( *valIt ).sourceDatumTransformId() == srcDatumTransform &&
+         ( *valIt ).destinationDatumTransformId() == destDatumTransform )
+    {
+      // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
+      QgsCoordinateTransformContext context = mContext;
+#ifdef QGISDEBUG
+      bool hasContext = mHasContext;
+#endif
+      *this = *valIt;
+      sCacheLock.unlock();
+
+      mContext = context;
+#ifdef QGISDEBUG
+      mHasContext = hasContext;
+#endif
+
+      return true;
+    }
+    Q_NOWARN_DEPRECATED_POP
+  }
+  sCacheLock.unlock();
+  return false;
+}
+#endif
 
 void QgsCoordinateTransform::addToCache()
 {
   if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
     return;
 
+  const QString sourceKey = d->mSourceCRS.authid().isEmpty() ?
+                            d->mSourceCRS.toWkt() : d->mSourceCRS.authid();
+  const QString destKey = d->mDestCRS.authid().isEmpty() ?
+                          d->mDestCRS.toWkt() : d->mDestCRS.authid();
+
+  if ( sourceKey.isEmpty() || destKey.isEmpty() )
+    return;
+
   sCacheLock.lockForWrite();
-  sTransforms.insertMulti( qMakePair( d->mSourceCRS.authid(), d->mDestCRS.authid() ), *this );
+  sTransforms.insertMulti( qMakePair( sourceKey, destKey ), *this );
   sCacheLock.unlock();
 }
 
 int QgsCoordinateTransform::sourceDatumTransformId() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return d->mSourceDatumTransform;
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsCoordinateTransform::setSourceDatumTransformId( int dt )
 {
   d.detach();
+  Q_NOWARN_DEPRECATED_PUSH
   d->mSourceDatumTransform = dt;
+  Q_NOWARN_DEPRECATED_POP
 }
 
 int QgsCoordinateTransform::destinationDatumTransformId() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return d->mDestinationDatumTransform;
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsCoordinateTransform::setDestinationDatumTransformId( int dt )
 {
   d.detach();
+  Q_NOWARN_DEPRECATED_PUSH
   d->mDestinationDatumTransform = dt;
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsCoordinateTransform::invalidateCache()
@@ -844,4 +952,24 @@ double QgsCoordinateTransform::scaleFactor( const QgsRectangle &ReferenceExtent 
   QgsPointXY dest2 = transform( source2 );
   double distDestUnits = std::sqrt( dest1.sqrDist( dest2 ) );
   return distDestUnits / distSourceUnits;
+}
+
+void QgsCoordinateTransform::setCustomMissingRequiredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler( handler );
+}
+
+void QgsCoordinateTransform::setCustomMissingPreferredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails &, const QgsDatumTransform::TransformDetails & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setCustomMissingPreferredGridHandler( handler );
+}
+
+void QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHandler( handler );
+}
+
+void QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( handler );
 }

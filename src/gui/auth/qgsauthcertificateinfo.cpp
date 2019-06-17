@@ -116,7 +116,7 @@ void QgsAuthCertInfo::setupError( const QString &msg )
 
 void QgsAuthCertInfo::currentCertItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   updateCurrentCert( current );
 }
 

@@ -181,7 +181,7 @@ void QgsMeasureTool::updateSettings()
 
 void QgsMeasureTool::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent *e )

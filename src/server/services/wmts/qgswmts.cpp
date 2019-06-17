@@ -56,7 +56,7 @@ namespace QgsWmts
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {
-        Q_UNUSED( project );
+        Q_UNUSED( project )
 
         const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 

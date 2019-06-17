@@ -269,8 +269,8 @@ QShortcut *QgsConfigureShortcutsDialog::currentShortcut()
 
 void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( current );
-  Q_UNUSED( previous );
+  Q_UNUSED( current )
+  Q_UNUSED( previous )
   // cancel previous shortcut setting (if any)
   setGettingShortcut( false );
 

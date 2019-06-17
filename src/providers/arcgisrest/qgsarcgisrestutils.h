@@ -51,6 +51,17 @@ class QgsFeatureRenderer;
 class QgsArcGisRestUtils
 {
   public:
+
+    /**
+     * Service types
+     */
+    enum ServiceTypeFilter
+    {
+      AllTypes, //!< All types
+      Vector,   //!< Vector type
+      Raster   //!< Raster type
+    };
+
     static QVariant::Type mapEsriFieldType( const QString &esriFieldType );
     static QgsWkbTypes::Type mapEsriGeometryType( const QString &esriGeometryType );
     static std::unique_ptr< QgsAbstractGeometry > parseEsriGeoJSON( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs = nullptr );
@@ -64,7 +75,7 @@ class QgsArcGisRestUtils
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
                                    const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
     static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
-    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
+    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr );
     static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
 
     static std::unique_ptr< QgsPoint > parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType );
@@ -96,8 +107,8 @@ class QgsArcGisRestUtils
     static QUrl parseUrl( const QUrl &url );
     static void adjustBaseUrl( QString &baseUrl, const QString name );
     static void visitFolderItems( const std::function<void ( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
-    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
-    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid )> &visitor, const QVariantMap &serviceData, const QString &parentUrl );
+    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter = QgsArcGisRestUtils::AllTypes );
+    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter = QgsArcGisRestUtils::AllTypes );
 };
 
 class QgsArcGisAsyncQuery : public QObject
@@ -107,7 +118,7 @@ class QgsArcGisAsyncQuery : public QObject
     QgsArcGisAsyncQuery( QObject *parent = nullptr );
     ~QgsArcGisAsyncQuery() override;
 
-    void start( const QUrl &url, QByteArray *result, bool allowCache = false );
+    void start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache = false, const QgsStringMap &headers = QgsStringMap() );
   signals:
     void finished();
     void failed( QString errorTitle, QString errorName );
@@ -123,7 +134,7 @@ class QgsArcGisAsyncParallelQuery : public QObject
 {
     Q_OBJECT
   public:
-    QgsArcGisAsyncParallelQuery( QObject *parent = nullptr );
+    QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsStringMap &requestHeaders, QObject *parent = nullptr );
     void start( const QVector<QUrl> &urls, QVector<QByteArray> *results, bool allowCache = false );
 
   signals:
@@ -135,6 +146,8 @@ class QgsArcGisAsyncParallelQuery : public QObject
     QVector<QByteArray> *mResults = nullptr;
     int mPendingRequests = 0;
     QStringList mErrors;
+    QString mAuthCfg;
+    QgsStringMap mRequestHeaders;
 };
 
 #endif // QGSARCGISRESTUTILS_H

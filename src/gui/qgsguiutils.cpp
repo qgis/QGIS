@@ -32,7 +32,7 @@ namespace QgsGuiUtils
       QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll )
   {
-    Q_UNUSED( enc );
+    Q_UNUSED( enc )
 
     QgsSettings settings;
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();

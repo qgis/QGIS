@@ -165,9 +165,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
 void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
 {
-  cbxWfsFeaturePaging->setEnabled( index == 0 || index == 3 );
-  lblPageSize->setEnabled( index == 0 || index == 3 );
-  txtPageSize->setEnabled( index == 0 || index == 3 );
+  // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
+  cbxWfsFeaturePaging->setEnabled( index == 0 || index >= 2 );
+  lblPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == 0 || index >= 2 ) );
+  txtPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == 0 || index >= 2 ) );
   cbxWfsIgnoreAxisOrientation->setEnabled( index != 1 );
 }
 
@@ -189,13 +190,13 @@ QString QgsNewHttpConnection::url() const
 
 void QgsNewHttpConnection::nameChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
 }
 
 void QgsNewHttpConnection::urlChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 }
@@ -237,6 +238,11 @@ bool QgsNewHttpConnection::validate()
 QPushButton *QgsNewHttpConnection::testConnectButton()
 {
   return mTestConnectionButton;
+}
+
+QgsAuthSettingsWidget *QgsNewHttpConnection::authSettingsWidget()
+{
+  return mAuthSettings;
 }
 
 QPushButton *QgsNewHttpConnection::wfsVersionDetectButton()
@@ -317,13 +323,17 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   txtReferer->setText( settings.value( wmsKey + "/referer" ).toString() );
   txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
 
-  bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", true ).toBool();
+  // Only default to paging enabled if WFS 2.0.0 or higher
+  bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", ( versionIdx == 0 || versionIdx >= 3 ) ).toBool();
   txtPageSize->setText( settings.value( wfsKey + "/pagesize" ).toString() );
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
 
-  txtPageSize->setEnabled( pagingEnabled );
-  lblPageSize->setEnabled( pagingEnabled );
-  cbxWfsFeaturePaging->setEnabled( pagingEnabled );
+  // Enable/disable these items per WFS versions
+  // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
+  txtPageSize->setEnabled( pagingEnabled && ( versionIdx == 0 || versionIdx >= 2 ) );
+  lblPageSize->setEnabled( pagingEnabled && ( versionIdx == 0 || versionIdx >= 2 ) );
+  cbxWfsFeaturePaging->setEnabled( versionIdx == 0 || versionIdx >= 2 );
+  cbxWfsIgnoreAxisOrientation->setEnabled( versionIdx != 1 );
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const

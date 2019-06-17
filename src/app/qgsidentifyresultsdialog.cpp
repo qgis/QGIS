@@ -16,6 +16,35 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QCloseEvent>
+#include <QLabel>
+#include <QAction>
+#include <QTreeWidgetItem>
+#include <QPixmap>
+#include <QMenu>
+#include <QClipboard>
+#include <QDesktopWidget>
+#include <QMenuBar>
+#include <QPushButton>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QDesktopServices>
+#include <QMessageBox>
+#include <QComboBox>
+#include <QTextDocument>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QRegExp>
+
+//graph
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_symbol.h>
+#include <qwt_legend.h>
+#include "qgscolorramp.h" // for random colors
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
@@ -50,35 +79,8 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsidentifymenu.h"
 
-#include <QCloseEvent>
-#include <QLabel>
-#include <QAction>
-#include <QTreeWidgetItem>
-#include <QPixmap>
-#include <QMenu>
-#include <QClipboard>
-#include <QDesktopWidget>
-#include <QMenuBar>
-#include <QPushButton>
-#include <QPrinter>
-#include <QPrintDialog>
-#include <QDesktopServices>
-#include <QMessageBox>
-#include <QComboBox>
-#include <QTextDocument>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QRegExp>
-
-//graph
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_symbol.h>
-#include <qwt_legend.h>
-#include "qgscolorramp.h" // for random colors
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -282,7 +284,7 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
 
 void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 {
-  Q_UNUSED( ok );
+  Q_UNUSED( ok )
 
   mWebView->show();
   treeWidget()->setItemWidget( this, 0, mWebView );
@@ -1156,7 +1158,7 @@ void QgsIdentifyResultsDialog::show()
 
 void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
   if ( item->data( 0, Qt::UserRole ).toString() == QLatin1String( "edit" ) )
   {
     lstResults->setCurrentItem( item );
@@ -1293,8 +1295,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 
       int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
-      QList<QgsMapLayerAction *>::const_iterator actionIt;
-      for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
+      for ( auto actionIt = registeredActions.constBegin(); actionIt != registeredActions.constEnd(); ++actionIt )
       {
         if ( ( *actionIt )->isEnabledOnlyWhenEditable() )
           continue;
@@ -1577,14 +1578,14 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *
 
 void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
 {
-  Q_UNUSED( item );
+  Q_UNUSED( item )
   // column width is now stored in settings
   //expandColumnsToFit();
 }
 
 void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
 
   mActionPrint->setEnabled( false );
 
@@ -1807,17 +1808,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
     highlight->setWidth( 2 );
   }
 
-  QgsSettings settings;
-  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-  double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-  double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
-
-  highlight->setColor( color ); // sets also fill with default alpha
-  color.setAlpha( alpha );
-  highlight->setFillColor( color ); // sets fill with alpha
-  highlight->setBuffer( buffer );
-  highlight->setMinWidth( minWidth );
+  QgsIdentifyMenu::styleHighlight( highlight );
   highlight->show();
   mHighlights.insert( featItem, highlight );
 }
@@ -2068,7 +2059,7 @@ void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
 
 void QgsIdentifyResultsDialog::mActionCopy_triggered( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
   copyFeature();
 }
 
@@ -2119,7 +2110,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
     return;
   }
 
-  QgsRaster::IdentifyFormat format = ( QgsRaster::IdentifyFormat ) combo->itemData( index, Qt::UserRole ).toInt();
+  QgsRaster::IdentifyFormat format = static_cast<QgsRaster::IdentifyFormat>( combo->itemData( index, Qt::UserRole ).toInt() );
   QgsDebugMsg( QStringLiteral( "format = %1" ).arg( format ) );
   QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
   if ( !layer )

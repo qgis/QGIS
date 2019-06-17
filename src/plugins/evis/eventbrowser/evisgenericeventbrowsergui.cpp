@@ -844,7 +844,7 @@ void eVisGenericEventBrowserGui::buttonboxOptions_clicked( QAbstractButton *butt
  */
 void eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   mConfiguration.setApplyPathRulesToDocs( chkboxApplyPathRulesToDocs->isChecked() );
 }
 
@@ -854,7 +854,7 @@ void eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged( int st
  */
 void eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mIgnoreEvent )
   {
     mConfiguration.setEventImagePathField( cboxEventImagePathField->currentText() );
@@ -882,7 +882,7 @@ void eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged( in
  */
 void eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mIgnoreEvent )
   {
     mConfiguration.setCompassBearingField( cboxCompassBearingField->currentText() );
@@ -910,7 +910,7 @@ void eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged( in
  */
 void eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mIgnoreEvent )
   {
     mConfiguration.setCompassOffsetField( cboxCompassOffsetField->currentText() );
@@ -938,7 +938,7 @@ void eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged( int
  */
 void eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   mConfiguration.setDisplayCompassBearing( chkboxDisplayCompassBearing->isChecked() );
   cboxCompassBearingField->setEnabled( chkboxDisplayCompassBearing->isChecked() );
 }
@@ -949,7 +949,7 @@ void eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged( int s
  */
 void eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   mConfiguration.setEventImagePathRelative( chkboxEventImagePathRelative->isChecked() );
 
   if ( chkboxEventImagePathRelative->isChecked() && "" == leBasePath->text() )
@@ -965,7 +965,7 @@ void eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged( int 
  */
 void eVisGenericEventBrowserGui::chkboxUseOnlyFilename_stateChanged( int state )
 {
-  Q_UNUSED( state );
+  Q_UNUSED( state )
   mConfiguration.setUseOnlyFilename( chkboxUseOnlyFilename->isChecked() );
 }
 

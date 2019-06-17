@@ -62,7 +62,7 @@ static void throwGEOSException( const char *fmt, ... )
 
 #ifdef _MSC_VER
   // stupid stupid MSVC, *SOMETIMES* raises it's own exception if we throw GEOSException, resulting in a crash!
-  // see https://issues.qgis.org/issues/14752
+  // see https://github.com/qgis/QGIS/issues/22709
   // if you want to test alternative fixes for this, run the testqgsexpression.cpp test suite - that will crash
   // and burn on the "line_interpolate_point point" test if a GEOSException is thrown.
   // TODO - find a real fix for the underlying issue
@@ -93,7 +93,7 @@ static void printGEOSNotice( const char *fmt, ... )
 
   QgsDebugMsg( QStringLiteral( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
 #else
-  Q_UNUSED( fmt );
+  Q_UNUSED( fmt )
 #endif
 }
 
@@ -1874,8 +1874,8 @@ geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int
 
 geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision )
 {
-  Q_UNUSED( hasM );
-  Q_UNUSED( m );
+  Q_UNUSED( hasM )
+  Q_UNUSED( m )
 
   geos::unique_ptr geosPoint;
 

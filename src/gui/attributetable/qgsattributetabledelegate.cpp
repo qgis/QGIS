@@ -61,7 +61,7 @@ const QgsAttributeTableModel *QgsAttributeTableDelegate::masterModel( const QAbs
 
 QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   QgsVectorLayer *vl = layer( index.model() );
   if ( !vl )
     return nullptr;
@@ -116,7 +116,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
   if ( ( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
   {
-    // This fixes https://issues.qgis.org/issues/16492
+    // This fixes https://github.com/qgis/QGIS/issues/24398
     QgsFeatureRequest request( fid );
     request.setFlags( QgsFeatureRequest::NoGeometry );
     request.setNoAttributes();

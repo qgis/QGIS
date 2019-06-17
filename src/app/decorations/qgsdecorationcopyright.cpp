@@ -110,7 +110,7 @@ void QgsDecorationCopyright::run()
 
 void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
-  Q_UNUSED( mapSettings );
+  Q_UNUSED( mapSettings )
   if ( !enabled() )
     return;
 

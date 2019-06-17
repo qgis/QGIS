@@ -20,6 +20,49 @@
 #include "qgssqliteutils.h"
 #include <sqlite3.h>
 
+#if PROJ_VERSION_MAJOR>=6
+#include "qgsprojutils.h"
+#include <proj.h>
+#endif
+
+QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
+{
+  QList< QgsDatumTransform::TransformDetails > res;
+#if PROJ_VERSION_MAJOR<6
+  Q_UNUSED( source )
+  Q_UNUSED( destination )
+#else
+  if ( !source.projObject() || !destination.projObject() )
+    return res;
+
+  PJ_CONTEXT *pjContext = QgsProjContext::get();
+
+  PJ_OPERATION_FACTORY_CONTEXT *operationContext = proj_create_operation_factory_context( pjContext, nullptr );
+
+  // We want to return ALL grids, not just those available for use
+  proj_operation_factory_context_set_grid_availability_use( pjContext, operationContext, PROJ_GRID_AVAILABILITY_IGNORED );
+
+  // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
+  proj_operation_factory_context_set_spatial_criterion( pjContext,   operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
+
+  if ( PJ_OBJ_LIST *ops = proj_create_operations( pjContext, source.projObject(), destination.projObject(), operationContext ) )
+  {
+    int count = proj_list_get_count( ops );
+    for ( int i = 0; i < count; ++i )
+    {
+      QgsProjUtils::proj_pj_unique_ptr op( proj_list_get( pjContext, ops, i ) );
+      if ( !op )
+        continue;
+
+      res.push_back( transformDetailsFromPj( op.get() ) );
+    }
+    proj_list_destroy( ops );
+  }
+  proj_operation_factory_context_destroy( operationContext );
+#endif
+  return res;
+}
+
 QList< QgsDatumTransform::TransformPair > QgsDatumTransform::datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS )
 {
   QList< QgsDatumTransform::TransformPair > transformations;
@@ -261,3 +304,46 @@ QgsDatumTransform::TransformInfo QgsDatumTransform::datumTransformInfo( int datu
 
   return info;
 }
+
+#if PROJ_VERSION_MAJOR >= 6
+QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( PJ *op )
+{
+  PJ_CONTEXT *pjContext = QgsProjContext::get();
+  TransformDetails details;
+  if ( !op )
+    return details;
+
+  QgsProjUtils::proj_pj_unique_ptr normalized( proj_normalize_for_visualization( pjContext, op ) );
+  if ( normalized )
+    details.proj = QString( proj_as_proj_string( pjContext, normalized.get(), PJ_PROJ_5, nullptr ) );
+
+  if ( details.proj.isEmpty() )
+    details.proj = QString( proj_as_proj_string( pjContext, op, PJ_PROJ_5, nullptr ) );
+  details.name = QString( proj_get_name( op ) );
+  details.accuracy = proj_coordoperation_get_accuracy( pjContext, op );
+  details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op );
+
+  for ( int j = 0; j < proj_coordoperation_get_grid_used_count( pjContext, op ); ++j )
+  {
+    const char *shortName = nullptr;
+    const char *fullName = nullptr;
+    const char *packageName = nullptr;
+    const char *url = nullptr;
+    int directDownload = 0;
+    int openLicense = 0;
+    int isAvailable = 0;
+    proj_coordoperation_get_grid_used( pjContext, op, j, &shortName, &fullName, &packageName, &url, &directDownload, &openLicense, &isAvailable );
+    GridDetails gridDetails;
+    gridDetails.shortName = QString( shortName );
+    gridDetails.fullName = QString( fullName );
+    gridDetails.packageName = QString( packageName );
+    gridDetails.url = QString( url );
+    gridDetails.directDownload = directDownload;
+    gridDetails.openLicense = openLicense;
+    gridDetails.isAvailable = isAvailable;
+
+    details.grids.append( gridDetails );
+  }
+  return details;
+}
+#endif

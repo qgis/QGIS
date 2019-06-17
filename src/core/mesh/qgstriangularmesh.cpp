@@ -131,7 +131,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
       }
       catch ( QgsCsException &cse )
       {
-        Q_UNUSED( cse );
+        Q_UNUSED( cse )
         QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
         mTriangularMesh.vertices[i] = vertex;
       }

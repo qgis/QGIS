@@ -37,6 +37,7 @@
 #include <QNetworkReply>
 #include <QThreadStorage>
 #include <QAuthenticator>
+#include <QStandardPaths>
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -601,8 +602,8 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
-    cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
-  qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toULongLong();
+    cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
+  qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toLongLong();
   newcache->setCacheDirectory( cacheDirectory );
   newcache->setMaximumCacheSize( cacheSize );
   QgsDebugMsgLevel( QStringLiteral( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ), 4 );
@@ -661,7 +662,7 @@ QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager:
 
 void QgsSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<QSslError> & )
 {
-  Q_UNUSED( reply );
+  Q_UNUSED( reply )
   QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 }
 
@@ -671,6 +672,6 @@ void QgsSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<QSsl
 
 void QgsNetworkAuthenticationHandler::handleAuthRequest( QNetworkReply *reply, QAuthenticator * )
 {
-  Q_UNUSED( reply );
+  Q_UNUSED( reply )
   QgsDebugMsg( QStringLiteral( "Network reply required authentication, but no handler was in place to provide this authentication request while accessing the URL:\n%1" ).arg( reply->request().url().toString() ) );
 }

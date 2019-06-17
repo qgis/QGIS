@@ -72,7 +72,7 @@ QDialog *QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *ite
 
 void QgsMapToolAnnotation::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   mCurrentMoveAction = QgsMapCanvasAnnotationItem::NoAction;
   mCanvas->setCursor( mCursor );

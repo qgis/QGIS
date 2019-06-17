@@ -161,16 +161,12 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   {
     mRasterViewPort->mSrcCRS = layer->crs();
     mRasterViewPort->mDestCRS = rendererContext.coordinateTransform().destinationCrs();
-    mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform().sourceDatumTransformId();
-    mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform().destinationDatumTransformId();
     mRasterViewPort->mTransformContext = rendererContext.transformContext();
   }
   else
   {
     mRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
     mRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
-    mRasterViewPort->mSrcDatumTransform = -1;
-    mRasterViewPort->mDestDatumTransform = -1;
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
@@ -271,6 +267,12 @@ bool QgsRasterLayerRenderer::render()
   QgsRasterIterator iterator( mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mPainter, mRasterViewPort, mMapToPixel, mFeedback );
+
+  const QStringList errors = mFeedback->errors();
+  for ( const QString &error : errors )
+  {
+    mErrors.append( error );
+  }
 
   QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 

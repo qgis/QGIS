@@ -375,6 +375,7 @@ Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) 
 
 
 
+
     static double normalizedAngle( double angle );
 %Docstring
 Ensures that an angle is in the range 0 <= angle < 2 pi.

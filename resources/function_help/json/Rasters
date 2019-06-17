@@ -1,0 +1,5 @@
+{
+  "name": "Rasters",
+  "type": "group",
+  "description": "Contains functions which calculate raster statistics and values."
+}

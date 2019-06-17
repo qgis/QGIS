@@ -77,7 +77,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::expression_valid( const QString &fo
 
 QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *feedback )
 {
-  Q_UNUSED( feedback );
+  Q_UNUSED( feedback )
 
   // check input
   if ( mOutputFile.isEmpty() )

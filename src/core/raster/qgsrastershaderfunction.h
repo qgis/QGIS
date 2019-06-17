@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRasterShaderFunction
     /**
      * Returns legend symbology items if provided by renderer.
      */
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ) }
 
   protected:
     //! \brief User defineable maximum value for the shading function

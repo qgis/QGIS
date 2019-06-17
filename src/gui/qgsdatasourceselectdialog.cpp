@@ -29,7 +29,7 @@
 QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   QgsBrowserModel *browserModel,
   bool setFilterByLayerType,
-  const QgsMapLayerType &layerType,
+  QgsMapLayerType layerType,
   QWidget *parent )
   : QDialog( parent )
 {
@@ -100,6 +100,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
 
   connect( mActionRefresh, &QAction::triggered, this, [ = ] { refreshModel( QModelIndex() ); } );
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, &QgsDataSourceSelectDialog::onLayerSelected );
+  connect( mBrowserTreeView, &QgsBrowserTreeView::doubleClicked, this, &QgsDataSourceSelectDialog::itemDoubleClicked );
   connect( mActionCollapse, &QAction::triggered, mBrowserTreeView, &QgsBrowserTreeView::collapseAll );
   connect( mActionShowFilter, &QAction::triggered, this, &QgsDataSourceSelectDialog::showFilterWidget );
   connect( mLeFilter, &QgsFilterLineEdit::returnPressed, this, &QgsDataSourceSelectDialog::setFilter );
@@ -159,6 +160,30 @@ void QgsDataSourceSelectDialog::showFilterWidget( bool visible )
   else
   {
     mLeFilter->setFocus();
+  }
+}
+
+void QgsDataSourceSelectDialog::setDescription( const QString &description )
+{
+  if ( !description.isEmpty() )
+  {
+    if ( !mDescriptionLabel )
+    {
+      mDescriptionLabel = new QLabel();
+      mDescriptionLabel->setWordWrap( true );
+      mDescriptionLabel->setMargin( 4 );
+      verticalLayout->insertWidget( 1, mDescriptionLabel );
+    }
+    mDescriptionLabel->setText( description );
+  }
+  else
+  {
+    if ( mDescriptionLabel )
+    {
+      verticalLayout->removeWidget( mDescriptionLabel );
+      delete mDescriptionLabel;
+      mDescriptionLabel = nullptr;
+    }
   }
 }
 
@@ -257,5 +282,12 @@ void QgsDataSourceSelectDialog::onLayerSelected( const QModelIndex &index )
     }
   }
   buttonBox->button( QDialogButtonBox::StandardButton::Ok )->setEnabled( isLayerCompatible );
+}
+
+void QgsDataSourceSelectDialog::itemDoubleClicked( const QModelIndex &index )
+{
+  onLayerSelected( index );
+  if ( buttonBox->button( QDialogButtonBox::StandardButton::Ok )->isEnabled() )
+    accept();
 }
 

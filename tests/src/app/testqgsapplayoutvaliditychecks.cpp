@@ -46,6 +46,7 @@ class TestQgsLayoutValidityChecks : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void testScaleBarValidity();
+    void testNorthArrowValidity();
     void testOverviewValidity();
     void testPictureValidity();
 
@@ -100,6 +101,56 @@ void TestQgsLayoutValidityChecks::testScaleBarValidity()
   QgsLayoutScaleBarValidityCheck check2;
   QVERIFY( check2.prepareCheck( &context, &f ) );
   res = check2.runCheck( &context, &f );
+  QCOMPARE( res.size(), 0 );
+}
+
+void TestQgsLayoutValidityChecks::testNorthArrowValidity()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  QgsLayoutItemPicture *picture = new QgsLayoutItemPicture( &l );
+  // we identify this as a north arrow based on the default picture path pointing to the default north arrow
+  picture->setPicturePath( QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ) );
+
+  l.addItem( picture );
+
+  QgsLayoutValidityCheckContext context( &l );
+  QgsFeedback f;
+
+  // scalebar not linked to map
+  QgsLayoutNorthArrowValidityCheck check;
+  QVERIFY( check.prepareCheck( &context, &f ) );
+  QList< QgsValidityCheckResult > res = check.runCheck( &context, &f );
+  QCOMPARE( res.size(), 1 );
+  QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
+
+  // now link a map
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  l.addItem( map );
+  picture->setLinkedMap( map );
+
+  QgsLayoutNorthArrowValidityCheck check2;
+  QVERIFY( check2.prepareCheck( &context, &f ) );
+  res = check2.runCheck( &context, &f );
+  QCOMPARE( res.size(), 0 );
+
+  // test with ID check
+  picture->setPicturePath( QStringLiteral( "a" ) );
+  picture->setId( QStringLiteral( "north arrow 2" ) );
+  picture->setLinkedMap( nullptr );
+
+  QgsLayoutNorthArrowValidityCheck check3;
+  QVERIFY( check3.prepareCheck( &context, &f ) );
+  res = check3.runCheck( &context, &f );
+  QCOMPARE( res.size(), 1 );
+  QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
+
+  // no longer looks like a north arrow
+  picture->setId( QStringLiteral( "a" ) );
+  QgsLayoutNorthArrowValidityCheck check4;
+  QVERIFY( check4.prepareCheck( &context, &f ) );
+  res = check4.runCheck( &context, &f );
   QCOMPARE( res.size(), 0 );
 }
 

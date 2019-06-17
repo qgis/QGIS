@@ -389,7 +389,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     }
     catch ( QgsCsException &e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( QStringLiteral( "Transform error caught: %1" ).arg( e.what() ) );
     }
   }
@@ -1074,7 +1074,7 @@ void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds 
 
 }
 
-void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids )
+void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter )
 {
   if ( !layer )
   {
@@ -1085,7 +1085,8 @@ void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &
   QString errorMsg;
   if ( boundingBoxOfFeatureIds( ids, layer, bbox, errorMsg ) )
   {
-    setCenter( bbox.center() );
+    if ( alwaysRecenter || !mapSettings().extent().contains( bbox ) )
+      setCenter( bbox.center() );
     refresh();
   }
   else
@@ -1876,7 +1877,7 @@ void QgsMapCanvas::setRenderFlag( bool flag )
 #if 0
 void QgsMapCanvas::connectNotify( const char *signal )
 {
-  Q_UNUSED( signal );
+  Q_UNUSED( signal )
   QgsDebugMsg( "QgsMapCanvas connected to " + QString( signal ) );
 } //connectNotify
 #endif
@@ -1962,7 +1963,7 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
 void QgsMapCanvas::panAction( QMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   // move all map canvas items
   moveCanvasContents();
@@ -2120,7 +2121,13 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
 
   // store canvas expression context
   QDomElement scopeElement = doc.createElement( QStringLiteral( "expressionContextScope" ) );
-  mExpressionContextScope.writeXml( scopeElement, doc, QgsReadWriteContext() );
+  QgsExpressionContextScope tmpScope( mExpressionContextScope );
+  tmpScope.removeVariable( QStringLiteral( "atlas_featurenumber" ) );
+  tmpScope.removeVariable( QStringLiteral( "atlas_pagename" ) );
+  tmpScope.removeVariable( QStringLiteral( "atlas_feature" ) );
+  tmpScope.removeVariable( QStringLiteral( "atlas_featureid" ) );
+  tmpScope.removeVariable( QStringLiteral( "atlas_geometry" ) );
+  tmpScope.writeXml( scopeElement, doc, QgsReadWriteContext() );
   mapcanvasNode.appendChild( scopeElement );
 
   // TODO: store only units, extent, projections, dest CRS

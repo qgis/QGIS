@@ -20,8 +20,6 @@
 __author__ = 'Victor Olaya'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 from functools import partial
@@ -124,7 +122,7 @@ WIDGET, BASE = uic.loadUiType(
 
 class ExpressionWidget(BASE, WIDGET):
 
-    _expressions = {"NDVI": "([NIR] - [Red]) % ([NIR] + [Red])"}
+    _expressions = {"NDVI": "([NIR] - [Red]) / ([NIR] + [Red])"}
 
     def __init__(self, options):
         super(ExpressionWidget, self).__init__(None)

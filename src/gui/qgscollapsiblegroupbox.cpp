@@ -207,7 +207,7 @@ void QgsCollapsibleGroupBoxBasic::clearModifiers()
 
 void QgsCollapsibleGroupBoxBasic::checkToggled( bool chkd )
 {
-  Q_UNUSED( chkd );
+  Q_UNUSED( chkd )
   mCollapseButton->setEnabled( true ); // always keep enabled
 }
 

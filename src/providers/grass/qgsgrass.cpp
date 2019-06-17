@@ -601,7 +601,7 @@ void QgsGrass::setMapset( const QString &gisdbase, const QString &location, cons
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QString( "No available mapsets found: %1" ).arg( e.what() ) );
     return;
   }
@@ -1603,7 +1603,7 @@ bool QgsGrass::defaultRegion( const QString &gisdbase, const QString &location,
   }
   catch ( QgsGrass::Exception &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     return false;
   }
 }
@@ -2108,7 +2108,7 @@ QgsCoordinateReferenceSystem QgsGrass::crsDirect( const QString &gisdbase, const
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( e.what() ) );
       return QgsCoordinateReferenceSystem();
     }

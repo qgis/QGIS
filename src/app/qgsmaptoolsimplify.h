@@ -81,7 +81,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     void clearSelection();
 
-    void setMethod( Method method );
+    void setMethod( QgsMapToolSimplify::Method method );
 
   private:
 

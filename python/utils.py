@@ -20,8 +20,6 @@
 __author__ = 'Martin Dobias'
 __date__ = 'November 2009'
 __copyright__ = '(C) 2009, Martin Dobias'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 """
 QGIS utilities module
@@ -263,6 +261,11 @@ def findPlugins(path):
 
         pluginName = os.path.basename(plugin)
         yield (pluginName, cp)
+
+
+def metadataParser():
+    """Used by other modules to access the local parser object"""
+    return plugins_metadata_parser
 
 
 def updateAvailablePlugins():

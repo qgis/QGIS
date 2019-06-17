@@ -428,7 +428,51 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     mLayer = OGR_DS_CreateLayer( mDS.get(), layerName.toUtf8().constData(), mOgrRef, wkbType, options );
     if ( newLayer && mLayer )
+    {
       *newLayer = OGR_L_GetName( mLayer );
+      if ( driverName == QLatin1String( "GPX" ) )
+      {
+        // See logic in GDAL ogr/ogrsf_frmts/gpx/ogrgpxdatasource.cpp ICreateLayer()
+        switch ( QgsWkbTypes::flatType( geometryType ) )
+        {
+          case QgsWkbTypes::Point:
+          {
+            if ( !EQUAL( layerName.toUtf8().constData(), "track_points" ) &&
+                 !EQUAL( layerName.toUtf8().constData(), "route_points" ) )
+            {
+              *newLayer = QStringLiteral( "waypoints" );
+            }
+          }
+          break;
+
+          case QgsWkbTypes::LineString:
+          {
+            const char *pszForceGPXTrack
+              = CSLFetchNameValue( options, "FORCE_GPX_TRACK" );
+            if ( pszForceGPXTrack && CPLTestBool( pszForceGPXTrack ) )
+              *newLayer = QStringLiteral( "tracks" );
+            else
+              *newLayer = QStringLiteral( "routes" );
+
+          }
+          break;
+
+          case QgsWkbTypes::MultiLineString:
+          {
+            const char *pszForceGPXRoute
+              = CSLFetchNameValue( options, "FORCE_GPX_ROUTE" );
+            if ( pszForceGPXRoute && CPLTestBool( pszForceGPXRoute ) )
+              *newLayer = QStringLiteral( "routes" );
+            else
+              *newLayer = QStringLiteral( "tracks" );
+          }
+          break;
+
+          default:
+            break;
+        }
+      }
+    }
   }
   else if ( driverName == QLatin1String( "DGN" ) )
   {
@@ -2161,7 +2205,7 @@ bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRe
 gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeature &feature )
 {
   QgsLocaleNumC l; // Make sure the decimal delimiter is a dot
-  Q_UNUSED( l );
+  Q_UNUSED( l )
 
   gdal::ogr_feature_unique_ptr poFeature( OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) ) );
 

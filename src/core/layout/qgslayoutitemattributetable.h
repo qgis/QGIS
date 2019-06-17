@@ -303,7 +303,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     //! Attribute source
     ContentSource mSource = LayerAttributes;
     //! Associated vector layer
-    QgsVectorLayerRef mVectorLayer;
+    QgsVectorLayerRef mVectorLayer = nullptr;
 
     //! Data defined vector layer - only
     QPointer< QgsVectorLayer > mDataDefinedVectorLayer;

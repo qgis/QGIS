@@ -79,7 +79,7 @@ QSize QgsLayoutRuler::minimumSizeHint() const
 
 void QgsLayoutRuler::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   if ( !mView || !mView->currentLayout() )
   {
     return;

@@ -95,7 +95,7 @@ void QgsHillshadeRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem 
 
 QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
@@ -561,24 +561,22 @@ void QgsHillshadeRenderer::setBand( int bandNo )
 
 double QgsHillshadeRenderer::calcFirstDerX( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33, double cellsize )
 {
-  Q_UNUSED( x12 );
-  Q_UNUSED( x22 );
-  Q_UNUSED( x32 );
+  Q_UNUSED( x12 )
+  Q_UNUSED( x22 )
+  Q_UNUSED( x32 )
   return ( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8 * cellsize );
 }
 
 double QgsHillshadeRenderer::calcFirstDerY( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33, double cellsize )
 {
-  Q_UNUSED( x21 );
-  Q_UNUSED( x22 );
-  Q_UNUSED( x23 );
+  Q_UNUSED( x21 )
+  Q_UNUSED( x22 )
+  Q_UNUSED( x23 )
   return ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -cellsize );
 }
 
 void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 

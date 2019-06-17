@@ -1698,6 +1698,8 @@ bool QgsAuthManager::initSslCaches()
   res = res && rebuildCertTrustCache();
   res = res && rebuildTrustedCaCertsCache();
   res = res && rebuildIgnoredSslErrorCache();
+  mCustomConfigByHostCache.clear();
+  mHasCheckedIfCustomConfigByHostExists = false;
 
   QgsDebugMsg( QStringLiteral( "Init of SSL caches %1" ).arg( res ? "SUCCEEDED" : "FAILED" ) );
   return res;
@@ -1994,6 +1996,8 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
                .arg( config.sslHostPort().trimmed(), id ) );
 
   updateIgnoredSslErrorsCacheFromConfig( config );
+  mHasCheckedIfCustomConfigByHostExists = false;
+  mCustomConfigByHostCache.clear();
 
   return true;
 }
@@ -2042,23 +2046,53 @@ const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfig( const QString 
 
 const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfigByHost( const QString &hostport )
 {
-  QMutexLocker locker( mMutex );
   QgsAuthConfigSslServer config;
-
   if ( hostport.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Passed host:port is empty" ) );
     return config;
   }
 
+  QMutexLocker locker( mMutex );
+  if ( mHasCheckedIfCustomConfigByHostExists && !mHasCustomConfigByHost )
+    return config;
+  if ( mCustomConfigByHostCache.contains( hostport ) )
+    return mCustomConfigByHostCache.value( hostport );
+
   QSqlQuery query( authDatabaseConnection() );
+
+  // first run -- see if we have ANY custom config by host. If not, we can skip all future checks for any host
+  if ( !mHasCheckedIfCustomConfigByHostExists )
+  {
+    mHasCheckedIfCustomConfigByHostExists = true;
+    query.prepare( QString( "SELECT count(*) FROM %1" ).arg( authDatabaseServersTable() ) );
+    if ( !authDbQuery( &query ) )
+    {
+      mHasCustomConfigByHost = false;
+      return config;
+    }
+    if ( query.isActive() && query.isSelect() && query.first() )
+    {
+      mHasCustomConfigByHost = query.value( 0 ).toInt() > 0;
+      if ( !mHasCustomConfigByHost )
+        return config;
+    }
+    else
+    {
+      mHasCustomConfigByHost = false;
+      return config;
+    }
+  }
+
   query.prepare( QString( "SELECT id, host, cert, config FROM %1 "
                           "WHERE host = :host" ).arg( authDatabaseServersTable() ) );
 
   query.bindValue( QStringLiteral( ":host" ), hostport.trimmed() );
 
   if ( !authDbQuery( &query ) )
+  {
+    mCustomConfigByHostCache.insert( hostport, config );
     return config;
+  }
 
   if ( query.isActive() && query.isSelect() )
   {
@@ -2075,9 +2109,12 @@ const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfigByHost( const QS
       emit messageOut( tr( "Authentication database contains duplicate SSL cert custom configs for host:port: %1" )
                        .arg( hostport ), authManTag(), WARNING );
       QgsAuthConfigSslServer emptyconfig;
+      mCustomConfigByHostCache.insert( hostport, emptyconfig );
       return emptyconfig;
     }
   }
+
+  mCustomConfigByHostCache.insert( hostport, config );
   return config;
 }
 
@@ -2154,6 +2191,9 @@ bool QgsAuthManager::removeSslCertCustomConfig( const QString &id, const QString
     QgsDebugMsg( QStringLiteral( "Passed config ID or host:port is empty" ) );
     return false;
   }
+
+  mHasCheckedIfCustomConfigByHostExists = false;
+  mCustomConfigByHostCache.clear();
 
   QSqlQuery query( authDatabaseConnection() );
 
@@ -2905,7 +2945,7 @@ void QgsAuthManager::writeToConsole( const QString &message,
                                      const QString &tag,
                                      QgsAuthManager::MessageLevel level )
 {
-  Q_UNUSED( tag );
+  Q_UNUSED( tag )
 
   // only output WARNING and CRITICAL messages
   if ( level == QgsAuthManager::INFO )
@@ -3478,8 +3518,8 @@ bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, cons
 bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass, const QString &prevciv )
 {
   // TODO: start remove (when function is actually used)
-  Q_UNUSED( prevpass );
-  Q_UNUSED( prevciv );
+  Q_UNUSED( prevpass )
+  Q_UNUSED( prevciv )
   return true;
   // end remove
 

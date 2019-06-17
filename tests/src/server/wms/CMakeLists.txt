@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_SOURCE_DIR}/src/server/services
   ${CMAKE_SOURCE_DIR}/src/server/services/wms
+  ${CMAKE_SOURCE_DIR}/external
 )
 
 #note for tests we should not include the moc of our

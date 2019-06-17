@@ -18,8 +18,6 @@ from builtins import next
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import psycopg2
@@ -242,7 +240,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         test_unique([f for f in vl.getFeatures()], 4)
 
-    # See https://issues.qgis.org/issues/14262
+    # See https://github.com/qgis/QGIS/issues/22258
     # TODO: accept multi-featured layers, and an array of values/fids
     def testSignedIdentifiers(self):
 
@@ -619,36 +617,42 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
         self.assertTrue(vl.isValid())
 
-        fields = vl.dataProvider().fields()
-        self.assertEqual(fields.at(fields.indexFromName('jvalue')).type(), QVariant.Map)
-        self.assertEqual(fields.at(fields.indexFromName('jbvalue')).type(), QVariant.Map)
-
-        fi = vl.getFeatures(QgsFeatureRequest())
-        f = QgsFeature()
-
-        # test list
-        fi.nextFeature(f)
-        value_idx = vl.fields().lookupField('jvalue')
-        self.assertIsInstance(f.attributes()[value_idx], list)
-        self.assertEqual(f.attributes()[value_idx], [1, 2, 3])
-        self.assertEqual(f.attributes()[value_idx], [1.0, 2.0, 3.0])
-
-        value_idx = vl.fields().lookupField('jbvalue')
-        self.assertIsInstance(f.attributes()[value_idx], list)
-        self.assertEqual(f.attributes()[value_idx], [4, 5, 6])
-        self.assertEqual(f.attributes()[value_idx], [4.0, 5.0, 6.0])
-
-        # test dict
-        fi.nextFeature(f)
-        value_idx = vl.fields().lookupField('jvalue')
-        self.assertIsInstance(f.attributes()[value_idx], dict)
-        self.assertEqual(f.attributes()[value_idx], {'a': 1, 'b': 2})
-        self.assertEqual(f.attributes()[value_idx], {'a': 1.0, 'b': 2.0})
-
-        value_idx = vl.fields().lookupField('jbvalue')
-        self.assertIsInstance(f.attributes()[value_idx], dict)
-        self.assertEqual(f.attributes()[value_idx], {'c': 4, 'd': 5})
-        self.assertEqual(f.attributes()[value_idx], {'c': 4.0, 'd': 5.0})
+        attrs = (
+            123,
+            1233.45,
+            None,
+            True,
+            False,
+            r"String literal with \"quotes\" 'and' other funny chars []{};#/èé*",
+            [1, 2, 3.4, None],
+            [True, False],
+            {'a': 123, 'b': 123.34, 'c': 'a string', 'd': [1, 2, 3], 'e': {'a': 123, 'b': 123.45}}
+        )
+        json_idx = vl.fields().lookupField('jvalue')
+        jsonb_idx = vl.fields().lookupField('jbvalue')
+        for attr in attrs:
+            # Add a new feature
+            vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+            self.assertTrue(vl2.startEditing())
+            f = QgsFeature(vl2.fields())
+            f.setAttributes([None, attr, attr])
+            self.assertTrue(vl2.addFeatures([f]))
+            self.assertTrue(vl2.commitChanges(), attr)
+            # Read back
+            vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+            fid = [f.id() for f in vl2.getFeatures()][-1]
+            f = vl2.getFeature(fid)
+            self.assertEqual(f.attributes(), [fid, attr, attr])
+            # Change attribute values
+            vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+            fid = [f.id() for f in vl2.getFeatures()][-1]
+            self.assertTrue(vl2.startEditing())
+            self.assertTrue(vl2.changeAttributeValues(fid, {json_idx: attr, jsonb_idx: attr}))
+            self.assertTrue(vl2.commitChanges())
+            # Read back
+            vl2 = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+            f = vl2.getFeature(fid)
+            self.assertEqual(f.attributes(), [fid, attr, attr])
 
     def testStringArray(self):
         vl = QgsVectorLayer('%s table="qgis_test"."string_array" sql=' % (self.dbconn), "teststringarray", "postgres")
@@ -811,7 +815,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # If an attribute map is provided, QgsVectorLayerUtils.createFeature must
         # respect it, otherwise default values from provider are checked.
         # User's choice will not be respected if the value violates unique constraints.
-        # See https://issues.qgis.org/issues/19936
+        # See https://github.com/qgis/QGIS/issues/27758
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
         # changed so that createFeature respects user choice
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'map', None, None])
@@ -825,7 +829,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5})
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
 
-    # See https://issues.qgis.org/issues/15188
+    # See https://github.com/qgis/QGIS/issues/23127
     def testNumericPrecision(self):
         uri = 'point?field=f1:int'
         uri += '&field=f2:double(6,4)'
@@ -849,7 +853,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f['f2'], 123.456)
         self.assertEqual(f['f3'], '12345678.90123456789')
 
-    # See https://issues.qgis.org/issues/15226
+    # See https://github.com/qgis/QGIS/issues/23163
     def testImportKey(self):
         uri = 'point?field=f1:int'
         uri += '&field=F2:double(6,4)'
@@ -891,7 +895,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         testKey(lyr, '"f1","F2","f3"', ['f1', 'F2', 'f3'])
         testKey(lyr, None, ['id'])
 
-    # See https://issues.qgis.org/issues/17518
+    # See https://github.com/qgis/QGIS/issues/25415
     def testImportWithoutSchema(self):
 
         def _test(table, schema=None):

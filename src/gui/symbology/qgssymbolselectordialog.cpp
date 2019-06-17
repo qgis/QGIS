@@ -244,6 +244,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
 
   layersTree->setMaximumHeight( static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
   layersTree->setMinimumHeight( layersTree->maximumHeight() );
+  lblPreview->setMaximumWidth( layersTree->maximumHeight() );
 
   // setup icons
   btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );

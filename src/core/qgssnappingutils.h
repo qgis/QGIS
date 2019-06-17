@@ -191,9 +191,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
-    virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ); }
+    virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ) }
     //! Called when finished indexing a layer. When index == count the indexing is complete
-    virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
+    virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ) }
 
     //! Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
     void clearAllLocators();

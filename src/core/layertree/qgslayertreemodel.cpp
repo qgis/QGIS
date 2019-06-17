@@ -91,7 +91,7 @@ int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
 
 int QgsLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 
@@ -778,7 +778,7 @@ void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode *node )
 
 void QgsLayerTreeModel::nodeNameChanged( QgsLayerTreeNode *node, const QString &name )
 {
-  Q_UNUSED( name );
+  Q_UNUSED( name )
   Q_ASSERT( node );
 
   QModelIndex index = node2index( node );

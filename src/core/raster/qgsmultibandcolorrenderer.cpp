@@ -133,7 +133,7 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
 
 QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
@@ -420,8 +420,6 @@ QList<int> QgsMultiBandColorRenderer::usesBands() const
 
 void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 

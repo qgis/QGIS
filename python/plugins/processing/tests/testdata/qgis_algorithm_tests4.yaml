@@ -315,6 +315,25 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:intersection
+    name: Test Intersection (custom prefix)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY_FIELDS_PREFIX: pre_
+    results:
+      OUTPUT:
+        name: expected/intersection_prefix.gml
+        type: vector
+        pk: [id_a, pre_id_b]
+        compare:
+          fields:
+            fid: skip
+
   - algorithm: native:wedgebuffers
     name: Wedge buffers
     params:
@@ -383,6 +402,7 @@ tests:
         compare:
           fields:
             fid: skip
+
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference B - A (basic)
     params:
@@ -397,6 +417,25 @@ tests:
         name: expected/symmetrical_difference1_b_a.gml
         type: vector
         pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference B - A (custom prefix)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY_FIELDS_PREFIX: pre_
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference_prefix.gml
+        type: vector
+        pk: [pre_id_a, id_b]
         compare:
           fields:
             fid: skip
@@ -430,6 +469,25 @@ tests:
         name: expected/union1.gml
         type: vector
         pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (custom prefix)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY_FIELDS_PREFIX: pre_
+    results:
+      OUTPUT:
+        name: expected/union_prefix.gml
+        type: vector
+        pk: [id_a, pre_id_b]
         compare:
           fields:
             fid: skip
@@ -1351,6 +1409,10 @@ tests:
         type: vector
         pk:
         - zone
+        compare:
+          fields:
+            sum:
+              precision: 0
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, zones ref
@@ -1874,6 +1936,10 @@ tests:
       OUTPUT:
         name: expected/add_xy_3857.gml
         type: vector
+        compare:
+          fields:
+            p_x:
+              precision: 6
 
   - algorithm: native:joinbynearest
     name: Join by nearest polys to points
@@ -1958,6 +2024,14 @@ tests:
       OUTPUT:
         name: expected/nearest_points_to_reproj_lines.gml
         type: vector
+        compare:
+          fields:
+            distance:
+              precision: 5
+            feature_x:
+              precision: 5
+            nearest_x:
+              precision: 5
 
   - algorithm: native:joinbynearest
     name: Nearest lines to points, reprojected
@@ -1974,6 +2048,12 @@ tests:
       OUTPUT:
         name: expected/nearest_lines_to_points_reprojected.gml
         type: vector
+        compare:
+          fields:
+            distance:
+              precision: 5
+            nearest_y:
+              precision: 5
 
   - algorithm: native:joinbynearest
     name: Join to nearest, self join
@@ -2045,8 +2125,8 @@ tests:
         name: expected/join_to_nearest_no_matches.gml
         type: vector
 
-  - name: Generate XYZ tiles
-    algorithm: qgis:tilesxyz
+  - name: Generate XYZ tiles (Directory)
+    algorithm: qgis:tilesxyzdirectory
     project: ../../../../../tests/testdata/xyztiles.qgs
     project_crs: EPSG:3857
     params:
@@ -2054,12 +2134,79 @@ tests:
       ZOOM_MIN: 1
       ZOOM_MAX: 3
       TILE_FORMAT: 0     # png
-      OUTPUT_FORMAT: 0   # directory
+      TMS_CONVENTION: false
+      TILE_WIDTH: 256
+      TILE_HEIGHT: 256
 
     results:
       OUTPUT_DIRECTORY:
         type: directory
         name: expected/xyztiles
 
+  - algorithm: native:calculatevectoroverlaps
+    name: Overlap analysis 1
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+      LAYERS:
+        params:
+        - name: custom/overlay1_a.geojson
+          type: vector
+        - name: custom/overlay1_b.geojson
+          type: vector
+        - name: custom/overlay2_a.geojson
+          type: vector
+        - name: custom/overlay2_b.geojson
+          type: vector
+        - name: custom/overlay3_a.geojson
+          type: vector
+        - name: custom/overlay3_b.geojson
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/overlap_analysis_1.gml
+        type: vector
+
+  - algorithm: native:calculatevectoroverlaps
+    name: Overlap analysis reprojected
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/overlay0_4326.gml|layername=overlay0_4326
+        type: vector
+      LAYERS:
+        params:
+        - name: custom/overlay1_a.geojson
+          type: vector
+        - name: custom/overlay1_b.geojson
+          type: vector
+        - name: custom/overlay2_a.geojson
+          type: vector
+        - name: custom/overlay2_b.geojson
+          type: vector
+        - name: custom/overlay3_a.geojson
+          type: vector
+        - name: custom/overlay3_b.geojson
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/overlap_analysis_4326.gml
+        type: vector
+        compare:
+          fields:
+            custom_overlay2_a.geojson_area:
+              precision: 13
+            custom_overlay2_a.geojson_pc:
+              precision: 13
+            custom_overlay2_b.geojson_area:
+              precision: 8
+            custom_overlay2_b.geojson_pc:
+              precision: 7
 
 # See ../README.md for a description of the file format

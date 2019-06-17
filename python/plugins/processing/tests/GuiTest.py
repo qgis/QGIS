@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'August 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.testing import start_app, unittest
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
@@ -36,6 +32,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterRange,
+                       QgsFeature,
                        QgsVectorLayer,
                        QgsProject)
 from qgis.analysis import QgsNativeAlgorithms
@@ -76,6 +73,9 @@ class WrappersTest(unittest.TestCase):
         self.assertIsInstance(wrapper, expected_wrapper_class)
         self.assertEqual(wrapper.dialog, dlg)
         self.assertIsNotNone(wrapper.widget)
+        wrapper.widget.deleteLater()
+        del wrapper.widget
+        del wrapper
 
         alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         # batch dialog
@@ -96,6 +96,9 @@ class WrappersTest(unittest.TestCase):
         self.assertIsInstance(wrapper, expected_wrapper_class)
         self.assertEqual(wrapper.dialog, dlg)
         self.assertIsNotNone(wrapper.widget)
+
+        wrapper.widget.deleteLater()
+        del wrapper.widget
 
     def testBoolean(self):
         self.checkConstructWrapper(QgsProcessingParameterBoolean('test'), BooleanWidgetWrapper)
@@ -138,6 +141,10 @@ class WrappersTest(unittest.TestCase):
 
         # dummy layer
         layer = QgsVectorLayer('Point', 'test', 'memory')
+        # need at least one feature in order to have a selection
+        layer.dataProvider().addFeature(QgsFeature())
+        layer.selectAll()
+
         self.assertTrue(layer.isValid())
         QgsProject.instance().addMapLayer(layer)
 
@@ -152,20 +159,15 @@ class WrappersTest(unittest.TestCase):
         wrapper.setValue(layer.id())
         self.assertEqual(wrapper.value(), layer.id())
 
-        # check not set
-        wrapper.setValue('')
-        self.assertFalse(wrapper.value())
-
         # check selected only - expect a QgsProcessingFeatureSourceDefinition
-        wrapper.setValue(layer.id())
-        wrapper.use_selection_checkbox.setChecked(True)
+        wrapper.setValue(QgsProcessingFeatureSourceDefinition(layer.id(), True))
         value = wrapper.value()
         self.assertIsInstance(value, QgsProcessingFeatureSourceDefinition)
         self.assertTrue(value.selectedFeaturesOnly)
         self.assertEqual(value.source.staticValue(), layer.id())
 
         # NOT selected only, expect a direct layer id or source value
-        wrapper.use_selection_checkbox.setChecked(False)
+        wrapper.setValue(QgsProcessingFeatureSourceDefinition(layer.id(), False))
         value = wrapper.value()
         self.assertEqual(value, layer.id())
 
@@ -173,6 +175,9 @@ class WrappersTest(unittest.TestCase):
         wrapper.setValue('/home/my_layer.shp')
         value = wrapper.value()
         self.assertEqual(value, '/home/my_layer.shp')
+
+        widget.deleteLater()
+        del widget
 
     def testRange(self):
         # minimal test to check if wrapper generate GUI for each processign context

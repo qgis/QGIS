@@ -417,22 +417,19 @@ tests:
         type: rasterhash
 
   - algorithm: gdal:warpreproject
-    name: Warp (gdalwarp)
+    name: Test (gdal:warpreproject)
     params:
-      DATA_TYPE: 6
+      DATA_TYPE: 0
+      EXTRA: ''
       INPUT:
         name: dem.tif
         type: raster
       MULTITHREADING: false
-      NODATA: 0.0
       OPTIONS: ''
-      RESAMPLING: 4
-      SOURCE_CRS: EPSG:4326
-      TARGET_CRS: EPSG:3857
-      TARGET_RESOLUTION: 0.0
+      RESAMPLING: 0
     results:
       OUTPUT:
-        hash: 77045222f6f9d8e5fda795d1d5288eae400c51522e621861aeab68e0
+        hash: 6ced822cc490c7a3d9346b6c8cd4b282eb4e2a9fdd6e7371f6174117
         type: rasterhash
 
 #  - algorithm: gdal:merge

@@ -227,7 +227,7 @@ IF(WITH_CORE)
     # https://sourceforge.net/p/mingw-w64/bugs/527/
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80816
 
-    # also OpenBSD has no thread_local support, see https://issues.qgis.org/issues/17351
+    # also OpenBSD has no thread_local support, see https://github.com/qgis/QGIS/issues/25248
 
   ELSE (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
     IF (WITH_THREAD_LOCAL)

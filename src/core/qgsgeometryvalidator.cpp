@@ -151,7 +151,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolylineXY line, bool rin
       }
       catch ( QgsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         QgsDebugMsg( "Error validating: " + e.what() );
         continue;
       }
@@ -164,7 +164,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolylineXY line, bool rin
       }
       catch ( QgsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         QgsDebugMsg( "Error validating: " + e.what() );
         continue;
       }

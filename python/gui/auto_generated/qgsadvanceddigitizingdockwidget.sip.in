@@ -42,6 +42,11 @@ by implementing filters called from QgsMapToolAdvancedDigitizing.
       Parallel
     };
 
+    enum WidgetSetMode
+    {
+      ReturnPressed,
+    };
+
 
     class CadConstraint
 {
@@ -163,12 +168,6 @@ Create an advanced digitizing dock widget
 :param parent: The parent
 %End
 
-    virtual void hideEvent( QHideEvent * );
-
-%Docstring
-Disables the CAD tools when hiding the dock
-%End
-
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 %Docstring
 Filter key events to e.g. toggle construction mode or adapt constraints
@@ -267,6 +266,13 @@ Adds point to the CAD point list
 .. versionadded:: 3.0
 %End
 
+    void removePreviousPoint();
+%Docstring
+Remove previous point in the CAD point list
+
+.. versionadded:: 3.8
+%End
+
     void setPoints( const QList<QgsPointXY> &points );
 %Docstring
 Configures list of current CAD points
@@ -338,6 +344,68 @@ Updates canvas item that displays constraints on the ma
 .. versionadded:: 3.0
 %End
 
+    void setX( const QString &value, WidgetSetMode mode );
+%Docstring
+Set the X value on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void setY( const QString &value, WidgetSetMode mode );
+%Docstring
+Set the Y value on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void setAngle( const QString &value, WidgetSetMode mode );
+%Docstring
+Set the angle value on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void setDistance( const QString &value, WidgetSetMode mode );
+%Docstring
+Set the distance value on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+
+
   signals:
 
     void pushWarning( const QString &message );
@@ -359,6 +427,268 @@ when a constraint is toggled.
 
 :param point: The last known digitizing point. Can be used to emulate a mouse event.
 %End
+
+
+    void cadEnabledChanged( bool enabled );
+%Docstring
+Emitted whenever CAD is enabled or disabled
+
+:param enabled: Whether CAD is enabled or not
+
+.. note::
+
+   unstable API (will likely change).
+
+.. versionadded:: 3.8
+%End
+
+    void valueXChanged( const QString &value );
+%Docstring
+Emitted whenever the X ``value`` changes (either the mouse moved, or the user changed the input).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void valueYChanged( const QString &value );
+%Docstring
+Emitted whenever the Y ``value`` changes (either the mouse moved, or the user changed the input).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void valueAngleChanged( const QString &value );
+%Docstring
+Emitted whenever the angle ``value`` changes (either the mouse moved, or the user changed the input).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void valueDistanceChanged( const QString &value );
+%Docstring
+Emitted whenever the distance ``value`` changes (either the mouse moved, or the user changed the input).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void lockXChanged( bool locked );
+%Docstring
+Emitted whenever the X parameter is ``locked``.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void lockYChanged( bool locked );
+%Docstring
+Emitted whenever the Y parameter is ``locked``.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void lockAngleChanged( bool locked );
+%Docstring
+Emitted whenever the angle parameter is ``locked``.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void lockDistanceChanged( bool locked );
+%Docstring
+Emitted whenever the distance parameter is ``locked``.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void relativeXChanged( bool relative );
+%Docstring
+Emitted whenever the X parameter is toggled between absolute and relative.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param relative: Whether the X parameter is relative or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void relativeYChanged( bool relative );
+%Docstring
+Emitted whenever the Y parameter is toggled between absolute and relative.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param relative: Whether the Y parameter is relative or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void relativeAngleChanged( bool relative );
+%Docstring
+Emitted whenever the angleX parameter is toggled between absolute and relative.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param relative: Whether the angle parameter is relative or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+
+    void enabledChangedX( bool enabled );
+%Docstring
+Emitted whenever the X field is enabled or disabled. Depending on the context, some parameters
+do not make sense (e.g. you need a previous point to define a distance).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param enabled: Whether the X parameter is enabled or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void enabledChangedY( bool enabled );
+%Docstring
+Emitted whenever the Y field is enabled or disabled. Depending on the context, some parameters
+do not make sense (e.g. you need a previous point to define a distance).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param enabled: Whether the Y parameter is enabled or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void enabledChangedAngle( bool enabled );
+%Docstring
+Emitted whenever the angle field is enabled or disabled. Depending on the context, some parameters
+do not make sense (e.g. you need a previous point to define a distance).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param enabled: Whether the angle parameter is enabled or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void enabledChangedDistance( bool enabled );
+%Docstring
+Emitted whenever the distance field is enabled or disabled. Depending on the context, some parameters
+do not make sense (e.g. you need a previous point to define a distance).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param enabled: Whether the distance parameter is enabled or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void focusOnXRequested();
+%Docstring
+Emitted whenever the X field should get the focus using the shortcuts (X).
+Could be used by widgets to capture the focus when a field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void focusOnYRequested();
+%Docstring
+Emitted whenever the Y field should get the focus using the shortcuts (Y).
+Could be used by widgets to capture the focus when a field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void focusOnAngleRequested();
+%Docstring
+Emitted whenever the angle field should get the focus using the shortcuts (A).
+Could be used by widgets to capture the focus when a field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
+    void focusOnDistanceRequested();
+%Docstring
+Emitted whenever the distance field should get the focus using the shortcuts (D).
+Could be used by widgets to capture the focus when a field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.8
+%End
+
 
   private:
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

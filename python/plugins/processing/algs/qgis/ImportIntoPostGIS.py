@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsVectorLayerExporter,
                        QgsSettings,
                        QgsFeatureSink,
@@ -149,7 +145,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
         if not table or table == '':
             table = source.sourceName()
             table = table.replace('.', '_')
-        table = table.replace(' ', '').lower()[0:62]
+        table = table.replace(' ', '')[0:62]
         providerName = 'postgres'
 
         geomColumn = self.parameterAsString(parameters, self.GEOMETRY_COLUMN, context)

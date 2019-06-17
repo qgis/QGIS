@@ -106,7 +106,12 @@ void TestQgsArcGisRestUtils::testParseSpatialReference()
 
   QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( map );
   QVERIFY( crs.isValid() );
+
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"Unknown_based_on_WGS84_ellipsoid\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",49.225],PARAMETER[\"central_meridian\",-2.135],PARAMETER[\"scale_factor\",0.9999999],PARAMETER[\"false_easting\",40000],PARAMETER[\"false_northing\",70000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
+#else
   QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"WGS 84\",DATUM[\"unknown\",SPHEROID[\"WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",49.225],PARAMETER[\"central_meridian\",-2.135],PARAMETER[\"scale_factor\",0.9999999],PARAMETER[\"false_easting\",40000],PARAMETER[\"false_northing\",70000],UNIT[\"Meter\",1]]" ) );
+#endif
 }
 
 void TestQgsArcGisRestUtils::testMapEsriGeometryType()

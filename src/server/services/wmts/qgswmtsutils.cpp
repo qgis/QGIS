@@ -95,7 +95,7 @@ namespace QgsWmts
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
     }
 
     tmi.unit = crs.mapUnits();
@@ -303,7 +303,7 @@ namespace QgsWmts
           }
           catch ( QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
             continue;
           }
         }

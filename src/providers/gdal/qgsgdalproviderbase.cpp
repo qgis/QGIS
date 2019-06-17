@@ -276,8 +276,8 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess 
 
 int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
-  Q_UNUSED( dfComplete );
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( dfComplete )
+  Q_UNUSED( pszMessage )
 
   QgsRasterBlockFeedback *feedback = static_cast<QgsRasterBlockFeedback *>( pProgressArg );
   return !feedback->isCanceled();

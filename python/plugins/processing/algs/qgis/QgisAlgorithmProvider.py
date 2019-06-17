@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import warnings
 
@@ -88,7 +84,6 @@ from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
-from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PointsFromPolygons import PointsFromPolygons
@@ -134,7 +129,7 @@ from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .TextToFloat import TextToFloat
-from .TilesXYZ import TilesXYZ
+from .TilesXYZ import TilesXYZAlgorithmDirectory, TilesXYZAlgorithmMBTiles
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
@@ -199,7 +194,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 NearestNeighbourAnalysis(),
                 Orthogonalize(),
                 PointDistance(),
-                PointsAlongGeometry(),
                 PointsDisplacement(),
                 PointsFromLines(),
                 PointsFromPolygons(),
@@ -245,7 +239,8 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 StatisticsByCategories(),
                 SumLines(),
                 TextToFloat(),
-                TilesXYZ(),
+                TilesXYZAlgorithmDirectory(),
+                TilesXYZAlgorithmMBTiles(),
                 TinInterpolation(),
                 TopoColor(),
                 TruncateTable(),

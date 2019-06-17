@@ -33,7 +33,7 @@ QgsMeshTimeSettings::QgsMeshTimeSettings( const QDateTime &absoluteTimeReference
 
 QDomElement QgsMeshTimeSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-time-settings" ) );
   elem.setAttribute( QStringLiteral( "use-absolute-time" ), mUseAbsoluteTime ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "relative-time-offset-hours" ), mRelativeTimeOffsetHours );
@@ -45,7 +45,7 @@ QDomElement QgsMeshTimeSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
 void QgsMeshTimeSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   mUseAbsoluteTime = elem.attribute( QStringLiteral( "use-absolute-time" ) ).toInt(); //bool
   mRelativeTimeOffsetHours = elem.attribute( QStringLiteral( "relative-time-offset-hours" ) ).toDouble();
   mRelativeTimeFormat = elem.attribute( QStringLiteral( "relative-time-format" ) );

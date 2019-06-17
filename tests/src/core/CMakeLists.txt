@@ -3,6 +3,7 @@
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/annotations
@@ -218,6 +219,7 @@ SET(TESTS
  testqgsmimedatautils.cpp
  testqgsofflineediting.cpp
  testqgstranslateproject.cpp
+ testqobjectuniqueptr.cpp
    )
 
 IF(WITH_QTWEBKIT)

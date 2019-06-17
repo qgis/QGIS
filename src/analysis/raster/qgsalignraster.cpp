@@ -62,7 +62,7 @@ static QgsRectangle transform_to_extent( const double *geotransform, double xSiz
 
 static int CPL_STDCALL _progress( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( pszMessage )
 
   QgsAlignRaster::ProgressHandler *handler = ( ( QgsAlignRaster * ) pProgressArg )->progressHandler();
   if ( handler )

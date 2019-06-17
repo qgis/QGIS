@@ -177,7 +177,7 @@ void QgsLayoutPictureWidget::mPictureRotationSpinBox_valueChanged( double d )
 
 void QgsLayoutPictureWidget::mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   if ( !mPicture || !current )
   {
     return;
@@ -732,7 +732,7 @@ void QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged( int index )
 
 void QgsLayoutPictureWidget::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );
 }
 

@@ -152,8 +152,6 @@ An IndexError will be raised if no geometry with the specified index exists.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
-
 
     virtual QgsRectangle boundingBox() const;
 

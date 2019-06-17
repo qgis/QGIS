@@ -195,7 +195,7 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRenderer::create( const QDomElement &
 
 QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput || !mShader || !mShader->rasterShaderFunction() )
@@ -331,8 +331,6 @@ QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const
 
 void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QgsStringMap newProps = props;
-
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 

@@ -105,7 +105,7 @@ void QgsSimplifyUserInputWidget::enableOkButton( bool enabled )
 
 bool QgsSimplifyUserInputWidget::eventFilter( QObject *object, QEvent *ev )
 {
-  Q_UNUSED( object );
+  Q_UNUSED( object )
   if ( ev->type() == QEvent::KeyPress )
   {
     QKeyEvent *event = static_cast<QKeyEvent *>( ev );

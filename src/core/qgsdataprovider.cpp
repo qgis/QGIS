@@ -46,7 +46,7 @@ QVariant QgsDataProvider::providerProperty( int property, const QVariant &defaul
 
 void QgsDataProvider::setListening( bool isListening )
 {
-  Q_UNUSED( isListening );
+  Q_UNUSED( isListening )
 }
 
 bool QgsDataProvider::renderInPreview( const PreviewContext &context )

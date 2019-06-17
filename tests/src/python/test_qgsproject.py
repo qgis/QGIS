@@ -11,8 +11,6 @@ from builtins import range
 __author__ = 'Sebastian Dietrich'
 __date__ = '19/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -197,15 +195,14 @@ class TestQgsProject(unittest.TestCase):
         prj.read(prj_path)
 
         layer_tree_group = prj.layerTreeRoot()
-        layers_ids = layer_tree_group.findLayerIds()
-
-        layers_names = []
-        for layer_id in layers_ids:
+        self.assertEqual(len(layer_tree_group.findLayerIds()), 2)
+        for layer_id in layer_tree_group.findLayerIds():
             name = prj.mapLayer(layer_id).name()
-            layers_names.append(name)
-
-        expected = ['polys', 'lines']
-        self.assertEqual(sorted(layers_names), sorted(expected))
+            self.assertTrue(name in ['polys', 'lines'])
+            if name == 'polys':
+                self.assertTrue(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
+            elif name == 'lines':
+                self.assertFalse(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
 
     def testInstance(self):
         """ test retrieving global instance """

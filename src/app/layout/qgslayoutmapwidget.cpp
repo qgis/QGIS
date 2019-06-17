@@ -1073,7 +1073,7 @@ QgsLayoutItemMapGrid *QgsLayoutMapWidget::currentGrid()
 
 void QgsLayoutMapWidget::mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   if ( !current )
   {
     mDrawGridCheckBox->setEnabled( false );
@@ -1296,7 +1296,7 @@ QgsLayoutItemMapOverview *QgsLayoutMapWidget::currentOverview()
 
 void QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   if ( !current )
   {
     mOverviewCheckBox->setEnabled( false );
@@ -1496,7 +1496,7 @@ void QgsLayoutMapWidget::overviewMapChanged( QgsLayoutItem *item )
 
 void QgsLayoutMapWidget::mOverviewBlendModeComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
@@ -1731,7 +1731,7 @@ QVariant QgsLayoutMapItemBlocksLabelsModel::data( const QModelIndex &i, int role
 
 bool QgsLayoutMapItemBlocksLabelsModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !index.isValid() )
     return false;

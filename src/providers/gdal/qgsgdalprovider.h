@@ -120,8 +120,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     double bandScale( int bandNo ) const override;
     double bandOffset( int bandNo ) const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;

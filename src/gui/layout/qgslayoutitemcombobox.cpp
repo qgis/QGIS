@@ -74,7 +74,7 @@ QgsLayoutItem *QgsLayoutItemComboBox::currentItem() const
 
 void QgsLayoutItemComboBox::indexChanged( int i )
 {
-  Q_UNUSED( i );
+  Q_UNUSED( i )
   emit itemChanged( currentItem() );
 }
 

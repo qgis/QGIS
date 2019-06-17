@@ -1240,6 +1240,9 @@ tests:
       OUTPUT:
         name: expected/geodesic_hub_no_split.shp
         type: vector
+        compare:
+          geometry:
+            precision: 6
 
   - algorithm: native:hublines
     name: Hub lines, geodesic, split
@@ -1261,6 +1264,9 @@ tests:
       OUTPUT:
         name: expected/geodesic_hub_split.shp
         type: vector
+        compare:
+          geometry:
+            precision: 6
 
   - algorithm: qgis:pointstopath
     name: Points to path (non grouped)
@@ -1811,6 +1817,76 @@ tests:
     results:
       OUTPUT:
         name: expected/points_along_lines.gml
+        type: vector
+
+  - algorithm: native:pointsalonglines
+    name: Points along lines with start offset
+    params:
+      DISTANCE: 1.0
+      END_OFFSET: 0.0
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+      START_OFFSET: 1.5
+    results:
+      OUTPUT:
+        name: expected/points_along_lines_start_offset.gml
+        type: vector
+
+  - algorithm: native:pointsalonglines
+    name: Points along lines with end offset
+    params:
+      DISTANCE: 1.0
+      END_OFFSET: 2.2
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+      START_OFFSET: 0.0
+    results:
+      OUTPUT:
+        name: expected/points_along_lines_end_offset.gml
+        type: vector
+
+  - algorithm: native:pointsalonglines
+    name: Points along polygons
+    params:
+      DISTANCE: 1.0
+      END_OFFSET: 0.0
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      START_OFFSET: 0.0
+    results:
+      OUTPUT:
+        name: expected/points_along_polys.gml
+        type: vector
+
+  - algorithm: native:pointsalonglines
+    name: Points along lines with z
+    params:
+      DISTANCE: 1.0
+      END_OFFSET: 0.0
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      START_OFFSET: 0.0
+    results:
+      OUTPUT:
+        name: expected/points_along_lines_z.shp
+        type: vector
+
+  - algorithm: native:pointsalonglines
+    name: Points along lines with m
+    params:
+      DISTANCE: 1.0
+      END_OFFSET: 0.0
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      START_OFFSET: 0.0
+    results:
+      OUTPUT:
+        name: expected/points_along_lines_m.shp
         type: vector
 
 

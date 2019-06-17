@@ -94,11 +94,6 @@ qgis:creategridlines: >
 
   The top-left point (minX, maxY) is used as the reference point. That means that, at that point, an element is guaranteed to be placed. Unless the width and height of the selected extent is a multiple of the selected spacing, that is not true for the other points that define that extent.
 
-qgis:createpointsalonglines: >
-  This algorithm creates a points layer, with points distributed along the lines of an input vector layer. the distance between points (measured along the line) is defined as a parameter.
-
-  Start and end points can be defined, so the first and last point do not fall on the line first and last node. Start and end points are defined as distances, measured from the first and last nodes of the lines, in the units of the projection used by the lines layer.
-
 qgis:createspatialindex: >
   Creates an index to speed up access to the features in a layer based on their spatial location. Support for spatial index creation is dependent on the layer's data provider.
 
@@ -334,7 +329,7 @@ qgis:polygoncentroids: >
   NOTE: This algorithm is deprecated and the generic "centroids" algorithm (which works for line and multi geometry layers) should be used instead.
 
 qgis:polygonfromlayerextent: >
-  This algorithm takes a map layer and generates a new vector layer with the minimum bounding box (rectangle with N-S orientation) that covers the input layer.
+  This algorithm takes a map layer and generates a new vector layer with the minimum bounding box (rectangle polygon with N-S orientation) that covers the input layer. Optionally, the extent can be enlarged to a rounded value.
 
 qgis:polygonize:  >
   This algorithm takes a lines layer and creates a polygon layer, with polygons generated from the lines in the input layer.

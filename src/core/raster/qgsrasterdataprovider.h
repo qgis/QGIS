@@ -125,7 +125,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const;
 
     /* It makes no sense to set input on provider */
-    bool setInput( QgsRasterInterface *input ) override { Q_UNUSED( input ); return false; }
+    bool setInput( QgsRasterInterface *input ) override { Q_UNUSED( input ) return false; }
 
     QgsRectangle extent() const override = 0;
 
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! Returns data type for the band specified by number
     virtual int colorInterpretation( int bandNo ) const
     {
-      Q_UNUSED( bandNo );
+      Q_UNUSED( bandNo )
       return QgsRaster::UndefinedColorInterpretation;
     }
 
@@ -217,13 +217,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Read band scale for raster value
      * \since QGIS 2.3
      */
-    virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ); return 1.0; }
+    virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ) return 1.0; }
 
     /**
      * Read band offset for raster value
      * \since QGIS 2.3
      */
-    virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ); return 0.0; }
+    virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ) return 0.0; }
 
     // TODO: remove or make protected all readBlock working with void*
 
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QgsRasterRangeList userNoDataValues( int bandNo ) const { return mUserNoDataValue.value( bandNo - 1 ); }
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const
-    { Q_UNUSED( bandNo ); return QList<QgsColorRampShader::ColorRampItem>(); }
+    { Q_UNUSED( bandNo ) return QList<QgsColorRampShader::ColorRampItem>(); }
 
     /**
      * \brief Returns the sublayers of this layer - useful for providers that manage
@@ -275,9 +275,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) SIP_SKIP
     {
-      Q_UNUSED( scale );
-      Q_UNUSED( forceRefresh );
-      Q_UNUSED( visibleExtent );
+      Q_UNUSED( scale )
+      Q_UNUSED( forceRefresh )
+      Q_UNUSED( visibleExtent )
       return QImage();
     }
 
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) SIP_FACTORY
     {
-      Q_UNUSED( mapSettings );
+      Q_UNUSED( mapSettings )
       return nullptr;
     }
 
@@ -307,11 +307,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                                    const QStringList &configOptions = QStringList(),
                                    QgsRasterBlockFeedback *feedback = nullptr )
     {
-      Q_UNUSED( pyramidList );
-      Q_UNUSED( resamplingMethod );
-      Q_UNUSED( format );
-      Q_UNUSED( configOptions );
-      Q_UNUSED( feedback );
+      Q_UNUSED( pyramidList )
+      Q_UNUSED( resamplingMethod )
+      Q_UNUSED( format )
+      Q_UNUSED( configOptions )
+      Q_UNUSED( feedback )
       return QStringLiteral( "FAILED_NOT_SUPPORTED" );
     }
 
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * list.
      */
     virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) // clazy:exclude=function-args-by-ref
-    { Q_UNUSED( overviewList ); return QList<QgsRasterPyramid>(); }
+    { Q_UNUSED( overviewList ) return QList<QgsRasterPyramid>(); }
 
     //! \brief Returns TRUE if raster has at least one populated histogram.
     bool hasPyramids();
@@ -434,18 +434,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \see isEditable(), writeBlock()
      * \since QGIS 3.0
      */
-    virtual bool setEditable( bool enabled ) { Q_UNUSED( enabled ); return false; }
+    virtual bool setEditable( bool enabled ) { Q_UNUSED( enabled ) return false; }
 
     //! Writes into the provider datasource
     // TODO: add data type (may be different from band type)
     virtual bool write( void *data, int band, int width, int height, int xOffset, int yOffset )
     {
-      Q_UNUSED( data );
-      Q_UNUSED( band );
-      Q_UNUSED( width );
-      Q_UNUSED( height );
-      Q_UNUSED( xOffset );
-      Q_UNUSED( yOffset );
+      Q_UNUSED( data )
+      Q_UNUSED( band )
+      Q_UNUSED( width )
+      Q_UNUSED( height )
+      Q_UNUSED( xOffset )
+      Q_UNUSED( yOffset )
       return false;
     }
 
@@ -481,7 +481,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *  \param bandNo band number
      *  \param noDataValue no data value
      */
-    virtual bool setNoDataValue( int bandNo, double noDataValue ) { Q_UNUSED( bandNo ); Q_UNUSED( noDataValue ); return false; }
+    virtual bool setNoDataValue( int bandNo, double noDataValue ) { Q_UNUSED( bandNo ) Q_UNUSED( noDataValue ); return false; }
 
     //! Remove dataset
     virtual bool remove() { return false; }
@@ -498,7 +498,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
      */
     virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format )
-    { Q_UNUSED( createOptions ); Q_UNUSED( format ); return QString(); }
+    { Q_UNUSED( createOptions ) Q_UNUSED( format ); return QString(); }
 
     /**
      * Validates pyramid creation options for a specific dataset and destination format
@@ -506,7 +506,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList &configOptions, const QString &fileFormat )
-    { Q_UNUSED( pyramidsFormat ); Q_UNUSED( configOptions ); Q_UNUSED( fileFormat ); return QString(); }
+    { Q_UNUSED( pyramidsFormat ) Q_UNUSED( configOptions ); Q_UNUSED( fileFormat ); return QString(); }
 
     static QString identifyFormatName( QgsRaster::IdentifyFormat format );
     static QgsRaster::IdentifyFormat identifyFormatFromName( const QString &formatName );
@@ -527,6 +527,16 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual int stepHeight() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT; }
 
+    /**
+     * Returns a list of native resolutions if available, i.e. map units per pixel at which the raster source
+     * was originally created.
+     *
+     * Resolutions are calculated in the provider's crs().
+     *
+     * \since QGIS 3.8.0
+     */
+    virtual QList< double > nativeResolutions() const;
+
   signals:
 
     /**
@@ -538,18 +548,20 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
   protected:
 
     /**
-     * Read block of data
+     * Reads a block of raster data into \a data.
+     * \returns TRUE if the block was successfully read, or FALSE if an error occurred and the block could not be read.
      * \note not available in Python bindings
      */
-    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data ) SIP_SKIP
-    { Q_UNUSED( bandNo ); Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); }
+    virtual bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) SIP_SKIP
+    { Q_UNUSED( bandNo ) Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); return false; }
 
     /**
-     * Read block of data using give extent and size
+     * Reads a block of raster data into \a data, using the given extent and size.
+     * \returns TRUE if the block was successfully read, or FALSE if an error occurred and the block could not be read.
      * \note not available in Python bindings
      */
-    virtual void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP
-    { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); }
+    virtual bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP
+    { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); return false; }
 
     //! Returns TRUE if user no data contains value
     bool userNoDataValuesContains( int bandNo, double value ) const;

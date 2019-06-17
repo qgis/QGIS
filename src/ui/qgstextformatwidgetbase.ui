@@ -1315,6 +1315,12 @@ font-style: italic;</string>
                          </item>
                          <item row="1" column="1">
                           <widget class="QFontComboBox" name="mFontFamilyCmbBx">
+                           <property name="sizeAdjustPolicy">
+                            <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                           </property>
+                           <property name="minimumContentsLength">
+                            <number>8</number>
+                           </property>
                            <property name="editable">
                             <bool>false</bool>
                            </property>
@@ -4135,6 +4141,9 @@ font-style: italic;</string>
                           <widget class="QgsDoubleSpinBox" name="mLineDistanceSpnBx">
                            <property name="decimals">
                             <number>4</number>
+                           </property>
+                           <property name="minimum">
+                            <double>-999999999.000000000000000</double>
                            </property>
                            <property name="maximum">
                             <double>999999999.000000000000000</double>

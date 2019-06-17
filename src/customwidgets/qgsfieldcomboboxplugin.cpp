@@ -62,7 +62,7 @@ bool QgsFieldComboBoxPlugin::isInitialized() const
 
 void QgsFieldComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

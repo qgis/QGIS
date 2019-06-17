@@ -1,15 +1,18 @@
 *****
 Content-Type: application/geo+json; charset=utf-8
 
-{"type": "FeatureCollection",
-    "features":[
 {
-   "type":"Feature",
-   "id":"testlayer èé.2",
-   "geometry":null,
-   "properties":{
-      "id":3,
-      "name":"three",
-      "utf8nameè":"three èé↓"
-   }
-}]}
+  "features": [
+    {
+      "geometry": null,
+      "id": "testlayer èé.2",
+      "properties": {
+        "id": 3,
+        "name": "three",
+        "utf8nameè": "three èé↓"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

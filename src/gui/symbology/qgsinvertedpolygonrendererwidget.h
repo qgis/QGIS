@@ -55,6 +55,8 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
 
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
+    void setDockMode( bool dockMode ) override;
+
   protected:
     //! The mask renderer
     std::unique_ptr<QgsInvertedPolygonRenderer> mRenderer;

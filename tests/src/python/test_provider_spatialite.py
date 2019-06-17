@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Vincent Mora'
 __date__ = '09/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -163,6 +161,12 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute(sql)
         sql = "INSERT INTO test_arrays (id, strings, ints, reals, geometry) "
         sql += "VALUES (1, '[\"toto\",\"tutu\"]', '[1,-2,724562]', '[1.0, -232567.22]', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
+        # table with different array types, stored as JSON
+        sql = "CREATE TABLE test_arrays_write (Id INTEGER NOT NULL PRIMARY KEY, array JSONARRAY NOT NULL, strings JSONSTRINGLIST NOT NULL, ints JSONINTEGERLIST NOT NULL, reals JSONREALLIST NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_arrays_write', 'Geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)
 
         # 2 tables with relations
@@ -534,6 +538,45 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(read_back['strings'], new_f['strings'])
         self.assertEqual(read_back['ints'], new_f['ints'])
         self.assertEqual(read_back['reals'], new_f['reals'])
+
+    def test_arrays_write(self):
+        """Test writing of layers with arrays"""
+        l = QgsVectorLayer("dbname=%s table=test_arrays_write (geometry)" % self.dbname, "test_arrays", "spatialite")
+        self.assertTrue(l.isValid())
+
+        new_f = QgsFeature(l.fields())
+        new_f['id'] = 2
+        new_f['array'] = ['simple', '"doubleQuote"', "'quote'", 'back\\slash']
+        new_f['strings'] = ['simple', '"doubleQuote"', "'quote'", 'back\\slash']
+        new_f['ints'] = [1, 2, 3, 4]
+        new_f['reals'] = [1e67, 1e-56]
+        r, fs = l.dataProvider().addFeatures([new_f])
+        self.assertTrue(r)
+
+        read_back = l.getFeature(new_f['id'])
+        self.assertEqual(read_back['id'], new_f['id'])
+        self.assertEqual(read_back['array'], new_f['array'])
+        self.assertEqual(read_back['strings'], new_f['strings'])
+        self.assertEqual(read_back['ints'], new_f['ints'])
+        self.assertEqual(read_back['reals'], new_f['reals'])
+
+        new_f = QgsFeature(l.fields())
+        new_f['id'] = 3
+        new_f['array'] = [1, 1.2345, '"doubleQuote"', "'quote'", 'back\\slash']
+        new_f['strings'] = ['simple', '"doubleQuote"', "'quote'", 'back\\slash']
+        new_f['ints'] = [1, 2, 3, 4]
+        new_f['reals'] = [1e67, 1e-56]
+        r, fs = l.dataProvider().addFeatures([new_f])
+        self.assertTrue(r)
+
+        read_back = l.getFeature(new_f['id'])
+        self.assertEqual(read_back['id'], new_f['id'])
+        self.assertEqual(read_back['array'], new_f['array'])
+        self.assertEqual(read_back['strings'], new_f['strings'])
+        self.assertEqual(read_back['ints'], new_f['ints'])
+        self.assertEqual(read_back['reals'], new_f['reals'])
+
+        read_back = l.getFeature(new_f['id'])
 
     def test_discover_relation(self):
         artist = QgsVectorLayer("dbname=%s table=test_relation_a (geometry)" % self.dbname, "test_relation_a", "spatialite")

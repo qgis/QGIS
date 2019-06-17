@@ -200,8 +200,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true )
     {
       // NOP by default
-      Q_UNUSED( subset );
-      Q_UNUSED( updateFeatureCount );
+      Q_UNUSED( subset )
+      Q_UNUSED( updateFeatureCount )
       return false;
     }
 
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Invalidate connections corresponding to specified name
      * \since QGIS 2.16
      */
-    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ); }
+    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ) }
 
     /**
      * Enter update mode.
@@ -520,7 +520,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \see layerMetadata()
      * \since QGIS 3.0
     */
-    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ); return false; }
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ) return false; }
 
     /**
      * Returns data provider coordinate transform context

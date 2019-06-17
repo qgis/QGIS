@@ -88,7 +88,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   if ( mLabelRubberBand && mCurrentLabel.valid )
   {
     QString labeltext = QString(); // NULL QString signifies no expression

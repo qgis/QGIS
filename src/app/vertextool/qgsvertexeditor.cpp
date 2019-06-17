@@ -41,7 +41,7 @@ QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *paren
   : QAbstractTableModel( parent )
   , mCanvas( canvas )
 {
-  QWidget *parentWidget = dynamic_cast< QWidget * >( parent );
+  QWidget *parentWidget = qobject_cast< QWidget * >( parent );
   if ( parentWidget )
     mWidgetFont = parentWidget->font();
 }
@@ -81,7 +81,7 @@ int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
 
 int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   if ( !mLockedFeature )
     return 0;
   else

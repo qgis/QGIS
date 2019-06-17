@@ -25,8 +25,6 @@ from builtins import range
 __author__ = 'Nyall Dawson'
 __date__ = 'October 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import sys

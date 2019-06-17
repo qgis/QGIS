@@ -447,7 +447,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       break;
     }
 
-    QList<QVariant> resolutions;
+    mNativeResolutions.clear();
     if ( mCaps.mTileMatrixSets.contains( mSettings.mTileMatrixSetId ) )
     {
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
@@ -456,7 +456,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       const auto constKeys = keys;
       for ( double key : constKeys )
       {
-        resolutions << key;
+        mNativeResolutions << key;
       }
       if ( !mTileMatrixSet->tileMatrices.empty() )
       {
@@ -469,8 +469,6 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       QgsDebugMsg( QStringLiteral( "Expected tile matrix set '%1' not found." ).arg( mSettings.mTileMatrixSetId ) );
       mTileMatrixSet = nullptr;
     }
-
-    setProperty( "resolutions", resolutions );
 
     if ( !mTileLayer || !mTileMatrixSet )
     {
@@ -567,7 +565,7 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
                 ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
                 r.rect.width() / cr,
                 r.rect.height() / cr );
-    otherResTiles << TileImage( dst, localImage );
+    otherResTiles << TileImage( dst, localImage, false );
 
     // see if there are any missing rects that are completely covered by this tile
     const auto constMissingRects = missingRects;
@@ -613,9 +611,9 @@ static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color
   p.fillRect( rect, QBrush( c, Qt::DiagCrossPattern ) );
   p.setCompositionMode( oldMode );
 #else
-  Q_UNUSED( p );
-  Q_UNUSED( rect );
-  Q_UNUSED( color );
+  Q_UNUSED( p )
+  Q_UNUSED( rect )
+  Q_UNUSED( color )
 #endif
 }
 
@@ -784,12 +782,13 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       if ( QgsTileCache::tile( r.url, localImage ) )
       {
         double cr = viewExtent.width() / image->width();
-
         QRectF dst( ( r.rect.left() - viewExtent.xMinimum() ) / cr,
                     ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
                     r.rect.width() / cr,
                     r.rect.height() / cr );
-        tileImages << TileImage( dst, localImage );
+        // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
+        bool disableSmoothing = ( qgsDoubleNear( dst.width(), tm->tileWidth, 2 ) && qgsDoubleNear( dst.height(), tm->tileHeight, 2 ) );
+        tileImages << TileImage( dst, localImage, !disableSmoothing );
       }
       else
       {
@@ -851,7 +850,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     const auto constTileImages = tileImages;
     for ( const TileImage &ti : constTileImages )
     {
-      if ( mSettings.mSmoothPixmapTransform )
+      if ( ti.smooth && mSettings.mSmoothPixmapTransform )
         p.setRenderHint( QPainter::SmoothPixmapTransform, true );
       p.drawImage( ti.rect, ti.img );
 
@@ -861,7 +860,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     p.end();
 
     int t2 = t.elapsed() - t1;
-    Q_UNUSED( t2 ); // only used in debug build
+    Q_UNUSED( t2 ) // only used in debug build
 
     if ( feedback && feedback->isPreviewOnly() )
     {
@@ -898,15 +897,15 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   return image;
 }
 
-void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
+bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   // TODO: optimize to avoid writing to QImage
-  QImage *image = draw( viewExtent, pixelWidth, pixelHeight, feedback );
+  std::unique_ptr< QImage > image( draw( viewExtent, pixelWidth, pixelHeight, feedback ) );
   if ( !image )   // should not happen
   {
     QgsMessageLog::logMessage( tr( "image is NULL" ), tr( "WMS" ) );
-    return;
+    return false;
   }
 
   QgsDebugMsg( QStringLiteral( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ) );
@@ -915,8 +914,7 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   if ( myExpectedSize != myImageSize )   // should not happen
   {
     QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WMS" ) );
-    delete image;
-    return;
+    return false;
   }
 
   uchar *ptr = image->bits();
@@ -924,9 +922,12 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
   {
     // If image is too large, ptr can be NULL
     memcpy( block, ptr, myExpectedSize );
+    return true;
   }
-
-  delete image;
+  else
+  {
+    return false;
+  }
 }
 
 QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight )
@@ -1290,7 +1291,7 @@ Qgis::DataType QgsWmsProvider::dataType( int bandNo ) const
 
 Qgis::DataType QgsWmsProvider::sourceDataType( int bandNo ) const
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   return Qgis::ARGB32;
 }
 
@@ -1374,7 +1375,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     return false;
   }
   QgsDebugMsg( QStringLiteral( "transformed layer extent %1" ).arg( extent.toString( true ) ) );
@@ -1613,7 +1614,7 @@ bool QgsWmsProvider::calculateExtent() const
           }
           catch ( QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
         }
       }
@@ -2298,11 +2299,8 @@ QString QgsWmsProvider::htmlMetadata()
                         tr( "Bottom" ),
                         tr( "Right" ) );
 
-      const auto constToList = property( "resolutions" ).toList();
-      for ( const QVariant &res : constToList )
+      for ( const double key : mNativeResolutions )
       {
-        double key = res.toDouble();
-
         QgsWmtsTileMatrix &tm = mTileMatrixSet->tileMatrices[ key ];
 
         double tw = key * tm.tileWidth;
@@ -2939,7 +2937,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 #ifdef QGISDEBUG
           QgsDebugMsg( QStringLiteral( "parsing result = %1" ).arg( ret ) );
 #else
-          Q_UNUSED( ret );
+          Q_UNUSED( ret )
 #endif
           // TODO: all features coming from this layer should probably have the same CRS
           // the same as this layer, because layerExtentToOutputExtent() may be used
@@ -3233,6 +3231,11 @@ bool QgsWmsProvider::renderInPreview( const QgsDataProvider::PreviewContext &con
   return QgsRasterDataProvider::renderInPreview( context );
 }
 
+QList<double> QgsWmsProvider::nativeResolutions() const
+{
+  return mNativeResolutions;
+}
+
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
 {
   QVector<QgsWmsSupportedFormat> formats;
@@ -3505,7 +3508,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage &img )
 
 void QgsWmsProvider::getLegendGraphicReplyErrored( const QString &message )
 {
-  Q_UNUSED( message );
+  Q_UNUSED( message )
   QgsDebugMsg( QStringLiteral( "get legend failed: %1" ).arg( message ) );
 
   QObject *reply = sender();
@@ -3711,8 +3714,8 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
 
 void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  Q_UNUSED( bytesReceived );
-  Q_UNUSED( bytesTotal );
+  Q_UNUSED( bytesReceived )
+  Q_UNUSED( bytesTotal )
   QgsDebugMsg( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
 }
 
@@ -3947,9 +3950,12 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       if ( !myLocalImage.isNull() )
       {
         QPainter p( mImage );
-        if ( mSmoothPixmapTransform )
+        // if image size is "close enough" to destination size, don't smooth it out. Instead try for pixel-perfect placement!
+        const bool disableSmoothing = ( qgsDoubleNear( dst.width(), myLocalImage.width(), 2 ) && qgsDoubleNear( dst.height(), myLocalImage.height(), 2 ) );
+        if ( !disableSmoothing && mSmoothPixmapTransform )
           p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
+        p.end();
 #if 0
         myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
         p.drawRect( dst ); // show tile bounds

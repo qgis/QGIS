@@ -344,7 +344,7 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
 
 void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
 {
-  Q_UNUSED( attr );
+  Q_UNUSED( attr )
   mLevel++;
 
   QString elementName = QString::fromUtf8( el );

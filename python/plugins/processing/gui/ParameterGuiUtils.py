@@ -22,10 +22,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'June 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessing,
                        QgsProviderRegistry,
                        QgsProcessingFeatureSourceDefinition,
@@ -85,7 +81,7 @@ def getFileFilter(param):
         return param.fileFilter() + ';;' + tr('All files (*.*)')
     elif param.type() == 'mesh':
         return tr('All files (*.*)')
-    if hasattr(param, 'defaultFileExtension') and param.defaultFileExtension():
+    if param.defaultFileExtension():
         return tr('Default extension') + ' (*.' + param.defaultFileExtension() + ')'
     else:
         return ''

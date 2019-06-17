@@ -169,8 +169,8 @@ class QgsPostgresResult
 
     int PQnfields();
     QString PQfname( int col );
-    int PQftable( int col );
-    int PQftype( int col );
+    Oid PQftable( int col );
+    Oid PQftype( int col );
     int PQfmod( int col );
     int PQftablecol( int col );
     Oid PQoidValue();
@@ -282,6 +282,12 @@ class QgsPostgresConn : public QObject
      * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value );
+
+    /**
+     * Quote a json(b) value for placement in a SQL string.
+     * \note a null value will be represented as a NULL and not as a json null.
+     */
+    static QString quotedJsonValue( const QVariant &value );
 
     /**
      * Gets the list of supported layers

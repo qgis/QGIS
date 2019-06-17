@@ -544,7 +544,7 @@ QModelIndex QgsPalettedRendererModel::index( int row, int column, const QModelIn
 
 QModelIndex QgsPalettedRendererModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level
   return QModelIndex();
@@ -763,7 +763,7 @@ QMimeData *QgsPalettedRendererModel::mimeData( const QModelIndexList &indexes ) 
 
 bool QgsPalettedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex & )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
   if ( action != Qt::MoveAction ) return true;
 
   if ( !data->hasFormat( QStringLiteral( "application/x-qgspalettedrenderermodel" ) ) )

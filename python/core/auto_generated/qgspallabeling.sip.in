@@ -19,7 +19,27 @@ class QgsLabelPosition
 #include "qgspallabeling.h"
 %End
   public:
-    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString() );
+
+    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
+                      const QgsGeometry &labelGeometry = QgsGeometry() );
+%Docstring
+Constructor for QgsLabelPosition.
+
+:param id: associated feature ID
+:param r: label rotation in degrees clockwise
+:param corners: corner points of label bounding box, in map units
+:param rect: label bounding box, in map units
+:param w: width of label, in map units
+:param h: height of label, in map units
+:param layer: ID of associated map layer
+:param labeltext: text rendered for label
+:param labelfont: font used to render label
+:param upside_down: ``True`` if label is upside down
+:param diagram: ``True`` if label is a diagram
+:param pinned: ``True`` if label has pinned placement
+:param providerId: ID of associated label provider
+:param labelGeometry: polygon geometry of label boundary
+%End
 
     QgsLabelPosition();
 %Docstring
@@ -27,17 +47,30 @@ Constructor for QgsLabelPosition
 %End
 
     QgsFeatureId featureId;
+
     double rotation;
+
     QVector< QgsPointXY > cornerPoints;
     QgsRectangle labelRect;
+
+    QgsGeometry labelGeometry;
+
     double width;
+
     double height;
+
     QString layerID;
+
     QString labelText;
+
     QFont labelFont;
+
     bool upsideDown;
+
     bool isDiagram;
+
     bool isPinned;
+
     QString providerID;
 };
 
@@ -540,6 +573,13 @@ Returns infos about labels at a given (map) position
 Returns infos about labels within a given (map) rectangle
 %End
 
+    void setMapSettings( const QgsMapSettings &settings );
+%Docstring
+Sets the map ``settings`` associated with the labeling run.
+
+.. versionadded:: 3.4.8
+%End
+
   private:
     QgsLabelingResults( const QgsLabelingResults & );
 };
@@ -560,7 +600,7 @@ called to find out whether the layer is used for labeling
 %End
 
 
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() ) /Factory/;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) /Factory/;
 %Docstring
 Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
 
@@ -568,13 +608,14 @@ Prepares a geometry for registration with PAL. Handles reprojection, rotation, c
 :param context: render context
 :param ct: coordinate transform, or invalid transform if no transformation required
 :param clipGeometry: geometry to clip features to, if applicable
+:param mergeLines: ``True`` if touching lines from this layer will be merged and treated as single features during labeling
 
 :return: prepared geometry
 
 .. versionadded:: 2.9
 %End
 
-    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
+    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
 %Docstring
 Checks whether a geometry requires preparation before registration with PAL
 
@@ -582,6 +623,7 @@ Checks whether a geometry requires preparation before registration with PAL
 :param context: render context
 :param ct: coordinate transform, or invalid transform if no transformation required
 :param clipGeometry: geometry to clip features to, if applicable
+:param mergeLines: ``True`` if touching lines from this layer will be merged and treated as single features during labeling
 
 :return: ``True`` if geometry requires preparation
 

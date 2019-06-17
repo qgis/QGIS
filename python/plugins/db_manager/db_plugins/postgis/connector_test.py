@@ -20,8 +20,6 @@
 __author__ = 'Sandro Santilli'
 __date__ = 'May 2017'
 __copyright__ = '(C) 2017, Sandro Santilli'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import qgis
@@ -50,8 +48,8 @@ class TestDBManagerPostgisConnector(unittest.TestCase):
         connector._close_cursor(r)
         return val
 
-    # See https://issues.qgis.org/issues/16625
-    # and https://issues.qgis.org/issues/10600
+    # See https://github.com/qgis/QGIS/issues/24525
+    # and https://github.com/qgis/QGIS/issues/19005
     def test_dbnameLessURI(self):
         c = PostGisDBConnector(QgsDataSourceUri())
         self.assertIsInstance(c, PostGisDBConnector)

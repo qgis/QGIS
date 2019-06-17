@@ -64,7 +64,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
 
     class Rule;
     typedef QList<QgsRuleBased3DRenderer::Rule *> RuleList;
-    typedef QMap<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
+    typedef QHash<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
 
     /**
      * \ingroup 3d

@@ -37,13 +37,13 @@ QgsLayoutMultiFrame::~QgsLayoutMultiFrame()
 
 QSizeF QgsLayoutMultiFrame::fixedFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( 0, 0 );
 }
 
 QSizeF QgsLayoutMultiFrame::minFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( 0, 0 );
 }
 
@@ -385,20 +385,23 @@ void QgsLayoutMultiFrame::handlePageChange()
     }
   }
 
-  //page number of the last item
-  QgsLayoutFrame *lastFrame = mFrameItems.last();
-  int lastItemPage = mLayout->pageCollection()->predictPageNumberForPoint( lastFrame->pos() );
-
-  for ( int i = lastItemPage + 1; i < mLayout->pageCollection()->pageCount(); ++i )
+  if ( !mFrameItems.empty() )
   {
-    //copy last frame to current page
-    std::unique_ptr< QgsLayoutFrame > newFrame = qgis::make_unique< QgsLayoutFrame >( mLayout, this );
+    //page number of the last item
+    QgsLayoutFrame *lastFrame = mFrameItems.last();
+    int lastItemPage = mLayout->pageCollection()->predictPageNumberForPoint( lastFrame->pos() );
 
-    newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
-                                           mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
-                                           lastFrame->rect().width(), lastFrame->rect().height() ) );
-    lastFrame = newFrame.get();
-    addFrame( newFrame.release(), false );
+    for ( int i = lastItemPage + 1; i < mLayout->pageCollection()->pageCount(); ++i )
+    {
+      //copy last frame to current page
+      std::unique_ptr< QgsLayoutFrame > newFrame = qgis::make_unique< QgsLayoutFrame >( mLayout, this );
+
+      newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
+                                             mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
+                                             lastFrame->rect().width(), lastFrame->rect().height() ) );
+      lastFrame = newFrame.get();
+      addFrame( newFrame.release(), false );
+    }
   }
 
   recalculateFrameSizes();

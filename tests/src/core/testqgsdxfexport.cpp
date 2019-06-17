@@ -44,6 +44,7 @@ class TestQgsDxfExport : public QObject
     void testPoints();
     void testLines();
     void testPolygons();
+    void testMultiSurface();
     void testMtext();
     void testMTextNoSymbology(); //tests if label export works if layer has vector renderer type 'no symbols'
     void testMTextEscapeSpaces();
@@ -214,6 +215,42 @@ void TestQgsDxfExport::testPolygons()
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 12L );
   QCOMPARE( result->wkbType(), QgsWkbTypes::LineString );
+}
+
+void TestQgsDxfExport::testMultiSurface()
+{
+  QgsDxfExport d;
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "MultiSurface" ), QString(), QStringLiteral( "memory" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( "MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)))" );
+  QgsFeature f;
+  f.setGeometry( g );
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+
+  QString file = getTempFileName( "multisurface_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  dxfFile.close();
+
+  // reload and compare
+  std::unique_ptr< QgsVectorLayer > result = qgis::make_unique< QgsVectorLayer >( file, "dxf" );
+  QVERIFY( result->isValid() );
+  QCOMPARE( result->featureCount(), 1L );
+  QCOMPARE( result->wkbType(), QgsWkbTypes::LineString );
+  QgsFeature f2;
+  result->getFeatures().nextFeature( f2 );
+  QCOMPARE( f2.geometry().asWkt(), QStringLiteral( "LineString (0 0, 0 1, 1 1, 0 0)" ) );
 }
 
 void TestQgsDxfExport::testMtext()

@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import subprocess
 import platform
@@ -409,15 +405,18 @@ class GdalUtils:
     @staticmethod
     def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
         listFile = QgsProcessingUtils.generateTempFilename(filename)
-        with open(listFile, 'w') as f:
-            if executing:
-                layers = []
-                for l in alg.parameterAsLayerList(parameters, parameter_name, context):
-                    if quote:
-                        layers.append('"' + l.source() + '"')
-                    else:
-                        layers.append(l.source())
+
+        if executing:
+            layers = []
+            for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                if quote:
+                    layers.append('"' + l.source() + '"')
+                else:
+                    layers.append(l.source())
+
+            with open(listFile, 'w') as f:
                 f.write('\n'.join(layers))
+
         return listFile
 
     @staticmethod

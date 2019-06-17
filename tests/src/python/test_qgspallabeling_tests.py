@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Larry Shaffer'
 __date__ = '07/16/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -98,7 +96,7 @@ class TestPointBase(object):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
         # verify fix for issues
-        #   https://issues.qgis.org/issues/9057
+        #   https://github.com/qgis/QGIS/issues/17705
         #   http://gis.stackexchange.com/questions/86900
 
         format = self.lyr.format()

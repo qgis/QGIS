@@ -5111,7 +5111,7 @@ bool QgsProcessingParameterBand::checkValueIsAcceptable( const QVariant &input, 
   {
     bool ok = false;
     double res = input.toInt( &ok );
-    Q_UNUSED( res );
+    Q_UNUSED( res )
     if ( !ok )
       return mFlags & FlagOptional;
   }

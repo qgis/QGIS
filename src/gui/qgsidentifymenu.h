@@ -160,6 +160,13 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 
+    /**
+     * Applies style from the settings to the highlight
+     *
+     * \since QGIS 3.8
+     */
+    static void styleHighlight( QgsHighlight *highlight );
+
   protected:
     void closeEvent( QCloseEvent *e ) override;
 

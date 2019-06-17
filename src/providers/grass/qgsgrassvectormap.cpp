@@ -238,7 +238,7 @@ bool QgsGrassVectorMap::startEdit()
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( e.what() ) );
   }
 
@@ -256,7 +256,7 @@ bool QgsGrassVectorMap::startEdit()
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
     }
 
@@ -289,7 +289,7 @@ bool QgsGrassVectorMap::startEdit()
 
 bool QgsGrassVectorMap::closeEdit( bool newMap )
 {
-  Q_UNUSED( newMap );
+  Q_UNUSED( newMap )
   QgsDebugMsg( toString() );
   if ( !mValid || !mIsEdited )
   {

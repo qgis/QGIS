@@ -202,7 +202,7 @@ QPointF QgsPaintEffect::imageOffset( const QgsRenderContext &context ) const
 
 QRectF QgsPaintEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   return rect;
 }
 

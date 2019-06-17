@@ -291,7 +291,7 @@ void QgsSymbolButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsSymbolButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   updatePreview();
 }

@@ -26,6 +26,9 @@
 #include <cmath>
 #include <QPainter>
 #include <QRegularExpression>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <nlohmann/json.hpp>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -273,17 +276,19 @@ QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &n
   return elemPoint;
 }
 
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
 
-QString QgsPoint::asJson( int precision ) const
+json QgsPoint::asJsonObject( int precision ) const
 {
-  return "{\"type\": \"Point\", \"coordinates\": ["
-         + qgsDoubleToString( mX, precision ) + QLatin1String( ", " ) + qgsDoubleToString( mY, precision )
-         + QLatin1String( "]}" );
+  json j
+  {
+    { "type", "Point" },
+    { "coordinates", { qgsRound( mX, precision ), qgsRound( mY, precision ) } },
+  };
+  if ( is3D() )
+  {
+    j["coordinates"].push_back( qgsRound( mZ, precision ) );
+  }
+  return j;
 }
 
 void QgsPoint::draw( QPainter &p ) const
@@ -306,6 +311,13 @@ void QgsPoint::clear()
 
   clearCache();
 }
+
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests.
+ * See details in QEP #17
+ ****************************************************************************/
 
 void QgsPoint::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
@@ -356,8 +368,8 @@ bool QgsPoint::isValid( QString &, int ) const
 
 bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
-  Q_UNUSED( position );
-  Q_UNUSED( vertex );
+  Q_UNUSED( position )
+  Q_UNUSED( vertex )
   return false;
 }
 
@@ -369,7 +381,7 @@ bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 
 bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
-  Q_UNUSED( position );
+  Q_UNUSED( position )
   clearCache();
   mX = newPos.mX;
   mY = newPos.mY;
@@ -386,18 +398,18 @@ bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 
 bool QgsPoint::deleteVertex( QgsVertexId position )
 {
-  Q_UNUSED( position );
+  Q_UNUSED( position )
   return false;
 }
 
 double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
-  Q_UNUSED( pt );
-  Q_UNUSED( segmentPt );
-  Q_UNUSED( vertexAfter );
+  Q_UNUSED( pt )
+  Q_UNUSED( segmentPt )
+  Q_UNUSED( vertexAfter )
   if ( leftOf )
     *leftOf = 0;
-  Q_UNUSED( epsilon );
+  Q_UNUSED( epsilon )
   return -1;  // no segments - return error
 }
 
@@ -431,7 +443,7 @@ void QgsPoint::adjacentVertices( QgsVertexId, QgsVertexId &previousVertex, QgsVe
 
 double QgsPoint::vertexAngle( QgsVertexId vertex ) const
 {
-  Q_UNUSED( vertex );
+  Q_UNUSED( vertex )
   return 0.0;
 }
 

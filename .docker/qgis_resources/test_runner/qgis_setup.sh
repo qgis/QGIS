@@ -38,7 +38,7 @@ printf "[qgis]\n" >> $CONF_MASTER_FILE
 SHOW_TIPS=$(qgis --help 2>&1 | head -2 | grep 'QGIS - ' | perl -npe 'chomp; s/QGIS - (\d+)\.(\d+).*/showTips\1\2=false/')
 printf "%s\n\n" "$SHOW_TIPS" >> $CONF_MASTER_FILE
 
-if [ -n "$PLUGIN_NAME" ]; then
+if [[ -n "$PLUGIN_NAME" ]]; then
     # Enable plugin
     printf '[PythonPlugins]\n' >> $CONF_MASTER_FILE
     printf "%s=true\n\n" "$PLUGIN_NAME" >> $CONF_MASTER_FILE

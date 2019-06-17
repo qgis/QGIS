@@ -55,7 +55,7 @@ The above translates to
 ```
 
 It is also possible to create tests for Processing scripts. Scripts
-should be placed in the `scrips` subdirectory in the test data directory
+should be placed in the `scripts` subdirectory in the test data directory
 `python/plugins/processing/tests/testdata/`. Script file name
 should match script algorithm name.
 
@@ -181,7 +181,7 @@ OUTPUT_HTML_FILE:
   type: file
 ```
 
-Or you can use one or more regular expressions that will be [matched](https://docs.python.org/2/library/re.html#re.search) against the file
+Or you can use one or more regular expressions that will be [matched](https://docs.python.org/3/library/re.html#re.search) against the file
 content
 
 ```yaml
@@ -196,7 +196,7 @@ OUTPUT:
 
 #### Directories
 
-You can compare the content of an output directory by en expected result reference directory
+You can compare the content of an output directory with an expected result reference directory
 
 ```yaml
 OUTPUT_DIR:

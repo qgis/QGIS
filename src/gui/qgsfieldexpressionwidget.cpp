@@ -72,8 +72,6 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   mCombo->installEventFilter( this );
-
-  mComboPalette = mCombo->lineEdit()->palette();
 }
 
 void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString &title )
@@ -340,10 +338,10 @@ void QgsFieldExpressionWidget::currentFieldChanged()
 
 void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 {
-  QPalette palette( mComboPalette );
+  QString stylesheet;
   if ( !isEnabled() )
   {
-    palette.setColor( QPalette::Text, Qt::gray );
+    stylesheet = QStringLiteral( "QLineEdit { color: %1; } Qt::gray );" ).arg( QColor( Qt::gray ).name() );
   }
   else
   {
@@ -363,10 +361,10 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 
     if ( isExpression && !isValid )
     {
-      palette.setColor( QPalette::Text, Qt::red );
+      stylesheet = QStringLiteral( "QLineEdit { color: %1; } Qt::gray );" ).arg( QColor( Qt::red ).name() );
     }
   }
-  mCombo->lineEdit()->setPalette( palette );
+  mCombo->lineEdit()->setStyleSheet( stylesheet );
 }
 
 bool QgsFieldExpressionWidget::isExpressionValid( const QString &expressionStr )

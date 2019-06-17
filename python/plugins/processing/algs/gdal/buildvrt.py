@@ -21,10 +21,6 @@ __author__ = 'Radoslaw Guzinski'
 __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Radoslaw Guzinski'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -60,9 +56,6 @@ class buildvrt(GdalAlgorithm):
     RESAMPLING = 'RESAMPLING'
     SRC_NODATA = 'SRC_NODATA'
 
-    RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
-    RESAMPLING_OPTIONS = ['nearest', 'bilinear', 'cubic', 'cubicspline', 'lanczos', 'average', 'mode']
-
     def __init__(self):
         super().__init__()
 
@@ -83,12 +76,27 @@ class buildvrt(GdalAlgorithm):
             def defaultFileExtension(self):
                 return 'vrt'
 
+            def parameterAsOutputLayer(self, definition, value, context):
+                return super(QgsProcessingParameterRasterDestination, self).parameterAsOutputLayer(definition, value, context)
+
+        self.RESAMPLING_OPTIONS = ((self.tr('Nearest Neighbour'), 'nearest'),
+                                   (self.tr('Bilinear'), 'bilinear'),
+                                   (self.tr('Cubic Convolution'), 'cubic'),
+                                   (self.tr('B-Spline Convolution'), 'cubicspline'),
+                                   (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
+                                   (self.tr('Average'), 'average'),
+                                   (self.tr('Mode'), 'mode'))
+
+        self.RESOLUTION_OPTIONS = ((self.tr('Average'), 'average'),
+                                   (self.tr('Highest'), 'highest'),
+                                   (self.tr('Lowest'), 'lowest'))
+
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
                                                                self.tr('Input layers'),
                                                                QgsProcessing.TypeRaster))
         self.addParameter(QgsProcessingParameterEnum(self.RESOLUTION,
                                                      self.tr('Resolution'),
-                                                     options=self.RESOLUTION_OPTIONS,
+                                                     options=[i[0] for i in self.RESOLUTION_OPTIONS],
                                                      defaultValue=0))
         self.addParameter(QgsProcessingParameterBoolean(self.SEPARATE,
                                                         self.tr('Place each input file into a separate band'),
@@ -111,7 +119,7 @@ class buildvrt(GdalAlgorithm):
 
         resampling = QgsProcessingParameterEnum(self.RESAMPLING,
                                                 self.tr('Resampling algorithm'),
-                                                options=self.RESAMPLING_OPTIONS,
+                                                options=[i[0] for i in self.RESAMPLING_OPTIONS],
                                                 defaultValue=0)
         resampling.setFlags(resampling.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(resampling)
@@ -146,7 +154,7 @@ class buildvrt(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-resolution')
-        arguments.append(self.RESOLUTION_OPTIONS[self.parameterAsEnum(parameters, self.RESOLUTION, context)])
+        arguments.append(self.RESOLUTION_OPTIONS[self.parameterAsEnum(parameters, self.RESOLUTION, context)][1])
         if self.parameterAsBoolean(parameters, buildvrt.SEPARATE, context):
             arguments.append('-separate')
         if self.parameterAsBoolean(parameters, buildvrt.PROJ_DIFFERENCE, context):
@@ -158,7 +166,7 @@ class buildvrt(GdalAlgorithm):
             arguments.append('-a_srs')
             arguments.append(GdalUtils.gdal_crs_string(crs))
         arguments.append('-r')
-        arguments.append(self.RESAMPLING_OPTIONS[self.parameterAsEnum(parameters, self.RESAMPLING, context)])
+        arguments.append(self.RESAMPLING_OPTIONS[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
 
         if self.SRC_NODATA in parameters and parameters[self.SRC_NODATA] not in (None, ''):
             nodata = self.parameterAsString(parameters, self.SRC_NODATA, context)

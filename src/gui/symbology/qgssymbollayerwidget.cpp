@@ -706,7 +706,7 @@ void QgsSimpleMarkerSymbolLayerWidget::setOffset()
 
 void QgsSimpleMarkerSymbolLayerWidget::mStrokeStyleComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( mLayer )
   {

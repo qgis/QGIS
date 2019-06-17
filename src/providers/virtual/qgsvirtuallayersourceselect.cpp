@@ -246,7 +246,7 @@ void QgsVirtualLayerSourceSelect::removeLayer()
 
 void QgsVirtualLayerSourceSelect::tableRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   mRemoveLayerBtn->setEnabled( current.row() != -1 );
 }
 

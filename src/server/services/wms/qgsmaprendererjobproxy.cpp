@@ -35,7 +35,7 @@ namespace QgsWms
     , mFeatureFilterProvider( featureFilterProvider )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
-    Q_UNUSED( mFeatureFilterProvider );
+    Q_UNUSED( mFeatureFilterProvider )
 #endif
     if ( mParallelRendering )
     {
@@ -59,7 +59,7 @@ namespace QgsWms
       renderJob.start();
 
       // Allows the main thread to manage blocking call coming from rendering
-      // threads (see discussion in https://issues.qgis.org/issues/18988).
+      // threads (see discussion in https://github.com/qgis/QGIS/issues/26819).
       QEventLoop loop;
       QObject::connect( &renderJob, &QgsMapRendererParallelJob::finished, &loop, &QEventLoop::quit );
       loop.exec();

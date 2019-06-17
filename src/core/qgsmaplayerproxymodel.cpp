@@ -92,24 +92,8 @@ void QgsMapLayerProxyModel::setExcludedProviders( const QStringList &providers )
   invalidateFilter();
 }
 
-void QgsMapLayerProxyModel::setFilterString( const QString &filter )
+bool QgsMapLayerProxyModel::acceptsLayer( QgsMapLayer *layer ) const
 {
-  mFilterString = filter;
-  invalidateFilter();
-}
-
-bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
-{
-  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mLayerWhitelist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
-    return true;
-
-  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-
-  if ( sourceModel()->data( index, QgsMapLayerModel::EmptyRole ).toBool()
-       || sourceModel()->data( index, QgsMapLayerModel::AdditionalRole ).toBool() )
-    return true;
-
-  QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
   if ( !layer )
     return false;
 
@@ -159,6 +143,26 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   }
 
   return false;
+}
+
+void QgsMapLayerProxyModel::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
+  invalidateFilter();
+}
+
+bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mLayerWhitelist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
+    return true;
+
+  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+
+  if ( sourceModel()->data( index, QgsMapLayerModel::EmptyRole ).toBool()
+       || sourceModel()->data( index, QgsMapLayerModel::AdditionalRole ).toBool() )
+    return true;
+
+  return acceptsLayer( static_cast<QgsMapLayer *>( index.internalPointer() ) );
 }
 
 bool QgsMapLayerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const

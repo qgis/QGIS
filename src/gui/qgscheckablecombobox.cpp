@@ -179,7 +179,7 @@ void QgsCheckableComboBox::hidePopup()
 
 void QgsCheckableComboBox::showContextMenu( QPoint pos )
 {
-  Q_UNUSED( pos );
+  Q_UNUSED( pos )
 
   mContextMenu->exec( QCursor::pos() );
 }

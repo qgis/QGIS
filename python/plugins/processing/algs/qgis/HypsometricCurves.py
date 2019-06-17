@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'November 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import numpy
 import csv

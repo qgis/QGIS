@@ -694,8 +694,8 @@ void QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
   const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg, sql, err );
   QgsDebugMsg( errMsg );
 #else
-  Q_UNUSED( sql );
-  Q_UNUSED( handler );
+  Q_UNUSED( sql )
+  Q_UNUSED( handler )
 #endif
 }
 

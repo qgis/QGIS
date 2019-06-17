@@ -90,8 +90,8 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( attributeNames );
+  Q_UNUSED( context )
+  Q_UNUSED( attributeNames )
   return true;
 }
 
@@ -362,8 +362,8 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( attributeNames );
+  Q_UNUSED( context )
+  Q_UNUSED( attributeNames )
   return true;
 }
 
@@ -406,7 +406,7 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
 void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent )
 {
-  Q_UNUSED( map );
+  Q_UNUSED( map )
   for ( const QVector3D &position : positions )
   {
     // build the entity

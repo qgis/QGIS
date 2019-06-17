@@ -1365,7 +1365,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
       }
       catch ( int i )
       {
-        Q_UNUSED( i );
+        Q_UNUSED( i )
         conflicts->clear();
       }
     } // end foreach labelposition
@@ -1645,7 +1645,7 @@ inline Chain *Problem::chain( int seed )
       }
       catch ( int i )
       {
-        Q_UNUSED( i );
+        Q_UNUSED( i )
         conflicts->clear();
       }
     } // end foreach labelposition

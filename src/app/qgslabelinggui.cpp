@@ -133,9 +133,13 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mFieldExpressionWidget->setEnabled( mMode == Labels );
   mLabelingFrame->setEnabled( mMode == Labels );
 
-  updateWidgetForFormat( lyr.format() );
-
   blockInitSignals( true );
+
+  mGeometryGenerator->setText( lyr.geometryGenerator );
+  mGeometryGeneratorGroupBox->setChecked( lyr.geometryGeneratorEnabled );
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( lyr.geometryGeneratorType ) );
+
+  updateWidgetForFormat( lyr.format() );
 
   mFieldExpressionWidget->setRow( -1 );
   mFieldExpressionWidget->setField( lyr.fieldName );
@@ -229,7 +233,18 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   wrapCharacterEdit->setText( lyr.wrapChar );
   mAutoWrapLengthSpinBox->setValue( lyr.autoWrapLength );
   mAutoWrapTypeComboBox->setCurrentIndex( lyr.useMaxLineLengthForAutoWrap ? 0 : 1 );
-  mFontMultiLineAlignComboBox->setCurrentIndex( lyr.multilineAlign );
+
+  if ( ( int ) lyr.multilineAlign < mFontMultiLineAlignComboBox->count() )
+  {
+    mFontMultiLineAlignComboBox->setCurrentIndex( lyr.multilineAlign );
+  }
+  else
+  {
+    // the default pal layer settings for multiline alignment is to follow label placement, which isn't always available
+    // revert to left alignment in such case
+    mFontMultiLineAlignComboBox->setCurrentIndex( 0 );
+  }
+
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
   mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
@@ -252,10 +267,6 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
 
   mZIndexSpinBox->setValue( lyr.zIndex );
-
-  mGeometryGenerator->setText( lyr.geometryGenerator );
-  mGeometryGeneratorGroupBox->setChecked( lyr.geometryGeneratorEnabled );
-  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( lyr.geometryGeneratorType ) );
 
   mDataDefinedProperties = lyr.dataDefinedProperties();
 

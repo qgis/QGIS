@@ -54,6 +54,7 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
 
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
+  mFontColorButton->setAllowOpacity( true );
 
   mMarginXDoubleSpinBox->setClearValue( 0.0 );
   mMarginYDoubleSpinBox->setClearValue( 0.0 );
@@ -187,7 +188,7 @@ void QgsLayoutLabelWidget::mInsertExpressionButton_clicked()
 
   QString selText = mTextEdit->textCursor().selectedText();
 
-  // html editor replaces newlines with Paragraph Separator characters - see https://issues.qgis.org/issues/19743
+  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
   selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
 
   // edit the selected expression if there's one

@@ -143,7 +143,7 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
   if ( !mMapTool )
     return false;
 
-  Q_UNUSED( watched );
+  Q_UNUSED( watched )
   switch ( event->type() )
   {
     case QEvent::MouseButtonPress:

@@ -304,8 +304,7 @@ namespace pal
       //obstacle r-tree
       RTree<FeaturePart *, double, 2, double, 8, 4> *mObstacleIndex;
 
-      QHash< QString, QLinkedList<FeaturePart *>* > mConnectedHashtable;
-      QStringList mConnectedTexts;
+      QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
       QMutex mMutex;

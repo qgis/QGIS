@@ -473,7 +473,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName ).arg( ref.name ) );
   }
   programTemplate = programTemplate.replace( QStringLiteral( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
-  programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), inputArgs.length() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
+  programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
   programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION##" ), cExpression );
   programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
 

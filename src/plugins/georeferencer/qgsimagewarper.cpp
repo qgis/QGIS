@@ -324,7 +324,7 @@ void *QgsImageWarper::createWarpProgressArg( QProgressDialog *progressDialog ) c
 
 int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( pszMessage )
   QProgressDialog *progress = static_cast<QProgressDialog *>( pProgressArg );
   progress->setValue( std::min( 100u, ( uint )( dfComplete * 100.0 ) ) );
   qApp->processEvents();

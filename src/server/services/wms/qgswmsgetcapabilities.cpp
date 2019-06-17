@@ -36,6 +36,7 @@
 #include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterdataprovider.h"
 
 
 namespace QgsWms
@@ -1453,7 +1454,7 @@ namespace QgsWms
         }
         catch ( QgsCsException &cse )
         {
-          Q_UNUSED( cse );
+          Q_UNUSED( cse )
           return;
         }
       }
@@ -1826,8 +1827,9 @@ namespace QgsWms
             QVariant wmsPublishDataSourceUrl = currentLayer->customProperty( QStringLiteral( "WMSPublishDataSourceUrl" ), false );
             if ( wmsPublishDataSourceUrl.toBool() )
             {
-              QList< QVariant > resolutionList = provider->property( "resolutions" ).toList();
-              bool tiled = resolutionList.size() > 0;
+              bool tiled = qobject_cast< const QgsRasterDataProvider * >( provider )
+                           ? !qobject_cast< const QgsRasterDataProvider * >( provider )->nativeResolutions().isEmpty()
+                           : false;
 
               QDomElement dataSourceElem = doc.createElement( tiled ? QStringLiteral( "WMTSDataSource" ) : QStringLiteral( "WMSDataSource" ) );
               QDomText dataSourceUri = doc.createTextNode( provider->dataSourceUri() );

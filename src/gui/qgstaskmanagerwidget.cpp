@@ -154,7 +154,7 @@ QModelIndex QgsTaskManagerModel::index( int row, int column, const QModelIndex &
 
 QModelIndex QgsTaskManagerModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level
   return QModelIndex();
@@ -175,7 +175,7 @@ int QgsTaskManagerModel::rowCount( const QModelIndex &parent ) const
 
 int QgsTaskManagerModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 3;
 }
 
@@ -249,7 +249,7 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
 
 bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !index.isValid() )
     return false;
@@ -296,7 +296,7 @@ void QgsTaskManagerModel::taskDeleted( long id )
 
 void QgsTaskManagerModel::progressChanged( long id, double progress )
 {
-  Q_UNUSED( progress );
+  Q_UNUSED( progress )
 
   QModelIndex index = idToIndex( id, Progress );
   if ( !index.isValid() )
@@ -547,7 +547,7 @@ void QgsTaskStatusWidget::leaveEvent( QEvent * )
 /*
 bool QgsTaskStatusWidget::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( event->type() == QEvent::MouseButtonPress )
   {
     QMouseEvent *e = static_cast<QMouseEvent*>( event );

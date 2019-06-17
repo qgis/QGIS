@@ -66,7 +66,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * Factory for label provider implementation
      * \note not available in Python bindings
      */
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ); return nullptr; }
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ) return nullptr; }
 
     //! Returns labeling configuration as XML element
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;

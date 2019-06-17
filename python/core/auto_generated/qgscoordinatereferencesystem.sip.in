@@ -14,6 +14,7 @@
 
 
 
+
 class QgsCoordinateReferenceSystem
 {
 %Docstring
@@ -693,6 +694,7 @@ Returns the new CRS srsid(), or -1 if the CRS could not be saved.
 %Docstring
 Returns auth id of related geographic CRS
 %End
+
 
     static QStringList recentProjections();
 %Docstring

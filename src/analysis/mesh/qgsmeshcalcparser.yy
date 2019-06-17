@@ -117,7 +117,7 @@ void addToTmpNodes(QgsMeshCalcNode* node)
 void removeTmpNode(QgsMeshCalcNode* node)
 {
   bool res;
-  Q_UNUSED(res);
+  Q_UNUSED(res)
 
   if (node)
   {

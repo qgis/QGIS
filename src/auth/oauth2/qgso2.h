@@ -74,6 +74,10 @@ class QgsO2: public O2
     //! Handle verification response.
     void onVerificationReceived( QMap<QString, QString> response ) override;
 
+  protected:
+
+    QNetworkAccessManager *getManager() override;
+
   signals:
 
     //! Emitted when the state has changed

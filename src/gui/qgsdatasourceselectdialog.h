@@ -16,7 +16,6 @@
 #ifndef QGSDATASOURCESELECTDIALOG_H
 #define QGSDATASOURCESELECTDIALOG_H
 
-#include <QObject>
 #include "ui_qgsdatasourceselectdialog.h"
 
 #include "qgis_gui.h"
@@ -25,6 +24,8 @@
 #include "qgsbrowsermodel.h"
 #include "qgsbrowserproxymodel.h"
 
+#include <QObject>
+#include <QLabel>
 
 /**
  * \ingroup gui
@@ -57,7 +58,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
      */
     QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = nullptr,
                                bool setFilterByLayerType = false,
-                               const QgsMapLayerType &layerType = QgsMapLayerType::VectorLayer,
+                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
                                QWidget *parent = nullptr );
 
 
@@ -67,6 +68,14 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
      * Sets layer type filter to \a layerType and activates the filtering
      */
     void setLayerTypeFilter( QgsMapLayerType layerType );
+
+    /**
+     * Sets a description label
+     * \param description a description string
+     * \note the description will be displayed at the bottom of the dialog
+     * \since 3.8
+     */
+    void setDescription( const QString &description );
 
     /**
      * Returns the (possibly invalid) uri of the selected data source
@@ -89,6 +98,8 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     //! Triggered when a layer is selected in the browser
     void onLayerSelected( const QModelIndex &index );
 
+    void itemDoubleClicked( const QModelIndex &index );
+
   private:
 
     //! Refresh the model
@@ -98,6 +109,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     std::unique_ptr<QgsBrowserModel> mBrowserModel;
     bool mOwnModel = true;
     QgsMimeDataUtils::Uri mUri;
+    QLabel *mDescriptionLabel = nullptr;
 
 };
 

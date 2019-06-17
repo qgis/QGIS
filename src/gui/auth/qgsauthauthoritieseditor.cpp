@@ -379,8 +379,8 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
 void QgsAuthAuthoritiesEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   checkSelection();
 }
 
@@ -415,7 +415,7 @@ void QgsAuthAuthoritiesEditor::checkSelection()
 
 void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
 {
-  Q_UNUSED( col );
+  Q_UNUSED( col )
   bool iscert = true;
 
   switch ( ( QgsAuthAuthoritiesEditor::CaType )item->type() )

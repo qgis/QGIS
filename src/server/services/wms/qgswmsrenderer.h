@@ -129,6 +129,7 @@ namespace QgsWms
       QByteArray getFeatureInfo( const QString &version = "1.3.0" );
 
     private:
+      QgsLegendSettings legendSettings() const;
 
       // Build and returns highlight layers
       QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
@@ -161,14 +162,12 @@ namespace QgsWms
       QImage *scaleImage( const QImage *image ) const;
 
       /**
-       * Creates a QImage from the HEIGHT and WIDTH parameters
-       * \param width image width (or -1 if width should be taken from WIDTH wms parameter)
-       * \param height image height (or -1 if height should be taken from HEIGHT wms parameter)
-       * \param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
+       * Creates a QImage.
+       * \param size image size
        * \returns a non null pointer
        * may throw an exception
        */
-      QImage *createImage( int width = -1, int height = -1, bool useBbox = true ) const;
+      QImage *createImage( const QSize &size ) const;
 
       /**
        * Configures map settings according to WMS parameters.
@@ -228,11 +227,6 @@ namespace QgsWms
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );
 
-      /**
-       * Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
-        \returns true if width/height values are okay*/
-      void checkMaximumWidthHeight() const;
-
       //! Converts a feature info xml document to SIA2045 norm
       void convertFeatureInfoToSia2045( QDomDocument &doc ) const;
 
@@ -273,20 +267,6 @@ namespace QgsWms
       void removeTemporaryLayers();
 
       void handlePrintErrors( const QgsLayout *layout ) const;
-
-      /**
-       * Returns QgsWmsParameter SRCWIDTH if it's a GetLegendGraphics request and otherwise HEIGHT parameter
-       * \returns height parameter
-       * \since QGIS 3.4.7
-       */
-      int height() const;
-
-      /**
-       * Returns QgsWmsParameter SRCWIDTH parameter if it's a GetLegendGraphics request and otherwise WIDTH parameter
-       * \returns width parameter
-       * \since QGIS 3.4.7
-       */
-      int width() const;
 
       void configureLayers( QList<QgsMapLayer *> &layers, QgsMapSettings *settings = nullptr );
 

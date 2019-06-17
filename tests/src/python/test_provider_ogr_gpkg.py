@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-04-21'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import re
@@ -217,7 +215,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
     @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2))
     def testGeopackageExtentUpdate(self):
-        ''' test https://issues.qgis.org/issues/15273 '''
+        ''' test https://github.com/qgis/QGIS/issues/23209 '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageExtentUpdate.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
@@ -645,7 +643,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(lyr2.wkbType(), QgsWkbTypes.Point)
 
     def testGeopackageTwoLayerEdition(self):
-        ''' test https://issues.qgis.org/issues/17034 '''
+        ''' test https://github.com/qgis/QGIS/issues/24933 '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageTwoLayerEdition.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
         lyr = ds.CreateLayer('layer1', geom_type=ogr.wkbPoint)
@@ -1035,7 +1033,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
     def testRequestWithoutGeometryOnLayerMixedGeometry(self):
-        """ Test bugfix for https://issues.qgis.org/issues/19077 """
+        """ Test bugfix for https://github.com/qgis/QGIS/issues/26907 """
 
         # Issue is more a generic one of the OGR provider, but easy to trigger with GPKG
 
@@ -1061,7 +1059,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(len(features), 1)
 
     def testAddingTwoIntFieldsWithWidth(self):
-        """ Test buggfix for https://issues.qgis.org/issues/19009 """
+        """ Test buggfix for https://github.com/qgis/QGIS/issues/26840 """
 
         tmpfile = os.path.join(self.basetestpath, 'testRequestWithoutGeometryOnLayerMixedGeometry.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
@@ -1081,7 +1079,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.commitChanges())
 
     def testApproxFeatureCountAndExtent(self):
-        """ Test perf improvement for for https://issues.qgis.org/issues/18402 """
+        """ Test perf improvement for for https://github.com/qgis/QGIS/issues/26292 """
 
         tmpfile = os.path.join(self.basetestpath, 'testApproxFeatureCountAndExtent.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)

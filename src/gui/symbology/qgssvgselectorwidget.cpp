@@ -238,7 +238,7 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString
 
 int QgsSvgSelectorListModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mSvgFiles.count();
 }
 
@@ -481,7 +481,7 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
   : QDialog( parent, fl )
 {
   // TODO: pass 'orientation' to QgsSvgSelectorWidget for customizing its layout, once implemented
-  Q_UNUSED( orientation );
+  Q_UNUSED( orientation )
 
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );

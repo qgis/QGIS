@@ -217,7 +217,7 @@ bool QgsFilterLineEdit::event( QEvent *event )
 /// @cond PRIVATE
 void QgsSpinBoxLineEdit::focusInEvent( QFocusEvent *e )
 {
-  QLineEdit::focusInEvent( e );
+  QgsFilterLineEdit::focusInEvent( e );
   if ( isNull() )
   {
     clear();

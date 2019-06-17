@@ -539,11 +539,11 @@ bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &path,
     const QVector<QgsMeshDataBlock> &datasetActive,
     const QVector<double> &times )
 {
-  Q_UNUSED( path );
-  Q_UNUSED( meta );
-  Q_UNUSED( datasetValues );
-  Q_UNUSED( datasetActive );
-  Q_UNUSED( times );
+  Q_UNUSED( path )
+  Q_UNUSED( meta )
+  Q_UNUSED( datasetValues )
+  Q_UNUSED( datasetActive )
+  Q_UNUSED( times )
   return true; // not implemented/supported
 }
 

@@ -96,7 +96,7 @@ class QgsBrowserPropertiesWidget : public QWidget
      * \param condensedMode set to TRUE to enable condensed mode
      * \since QGIS 2.10
      */
-    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ); }
+    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ) }
 };
 
 /**

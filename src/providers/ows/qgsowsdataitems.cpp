@@ -210,7 +210,7 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsOWSRootItem::actions( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   QList<QAction *> lst;
 
 #if 0
@@ -273,9 +273,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 //QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
 QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( fl );
-  Q_UNUSED( widgetMode );
+  Q_UNUSED( parent )
+  Q_UNUSED( fl )
+  Q_UNUSED( widgetMode )
   //return new QgsOWSSourceSelect( parent, fl, widgetMode );
   return nullptr;
 }

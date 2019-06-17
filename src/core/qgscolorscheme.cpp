@@ -28,9 +28,9 @@
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
   //base implementation does nothing
-  Q_UNUSED( colors );
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( colors )
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
   return false;
 }
 
@@ -41,8 +41,8 @@ bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &
 
 QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   //fetch recent colors
   QgsSettings settings;
@@ -113,8 +113,8 @@ QColor QgsRecentColorScheme::lastUsedColor()
 
 QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   //fetch predefined custom colors
   QgsNamedColorList colorList;
@@ -162,8 +162,8 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
 
 bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   // save colors to settings
   QgsSettings settings;
@@ -191,8 +191,8 @@ QgsCustomColorScheme *QgsCustomColorScheme::clone() const
 
 QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   QgsNamedColorList colorList;
 
@@ -220,8 +220,8 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
 
 bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
   QgsProject::instance()->setProjectColors( colors );
   return true;
 }
@@ -238,8 +238,8 @@ QgsProjectColorScheme *QgsProjectColorScheme::clone() const
 
 QgsNamedColorList QgsGplColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   QString sourceFilePath = gplFilePath();
   if ( sourceFilePath.isEmpty() )
@@ -256,8 +256,8 @@ QgsNamedColorList QgsGplColorScheme::fetchColors( const QString &context, const 
 
 bool QgsGplColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   QString destFilePath = gplFilePath();
   if ( destFilePath.isEmpty() )

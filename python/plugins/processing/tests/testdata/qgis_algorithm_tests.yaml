@@ -1740,6 +1740,26 @@ tests:
             fid_2: skip
 
   - algorithm: native:lineintersections
+    name: Line intersections all fields (custom prefix)
+    params:
+      INPUT:
+        name: custom/line_intersection1.gml
+        type: vector
+      INTERSECT:
+        name: custom/line_intersection2.gml
+        type: vector
+      INTERSECT_FIELDS_PREFIX: pre_
+    results:
+      OUTPUT:
+        name: expected/line_intersection_prefix.gml
+        type: vector
+        pk: [ name, pre_name ]
+        compare:
+          fields:
+            fid: skip
+            pre_fid: skip
+
+  - algorithm: native:lineintersections
     name: Line intersections some fields
     params:
       INPUT:
@@ -1799,6 +1819,32 @@ tests:
     results:
       OUTPUT:
         name: expected/multipoint_delaunay.gml
+        type: vector
+
+  - algorithm: qgis:polygonfromlayerextent
+    name: Polygon from layer extent rounded to 0
+    params:
+      BY_FEATURE: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      ROUND_TO: 0.0
+    results:
+      OUTPUT:
+        name: expected/polygon_from_extent.gml
+        type: vector
+
+  - algorithm: qgis:polygonfromlayerextent
+    name: Polygon from layer extent rounded to 2
+    params:
+      BY_FEATURE: false
+      INPUT:
+        name: lines.gml
+        type: vector
+      ROUND_TO: 2.0
+    results:
+      OUTPUT:
+        name: expected/polygon_from_extent_rounded_2.gml
         type: vector
 
 # See ../README.md for a description of the file format

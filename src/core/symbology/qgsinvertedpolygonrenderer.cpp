@@ -111,7 +111,6 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const Q
   // We compute coordinates of the extent which will serve as exterior ring
   // for the final polygon
   // It must be computed in the destination CRS if reprojection is enabled.
-  const QgsMapToPixel &mtp( context.mapToPixel() );
 
   if ( !context.painter() )
   {
@@ -119,15 +118,16 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const Q
   }
 
   // convert viewport to dest CRS
-  QRect e( context.painter()->viewport() );
   // add some space to hide borders and tend to infinity
-  e.adjust( -e.width() * 5, -e.height() * 5, e.width() * 5, e.height() * 5 );
+  const double buffer = std::max( context.mapExtent().width(), context.mapExtent().height() ) * 0.1;
+  const QRectF outer = context.mapExtent().buffered( buffer ).toRectF();
   QgsPolylineXY exteriorRing;
-  exteriorRing << mtp.toMapCoordinates( e.topLeft() );
-  exteriorRing << mtp.toMapCoordinates( e.topRight() );
-  exteriorRing << mtp.toMapCoordinates( e.bottomRight() );
-  exteriorRing << mtp.toMapCoordinates( e.bottomLeft() );
-  exteriorRing << mtp.toMapCoordinates( e.topLeft() );
+  exteriorRing.reserve( 5 );
+  exteriorRing << outer.topLeft();
+  exteriorRing << outer.topRight();
+  exteriorRing << outer.bottomRight();
+  exteriorRing << outer.bottomLeft();
+  exteriorRing << outer.topLeft();
 
   // copy the rendering context
   mContext = context;
@@ -142,8 +142,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const Q
     // disable projection
     mContext.setCoordinateTransform( QgsCoordinateTransform() );
     // recompute extent so that polygon clipping is correct
-    QRect v( context.painter()->viewport() );
-    mContext.setExtent( QgsRectangle( mtp.toMapCoordinates( v.topLeft() ), mtp.toMapCoordinates( v.bottomRight() ) ) );
+    mContext.setExtent( context.mapExtent() );
     // do we have to recompute the MapToPixel ?
   }
 
@@ -247,6 +246,11 @@ bool QgsInvertedPolygonRenderer::renderFeature( const QgsFeature &feature, QgsRe
 void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
+  if ( context.renderingStopped() )
+  {
+    mSubRenderer->stopRender( mContext );
+    return;
+  }
 
   if ( !mSubRenderer )
   {

@@ -47,6 +47,7 @@ namespace QgsWms
     // init render context
     QgsWmsRenderContext context( project, serverIface );
     context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
+    context.setFlag( QgsWmsRenderContext::UseSrcWidthHeight );
     context.setParameters( parameters );
 
     const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );

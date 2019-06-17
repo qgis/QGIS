@@ -1814,7 +1814,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
         Vect_cat_set( mCats, mLayerField, newCat );
         mLayer->map()->lockReadWrite();
         int newLid = rewriteLine( realLine, type, mPoints, mCats );
-        Q_UNUSED( newLid );
+        Q_UNUSED( newLid )
         mLayer->map()->newCats()[fid] = newCat;
 
         QString error;
@@ -1948,7 +1948,7 @@ void QgsGrassProvider::onUndoIndexChanged( int currentIndex )
 
 bool QgsGrassProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  Q_UNUSED( attributes );
+  Q_UNUSED( attributes )
   // update fields because QgsVectorLayerEditBuffer::commitChanges() checks old /new fields count
   mLayer->updateFields();
   return true;
@@ -1956,7 +1956,7 @@ bool QgsGrassProvider::addAttributes( const QList<QgsField> &attributes )
 
 bool QgsGrassProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
-  Q_UNUSED( attributes );
+  Q_UNUSED( attributes )
   // update fields because QgsVectorLayerEditBuffer::commitChanges() checks old /new fields count
   mLayer->updateFields();
   return true;

@@ -39,8 +39,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   addProjectCrsOption();
 
   QgsSettings settings;
-  QString defCrsString = settings.value( QStringLiteral( "Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
-  mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrsString );
+  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString() );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {
     //only show default CRS option if it's different to the project CRS, avoids
@@ -172,9 +171,11 @@ void QgsProjectionSelectionWidget::selectCrs()
   //find out crs id of current proj4 string
   QgsProjectionSelectionDialog dlg( this );
   dlg.setMessage( mMessage );
-  if ( mCrs.isValid() )
+  dlg.setCrs( mCrs );
+
+  if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
   {
-    dlg.setCrs( mCrs );
+    dlg.setShowNoProjection( true );
   }
 
   if ( dlg.exec() )

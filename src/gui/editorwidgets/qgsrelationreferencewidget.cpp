@@ -41,6 +41,8 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistcombobox.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeaturefiltermodel.h"
+#include "qgsidentifymenu.h"
 
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
@@ -636,17 +638,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   // highlight
   deleteHighlight();
   mHighlight = new QgsHighlight( mCanvas, f, mReferencedLayer );
-  QgsSettings settings;
-  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-  double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-  double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
-
-  mHighlight->setColor( color ); // sets also fill with default alpha
-  color.setAlpha( alpha );
-  mHighlight->setFillColor( color ); // sets fill with alpha
-  mHighlight->setBuffer( buffer );
-  mHighlight->setMinWidth( minWidth );
+  QgsIdentifyMenu::styleHighlight( mHighlight );
   mHighlight->show();
 
   QTimer *timer = new QTimer( this );
@@ -746,7 +738,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
   }
   else
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( feature.id(), QgsAttributeTableModel::FeatureIdRole ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mReferencedFieldIdx ), QgsFeatureFilterModel::Role::IdentifierValueRole ) );
     mFeature = feature;
   }
 

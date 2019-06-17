@@ -35,6 +35,13 @@ and the attributes for the currently selected feature are shown in a form.
     };
 
 
+    enum FeatureListBrowsingAction
+    {
+      NoAction,
+      PanToFeature,
+      ZoomToFeature,
+    };
+
     explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -42,7 +49,10 @@ Constructor
 :param parent: The parent widget
 %End
 
-    void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+    void init( QgsVectorLayer *layer,
+               QgsMapCanvas *mapCanvas,
+               const QgsFeatureRequest &request = QgsFeatureRequest(),
+               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
                bool loadFeatures = true );
 %Docstring
 Has to be called to initialize the dual view.

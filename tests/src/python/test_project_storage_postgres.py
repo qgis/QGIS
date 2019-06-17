@@ -14,8 +14,6 @@ from builtins import next
 __author__ = 'Martin Dobias'
 __date__ = '2018-03-29'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import psycopg2

@@ -155,10 +155,8 @@ void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer *other, bo
     setMinMaxOrigin( other->minMaxOrigin() );
 }
 
-void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap & ) const
 {
-  QgsStringMap newProps = props;
-
   QDomElement rasterSymbolizerElem = doc.createElement( QStringLiteral( "sld:RasterSymbolizer" ) );
   element.appendChild( rasterSymbolizerElem );
 

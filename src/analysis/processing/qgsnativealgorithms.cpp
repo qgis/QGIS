@@ -23,6 +23,7 @@
 #include "qgsalgorithmboundary.h"
 #include "qgsalgorithmboundingbox.h"
 #include "qgsalgorithmbuffer.h"
+#include "qgsalgorithmcalculateoverlaps.h"
 #include "qgsalgorithmcategorizeusingstyle.h"
 #include "qgsalgorithmcentroid.h"
 #include "qgsalgorithmclip.h"
@@ -73,6 +74,7 @@
 #include "qgsalgorithmpackage.h"
 #include "qgsalgorithmarrayoffsetlines.h"
 #include "qgsalgorithmpointonsurface.h"
+#include "qgsalgorithmpointsalonggeometry.h"
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
@@ -159,6 +161,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsBoundingBoxAlgorithm() );
   addAlgorithm( new QgsBufferAlgorithm() );
+  addAlgorithm( new QgsCalculateVectorOverlapsAlgorithm() );
   addAlgorithm( new QgsCategorizeUsingStyleAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
@@ -212,6 +215,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsCreateArrayOffsetLinesAlgorithm() );
   addAlgorithm( new QgsPointOnSurfaceAlgorithm() );
+  addAlgorithm( new QgsPointsAlongGeometryAlgorithm() );
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );

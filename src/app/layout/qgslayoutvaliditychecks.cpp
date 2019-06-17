@@ -20,6 +20,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayout.h"
+#include "qgssettings.h"
 
 //
 // QgsLayoutScaleBarValidityCheck
@@ -71,6 +72,64 @@ QList<QgsValidityCheckResult> QgsLayoutScaleBarValidityCheck::runCheck( const Qg
 {
   return mResults;
 }
+
+
+//
+// QgsLayoutNorthArrowValidityCheck
+//
+
+QgsLayoutNorthArrowValidityCheck *QgsLayoutNorthArrowValidityCheck::create() const
+{
+  return new QgsLayoutNorthArrowValidityCheck();
+}
+
+QString QgsLayoutNorthArrowValidityCheck::id() const
+{
+  return QStringLiteral( "layout_northarrow_check" );
+}
+
+int QgsLayoutNorthArrowValidityCheck::checkType() const
+{
+  return QgsAbstractValidityCheck::TypeLayoutCheck;
+}
+
+bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
+{
+  if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
+    return false;
+
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  if ( !layoutContext )
+    return false;
+
+  QgsSettings settings;
+  const QString defaultPath = settings.value( QStringLiteral( "LayoutDesigner/defaultNorthArrow" ), QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ), QgsSettings::Gui ).toString();
+
+  QList< QgsLayoutItemPicture * > pictureItems;
+  layoutContext->layout->layoutItems( pictureItems );
+  for ( QgsLayoutItemPicture *picture : qgis::as_const( pictureItems ) )
+  {
+    // look for pictures which use the default north arrow svg, but aren't actually linked to maps.
+    // alternatively identify them by looking for the default "North Arrow" string in their id
+    if ( !picture->linkedMap() && ( picture->picturePath() == defaultPath || picture->id().contains( QObject::tr( "North Arrow" ), Qt::CaseInsensitive ) ) )
+    {
+      QgsValidityCheckResult res;
+      res.type = QgsValidityCheckResult::Warning;
+      res.title = QObject::tr( "North arrow is not linked to a map" );
+      const QString name = picture->displayName().toHtmlEscaped();
+      res.detailedDescription = QObject::tr( "The north arrow “%1” is not linked to a map item. The arrow orientation may be misleading." ).arg( name );
+      mResults.append( res );
+    }
+  }
+
+  return true;
+}
+
+QList<QgsValidityCheckResult> QgsLayoutNorthArrowValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
+{
+  return mResults;
+}
+
 
 
 //

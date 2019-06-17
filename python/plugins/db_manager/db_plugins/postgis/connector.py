@@ -922,7 +922,8 @@ class PostGisDBConnector(DBConnector):
         # comment the column
         if comment is not None:
             schema, tablename = self.getSchemaTableName(table)
-            sql = u"COMMENT ON COLUMN %s.%s.%s is '%s'" % (schema, tablename, column, comment)
+            column_name = new_name if new_name is not None and new_name != column else column
+            sql = u"COMMENT ON COLUMN %s.%s.%s IS '%s'" % (schema, tablename, column_name, comment)
             self._execute(c, sql)
 
         self._commit()

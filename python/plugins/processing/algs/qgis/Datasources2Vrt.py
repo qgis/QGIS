@@ -21,10 +21,6 @@ __author__ = 'Luigi Pirelli'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Luigi Pirelli'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import codecs
 import xml.sax.saxutils
 

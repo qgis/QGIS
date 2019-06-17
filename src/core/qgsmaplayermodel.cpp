@@ -194,7 +194,7 @@ QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &par
 
 QModelIndex QgsMapLayerModel::parent( const QModelIndex &child ) const
 {
-  Q_UNUSED( child );
+  Q_UNUSED( child )
   return QModelIndex();
 }
 
@@ -209,7 +209,7 @@ int QgsMapLayerModel::rowCount( const QModelIndex &parent ) const
 
 int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 

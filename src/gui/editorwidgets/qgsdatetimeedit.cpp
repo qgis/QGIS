@@ -62,7 +62,11 @@ void QgsDateTimeEdit::clear()
   {
     displayNull();
 
-    changed( QDateTime() );
+    // Check if it's really changed or crash, see GH #29937
+    if ( ! dateTime().isNull() )
+    {
+      changed( QDateTime() );
+    }
 
     // emit signal of QDateTime::dateTimeChanged with an invalid date
     // anyway, using parent's signal should be avoided
@@ -252,7 +256,8 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
   {
     clear();
   }
-  else
+  // Check if it's really changed or crash, see GH #29937
+  else if ( dateTime != QgsDateTimeEdit::dateTime() )
   {
     QDateTimeEdit::setDateTime( dateTime );
     changed( dateTime );

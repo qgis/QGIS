@@ -200,14 +200,13 @@ namespace pal
        * \param path_positions line path to place label on
        * \param path_distances array of distances to each segment on path
        * \param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
-       * \param index
        * \param distance distance to offset label along curve by
        * \param reversed if TRUE label is reversed from lefttoright to righttoleft
        * \param flip if TRUE label is placed on the other side of the line
        * \returns calculated label position
        */
       LabelPosition *curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
-                                              int &orientation, int index, double distance, bool &reversed, bool &flip );
+                                              int &orientation, double distance, bool &reversed, bool &flip );
 
       /**
        * Generate curved candidates for line features.
@@ -298,8 +297,8 @@ namespace pal
       bool showUprightLabels() const;
 
       //! Returns TRUE if the next char position is found. The referenced parameters are updated.
-      bool nextCharPosition( double charWidth, double segment_length, PointSet *path_positions, int &index, double &distance,
-                             double &start_x, double &start_y, double &end_x, double &end_y ) const;
+      bool nextCharPosition( double charWidth, double segmentLength, PointSet *path_positions, int &index, double &currentDistanceAlongSegment,
+                             double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY ) const;
 
     protected:
 

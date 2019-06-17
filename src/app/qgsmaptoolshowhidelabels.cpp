@@ -46,7 +46,7 @@ QgsMapToolShowHideLabels::~QgsMapToolShowHideLabels()
 
 void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   QgsMapLayer *layer = mCanvas->currentLayer();
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -203,7 +203,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
     QgsLogger::warning( "Caught CRS exception " + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
     emit messageEmitted( tr( "CRS Exception: selection extends beyond layer's coordinate system." ), Qgis::Warning );

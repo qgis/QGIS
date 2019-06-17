@@ -129,7 +129,6 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
     linearGrad.setColorAt( 1, Qt::white );
 
     // create image and fill it with gradient
-    QImage image( pixmap.width(), pixmap.height(), QImage::Format_ARGB32 );
     QPainter painter( &img );
     painter.fillRect( img.rect(), linearGrad );
     pixmap = QPixmap::fromImage( img );
@@ -283,7 +282,7 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
   Q_ASSERT( idx >= 0 );
   dlg->mRendererDialog->cboRenderers->setCurrentIndex( idx );
   QCoreApplication::processEvents();
-  Qgs25DRendererWidget *w = dynamic_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
+  Qgs25DRendererWidget *w = qobject_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
   w->mHeightWidget->setField( QStringLiteral( "height" ) );
   Q_ASSERT( w->mHeightWidget->expression() == QLatin1String( "\"height\"" ) );
   QCoreApplication::processEvents();

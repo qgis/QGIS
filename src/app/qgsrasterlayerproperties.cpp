@@ -1417,7 +1417,7 @@ void QgsRasterLayerProperties::pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::transparencyCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   QgsDebugMsg( QStringLiteral( "text = %1" ).arg( text ) );
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
@@ -1427,7 +1427,7 @@ void QgsRasterLayerProperties::transparencyCellTextEdited( const QString &text )
   int nBands = renderer->usesBands().size();
   if ( nBands == 1 )
   {
-    QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+    QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
     if ( !lineEdit ) return;
     int row = -1;
     int column = -1;
@@ -1650,7 +1650,7 @@ void QgsRasterLayerProperties::pbnRemoveSelectedRow_clicked()
 
 void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint, const Qt::MouseButton &btn )
 {
-  Q_UNUSED( btn );
+  Q_UNUSED( btn )
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
   {

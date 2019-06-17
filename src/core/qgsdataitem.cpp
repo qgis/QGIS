@@ -549,7 +549,7 @@ bool QgsDataItem::equal( const QgsDataItem *other )
 
 QList<QAction *> QgsDataItem::actions( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return QList<QAction *>();
 }
 
@@ -601,7 +601,7 @@ void QgsDataItem::setState( State state )
 
 QList<QMenu *> QgsDataItem::menus( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return QList<QMenu *>();
 }
 
@@ -739,6 +739,30 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
   {
     case QgsMapLayerType::VectorLayer:
       u.layerType = QStringLiteral( "vector" );
+      switch ( mLayerType )
+      {
+        case Point:
+          u.wkbType = QgsWkbTypes::Point;
+          break;
+        case Line:
+          u.wkbType = QgsWkbTypes::LineString;
+          break;
+        case Polygon:
+          u.wkbType = QgsWkbTypes::Polygon;
+          break;
+        case TableLayer:
+          u.wkbType = QgsWkbTypes::NoGeometry;
+          break;
+
+        case Database:
+        case Table:
+        case NoType:
+        case Vector:
+        case Raster:
+        case Plugin:
+        case Mesh:
+          break;
+      }
       break;
     case QgsMapLayerType::RasterLayer:
       u.layerType = QStringLiteral( "raster" );
@@ -1211,7 +1235,7 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, QStringLiteral( "favorites:" ) )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   mCapabilities |= Fast;
   mType = Favorites;
   mIconName = QStringLiteral( "/mIconFavourites.svg" );

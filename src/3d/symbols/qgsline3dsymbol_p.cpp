@@ -87,8 +87,8 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( attributeNames );
+  Q_UNUSED( context )
+  Q_UNUSED( attributeNames )
   return true;
 }
 
@@ -213,7 +213,7 @@ class QgsSimpleLine3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsSimpleLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( attributeNames );
+  Q_UNUSED( attributeNames )
 
   outNormal.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
   outSelected.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
@@ -223,7 +223,7 @@ bool QgsSimpleLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, Q
 
 void QgsSimpleLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   if ( f.geometry().isNull() )
     return;
 
@@ -323,7 +323,7 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_UNUSED( attributeNames );
+  Q_UNUSED( attributeNames )
 
   outNormal.withAdjacency = true;
   outSelected.withAdjacency = true;
@@ -335,7 +335,7 @@ bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QS
 
 void QgsThickLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   if ( f.geometry().isNull() )
     return;
 

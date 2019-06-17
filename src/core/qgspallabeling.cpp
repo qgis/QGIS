@@ -60,6 +60,7 @@
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgscurvepolygon.h"
 #include "qgsmessagelog.h"
+#include "qgsgeometrycollection.h"
 #include <QMessageBox>
 
 using namespace pal;
@@ -191,7 +192,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     },
     { QgsPalLayerSettings::OffsetXY, QgsPropertyDefinition( "OffsetXY", QObject::tr( "Offset" ), QgsPropertyDefinition::Offset, origin ) },
     { QgsPalLayerSettings::OffsetUnits, QgsPropertyDefinition( "OffsetUnits", QObject::tr( "Offset units" ), QgsPropertyDefinition::RenderUnits, origin ) },
-    { QgsPalLayerSettings::LabelDistance, QgsPropertyDefinition( "LabelDistance", QObject::tr( "Label distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::LabelDistance, QgsPropertyDefinition( "LabelDistance", QObject::tr( "Label distance" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::DistanceUnits, QgsPropertyDefinition( "DistanceUnits", QObject::tr( "Label distance units" ), QgsPropertyDefinition::RenderUnits, origin ) },
     { QgsPalLayerSettings::OffsetRotation, QgsPropertyDefinition( "OffsetRotation", QObject::tr( "Offset rotation" ), QgsPropertyDefinition::Rotation, origin ) },
     { QgsPalLayerSettings::CurvedCharAngleInOut, QgsPropertyDefinition( "CurvedCharAngleInOut", QgsPropertyDefinition::DataTypeString, QObject::tr( "Curved character angles" ), QObject::tr( "double coord [<b>in,out</b> as 20.0-60.0,20.0-95.0]" ), origin ) },
@@ -1645,9 +1646,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && fitInPolygonOnly )
   {
     permissibleZone = geom;
-    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry() ) )
+    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
-      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry() );
+      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines );
     }
   }
 
@@ -1660,9 +1661,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   geos::unique_ptr geos_geom_clone;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry() ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry() );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines );
 
     if ( geom.isNull() )
       return;
@@ -1671,9 +1672,9 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   if ( isObstacle )
   {
-    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry() ) )
+    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
-      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry() ) );
+      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) );
     }
   }
 
@@ -2068,7 +2069,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours
   if ( placement == QgsPalLayerSettings::Line || placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved )
   {
-    distance = std::max( distance, 1.0 );
+    distance = ( distance < 0 ? -1 : 1 ) * std::max( std::fabs( distance ), 1.0 );
   }
 
   if ( !qgsDoubleNear( distance, 0.0 ) )
@@ -2169,9 +2170,9 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
   geos::unique_ptr geos_geom_clone;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
 
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom, mergeLines ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom, mergeLines );
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
@@ -2983,11 +2984,16 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer *layer )
 }
 
 
-bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry )
+bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry, bool mergeLines )
 {
   if ( geometry.isNull() )
   {
     return false;
+  }
+
+  if ( geometry.type() == QgsWkbTypes::LineGeometry && geometry.isMultipart() && mergeLines )
+  {
+    return true;
   }
 
   //requires reprojection
@@ -3055,7 +3061,7 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
   return graphemes;
 }
 
-QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry )
+QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry, bool mergeLines )
 {
   if ( geometry.isNull() )
   {
@@ -3064,6 +3070,11 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
 
   //don't modify the feature's geometry so that geometry based expressions keep working
   QgsGeometry geom = geometry;
+
+  if ( geom.type() == QgsWkbTypes::LineGeometry && geom.isMultipart() && mergeLines )
+  {
+    geom = geom.mergeLines();
+  }
 
   //reproject the geometry if necessary
   if ( ct.isValid() && !ct.isShortCircuited() )
@@ -3074,7 +3085,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
       QgsDebugMsgLevel( QStringLiteral( "Ignoring feature due to transformation exception" ), 4 );
       return QgsGeometry();
     }
@@ -3091,22 +3102,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   const QgsMapToPixel &m2p = context.mapToPixel();
   if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
   {
-    QgsPointXY center = context.extent().center();
-
-    if ( ct.isValid() && !ct.isShortCircuited() )
-    {
-      try
-      {
-        center = ct.transform( center );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse );
-        QgsDebugMsgLevel( QStringLiteral( "Ignoring feature due to transformation exception" ), 4 );
-        return QgsGeometry();
-      }
-    }
-
+    QgsPointXY center = context.mapExtent().center();
     if ( geom.rotate( m2p.mapRotation(), center ) )
     {
       QgsDebugMsg( QStringLiteral( "Error rotating geometry" ).arg( geom.asWkt() ) );
@@ -3115,15 +3111,37 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   }
 
   // fix invalid polygons
-  if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
+  if ( geom.type() == QgsWkbTypes::PolygonGeometry )
   {
-    QgsGeometry bufferGeom = geom.buffer( 0, 0 );
-    if ( bufferGeom.isNull() )
+    if ( geom.isMultipart() )
     {
-      QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
-      return QgsGeometry();
+      // important -- we need to treat ever part in isolation here. We can't test the validity of the whole geometry
+      // at once, because touching parts would result in an invalid geometry, and buffering this "dissolves" the parts.
+      // because the actual label engine treats parts as separate entities, we aren't bound by the usual "touching parts are invalid" rule
+      // see https://github.com/qgis/QGIS/issues/26763
+      QVector< QgsGeometry> parts;
+      parts.reserve( qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() )->numGeometries() );
+      for ( auto it = geom.const_parts_begin(); it != geom.const_parts_end(); ++it )
+      {
+        QgsGeometry partGeom( ( *it )->clone() );
+        if ( !partGeom.isGeosValid() )
+        {
+          partGeom = partGeom.buffer( 0, 0 );
+        }
+        parts.append( partGeom );
+      }
+      geom = QgsGeometry::collectGeometry( parts );
     }
-    geom = bufferGeom;
+    else if ( !geom.isGeosValid() )
+    {
+      QgsGeometry bufferGeom = geom.buffer( 0, 0 );
+      if ( bufferGeom.isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
+        return QgsGeometry();
+      }
+      geom = bufferGeom;
+    }
   }
 
   if ( !clipGeometry.isNull() &&
@@ -3653,15 +3671,11 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *p
 }
 
 QgsLabelingResults::QgsLabelingResults()
+  : mLabelSearchTree( qgis::make_unique< QgsLabelSearchTree >() )
 {
-  mLabelSearchTree = new QgsLabelSearchTree();
 }
 
-QgsLabelingResults::~QgsLabelingResults()
-{
-  delete mLabelSearchTree;
-  mLabelSearchTree = nullptr;
-}
+QgsLabelingResults::~QgsLabelingResults() = default;
 
 QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPointXY &p ) const
 {
@@ -3697,4 +3711,9 @@ QList<QgsLabelPosition> QgsLabelingResults::labelsWithinRect( const QgsRectangle
   }
 
   return positions;
+}
+
+void QgsLabelingResults::setMapSettings( const QgsMapSettings &settings )
+{
+  mLabelSearchTree->setMapSettings( settings );
 }

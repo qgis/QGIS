@@ -59,7 +59,7 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *p
 
 bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, QgsReadWriteContext &context )
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
 
   QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
 
@@ -87,26 +87,25 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
 
   // IDs of layers should be changed otherwise we may have more then one layer with the same id
   // We have to replace the IDs before we load them because it's too late once they are loaded
-  QDomNodeList ids = doc.elementsByTagName( QStringLiteral( "id" ) );
-  for ( int i = 0; i < ids.size(); ++i )
+  QDomNodeList treeLayerNodes = doc.elementsByTagName( QStringLiteral( "layer-tree-layer" ) );
+  for ( int i = 0; i < treeLayerNodes.size(); ++i )
   {
-    QDomNode idnode = ids.at( i );
-    QDomElement idElem = idnode.toElement();
-    QString oldid = idElem.text();
-    // Strip the date part because we will replace it.
-    QString layername = oldid.left( oldid.length() - 17 );
-    QDateTime dt = QDateTime::currentDateTime();
-    QString newid = layername + dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) ) + QString::number( qrand() );
-    idElem.firstChild().setNodeValue( newid );
-    QDomNodeList treeLayerNodes = doc.elementsByTagName( QStringLiteral( "layer-tree-layer" ) );
+    QDomNode treeLayerNode = treeLayerNodes.at( i );
+    QDomElement treeLayerElem = treeLayerNode.toElement();
+    QString oldid = treeLayerElem.attribute( QStringLiteral( "id" ) );
+    QString layername = treeLayerElem.attribute( QStringLiteral( "name" ) );
+    QString newid = QgsMapLayer::generateId( layername );
+    treeLayerElem.setAttribute( QStringLiteral( "id" ), newid );
 
-    for ( int i = 0; i < treeLayerNodes.count(); ++i )
+    // Replace IDs for map layers
+    QDomNodeList ids = doc.elementsByTagName( QStringLiteral( "id" ) );
+    for ( int i = 0; i < ids.size(); ++i )
     {
-      QDomNode layerNode = treeLayerNodes.at( i );
-      QDomElement layerElem = layerNode.toElement();
-      if ( layerElem.attribute( QStringLiteral( "id" ) ) == oldid )
+      QDomNode idnode = ids.at( i );
+      QDomElement idElem = idnode.toElement();
+      if ( idElem.text() == oldid )
       {
-        layerNode.toElement().setAttribute( QStringLiteral( "id" ), newid );
+        idElem.firstChild().setNodeValue( newid );
       }
     }
 
@@ -137,6 +136,28 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
       }
     }
 
+    // Change IDs of widget config values
+    QDomNodeList widgetConfig = doc.elementsByTagName( QStringLiteral( "editWidget" ) );
+    for ( int i = 0; i < widgetConfig.size(); i++ )
+    {
+      QDomNodeList config = widgetConfig.at( i ).childNodes();
+      for ( int j = 0; j < config.size(); j++ )
+      {
+        QDomNodeList optMap = config.at( j ).childNodes();
+        for ( int z = 0; z < optMap.size(); z++ )
+        {
+          QDomNodeList opts = optMap.at( z ).childNodes();
+          for ( int k = 0; k < opts.size(); k++ )
+          {
+            QDomElement opt = opts.at( k ).toElement();
+            if ( opt.attribute( QStringLiteral( "value" ) ) == oldid )
+            {
+              opt.setAttribute( QStringLiteral( "value" ), newid );
+            }
+          }
+        }
+      }
+    }
   }
 
   QDomElement layerTreeElem = doc.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
@@ -202,7 +223,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
 
 bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( errorMessage );
+  Q_UNUSED( errorMessage )
   QDomElement qgiselm = doc.createElement( QStringLiteral( "qlr" ) );
   doc.appendChild( qgiselm );
   QList<QgsLayerTreeNode *> nodes = selectedTreeNodes;

@@ -50,7 +50,7 @@
 QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char *name, Qt::WindowFlags f )
   : QgsDockWidget( parent, f )
 {
-  Q_UNUSED( name );
+  Q_UNUSED( name )
   QgsDebugMsg( "QgsGrassTools()" );
   setupUi( this );
   connect( mFilterInput, &QLineEdit::textChanged, this, &QgsGrassTools::mFilterInput_textChanged );

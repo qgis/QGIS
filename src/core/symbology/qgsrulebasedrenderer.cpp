@@ -423,7 +423,7 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
       sf = QStringLiteral( "TRUE" );
     }
     // If we have more than 50 rules (to stay on the safe side) make a binary tree or SQLITE will fail,
-    // see: http://issues.qgis.org/issues/19441
+    // see: https://github.com/qgis/QGIS/issues/27269
     else if ( subfilters.count() > 50 )
     {
       std::function<QString( const QStringList & )>bt = [ &bt ]( const QStringList & subf )
@@ -904,7 +904,7 @@ bool QgsRuleBasedRenderer::renderFeature( const QgsFeature &feature,
     bool selected,
     bool drawVertexMarker )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
 
   int flags = ( selected ? FeatIsSelected : 0 ) | ( drawVertexMarker ? FeatDrawMarkers : 0 );
   mCurrentFeatures.append( FeatureToRender( feature, flags ) );
@@ -949,27 +949,30 @@ void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )
   //
 
   // go through all levels
-  const auto constMRenderQueue = mRenderQueue;
-  for ( const RenderLevel &level : constMRenderQueue )
+  if ( !context.renderingStopped() )
   {
-    //QgsDebugMsg(QString("level %1").arg(level.zIndex));
-    // go through all jobs at the level
-    for ( const RenderJob *job : qgis::as_const( level.jobs ) )
+    const auto constMRenderQueue = mRenderQueue;
+    for ( const RenderLevel &level : constMRenderQueue )
     {
-      context.expressionContext().setFeature( job->ftr.feat );
-      //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
-      // render feature - but only with symbol layers with specified zIndex
-      QgsSymbol *s = job->symbol;
-      int count = s->symbolLayerCount();
-      for ( int i = 0; i < count; i++ )
+      //QgsDebugMsg(QString("level %1").arg(level.zIndex));
+      // go through all jobs at the level
+      for ( const RenderJob *job : qgis::as_const( level.jobs ) )
       {
-        // TODO: better solution for this
-        // renderFeatureWithSymbol asks which symbol layer to draw
-        // but there are multiple transforms going on!
-        if ( s->symbolLayer( i )->renderingPass() == level.zIndex )
+        context.expressionContext().setFeature( job->ftr.feat );
+        //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
+        // render feature - but only with symbol layers with specified zIndex
+        QgsSymbol *s = job->symbol;
+        int count = s->symbolLayerCount();
+        for ( int i = 0; i < count; i++ )
         {
-          int flags = job->ftr.flags;
-          renderFeatureWithSymbol( job->ftr.feat, job->symbol, context, i, flags & FeatIsSelected, flags & FeatDrawMarkers );
+          // TODO: better solution for this
+          // renderFeatureWithSymbol asks which symbol layer to draw
+          // but there are multiple transforms going on!
+          if ( s->symbolLayer( i )->renderingPass() == level.zIndex )
+          {
+            int flags = job->ftr.flags;
+            renderFeatureWithSymbol( job->ftr.feat, job->symbol, context, i, flags & FeatIsSelected, flags & FeatDrawMarkers );
+          }
         }
       }
     }

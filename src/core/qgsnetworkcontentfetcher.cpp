@@ -138,7 +138,7 @@ QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 
 void QgsNetworkContentFetcher::contentLoaded( bool ok )
 {
-  Q_UNUSED( ok );
+  Q_UNUSED( ok )
 
   if ( mIsCanceled )
   {

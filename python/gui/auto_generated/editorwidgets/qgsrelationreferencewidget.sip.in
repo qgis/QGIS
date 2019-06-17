@@ -72,7 +72,7 @@ determines if the foreign key is shown in a combox box or a read-only line edit
 
     bool allowMapIdentification();
 %Docstring
-determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
+determines if the widget offers the possibility to select the related feature on the map (using a dedicated map tool)
 %End
     void setAllowMapIdentification( bool allowMapIdentification );
 

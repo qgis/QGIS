@@ -717,10 +717,34 @@ trustedCaCertsPemText get concatenated string of all trusted CA certificates
 
 
 
+    bool passwordHelperEnabled() const;
+%Docstring
+Password helper enabled getter
+
+.. note::
+
+   Available in Python bindings since QGIS 3.8.0
+%End
+
+    void setPasswordHelperEnabled( bool enabled );
+%Docstring
+Password helper enabled setter
+
+.. note::
+
+   Available in Python bindings since QGIS 3.8.0
+%End
 
 
 
+    bool passwordHelperSync();
+%Docstring
+Store the password manager into the wallet
 
+.. note::
+
+   Available in Python bindings since QGIS 3.8.0
+%End
 
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
 

@@ -56,7 +56,7 @@ void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *r
 {
   if ( mRenderer )
   {
-    if ( mRenderer->ranges().size() )
+    if ( !mRenderer->ranges().isEmpty() )
     {
       beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
       mRenderer = nullptr;
@@ -69,7 +69,7 @@ void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *r
   }
   if ( renderer )
   {
-    if ( renderer->ranges().size() )
+    if ( !renderer->ranges().isEmpty() )
     {
       beginInsertRows( QModelIndex(), 0, renderer->ranges().size() - 1 );
       mRenderer = renderer;
@@ -237,7 +237,7 @@ int QgsGraduatedSymbolRendererModel::rowCount( const QModelIndex &parent ) const
 
 int QgsGraduatedSymbolRendererModel::columnCount( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return 3;
 }
 
@@ -252,7 +252,7 @@ QModelIndex QgsGraduatedSymbolRendererModel::index( int row, int column, const Q
 
 QModelIndex QgsGraduatedSymbolRendererModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return QModelIndex();
 }
 
@@ -285,8 +285,8 @@ QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &ind
 
 bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
+  Q_UNUSED( row )
+  Q_UNUSED( column )
   if ( action != Qt::MoveAction ) return true;
 
   if ( !data->hasFormat( mMimeFormat ) ) return false;

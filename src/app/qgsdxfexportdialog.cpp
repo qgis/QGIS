@@ -43,7 +43,7 @@ FieldSelectorDelegate::FieldSelectorDelegate( QObject *parent )
 
 QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
 
   const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
   if ( !m )
@@ -61,7 +61,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
 void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  const QgsVectorLayerAndAttributeModel *m = dynamic_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
+  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
   if ( !m )
     return;
 
@@ -102,7 +102,7 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
 
 int QgsVectorLayerAndAttributeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -507,7 +507,7 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
 
 void QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel * >( mTreeView->model() );
   Q_ASSERT( model );
   model->applyVisibilityPreset( mVisibilityPresets->currentText() );
@@ -558,7 +558,7 @@ void QgsDxfExportDialog::deSelectAll()
 
 QList< QgsDxfExport::DxfLayer > QgsDxfExportDialog::layers() const
 {
-  const QgsVectorLayerAndAttributeModel *model = dynamic_cast< const QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  const QgsVectorLayerAndAttributeModel *model = qobject_cast< const QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
   Q_ASSERT( model );
   return model->layers();
 }

@@ -88,6 +88,32 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
+QString QgsWfsCapabilities::Capabilities::getNamespaceForTypename( const QString &name ) const
+{
+  Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, featureTypes )
+  {
+    if ( f.name == name )
+    {
+      return f.nameSpace;
+    }
+  }
+  return "";
+}
+
+QString QgsWfsCapabilities::Capabilities::getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const
+{
+  QString namespaces = getNamespaceForTypename( typeName );
+  bool tryNameSpacing = ( !namespaces.isEmpty() && typeName.contains( ':' ) );
+  if ( tryNameSpacing )
+  {
+    QString prefixOfTypename = typeName.section( ':', 0, 0 );
+    return "xmlns(" + prefixOfTypename +
+           ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) ? "," : "=" ) +
+           namespaces + ")";
+  }
+  return QString();
+}
+
 class CPLXMLTreeUniquePointer
 {
   public:
@@ -405,6 +431,14 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( psFeatureTypeIter )
         {
           featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+          if ( featureType.nameSpace.isEmpty() )
+          {
+            //Try to look for namespace in Name tag (Seen in GO Publisher)
+            //<wfs:FeatureType>
+            // <wfs:Name xmlns:dagi="http://data.gov.dk/schemas/dagi/2/gml3sfp">dagi:Menighedsraadsafstemningsomraade</wfs:Name>
+            // <wfs:Title>Menighedsraadsafstemningsomraade</wfs:Title>
+            featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "wfs:Name.xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+          }
         }
       }
     }
@@ -809,3 +843,4 @@ QString QgsWfsCapabilities::errorMessageWithReason( const QString &reason )
 {
   return tr( "Download of capabilities failed: %1" ).arg( reason );
 }
+

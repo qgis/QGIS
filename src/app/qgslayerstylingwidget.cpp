@@ -684,7 +684,7 @@ QgsLayerStyleManagerWidgetFactory::QgsLayerStyleManagerWidgetFactory()
 
 QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const
 {
-  Q_UNUSED( dockMode );
+  Q_UNUSED( dockMode )
   return new QgsMapLayerStyleManagerWidget( layer,  canvas, parent );
 
 }

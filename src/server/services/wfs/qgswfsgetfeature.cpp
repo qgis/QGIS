@@ -89,7 +89,7 @@ namespace QgsWfs
                         const QString &version, const QgsServerRequest &request,
                         QgsServerResponse &response )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     mRequestParameters = request.parameters();
     mWfsParameters = QgsWfsParameters( QUrlQuery( request.url() ) );
@@ -170,7 +170,7 @@ namespace QgsWfs
           }
           catch ( QgsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
             requestRect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
           }
         }
@@ -241,7 +241,7 @@ namespace QgsWfs
       }
 
       // get propertyList from query
-      QStringList propertyList = query.propertyList;
+      const QStringList propertyList = query.propertyList;
 
       //Using pending attributes and pending fields
       QgsAttributeList attrIndexes = vlayer->attributeList();
@@ -261,7 +261,7 @@ namespace QgsWfs
           propertynames.append( fields.field( idx ).name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         }
         QString fieldName;
-        for ( plstIt = propertyList.begin(); plstIt != propertyList.end(); ++plstIt )
+        for ( plstIt = propertyList.constBegin(); plstIt != propertyList.constEnd(); ++plstIt )
         {
           fieldName = *plstIt;
           int fieldNameIdx = propertynames.indexOf( fieldName );
@@ -367,7 +367,7 @@ namespace QgsWfs
         }
         catch ( QgsException &cse )
         {
-          Q_UNUSED( cse );
+          Q_UNUSED( cse )
         }
         if ( onlyOneLayer )
         {
@@ -548,9 +548,9 @@ namespace QgsWfs
         {
           QStringList propertyList;
 
-          QStringList attrList = propertyName.split( ',' );
+          const QStringList attrList = propertyName.split( ',' );
           QStringList::const_iterator alstIt;
-          for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
+          for ( alstIt = attrList.constBegin(); alstIt != attrList.constEnd(); ++alstIt )
           {
             QString fieldName = *alstIt;
             fieldName = fieldName.trimmed();
@@ -623,9 +623,9 @@ namespace QgsWfs
       {
         QStringList propertyList;
 
-        QStringList attrList = propertyName.split( ',' );
+        const QStringList attrList = propertyName.split( ',' );
         QStringList::const_iterator alstIt;
-        for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
+        for ( alstIt = attrList.constBegin(); alstIt != attrList.constEnd(); ++alstIt )
         {
           QString fieldName = *alstIt;
           fieldName = fieldName.trimmed();
@@ -723,7 +723,7 @@ namespace QgsWfs
             }
             catch ( QgsException &cse )
             {
-              Q_UNUSED( cse );
+              Q_UNUSED( cse )
             }
           }
         }
@@ -1065,7 +1065,7 @@ namespace QgsWfs
           }
           catch ( QgsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
         }
         // EPSG:4326 max extent is -180, -90, 180, 90
@@ -1232,7 +1232,7 @@ namespace QgsWfs
       QString id = QStringLiteral( "%1.%2" ).arg( params.typeName, FID_TO_STRING( feat->id() ) );
       //QgsJsonExporter force transform geometry to ESPG:4326
       //and the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
-      //Q_UNUSED( prec );
+      //Q_UNUSED( prec )
 
       //copy feature so we can modify its geometry as required
       QgsFeature f( *feat );
@@ -1285,7 +1285,7 @@ namespace QgsWfs
         }
         catch ( QgsCsException &cse )
         {
-          Q_UNUSED( cse );
+          Q_UNUSED( cse )
         }
 
         QDomElement geomElem = doc.createElement( QStringLiteral( "qgs:geometry" ) );
@@ -1386,7 +1386,7 @@ namespace QgsWfs
         }
         catch ( QgsCsException &cse )
         {
-          Q_UNUSED( cse );
+          Q_UNUSED( cse )
         }
 
         QDomElement geomElem = doc.createElement( QStringLiteral( "qgs:geometry" ) );

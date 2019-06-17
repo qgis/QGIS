@@ -29,7 +29,6 @@ You could re-run the failing test with:
 The parameter `-V` enables verbose mode and `-R` takes a regular expression as
 parameter and will only run matching tests.
 
-
 For python tests, you can run a specific test inside a unit file
 with something like this:
 
@@ -39,6 +38,13 @@ with something like this:
    TestQgsVectorLayer.testOverwriteLayer
 ```
 
+If you get `Could not connect to any X display` errors it means that your build
+machine does not have an X server.  In that case you need to run the test under
+`xvfb-run`.  For example:
+
+```
+    xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest -V -R PyQgsServerWMSGetMap
+```
 
 # Advanced configuration
 

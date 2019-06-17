@@ -33,7 +33,7 @@ QgsPieDiagram *QgsPieDiagram::clone() const
 
 QSizeF QgsPieDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
 
   QVariant attrVal;
   if ( is.classificationAttributeIsExpression )
@@ -74,8 +74,8 @@ QString QgsPieDiagram::diagramName() const
 
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
-  Q_UNUSED( c );
-  Q_UNUSED( attributes );
+  Q_UNUSED( c )
+  Q_UNUSED( attributes )
   return s.size;
 }
 

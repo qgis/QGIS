@@ -65,7 +65,6 @@ namespace MDAL
   int toInt( const std::string &str );
   double toDouble( const std::string &str );
   bool toBool( const std::string &str );
-  bool isNumber( const std::string &str );
 
   /**
    * Splits by deliminer and skips empty parts.

@@ -50,7 +50,7 @@ bool QgsVectorLayerEditBuffer::isModified() const
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
   QgsDebugMsgLevel( QStringLiteral( "undo index changed %1" ).arg( index ), 4 );
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   emit layerModified();
 }
 
@@ -333,7 +333,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   // no                 yes                   => changeAttributeValues
   // yes                yes                   => changeFeatures
 
-  // to fix https://issues.qgis.org/issues/15741
+  // to fix https://github.com/qgis/QGIS/issues/23663
   // first of all check if feature to add is compatible with provider type
   // this check have to be done before all checks to avoid to clear internal
   // buffer if some of next steps success.

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -352,7 +350,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.name(), 'new name2')
         self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiLineString)
-        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        # depending on proj version, the projection for this layer is either 4326 or 4030
+        self.assertIn(layer.crs().authid(), ('EPSG:4326', 'EPSG:4030'))
         self.assertIn(lines_path, layer.dataProvider().dataSourceUri())
         self.assertEqual(len(spy), 2)
 
@@ -2206,6 +2205,24 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.addExpressionField('sum(fldint*2)', field)
         vals = [f['virtual'] for f in layer.getFeatures()]
         self.assertEqual(vals, [48, 48, 48, 48, 48, 48, 48])
+
+    def testAggregateFilter(self):
+        """ Test aggregate calculation """
+        layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
+        pr = layer.dataProvider()
+
+        int_values = [4, 2, 3, 2, 5, None, 8]
+        features = []
+        for i in int_values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([i])
+            features.append(f)
+        assert pr.addFeatures(features)
+
+        val, ok = layer.aggregate(QgsAggregateCalculator.Sum, 'fldint', fids=[1, 2])
+        self.assertTrue(ok)
+        self.assertEqual(val, 6.0)
 
     def onLayerOpacityChanged(self, tr):
         self.opacityTest = tr

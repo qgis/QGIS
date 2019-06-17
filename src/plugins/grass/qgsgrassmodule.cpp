@@ -90,7 +90,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   , mSuccess( false )
   , mDirect( direct )
 {
-  Q_UNUSED( f );
+  Q_UNUSED( f )
   QgsDebugMsg( "called" );
 
   setupUi( this );

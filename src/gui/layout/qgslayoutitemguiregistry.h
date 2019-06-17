@@ -106,7 +106,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Creates a configuration widget for an \a item of this type. Can return NULLPTR if no configuration GUI is required.
      */
-    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_FACTORY { Q_UNUSED( item ); return nullptr; }
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_FACTORY { Q_UNUSED( item ) return nullptr; }
 
     /**
      * Creates a rubber band for use when creating layout items of this type. Can return NULLPTR if no rubber band

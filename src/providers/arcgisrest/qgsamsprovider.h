@@ -22,23 +22,33 @@
 #include "qgsrasterdataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 
+#include <QNetworkRequest>
+
 class QgsArcGisAsyncQuery;
 class QgsAmsProvider;
+class QNetworkReply;
 
 class QgsAmsLegendFetcher : public QgsImageFetcher
 {
     Q_OBJECT
   public:
-    QgsAmsLegendFetcher( QgsAmsProvider *provider );
+    QgsAmsLegendFetcher( QgsAmsProvider *provider, const QImage &fetchedImage );
     void start() override;
     bool haveImage() const { return mLegendImage.isNull(); }
     QImage getImage() const { return mLegendImage; }
+    void setImage( const QImage &image ) { mLegendImage = image; }
+    void clear() { mLegendImage = QImage(); }
     const QString &errorTitle() const { return mErrorTitle; }
     const QString &errorMessage() const { return mError; }
+
+  signals:
+
+    void fetchedNew( const QImage &image );
 
   private slots:
     void handleFinished();
     void handleError( const QString &errorTitle, const QString &errorMsg );
+    void sendCachedImage();
 
   private:
     QgsAmsProvider *mProvider = nullptr;
@@ -47,6 +57,7 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
     QImage mLegendImage;
     QString mErrorTitle;
     QString mError;
+
 };
 
 class QgsAmsProvider : public QgsRasterDataProvider
@@ -56,6 +67,8 @@ class QgsAmsProvider : public QgsRasterDataProvider
   public:
     QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
+    explicit QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
     QString name() const override { return QStringLiteral( "mapserver" ); }
@@ -67,6 +80,8 @@ class QgsAmsProvider : public QgsRasterDataProvider
     void setLayerOrder( const QStringList &layers ) override;
     void setSubLayerVisibility( const QString &name, bool vis ) override;
     void reloadData() override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
+    QgsLayerMetadata layerMetadata() const override;
 
     /* Inherited from QgsRasterInterface */
     int bandCount() const override { return 1; }
@@ -84,11 +99,37 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) override;
     QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QList< double > nativeResolutions() const override;
+
+    //! Helper struct for tile requests
+    struct TileRequest
+    {
+      TileRequest( const QUrl &u, const QRectF &r, int i, const QRectF &mapExtent )
+        : url( u )
+        , rect( r )
+        , mapExtent( mapExtent )
+        , index( i )
+      {}
+      QUrl url;
+      QRectF rect;
+      QRectF mapExtent;
+      int index;
+    };
+    typedef QList<TileRequest> TileRequests;
+
+    //! Helper structure to store a cached tile image with its rectangle
+    typedef struct TileImage
+    {
+      TileImage( const QRectF &r, const QImage &i, bool smooth ): rect( r ), img( i ), smooth( smooth ) {}
+      QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
+      QImage img;  //!< Cached tile to be drawn
+      bool smooth;
+    } TileImage;
 
   protected:
-    void readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    void draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight );
+    QImage draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback = nullptr );
 
   private:
     bool mValid = false;
@@ -103,6 +144,66 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QString mError;
     QImage mCachedImage;
     QgsRectangle mCachedImageExtent;
+    QgsStringMap mRequestHeaders;
+    int mTileReqNo = 0;
+    bool mTiled = false;
+    bool mImageServer = false;
+    int mMaxImageWidth = 4096;
+    int mMaxImageHeight = 4096;
+    QgsLayerMetadata mLayerMetadata;
+    QList< double > mResolutions;
+};
+
+//! Handler for tiled MapServer requests, the data are written to the given image
+class QgsAmsTiledImageDownloadHandler : public QObject
+{
+    Q_OBJECT
+  public:
+
+    QgsAmsTiledImageDownloadHandler( const QString &auth,  const QgsStringMap &requestHeaders, int reqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback );
+    ~QgsAmsTiledImageDownloadHandler() override;
+
+    void downloadBlocking();
+
+  protected slots:
+    void tileReplyFinished();
+    void canceled();
+
+  private:
+
+    enum TileAttribute
+    {
+      TileReqNo = QNetworkRequest::User + 0,
+      TileIndex = QNetworkRequest::User + 1,
+      TileRect  = QNetworkRequest::User + 2,
+      TileRetry = QNetworkRequest::User + 3,
+    };
+
+    /**
+     * \brief Relaunch tile request cloning previous request parameters and managing max repeat
+     *
+     * \param oldRequest request to clone to generate new tile request
+     *
+     * request is not launched if max retry is reached. Message is logged.
+     */
+    void repeatTileRequest( QNetworkRequest const &oldRequest );
+
+    void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
+
+    QString mAuth;
+    QgsStringMap mRequestHeaders;
+
+    QImage *mImage = nullptr;
+    QgsRectangle mViewExtent;
+
+    QEventLoop *mEventLoop = nullptr;
+
+    int mTileReqNo;
+
+    //! Running tile requests
+    QList<QNetworkReply *> mReplies;
+
+    QgsRasterBlockFeedback *mFeedback = nullptr;
 };
 
 #endif // QGSMAPSERVERPROVIDER_H

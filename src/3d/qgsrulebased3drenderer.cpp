@@ -442,7 +442,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   for ( QgsFeature3DHandler *handler : handlers.values() )
     handler->finalize( entity, context );
 
-  qDeleteAll( handlers.values() );
+  qDeleteAll( handlers );
 
   return entity;
 
@@ -461,7 +461,7 @@ void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
 
 void QgsRuleBased3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
   // root rule is read before class constructed

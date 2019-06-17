@@ -1756,7 +1756,7 @@ QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderR
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; data item detected." ) );
   return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
 }

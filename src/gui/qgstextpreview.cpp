@@ -33,7 +33,7 @@ QgsTextPreview::QgsTextPreview( QWidget *parent )
 
 void QgsTextPreview::paintEvent( QPaintEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   QPainter p( this );
 
   p.setRenderHint( QPainter::Antialiasing );

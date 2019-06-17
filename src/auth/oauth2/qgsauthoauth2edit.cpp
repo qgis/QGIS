@@ -990,7 +990,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
   if ( jsonData.contains( QStringLiteral( "grant_types" ) ) && jsonData.contains( QStringLiteral( "redirect_uris" ) ) )
   {
     const QStringList grantTypes( jsonData[QStringLiteral( "grant_types" ) ].toStringList() );
-    if ( grantTypes.count( ) )
+    if ( !grantTypes.isEmpty( ) )
     {
       QString grantType = grantTypes[0];
       if ( grantType == QLatin1Literal( "authorization_code" ) )
@@ -1004,7 +1004,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     }
     //Set redirect_uri
     const QStringList  redirectUris( jsonData[QStringLiteral( "redirect_uris" ) ].toStringList() );
-    if ( redirectUris.count( ) )
+    if ( !redirectUris.isEmpty( ) )
     {
       QString redirectUri = redirectUris[0];
       leRedirectUrl->setText( redirectUri );

@@ -127,6 +127,17 @@ there is only one occurrence of that layer.
 
 .. versionadded:: 3.4
 %End
+
+    static QgsLayerTreeGroup *firstGroupWithoutCustomProperty( QgsLayerTreeGroup *group, const QString &property );
+%Docstring
+Returns the first parent which doesn't have the given custom property
+or the group itself if it doesn't hold the property
+
+:param group: the layer tree group
+:param property: the property
+
+.. versionadded:: 3.8
+%End
 };
 
 /************************************************************************

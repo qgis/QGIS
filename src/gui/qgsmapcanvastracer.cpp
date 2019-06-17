@@ -62,7 +62,7 @@ QgsMapCanvasTracer *QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas *canvas )
 
 void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVertex )
 {
-  Q_UNUSED( addingVertex );
+  Q_UNUSED( addingVertex )
 
   if ( !mMessageBar )
     return;

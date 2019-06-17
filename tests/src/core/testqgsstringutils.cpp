@@ -159,6 +159,8 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( QString( "is a@a an email?" ), &found ), QString( "is a@a an email?" ) );
   QVERIFY( !found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "Load file:///this/is/path/to.file?query=1#anchor" ), &found ), QString( "Load <a href=\"file:///this/is/path/to.file?query=1#anchor\">file:///this/is/path/to.file?query=1#anchor</a>" ) );
+  QVERIFY( found );
 }
 
 void TestQgsStringUtils::titleCase_data()

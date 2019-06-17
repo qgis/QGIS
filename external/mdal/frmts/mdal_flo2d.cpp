@@ -34,11 +34,6 @@ struct VertexCompare
   }
 };
 
-static inline bool is_nodata( double val )
-{
-  return MDAL::equals( val, -9999.0, 1e-8 );
-}
-
 static std::string fileNameFromDir( const std::string &mainFileName, const std::string &name )
 {
   std::string dir = MDAL::dirName( mainFileName );
@@ -47,7 +42,7 @@ static std::string fileNameFromDir( const std::string &mainFileName, const std::
 
 static double getDouble( double val )
 {
-  if ( is_nodata( val ) )
+  if ( MDAL::equals( val, 0.0, 1e-8 ) )
   {
     return MDAL_NAN;
   }
@@ -59,19 +54,11 @@ static double getDouble( double val )
 
 static double getDouble( const std::string &val )
 {
-  if ( MDAL::isNumber( val ) )
-  {
-    double valF = MDAL::toDouble( val );
-    return getDouble( valF );
-  }
-  else
-  {
-    return MDAL_NAN;
-  }
+  double valF = MDAL::toDouble( val );
+  return getDouble( valF );
 }
 
 void MDAL::DriverFlo2D::addStaticDataset(
-  bool isOnVertices,
   std::vector<double> &vals,
   const std::string &groupName,
   const std::string &datFileName )
@@ -82,7 +69,7 @@ void MDAL::DriverFlo2D::addStaticDataset(
                                           datFileName,
                                           groupName
                                         );
-  group->setIsOnVertices( isOnVertices );
+  group->setIsOnVertices( false );
   group->setIsScalar( true );
 
   std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
@@ -257,7 +244,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
       double depth = getDouble( lineParts[1] );
       depthDataset->values()[face_idx] = depth;
 
-      if ( !is_nodata( depth ) ) depth += elevations[face_idx];
+      if ( !std::isnan( depth ) ) depth += elevations[face_idx];
       waterLevelDataset->values()[face_idx] = depth;
 
       face_idx ++;
@@ -295,9 +282,9 @@ void MDAL::DriverFlo2D::parseDEPTHFile( const std::string &datFileName, const st
   std::ifstream depthStream( depthFile, std::ifstream::in );
   std::string line;
 
-  size_t nVertices = mMesh->verticesCount();
-  std::vector<double> maxDepth( nVertices );
-  std::vector<double> maxWaterLevel( nVertices );
+  size_t nFaces = mMesh->facesCount();
+  std::vector<double> maxDepth( nFaces );
+  std::vector<double> maxWaterLevel( nFaces );
 
   size_t vertex_idx = 0;
 
@@ -305,7 +292,7 @@ void MDAL::DriverFlo2D::parseDEPTHFile( const std::string &datFileName, const st
   while ( std::getline( depthStream, line ) )
   {
     line = MDAL::rtrim( line );
-    if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
+    if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
 
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 4 )
@@ -317,23 +304,23 @@ void MDAL::DriverFlo2D::parseDEPTHFile( const std::string &datFileName, const st
     maxDepth[vertex_idx] = val;
 
     //water level
-    if ( !is_nodata( val ) ) val += elevations[vertex_idx];
+    if ( !std::isnan( val ) ) val += elevations[vertex_idx];
     maxWaterLevel[vertex_idx] = val;
 
 
     vertex_idx++;
   }
 
-  addStaticDataset( true, maxDepth, "Depth/Maximums", datFileName );
-  addStaticDataset( true, maxWaterLevel, "Water Level/Maximums", datFileName );
+  addStaticDataset( maxDepth, "Depth/Maximums", datFileName );
+  addStaticDataset( maxWaterLevel, "Water Level/Maximums", datFileName );
 }
 
 
 void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
 {
   // these files are optional, so if not present, reading is skipped
-  size_t nVertices = mMesh->verticesCount();
-  std::vector<double> maxVel( nVertices );
+  size_t nFaces = mMesh->facesCount();
+  std::vector<double> maxVel( nFaces );
 
   {
     std::string velocityFile( fileNameFromDir( datFileName, "VELFP.OUT" ) );
@@ -350,7 +337,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     // VELFP.OUT - COORDINATES (ELEM NUM, X, Y, MAX VEL) - Maximum floodplain flow velocity;
     while ( std::getline( velocityStream, line ) )
     {
-      if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
+      if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
 
       line = MDAL::rtrim( line );
       std::vector<std::string> lineParts = MDAL::split( line, ' ' );
@@ -381,7 +368,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     // VELOC.OUT - COORDINATES (ELEM NUM, X, Y, MAX VEL)  - Maximum channel flow velocity
     while ( std::getline( velocityStream, line ) )
     {
-      if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
+      if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
 
       line = MDAL::rtrim( line );
       std::vector<std::string> lineParts = MDAL::split( line, ' ' );
@@ -391,7 +378,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
       }
 
       double val = getDouble( lineParts[3] );
-      if ( !is_nodata( val ) ) // overwrite value from VELFP if it is not 0
+      if ( !std::isnan( val ) )  // overwrite value from VELFP if it is not 0
       {
         maxVel[vertex_idx] = val;
       }
@@ -400,7 +387,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     }
   }
 
-  addStaticDataset( true, maxVel, "Velocity/Maximums", datFileName );
+  addStaticDataset( maxVel, "Velocity/Maximums", datFileName );
 }
 
 double MDAL::DriverFlo2D::calcCellSize( const std::vector<CellCenter> &cells )
@@ -671,7 +658,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &result
     createMesh( cells, cell_size / 2.0 );
 
     // create output for bed elevation
-    addStaticDataset( false, elevations, "Bed Elevation", mDatFileName );
+    addStaticDataset( elevations, "Bed Elevation", mDatFileName );
 
     if ( parseHDF5Datasets( mDatFileName ) )
     {

@@ -44,7 +44,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
       : mList( list ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ); }
+    { Q_UNUSED( n ) }
 
     void visitData( const IData &d ) override
     {
@@ -52,7 +52,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ); }
+    { Q_UNUSED( v ) }
 
   private:
     QList<QgsFeatureId> &mList;
@@ -70,7 +70,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
       : mNewIndex( newIndex ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ); }
+    { Q_UNUSED( n ) }
 
     void visitData( const IData &d ) override
     {
@@ -81,7 +81,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ); }
+    { Q_UNUSED( v ) }
 
   private:
     SpatialIndex::ISpatialIndex *mNewIndex = nullptr;
@@ -379,6 +379,10 @@ bool QgsSpatialIndex::featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsF
 
   id = f.id();
   rect = f.geometry().boundingBox();
+
+  if ( !rect.isFinite() )
+    return false;
+
   return true;
 }
 
@@ -437,12 +441,12 @@ bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
   }
   catch ( Tools::Exception &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
   }
   catch ( const std::exception &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
   }
   catch ( ... )

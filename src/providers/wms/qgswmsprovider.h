@@ -146,7 +146,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     void setConnectionName( QString const &connName );
 
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
     QgsRectangle extent() const override;
@@ -210,6 +210,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString description() const override;
     void reloadData() override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
+    QList< double > nativeResolutions() const override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
@@ -335,9 +336,10 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-      TileImage( const QRectF &r, const QImage &i ): rect( r ), img( i ) {}
+      TileImage( const QRectF &r, const QImage &i, bool smooth ): rect( r ), img( i ), smooth( smooth ) {}
       QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
       QImage img;  //!< Cached tile to be drawn
+      bool smooth; //!< Whether to use antialiasing/smooth transforms when rendering tile
     } TileImage;
     //! Gets tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
@@ -461,6 +463,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
+
+    QList< double > mNativeResolutions;
 
     friend class TestQgsWmsProvider;
 

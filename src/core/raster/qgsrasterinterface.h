@@ -76,6 +76,23 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
      */
     void setRenderPartialOutput( bool enable ) { mRenderPartialOutput = enable; }
 
+    /**
+     * Appends an error message to the stored list of errors. Should be called
+     * whenever an error is encountered while retrieving a raster block.
+     *
+     * \see errors()
+     * \since QGIS 3.8.0
+     */
+    void appendError( const QString &error ) { mErrors.append( error ); }
+
+    /**
+     * Returns a list of any errors encountered while retrieving the raster block.
+     *
+     * \see appendError()
+     * \since QGIS 3.8.0
+     */
+    QStringList errors() const { return mErrors; }
+
   private:
 
     /**
@@ -86,6 +103,9 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
     //! Whether our painter is drawing to a temporary image used just by this layer
     bool mRenderPartialOutput = false;
+
+    //! List of errors encountered while retrieving block
+    QStringList mErrors;
 };
 
 
@@ -359,8 +379,8 @@ class CORE_EXPORT QgsRasterInterface
       maximum = PyFloat_AsDouble( a3 );
     }
 
-    QgsRasterHistogram h = sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 );
-    sipRes = &h;
+    QgsRasterHistogram *h = new QgsRasterHistogram( sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 ) );
+    return sipConvertFromType( h, sipType_QgsRasterHistogram, Py_None );
     % End
 #endif
 
@@ -437,9 +457,9 @@ class CORE_EXPORT QgsRasterInterface
                                 int sampleSize = 0 );
 
     //! Write base class members to xml.
-    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const { Q_UNUSED( doc ) Q_UNUSED( parentElem ); }
     //! Sets base class members from xml. Usually called from create() methods of subclasses
-    virtual void readXml( const QDomElement &filterElem ) { Q_UNUSED( filterElem ); }
+    virtual void readXml( const QDomElement &filterElem ) { Q_UNUSED( filterElem ) }
 
   protected:
     // QgsRasterInterface used as input

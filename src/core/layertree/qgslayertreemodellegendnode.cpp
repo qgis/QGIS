@@ -54,8 +54,8 @@ Qt::ItemFlags QgsLayerTreeModelLegendNode::flags() const
 
 bool QgsLayerTreeModelLegendNode::setData( const QVariant &value, int role )
 {
-  Q_UNUSED( value );
-  Q_UNUSED( role );
+  Q_UNUSED( value )
+  Q_UNUSED( role )
   return false;
 }
 
@@ -711,7 +711,7 @@ QVariant QgsImageLegendNode::data( int role ) const
 
 QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
-  Q_UNUSED( itemHeight );
+  Q_UNUSED( itemHeight )
 
   if ( ctx && ctx->painter )
   {
@@ -881,7 +881,7 @@ QVariant QgsWmsLegendNode::data( int role ) const
 
 QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
-  Q_UNUSED( itemHeight );
+  Q_UNUSED( itemHeight )
 
   if ( ctx && ctx->painter )
   {

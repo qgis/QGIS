@@ -59,6 +59,30 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
   retrieveServerCapabilities();
 }
 
+QgsWcsCapabilities::QgsWcsCapabilities( const QgsWcsCapabilities &other )
+  : QObject()
+  , mUri( other.mUri )
+  , mVersion( other.mVersion )
+  , mCapabilitiesResponse( other.mCapabilitiesResponse )
+  , mCapabilitiesDom( other.mCapabilitiesDom )
+  , mServiceExceptionReportDom( other.mServiceExceptionReportDom )
+  , mCapabilities( other.mCapabilities )
+  , mCoveragesSupported( other.mCoveragesSupported )
+    // intentionally omitted:
+    // - mCapabilitiesReply
+    // - mErrorTitle
+    // - mError
+    // - mErrorFormat
+  , mCoverageCount( other.mCoverageCount )
+  , mCoverageParents( other.mCoverageParents )
+  , mCoverageParentIdentifiers( other.mCoverageParentIdentifiers )
+  , mUserName( other.mUserName )
+  , mPassword( other.mPassword )
+  , mCacheLoadControl( other.mCacheLoadControl )
+{
+}
+
+
 void QgsWcsCapabilities::parseUri()
 {
   mCacheLoadControl = QNetworkRequest::PreferNetwork;
@@ -705,7 +729,7 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const &e, QgsWcsCover
 
 void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   coverageSummary.orderId = ++mCoverageCount;
 
   coverageSummary.identifier = firstChildText( e, QStringLiteral( "name" ) );

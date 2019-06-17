@@ -13,7 +13,7 @@ QgsProcessingParameterNumber|threshold|Threshold for connecting nodes to the net
 *QgsProcessingParameterString|to_where|To WHERE conditions of SQL statement without 'where' keyword|None|True|True
 *QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
 *QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
-*QgsProcessingParameterField|node_column|Node cost column (number)|None|from_layer|0|False|True
+*QgsProcessingParameterField|node_column|Node cost column (number)|None|flayer|0|False|True
 *QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
 *QgsProcessingParameterBoolean|-l|Write each output path as one line, not as original input segments|False|True
 QgsProcessingParameterVectorDestination|output|Network_Distance

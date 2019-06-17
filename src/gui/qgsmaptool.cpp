@@ -34,7 +34,8 @@ QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
 
 QgsMapTool::~QgsMapTool()
 {
-  mCanvas->unsetMapTool( this );
+  if ( mCanvas )
+    mCanvas->unsetMapTool( this );
 }
 
 
@@ -155,22 +156,22 @@ void QgsMapTool::setCursor( const QCursor &cursor )
 
 void QgsMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMapTool::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMapTool::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMapTool::wheelEvent( QWheelEvent *e )
@@ -180,17 +181,17 @@ void QgsMapTool::wheelEvent( QWheelEvent *e )
 
 void QgsMapTool::keyPressEvent( QKeyEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsMapTool::keyReleaseEvent( QKeyEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 bool QgsMapTool::gestureEvent( QGestureEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   return true;
 }
 

@@ -17,13 +17,17 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSABSTRACTGEOMETRYV2
 
 #include <functional>
-
 #include <QString>
 
 #include "qgis_core.h"
 #include "qgscoordinatetransform.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
+
+#ifndef SIP_RUN
+#include <nlohmann/json_fwd.hpp>
+using json = nlohmann::json;
+#endif
 
 class QgsMapToPixel;
 class QgsCurve;
@@ -47,6 +51,7 @@ typedef QVector< QgsRingSequence > QgsCoordinateSequence;
 typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 #endif
+
 
 /**
  * \ingroup core
@@ -271,14 +276,28 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 
     /**
-     * Returns a GeoJSON representation of the geometry.
+     * Returns a GeoJSON representation of the geometry as a QString.
      * \param precision number of decimal places for coordinates
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
      * \see asGml3()
+     * \see asJsonObject()
      */
-    virtual QString asJson( int precision = 17 ) const = 0;
+    QString asJson( int precision = 17 );
+
+    /**
+     * Returns a json object representation of the geometry.
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml2()
+     * \see asGml3()
+     * \see asJson()
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    virtual json asJsonObject( int precision = 17 ) SIP_SKIP const;
+
 
     //render pipeline
 
@@ -915,7 +934,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note used for vertex_iterator implementation
      * \since QGIS 3.0
      */
-    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ); return nullptr; }
+    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ) return nullptr; }
 
     /**
      * Returns point at index (for geometries without child geometries - i.e. curve / point)

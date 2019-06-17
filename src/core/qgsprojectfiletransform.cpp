@@ -70,7 +70,7 @@ QgsProjectFileTransform::TransformItem QgsProjectFileTransform::sTransformers[] 
 
 bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersion )
 {
-  Q_UNUSED( newVersion );
+  Q_UNUSED( newVersion )
   bool returnValue = false;
 
   if ( !mDom.isNull() )
@@ -1189,8 +1189,8 @@ void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument &doc, c
 void QgsProjectFileTransform::transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QDomElement &rendererElem )
 {
   //soon...
-  Q_UNUSED( doc );
-  Q_UNUSED( orig );
-  Q_UNUSED( rendererElem );
+  Q_UNUSED( doc )
+  Q_UNUSED( orig )
+  Q_UNUSED( rendererElem )
 }
 

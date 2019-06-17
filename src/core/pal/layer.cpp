@@ -74,9 +74,6 @@ Layer::~Layer()
   qDeleteAll( mFeatureParts );
   qDeleteAll( mObstacleParts );
 
-  //should already be empty
-  qDeleteAll( mConnectedHashtable );
-
   delete mFeatureIndex;
   delete mObstacleIndex;
 
@@ -284,19 +281,7 @@ void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
   {
-    QLinkedList< FeaturePart *> *lst;
-    if ( !mConnectedHashtable.contains( labelText ) )
-    {
-      // entry doesn't exist yet
-      lst = new QLinkedList<FeaturePart *>;
-      mConnectedHashtable.insert( labelText, lst );
-      mConnectedTexts << labelText;
-    }
-    else
-    {
-      lst = mConnectedHashtable.value( labelText );
-    }
-    lst->append( fpart ); // add to the list
+    mConnectedHashtable[ labelText ].append( fpart );
   }
 }
 
@@ -313,18 +298,18 @@ void Layer::addObstaclePart( FeaturePart *fpart )
   mObstacleIndex->Insert( bmin, bmax, fpart );
 }
 
-static FeaturePart *_findConnectedPart( FeaturePart *partCheck, QLinkedList<FeaturePart *> *otherParts )
+static FeaturePart *_findConnectedPart( FeaturePart *partCheck, const QVector<FeaturePart *> &otherParts )
 {
   // iterate in the rest of the parts with the same label
-  QLinkedList<FeaturePart *>::const_iterator p = otherParts->constBegin();
-  while ( p != otherParts->constEnd() )
+  auto it = otherParts.constBegin();
+  while ( it != otherParts.constEnd() )
   {
-    if ( partCheck->isConnected( *p ) )
+    if ( partCheck->isConnected( *it ) )
     {
       // stop checking for other connected parts
-      return *p;
+      return *it;
     }
-    ++p;
+    ++it;
   }
 
   return nullptr; // no connected part found...
@@ -334,21 +319,23 @@ void Layer::joinConnectedFeatures()
 {
   // go through all label texts
   int connectedFeaturesId = 0;
-  const auto constMConnectedTexts = mConnectedTexts;
-  for ( const QString &labelText : constMConnectedTexts )
+  for ( auto it = mConnectedHashtable.constBegin(); it != mConnectedHashtable.constEnd(); ++it )
   {
-    if ( !mConnectedHashtable.contains( labelText ) )
-      continue; // shouldn't happen
-
+    QVector<FeaturePart *> parts = it.value();
     connectedFeaturesId++;
 
-    QLinkedList<FeaturePart *> *parts = mConnectedHashtable.value( labelText );
+    // need to start with biggest parts first, to avoid merging in side branches before we've
+    // merged the whole of the longest parts of the joined network
+    std::sort( parts.begin(), parts.end(), []( FeaturePart * a, FeaturePart * b )
+    {
+      return a->length() > b->length();
+    } );
 
     // go one-by-one part, try to merge
-    while ( !parts->isEmpty() && parts->count() > 1 )
+    while ( parts.count() > 1 )
     {
       // part we'll be checking against other in this round
-      FeaturePart *partCheck = parts->takeFirst();
+      FeaturePart *partCheck = parts.takeFirst();
 
       FeaturePart *otherPart = _findConnectedPart( partCheck, parts );
       if ( otherPart )
@@ -379,19 +366,8 @@ void Layer::joinConnectedFeatures()
         }
       }
     }
-
-    // we're done processing feature parts with this particular label text
-    delete parts;
-    mConnectedHashtable.remove( labelText );
   }
-
-  // we're done processing connected features
-
-  //should be empty, but clear to be safe
-  qDeleteAll( mConnectedHashtable );
   mConnectedHashtable.clear();
-
-  mConnectedTexts.clear();
 }
 
 int Layer::connectedFeatureId( QgsFeatureId featureId ) const

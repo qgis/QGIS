@@ -1,14 +1,14 @@
 language: python # This lets us use newer python versions from virtualenv
 python: "3.5"
 compiler: clang
-dist: trusty
+dist: xenial
 sudo: false
 cache:
   apt: true
   pip: true
   directories:
     - ${HOME}/.ccache_testing
-    - ${HOME}/.ccache_docker_build_cosmic
+    - ${HOME}/.ccache_docker_build_disco
     - ${HOME}/.ccache_docker_build_bionic
   timeout: 1000
 if: NOT branch =~ /^(cherry-pick-)?backport-\d+-/ AND NOT branch =~ /-patch-\d+$/
@@ -61,7 +61,6 @@ matrix:
         apt:
           sources:
             - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
-            - sourceline: 'ppa:sergey-dryabzhinsky/packages' # doxygen
           packages:
             - doxygen
             - graphviz
@@ -114,18 +113,19 @@ matrix:
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
       ##########################################################
-      # COSMIC DOCKER BUILD ON CRON OR TAG
+      # DISCO DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
-      name: cosmic docker build 🐠
+      name: disco docker build 💃
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       env:
         - TRAVIS_CONFIG=docker_image
-        - CCACHE_DIR=${HOME}/.ccache_docker_build_cosmic
+        - CCACHE_DIR=${HOME}/.ccache_docker_build_disco
         - TRIGGER_PYQGIS_DOC=TRUE
-        - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_cosmic"
-        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-cosmic.dockerfile
+        - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_disco"
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-disco.dockerfile
+        - INSTALL_LIBSECCOMP=TRUE
 
 
 

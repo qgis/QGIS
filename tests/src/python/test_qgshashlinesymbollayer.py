@@ -20,8 +20,6 @@
 __author__ = 'Nyall Dawson'
 __date__ = 'March 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 

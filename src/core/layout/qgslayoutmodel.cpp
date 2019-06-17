@@ -88,7 +88,7 @@ void QgsLayoutModel::refreshItemsInScene()
 
 QModelIndex QgsLayoutModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level for now
   return QModelIndex();
@@ -116,7 +116,7 @@ int QgsLayoutModel::rowCount( const QModelIndex &parent ) const
 
 int QgsLayoutModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 3;
 }
 
@@ -193,7 +193,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
 
 bool QgsLayoutModel::setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !index.isValid() )
     return false;
@@ -410,7 +410,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
 
 bool QgsLayoutModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( count );
+  Q_UNUSED( count )
   if ( parent.isValid() )
   {
     return false;

@@ -82,7 +82,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
     virtual void readXml( const QDomElement &elem ) = 0;
 
     //! After read of XML, resolve references to any layers that have been read as layer IDs
-    virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ); }
+    virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
 
     //! Converts terrain generator type enumeration into a string
     static QString typeToString( Type type );

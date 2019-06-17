@@ -166,7 +166,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
+      Q_UNUSED( cse )
       emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::Warning );
       return;
     }

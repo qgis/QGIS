@@ -9,11 +9,11 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '25/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import qgis  # NOQA
+import shutil
+import tempfile
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsProject,
@@ -34,7 +34,7 @@ from qgis.core import (QgsProject,
                        NULL
                        )
 from qgis.testing import start_app, unittest
-
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -263,6 +263,10 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # we do not expect the default value expression to take precedence over the attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
         self.assertEqual(f.attributes(), ['a', NULL, 6.0])
+        # default value takes precedence if it's apply on update
+        layer.setDefaultValueDefinition(2, QgsDefaultValue('3*4', True))
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
+        self.assertEqual(f.attributes(), ['a', NULL, 12.0])
         # layer with default value expression based on geometry
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*$x'))
         f = QgsVectorLayerUtils.createFeature(layer, g)
@@ -615,6 +619,28 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
 
         for f in features:
             self.assertEqual(f.attributes()[0], 'my_default', f.id())
+
+    def test_unique_pk_when_subset(self):
+        """Test unique values on filtered layer GH #30062"""
+
+        src = unitTestDataPath('points_gpkg.gpkg')
+        dest = tempfile.mktemp() + '.gpkg'
+        shutil.copy(src, dest)
+        vl = QgsVectorLayer(dest, 'vl', 'ogr')
+        self.assertTrue(vl.isValid())
+        features_data = []
+        it = vl.getFeatures()
+        for _ in range(3):
+            f = next(it)
+            features_data.append(QgsVectorLayerUtils.QgsFeatureData(f.geometry(), dict(zip(range(f.fields().count()), f.attributes()))))
+        # Set a filter
+        vl.setSubsetString('"fid" in (4,5,6)')
+        self.assertTrue(vl.isValid())
+        context = vl.createExpressionContext()
+        features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
+        self.assertTrue(vl.startEditing())
+        vl.addFeatures(features)
+        self.assertTrue(vl.commitChanges())
 
 
 if __name__ == '__main__':

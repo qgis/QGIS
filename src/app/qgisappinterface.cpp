@@ -686,7 +686,7 @@ QAction *QgisAppInterface::actionAbout() { return qgis->actionAbout(); }
 
 bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly, bool showModal )
 {
-  Q_UNUSED( updateFeatureOnly );
+  Q_UNUSED( updateFeatureOnly )
   if ( !vlayer )
     return false;
 

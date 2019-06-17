@@ -744,7 +744,7 @@ QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const
 QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   // set aside for future use
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QObject::tr( "Algorithm" ) ) );
   scope->addFunction( QStringLiteral( "parameter" ), new GetProcessingParameterValue( parameters ) );

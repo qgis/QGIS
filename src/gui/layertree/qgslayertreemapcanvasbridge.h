@@ -102,6 +102,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
   private slots:
     void nodeVisibilityChanged();
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+    void layersAdded( const QList<QgsMapLayer *> &layers );
 
   private:
     //! Fill canvasLayers and overviewLayers lists from node and its descendants
@@ -120,6 +121,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
     bool mHasFirstLayer;
     bool mHasLayersLoaded;
+    bool mHasValidLayersLoaded = false;
     bool mUpdatingProjectLayerOrder = false;
 
     QgsCoordinateReferenceSystem mFirstCRS;

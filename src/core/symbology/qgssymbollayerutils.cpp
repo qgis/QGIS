@@ -1499,7 +1499,7 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
 
 bool QgsSymbolLayerUtils::needPointPatternFill( QDomElement &element )
 {
-  Q_UNUSED( element );
+  Q_UNUSED( element )
   return false;
 }
 
@@ -2103,7 +2103,7 @@ void QgsSymbolLayerUtils::externalGraphicToSld( QDomDocument &doc, QDomElement &
   createOnlineResourceElement( doc, externalGraphicElem, path, mime );
 
   //TODO: missing a way to handle svg color. Should use <se:ColorReplacement>
-  Q_UNUSED( color );
+  Q_UNUSED( color )
 
   if ( size >= 0 )
   {
@@ -2181,7 +2181,7 @@ bool QgsSymbolLayerUtils::externalGraphicFromSld( QDomElement &element,
     QColor &color, double &size )
 {
   QgsDebugMsg( QStringLiteral( "Entered." ) );
-  Q_UNUSED( color );
+  Q_UNUSED( color )
 
   QDomElement externalGraphicElem = element.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
   if ( externalGraphicElem.isNull() )

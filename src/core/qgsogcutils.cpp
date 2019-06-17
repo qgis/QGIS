@@ -1027,7 +1027,7 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode &envelopeNode
     }
   }
 
-  Q_UNUSED( srsDimension );
+  Q_UNUSED( srsDimension )
 
   bString = elem.text();
   double xmax = bString.section( ' ', 0, 0 ).toDouble( &conversionSuccess );
@@ -1156,7 +1156,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
   }
   catch ( const QgsWkbException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     // WKB exception while reading header
     return QDomElement();
   }
@@ -1498,7 +1498,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
   }
   catch ( const QgsWkbException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     return QDomElement();
   }
 }

@@ -188,7 +188,7 @@ QgsGlobeLayerPropertiesFactory::QgsGlobeLayerPropertiesFactory( QObject *parent 
 
 QgsMapLayerConfigWidget *QgsGlobeLayerPropertiesFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const
 {
-  Q_UNUSED( dockWidget );
+  Q_UNUSED( dockWidget )
   QgsGlobeVectorLayerPropertiesPage *propsPage = new QgsGlobeVectorLayerPropertiesPage( qobject_cast<QgsVectorLayer *>( layer ), canvas, parent );
   connect( propsPage, SIGNAL( layerSettingsChanged( QgsMapLayer * ) ), this, SIGNAL( layerSettingsChanged( QgsMapLayer * ) ) );
   return propsPage;

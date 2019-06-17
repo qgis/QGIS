@@ -33,7 +33,7 @@ will return a (possibly invalid) QgsMimeDataUtils.Uri.
 
     QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = 0,
                                bool setFilterByLayerType = false,
-                               const QgsMapLayerType &layerType = QgsMapLayerType::VectorLayer,
+                               QgsMapLayerType layerType = QgsMapLayerType::VectorLayer,
                                QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
@@ -50,6 +50,19 @@ Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
     void setLayerTypeFilter( QgsMapLayerType layerType );
 %Docstring
 Sets layer type filter to ``layerType`` and activates the filtering
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets a description label
+
+:param description: a description string
+
+.. note::
+
+   the description will be displayed at the bottom of the dialog
+
+.. versionadded:: 3.8
 %End
 
     QgsMimeDataUtils::Uri uri() const;

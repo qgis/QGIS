@@ -46,7 +46,7 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
     }
     if ( sourceCrs.isValid() && destinationCrs.isValid() )
     {
-      mTransformContext.removeSourceDestinationDatumTransform( sourceCrs, destinationCrs );
+      mTransformContext.removeCoordinateOperation( sourceCrs, destinationCrs );
       reset();
       break;
     }
@@ -56,40 +56,49 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
 
 int QgsDatumTransformTableModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
-  return mTransformContext.sourceDestinationDatumTransforms().count()
-#ifdef singlesourcedest
-         + mTransformContext.sourceDatumTransforms().count()
-         + mTransformContext.destinationDatumTransforms().count()
+  Q_UNUSED( parent )
+#if PROJ_VERSION_MAJOR>=6
+  return mTransformContext.coordinateOperations().count();
+#else
+  Q_NOWARN_DEPRECATED_PUSH
+  return mTransformContext.sourceDestinationDatumTransforms().count();
+  Q_NOWARN_DEPRECATED_POP
 #endif
-         ;
 }
 
 int QgsDatumTransformTableModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
+#if PROJ_VERSION_MAJOR>=6
+  return 3;
+#else
   return 4;
+#endif
 }
 
 QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role ) const
 {
   QString sourceCrs;
   QString destinationCrs;
+#if PROJ_VERSION_MAJOR>=6
+  QPair< QString, QString> crses = mTransformContext.coordinateOperations().keys().at( index.row() );
+#else
   int sourceTransform = -1;
   int destinationTransform = -1;
-
-#ifdef singlesourcedest
-  if ( index.row() < mTransformContext.sourceDestinationDatumTransforms().count() )
-  {
+  Q_NOWARN_DEPRECATED_PUSH
+  QPair< QString, QString> crses = mTransformContext.sourceDestinationDatumTransforms().keys().at( index.row() );
+  Q_NOWARN_DEPRECATED_POP
 #endif
-    QPair< QString, QString> crses = mTransformContext.sourceDestinationDatumTransforms().keys().at( index.row() );
-    sourceCrs = crses.first;
-    destinationCrs = crses.second;
-    const QgsDatumTransform::TransformPair transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
-    sourceTransform = transforms.sourceTransformId;
-    destinationTransform = transforms.destinationTransformId;
-#ifdef singlesourcedest
-  }
+  sourceCrs = crses.first;
+  destinationCrs = crses.second;
+#if PROJ_VERSION_MAJOR>=6
+  const QString proj = mTransformContext.coordinateOperations().value( crses );
+#else
+  Q_NOWARN_DEPRECATED_PUSH
+  const QgsDatumTransform::TransformPair transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
+  Q_NOWARN_DEPRECATED_POP
+  sourceTransform = transforms.sourceTransformId;
+  destinationTransform = transforms.destinationTransformId;
 #endif
 
   switch ( role )
@@ -106,25 +115,40 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
       {
         case SourceCrsColumn:
           return sourceCrs;
+        case DestinationCrsColumn:
+          return destinationCrs;
+
+#if PROJ_VERSION_MAJOR>=6
+        case ProjDefinitionColumn:
+          return proj;
+#else
         case SourceTransformColumn:
           if ( sourceTransform != -1 )
           {
+            Q_NOWARN_DEPRECATED_PUSH
             return QgsDatumTransform::datumTransformToProj( sourceTransform );
+            Q_NOWARN_DEPRECATED_POP
           }
           break;
-        case DestinationCrsColumn:
-          return destinationCrs;
+
         case DestinationTransformColumn:
           if ( destinationTransform != -1 )
           {
+            Q_NOWARN_DEPRECATED_PUSH
             return QgsDatumTransform::datumTransformToProj( destinationTransform );
+            Q_NOWARN_DEPRECATED_POP
           }
           break;
+#endif
+
         default:
           break;
       }
       break;
     case Qt::UserRole:
+#if PROJ_VERSION_MAJOR>=6
+      return proj;
+#else
       switch ( index.column() )
       {
         case SourceTransformColumn:
@@ -135,6 +159,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
           break;
       }
       break;
+#endif
     default:
       break;
   }
@@ -155,12 +180,18 @@ QVariant QgsDatumTransformTableModel::headerData( int section, Qt::Orientation o
       {
         case SourceCrsColumn :
           return tr( "Source CRS" );
-        case SourceTransformColumn:
-          return tr( "Source Datum Transform" );
         case DestinationCrsColumn:
           return tr( "Destination CRS" );
+
+#if PROJ_VERSION_MAJOR>=6
+        case ProjDefinitionColumn:
+          return tr( "Operation" );
+#else
+        case SourceTransformColumn:
+          return tr( "Source Datum Transform" );
         case DestinationTransformColumn:
           return tr( "Destination Datum Transform" );
+#endif
         default:
           break;
       }
@@ -202,7 +233,10 @@ void QgsDatumTransformTableWidget::addDatumTransform()
   {
     const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
     QgsCoordinateTransformContext context = mModel->transformContext();
+    Q_NOWARN_DEPRECATED_PUSH
     context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+    Q_NOWARN_DEPRECATED_POP
+    context.addCoordinateOperation( dt.sourceCrs, dt.destinationCrs, dt.proj );
     mModel->setTransformContext( context );
     selectionChanged();
   }
@@ -225,6 +259,7 @@ void QgsDatumTransformTableWidget::editDatumTransform()
   {
     QgsCoordinateReferenceSystem sourceCrs;
     QgsCoordinateReferenceSystem destinationCrs;
+    QString proj;
     int sourceTransform = -1;
     int destinationTransform = -1;
     for ( QModelIndexList::const_iterator it = selectedIndexes.constBegin(); it != selectedIndexes.constEnd(); it ++ )
@@ -237,26 +272,40 @@ void QgsDatumTransformTableWidget::editDatumTransform()
         case QgsDatumTransformTableModel::DestinationCrsColumn:
           destinationCrs = QgsCoordinateReferenceSystem( mModel->data( *it, Qt::DisplayRole ).toString() );
           break;
+#if PROJ_VERSION_MAJOR>=6
+        case QgsDatumTransformTableModel::ProjDefinitionColumn:
+          proj = mModel->data( *it, Qt::UserRole ).toString();
+          break;
+#else
         case QgsDatumTransformTableModel::SourceTransformColumn:
           sourceTransform = mModel->data( *it, Qt::UserRole ).toInt();
           break;
         case QgsDatumTransformTableModel::DestinationTransformColumn:
           destinationTransform = mModel->data( *it, Qt::UserRole ).toInt();
           break;
+#endif
         default:
           break;
       }
     }
+
+#if PROJ_VERSION_MAJOR>=6
+    if ( sourceCrs.isValid() && destinationCrs.isValid() && !proj.isEmpty() )
+#else
     if ( sourceCrs.isValid() && destinationCrs.isValid() &&
          ( sourceTransform != -1 || destinationTransform != -1 ) )
+#endif
     {
-      QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ) );
+      QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, nullptr, proj );
       if ( dlg.exec() )
       {
         const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
         QgsCoordinateTransformContext context = mModel->transformContext();
         // QMap::insert takes care of replacing existing value
+        Q_NOWARN_DEPRECATED_PUSH
         context.addSourceDestinationDatumTransform( sourceCrs, destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
+        Q_NOWARN_DEPRECATED_POP
+        context.addCoordinateOperation( sourceCrs, destinationCrs, dt.proj );
         mModel->setTransformContext( context );
       }
     }

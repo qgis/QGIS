@@ -33,14 +33,14 @@ QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
 
 void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( elem );
-  Q_UNUSED( context );
+  Q_UNUSED( elem )
+  Q_UNUSED( context )
 }
 
 QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( doc );
-  Q_UNUSED( context );
+  Q_UNUSED( doc )
+  Q_UNUSED( context )
   return QDomElement();
 }
 

@@ -326,8 +326,8 @@ void getGeometryType( const QgsVectorDataProvider *provider, QString &geometryTy
 
 int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **outVtab, char **outErr, bool isCreated )
 {
-  Q_UNUSED( aux );
-  Q_UNUSED( isCreated );
+  Q_UNUSED( aux )
+  Q_UNUSED( isCreated )
 
 #define RETURN_CSTR_ERROR(err) if (outErr) {size_t s = strlen(err); *outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( s ) +1)); strncpy(*outErr, err, s);}
 #define RETURN_CPPSTR_ERROR(err) if (outErr) {*outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.toUtf8().size() )+1)); strncpy(*outErr, err.toUtf8().constData(), err.toUtf8().size());}
@@ -464,8 +464,8 @@ int vtableDisconnect( sqlite3_vtab *vtab )
 
 int vtableRename( sqlite3_vtab *vtab, const char *newName )
 {
-  Q_UNUSED( vtab );
-  Q_UNUSED( newName );
+  Q_UNUSED( vtab )
+  Q_UNUSED( newName )
 
   return SQLITE_OK;
 }
@@ -584,7 +584,7 @@ int vtableClose( sqlite3_vtab_cursor *cursor )
 
 int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv )
 {
-  Q_UNUSED( argc );
+  Q_UNUSED( argc )
 
   QgsFeatureRequest request;
   if ( idxNum == 1 )
@@ -884,8 +884,8 @@ void registerQgisFunctions( sqlite3 *db )
 
 int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ )
 {
-  Q_UNUSED( pzErrMsg );
-  Q_UNUSED( unused );
+  Q_UNUSED( pzErrMsg )
+  Q_UNUSED( unused )
 
   int rc = SQLITE_OK;
 

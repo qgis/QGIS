@@ -74,7 +74,7 @@ QSGNode *QgsQuickFeatureHighlight::updatePaintNode( QSGNode *n, QQuickItem::Upda
     }
     catch ( QgsCsException &e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       // Caught an error in transform
     }
   }

@@ -183,12 +183,11 @@ QMap<QString, QgsDirectoryItem *> QgsBrowserModel::driveItems() const
   return mDriveItems;
 }
 
+
 void QgsBrowserModel::initialize()
 {
   if ( ! mInitialized )
   {
-    connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
-    connect( QgsProject::instance(), &QgsProject::projectSaved, this, &QgsBrowserModel::updateProjectHome );
     connect( QgsProject::instance(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome );
     addRootItems();
     mInitialized = true;
@@ -289,7 +288,7 @@ bool QgsBrowserModel::setData( const QModelIndex &index, const QVariant &value, 
 
 QVariant QgsBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  Q_UNUSED( section );
+  Q_UNUSED( section )
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     return QVariant( "header" );
@@ -327,7 +326,7 @@ bool QgsBrowserModel::hasChildren( const QModelIndex &parent ) const
 
 int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 
@@ -595,8 +594,8 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 
 bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
+  Q_UNUSED( row )
+  Q_UNUSED( column )
 
   QgsDataItem *destItem = dataItem( parent );
   if ( !destItem )

@@ -1141,8 +1141,8 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
 
 QVariant QgsExpressionNodeLiteral::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( parent );
+  Q_UNUSED( context )
+  Q_UNUSED( parent )
   return mValue;
 }
 
@@ -1153,8 +1153,8 @@ QgsExpressionNode::NodeType QgsExpressionNodeLiteral::nodeType() const
 
 bool QgsExpressionNodeLiteral::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( context );
+  Q_UNUSED( parent )
+  Q_UNUSED( context )
   return true;
 }
 
@@ -1224,7 +1224,7 @@ bool QgsExpressionNodeLiteral::isStatic( QgsExpression *parent, const QgsExpress
 
 QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   int index = mIndex;
 
   if ( index < 0 )

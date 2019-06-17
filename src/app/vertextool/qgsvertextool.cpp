@@ -313,6 +313,7 @@ QgsVertexTool::~QgsVertexTool()
   delete mVertexBand;
   delete mEdgeBand;
   delete mEndpointMarker;
+  delete mVertexEditor;
 }
 
 void QgsVertexTool::activate()
@@ -520,7 +521,6 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //   we give them precedence.
 
     // for each editable layer, select vertices
-    const auto layers = canvas()->layers();
     const auto editableLayers = editableVectorLayers();
     for ( QgsVectorLayer *vlayer : editableLayers )
     {
@@ -1391,12 +1391,12 @@ void QgsVertexTool::showVertexEditor()  //#spellok
 {
   if ( !mVertexEditor )
   {
-    mVertexEditor.reset( new QgsVertexEditor( mCanvas ) );
-    if ( !QgisApp::instance()->restoreDockWidget( mVertexEditor.get() ) )
-      QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
+    mVertexEditor = new QgsVertexEditor( mCanvas );
+    if ( !QgisApp::instance()->restoreDockWidget( mVertexEditor ) )
+      QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor );
 
-    connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
-    connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
+    connect( mVertexEditor, &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
+    connect( mVertexEditor, &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
 
     // timer required as showing/raising the vertex editor in the same function following restoreDockWidget fails
     QTimer::singleShot( 200, this, [ = ] { mVertexEditor->show(); mVertexEditor->raise(); } );
@@ -1411,7 +1411,10 @@ void QgsVertexTool::showVertexEditor()  //#spellok
 void QgsVertexTool::cleanupVertexEditor()
 {
   mLockedFeature.reset();
-  mVertexEditor.reset();
+  // do not delete immediately because vertex editor
+  // can be still used in the qt event loop
+  mVertexEditor->deleteLater();
+
   updateLockedFeatureVertices();
 }
 
@@ -2040,6 +2043,18 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   setHighlightedVertices( mSelectedVertices );  // update positions of existing highlighted vertices
   setHighlightedVerticesVisible( true );  // time to show highlighted vertices again
+
+  // restart startDraggingAddVertexAtEndpoint right after it finishes
+  if ( addingAtEndpoint )
+  {
+    if ( mMouseAtEndpoint->vertexId != 0 )
+    {
+      // If we were adding at the end of the feature, we need to update the index
+      mMouseAtEndpoint.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId + 1 ) );
+    }
+    // And then we just restart the drag
+    startDraggingAddVertexAtEndpoint( mapPoint );
+  }
 }
 
 
@@ -2676,7 +2691,7 @@ QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureI
 void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
 {
   // nothing to do here for now...
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 }
 
 void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )

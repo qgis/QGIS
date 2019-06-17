@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '16/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -417,6 +415,19 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         val, ok = agg.calculate(QgsAggregateCalculator.Min, "@my_var", context)
         self.assertTrue(ok)
         self.assertEqual(val, 5)
+
+        # test with subset
+        agg = QgsAggregateCalculator(layer)  # reset to remove expression filter
+        agg.setFidsFilter([1, 2])
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
+        self.assertTrue(ok)
+        self.assertEqual(val, 6.0)
+
+        # test with empty subset
+        agg.setFidsFilter(list())
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
+        self.assertTrue(ok)
+        self.assertEqual(val, 0.0)
 
     def testExpressionNoMatch(self):
         """ test aggregate calculation using an expression with no features """

@@ -103,7 +103,7 @@ void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &servic
   {
     std::unique_ptr< QgsAfsServiceItem > serviceItem = qgis::make_unique< QgsAfsServiceItem >( parent, name, url, url, authcfg, headers );
     items.append( serviceItem.release() );
-  }, serviceData, baseUrl );
+  }, serviceData, baseUrl, QgsArcGisRestUtils::Vector );
 }
 
 void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &parentUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent )
@@ -111,9 +111,9 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
   QMap< QString, QgsDataItem * > layerItems;
   QMap< QString, QString > parents;
 
-  QgsArcGisRestUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers]( const QString & parentLayerId, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid )
+  QgsArcGisRestUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers]( const QString & parentLayerId, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid, const QString & )
   {
-    Q_UNUSED( description );
+    Q_UNUSED( description )
 
     if ( !parentLayerId.isEmpty() )
       parents.insert( id, parentLayerId );
@@ -129,7 +129,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
       layerItems.insert( id, layerItem.release() );
     }
 
-  }, serviceData, parentUrl );
+  }, serviceData, parentUrl, QgsArcGisRestUtils::Vector );
 
   // create groups
   for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
@@ -214,7 +214,7 @@ QList<QAction *> QgsAfsConnectionItem::actions( QWidget *parent )
   connect( actionEdit, &QAction::triggered, this, &QgsAfsConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
+  QAction *actionDelete = new QAction( tr( "Delete Connection…" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsAfsConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -391,8 +391,7 @@ QgsDataItem *QgsAfsDataItemProvider::createDataItem( const QString &path, QgsDat
     QString connectionName = path.split( '/' ).last();
     if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgisfeatureserver" ) ).contains( connectionName ) )
     {
-      QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), connectionName );
-      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
+      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connectionName );
     }
   }
 

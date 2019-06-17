@@ -567,7 +567,7 @@ void QgsGeorefPluginGui::movePoint( QPoint p )
 
 void QgsGeorefPluginGui::releasePoint( QPoint p )
 {
-  Q_UNUSED( p );
+  Q_UNUSED( p )
   // Get Map Sender
   if ( sender() == mToolMovePoint )
   {
@@ -690,7 +690,7 @@ void QgsGeorefPluginGui::localHistogramStretch()
 // Info slots
 void QgsGeorefPluginGui::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
 }
 
 // Comfort slots
@@ -1121,7 +1121,7 @@ void QgsGeorefPluginGui::removeOldLayer()
 
 void QgsGeorefPluginGui::updateIconTheme( const QString &theme )
 {
-  Q_UNUSED( theme );
+  Q_UNUSED( theme )
   // File actions
   mActionOpenRaster->setIcon( getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
   mActionStartGeoref->setIcon( getThemeIcon( QStringLiteral( "/mActionStartGeoref.png" ) ) );
@@ -1503,7 +1503,7 @@ bool QgsGeorefPluginGui::calculateMeanError( double &error ) const
 
 bool QgsGeorefPluginGui::writePDFMapFile( const QString &fileName, const QgsGeorefTransform &transform )
 {
-  Q_UNUSED( transform );
+  Q_UNUSED( transform )
   if ( !mCanvas )
   {
     return false;

@@ -138,6 +138,14 @@ class CORE_EXPORT QgsAggregateCalculator
     void setFilter( const QString &filterExpression ) { mFilterExpression = filterExpression; }
 
     /**
+     * Sets a filter to limit the features used during the aggregate calculation.
+     * If an expression filter is set, it will override this filter.
+     * \param  fids feature ids for feature filtering, and empty list will return no features.
+     * \see filter()
+     */
+    void setFidsFilter( const QgsFeatureIds &fids );
+
+    /**
      * Returns the filter which limits the features used during the aggregate calculation.
      * \see setFilter()
      */
@@ -196,6 +204,12 @@ class CORE_EXPORT QgsAggregateCalculator
 
     //! Delimiter to use for concatenate aggregate
     QString mDelimiter;
+
+    //!list of fids to filter
+    QgsFeatureIds mFidsFilter;
+
+    //trigger variable
+    bool mFidsSet = false;
 
     static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
     static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );

@@ -203,6 +203,11 @@ render and represents the exact bounds of the map being rendered.
 %End
 
     const QgsMapToPixel &mapToPixel() const;
+%Docstring
+Returns the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+
+.. seealso:: :py:func:`setMapToPixel`
+%End
 
     double scaleFactor() const;
 %Docstring
@@ -214,8 +219,20 @@ per millimeter.
 %End
 
     bool renderingStopped() const;
+%Docstring
+Returns ``True`` if the rendering operation has been stopped and any ongoing
+rendering should be canceled immediately.
+
+.. seealso:: :py:func:`setRenderingStopped`
+%End
 
     bool forceVectorOutput() const;
+%Docstring
+Returns ``True`` if rendering operations should use vector operations instead
+of any faster raster shortcuts.
+
+.. seealso:: :py:func:`setForceVectorOutput`
+%End
 
     bool useAdvancedEffects() const;
 %Docstring
@@ -228,6 +245,11 @@ Used to enable or disable advanced effects such as blend modes
 %End
 
     bool drawEditingInformation() const;
+%Docstring
+Returns ``True`` if edit markers should be drawn during the render operation.
+
+.. seealso:: :py:func:`setDrawEditingInformation`
+%End
 
     double rendererScale() const;
 %Docstring
@@ -239,6 +261,11 @@ for the rendered map, eg 1000.0 for a 1:1000 map render.
 
 
     QColor selectionColor() const;
+%Docstring
+Returns the color to use when rendering selected features.
+
+.. seealso:: :py:func:`setSelectionColor`
+%End
 
     bool showSelection() const;
 %Docstring
@@ -267,6 +294,11 @@ Set to an invalid QgsCoordinateTransform to indicate that no transformation is r
 %End
 
     void setMapToPixel( const QgsMapToPixel &mtp );
+%Docstring
+Sets the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+
+.. seealso:: :py:func:`mapToPixel`
+%End
 
     void setExtent( const QgsRectangle &extent );
 %Docstring
@@ -298,8 +330,19 @@ render and represents the exact bounds of the map being rendered.
 %End
 
     void setDrawEditingInformation( bool b );
+%Docstring
+Sets whether edit markers should be drawn during the render operation.
+
+.. seealso:: :py:func:`drawEditingInformation`
+%End
 
     void setRenderingStopped( bool stopped );
+%Docstring
+Sets whether the rendering operation has been ``stopped`` and any ongoing
+rendering should be canceled immediately.
+
+.. seealso:: :py:func:`renderingStopped`
+%End
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
@@ -336,8 +379,20 @@ of any rendering operations.
 %End
 
     void setForceVectorOutput( bool force );
+%Docstring
+Sets whether rendering operations should use vector operations instead
+of any faster raster shortcuts.
+
+.. seealso:: :py:func:`forceVectorOutput`
+%End
+
 
     void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use when rendering selected features.
+
+.. seealso:: :py:func:`selectionColor`
+%End
 
     void setShowSelection( bool showSelection );
 %Docstring

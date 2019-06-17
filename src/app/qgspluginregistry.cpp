@@ -118,7 +118,7 @@ bool QgsPluginRegistry::isPythonPlugin( const QString &key ) const
       return true;
   }
 #else
-  Q_UNUSED( key );
+  Q_UNUSED( key )
 #endif
   return false;
 }
@@ -148,7 +148,7 @@ void QgsPluginRegistry::dump()
     const auto constListActivePlugins = mPythonUtils->listActivePlugins();
     for ( const QString &pluginName : constListActivePlugins )
     {
-      Q_UNUSED( pluginName );
+      Q_UNUSED( pluginName )
       QgsDebugMsg( pluginName );
     }
   }
@@ -317,7 +317,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
     settings.remove( "/PythonPlugins/watchDog/" + packageName );
   }
 #else
-  Q_UNUSED( packageName );
+  Q_UNUSED( packageName )
 #endif
 }
 
@@ -444,7 +444,7 @@ void QgsPluginRegistry::unloadPythonPlugin( const QString &packageName )
   QgsSettings settings;
   settings.setValue( "/PythonPlugins/" + packageName, false );
 #else
-  Q_UNUSED( packageName );
+  Q_UNUSED( packageName )
 #endif
 }
 
@@ -632,7 +632,7 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString &packageName )
 
   return true;
 #else
-  Q_UNUSED( packageName );
+  Q_UNUSED( packageName )
   return false;
 #endif
 }
@@ -645,7 +645,7 @@ bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) c
   QString maxVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMaximumVersion" ) );
   return minVersion != QLatin1String( "__error__" ) && checkQgisVersion( minVersion, maxVersion );
 #else
-  Q_UNUSED( packageName );
+  Q_UNUSED( packageName )
   return false;
 #endif
 }

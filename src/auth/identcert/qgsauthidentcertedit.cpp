@@ -99,6 +99,6 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
 
 void QgsAuthIdentCertEdit::cmbIdentityCert_currentIndexChanged( int indx )
 {
-  Q_UNUSED( indx );
+  Q_UNUSED( indx )
   validateConfig();
 }

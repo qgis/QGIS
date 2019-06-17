@@ -402,7 +402,7 @@ void QgsColorButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsColorButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   setButtonBackground();
 }

@@ -57,8 +57,8 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
 
 void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-  Q_UNUSED( option );
-  Q_UNUSED( widget );
+  Q_UNUSED( option )
+  Q_UNUSED( widget )
 
   if ( !mLayout->renderContext().isPreviewRender() )
   {
@@ -540,7 +540,7 @@ void QgsLayoutMouseHandles::hoverMoveEvent( QGraphicsSceneHoverEvent *event )
 
 void QgsLayoutMouseHandles::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   setViewportCursor( Qt::ArrowCursor );
 }
 
@@ -549,7 +549,7 @@ void QgsLayoutMouseHandles::setViewportCursor( Qt::CursorShape cursor )
   //workaround qt bug #3732 by setting cursor for QGraphicsView viewport,
   //rather then setting it directly here
 
-  if ( dynamic_cast< QgsLayoutViewToolSelect *>( mView->tool() ) )
+  if ( qobject_cast< QgsLayoutViewToolSelect *>( mView->tool() ) )
   {
     mView->viewport()->setCursor( cursor );
   }
@@ -795,7 +795,7 @@ void QgsLayoutMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 void QgsLayoutMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 }
 
 QSizeF QgsLayoutMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )

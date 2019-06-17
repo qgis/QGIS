@@ -112,7 +112,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   }
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
+  QgsVectorDataProvider *vectorProvider = qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;

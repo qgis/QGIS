@@ -254,7 +254,7 @@ void QgsVectorFieldSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, 
 
 QgsSymbolLayer *QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
 {
-  Q_UNUSED( element );
+  Q_UNUSED( element )
   return nullptr;
 }
 

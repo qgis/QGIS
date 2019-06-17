@@ -88,10 +88,10 @@ class CORE_EXPORT QgsRendererAbstractMetadata
      * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) SIP_FACTORY
-    { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
+    { Q_UNUSED( layer ) Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
 
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY
-    { Q_UNUSED( elem ); Q_UNUSED( geomType ); return nullptr; }
+    { Q_UNUSED( elem ) Q_UNUSED( geomType ); return nullptr; }
 
   protected:
     //! name used within QGIS for identification (the same what renderer's type() returns)
