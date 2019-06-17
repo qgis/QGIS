@@ -3139,7 +3139,7 @@ QString QgsVectorLayer::displayExpression() const
     // more "interesting" field names first. As such, name should
     // be selected before oldname, othername, etc.
     // This candidates list is a prioritised list of candidates ranked by "interestingness"!
-    static QStringList sCandidates{ QStringLiteral( "name" ), QStringLiteral( "descript" ), QStringLiteral( "id" )};
+    static QStringList sCandidates{ QStringLiteral( "name" ), QStringLiteral( "descript" ), QStringLiteral( "street" ), QStringLiteral( "road" ), QStringLiteral( "id" )};
     for ( const QString &candidate : sCandidates )
     {
       for ( const QgsField &field : mFields )
