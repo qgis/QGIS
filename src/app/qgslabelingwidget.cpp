@@ -186,6 +186,9 @@ void QgsLabelingWidget::labelModeChanged( int index )
     if ( !mSimpleSettings )
       mSimpleSettings.reset( new QgsPalLayerSettings() );
 
+    if ( mSimpleSettings->fieldName.isEmpty() )
+      mSimpleSettings->fieldName = mLayer->displayField();
+
     QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
     simpleWidget->setDockMode( dockMode() );
     connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
