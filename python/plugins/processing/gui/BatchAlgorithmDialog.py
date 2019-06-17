@@ -61,7 +61,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.setMainWidget(BatchPanel(self, self.algorithm()))
         self.hideShortHelp()
 
-        self.btnRunSingle = QPushButton(self.tr("Run as Single Process…"))
+        self.btnRunSingle = QPushButton(QCoreApplication.translate('BatchAlgorithmDialog', "Run as Single Process…"))
         self.btnRunSingle.clicked.connect(self.runAsSingle)
         self.buttonBox().addButton(self.btnRunSingle, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
 
