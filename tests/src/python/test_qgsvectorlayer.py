@@ -2949,6 +2949,26 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.addFeature(feature)
         self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))'), feature.geometry(), 'geometry with unsnapped nodes', 'fixed geometry')
 
+    def testDefaultDisplayExpression(self):
+        """
+        Test that default display expression gravitates to most interesting column names
+        """
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"pk"')
+        self.assertEqual(layer.displayField(), 'pk')
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=fid:int", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"fid"')
+        self.assertEqual(layer.displayField(), 'fid')
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"DESCRIPTION"')
+        self.assertEqual(layer.displayField(), 'DESCRIPTION')
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=NAME:string", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"NAME"')
+        self.assertEqual(layer.displayField(), 'NAME')
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=NAME:string", "vl", "memory")
+        self.assertEqual(layer.displayExpression(), '"BETTER_NAME"')
+        self.assertEqual(layer.displayField(), 'BETTER_NAME')
+
 
 class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
 

@@ -3106,7 +3106,7 @@ void QgsVectorLayer::setCoordinateSystem()
 
 QString QgsVectorLayer::displayField() const
 {
-  QgsExpression exp( mDisplayExpression );
+  QgsExpression exp( displayExpression() );
   if ( exp.isField() )
   {
     return static_cast<const QgsExpressionNodeColumnRef *>( exp.rootNode() )->name();
@@ -3134,30 +3134,26 @@ QString QgsVectorLayer::displayExpression() const
   {
     QString idxName;
 
-    const auto constMFields = mFields;
-    for ( const QgsField &field : constMFields )
+    // Check the fields and keep the first one that matches.
+    // We assume that the user has organized the data with the
+    // more "interesting" field names first. As such, name should
+    // be selected before oldname, othername, etc.
+    // This candidates list is a prioritised list of candidates ranked by "interestingness"!
+    static QStringList sCandidates{ QStringLiteral( "name" ), QStringLiteral( "descript" ), QStringLiteral( "id" )};
+    for ( const QString &candidate : sCandidates )
     {
-      QString fldName = field.name();
+      for ( const QgsField &field : mFields )
+      {
+        QString fldName = field.name();
+        if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
+        {
+          idxName = fldName;
+          break;
+        }
+      }
 
-      // Check the fields and keep the first one that matches.
-      // We assume that the user has organized the data with the
-      // more "interesting" field names first. As such, name should
-      // be selected before oldname, othername, etc.
-      if ( fldName.indexOf( QLatin1String( "name" ), 0, Qt::CaseInsensitive ) > -1 )
-      {
-        idxName = fldName;
+      if ( !idxName.isEmpty() )
         break;
-      }
-      if ( fldName.indexOf( QLatin1String( "descrip" ), 0, Qt::CaseInsensitive ) > -1 )
-      {
-        idxName = fldName;
-        break;
-      }
-      if ( fldName.indexOf( QLatin1String( "id" ), 0, Qt::CaseInsensitive ) > -1 )
-      {
-        idxName = fldName;
-        break;
-      }
     }
 
     if ( !idxName.isNull() )
