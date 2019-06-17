@@ -3138,7 +3138,7 @@ QString QgsVectorLayer::displayExpression() const
     // We assume that the user has organized the data with the
     // more "interesting" field names first. As such, name should
     // be selected before oldname, othername, etc.
-    // This candidates list is a prioritised list of candidates ranked by "interestingness"!
+    // This candidates list is a prioritized list of candidates ranked by "interestingness"!
     static QStringList sCandidates{ QStringLiteral( "name" ), QStringLiteral( "descript" ), QStringLiteral( "street" ), QStringLiteral( "road" ), QStringLiteral( "id" )};
     for ( const QString &candidate : sCandidates )
     {
