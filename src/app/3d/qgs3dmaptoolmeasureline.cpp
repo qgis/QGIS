@@ -110,7 +110,9 @@ void Qgs3DMapToolMeasureLine::activate()
 
   // Add layer to canvas
   qInfo() << "Current layer: " << mCanvas->map()->layers();
-  mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
+//  mCanvas->map()->setLayers( mCanvas->map()->layers() << mMeasurementLayer );
+  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
+
   qInfo() << "Current layer after adding: " << mCanvas->map()->layers();
 
   // Show dialog
@@ -165,7 +167,9 @@ void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
 
 void Qgs3DMapToolMeasureLine::setMeasurementLayerRenderer( QgsVectorLayer *layer )
 {
-  layer->setRenderer3D( new QgsVectorLayer3DRenderer( mLineSymbol ) );
+  QgsVectorLayer3DRenderer *mLineSymbolRenderer = new QgsVectorLayer3DRenderer( mLineSymbol );
+  layer->setRenderer3D( mLineSymbolRenderer );
+  mLineSymbolRenderer->setLayer( layer );
 }
 
 
@@ -246,4 +250,9 @@ void Qgs3DMapToolMeasureLine::keyPressEvent( QKeyEvent *e )
     // Override default shortcut management in MapCanvas
     e->ignore();
   }
+}
+
+QVector<QgsPoint> Qgs3DMapToolMeasureLine::points() const
+{
+  return mPoints;
 }
