@@ -1193,6 +1193,18 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
     updateTitle();
+
+    // To prevent "QAction::event: Ambiguous shortcut overload"
+    QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
+    mActionCopySelectedRows->setShortcut( QKeySequence() );
+    mActionPasteFeatures->setShortcut( QKeySequence() );
+    mActionCutSelectedRows->setShortcut( QKeySequence() );
+    mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
+    mActionRemoveSelection->setShortcut( QKeySequence() );
+    mActionSelectAll->setShortcut( QKeySequence() );
+    // duplicated on Main Window, with different semantics
+    mActionPanMapToSelectedRows->setShortcut( QKeySequence() );
+    mActionSearchForm->setShortcut( QKeySequence() );
   }
   else
   {
@@ -1221,6 +1233,19 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     updateTitle();
     mDialog->restoreGeometry( QgsSettings().value( QStringLiteral( "Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
     mDialog->show();
+
+    // restore attribute table shortcuts in window mode
+    QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
+    // duplicated on Main Window
+    mActionCopySelectedRows->setShortcut( QKeySequence( QKeySequence::Copy ) );
+    mActionPasteFeatures->setShortcut( QKeySequence( QKeySequence::Paste ) );
+    mActionCutSelectedRows->setShortcut( QKeySequence( QKeySequence::Cut ) );
+    mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
+    mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
+    mActionSelectAll->setShortcut( QStringLiteral( "Ctrl+A" ) );
+    // duplicated on Main Window, with different semantics
+    mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
+    mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
   }
 }
 
