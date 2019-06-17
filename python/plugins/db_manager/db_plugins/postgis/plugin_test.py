@@ -66,7 +66,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         # Remove temporary service file
         os.unlink(self.tmpservicefile)
 
-    # See https://issues.qgis.org/issues/16625
+    # See https://github.com/qgis/QGIS/issues/24525
 
     def test_rasterTableGdalURI(self):
 
@@ -92,8 +92,8 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         obj = QObject() # needs to be kept alive
 
         # Test for empty URI
-        # See https://issues.qgis.org/issues/16625
-        # and https://issues.qgis.org/issues/10600
+        # See https://github.com/qgis/QGIS/issues/24525
+        # and https://github.com/qgis/QGIS/issues/19005
 
         expected_dbname = self.testdb
         os.environ['PGDATABASE'] = expected_dbname
@@ -110,7 +110,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         check_rasterTableGdalURI(expected_dbname)
 
         # Test for service-only URI
-        # See https://issues.qgis.org/issues/16626
+        # See https://github.com/qgis/QGIS/issues/24526
 
         os.environ['PGDATABASE'] = 'fake'
         database = PGDatabase(obj, QgsDataSourceUri('service=dbmanager'))
@@ -124,7 +124,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
 
         check_rasterTableGdalURI(expected_dbname)
 
-    # See http://issues.qgis.org/issues/16833
+    # See https://github.com/qgis/QGIS/issues/24732
     def test_unicodeInQuery(self):
         os.environ['PGDATABASE'] = self.testdb
         obj = QObject() # needs to be kept alive

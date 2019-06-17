@@ -549,7 +549,7 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
 void TestQgsGeometryUtils::testSqrDistToLine()
 {
 
-  // See https://issues.qgis.org/issues/13952#note-26
+  // See https://github.com/qgis/QGIS/issues/21967#issuecomment-495853991
   QgsPointXY qp( 771938, 6.95593e+06 );
   QgsPointXY p1( 771946, 6.95593e+06 );
   QgsPointXY p2( 771904, 6.95595e+06 );

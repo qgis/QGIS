@@ -320,7 +320,7 @@ void TestQgsAttributeTable::testOrderColumn()
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
 
-  // Issue https://issues.qgis.org/issues/20673
+  // Issue https://github.com/qgis/QGIS/issues/28493
   // When we reorder column (last column becomes first column), and we select an entire row
   // the currentIndex is no longer the first column, and consequently it breaks edition
 

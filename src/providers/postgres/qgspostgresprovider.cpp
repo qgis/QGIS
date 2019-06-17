@@ -77,7 +77,7 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
       // unless we can guarantee all values are unsigned
       // (in which case we could use pktUint64)
       // we'll have to use a Map type.
-      // See https://issues.qgis.org/issues/14262
+      // See https://github.com/qgis/QGIS/issues/22258
       return PktFidMap; // pktUint64
 
     case QVariant::Int:
@@ -178,7 +178,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
 
   // NOTE: mValid would be true after true return from
-  // getGeometryDetails, see https://issues.qgis.org/issues/13781
+  // getGeometryDetails, see https://github.com/qgis/QGIS/issues/21807
 
   if ( mSpatialColType == SctTopoGeometry )
   {
@@ -3236,7 +3236,7 @@ long QgsPostgresProvider::featureCount() const
   if ( featuresCounted >= 0 )
     return featuresCounted;
 
-  // See: https://issues.qgis.org/issues/17388 - QGIS crashes on featureCount())
+  // See: https://github.com/qgis/QGIS/issues/25285 - QGIS crashes on featureCount())
   if ( ! connectionRO() )
   {
     return 0;

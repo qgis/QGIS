@@ -62,7 +62,7 @@ static void throwGEOSException( const char *fmt, ... )
 
 #ifdef _MSC_VER
   // stupid stupid MSVC, *SOMETIMES* raises it's own exception if we throw GEOSException, resulting in a crash!
-  // see https://issues.qgis.org/issues/14752
+  // see https://github.com/qgis/QGIS/issues/22709
   // if you want to test alternative fixes for this, run the testqgsexpression.cpp test suite - that will crash
   // and burn on the "line_interpolate_point point" test if a GEOSException is thrown.
   // TODO - find a real fix for the underlying issue

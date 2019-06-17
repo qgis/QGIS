@@ -977,7 +977,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     def testUpdatedFields(self):
         """Test when referenced layer update its fields
-        https://issues.qgis.org/issues/20893
+        https://github.com/qgis/QGIS/issues/28712
         """
 
         ml = QgsVectorLayer("Point?srid=EPSG:4326&field=a:int", "mem", "memory")

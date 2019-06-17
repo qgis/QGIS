@@ -583,7 +583,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     mLayer->endEditCommand();
 
     // refresh table with updated values
-    // fixes https://issues.qgis.org/issues/17312
+    // fixes https://github.com/qgis/QGIS/issues/25210
     QgsAttributeTableModel *masterModel = mMainView->masterModel();
     int modelColumn = masterModel->fieldCol( fieldindex );
     masterModel->reload( masterModel->index( 0, modelColumn ), masterModel->index( masterModel->rowCount() - 1, modelColumn ) );

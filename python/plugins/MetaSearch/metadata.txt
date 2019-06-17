@@ -9,7 +9,7 @@ icon=images/MetaSearch.svg
 author=Tom Kralidis
 email=tomkralidis@gmail.com
 tags=web,catalog,service,metadata,csw
-homepage=http://qgis.org/
+homepage=https://qgis.org/
 tracker=https://issues.qgis.org/projects/qgis/issues?category_id=107&set_filter=1&status_id=o
 repository=https://github.com/qgis/QGIS/tree/master/python/plugins/MetaSearch
 experimental=False

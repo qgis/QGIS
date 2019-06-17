@@ -172,7 +172,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
   if ( !CPLGetConfigOption( "VRT_SHARED_SOURCE", nullptr ) )
   {
     // GDAL < 2.3 has issues with use of VRT in multi-threaded
-    // scenarios. See https://issues.qgis.org/issues/16507 /
+    // scenarios. See https://github.com/qgis/QGIS/issues/24413 /
     // https://trac.osgeo.org/gdal/ticket/6939
     CPLSetConfigOption( "VRT_SHARED_SOURCE", "NO" );
   }

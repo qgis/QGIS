@@ -232,7 +232,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   // We are checking for editable layer because in the form field context we do not
   // want to strip the separator unless the layer is editable.
   // Also check that we have something like a number in the value to avoid
-  // stripping out dots from nextval when we have a schema: see https://issues.qgis.org/issues/20200
+  // stripping out dots from nextval when we have a schema: see https://github.com/qgis/QGIS/issues/28021
   // "Wrong sequence detection with Postgres"
   bool canConvertToDouble;
   QLocale().toDouble( v, &canConvertToDouble );

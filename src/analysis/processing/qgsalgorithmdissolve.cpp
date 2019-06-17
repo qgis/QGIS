@@ -220,7 +220,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
     if ( QgsWkbTypes::geometryType( result.wkbType() ) == QgsWkbTypes::LineGeometry )
       result = result.mergeLines();
     // Geos may fail in some cases, let's try a slower but safer approach
-    // See: https://issues.qgis.org/issues/20591 - Dissolve tool failing to produce outputs
+    // See: https://github.com/qgis/QGIS/issues/28411 - Dissolve tool failing to produce outputs
     if ( ! result.lastError().isEmpty() && parts.count() >  2 )
     {
       if ( feedback->isCanceled() )

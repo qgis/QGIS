@@ -439,7 +439,7 @@ void TestQgsRasterLayer::checkStats()
 }
 
 // test scale_factor and offset - uses netcdf file which may not be supported
-// see https://issues.qgis.org/issues/8417
+// see https://github.com/qgis/QGIS/issues/17186
 void TestQgsRasterLayer::checkScaleOffset()
 {
   mReport += QLatin1String( "<h2>Check Stats with scale/offset</h2>\n" );

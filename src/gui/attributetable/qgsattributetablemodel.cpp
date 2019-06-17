@@ -263,7 +263,7 @@ void QgsAttributeTableModel::updatedFields()
 void QgsAttributeTableModel::editCommandEnded()
 {
   // do not do reload(...) due would trigger (dataChanged) row sort
-  // giving issue: https://issues.qgis.org/issues/15976
+  // giving issue: https://github.com/qgis/QGIS/issues/23892
   bulkEditCommandEnded( );
 }
 

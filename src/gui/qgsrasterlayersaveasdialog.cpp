@@ -137,7 +137,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // pyramids are not necessarily built every time
 
   mCrsSelector->setLayerCrs( mLayerCrs );
-  //default to layer CRS - see https://issues.qgis.org/issues/14209 for discussion
+  //default to layer CRS - see https://github.com/qgis/QGIS/issues/22211 for discussion
   mCrsSelector->setCrs( mLayerCrs );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged,

@@ -240,7 +240,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         test_unique([f for f in vl.getFeatures()], 4)
 
-    # See https://issues.qgis.org/issues/14262
+    # See https://github.com/qgis/QGIS/issues/22258
     # TODO: accept multi-featured layers, and an array of values/fids
     def testSignedIdentifiers(self):
 
@@ -815,7 +815,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # If an attribute map is provided, QgsVectorLayerUtils.createFeature must
         # respect it, otherwise default values from provider are checked.
         # User's choice will not be respected if the value violates unique constraints.
-        # See https://issues.qgis.org/issues/19936
+        # See https://github.com/qgis/QGIS/issues/27758
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
         # changed so that createFeature respects user choice
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'map', None, None])
@@ -829,7 +829,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5})
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
 
-    # See https://issues.qgis.org/issues/15188
+    # See https://github.com/qgis/QGIS/issues/23127
     def testNumericPrecision(self):
         uri = 'point?field=f1:int'
         uri += '&field=f2:double(6,4)'
@@ -853,7 +853,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f['f2'], 123.456)
         self.assertEqual(f['f3'], '12345678.90123456789')
 
-    # See https://issues.qgis.org/issues/15226
+    # See https://github.com/qgis/QGIS/issues/23163
     def testImportKey(self):
         uri = 'point?field=f1:int'
         uri += '&field=F2:double(6,4)'
@@ -895,7 +895,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         testKey(lyr, '"f1","F2","f3"', ['f1', 'F2', 'f3'])
         testKey(lyr, None, ['id'])
 
-    # See https://issues.qgis.org/issues/17518
+    # See https://github.com/qgis/QGIS/issues/25415
     def testImportWithoutSchema(self):
 
         def _test(table, schema=None):
