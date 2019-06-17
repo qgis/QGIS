@@ -88,6 +88,15 @@ Removes any temporary message being shown.
 .. seealso:: :py:func:`showMessage`
 %End
 
+    void setParentStatusBar( QStatusBar *statusBar );
+%Docstring
+Sets the parent status bar.
+Messages that are shown on the parent status bar will be intercepted
+and shown on this status bar too.
+
+.. versionadded:: 3.8
+%End
+
 
   protected:
 
