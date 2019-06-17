@@ -40,7 +40,6 @@ const QString QgsCrashReport::toMarkdown()
   markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
   markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
   markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
-  markdown.replace( QLatin1String( "QGIS code revision: " ), QLatin1String( "QGIS code revision: commit:" ) );
   return markdown;
 }
 
