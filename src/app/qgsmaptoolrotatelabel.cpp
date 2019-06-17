@@ -81,7 +81,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( !mLabelRubberBand )
   {

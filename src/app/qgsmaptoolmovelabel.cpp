@@ -50,7 +50,7 @@ void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( !mLabelRubberBand )
   {
