@@ -114,6 +114,15 @@ typedef SInt32 SRefCon;
 #endif
 
 /**
+ * Print QGIS version
+ */
+void version( )
+{
+  const QString msg = QStringLiteral( "QGIS %1 '%2' (%3)\n" ).arg( VERSION ).arg( RELEASE_NAME ).arg( QGSVERSION );
+  std::cout << msg.toStdString();
+}
+
+/**
  * Print usage text
  */
 void usage( const QString &appName )
@@ -121,11 +130,10 @@ void usage( const QString &appName )
   QStringList msg;
 
   msg
-      << QStringLiteral( "QGIS - " ) << VERSION << QStringLiteral( " '" ) << RELEASE_NAME << QStringLiteral( "' (" )
-      << QGSVERSION << QStringLiteral( ")\n" )
       << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
       << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
       << QStringLiteral( "  OPTION:\n" )
+      << QStringLiteral( "\t[--version]\tdisplay version information and exit\n" )
       << QStringLiteral( "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n" )
       << QStringLiteral( "\t[--width width]\twidth of snapshot to emit\n" )
       << QStringLiteral( "\t[--height height]\theight of snapshot to emit\n" )
@@ -173,7 +181,7 @@ void usage( const QString &appName )
               "QGIS command line options",
               MB_OK );
 #else
-  std::cerr << msg.join( QString() ).toLocal8Bit().constData();
+  std::cout << msg.join( QString() ).toLocal8Bit().constData();
 #endif
 
 } // usage()
@@ -603,7 +611,12 @@ int main( int argc, char *argv[] )
         if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-?" ) )
         {
           usage( args[0] );
-          return 2;
+          return EXIT_SUCCESS;
+        }
+        else if ( arg == QLatin1String( "--version" ) || arg == QLatin1String( "-v" ) )
+        {
+          version();
+          return EXIT_SUCCESS;
         }
         else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
         {
