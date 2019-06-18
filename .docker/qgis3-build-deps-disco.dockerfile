@@ -129,5 +129,6 @@ RUN locale-gen
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
+ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"

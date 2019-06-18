@@ -146,6 +146,7 @@ RUN echo "alias python=python3" >> ~/.bash_aliases
 RUN curl -k https://orfeo-toolbox.org/qgis/OTB-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
 
+ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"
 
