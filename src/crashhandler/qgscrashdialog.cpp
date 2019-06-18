@@ -65,8 +65,8 @@ void QgsCrashDialog::on_mUserFeedbackText_textChanged()
 void QgsCrashDialog::createBugReport()
 {
   QClipboard *clipboard = QApplication::clipboard();
-  QString userText = "h2. User Feedback\n\n" + mUserFeedbackText->toPlainText();
-  QString details = "h2. Report Details\n\n" + mReportData;
+  QString userText = "## User Feedback\n\n" + mUserFeedbackText->toPlainText();
+  QString details = "## Report Details\n\n" + mReportData;
   QString finalText = userText + "\n\n" + details;
   QString markdown = htmlToMarkdown( finalText );
   clipboard->setText( markdown );
@@ -87,7 +87,6 @@ QString QgsCrashDialog::htmlToMarkdown( const QString &html )
   markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
   markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
   markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
-  markdown.replace( QLatin1String( "QGIS code revision: " ), QLatin1String( "QGIS code revision: commit:" ) );
   return markdown;
 }
 
