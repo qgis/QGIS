@@ -725,15 +725,21 @@ namespace QgsWms
     // add highlight layers above others
     layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
 
+    const QSize mapSize = mContext.mapSize();
+
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
-    std::unique_ptr<QImage> image( createImage() );
+    std::unique_ptr<QImage> image( createImage( mapSize ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
 
     // add layers to map settings (revert order for the rendering)
     std::reverse( layers.begin(), layers.end() );
+    // set the extent buffer in the map settings
+    mapSettings.setExtentBuffer( mContext.mapTileBuffer( mapSize.width() ) );
+
+    // add layers to map settings
     mapSettings.setLayers( layers );
 
     // rendering step for layers
@@ -744,12 +750,6 @@ namespace QgsWms
 
     // painting is terminated
     painter->end();
-
-    if ( mContext.testFlag( QgsWmsRenderContext::UseTileBuffer ) )
-    {
-      QRect rect( mContext.tileBuffer(), mContext.tileBuffer(), mContext.mapWidth(), mContext.mapHeight() );
-      image.reset( new QImage( image.get()->copy( rect ) ) );
-    }
 
     // scale output image if necessary (required by WMS spec)
     QImage *scaledImage = scaleImage( image.get() );
@@ -1120,7 +1120,8 @@ namespace QgsWms
     QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
     if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    mWmsParameters[QgsWmsParameter::BBOX] );
     }
 
     QString crs = mWmsParameters.crs();
