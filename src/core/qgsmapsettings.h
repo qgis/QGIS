@@ -102,6 +102,16 @@ class CORE_EXPORT QgsMapSettings
      */
     void setExtent( const QgsRectangle &rect, bool magnified = true );
 
+    /**
+     * \since QGIS 3.10
+     */
+    double extentBuffer() const;
+
+    /**
+     * \since QGIS 3.10
+     */
+    void setExtentBuffer( double buffer );
+
     //! Returns the size of the resulting map image
     QSize outputSize() const;
     //! Sets the size of the resulting map image
@@ -539,6 +549,7 @@ class CORE_EXPORT QgsMapSettings
     float mDevicePixelRatio = 1.0;
 
     QgsRectangle mExtent;
+    double mExtentBuffer = 0.0;
 
     double mRotation = 0.0;
     double mMagnificationFactor = 1.0;

@@ -254,6 +254,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     }
 
     QgsRectangle r1 = mSettings.visibleExtent(), r2;
+    r1.grow( mSettings.extentBuffer() );
     QgsCoordinateTransform ct;
 
     ct = mSettings.layerTransform( ml );
