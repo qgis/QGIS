@@ -212,7 +212,7 @@ namespace QgsWms
        * Returns the tile buffer in geographical units for the given map width in pixels.
        * \since QGIS 3.10
        */
-      double mapTileBuffer(int mapWidth) const;
+      double mapTileBuffer( int mapWidth ) const;
 
       /**
        * Returns the size (in pixels) of the map to render, according to width
