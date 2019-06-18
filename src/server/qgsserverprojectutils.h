@@ -148,7 +148,7 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT int wmsImageQuality( const QgsProject &project );
 
   /**
-   * Returns the tile buffer for WMS images defined in a QGIS project.
+   * Returns the tile buffer in pixels for WMS images defined in a QGIS project.
    * \param project the QGIS project
    * \returns tile buffer if defined in project, 0 otherwise.
    * \since QGIS 3.10
