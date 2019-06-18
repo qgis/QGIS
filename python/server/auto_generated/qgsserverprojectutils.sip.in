@@ -156,7 +156,7 @@ Returns the quality for WMS images defined in a QGIS project.
 
   int wmsTileBuffer( const QgsProject &project );
 %Docstring
-Returns the tile buffer for WMS images defined in a QGIS project.
+Returns the tile buffer in pixels for WMS images defined in a QGIS project.
 
 :param project: the QGIS project
 
