@@ -92,7 +92,7 @@ double QgsMapSettings::extentBuffer() const
   return mExtentBuffer;
 }
 
-void QgsMapSettings::setExtentBuffer( double buffer )
+void QgsMapSettings::setExtentBuffer( const double buffer )
 {
   mExtentBuffer = buffer;
 }

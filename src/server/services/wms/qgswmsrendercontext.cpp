@@ -649,12 +649,12 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
   return true;
 }
 
-double QgsWmsRenderContext::mapTileBuffer( int mapWidth ) const
+double QgsWmsRenderContext::mapTileBuffer( const int mapWidth ) const
 {
   double buffer;
   if ( mFlags & UseTileBuffer )
   {
-    QgsRectangle extent = mParameters.bboxAsRectangle();
+    const QgsRectangle extent = mParameters.bboxAsRectangle();
     if ( !mParameters.bbox().isEmpty() && extent.isEmpty() )
     {
       throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
