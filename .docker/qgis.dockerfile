@@ -9,8 +9,8 @@ MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
 
-ENV CC=/usr/lib/ccache/clang
-ENV CXX=/usr/lib/ccache/clang++
+ARG CC=/usr/lib/ccache/clang
+ARG CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 

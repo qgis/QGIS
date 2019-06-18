@@ -28,6 +28,7 @@ echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
 docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
              --cache-from "qgis/qgis:${DOCKER_TAG}" \
              -t "qgis/qgis:${DOCKER_TAG}" \
+             --build-arg CC --build-arg CXX \
              -f qgis.dockerfile ..
 echo "${bold}Pushing image to docker hub...${endbold}"
 docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
