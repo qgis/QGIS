@@ -44,13 +44,15 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
     # and set its value to their own description folder.
     descriptionFolder = Grass7Utils.grassDescriptionPath()
 
+    activateSetting = "ACTIVATE_GRASS7"
+
     def __init__(self):
         super().__init__()
         self.algs = []
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GRASS7',
+        ProcessingConfig.addSetting(Setting(self.name(), self.activateSetting,
                                             self.tr('Activate'), True))
         if isMac():
             ProcessingConfig.addSetting(Setting(
@@ -83,7 +85,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return True
 
     def unload(self):
-        ProcessingConfig.removeSetting('ACTIVATE_GRASS7')
+        ProcessingConfig.removeSetting(self.activateSetting)
         if isMac():
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
@@ -92,10 +94,10 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
 
     def isActive(self):
-        return ProcessingConfig.getSetting('ACTIVATE_GRASS7')
+        return ProcessingConfig.getSetting(self.activateSetting)
 
     def setActive(self, active):
-        ProcessingConfig.setSettingValue('ACTIVATE_GRASS7', active)
+        ProcessingConfig.setSettingValue(self.activateSetting, active)
 
     def createAlgsList(self):
         algs = []
