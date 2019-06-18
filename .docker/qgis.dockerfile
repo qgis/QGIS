@@ -11,7 +11,6 @@ LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
 
 ARG CC=/usr/lib/ccache/clang
 ARG CXX=/usr/lib/ccache/clang++
-ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 
 COPY . /usr/src/QGIS

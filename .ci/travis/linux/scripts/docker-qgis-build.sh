@@ -29,6 +29,10 @@ pushd build > /dev/null
 
 echo "travis_fold:start:cmake"
 echo "${bold}Running cmake...${endbold}"
+
+export CC=/usr/lib/ccache/clang
+export CXX=/usr/lib/ccache/clang++
+
 cmake \
  -GNinja \
  -DUSE_CCACHE=OFF \
