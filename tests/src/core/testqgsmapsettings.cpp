@@ -40,6 +40,7 @@ class TestQgsMapSettings: public QObject
     void testGettersSetters();
     void testLabelingEngineSettings();
     void visibleExtent();
+    void extentBuffer();
     void mapUnitsPerPixel();
     void testDevicePixelRatio();
     void visiblePolygon();
@@ -158,6 +159,17 @@ void TestQgsMapSettings::visibleExtent()
   QCOMPARE( ms.visibleExtent().toString( 0 ), QString( "-50,-25 : 150,75" ) );
   ms.setRotation( 45 );
   QCOMPARE( ms.visibleExtent().toString( 0 ), QString( "-56,-81 : 156,131" ) );
+}
+
+void TestQgsMapSettings::extentBuffer()
+{
+  QgsMapSettings ms;
+  ms.setExtent( QgsRectangle( 50, 50, 100, 100 ) );
+  ms.setOutputSize( QSize( 50, 50 ) );
+  ms.setExtentBuffer( 10 );
+  QgsRectangle visibleExtent = ms.visibleExtent();
+  visibleExtent.grow( ms.extentBuffer() );
+  QCOMPARE( visibleExtent.toString( 0 ), QString( "40,40 : 110,110" ) );
 }
 
 void TestQgsMapSettings::mapUnitsPerPixel()
