@@ -70,6 +70,17 @@ Adds vertices to other features to keep topology up to date, e.g. to neighbourin
 :return: 0 in case of success
 %End
 
+    int addTopologicalPoints( const QVector<QgsPoint> &geom );
+%Docstring
+Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+
+:param geom: list of points (in layer coordinate system)
+
+:return: 0 in case of success
+
+.. versionadded:: 3.10
+%End
+
     void notifyNotVectorLayer();
 %Docstring
 Display a timed message bar noting the active layer is not vector.

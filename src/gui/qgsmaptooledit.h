@@ -74,6 +74,14 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      */
     int addTopologicalPoints( const QVector<QgsPointXY> &geom );
 
+    /**
+     * Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+     * \param geom list of points (in layer coordinate system)
+     * \returns 0 in case of success
+     * \since QGIS 3.10
+     */
+    int addTopologicalPoints( const QVector<QgsPoint> &geom );
+
     //! Display a timed message bar noting the active layer is not vector.
     void notifyNotVectorLayer();
     //! Display a timed message bar noting the active vector layer is not editable.
