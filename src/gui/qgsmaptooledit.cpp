@@ -92,6 +92,29 @@ QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 }
 
 
+int QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPoint> &geom )
+{
+  if ( !mCanvas )
+  {
+    return 1;
+  }
+
+  //find out current vector layer
+  QgsVectorLayer *vlayer = currentVectorLayer();
+
+  if ( !vlayer )
+  {
+    return 2;
+  }
+
+  QVector<QgsPoint>::const_iterator list_it = geom.constBegin();
+  for ( ; list_it != geom.constEnd(); ++list_it )
+  {
+    vlayer->addTopologicalPoints( *list_it );
+  }
+  return 0;
+}
+
 int QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &geom )
 {
   if ( !mCanvas )
