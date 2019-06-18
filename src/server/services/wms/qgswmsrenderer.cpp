@@ -751,17 +751,12 @@ namespace QgsWms
     QgsMapSettings mapSettings;
     configureLayers( layers, &mapSettings );
 
-    const QSize mapSize = mContext.mapSize();
-
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
-    std::unique_ptr<QImage> image( createImage( mapSize ) );
+    std::unique_ptr<QImage> image( createImage( mContext.mapSize() ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
-
-    // set the extent buffer in the map settings
-    mapSettings.setExtentBuffer( mContext.mapTileBuffer( mapSize.width() ) );
 
     // add layers to map settings
     mapSettings.setLayers( layers );
@@ -1032,6 +1027,9 @@ namespace QgsWms
     }
 
     mapSettings.setExtent( mapExtent );
+
+    // set the extent buffer
+    mapSettings.setExtentBuffer( mContext.mapTileBuffer( paintDevice->width() ) );
 
     /* Define the background color
      * Transparent or colored
