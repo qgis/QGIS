@@ -751,12 +751,17 @@ namespace QgsWms
     QgsMapSettings mapSettings;
     configureLayers( layers, &mapSettings );
 
+    const QSize mapSize = mContext.mapSize();
+
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
-    std::unique_ptr<QImage> image( createImage( mContext.mapSize() ) );
+    std::unique_ptr<QImage> image( createImage( mapSize ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
+
+    // set the extent buffer in the map settings
+    mapSettings.setExtentBuffer( mContext.mapTileBuffer( mapSize.width() ) );
 
     // add layers to map settings
     mapSettings.setLayers( layers );
@@ -769,12 +774,6 @@ namespace QgsWms
 
     // painting is terminated
     painter->end();
-
-    if ( mContext.testFlag( QgsWmsRenderContext::UseTileBuffer ) )
-    {
-      QRect rect( mContext.tileBuffer(), mContext.tileBuffer(), mContext.mapWidth(), mContext.mapHeight() );
-      image.reset( new QImage( image.get()->copy( rect ) ) );
-    }
 
     // scale output image if necessary (required by WMS spec)
     QImage *scaledImage = scaleImage( image.get() );
@@ -982,7 +981,12 @@ namespace QgsWms
     mapSettings.setOutputDpi( paintDevice->logicalDpiX() );
 
     //map extent
-    QgsRectangle mapExtent = mContext.mapExtent();
+    QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
+    if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
+    {
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                    mWmsParameters[QgsWmsParameter::BBOX] );
+    }
 
     QString crs = mWmsParameters.crs();
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
