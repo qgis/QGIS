@@ -21,6 +21,7 @@
 #include <QPalette>
 #include <QTimer>
 #include <QEvent>
+#include <QStatusBar>
 
 QgsStatusBar::QgsStatusBar( QWidget *parent )
   : QWidget( parent )
@@ -89,6 +90,17 @@ void QgsStatusBar::showMessage( const QString &text, int timeout )
 void QgsStatusBar::clearMessage()
 {
   mLineEdit->setText( QString() );
+}
+
+void QgsStatusBar::setParentStatusBar( QStatusBar *statusBar )
+{
+  if ( mParentStatusBar )
+    mParentStatusBar->disconnect( mShowMessageConnection );
+
+  mParentStatusBar = statusBar;
+
+  if ( mParentStatusBar )
+    mShowMessageConnection = connect( mParentStatusBar, &QStatusBar::messageChanged, this, [this]( const QString & message ) { showMessage( message ); } );
 }
 
 void QgsStatusBar::changeEvent( QEvent *event )
