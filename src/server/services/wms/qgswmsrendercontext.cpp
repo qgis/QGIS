@@ -649,7 +649,7 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
   return true;
 }
 
-double QgsWmsRenderContext::mapTileBuffer(int mapWidth) const
+double QgsWmsRenderContext::mapTileBuffer( int mapWidth ) const
 {
   double buffer;
   if ( mFlags & UseTileBuffer )
