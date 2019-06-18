@@ -725,11 +725,9 @@ namespace QgsWms
     // add highlight layers above others
     layers = layers << highlightLayers( mWmsParameters.highlightLayersParameters() );
 
-    const QSize mapSize = mContext.mapSize();
-
     // create the output image and the painter
     std::unique_ptr<QPainter> painter;
-    std::unique_ptr<QImage> image( createImage( mapSize ) );
+    std::unique_ptr<QImage> image( createImage( mContext.mapSize() ) );
 
     // configure map settings (background, DPI, ...)
     configureMapSettings( image.get(), mapSettings );
@@ -1155,6 +1153,9 @@ namespace QgsWms
     }
 
     mapSettings.setExtent( mapExtent );
+
+    // set the extent buffer
+    mapSettings.setExtentBuffer( mContext.mapTileBuffer( paintDevice->width() ) );
 
     /* Define the background color
      * Transparent or colored
