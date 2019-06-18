@@ -29,6 +29,9 @@ docker --version
 
 docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
 docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
+echo "push to qgis/qgis3-build-deps:${DOCKER_TAG}"
+docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
 
 echo "travis_fold:end:docker_build"
 

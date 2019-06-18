@@ -38,7 +38,6 @@ echo "${bold}Docker push deps${endbold}"
 if [[ $DOCKER_DEPS_PUSH =~ true ]]; then
   echo "push to qgis/qgis3-build-deps:${DOCKER_TAG}"
   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  #docker tag "qgis/qgis3-build-deps:${DOCKER_TAG}" "qgis/qgis3-build-deps:latest"
   docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
 fi
 echo "travis_fold:end:docker_push"
