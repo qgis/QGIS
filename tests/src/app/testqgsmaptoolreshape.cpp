@@ -52,6 +52,8 @@ class TestQgsMapToolReshape: public QObject
     QgsMapCanvas *mCanvas = nullptr;
     QgsMapToolReshape *mCaptureTool = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
+    QgsVectorLayer *mLayerPointZ = nullptr;
+    QgsVectorLayer *mLayerPolygonZ = nullptr;
 };
 
 TestQgsMapToolReshape::TestQgsMapToolReshape() = default;
@@ -87,6 +89,14 @@ void TestQgsMapToolReshape::initTestCase()
   QVERIFY( mLayerLineZ->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZ );
 
+  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:3946" ), QStringLiteral( "point Z" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPointZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZ );
+
+  mLayerPolygonZ = new QgsVectorLayer( QStringLiteral( "PolygonZ?crs=EPSG:3946" ), QStringLiteral( "polygon Z" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPolygonZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPolygonZ );
+
   mLayerLineZ->startEditing();
   QString wkt1 = "LineStringZ (0 0 0, 1 1 0, 1 2 0)";
   QString wkt2 = "LineStringZ (2 1 5, 3 3 5)";
@@ -102,6 +112,31 @@ void TestQgsMapToolReshape::initTestCase()
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt1 );
   QCOMPARE( mLayerLineZ->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
+  mLayerPointZ->startEditing();
+  QString wkt3 = "PointZ (5 5 5)";
+  QgsFeature f3;
+  f3.setGeometry( QgsGeometry::fromWkt( wkt3 ) );
+  QString wkt4 = "PointZ (6 6 6)";
+  QgsFeature f4;
+  f4.setGeometry( QgsGeometry::fromWkt( wkt4 ) );
+
+  QgsFeatureList flistPoint;
+  flistPoint << f3 << f4;
+  mLayerPointZ->dataProvider()->addFeatures( flistPoint );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPointZ->getFeature( 1 ).geometry().asWkt(), wkt3 );
+  QCOMPARE( mLayerPointZ->getFeature( 2 ).geometry().asWkt(), wkt4 );
+
+  mLayerPolygonZ->startEditing();
+  QString wkt5 = "PolygonZ ((7 5 4, 3 2 1, 0 1 2, 7 5 4))";
+  QgsFeature f5;
+  f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
+  QgsFeatureList flistPolygon;
+  flistPolygon << f5;
+  mLayerPolygonZ->dataProvider()->addFeatures( flistPolygon );
+  QCOMPARE( mLayerPolygonZ->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPolygonZ->getFeature( 1 ).geometry().asWkt(), wkt5 );
+
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( QgsSnappingConfig::AllLayers );
   cfg.setTolerance( 100 );
@@ -109,7 +144,7 @@ void TestQgsMapToolReshape::initTestCase()
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLineZ );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLineZ << mLayerPointZ << mLayerPolygonZ );
   mCanvas->setCurrentLayer( mLayerLineZ );
 
   // create the tool
@@ -137,6 +172,7 @@ void TestQgsMapToolReshape::testReshapeZ()
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
+  // snap on a linestringz layer
   utils.mouseClick( 1, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::RightButton );
@@ -144,6 +180,23 @@ void TestQgsMapToolReshape::testReshapeZ()
   QString wkt = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5)";
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt );
 
+  // snap on a pointz layer
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 5, 5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 6, 6, Qt::RightButton );
+
+  QString wkt2 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6)";
+  QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt2 );
+
+  // snap on a polygonz layer
+  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 7, 5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 3, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 3, 2, Qt::RightButton );
+
+  QString wkt3 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6, 7 5 4, 3 2 1)";
+  QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt3 );
   mLayerLineZ->undoStack()->undo();
 
 }
