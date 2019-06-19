@@ -2425,8 +2425,11 @@
                    <layout class="QHBoxLayout" name="horizontalLayout_18">
                     <item>
                      <widget class="QLabel" name="label_33">
+                      <property name="toolTip">
+                       <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
+                      </property>
                       <property name="text">
-                       <string>Tile buffer</string>
+                       <string>Tile buffer in pixels</string>
                       </property>
                      </widget>
                     </item>
