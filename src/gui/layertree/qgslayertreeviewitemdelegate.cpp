@@ -33,7 +33,7 @@ QgsLayerTreeViewProxyStyle::QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeVi
 
 QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, const QStyleOption *option, const QWidget *widget ) const
 {
-  if ( element == SE_ItemViewItemText || element == SE_LayerTreeItemIndicator )
+  if ( element == SE_LayerTreeItemIndicator )
   {
     if ( const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>( option ) )
     {
@@ -42,17 +42,11 @@ QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, co
         int count = mLayerTreeView->indicators( node ).count();
         if ( count )
         {
+          QRect vpr = mLayerTreeView->viewport()->rect();
           QRect r = QProxyStyle::subElementRect( SE_ItemViewItemText, option, widget );
           int indiWidth = r.height() * count;
-          int textWidth = r.width() - indiWidth;
-          if ( element == SE_LayerTreeItemIndicator )
-          {
-            return QRect( r.left() + textWidth, r.top(), indiWidth, r.height() );
-          }
-          else if ( element == SE_ItemViewItemText )
-          {
-            return QRect( r.left(), r.top(), textWidth, r.height() );
-          }
+          int vpIndiWidth = vpr.width() - indiWidth;
+          return QRect( vpIndiWidth, r.top(), indiWidth, r.height() );
         }
       }
     }
