@@ -36,6 +36,7 @@ class QgsGpsConnection;
 class QgsGpsTrackerThread;
 struct QgsGpsInformation;
 class QgsMapCanvas;
+class QgsFeature;
 
 class QFile;
 class QColor;
@@ -50,7 +51,12 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
   public:
     QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsGpsInformationWidget() override;
+  public slots:
 
+    /**
+     * Updates compatible fields for timestamp recording
+     */
+    void updateTimestampDestinationFields();
   private slots:
     void mConnectButton_toggled( bool flag );
     void displayGPSInformation( const QgsGpsInformation &info );
@@ -91,6 +97,7 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     void showStatusBarMessage( const QString &msg );
     void setAcquisitionInterval( uint );
     void setDistanceThreshold( uint );
+    QVariant timestamp( QgsVectorLayer *vlayer, int idx );
     QgsGpsConnection *mNmea = nullptr;
     QgsMapCanvas *mpCanvas = nullptr;
     QgsGpsMarker *mpMapMarker = nullptr;
@@ -121,6 +128,8 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     bool mAcquisitionEnabled = true;
     unsigned int mAcquisitionInterval = 0;
     unsigned int mDistanceThreshold = 0;
+    //! Temporary storage of preferred fields
+    QMap<QString, QString> mPreferredTimeStampFields;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H

@@ -74,7 +74,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   setupUi( this );
   connect( mConnectButton, &QPushButton::toggled, this, &QgsGpsInformationWidget::mConnectButton_toggled );
   connect( mBtnTrackColor, &QgsColorButton::colorChanged, this, &QgsGpsInformationWidget::trackColorChanged );
-  connect( mSpinTrackWidth, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
+  connect( mSpinTrackWidth, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
@@ -289,12 +289,23 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mCboAcquisitionInterval->setCurrentText( mySettings.value( QStringLiteral( "gps/acquisitionInterval" ), 0 ).toString() );
   mCboDistanceThreshold->setCurrentText( mySettings.value( QStringLiteral( "gps/distanceThreshold" ), 0 ).toString() );
 
+  // Qt::LocalTime  0 Locale dependent time (Timezones and Daylight Savings Time).
+  // Qt::UTC  1 Coordinated Universal Time, replaces Greenwich Mean Time.
+  // SKIP this one Qt::OffsetFromUTC  2 An offset in seconds from Coordinated Universal Time.
+  // Qt::TimeZone 3 A named time zone using a specific set of Daylight Savings rules.
+  mCboTimestampFormat->addItem( tr( "Locale dependent time (Timezones and Daylight Savings Time)" ), Qt::LocalTime );
+  mCboTimestampFormat->addItem( tr( "UTC (Coordinated Universal Time)" ), Qt::UTC );
+  mCboTimestampFormat->addItem( tr( "A named time zone using a specific set of Daylight Savings rules." ), Qt::TimeZone );
+  mCboTimestampFormat->setCurrentIndex( mySettings.value( QStringLiteral( "gps/timeStampFormat" ), Qt::LocalTime ).toInt() );
+
+
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsGpsInformationWidget::switchAcquisition );
   connect( mCboAcquisitionInterval, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
   connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
+  updateTimestampDestinationFields();
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -321,7 +332,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "gps/autoCommit" ), mCbxAutoCommit->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/acquisitionInterval" ), mCboAcquisitionInterval->currentText() );
   mySettings.setValue( QStringLiteral( "gps/distanceThreshold" ), mCboDistanceThreshold->currentText() );
-
+  mySettings.setValue( QStringLiteral( "gps/timeStampFormat" ), mCboTimestampFormat->currentData( ) );
   mySettings.setValue( QStringLiteral( "gps/mapExtentMultiplier" ), mSpinMapExtentMultiplier->value() );
 
   // scan, explicit port or gpsd
@@ -904,6 +915,16 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   if ( layerWKBType == QgsWkbTypes::Point )
   {
     QgsFeature *f = new QgsFeature( 0 );
+    QgsAttributeMap attrMap;
+    int idx { vlayer->fields().indexOf( mCboTimestampField->currentText() ) };
+    if ( idx != -1 )
+    {
+      QVariant ts { timestamp( vlayer, idx ) };
+      if ( ts.isValid() && idx != -1 )
+      {
+        attrMap[ idx ] = ts;
+      }
+    }
 
     QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
     QgsPointXY myPoint = t.transform( mLastGpsPosition );
@@ -914,14 +935,14 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
     unsigned char *buf = new unsigned char[size];
 
     QgsWkbPtr wkbPtr( buf, size );
-    wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Point << x << y;
+    wkbPtr << static_cast<char>( QgsApplication::endian() ) << QgsWkbTypes::Point << x << y;
 
     QgsGeometry g;
     g.fromWkb( buf, size );
     f->setGeometry( g );
 
     QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, QString(), -1, this );
-    if ( action.addFeature() )
+    if ( action.addFeature( attrMap ) )
     {
       if ( mCbxAutoCommit->isChecked() )
       {
@@ -947,6 +968,16 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
 
     //create QgsFeature with wkb representation
     QgsFeature *f = new QgsFeature( 0 );
+    QgsAttributeMap attrMap;
+    int idx { vlayer->fields().indexOf( mCboTimestampField->currentText() ) };
+    if ( idx != - 1 )
+    {
+      QVariant ts { timestamp( vlayer, idx ) };
+      if ( ts.isValid() )
+      {
+        attrMap[ idx ] = ts;
+      }
+    }
 
     if ( layerWKBType == QgsWkbTypes::LineString )
     {
@@ -1031,7 +1062,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
     } // layerWKBType == QgsWkbTypes::Polygon
 
     QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, QString(), -1, this );
-    if ( action.addFeature() )
+    if ( action.addFeature( attrMap ) )
     {
       if ( mCbxAutoCommit->isChecked() )
       {
@@ -1248,6 +1279,35 @@ void QgsGpsInformationWidget::setDistanceThreshold( uint distance )
   mDistanceThreshold = distance;
 }
 
+QVariant QgsGpsInformationWidget::timestamp( QgsVectorLayer *vlayer, int idx )
+{
+  QVariant value;
+  if ( idx != -1 && ! mCboTimestampField->currentText().isEmpty() )
+  {
+    // Store the choice
+    mPreferredTimeStampFields[ vlayer->id() ] = mCboTimestampField->currentText();
+    // TODO formatting options
+    QDateTime time( QDate( 1900 + mLastNmeaTime.year, mLastNmeaTime.mon + 1, mLastNmeaTime.day ),
+                    QTime( mLastNmeaTime.hour, mLastNmeaTime.min, mLastNmeaTime.sec ) );
+    // Set options here
+    time.setTimeSpec( static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) );
+    if ( idx != -1 )
+    {
+      if ( vlayer->fields().at( idx ).type() == QVariant::String )
+      {
+        value = time.toString( Qt::DateFormat::ISODate );
+      }
+      else // Datetime
+      {
+        value = time;
+      }
+
+    }
+  }
+
+  return value;
+}
+
 void QgsGpsInformationWidget::cboAcquisitionIntervalEdited()
 {
   setAcquisitionInterval( mCboAcquisitionInterval->currentText().toUInt() );
@@ -1256,6 +1316,36 @@ void QgsGpsInformationWidget::cboAcquisitionIntervalEdited()
 void QgsGpsInformationWidget::cboDistanceThresholdEdited()
 {
   setDistanceThreshold( mCboDistanceThreshold->currentText().toUInt() );
+}
+
+void QgsGpsInformationWidget::updateTimestampDestinationFields()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mpCanvas->currentLayer() );
+  mCboTimestampField->clear();
+  // Empty option by default
+  mCboTimestampField->addItem( QString() );
+  if ( vlayer )
+  {
+    // Search for suitable fields
+    const auto fields { vlayer->fields() };
+    for ( const auto &f : fields )
+    {
+      if ( f.type() == QVariant::String || f.type() == QVariant::DateTime )
+      {
+        mCboTimestampField->addItem( f.name() );
+      }
+    }
+  }
+  if ( mCboTimestampField->count() == 0 )
+  {
+    mGboxTimestamp->hide();
+  }
+  else
+  {
+    mGboxTimestamp->show();
+    // Set default if stored
+    //mCboTimestampField->setCurrentIndex(  );
+  }
 }
 
 void QgsGpsInformationWidget::switchAcquisition()

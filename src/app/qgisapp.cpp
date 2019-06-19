@@ -1087,6 +1087,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
+  connect( this, &QgisApp::activeLayerChanged, mpGpsWidget, &QgsGpsInformationWidget::updateTimestampDestinationFields );
   //create the dock widget
   mpGpsDock = new QgsDockWidget( tr( "GPS Information" ), this );
 

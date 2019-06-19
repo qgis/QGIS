@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>215</width>
+    <width>324</width>
     <height>591</height>
    </rect>
   </property>
@@ -157,8 +157,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>214</width>
-            <height>505</height>
+            <width>121</width>
+            <height>488</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -577,9 +577,9 @@ gray = no data
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>241</width>
-            <height>696</height>
+            <y>-76</y>
+            <width>306</width>
+            <height>935</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -1026,7 +1026,7 @@ gray = no data
               <property name="verticalSpacing">
                <number>2</number>
               </property>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QGroupBox" name="groupBox_3">
                 <property name="title">
                  <string>Track</string>
@@ -1096,6 +1096,35 @@ gray = no data
                 <property name="text">
                  <string>Automatically save added feature</string>
                 </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="mGboxTimestamp">
+                <property name="title">
+                 <string>Timestamp properties</string>
+                </property>
+                <layout class="QFormLayout" name="formLayout">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_10">
+                   <property name="text">
+                    <string>Destination</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="mCboTimestampField"/>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QComboBox" name="mCboTimestampFormat"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_11">
+                   <property name="text">
+                    <string>Format</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
