@@ -95,6 +95,12 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void onRampRemoved( const QString &name );
     void onRampChanged( const QString &name );
     void onRampRename( const QString &oldName, const QString &newName );
+
+    void onTextFormatAdded( const QString &name );
+    void onTextFormatRemoved( const QString &name );
+    void onTextFormatChanged( const QString &name );
+    void onTextFormatRename( const QString &oldName, const QString &newName );
+
     void onTagsChanged( int entity, const QString &name, const QStringList &tags );
     void rebuildSymbolIcons();
 
@@ -103,10 +109,14 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QgsStyle *mStyle = nullptr;
     QStringList mSymbolNames;
     QStringList mRampNames;
+    QStringList mTextFormatNames;
     QList< QSize > mAdditionalSizes;
 
     mutable QHash< QString, QIcon > mSymbolIconCache;
     mutable QHash< QString, QIcon > mColorRampIconCache;
+    mutable QHash< QString, QIcon > mTextFormatIconCache;
+
+    QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
 
 };
 
