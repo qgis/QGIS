@@ -373,6 +373,7 @@ SET(QGIS_GUI_SRCS
   qgsslider.cpp
   qgssnapindicator.cpp
   qgssnaptogridcanvasitem.cpp
+  qgsstyleitemslistwidget.cpp
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
@@ -552,6 +553,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgssnaptogridcanvasitem.h
   qgssqlcomposerdialog.h
   qgsstatusbar.h
+  qgsstyleitemslistwidget.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h

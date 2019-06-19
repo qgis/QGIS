@@ -29,21 +29,6 @@ class QgsStyle;
 
 class QMenu;
 
-#ifndef SIP_RUN
-///@cond PRIVATE
-class QgsReadOnlyStyleModel : public QgsStyleProxyModel
-{
-    Q_OBJECT
-  public:
-
-    explicit QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent = nullptr );
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-
-};
-#endif
-///@endcond
-
 /**
  * \ingroup gui
  * \class QgsSymbolsListWidget
@@ -90,18 +75,11 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
   public slots:
 
-    void setSymbolFromStyle( const QModelIndex &index );
     void setSymbolColor( const QColor &color );
     void setMarkerAngle( double angle );
     void setMarkerSize( double size );
     void setLineWidth( double width );
-    void addSymbolToStyle();
-    void saveSymbol();
 
-    //! Pupulates the groups combo box with available tags and smartgroups
-    void populateGroups();
-
-    void openStyleManager();
     void clipFeaturesToggled( bool checked );
 
     void updateDataDefinedMarkerSize();
@@ -112,13 +90,13 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void changed();
 
   private slots:
+    void setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity type );
     void mSymbolUnitWidget_changed();
-    void groupsCombo_currentIndexChanged( int index );
     void updateAssistantSymbol();
     void opacityChanged( double value );
     void createAuxiliaryField();
-    void updateModelFilters();
     void forceRHRToggled( bool checked );
+    void saveSymbol();
 
   private:
     QgsSymbol *mSymbol = nullptr;
@@ -129,8 +107,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QAction *mStandardizeRingsAction = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    QgsStyleProxyModel *mModel = nullptr;
-    bool mUpdatingGroups = false;
 
     void updateSymbolColor();
     void updateSymbolInfo();
