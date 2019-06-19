@@ -189,7 +189,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         // write scanline to the dataset
         for ( size_t i = 0; i < static_cast<size_t>( mNumOutputColumns ); i++ )
         {
-          castedResult[i] = static_cast<float>( resultMatrix.data()[i] );
+          castedResult.push_back( static_cast<float>( resultMatrix.data()[i] ) );
         }
         if ( GDALRasterIO( outputRasterBand, GF_Write, 0, row, mNumOutputColumns, 1, castedResult.data(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
