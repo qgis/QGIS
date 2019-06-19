@@ -154,6 +154,13 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     QList<QgsLayerTreeViewIndicator *> indicators( QgsLayerTreeNode *node ) const;
 
+    /**
+     * Returns width of contextual menu mark, at right of layer node items.
+     * \see setLayerMarkWidth
+     * \since QGIS 3.8
+     */
+    int layerMarkWidth() const { return mLayerMarkWidth; }
+
 ///@cond PRIVATE
 
     /**
@@ -183,6 +190,13 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * \since QGIS 2.18
      */
     void collapseAllNodes();
+
+    /**
+     * Set width of contextual menu mark, at right of layer node items.
+     * \see layerMarkWidth
+     * \since QGIS 3.8
+     */
+    void setLayerMarkWidth( int width ) { mLayerMarkWidth = width; }
 
   signals:
     //! Emitted when a current layer is changed
@@ -227,6 +241,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QHash< QgsLayerTreeNode *, QList<QgsLayerTreeViewIndicator *> > mIndicators;
     //! Used by the item delegate for identification of which indicator has been clicked
     QPoint mLastReleaseMousePos;
+
+    //! Width of contextual menu mark for layer nodes
+    int mLayerMarkWidth;
 
     // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public
     friend class QgsLayerTreeViewItemDelegate;

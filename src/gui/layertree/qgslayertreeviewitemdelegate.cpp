@@ -21,6 +21,7 @@
 
 #include <QBrush>
 #include <QHelpEvent>
+#include <QMenu>
 #include <QPen>
 #include <QToolTip>
 
@@ -47,7 +48,8 @@ QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, co
           QRect vpr = mLayerTreeView->viewport()->rect();
           QRect r = QProxyStyle::subElementRect( SE_ItemViewItemText, option, widget );
           int indiWidth = r.height() * count;
-          int vpIndiWidth = vpr.width() - indiWidth;
+          int spacing = r.height() / 10;
+          int vpIndiWidth = vpr.width() - indiWidth - spacing - mLayerTreeView->layerMarkWidth() - spacing;
           return QRect( vpIndiWidth, r.top(), indiWidth, r.height() );
         }
       }
@@ -76,12 +78,36 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   if ( !node )
     return;
 
+  QStyleOptionViewItem opt = option;
+  initStyleOption( &opt, index );
+
+  QRect tRect = mLayerTreeView->style()->subElementRect( QStyle::SE_ItemViewItemText, &opt, mLayerTreeView );
+  int tSpacing = tRect.height() / 6;
+  int tPadding = tRect.height() / 10;
+
+  // Draw layer context menu mark
+  QRect mRect( mLayerTreeView->viewport()->rect().right() - mLayerTreeView->layerMarkWidth(), tRect.top() + tPadding, mLayerTreeView->layerMarkWidth(), tRect.height() - tPadding * 2 );
+  qreal ex = mRect.x() + 0.5 + mRect.width() / 2;
+  qreal eradius = tSpacing * 0.5;
+  qreal bradius = tPadding;
+  QBrush pb = painter->brush();
+  QPen pp = painter->pen();
+  painter->setPen( QPen( QBrush( opt.palette.mid() ), 0.25 ) );
+  // background
+  painter->setBrush( QBrush( opt.palette.midlight() ) );
+  painter->drawRoundedRect( mRect, bradius, bradius );
+  // mark
+  painter->setPen( QPen( Qt::NoPen ) );
+  painter->setBrush( QBrush( Qt::darkGray ) );
+  painter->drawEllipse( QPointF( ex, mRect.top() + tSpacing * 1.25 ), eradius, eradius );
+  painter->drawEllipse( QPointF( ex, mRect.top() + tSpacing * 2.75 ), eradius, eradius );
+  painter->drawEllipse( QPointF( ex, mRect.top() + tSpacing * 4.25 ), eradius, eradius );
+  painter->setBrush( pb );
+  painter->setPen( pp );
+
   const QList<QgsLayerTreeViewIndicator *> indicators = mLayerTreeView->indicators( node );
   if ( indicators.isEmpty() )
     return;
-
-  QStyleOptionViewItem opt = option;
-  initStyleOption( &opt, index );
 
   QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
   int spacing = indRect.height() / 10;
@@ -168,18 +194,40 @@ void QgsLayerTreeViewItemDelegate::onClicked( const QModelIndex &index )
   if ( !node )
     return;
 
-  const QList<QgsLayerTreeViewIndicator *> indicators = mLayerTreeView->indicators( node );
-  if ( indicators.isEmpty() )
-    return;
-
   QStyleOptionViewItem opt( mLayerTreeView->viewOptions() );
   opt.rect = mLayerTreeView->visualRect( index );
   initStyleOption( &opt, index );
   _fixStyleOption( opt );
 
+  QPoint pos = mLayerTreeView->mLastReleaseMousePos;
+
+  QRect tRect = mLayerTreeView->style()->subElementRect( QStyle::SE_ItemViewItemText, &opt, mLayerTreeView );
+  int spacing = tRect.height() / 10;
+  QRect mRect( mLayerTreeView->viewport()->rect().right() - mLayerTreeView->layerMarkWidth() - spacing * 2, tRect.top(), mLayerTreeView->layerMarkWidth(), tRect.height() );
+
+  if ( mRect.contains( pos ) )
+  {
+    QgsLayerTreeViewMenuProvider *menuProvider = mLayerTreeView->menuProvider();
+    if ( !menuProvider )
+    {
+      return;
+    }
+
+    QMenu *menu = menuProvider->createContextMenu();
+    if ( menu && menu->actions().count() != 0 )
+    {
+      menu->exec( mLayerTreeView->viewport()->mapToGlobal( pos ) );
+    }
+    delete menu;
+    return;
+  }
+
+  const QList<QgsLayerTreeViewIndicator *> indicators = mLayerTreeView->indicators( node );
+  if ( indicators.isEmpty() )
+    return;
+
   QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
 
-  QPoint pos = mLayerTreeView->mLastReleaseMousePos;
   if ( indRect.contains( pos ) )
   {
     int indicatorIndex = ( pos.x() - indRect.left() ) / indRect.height();
