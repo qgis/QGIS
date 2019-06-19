@@ -19,7 +19,9 @@
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewindicator.h"
 
+#include <QBrush>
 #include <QHelpEvent>
+#include <QPen>
 #include <QToolTip>
 
 /// @cond PRIVATE
@@ -96,6 +98,16 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
       mode = QIcon::Disabled;
     else if ( opt.state & QStyle::State_Selected )
       mode = QIcon::Selected;
+
+    // Draw indicator background, for when floating over text content
+    qreal bradius = spacing;
+    QBrush pb = painter->brush();
+    QPen pp = painter->pen();
+    painter->setBrush( opt.palette.midlight() );
+    painter->setPen( QPen( QBrush( opt.palette.mid() ), 0.25 ) );
+    painter->drawRoundedRect( rect, bradius, bradius );
+    painter->setBrush( pb );
+    painter->setPen( pp );
 
     indicator->icon().paint( painter, rect, Qt::AlignCenter, mode );
   }
