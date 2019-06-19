@@ -26,6 +26,7 @@
 
 #include "qgssqliteutils.h"
 #include "qgssymbollayerutils.h" // QgsStringMap
+#include "qgstextrenderer.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -36,6 +37,12 @@ class QDomElement;
 
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
+
+/**
+ * Map of name to text format.
+ * \since QGIS 3.10
+ */
+typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
 
 /*
  * Constants used to describe copy-paste MIME types
@@ -63,11 +70,67 @@ typedef QMap<int, QString> QgsSymbolGroupMap;
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 // enumerators representing sqlite DB columns
-enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolFavoriteId };
-enum TagTable { TagId, TagName };
-enum TagmapTable { TagmapTagId, TagmapSymbolId };
-enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampFavoriteId };
-enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
+
+/**
+ * Columns available in the Symbols table.
+ */
+enum SymbolTable
+{
+  SymbolId, //!< Symbol ID
+  SymbolName, //!< Symbol Name
+  SymbolXML, //!< Symbol definition (as XML)
+  SymbolFavoriteId, //!< Symbol is favorite flag
+};
+
+/**
+ * Columns available in the Tags table.
+ */
+enum TagTable
+{
+  TagId, //!< Tag ID
+  TagName, //!< Tag name
+};
+
+/**
+ * Columns available in the tag to symbol table.
+ */
+enum TagmapTable
+{
+  TagmapTagId, //!< Tag ID
+  TagmapSymbolId, //!< Symbol ID
+};
+
+/**
+ * Columns available in the color ramp table.
+ */
+enum ColorrampTable
+{
+  ColorrampId, //!< Color ramp ID
+  ColorrampName, //!< Color ramp name
+  ColorrampXML, //!< Color ramp definition (as XML)
+  ColorrampFavoriteId, //!< Color ramp is favorite flag
+};
+
+/**
+ * Columns available in the text format table.
+ */
+enum TextFormatTable
+{
+  TextFormatId, //!< Text format ID
+  TextFormatName, //!< Text format name
+  TextFormatXML, //!< Text format definition (as XML)
+  TextFormatFavoriteId, //!< Text format is favorite flag
+};
+
+/**
+ * Columns available in the smart group table.
+ */
+enum SmartgroupTable
+{
+  SmartgroupId, //!< Smart group ID
+  SmartgroupName, //!< Smart group name
+  SmartgroupXML, //!< Smart group definition (as XML)
+};
 
 /**
  * \ingroup core
@@ -94,10 +157,11 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     enum StyleEntity
     {
-      SymbolEntity,
-      TagEntity,
-      ColorrampEntity,
-      SmartgroupEntity
+      SymbolEntity, //!< Symbols
+      TagEntity, //!< Tags
+      ColorrampEntity, //!< Color ramps
+      SmartgroupEntity, //!< Smart groups
+      TextFormatEntity, //!< Text formats
     };
 
     /**
@@ -120,6 +184,18 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \returns success status of the operation
      */
     bool addColorRamp( const QString &name, QgsColorRamp *colorRamp SIP_TRANSFER, bool update = false );
+
+    /**
+     * Adds a text \a format with the specified \a name to the style.
+     *
+     * If \a update is set to TRUE, the style DB will be automatically updated with the new text format.
+     *
+     * Returns TRUE if the operation was successful.
+     *
+     * \note Adding a text format with the name of existing one replaces it.
+     * \since QGIS 3.10
+     */
+    bool addTextFormat( const QString &name, const QgsTextFormat &format, bool update = false );
 
     /**
      * Adds a new tag and returns the tag's id
@@ -186,6 +262,33 @@ class CORE_EXPORT QgsStyle : public QObject
      * returns 0 if not found
      */
     int colorrampId( const QString &name );
+
+    /**
+     * Returns the text format with the specified \a name.
+     *
+     * \since QGIS 3.10
+     */
+    QgsTextFormat textFormat( const QString &name ) const;
+
+    /**
+     * Returns count of text formats in the style.
+     * \since QGIS 3.10
+     */
+    int textFormatCount() const;
+
+    /**
+     * Returns a list of names of text formats in the style.
+     * \since QGIS 3.10
+     */
+    QStringList textFormatNames() const;
+
+    /**
+     * Returns the ID in the style database for the given text format by \a name.
+     * Returns 0 if the text format was not found.
+     *
+     * \since QGIS 3.10
+     */
+    int textFormatId( const QString &name );
 
     //! Returns default application-wide style
     static QgsStyle *defaultStyle();
@@ -336,6 +439,30 @@ class CORE_EXPORT QgsStyle : public QObject
 
     //! Changes ramp's name
     bool renameColorRamp( const QString &oldName, const QString &newName );
+
+    /**
+     * Adds a text \a format to the database.
+     *
+     *  \param name is the name of the text format
+     *  \param format text format to save
+     *  \param favorite is a boolean value to specify whether the text format should be added to favorites
+     *  \param tags is a list of tags that are associated with the text format
+     *  \returns returns the success state of the save operation
+     */
+    bool saveTextFormat( const QString &name, const QgsTextFormat &format, bool favorite, const QStringList &tags );
+
+    /**
+     * Removes a text format from the style.
+     * \since QGIS 3.10
+     */
+    bool removeTextFormat( const QString &name );
+
+    /**
+     * Changes a text format's name.
+     *
+     * \since QGIS 3.10
+     */
+    bool renameTextFormat( const QString &oldName, const QString &newName );
 
     /**
      * Creates an on-disk database
@@ -541,13 +668,51 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     void rampChanged( const QString &name );
 
+
+    /**
+     * Emitted whenever a text format has been renamed from \a oldName to \a newName
+     * \see symbolRenamed()
+     * \since QGIS 3.10
+     */
+    void textFormatRenamed( const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever a text format has been added to the style and the database
+     * has been updated as a result.
+     * \see textFormatRemoved()
+     * \see symbolSaved()
+     * \since QGIS 3.10
+     */
+    void textFormatAdded( const QString &name );
+
+    /**
+     * Emitted whenever a text format has been removed from the style and the database
+     * has been updated as a result.
+     * \see textFormatAdded()
+     * \see symbolRemoved()
+     * \since QGIS 3.10
+     */
+    void textFormatRemoved( const QString &name );
+
+    /**
+     * Emitted whenever a text format's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \see textFormatAdded()
+     *
+     * \since QGIS 3.10
+     */
+    void textFormatChanged( const QString &name );
+
   private:
 
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;
+    QgsTextFormatMap mTextFormats;
 
     QHash< QString, QStringList > mCachedSymbolTags;
     QHash< QString, QStringList > mCachedColorRampTags;
+    QHash< QString, QStringList > mCachedTextFormatTags;
 
     QString mErrorString;
     QString mFileName;

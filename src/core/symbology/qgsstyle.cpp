@@ -34,7 +34,7 @@
 #include <sqlite3.h>
 #include "qgssqliteutils.h"
 
-#define STYLE_CURRENT_VERSION  "1"
+#define STYLE_CURRENT_VERSION  "2"
 
 QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
@@ -81,8 +81,10 @@ void QgsStyle::clear()
 
   mSymbols.clear();
   mColorRamps.clear();
+  mTextFormats.clear();
   mCachedColorRampTags.clear();
   mCachedSymbolTags.clear();
+  mCachedTextFormatTags.clear();
 }
 
 bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
@@ -218,6 +220,27 @@ bool QgsStyle::addColorRamp( const QString &name, QgsColorRamp *colorRamp, bool 
   return true;
 }
 
+bool QgsStyle::addTextFormat( const QString &name, const QgsTextFormat &format, bool update )
+{
+  // delete previous text format (if any)
+  if ( mTextFormats.contains( name ) )
+  {
+    // TODO remove groups and tags?
+    mTextFormats.remove( name );
+    mTextFormats.insert( name, format );
+    if ( update )
+      updateSymbol( TextFormatEntity, name );
+  }
+  else
+  {
+    mTextFormats.insert( name, format );
+    if ( update )
+      saveTextFormat( name, format, false, QStringList() );
+  }
+
+  return true;
+}
+
 bool QgsStyle::saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags )
 {
   // insert it into the database
@@ -344,6 +367,11 @@ void QgsStyle::createTables()
                                   "name TEXT UNIQUE,"\
                                   "xml TEXT,"\
                                   "favorite INTEGER);"\
+                                  "CREATE TABLE textformat("\
+                                  "id INTEGER PRIMARY KEY,"\
+                                  "name TEXT UNIQUE,"\
+                                  "xml TEXT,"\
+                                  "favorite INTEGER);"\
                                   "CREATE TABLE tag("\
                                   "id INTEGER PRIMARY KEY,"\
                                   "name TEXT);"\
@@ -353,6 +381,9 @@ void QgsStyle::createTables()
                                   "CREATE TABLE ctagmap("\
                                   "tag_id INTEGER NOT NULL,"\
                                   "colorramp_id INTEGER);"\
+                                  "CREATE TABLE tftagmap("\
+                                  "tag_id INTEGER NOT NULL,"\
+                                  "textformat_id INTEGER);"\
                                   "CREATE TABLE smartgroup("\
                                   "id INTEGER PRIMARY KEY,"\
                                   "name TEXT,"\
@@ -375,6 +406,7 @@ bool QgsStyle::load( const QString &filename )
   // Make sure there are no Null fields in parenting symbols and groups
   auto query = QgsSqlite3Mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
                                   "UPDATE colorramp SET favorite=0 WHERE favorite IS NULL;"
+                                  "UPDATE textformat SET favorite=0 WHERE favorite IS NULL;"
                                 );
   runEmptyQuery( query );
 
@@ -418,6 +450,24 @@ bool QgsStyle::load( const QString &filename )
     QgsColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
     if ( ramp )
       mColorRamps.insert( ramp_name, ramp );
+  }
+
+  query = QgsSqlite3Mprintf( "SELECT * FROM textformat" );
+  statement = mCurrentDB.prepare( query, rc );
+  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+  {
+    QDomDocument doc;
+    const QString formatName = statement.columnAsText( TextFormatName );
+    const QString xmlstring = statement.columnAsText( TextFormatXML );
+    if ( !doc.setContent( xmlstring ) )
+    {
+      QgsDebugMsg( "Cannot open text format " + formatName );
+      continue;
+    }
+    QDomElement formatElement = doc.documentElement();
+    QgsTextFormat format;
+    format.readXml( formatElement, QgsReadWriteContext() );
+    mTextFormats.insert( formatName, format );
   }
 
   mFileName = filename;
@@ -539,6 +589,90 @@ bool QgsStyle::renameColorRamp( const QString &oldName, const QString &newName )
   return result;
 }
 
+bool QgsStyle::saveTextFormat( const QString &name, const QgsTextFormat &format, bool favorite, const QStringList &tags )
+{
+  // insert it into the database
+  QDomDocument doc( QStringLiteral( "dummy" ) );
+  QDomElement formatElem = format.writeXml( doc, QgsReadWriteContext() );
+
+  if ( formatElem.isNull() )
+  {
+    QgsDebugMsg( QStringLiteral( "Couldn't convert text format to valid XML!" ) );
+    return false;
+  }
+
+  QByteArray xmlArray;
+  QTextStream stream( &xmlArray );
+  stream.setCodec( "UTF-8" );
+  formatElem.save( stream, 4 );
+  auto query = QgsSqlite3Mprintf( "INSERT INTO textformat VALUES (NULL, '%q', '%q', %d);",
+                                  name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Couldn't insert text format into the database!" ) );
+    return false;
+  }
+
+  tagSymbol( TextFormatEntity, name, tags );
+
+  emit textFormatAdded( name );
+
+  return true;
+}
+
+bool QgsStyle::removeTextFormat( const QString &name )
+{
+  if ( !mTextFormats.contains( name ) )
+    return false;
+
+  mTextFormats.remove( name );
+
+  auto query = QgsSqlite3Mprintf( "DELETE FROM textformat WHERE name='%q'", name.toUtf8().constData() );
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Couldn't remove text format from the database." ) );
+    return false;
+  }
+
+  mCachedTextFormatTags.remove( name );
+
+  emit textFormatRemoved( name );
+
+  return true;
+
+}
+
+bool QgsStyle::renameTextFormat( const QString &oldName, const QString &newName )
+{
+  if ( mTextFormats.contains( newName ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Text format of new name already exists." ) );
+    return false;
+  }
+
+  if ( !mTextFormats.contains( oldName ) )
+    return false;
+  QgsTextFormat format = mTextFormats.take( oldName );
+
+  mTextFormats.insert( newName, format );
+  mCachedTextFormatTags.remove( oldName );
+
+  int textFormatId = 0;
+  sqlite3_statement_unique_ptr statement;
+  auto query = QgsSqlite3Mprintf( "SELECT id FROM textformat WHERE name='%q'", oldName.toUtf8().constData() );
+  int nErr;
+  statement = mCurrentDB.prepare( query, nErr );
+  if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+  {
+    textFormatId = sqlite3_column_int( statement.get(), 0 );
+  }
+  const bool result = rename( TextFormatEntity, textFormatId, newName );
+  if ( result )
+    emit textFormatRenamed( oldName, newName );
+
+  return result;
+}
+
 QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
 {
   if ( !mCurrentDB )
@@ -548,18 +682,24 @@ QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
   }
 
   QString query;
-  if ( type == SymbolEntity )
+  switch ( type )
   {
-    query = QgsSqlite3Mprintf( "SELECT name FROM symbol WHERE favorite=1" );
-  }
-  else if ( type == ColorrampEntity )
-  {
-    query = QgsSqlite3Mprintf( "SELECT name FROM colorramp WHERE favorite=1" );
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "No such style entity" ) );
-    return QStringList();
+    case SymbolEntity:
+      query = QgsSqlite3Mprintf( "SELECT name FROM symbol WHERE favorite=1" );
+      break;
+
+    case ColorrampEntity:
+      query = QgsSqlite3Mprintf( "SELECT name FROM colorramp WHERE favorite=1" );
+      break;
+
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "SELECT name FROM textformat WHERE favorite=1" );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      QgsDebugMsg( QStringLiteral( "No such style entity" ) );
+      return QStringList();
   }
 
   int nErr;
@@ -583,19 +723,25 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid ) const
     return QStringList();
   }
 
-  QString subquery;;
-  if ( type == SymbolEntity )
+  QString subquery;
+  switch ( type )
   {
-    subquery = QgsSqlite3Mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id=%d", tagid );
-  }
-  else if ( type == ColorrampEntity )
-  {
-    subquery = QgsSqlite3Mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id=%d", tagid );
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "Unknown Entity" ) );
-    return QStringList();
+    case SymbolEntity:
+      subquery = QgsSqlite3Mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id=%d", tagid );
+      break;
+
+    case ColorrampEntity:
+      subquery = QgsSqlite3Mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id=%d", tagid );
+      break;
+
+    case TextFormatEntity:
+      subquery = QgsSqlite3Mprintf( "SELECT textformat_id FROM tftagmap WHERE tag_id=%d", tagid );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      QgsDebugMsg( QStringLiteral( "Unknown Entity" ) );
+      return QStringList();
   }
 
   int nErr;
@@ -608,9 +754,25 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid ) const
   {
     int id = sqlite3_column_int( statement.get(), 0 );
 
-    auto query = type == SymbolEntity
-                 ? QgsSqlite3Mprintf( "SELECT name FROM symbol WHERE id=%d", id )
-                 : QgsSqlite3Mprintf( "SELECT name FROM colorramp WHERE id=%d", id );
+    QString query;
+    switch ( type )
+    {
+      case SymbolEntity:
+        query = QgsSqlite3Mprintf( "SELECT name FROM symbol WHERE id=%d", id );
+        break;
+
+      case ColorrampEntity:
+        query = QgsSqlite3Mprintf( "SELECT name FROM colorramp WHERE id=%d", id );
+        break;
+
+      case TextFormatEntity:
+        query = QgsSqlite3Mprintf( "SELECT name FROM textformat WHERE id=%d", id );
+        break;
+
+      case TagEntity:
+      case SmartgroupEntity:
+        continue;
+    }
 
     int rc;
     sqlite3_statement_unique_ptr statement2;
@@ -675,6 +837,9 @@ bool QgsStyle::rename( StyleEntity type, int id, const QString &newName )
     case ColorrampEntity:
       query = QgsSqlite3Mprintf( "UPDATE colorramp SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
       break;
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "UPDATE textformat SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
+      break;
     case TagEntity:
       query = QgsSqlite3Mprintf( "UPDATE tag SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
       break;
@@ -691,6 +856,7 @@ bool QgsStyle::rename( StyleEntity type, int id, const QString &newName )
   {
     mCachedColorRampTags.clear();
     mCachedSymbolTags.clear();
+    mCachedTextFormatTags.clear();
 
     switch ( type )
     {
@@ -708,6 +874,7 @@ bool QgsStyle::rename( StyleEntity type, int id, const QString &newName )
 
       case ColorrampEntity:
       case SymbolEntity:
+      case TextFormatEntity:
         break;
     }
   }
@@ -725,6 +892,9 @@ bool QgsStyle::remove( StyleEntity type, int id )
       break;
     case ColorrampEntity:
       query = QgsSqlite3Mprintf( "DELETE FROM colorramp WHERE id=%d", id );
+      break;
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "DELETE FROM textformat WHERE id=%d", id );
       break;
     case TagEntity:
       query = QgsSqlite3Mprintf( "DELETE FROM tag WHERE id=%d; DELETE FROM tagmap WHERE tag_id=%d", id, id );
@@ -745,6 +915,7 @@ bool QgsStyle::remove( StyleEntity type, int id )
   {
     mCachedColorRampTags.clear();
     mCachedSymbolTags.clear();
+    mCachedTextFormatTags.clear();
 
     if ( groupRemoved )
     {
@@ -787,8 +958,12 @@ bool QgsStyle::addFavorite( StyleEntity type, const QString &name )
     case ColorrampEntity:
       query = QgsSqlite3Mprintf( "UPDATE colorramp SET favorite=1 WHERE name='%q'", name.toUtf8().constData() );
       break;
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "UPDATE textformat SET favorite=1 WHERE name='%q'", name.toUtf8().constData() );
+      break;
 
-    default:
+    case TagEntity:
+    case SmartgroupEntity:
       QgsDebugMsg( QStringLiteral( "Wrong entity value. cannot apply group" ) );
       return false;
   }
@@ -812,8 +987,12 @@ bool QgsStyle::removeFavorite( StyleEntity type, const QString &name )
     case ColorrampEntity:
       query = QgsSqlite3Mprintf( "UPDATE colorramp SET favorite=0 WHERE name='%q'", name.toUtf8().constData() );
       break;
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "UPDATE textformat SET favorite=0 WHERE name='%q'", name.toUtf8().constData() );
+      break;
 
-    default:
+    case TagEntity:
+    case SmartgroupEntity:
       QgsDebugMsg( QStringLiteral( "Wrong entity value. cannot apply group" ) );
       return false;
   }
@@ -834,7 +1013,26 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
   }
 
   // first find symbols with matching name
-  QString item = ( type == SymbolEntity ) ? QStringLiteral( "symbol" ) : QStringLiteral( "colorramp" );
+  QString item;
+  switch ( type )
+  {
+    case SymbolEntity:
+      item = QStringLiteral( "symbol" );
+      break;
+
+    case ColorrampEntity:
+      item = QStringLiteral( "colorramp" );
+      break;
+
+    case TextFormatEntity:
+      item = QStringLiteral( "textformat" );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return QStringList();
+  }
+
   auto query = QgsSqlite3Mprintf( "SELECT name FROM %q WHERE name LIKE '%%%q%%'",
                                   item.toUtf8().constData(), qword.toUtf8().constData() );
 
@@ -859,16 +1057,28 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
 
   QString dummy = tagids.join( QStringLiteral( ", " ) );
 
-  if ( type == SymbolEntity )
+  switch ( type )
   {
-    query = QgsSqlite3Mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id IN (%q)",
-                               dummy.toUtf8().constData() );
+    case SymbolEntity:
+      query = QgsSqlite3Mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id IN (%q)",
+                                 dummy.toUtf8().constData() );
+      break;
+
+    case ColorrampEntity:
+      query = QgsSqlite3Mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id IN (%q)",
+                                 dummy.toUtf8().constData() );
+      break;
+
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "SELECT textformat_id FROM tftagmap WHERE tag_id IN (%q)",
+                                 dummy.toUtf8().constData() );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return QStringList();
   }
-  else
-  {
-    query = QgsSqlite3Mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id IN (%q)",
-                               dummy.toUtf8().constData() );
-  }
+
   statement = mCurrentDB.prepare( query, nErr );
 
   QStringList symbolids;
@@ -897,7 +1107,27 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
     return false;
   }
 
-  int symbolid = type == SymbolEntity ? symbolId( symbol ) : colorrampId( symbol );
+  int symbolid = 0;
+  switch ( type )
+  {
+    case SymbolEntity:
+      symbolid = symbolId( symbol );
+      break;
+
+    case ColorrampEntity:
+      symbolid = colorrampId( symbol );
+      break;
+
+    case TextFormatEntity:
+      symbolid = textFormatId( symbol );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return false;
+
+  }
+
   if ( !symbolid )
   {
     QgsDebugMsg( QStringLiteral( "No such symbol for tagging in database: " ) + symbol );
@@ -921,9 +1151,25 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
       // Now map the tag to the symbol if it's not already tagged
       if ( !symbolHasTag( type, symbol, tag ) )
       {
-        auto query = type == SymbolEntity
-                     ? QgsSqlite3Mprintf( "INSERT INTO tagmap VALUES (%d,%d)", tagid, symbolid )
-                     : QgsSqlite3Mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
+        QString query;
+        switch ( type )
+        {
+          case SymbolEntity:
+            query = QgsSqlite3Mprintf( "INSERT INTO tagmap VALUES (%d,%d)", tagid, symbolid );
+            break;
+
+          case ColorrampEntity:
+            query = QgsSqlite3Mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
+            break;
+
+          case TextFormatEntity:
+            query = QgsSqlite3Mprintf( "INSERT INTO tftagmap VALUES (%d,%d)", tagid, symbolid );
+            break;
+
+          case TagEntity:
+          case SmartgroupEntity:
+            continue;
+        }
 
         char *zErr = nullptr;
         int nErr;
@@ -947,13 +1193,29 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStri
 {
   if ( !mCurrentDB )
   {
-    QgsDebugMsg( QStringLiteral( "Sorry! Cannot open database for detgging." ) );
+    QgsDebugMsg( QStringLiteral( "Sorry! Cannot open database for detagging." ) );
     return false;
   }
 
-  auto query = type == SymbolEntity
-               ? QgsSqlite3Mprintf( "SELECT id FROM symbol WHERE name='%q'", symbol.toUtf8().constData() )
-               : QgsSqlite3Mprintf( "SELECT id FROM colorramp WHERE name='%q'", symbol.toUtf8().constData() );
+  QString query;
+  switch ( type )
+  {
+    case SymbolEntity:
+      query = QgsSqlite3Mprintf( "SELECT id FROM symbol WHERE name='%q'", symbol.toUtf8().constData() );
+      break;
+
+    case ColorrampEntity:
+      query = QgsSqlite3Mprintf( "SELECT id FROM colorramp WHERE name='%q'", symbol.toUtf8().constData() );
+      break;
+
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "SELECT id FROM textformat WHERE name='%q'", symbol.toUtf8().constData() );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return false;
+  }
   sqlite3_statement_unique_ptr statement;
   int nErr; statement = mCurrentDB.prepare( query, nErr );
 
@@ -984,9 +1246,26 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStri
     if ( tagid )
     {
       // remove from the tagmap
-      query = type == SymbolEntity
-              ? QgsSqlite3Mprintf( "DELETE FROM tagmap WHERE tag_id=%d AND symbol_id=%d", tagid, symbolid )
-              : QgsSqlite3Mprintf( "DELETE FROM ctagmap WHERE tag_id=%d AND colorramp_id=%d", tagid, symbolid );
+      QString query;
+      switch ( type )
+      {
+        case SymbolEntity:
+          query = QgsSqlite3Mprintf( "DELETE FROM tagmap WHERE tag_id=%d AND symbol_id=%d", tagid, symbolid );
+          break;
+
+        case ColorrampEntity:
+          query = QgsSqlite3Mprintf( "DELETE FROM ctagmap WHERE tag_id=%d AND colorramp_id=%d", tagid, symbolid );
+          break;
+
+        case TextFormatEntity:
+          query = QgsSqlite3Mprintf( "DELETE FROM tftagmap WHERE tag_id=%d AND textformat_id=%d", tagid, symbolid );
+          break;
+
+        case TagEntity:
+        case SmartgroupEntity:
+          continue;
+      }
+
       runEmptyQuery( query );
     }
   }
@@ -1008,9 +1287,26 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
     return false;
   }
 
-  auto query = type == SymbolEntity
-               ? QgsSqlite3Mprintf( "SELECT id FROM symbol WHERE name='%q'", symbol.toUtf8().constData() )
-               : QgsSqlite3Mprintf( "SELECT id FROM colorramp WHERE name='%q'", symbol.toUtf8().constData() );
+  QString query;
+  switch ( type )
+  {
+    case SymbolEntity:
+      query = QgsSqlite3Mprintf( "SELECT id FROM symbol WHERE name='%q'", symbol.toUtf8().constData() );
+      break;
+
+    case ColorrampEntity:
+      query = QgsSqlite3Mprintf( "SELECT id FROM colorramp WHERE name='%q'", symbol.toUtf8().constData() );
+      break;
+
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "SELECT id FROM textformat WHERE name='%q'", symbol.toUtf8().constData() );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return false;
+  }
+
   sqlite3_statement_unique_ptr statement;
   int nErr;
   statement = mCurrentDB.prepare( query, nErr );
@@ -1026,9 +1322,25 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
   }
 
   // remove all tags
-  query = type == SymbolEntity
-          ? QgsSqlite3Mprintf( "DELETE FROM tagmap WHERE symbol_id=%d", symbolid )
-          : QgsSqlite3Mprintf( "DELETE FROM ctagmap WHERE colorramp_id=%d", symbolid );
+  switch ( type )
+  {
+    case SymbolEntity:
+      query = QgsSqlite3Mprintf( "DELETE FROM tagmap WHERE symbol_id=%d", symbolid );
+      break;
+
+    case ColorrampEntity:
+      query = QgsSqlite3Mprintf( "DELETE FROM ctagmap WHERE colorramp_id=%d", symbolid );
+      break;
+
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "DELETE FROM tftagmap WHERE textformat_id=%d", symbolid );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return false;
+
+  }
   runEmptyQuery( query );
 
   clearCachedTags( type, symbol );
@@ -1054,6 +1366,11 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
         return mCachedColorRampTags.value( symbol );
       break;
 
+    case TextFormatEntity:
+      if ( mCachedTextFormatTags.contains( symbol ) )
+        return mCachedTextFormatTags.value( symbol );
+      break;
+
     case TagEntity:
     case SmartgroupEntity:
       break;
@@ -1065,14 +1382,50 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
     return QStringList();
   }
 
-  int symbolid = type == SymbolEntity ? symbolId( symbol ) : colorrampId( symbol );
+  int symbolid = 0;
+  switch ( type )
+  {
+    case SymbolEntity:
+      symbolid = symbolId( symbol );
+      break;
+
+    case ColorrampEntity:
+      symbolid = colorrampId( symbol );
+      break;
+
+    case TextFormatEntity:
+      symbolid = textFormatId( symbol );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      break;
+
+  }
+
   if ( !symbolid )
     return QStringList();
 
   // get the ids of tags for the symbol
-  auto query = type == SymbolEntity
-               ? QgsSqlite3Mprintf( "SELECT tag_id FROM tagmap WHERE symbol_id=%d", symbolid )
-               : QgsSqlite3Mprintf( "SELECT tag_id FROM ctagmap WHERE colorramp_id=%d", symbolid );
+  QString query;
+  switch ( type )
+  {
+    case SymbolEntity:
+      query = QgsSqlite3Mprintf( "SELECT tag_id FROM tagmap WHERE symbol_id=%d", symbolid );
+      break;
+
+    case ColorrampEntity:
+      query = QgsSqlite3Mprintf( "SELECT tag_id FROM ctagmap WHERE colorramp_id=%d", symbolid );
+      break;
+
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "SELECT tag_id FROM tftagmap WHERE textformat_id=%d", symbolid );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return QStringList();
+  }
 
   sqlite3_statement_unique_ptr statement;
   int nErr; statement = mCurrentDB.prepare( query, nErr );
@@ -1102,6 +1455,10 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
       mCachedColorRampTags[ symbol ] = tagList;
       break;
 
+    case TextFormatEntity:
+      mCachedTextFormatTags[ symbol ] = tagList;
+      break;
+
     case TagEntity:
     case SmartgroupEntity:
       break;
@@ -1118,7 +1475,26 @@ bool QgsStyle::symbolHasTag( StyleEntity type, const QString &symbol, const QStr
     return false;
   }
 
-  int symbolid = type == SymbolEntity ? symbolId( symbol ) : colorrampId( symbol );
+  int symbolid = 0;
+  switch ( type )
+  {
+    case SymbolEntity:
+      symbolid = symbolId( symbol );
+      break;
+
+    case ColorrampEntity:
+      symbolid = colorrampId( symbol );
+      break;
+
+    case TextFormatEntity:
+      symbolid = textFormatId( symbol );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return false;
+  }
+
   if ( !symbolid )
   {
     return false;
@@ -1130,10 +1506,26 @@ bool QgsStyle::symbolHasTag( StyleEntity type, const QString &symbol, const QStr
   }
 
   // get the ids of tags for the symbol
-  auto query = type == SymbolEntity
-               ? QgsSqlite3Mprintf( "SELECT tag_id FROM tagmap WHERE tag_id=%d AND symbol_id=%d", tagid, symbolid )
-               : QgsSqlite3Mprintf( "SELECT tag_id FROM ctagmap WHERE tag_id=%d AND colorramp_id=%d", tagid, symbolid );
+  QString query;
 
+  switch ( type )
+  {
+    case SymbolEntity:
+      query = QgsSqlite3Mprintf( "SELECT tag_id FROM tagmap WHERE tag_id=%d AND symbol_id=%d", tagid, symbolid );
+      break;
+
+    case ColorrampEntity:
+      query = QgsSqlite3Mprintf( "SELECT tag_id FROM ctagmap WHERE tag_id=%d AND colorramp_id=%d", tagid, symbolid );
+      break;
+
+    case TextFormatEntity:
+      query = QgsSqlite3Mprintf( "SELECT tag_id FROM tftagmap WHERE tag_id=%d AND textformat_id=%d", tagid, symbolid );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return false;
+  }
   sqlite3_statement_unique_ptr statement;
   int nErr; statement = mCurrentDB.prepare( query, nErr );
 
@@ -1213,6 +1605,26 @@ int QgsStyle::symbolId( const QString &name )
 int QgsStyle::colorrampId( const QString &name )
 {
   return getId( QStringLiteral( "colorramp" ), name );
+}
+
+QgsTextFormat QgsStyle::textFormat( const QString &name ) const
+{
+  return mTextFormats.value( name );
+}
+
+int QgsStyle::textFormatCount() const
+{
+  return mTextFormats.count();
+}
+
+QStringList QgsStyle::textFormatNames() const
+{
+  return mTextFormats.keys();
+}
+
+int QgsStyle::textFormatId( const QString &name )
+{
+  return getId( QStringLiteral( "textformat" ), name );
 }
 
 int QgsStyle::tagId( const QString &name )
@@ -1365,18 +1777,46 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       }
       else if ( constraint == QLatin1String( "name" ) )
       {
-        if ( type == SymbolEntity )
+        switch ( type )
         {
-          resultNames = symbolNames().filter( param, Qt::CaseInsensitive );
-        }
-        else
-        {
-          resultNames = colorRampNames().filter( param, Qt::CaseInsensitive );
+          case SymbolEntity:
+            resultNames = symbolNames().filter( param, Qt::CaseInsensitive );
+            break;
+
+          case ColorrampEntity:
+            resultNames = colorRampNames().filter( param, Qt::CaseInsensitive );
+            break;
+
+          case TextFormatEntity:
+            resultNames = textFormatNames().filter( param, Qt::CaseInsensitive );
+            break;
+
+          case TagEntity:
+          case SmartgroupEntity:
+            break;
         }
       }
       else if ( constraint == QLatin1String( "!tag" ) )
       {
-        resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
+        switch ( type )
+        {
+          case SymbolEntity:
+            resultNames = symbolNames();
+            break;
+
+          case ColorrampEntity:
+            resultNames = colorRampNames();
+            break;
+
+          case TextFormatEntity:
+            resultNames = textFormatNames();
+            break;
+
+          case TagEntity:
+          case SmartgroupEntity:
+            break;
+        }
+
         const QStringList unwanted = symbolsWithTag( type, tagId( param ) );
         for ( const QString &name : unwanted )
         {
@@ -1385,8 +1825,26 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       }
       else if ( constraint == QLatin1String( "!name" ) )
       {
-        const QStringList all = type == SymbolEntity ? symbolNames() : colorRampNames();
-        for ( const QString &str : all )
+        QStringList all;
+        switch ( type )
+        {
+          case SymbolEntity:
+            all = symbolNames();
+            break;
+
+          case ColorrampEntity:
+            all = colorRampNames();
+            break;
+
+          case TextFormatEntity:
+            all = textFormatNames();
+            break;
+
+          case TagEntity:
+          case SmartgroupEntity:
+            break;
+        }
+        for ( const QString &str : qgis::as_const( all ) )
         {
           if ( !str.contains( param, Qt::CaseInsensitive ) )
             resultNames << str;
@@ -1508,8 +1966,9 @@ bool QgsStyle::exportXml( const QString &filename )
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( STYLE_CURRENT_VERSION ) );
   doc.appendChild( root );
 
-  QStringList favoriteSymbols = symbolsOfFavorite( SymbolEntity );
-  QStringList favoriteColorramps = symbolsOfFavorite( ColorrampEntity );
+  const QStringList favoriteSymbols = symbolsOfFavorite( SymbolEntity );
+  const QStringList favoriteColorramps = symbolsOfFavorite( ColorrampEntity );
+  const QStringList favoriteTextFormats = symbolsOfFavorite( TextFormatEntity );
 
   // save symbols and attach tags
   QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
@@ -1547,8 +2006,29 @@ bool QgsStyle::exportXml( const QString &filename )
     rampsElem.appendChild( rampEl );
   }
 
+  // save text formats
+  QDomElement textFormatsElem = doc.createElement( QStringLiteral( "textformats" ) );
+  for ( auto it = mTextFormats.constBegin(); it != mTextFormats.constEnd(); ++it )
+  {
+    QDomElement textFormatEl = doc.createElement( QStringLiteral( "textformat" ) );
+    textFormatEl.setAttribute( QStringLiteral( "name" ), it.key() );
+    QDomElement textStyleEl = it.value().writeXml( doc, QgsReadWriteContext() );
+    textFormatEl.appendChild( textStyleEl );
+    QStringList tags = tagsOfSymbol( TextFormatEntity, it.key() );
+    if ( tags.count() > 0 )
+    {
+      textFormatEl.setAttribute( QStringLiteral( "tags" ), tags.join( ',' ) );
+    }
+    if ( favoriteTextFormats.contains( it.key() ) )
+    {
+      textFormatEl.setAttribute( QStringLiteral( "favorite" ), QStringLiteral( "1" ) );
+    }
+    textFormatsElem.appendChild( textFormatEl );
+  }
+
   root.appendChild( symbolsElem );
   root.appendChild( rampsElem );
+  root.appendChild( textFormatsElem );
 
   // save
   QFile f( filename );
@@ -1595,8 +2075,8 @@ bool QgsStyle::importXml( const QString &filename )
     return false;
   }
 
-  QString version = docEl.attribute( QStringLiteral( "version" ) );
-  if ( version != QLatin1String( STYLE_CURRENT_VERSION ) && version != QLatin1String( "0" ) )
+  const QString version = docEl.attribute( QStringLiteral( "version" ) );
+  if ( version != QLatin1String( STYLE_CURRENT_VERSION ) && version != QLatin1String( "0" ) && version != QLatin1String( "1" ) )
   {
     mErrorString = "Unknown style file version: " + version;
     return false;
@@ -1611,7 +2091,7 @@ bool QgsStyle::importXml( const QString &filename )
   auto query = QgsSqlite3Mprintf( "BEGIN TRANSACTION;" );
   runEmptyQuery( query );
 
-  if ( version == QLatin1String( STYLE_CURRENT_VERSION ) )
+  if ( version == QLatin1String( STYLE_CURRENT_VERSION ) || version == QLatin1String( "1" ) )
   {
     // For the new style, load symbols individually
     while ( !e.isNull() )
@@ -1695,6 +2175,44 @@ bool QgsStyle::importXml( const QString &filename )
     e = e.nextSiblingElement();
   }
 
+  // load text formats
+  if ( version == STYLE_CURRENT_VERSION )
+  {
+    const QDomElement textFormatElement = docEl.firstChildElement( QStringLiteral( "textformats" ) );
+    e = textFormatElement.firstChildElement();
+    while ( !e.isNull() )
+    {
+      if ( e.tagName() == QLatin1String( "textformat" ) )
+      {
+        QString name = e.attribute( QStringLiteral( "name" ) );
+        QStringList tags;
+        if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+        {
+          tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
+        }
+        bool favorite = false;
+        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QStringLiteral( "1" ) )
+        {
+          favorite = true;
+        }
+
+        QgsTextFormat format;
+        const QDomElement styleElem = e.firstChildElement();
+        format.readXml( styleElem, QgsReadWriteContext() );
+        addTextFormat( name, format );
+        if ( mCurrentDB )
+        {
+          saveTextFormat( name, format, favorite, tags );
+        }
+      }
+      else
+      {
+        QgsDebugMsg( "unknown tag: " + e.tagName() );
+      }
+      e = e.nextSiblingElement();
+    }
+  }
+
   query = QgsSqlite3Mprintf( "COMMIT TRANSACTION;" );
   runEmptyQuery( query );
 
@@ -1732,48 +2250,77 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 
   QString query;
 
-  if ( type == SymbolEntity )
+  switch ( type )
   {
-    // check if it is an existing symbol
-    if ( !symbolNames().contains( name ) )
+    case SymbolEntity:
     {
-      QgsDebugMsg( QStringLiteral( "Update request received for unavailable symbol" ) );
-      return false;
+      // check if it is an existing symbol
+      if ( !symbolNames().contains( name ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Update request received for unavailable symbol" ) );
+        return false;
+      }
+
+      symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol( name ), doc, QgsReadWriteContext() );
+      if ( symEl.isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "Couldn't convert symbol to valid XML!" ) );
+        return false;
+      }
+      symEl.save( stream, 4 );
+      query = QgsSqlite3Mprintf( "UPDATE symbol SET xml='%q' WHERE name='%q';",
+                                 xmlArray.constData(), name.toUtf8().constData() );
+      break;
     }
 
-    symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol( name ), doc, QgsReadWriteContext() );
-    if ( symEl.isNull() )
+    case ColorrampEntity:
     {
-      QgsDebugMsg( QStringLiteral( "Couldn't convert symbol to valid XML!" ) );
-      return false;
-    }
-    symEl.save( stream, 4 );
-    query = QgsSqlite3Mprintf( "UPDATE symbol SET xml='%q' WHERE name='%q';",
-                               xmlArray.constData(), name.toUtf8().constData() );
-  }
-  else if ( type == ColorrampEntity )
-  {
-    if ( !colorRampNames().contains( name ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Update requested for unavailable color ramp." ) );
-      return false;
+      if ( !colorRampNames().contains( name ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Update requested for unavailable color ramp." ) );
+        return false;
+      }
+
+      std::unique_ptr< QgsColorRamp > ramp( colorRamp( name ) );
+      symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.get(), doc );
+      if ( symEl.isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "Couldn't convert color ramp to valid XML!" ) );
+        return false;
+      }
+      symEl.save( stream, 4 );
+      query = QgsSqlite3Mprintf( "UPDATE colorramp SET xml='%q' WHERE name='%q';",
+                                 xmlArray.constData(), name.toUtf8().constData() );
+      break;
     }
 
-    std::unique_ptr< QgsColorRamp > ramp( colorRamp( name ) );
-    symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.get(), doc );
-    if ( symEl.isNull() )
+    case TextFormatEntity:
     {
-      QgsDebugMsg( QStringLiteral( "Couldn't convert color ramp to valid XML!" ) );
+      if ( !textFormatNames().contains( name ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Update requested for unavailable text format." ) );
+        return false;
+      }
+
+      QgsTextFormat format( textFormat( name ) );
+      symEl = format.writeXml( doc, QgsReadWriteContext() );
+      if ( symEl.isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "Couldn't convert text format to valid XML!" ) );
+        return false;
+      }
+      symEl.save( stream, 4 );
+      query = QgsSqlite3Mprintf( "UPDATE textformat SET xml='%q' WHERE name='%q';",
+                                 xmlArray.constData(), name.toUtf8().constData() );
+      break;
+    }
+
+    case TagEntity:
+    case SmartgroupEntity:
+    {
+      QgsDebugMsg( QStringLiteral( "Updating the unsupported StyleEntity" ) );
       return false;
     }
-    symEl.save( stream, 4 );
-    query = QgsSqlite3Mprintf( "UPDATE colorramp SET xml='%q' WHERE name='%q';",
-                               xmlArray.constData(), name.toUtf8().constData() );
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "Updating the unsupported StyleEntity" ) );
-    return false;
   }
 
 
@@ -1794,6 +2341,10 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
         emit rampChanged( name );
         break;
 
+      case TextFormatEntity:
+        emit textFormatChanged( name );
+        break;
+
       case TagEntity:
       case SmartgroupEntity:
         break;
@@ -1812,6 +2363,10 @@ void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name 
 
     case ColorrampEntity:
       mCachedColorRampTags.remove( name );
+      break;
+
+    case TextFormatEntity:
+      mCachedTextFormatTags.remove( name );
       break;
 
     case TagEntity:

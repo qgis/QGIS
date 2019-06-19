@@ -63,6 +63,7 @@ class TestStyle : public QObject
     // void initStyles();
 
     void testCreateColorRamps();
+    void testCreateTextFormats();
     void testLoadColorRamps();
     void testSaveLoad();
     void testFavorites();
@@ -174,6 +175,58 @@ void TestStyle::testCreateColorRamps()
   // continuous ramp
   QgsCptCityColorRamp *cc3Ramp = new QgsCptCityColorRamp( QStringLiteral( "grass/byr" ), QString() );
   QVERIFY( mStyle->addColorRamp( "test_cc3", cc3Ramp, true ) );
+}
+
+void TestStyle::testCreateTextFormats()
+{
+  QVERIFY( mStyle->textFormatNames().isEmpty() );
+  QCOMPARE( mStyle->textFormatCount(), 0 );
+  // non existant format, should be default
+  QCOMPARE( mStyle->textFormat( QString( "blah" ) ).color().name(), QStringLiteral( "#000000" ) );
+
+  QSignalSpy spy( mStyle, &QgsStyle::textFormatAdded );
+  QSignalSpy spyChanged( mStyle, &QgsStyle::textFormatChanged );
+  // add a format
+  QgsTextFormat format;
+  format.setColor( QColor( 255, 0, 0 ) );
+  QVERIFY( mStyle->addTextFormat( "test_format", format, true ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spyChanged.count(), 0 );
+
+  QVERIFY( mStyle->textFormatNames().contains( QStringLiteral( "test_format" ) ) );
+  QCOMPARE( mStyle->textFormatCount(), 1 );
+  QCOMPARE( mStyle->textFormat( QString( "test_format" ) ).color().name(), QStringLiteral( "#ff0000" ) );
+
+  format.setColor( QColor( 255, 255, 0 ) );
+  QVERIFY( mStyle->addTextFormat( "test_format", format, true ) );
+  QVERIFY( mStyle->textFormatNames().contains( QStringLiteral( "test_format" ) ) );
+  QCOMPARE( mStyle->textFormatCount(), 1 );
+  QCOMPARE( mStyle->textFormat( QString( "test_format" ) ).color().name(), QStringLiteral( "#ffff00" ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spyChanged.count(), 1 );
+
+  format.setColor( QColor( 255, 255, 255 ) );
+  QVERIFY( mStyle->addTextFormat( "test_format2", format, true ) );
+  QVERIFY( mStyle->textFormatNames().contains( QStringLiteral( "test_format2" ) ) );
+  QCOMPARE( mStyle->textFormatCount(), 2 );
+  QCOMPARE( mStyle->textFormat( QString( "test_format" ) ).color().name(), QStringLiteral( "#ffff00" ) );
+  QCOMPARE( mStyle->textFormat( QString( "test_format2" ) ).color().name(), QStringLiteral( "#ffffff" ) );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spyChanged.count(), 1 );
+
+  // save and restore
+  QVERIFY( mStyle->exportXml( QDir::tempPath() + "/text_style.xml" ) );
+
+  QgsStyle style2;
+  QVERIFY( style2.importXml( QDir::tempPath() + "/text_style.xml" ) );
+
+  QVERIFY( style2.textFormatNames().contains( QStringLiteral( "test_format" ) ) );
+  QVERIFY( style2.textFormatNames().contains( QStringLiteral( "test_format2" ) ) );
+  QCOMPARE( style2.textFormatCount(), 2 );
+  QCOMPARE( style2.textFormat( QString( "test_format" ) ).color().name(), QStringLiteral( "#ffff00" ) );
+  QCOMPARE( style2.textFormat( QString( "test_format2" ) ).color().name(), QStringLiteral( "#ffffff" ) );
+
+
 }
 
 void TestStyle::testLoadColorRamps()
@@ -310,6 +363,29 @@ void TestStyle::testFavorites()
   QCOMPARE( favoriteChangedSpy.at( 3 ).at( 1 ).toString(), QStringLiteral( "gradient_1" ) );
   QCOMPARE( favoriteChangedSpy.at( 3 ).at( 2 ).toBool(), false );
   favorites = mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity );
+  QCOMPARE( favorites.count(), 0 );
+
+  // text formats
+  QgsTextFormat format1;
+  QVERIFY( mStyle->addTextFormat( "format_1", format1, true ) );
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::TextFormatEntity );
+  QCOMPARE( favorites.count(), 0 );
+
+  mStyle->addFavorite( QgsStyle::TextFormatEntity, QStringLiteral( "format_1" ) );
+  QCOMPARE( favoriteChangedSpy.count(), 5 );
+  QCOMPARE( favoriteChangedSpy.at( 4 ).at( 0 ).toInt(), static_cast< int >( QgsStyle::TextFormatEntity ) );
+  QCOMPARE( favoriteChangedSpy.at( 4 ).at( 1 ).toString(), QStringLiteral( "format_1" ) );
+  QCOMPARE( favoriteChangedSpy.at( 4 ).at( 2 ).toBool(), true );
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::TextFormatEntity );
+  QCOMPARE( favorites.count(), 1 );
+  QVERIFY( favorites.contains( "format_1" ) );
+
+  mStyle->removeFavorite( QgsStyle::TextFormatEntity, QStringLiteral( "format_1" ) );
+  QCOMPARE( favoriteChangedSpy.count(), 6 );
+  QCOMPARE( favoriteChangedSpy.at( 5 ).at( 0 ).toInt(), static_cast< int >( QgsStyle::TextFormatEntity ) );
+  QCOMPARE( favoriteChangedSpy.at( 5 ).at( 1 ).toString(), QStringLiteral( "format_1" ) );
+  QCOMPARE( favoriteChangedSpy.at( 5 ).at( 2 ).toBool(), false );
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::TextFormatEntity );
   QCOMPARE( favorites.count(), 0 );
 }
 
@@ -551,6 +627,69 @@ void TestStyle::testTags()
   QCOMPARE( tagsChangedSpy.at( 13 ).at( 0 ).toInt(), static_cast< int >( QgsStyle::ColorrampEntity ) );
   QCOMPARE( tagsChangedSpy.at( 13 ).at( 1 ).toString(), QStringLiteral( "gradient_tag1" ) );
   QCOMPARE( tagsChangedSpy.at( 13 ).at( 2 ).toStringList(), QStringList() );
+
+  // text formats
+
+  // tag format
+  QgsTextFormat format1;
+  QVERIFY( mStyle->addTextFormat( "format1", format1, true ) );
+  QgsTextFormat format2;
+  QVERIFY( mStyle->addTextFormat( "format2", format2, true ) );
+
+  QVERIFY( mStyle->tagSymbol( QgsStyle::TextFormatEntity, "format1", QStringList() << "blue" << "starry" ) );
+  QCOMPARE( tagsChangedSpy.count(), 17 );
+  QCOMPARE( tagsChangedSpy.at( 16 ).at( 0 ).toInt(), static_cast< int>( QgsStyle::TextFormatEntity ) );
+  QCOMPARE( tagsChangedSpy.at( 16 ).at( 1 ).toString(), QStringLiteral( "format1" ) );
+  QCOMPARE( tagsChangedSpy.at( 16 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "blue" ) << QStringLiteral( "starry" ) );
+
+  QVERIFY( mStyle->tagSymbol( QgsStyle::TextFormatEntity, "format2", QStringList() << "red" << "circle" ) );
+  QCOMPARE( tagsChangedSpy.count(), 18 );
+  QCOMPARE( tagsChangedSpy.at( 17 ).at( 0 ).toInt(), static_cast< int>( QgsStyle::TextFormatEntity ) );
+  QCOMPARE( tagsChangedSpy.at( 17 ).at( 1 ).toString(), QStringLiteral( "format2" ) );
+  QCOMPARE( tagsChangedSpy.at( 17 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "red" ) << QStringLiteral( "circle" ) );
+
+  //bad format name
+  QVERIFY( !mStyle->tagSymbol( QgsStyle::TextFormatEntity, "no format", QStringList() << "red" << "circle" ) );
+  QCOMPARE( tagsChangedSpy.count(), 18 );
+  //tag which hasn't been added yet
+  QVERIFY( mStyle->tagSymbol( QgsStyle::TextFormatEntity, "format2", QStringList() << "red text" ) );
+  QCOMPARE( tagsChangedSpy.count(), 19 );
+  QCOMPARE( tagsChangedSpy.at( 18 ).at( 0 ).toInt(), static_cast< int>( QgsStyle::TextFormatEntity ) );
+  QCOMPARE( tagsChangedSpy.at( 18 ).at( 1 ).toString(), QStringLiteral( "format2" ) );
+  QCOMPARE( tagsChangedSpy.at( 18 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "red" ) << QStringLiteral( "circle" ) << QStringLiteral( "red text" ) );
+
+  tags = mStyle->tags();
+  QVERIFY( tags.contains( QStringLiteral( "red text" ) ) );
+
+  //check that tags have been applied
+  tags = mStyle->tagsOfSymbol( QgsStyle::TextFormatEntity, QStringLiteral( "format1" ) );
+  QCOMPARE( tags.count(), 2 );
+  QVERIFY( tags.contains( "blue" ) );
+  QVERIFY( tags.contains( "starry" ) );
+  tags = mStyle->tagsOfSymbol( QgsStyle::TextFormatEntity, QStringLiteral( "format2" ) );
+  QCOMPARE( tags.count(), 3 );
+  QVERIFY( tags.contains( "red" ) );
+  QVERIFY( tags.contains( "circle" ) );
+  QVERIFY( tags.contains( "red text" ) );
+
+  //remove a tag, including a non-present tag
+  QVERIFY( mStyle->detagSymbol( QgsStyle::TextFormatEntity, "format1", QStringList() << "bad" << "blue" ) );
+  tags = mStyle->tagsOfSymbol( QgsStyle::TextFormatEntity, QStringLiteral( "format1" ) );
+  QCOMPARE( tags.count(), 1 );
+  QVERIFY( tags.contains( "starry" ) );
+  QCOMPARE( tagsChangedSpy.count(), 20 );
+  QCOMPARE( tagsChangedSpy.at( 19 ).at( 0 ).toInt(), static_cast< int >( QgsStyle::TextFormatEntity ) );
+  QCOMPARE( tagsChangedSpy.at( 19 ).at( 1 ).toString(), QStringLiteral( "format1" ) );
+  QCOMPARE( tagsChangedSpy.at( 19 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "starry" ) );
+
+  // completely detag symbol
+  QVERIFY( mStyle->detagSymbol( QgsStyle::TextFormatEntity, QStringLiteral( "format1" ) ) );
+  tags = mStyle->tagsOfSymbol( QgsStyle::TextFormatEntity, QStringLiteral( "format1" ) );
+  QCOMPARE( tags.count(), 0 );
+  QCOMPARE( tagsChangedSpy.count(), 21 );
+  QCOMPARE( tagsChangedSpy.at( 20 ).at( 0 ).toInt(), static_cast< int >( QgsStyle::TextFormatEntity ) );
+  QCOMPARE( tagsChangedSpy.at( 20 ).at( 1 ).toString(), QStringLiteral( "format1" ) );
+  QCOMPARE( tagsChangedSpy.at( 20 ).at( 2 ).toStringList(), QStringList() );
 }
 
 void TestStyle::testSmartGroup()
@@ -571,6 +710,11 @@ void TestStyle::testSmartGroup()
   randomRamp = new QgsLimitedRandomColorRamp();
   QVERIFY( style.addColorRamp( "different bbb", randomRamp, true ) );
 
+  QgsTextFormat format1;
+  QVERIFY( style.addTextFormat( "format a", format1, true ) );
+  QgsTextFormat format2;
+  QVERIFY( style.addTextFormat( "different text bbb", format2, true ) );
+
   QVERIFY( style.smartgroupNames().empty() );
   QVERIFY( style.smartgroup( 5 ).isEmpty() );
   QCOMPARE( style.smartgroupId( QStringLiteral( "no exist" ) ), 0 );
@@ -584,6 +728,7 @@ void TestStyle::testSmartGroup()
 
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 1 ), QStringList() << QStringLiteral( "symbolA" ) );
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 1 ), QStringList() << QStringLiteral( "ramp a" ) );
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::TextFormatEntity, 1 ), QStringList() << QStringLiteral( "format a" ) );
 
   res = style.addSmartgroup( QStringLiteral( "tag" ), QStringLiteral( "OR" ), QStringList(), QStringList(), QStringList() << "c", QStringList() << "a" );
   QCOMPARE( res, 2 );
@@ -595,12 +740,15 @@ void TestStyle::testSmartGroup()
 
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 2 ), QStringList() << QStringLiteral( "symbolB" ) << QStringLiteral( "symbolC" ) );
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 2 ), QStringList() << QStringLiteral( "different bbb" ) );
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::TextFormatEntity, 2 ), QStringList() << QStringLiteral( "different text bbb" ) );
 
   // tag some symbols
   style.tagSymbol( QgsStyle::SymbolEntity, "symbolA", QStringList() << "red" << "blue" );
   style.tagSymbol( QgsStyle::SymbolEntity, "symbolB", QStringList() << "blue" );
   style.tagSymbol( QgsStyle::ColorrampEntity, "ramp a", QStringList() << "blue" );
   style.tagSymbol( QgsStyle::ColorrampEntity, "different bbb", QStringList() << "blue" << "red" );
+  style.tagSymbol( QgsStyle::TextFormatEntity, "format a", QStringList() << "blue" );
+  style.tagSymbol( QgsStyle::TextFormatEntity, "different text bbb", QStringList() << "blue" << "red" );
 
   // adding tags modifies groups!
   QCOMPARE( groupModifiedSpy.count(), 4 );
@@ -615,6 +763,7 @@ void TestStyle::testSmartGroup()
 
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 3 ), QStringList() << QStringLiteral( "symbolB" ) );
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 3 ), QStringList() << QStringLiteral( "ramp a" ) );
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::TextFormatEntity, 3 ), QStringList() << QStringLiteral( "format a" ) );
 
   res = style.addSmartgroup( QStringLiteral( "combined" ), QStringLiteral( "AND" ), QStringList() << "blue", QStringList(), QStringList(), QStringList() << "a" );
   QCOMPARE( res, 4 );
@@ -626,6 +775,7 @@ void TestStyle::testSmartGroup()
 
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 4 ), QStringList() << QStringLiteral( "symbolB" ) );
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 4 ), QStringList() << QStringLiteral( "different bbb" ) );
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::TextFormatEntity, 4 ), QStringList() << QStringLiteral( "different text bbb" ) );
 
   style.remove( QgsStyle::SmartgroupEntity, 1 );
   QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "tag" ) << QStringLiteral( "tags" )  << QStringLiteral( "combined" ) );

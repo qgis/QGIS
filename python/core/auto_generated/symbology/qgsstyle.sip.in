@@ -15,14 +15,54 @@
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
+typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
+
 
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
-enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolFavoriteId };
-enum TagTable { TagId, TagName };
-enum TagmapTable { TagmapTagId, TagmapSymbolId };
-enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampFavoriteId };
-enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
+
+enum SymbolTable
+{
+  SymbolId,
+  SymbolName,
+  SymbolXML,
+  SymbolFavoriteId,
+};
+
+enum TagTable
+{
+  TagId,
+  TagName,
+};
+
+enum TagmapTable
+{
+  TagmapTagId,
+  TagmapSymbolId,
+};
+
+enum ColorrampTable
+{
+  ColorrampId,
+  ColorrampName,
+  ColorrampXML,
+  ColorrampFavoriteId,
+};
+
+enum TextFormatTable
+{
+  TextFormatId,
+  TextFormatName,
+  TextFormatXML,
+  TextFormatFavoriteId,
+};
+
+enum SmartgroupTable
+{
+  SmartgroupId,
+  SmartgroupName,
+  SmartgroupXML,
+};
 
 class QgsStyle : QObject
 {
@@ -43,7 +83,8 @@ Constructor for QgsStyle.
       SymbolEntity,
       TagEntity,
       ColorrampEntity,
-      SmartgroupEntity
+      SmartgroupEntity,
+      TextFormatEntity,
     };
 
     bool addSymbol( const QString &name, QgsSymbol *symbol /Transfer/, bool update = false );
@@ -74,6 +115,21 @@ Adds a color ramp to the style. Calling this method takes the ramp's ownership.
 :param update: set to ``True`` when the style DB has to be updated, by default it is ``False``
 
 :return: success status of the operation
+%End
+
+    bool addTextFormat( const QString &name, const QgsTextFormat &format, bool update = false );
+%Docstring
+Adds a text ``format`` with the specified ``name`` to the style.
+
+If ``update`` is set to ``True``, the style DB will be automatically updated with the new text format.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding a text format with the name of existing one replaces it.
+
+.. versionadded:: 3.10
 %End
 
     int addTag( const QString &tagName );
@@ -140,6 +196,35 @@ Returns a const pointer to a symbol (doesn't create new instance)
 %Docstring
 Returns the id in the style database for the given colorramp name
 returns 0 if not found
+%End
+
+    QgsTextFormat textFormat( const QString &name ) const;
+%Docstring
+Returns the text format with the specified ``name``.
+
+.. versionadded:: 3.10
+%End
+
+    int textFormatCount() const;
+%Docstring
+Returns count of text formats in the style.
+
+.. versionadded:: 3.10
+%End
+
+    QStringList textFormatNames() const;
+%Docstring
+Returns a list of names of text formats in the style.
+
+.. versionadded:: 3.10
+%End
+
+    int textFormatId( const QString &name );
+%Docstring
+Returns the ID in the style database for the given text format by ``name``.
+Returns 0 if the text format was not found.
+
+.. versionadded:: 3.10
 %End
 
     static QgsStyle *defaultStyle();
@@ -320,6 +405,32 @@ Removes color ramp from style (and delete it)
     bool renameColorRamp( const QString &oldName, const QString &newName );
 %Docstring
 Changes ramp's name
+%End
+
+    bool saveTextFormat( const QString &name, const QgsTextFormat &format, bool favorite, const QStringList &tags );
+%Docstring
+Adds a text ``format`` to the database.
+
+:param name: is the name of the text format
+:param format: text format to save
+:param favorite: is a boolean value to specify whether the text format should be added to favorites
+:param tags: is a list of tags that are associated with the text format
+
+:return: returns the success state of the save operation
+%End
+
+    bool removeTextFormat( const QString &name );
+%Docstring
+Removes a text format from the style.
+
+.. versionadded:: 3.10
+%End
+
+    bool renameTextFormat( const QString &oldName, const QString &newName );
+%Docstring
+Changes a text format's name.
+
+.. versionadded:: 3.10
 %End
 
     bool createDatabase( const QString &filename );
@@ -577,6 +688,50 @@ name or tag changes.
 .. seealso:: :py:func:`rampAdded`
 
 .. versionadded:: 3.4
+%End
+
+
+    void textFormatRenamed( const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever a text format has been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`symbolRenamed`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatAdded( const QString &name );
+%Docstring
+Emitted whenever a text format has been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`textFormatRemoved`
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatRemoved( const QString &name );
+%Docstring
+Emitted whenever a text format has been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`textFormatAdded`
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.10
+%End
+
+    void textFormatChanged( const QString &name );
+%Docstring
+Emitted whenever a text format's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`textFormatAdded`
+
+.. versionadded:: 3.10
 %End
 
 };
