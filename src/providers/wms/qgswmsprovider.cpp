@@ -2204,6 +2204,20 @@ QString QgsWmsProvider::htmlMetadata()
       metadata += QLatin1String( "</th></tr>" );
 
       metadata += QLatin1String( "<tr><td class=\"strong\">" );
+      metadata += tr( "Title" );
+      metadata += QLatin1String( "</td>" );
+      metadata += QLatin1String( "<td>" );
+      metadata += l.title;
+      metadata += QLatin1String( "</td></tr>" );
+
+      metadata += QLatin1String( "<tr><td class=\"strong\">" );
+      metadata += tr( "Abstract" );
+      metadata += QLatin1String( "</td>" );
+      metadata += QLatin1String( "<td>" );
+      metadata += l.abstract;
+      metadata += QLatin1String( "</td></tr>" );
+
+      metadata += QLatin1String( "<tr><td class=\"strong\">" );
       metadata += tr( "Selected" );
       metadata += QLatin1String( "</td>" );
       metadata += QLatin1String( "<td class=\"strong\">" );

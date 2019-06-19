@@ -82,6 +82,10 @@ ADD_QGIS_TEST(wmscapabilitiestest
               testqgswmscapabilities.cpp)
 TARGET_LINK_LIBRARIES(qgis_wmscapabilitiestest wmsprovider_a)
 
+ADD_QGIS_TEST(wmsccapabilitiestest
+              testqgswmsccapabilities.cpp)
+TARGET_LINK_LIBRARIES(qgis_wmsccapabilitiestest wmsprovider_a)
+
 ADD_QGIS_TEST(wmsprovidertest
               testqgswmsprovider.cpp)
 TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a)
