@@ -787,6 +787,9 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mShadowColorBtn->setColor( shadow.color() );
   mShadowBlendCmbBx->setBlendMode( shadow.blendMode() );
 
+  mPreviewBackgroundBtn->setColor( format.previewBackgroundColor() );
+  mPreviewBackgroundBtn->setDefaultColor( format.previewBackgroundColor() );
+  setPreviewBackground( format.previewBackgroundColor() );
 }
 
 QgsTextFormatWidget::~QgsTextFormatWidget()
@@ -809,6 +812,7 @@ QgsTextFormat QgsTextFormatWidget::format() const
   format.setSizeUnit( mFontSizeUnitWidget->unit() );
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
   format.setLineHeight( mFontLineHeightSpinBox->value() );
+  format.setPreviewBackgroundColor( mPreviewBackgroundColor );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -977,6 +981,8 @@ void QgsTextFormatWidget::scrollPreview()
 
 void QgsTextFormatWidget::setPreviewBackground( const QColor &color )
 {
+  mPreviewBackgroundColor = color;
+
   scrollArea_mPreview->widget()->setStyleSheet( QStringLiteral( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
       QString::number( color.green() ),
       QString::number( color.blue() ) ) );

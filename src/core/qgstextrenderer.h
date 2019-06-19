@@ -1202,6 +1202,20 @@ class CORE_EXPORT QgsTextFormat
     void setLineHeight( double height );
 
     /**
+     * Returns the background color for text previews.
+     * \see setPreviewBackgroundColor()
+     * \since QGIS 3.10
+     */
+    QColor previewBackgroundColor() const;
+
+    /**
+     * Sets the background \a color that text will be rendered on for previews.
+     * \see previewBackgroundColor()
+     * \since QGIS 3.10
+     */
+    void setPreviewBackgroundColor( const QColor &color );
+
+    /**
      * Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
      */

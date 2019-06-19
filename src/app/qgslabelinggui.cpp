@@ -247,10 +247,6 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
-  mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
-  mPreviewBackgroundBtn->setDefaultColor( lyr.previewBkgrdColor );
-  setPreviewBackground( lyr.previewBkgrdColor );
-
   mScaleBasedVisibilityChkBx->setChecked( lyr.scaleVisibility );
   mMinScaleWidget->setScale( lyr.minimumScale );
   mMaxScaleWidget->setScale( lyr.maximumScale );
@@ -382,8 +378,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.repeatDistance = mRepeatDistanceSpinBox->value();
   lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit();
   lyr.repeatDistanceMapUnitScale = mRepeatDistanceUnitWidget->getMapUnitScale();
-
-  lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
 
   lyr.priority = mPrioritySlider->value();
   lyr.obstacle = mChkNoObstacle->isChecked() || mMode == ObstaclesOnly;

@@ -491,7 +491,10 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     QgsExpression *getLabelExpression();
 
-    QColor previewBkgrdColor;
+    /**
+     * \deprecated since QGIS 3.10. Use QgsTextFormat::previewBackgroundColor() instead.
+     */
+    Q_DECL_DEPRECATED QColor previewBkgrdColor = Qt::white;
 
     //! Substitution collection for automatic text substitution with labels
     QgsStringReplacementCollection substitutions;

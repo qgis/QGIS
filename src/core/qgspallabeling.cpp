@@ -238,6 +238,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
   };
 }
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings()
 {
   initPropertyDefinitions();
@@ -246,7 +247,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   isExpression = false;
   fieldIndex = 0;
 
-  previewBkgrdColor = Qt::white;
   useSubstitutions = false;
 
   // text formatting
@@ -302,13 +302,16 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacleType = PolygonInterior;
   zIndex = 0.0;
 }
+Q_NOWARN_DEPRECATED_POP
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
   : fieldIndex( 0 )
   , mDataDefinedProperties( s.mDataDefinedProperties )
 {
   *this = s;
 }
+Q_NOWARN_DEPRECATED_POP
 
 QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &s )
 {
@@ -322,7 +325,9 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   // text style
   fieldName = s.fieldName;
   isExpression = s.isExpression;
+  Q_NOWARN_DEPRECATED_PUSH
   previewBkgrdColor = s.previewBkgrdColor;
+  Q_NOWARN_DEPRECATED_POP
   substitutions = s.substitutions;
   useSubstitutions = s.useSubstitutions;
 
@@ -648,7 +653,9 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   // text style
   fieldName = layer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
   isExpression = layer->customProperty( QStringLiteral( "labeling/isExpression" ) ).toBool();
+  Q_NOWARN_DEPRECATED_PUSH
   previewBkgrdColor = QColor( layer->customProperty( QStringLiteral( "labeling/previewBkgrdColor" ), QVariant( "#ffffff" ) ).toString() );
+  Q_NOWARN_DEPRECATED_POP
   QDomDocument doc( QStringLiteral( "substitutions" ) );
   doc.setContent( layer->customProperty( QStringLiteral( "labeling/substitutions" ) ).toString() );
   QDomElement replacementElem = doc.firstChildElement( QStringLiteral( "substitutions" ) );
@@ -860,7 +867,9 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   isExpression = textStyleElem.attribute( QStringLiteral( "isExpression" ) ).toInt();
 
   mFormat.readXml( elem, context );
+  Q_NOWARN_DEPRECATED_PUSH
   previewBkgrdColor = QColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QStringLiteral( "#ffffff" ) ) );
+  Q_NOWARN_DEPRECATED_POP
   substitutions.readXml( textStyleElem.firstChildElement( QStringLiteral( "substitutions" ) ) );
   useSubstitutions = textStyleElem.attribute( QStringLiteral( "useSubstitutions" ) ).toInt();
 
@@ -1080,7 +1089,6 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   // text style
   textStyleElem.setAttribute( QStringLiteral( "fieldName" ), fieldName );
   textStyleElem.setAttribute( QStringLiteral( "isExpression" ), isExpression );
-  textStyleElem.setAttribute( QStringLiteral( "previewBkgrdColor" ), previewBkgrdColor.name() );
   QDomElement replacementElem = doc.createElement( QStringLiteral( "substitutions" ) );
   substitutions.writeXml( replacementElem, doc );
   textStyleElem.appendChild( replacementElem );

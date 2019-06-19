@@ -328,7 +328,7 @@ Returns the labeling property definitions.
 Returns the QgsExpression for this label settings. May be ``None`` if isExpression is ``False``.
 %End
 
-    QColor previewBkgrdColor;
+ QColor previewBkgrdColor;
 
     QgsStringReplacementCollection substitutions;
     bool useSubstitutions;
