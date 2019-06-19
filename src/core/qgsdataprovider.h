@@ -65,6 +65,21 @@ class CORE_EXPORT QgsDataProvider : public QObject
   public:
 
     /**
+     * Used in browser model to understand which items for which providers should be populated
+     *
+     * TODO: remove in QGIS 4 as this enum is really meant for data items rather than data providers!
+     */
+    enum DataCapability
+    {
+      NoDataCapabilities  = 0,
+      File                = 1,
+      Dir                 = 1 << 1,
+      Database            = 1 << 2,
+      Net                 = 1 << 3  // Internet source
+    };
+    Q_DECLARE_FLAGS( DataCapabilities, DataCapability )
+
+    /**
      * Properties are used to pass custom configuration options into data providers.
      * This enum defines a list of custom properties which can be used on different
      * providers. It depends on the provider, which properties are supported.

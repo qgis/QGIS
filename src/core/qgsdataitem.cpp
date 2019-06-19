@@ -930,10 +930,10 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     bool createdItem = false;
     for ( QgsDataItemProvider *provider : providers )
     {
-      Qgis::DataCapabilities capabilities = provider->capabilities();
+      int capabilities = provider->capabilities();
 
-      if ( !( ( fileInfo.isFile() && ( capabilities & Qgis::DataCapability::File ) ) ||
-              ( fileInfo.isDir() && ( capabilities & Qgis::DataCapability::Dir ) ) ) )
+      if ( !( ( fileInfo.isFile() && ( capabilities & QgsDataProvider::File ) ) ||
+              ( fileInfo.isDir() && ( capabilities & QgsDataProvider::Dir ) ) ) )
       {
         continue;
       }
@@ -1358,9 +1358,9 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir, 
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *provider : constProviders )
   {
-    Qgis::DataCapabilities capabilities = provider->capabilities();
+    int capabilities = provider->capabilities();
 
-    if ( capabilities & Qgis::DataCapability::Dir )
+    if ( capabilities & QgsDataProvider::Dir )
     {
       QgsDataItem *item = provider->createDataItem( favDir, this );
       if ( item )

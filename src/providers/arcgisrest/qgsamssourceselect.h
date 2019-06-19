@@ -28,7 +28,7 @@ class QgsAmsSourceSelect: public QgsArcGisServiceSourceSelect
     Q_OBJECT
 
   public:
-    QgsAmsSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
+    QgsAmsSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Normal );
 
   protected:
     bool connectToService( const QgsOwsConnection &connection ) override;

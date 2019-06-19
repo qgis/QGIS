@@ -176,6 +176,6 @@ class QgsDb2DataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "DB2" ); }
-    Qgis::DataCapabilities capabilities() const override { return Qgis::DataCapability::Database; }
+    int capabilities() const override { return QgsDataProvider::Database; }
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

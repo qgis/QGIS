@@ -215,7 +215,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   mFileWidget->setFilePath( QString() );
   txtLayerName->setText( QString() );
 
-  if ( widgetMode() == QgsAbstractDataSourceWidgetMode::None )
+  if ( widgetMode() == QgsAbstractDataSourceWidgetMode::Normal )
   {
     accept();
   }

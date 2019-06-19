@@ -83,6 +83,7 @@ class CORE_EXPORT QgsProviderMetadata
      * Constructor for provider metadata
      * \param key provider key
      * \param description provider description
+     * \since QGIS 3.10
      */
     QgsProviderMetadata( const QString &key, const QString &description );
 
@@ -92,49 +93,7 @@ class CORE_EXPORT QgsProviderMetadata
      * \since QGIS 3.0
      * \deprecated QGIS 3.10
      */
-#ifndef SIP_RUN
-    QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
-#else
-    QgsProviderMetadata( const QString &key, const QString &description, SIP_PYCALLABLE / AllowNone / );
-    % MethodCode
-
-    // Make sure the callable doesn't get garbage collected, this is needed because refcount for a2 is 0
-    // and the creation function pointer is passed to the metadata and it needs to be kept in memory.
-    Py_INCREF( a2 );
-
-    Py_BEGIN_ALLOW_THREADS
-
-    sipCpp = new QgsProviderMetadata( *a0, *a1, [a2]( const QString &dataSource, const QgsDataProvider::ProviderOptions &providerOptions ) -> QgsDataProvider*
-    {
-      QgsDataProvider *provider;
-      provider = nullptr;
-      PyObject *sipResObj;
-      SIP_BLOCK_THREADS
-
-      sipResObj = sipCallMethod( nullptr, a2, "DD", new QString( dataSource ), sipType_QString, nullptr, new QgsDataProvider::ProviderOptions( providerOptions ), sipType_QgsDataProvider_ProviderOptions, NULL );
-
-      if ( sipResObj )
-      {
-        if ( sipCanConvertToType( sipResObj, sipType_QgsDataProvider, SIP_NOT_NONE ) )
-        {
-          int state0;
-          int sipIsErr = 0;
-          provider = reinterpret_cast<QgsDataProvider *>( sipConvertToType( sipResObj, sipType_QgsDataProvider, nullptr, SIP_NOT_NONE, &state0, &sipIsErr ) );
-          if ( sipIsErr != 0 )
-          {
-            sipReleaseType( provider, sipType_QgsDataProvider, state0 );
-            provider = nullptr;
-          }
-        }
-      }
-      SIP_UNBLOCK_THREADS
-      return provider;
-    } );
-
-    Py_END_ALLOW_THREADS
-
-    % End
-#endif
+    SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
     //! dtor
     virtual ~QgsProviderMetadata();
@@ -213,16 +172,9 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Creates new empty vector layer
      * \since QGIS 3.10
+     * \note not available in Python bindings
      */
-    virtual QgsVectorLayerExporter::ExportError createEmptyLayer(
-      const QString &uri,
-      const QgsFields &fields,
-      QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem &srs,
-      bool overwrite,
-      QMap<int, int> &oldToNewAttrIdxMap,
-      QString &errorMessage,
-      const QMap<QString, QVariant> *options );
+    SIP_SKIP virtual QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
 
     /**
      * Creates a new instance of the raster data provider.

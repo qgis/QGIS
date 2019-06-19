@@ -62,7 +62,7 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOgrDbSourceSelect::buildQuery );
   mBuildQueryButton->setEnabled( false );
 
-  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::None )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Normal )
   {
     mHoldDialogOpen->hide();
   }
@@ -311,7 +311,7 @@ void QgsOgrDbSourceSelect::addButtonClicked()
     {
       emit addRasterLayer( info.first, info.second, QStringLiteral( "gdal" ) );
     }
-    if ( widgetMode() == QgsAbstractDataSourceWidgetMode::None && ! mHoldDialogOpen->isChecked() )
+    if ( widgetMode() == QgsAbstractDataSourceWidgetMode::Normal && ! mHoldDialogOpen->isChecked() )
     {
       accept();
     }

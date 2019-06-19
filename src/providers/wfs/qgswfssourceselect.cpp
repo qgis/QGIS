@@ -56,7 +56,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWFSSourceSelect::showHelp );
 
-  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::None )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Normal )
   {
     mHoldDialogOpen->hide();
   }
@@ -404,7 +404,7 @@ void QgsWFSSourceSelect::addButtonClicked()
     emit addVectorLayer( mUri, layerName );
   }
 
-  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsAbstractDataSourceWidgetMode::None )
+  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsAbstractDataSourceWidgetMode::Normal )
   {
     accept();
   }

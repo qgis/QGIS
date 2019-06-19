@@ -139,7 +139,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   setWindowTitle( tr( "Add Db2 Table(s)" ) );
 
-  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::None )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Normal )
   {
     mHoldDialogOpen->hide();
   }
@@ -459,7 +459,7 @@ void QgsDb2SourceSelect::addButtonClicked()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "DB2" ) );
-    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsAbstractDataSourceWidgetMode::None )
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsAbstractDataSourceWidgetMode::Normal )
     {
       accept();
     }

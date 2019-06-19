@@ -49,7 +49,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     Q_OBJECT
 
   public:
-    QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
+    QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Normal );
     ~QgsOgrSourceSelect() override;
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();
@@ -74,7 +74,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     //! Stores the datasource type
     QString mDataSourceType;
     //! Embedded dialog (do not call parent's accept) and emit signals
-    QgsAbstractDataSourceWidgetMode mWidgetMode = QgsAbstractDataSourceWidgetMode::None;
+    QgsAbstractDataSourceWidgetMode mWidgetMode = QgsAbstractDataSourceWidgetMode::Normal;
 
   public slots:
     void addButtonClicked() override;

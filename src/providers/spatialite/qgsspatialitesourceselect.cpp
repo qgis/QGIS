@@ -76,7 +76,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
   mBuildQueryButton->setEnabled( false );
 
-  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::None )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Normal )
   {
     mHoldDialogOpen->hide();
   }
@@ -418,7 +418,7 @@ void QgsSpatiaLiteSourceSelect::addButtonClicked()
   else
   {
     emit addDatabaseLayers( m_selectedTables, QStringLiteral( "spatialite" ) );
-    if ( widgetMode() == QgsAbstractDataSourceWidgetMode::None && ! mHoldDialogOpen->isChecked() )
+    if ( widgetMode() == QgsAbstractDataSourceWidgetMode::Normal && ! mHoldDialogOpen->isChecked() )
     {
       accept();
     }

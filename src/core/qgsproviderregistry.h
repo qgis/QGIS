@@ -97,17 +97,9 @@ class CORE_EXPORT QgsProviderRegistry
     /**
      * Creates new empty vector layer
      * \since QGIS 3.10
+     * \note not available in Python bindings
      */
-    QgsVectorLayerExporter::ExportError createEmptyLayer(
-      const QString &providerKey,
-      const QString &uri,
-      const QgsFields &fields,
-      QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem &srs,
-      bool overwrite,
-      QMap<int, int> &oldToNewAttrIdxMap,
-      QString &errorMessage,
-      const QMap<QString, QVariant> *options );
+    SIP_SKIP QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
 
     /**
      * Creates new instance of raster data provider
@@ -132,15 +124,6 @@ class CORE_EXPORT QgsProviderRegistry
      * \since QGIS 3.10
      */
     QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
-
-    /**
-     * Returns the provider capabilities
-     * \param providerKey identifier of the provider
-     * \returns QgsDataProvider::DataCapability
-     *
-     * \since QGIS 2.6
-     */
-    Qgis::DataCapabilities providerCapabilities( const QString &providerKey ) const;
 
     /**
      * Breaks a provider data source URI into its component paths (e.g. file path, layer name).

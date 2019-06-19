@@ -79,21 +79,6 @@ Creates a new instance of a provider.
 .. seealso:: :py:func:`createRasterDataProvider`
 %End
 
-    QgsVectorLayerExporter::ExportError createEmptyLayer(
-      const QString &providerKey,
-      const QString &uri,
-      const QgsFields &fields,
-      QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem &srs,
-      bool overwrite,
-      QMap<int, int> &oldToNewAttrIdxMap,
-      QString &errorMessage,
-      const QMap<QString, QVariant> *options );
-%Docstring
-Creates new empty vector layer
-
-.. versionadded:: 3.10
-%End
 
     virtual QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
@@ -118,17 +103,6 @@ Creates new instance of raster data provider
 Returns list of raster pyramid resampling methods
 
 .. versionadded:: 3.10
-%End
-
-    Qgis::DataCapabilities providerCapabilities( const QString &providerKey ) const;
-%Docstring
-Returns the provider capabilities
-
-:param providerKey: identifier of the provider
-
-:return: QgsDataProvider.DataCapability
-
-.. versionadded:: 2.6
 %End
 
     QVariantMap decodeUri( const QString &providerKey, const QString &uri );

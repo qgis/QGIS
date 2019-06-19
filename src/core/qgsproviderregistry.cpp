@@ -501,18 +501,6 @@ QgsTransaction *QgsProviderRegistry::createTransaction( const QString &providerK
     return nullptr;
 }
 
-Qgis::DataCapabilities QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
-{
-  const QList< QgsDataItemProvider * > itemProviders = dataItemProviders( providerKey );
-  Qgis::DataCapabilities ret = Qgis::DataCapability::NoDataCapabilities;
-  //concat flags
-  for ( const QgsDataItemProvider *itemProvider : itemProviders )
-  {
-    ret = ret | itemProvider->capabilities();
-  }
-  return ret;
-}
-
 QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
     QString const &functionName )
 {

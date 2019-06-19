@@ -32,13 +32,29 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * Different ways a source select dialog can be used
- * (embedded is for the data source manager dialog)
  * \since QGIS 3.10
  */
 enum class QgsAbstractDataSourceWidgetMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractDataSourceWidget, WidgetMode ) : int
   {
-  None,
+
+  /**
+   * Basic mode when the widget is used as a standalone dialog. Originally used
+   * as GUI for individual "Add XXX layer" buttons in the main window.
+   * Likely not used in live code anymore.
+   */
+  Normal,
+
+  /**
+   * Used for the data source manager dialog where the widget is embedded as the main content
+   * for a particular tab.
+   */
   Embedded,
+
+  /**
+   * Used by data items for QgsDataItem::paramWidget(). Originally used by QGIS Browser,
+   * but does not seem to be in live code anymore. The mode was meant to avoid some actions
+   * to keep the browser interface simple (supposedly).
+   */
   Manager,
 };
 
@@ -140,7 +156,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   protected:
 
     //! Constructor
-    QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
+    QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Normal );
 
     //! Returns the widget mode
     QgsAbstractDataSourceWidgetMode widgetMode() const;

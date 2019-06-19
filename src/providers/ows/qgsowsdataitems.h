@@ -72,7 +72,7 @@ class QgsOwsDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "OWS" ); }
 
-    Qgis::DataCapabilities capabilities() const override { return Qgis::DataCapability::Net; }
+    int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

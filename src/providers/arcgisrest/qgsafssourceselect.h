@@ -29,7 +29,7 @@ class QgsAfsSourceSelect: public QgsArcGisServiceSourceSelect
     Q_OBJECT
 
   public:
-    QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
+    QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Normal );
   protected:
     bool connectToService( const QgsOwsConnection &connection ) override;
     void buildQuery( const QgsOwsConnection &connection, const QModelIndex & ) override;

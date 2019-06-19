@@ -394,7 +394,7 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
       emit addVectorLayer( def.toString(), layerName );
     }
   }
-  if ( widgetMode() == QgsAbstractDataSourceWidgetMode::None )
+  if ( widgetMode() == QgsAbstractDataSourceWidgetMode::Normal )
   {
     accept();
   }

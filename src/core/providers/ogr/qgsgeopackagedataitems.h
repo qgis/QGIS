@@ -146,7 +146,7 @@ class CORE_EXPORT QgsGeoPackageDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "GPKG" ); }
-    Qgis::DataCapabilities capabilities() const override { return Qgis::DataCapability::Database; }
+    int capabilities() const override { return QgsDataProvider::Database; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

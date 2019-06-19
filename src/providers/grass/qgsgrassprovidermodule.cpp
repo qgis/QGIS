@@ -1258,7 +1258,7 @@ class QgsGrassDataItemProvider : public QgsDataItemProvider
 
     int capabilities() const override { return QgsDataProvider::Dir; }
 
-    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override
+    QgsDataItem *createDataItem( const QString &dirPath, QgsDataItem *parentItem ) override
     {
       if ( !QgsGrass::init() )
       {
@@ -1292,12 +1292,13 @@ class QgsGrassProviderMetadata: public QgsProviderMetadata
     QgsGrassProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
     QgsGrassProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override
     {
-      return new QgsGrassProvider( uri );
+      Q_UNUSED( options );
+      return new QgsGrassProvider( *uri );
     }
-    QList< QgsDataItemProvider * > *dataItemProviders() const override
+    QList< QgsDataItemProvider * > dataItemProviders() const override
     {
-      QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
-      *providers << new QgsGrassDataItemProvider;
+      QList< QgsDataItemProvider * > providers;
+      providers << new QgsGrassDataItemProvider;
       return providers;
     }
 
@@ -1310,7 +1311,6 @@ class QgsGrassProviderMetadata: public QgsProviderMetadata
       {
         QgsDebugMsg( "init failed" );
       }
-      return true;
     }
 };
 

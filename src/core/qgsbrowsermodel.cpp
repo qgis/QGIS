@@ -125,13 +125,13 @@ void QgsBrowserModel::addRootItems()
 #endif
 
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
-  QMap<Qgis::DataCapabilities, QgsDataItem *> providerMap;
+  QMap<int, QgsDataItem *> providerMap;
 
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *pr : constProviders )
   {
-    Qgis::DataCapabilities capabilities = pr->capabilities();
-    if ( capabilities == Qgis::DataCapability::NoDataCapabilities )
+    int capabilities = pr->capabilities();
+    if ( capabilities == QgsDataProvider::NoDataCapabilities )
     {
       QgsDebugMsgLevel( pr->name() + " does not have any dataCapabilities", 4 );
       continue;
@@ -150,7 +150,7 @@ void QgsBrowserModel::addRootItems()
 
   // add as sorted groups by QgsDataProvider::DataCapability enum
   const auto constUniqueKeys = providerMap.uniqueKeys();
-  for ( Qgis::DataCapabilities key : constUniqueKeys )
+  for ( int key : constUniqueKeys )
   {
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )

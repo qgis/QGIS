@@ -91,7 +91,7 @@ class QgsWcsDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "WCS" ); }
 
-    Qgis::DataCapabilities capabilities() const override { return Qgis::DataCapability::Net; }
+    int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

@@ -44,17 +44,6 @@ The Qgis class provides global constants for use throughout the application.
       None
     };
 
-    enum DataCapability
-    {
-      NoDataCapabilities,
-      File,
-      Dir,
-      Database,
-      Net
-    };
-    typedef QFlags<Qgis::DataCapability> DataCapabilities;
-
-
     enum DataType
     {
       UnknownDataType,
@@ -93,8 +82,6 @@ The Qgis class provides global constants for use throughout the application.
 
     static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
 };
-QFlags<Qgis::DataCapability> operator|(Qgis::DataCapability f1, QFlags<Qgis::DataCapability> f2);
-
 
 
 

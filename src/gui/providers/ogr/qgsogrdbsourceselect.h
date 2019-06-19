@@ -45,7 +45,7 @@ class QgsOgrDbSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsD
      * and \a theName as string for describing the layers managed by the source select (e.g. : "GeoPackage" etc.)
      * The \a extensions is a string dscribing the accepted file extensions (e.g. : "GeoPackage Database (*.gpkg *.GPKG)")
      */
-    QgsOgrDbSourceSelect( const QString &theOgrDriverName, const QString &theName, const QString &theExtensions, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode theWidgetMode = QgsAbstractDataSourceWidgetMode::None );
+    QgsOgrDbSourceSelect( const QString &theOgrDriverName, const QString &theName, const QString &theExtensions, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode theWidgetMode = QgsAbstractDataSourceWidgetMode::Normal );
 
     ~QgsOgrDbSourceSelect() override;
 

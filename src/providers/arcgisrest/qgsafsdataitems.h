@@ -130,7 +130,7 @@ class QgsAfsDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "AFS" ); }
 
-    Qgis::DataCapabilities capabilities() const override { return Qgis::DataCapability::Net; }
+    int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };

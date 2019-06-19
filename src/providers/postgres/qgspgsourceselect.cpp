@@ -217,7 +217,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAb
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgSourceSelect::showHelp );
 
-  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::None )
+  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Normal )
   {
     mHoldDialogOpen->hide();
   }
@@ -524,7 +524,7 @@ void QgsPgSourceSelect::addButtonClicked()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "postgres" ) );
-    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsAbstractDataSourceWidgetMode::None )
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsAbstractDataSourceWidgetMode::Normal )
     {
       accept();
     }

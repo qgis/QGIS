@@ -32,7 +32,7 @@ class QgsMdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsM
 
   public:
     //! Constructor
-    QgsMdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
+    QgsMdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Normal );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

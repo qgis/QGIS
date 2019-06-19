@@ -991,7 +991,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     my $comment = $+{co};
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ($is_scope_based eq "1") {
-                        if ( $monkeypatch eq 1 ){
+                        if ( $monkeypatch eq 1 and $enum_member ne "" ){
                             if ($enum_mk_base ne "") {
                                 push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
                                 push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;

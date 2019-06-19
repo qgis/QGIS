@@ -68,6 +68,10 @@ class GUI_EXPORT QgsProjectStorageGuiRegistry
     void unregisterProjectStorage( QgsProjectStorageGuiProvider *storage );
 
   private:
+#ifdef SIP_RUN
+    QgsProjectStorageGuiRegistry( const QgsProjectStorageGuiRegistry &rh );
+#endif
+
     QHash<QString, QgsProjectStorageGuiProvider *> mBackends;
 };
 

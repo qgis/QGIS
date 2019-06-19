@@ -13,8 +13,11 @@
 
 enum class QgsAbstractDataSourceWidgetMode
   {
-  None,
+
+  Normal,
+
   Embedded,
+
   Manager,
 };
 
@@ -128,7 +131,7 @@ Emitted when the ok/add buttons should be enabled/disabled
 
   protected:
 
-    QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::None );
+    QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Normal );
 %Docstring
 Constructor
 %End

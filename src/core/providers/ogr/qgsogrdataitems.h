@@ -104,7 +104,7 @@ class CORE_EXPORT QgsOgrDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "OGR" ); }
 
-    Qgis::DataCapabilities capabilities() const override { return Qgis::DataCapability::File | Qgis::DataCapability::Dir | Qgis::DataCapability::Net; }
+    int capabilities() const override { return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 
