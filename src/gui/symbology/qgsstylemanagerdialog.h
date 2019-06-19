@@ -395,6 +395,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool mSmartGroupVisible = true;
     QString mBaseName;
 
+    bool addTextFormat();
+
     friend class QgsStyleExportImportDialog;
 };
 

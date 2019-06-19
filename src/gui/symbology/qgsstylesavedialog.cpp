@@ -31,13 +31,24 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
 
   QgsGui::enableAutoGeometryRestore( this );
 
-  if ( type == QgsStyle::SymbolEntity )
+  switch ( type )
   {
-    this->setWindowTitle( tr( "Save New Symbol" ) );
-  }
-  else if ( type == QgsStyle::ColorrampEntity )
-  {
-    this->setWindowTitle( tr( "Save New Color Ramp" ) );
+    case QgsStyle::SymbolEntity:
+      this->setWindowTitle( tr( "Save New Symbol" ) );
+      break;
+
+    case QgsStyle::ColorrampEntity:
+      this->setWindowTitle( tr( "Save New Color Ramp" ) );
+      break;
+
+    case QgsStyle::TextFormatEntity:
+      this->setWindowTitle( tr( "Save New Text Format" ) );
+      break;
+
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+      break;
+
   }
 }
 

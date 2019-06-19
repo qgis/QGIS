@@ -321,6 +321,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
       mMenuBtnAddItemAll->addAction( item );
       mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
     }
+    mMenuBtnAddItemAll->addSeparator();
+    item = new QAction( tr( "Text Format" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addTextFormat(); } );
+    mMenuBtnAddItemAll->addAction( item );
 
     connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
              this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
@@ -438,12 +442,18 @@ void QgsStyleManagerDialog::populateTypes()
 void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
-  const bool isSymbol = currentItemType() != 3;
-  searchBox->setPlaceholderText( isSymbol ? tr( "Filter symbols…" ) : tr( "Filter color ramps…" ) );
+  const bool isSymbol = currentItemType() != 3 && currentItemType() != 4;
+  const bool isColorRamp = currentItemType() == 3;
+  searchBox->setPlaceholderText( isSymbol ? tr( "Filter symbols…" ) :
+                                 isColorRamp ? tr( "Filter color ramps…" ) : tr( "Filter text symbols…" ) );
 
-  if ( !mReadOnly && !isSymbol ) // color ramp tab
+  if ( !mReadOnly && isColorRamp ) // color ramp tab
   {
     btnAddItem->setMenu( mMenuBtnAddItemColorRamp );
+  }
+  if ( !mReadOnly && !isSymbol && !isColorRamp ) // text format tab
+  {
+    btnAddItem->setMenu( nullptr );
   }
   else if ( !mReadOnly && tabItemType->currentIndex() == 0 ) // all symbols tab
   {
@@ -457,7 +467,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   actnExportAsPNG->setVisible( isSymbol );
   actnExportAsSVG->setVisible( isSymbol );
 
-  mModel->setEntityFilter( isSymbol  ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity );
+  mModel->setEntityFilter( isSymbol ? QgsStyle::SymbolEntity : ( isColorRamp ? QgsStyle::ColorrampEntity : QgsStyle::TextFormatEntity ) );
   mModel->setEntityFilterEnabled( !allTypesSelected() );
   mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
   if ( isSymbol && !allTypesSelected() )
@@ -504,6 +514,9 @@ int QgsStyleManagerDialog::selectedItemType()
   if ( entity == QgsStyle::ColorrampEntity )
     return 3;
 
+  if ( entity == QgsStyle::TextFormatEntity )
+    return 4;
+
   return  mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt();
 }
 
@@ -541,6 +554,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
 
   const QStringList favoriteSymbols = src->symbolsOfFavorite( QgsStyle::SymbolEntity );
   const QStringList favoriteColorramps = src->symbolsOfFavorite( QgsStyle::ColorrampEntity );
+  const QStringList favoriteTextFormats = src->symbolsOfFavorite( QgsStyle::TextFormatEntity );
 
   for ( auto &details : items )
   {
@@ -665,6 +679,56 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
         break;
       }
 
+      case QgsStyle::TextFormatEntity:
+      {
+        const QgsTextFormat format( src->textFormat( details.name ) );
+
+        const bool hasDuplicateName = dst->textFormatNames().contains( details.name );
+        bool overwriteThis = false;
+        if ( isImport )
+          addItemToFavorites = favoriteTextFormats.contains( details.name );
+
+        if ( hasDuplicateName && prompt )
+        {
+          cursorOverride.reset();
+          int res = QMessageBox::warning( parentWidget, isImport ? tr( "Import Text Format" ) : tr( "Export Text Format" ),
+                                          tr( "A text format with the name “%1” already exists.\nOverwrite?" )
+                                          .arg( details.name ),
+                                          QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          switch ( res )
+          {
+            case QMessageBox::Cancel:
+              return count;
+
+            case QMessageBox::No:
+              continue;
+
+            case QMessageBox::Yes:
+              overwriteThis = true;
+              break;
+
+            case QMessageBox::YesToAll:
+              prompt = false;
+              overwriteAll = true;
+              break;
+
+            case QMessageBox::NoToAll:
+              prompt = false;
+              overwriteAll = false;
+              break;
+          }
+        }
+
+        if ( !hasDuplicateName || overwriteAll || overwriteThis )
+        {
+          dst->addTextFormat( details.name, format );
+          dst->saveTextFormat( details.name, format, addItemToFavorites, symbolTags );
+          count++;
+        }
+        break;
+      }
+
       case QgsStyle::TagEntity:
       case QgsStyle::SmartgroupEntity:
         break;
@@ -672,6 +736,12 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
     }
   }
   return count;
+}
+
+bool QgsStyleManagerDialog::addTextFormat()
+{
+  // TODO
+  return false;
 }
 
 void QgsStyleManagerDialog::populateList()
@@ -699,6 +769,8 @@ int QgsStyleManagerDialog::currentItemType()
       return QgsSymbol::Fill;
     case 4:
       return 3;
+    case 5:
+      return 4;
     default:
       return 0;
   }
@@ -723,6 +795,10 @@ void QgsStyleManagerDialog::addItem()
   else if ( currentItemType() == 3 )
   {
     changed = addColorRamp();
+  }
+  else if ( currentItemType() == 4 )
+  {
+    changed = addTextFormat();
   }
   else
   {
@@ -1169,10 +1245,24 @@ void QgsStyleManagerDialog::removeItem()
     if ( details.name.isEmpty() )
       continue;
 
-    if ( details.entityType == QgsStyle::SymbolEntity )
-      mStyle->removeSymbol( details.name );
-    else if ( details.entityType == QgsStyle::ColorrampEntity )
-      mStyle->removeColorRamp( details.name );
+    switch ( details.entityType )
+    {
+      case QgsStyle::SymbolEntity:
+        mStyle->removeSymbol( details.name );
+        break;
+
+      case QgsStyle::ColorrampEntity:
+        mStyle->removeColorRamp( details.name );
+        break;
+
+      case QgsStyle::TextFormatEntity:
+        mStyle->removeTextFormat( details.name );
+        break;
+
+      case QgsStyle::TagEntity:
+      case QgsStyle::SmartgroupEntity:
+        continue;
+    }
   }
 
   mModified = true;

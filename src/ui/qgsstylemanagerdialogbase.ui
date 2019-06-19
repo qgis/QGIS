@@ -355,6 +355,11 @@
              <string>Color Ramp</string>
             </attribute>
            </widget>
+           <widget class="QWidget" name="tabTextFormat">
+            <attribute name="title">
+             <string>Text Format</string>
+            </attribute>
+           </widget>
           </widget>
          </item>
          <item>
@@ -641,38 +646,6 @@
   <tabstop>searchBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
