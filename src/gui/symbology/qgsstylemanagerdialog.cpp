@@ -31,6 +31,7 @@
 #include "qgssettings.h"
 #include "qgsstylemodel.h"
 #include "qgsmessagebar.h"
+#include "qgstextformatwidget.h"
 
 #include <QAction>
 #include <QFile>
@@ -740,8 +741,65 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
 
 bool QgsStyleManagerDialog::addTextFormat()
 {
-  // TODO
-  return false;
+  QgsTextFormat format;
+  QgsTextFormatDialog formatDlg( format, nullptr, this );
+  if ( !formatDlg.exec() )
+    return false;
+  format = formatDlg.format();
+
+  QgsStyleSaveDialog saveDlg( this );
+  if ( !saveDlg.exec() )
+    return false;
+  QString name = saveDlg.name();
+
+  // request valid/unique name
+  bool nameInvalid = true;
+  while ( nameInvalid )
+  {
+    // validate name
+    if ( name.isEmpty() )
+    {
+      QMessageBox::warning( this, tr( "Save Text Format" ),
+                            tr( "Cannot save text format without name. Enter a name." ) );
+    }
+    else if ( mStyle->textFormatNames().contains( name ) )
+    {
+      int res = QMessageBox::warning( this, tr( "Save Text Format" ),
+                                      tr( "Text format with name '%1' already exists. Overwrite?" )
+                                      .arg( name ),
+                                      QMessageBox::Yes | QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+      {
+        mStyle->removeTextFormat( name );
+        nameInvalid = false;
+      }
+    }
+    else
+    {
+      // valid name
+      nameInvalid = false;
+    }
+    if ( nameInvalid )
+    {
+      bool ok;
+      name = QInputDialog::getText( this, tr( "Text Format Name" ),
+                                    tr( "Please enter a name for new text format:" ),
+                                    QLineEdit::Normal, name, &ok );
+      if ( !ok )
+      {
+        return false;
+      }
+    }
+  }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  // add new format to style and re-populate the list
+  mStyle->addTextFormat( name, format );
+  mStyle->saveTextFormat( name, format, saveDlg.isFavorite(), symbolTags );
+
+  mModified = true;
+  return true;
 }
 
 void QgsStyleManagerDialog::populateList()
@@ -1103,6 +1161,10 @@ void QgsStyleManagerDialog::editItem()
   {
     editColorRamp();
   }
+  else if ( selectedItemType() == 4 )
+  {
+    editTextFormat();
+  }
   else
   {
     Q_ASSERT( false && "not implemented" );
@@ -1201,6 +1263,25 @@ bool QgsStyleManagerDialog::editColorRamp()
   }
 
   mStyle->addColorRamp( name, ramp.release(), true );
+  mModified = true;
+  return true;
+}
+
+bool QgsStyleManagerDialog::editTextFormat()
+{
+  const QString formatName = currentItemName();
+  if ( formatName.isEmpty() )
+    return false;
+
+  QgsTextFormat format = mStyle->textFormat( formatName );
+
+  // let the user edit the format and update list when done
+  QgsTextFormatDialog dlg( format, nullptr, this );
+  if ( !dlg.exec() )
+    return false;
+
+  // by adding format to style with the same name the old effectively gets overwritten
+  mStyle->addTextFormat( formatName, dlg.format(), true );
   mModified = true;
   return true;
 }

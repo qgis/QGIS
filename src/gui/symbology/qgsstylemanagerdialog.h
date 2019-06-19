@@ -396,6 +396,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QString mBaseName;
 
     bool addTextFormat();
+    bool editTextFormat();
 
     friend class QgsStyleExportImportDialog;
 };
