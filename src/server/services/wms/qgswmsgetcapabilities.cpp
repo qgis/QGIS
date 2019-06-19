@@ -1073,6 +1073,12 @@ namespace QgsWms
                   // or the CRS extent otherwise
                   extent = vl->crs().bounds();
                 }
+                // If CRS is different transform it to layer's CRS
+                else if ( vl->crs() != project->crs() )
+                {
+                  QgsCoordinateTransform ct( project->crs(), vl->crs(), project->transformContext() );
+                  extent = ct.transform( extent );
+                }
               }
             }
 
