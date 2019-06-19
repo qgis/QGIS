@@ -211,6 +211,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
+
+    void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+    void saveFormat();
 };
 
 

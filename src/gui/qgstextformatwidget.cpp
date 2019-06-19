@@ -28,8 +28,10 @@
 #include "qgssettings.h"
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
+#include "qgsstylesavedialog.h"
 
 #include <QButtonGroup>
+#include <QMessageBox>
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
@@ -537,6 +539,11 @@ void QgsTextFormatWidget::initWidget()
     lblFontPreview->setMapUnits( mMapCanvas->mapSettings().mapUnits() );
     mPreviewScaleComboBox->setScale( mMapCanvas->mapSettings().scale() );
   }
+
+  mTextFormatsListWidget->setStyle( QgsStyle::defaultStyle() );
+  mTextFormatsListWidget->setEntityType( QgsStyle::TextFormatEntity );
+  connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsTextFormatWidget::setFormatFromStyle );
+  connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsTextFormatWidget::saveFormat );
 }
 
 void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
@@ -1366,6 +1373,49 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
   //mShapeStrokeWidthUnitWidget->setEnabled( validSVG && strokeWidthParam );
   //mShapeStrokeUnitsDDBtn->setEnabled( validSVG && strokeWidthParam );
   mShapeSVGUnitsLabel->setEnabled( validSVG && strokeWidthParam );
+}
+
+void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity )
+{
+  if ( !QgsStyle::defaultStyle()->textFormatNames().contains( name ) )
+    return;
+
+  QgsTextFormat newFormat = QgsStyle::defaultStyle()->textFormat( name );
+  setFormat( newFormat );
+}
+
+void QgsTextFormatWidget::saveFormat()
+{
+  QgsStyle *style = QgsStyle::defaultStyle();
+  if ( !style )
+    return;
+
+  QgsStyleSaveDialog saveDlg( this );
+  if ( !saveDlg.exec() )
+    return;
+
+  if ( saveDlg.name().isEmpty() )
+    return;
+
+  // check if there is no format with same name
+  if ( style->textFormatNames().contains( saveDlg.name() ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save Text Format" ),
+                                    tr( "Format with name '%1' already exists. Overwrite?" )
+                                    .arg( saveDlg.name() ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+    style->removeTextFormat( saveDlg.name() );
+  }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  QgsTextFormat newFormat = format();
+  style->addTextFormat( saveDlg.name(), newFormat );
+  style->saveTextFormat( saveDlg.name(), newFormat, saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsTextFormatWidget::mShapeSVGSelectorBtn_clicked()

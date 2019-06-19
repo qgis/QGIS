@@ -624,7 +624,7 @@
                        <height>540</height>
                       </rect>
                      </property>
-                     <layout class="QVBoxLayout" name="verticalLayout_2">
+                     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
                       <property name="leftMargin">
                        <number>0</number>
                       </property>
@@ -1354,17 +1354,7 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
-                       <spacer name="verticalSpacer_2">
-                        <property name="orientation">
-                         <enum>Qt::Vertical</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>20</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                       </spacer>
+                       <widget class="QgsStyleItemsListWidget" name="mTextFormatsListWidget" native="true"/>
                       </item>
                      </layout>
                     </widget>
@@ -6398,6 +6388,12 @@ font-style: italic;</string>
    <class>QgsCodeEditorExpression</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorexpression.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsStyleItemsListWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsstyleitemslistwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
