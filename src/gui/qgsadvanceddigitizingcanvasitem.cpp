@@ -28,7 +28,6 @@ QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *
   , mSnapPen( QPen( QColor( 127, 0, 0, 150 ), 1 ) )
   , mSnapLinePen( QPen( QColor( 127, 0, 0, 150 ), 1, Qt::DashLine ) )
   , mCursorPen( QPen( QColor( 127, 127, 127, 255 ), 1 ) )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
   , mAdvancedDigitizingDockWidget( cadDockWidget )
 {
 }
@@ -253,15 +252,4 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     painter->drawLine( curPointPix + QPointF( -5, +5 ),
                        curPointPix + QPointF( +5, -5 ) );
   }
-
-
-  QgsPointLocator::Match match = mAdvancedDigitizingDockWidget->mapPointMatch();
-  if ( match.isValid() )
-  {
-    mSnapIndicator->setMatch( match );
-    mSnapIndicator->setVisible( true );
-  }
-  else
-    mSnapIndicator->setVisible( false );
-
 }
