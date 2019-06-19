@@ -1729,15 +1729,22 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
 
   QRect rect( 0, 0, size.width(), size.height() );
 
-  if ( ( tempFormat.previewBackgroundColor().lightnessF() < 0.7 ) )
+  // shameless eye candy - use a subtle gradient when drawing background
+  painter.setPen( Qt::NoPen );
+  QColor background1 = tempFormat.previewBackgroundColor();
+  if ( ( background1.lightnessF() < 0.7 ) )
   {
-    painter.setPen( QPen( QColor( 150, 150, 150 ), 0 ) );
+    background1 = background1.darker( 125 );
   }
   else
   {
-    painter.setPen( QPen( QColor( 100, 100, 100 ), 0 ) );
+    background1 = background1.lighter( 125 );
   }
-  painter.setBrush( tempFormat.previewBackgroundColor() );
+  QColor background2 = tempFormat.previewBackgroundColor();
+  QLinearGradient linearGrad( QPointF( 0, 0 ), QPointF( 0, rect.height() ) );
+  linearGrad.setColorAt( 0, background1 );
+  linearGrad.setColorAt( 1, background2 );
+  painter.setBrush( QBrush( linearGrad ) );
   if ( size.width() > 30 )
   {
     painter.drawRoundedRect( rect, 6, 6 );
@@ -1788,6 +1795,18 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
 
   QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
 
+  // draw border on top of text
+  painter.setBrush( Qt::NoBrush );
+  painter.setPen( QPen( tempFormat.previewBackgroundColor().darker( 150 ), 0 ) );
+  if ( size.width() > 30 )
+  {
+    painter.drawRoundedRect( rect, 6, 6 );
+  }
+  else
+  {
+    // don't use rounded rect for small previews
+    painter.drawRect( rect );
+  }
   painter.end();
   return pixmap;
 }
