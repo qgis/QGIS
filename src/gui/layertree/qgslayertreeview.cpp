@@ -163,14 +163,22 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
           QWidget *wdgt = provider->createWidget( layer, i );
-          // Since column is resized to contents, limit the expanded width of embedded widgets,
-          // if they are not already limited, e.g. have the defaut MAX value.
+          // Since column is resized to contents, limit the expanded width of embedded
+          //  widgets, if they are not already limited, e.g. have the default MAX value.
           // Else, embedded widget may grow very wide due to large legend graphics.
-          // TODO: Max width could be a configured setting.
-          if ( wdgt->maximumWidth() == QWIDGETSIZE_MAX )
-          {
-            wdgt->setMaximumWidth( 250 );
-          }
+          // NOTE: This approach DOES NOT work right. It causes horizontal scroll
+          //       bar to disappear if the embedded widget is expanded and part
+          //       of the last layer in the panel, even if much wider legend items
+          //       are expanded above it. The correct width-limiting method should
+          //       be setting fixed-width, hidpi-aware embedded widget items in a
+          //       layout and appending an expanding QSpacerItem to end. This ensures
+          //       full width is always created in the column by the embedded widget.
+          //       See QgsLayerTreeOpacityWidget
+          //if ( wdgt->maximumWidth() == QWIDGETSIZE_MAX )
+          //{
+          //  wdgt->setMaximumWidth( 250 );
+          //}
+
           setIndexWidget( index, wdgt );
         }
       }
