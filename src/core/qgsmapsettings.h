@@ -103,16 +103,17 @@ class CORE_EXPORT QgsMapSettings
     void setExtent( const QgsRectangle &rect, bool magnified = true );
 
     /**
-     * Returns the buffer to use around the visible extent for rendering symbols whose
-     * corresponding geometries are outside the visible extent.
+     * Returns the buffer in map units to use around the visible extent for rendering
+     * symbols whose corresponding geometries are outside the visible extent.
+     * \see setExtentBuffer()
      * \since QGIS 3.10
      */
     double extentBuffer() const;
 
     /**
-     * Sets the buffer to use around the visible extent for rendering symbols whose
-     * corresponding geometries are outside the visible extent. This is useful when
-     * using tiles to avoid cut symbols at tile boundaries.
+     * Sets the buffer in map units to use around the visible extent for rendering
+     * symbols whose corresponding geometries are outside the visible extent. This
+     * is useful when using tiles to avoid cut symbols at tile boundaries.
      * \since QGIS 3.10
      */
     void setExtentBuffer( double buffer );
