@@ -3139,7 +3139,15 @@ QString QgsVectorLayer::displayExpression() const
     // more "interesting" field names first. As such, name should
     // be selected before oldname, othername, etc.
     // This candidates list is a prioritized list of candidates ranked by "interestingness"!
-    static QStringList sCandidates{ QStringLiteral( "name" ), QStringLiteral( "descript" ), QStringLiteral( "street" ), QStringLiteral( "road" ), QStringLiteral( "id" )};
+    // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
+    // but adding hardcoded localized variants of the strings is encouraged.
+    static QStringList sCandidates{ QStringLiteral( "name" ),
+                                    QStringLiteral( "heibt" ),
+                                    QStringLiteral( "desc" ),
+                                    QStringLiteral( "nom" ),
+                                    QStringLiteral( "street" ),
+                                    QStringLiteral( "road" ),
+                                    QStringLiteral( "id" )};
     for ( const QString &candidate : sCandidates )
     {
       for ( const QgsField &field : mFields )
