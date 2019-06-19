@@ -1286,6 +1286,16 @@ class CORE_EXPORT QgsTextFormat
      */
     QString resolvedFontFamily() const { return mTextFontFamily; }
 
+    /**
+    * Returns a pixmap preview for a text \a format.
+    * \param format text format
+    * \param size target pixmap size
+    * \param previewText text to render in preview, or empty for default text
+    * \param padding space between icon edge and color ramp
+    * \since QGIS 3.10
+    */
+    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
+
   private:
 
     QgsTextBufferSettings mBufferSettings;

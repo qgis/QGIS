@@ -108,20 +108,42 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             QString tooltip = QStringLiteral( "<h3>%1</h3><p><i>%2</i>" ).arg( name,
                               tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) );
 
-            if ( entityType == QgsStyle::SymbolEntity )
+            switch ( entityType )
             {
-              // create very large preview image
-              std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
-              if ( symbol )
+              case QgsStyle::SymbolEntity:
+              {
+                // create very large preview image
+                std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
+                if ( symbol )
+                {
+                  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
+                  int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+                  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20 );
+                  QByteArray data;
+                  QBuffer buffer( &data );
+                  pm.save( &buffer, "PNG", 100 );
+                  tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                }
+                break;
+              }
+
+              case QgsStyle::TextFormatEntity:
               {
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
-                QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20 );
+                const QgsTextFormat format = mStyle->textFormat( name );
+                QPixmap pm = QgsTextFormat::textFormatPreviewPixmap( format, QSize( width, height ), QString(), height / 20 );
                 QByteArray data;
                 QBuffer buffer( &data );
                 pm.save( &buffer, "PNG", 100 );
                 tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                break;
               }
+
+              case QgsStyle::ColorrampEntity:
+              case QgsStyle::TagEntity:
+              case QgsStyle::SmartgroupEntity:
+                break;
             }
             return tooltip;
           }
@@ -199,15 +221,13 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 return icon;
 
               const QgsTextFormat format( mStyle->textFormat( name ) );
-#if 0
               if ( mAdditionalSizes.isEmpty() )
-                icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
+                icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, QSize( 24, 24 ), QString(),  1 ) );
               for ( const QVariant &size : mAdditionalSizes )
               {
                 QSize s = size.toSize();
-                icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+                icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
               }
-#endif
               mTextFormatIconCache.insert( name, icon );
               return icon;
             }

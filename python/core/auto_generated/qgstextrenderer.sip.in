@@ -1522,6 +1522,18 @@ font.
 .. seealso:: :py:func:`fontFound`
 %End
 
+    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
+%Docstring
+Returns a pixmap preview for a text ``format``.
+
+:param format: text format
+:param size: target pixmap size
+:param previewText: text to render in preview, or empty for default text
+:param padding: space between icon edge and color ramp
+
+.. versionadded:: 3.10
+%End
+
 };
 
 

@@ -26,6 +26,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgspainteffectregistry.h"
 #include <QFontDatabase>
+#include <QDesktopWidget>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
@@ -1714,6 +1715,81 @@ bool QgsTextFormat::containsAdvancedEffects() const
     return true;
 
   return false;
+}
+
+QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText, int padding )
+{
+  QgsTextFormat tempFormat = format;
+  QPixmap pixmap( size );
+  pixmap.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &pixmap );
+
+  painter.setRenderHint( QPainter::Antialiasing );
+
+  QRect rect( 0, 0, size.width(), size.height() );
+
+  if ( ( tempFormat.previewBackgroundColor().lightnessF() < 0.7 ) )
+  {
+    painter.setPen( QPen( QColor( 150, 150, 150 ), 0 ) );
+  }
+  else
+  {
+    painter.setPen( QPen( QColor( 100, 100, 100 ), 0 ) );
+  }
+  painter.setBrush( tempFormat.previewBackgroundColor() );
+  if ( size.width() > 30 )
+  {
+    painter.drawRoundedRect( rect, 6, 6 );
+  }
+  else
+  {
+    // don't use rounded rect for small previews
+    painter.drawRect( rect );
+  }
+  painter.setBrush( Qt::NoBrush );
+  painter.setPen( Qt::NoPen );
+  padding += 1; // move text away from background border
+
+  QgsRenderContext context;
+  QgsMapToPixel newCoordXForm;
+  newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
+  context.setMapToPixel( newCoordXForm );
+
+  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+  context.setUseAdvancedEffects( true );
+  context.setPainter( &painter );
+
+  // slightly inset text to account for buffer/background
+  double xtrans = 0;
+  if ( tempFormat.buffer().enabled() )
+    xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+  if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
+    xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+
+  double ytrans = 0.0;
+  if ( tempFormat.buffer().enabled() )
+    ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+  if ( tempFormat.background().enabled() )
+    ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+
+  const QStringList text = QStringList() << ( previewText.isEmpty() ? QObject::tr( "Aa" ) : previewText );
+  const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, QgsTextRenderer::Rect );
+  QRectF textRect = rect;
+  textRect.setLeft( xtrans + padding );
+  textRect.setWidth( rect.width() - xtrans - 2 * padding );
+
+  if ( textRect.width() > 2000 )
+    textRect.setWidth( 2000 - 2 * padding );
+
+  const double bottom = textRect.height() / 2 + textHeight / 2;
+  textRect.setTop( bottom - textHeight );
+  textRect.setBottom( bottom );
+
+  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
+
+  painter.end();
+  return pixmap;
 }
 
 
