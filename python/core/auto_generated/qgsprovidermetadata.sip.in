@@ -38,7 +38,7 @@ library object.
   public:
 
 
-    QgsProviderMetadata( const QString &key, const QString &description, const QString &library );
+ QgsProviderMetadata( const QString &key, const QString &description, const QString &library ) /Deprecated/;
 %Docstring
 Constructor for provider metadata
 

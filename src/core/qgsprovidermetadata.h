@@ -77,7 +77,7 @@ class CORE_EXPORT QgsProviderMetadata
      *
      * \deprecated QGIS 3.10
      */
-    QgsProviderMetadata( const QString &key, const QString &description, const QString &library );
+    Q_DECL_DEPRECATED QgsProviderMetadata( const QString &key, const QString &description, const QString &library ) SIP_DEPRECATED;
 
     /**
      * Constructor for provider metadata
@@ -171,8 +171,8 @@ class CORE_EXPORT QgsProviderMetadata
 
     /**
      * Creates new empty vector layer
-     * \since QGIS 3.10
      * \note not available in Python bindings
+     * \since QGIS 3.10
      */
     SIP_SKIP virtual QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
 
