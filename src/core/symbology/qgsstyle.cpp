@@ -403,18 +403,33 @@ bool QgsStyle::load( const QString &filename )
     return false;
   }
 
+  // make sure text format table exists
+  auto query = QgsSqlite3Mprintf( "SELECT name FROM sqlite_master WHERE name='textformat'" );
+  sqlite3_statement_unique_ptr statement;
+  int rc;
+  statement = mCurrentDB.prepare( query, rc );
+  if ( rc != SQLITE_OK || sqlite3_step( statement.get() ) != SQLITE_ROW )
+  {
+    query = QgsSqlite3Mprintf( "CREATE TABLE textformat("\
+                               "id INTEGER PRIMARY KEY,"\
+                               "name TEXT UNIQUE,"\
+                               "xml TEXT,"\
+                               "favorite INTEGER);"\
+                               "CREATE TABLE tftagmap("\
+                               "tag_id INTEGER NOT NULL,"\
+                               "textformat_id INTEGER);" );
+    runEmptyQuery( query );
+  }
+
   // Make sure there are no Null fields in parenting symbols and groups
-  auto query = QgsSqlite3Mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
-                                  "UPDATE colorramp SET favorite=0 WHERE favorite IS NULL;"
-                                  "UPDATE textformat SET favorite=0 WHERE favorite IS NULL;"
-                                );
+  query = QgsSqlite3Mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
+                             "UPDATE colorramp SET favorite=0 WHERE favorite IS NULL;"
+                             "UPDATE textformat SET favorite=0 WHERE favorite IS NULL;"
+                           );
   runEmptyQuery( query );
 
   // First create all the main symbols
   query = QgsSqlite3Mprintf( "SELECT * FROM symbol" );
-
-  sqlite3_statement_unique_ptr statement;
-  int rc;
   statement = mCurrentDB.prepare( query, rc );
 
   while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
