@@ -133,10 +133,10 @@ int nmea_pack_type( const char *buff, int buff_sz )
     "GPGSV",
     "GPRMC",
     "GPVTG",
-    "GNRMC",    
+    "GNRMC",
     "GPGST",
   };
-  
+
   // BUFFER_SIZE = size(P_HEADS) - 1;
   int buffer_size = 6;
 
@@ -269,10 +269,10 @@ int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
   nmea_trace_buff( buff, buff_sz );
 
   if ( 8 != nmea_scanf( buff, buff_sz,
-                         "$GPGST,%s,%f,%f,%f,%f,%f,%f,%f*",
-                         &( time_buff[0] ),
-                         &( pack->rms_pr ), &( pack->err_major ), &( pack->err_minor ), &( pack->err_ori ),
-                         &( pack->sig_lat ), &( pack->sig_lon ), &( pack->sig_alt ) ) )
+                        "$GPGST,%s,%f,%f,%f,%f,%f,%f,%f*",
+                        &( time_buff[0] ),
+                        &( pack->rms_pr ), &( pack->err_major ), &( pack->err_minor ), &( pack->err_ori ),
+                        &( pack->sig_lat ), &( pack->sig_lon ), &( pack->sig_alt ) ) )
   {
     nmea_error( "GPGST parse error!" );
     return 0;
