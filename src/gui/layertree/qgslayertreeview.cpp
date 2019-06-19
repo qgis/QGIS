@@ -48,6 +48,9 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   header()->setStretchLastSection( false );
   header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
+  // If vertically scrolling by item, legend graphics can get clipped
+  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
 
