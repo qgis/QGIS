@@ -200,6 +200,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     void dropEvent( QDropEvent *event ) override;
 
+    void resizeEvent( QResizeEvent *event ) override;
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );

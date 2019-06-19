@@ -505,3 +505,17 @@ void QgsLayerTreeView::dropEvent( QDropEvent *event )
   }
   QTreeView::dropEvent( event );
 }
+
+void QgsLayerTreeView::resizeEvent( QResizeEvent *event )
+{
+  // Since last column is resized to content (instead of stretched), the active
+  // selection rectangle ends at width of widest visible item in tree,
+  // regardless of which item is selected. This causes layer indicators to
+  // become 'inactive' (not clickable and no tool tip) unless their rectangle
+  // enters the view item's selection (active) rectangle.
+  // Always resetting the minimum section size relative to the viewport ensures
+  // the view item's selection rectangle extends to the right edge of the
+  // viewport, which allows indicators to become active again.
+  header()->setMinimumSectionSize( viewport()->width() );
+  QTreeView::resizeEvent( event );
+}

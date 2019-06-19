@@ -208,6 +208,9 @@ Emitted when a current layer is changed
     virtual void dropEvent( QDropEvent *event );
 
 
+    virtual void resizeEvent( QResizeEvent *event );
+
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
