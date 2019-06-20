@@ -95,9 +95,9 @@ class CORE_EXPORT QgsProviderRegistry
      * If the provider uses direct provider function pointers instead of a library an empty string will
      * be returned.
      *
-     * \deprecated QGIS 3.10
+     * \deprecated QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
      */
-    QString library( const QString &providerKey ) const;
+    Q_DECL_DEPRECATED QString library( const QString &providerKey ) const SIP_DEPRECATED;
 
     //! Returns list of provider plugins found
     QString pluginList( bool asHtml = false ) const;
@@ -122,6 +122,14 @@ class CORE_EXPORT QgsProviderRegistry
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
                                      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ) SIP_FACTORY;
+
+    /**
+     * Returns the provider capabilities
+        \param providerKey identifier of the provider
+        \since QGIS 2.6
+        \deprecated QGIS 3.10 (use instead capabilities() method of individual data item provider)
+     */
+    Q_DECL_DEPRECATED int providerCapabilities( const QString &providerKey ) const SIP_DEPRECATED;
 
     /**
      * Creates new empty vector layer
@@ -163,6 +171,14 @@ class CORE_EXPORT QgsProviderRegistry
      * \since QGIS 3.4
      */
     QVariantMap decodeUri( const QString &providerKey, const QString &uri );
+
+    /**
+     * Returns a new widget for selecting layers from a provider.
+     * Either the \a parent widget must be set or the caller becomes
+     * responsible for deleting the returned widget.
+     * \deprecated QGIS 3.10 - use QgsGui::providerGuiRegistry()->createDataSourceWidget() instead
+     */
+    Q_DECL_DEPRECATED QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None ) SIP_DEPRECATED;
 
     /**
       * Returns list of data item providers of the provider
@@ -230,9 +246,9 @@ class CORE_EXPORT QgsProviderRegistry
      * \returns pointer to function or NULLPTR on error. If the provider uses direct provider
      * function pointers instead of a library NULLPTR will be returned.
      *
-     * \deprecated QGIS 3.10
+     * \deprecated QGIS 3.10 - any provider functionality should be accessed through QgsProviderMetadata
      */
-    QFunctionPointer function( const QString &providerKey, const QString &functionName );
+    Q_DECL_DEPRECATED QFunctionPointer function( const QString &providerKey, const QString &functionName ) SIP_DEPRECATED;
 
     /**
      * Returns a new QLibrary for the specified \a providerKey. Ownership of the returned
@@ -241,9 +257,9 @@ class CORE_EXPORT QgsProviderRegistry
      * If the provider uses direct provider function pointers instead of a library NULLPTR will
      * be returned.
      *
-     * \deprecated QGIS 3.10
+     * \deprecated QGIS 3.10 - providers may not need to be loaded from a library
      */
-    QLibrary *createProviderLibrary( const QString &providerKey ) const SIP_FACTORY;
+    Q_DECL_DEPRECATED QLibrary *createProviderLibrary( const QString &providerKey ) const SIP_FACTORY SIP_DEPRECATED;
 
     //! Returns list of available providers by their keys
     QStringList providerList() const;
@@ -315,6 +331,11 @@ class CORE_EXPORT QgsProviderRegistry
     virtual QString directoryDrivers() const;
     //! Returns a string containing the available protocol drivers
     virtual QString protocolDrivers() const;
+
+    /**
+     * \deprecated since QGIS 3.10 - does nothing - use QgsGui::providerGuiRegistry()
+     */
+    Q_DECL_DEPRECATED void registerGuis( QWidget *widget ) SIP_DEPRECATED;
 
     /**
      * \brief register a new vector data provider from its \a providerMetadata

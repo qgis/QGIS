@@ -274,7 +274,9 @@ QString QgsProviderRegistry::library( QString const &providerKey ) const
 
   if ( md )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     return md->library();
+    Q_NOWARN_DEPRECATED_POP
   }
 
   return QString();
@@ -346,7 +348,19 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
   }
 
   return metadata->createProvider( &dataSource, options );
-} // QgsProviderRegistry::setDataProvider
+}
+
+int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
+{
+  const QList< QgsDataItemProvider * > itemProviders = dataItemProviders( providerKey );
+  int ret = QgsDataProvider::NoDataCapabilities;
+  //concat flags
+  for ( const QgsDataItemProvider *itemProvider : itemProviders )
+  {
+    ret = ret | itemProvider->capabilities();
+  }
+  return ret;
+}
 
 QVariantMap QgsProviderRegistry::decodeUri( const QString &providerKey, const QString &uri )
 {
@@ -504,14 +518,27 @@ QgsTransaction *QgsProviderRegistry::createTransaction( const QString &providerK
     return nullptr;
 }
 
+QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
+    QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+{
+  Q_UNUSED( providerKey );
+  Q_UNUSED( parent );
+  Q_UNUSED( fl );
+  Q_UNUSED( widgetMode );
+  QgsDebugMsg( "deprecated call - use QgsGui::providerGuiRegistry()->createDataSourceWidget() instead" );
+  return nullptr;
+}
+
 QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
     QString const &functionName )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QString lib = library( providerKey );
+  Q_NOWARN_DEPRECATED_POP
   if ( lib.isEmpty() )
     return nullptr;
 
-  QLibrary myLib( library( providerKey ) );
+  QLibrary myLib( lib );
 
   QgsDebugMsg( "Library name is " + myLib.fileName() );
 
@@ -528,7 +555,9 @@ QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
 
 QLibrary *QgsProviderRegistry::createProviderLibrary( QString const &providerKey ) const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QString lib = library( providerKey );
+  Q_NOWARN_DEPRECATED_POP
   if ( lib.isEmpty() )
     return nullptr;
 
@@ -542,6 +571,11 @@ QLibrary *QgsProviderRegistry::createProviderLibrary( QString const &providerKey
   QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
 
   return nullptr;
+}
+
+void QgsProviderRegistry::registerGuis( QWidget * )
+{
+  QgsDebugMsg( "deprecated - use QgsGui::providerGuiRegistry() instead." );
 }
 
 bool QgsProviderRegistry::registerProvider( QgsProviderMetadata *providerMetadata )

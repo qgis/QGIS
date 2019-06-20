@@ -76,13 +76,13 @@ This returns descriptive text for the provider
 This is used to provide a descriptive list of available data providers.
 %End
 
-    QString library() const;
+ QString library() const /Deprecated/;
 %Docstring
 This returns the library file name
 
 This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
 %End
 
 

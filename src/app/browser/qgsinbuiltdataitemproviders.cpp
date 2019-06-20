@@ -495,7 +495,10 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths )
       QgsMessageLog::logMessage( tr( "Item with path %1 no longer exists." ).arg( itemPath ) );
       return;
     }
-    if ( !item->deleteLayer() )
+    Q_NOWARN_DEPRECATED_PUSH
+    bool res = item->deleteLayer();
+    Q_NOWARN_DEPRECATED_POP
+    if ( !res )
       QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
   }
 }
