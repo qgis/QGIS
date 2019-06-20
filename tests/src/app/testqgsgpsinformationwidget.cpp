@@ -37,6 +37,7 @@ class TestQgsGpsInformationWidget : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void testTimestamp();
+    void testTimestampWriteLinestring();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -47,8 +48,10 @@ TestQgsGpsInformationWidget::TestQgsGpsInformationWidget() = default;
 //runs before all tests
 void TestQgsGpsInformationWidget::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
-  // init QGIS's paths - true means that all path will be inited from prefix
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
   QgsApplication::init();
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
@@ -124,6 +127,12 @@ void TestQgsGpsInformationWidget::testTimestamp()
   QVERIFY( widget.mPreferredTimestampFields.contains( tempLayerDateTime->id() ) );
   QCOMPARE( widget.mPreferredTimestampFields[ tempLayerDateTime->id() ], QStringLiteral( "datetimef" ) );
 
+  // Leap seconds
+  widget.mCbxLeapSeconds->setChecked( true );
+  dt = widget.timestamp( tempLayerDateTime, fieldIdx );
+  QCOMPARE( dt.toDateTime(), dateTime.addSecs( 7 ) );
+  widget.mCbxLeapSeconds->setChecked( false );
+
   // Test store preferred fields
   canvas->setCurrentLayer( tempLayerString );
   fieldIdx = tempLayerString->fields().indexOf( QStringLiteral( "stringf" ) );
@@ -156,6 +165,102 @@ void TestQgsGpsInformationWidget::testTimestamp()
   // Test that preferred field is stored
   canvas->setCurrentLayer( tempLayerDateTime );
   QCOMPARE( widget.mCboTimestampField->currentText(), QStringLiteral( "datetimef" ) );
+
+  // Test write
+  QgsSettings().setValue( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), true );
+
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::UTC ) );
+  tempLayerDateTime->startEditing();
+  widget.mBtnCloseFeature_clicked();
+  QgsFeature f;
+  tempLayerDateTime->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "datetimef" ) ).toDateTime(), dateTime );
+  tempLayerDateTime->rollBack();
+
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::LocalTime ) );
+  tempLayerDateTime->startEditing();
+  widget.mBtnCloseFeature_clicked();
+  tempLayerDateTime->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "datetimef" ) ).toDateTime(), dateTime );
+  tempLayerDateTime->rollBack();
+
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::TimeZone ) );
+  tempLayerDateTime->startEditing();
+  widget.mBtnCloseFeature_clicked();
+  tempLayerDateTime->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "datetimef" ) ).toDateTime(), dateTime );
+  tempLayerDateTime->rollBack();
+
+  // Test write on string
+  canvas->setCurrentLayer( tempLayerString );
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::UTC ) );
+  tempLayerString->startEditing();
+  widget.mBtnCloseFeature_clicked();
+  tempLayerString->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "stringf" ) ).toDateTime().toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
+  tempLayerString->rollBack();
+
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::LocalTime ) );
+  tempLayerString->startEditing();
+  widget.mBtnCloseFeature_clicked();
+  tempLayerString->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "stringf" ) ).toDateTime().toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
+  tempLayerString->rollBack();
+
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::TimeZone ) );
+  tempLayerString->startEditing();
+  widget.mBtnCloseFeature_clicked();
+  tempLayerString->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "stringf" ) ).toDateTime().toString( Qt::DateFormat::ISODate ), tzTime.toString( Qt::DateFormat::ISODate ) );
+  tempLayerString->rollBack();
+
+}
+
+void TestQgsGpsInformationWidget::testTimestampWriteLinestring()
+{
+  //create a temporary layer
+  QgsVectorLayer *tempLayerString( new QgsVectorLayer( QStringLiteral( "Linestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+                                   QStringLiteral( "vl" ),
+                                   QStringLiteral( "memory" ) ) );
+  QgsMapCanvas *canvas = mQgisApp->mapCanvas();
+  QgsGpsInformationWidget widget( canvas );
+  canvas->setCurrentLayer( tempLayerString );
+  widget.mCboTimestampField->setCurrentIndex( widget.mCboTimestampField->findText( QStringLiteral( "stringf" ) ) );
+  widget.mLastNmeaTime = { 119, 5, 19, 12, 27, 34, 543 };
+  QDateTime dateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ) );
+  dateTime.setTimeSpec( Qt::TimeSpec::UTC );
+  QDateTime localTime( dateTime.toLocalTime() );
+  QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
+  canvas->setCurrentLayer( tempLayerString );
+  QgsFeature f;
+
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::UTC ) );
+  tempLayerString->startEditing();
+  widget.mCaptureList.push_back( QgsPointXY( 1, 2 ) );
+  widget.mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget.mBtnCloseFeature_clicked();
+  tempLayerString->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "stringf" ) ).toDateTime().toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( f.geometry().asWkt(), QStringLiteral( "LineString (1 2, 3 4)" ) );
+  tempLayerString->rollBack();
+
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::LocalTime ) );
+  tempLayerString->startEditing();
+  widget.mCaptureList.push_back( QgsPointXY( 1, 2 ) );
+  widget.mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget.mBtnCloseFeature_clicked();
+  tempLayerString->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "stringf" ) ).toDateTime().toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
+  tempLayerString->rollBack();
+
+  widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::TimeZone ) );
+  tempLayerString->startEditing();
+  widget.mCaptureList.push_back( QgsPointXY( 1, 2 ) );
+  widget.mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget.mBtnCloseFeature_clicked();
+  tempLayerString->getFeatures().nextFeature( f );
+  QCOMPARE( f.attribute( QStringLiteral( "stringf" ) ).toDateTime().toString( Qt::DateFormat::ISODate ), tzTime.toString( Qt::DateFormat::ISODate ) );
+  tempLayerString->rollBack();
 }
 
 QGSTEST_MAIN( TestQgsGpsInformationWidget )
