@@ -176,6 +176,17 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void setEntityFilter( QgsStyle::StyleEntity filter );
 
     /**
+     * Sets the style entity type \a filters.
+     *
+     * \note These filters are only active if entityFilterEnabled() is TRUE.
+     * \note Not available in Python bindings
+     *
+     * \see setEntityFilter()
+     * \since QGIS 3.10
+     */
+    void setEntityFilters( const QList<QgsStyle::StyleEntity> &filters ) SIP_SKIP;
+
+    /**
      * Returns TRUE if filtering by entity type is enabled.
      *
      * \see setEntityFilterEnabled()
@@ -321,7 +332,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     bool mFavoritesOnly = false;
 
     bool mEntityFilterEnabled = false;
-    QgsStyle::StyleEntity mEntityFilter = QgsStyle::SymbolEntity;
+    QList< QgsStyle::StyleEntity > mEntityFilters = QList< QgsStyle::StyleEntity >() << QgsStyle::SymbolEntity;
 
     bool mSymbolTypeFilterEnabled = false;
     QgsSymbol::SymbolType mSymbolType = QgsSymbol::Marker;

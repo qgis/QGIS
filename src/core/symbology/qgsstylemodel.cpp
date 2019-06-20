@@ -838,7 +838,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   const QStringList tags = sourceModel()->data( index, QgsStyleModel::TagRole ).toStringList();
 
   QgsStyle::StyleEntity styleEntityType = static_cast< QgsStyle::StyleEntity >( sourceModel()->data( index, QgsStyleModel::TypeRole ).toInt() );
-  if ( mEntityFilterEnabled && styleEntityType != mEntityFilter )
+  if ( mEntityFilterEnabled && ( mEntityFilters.empty() || !mEntityFilters.contains( styleEntityType ) ) )
     return false;
 
   QgsSymbol::SymbolType symbolType = static_cast< QgsSymbol::SymbolType >( sourceModel()->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
@@ -990,11 +990,17 @@ void QgsStyleProxyModel::setEntityFilterEnabled( bool entityFilterEnabled )
 
 QgsStyle::StyleEntity QgsStyleProxyModel::entityFilter() const
 {
-  return mEntityFilter;
+  return mEntityFilters.empty() ? QgsStyle::SymbolEntity : mEntityFilters.at( 0 );
 }
 
 void QgsStyleProxyModel::setEntityFilter( const QgsStyle::StyleEntity entityFilter )
 {
-  mEntityFilter = entityFilter;
+  mEntityFilters = QList< QgsStyle::StyleEntity >() << entityFilter;
+  invalidateFilter();
+}
+
+void QgsStyleProxyModel::setEntityFilters( const QList<QgsStyle::StyleEntity> &filters )
+{
+  mEntityFilters = filters;
   invalidateFilter();
 }

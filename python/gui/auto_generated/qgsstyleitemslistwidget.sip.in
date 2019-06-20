@@ -45,6 +45,7 @@ Sets the ``type`` of style entity to show in the widget.
 .. seealso:: :py:func:`setSymbolType`
 %End
 
+
     void setSymbolType( QgsSymbol::SymbolType type );
 %Docstring
 Sets the ``type`` of symbols to show in the widget.

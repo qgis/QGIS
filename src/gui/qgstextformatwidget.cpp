@@ -553,6 +553,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
   {
     case Labeling:
       toggleDDButtons( true );
+      mTextFormatsListWidget->setEntityTypes( QList< QgsStyle::StyleEntity >() << QgsStyle::TextFormatEntity << QgsStyle::LabelSettingsEntity );
       break;
 
     case Text:

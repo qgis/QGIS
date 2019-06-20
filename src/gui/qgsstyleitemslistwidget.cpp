@@ -184,6 +184,49 @@ void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
   }
 }
 
+void QgsStyleItemsListWidget::setEntityTypes( const QList<QgsStyle::StyleEntity> &filters )
+{
+  mModel->setEntityFilterEnabled( true );
+  mModel->setEntityFilters( filters );
+#if 0
+  const int allGroup = groupsCombo->findData( QVariant( "all" ) );
+  switch ( type )
+  {
+    case QgsStyle::SymbolEntity:
+      btnSaveSymbol->setText( tr( "Save Symbol…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save symbol to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Symbols" ) );
+      break;
+
+    case QgsStyle::ColorrampEntity:
+      btnSaveSymbol->setText( tr( "Save Color Ramp…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save color ramp to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Color Ramps" ) );
+      break;
+
+    case QgsStyle::TextFormatEntity:
+      btnSaveSymbol->setText( tr( "Save Format…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save text format to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Text Formats" ) );
+      break;
+
+    case QgsStyle::LabelSettingsEntity:
+      btnSaveSymbol->setText( tr( "Save Label Settings…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save label settings to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Label Settings" ) );
+      break;
+
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+      break;
+  }
+#endif
+}
+
 void QgsStyleItemsListWidget::setSymbolType( QgsSymbol::SymbolType type )
 {
   mModel->setSymbolTypeFilterEnabled( true );

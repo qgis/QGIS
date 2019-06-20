@@ -74,6 +74,13 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
     void setEntityType( QgsStyle::StyleEntity type );
 
     /**
+     * Sets the \a types of style entity to show in the widget.
+     *
+     * \note Not available in Python bindings.
+     */
+    void setEntityTypes( const QList<QgsStyle::StyleEntity> &filters ) SIP_SKIP;
+
+    /**
      * Sets the \a type of symbols to show in the widget.
      *
      * \see setEntityType()

@@ -126,6 +126,7 @@ Sets the style entity type ``filter``.
 .. seealso:: :py:func:`entityFilter`
 %End
 
+
     bool entityFilterEnabled() const;
 %Docstring
 Returns ``True`` if filtering by entity type is enabled.
