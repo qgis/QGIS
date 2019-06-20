@@ -577,9 +577,9 @@ gray = no data
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-76</y>
+            <y>0</y>
             <width>306</width>
-            <height>935</height>
+            <height>1000</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -1106,6 +1106,9 @@ gray = no data
                 <layout class="QFormLayout" name="formLayout">
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_10">
+                   <property name="toolTip">
+                    <string>Specify the field where the GPS timestamp will be saved, only string or datetime fields are supported</string>
+                   </property>
                    <property name="text">
                     <string>Destination</string>
                    </property>
@@ -1114,13 +1117,36 @@ gray = no data
                  <item row="0" column="1">
                   <widget class="QComboBox" name="mCboTimestampField"/>
                  </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="mLblTimestampFormat">
+                   <property name="text">
+                    <string>Format</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="1" column="1">
                   <widget class="QComboBox" name="mCboTimestampFormat"/>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_11">
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="mLblTimeZone">
                    <property name="text">
-                    <string>Format</string>
+                    <string>Timezone</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="mCboTimeZones"/>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QSpinBox" name="mLeapSeconds"/>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QCheckBox" name="mCbxLeapSeconds">
+                   <property name="toolTip">
+                    <string>Apply leap seconds correction by adding the seconds to GPS timestamp</string>
+                   </property>
+                   <property name="text">
+                    <string>Leap seconds</string>
                    </property>
                   </widget>
                  </item>
