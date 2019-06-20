@@ -335,7 +335,7 @@
              <enum>QTabWidget::Rounded</enum>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <property name="iconSize">
              <size>
@@ -591,7 +591,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>5</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4012,6 +4012,13 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mLinePlacementFlagsDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
                           </layout>
                          </item>
                          <item row="1" column="1">
@@ -6567,6 +6574,7 @@ font-style: italic;</string>
   <tabstop>chkLineOn</tabstop>
   <tabstop>chkLineBelow</tabstop>
   <tabstop>chkLineOrientationDependent</tabstop>
+  <tabstop>mLinePlacementFlagsDDBtn</tabstop>
   <tabstop>mCentroidRadioVisible</tabstop>
   <tabstop>mCentroidRadioWhole</tabstop>
   <tabstop>mCentroidDDBtn</tabstop>
@@ -6641,6 +6649,9 @@ font-style: italic;</string>
   <tabstop>mObstacleFactorDDBtn</tabstop>
   <tabstop>mObstacleTypeComboBox</tabstop>
   <tabstop>scrollArea_mPreview</tabstop>
+  <tabstop>mGeometryGeneratorGroupBox</tabstop>
+  <tabstop>mGeometryGeneratorExpressionButton</tabstop>
+  <tabstop>mGeometryGeneratorType</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

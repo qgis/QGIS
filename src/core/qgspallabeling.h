@@ -421,6 +421,7 @@ class CORE_EXPORT QgsPalLayerSettings
       RepeatDistanceUnit = 86,
       Priority = 87,
       PredefinedPositionOrder = 91,
+      LinePlacementOptions = 99, //!< Line placement flags
 
       // rendering
       ScaleVisibility = 23,

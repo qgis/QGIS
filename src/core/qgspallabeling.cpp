@@ -209,6 +209,11 @@ void QgsPalLayerSettings::initPropertyDefinitions()
                             "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
                             "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ), origin )
     },
+    {
+      QgsPalLayerSettings::LinePlacementOptions, QgsPropertyDefinition( "LinePlacementFlags", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line placement options" ),  QObject::tr( "Comma separated list of placement options<br>" )
+          + QStringLiteral( "[<b>OL</b>=On line|<b>AL</b>=Above line|<b>BL</b>=Below line|<br>"
+                            "<b>LO</b>=Respect line orientation]" ), origin )
+    },
     { QgsPalLayerSettings::PositionX, QgsPropertyDefinition( "PositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::PositionY, QgsPropertyDefinition( "PositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::Hali, QgsPropertyDefinition( "Hali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Horizontal alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>]", origin ) },
@@ -2082,6 +2087,15 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     ( *labelFeature )->setHasFixedQuadrant( true );
   }
+
+  pal::LineArrangementFlags featureArrangementFlags = static_cast< pal::LineArrangementFlags >( placementFlags );
+  context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodeLinePlacementFlags( featureArrangementFlags ) );
+  const QString dataDefinedLineArrangement = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::LinePlacementOptions, context.expressionContext() );
+  if ( !dataDefinedLineArrangement.isEmpty() )
+  {
+    featureArrangementFlags = QgsLabelingUtils::decodeLinePlacementFlags( dataDefinedLineArrangement );
+  }
+  ( *labelFeature )->setArrangementFlags( featureArrangementFlags );
 
   // data defined z-index?
   context.expressionContext().setOriginalValueVariable( zIndex );
