@@ -104,6 +104,8 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   for ( QgsLayerTreeViewIndicator *indicator : indicators )
   {
     QRect rect( x + spacing, indRect.top() + spacing, h - spacing * 2, h - spacing * 2 );
+    // Add a little more padding so the icon does not look misaligned to background
+    QRect iconRect( x + spacing * 2, indRect.top() + spacing * 2, h - spacing * 4, h - spacing * 4 );
     x += h;
 
     QIcon::Mode mode = QIcon::Normal;
@@ -122,7 +124,7 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
     painter->setBrush( pb );
     painter->setPen( pp );
 
-    indicator->icon().paint( painter, rect, Qt::AlignCenter, mode );
+    indicator->icon().paint( painter, iconRect, Qt::AlignCenter, mode );
   }
 }
 
