@@ -48,6 +48,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void configure();
     void saveAsImage();
     void toggleAnimations();
+    void cameraControl();
     void identify();
     void measureLine();
 

@@ -50,6 +50,9 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   QToolBar *toolBar = new QToolBar( contentsWidget );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
+  QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ),
+                                 tr( "Camera Control" ), this, &Qgs3DMapCanvasDockWidget::cameraControl );
+  actionCameraControl->setCheckable( true );
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
@@ -66,20 +69,11 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   // Create action group to make the action exclusive
   QActionGroup *actionGroup = new QActionGroup( this );
+  actionGroup->addAction( actionCameraControl );
   actionGroup->addAction( actionIdentify );
   actionGroup->addAction( actionMeasurementTool );
-
-  // Make the action only one active, from https://stackoverflow.com/a/55258745/1198772
-  connect( actionGroup, &QActionGroup::triggered, [lastAction = static_cast<QAction *>( nullptr )]( QAction * action ) mutable
-  {
-    if ( action == lastAction )
-    {
-      action->setChecked( false );
-      lastAction = nullptr;
-    }
-    else
-      lastAction = action;
-  } );
+  actionGroup->setExclusive( true );
+  actionCameraControl->setChecked( true );
 
   QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
                         tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
@@ -160,6 +154,15 @@ void Qgs3DMapCanvasDockWidget::toggleAnimations()
   {
     mAnimationWidget->setDefaultAnimation();
   }
+}
+
+void Qgs3DMapCanvasDockWidget::cameraControl()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( nullptr );
 }
 
 void Qgs3DMapCanvasDockWidget::identify()
