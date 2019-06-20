@@ -27,9 +27,23 @@
 QgsSnapIndicator::QgsSnapIndicator( QgsMapCanvas *canvas )
   : mCanvas( canvas )
 {
+  mCanvasDestroyedConnection = QObject::connect( canvas, &QgsMapCanvas::destroyed, [ = ]()
+  {
+    mCanvas = nullptr;
+    mSnappingMarker = nullptr;
+  } );
 }
 
-QgsSnapIndicator::~QgsSnapIndicator() = default;
+QgsSnapIndicator::~QgsSnapIndicator()
+{
+  if ( mSnappingMarker && mCanvas )
+  {
+    mCanvas->scene()->removeItem( mSnappingMarker );
+    delete mSnappingMarker;
+  }
+
+  QObject::disconnect( mCanvasDestroyedConnection );
+};
 
 void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
 {
@@ -37,14 +51,19 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
 
   if ( !mMatch.isValid() )
   {
-    mSnappingMarker.reset();
+    if ( mSnappingMarker )
+    {
+      mCanvas->scene()->removeItem( mSnappingMarker );
+      delete mSnappingMarker; // need to delete since QGraphicsSene::removeItem transfers back ownership
+    }
+    mSnappingMarker = nullptr;
     QToolTip::hideText();
   }
   else
   {
     if ( !mSnappingMarker )
     {
-      mSnappingMarker.reset( new QgsVertexMarker( mCanvas ) );
+      mSnappingMarker = new QgsVertexMarker( mCanvas ); // ownership of the marker is transferred to QGraphicsScene
       mSnappingMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
       mSnappingMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
     }
