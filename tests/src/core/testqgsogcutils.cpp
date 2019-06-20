@@ -315,7 +315,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
-  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, QgsOgcUtils::FILTER_FES_2_0, &layer ) );
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, QgsOgcUtils::FILTER_FES_2_0, &layer ) );
   QVERIFY( expr.get() );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
@@ -459,7 +459,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
-  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
@@ -509,7 +509,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong()
   layer.dataProvider()->addAttributes( fields );
   layer.updateFields();
 
-  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
