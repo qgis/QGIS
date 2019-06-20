@@ -30,6 +30,7 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 
   qInfo() << "3D Measure Dialog created";
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
+  connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMeasureDialog::unitsChanged );
 }
 
 void Qgs3DMeasureDialog::saveWindowLocation()
@@ -127,4 +128,21 @@ void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
 {
   reject();
   e->accept();
+}
+
+void Qgs3DMeasureDialog::unitsChanged( int index )
+{
+  mDistanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
+  if ( mDistanceUnits == QgsUnitTypes::DistanceUnknownUnit )
+  {
+    mUseMapUnits = true;
+    mDistanceUnits = mMapDistanceUnits;
+  }
+  else
+  {
+    mUseMapUnits = false;
+  }
+  mTable->clear();
+  mTotal = 0.;
+  updateUi();
 }

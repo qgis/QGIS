@@ -6,6 +6,7 @@
 #include "ui_qgsmeasurebase.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dmapcanvas.h"
+#include "qgsunittypes.h"
 
 
 class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
@@ -42,6 +43,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Close event
     void closeEvent( QCloseEvent *e ) override;
 
+  private slots:
+    void unitsChanged( int index );
+
   private:
     Qgs3DMapToolMeasureLine *mTool;
 //    Qgs3DMapCanvas *mCanvas;
@@ -54,6 +58,12 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Indicates whether the user chose "Map units" instead of directly selecting a unit
     bool mUseMapUnits = true;
+
+    //! Current unit for distance values
+    QgsUnitTypes::DistanceUnit mDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
+
+    //! Current map unit for distance values
+    QgsUnitTypes::DistanceUnit mMapDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
 
 };
 
