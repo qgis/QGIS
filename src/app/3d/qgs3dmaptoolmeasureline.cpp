@@ -39,24 +39,39 @@ class Qgs3DMapToolMeasureLinePickHandler : public Qgs3DMapScenePickHandler
 {
   public:
     Qgs3DMapToolMeasureLinePickHandler( Qgs3DMapToolMeasureLine *measureLineTool ): mMeasureLineTool( measureLineTool ) {}
-    void handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection ) override;
+    void handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection, Qt3DRender::QPickEvent *event ) override;
   private:
     Qgs3DMapToolMeasureLine *mMeasureLineTool = nullptr;
 };
 
-void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection )
+void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection, Qt3DRender::QPickEvent *event )
 {
-  qInfo() << "handlePickOnVectorLayer" ;
-  QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates(
-                            QgsVector3D( worldIntersection.x(),
-                                         worldIntersection.y(),
-                                         worldIntersection.z() ), mMeasureLineTool->mCanvas->map()->origin() );
-  QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
-  qInfo() << "Coord (handlePickOnVectorLayer): " << pt.x() << " " << pt.y() << " " << pt.z();
+  if ( event->button() == Qt3DRender::QPickEvent::LeftButton )
+  {
+    if ( mMeasureLineTool->done() )
+    {
+      mMeasureLineTool->mDialog->restart();
+    }
 
-  mMeasureLineTool->mDone = false;
-  mMeasureLineTool->addPoint( pt );
-  mMeasureLineTool->mDialog->show();
+    // Left button, keep addinng point
+    qInfo() << "handlePickOnVectorLayer" ;
+    QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates(
+                              QgsVector3D( worldIntersection.x(),
+                                           worldIntersection.y(),
+                                           worldIntersection.z() ), mMeasureLineTool->mCanvas->map()->origin() );
+    QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
+    qInfo() << "Coord (handlePickOnVectorLayer): " << pt.x() << " " << pt.y() << " " << pt.z();
+
+    mMeasureLineTool->mDone = false;
+    mMeasureLineTool->addPoint( pt );
+    mMeasureLineTool->mDialog->show();
+  }
+  else if ( event->button() == Qt3DRender::QPickEvent::RightButton )
+  {
+    // Finish measurement
+    qInfo() << "Finish measurement";
+    mMeasureLineTool->mDone = true;
+  }
 }
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
@@ -149,18 +164,31 @@ void Qgs3DMapToolMeasureLine::deactivate()
 void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
 {
   qInfo() << "onTerrainPicked";
-  if ( event->button() != Qt3DRender::QPickEvent::LeftButton )
-    return;
+  if ( event->button() == Qt3DRender::QPickEvent::LeftButton )
+  {
+    if ( mDone )
+    {
+      mDialog->restart();
+    }
 
-  const QVector3D worldIntersection = event->worldIntersection();
-  QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
-                          worldIntersection.y(),
-                          worldIntersection.z() ), mCanvas->map()->origin() );
-  qInfo() << "Coord (onTerrainPicked): " << mapCoords.x() << " " << mapCoords.y() << " " << mapCoords.z();
+    const QVector3D worldIntersection = event->worldIntersection();
+    QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
+                            worldIntersection.y(),
+                            worldIntersection.z() ), mCanvas->map()->origin() );
+    qInfo() << "Coord (onTerrainPicked): " << mapCoords.x() << " " << mapCoords.y() << " " << mapCoords.z();
 
-  mDone = false;
-  addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
-  mDialog->show();
+    mDone = false;
+    addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
+    mDialog->show();
+  }
+  else if ( event->button() == Qt3DRender::QPickEvent::RightButton )
+  {
+    // Finish measurement
+    qInfo() << "Finish measurement";
+    mDone = true;
+  }
+
+
 
 }
 

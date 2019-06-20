@@ -52,6 +52,8 @@
 
 #include "qgslinematerial_p.h"
 
+#include <qdebug.h>
+
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
@@ -415,7 +417,7 @@ void Qgs3DMapScene::onBackgroundColorChanged()
 
 void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
 {
-  if ( event->button() != Qt3DRender::QPickEvent::LeftButton )
+  if ( event->button() != Qt3DRender::QPickEvent::LeftButton && event->button() != Qt3DRender::QPickEvent::RightButton )
     return;
 
   Qt3DRender::QPickTriangleEvent *triangleEvent = qobject_cast<Qt3DRender::QPickTriangleEvent *>( event );
@@ -456,7 +458,7 @@ void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
         break;
       }
     }
-    pickHandler->handlePickOnVectorLayer( vlayer, fid, event->worldIntersection() );
+    pickHandler->handlePickOnVectorLayer( vlayer, fid, event->worldIntersection(), event );
   }
 
 }
