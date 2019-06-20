@@ -276,22 +276,6 @@ void Qgs3DMapToolMeasureLine::removeLastPoint()
   }
 }
 
-// TODO: this is not picking the event
-void Qgs3DMapToolMeasureLine::keyPressEvent( QKeyEvent *e )
-{
-  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
-  {
-    qInfo() << "Backspace or Delete key pressed";
-    if ( !mDone )
-    {
-      removeLastPoint();
-    }
-
-    // Override default shortcut management in MapCanvas
-    e->ignore();
-  }
-}
-
 QVector<QgsPoint> Qgs3DMapToolMeasureLine::points() const
 {
   return mPoints;

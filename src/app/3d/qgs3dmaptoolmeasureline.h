@@ -60,9 +60,6 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     //! Returns reference to array of the points
     QVector<QgsPoint> points() const;
 
-    //! Catching key press event
-    void keyPressEvent( QKeyEvent *e );
-
     // Inherited from Qgs3DMapTool
     void mousePressEvent( QMouseEvent *event ) override { Q_UNUSED( event )}
     void mouseReleaseEvent( QMouseEvent *event ) override { Q_UNUSED( event )}
