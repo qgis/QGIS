@@ -65,27 +65,30 @@ void TestQgsGpsInformationWidget::testTimestamp()
 {
 
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=intf:int" ),
-      QStringLiteral( "vl" ),
-      QStringLiteral( "memory" ) ) );
-  std::unique_ptr< QgsVectorLayer> tempLayerString( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=stringf:string&field=intf:int" ),
-      QStringLiteral( "vl" ),
-      QStringLiteral( "memory" ) ) );
-  std::unique_ptr< QgsVectorLayer> tempLayerDateTime( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=datetimef:datetime&field=intf:int" ),
-      QStringLiteral( "vl" ),
-      QStringLiteral( "memory" ) ) );
+  QgsVectorLayer *tempLayer( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=intf:int" ),
+                             QStringLiteral( "vl" ),
+                             QStringLiteral( "memory" ) ) );
+  QgsVectorLayer *tempLayerString( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=stringf:string&field=intf:int" ),
+                                   QStringLiteral( "vl" ),
+                                   QStringLiteral( "memory" ) ) );
+  QgsVectorLayer *tempLayerDateTime( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=datetimef:datetime&field=intf:int" ),
+                                     QStringLiteral( "vl" ),
+                                     QStringLiteral( "memory" ) ) );
+
+  QgsProject::instance()->addMapLayers( { tempLayer, tempLayerString, tempLayerDateTime } );
+
   QVERIFY( tempLayer->isValid() );
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
   QgsGpsInformationWidget widget( canvas );
-  canvas->setCurrentLayer( tempLayer.get() );
+  canvas->setCurrentLayer( tempLayer );
   QVERIFY( ! widget.mGboxTimestamp->isEnabled() );
 
-  canvas->setCurrentLayer( tempLayerString.get() );
+  canvas->setCurrentLayer( tempLayerString );
   QVERIFY( widget.mGboxTimestamp->isEnabled() );
   QVERIFY( widget.mCboTimestampField->findText( QStringLiteral( "stringf" ) ) != -1 );
   QVERIFY( widget.mCboTimestampField->findText( QStringLiteral( "intf" ) ) == -1 );
 
-  canvas->setCurrentLayer( tempLayerDateTime.get() );
+  canvas->setCurrentLayer( tempLayerDateTime );
   QVERIFY( widget.mGboxTimestamp->isEnabled() );
   QVERIFY( widget.mCboTimestampField->findText( QStringLiteral( "datetimef" ) ) != -1 );
   QVERIFY( widget.mCboTimestampField->findText( QStringLiteral( "intf" ) ) == -1 );
@@ -98,11 +101,11 @@ void TestQgsGpsInformationWidget::testTimestamp()
   widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::TimeZone ) );
   QVERIFY( widget.mCboTimeZones->isEnabled() );
 
-  canvas->setCurrentLayer( tempLayer.get() );
+  canvas->setCurrentLayer( tempLayer );
   QVERIFY( ! widget.mGboxTimestamp->isEnabled() );
 
   // Test timestamp conversions
-  canvas->setCurrentLayer( tempLayerDateTime.get() );
+  canvas->setCurrentLayer( tempLayerDateTime );
   // 2019/06/19 12:27:34.543[UTC]
   widget.mLastNmeaTime = { 119, 5, 19, 12, 27, 34, 543 };
   QDateTime dateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ) );
@@ -116,30 +119,43 @@ void TestQgsGpsInformationWidget::testTimestamp()
   QVERIFY( fieldIdx != -1 );
   // UTC
   widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::UTC ) );
-  QVariant dt { widget.timestamp( tempLayerDateTime.get(), fieldIdx ) };
+  QVariant dt { widget.timestamp( tempLayerDateTime, fieldIdx ) };
   QCOMPARE( dt.toDateTime(), dateTime );
+  QVERIFY( widget.mPreferredTimestampFields.contains( tempLayerDateTime->id() ) );
+  QCOMPARE( widget.mPreferredTimestampFields[ tempLayerDateTime->id() ], QStringLiteral( "datetimef" ) );
 
-  // Test string
-  canvas->setCurrentLayer( tempLayerString.get() );
+  // Test store preferred fields
+  canvas->setCurrentLayer( tempLayerString );
   fieldIdx = tempLayerString->fields().indexOf( QStringLiteral( "stringf" ) );
   QVERIFY( fieldIdx != -1 );
   widget.mCboTimestampField->setCurrentIndex( widget.mCboTimestampField->findText( QStringLiteral( "stringf" ) ) );
+  canvas->setCurrentLayer( tempLayerDateTime );
+  QVERIFY( widget.mPreferredTimestampFields.contains( tempLayerDateTime->id() ) );
+  QCOMPARE( widget.mPreferredTimestampFields[ tempLayerString->id() ], QStringLiteral( "stringf" ) );
+  QVERIFY( widget.mPreferredTimestampFields.contains( tempLayerDateTime->id() ) );
+  QCOMPARE( widget.mPreferredTimestampFields[ tempLayerDateTime->id() ], QStringLiteral( "datetimef" ) );
+
+  // Test string
+  canvas->setCurrentLayer( tempLayerString );
   // UTC
   widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::UTC ) );
-  dt = widget.timestamp( tempLayerString.get(), fieldIdx );
+  dt = widget.timestamp( tempLayerString, fieldIdx );
   QCOMPARE( dt.toString(), dateTime.toString( Qt::DateFormat::ISODate ) );
   // Local Time (not very robust because we cannot change the system timezone and it may be GMT)
   widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::LocalTime ) );
-  dt = widget.timestamp( tempLayerString.get(), fieldIdx );
+  dt = widget.timestamp( tempLayerString, fieldIdx );
   QDateTime localTime( dateTime.toLocalTime() );
   QCOMPARE( dt.toString(), localTime.toString( Qt::DateFormat::ISODate ) );
   // Timezone
   widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::TimeZone ) );
   widget.mCboTimeZones->setCurrentIndex( widget.mCboTimeZones->findText( QStringLiteral( "Asia/Colombo" ) ) ) ;
   QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
-  dt = widget.timestamp( tempLayerString.get(), fieldIdx );
+  dt = widget.timestamp( tempLayerString, fieldIdx );
   QCOMPARE( dt.toString(), tzTime.toString( Qt::DateFormat::ISODate ) );
 
+  // Test that preferred field is stored
+  canvas->setCurrentLayer( tempLayerDateTime );
+  QCOMPARE( widget.mCboTimestampField->currentText(), QStringLiteral( "datetimef" ) );
 }
 
 QGSTEST_MAIN( TestQgsGpsInformationWidget )

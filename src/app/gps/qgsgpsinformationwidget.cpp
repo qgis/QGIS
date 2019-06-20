@@ -311,7 +311,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
     mCbxLeapSeconds->setEnabled( enabled );
     mLeapSeconds->setEnabled( enabled );
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-    if ( vlayer )
+    if ( vlayer && ! mPopulatingFields )
     {
       mPreferredTimestampFields[ vlayer->id() ] = mCboTimestampField->currentText();
     }
@@ -1396,6 +1396,7 @@ void QgsGpsInformationWidget::timestampFormatChanged( int index )
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
 {
+  mPopulatingFields = true;
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
   mGboxTimestamp->setEnabled( false );
   mCboTimestampField->clear();
@@ -1415,7 +1416,7 @@ void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *map
     if ( mCboTimestampField->count() > 1 )
     {
       mGboxTimestamp->setEnabled( true );
-      // Set default if stored
+      // Set preferred if stored
       if ( mPreferredTimestampFields.contains( vlayer->id( ) ) )
       {
         int idx { mCboTimestampField->findText( mPreferredTimestampFields[ vlayer->id( ) ] ) };
@@ -1435,6 +1436,7 @@ void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *map
       }
     }
   }
+  mPopulatingFields = false;
 }
 
 void QgsGpsInformationWidget::switchAcquisition()

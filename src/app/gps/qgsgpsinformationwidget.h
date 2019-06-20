@@ -131,7 +131,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInfo
     unsigned int mDistanceThreshold = 0;
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
-
+    //! Flag when updating fields
+    bool mPopulatingFields = false;
     friend class TestQgsGpsInformationWidget;
 };
 
