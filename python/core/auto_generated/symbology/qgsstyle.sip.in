@@ -182,7 +182,7 @@ takes responsibility for deleting the returned object.
 Returns count of color ramps
 %End
 
-    QStringList colorRampNames();
+    QStringList colorRampNames() const;
 %Docstring
 Returns a list of names of color ramps
 %End
@@ -298,7 +298,7 @@ Returns a const pointer to a symbol (doesn't create new instance)
 Returns count of symbols in style
 %End
 
-    QStringList symbolNames();
+    QStringList symbolNames() const;
 %Docstring
 Returns a list of names of symbols
 %End
@@ -315,6 +315,13 @@ Returns the DB id for the given tag name
     int smartgroupId( const QString &smartgroup );
 %Docstring
 Returns the DB id for the given smartgroup name
+%End
+
+    QStringList allNames( StyleEntity type ) const;
+%Docstring
+Returns a list of the names of all existing entities of the specified ``type``.
+
+.. versionadded:: 3.10
 %End
 
     QStringList symbolsOfFavorite( StyleEntity type ) const;
@@ -520,6 +527,14 @@ Returns the tags associated with the symbol
 :return: A QStringList of the tags that have been applied to that symbol/colorramp
 %End
 
+    bool isFavorite( StyleEntity type, const QString &name );
+%Docstring
+Returns ``True`` if the symbol with matching ``type`` and \name is
+marked as a favorite.
+
+.. versionadded:: 3.10
+%End
+
     bool symbolHasTag( StyleEntity type, const QString &symbol, const QString &tag );
 %Docstring
 Returns whether a given tag is associated with the symbol
@@ -541,7 +556,7 @@ Returns the tag name for the given id
 Returns the smart groups map with id as key and name as value
 %End
 
-    QStringList smartgroupNames();
+    QStringList smartgroupNames() const;
 %Docstring
 Returns the smart groups list
 %End

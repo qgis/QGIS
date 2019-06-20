@@ -57,6 +57,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
       TypeRole = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
       TagRole, //!< String list of tags
       SymbolTypeRole, //!< Symbol type (for symbol entities)
+      IsFavoriteRole, //!< Whether entity is flagged as a favorite
     };
 
     /**
@@ -311,7 +312,6 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     QStringList mSmartGroupSymbolNames;
 
     bool mFavoritesOnly = false;
-    QStringList mFavoritedSymbolNames;
 
     bool mEntityFilterEnabled = false;
     QgsStyle::StyleEntity mEntityFilter = QgsStyle::SymbolEntity;

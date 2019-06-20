@@ -252,7 +252,7 @@ class CORE_EXPORT QgsStyle : public QObject
     int colorRampCount();
 
     //! Returns a list of names of color ramps
-    QStringList colorRampNames();
+    QStringList colorRampNames() const;
 
     //! Returns a const pointer to a symbol (doesn't create new instance)
     const QgsColorRamp *colorRampRef( const QString &name ) const;
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsStyle : public QObject
     int symbolCount();
 
     //! Returns a list of names of symbols
-    QStringList symbolNames();
+    QStringList symbolNames() const;
 
     /**
      * Returns the id in the style database for the given symbol name
@@ -359,6 +359,12 @@ class CORE_EXPORT QgsStyle : public QObject
     int tagId( const QString &tag );
     //! Returns the DB id for the given smartgroup name
     int smartgroupId( const QString &smartgroup );
+
+    /**
+     * Returns a list of the names of all existing entities of the specified \a type.
+     * \since QGIS 3.10
+     */
+    QStringList allNames( StyleEntity type ) const;
 
     /**
      * Returns the symbol names which are flagged as favorite
@@ -532,6 +538,14 @@ class CORE_EXPORT QgsStyle : public QObject
     QStringList tagsOfSymbol( StyleEntity type, const QString &symbol );
 
     /**
+     * Returns TRUE if the symbol with matching \a type and \name is
+     * marked as a favorite.
+     *
+     * \since QGIS 3.10
+     */
+    bool isFavorite( StyleEntity type, const QString &name );
+
+    /**
      * Returns whether a given tag is associated with the symbol
      *
      *  \param type is either SymbolEntity or ColorrampEntity
@@ -548,7 +562,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsSymbolGroupMap smartgroupsListMap();
 
     //! Returns the smart groups list
-    QStringList smartgroupNames();
+    QStringList smartgroupNames() const;
 
     //! Returns the QgsSmartConditionMap for the given id
     QgsSmartConditionMap smartgroup( int id );
@@ -713,6 +727,10 @@ class CORE_EXPORT QgsStyle : public QObject
     QHash< QString, QStringList > mCachedSymbolTags;
     QHash< QString, QStringList > mCachedColorRampTags;
     QHash< QString, QStringList > mCachedTextFormatTags;
+
+    QHash< QString, bool > mCachedSymbolFavorites;
+    QHash< QString, bool > mCachedColorRampFavorites;
+    QHash< QString, bool > mCachedTextFormatFavorites;
 
     QString mErrorString;
     QString mFileName;

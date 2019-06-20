@@ -250,6 +250,9 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
     case TagRole:
       return mStyle->tagsOfSymbol( entityType, name );
 
+    case IsFavoriteRole:
+      return mStyle->isFavorite( entityType, name );
+
     case SymbolTypeRole:
     {
       if ( entityType != QgsStyle::SymbolEntity )
@@ -720,7 +723,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mSmartGroupId >= 0 && !mSmartGroupSymbolNames.contains( name ) )
     return false;
 
-  if ( mFavoritesOnly && !mFavoritedSymbolNames.contains( name ) )
+  if ( mFavoritesOnly && !sourceModel()->data( index, QgsStyleModel::IsFavoriteRole ).toBool() )
     return false;
 
   if ( !mFilterString.isEmpty() )
@@ -768,17 +771,6 @@ bool QgsStyleProxyModel::favoritesOnly() const
 void QgsStyleProxyModel::setFavoritesOnly( bool favoritesOnly )
 {
   mFavoritesOnly = favoritesOnly;
-
-  if ( mFavoritesOnly )
-  {
-    mFavoritedSymbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
-    mFavoritedSymbolNames.append( mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity ) );
-    mFavoritedSymbolNames.append( mStyle->symbolsOfFavorite( QgsStyle::TextFormatEntity ) );
-  }
-  else
-  {
-    mFavoritedSymbolNames.clear();
-  }
   invalidateFilter();
 }
 

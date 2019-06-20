@@ -37,6 +37,7 @@ within a QgsStyle database.
       TypeRole,
       TagRole,
       SymbolTypeRole,
+      IsFavoriteRole,
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );

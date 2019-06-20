@@ -74,6 +74,7 @@ class TestQgsStyleModel(unittest.TestCase):
         symbol_C.setColor(QColor(10, 255, 10))
         self.assertTrue(style.addSymbol('C', symbol_C, True))
         style.tagSymbol(QgsStyle.SymbolEntity, 'C', ['tag 3'])
+        style.addFavorite(QgsStyle.SymbolEntity, 'C')
         symbol_C = createMarkerSymbol()
         symbol_C.setColor(QColor(10, 255, 10))
         self.assertTrue(style.addSymbol(' ----c/- ', symbol_C, True))
@@ -125,6 +126,12 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.TypeRole), QgsStyle.SymbolEntity)
         self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.TypeRole), QgsStyle.SymbolEntity)
 
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(2, 0), QgsStyleModel.IsFavoriteRole), True)
+        self.assertEqual(model.data(model.index(3, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.IsFavoriteRole), False)
+
     def test_style_with_ramps(self):
         style = QgsStyle()
         style.createMemoryDatabase()
@@ -141,6 +148,7 @@ class TestQgsStyleModel(unittest.TestCase):
         symbol_C = QgsLimitedRandomColorRamp()
         self.assertTrue(style.addColorRamp('C', symbol_C, True))
         style.tagSymbol(QgsStyle.ColorrampEntity, 'C', ['tag 3'])
+        style.addFavorite(QgsStyle.ColorrampEntity, 'C')
         symbol_C = QgsLimitedRandomColorRamp()
         self.assertTrue(style.addColorRamp(' ----c/- ', symbol_C, True))
 
@@ -182,6 +190,12 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.TypeRole), QgsStyle.ColorrampEntity)
         self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.TypeRole), QgsStyle.ColorrampEntity)
 
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(2, 0), QgsStyleModel.IsFavoriteRole), True)
+        self.assertEqual(model.data(model.index(3, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.IsFavoriteRole), False)
+
     def test_style_with_text_formats(self):
         style = QgsStyle()
         style.createMemoryDatabase()
@@ -198,6 +212,7 @@ class TestQgsStyleModel(unittest.TestCase):
         format_C = QgsTextFormat()
         self.assertTrue(style.addTextFormat('C', format_C, True))
         style.tagSymbol(QgsStyle.TextFormatEntity, 'C', ['tag 3'])
+        style.addFavorite(QgsStyle.TextFormatEntity, 'C')
         format_C = QgsTextFormat()
         self.assertTrue(style.addTextFormat(' ----c/- ', format_C, True))
 
@@ -238,6 +253,12 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.TypeRole), QgsStyle.TextFormatEntity)
         self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.TypeRole), QgsStyle.TextFormatEntity)
         self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.TypeRole), QgsStyle.TextFormatEntity)
+
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(2, 0), QgsStyleModel.IsFavoriteRole), True)
+        self.assertEqual(model.data(model.index(3, 0), QgsStyleModel.IsFavoriteRole), False)
+        self.assertEqual(model.data(model.index(4, 0), QgsStyleModel.IsFavoriteRole), False)
 
     def test_mixed_style(self):
         """

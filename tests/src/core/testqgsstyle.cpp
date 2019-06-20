@@ -62,6 +62,7 @@ class TestStyle : public QObject
     void cleanup() {}// will be called after every testfunction.
     // void initStyles();
 
+    void testCreateSymbols();
     void testCreateColorRamps();
     void testCreateTextFormats();
     void testLoadColorRamps();
@@ -122,6 +123,25 @@ void TestStyle::cleanupTestCase()
   }
 }
 
+void TestStyle::testCreateSymbols()
+{
+  // add some symbols to favorites
+  QgsStyle s;
+  s.createMemoryDatabase();
+
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  s.addSymbol( QStringLiteral( "symbolA" ), sym1.release(), true );
+  s.addSymbol( QStringLiteral( "symbolB" ), sym2.release(), true );
+  s.addSymbol( QStringLiteral( "symbolC" ), sym3.release(), true );
+
+  QCOMPARE( s.allNames( QgsStyle::SymbolEntity ),
+            QStringList() << QStringLiteral( "symbolA" )
+            << QStringLiteral( "symbolB" )
+            << QStringLiteral( "symbolC" ) );
+}
+
 bool TestStyle::imageCheck( QgsMapSettings &ms, const QString &testName )
 {
   QgsMultiRenderChecker checker;
@@ -175,6 +195,14 @@ void TestStyle::testCreateColorRamps()
   // continuous ramp
   QgsCptCityColorRamp *cc3Ramp = new QgsCptCityColorRamp( QStringLiteral( "grass/byr" ), QString() );
   QVERIFY( mStyle->addColorRamp( "test_cc3", cc3Ramp, true ) );
+
+  QCOMPARE( mStyle->allNames( QgsStyle::ColorrampEntity ), QStringList() << QStringLiteral( "test_cb1" )
+            << QStringLiteral( "test_cb2" )
+            << QStringLiteral( "test_cc1" )
+            << QStringLiteral( "test_cc2" )
+            << QStringLiteral( "test_cc3" )
+            << QStringLiteral( "test_gradient" )
+            << QStringLiteral( "test_random" ) );
 }
 
 void TestStyle::testCreateTextFormats()
@@ -226,7 +254,8 @@ void TestStyle::testCreateTextFormats()
   QCOMPARE( style2.textFormat( QString( "test_format" ) ).color().name(), QStringLiteral( "#ffff00" ) );
   QCOMPARE( style2.textFormat( QString( "test_format2" ) ).color().name(), QStringLiteral( "#ffffff" ) );
 
-
+  QCOMPARE( mStyle->allNames( QgsStyle::TextFormatEntity ), QStringList() << QStringLiteral( "test_format" )
+            << QStringLiteral( "test_format2" ) );
 }
 
 void TestStyle::testLoadColorRamps()
@@ -306,6 +335,10 @@ void TestStyle::testFavorites()
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
   int count = favorites.count();
 
+  QVERIFY( !mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "AaaaaaaaaA" ) ) );
+  QVERIFY( !mStyle->isFavorite( QgsStyle::TextFormatEntity, QStringLiteral( "AaaaaaaaaA" ) ) );
+  QVERIFY( !mStyle->isFavorite( QgsStyle::ColorrampEntity, QStringLiteral( "AaaaaaaaaA" ) ) );
+
   // add some symbols to favorites
   std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
@@ -314,11 +347,15 @@ void TestStyle::testFavorites()
   mStyle->saveSymbol( QStringLiteral( "symbolB" ), sym2.get(), false, QStringList() );
   mStyle->saveSymbol( QStringLiteral( "symbolC" ), sym3.get(), true, QStringList() );
 
+  QVERIFY( mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolA" ) ) );
+  QVERIFY( !mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolB" ) ) );
+  QVERIFY( mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolC" ) ) );
+
   // check for added symbols to favorites
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
   QCOMPARE( favorites.count(), count + 2 );
-  QVERIFY( favorites.contains( "symbolA" ) );
-  QVERIFY( favorites.contains( "symbolC" ) );
+  QVERIFY( favorites.contains( QStringLiteral( "symbolA" ) ) );
+  QVERIFY( favorites.contains( QStringLiteral( "symbolC" ) ) );
 
   QSignalSpy favoriteChangedSpy( mStyle, &QgsStyle::favoritedChanged );
 
@@ -328,6 +365,10 @@ void TestStyle::testFavorites()
   QCOMPARE( favoriteChangedSpy.at( 0 ).at( 0 ).toInt(), static_cast< int >( QgsStyle::SymbolEntity ) );
   QCOMPARE( favoriteChangedSpy.at( 0 ).at( 1 ).toString(), QStringLiteral( "symbolA" ) );
   QCOMPARE( favoriteChangedSpy.at( 0 ).at( 2 ).toBool(), false );
+
+  QVERIFY( !mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolA" ) ) );
+  QVERIFY( !mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolB" ) ) );
+  QVERIFY( mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolC" ) ) );
 
   // insure favorites updated after removal
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
@@ -343,10 +384,16 @@ void TestStyle::testFavorites()
   QCOMPARE( favorites.count(), count + 2 );
   QVERIFY( favorites.contains( "symbolA" ) );
 
+  QVERIFY( mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolA" ) ) );
+  QVERIFY( !mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolB" ) ) );
+  QVERIFY( mStyle->isFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolC" ) ) );
+
   QgsGradientColorRamp *gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
   QVERIFY( mStyle->addColorRamp( "gradient_1", gradientRamp, true ) );
   favorites = mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity );
   QCOMPARE( favorites.count(), 0 );
+
+  QVERIFY( !mStyle->isFavorite( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_1" ) ) );
 
   mStyle->addFavorite( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_1" ) );
   QCOMPARE( favoriteChangedSpy.count(), 3 );
@@ -356,6 +403,7 @@ void TestStyle::testFavorites()
   favorites = mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity );
   QCOMPARE( favorites.count(), 1 );
   QVERIFY( favorites.contains( "gradient_1" ) );
+  QVERIFY( mStyle->isFavorite( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_1" ) ) );
 
   mStyle->removeFavorite( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_1" ) );
   QCOMPARE( favoriteChangedSpy.count(), 4 );
@@ -364,12 +412,14 @@ void TestStyle::testFavorites()
   QCOMPARE( favoriteChangedSpy.at( 3 ).at( 2 ).toBool(), false );
   favorites = mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity );
   QCOMPARE( favorites.count(), 0 );
+  QVERIFY( !mStyle->isFavorite( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_1" ) ) );
 
   // text formats
   QgsTextFormat format1;
-  QVERIFY( mStyle->addTextFormat( "format_1", format1, true ) );
+  QVERIFY( mStyle->addTextFormat( QStringLiteral( "format_1" ), format1, true ) );
   favorites = mStyle->symbolsOfFavorite( QgsStyle::TextFormatEntity );
   QCOMPARE( favorites.count(), 0 );
+  QVERIFY( !mStyle->isFavorite( QgsStyle::TextFormatEntity, QStringLiteral( "format_1" ) ) );
 
   mStyle->addFavorite( QgsStyle::TextFormatEntity, QStringLiteral( "format_1" ) );
   QCOMPARE( favoriteChangedSpy.count(), 5 );
@@ -378,7 +428,8 @@ void TestStyle::testFavorites()
   QCOMPARE( favoriteChangedSpy.at( 4 ).at( 2 ).toBool(), true );
   favorites = mStyle->symbolsOfFavorite( QgsStyle::TextFormatEntity );
   QCOMPARE( favorites.count(), 1 );
-  QVERIFY( favorites.contains( "format_1" ) );
+  QVERIFY( favorites.contains( QStringLiteral( "format_1" ) ) );
+  QVERIFY( mStyle->isFavorite( QgsStyle::TextFormatEntity, QStringLiteral( "format_1" ) ) );
 
   mStyle->removeFavorite( QgsStyle::TextFormatEntity, QStringLiteral( "format_1" ) );
   QCOMPARE( favoriteChangedSpy.count(), 6 );
@@ -387,6 +438,7 @@ void TestStyle::testFavorites()
   QCOMPARE( favoriteChangedSpy.at( 5 ).at( 2 ).toBool(), false );
   favorites = mStyle->symbolsOfFavorite( QgsStyle::TextFormatEntity );
   QCOMPARE( favorites.count(), 0 );
+  QVERIFY( !mStyle->isFavorite( QgsStyle::TextFormatEntity, QStringLiteral( "format_1" ) ) );
 }
 
 void TestStyle::testTags()
@@ -406,6 +458,13 @@ void TestStyle::testTags()
   //check tagid and tag return values
   QCOMPARE( id, mStyle->tagId( "purple" ) );
   QCOMPARE( QStringLiteral( "purple" ), mStyle->tag( id ) );
+
+  QCOMPARE( mStyle->allNames( QgsStyle::TagEntity ),
+            QStringList() << QStringLiteral( "red" )
+            << QStringLiteral( "starry" )
+            << QStringLiteral( "circle" )
+            << QStringLiteral( "blue" )
+            << QStringLiteral( "purple" ) );
 
   // Cyrillic
   id = mStyle->addTag( QStringLiteral( "МЕТЕОР" ) );
@@ -725,6 +784,9 @@ void TestStyle::testSmartGroup()
   QCOMPARE( style.smartgroup( 1 ).values( QStringLiteral( "name" ) ), QList< QString >() << QStringLiteral( "a" ) );
   QCOMPARE( style.smartgroupId( QStringLiteral( "mine" ) ), 1 );
   QCOMPARE( groupModifiedSpy.count(), 1 );
+
+  QCOMPARE( style.allNames( QgsStyle::SmartgroupEntity ),
+            QStringList() << QStringLiteral( "mine" ) );
 
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 1 ), QStringList() << QStringLiteral( "symbolA" ) );
   QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 1 ), QStringList() << QStringLiteral( "ramp a" ) );
