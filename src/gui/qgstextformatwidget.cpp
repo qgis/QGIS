@@ -512,7 +512,8 @@ void QgsTextFormatWidget::initWidget()
           << radPolygonPerimeterCurved
           << radPredefinedOrder
           << mFieldExpressionWidget
-          << mCheckBoxSubstituteText;
+          << mCheckBoxSubstituteText
+          << mLinePlacementFlagsDDBtn;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );

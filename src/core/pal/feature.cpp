@@ -597,7 +597,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
   double distanceLineToLabel = getLabelDistance();
-  LineArrangementFlags flags = mLF->layer()->arrangementFlags();
+  LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
     flags = FLAG_ON_LINE; // default flag
 
@@ -824,7 +824,7 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
   double angle;
   double cost;
 
-  LineArrangementFlags flags = mLF->layer()->arrangementFlags();
+  LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
     flags = FLAG_ON_LINE; // default flag
 
@@ -1194,7 +1194,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
   QLinkedList<LabelPosition *> positions;
   double delta = std::max( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
-  pal::LineArrangementFlags flags = mLF->layer()->arrangementFlags();
+  pal::LineArrangementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
     flags = FLAG_ON_LINE; // default flag
 

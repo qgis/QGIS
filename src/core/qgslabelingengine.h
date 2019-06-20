@@ -23,7 +23,7 @@
 
 #include "qgspallabeling.h"
 #include "qgslabelingenginesettings.h"
-
+#include "pal.h"
 
 class QgsLabelingEngine;
 
@@ -93,9 +93,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! What placement strategy to use for the labels
     QgsPalLayerSettings::Placement placement() const { return mPlacement; }
 
-    //! For layers with linestring geometries - extra placement flags (or-ed combination of QgsPalLayerSettings::LinePlacementFlags)
-    unsigned int linePlacementFlags() const { return mLinePlacementFlags; }
-
     //! Default priority of labels (may be overridden by individual labels)
     double priority() const { return mPriority; }
 
@@ -121,8 +118,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
     Flags mFlags;
     //! Placement strategy
     QgsPalLayerSettings::Placement mPlacement;
-    //! Extra placement flags for linestring geometries
-    unsigned int mLinePlacementFlags;
     //! Default priority of labels
     double mPriority;
     //! Type of the obstacle of feature geometries
@@ -254,6 +249,18 @@ class CORE_EXPORT QgsLabelingUtils
      * \see encodePredefinedPositionOrder()
      */
     static QVector< QgsPalLayerSettings::PredefinedPointPosition > decodePredefinedPositionOrder( const QString &positionString );
+
+    /**
+     * Encodes line placement \a flags to a string.
+     * \see decodeLinePlacementFlags()
+     */
+    static QString encodeLinePlacementFlags( pal::LineArrangementFlags flags );
+
+    /**
+     * Decodes a \a string to set of line placement flags.
+     * \see encodeLinePlacementFlags()
+     */
+    static pal::LineArrangementFlags decodeLinePlacementFlags( const QString &string );
 
 };
 
