@@ -1,4 +1,4 @@
-Content-Length: 5000
+Content-Length: 4920
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
@@ -45,8 +45,6 @@ Content-Type: text/xml; charset=utf-8
     <Format>text/xml</Format>
     <Format>application/vnd.ogc.gml</Format>
     <Format>application/vnd.ogc.gml/3.1.1</Format>
-    <Format>application/json</Format>
-    <Format>application/geo+json</Format>
     <DCPType>
      <HTTP>
       <Get>
