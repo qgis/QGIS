@@ -181,7 +181,7 @@ void TestStyle::testCreateTextFormats()
 {
   QVERIFY( mStyle->textFormatNames().isEmpty() );
   QCOMPARE( mStyle->textFormatCount(), 0 );
-  // non existant format, should be default
+  // non existent format, should be default
   QCOMPARE( mStyle->textFormat( QString( "blah" ) ).color().name(), QStringLiteral( "#000000" ) );
 
   QSignalSpy spy( mStyle, &QgsStyle::textFormatAdded );
