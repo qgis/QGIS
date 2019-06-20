@@ -65,7 +65,6 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Typedef for data provider creation function.
      * \since QGIS 3.0
-     * \deprecated QGIS 3.10
      */
     SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions & ) > CreateDataProviderFunction;
 

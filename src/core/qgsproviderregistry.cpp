@@ -184,6 +184,7 @@ void QgsProviderRegistry::init()
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
   {
     const QString &key = it->first;
+    Q_UNUSED( key );  // avoid unused variable warning in release build
     QgsProviderMetadata *meta = it->second;
 
     // now get vector file filters, if any
