@@ -46,6 +46,7 @@ class TestQgsLabelingEngine : public QObject
     void testRuleBased();
     void zOrder(); //test that labels are stacked correctly
     void testEncodeDecodePositionOrder();
+    void testEncodeDecodeLinePlacement();
     void testSubstitutions();
     void testCapitalization();
     void testParticipatingLayers();
@@ -479,6 +480,21 @@ void TestQgsLabelingEngine::testEncodeDecodePositionOrder()
   expected << QgsPalLayerSettings::TopRight << QgsPalLayerSettings::BottomSlightlyRight
            << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopMiddle;
   QCOMPARE( decoded, expected );
+}
+
+void TestQgsLabelingEngine::testEncodeDecodeLinePlacement()
+{
+  QString encoded = QgsLabelingUtils::encodeLinePlacementFlags( pal::FLAG_ABOVE_LINE | pal::FLAG_ON_LINE );
+  QVERIFY( !encoded.isEmpty() );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( encoded ), pal::FLAG_ABOVE_LINE | pal::FLAG_ON_LINE );
+  encoded = QgsLabelingUtils::encodeLinePlacementFlags( pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
+  QVERIFY( !encoded.isEmpty() );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( encoded ), pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
+
+  //test decoding with a messy string
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,," ) ), pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,BL,  al" ) ), pal::FLAG_ON_LINE | pal::FLAG_ABOVE_LINE | pal::FLAG_BELOW_LINE | pal::FLAG_MAP_ORIENTATION );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,BL, LO,  al" ) ), pal::FLAG_ON_LINE | pal::FLAG_ABOVE_LINE | pal::FLAG_BELOW_LINE );
 }
 
 void TestQgsLabelingEngine::testSubstitutions()

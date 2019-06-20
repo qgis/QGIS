@@ -4066,6 +4066,13 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mLinePlacementFlagsDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
                           </layout>
                          </item>
                          <item row="1" column="1">
@@ -6491,6 +6498,7 @@ font-style: italic;</string>
   <tabstop>chkLineOn</tabstop>
   <tabstop>chkLineBelow</tabstop>
   <tabstop>chkLineOrientationDependent</tabstop>
+  <tabstop>mLinePlacementFlagsDDBtn</tabstop>
   <tabstop>mCentroidRadioVisible</tabstop>
   <tabstop>mCentroidRadioWhole</tabstop>
   <tabstop>mCentroidDDBtn</tabstop>
