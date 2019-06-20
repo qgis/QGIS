@@ -50,9 +50,10 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   private slots:
     void unitsChanged( int index );
 
+    void crsChanged();
+
   private:
     Qgs3DMapToolMeasureLine *mTool;
-//    Qgs3DMapCanvas *mCanvas;
 
     //! Total length
     double mTotal = 0.0;

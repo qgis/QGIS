@@ -36,11 +36,13 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   else
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
 
+  QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
 
   qInfo() << "3D Measure Dialog created";
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMeasureDialog::unitsChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &Qgs3DMeasureDialog::showHelp );
+  connect( canvas2D, &QgsMapCanvas::destinationCrsChanged, this, &Qgs3DMeasureDialog::crsChanged );
 }
 
 void Qgs3DMeasureDialog::saveWindowLocation()
@@ -285,6 +287,25 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
   {
     mUseMapUnits = false;
   }
+  mTable->clear();
+  mTotal = 0.;
+  updateUi();
+}
+
+void Qgs3DMeasureDialog::crsChanged()
+{
+  QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
+  if ( !canvas2D->mapSettings().destinationCrs().isValid() )
+  {
+    mUnitsCombo->setEnabled( false );
+
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
+  }
+  else
+  {
+    mUnitsCombo->setEnabled( true );
+  }
+
   mTable->clear();
   mTotal = 0.;
   updateUi();
