@@ -40,6 +40,7 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   qInfo() << "3D Measure Dialog created";
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMeasureDialog::unitsChanged );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &Qgs3DMeasureDialog::showHelp );
 }
 
 void Qgs3DMeasureDialog::saveWindowLocation()
@@ -298,4 +299,9 @@ QString Qgs3DMeasureDialog::formatDistance( double distance, bool convertUnits )
     decimals = std::max( decimals, minPlaces );
   }
   return QgsDistanceArea::formatDistance( distance, decimals, mDistanceUnits, baseUnit );
+}
+
+void Qgs3DMeasureDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) );
 }

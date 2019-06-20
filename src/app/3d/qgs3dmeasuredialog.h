@@ -76,6 +76,8 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! formats distance to most appropriate units
     QString formatDistance( double distance, bool convertUnits = true ) const;
+
+    void showHelp();
 };
 
 #endif // QGS3DMEASUREDIALOG_H
