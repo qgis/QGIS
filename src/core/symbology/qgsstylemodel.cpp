@@ -93,7 +93,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       break;
 
     case QgsStyle::LabelSettingsEntity:
-      name = mTextFormatNames.value( index.row() - mSymbolNames.size() - mRampNames.size() - mTextFormatNames.size() );
+      name = mLabelSettingsNames.value( index.row() - mSymbolNames.size() - mRampNames.size() - mTextFormatNames.size() );
       break;
 
     case QgsStyle::TagEntity:
@@ -150,8 +150,20 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 break;
               }
 
-              case QgsStyle::ColorrampEntity:
               case QgsStyle::LabelSettingsEntity:
+              {
+                int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
+                int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+                const QgsPalLayerSettings settings = mStyle->labelSettings( name );
+                QPixmap pm = QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( width, height ), QString(), height / 20 );
+                QByteArray data;
+                QBuffer buffer( &data );
+                pm.save( &buffer, "PNG", 100 );
+                tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                break;
+              }
+
+              case QgsStyle::ColorrampEntity:
               case QgsStyle::TagEntity:
               case QgsStyle::SmartgroupEntity:
                 break;
@@ -244,7 +256,23 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             }
 
             case QgsStyle::LabelSettingsEntity:
-              return QVariant();
+            {
+              // use cached icon if possible
+              QIcon icon = mLabelSettingsIconCache.value( name );
+              if ( !icon.isNull() )
+                return icon;
+
+              const QgsPalLayerSettings settings( mStyle->labelSettings( name ) );
+              if ( mAdditionalSizes.isEmpty() )
+                icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( 24, 24 ), QString(),  1 ) );
+              for ( const QVariant &size : mAdditionalSizes )
+              {
+                QSize s = size.toSize();
+                icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+              }
+              mLabelSettingsIconCache.insert( name, icon );
+              return icon;
+            }
 
             case QgsStyle::TagEntity:
             case QgsStyle::SmartgroupEntity:
@@ -309,7 +337,7 @@ bool QgsStyleModel::setData( const QModelIndex &index, const QVariant &value, in
           break;
 
         case QgsStyle::LabelSettingsEntity:
-          name = mTextFormatNames.value( index.row() - mSymbolNames.size() - mRampNames.size() - mTextFormatNames.size() );
+          name = mLabelSettingsNames.value( index.row() - mSymbolNames.size() - mRampNames.size() - mTextFormatNames.size() );
           break;
 
         case QgsStyle::TagEntity:
@@ -412,7 +440,7 @@ int QgsStyleModel::rowCount( const QModelIndex &parent ) const
 {
   if ( !parent.isValid() )
   {
-    return mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count();
+    return mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() + mLabelSettingsNames.count();
   }
   return 0;
 }
@@ -645,7 +673,7 @@ void QgsStyleModel::onLabelSettingsAdded( const QString &name )
   if ( newNameIndex < 0 )
     return; // shouldn't happen
 
-  beginInsertRows( QModelIndex(), newNameIndex + mSymbolNames.count() + mRampNames.count(), newNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() );
+  beginInsertRows( QModelIndex(), newNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(), newNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() );
   mLabelSettingsNames = newLabelSettingsNames;
   endInsertRows();
 }
@@ -661,7 +689,7 @@ void QgsStyleModel::onLabelSettingsRemoved( const QString &name )
   if ( oldNameIndex < 0 )
     return; // shouldn't happen
 
-  beginRemoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count() + mRampNames.count(), oldNameIndex + mSymbolNames.count() + mRampNames.count()  + mTextFormatNames.count() );
+  beginRemoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(), oldNameIndex + mSymbolNames.count() + mRampNames.count()  + mTextFormatNames.count() );
   mLabelSettingsNames = newLabelSettingsNames;
   endRemoveRows();
 }
@@ -696,7 +724,7 @@ void QgsStyleModel::onLabelSettingsRename( const QString &oldName, const QString
     return;
   }
 
-  beginMoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count() + mRampNames.count(), oldNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(),
+  beginMoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(), oldNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(),
                  QModelIndex(), ( newNameIndex > oldNameIndex ? newNameIndex + 1 : newNameIndex ) + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() );
   mLabelSettingsNames = newLabelSettingsNames;
   endMoveRows();

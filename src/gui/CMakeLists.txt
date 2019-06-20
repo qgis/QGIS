@@ -295,6 +295,7 @@ SET(QGIS_GUI_SRCS
   qgshelp.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
+  qgslabelinggui.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslimitedrandomcolorrampdialog.cpp
@@ -476,6 +477,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgshighlight.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
+  qgslabelinggui.h
   qgslistwidget.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h

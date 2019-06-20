@@ -852,6 +852,12 @@ class CORE_EXPORT QgsPalLayerSettings
     bool geometryGeneratorEnabled = false;
 
     /**
+     * Geometry type of layers associated with these settings.
+     * \since QGIS 3.10
+     */
+    QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
+
+    /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
      */
@@ -925,6 +931,16 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
+
+    /**
+    * Returns a pixmap preview for label \a settings.
+    * \param settings label settings
+    * \param size target pixmap size
+    * \param previewText text to render in preview, or empty for default text
+    * \param padding space between icon edge and color ramp
+    * \since QGIS 3.10
+    */
+    static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );
 
     // temporary stuff: set when layer gets prepared or labeled
     const QgsFeature *mCurFeat = nullptr;

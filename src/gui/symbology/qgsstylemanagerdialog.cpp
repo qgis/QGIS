@@ -32,7 +32,7 @@
 #include "qgsstylemodel.h"
 #include "qgsmessagebar.h"
 #include "qgstextformatwidget.h"
-
+#include "qgslabelinggui.h"
 #include <QAction>
 #include <QFile>
 #include <QFileDialog>
@@ -1370,12 +1370,89 @@ bool QgsStyleManagerDialog::editTextFormat()
 
 bool QgsStyleManagerDialog::addLabelSettings( QgsWkbTypes::GeometryType type )
 {
+  QgsPalLayerSettings settings;
+  QgsLabelSettingsDialog settingsDlg( settings, nullptr, nullptr, this, type );
+  if ( !settingsDlg.exec() )
+    return false;
 
+  settings = settingsDlg.settings();
+  settings.layerType = type;
+
+  QgsStyleSaveDialog saveDlg( this );
+  if ( !saveDlg.exec() )
+    return false;
+  QString name = saveDlg.name();
+
+  // request valid/unique name
+  bool nameInvalid = true;
+  while ( nameInvalid )
+  {
+    // validate name
+    if ( name.isEmpty() )
+    {
+      QMessageBox::warning( this, tr( "Save Label Settings" ),
+                            tr( "Cannot save label settings without a name. Enter a name." ) );
+    }
+    else if ( mStyle->labelSettingsNames().contains( name ) )
+    {
+      int res = QMessageBox::warning( this, tr( "Save Label Settings" ),
+                                      tr( "Label settings with the name '%1' already exist. Overwrite?" )
+                                      .arg( name ),
+                                      QMessageBox::Yes | QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+      {
+        mStyle->removeLabelSettings( name );
+        nameInvalid = false;
+      }
+    }
+    else
+    {
+      // valid name
+      nameInvalid = false;
+    }
+    if ( nameInvalid )
+    {
+      bool ok;
+      name = QInputDialog::getText( this, tr( "Label Settings Name" ),
+                                    tr( "Please enter a name for the new label settings:" ),
+                                    QLineEdit::Normal, name, &ok );
+      if ( !ok )
+      {
+        return false;
+      }
+    }
+  }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  // add new format to style and re-populate the list
+  mStyle->addLabelSettings( name, settings );
+  mStyle->saveLabelSettings( name, settings, saveDlg.isFavorite(), symbolTags );
+
+  mModified = true;
   return true;
 }
 
 bool QgsStyleManagerDialog::editLabelSettings()
 {
+  const QString formatName = currentItemName();
+  if ( formatName.isEmpty() )
+    return false;
+
+  QgsPalLayerSettings settings = mStyle->labelSettings( formatName );
+  QgsWkbTypes::GeometryType geomType = settings.layerType;
+
+  // let the user edit the settings and update list when done
+  QgsLabelSettingsDialog dlg( settings, nullptr, nullptr, this, geomType );
+  if ( !dlg.exec() )
+    return false;
+
+  settings = dlg.settings();
+  settings.layerType = geomType;
+
+  // by adding format to style with the same name the old effectively gets overwritten
+  mStyle->addLabelSettings( formatName, settings, true );
+  mModified = true;
   return true;
 }
 

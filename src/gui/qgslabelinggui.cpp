@@ -27,6 +27,8 @@
 
 #include <QButtonGroup>
 
+///@cond PRIVATE
+
 QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
@@ -65,9 +67,10 @@ void QgsLabelingGui::updateProperty()
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, QgsWkbTypes::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling )
   , mLayer( layer )
+  , mGeomType( geomType )
   , mSettings( layerSettings )
   , mMode( NoLabels )
   , mCanvas( mapCanvas )
@@ -109,7 +112,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 {
   mPreviewFeature = QgsFeature();
 
-  if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+  if ( ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer ) && mGeomType == QgsWkbTypes::UnknownGeometry )
   {
     setEnabled( false );
     return;
@@ -132,8 +135,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
 
-  mFieldExpressionWidget->setEnabled( mMode == Labels );
-  mLabelingFrame->setEnabled( mMode == Labels );
+  mFieldExpressionWidget->setEnabled( mMode == Labels || !mLayer );
+  mLabelingFrame->setEnabled( mMode == Labels || !mLayer );
 
   blockInitSignals( true );
 
@@ -302,7 +305,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
-  lyr.drawLabels = ( mMode == Labels );
+  lyr.drawLabels = ( mMode == Labels ) || !mLayer;
 
   bool isExpression;
   lyr.fieldName = mFieldExpressionWidget->currentField( &isExpression );
@@ -668,11 +671,11 @@ void QgsLabelingGui::deactivateField( QgsPalLayerSettings::Property key )
 
 void QgsLabelingGui::updateGeometryTypeBasedWidgets()
 {
-  QgsWkbTypes::GeometryType geometryType;
+  QgsWkbTypes::GeometryType geometryType = mGeomType;
 
   if ( mGeometryGeneratorGroupBox->isChecked() )
     geometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
-  else
+  else if ( mLayer )
     geometryType = mLayer->geometryType();
 
   // show/hide options based upon geometry type
@@ -796,3 +799,27 @@ void QgsLabelingGui::determineGeometryGeneratorType()
 
   mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( geometry.type() ) );
 }
+
+
+//
+// QgsLabelSettingsDialog
+//
+
+QgsLabelSettingsDialog::QgsLabelSettingsDialog( const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent,
+    QgsWkbTypes::GeometryType geomType )
+  : QDialog( parent )
+{
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  mWidget = new QgsLabelingGui( layer, mapCanvas, settings, nullptr, geomType );
+  vLayout->addWidget( mWidget );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
+  setWindowTitle( tr( "Label Settings" ) );
+}
+
+
+
+///@endcond

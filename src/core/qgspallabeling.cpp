@@ -19,6 +19,7 @@
 #include "qgstextlabelfeature.h"
 #include "qgsunittypes.h"
 #include "qgsexception.h"
+#include "qgsapplication.h"
 
 #include <list>
 
@@ -37,6 +38,7 @@
 #include <QFontMetrics>
 #include <QTime>
 #include <QPainter>
+#include <QDesktopWidget>
 
 #include "diagram/qgsdiagram.h"
 #include "qgsdiagramrenderer.h"
@@ -396,6 +398,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   geometryGenerator = s.geometryGenerator;
   geometryGeneratorEnabled = s.geometryGeneratorEnabled;
   geometryGeneratorType = s.geometryGeneratorType;
+  layerType = s.layerType;
 
   return *this;
 }
@@ -1002,6 +1005,8 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
   geometryGeneratorType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) ), QgsWkbTypes::PointGeometry );
 
+  layerType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "layerType" ) ), QgsWkbTypes::UnknownGeometry );
+
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
 
@@ -1140,6 +1145,8 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWkbTypes::GeometryType>() );
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), metaEnum.valueToKey( geometryGeneratorType ) );
 
+  placementElem.setAttribute( QStringLiteral( "layerType" ), metaEnum.valueToKey( layerType ) );
+
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
   renderingElem.setAttribute( QStringLiteral( "drawLabels" ), drawLabels );
@@ -1172,6 +1179,101 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   elem.appendChild( renderingElem );
   elem.appendChild( ddElem );
   return elem;
+}
+
+QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText, int padding )
+{
+  // for now, just use format
+  QgsTextFormat tempFormat = settings.format();
+  QPixmap pixmap( size );
+  pixmap.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &pixmap );
+
+  painter.setRenderHint( QPainter::Antialiasing );
+
+  QRect rect( 0, 0, size.width(), size.height() );
+
+  // shameless eye candy - use a subtle gradient when drawing background
+  painter.setPen( Qt::NoPen );
+  QColor background1 = tempFormat.previewBackgroundColor();
+  if ( ( background1.lightnessF() < 0.7 ) )
+  {
+    background1 = background1.darker( 125 );
+  }
+  else
+  {
+    background1 = background1.lighter( 125 );
+  }
+  QColor background2 = tempFormat.previewBackgroundColor();
+  QLinearGradient linearGrad( QPointF( 0, 0 ), QPointF( 0, rect.height() ) );
+  linearGrad.setColorAt( 0, background1 );
+  linearGrad.setColorAt( 1, background2 );
+  painter.setBrush( QBrush( linearGrad ) );
+  if ( size.width() > 30 )
+  {
+    painter.drawRoundedRect( rect, 6, 6 );
+  }
+  else
+  {
+    // don't use rounded rect for small previews
+    painter.drawRect( rect );
+  }
+  painter.setBrush( Qt::NoBrush );
+  painter.setPen( Qt::NoPen );
+  padding += 1; // move text away from background border
+
+  QgsRenderContext context;
+  QgsMapToPixel newCoordXForm;
+  newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
+  context.setMapToPixel( newCoordXForm );
+
+  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+  context.setUseAdvancedEffects( true );
+  context.setPainter( &painter );
+
+  // slightly inset text to account for buffer/background
+  double xtrans = 0;
+  if ( tempFormat.buffer().enabled() )
+    xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+  if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
+    xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+
+  double ytrans = 0.0;
+  if ( tempFormat.buffer().enabled() )
+    ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+  if ( tempFormat.background().enabled() )
+    ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+
+  const QStringList text = QStringList() << ( previewText.isEmpty() ? QObject::tr( "Aa" ) : previewText );
+  const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, QgsTextRenderer::Rect );
+  QRectF textRect = rect;
+  textRect.setLeft( xtrans + padding );
+  textRect.setWidth( rect.width() - xtrans - 2 * padding );
+
+  if ( textRect.width() > 2000 )
+    textRect.setWidth( 2000 - 2 * padding );
+
+  const double bottom = textRect.height() / 2 + textHeight / 2;
+  textRect.setTop( bottom - textHeight );
+  textRect.setBottom( bottom );
+
+  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
+
+  // draw border on top of text
+  painter.setBrush( Qt::NoBrush );
+  painter.setPen( QPen( tempFormat.previewBackgroundColor().darker( 150 ), 0 ) );
+  if ( size.width() > 30 )
+  {
+    painter.drawRoundedRect( rect, 6, 6 );
+  }
+  else
+  {
+    // don't use rounded rect for small previews
+    painter.drawRect( rect );
+  }
+  painter.end();
+  return pixmap;
 }
 
 bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const
