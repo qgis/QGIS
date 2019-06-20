@@ -114,12 +114,12 @@ void Qgs3DMeasureDialog::updateUi()
     toolTip += "<br> * ";
     if ( mCartesian->isChecked() )
     {
-      toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
+      toolTip += tr( "Cartesian calculation selected" );
       mConvertToDisplayUnits = true;
     }
     else
     {
-      toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+      toolTip += tr( "No map projection set." );
       toolTip += "<br> * " + tr( "Units are unknown." );
       mConvertToDisplayUnits = false;
     }
