@@ -67,6 +67,11 @@ Returns the type of the item currently selected in the widget.
 .. seealso:: :py:func:`currentItemName`
 %End
 
+  protected:
+
+    virtual void showEvent( QShowEvent *event );
+
+
   signals:
 
     void selectionChanged( const QString &name, QgsStyle::StyleEntity type );

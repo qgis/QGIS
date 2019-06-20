@@ -138,6 +138,9 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
   populateGroups();
   connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleItemsListWidget::groupsCombo_currentIndexChanged );
   connect( groupsCombo, &QComboBox::currentTextChanged, this, &QgsStyleItemsListWidget::updateModelFilters );
+
+  QgsSettings settings;
+  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
@@ -219,6 +222,17 @@ QgsStyle::StyleEntity QgsStyleItemsListWidget::currentEntityType() const
   const QModelIndex index = selection.at( 0 ).topLeft();
 
   return static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
+}
+
+void QgsStyleItemsListWidget::showEvent( QShowEvent *event )
+{
+  // restore header sizes on show event -- because this widget is used in multiple places simultaneously
+  // (e.g. layer styling dock, it's shown in both the symbology and labeling sections), then we want
+  // to ensure that a header resize for any of the widgets applies the next time any other item list widgets
+  // are shown.
+  QWidget::showEvent( event );
+  QgsSettings settings;
+  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 void QgsStyleItemsListWidget::populateGroups()

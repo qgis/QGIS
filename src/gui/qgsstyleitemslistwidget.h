@@ -122,6 +122,10 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
      */
     QgsStyle::StyleEntity currentEntityType() const;
 
+  protected:
+
+    void showEvent( QShowEvent *event ) override;
+
   signals:
 
     /**
