@@ -1021,11 +1021,11 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
 
     if ( layerWKBType == QgsWkbTypes::LineString )
     {
-      int size = 1 + 2 * sizeof( int ) + 2 * mCaptureList.size() * sizeof( double );
+      int size = 1 + 2 *  static_cast<int>( sizeof( int ) ) + 2 * mCaptureList.size() * static_cast<int>( sizeof( double ) );
       unsigned char *buf = new unsigned char[size];
 
       QgsWkbPtr wkbPtr( buf, size );
-      wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::LineString << mCaptureList.size();
+      wkbPtr << static_cast< char >( QgsApplication::endian() ) << QgsWkbTypes::LineString << mCaptureList.size();
 
       for ( QList<QgsPointXY>::const_iterator it = mCaptureList.constBegin(); it != mCaptureList.constEnd(); ++it )
       {
@@ -1043,11 +1043,11 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
     }
     else if ( layerWKBType == QgsWkbTypes::Polygon )
     {
-      int size = 1 + 3 * sizeof( int ) + 2 * ( mCaptureList.size() + 1 ) * sizeof( double );
+      int size = 1 + 3 * static_cast< int >( sizeof( int ) ) + 2 * ( mCaptureList.size() + 1 ) * static_cast< int >( sizeof( double ) );
       unsigned char *buf = new unsigned char[size];
 
       QgsWkbPtr wkbPtr( buf, size );
-      wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Polygon << 1 << mCaptureList.size() + 1;
+      wkbPtr << static_cast< char >( QgsApplication::endian() ) << QgsWkbTypes::Polygon << 1 << mCaptureList.size() + 1;
 
       QList<QgsPointXY>::iterator it;
       for ( it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
