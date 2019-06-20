@@ -15,6 +15,7 @@
 
 #include "qgs3dmaptoolidentify.h"
 
+#include "qgsapplication.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
@@ -96,6 +97,11 @@ void Qgs3DMapToolIdentify::deactivate()
   }
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
+}
+
+QCursor Qgs3DMapToolIdentify::cursor() const
+{
+  return QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify );
 }
 
 void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
