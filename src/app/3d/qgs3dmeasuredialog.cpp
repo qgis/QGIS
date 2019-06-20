@@ -1,5 +1,6 @@
 #include <QtMath>
 #include <QCloseEvent>
+#include <QPushButton>
 
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dmaptoolmeasureline.h"
@@ -10,6 +11,12 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   , mTool( tool )
 {
   setupUi( this );
+
+  // New button
+  QPushButton *newButton = new QPushButton( tr( "&New" ) );
+  buttonBox->addButton( newButton, QDialogButtonBox::ActionRole );
+  connect( newButton, &QAbstractButton::clicked, this, &Qgs3DMeasureDialog::restart );
+
   qInfo() << "3D Measure Dialog created";
   connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
 }
@@ -70,6 +77,11 @@ double Qgs3DMeasureDialog::lastDistance()
          );
 }
 
+void Qgs3DMeasureDialog::updateUi()
+{
+  editTotal->setText( QString::number( mTotal ) );
+}
+
 void Qgs3DMeasureDialog::reject()
 {
   saveWindowLocation();
@@ -83,6 +95,7 @@ void Qgs3DMeasureDialog::restart()
 
   mTable->clear();
   mTotal = 0.;
+  updateUi();
 }
 
 void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )

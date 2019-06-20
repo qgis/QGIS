@@ -28,6 +28,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Get last distance
     double lastDistance();
 
+    //! update UI
+    void updateUi();
+
   public slots:
     void reject() override;
 
