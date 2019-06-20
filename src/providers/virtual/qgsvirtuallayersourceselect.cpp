@@ -37,7 +37,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <QMessageBox>
 #include <QTextStream>
 
-QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode )
+QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
@@ -394,7 +394,7 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
       emit addVectorLayer( def.toString(), layerName );
     }
   }
-  if ( widgetMode() == QgsAbstractDataSourceWidgetMode::Normal )
+  if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }

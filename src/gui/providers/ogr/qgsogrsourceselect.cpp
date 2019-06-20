@@ -34,7 +34,7 @@
 
 #include <gdal.h>
 
-QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode widgetMode )
+QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
@@ -51,7 +51,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrSourceSelect::showHelp );
 
-  if ( mWidgetMode != QgsAbstractDataSourceWidgetMode::Normal )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
     this->layout()->setSizeConstraint( QLayout::SetNoConstraint );
   }

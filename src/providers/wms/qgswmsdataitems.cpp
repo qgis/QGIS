@@ -390,7 +390,7 @@ QList<QAction *> QgsWMSRootItem::actions( QWidget *parent )
 
 QWidget *QgsWMSRootItem::paramWidget()
 {
-  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, nullptr, QgsAbstractDataSourceWidgetMode::Manager );
+  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
   return select;
 }
 

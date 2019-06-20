@@ -249,7 +249,7 @@ QList<QAction *> QgsWCSRootItem::actions( QWidget *parent )
 
 QWidget *QgsWCSRootItem::paramWidget()
 {
-  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, nullptr, QgsAbstractDataSourceWidgetMode::Manager );
+  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsOWSSourceSelect::connectionsChanged, this, &QgsWCSRootItem::onConnectionsChanged );
   return select;
 }

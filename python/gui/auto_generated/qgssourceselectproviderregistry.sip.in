@@ -9,6 +9,7 @@
 
 
 
+
 class QgsSourceSelectProviderRegistry
 {
 %Docstring
@@ -65,7 +66,7 @@ Returns a (possibly empty) list of providers by data ``providerkey``
       const QString &name,
       QWidget *parent,
       Qt::WindowFlags fl,
-      QgsAbstractDataSourceWidgetMode widgetMode
+      QgsProviderRegistry::WidgetMode widgetMode
     );
 %Docstring
 Gets select widget from provider with ``name``

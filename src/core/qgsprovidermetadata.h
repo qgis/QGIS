@@ -127,7 +127,7 @@ class CORE_EXPORT QgsProviderMetadata
      * \since QGIS 3.0
      * \deprecated QGIS 3.10
      */
-    SIP_SKIP CreateDataProviderFunction createFunction() const;
+    SIP_SKIP Q_DECL_DEPRECATED CreateDataProviderFunction createFunction() const;
 
     /**
       * Initialize the provider

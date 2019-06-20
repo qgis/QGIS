@@ -55,6 +55,35 @@ class CORE_EXPORT QgsProviderRegistry
 {
 
   public:
+
+    /**
+     * Different ways a source select dialog can be used
+     */
+    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
+    enum WidgetMode
+    {
+
+      /**
+       * Basic mode when the widget is used as a standalone dialog. Originally used
+       * as GUI for individual "Add XXX layer" buttons in the main window.
+       * Likely not used in live code anymore.
+       */
+      None,
+
+      /**
+       * Used for the data source manager dialog where the widget is embedded as the main content
+       * for a particular tab.
+       */
+      Embedded,
+
+      /**
+       * Used by data items for QgsDataItem::paramWidget(). Originally used by QGIS Browser,
+       * but does not seem to be in live code anymore. The mode was meant to avoid some actions
+       * to keep the browser interface simple (supposedly).
+       */
+      Manager,
+    };
+
     //! Means of accessing canonical single instance
     static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
 

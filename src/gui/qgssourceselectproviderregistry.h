@@ -22,10 +22,11 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+#include "qgsproviderregistry.h"
+
 class QgsSourceSelectProvider;
 class QgsProviderGuiRegistry;
 class QgsAbstractDataSourceWidget;
-enum class QgsAbstractDataSourceWidgetMode;
 
 /**
  * \ingroup gui
@@ -82,7 +83,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
       const QString &name,
       QWidget *parent,
       Qt::WindowFlags fl,
-      QgsAbstractDataSourceWidgetMode widgetMode
+      QgsProviderRegistry::WidgetMode widgetMode
     );
   private:
 #ifdef SIP_RUN

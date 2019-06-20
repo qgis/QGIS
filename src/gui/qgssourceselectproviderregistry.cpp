@@ -94,7 +94,7 @@ QgsAbstractDataSourceWidget *QgsSourceSelectProviderRegistry::createSelectionWid
   const QString &name,
   QWidget *parent,
   Qt::WindowFlags fl,
-  QgsAbstractDataSourceWidgetMode widgetMode )
+  QgsProviderRegistry::WidgetMode widgetMode )
 {
   QgsSourceSelectProvider *provider = providerByName( name );
   if ( !provider )

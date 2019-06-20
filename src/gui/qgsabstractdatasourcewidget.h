@@ -23,40 +23,13 @@
 #include "qgis_gui.h"
 
 #include "qgsproviderguimetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
 #include <QDialog>
 #include <QDialogButtonBox>
 
 class QgsMapCanvas;
 
-/**
- * \ingroup gui
- * Different ways a source select dialog can be used
- * \since QGIS 3.10
- */
-enum class QgsAbstractDataSourceWidgetMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractDataSourceWidget, WidgetMode ) : int
-  {
-
-  /**
-   * Basic mode when the widget is used as a standalone dialog. Originally used
-   * as GUI for individual "Add XXX layer" buttons in the main window.
-   * Likely not used in live code anymore.
-   */
-  Normal,
-
-  /**
-   * Used for the data source manager dialog where the widget is embedded as the main content
-   * for a particular tab.
-   */
-  Embedded,
-
-  /**
-   * Used by data items for QgsDataItem::paramWidget(). Originally used by QGIS Browser,
-   * but does not seem to be in live code anymore. The mode was meant to avoid some actions
-   * to keep the browser interface simple (supposedly).
-   */
-  Manager,
-};
 
 /**
  * \ingroup gui
@@ -76,7 +49,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * Store a pointer to the map canvas to retrieve extent and CRS
      * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
      */
-    void setMapCanvas( const QgsMapCanvas * mapCanvas );
+    void setMapCanvas( const QgsMapCanvas *mapCanvas );
 
 
   public slots:
@@ -156,10 +129,10 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   protected:
 
     //! Constructor
-    QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsAbstractDataSourceWidgetMode widgetMode = QgsAbstractDataSourceWidgetMode::Normal );
+    QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     //! Returns the widget mode
-    QgsAbstractDataSourceWidgetMode widgetMode() const;
+    QgsProviderRegistry::WidgetMode widgetMode() const;
 
     //! Returns the map canvas (can be NULLPTR)
     const QgsMapCanvas *mapCanvas() const;
@@ -172,7 +145,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 
   private:
     QPushButton *mAddButton  = nullptr;
-    QgsAbstractDataSourceWidgetMode mWidgetMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode;
     QgsMapCanvas const *mMapCanvas = nullptr;
 
 };

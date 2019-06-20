@@ -28,7 +28,7 @@
 #include <QMessageBox>
 
 QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName,
-    const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsAbstractDataSourceWidgetMode theWidgetMode )
+    const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mOgrDriverName( theSettingsKey )
   , mName( theName )
@@ -62,7 +62,7 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOgrDbSourceSelect::buildQuery );
   mBuildQueryButton->setEnabled( false );
 
-  if ( widgetMode() != QgsAbstractDataSourceWidgetMode::Normal )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     mHoldDialogOpen->hide();
   }
@@ -311,7 +311,7 @@ void QgsOgrDbSourceSelect::addButtonClicked()
     {
       emit addRasterLayer( info.first, info.second, QStringLiteral( "gdal" ) );
     }
-    if ( widgetMode() == QgsAbstractDataSourceWidgetMode::Normal && ! mHoldDialogOpen->isChecked() )
+    if ( widgetMode() == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
     {
       accept();
     }

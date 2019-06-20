@@ -32,6 +32,17 @@ ogr and postgres.
 #include "qgsproviderregistry.h"
 %End
   public:
+
+    enum WidgetMode
+    {
+
+      None,
+
+      Embedded,
+
+      Manager,
+    };
+
     static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
 %Docstring
 Means of accessing canonical single instance
