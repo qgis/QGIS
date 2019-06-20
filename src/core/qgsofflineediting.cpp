@@ -839,7 +839,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     copySymbology( layer, newLayer );
 
     //remove constrainst of fields that use defaultValueClauses from provider on original
-    for ( const QgsField &field : layer->fields() )
+    const auto fields = layer->fields();
+    for ( const QgsField &field : fields )
     {
       if ( !layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( layer->fields().indexOf( field.name() ) ) ).isEmpty() )
       {
