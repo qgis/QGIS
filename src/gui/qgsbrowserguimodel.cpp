@@ -39,7 +39,11 @@ Qt::ItemFlags QgsBrowserGuiModel::flags( const QModelIndex &index ) const
   Qt::ItemFlags flags = QgsBrowserModel::flags( index );
   QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
 
-  if ( ptr->acceptDrop() )
+  Q_NOWARN_DEPRECATED_PUSH
+  bool legacyAcceptDrop = ptr->acceptDrop();
+  Q_NOWARN_DEPRECATED_POP
+
+  if ( legacyAcceptDrop )
     // legacy support for data items
     flags |= Qt::ItemIsDropEnabled;
   else
@@ -67,9 +71,17 @@ bool QgsBrowserGuiModel::dropMimeData( const QMimeData *data, Qt::DropAction act
     return false;
   }
 
+  Q_NOWARN_DEPRECATED_PUSH
+  bool legacyAcceptDrop = destItem->acceptDrop();
+  Q_NOWARN_DEPRECATED_POP
+
   // legacy support for data items
-  if ( destItem->acceptDrop() )
+  if ( legacyAcceptDrop )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     return destItem->handleDrop( data, action );
+    Q_NOWARN_DEPRECATED_POP
+  }
   else
   {
     // new support

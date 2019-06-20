@@ -93,7 +93,7 @@ class CORE_EXPORT QgsProviderMetadata
      * \since QGIS 3.0
      * \deprecated QGIS 3.10
      */
-    SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
+    SIP_SKIP Q_DECL_DEPRECATED QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
     //! dtor
     virtual ~QgsProviderMetadata();

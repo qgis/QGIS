@@ -28,6 +28,7 @@ class QgsGrassRasterProviderMetadata: public QgsProviderMetadata
     QgsGrassRasterProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
     QgsGrassRasterProvider *createProvider( const QString *uri, const QgsDataProvider::ProviderOptions &options ) override
     {
+      Q_UNUSED( options );
       return new QgsGrassRasterProvider( *uri );
     }
 };
