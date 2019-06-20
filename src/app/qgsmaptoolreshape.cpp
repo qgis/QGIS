@@ -145,7 +145,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
     {
       // in case of a binding line, we just want to update the line from
       // the starting point and not both side
-      if ( isBinding && !geom.asPolyline().contains( pts.constFirst() ) )
+      if ( isBinding && !geom.asPolyline().contains( pts.first() ) )
         continue;
 
       reshapeReturn = geom.reshapeGeometry( reshapeLineString );
