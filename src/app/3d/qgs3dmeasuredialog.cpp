@@ -6,6 +6,8 @@
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qdebug.h"
+#include "qgsmapcanvas.h"
+#include "qgisapp.h"
 
 Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
@@ -98,7 +100,127 @@ double Qgs3DMeasureDialog::lastDistance()
 
 void Qgs3DMeasureDialog::updateUi()
 {
+  // Set tooltip to indicate how we calculate measurements
+  QString toolTip = tr( "The calculations are based on:" );
+
+  mConvertToDisplayUnits = true;
+  QgsMapCanvas *canvas2D = QgisApp::instance()->mapCanvas();
+
+  if ( mCartesian->isChecked() || !canvas2D->mapSettings().destinationCrs().isValid() )
+  {
+    toolTip += "<br> * ";
+    if ( mCartesian->isChecked() )
+    {
+      toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
+      mConvertToDisplayUnits = true;
+    }
+    else
+    {
+      toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+      toolTip += "<br> * " + tr( "Units are unknown." );
+      mConvertToDisplayUnits = false;
+    }
+    mDa.setEllipsoid( GEO_NONE );
+  }
+  else if ( canvas2D->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+            && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
+  {
+    //both source and destination units are degrees
+    toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
+                 canvas2D->mapSettings().destinationCrs().description() );
+    mDa.setEllipsoid( GEO_NONE );
+    mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
+  }
+  else
+  {
+    QgsUnitTypes::DistanceUnit resultUnit = QgsUnitTypes::DistanceUnknownUnit;
+    resultUnit = canvas2D->mapSettings().destinationCrs().mapUnits();
+    toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
+    toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
+               canvas2D->mapSettings().destinationCrs().description() );
+    setWindowTitle( tr( "Measure" ) );
+
+    if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
+         QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Standard )
+    {
+      toolTip += QLatin1String( "<br> * Distance is roughly converted to meters by using scale at equator (1 degree = 111319.49 meters)." );
+      resultUnit = QgsUnitTypes::DistanceMeters;
+    }
+    else if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
+              QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Geographic )
+    {
+      toolTip += QLatin1String( "<br> * Distance is roughly converted to degrees by using scale at equator (1 degree = 111319.49 meters)." );
+      resultUnit = QgsUnitTypes::DistanceDegrees;
+    }
+    if ( resultUnit != mDistanceUnits )
+    {
+      if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
+           QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Standard )
+      {
+        // only shown if both conditions are true:
+        // - the display unit is a standard distance measurement (e.g., feet)
+        // - either the canvas units is also a standard distance OR we are using an ellipsoid (in which case the
+        //   value will be in meters)
+        toolTip += "<br> * " + tr( "The value is converted from %1 to %2." ).arg( QgsUnitTypes::toString( resultUnit ),
+                   QgsUnitTypes::toString( mDistanceUnits ) );
+      }
+      else
+      {
+        //should not be possible!
+      }
+    }
+  }
+  editTotal->setToolTip( toolTip );
+  mTable->setToolTip( toolTip );
+  mNotesLabel->setText( toolTip );
   editTotal->setText( QString::number( mTotal ) );
+
+  if ( mUseMapUnits )
+  {
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
+    mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mMapDistanceUnits ) ) ) );
+  }
+  else
+  {
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mDistanceUnits ) );
+    if ( mDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+      mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) ) );
+    else
+      mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
+  }
+  QVector<QgsPoint>::const_iterator it;
+  bool b = true; // first point
+
+  QgsPoint p1, p2;
+  mTotal = 0;
+  QVector< QgsPoint > tmpPoints = mTool->points();
+  for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
+  {
+    p2 = *it;
+    if ( !b )
+    {
+      double d = -1;
+      d = mDa.measureLine( p1, p2 );
+      if ( mConvertToDisplayUnits )
+      {
+        if ( mDistanceUnits == QgsUnitTypes::DistanceUnknownUnit && mMapDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+          d = convertLength( d, mMapDistanceUnits );
+        else
+          d = convertLength( d, mDistanceUnits );
+      }
+
+      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( d, 'f', mDecimalPlaces ) ) );
+      item->setTextAlignment( 0, Qt::AlignRight );
+      mTable->addTopLevelItem( item );
+      mTable->scrollToItem( item );
+    }
+    p1 = p2;
+    b = false;
+  }
+
+  mTotal = mDa.measureLine3D( mTool->points() );
+  mTable->show(); // Show the table with items
+  editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
 }
 
 void Qgs3DMeasureDialog::repopulateComboBoxUnits()
@@ -152,4 +274,28 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
   mTable->clear();
   mTotal = 0.;
   updateUi();
+}
+
+double Qgs3DMeasureDialog::convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const
+{
+  return mDa.convertLengthMeasurement( length, toUnit );
+}
+
+QString Qgs3DMeasureDialog::formatDistance( double distance, bool convertUnits ) const
+{
+  QgsSettings settings;
+  bool baseUnit = settings.value( QStringLiteral( "qgis/3Dmeasure/keepbaseunit" ), true ).toBool();
+
+  if ( convertUnits )
+    distance = convertLength( distance, mDistanceUnits );
+
+  int decimals = mDecimalPlaces;
+  if ( mDistanceUnits == QgsUnitTypes::DistanceDegrees  && distance < 1 )
+  {
+    // special handling for degrees - because we can't use smaller units (eg m->mm), we need to make sure there's
+    // enough decimal places to show a usable measurement value
+    int minPlaces = std::round( std::log10( 1.0 / distance ) ) + 1;
+    decimals = std::max( decimals, minPlaces );
+  }
+  return QgsDistanceArea::formatDistance( distance, decimals, mDistanceUnits, baseUnit );
 }

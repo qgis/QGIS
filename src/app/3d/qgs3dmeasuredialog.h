@@ -7,6 +7,7 @@
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dmapcanvas.h"
 #include "qgsunittypes.h"
+#include "qgsdistancearea.h"
 
 
 class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
@@ -59,12 +60,22 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Indicates whether the user chose "Map units" instead of directly selecting a unit
     bool mUseMapUnits = true;
 
+    //! Indicates whether we need to convert units.
+    bool mConvertToDisplayUnits = true;
+
     //! Current unit for distance values
     QgsUnitTypes::DistanceUnit mDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
 
     //! Current map unit for distance values
     QgsUnitTypes::DistanceUnit mMapDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
 
+    //! Our measurement object
+    QgsDistanceArea mDa;
+
+    double convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const;
+
+    //! formats distance to most appropriate units
+    QString formatDistance( double distance, bool convertUnits = true ) const;
 };
 
 #endif // QGS3DMEASUREDIALOG_H
