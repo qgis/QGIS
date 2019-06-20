@@ -53,6 +53,8 @@ void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer
                                          worldIntersection.z() ), mMeasureLineTool->mCanvas->map()->origin() );
   QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
   qInfo() << "Coord (handlePickOnVectorLayer): " << pt.x() << " " << pt.y() << " " << pt.z();
+
+  mMeasureLineTool->mDone = false;
   mMeasureLineTool->addPoint( pt );
 }
 
@@ -150,7 +152,10 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
                           worldIntersection.y(),
                           worldIntersection.z() ), mCanvas->map()->origin() );
   qInfo() << "Coord (onTerrainPicked): " << mapCoords.x() << " " << mapCoords.y() << " " << mapCoords.z();
+
+  mDone = false;
   addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
+
 }
 
 
@@ -194,6 +199,8 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
   qInfo() << "Current line: " << newMeasurementLine->asWkt();
   mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
   mMeasurementLayer->commitChanges();
+
+  mDialog->addPoint();
 }
 
 void Qgs3DMapToolMeasureLine::restart()
