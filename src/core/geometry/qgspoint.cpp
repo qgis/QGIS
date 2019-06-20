@@ -29,6 +29,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <nlohmann/json.hpp>
+#include <QTextStream>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -86,6 +87,40 @@ QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, dou
 {
   Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
   mWkbType = wkbType;
+}
+
+QString QgsPoint::toString( int precision ) const
+{
+  if ( precision < 0 )
+  {
+    QString rep;
+    QTextStream ot( &rep );
+    ot.setRealNumberPrecision( 12 );
+    if ( !is3D() && !isMeasure() )
+    {
+      ot << "(" << mX << ", " << mY << ")";
+    }
+    else if ( is3D() && !isMeasure() )
+    {
+      ot << "Z(" << mX << ", " << mY << ", " << mZ << ")";
+    }
+    else if ( !is3D() && isMeasure() )
+    {
+      ot << "M(" << mX << ", " << mY << ", " << mM << ")";
+    }
+    else
+    {
+      ot << "ZM(" << mX << ", " << mY << ", " << mZ << ", " << mM << ")";
+    }
+
+    return rep;
+  }
+  else
+  {
+    QString x = std::isfinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
+    QString y = std::isfinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
+    return QStringLiteral( "%1,%2" ).arg( x, y );
+  }
 }
 
 /***************************************************************************

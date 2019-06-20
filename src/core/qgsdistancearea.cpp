@@ -347,6 +347,62 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
   return result;
 }
 
+double QgsDistanceArea::measureLine3D( const QVector<QgsPoint> &points ) const
+{
+  if ( points.size() < 2 )
+    return 0;
+
+  double total = 0;
+  QgsPoint p1, p2;
+
+  try
+  {
+    p1 = points[0];
+
+    for ( QVector<QgsPoint>::const_iterator i = points.constBegin(); i != points.constEnd(); ++i )
+    {
+      p2 = *i;
+      total += measureLine( p1, p2 );
+
+      p1 = p2;
+    }
+
+    return total;
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse )
+    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
+    return 0.0;
+  }
+
+}
+
+
+double QgsDistanceArea::measureLine3D( const QgsPoint &p1, const QgsPoint &p2 ) const
+{
+  double result;
+
+  try
+  {
+    QgsPoint pp1 = p1, pp2 = p2;
+
+    QgsDebugMsgLevel( QStringLiteral( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
+
+    QgsDebugMsgLevel( QStringLiteral( "Cartesian calculation on canvas coordinates" ), 4 );
+    result = p2.distance( p1 );
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse )
+    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
+    result = 0.0;
+  }
+  QgsDebugMsgLevel( QStringLiteral( "The result was %1" ).arg( result ), 3 );
+  return result;
+
+}
+
 double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double distance, double azimuth, QgsPointXY *projectedPoint ) const
 {
   double result = 0.0;
@@ -789,6 +845,11 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
 QgsUnitTypes::DistanceUnit QgsDistanceArea::lengthUnits() const
 {
   return willUseEllipsoid() ? QgsUnitTypes::DistanceMeters : mCoordTransform.sourceCrs().mapUnits();
+}
+
+QgsUnitTypes::DistanceUnit QgsDistanceArea::lengthUnits3D() const
+{
+  return mCoordTransform.sourceCrs().mapUnits();
 }
 
 QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const

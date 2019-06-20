@@ -227,6 +227,31 @@ Measures the distance between two points.
 .. seealso:: :py:func:`lengthUnits`
 %End
 
+    double measureLine3D( const QVector<QgsPoint> &points ) const;
+%Docstring
+Measures the length of a line with multiple segments in 3D.
+Support cartesian calculation only.
+
+:param points: list of points in line
+
+:return: length of line. The units for the returned length can be retrieved by calling lengthUnits3D().
+
+.. seealso:: :py:func:`lengthUnits3D`
+%End
+
+    double measureLine3D( const QgsPoint &p1, const QgsPoint &p2 ) const;
+%Docstring
+Measures the distance between two points in 3D.
+Support cartesian calculation only.
+
+:param p1: start of line
+:param p2: end of line
+
+:return: distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
+
+.. seealso:: :py:func:`lengthUnits`
+%End
+
     double measureLineProjected( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2, QgsPointXY *projectedPoint /Out/ = 0 ) const;
 %Docstring
 Calculates the distance from one point with distance in meters and azimuth (direction)
@@ -258,6 +283,11 @@ Returns the units of distance for length calculations made by this object.
 .. seealso:: :py:func:`areaUnits`
 
 .. versionadded:: 2.14
+%End
+
+    QgsUnitTypes::DistanceUnit lengthUnits3D() const;
+%Docstring
+Returns the units of distance for length calculations made by this object in 3D.
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;

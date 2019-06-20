@@ -267,6 +267,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 
     /**
+     * Returns a string representation of the point (x, y, z, m) with a preset \a precision.
+     * The format is either (x, y), Z(x, y, z), M(x, y, m), or ZM(x, y, z, m)
+     * If  \a precision is -1, then a default precision will be used.
+     */
+    QString toString( int precision = -1 ) const;
+
+    /**
      * Returns the distance between this point and a specified x, y coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
