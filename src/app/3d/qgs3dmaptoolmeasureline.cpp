@@ -67,13 +67,15 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mPickHandler.reset( new Qgs3DMapToolMeasureLinePickHandler( this ) );
 
   // Line style
-  QgsLine3DSymbol *mLineSymbol = new QgsLine3DSymbol;
+  mLineSymbol = new QgsLine3DSymbol;
   mLineSymbol->setRenderAsSimpleLines( true );
   mLineSymbol->setWidth( 4 );
   QgsPhongMaterialSettings phongMaterial;
   phongMaterial.setAmbient( Qt::yellow );
   phongMaterial.setDiffuse( Qt::green );
   mLineSymbol->setMaterial( phongMaterial );
+
+  mLineSymbolRenderer = new QgsVectorLayer3DRenderer( mLineSymbol );
 
   // Dialog
   mDialog = new Qgs3DMeasureDialog( this );
@@ -176,7 +178,6 @@ void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
 
 void Qgs3DMapToolMeasureLine::setMeasurementLayerRenderer( QgsVectorLayer *layer )
 {
-  QgsVectorLayer3DRenderer *mLineSymbolRenderer = new QgsVectorLayer3DRenderer( mLineSymbol );
   layer->setRenderer3D( mLineSymbolRenderer );
   mLineSymbolRenderer->setLayer( layer );
 }

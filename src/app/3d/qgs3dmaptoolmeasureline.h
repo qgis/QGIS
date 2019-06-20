@@ -23,6 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint.h"
+#include "qgsvectorlayer3drenderer.h"
 //#include "qgs3dmeasuredialog.h"
 
 #include <memory>
@@ -83,6 +84,8 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     QgsFeature *mMeasurementFeature = nullptr;
     QgsLineString *mMeasurementLine = nullptr;
     QgsLine3DSymbol *mLineSymbol = nullptr;
+    QgsVectorLayer3DRenderer *mLineSymbolRenderer = nullptr;
+
 
     //! Store points
     QVector<QgsPoint> mPoints;
