@@ -44,8 +44,7 @@ class QgsProviderGuiRegistry;
 class GUI_EXPORT QgsProjectStorageGuiRegistry
 {
   public:
-    //! Initializes the registry. Do not create new instances in client code - use QgsGui::projectStorageGuiRegistry() instead
-    QgsProjectStorageGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+    QgsProjectStorageGuiRegistry();
     ~QgsProjectStorageGuiRegistry();
 
     //! QgsProjectStorageGuiRegistry cannot be copied.
@@ -67,6 +66,12 @@ class GUI_EXPORT QgsProjectStorageGuiRegistry
 
     //! Unregisters a storage backend and destroys its instance
     void unregisterProjectStorage( QgsProjectStorageGuiProvider *storage );
+
+    /**
+     * Initializes the registry. The registry needs to be passed explicitly
+     * (instead of using singleton) because this gets called from QgsGui constructor.
+     */
+    void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 
   private:
 #ifdef SIP_RUN

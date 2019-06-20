@@ -184,9 +184,13 @@ QgsGui::QgsGui()
 
   // provider gui registry initialize QgsProviderRegistry too
   mProviderGuiRegistry = new QgsProviderGuiRegistry( QgsApplication::pluginPath() );
-  mProjectStorageGuiRegistry = new QgsProjectStorageGuiRegistry( mProviderGuiRegistry );
-  mDataItemGuiProviderRegistry = new QgsDataItemGuiProviderRegistry( mProviderGuiRegistry );
-  mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry( mProviderGuiRegistry );
+  mProjectStorageGuiRegistry = new QgsProjectStorageGuiRegistry();
+  mDataItemGuiProviderRegistry = new QgsDataItemGuiProviderRegistry();
+  mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
+
+  mProjectStorageGuiRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
+  mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
+  mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
   mShortcutsManager = new QgsShortcutsManager();

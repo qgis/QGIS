@@ -19,19 +19,7 @@
 
 #include <memory>
 
-QgsSourceSelectProviderRegistry::QgsSourceSelectProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry )
-{
-  const QStringList providersList = providerGuiRegistry->providerList();
-  for ( const QString &key : providersList )
-  {
-    const QList<QgsSourceSelectProvider *> providerList = providerGuiRegistry->sourceSelectProviders( key );
-    // the function is a factory - we keep ownership of the returned providers
-    for ( auto provider : providerList )
-    {
-      addProvider( provider );
-    }
-  }
-}
+QgsSourceSelectProviderRegistry::QgsSourceSelectProviderRegistry() = default;
 
 QgsSourceSelectProviderRegistry::~QgsSourceSelectProviderRegistry()
 {
@@ -61,6 +49,24 @@ bool QgsSourceSelectProviderRegistry::removeProvider( QgsSourceSelectProvider *p
     return true;
   }
   return false;
+}
+
+
+void QgsSourceSelectProviderRegistry::initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry )
+{
+  if ( !providerGuiRegistry )
+    return;
+
+  const QStringList providersList = providerGuiRegistry->providerList();
+  for ( const QString &key : providersList )
+  {
+    const QList<QgsSourceSelectProvider *> providerList = providerGuiRegistry->sourceSelectProviders( key );
+    // the function is a factory - we keep ownership of the returned providers
+    for ( auto provider : providerList )
+    {
+      addProvider( provider );
+    }
+  }
 }
 
 QgsSourceSelectProvider *QgsSourceSelectProviderRegistry::providerByName( const QString &name )

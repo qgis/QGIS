@@ -29,10 +29,7 @@ QgsProjectStorageGuiRegistry is not usually directly created, but rather accesse
 #include "qgsprojectstorageguiregistry.h"
 %End
   public:
-    QgsProjectStorageGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
-%Docstring
-Initializes the registry. Do not create new instances in client code - use QgsGui.projectStorageGuiRegistry() instead
-%End
+    QgsProjectStorageGuiRegistry();
     ~QgsProjectStorageGuiRegistry();
 
 
@@ -59,6 +56,12 @@ Registers a storage backend and takes ownership of it
     void unregisterProjectStorage( QgsProjectStorageGuiProvider *storage );
 %Docstring
 Unregisters a storage backend and destroys its instance
+%End
+
+    void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+%Docstring
+Initializes the registry. The registry needs to be passed explicitly
+(instead of using singleton) because this gets called from QgsGui constructor.
 %End
 
   private:

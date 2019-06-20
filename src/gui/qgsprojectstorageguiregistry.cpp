@@ -19,23 +19,7 @@
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsproviderguiregistry.h"
 
-QgsProjectStorageGuiRegistry::QgsProjectStorageGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry )
-{
-  if ( !providerGuiRegistry )
-    return;
-
-  const QStringList providersList = providerGuiRegistry->providerList();
-
-  for ( const QString &key : providersList )
-  {
-    const QList<QgsProjectStorageGuiProvider *> providerList = providerGuiRegistry->projectStorageGuiProviders( key );
-    // the function is a factory - we keep ownership of the returned providers
-    for ( QgsProjectStorageGuiProvider *provider : providerList )
-    {
-      mBackends[key] = provider;
-    }
-  }
-}
+QgsProjectStorageGuiRegistry::QgsProjectStorageGuiRegistry() = default;
 
 QgsProjectStorageGuiRegistry::~QgsProjectStorageGuiRegistry()
 {
@@ -72,4 +56,21 @@ void QgsProjectStorageGuiRegistry::registerProjectStorage( QgsProjectStorageGuiP
 void QgsProjectStorageGuiRegistry::unregisterProjectStorage( QgsProjectStorageGuiProvider *storage )
 {
   delete mBackends.take( storage->type() );
+}
+
+void QgsProjectStorageGuiRegistry::initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry )
+{
+  if ( !providerGuiRegistry )
+    return;
+
+  const QStringList providersList = providerGuiRegistry->providerList();
+  for ( const QString &key : providersList )
+  {
+    const QList<QgsProjectStorageGuiProvider *> providerList = providerGuiRegistry->projectStorageGuiProviders( key );
+    // the function is a factory - we keep ownership of the returned providers
+    for ( QgsProjectStorageGuiProvider *provider : providerList )
+    {
+      mBackends[key] = provider;
+    }
+  }
 }

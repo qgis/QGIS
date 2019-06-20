@@ -27,11 +27,7 @@ QgsSourceSelectProviderRegistry is not usually directly created, but rather acce
 %End
   public:
 
-    QgsSourceSelectProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
-%Docstring
-Constructor for QgsSourceSelectProviderRegistry.
-%End
-
+    QgsSourceSelectProviderRegistry();
     ~QgsSourceSelectProviderRegistry();
 
 
@@ -50,6 +46,14 @@ Add a ``provider`` implementation. Takes ownership of the object.
 Remove ``provider`` implementation from the list (``provider`` object is deleted)
 
 :return: ``True`` if the provider was actually removed and deleted
+%End
+
+    void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+%Docstring
+Initializes the registry. The registry needs to be passed explicitly
+(instead of using singleton) because this gets called from QgsGui constructor.
+
+.. versionadded:: 3.10
 %End
 
     QgsSourceSelectProvider *providerByName( const QString &name );

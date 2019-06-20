@@ -37,8 +37,7 @@ class QgsProviderGuiRegistry;
 class GUI_EXPORT QgsDataItemGuiProviderRegistry
 {
   public:
-    //! Initializes the registry. Do not create new instances in client code - use QgsGui::dataItemGuiProviderRegistry() instead
-    QgsDataItemGuiProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+    QgsDataItemGuiProviderRegistry();
     ~QgsDataItemGuiProviderRegistry();
 
     //! QgsDataItemGuiProviderRegistry cannot be copied.
@@ -62,6 +61,13 @@ class GUI_EXPORT QgsDataItemGuiProviderRegistry
      * The provider object is automatically deleted.
      */
     void removeProvider( QgsDataItemGuiProvider *provider );
+
+    /**
+     * Initializes the registry. The registry needs to be passed explicitly
+     * (instead of using singleton) because this gets called from QgsGui constructor.
+     * \since QGIS 3.10
+     */
+    void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 
   private:
 #ifdef SIP_RUN

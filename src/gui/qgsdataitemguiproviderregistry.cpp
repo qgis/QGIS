@@ -19,20 +19,7 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsproviderguiregistry.h"
 
-QgsDataItemGuiProviderRegistry::QgsDataItemGuiProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry )
-{
-  if ( !providerGuiRegistry )
-    return;
-
-  const QStringList providersList = providerGuiRegistry->providerList();
-
-  for ( const QString &key : providersList )
-  {
-    const QList<QgsDataItemGuiProvider *> providerList = providerGuiRegistry->dataItemGuiProviders( key );
-    // the function is a factory - we keep ownership of the returned providers
-    mProviders << providerList;
-  }
-}
+QgsDataItemGuiProviderRegistry::QgsDataItemGuiProviderRegistry() = default;
 
 QgsDataItemGuiProviderRegistry::~QgsDataItemGuiProviderRegistry()
 {
@@ -49,4 +36,19 @@ void QgsDataItemGuiProviderRegistry::removeProvider( QgsDataItemGuiProvider *pro
   int index = mProviders.indexOf( provider );
   if ( index >= 0 )
     delete mProviders.takeAt( index );
+}
+
+void QgsDataItemGuiProviderRegistry::initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry )
+{
+  if ( !providerGuiRegistry )
+    return;
+
+  const QStringList providersList = providerGuiRegistry->providerList();
+
+  for ( const QString &key : providersList )
+  {
+    const QList<QgsDataItemGuiProvider *> providerList = providerGuiRegistry->dataItemGuiProviders( key );
+    // the function is a factory - we keep ownership of the returned providers
+    mProviders << providerList;
+  }
 }

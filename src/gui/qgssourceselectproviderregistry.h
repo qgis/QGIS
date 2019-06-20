@@ -42,11 +42,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
 {
   public:
 
-    /**
-     * Constructor for QgsSourceSelectProviderRegistry.
-     */
-    QgsSourceSelectProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
-
+    QgsSourceSelectProviderRegistry();
     ~QgsSourceSelectProviderRegistry();
 
     //! QgsDataItemProviderRegistry cannot be copied.
@@ -65,6 +61,13 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
      * \returns TRUE if the provider was actually removed and deleted
      */
     bool removeProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
+
+    /**
+     * Initializes the registry. The registry needs to be passed explicitly
+     * (instead of using singleton) because this gets called from QgsGui constructor.
+     * \since QGIS 3.10
+     */
+    void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 
     //! Returns a provider by \a name or NULLPTR if not found
     QgsSourceSelectProvider *providerByName( const QString &name );
