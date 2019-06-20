@@ -38,25 +38,13 @@ library object.
   public:
 
 
- QgsProviderMetadata( const QString &key, const QString &description, const QString &library ) /Deprecated/;
+    QgsProviderMetadata( const QString &key, const QString &description, const QString &library = QString() );
 %Docstring
 Constructor for provider metadata
 
 :param key: provider key
 :param description: provider description
-:param provider: plugin library name
-
-.. deprecated:: QGIS 3.10
-%End
-
-    QgsProviderMetadata( const QString &key, const QString &description );
-%Docstring
-Constructor for provider metadata
-
-:param key: provider key
-:param description: provider description
-
-.. versionadded:: 3.10
+:param library: plugin library file name (empty if the provider is not loaded from a library)
 %End
 
 

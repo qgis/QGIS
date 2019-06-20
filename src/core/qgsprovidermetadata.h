@@ -72,19 +72,9 @@ class CORE_EXPORT QgsProviderMetadata
      * Constructor for provider metadata
      * \param key provider key
      * \param description provider description
-     * \param provider plugin library name
-     *
-     * \deprecated QGIS 3.10
+     * \param library plugin library file name (empty if the provider is not loaded from a library)
      */
-    Q_DECL_DEPRECATED QgsProviderMetadata( const QString &key, const QString &description, const QString &library ) SIP_DEPRECATED;
-
-    /**
-     * Constructor for provider metadata
-     * \param key provider key
-     * \param description provider description
-     * \since QGIS 3.10
-     */
-    QgsProviderMetadata( const QString &key, const QString &description );
+    QgsProviderMetadata( const QString &key, const QString &description, const QString &library = QString() );
 
     /**
      * Metadata for provider with direct provider creation function pointer, where

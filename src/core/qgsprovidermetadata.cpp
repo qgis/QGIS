@@ -28,13 +28,6 @@ QgsProviderMetadata::QgsProviderMetadata( QString const &key,
   , mLibrary( library )
 {}
 
-QgsProviderMetadata::QgsProviderMetadata( const QString &_key, const QString &description ):
-  mKey( _key )
-  , mDescription( description )
-{
-
-}
-
 QgsProviderMetadata::QgsProviderMetadata( const QString &key, const QString &description, const CreateDataProviderFunction &createFunc )
   : mKey( key )
   , mDescription( description )
