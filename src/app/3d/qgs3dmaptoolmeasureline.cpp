@@ -56,6 +56,7 @@ void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer
 
   mMeasureLineTool->mDone = false;
   mMeasureLineTool->addPoint( pt );
+  mMeasureLineTool->mDialog->show();
 }
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
@@ -76,6 +77,8 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
 
   // Dialog
   mDialog = new Qgs3DMeasureDialog( this );
+  mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
+  mDialog->restorePosition();
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -155,6 +158,7 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
 
   mDone = false;
   addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
+  mDialog->show();
 
 }
 

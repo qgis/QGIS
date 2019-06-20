@@ -1,4 +1,5 @@
 #include <QtMath>
+#include <QCloseEvent>
 
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dmaptoolmeasureline.h"
@@ -10,6 +11,24 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 {
   setupUi( this );
   qInfo() << "3D Measure Dialog created";
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &Qgs3DMeasureDialog::reject );
+}
+
+void Qgs3DMeasureDialog::saveWindowLocation()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/3DMeasure/geometry" ), saveGeometry() );
+  const QString &key = "/Windows/3DMeasure/h";
+  settings.setValue( key, height() );
+}
+
+void Qgs3DMeasureDialog::restorePosition()
+{
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/3DMeasure/geometry" ) ).toByteArray() );
+  int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
+  resize( width(), wh );
+//    updateUi();
 }
 
 void Qgs3DMeasureDialog::addPoint()
@@ -31,6 +50,10 @@ void Qgs3DMeasureDialog::addPoint()
       editTotal->setText( QString::number( mTotal ) );
     }
   }
+  else
+  {
+    editTotal->setText( QString::number( mTotal ) );
+  }
 }
 
 double Qgs3DMeasureDialog::lastDistance()
@@ -45,4 +68,25 @@ double Qgs3DMeasureDialog::lastDistance()
            ( lastPoint.y() - secondLastPoint.y() ) * ( lastPoint.y() - secondLastPoint.y() ) +
            ( lastPoint.z() - secondLastPoint.z() ) * ( lastPoint.z() - secondLastPoint.z() )
          );
+}
+
+void Qgs3DMeasureDialog::reject()
+{
+  saveWindowLocation();
+  restart();
+  QDialog::close();
+}
+
+void Qgs3DMeasureDialog::restart()
+{
+  mTool->restart();
+
+  mTable->clear();
+  mTotal = 0.;
+}
+
+void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
+{
+  reject();
+  e->accept();
 }
