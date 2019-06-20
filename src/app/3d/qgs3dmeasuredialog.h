@@ -36,6 +36,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Populating unit combo box
     void repopulateComboBoxUnits();
 
+    //! Remove last point
+    void removeLastPoint();
+
   public slots:
     void reject() override;
 

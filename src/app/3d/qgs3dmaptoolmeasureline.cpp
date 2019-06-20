@@ -72,6 +72,12 @@ void Qgs3DMapToolMeasureLinePickHandler::handlePickOnVectorLayer( QgsVectorLayer
     qInfo() << "Finish measurement";
     mMeasureLineTool->mDone = true;
   }
+  else if ( event->button() == Qt3DRender::QPickEvent::MiddleButton )
+  {
+    qInfo() << "Undo - middle button";
+    mMeasureLineTool->undo();
+
+  }
 }
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
@@ -187,6 +193,11 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
     qInfo() << "Finish measurement";
     mDone = true;
   }
+  else if ( event->button() == Qt3DRender::QPickEvent::MiddleButton )
+  {
+    qInfo() << "Undo - middle button";
+    undo();
+  }
 
 
 
@@ -250,7 +261,7 @@ void Qgs3DMapToolMeasureLine::restart()
   mMeasurementLayer->commitChanges();
 }
 
-void Qgs3DMapToolMeasureLine::removeLastPoint()
+void Qgs3DMapToolMeasureLine::undo()
 {
 
   qInfo() << "Removing last point.";
@@ -262,6 +273,7 @@ void Qgs3DMapToolMeasureLine::removeLastPoint()
   {
     //removing first point, so restart everything
     restart();
+    mDialog->restart();
   }
   else
   {
@@ -273,6 +285,8 @@ void Qgs3DMapToolMeasureLine::removeLastPoint()
     qInfo() << "Current line: " << newMeasurementLine->asWkt();
     mMeasurementLayer->changeGeometry( mMeasurementFeature->id(), *newMeasurementLine );
     mMeasurementLayer->commitChanges();
+
+    mDialog->removeLastPoint();
   }
 }
 

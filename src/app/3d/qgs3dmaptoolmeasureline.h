@@ -55,7 +55,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     void addPoint( const QgsPoint &point );
 
     //! Removes the last point
-    void removeLastPoint();
+    void undo();
 
     //! Returns reference to array of the points
     QVector<QgsPoint> points() const;

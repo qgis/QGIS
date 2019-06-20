@@ -417,9 +417,6 @@ void Qgs3DMapScene::onBackgroundColorChanged()
 
 void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
 {
-  if ( event->button() != Qt3DRender::QPickEvent::LeftButton && event->button() != Qt3DRender::QPickEvent::RightButton )
-    return;
-
   Qt3DRender::QPickTriangleEvent *triangleEvent = qobject_cast<Qt3DRender::QPickTriangleEvent *>( event );
   if ( !triangleEvent )
     return;

@@ -238,6 +238,19 @@ void Qgs3DMeasureDialog::repopulateComboBoxUnits()
   mUnitsCombo->addItem( tr( "map units" ), QgsUnitTypes::DistanceUnknownUnit );
 }
 
+void Qgs3DMeasureDialog::removeLastPoint()
+{
+  int numPoints = mTool->points().size();
+  if ( numPoints >= 1 )
+  {
+    // Remove final row
+    delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
+    // Update total distance
+    mTotal = mDa.measureLine3D( mTool->points() );
+    editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
+  }
+}
+
 void Qgs3DMeasureDialog::reject()
 {
   saveWindowLocation();
