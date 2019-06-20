@@ -1,4 +1,7 @@
 ADD_SUBDIRECTORY(../../external/libdxfrw dwg/libdxfrw)
+IF(NOT WIN32)
+SUBDIRS(${CMAKE_SOURCE_DIR}/external/qt-unix-signals)
+ENDIF(NOT WIN32)
 
 SET(QGIS_APP_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
@@ -8,7 +11,9 @@ SET(QGIS_APP_SRCS
   qgisappstylesheet.cpp
   qgsabout.cpp
   qgsalignrasterdialog.cpp
+  qgsappauthrequesthandler.cpp
   qgsappbrowserproviders.cpp
+  qgsappcoordinateoperationhandlers.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
   qgsaddattrdialog.cpp
@@ -16,6 +21,7 @@ SET(QGIS_APP_SRCS
   qgsappscreenshots.cpp
   qgsjoindialog.cpp
   qgsannotationwidget.cpp
+  qgsappsslerrorhandler.cpp
   qgsattributeactiondialog.cpp
   qgsattributeactionpropertiesdialog.cpp
   qgsattributetypedialog.cpp
@@ -123,8 +129,7 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
 
-  vertextool/qgsselectedfeature.cpp
-  vertextool/qgsvertexentry.cpp
+  vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
 
@@ -240,6 +245,7 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
+  mesh/qgsmeshtimeformatdialog.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -250,6 +256,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsaddattrdialog.h
   qgsalignrasterdialog.h
   qgsappbrowserproviders.h
+  qgsappcoordinateoperationhandlers.h
   qgsappscreenshots.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
@@ -382,7 +389,7 @@ SET (QGIS_APP_MOC_HDRS
   decorations/qgsdecorationgrid.h
   decorations/qgsdecorationgriddialog.h
 
-  vertextool/qgsselectedfeature.h
+  vertextool/qgslockedfeature.h
   vertextool/qgsvertexeditor.h
   vertextool/qgsvertextool.h
 
@@ -466,14 +473,15 @@ SET (QGIS_APP_MOC_HDRS
   mesh/qgsmeshrendereractivedatasetwidget.h
   mesh/qgsmeshdatasetgrouptreeview.h
   mesh/qgsmeshcalculatordialog.h
+  mesh/qgsmeshtimeformatdialog.h
 )
 
 
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
-    3d/qgs3danimationsettings.cpp
     3d/qgs3danimationwidget.cpp
+    3d/qgs3danimationexportdialog.cpp
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
@@ -485,6 +493,8 @@ IF (WITH_3D)
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
     3d/qgsphongmaterialwidget.cpp
+    3d/qgsrulebased3drendererwidget.cpp
+    3d/qgssymbol3dwidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
     layout/qgslayout3dmapwidget.cpp
@@ -493,6 +503,7 @@ IF (WITH_3D)
   SET (QGIS_APP_MOC_HDRS
     ${QGIS_APP_MOC_HDRS}
     3d/qgs3danimationwidget.h
+    3d/qgs3danimationexportdialog.h
     3d/qgs3dmapcanvas.h
     3d/qgs3dmapcanvasdockwidget.h
     3d/qgs3dmapconfigwidget.h
@@ -504,6 +515,8 @@ IF (WITH_3D)
     3d/qgspoint3dsymbolwidget.h
     3d/qgspolygon3dsymbolwidget.h
     3d/qgsphongmaterialwidget.h
+    3d/qgsrulebased3drendererwidget.h
+    3d/qgssymbol3dwidget.h
     3d/qgsvectorlayer3drendererwidget.h
     3d/qgsmeshlayer3drendererwidget.h
     layout/qgslayout3dmapwidget.h
@@ -569,10 +582,6 @@ IF (POSTGRES_FOUND)
     ADD_DEFINITIONS(-DHAVE_PGCONFIG=1)
   ENDIF(HAVE_PGCONFIG)
 ENDIF (POSTGRES_FOUND)
-
-IF (PROJ_HAS_INFO)
-  ADD_DEFINITIONS(-DPROJ_HAS_INFO)
-ENDIF (PROJ_HAS_INFO)
 
 # Test data dir for QgsAppScreenShots
 ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
@@ -651,6 +660,7 @@ ENDIF(MSVC)
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/libdxfrw
   ${CMAKE_SOURCE_DIR}/external/nmea
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
@@ -675,6 +685,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/locator
+  ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
@@ -723,6 +734,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
 INCLUDE_DIRECTORIES(
   ../analysis/processing
@@ -763,11 +775,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/native
 )
 INCLUDE_DIRECTORIES(SYSTEM
+  ${PROJ_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${QWTPOLAR_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
@@ -819,6 +831,8 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_native
   libdxfrw
 )
+
+TARGET_COMPILE_DEFINITIONS(qgis_app PRIVATE "-DQT_NO_FOREACH")
 
 IF(ENABLE_MODELTEST)
   TARGET_LINK_LIBRARIES(qgis_app ${Qt5Test_LIBRARIES})
@@ -876,6 +890,10 @@ IF(WIN32)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_native)
+
+IF (NOT WIN32)
+TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} QTSignal)
+ENDIF (NOT WIN32)
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(${QGIS_APP_NAME} PROPERTIES

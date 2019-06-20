@@ -25,7 +25,7 @@ class QHBoxLayout;
 #include <QWidget>
 
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsfilterlineedit.h"
 
 /**
@@ -62,10 +62,10 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     enum StorageMode
     {
-      GetFile, //! Select a single file
-      GetDirectory, //! Select a directory
-      GetMultipleFiles, //! Select multiple files
-      SaveFile, //! Select a single new or pre-existing file
+      GetFile, //!< Select a single file
+      GetDirectory, //!< Select a directory
+      GetMultipleFiles, //!< Select multiple files
+      SaveFile, //!< Select a single new or pre-existing file
     };
 
     /**
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     /**
      * Sets whether a confirmation to overwrite an existing file will appear.
      * By default, a confirmation will appear.
-     * \param confirmOverwrite If set to true, an overwrite confirmation will be shown
+     * \param confirmOverwrite If set to TRUE, an overwrite confirmation will be shown
      */
     void setConfirmOverwrite( bool confirmOverwrite ) { mConfirmOverwrite = confirmOverwrite; }
 

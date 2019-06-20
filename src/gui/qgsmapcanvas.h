@@ -25,7 +25,6 @@
 #include "qgsrectangle.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
-#include "qgis.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -76,10 +75,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
+    if ( qobject_cast<QgsMapCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMapCanvas;
     else
-      sipType = NULL;
+      sipType = nullptr;
     SIP_END
 #endif
 
@@ -134,7 +133,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
     /**
-     * Gets access to the labeling results (may be null)
+     * Gets access to the labeling results (may be NULLPTR)
      * \since QGIS 2.4
      */
     const QgsLabelingResults *labelingResults() const;
@@ -254,9 +253,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Centers canvas extent to feature ids
-        \param layer the vector layer
-        \param ids the feature ids*/
-    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
+     * \param layer the vector layer
+     * \param ids the feature ids
+     * \param alwaysRecenter if false, the canvas is recentered only if the bounding box is not contained within the current extent
+     */
+    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter = true );
 
     //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer *layer = nullptr );
@@ -343,8 +344,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
-     * \param frozen Boolean specifying if the canvas should be frozen (true) or
-     * thawed (false). Default is true.
+     * \param frozen Boolean specifying if the canvas should be frozen (TRUE) or
+     * thawed (FALSE). Default is TRUE.
      * \see isFrozen()
      * \see setRenderFlag(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
@@ -352,7 +353,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void freeze( bool frozen = true );
 
     /**
-     * Returns true if canvas is frozen.
+     * Returns TRUE if canvas is frozen.
      * \see renderFlag(). isFrozen() should be used to determine whether map updates
      * have been halted programmatically, while renderFlag() should be used to
      * determine whether a user has disabled rendering via GUI.
@@ -361,7 +362,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool isFrozen() const;
 
     /**
-     * Returns true if canvas render is disabled as a result of user disabling
+     * Returns TRUE if canvas render is disabled as a result of user disabling
      * renders via the GUI.
      * \see setRenderFlag()
      * \see isFrozen(). isFrozen() should be used to determine whether map updates
@@ -466,7 +467,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing( bool flag );
 
-    //! true if antialising is enabled
+    //! TRUE if antialising is enabled
     bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
     //! sets map tile rendering flag
@@ -485,14 +486,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Enables a preview mode for the map canvas
-     * \param previewEnabled set to true to enable a preview mode
+     * \param previewEnabled set to TRUE to enable a preview mode
      * \see setPreviewMode
      * \since QGIS 2.3 */
     void setPreviewModeEnabled( bool previewEnabled );
 
     /**
      * Returns whether a preview mode is enabled for the map canvas
-     * \returns true if a preview mode is currently enabled
+     * \returns TRUE if a preview mode is currently enabled
      * \see setPreviewModeEnabled
      * \see previewMode
      * \since QGIS 2.3 */
@@ -500,7 +501,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Sets a preview mode for the map canvas. This setting only has an effect if
-     * previewModeEnabled is true.
+     * previewModeEnabled is TRUE.
      * \param mode preview mode for the canvas
      * \see previewMode
      * \see setPreviewModeEnabled
@@ -510,7 +511,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns the current preview mode for the map canvas. This setting only has an effect if
-     * previewModeEnabled is true.
+     * previewModeEnabled is TRUE.
      * \returns preview mode for map canvas
      * \see setPreviewMode
      * \see previewModeEnabled
@@ -593,7 +594,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
 
     /**
-     * Returns true if annotations are visible within the map canvas.
+     * Returns TRUE if annotations are visible within the map canvas.
      * \see setAnnotationsVisible()
      * \since QGIS 3.0
      */
@@ -619,7 +620,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
     /**
-     * Returns true if canvas map preview jobs (low priority render jobs which render portions
+     * Returns TRUE if canvas map preview jobs (low priority render jobs which render portions
      * of the view just outside of the canvas extent, to allow preview of these
      * out-of-canvas areas when panning or zooming out the map) are enabled
      * for the canvas.
@@ -652,7 +653,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Receives signal about selection change, and pass it on with layer info
     void selectionChangedSlot();
 
-    //! Save the convtents of the map canvas to disk as an image
+    //! Save the contents of the map canvas to disk as an image
     void saveAsImage( const QString &fileName, QPixmap *QPixmap = nullptr, const QString & = "PNG" );
 
     //! This slot is connected to the visibility change of one or more layers
@@ -660,7 +661,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Sets whether a user has disabled canvas renders via the GUI.
-     * \param flag set to false to indicate that user has disabled renders
+     * \param flag set to FALSE to indicate that user has disabled renders
      * \see renderFlag()
      * \see freeze(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
@@ -678,11 +679,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
-
-#if 0
-    //! ask user about datum transformation
-    void getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
-#endif
 
     /**
      * Sets the factor of magnification to apply to the map canvas. Indeed, we

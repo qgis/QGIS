@@ -101,13 +101,14 @@ void QgsCodeEditor::setSciWidget()
       colors.insert( key, QgsSymbolLayerUtils::decodeColor( ini.value( key ).toString() ) );
     }
   }
+  QPalette pal = qApp->palette();
 
   setUtf8( true );
   setCaretLineVisible( true );
   setCaretLineBackgroundColor( colors.value( QStringLiteral( "caretLineColor" ), QColor( 252, 243, 237 ) ) );
   setCaretForegroundColor( colors.value( QStringLiteral( "cursorColor" ), QColor( 51, 51, 51 ) ) );
-  setSelectionForegroundColor( colors.value( QStringLiteral( "selectionForegroundColorEditor" ), QColor( 48, 48, 48 ) ) );
-  setSelectionBackgroundColor( colors.value( QStringLiteral( "selectionBackgroundColor" ), QColor( 251, 251, 251 ) ) );
+  setSelectionForegroundColor( colors.value( QStringLiteral( "selectionForegroundColor" ), pal.color( QPalette::HighlightedText ) ) );
+  setSelectionBackgroundColor( colors.value( QStringLiteral( "selectionBackgroundColor" ), pal.color( QPalette::Highlight ) ) );
 
   setBraceMatching( QsciScintilla::SloppyBraceMatch );
   setMatchedBraceBackgroundColor( colors.value( QStringLiteral( "matchedBraceColor" ), QColor( 183, 249, 7 ) ) );

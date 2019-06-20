@@ -24,6 +24,7 @@
 #include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgscredentials.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsdb2sourceselect.h"
@@ -1288,11 +1289,8 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
-    QString *errorMessage,
-    const QMap<QString, QVariant> *options )
+    QString *errorMessage )
 {
-  Q_UNUSED( options );
-
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
 
@@ -1758,7 +1756,7 @@ QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderR
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( path );
+  Q_UNUSED( path )
   QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; data item detected." ) );
   return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
 }
@@ -1771,12 +1769,11 @@ QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QgsCoordinateReferenceSystem &srs,
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+  QString *errorMessage )
 {
   return QgsDb2Provider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           oldToNewAttrIdxMap, errorMessage, options
+           oldToNewAttrIdxMap, errorMessage
          );
 }
 

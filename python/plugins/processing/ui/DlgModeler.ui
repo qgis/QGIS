@@ -166,10 +166,10 @@
   </action>
   <action name="mActionExportPython">
    <property name="text">
-    <string>Export as Python script…</string>
+    <string>Export as Python Script…</string>
    </property>
    <property name="toolTip">
-    <string>Export as Python script</string>
+    <string>Export as Python Script</string>
    </property>
   </action>
   <action name="mActionEditHelp">

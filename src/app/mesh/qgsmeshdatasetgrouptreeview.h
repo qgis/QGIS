@@ -133,6 +133,7 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
  */
 class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
 {
+    Q_OBJECT
   public:
     QgsMeshDatasetGroupTreeItemDelagate( QObject *parent = Q_NULLPTR );
 

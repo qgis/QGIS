@@ -33,7 +33,8 @@ QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
 
 QgsLayoutPageCollection::~QgsLayoutPageCollection()
 {
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     mLayout->removeItem( page );
     page->deleteLater();
@@ -89,7 +90,8 @@ void QgsLayoutPageCollection::reflow()
 {
   double currentY = 0;
   QgsLayoutPoint p( 0, 0, mLayout->units() );
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     page->attemptMove( p );
     currentY += mLayout->convertToLayoutUnits( page->pageSize() ).height() + spaceBetweenPages();
@@ -149,7 +151,8 @@ int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
 {
   int pageNumber = 0;
   double startNextPageY = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     startNextPageY += page->rect().height() + spaceBetweenPages();
     if ( startNextPageY > point.y() )
@@ -169,7 +172,8 @@ int QgsLayoutPageCollection::predictPageNumberForPoint( QPointF point ) const
 
   int pageNumber = 0;
   double startNextPageY = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     startNextPageY += page->rect().height() + spaceBetweenPages();
     if ( startNextPageY >= point.y() )
@@ -236,7 +240,8 @@ QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
   double startCurrentPageY = 0;
   double startNextPageY = 0;
   int pageNumber = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     startCurrentPageY = startNextPageY;
     startNextPageY += page->rect().height() + spaceBetweenPages();
@@ -421,7 +426,8 @@ const QgsLayoutGuideCollection &QgsLayoutPageCollection::guides() const
 
 void QgsLayoutPageCollection::redraw()
 {
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     page->redraw();
   }
@@ -460,7 +466,8 @@ int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const
 QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( const QRectF &region ) const
 {
   QList<QgsLayoutItemPage *> pages;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
       pages << page;
@@ -472,7 +479,8 @@ QList<int> QgsLayoutPageCollection::visiblePageNumbers( const QRectF &region ) c
 {
   QList< int > pages;
   int p = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
       pages << p;

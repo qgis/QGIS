@@ -56,7 +56,7 @@ Returns the name of the ramp currently selected in the dialog.
 
     bool saveAsGradientRamp() const;
 %Docstring
-Returns true if the ramp should be converted to a :py:class:`QgsGradientColorRamp`.
+Returns ``True`` if the ramp should be converted to a :py:class:`QgsGradientColorRamp`.
 %End
 
     virtual bool eventFilter( QObject *obj, QEvent *event );

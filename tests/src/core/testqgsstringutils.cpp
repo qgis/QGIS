@@ -36,6 +36,7 @@ class TestQgsStringUtils : public QObject
     void insertLinks();
     void titleCase_data();
     void titleCase();
+    void camelCase();
     void ampersandEncode_data();
     void ampersandEncode();
     void wordWrap_data();
@@ -158,6 +159,8 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( QString( "is a@a an email?" ), &found ), QString( "is a@a an email?" ) );
   QVERIFY( !found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "Load file:///this/is/path/to.file?query=1#anchor" ), &found ), QString( "Load <a href=\"file:///this/is/path/to.file?query=1#anchor\">file:///this/is/path/to.file?query=1#anchor</a>" ) );
+  QVERIFY( found );
 }
 
 void TestQgsStringUtils::titleCase_data()
@@ -186,6 +189,15 @@ void TestQgsStringUtils::titleCase()
   QFETCH( QString, input );
   QFETCH( QString, expected );
   QCOMPARE( QgsStringUtils::capitalize( input, QgsStringUtils::TitleCase ), expected );
+}
+
+void TestQgsStringUtils::camelCase()
+{
+  QCOMPARE( QgsStringUtils::capitalize( QString(), QgsStringUtils::UpperCamelCase ), QString() );
+  QCOMPARE( QgsStringUtils::capitalize( QString( " abc def" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDéf" ) );
 }
 
 void TestQgsStringUtils::ampersandEncode_data()

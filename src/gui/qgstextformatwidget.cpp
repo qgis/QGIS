@@ -82,12 +82,37 @@ void QgsTextFormatWidget::initWidget()
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
+  const int iconSize32 = QgsGuiUtils::scaleIconSize( 32 );
+  const int iconSize24 = QgsGuiUtils::scaleIconSize( 24 );
+  const int iconSize18 = QgsGuiUtils::scaleIconSize( 18 );
+  mPointOffsetAboveLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetAbove->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetAboveRight->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetOver ->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetRight->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetBelowLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetBelow->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetBelowRight->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mLabelMinScale->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ).pixmap( QSize( iconSize24, iconSize24 ) ) );
+  mLabelMaxScale->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ).pixmap( QSize( iconSize24, iconSize24 ) ) );
+
+  const int buttonSize = QgsGuiUtils::scaleIconSize( 24 );
+  mFontUnderlineBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontUnderlineBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontStrikethroughBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontStrikethroughBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontBoldBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontBoldBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontItalicBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontItalicBtn->setMaximumSize( buttonSize, buttonSize );
 
   mPreviewScaleComboBox->setMapCanvas( mMapCanvas );
   mPreviewScaleComboBox->setShowCurrentScaleButton( true );
   connect( mPreviewScaleComboBox, &QgsScaleWidget::scaleChanged, this, &QgsTextFormatWidget::previewScaleChanged );
 
-  Q_FOREACH ( QgsUnitSelectionWidget *unitWidget, findChildren<QgsUnitSelectionWidget *>() )
+  const auto unitWidgets = findChildren<QgsUnitSelectionWidget *>();
+  for ( QgsUnitSelectionWidget *unitWidget : unitWidgets )
   {
     unitWidget->setMapCanvas( mMapCanvas );
   }
@@ -125,6 +150,7 @@ void QgsTextFormatWidget::initWidget()
   mFontLetterSpacingSpinBox->setClearValue( 0.0 );
   mFontWordSpacingSpinBox->setClearValue( 0.0 );
   mZIndexSpinBox->setClearValue( 0.0 );
+  mLineDistanceSpnBx->setClearValue( 0.0 );
 
   mObstacleTypeComboBox->addItem( tr( "Over the feature's interior" ), QgsPalLayerSettings::PolygonInterior );
   mObstacleTypeComboBox->addItem( tr( "Over the feature's boundary" ), QgsPalLayerSettings::PolygonBoundary );
@@ -167,16 +193,11 @@ void QgsTextFormatWidget::initWidget()
   mShadowColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShadowColorBtn->setDefaultColor( Qt::black );
 
-  mFontColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mFontColorDDBtn->registerEnabledWidget( btnTextColor, false );
-  mBufferColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mBufferColorDDBtn->registerEnabledWidget( btnBufferColor, false );
-  mShapeStrokeColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mShapeStrokeColorDDBtn->registerEnabledWidget( mShapeStrokeColorBtn, false );
-  mShapeFillColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mShapeFillColorDDBtn->registerEnabledWidget( mShapeFillColorBtn, false );
-  mShadowColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mShadowColorDDBtn->registerEnabledWidget( mShadowColorBtn, false );
+  mFontColorDDBtn->registerLinkedWidget( btnTextColor );
+  mBufferColorDDBtn->registerLinkedWidget( btnBufferColor );
+  mShapeStrokeColorDDBtn->registerLinkedWidget( mShapeStrokeColorBtn );
+  mShapeFillColorDDBtn->registerLinkedWidget( mShapeFillColorBtn );
+  mShadowColorDDBtn->registerLinkedWidget( mShadowColorBtn );
 
   // set up quadrant offset button group
   mQuadrantBtnGrp = new QButtonGroup( this );
@@ -240,15 +261,13 @@ void QgsTextFormatWidget::initWidget()
 
   // Global settings group for groupboxes' saved/restored collapsed state
   // maintains state across different dialogs
-  Q_FOREACH ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox *>() )
+  const auto groupBoxes = findChildren<QgsCollapsibleGroupBox *>();
+  for ( QgsCollapsibleGroupBox *grpbox : groupBoxes )
   {
     grpbox->setSettingGroup( QStringLiteral( "mAdvLabelingDlg" ) );
   }
 
-  connect( groupBox_mPreview,
-           &QgsCollapsibleGroupBoxBasic::collapsedStateChanged,
-           this,
-           &QgsTextFormatWidget::collapseSample );
+  connect( groupBox_mPreview, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsTextFormatWidget::collapseSample );
 
   // get rid of annoying outer focus rect on Mac
   mLabelingOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
@@ -284,7 +303,6 @@ void QgsTextFormatWidget::initWidget()
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
   setDockMode( false );
-
 
   QList<QWidget *> widgets;
   widgets << btnBufferColor
@@ -498,10 +516,18 @@ void QgsTextFormatWidget::initWidget()
           << radPolygonPerimeterCurved
           << radPredefinedOrder
           << mFieldExpressionWidget
-          << mCheckBoxSubstituteText;
+          << mCheckBoxSubstituteText
+          << mGeometryGeneratorGroupBox
+          << mGeometryGenerator
+          << mGeometryGeneratorType
+          << mLinePlacementFlagsDDBtn;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
+
+  mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
+  mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
+  mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point / MultiPoint" ), QgsWkbTypes::GeometryType::PointGeometry );
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
@@ -544,7 +570,8 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
 
 void QgsTextFormatWidget::toggleDDButtons( bool visible )
 {
-  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
+  const auto buttons = findChildren< QgsPropertyOverrideButton * >();
+  for ( QgsPropertyOverrideButton *button : buttons )
   {
     button->setVisible( visible );
   }
@@ -568,7 +595,8 @@ void QgsTextFormatWidget::setDockMode( bool enabled )
 
 void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, const char *slot )
 {
-  Q_FOREACH ( QWidget *widget, widgets )
+  const auto constWidgets = widgets;
+  for ( QWidget *widget : constWidgets )
   {
     if ( QgsPropertyOverrideButton *w = qobject_cast<QgsPropertyOverrideButton *>( widget ) )
     {
@@ -621,6 +649,14 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, 
     else if ( QSlider *w = qobject_cast<QSlider *>( widget ) )
     {
       connect( w, SIGNAL( valueChanged( int ) ), this, slot );
+    }
+    else if ( QGroupBox *w = qobject_cast<QGroupBox *>( widget ) )
+    {
+      connect( w, SIGNAL( toggled( bool ) ), this, slot );
+    }
+    else if ( QgsCodeEditorExpression *w = qobject_cast<QgsCodeEditorExpression *>( widget ) )
+    {
+      connect( w, SIGNAL( textChanged() ), this, slot );
     }
     else
     {
@@ -1046,7 +1082,8 @@ void QgsTextFormatWidget::populateFontStyleComboBox()
 {
   mFontStyleComboBox->clear();
   QStringList styles = mFontDB.styles( mRefFont.family() );
-  Q_FOREACH ( const QString &style, styles )
+  const auto constStyles = styles;
+  for ( const QString &style : constStyles )
   {
     mFontStyleComboBox->addItem( style );
   }
@@ -1076,7 +1113,7 @@ void QgsTextFormatWidget::mFontSizeSpinBox_valueChanged( double d )
 
 void QgsTextFormatWidget::mFontCapitalsComboBox_currentIndexChanged( int index )
 {
-  int capitalsindex = mFontCapitalsComboBox->itemData( index ).toUInt();
+  int capitalsindex = mFontCapitalsComboBox->itemData( index ).toInt();
   mRefFont.setCapitalization( ( QFont::Capitalization ) capitalsindex );
   updateFont( mRefFont );
 }
@@ -1376,7 +1413,9 @@ void QgsTextFormatWidget::mPreviewBackgroundBtn_colorChanged( const QColor &colo
 void QgsTextFormatWidget::mDirectSymbLeftToolBtn_clicked()
 {
   bool gotChar = false;
-  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+
+  const QChar initial = !mDirectSymbLeftLineEdit->text().isEmpty() ? mDirectSymbLeftLineEdit->text().at( 0 ) : QChar();
+  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ), initial );
 
   if ( !gotChar )
     return;
@@ -1388,7 +1427,8 @@ void QgsTextFormatWidget::mDirectSymbLeftToolBtn_clicked()
 void QgsTextFormatWidget::mDirectSymbRightToolBtn_clicked()
 {
   bool gotChar = false;
-  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+  const QChar initial = !mDirectSymbRightLineEdit->text().isEmpty() ? mDirectSymbRightLineEdit->text().at( 0 ) : QChar();
+  QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ), initial );
 
   if ( !gotChar )
     return;

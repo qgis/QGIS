@@ -8,10 +8,13 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 CMAKE_POLICY (SET CMP0048 NEW)
 CMAKE_POLICY (SET CMP0053 NEW)
 
+# don't relink it only the shared object changes
+SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
+
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "5")
+SET(CPACK_PACKAGE_VERSION_MINOR "7")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -120,12 +123,34 @@ IF(WITH_CORE)
 
   SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
+  # try to configure and build python bindings by default
+  SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+  IF (WITH_BINDINGS)
+    # By default bindings will be installed only to QGIS directory
+    # Someone might want to install it to python site-packages directory
+    # as otherwise user has to use PYTHONPATH environment variable to add
+    # QGIS bindings to package search path
+    SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+    SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
+    SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
+    # concatenate QScintilla2 API files
+    IF (WITH_GUI)
+      SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
+      # keep casual users from updating their source tree via WITH_QSCIAPI
+      MARK_AS_ADVANCED (WITH_QSCIAPI)
+    ENDIF (WITH_GUI)
+    ADD_DEFINITIONS(-DWITH_BINDINGS)
+  ENDIF (WITH_BINDINGS)
+
   # server disabled default because it needs FastCGI (which is optional dependency)
   SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
   IF(WITH_SERVER)
     SET (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
 
-    SET (WITH_SERVER_PLUGINS TRUE CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    SET (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    IF(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
+      MESSAGE(FATAL_ERROR "Server plugins are not supported without python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
+    ENDIF(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
     IF(WITH_SERVER_PLUGINS)
       SET(HAVE_SERVER_PYTHON_PLUGINS TRUE)
     ENDIF(WITH_SERVER_PLUGINS)
@@ -172,26 +197,6 @@ IF(WITH_CORE)
     SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
   ENDIF(WITH_ORACLE)
 
-
-  # try to configure and build python bindings by default
-  SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
-  IF (WITH_BINDINGS)
-    # By default bindings will be installed only to QGIS directory
-    # Someone might want to install it to python site-packages directory
-    # as otherwise user has to use PYTHONPATH environment variable to add
-    # QGIS bindings to package search path
-    SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
-    SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
-    SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
-    # concatenate QScintilla2 API files
-    IF (WITH_GUI)
-      SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
-      # keep casual users from updating their source tree via WITH_QSCIAPI
-      MARK_AS_ADVANCED (WITH_QSCIAPI)
-    ENDIF (WITH_GUI)
-    ADD_DEFINITIONS(-DWITH_BINDINGS)
-  ENDIF (WITH_BINDINGS)
-
   #BUILD WITH QtMobility by default on android only. Other platform can force it
   IF (ANDROID)
       SET (DEFAULT_WITH_QTMOBILITY TRUE)
@@ -222,7 +227,7 @@ IF(WITH_CORE)
     # https://sourceforge.net/p/mingw-w64/bugs/527/
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80816
 
-    # also OpenBSD has no thread_local support, see https://issues.qgis.org/issues/17351
+    # also OpenBSD has no thread_local support, see https://github.com/qgis/QGIS/issues/25248
 
   ELSE (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
     IF (WITH_THREAD_LOCAL)

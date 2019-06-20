@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'December 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon, QColor
@@ -133,7 +129,7 @@ class Relief(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         inputFile = self.parameterAsRasterLayer(parameters, self.INPUT, context).source()
         zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
-        automaticColors = self.parameterAsBool(parameters, self.AUTO_COLORS, context)
+        automaticColors = self.parameterAsBoolean(parameters, self.AUTO_COLORS, context)
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         frequencyDistribution = self.parameterAsFileOutput(parameters, self.FREQUENCY_DISTRIBUTION, context)
 

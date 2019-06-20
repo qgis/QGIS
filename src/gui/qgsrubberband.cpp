@@ -436,7 +436,8 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
 
     case QgsWkbTypes::PointGeometry:
     {
-      Q_FOREACH ( QPointF pt, pts )
+      const auto constPts = pts;
+      for ( QPointF pt : constPts )
       {
         double x = pt.x();
         double y = pt.y();
@@ -550,7 +551,7 @@ void QgsRubberBand::updateRect()
 void QgsRubberBand::updatePosition()
 {
   // re-compute rectangle
-  // See https://issues.qgis.org/issues/12392
+  // See https://github.com/qgis/QGIS/issues/20566
   // NOTE: could be optimized by saving map-extent
   //       of rubberband and simply re-projecting
   //       that to device-rectangle on "updatePosition"

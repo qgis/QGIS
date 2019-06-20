@@ -31,7 +31,8 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   mPageOrientationComboBox->addItem( tr( "Portrait" ), QgsLayoutItemPage::Portrait );
   mPageOrientationComboBox->addItem( tr( "Landscape" ), QgsLayoutItemPage::Landscape );
 
-  Q_FOREACH ( const QgsPageSize &size, QgsApplication::pageSizeRegistry()->entries() )
+  const auto constEntries = QgsApplication::pageSizeRegistry()->entries();
+  for ( const QgsPageSize &size : constEntries )
   {
     mPageSizeComboBox->addItem( size.displayName, size.name );
   }
@@ -167,6 +168,7 @@ void QgsLayoutPagePropertiesWidget::updatePageSize()
   mPage->layout()->pageCollection()->endPageSizeChange();
   mPage->layout()->undoStack()->endMacro();
 
+  refreshLayout();
   emit pageOrientationChanged();
 }
 

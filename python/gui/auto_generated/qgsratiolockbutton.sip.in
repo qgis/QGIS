@@ -42,7 +42,7 @@ Sets whether the button state is locked.
 %Docstring
 Returns whether the button state is locked.
 
-:return: true if the button state is locked.
+:return: ``True`` if the button state is locked.
 
 .. seealso:: :py:func:`setLocked`
 %End

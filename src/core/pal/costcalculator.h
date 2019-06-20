@@ -63,7 +63,7 @@ namespace pal
    *
    *  Eight segments from center of candidate to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
    *  dist store the shortest square distance from the center to an object
-   *  ok[i] is the to true whether the corresponding dist[i] is set
+   *  ok[i] is the to TRUE whether the corresponding dist[i] is set
    *
    * \note not available in Python bindings
    */

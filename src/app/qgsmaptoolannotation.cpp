@@ -50,26 +50,19 @@ QDialog *QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *ite
 
   QgsAnnotation *annotation = item->annotation();
 
-  QgsTextAnnotation *tItem = dynamic_cast<QgsTextAnnotation *>( annotation );
-  if ( tItem )
+  if ( qobject_cast<QgsTextAnnotation *>( annotation ) )
   {
     return new QgsTextAnnotationDialog( item );
   }
-
-  QgsFormAnnotation *fItem = dynamic_cast<QgsFormAnnotation *>( annotation );
-  if ( fItem )
+  else if ( qobject_cast<QgsFormAnnotation *>( annotation ) )
   {
     return new QgsFormAnnotationDialog( item );
   }
-
-  QgsHtmlAnnotation *hItem = dynamic_cast<QgsHtmlAnnotation *>( annotation );
-  if ( hItem )
+  else if ( qobject_cast<QgsHtmlAnnotation *>( annotation ) )
   {
     return new QgsHtmlAnnotationDialog( item );
   }
-
-  QgsSvgAnnotation *sItem = dynamic_cast<QgsSvgAnnotation *>( annotation );
-  if ( sItem )
+  else if ( qobject_cast<QgsSvgAnnotation *>( annotation ) )
   {
     return new QgsSvgAnnotationDialog( item );
   }
@@ -79,7 +72,7 @@ QDialog *QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *ite
 
 void QgsMapToolAnnotation::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   mCurrentMoveAction = QgsMapCanvasAnnotationItem::NoAction;
   mCanvas->setCursor( mCursor );
@@ -124,12 +117,13 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
         annotation->setMapPositionCrs( mCanvas->mapSettings().destinationCrs() );
         annotation->setRelativePosition( QPointF( e->pos().x() / mCanvas->width(),
                                          e->pos().y() / mCanvas->height() ) );
-        annotation->setFrameSize( QSizeF( 200, 100 ) );
+        annotation->setFrameSizeMm( QSizeF( 50, 25 ) );
 
         QgsProject::instance()->annotationManager()->addAnnotation( annotation );
 
         // select newly added item
-        Q_FOREACH ( QGraphicsItem *item, mCanvas->items() )
+        const auto constItems = mCanvas->items();
+        for ( QGraphicsItem *item : constItems )
         {
           if ( QgsMapCanvasAnnotationItem *annotationItem = dynamic_cast< QgsMapCanvasAnnotationItem * >( item ) )
           {
@@ -192,7 +186,11 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
       QPointF newCanvasPos = item->pos() + ( e->pos() - mLastMousePosition );
       if ( annotation->hasFixedMapPosition() )
       {
-        annotation->setFrameOffsetFromReferencePoint( annotation->frameOffsetFromReferencePoint() + ( e->pos() - mLastMousePosition ) );
+        const double pixelToMmScale = 25.4 / mCanvas->logicalDpiX();
+        const double deltaX = pixelToMmScale * ( e->pos().x() - mLastMousePosition.x() );
+        const double deltaY = pixelToMmScale * ( e->pos().y() - mLastMousePosition.y() );
+        annotation->setFrameOffsetFromReferencePointMm( QPointF( annotation->frameOffsetFromReferencePointMm().x() + deltaX,
+            annotation->frameOffsetFromReferencePointMm().y() + deltaY ) );
         annotation->setRelativePosition( QPointF( newCanvasPos.x() / mCanvas->width(),
                                          newCanvasPos.y() / mCanvas->height() ) );
       }
@@ -209,9 +207,12 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
     else if ( mCurrentMoveAction != QgsMapCanvasAnnotationItem::NoAction )
     {
       //handle the frame resize actions
-      QSizeF size = annotation->frameSize();
-      double xmin = annotation->frameOffsetFromReferencePoint().x();
-      double ymin = annotation->frameOffsetFromReferencePoint().y();
+
+      const double pixelToMmScale = 25.4 / mCanvas->logicalDpiX();
+
+      QSizeF size = annotation->frameSizeMm();
+      double xmin = annotation->frameOffsetFromReferencePointMm().x();
+      double ymin = annotation->frameOffsetFromReferencePointMm().y();
       double xmax = xmin + size.width();
       double ymax = ymin + size.height();
       double relPosX = annotation->relativePosition().x();
@@ -221,27 +222,27 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
-        xmax += e->pos().x() - mLastMousePosition.x();
+        xmax += pixelToMmScale * ( e->pos().x() - mLastMousePosition.x() );
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeft ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp )
       {
-        xmin += e->pos().x() - mLastMousePosition.x();
+        xmin += pixelToMmScale * ( e->pos().x() - mLastMousePosition.x() );
         relPosX = ( relPosX * mCanvas->width() + e->pos().x() - mLastMousePosition.x() ) / static_cast<double>( mCanvas->width() );
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameUp ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
-        ymin += e->pos().y() - mLastMousePosition.y();
+        ymin += pixelToMmScale * ( e->pos().y() - mLastMousePosition.y() );
         relPosY = ( relPosY * mCanvas->height() + e->pos().y() - mLastMousePosition.y() ) / static_cast<double>( mCanvas->height() );
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown )
       {
-        ymax += e->pos().y() - mLastMousePosition.y();
+        ymax += pixelToMmScale * ( e->pos().y() - mLastMousePosition.y() );
       }
 
       //switch min / max if necessary
@@ -259,8 +260,8 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
         ymin = tmp;
       }
 
-      annotation->setFrameOffsetFromReferencePoint( QPointF( xmin, ymin ) );
-      annotation->setFrameSize( QSizeF( xmax - xmin, ymax - ymin ) );
+      annotation->setFrameOffsetFromReferencePointMm( QPointF( xmin, ymin ) );
+      annotation->setFrameSizeMm( QSizeF( xmax - xmin, ymax - ymin ) );
       annotation->setRelativePosition( QPointF( relPosX, relPosY ) );
       item->update();
       QgsProject::instance()->setDirty( true );
@@ -347,9 +348,10 @@ QList<QgsMapCanvasAnnotationItem *> QgsMapToolAnnotation::annotationItems() cons
 void QgsMapToolAnnotation::toggleTextItemVisibilities()
 {
   QList<QgsMapCanvasAnnotationItem *> itemList = annotationItems();
-  Q_FOREACH ( QgsMapCanvasAnnotationItem *item, itemList )
+  const auto constItemList = itemList;
+  for ( QgsMapCanvasAnnotationItem *item : constItemList )
   {
-    QgsTextAnnotation *textItem = dynamic_cast<QgsTextAnnotation *>( item->annotation() );
+    QgsTextAnnotation *textItem = qobject_cast<QgsTextAnnotation *>( item->annotation() );
     if ( textItem )
     {
       textItem->setVisible( !textItem->isVisible() );

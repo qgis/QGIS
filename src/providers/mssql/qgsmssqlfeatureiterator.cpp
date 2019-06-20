@@ -34,7 +34,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
 {
   mClosed = false;
 
-  mParser.IsGeography = mSource->mIsGeography;
+  mParser.mIsGeography = mSource->mIsGeography;
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
@@ -66,6 +66,24 @@ QgsMssqlFeatureIterator::~QgsMssqlFeatureIterator()
   close();
 }
 
+double QgsMssqlFeatureIterator::validLat( const double latitude ) const
+{
+  if ( latitude < -90.0 )
+    return -90.0;
+  if ( latitude > 90.0 )
+    return 90.0;
+  return latitude;
+}
+
+double QgsMssqlFeatureIterator::validLon( const double longitude ) const
+{
+  if ( longitude < -15069.0 )
+    return -15069.0;
+  if ( longitude > 15069.0 )
+    return 15069.0;
+  return longitude;
+}
+
 void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 {
   mFallbackStatement.clear();
@@ -95,10 +113,9 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
 
     // ensure that all attributes required for order by are fetched
-    const QSet< QString > orderByAttributes = mRequest.orderBy().usedAttributes();
-    for ( const QString &attr : orderByAttributes )
+    const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIndex : usedAttributeIndices )
     {
-      int attrIndex = mSource->mFields.lookupField( attr );
       if ( !attrs.contains( attrIndex ) )
         attrs << attrIndex;
     }
@@ -132,15 +149,27 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   {
     // polygons should be CCW for SqlGeography
     QString r;
-    QTextStream foo( &r );
+    QTextStream stream( &r );
 
-    foo.setRealNumberPrecision( 8 );
-    foo.setRealNumberNotation( QTextStream::FixedNotation );
-    foo <<  qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
-        <<  qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
-        <<  qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
-        <<  qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
-        <<  qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMinimum() );
+    stream.setRealNumberPrecision( 8 );
+    stream.setRealNumberNotation( QTextStream::FixedNotation );
+
+    if ( mSource->mGeometryColType == QLatin1String( "geometry" ) )
+    {
+      stream << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
+             << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
+             << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
+             << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
+             << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() );
+    }
+    else
+    {
+      stream << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
+             << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
+             << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
+             << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
+             << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) );
+    }
 
     mStatement += QStringLiteral( " WHERE " );
     if ( !mDisableInvalidGeometryHandling )
@@ -172,7 +201,8 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   {
     QString delim;
     QString inClause = QStringLiteral( "%1 IN (" ).arg( mSource->mFidColName );
-    Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
+    const auto constFilterFids = mRequest.filterFids();
+    for ( QgsFeatureId featureId : constFilterFids )
     {
       inClause += delim + FID_TO_STRING( featureId );
       delim = ',';
@@ -235,7 +265,8 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+    const auto constOrderBy = request.orderBy();
+    for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
     {
       if ( ( clause.ascending() && !clause.nullsFirst() ) || ( !clause.ascending() && clause.nullsFirst() ) )
       {
@@ -375,11 +406,10 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       QByteArray ar = mQuery->record().value( mSource->mGeometryColName ).toByteArray();
       if ( !ar.isEmpty() )
       {
-        if ( unsigned char *wkb = mParser.ParseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() ) )
+        std::unique_ptr<QgsAbstractGeometry> geom = mParser.parseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
+        if ( geom )
         {
-          QgsGeometry g;
-          g.fromWkb( wkb, mParser.GetWkbLen() );
-          feature.setGeometry( g );
+          feature.setGeometry( QgsGeometry( std::move( geom ) ) );
         }
       }
     }
@@ -492,7 +522,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   : mFields( p->mAttributeFields )
   , mFidColName( p->mFidColName )
   , mSRId( p->mSRId )
-  , mIsGeography( p->mParser.IsGeography )
+  , mIsGeography( p->mParser.mIsGeography )
   , mGeometryColName( p->mGeometryColName )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )

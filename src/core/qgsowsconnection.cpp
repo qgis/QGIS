@@ -38,7 +38,7 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   : mConnName( connName )
   , mService( service )
 {
-  QgsDebugMsg( "theConnName = " + connName );
+  QgsDebugMsgLevel( "theConnName = " + connName, 4 );
 
   QgsSettings settings;
 
@@ -65,6 +65,13 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
+  const QString referer = settings.value( key + "/referer" ).toString();
+  if ( !referer.isEmpty() )
+  {
+    mUri.setParam( QStringLiteral( "referer" ), referer );
+    mConnectionInfo.append( ",referer=" + referer );
+  }
+
   if ( mService.compare( QLatin1String( "WMS" ), Qt::CaseInsensitive ) == 0
        || mService.compare( QLatin1String( "WCS" ), Qt::CaseInsensitive ) == 0 )
   {
@@ -75,7 +82,7 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
     addWfsConnectionSettings( mUri, key );
   }
 
-  QgsDebugMsg( QStringLiteral( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ), 4 );
 }
 
 QString QgsOwsConnection::connectionName() const

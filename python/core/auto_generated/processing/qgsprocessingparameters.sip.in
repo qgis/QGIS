@@ -151,6 +151,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterNumber;
     else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
       sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
+      sipType = sipType_QgsProcessingParameterScale;
     else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
@@ -183,6 +185,10 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterFolderDestination;
     else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
       sipType = sipType_QgsProcessingParameterBand;
+    else if ( sipCpp->type() == QgsProcessingParameterLayout::typeName() )
+      sipType = sipType_QgsProcessingParameterLayout;
+    else if ( sipCpp->type() == QgsProcessingParameterLayoutItem::typeName() )
+      sipType = sipType_QgsProcessingParameterLayoutItem;
     else
       sipType = nullptr;
 %End
@@ -218,9 +224,9 @@ Unique parameter type name.
 
     virtual bool isDestination() const;
 %Docstring
-Returns true if this parameter represents a file or layer destination, e.g. parameters
+Returns ``True`` if this parameter represents a file or layer destination, e.g. parameters
 which are used for the destination for layers output by an algorithm will return
-true.
+``True``.
 %End
 
     QString name() const;
@@ -287,7 +293,7 @@ Sets the ``flags`` associated with the parameter.
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 %Docstring
 Checks whether the specified ``input`` value is acceptable for the
-parameter. Returns true if the value can be accepted.
+parameter. Returns ``True`` if the value can be accepted.
 The optional ``context`` parameter can be specified to allow a more stringent
 check to be performed, capable of checking for the presence of required
 layers and other factors within the context.
@@ -297,13 +303,23 @@ layers and other factors within the context.
 %Docstring
 Returns a string version of the parameter input ``value``, which is suitable for use as an input
 parameter value when running an algorithm directly from a Python command.
-The returned value must be correctly escaped - e.g. string values must be wrapped in ' 's.
 %End
 
     virtual QString asScriptCode() const;
 %Docstring
 Returns the parameter definition encoded in a string which can be used within a
-Python processing script.
+Processing script.
+%End
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+%Docstring
+Returns the parameter definition as a Python command which can be used within a
+Python Processing script.
+
+The ``outputType`` argument specifies the desired output format for the Python string,
+i.e. the intended end use of the generated Python code.
+
+.. versionadded:: 3.6
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -347,7 +363,7 @@ field parameters which depend on a parent layer parameter).
 
     QgsProcessingAlgorithm *algorithm() const;
 %Docstring
-Returns a pointer to the algorithm which owns this parameter. May be None
+Returns a pointer to the algorithm which owns this parameter. May be ``None``
 for non-owned parameters.
 
 .. seealso:: :py:func:`provider`
@@ -355,7 +371,7 @@ for non-owned parameters.
 
     QgsProcessingProvider *provider() const;
 %Docstring
-Returns a pointer to the provider for the algorithm which owns this parameter. May be None
+Returns a pointer to the provider for the algorithm which owns this parameter. May be ``None``
 for non-owned parameters or algorithms.
 
 .. seealso:: :py:func:`algorithm`
@@ -369,7 +385,7 @@ like parameter description, ID, and extra content like default values (depending
 
     bool isDynamic() const;
 %Docstring
-Returns true if the parameter supports is dynamic, and can support data-defined values
+Returns ``True`` if the parameter supports is dynamic, and can support data-defined values
 (i.e. QgsProperty based values).
 
 .. seealso:: :py:func:`setIsDynamic`
@@ -443,7 +459,46 @@ the dynamic parameter.
 .. seealso:: :py:func:`setDynamicPropertyDefinition`
 %End
 
+    QStringList additionalExpressionContextVariables() const;
+%Docstring
+Returns a list of additional expression context variables which are available for use when evaluating
+this parameter.
+
+The additional variables will be added to the variables exposed from the usual expression
+context available to the parameter. They can be used to expose variables which are ONLY available
+to this parameter.
+
+The returned list should contain the variable names only, without the usual "@" prefix.
+
+.. seealso:: :py:func:`setAdditionalExpressionContextVariables`
+
+.. versionadded:: 3.8
+%End
+
+    void setAdditionalExpressionContextVariables( const QStringList &variables );
+%Docstring
+Sets a list of additional expression context ``variables`` which are available for use when evaluating
+this parameter.
+
+The additional variables will be added to the variables exposed from the usual expression
+context available to the parameter. They can be used to expose variables which are ONLY available
+to this parameter.
+
+The ``variables`` list should contain the variable names only, without the usual "@" prefix.
+
+.. note::
+
+   Specifying variables via this method is for metadata purposes only. It is the algorithm's responsibility
+   to correctly set the value of these additional variables in all expression context used when evaluating the parameter,
+   in whichever way is appropriate for that particular variable.
+
+.. seealso:: :py:func:`additionalExpressionContextVariables`
+
+.. versionadded:: 3.8
+%End
+
   protected:
+
 
 
 
@@ -488,7 +543,7 @@ the evaluation to understand available map layers and expression contexts
 
     static bool isDynamic( const QVariantMap &parameters, const QString &name );
 %Docstring
-Returns true if the parameter with matching ``name`` is a dynamic parameter, and must
+Returns ``True`` if the parameter with matching ``name`` is a dynamic parameter, and must
 be evaluated once for every input feature processed.
 %End
 
@@ -583,11 +638,25 @@ Evaluates the parameter with matching ``definition`` and ``value`` to list of en
 Evaluates the parameter with matching ``definition`` to a static boolean value.
 %End
 
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a static boolean value.
+
+.. versionadded:: 3.8
+%End
+
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a static boolean value.
 
 .. versionadded:: 3.4
+%End
+
+    static bool parameterAsBoolean( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static boolean value.
+
+.. versionadded:: 3.8
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
@@ -861,6 +930,15 @@ Returns the coordinate reference system associated with an point parameter value
 .. seealso:: :py:func:`parameterAsPoint`
 %End
 
+    static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with an point parameter value.
+
+.. seealso:: :py:func:`parameterAsPoint`
+
+.. versionadded:: 3.8
+%End
+
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a file/folder name.
@@ -922,6 +1000,55 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a list of 
 
 .. versionadded:: 3.4
 %End
+
+    static QgsPrintLayout *parameterAsLayout( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a print layout.
+
+.. warning::
+
+   This method is not safe to run in a background thread, so it must either be used within a prepareAlgorithm
+   implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
+
+.. versionadded:: 3.8
+%End
+
+    static QgsPrintLayout *parameterAsLayout( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a print layout.
+
+.. warning::
+
+   This method is not safe to run in a background thread, so it must either be used within a prepareAlgorithm
+   implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
+
+.. versionadded:: 3.8
+%End
+
+    static QgsLayoutItem *parameterAsLayoutItem( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsPrintLayout *layout );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a print layout item, taken from the specified ``layout``.
+
+.. warning::
+
+   This method is not safe to run in a background thread, so it must either be used within a prepareAlgorithm
+   implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
+
+.. versionadded:: 3.8
+%End
+
+    static QgsLayoutItem *parameterAsLayoutItem( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsPrintLayout *layout );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a print layout, taken from the specified ``layout``.
+
+.. warning::
+
+   This method is not safe to run in a background thread, so it must either be used within a prepareAlgorithm
+   implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
+
+.. versionadded:: 3.8
+%End
+
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
 %Docstring
@@ -1172,6 +1299,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     Behavior behavior() const;
 %Docstring
@@ -1245,6 +1374,8 @@ Returns the type name for the parameter class.
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QStringList headers() const;
 %Docstring
@@ -1263,7 +1394,7 @@ Sets the list of column ``headers``.
     int numberRows() const;
 %Docstring
 Returns the fixed number of rows in the table. This parameter only has an
-effect if hasFixedNumberRows() is true.
+effect if hasFixedNumberRows() is ``True``.
 
 .. seealso:: :py:func:`setNumberRows`
 
@@ -1273,7 +1404,7 @@ effect if hasFixedNumberRows() is true.
     void setNumberRows( int rows );
 %Docstring
 Sets the fixed number of ``rows`` in the table. This parameter only has an
-effect if hasFixedNumberRows() is true.
+effect if hasFixedNumberRows() is ``True``.
 
 .. seealso:: :py:func:`numberRows`
 
@@ -1342,6 +1473,8 @@ Returns the type name for the parameter class.
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
     virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     QgsProcessing::SourceType layerType() const;
@@ -1439,6 +1572,8 @@ Returns the type name for the parameter class.
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
     virtual QString toolTip() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     double minimum() const;
@@ -1542,6 +1677,8 @@ Returns the type name for the parameter class.
 
     virtual QStringList dependsOnOtherParameters() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QString parentParameterName() const;
 %Docstring
@@ -1582,6 +1719,49 @@ Sets the default distance ``unit`` for the parameter.
 
 };
 
+class QgsProcessingParameterScale : QgsProcessingParameterNumber
+{
+%Docstring
+A double numeric parameter for map scale values.
+
+QgsProcessingParameterScale should be evaluated by calling QgsProcessingAlgorithm.parameterAsDouble(),
+which will return a numeric value representing the scale denominator.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    explicit QgsProcessingParameterScale( const QString &name, const QString &description = QString(),
+                                          const QVariant &defaultValue = QVariant(),
+                                          bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterScale.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    virtual QgsProcessingParameterScale *clone() const /Factory/;
+
+
+    virtual QString type() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    static QgsProcessingParameterScale *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
 class QgsProcessingParameterRange : QgsProcessingParameterDefinition
 {
 %Docstring
@@ -1613,6 +1793,8 @@ Returns the type name for the parameter class.
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     QgsProcessingParameterNumber::Type dataType() const;
@@ -1713,6 +1895,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QStringList options() const;
 %Docstring
@@ -1730,7 +1914,7 @@ Sets the list of acceptable ``options`` for the parameter.
 
     bool allowMultiple() const;
 %Docstring
-Returns true if the parameter allows multiple selected values.
+Returns ``True`` if the parameter allows multiple selected values.
 
 .. seealso:: :py:func:`setAllowMultiple`
 %End
@@ -1785,10 +1969,12 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     bool multiLine() const;
 %Docstring
-Returns true if the parameter allows multiline strings.
+Returns ``True`` if the parameter allows multiline strings.
 
 .. seealso:: :py:func:`setMultiLine`
 %End
@@ -1816,7 +2002,7 @@ Creates a new parameter using the definition from a script code.
 class QgsProcessingParameterAuthConfig : QgsProcessingParameterDefinition
 {
 %Docstring
-A string parameter for authentication configuration configuration ID values.
+A string parameter for authentication configuration ID values.
 
 This parameter allows for users to select from available authentication configurations,
 or create new authentication configurations as required.
@@ -1886,6 +2072,8 @@ Returns the type name for the parameter class.
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
     virtual QStringList dependsOnOtherParameters() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     QString parentLayerParameterName() const;
@@ -1985,6 +2173,8 @@ Returns the type name for the parameter class.
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     virtual QVariantMap toVariantMap() const;
 
@@ -2080,6 +2270,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
     virtual QStringList dependsOnOtherParameters() const;
 
 
@@ -2171,6 +2363,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     virtual QVariantMap toVariantMap() const;
 
@@ -2203,7 +2397,7 @@ which are used for the destination for layers output by an algorithm.
 %Docstring
 Constructor for QgsProcessingDestinationParameter.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then the destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then the destination
 output will not be created by default.
 %End
 
@@ -2211,6 +2405,8 @@ output will not be created by default.
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 /Factory/;
@@ -2221,7 +2417,7 @@ parameter.
 
     bool supportsNonFileBasedOutput() const;
 %Docstring
-Returns true if the destination parameter supports non filed-based outputs,
+Returns ``True`` if the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
 
 .. seealso:: :py:func:`setSupportsNonFileBasedOutput`
@@ -2250,8 +2446,8 @@ temporary storage of created layers and files.
 
     bool createByDefault() const;
 %Docstring
-Returns true if the destination should be created by default. For optional parameters,
-a return value of false indicates that the destination should not be created by default.
+Returns ``True`` if the destination should be created by default. For optional parameters,
+a return value of ``False`` indicates that the destination should not be created by default.
 
 .. seealso:: :py:func:`setCreateByDefault`
 %End
@@ -2259,7 +2455,7 @@ a return value of false indicates that the destination should not be created by 
     void setCreateByDefault( bool createByDefault );
 %Docstring
 Sets whether the destination should be created by default. For optional parameters,
-a value of false indicates that the destination should not be created by default.
+a value of ``False`` indicates that the destination should not be created by default.
 
 .. seealso:: :py:func:`createByDefault`
 %End
@@ -2300,7 +2496,7 @@ A parameter which represents the destination feature sink for features created b
 %Docstring
 Constructor for QgsProcessingParameterFeatureSink.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
 output will not be created by default.
 %End
 
@@ -2321,6 +2517,8 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
@@ -2340,8 +2538,8 @@ Returns the layer type for sinks associated with the parameter.
 
     bool hasGeometry() const;
 %Docstring
-Returns true if sink is likely to include geometries. In cases were presence of geometry
-cannot be reliably determined in advance, this method will default to returning true.
+Returns ``True`` if sink is likely to include geometries. In cases were presence of geometry
+cannot be reliably determined in advance, this method will default to returning ``True``.
 %End
 
     void setDataType( QgsProcessing::SourceType type );
@@ -2390,7 +2588,7 @@ created by the algorithm.
 %Docstring
 Constructor for QgsProcessingParameterVectorDestination.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
 output will not be created by default.
 %End
 
@@ -2411,6 +2609,8 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
@@ -2430,8 +2630,8 @@ Returns the layer type for this created vector layer.
 
     bool hasGeometry() const;
 %Docstring
-Returns true if the created layer is likely to include geometries. In cases were presence of geometry
-cannot be reliably determined in advance, this method will default to returning true.
+Returns ``True`` if the created layer is likely to include geometries. In cases were presence of geometry
+cannot be reliably determined in advance, this method will default to returning ``True``.
 %End
 
     void setDataType( QgsProcessing::SourceType type );
@@ -2475,7 +2675,7 @@ created by the algorithm.
 %Docstring
 Constructor for QgsProcessingParameterRasterDestination.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
 output will not be created by default.
 %End
 
@@ -2532,7 +2732,7 @@ created by the algorithm.
 %Docstring
 Constructor for QgsProcessingParameterFileDestination.
 
-If ``createByDefault`` is false and the parameter is ``optional``, then this destination
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
 output will not be created by default.
 %End
 
@@ -2550,6 +2750,8 @@ Returns the type name for the parameter class.
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
 
     virtual QString defaultFileExtension() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     QString fileFilter() const;
@@ -2658,6 +2860,8 @@ Returns the type name for the parameter class.
 
     virtual QStringList dependsOnOtherParameters() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QString parentLayerParameterName() const;
 %Docstring
@@ -2699,6 +2903,134 @@ Sets whether multiple band selections are permitted.
 .. seealso:: :py:func:`allowMultiple`
 
 .. versionadded:: 3.4
+%End
+
+};
+
+class QgsProcessingParameterLayout : QgsProcessingParameterDefinition
+{
+%Docstring
+A print layout parameter, allowing users to select a print layout.
+
+QgsProcessingParameterLayout should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsLayout()`
+This will return the matching layout from the context's current project. Alternatively, calling
+QgsProcessingAlgorithm.parameterAsString() will return the name of the target print layout.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterLayout( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                  bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterLayout.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    static QgsProcessingParameterLayout *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+class QgsProcessingParameterLayoutItem : QgsProcessingParameterDefinition
+{
+%Docstring
+A print layout item parameter, allowing users to select a particular item from a print layout.
+
+QgsProcessingParameterLayoutItem should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsLayoutItem()`
+Internally, QgsProcessingParameterLayoutItems are string parameters, storing references to items either by
+their UUID (QgsLayoutItem.uuid()) or ID (QgsLayoutItem.id()).
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterLayoutItem( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                      const QString &parentLayoutParameterName = QString(),
+                                      int itemType = -1,
+                                      bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterLayoutItem.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    static QgsProcessingParameterLayoutItem *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+    QString parentLayoutParameterName() const;
+%Docstring
+Returns the name of the parent layout parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentLayoutParameterName`
+%End
+
+    void setParentLayoutParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent layout parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentLayoutParameterName`
+%End
+
+    int itemType() const;
+%Docstring
+Returns the acceptable item type, or -1 if any item type is allowed.
+
+These values correspond to the registered item types from :py:class:`QgsLayoutItemRegistry`.
+
+.. seealso:: :py:func:`setItemType`
+%End
+
+    void setItemType( int type );
+%Docstring
+Sets the acceptable item ``type``, or -1 if any item type is allowed.
+
+These values correspond to the registered item types from :py:class:`QgsLayoutItemRegistry`.
+
+.. seealso:: :py:func:`itemType`
 %End
 
 };

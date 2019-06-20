@@ -27,7 +27,13 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMes
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsApplication, QgsSettings
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsMapLayerType,
+    QgsWkbTypes
+)
 from ..db_plugins import createDbPlugin
 
 
@@ -273,7 +279,7 @@ class Database(DbItemObject):
         return "row_number() over ()"
 
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
-        from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
+        from qgis.core import QgsVectorLayer, QgsRasterLayer
 
         if uniqueCol is None:
             if hasattr(self, 'uniqueIdFunction'):
@@ -290,7 +296,7 @@ class Database(DbItemObject):
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
-        if layerType == QgsMapLayer.RasterLayer:
+        if layerType == QgsMapLayerType.RasterLayer:
             return QgsRasterLayer(uri.uri(False), layerName, provider)
         return QgsVectorLayer(uri.uri(False), layerName, provider)
 
@@ -517,8 +523,28 @@ class Database(DbItemObject):
     def tables(self, schema=None, sys_tables=False):
         tables = self.connector.getTables(schema.name if schema else None, sys_tables)
         if tables is not None:
-            tables = [self.tablesFactory(x, self, schema) for x in tables]
-        return tables
+            ret = []
+            for t in tables:
+                table = self.tablesFactory(t, self, schema)
+                ret.append(table)
+
+                # Similarly to what to browser does, if the geom type is generic geometry,
+                # we additionnly add three copies of the layer to allow importing
+                if isinstance(table, VectorTable):
+                    if table.geomType == 'GEOMETRY':
+                        point_table = self.tablesFactory(t, self, schema)
+                        point_table.geomType = 'POINT'
+                        ret.append(point_table)
+
+                        line_table = self.tablesFactory(t, self, schema)
+                        line_table.geomType = 'LINESTRING'
+                        ret.append(line_table)
+
+                        poly_table = self.tablesFactory(t, self, schema)
+                        poly_table.geomType = 'POLYGON'
+                        ret.append(poly_table)
+
+        return ret
 
     def createTable(self, table, fields, schema=None):
         field_defs = [x.definition() for x in fields]
@@ -594,6 +620,7 @@ class Schema(DbItemObject):
         ret = self.database().connector.renameSchema(self.name, new_name)
         if ret is not False:
             self.name = new_name
+            # FIXME: refresh triggers
             self.refresh()
         return ret
 
@@ -652,6 +679,9 @@ class Table(DbItemObject):
         ret = self.database().connector.renameTable((self.schemaName(), self.name), new_name)
         if ret is not False:
             self.name = new_name
+            self._triggers = None
+            self._rules = None
+            self._constraints = None
             self.refresh()
         return ret
 
@@ -683,6 +713,13 @@ class Table(DbItemObject):
         geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
         uniqueCol = self.getValidQgisUniqueFields(True) if self.isView else None
         uri.setDataSource(schema, self.name, geomCol if geomCol else None, None, uniqueCol.name if uniqueCol else "")
+        uri.setSrid(str(self.srid))
+        for f in self.fields():
+            if f.primaryKey:
+                uri.setKeyColumn(f.name)
+                break
+        uri.setWkbType(QgsWkbTypes.parseType(self.geomType))
+
         return uri
 
     def mimeUri(self):
@@ -1095,13 +1132,17 @@ class TableField(TableSubItemObject):
             txt += u" DEFAULT %s" % self.default2String()
         return txt
 
+    def getComment(self):
+        """Returns the comment for a field"""
+        return ''
+
     def delete(self):
         return self.table().deleteField(self)
 
     def rename(self, new_name):
         return self.update(new_name)
 
-    def update(self, new_name, new_type_str=None, new_not_null=None, new_default_str=None):
+    def update(self, new_name, new_type_str=None, new_not_null=None, new_default_str=None, new_comment=None):
         self.table().aboutToChange.emit()
         if self.name == new_name:
             new_name = None
@@ -1111,10 +1152,12 @@ class TableField(TableSubItemObject):
             new_not_null = None
         if self.default2String() == new_default_str:
             new_default_str = None
-
+        if self.comment == new_comment:
+            # Update also a new_comment
+            new_comment = None
         ret = self.table().database().connector.updateTableColumn((self.table().schemaName(), self.table().name),
-                                                                  self.name, new_name, new_type_str, new_not_null,
-                                                                  new_default_str)
+                                                                  self.name, new_name, new_type_str,
+                                                                  new_not_null, new_default_str, new_comment)
         if ret is not False:
             self.table().refreshFields()
         return ret

@@ -19,9 +19,11 @@
 #define QGSCOORDINATETRANSFORMCONTEXT_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsdatumtransform.h"
 
+#include <QMetaType>
+#include <QExplicitlySharedDataPointer>
 class QgsCoordinateReferenceSystem;
 class QgsReadWriteContext;
 class QgsCoordinateTransformContextPrivate;
@@ -38,16 +40,9 @@ class QDomElement;
  * \ingroup core
  * Contains information about the context in which a coordinate transform is executed.
  *
- * The context stores various information regarding which coordinate transforms should
+ * The context stores various information regarding which coordinate operations should
  * be used when transforming points from a source to destination coordinate reference
  * system.
- *
- * The highest priority transforms are those set using addSourceDestinationDatumTransform()
- * and which the transform has a matching source to destination CRS pair.
- *
- * Failing this, if the source CRS has a matching transform specified by
- * addSourceDatumTransform() then this datum transform will be used. The same logic
- * applies for destination CRS transforms set using addDestinationDatumTransform().
  *
  * \note QgsCoordinateTransformContext objects are thread safe for read and write.
  *
@@ -68,7 +63,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      */
     QgsCoordinateTransformContext();
 
-    ~QgsCoordinateTransformContext();
+    ~QgsCoordinateTransformContext() ;
 
     /**
      * Copy constructor
@@ -87,94 +82,6 @@ class CORE_EXPORT QgsCoordinateTransformContext
      */
     void clear();
 
-
-#if 0
-//singlesourcedest
-
-    /**
-     * Returns the stored mapping for source CRS to associated datum transform to use.
-     * The map keys will be QgsCoordinateReferenceSystems::authid()s.
-     *
-     * A datum transform of -1 indicates that no datum transform is required for the
-     * source CRS.
-     *
-     * \warning This method should not be used to calculate the corresponding datum transforms
-     * to use for a coordinate transform. Instead, always use calculateDatumTransforms()
-     * to determine this.
-     *
-     * \see addSourceDatumTransform()
-     * \see destinationDatumTransforms()
-     */
-    QMap<QString, int> sourceDatumTransforms() const;
-
-    /**
-     * Adds a new \a transform to use when projecting coordinates from the specified source
-     * \a crs.
-     *
-     * A datum \a transform of -1 indicates that no datum transform is required for the
-     * source CRS.
-     *
-     * Returns true if the new transform was added successfully.
-     *
-     * \warning Transforms set using this method may be overridden by specific source/destination
-     * transforms set by addSourceDestinationDatumTransform().
-     *
-     * \see sourceDatumTransforms()
-     * \see addDestinationDatumTransform()
-     * \see removeSourceDatumTransform()
-     */
-    bool addSourceDatumTransform( const QgsCoordinateReferenceSystem &crs, int transform );
-
-    /**
-     * Removes the source datum transform for the specified \a crs.
-     * \see addSourceDatumTransform()
-     * \see removeDestinationDatumTransform()
-     */
-    void removeSourceDatumTransform( const QgsCoordinateReferenceSystem &crs );
-
-    /**
-     * Returns the stored mapping for destination CRS to associated datum transform to use.
-     * The map keys will be QgsCoordinateReferenceSystems::authid()s.
-     *
-     * A datum transform of -1 indicates that no datum transform is required for the
-     * destination CRS.
-     *
-     * \warning This method should not be used to calculate the corresponding datum transforms
-     * to use for a coordinate transform. Instead, always use calculateDatumTransforms()
-     * to determine this.
-     *
-     * \see addDestinationDatumTransform()
-     * \see sourceDatumTransforms()
-     */
-    QMap< QString, int > destinationDatumTransforms() const;
-
-    /**
-     * Adds a new \a transform to use when projecting coordinates to the specified destination
-     * \a crs.
-     *
-     * A datum \a transform of -1 indicates that no datum transform is required for the
-     * destination CRS.
-     *
-     * Returns true if the new transform was added successfully.
-     *
-     * \warning Transforms set using this method may be overridden by specific source/destination
-     * transforms set by addSourceDestinationDatumTransform().
-     *
-     * \see destinationDatumTransforms()
-     * \see addSourceDatumTransform()
-     * \see removeDestinationDatumTransform()
-     */
-    bool addDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs, int transform );
-
-    /**
-     * Removes the destination datum transform for the specified \a crs.
-     * \see addDestinationDatumTransform()
-     * \see removeSourceDatumTransform()
-     */
-    void removeDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs );
-
-#endif
-
     /**
      * Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
      * The map keys will be QgsCoordinateReferenceSystems::authid()s.
@@ -187,8 +94,27 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * to determine this.
      *
      * \see addSourceDestinationDatumTransform()
+     *
+     * \deprecated Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
      */
-    QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const;
+    Q_DECL_DEPRECATED QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const SIP_DEPRECATED;
+
+    /**
+     * Returns the stored mapping for source to destination CRS pairs to associated coordinate operation to use
+     * (as a proj string). The map keys will be QgsCoordinateReferenceSystems::authid()s.
+     *
+     * \warning This method should not be used to calculate the corresponding coordinate operation
+     * to use for a coordinate transform. Instead, always use calculateCoordinateOperation()
+     * to determine this.
+     *
+     * \see addCoordinateOperation()
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return an empty list,
+     * and the deprecated sourceDestinationDatumTransforms() method must be used instead.
+     *
+     * \since QGIS 3.8
+     */
+    QMap< QPair< QString, QString>, QString > coordinateOperations() const;
 
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
@@ -197,29 +123,53 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * If either \a sourceTransformId or \a destinationTransformId is -1, then no datum transform is
      * required for transformations for that source or destination.
      *
-     * Returns true if the new transform pair was added successfully.
-     *
-     * \note Transforms set using this method will override any specific source or destination
-     * transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
+     * Returns TRUE if the new transform pair was added successfully.
      *
      * \see sourceDestinationDatumTransforms()
      * \see removeSourceDestinationDatumTransform()
+     *
+     * \deprecated Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
      */
-    bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        int sourceTransformId,
-        int destinationTransformId );
+    Q_DECL_DEPRECATED bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) SIP_DEPRECATED;
+
+    /**
+     * Adds a new \a coordinateOperationProjString to use when projecting coordinates
+     * from the specified \a sourceCrs to the specified \a destinationCrs.
+     *
+     * \a coordinateOperationProjString should be set to a valid Proj coordinate operation
+     * string. If \a coordinateOperationProjString is empty, then the default Proj operation
+     * will be used when transforming between the coordinate reference systems.
+     *
+     * Returns TRUE if the new coordinate operation was added successfully.
+     *
+     * \see coordinateOperations()
+     * \see removeCoordinateOperation()
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
+     * and the deprecated addSourceDestinationDatumTransform() method must be used instead.
+     *
+     * \since QGIS 3.8
+     */
+    bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString );
 
     /**
      * Removes the source to destination datum transform pair for the specified \a sourceCrs and
      * \a destinationCrs.
      * \see addSourceDestinationDatumTransform()
+     *
+     * \deprecated Use removeCoordinateOperation() instead
      */
-    void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs );
+    Q_DECL_DEPRECATED void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_DEPRECATED ;
 
     /**
-     * Returns true if the context has a valid datum transform to use
+     * Removes the coordinate operation for the specified \a sourceCrs and \a destinationCrs.
+     *
+     * \since QGIS 3.8
+     */
+    void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
+
+    /**
+     * Returns TRUE if the context has a valid coordinate operation to use
      * when transforming from the specified \a source CRS to \a destination CRS.
      * \note source and destination are reversible.
      */
@@ -234,14 +184,33 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * destination.
      *
      * \note source and destination are reversible.
+     * \deprecated Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead.
      */
-    QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
-        const QgsCoordinateReferenceSystem &destination ) const;
+    Q_DECL_DEPRECATED QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const SIP_DEPRECATED;
+
+    /**
+     * Returns the Proj coordinate operation string to use when transforming
+     * from the specified \a source CRS to \a destination CRS.
+     *
+     * Returns an empty string if no specific coordinate operation is set for the source to
+     * destination pair, in which case the default Proj coordinate operation should
+     * be used.
+     *
+     * \note source and destination are reversible.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+     * an empty string, and the deprecated calculateDatumTransforms() method should be used instead.
+     *
+     * \since QGIS 3.8
+     */
+    QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+
+    // TODO QGIS 4.0 - remove missingTransforms, not used for Proj >= 6.0 builds
 
     /**
      * Reads the context's state from a DOM \a element.
      *
-     * Returns false if transforms stored in the XML are not available. In this case \a missingTransforms will be
+     * Returns FALSE if transforms stored in the XML are not available. In this case \a missingTransforms will be
      * filled with missing datum transform strings.
      *
      * \see writeXml()
@@ -273,6 +242,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
     QExplicitlySharedDataPointer<QgsCoordinateTransformContextPrivate> d;
 
 };
+
+Q_DECLARE_METATYPE( QgsCoordinateTransformContext )
 
 #endif // QGSCOORDINATETRANSFORMCONTEXT_H
 

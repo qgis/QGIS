@@ -38,14 +38,12 @@
 #include <sqlite3.h>
 
 //proj4 includes
-extern "C"
-{
-#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
+#if PROJ_VERSION_MAJOR>=6
+#include "qgsprojutils.h"
+#include <proj.h>
+#else
 #include <proj_api.h>
-}
-
+#endif
 
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -100,7 +98,7 @@ void QgsCustomProjectionDialog::populateList()
     Q_ASSERT( result == SQLITE_OK );
   }
   QString sql = QStringLiteral( "select srs_id,description,parameters from tbl_srs" );
-  QgsDebugMsg( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ) );
+  QgsDebugMsgLevel( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ), 4 );
   preparedStatement = database.prepare( sql, result );
   if ( result == SQLITE_OK )
   {
@@ -145,7 +143,7 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
   sqlite3_database_unique_ptr database;
 
   QString sql = "delete from tbl_srs where srs_id=" + QgsSqliteUtils::quotedString( id );
-  QgsDebugMsg( sql );
+  QgsDebugMsgLevel( sql, 4 );
   //check the db is available
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( result != SQLITE_OK )
@@ -201,7 +199,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
     {
       if ( srsPreparedStatement.step() == SQLITE_ROW )
       {
-        QgsDebugMsg( QStringLiteral( "Trying to insert projection" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Trying to insert projection" ), 4 );
         // We have the result from system srs.db. Now insert into user db.
         sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
               + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
@@ -230,7 +228,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
   int returnId;
   QString projectionAcronym = parameters.projectionAcronym();
   QString ellipsoidAcronym = parameters.ellipsoidAcronym();
-  QgsDebugMsg( QStringLiteral( "Saving a CRS:%1, %2, %3" ).arg( name, parameters.toProj4() ).arg( newEntry ) );
+  QgsDebugMsgLevel( QStringLiteral( "Saving a CRS:%1, %2, %3" ).arg( name, parameters.toProj4() ).arg( newEntry ), 4 );
   if ( newEntry )
   {
     returnId = parameters.saveAsUserCrs( name );
@@ -249,7 +247,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
           + ",is_geo=0" // <--shamelessly hard coded for now
           + " where srs_id=" + QgsSqliteUtils::quotedString( id )
           ;
-    QgsDebugMsg( sql );
+    QgsDebugMsgLevel( sql, 4 );
     sqlite3_database_unique_ptr database;
     //check if the db is available
     int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
@@ -376,7 +374,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     mCustomCRSparameters[i] = teParameters->toPlainText();
   }
 
-  QgsDebugMsg( QStringLiteral( "We save the modified CRS." ) );
+  QgsDebugMsgLevel( QStringLiteral( "We save the modified CRS." ), 4 );
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem CRS;
@@ -412,7 +410,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
       QgsDebugMsg( QStringLiteral( "Error when saving CRS '%1'" ).arg( mCustomCRSnames[i] ) );
     }
   }
-  QgsDebugMsg( QStringLiteral( "We remove the deleted CRS." ) );
+  QgsDebugMsgLevel( QStringLiteral( "We remove the deleted CRS." ), 4 );
   for ( int i = 0; i < mDeletedCRSs.size(); ++i )
   {
     saveSuccess &= deleteCrs( mDeletedCRSs[i] );
@@ -446,15 +444,19 @@ void QgsCustomProjectionDialog::updateListFromCurrentItem()
 void QgsCustomProjectionDialog::pbnCalculate_clicked()
 {
   // We must check the prj def is valid!
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *pContext = QgsProjContext::get();
+  const QString projDef = teParameters->toPlainText();
+  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
+#else
   projCtx pContext = pj_ctx_alloc();
   projPJ proj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
-
-  QgsDebugMsg( QStringLiteral( "Proj: %1" ).arg( teParameters->toPlainText() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( teParameters->toPlainText() ), 3 );
 
   if ( !proj )
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid." ) );
+                              tr( "This proj projection definition is not valid." ) );
     projectedX->clear();
     projectedY->clear();
     pj_free( proj );
@@ -462,22 +464,31 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
     return;
 
   }
+#endif
   // Get the WGS84 coordinates
   bool okN, okE;
-  double northing = northWGS84->text().toDouble( &okN ) * DEG_TO_RAD;
-  double easting = eastWGS84->text().toDouble( &okE )  * DEG_TO_RAD;
+  double northing = northWGS84->text().toDouble( &okN );
+  double easting = eastWGS84->text().toDouble( &okE );
+
+#if PROJ_VERSION_MAJOR<6
+  northing *= DEG_TO_RAD;
+  easting *= DEG_TO_RAD;
+#endif
 
   if ( !okN || !okE )
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "Northing and Easthing must be in decimal form." ) );
+                              tr( "Northing and Easting must be in decimal form." ) );
     projectedX->clear();
     projectedY->clear();
+#if PROJ_VERSION_MAJOR<6
     pj_free( proj );
     pj_ctx_free( pContext );
+#endif
     return;
   }
 
+#if PROJ_VERSION_MAJOR < 6
   projPJ wgs84Proj = pj_init_plus_ctx( pContext, GEOPROJ4.toLocal8Bit().data() ); //defined in qgis.h
 
   if ( !wgs84Proj )
@@ -490,26 +501,58 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
     pj_ctx_free( pContext );
     return;
   }
+#endif
 
+#if PROJ_VERSION_MAJOR>=6
+  QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
+  if ( !res )
+  {
+    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
+                              tr( "This proj projection definition is not valid." ) );
+    projectedX->clear();
+    projectedY->clear();
+    return;
+  }
+
+  proj_trans_generic( res.get(), PJ_FWD,
+                      &easting, sizeof( double ), 1,
+                      &northing, sizeof( double ), 1,
+                      nullptr, sizeof( double ), 0,
+                      nullptr, sizeof( double ), 0 );
+  int projResult = proj_errno( res.get() );
+#else
   double z = 0.0;
-
   int projResult = pj_transform( wgs84Proj, proj, 1, 0, &easting, &northing, &z );
+#endif
   if ( projResult != 0 )
   {
     projectedX->setText( tr( "Error" ) );
     projectedY->setText( tr( "Error" ) );
+#if PROJ_VERSION_MAJOR>=6
+    QgsDebugMsg( proj_errno_string( projResult ) );
+#else
     QgsDebugMsg( pj_strerrno( projResult ) );
+#endif
   }
   else
   {
     QString tmp;
 
     int precision = 4;
+    bool isLatLong = false;
 
-    if ( pj_is_latlong( proj ) )
+#if PROJ_VERSION_MAJOR>= 6
+    isLatLong = QgsProjUtils::usesAngularUnit( projDef );
+#else
+    isLatLong = pj_is_latlong( proj );
+    if ( isLatLong )
     {
       northing *= RAD_TO_DEG;
       easting *= RAD_TO_DEG;
+    }
+#endif
+    if ( isLatLong )
+    {
       precision = 7;
     }
 
@@ -519,9 +562,11 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
     projectedY->setText( tmp );
   }
 
+#if PROJ_VERSION_MAJOR<6
   pj_free( proj );
   pj_free( wgs84Proj );
   pj_ctx_free( pContext );
+#endif
 }
 
 void QgsCustomProjectionDialog::showHelp()

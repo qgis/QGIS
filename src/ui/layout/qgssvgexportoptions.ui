@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>385</height>
+    <height>464</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -180,6 +180,28 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+     <property name="title">
+      <string>Advanced Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="mDisableRasterTilingCheckBox">
+        <property name="toolTip">
+         <string>Disables tiled rendering of raster layers. This setting may improve the export quality in some circumstances, at the cost of much greater memory usage during exports.</string>
+        </property>
+        <property name="text">
+         <string>Disable tiled raster layer exports</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

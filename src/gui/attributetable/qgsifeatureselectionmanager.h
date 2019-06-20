@@ -72,11 +72,11 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
   signals:
 
     /**
-     * This signal is emitted when selection was changed
+     * Emitted when selection was changed.
      *
      * \param selected        Newly selected feature ids
      * \param deselected      Ids of all features which have previously been selected but are not any more
-     * \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+     * \param clearAndSelect  In case this is set to TRUE, the old selection was dismissed and the new selection corresponds to selected
      */
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 };

@@ -66,7 +66,7 @@ class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
     QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer );
 
     /**
-     * Constructor for highlighting true feature shape using feature attributes
+     * Constructor for highlighting TRUE feature shape using feature attributes
      * and renderer.
      * \param mapCanvas map canvas
      * \param feature

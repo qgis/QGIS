@@ -3,6 +3,7 @@
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/annotations
@@ -16,6 +17,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/raster
@@ -90,6 +92,7 @@ SET(TESTS
  testcontrastenhancements.cpp
  testqgscoordinatereferencesystem.cpp
  testqgscoordinatetransform.cpp
+ testqgscredentials.cpp
  testqgscurve.cpp
  testqgsdatadefinedsizelegend.cpp
  testqgsdataitem.cpp
@@ -159,6 +162,10 @@ SET(TESTS
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
+ testqgsmeshlayer.cpp
+ testqgsmeshlayerinterpolator.cpp
+ testqgsmeshlayerrenderer.cpp
+ testqgsnetworkaccessmanager.cpp
  testqgsnetworkcontentfetcher.cpp
  testqgsogcutils.cpp
  testqgsogrutils.cpp
@@ -171,6 +178,7 @@ SET(TESTS
  testqgspoint.cpp
  testqgsproject.cpp
  testqgsprojectstorage.cpp
+ testqgsprojutils.cpp
  testqgsproperty.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp
@@ -197,6 +205,7 @@ SET(TESTS
  testqgssymbol.cpp
  testqgstaskmanager.cpp
  testqgstracer.cpp
+ testqgstriangularmesh.cpp
  testqgsfontutils.cpp
  testqgsvector.cpp
  testqgsvectordataprovider.cpp
@@ -206,13 +215,12 @@ SET(TESTS
  testqgsvectorlayerutils.cpp
  testqgsziputils.cpp
  testziplayer.cpp
- testqgsmeshlayer.cpp
- testqgsmeshlayerrenderer.cpp
  testqgslayerdefinition.cpp
  testqgssqliteutils.cpp
  testqgsmimedatautils.cpp
  testqgsofflineediting.cpp
  testqgstranslateproject.cpp
+ testqobjectuniqueptr.cpp
    )
 
 IF(WITH_QTWEBKIT)

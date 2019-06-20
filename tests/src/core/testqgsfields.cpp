@@ -39,6 +39,7 @@ class TestQgsFields: public QObject
     void count();
     void isEmpty();
     void remove();
+    void rename();
     void extend();
     void byIndex();
     void byName();
@@ -235,6 +236,25 @@ void TestQgsFields::remove()
   QCOMPARE( fields.count(), 1 );
   QCOMPARE( fields.at( 0 ).name(), QString( "testfield2" ) );
   QCOMPARE( fields.indexFromName( "testfield2" ), 0 );
+}
+
+void TestQgsFields::rename()
+{
+  QgsFields fields;
+
+  QVERIFY( !fields.rename( 1, "name" ) );
+
+  QgsField field( QStringLiteral( "testfield" ) );
+  fields.append( field );
+  QVERIFY( !fields.rename( 0, "" ) );
+
+  QgsField field2( QStringLiteral( "testfield2" ) );
+  fields.append( field2 );
+  QVERIFY( !fields.rename( 0, "testfield2" ) );
+
+  QVERIFY( fields.rename( 0, "newname" ) );
+  QCOMPARE( fields.at( 0 ).name(), QString( "newname" ) );
+  QCOMPARE( fields.at( 1 ).name(), QString( "testfield2" ) );
 }
 
 void TestQgsFields::extend()

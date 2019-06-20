@@ -101,7 +101,7 @@ is disabled.
 %Docstring
 Check if the root location has been set for the manager.
 
-:return: True if the root location has been set.
+:return: ``True`` if the root location has been set.
 %End
 
     QStringList allProfiles() const;
@@ -113,7 +113,7 @@ Returns a list of all found profile names.
 %Docstring
 Check if a profile exists.
 
-:return: False if the profile can't be found.
+:return: ``False`` if the profile can't be found.
 %End
 
     QString defaultProfileName() const;
@@ -203,7 +203,7 @@ Starts a new instance of QGIS for the given profile.
 %Docstring
 Emitted when the list of profiles is changed.
 
-This signal will only be emitted when isNewProfileNotificationEnabled() is true.
+This signal will only be emitted when isNewProfileNotificationEnabled() is ``True``.
 By default new profile notification is disabled.
 
 .. seealso:: :py:func:`isNewProfileNotificationEnabled`

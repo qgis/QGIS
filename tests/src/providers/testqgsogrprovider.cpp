@@ -24,6 +24,8 @@
 #include <qgsproviderregistry.h>
 #include <qgsvectorlayer.h>
 #include <qgsnetworkaccessmanager.h>
+#include <qgsgeopackagedataitems.h>
+#include <qgsdataitem.h>
 
 #include <QObject>
 
@@ -46,6 +48,9 @@ class TestQgsOgrProvider : public QObject
 
     void setupProxy();
     void decodeUri();
+    void testThread();
+    //! Test GPKG data items rename
+    void testGpkgDataItemRename();
 
   private:
     QString mTestDataDir;
@@ -129,6 +134,126 @@ void TestQgsOgrProvider::decodeUri()
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=a_layer" ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
 }
+
+
+class ReadVectorLayer : public QThread
+{
+
+  public :
+    ReadVectorLayer( const QString &filePath, QMutex &mutex, QWaitCondition &waitForVlCreation, QWaitCondition &waitForProcessEvents )
+      : _filePath( filePath ), _mutex( mutex ), _waitForVlCreation( waitForVlCreation ), _waitForProcessEvents( waitForProcessEvents ) {}
+
+    void run() override
+    {
+
+      QgsVectorLayer *vl2 = new QgsVectorLayer( _filePath, QStringLiteral( "thread_test" ), QLatin1Literal( "ogr" ) );
+
+      QgsFeature f;
+      QVERIFY( vl2->getFeatures().nextFeature( f ) );
+
+      _mutex.lock();
+      _waitForVlCreation.wakeAll();
+      _mutex.unlock();
+
+      _mutex.lock();
+      _waitForProcessEvents.wait( &_mutex );
+      _mutex.unlock();
+
+      delete vl2;
+    }
+
+  private:
+    QString _filePath;
+    QMutex &_mutex;
+    QWaitCondition &_waitForVlCreation;
+    QWaitCondition &_waitForProcessEvents;
+
+};
+
+void failOnWarning( QtMsgType type, const QMessageLogContext &context, const QString &msg )
+{
+  Q_UNUSED( context );
+
+  switch ( type )
+  {
+    case QtWarningMsg:
+      QFAIL( QString( "No Qt warning message expect : %1" ).arg( msg ).toUtf8() );
+    default:;
+  }
+}
+
+void TestQgsOgrProvider::testThread()
+{
+  // Disabled by @m-kuhn
+  // This test is flaky
+  // See https://travis-ci.org/qgis/QGIS/jobs/505008602#L6464-L7108
+  if ( !QgsTest::runFlakyTests() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  // After reading a QgsVectorLayer (getFeatures) from another thread the QgsOgrConnPoolGroup starts
+  // an expiration timer. The timer belongs to the main thread in order to listening the event
+  // loop and is parented to its QgsOgrConnPoolGroup. So when we delete the QgsVectorLayer, the
+  // QgsConnPoolGroup and the timer are subsequently deleted from another thread. This leads to
+  // segfault later when the expiration time reaches its timeout.
+
+  QMutex mutex;
+  QWaitCondition waitForVlCreation;
+  QWaitCondition waitForProcessEvents;
+
+  QString filePath = mTestDataDir + '/' + QStringLiteral( "lines.shp" );
+  QThread *thread = new ReadVectorLayer( filePath, mutex, waitForVlCreation, waitForProcessEvents );
+
+  thread->start();
+
+  mutex.lock();
+  waitForVlCreation.wait( &mutex );
+  mutex.unlock();
+
+  // make sure timer as been started
+  QCoreApplication::processEvents();
+
+  qInstallMessageHandler( failOnWarning );
+
+  mutex.lock();
+  waitForProcessEvents.wakeAll();
+  mutex.unlock();
+
+  thread->wait();
+  qInstallMessageHandler( 0 );
+
+}
+
+void TestQgsOgrProvider::testGpkgDataItemRename()
+{
+  QTemporaryFile f( QStringLiteral( "qgis-XXXXXX.gpkg" ) );
+  f.open();
+  f.close();
+  QString fileName { f.fileName( ) };
+  f.remove();
+  QVERIFY( QFile::copy( QStringLiteral( "%1/provider/bug_21227-rename-styles.gpkg" ).arg( mTestDataDir ),  fileName ) );
+  QgsGeoPackageVectorLayerItem item( nullptr,
+                                     QStringLiteral( "Layer 1" ),
+                                     QStringLiteral( "gpkg:/%1|layername=layer 1" )
+                                     .arg( fileName ),
+                                     QStringLiteral( "%1|layername=layer 1" ).arg( fileName ),
+                                     QgsLayerItem::LayerType::TableLayer );
+  item.rename( "layer 3" );
+  // Check that the style is still available
+  QgsVectorLayer metadataLayer( QStringLiteral( "/%1|layername=layer_styles" ).arg( fileName ) );
+  QVERIFY( metadataLayer.isValid() );
+  QgsFeature feature;
+  QgsFeatureIterator it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 3'" ) ) ) );
+  QVERIFY( it.nextFeature( feature ) );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 1" ) );
+  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 1' " ) ) ) );
+  QVERIFY( !it.nextFeature( feature ) );
+  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 2' " ) ) ) );
+  QVERIFY( it.nextFeature( feature ) );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 2" ) );
+}
+
 
 QGSTEST_MAIN( TestQgsOgrProvider )
 #include "testqgsogrprovider.moc"

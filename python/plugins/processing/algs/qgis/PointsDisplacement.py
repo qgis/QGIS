@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'July 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import math
 from qgis.core import (QgsFeatureSink,
                        QgsGeometry,
@@ -83,7 +79,7 @@ class PointsDisplacement(QgisAlgorithm):
 
         proximity = self.parameterAsDouble(parameters, self.PROXIMITY, context)
         radius = self.parameterAsDouble(parameters, self.DISTANCE, context)
-        horizontal = self.parameterAsBool(parameters, self.HORIZONTAL, context)
+        horizontal = self.parameterAsBoolean(parameters, self.HORIZONTAL, context)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())

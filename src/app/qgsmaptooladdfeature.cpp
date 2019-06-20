@@ -32,6 +32,7 @@
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
 #include "qgisapp.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QSettings>
 
@@ -48,6 +49,8 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bo
 {
   QgsExpressionContextScope *scope = QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() );
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, QString(), -1, this );
+  QgsRubberBand *rb = takeRubberBand();
+  connect( action, &QgsFeatureAction::addFeatureFinished, rb, &QgsRubberBand::deleteLater );
   bool res = action->addFeature( QgsAttributeMap(), showModal, scope );
   if ( showModal )
     delete action;
@@ -66,11 +69,11 @@ void QgsMapToolAddFeature::digitized( QgsFeature &f )
 
     //use always topological editing for avoidIntersection.
     //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-    QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
-    bool avoidIntersection = !intersectionLayers.isEmpty();
-    if ( avoidIntersection ) //try to add topological points also to background layers
+    const QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
+
+    if ( !intersectionLayers.isEmpty() ) //try to add topological points also to background layers
     {
-      Q_FOREACH ( QgsVectorLayer *vl, intersectionLayers )
+      for ( QgsVectorLayer *vl : intersectionLayers )
       {
         //can only add topological points if background layer is editable...
         if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )

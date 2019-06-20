@@ -18,7 +18,7 @@
 #define QGSEFFECTSTACK_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspainteffect.h"
 
 /**

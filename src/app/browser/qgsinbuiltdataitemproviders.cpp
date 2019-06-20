@@ -32,6 +32,7 @@
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewgeopackagelayerdialog.h"
 #include "qgsfileutils.h"
+#include "qgsapplication.h"
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -105,12 +106,17 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   {
     QString enc;
     QDir dir( directoryItem->dirPath() );
-    const QString newFile = QgsNewVectorLayerDialog::runAndCreateLayer( QgisApp::instance(), &enc, QgsProject::instance()->defaultCrsForNewLayers(), dir.filePath( QStringLiteral( "new_layer.shp" ) ) );
+    QString error;
+    const QString newFile = QgsNewVectorLayerDialog::execAndCreateLayer( error, QgisApp::instance(), dir.filePath( QStringLiteral( "new_layer.shp" ) ), &enc, QgsProject::instance()->defaultCrsForNewLayers() );
     if ( !newFile.isEmpty() )
     {
       context.messageBar()->pushSuccess( tr( "New ShapeFile" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
                                            QUrl::fromLocalFile( newFile ).toString(), QDir::toNativeSeparators( newFile ) ) );
       item->refresh();
+    }
+    else if ( !error.isEmpty() )
+    {
+      context.messageBar()->pushCritical( tr( "New ShapeFile" ), tr( "Layer creation failed: %1" ).arg( error ) );
     }
   } );
   newMenu->addAction( createShp );
@@ -344,8 +350,8 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     return;
 
   QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
-  if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayer::VectorLayer ||
-                      layerItem->mapLayerType() == QgsMapLayer::RasterLayer ) )
+  if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayerType::VectorLayer ||
+                      layerItem->mapLayerType() == QgsMapLayerType::RasterLayer ) )
   {
     QMenu *exportMenu = new QMenu( tr( "Export Layer" ), menu );
     menu->addMenu( exportMenu );
@@ -355,9 +361,10 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     {
       switch ( layerItem->mapLayerType() )
       {
-        case QgsMapLayer::VectorLayer:
+        case QgsMapLayerType::VectorLayer:
         {
-          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
+          const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options ) );
           if ( layer && layer->isValid() )
           {
             QgisApp::instance()->saveAsFile( layer.get(), false, false );
@@ -365,7 +372,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           break;
         }
 
-        case QgsMapLayer::RasterLayer:
+        case QgsMapLayerType::RasterLayer:
         {
           std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
           if ( layer && layer->isValid() )
@@ -375,8 +382,8 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           break;
         }
 
-        case QgsMapLayer::PluginLayer:
-        case QgsMapLayer::MeshLayer:
+        case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
           break;
       }
     } );

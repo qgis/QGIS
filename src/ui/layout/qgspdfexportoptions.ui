@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>197</height>
+    <height>276</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,26 @@
       <string>Export Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+      <item row="3" column="1">
+       <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="mForceVectorCheckBox">
+        <property name="toolTip">
+         <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterized in order to keep their appearance intact.</string>
+        </property>
+        <property name="text">
+         <string>Always export as vectors</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Text export</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="mIncludeMetadataCheckbox">
         <property name="text">
@@ -30,23 +50,25 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Text export</string>
-        </property>
-       </widget>
-      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+     <property name="title">
+      <string>Advanced Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
       <item row="0" column="0" colspan="2">
-       <widget class="QCheckBox" name="mForceVectorCheckBox">
+       <widget class="QCheckBox" name="mDisableRasterTilingCheckBox">
         <property name="toolTip">
-         <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterized in order to keep their appearance intact.</string>
+         <string>Disables tiled rendering of raster layers. This setting may improve the export quality in some circumstances, at the cost of much greater memory usage during exports.</string>
         </property>
         <property name="text">
-         <string>Always export as vectors</string>
+         <string>Disable tiled raster layer exports</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

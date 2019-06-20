@@ -29,11 +29,12 @@ class QgsMeshLayer;
 
 #include "qgsmaplayerrenderer.h"
 #include "qgsrasterinterface.h"
-#include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
 #include "qgssymbol.h"
 #include "qgsmeshdataprovider.h"
+
+class QgsRenderContext;
 
 ///@cond PRIVATE
 
@@ -100,7 +101,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     void calculateOutputSize();
 
   protected:
-    //! feedback class for cancelation
+    //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;
 
     // copy from mesh layer

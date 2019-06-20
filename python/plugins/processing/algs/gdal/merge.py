@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -128,12 +124,13 @@ class merge(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
-        if self.parameterAsBool(parameters, self.PCT, context):
+        if self.parameterAsBoolean(parameters, self.PCT, context):
             arguments.append('-pct')
 
-        if self.parameterAsBool(parameters, self.SEPARATE, context):
+        if self.parameterAsBoolean(parameters, self.SEPARATE, context):
             arguments.append('-separate')
 
         if self.NODATA_INPUT in parameters and parameters[self.NODATA_INPUT] is not None:
@@ -165,8 +162,11 @@ class merge(GdalAlgorithm):
         arguments.append('--optfile')
         arguments.append(list_file)
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

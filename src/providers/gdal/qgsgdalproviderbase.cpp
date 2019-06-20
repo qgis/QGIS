@@ -261,14 +261,23 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 
 GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
 {
+  bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
+  {
+    CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
+  }
   GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
+  if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
+  {
+    CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  }
   return hDS;
 }
 
 int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
-  Q_UNUSED( dfComplete );
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( dfComplete )
+  Q_UNUSED( pszMessage )
 
   QgsRasterBlockFeedback *feedback = static_cast<QgsRasterBlockFeedback *>( pProgressArg );
   return !feedback->isCanceled();
@@ -281,10 +290,10 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
   INIT_RASTERIO_EXTRA_ARG( extra );
   if ( false && feedback )  // disabled!
   {
-    // Currently the cancelation is disabled... When RasterIO call is canceled,
+    // Currently the cancellation is disabled... When RasterIO call is canceled,
     // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would
     // expect to get CPLE_UserInterrupt to clearly identify that the failure was
-    // caused by the cancelation and not that something dodgy is going on.
+    // caused by the cancellation and not that something dodgy is going on.
     // Are both error codes acceptable?
     extra.pfnProgress = _gdalProgressFnWithFeedback;
     extra.pProgressData = ( void * ) feedback;

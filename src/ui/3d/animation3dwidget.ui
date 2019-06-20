@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1301</width>
-    <height>138</height>
+    <width>986</width>
+    <height>129</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,6 +60,19 @@
       <widget class="QToolButton" name="btnDuplicateKeyframe">
        <property name="toolTip">
         <string>Duplicate keyframe</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnExportAnimation">
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Export Animation Frames</string>
        </property>
        <property name="text">
         <string>…</string>

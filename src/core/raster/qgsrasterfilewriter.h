@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
@@ -70,7 +71,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * Create a raster file with one band without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
-     * \returns Instance of data provider in editing mode (on success) or nullptr on error.
+     * \returns Instance of data provider in editing mode (on success) or NULLPTR on error.
      * \note Does not work with tiled mode enabled.
      * \since QGIS 3.0
      */
@@ -83,7 +84,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * Create a raster file with given number of bands without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
-     * \returns Instance of data provider in editing mode (on success) or nullptr on error.
+     * \returns Instance of data provider in editing mode (on success) or NULLPTR on error.
      * \note Does not work with tiled mode enabled.
      * \since QGIS 3.0
      */
@@ -93,6 +94,7 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsCoordinateReferenceSystem &crs,
         int nBands ) SIP_FACTORY;
 
+
     /**
      * Write raster file
         \param pipe raster pipe
@@ -101,9 +103,27 @@ class CORE_EXPORT QgsRasterFileWriter
         \param outputExtent extent to output
         \param crs crs to reproject to
         \param feedback optional feedback object for progress reports
+        \deprecated since QGIS 3.8, use version with transformContext instead
+    */
+    Q_DECL_DEPRECATED WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+        const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr ) SIP_DEPRECATED;
+
+    /**
+     * Write raster file
+        \param pipe raster pipe
+        \param nCols number of output columns
+        \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
+        \param outputExtent extent to output
+        \param crs crs to reproject to
+        \param transformContext coordinate transform context
+        \param feedback optional feedback object for progress reports
+        \since QGIS 3.8
     */
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-                             const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr );
+                             const QgsCoordinateReferenceSystem &crs,
+                             const QgsCoordinateTransformContext &transformContext,
+                             QgsRasterBlockFeedback *feedback = nullptr );
+
 
     /**
      * Returns the output URL for the raster.
@@ -210,7 +230,8 @@ class CORE_EXPORT QgsRasterFileWriter
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-                                 const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr );
+                                 const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
+                                 QgsRasterBlockFeedback *feedback = nullptr );
 
     // Helper method used by previous one
     WriterError writeDataRaster( const QgsRasterPipe *pipe,
@@ -235,7 +256,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *  \param crs coordinate system of vrt
      *  \param geoTransform optional array of transformation matrix values
      *  \param type datatype of vrt
-     *  \param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  \param destHasNoDataValueList TRUE if destination has no data value, indexed from 0
      *  \param destNoDataValueList no data value, indexed from 0
      */
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem &crs, double *geoTransform, Qgis::DataType type, const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList );
@@ -259,7 +280,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *  \param geoTransform optional array of transformation matrix values
      *  \param nBands number of bands
      *  \param type datatype of vrt
-     *  \param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  \param destHasNoDataValueList TRUE if destination has no data value, indexed from 0
      *  \param destNoDataValueList no data value, indexed from 0
      */
     QgsRasterDataProvider *initOutput( int nCols, int nRows,
@@ -280,10 +301,10 @@ class CORE_EXPORT QgsRasterFileWriter
     QStringList mCreateOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
-    //! False: Write one file, true: create a directory and add the files numbered
+    //! False: Write one file, TRUE: create a directory and add the files numbered
     bool mTiledMode = false;
-    double mMaxTileWidth = 500;
-    double mMaxTileHeight = 500;
+    int mMaxTileWidth = 500;
+    int mMaxTileHeight = 500;
 
     QList< int > mPyramidsList;
     QString mPyramidsResampling = QStringLiteral( "AVERAGE" );

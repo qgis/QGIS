@@ -18,6 +18,7 @@
 #include "qgsblureffect.h"
 #include "qgsimageoperation.h"
 #include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
 
 QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
 {
@@ -44,14 +45,16 @@ void QgsBlurEffect::draw( QgsRenderContext &context )
 
 void QgsBlurEffect::drawStackBlur( QgsRenderContext &context )
 {
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   QImage im = sourceAsImage( context )->copy();
-  QgsImageOperation::stackBlur( im, mBlurLevel );
+  QgsImageOperation::stackBlur( im, blurLevel );
   drawBlurredImage( context, im );
 }
 
 void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
 {
-  QImage *im = QgsImageOperation::gaussianBlur( *sourceAsImage( context ), mBlurLevel );
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  QImage *im = QgsImageOperation::gaussianBlur( *sourceAsImage( context ), blurLevel );
   drawBlurredImage( context, *im );
   delete im;
 }
@@ -76,6 +79,8 @@ QgsStringMap QgsBlurEffect::properties() const
   props.insert( QStringLiteral( "blend_mode" ), QString::number( static_cast< int >( mBlendMode ) ) );
   props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
+  props.insert( QStringLiteral( "blur_unit" ), QgsUnitTypes::encodeUnit( mBlurUnit ) );
+  props.insert( QStringLiteral( "blur_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mBlurMapUnitScale ) );
   props.insert( QStringLiteral( "blur_method" ), QString::number( static_cast< int >( mBlurMethod ) ) );
   return props;
 }
@@ -107,11 +112,18 @@ void QgsBlurEffect::readProperties( const QgsStringMap &props )
 
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
-  int level = props.value( QStringLiteral( "blur_level" ) ).toInt( &ok );
+  double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
   if ( ok )
   {
     mBlurLevel = level;
+    if ( !props.contains( QStringLiteral( "blur_unit" ) ) )
+    {
+      // deal with pre blur unit era by assuming 96 dpi and converting pixel values as millimeters
+      mBlurLevel *= 0.2645;
+    }
   }
+  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ) );
+  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ) );
   QgsBlurEffect::BlurMethod method = static_cast< QgsBlurEffect::BlurMethod >( props.value( QStringLiteral( "blur_method" ) ).toInt( &ok ) );
   if ( ok )
   {
@@ -127,9 +139,8 @@ QgsBlurEffect *QgsBlurEffect::clone() const
 
 QRectF QgsBlurEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
-
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
-  double spread = mBlurLevel * 2.0 + 10;
+  double spread = blurLevel * 2.0 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
 }

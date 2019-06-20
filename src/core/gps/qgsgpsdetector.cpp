@@ -158,7 +158,7 @@ void QgsGpsDetector::advance()
 
 void QgsGpsDetector::detected( const QgsGpsInformation &info )
 {
-  Q_UNUSED( info );
+  Q_UNUSED( info )
 
   if ( !mConn )
   {

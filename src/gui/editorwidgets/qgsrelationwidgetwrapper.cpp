@@ -105,7 +105,7 @@ void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
 
 void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 {
-  QgsRelationEditorWidget *w = dynamic_cast<QgsRelationEditorWidget *>( editor );
+  QgsRelationEditorWidget *w = qobject_cast<QgsRelationEditorWidget *>( editor );
 
   // if the editor cannot be cast to relation editor, insert a new one
   if ( !w )

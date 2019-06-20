@@ -20,12 +20,13 @@
 #define QGSBUFFERSERVERRESPONSE_H
 
 #include "qgis_server.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsserverresponse.h"
 
 #include <QBuffer>
 #include <QByteArray>
 #include <QMap>
+#include <QString>
 
 /**
  * \ingroup server
@@ -66,7 +67,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     QMap<QString, QString> headers() const override { return mHeaders; }
 
     /**
-     * Returns true if the headers have already been sent
+     * Returns TRUE if the headers have already been sent
      */
     bool headersSent() const override;
 

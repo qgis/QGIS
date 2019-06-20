@@ -217,7 +217,8 @@ void QgsTransaction::onLayerDeleted()
 
 void QgsTransaction::setLayerTransactionIds( QgsTransaction *transaction )
 {
-  Q_FOREACH ( QgsVectorLayer *vl, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsVectorLayer *vl : constMLayers )
   {
     if ( vl->dataProvider() )
     {

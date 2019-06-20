@@ -316,10 +316,11 @@ bool QgsProcessingToolboxModel::isTopLevelProvider( const QString &providerId )
 
 QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm )
 {
-  return QStringLiteral( "<p><b>%1</b></p>%2<p>%3</p>" ).arg(
+  return QStringLiteral( "<p><b>%1</b></p>%2<p>%3</p>%4" ).arg(
            algorithm->displayName(),
            !algorithm->shortDescription().isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( algorithm->shortDescription() ) : QString(),
-           QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) )
+           QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) ),
+           algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
          );
 }
 
@@ -388,7 +389,16 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
         return QVariant();
     }
 
+    case Qt::ForegroundRole:
+    {
+      if ( algorithm && algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
+        return QBrush( QColor( Qt::red ) );
+      else
+        return QVariant();
+    }
+
     case Qt::DecorationRole:
+    {
       switch ( index.column() )
       {
         case 0:
@@ -396,7 +406,11 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           if ( provider )
             return provider->icon();
           else if ( algorithm )
+          {
+            if ( algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
+              return QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
             return algorithm->icon();
+          }
           else if ( isRecentNode )
             return QgsApplication::getThemeIcon( QStringLiteral( "/mIconHistory.svg" ) );
           else if ( !index.parent().isValid() )
@@ -410,6 +424,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           return QVariant();
       }
       break;
+    }
 
     case RoleAlgorithmFlags:
       switch ( index.column() )
@@ -674,6 +689,10 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
+    const bool hasKnownIssues = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagKnownIssues;
+    if ( hasKnownIssues && !( mFilters & FilterShowKnownIssues ) )
+      return false;
+
     if ( !mFilterString.trimmed().isEmpty() )
     {
       const QString algId = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmId ).toString();

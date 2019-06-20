@@ -30,6 +30,7 @@
 #include <QPlainTextEdit>
 #include <QScrollBar>
 #include <QDebug>
+#include <QDesktopServices>
 
 QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -70,36 +71,40 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   {
     w = new QPlainTextEdit( this );
     w->setReadOnly( true );
+    w->viewport()->installEventFilter( this );
     tabWidget->addTab( w, cleanedTag );
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
   }
 
   QString levelString;
   QgsSettings settings;
-  QColor color;
+  QPalette pal = qApp->palette();
+  QString defaultColorName = pal.color( QPalette::WindowText ).name();
+  QString colorName;
   switch ( level )
   {
     case Qgis::Info:
       levelString = QStringLiteral( "INFO" );
-      color = QColor( settings.value( QStringLiteral( "colors/info" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/info" ), QString() ).toString();
       break;
     case Qgis::Warning:
       levelString = QStringLiteral( "WARNING" );
-      color = QColor( settings.value( QStringLiteral( "colors/warning" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/warning" ), QString() ).toString();
       break;
     case Qgis::Critical:
       levelString = QStringLiteral( "CRITICAL" );
-      color = QColor( settings.value( QStringLiteral( "colors/critical" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/critical" ), QString() ).toString();
       break;
     case Qgis::Success:
       levelString = QStringLiteral( "SUCCESS" );
-      color = QColor( settings.value( QStringLiteral( "colors/success" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/success" ), QString() ).toString();
       break;
     case Qgis::None:
       levelString = QStringLiteral( "NONE" );
-      color = QColor( settings.value( QStringLiteral( "colors/default" ), QStringLiteral( "#000000" ) ).toString() );
+      colorName = settings.value( QStringLiteral( "colors/default" ), QString() ).toString();
       break;
   }
+  QColor color = QColor( !colorName.isEmpty() ? colorName : defaultColorName );
 
   QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
                    .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
@@ -115,4 +120,44 @@ void QgsMessageLogViewer::closeTab( int index )
     qobject_cast<QPlainTextEdit *>( tabWidget->widget( 0 ) )->clear();
   else
     tabWidget->removeTab( index );
+}
+
+bool QgsMessageLogViewer::eventFilter( QObject *object, QEvent *event )
+{
+  switch ( event->type() )
+  {
+    case QEvent::MouseButtonPress:
+    {
+      if ( QPlainTextEdit *te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
+      {
+        QMouseEvent *me = static_cast< QMouseEvent *>( event );
+        mClickedAnchor = ( me->button() & Qt::LeftButton ) ? te->anchorAt( me->pos() ) :
+                         QString();
+        if ( !mClickedAnchor.isEmpty() )
+          return true;
+      }
+      break;
+    }
+
+    case QEvent::MouseButtonRelease:
+    {
+      if ( QPlainTextEdit *te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
+      {
+        QMouseEvent *me = static_cast< QMouseEvent *>( event );
+        QString clickedAnchor = ( me->button() & Qt::LeftButton ) ? te->anchorAt( me->pos() ) :
+                                QString();
+        if ( !clickedAnchor.isEmpty() && clickedAnchor == mClickedAnchor )
+        {
+          QDesktopServices::openUrl( mClickedAnchor );
+          return true;
+        }
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return QDialog::eventFilter( object, event );
 }

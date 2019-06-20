@@ -40,7 +40,7 @@ class LayerPreview(QgsMapCanvas):
 
         self.item = None
         self.dirty = False
-        self.currentLayer = None
+        self.currentLayerId = None
 
         # reuse settings from QGIS
         settings = QgsSettings()
@@ -118,18 +118,18 @@ class LayerPreview(QgsMapCanvas):
                     vl = None
 
             # remove old layer (if any) and set new
-            if self.currentLayer:
-                if not QgsProject.instance().layerTreeRoot().findLayer(self.currentLayer.id()):
-                    QgsProject.instance().removeMapLayers([self.currentLayer.id()])
+            if self.currentLayerId:
+                if not QgsProject.instance().layerTreeRoot().findLayer(self.currentLayerId):
+                    QgsProject.instance().removeMapLayers([self.currentLayerId])
 
             if vl and vl.isValid():
                 self.setLayers([vl])
                 QgsProject.instance().addMapLayers([vl], False)
                 self.zoomToFullExtent()
+                self.currentLayerId = vl.id()
             else:
                 self.setLayers([])
-
-            self.currentLayer = vl
+                self.currentLayerId = None
 
             self.freeze(False)
             super().refresh()

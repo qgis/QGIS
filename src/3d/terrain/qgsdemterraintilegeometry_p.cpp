@@ -297,11 +297,12 @@ static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteAr
 
   const float *vertices = reinterpret_cast<const float *>( vertexBuf.constData() );
   const uint *indices = reinterpret_cast<const uint *>( indexBuf.constData() );
+#ifdef QGISDEBUG
   int vertexCnt = vertexBuf.count() / sizeof( float );
-  int indexCnt = indexBuf.count() / sizeof( uint );
   Q_ASSERT( vertexCnt % 8 == 0 );
+#endif
+  int indexCnt = indexBuf.count() / sizeof( uint );
   Q_ASSERT( indexCnt % 3 == 0 );
-  //int vertexCount = vertexCnt/8;
   int triangleCount = indexCnt / 3;
 
   QVector3D intersectionPt, minIntersectionPt;

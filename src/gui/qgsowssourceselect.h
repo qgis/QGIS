@@ -21,7 +21,6 @@
 #define QGSOWSSOURCESELECT_H
 #include "ui_qgsowssourceselectbase.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
@@ -136,7 +135,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     /**
      * \brief Populate the layer list.
      *
-     * \retval false if the layers could not be retrieved or parsed
+     * \returns FALSE if the layers could not be retrieved or parsed
      */
     virtual void populateLayerList();
 

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     /**
      * Add a layer to this transaction group.
      *
-     * Will return true if it is compatible and has been added.
+     * Will return TRUE if it is compatible and has been added.
      */
     bool addLayer( QgsVectorLayer *layer );
 
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     QSet<QgsVectorLayer *> layers() const;
 
     /**
-     * Returns true if any of the layers in this group reports a modification.
+     * Returns TRUE if any of the layers in this group reports a modification.
      */
     bool modified() const;
 
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     QString providerKey() const;
 
     /**
-     * Returns true if there are no layers in this transaction group.
+     * Returns TRUE if there are no layers in this transaction group.
      */
     bool isEmpty() const;
 

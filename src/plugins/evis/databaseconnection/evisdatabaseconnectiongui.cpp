@@ -159,7 +159,7 @@ void eVisDatabaseConnectionGui::buttonBox_accepted()
 */
 void eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged( int currentIndex )
 {
-  Q_UNUSED( currentIndex );
+  Q_UNUSED( currentIndex )
   if ( cboxDatabaseType->currentText() == QLatin1String( "MYSQL" ) )
   {
     lblDatabaseHost->setEnabled( true );
@@ -545,5 +545,5 @@ void eVisDatabaseConnectionGui::pbtnRunQuery_clicked()
 
 void eVisDatabaseConnectionGui::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#database-connection" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_evis.html#database-connection" ) );
 }

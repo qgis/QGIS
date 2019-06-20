@@ -18,7 +18,7 @@
 #define QGSPGTABLEMODEL_H
 #include <QStandardItemModel>
 
-#include "qgis.h"
+#include "qgswkbtypes.h"
 #include "qgspostgresconn.h"
 
 class QIcon;
@@ -53,6 +53,7 @@ class QgsPgTableModel : public QStandardItemModel
       DbtmSrid,
       DbtmPkCol,
       DbtmSelectAtId,
+      DbtmCheckPkUnicity,
       DbtmSql,
       DbtmColumns
     };

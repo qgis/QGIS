@@ -36,7 +36,7 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
                            "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers.</a>"
                            "<br><br>"
                            "You can also send us a helpful bug report using the Copy Report button <br>and opening a ticket at "
-                           "<a href=\"https://issues.qgis.org/\">issues.qgis.org</a>" ) );
+                           "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>" ) );
   mHelpLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mHelpLabel->setOpenExternalLinks( true );
 
@@ -65,8 +65,8 @@ void QgsCrashDialog::on_mUserFeedbackText_textChanged()
 void QgsCrashDialog::createBugReport()
 {
   QClipboard *clipboard = QApplication::clipboard();
-  QString userText = "h2. User Feedback\n\n" + mUserFeedbackText->toPlainText();
-  QString details = "h2. Report Details\n\n" + mReportData;
+  QString userText = "## User Feedback\n\n" + mUserFeedbackText->toPlainText();
+  QString details = "## Report Details\n\n" + mReportData;
   QString finalText = userText + "\n\n" + details;
   QString markdown = htmlToMarkdown( finalText );
   clipboard->setText( markdown );
@@ -87,7 +87,6 @@ QString QgsCrashDialog::htmlToMarkdown( const QString &html )
   markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
   markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
   markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
-  markdown.replace( QLatin1String( "QGIS code revision: " ), QLatin1String( "QGIS code revision: commit:" ) );
   return markdown;
 }
 

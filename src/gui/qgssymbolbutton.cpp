@@ -24,6 +24,10 @@
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
 #include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
+#include "qgsguiutils.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
@@ -287,7 +291,7 @@ void QgsSymbolButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsSymbolButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   updatePreview();
 }
@@ -331,7 +335,8 @@ void QgsSymbolButton::prepareMenu()
   std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   if ( tempSymbol && tempSymbol->type() == mType )
   {
-    pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( 16, 16 ), 1 ) );
+    const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+    pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( iconSize, iconSize ), 1 ) );
   }
   else
   {
@@ -512,7 +517,8 @@ bool QgsSymbolButton::colorFromMimeData( const QMimeData *mimeData, QColor &resu
 QPixmap QgsSymbolButton::createColorIcon( const QColor &color ) const
 {
   //create an icon pixmap
-  QPixmap pixmap( 16, 16 );
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  QPixmap pixmap( iconSize, iconSize );
   pixmap.fill( Qt::transparent );
 
   QPainter p;
@@ -523,7 +529,7 @@ QPixmap QgsSymbolButton::createColorIcon( const QColor &color ) const
 
   //draw border
   p.setPen( QColor( 197, 197, 197 ) );
-  p.drawRect( 0, 0, 15, 15 );
+  p.drawRect( 0, 0, iconSize - 1, iconSize - 1 );
   p.end();
   return pixmap;
 }

@@ -60,8 +60,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
   // initialize resampling methods
   cboResamplingMethod->clear();
-  QPair<QString, QString> method;
-  Q_FOREACH ( method, QgsRasterDataProvider::pyramidResamplingMethods( mProvider ) )
+  const auto methods {QgsRasterDataProvider::pyramidResamplingMethods( mProvider )};
+  for ( const QPair<QString, QString> &method : methods )
   {
     cboResamplingMethod->addItem( method.second, method.first );
   }
@@ -81,7 +81,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
     QList<int> overviewList;
     overviewList << 2 << 4 << 8 << 16 << 32 << 64;
     mOverviewCheckBoxes.clear();
-    Q_FOREACH ( int i, overviewList )
+    const auto constOverviewList = overviewList;
+    for ( int i : constOverviewList )
     {
       mOverviewCheckBoxes[ i ] = new QCheckBox( QString::number( i ), this );
       connect( mOverviewCheckBoxes[ i ], &QCheckBox::toggled,
@@ -95,7 +96,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
       it.value()->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
-  Q_FOREACH ( const QString &lev, tmpStr.split( ' ', QString::SkipEmptyParts ) )
+  const auto constSplit = tmpStr.split( ' ', QString::SkipEmptyParts );
+  for ( const QString &lev : constSplit )
   {
     if ( mOverviewCheckBoxes.contains( lev.toInt() ) )
       mOverviewCheckBoxes[ lev.toInt()]->setChecked( true );
@@ -193,7 +195,8 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   if ( cbxPyramidsLevelsCustom->isChecked() )
   {
     // should we also validate that numbers are increasing?
-    Q_FOREACH ( const QString &lev, lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts ) )
+    const auto constSplit = lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts );
+    for ( const QString &lev : constSplit )
     {
       QgsDebugMsg( "lev= " + lev );
       int tmpInt = lev.toInt();

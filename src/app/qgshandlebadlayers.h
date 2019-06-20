@@ -71,6 +71,7 @@ class APP_EXPORT QgsHandleBadLayers
     QList<int> mRows;
     QString mVectorFileFilter;
     QString mRasterFileFilter;
+    QHash <QString, QList<QString> > mFileBase;
 
     QString filename( int row );
     void setFilename( int row, const QString &filename );

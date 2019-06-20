@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import sys
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
@@ -335,7 +331,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
 
             o = outputs[out.name()]
             parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
-        feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i, len(sink_list)))
+        feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i + 1, len(sink_list)))
         feedback.setProgress(i * 100 / len(sink_list))
         ret, results = execute(alg, parameters, context, feedback)
         if not ret:

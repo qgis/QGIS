@@ -247,7 +247,7 @@ A selection: contains subdirectories and color ramps
 class QgsCptCityAllRampsItem : QgsCptCityCollectionItem
 {
 %Docstring
-An "All ramps item", which contains all items in a flat hierarchy *
+An "All ramps item", which contains all items in a flat hierarchy
 %End
 
 %TypeHeaderCode

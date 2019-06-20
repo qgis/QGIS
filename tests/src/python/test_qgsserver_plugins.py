@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '22/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -176,6 +174,51 @@ class TestQgsServerPlugins(QgsServerTestBase):
         expected = b'Content-Length: 19\nContent-type: text/plain\n\nnew body, new life!'
         self.assertEqual(response, expected)
         self.assertEqual(headers2, {'Content-type': 'text/plain'})
+
+    def test_configpath(self):
+        """ Test plugin can read confif path
+        """
+        try:
+            from qgis.server import QgsServerFilter
+            from qgis.core import QgsProject
+        except ImportError:
+            print("QGIS Server plugins are not compiled. Skipping test")
+            return
+
+        d = unitTestDataPath('qgis_server_accesscontrol') + '/'
+        self.projectPath = os.path.join(d, "project.qgs")
+        self.server = QgsServer()
+
+        # global to be modified inside plugin filters
+        globals()['configFilePath2'] = None
+
+        class Filter0(QgsServerFilter):
+            """Body setter, clear body, keep headers"""
+
+            def requestReady(self):
+                global configFilePath2
+                configFilePath2 = self.serverInterface().configFilePath()
+
+        serverIface = self.server.serverInterface()
+        serverIface.registerFilter(Filter0(serverIface), 100)
+
+        # Test using MAP
+        self._execute_request('?service=simple&MAP=%s' % self.projectPath)
+
+        # Check config file path
+        self.assertEqual(configFilePath2, self.projectPath)
+
+        # Reset result
+        globals()['configFilePath2'] = None
+
+        # Test with prqject as argument
+        project = QgsProject()
+        project.read(self.projectPath)
+
+        self._execute_request_project('?service=simple', project=project)
+
+        # Check config file path
+        self.assertEqual(configFilePath2, project.fileName())
 
 
 if __name__ == '__main__':

@@ -19,6 +19,7 @@
 #include "qgsanimatedicon.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 #include <QCompleter>
 #include <QLineEdit>

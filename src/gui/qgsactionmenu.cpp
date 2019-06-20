@@ -115,7 +115,8 @@ void QgsActionMenu::reloadActions()
 
   mActions = mLayer->actions()->actions( mActionScope );
 
-  Q_FOREACH ( const QgsAction &action, mActions )
+  const auto constMActions = mActions;
+  for ( const QgsAction &action : constMActions )
   {
     if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;

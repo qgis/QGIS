@@ -21,6 +21,7 @@
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
+#include "qgsgeos.h"
 
 bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
 {
@@ -150,14 +151,14 @@ QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType tole
 
 int QgsCurve::vertexCount( int part, int ring ) const
 {
-  Q_UNUSED( part );
-  Q_UNUSED( ring );
+  Q_UNUSED( part )
+  Q_UNUSED( ring )
   return numPoints();
 }
 
 int QgsCurve::ringCount( int part ) const
 {
-  Q_UNUSED( part );
+  Q_UNUSED( part )
   return numPoints() > 0 ? 1 : 0;
 }
 
@@ -186,6 +187,25 @@ QgsRectangle QgsCurve::boundingBox() const
     mBoundingBox = calculateBoundingBox();
   }
   return mBoundingBox;
+}
+
+bool QgsCurve::isValid( QString &error, int flags ) const
+{
+  if ( flags == 0 && mHasCachedValidity )
+  {
+    // use cached validity results
+    error = mValidityFailureReason;
+    return error.isEmpty();
+  }
+
+  QgsGeos geos( this );
+  bool res = geos.isValid( &error, flags & QgsGeometry::FlagAllowSelfTouchingHoles, nullptr );
+  if ( flags == 0 )
+  {
+    mValidityFailureReason = !res ? error : QString();
+    mHasCachedValidity = true;
+  }
+  return res;
 }
 
 QPolygonF QgsCurve::asQPolygonF() const
@@ -224,6 +244,8 @@ QgsCurve::Orientation QgsCurve::orientation() const
 void QgsCurve::clearCache() const
 {
   mBoundingBox = QgsRectangle();
+  mHasCachedValidity = false;
+  mValidityFailureReason.clear();
   QgsAbstractGeometry::clearCache();
 }
 
@@ -238,7 +260,7 @@ QgsPoint QgsCurve::childPoint( int index ) const
   QgsVertexId::VertexType type;
   bool res = pointAt( index, point, type );
   Q_ASSERT( res );
-  Q_UNUSED( res );
+  Q_UNUSED( res )
   return point;
 }
 

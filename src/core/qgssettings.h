@@ -21,7 +21,7 @@
 #include <QMetaEnum>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslogger.h"
 
 /**
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        QByteArray ba = value( key, metaEnum.valueToKey( defaultValue ) ).toString().toUtf8();
+        QByteArray ba = value( key, metaEnum.valueToKey( defaultValue ), section ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
         if ( ok )
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsSettings : public QObject
         v = T( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
         if ( metaEnum.isValid() )
         {
-          if ( !ok || !metaEnum.valueToKeys( static_cast<int>( v ) ).size() )
+          if ( !ok || metaEnum.valueToKeys( static_cast<int>( v ) ).isEmpty() )
           {
             v = defaultValue;
           }
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsSettings : public QObject
 #endif
 
     /**
-     * Returns true if there exists a setting called key; returns false otherwise.
+     * Returns TRUE if there exists a setting called key; returns FALSE otherwise.
      * If a group is set using beginGroup(), key is taken to be relative to that group.
      */
     bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;

@@ -48,7 +48,7 @@ or repeatedly calling addVertex()
 
 If the ``z`` vector is filled, then the geometry type will either
 be a LineStringZ(M) or LineString25D depending on the ``is25DType``
-argument. If ``is25DType`` is true (and the ``m`` vector is unfilled) then
+argument. If ``is25DType`` is ``True`` (and the ``m`` vector is unfilled) then
 the created Linestring will be a LineString25D type. Otherwise, the
 LineString will be LineStringZ (or LineStringZM) type.
 
@@ -411,8 +411,6 @@ segment in the line.
     virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
-
-    virtual QString asJson( int precision = 17 ) const;
 
 
     virtual double length() const;

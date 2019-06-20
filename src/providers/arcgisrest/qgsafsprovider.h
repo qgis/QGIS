@@ -36,7 +36,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   public:
 
-    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
@@ -72,6 +72,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     void reloadData() override;
     QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
     QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
   private:
     bool mValid = false;
@@ -82,6 +83,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
+    QgsStringMap mRequestHeaders;
 };
 
 #endif // QGSAFSPROVIDER_H

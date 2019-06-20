@@ -28,6 +28,8 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsgui.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QTableWidgetItem>
 #include <QFile>
@@ -89,6 +91,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
 
+  constraintExpressionWidget->setAllowEmptyFieldName( true );
   constraintExpressionWidget->setLayer( vl );
 }
 
@@ -191,8 +194,6 @@ void QgsAttributeTypeDialog::setProviderConstraints( QgsFieldConstraints::Constr
     notNullCheckBox->setChecked( true );
     notNullCheckBox->setEnabled( false );
     notNullCheckBox->setToolTip( tr( "The provider for this layer has a NOT NULL constraint set on the field." ) );
-    mCheckBoxEnforceNotNull->setChecked( true );
-    mCheckBoxEnforceNotNull->setEnabled( false );
   }
 
   if ( constraints & QgsFieldConstraints::ConstraintUnique )
@@ -200,8 +201,6 @@ void QgsAttributeTypeDialog::setProviderConstraints( QgsFieldConstraints::Constr
     mUniqueCheckBox->setChecked( true );
     mUniqueCheckBox->setEnabled( false );
     mUniqueCheckBox->setToolTip( tr( "The provider for this layer has a UNIQUE constraint set on the field." ) );
-    mCheckBoxEnforceUnique->setChecked( true );
-    mCheckBoxEnforceUnique->setEnabled( false );
   }
 }
 
@@ -227,7 +226,12 @@ QString QgsAttributeTypeDialog::constraintExpressionDescription()
 
 bool QgsAttributeTypeDialog::notNull() const
 {
-  return notNullCheckBox->isChecked();
+  return notNullCheckBox->isEnabled() && notNullCheckBox->isChecked();
+}
+
+bool QgsAttributeTypeDialog::notNullFromProvider() const
+{
+  return ( !notNullCheckBox->isEnabled() ) && notNullCheckBox->isChecked();
 }
 
 void QgsAttributeTypeDialog::setNotNullEnforced( bool enforced )
@@ -247,7 +251,12 @@ void QgsAttributeTypeDialog::setUnique( bool unique )
 
 bool QgsAttributeTypeDialog::unique() const
 {
-  return mUniqueCheckBox->isChecked();
+  return mUniqueCheckBox->isEnabled() && mUniqueCheckBox->isChecked();
+}
+
+bool QgsAttributeTypeDialog::uniqueFromProvider() const
+{
+  return ( !mUniqueCheckBox->isEnabled() ) && mUniqueCheckBox->isChecked();
 }
 
 void QgsAttributeTypeDialog::setUniqueEnforced( bool enforced )

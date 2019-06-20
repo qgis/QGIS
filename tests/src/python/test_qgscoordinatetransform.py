@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2012 by Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -19,7 +17,8 @@ from qgis.core import (QgsRectangle,
                        QgsCoordinateTransform,
                        QgsCoordinateTransformContext,
                        QgsDatumTransform,
-                       QgsProject)
+                       QgsProject,
+                       QgsProjUtils)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -73,68 +72,7 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertAlmostEquals(myTransformedExtentReverse.yMaximum(), myExtent.yMaximum())
         self.assertAlmostEquals(myTransformedExtentReverse.yMinimum(), myExtent.yMinimum())
 
-    @unittest.skip('ifdefed out in c++ until required')
-    def testContextSingle(self):
-        """
-        Various tests to ensure that datum transforms are correctly set respecting context
-        """
-        context = QgsCoordinateTransformContext()
-        context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 1)
-        context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:4283'), 2)
-        context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
-                                                   QgsCoordinateReferenceSystem('EPSG:4283'),
-                                                   3, 4)
-
-        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
-        # should be no datum transforms
-        self.assertEqual(transform.sourceDatumTransformId(), -1)
-        self.assertEqual(transform.destinationDatumTransformId(), -1)
-        # matching source
-        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
-        self.assertEqual(transform.sourceDatumTransformId(), 1)
-        self.assertEqual(transform.destinationDatumTransformId(), -1)
-        # matching dest
-        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'),
-                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
-        self.assertEqual(transform.sourceDatumTransformId(), -1)
-        self.assertEqual(transform.destinationDatumTransformId(), 2)
-        # matching src/dest pair
-        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
-                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
-        self.assertEqual(transform.sourceDatumTransformId(), 3)
-        self.assertEqual(transform.destinationDatumTransformId(), 4)
-
-        # test manual overwriting
-        transform.setSourceDatumTransform(11)
-        transform.setDestinationDatumTransform(13)
-        self.assertEqual(transform.sourceDatumTransformId(), 11)
-        self.assertEqual(transform.destinationDatumTransformId(), 13)
-
-        # test that auto datum setting occurs when updating src/dest crs
-        transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
-        self.assertEqual(transform.sourceDatumTransformId(), 3)
-        self.assertEqual(transform.destinationDatumTransformId(), 4)
-        transform.setSourceDatumTransform(11)
-        transform.setDestinationDatumTransform(13)
-
-        transform.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4283'))
-        self.assertEqual(transform.sourceDatumTransformId(), 3)
-        self.assertEqual(transform.destinationDatumTransformId(), 4)
-        transform.setSourceDatumTransform(11)
-        transform.setDestinationDatumTransform(13)
-
-        # delayed context set
-        transform = QgsCoordinateTransform()
-        self.assertEqual(transform.sourceDatumTransformId(), -1)
-        self.assertEqual(transform.destinationDatumTransformId(), -1)
-        transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
-        transform.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4283'))
-        self.assertEqual(transform.sourceDatumTransformId(), -1)
-        self.assertEqual(transform.destinationDatumTransformId(), -1)
-        transform.setContext(context)
-        self.assertEqual(transform.sourceDatumTransformId(), 3)
-        self.assertEqual(transform.destinationDatumTransformId(), 4)
-
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() >= 6, 'Skipped on proj6 builds')
     def testContext(self):
         """
         Various tests to ensure that datum transforms are correctly set respecting context
@@ -196,6 +134,58 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertEqual(transform.destinationDatumTransformId(), 4)
         self.assertEqual(list(transform.context().sourceDestinationDatumTransforms().keys()), [('EPSG:28356', 'EPSG:4283')])
 
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Skipped on non proj6 builds')
+    def testContextProj6(self):
+        """
+        Various tests to ensure that datum transforms are correctly set respecting context
+        """
+        context = QgsCoordinateTransformContext()
+        context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                       QgsCoordinateReferenceSystem('EPSG:4283'),
+                                       'proj')
+
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
+        self.assertEqual(list(transform.context().coordinateOperations().keys()), [('EPSG:28356', 'EPSG:4283')])
+
+        # should be no coordinate operation
+        self.assertEqual(transform.coordinateOperation(), '')
+
+        # matching source
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
+        self.assertEqual(transform.coordinateOperation(), '')
+        # matching dest
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'),
+                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
+        self.assertEqual(transform.coordinateOperation(), '')
+        # matching src/dest pair
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
+        self.assertEqual(transform.coordinateOperation(), 'proj')
+
+        # test manual overwriting
+        transform.setCoordinateOperation('proj2')
+        self.assertEqual(transform.coordinateOperation(), 'proj2')
+
+        # test that auto operation setting occurs when updating src/dest crs
+        transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
+        self.assertEqual(transform.coordinateOperation(), 'proj')
+        transform.setCoordinateOperation('proj2')
+
+        transform.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4283'))
+        self.assertEqual(transform.coordinateOperation(), 'proj')
+        transform.setCoordinateOperation('proj2')
+
+        # delayed context set
+        transform = QgsCoordinateTransform()
+        self.assertEqual(transform.coordinateOperation(), '')
+        transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
+        transform.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4283'))
+        self.assertEqual(transform.coordinateOperation(), '')
+        transform.setContext(context)
+        self.assertEqual(transform.coordinateOperation(), 'proj')
+        self.assertEqual(list(transform.context().coordinateOperations().keys()), [('EPSG:28356', 'EPSG:4283')])
+
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() >= 6, 'Skipped on proj6 builds')
     def testProjectContext(self):
         """
         Test creating transform using convenience constructor which takes project reference
@@ -210,6 +200,21 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertEqual(transform.sourceDatumTransformId(), 1)
         self.assertEqual(transform.destinationDatumTransformId(), 2)
 
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Skipped on non proj6 builds')
+    def testProjectContextProj6(self):
+        """
+        Test creating transform using convenience constructor which takes project reference
+        """
+        p = QgsProject()
+        context = p.transformContext()
+        context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                       QgsCoordinateReferenceSystem('EPSG:3111'), 'proj')
+        p.setTransformContext(context)
+
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:3111'), p)
+        self.assertEqual(transform.coordinateOperation(), 'proj')
+
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() >= 6, 'Skipped on proj6 builds')
     def testTransformInfo(self):
         # hopefully this transform is available on all platforms!
         transforms = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4613), QgsCoordinateReferenceSystem(4326))
@@ -232,6 +237,7 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertIn('EPSG:4613', [QgsDatumTransform.datumTransformInfo(t.destinationTransformId).sourceCrsAuthId for t in
                                     transforms])
 
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() >= 6, 'Skipped on proj6 builds')
     def testStringToTransformId(self):
         """
         Test converting proj strings to corresponding datum IDs

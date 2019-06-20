@@ -17,6 +17,7 @@
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame )
   : QgsLayoutItem( layout )

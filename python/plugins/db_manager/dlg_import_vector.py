@@ -25,12 +25,11 @@ from builtins import str
 from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QFileInfo
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
-from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from qgis.core import (QgsDataSourceUri,
                        QgsVectorLayer,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsProviderRegistry,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayerExporter,
@@ -52,6 +51,11 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.outUri = outUri
         self.setupUi(self)
 
+        supportCom = self.db.supportsComment()
+        if not supportCom:
+            self.chkCom.setVisible(False)
+            self.editCom.setVisible(False)
+
         self.default_pk = "id"
         self.default_geom = "geom"
 
@@ -70,6 +74,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.cboSchema.currentIndexChanged.connect(self.populateTables)
         self.widgetSourceSrid.setCrs(QgsProject.instance().crs())
         self.widgetTargetSrid.setCrs(QgsProject.instance().crs())
+        self.updateInputLayer()
 
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
@@ -128,7 +133,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         for nodeLayer in QgsProject.instance().layerTreeRoot().findLayers():
             layer = nodeLayer.layer()
             # TODO: add import raster support!
-            if layer.type() == QgsMapLayer.VectorLayer:
+            if layer.type() == QgsMapLayerType.VectorLayer:
                 self.cboInputLayer.addItem(layer.name(), layer.id())
 
     def deleteInputLayer(self):
@@ -156,6 +161,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         settings.setValue("/db_manager/lastUsedDir", QFileInfo(filename).filePath())
         settings.setValue("/UI/lastVectorFileFilter", lastVectorFormat)
 
+        self.cboInputLayer.setCurrentIndex(-1)
         self.cboInputLayer.setEditText(filename)
 
     def reloadInputLayer(self):
@@ -173,7 +179,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             layerName = QFileInfo(filename).completeBaseName()
             layer = QgsVectorLayer(filename, layerName, "ogr")
-            if not layer.isValid() or layer.type() != QgsMapLayer.VectorLayer:
+            if not layer.isValid() or layer.type() != QgsMapLayerType.VectorLayer:
                 layer.deleteLater()
                 return False
 
@@ -369,9 +375,11 @@ class DlgImportVector(QDialog, Ui_Dialog):
             self.db.connector.createSpatialIndex((schema, table), geom)
 
         # add comment on table
-        if self.chkCom.isEnabled() and self.chkCom.isChecked():
+        supportCom = self.db.supportsComment()
+        if self.chkCom.isEnabled() and self.chkCom.isChecked() and supportCom:
             # using connector executing COMMENT ON TABLE query (with editCome.text() value)
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}E\''.format(schema, table, self.editCom.text()))
+            com = self.editCom.text()
+            self.db.connector.commentTable(schema, table, com)
 
         self.db.connection().reconnect()
         self.db.refresh()

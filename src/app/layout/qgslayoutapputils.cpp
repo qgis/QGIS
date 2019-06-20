@@ -47,6 +47,45 @@
 #include "qgslayout3dmapwidget.h"
 #endif
 
+/**
+ * Attempts to find the best guess at a map item to link \a referenceItem to,
+ * by:
+ * 1. Prioritizing a selected map
+ * 2. If no selection, prioritizing the topmost map the item was drawn over
+ * 3. If still none, use the layout's reference map (or biggest map)
+ */
+QgsLayoutItemMap *findSensibleDefaultLinkedMapItem( QgsLayoutItem *referenceItem )
+{
+  // start by trying to find a selected map
+  QList<QgsLayoutItemMap *> mapItems;
+  referenceItem->layout()->layoutItems( mapItems );
+
+  QgsLayoutItemMap *targetMap = nullptr;
+  for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
+  {
+    if ( map->isSelected() )
+    {
+      return map;
+    }
+  }
+
+  // nope, no selection... hm, was the item drawn over a map? If so, use the topmost intersecting one
+  double largestZValue = std::numeric_limits< double >::lowest();
+  for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
+  {
+    if ( map->collidesWithItem( referenceItem ) && map->zValue() > largestZValue )
+    {
+      targetMap = map;
+      largestZValue = map->zValue();
+    }
+  }
+  if ( targetMap )
+    return targetMap;
+
+  // ah frick it, just use the reference (or biggest!) map
+  return referenceItem->layout()->referenceMap();
+}
+
 void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 {
   QgsLayoutItemGuiRegistry *registry = QgsGui::layoutItemGuiRegistry();
@@ -153,29 +192,8 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     QgsLayoutItemLegend *legend = qobject_cast< QgsLayoutItemLegend * >( item );
     Q_ASSERT( legend );
 
-    QList<QgsLayoutItemMap *> mapItems;
-    legend->layout()->layoutItems( mapItems );
-
     // try to find a good map to link the legend with by default
-    // start by trying to find a selected map
-    QgsLayoutItemMap *targetMap = nullptr;
-    for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
-    {
-      if ( map->isSelected() )
-      {
-        targetMap = map;
-        break;
-      }
-    }
-    // otherwise just use first map
-    if ( !targetMap && !mapItems.isEmpty() )
-    {
-      targetMap = mapItems.at( 0 );
-    }
-    if ( targetMap )
-    {
-      legend->setLinkedMap( targetMap );
-    }
+    legend->setLinkedMap( findSensibleDefaultLinkedMapItem( legend ) );
 
     legend->updateLegend();
   } );
@@ -194,26 +212,8 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     QgsLayoutItemScaleBar *scalebar = qobject_cast< QgsLayoutItemScaleBar * >( item );
     Q_ASSERT( scalebar );
 
-    QList<QgsLayoutItemMap *> mapItems;
-    scalebar->layout()->layoutItems( mapItems );
-
     // try to find a good map to link the scalebar with by default
-    // start by trying to find a selected map
-    QgsLayoutItemMap *targetMap = nullptr;
-    for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
-    {
-      if ( map->isSelected() )
-      {
-        targetMap = map;
-        break;
-      }
-    }
-    // otherwise just use first map
-    if ( !targetMap && !mapItems.isEmpty() )
-    {
-      targetMap = mapItems.at( 0 );
-    }
-    if ( targetMap )
+    if ( QgsLayoutItemMap *targetMap = findSensibleDefaultLinkedMapItem( scalebar ) )
     {
       scalebar->setLinkedMap( targetMap );
       scalebar->applyDefaultSize( scalebar->guessUnits() );
@@ -221,6 +221,52 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   } );
 
   registry->addLayoutItemGuiMetadata( scalebarItemMetadata.release() );
+
+
+  // north arrow
+  std::unique_ptr< QgsLayoutItemGuiMetadata > northArrowMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
+        QgsLayoutItemRegistry::LayoutPicture, QObject::tr( "North Arrow" ), QgsApplication::getThemeIcon( QStringLiteral( "/north_arrow.svg" ) ),
+        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutPictureWidget( qobject_cast< QgsLayoutItemPicture * >( item ) );
+  }, createRubberBand );
+  northArrowMetadata->setItemCreationFunction( []( QgsLayout * layout )->QgsLayoutItem *
+  {
+
+    // count how many existing north arrows are already in layout
+    QList< QgsLayoutItemPicture * > pictureItems;
+    layout->layoutItems( pictureItems );
+    int northArrowCount = 0;
+
+    QgsSettings settings;
+    const QString defaultPath = settings.value( QStringLiteral( "LayoutDesigner/defaultNorthArrow" ), QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ), QgsSettings::Gui ).toString();
+
+    for ( QgsLayoutItemPicture *p : qgis::as_const( pictureItems ) )
+    {
+      // look for pictures which use the default north arrow svg
+      if ( p->picturePath() == defaultPath )
+        northArrowCount++;
+    }
+
+    std::unique_ptr< QgsLayoutItemPicture > picture = qgis::make_unique< QgsLayoutItemPicture >( layout );
+    picture->setNorthMode( QgsLayoutItemPicture::GridNorth );
+    picture->setPicturePath( defaultPath );
+    // set an id by default, so that north arrows are discernible in layout item lists
+    picture->setId( northArrowCount > 0 ? QObject::tr( "North Arrow %1" ).arg( northArrowCount + 1 ) : QObject::tr( "North Arrow" ) );
+    return picture.release();
+  } );
+  northArrowMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
+  {
+    QgsLayoutItemPicture *picture = qobject_cast< QgsLayoutItemPicture * >( item );
+    Q_ASSERT( picture );
+
+    QList<QgsLayoutItemMap *> mapItems;
+    picture->layout()->layoutItems( mapItems );
+
+    // try to find a good map to link the north arrow with by default
+    picture->setLinkedMap( findSensibleDefaultLinkedMapItem( picture ) );
+  } );
+  registry->addLayoutItemGuiMetadata( northArrowMetadata.release() );
 
   // shape items
 
@@ -270,7 +316,6 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     return band.release();
   } );
   registry->addLayoutItemGuiMetadata( arrowMetadata.release() );
-
 
   // node items
 

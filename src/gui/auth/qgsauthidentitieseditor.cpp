@@ -106,7 +106,8 @@ void QgsAuthIdentitiesEditor::setupIdentitiesTree()
 
 static void removeChildren_( QTreeWidgetItem *item )
 {
-  Q_FOREACH ( QTreeWidgetItem *child, item->takeChildren() )
+  const auto constTakeChildren = item->takeChildren();
+  for ( QTreeWidgetItem *child : constTakeChildren )
   {
     delete child;
   }
@@ -193,7 +194,8 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificat
   QBrush redb( QgsAuthGuiUtils::redColor() );
 
   // Columns: Common Name, Serial #, Expiry Date
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  const auto constCerts = certs;
+  for ( const QSslCertificate &cert : constCerts )
   {
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
@@ -241,8 +243,8 @@ void QgsAuthIdentitiesEditor::showCertInfo( QTreeWidgetItem *item )
 
 void QgsAuthIdentitiesEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   checkSelection();
 }
 
@@ -269,7 +271,7 @@ void QgsAuthIdentitiesEditor::checkSelection()
 
 void QgsAuthIdentitiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
 {
-  Q_UNUSED( col );
+  Q_UNUSED( col )
   bool iscert = true;
 
   switch ( ( QgsAuthIdentitiesEditor::IdentityType )item->type() )

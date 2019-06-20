@@ -62,7 +62,7 @@ static void throwGEOSException( const char *fmt, ... )
 
 #ifdef _MSC_VER
   // stupid stupid MSVC, *SOMETIMES* raises it's own exception if we throw GEOSException, resulting in a crash!
-  // see https://issues.qgis.org/issues/14752
+  // see https://github.com/qgis/QGIS/issues/22709
   // if you want to test alternative fixes for this, run the testqgsexpression.cpp test suite - that will crash
   // and burn on the "line_interpolate_point point" test if a GEOSException is thrown.
   // TODO - find a real fix for the underlying issue
@@ -93,7 +93,7 @@ static void printGEOSNotice( const char *fmt, ... )
 
   QgsDebugMsg( QStringLiteral( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
 #else
-  Q_UNUSED( fmt );
+  Q_UNUSED( fmt )
 #endif
 }
 
@@ -1658,7 +1658,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( nullptr );
 }
 
-bool QgsGeos::isValid( QString *errorMsg ) const
+bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc ) const
 {
   if ( !mGeos )
   {
@@ -1667,7 +1667,45 @@ bool QgsGeos::isValid( QString *errorMsg ) const
 
   try
   {
-    return GEOSisValid_r( geosinit.ctxt, mGeos.get() );
+    GEOSGeometry *g1 = nullptr;
+    char *r = nullptr;
+    char res = GEOSisValidDetail_r( geosinit.ctxt, mGeos.get(), allowSelfTouchingHoles ? GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE : 0, &r, &g1 );
+    const bool invalid = res != 1;
+
+    if ( invalid && errorMsg )
+    {
+      static QgsStringMap translatedErrors;
+
+      if ( translatedErrors.empty() )
+      {
+        // Copied from https://git.osgeo.org/gitea/geos/geos/src/branch/master/src/operation/valid/TopologyValidationError.cpp
+        translatedErrors.insert( QStringLiteral( "topology validation error" ), QObject::tr( "Topology validation error", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "repeated point" ), QObject::tr( "Repeated point", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "hole lies outside shell" ), QObject::tr( "Hole lies outside shell", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "holes are nested" ), QObject::tr( "Holes are nested", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "interior is disconnected" ), QObject::tr( "Interior is disconnected", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "self-intersection" ), QObject::tr( "Self-intersection", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "ring self-intersection" ), QObject::tr( "Ring self-intersection", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "nested shells" ), QObject::tr( "Nested shells", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "duplicate rings" ), QObject::tr( "Duplicate rings", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "too few points in geometry component" ), QObject::tr( "Too few points in geometry component", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "invalid coordinate" ), QObject::tr( "Invalid coordinate", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "ring is not closed" ), QObject::tr( "Ring is not closed", "GEOS Error" ) );
+      }
+
+      const QString error( r );
+      *errorMsg = translatedErrors.value( error.toLower(), error );
+
+      if ( g1 && errorLoc )
+      {
+        *errorLoc = geometryFromGeos( g1 );
+      }
+      else if ( g1 )
+      {
+        GEOSGeom_destroy_r( geosinit.ctxt, g1 );
+      }
+    }
+    return !invalid;
   }
   CATCH_GEOS_WITH_ERRMSG( false );
 }
@@ -1836,8 +1874,8 @@ geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int
 
 geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision )
 {
-  Q_UNUSED( hasM );
-  Q_UNUSED( m );
+  Q_UNUSED( hasM )
+  Q_UNUSED( m )
 
   geos::unique_ptr geosPoint;
 
@@ -2344,7 +2382,7 @@ static geos::unique_ptr _mergeLinestrings( const GEOSGeometry *line1, const GEOS
     return nullptr;
 
   bool intersectionAtOrigLineEndpoint =
-    ( intersectionPoint.x() == x1 && intersectionPoint.y() == y1 ) ||
+    ( intersectionPoint.x() == x1 && intersectionPoint.y() == y1 ) !=
     ( intersectionPoint.x() == x2 && intersectionPoint.y() == y2 );
   bool intersectionAtReshapeLineEndpoint =
     ( intersectionPoint.x() == rx1 && intersectionPoint.y() == ry1 ) ||

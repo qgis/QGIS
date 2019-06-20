@@ -36,6 +36,36 @@
 #include "qgsgdalutils.h"
 #endif
 
+QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
+  , mTransformContext( transformContext )
+{
+
+}
+
+QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+    const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows,
+    const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mOutputCrs( outputCrs )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
+  , mTransformContext( transformContext )
+{
+
+}
+
+// Deprecated!
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
     const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
   : mFormulaString( formulaString )
@@ -48,8 +78,11 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
 {
   //default to first layer's crs
   mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  mTransformContext = QgsProject::instance()->transformContext();
 }
 
+
+// Deprecated!
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
     const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
   : mFormulaString( formulaString )
@@ -61,6 +94,7 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mNumOutputRows( nOutputRows )
   , mRasterEntries( rasterEntries )
 {
+  mTransformContext = QgsProject::instance()->transformContext();
 }
 
 QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
@@ -149,8 +183,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     //read / write line by line
     QMap<QString, QgsRasterBlock * > _rasterData;
     // Cast to float
-    std::vector<float> castedResult;
-    castedResult.reserve( static_cast<size_t>( mNumOutputColumns ) );
+    std::vector<float> castedResult( static_cast<size_t>( mNumOutputColumns ), 0 );
     auto rowHeight = mOutputRectangle.height() / mNumOutputRows;
     for ( size_t row = 0; row < static_cast<size_t>( mNumOutputRows ); ++row )
     {
@@ -176,7 +209,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         if ( uniqueRasterEntries[layerRef.first].raster->crs() != mOutputCrs )
         {
           QgsRasterProjector proj;
-          proj.setCrs( ref.raster->crs(), mOutputCrs );
+          proj.setCrs( ref.raster->crs(), mOutputCrs, mTransformContext );
           proj.setInput( ref.raster->dataProvider() );
           proj.setPrecision( QgsRasterProjector::Exact );
           layerRef.second.reset( proj.block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
@@ -198,11 +231,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
       if ( calcNode->calculate( _rasterData, resultMatrix, 0 ) )
       {
-        // write scanline to the dataset
-        for ( size_t i = 0; i < static_cast<size_t>( mNumOutputColumns ); i++ )
-        {
-          castedResult[i] = static_cast<float>( resultMatrix.data()[i] );
-        }
+        std::copy( resultMatrix.data(), resultMatrix.data() + mNumOutputColumns, castedResult.begin() );
         if ( GDALRasterIO( outputRasterBand, GF_Write, 0, row, mNumOutputColumns, 1, castedResult.data(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
           QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
@@ -227,7 +256,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       if ( it->raster->crs() != mOutputCrs )
       {
         QgsRasterProjector proj;
-        proj.setCrs( it->raster->crs(), mOutputCrs );
+        proj.setCrs( it->raster->crs(), mOutputCrs, it->raster->transformContext() );
         proj.setInput( it->raster->dataProvider() );
         proj.setPrecision( QgsRasterProjector::Exact );
 
@@ -439,7 +468,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName ).arg( ref.name ) );
   }
   programTemplate = programTemplate.replace( QStringLiteral( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
-  programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), inputArgs.length() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
+  programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
   programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION##" ), cExpression );
   programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
 
@@ -516,7 +545,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       if ( ref.layer->crs() != mOutputCrs )
       {
         QgsRasterProjector proj;
-        proj.setCrs( ref.layer->crs(), mOutputCrs );
+        proj.setCrs( ref.layer->crs(), mOutputCrs, ref.layer->transformContext() );
         proj.setInput( ref.layer->dataProvider() );
         proj.setPrecision( QgsRasterProjector::Exact );
         block.reset( proj.block( ref.band, rect, mNumOutputColumns, 1 ) );
@@ -636,9 +665,18 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
         // Safety belt
         if ( !( entry.raster && ref.raster ) )
           continue;
-        // Check if a layer with the same data source was already added to the list
+        // Check if is another band of the same raster
         if ( ref.raster->publicSource() == entry.raster->publicSource() )
-          return false;
+        {
+          if ( ref.bandNumber != entry.bandNumber )
+          {
+            continue;
+          }
+          else // a layer with the same data source was already added to the list
+          {
+            return false;
+          }
+        }
         // If same name but different source
         if ( ref.ref == entry.ref )
         {
@@ -664,7 +702,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
         entry.raster = rlayer;
         entry.bandNumber = i + 1;
         if ( ! uniqueRasterBandIdentifier( entry ) )
-          continue;
+          break;
         availableEntries.push_back( entry );
       }
     }

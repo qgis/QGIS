@@ -48,6 +48,9 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
     void setSymbolName( const QString &name );
     QString symbolName() const;
 
+    virtual void setSize( double size );
+
+
     void setSymbolWidth( double w );
     double symbolWidth() const;
 

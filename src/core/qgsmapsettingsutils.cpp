@@ -28,7 +28,8 @@ const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSett
   QSet< QString > layers;
 
   QgsTextFormat layerFormat;
-  Q_FOREACH ( QgsMapLayer *layer, mapSettings.layers() )
+  const auto constLayers = mapSettings.layers();
+  for ( QgsMapLayer *layer : constLayers )
   {
     if ( layer )
     {
@@ -105,7 +106,7 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   double c = r[0] * s[2] + r[1] * s[5] + r[2];
   double d = r[3] * s[0] + r[4] * s[3];
   // Pixel YDim - almost always negative
-  // See https://en.wikipedia.org/wiki/World_file#cite_ref-3, https://issues.qgis.org/issues/18491
+  // See https://en.wikipedia.org/wiki/World_file#cite_ref-3, https://github.com/qgis/QGIS/issues/26379
   double e =  r[3] * s[1] + r[4] * s[4];
   double f = r[3] * s[2] + r[4] * s[5] + r[5];
 

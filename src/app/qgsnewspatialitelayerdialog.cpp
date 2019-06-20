@@ -454,11 +454,12 @@ bool QgsNewSpatialiteLayerDialog::apply()
     }
   }
 
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
       .arg( mDatabaseComboBox->currentText(),
             leLayerName->text(),
             mGeometryTypeBox->currentIndex() != 0 ? QStringLiteral( "(%1)" ).arg( leGeometryColumn->text() ) : QString() ),
-      leLayerName->text(), QStringLiteral( "spatialite" ) );
+      leLayerName->text(), QStringLiteral( "spatialite" ), options );
   if ( layer->isValid() )
   {
     // Reload connections to refresh browser panel

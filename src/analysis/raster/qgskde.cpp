@@ -293,7 +293,7 @@ double QgsKernelDensityEstimation::calculateKernelValue( const double distance, 
 
 double QgsKernelDensityEstimation::uniformKernel( const double distance, const double bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
 {
-  Q_UNUSED( distance );
+  Q_UNUSED( distance )
   switch ( outputType )
   {
     case OutputScaled:

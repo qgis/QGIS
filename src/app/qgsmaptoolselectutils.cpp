@@ -29,6 +29,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgslogger.h"
 #include "qgis.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -213,7 +214,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
     QgsDebugMsg( QStringLiteral( "Caught CRS exception " ) );
     QgisApp::instance()->messageBar()->pushMessage(

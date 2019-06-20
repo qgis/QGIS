@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import math
 
 from qgis.PyQt.QtCore import (Qt,
@@ -55,6 +51,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterDistance,
+                       QgsProcessingParameterScale,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
@@ -64,6 +61,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBand,
+                       QgsProcessingParameterLayout,
+                       QgsProcessingParameterLayoutItem,
                        QgsProcessingDestinationParameter,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFileDestination,
@@ -96,7 +95,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         super(ModelerParameterDefinitionDialog, self).closeEvent(event)
 
     def setupUi(self):
-        self.setWindowTitle(self.tr('Parameter Definition'))
+        type_metadata = QgsApplication.processingRegistry().parameterType(self.param.type() if self.param else self.paramType)
+        self.setWindowTitle(self.tr('{} Parameter Definition').format(type_metadata.name()))
         self.setMinimumWidth(300)
 
         self.verticalLayout = QVBoxLayout(self)
@@ -179,6 +179,20 @@ class ModelerParameterDefinitionDialog(QDialog):
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
+        elif self.paramType == parameters.PARAMETER_LAYOUTITEM or \
+                isinstance(self.param, QgsProcessingParameterLayoutItem):
+            self.verticalLayout.addWidget(QLabel(self.tr('Parent layout')))
+            self.parentCombo = QComboBox()
+            idx = 0
+            for param in list(self.alg.parameterComponents().values()):
+                definition = self.alg.parameterDefinition(param.parameterName())
+                if isinstance(definition, (QgsProcessingParameterLayout)):
+                    self.parentCombo.addItem(definition.description(), definition.name())
+                    if self.param is not None:
+                        if self.param.parentLayoutParameterName() == definition.name():
+                            self.parentCombo.setCurrentIndex(idx)
+                    idx += 1
+            self.verticalLayout.addWidget(self.parentCombo)
         elif (self.paramType in (
                 parameters.PARAMETER_VECTOR, parameters.PARAMETER_TABLE) or
                 isinstance(self.param, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer))):
@@ -207,24 +221,55 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.layerType()))
             self.verticalLayout.addWidget(self.datatypeCombo)
-        elif (self.paramType == parameters.PARAMETER_NUMBER or self.paramType == parameters.PARAMETER_DISTANCE or
-              isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance))):
-            self.verticalLayout.addWidget(QLabel(self.tr('Min value')))
-            self.minTextBox = QLineEdit()
-            self.verticalLayout.addWidget(self.minTextBox)
-            self.verticalLayout.addWidget(QLabel(self.tr('Max value')))
-            self.maxTextBox = QLineEdit()
-            self.verticalLayout.addWidget(self.maxTextBox)
-            if self.param is not None:
-                self.minTextBox.setText(str(self.param.minimum()))
-                self.maxTextBox.setText(str(self.param.maximum()))
+        elif (self.paramType in (parameters.PARAMETER_NUMBER, parameters.PARAMETER_DISTANCE, parameters.PARAMETER_SCALE) or
+              isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance, QgsProcessingParameterScale))):
+
+            if (self.paramType == parameters.PARAMETER_DISTANCE or
+                    isinstance(self.param, QgsProcessingParameterDistance)):
+                self.verticalLayout.addWidget(QLabel(self.tr('Linked input')))
+                self.parentCombo = QComboBox()
+                self.parentCombo.addItem('', '')
+                idx = 1
+                for param in list(self.alg.parameterComponents().values()):
+                    definition = self.alg.parameterDefinition(param.parameterName())
+                    if isinstance(definition, (QgsProcessingParameterFeatureSource,
+                                               QgsProcessingParameterVectorLayer,
+                                               QgsProcessingParameterMapLayer,
+                                               QgsProcessingParameterCrs)):
+                        self.parentCombo.addItem(definition.description(), definition.name())
+                        if self.param is not None:
+                            if self.param.parentParameterName() == definition.name():
+                                self.parentCombo.setCurrentIndex(idx)
+                        idx += 1
+                self.verticalLayout.addWidget(self.parentCombo)
+            elif (self.paramType != parameters.PARAMETER_SCALE and not
+                    isinstance(self.param, QgsProcessingParameterScale)):
+                self.verticalLayout.addWidget(QLabel(self.tr('Number type')))
+                self.type_combo = QComboBox()
+                self.type_combo.addItem(self.tr('Float'), QgsProcessingParameterNumber.Double)
+                self.type_combo.addItem(self.tr('Integer'), QgsProcessingParameterNumber.Integer)
+                if self.param:
+                    self.type_combo.setCurrentIndex(self.type_combo.findData(self.param.dataType()))
+                self.verticalLayout.addWidget(self.type_combo)
+
+            if (self.paramType != parameters.PARAMETER_SCALE and not
+                    isinstance(self.param, QgsProcessingParameterScale)):
+                self.verticalLayout.addWidget(QLabel(self.tr('Min value')))
+                self.minTextBox = QLineEdit()
+                self.verticalLayout.addWidget(self.minTextBox)
+                self.verticalLayout.addWidget(QLabel(self.tr('Max value')))
+                self.maxTextBox = QLineEdit()
+                self.verticalLayout.addWidget(self.maxTextBox)
+                if self.param is not None:
+                    self.minTextBox.setText(str(self.param.minimum()))
+                    self.maxTextBox.setText(str(self.param.maximum()))
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
             self.defaultTextBox = QLineEdit()
             self.defaultTextBox.setText(self.tr('0'))
             if self.param is not None:
                 default = self.param.defaultValue()
                 if self.param.dataType() == QgsProcessingParameterNumber.Integer:
-                    default = int(math.floor(default))
+                    default = int(math.floor(float(default)))
                 if default:
                     self.defaultTextBox.setText(str(default))
             self.verticalLayout.addWidget(self.defaultTextBox)
@@ -376,6 +421,14 @@ class ModelerParameterDefinitionDialog(QDialog):
                 return
             parent = self.parentCombo.currentData()
             self.param = QgsProcessingParameterBand(name, description, None, parent)
+        elif (self.paramType == parameters.PARAMETER_LAYOUTITEM or
+              isinstance(self.param, QgsProcessingParameterLayoutItem)):
+            if self.parentCombo.currentIndex() < 0:
+                QMessageBox.warning(self, self.tr('Unable to define parameter'),
+                                    self.tr('Wrong or missing parameter values'))
+                return
+            parent = self.parentCombo.currentData()
+            self.param = QgsProcessingParameterLayoutItem(name, description, None, parent)
         elif (self.paramType == parameters.PARAMETER_MAP_LAYER or
               isinstance(self.param, QgsProcessingParameterMapLayer)):
             self.param = QgsProcessingParameterMapLayer(
@@ -399,11 +452,40 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param = QgsProcessingParameterMultipleLayers(
                 name, description,
                 self.datatypeCombo.currentData())
-        elif (self.paramType == parameters.PARAMETER_NUMBER or
-              isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance))):
+        elif (self.paramType == parameters.PARAMETER_DISTANCE or
+              isinstance(self.param, QgsProcessingParameterDistance)):
+            self.param = QgsProcessingParameterDistance(name, description,
+                                                        self.defaultTextBox.text())
             try:
-                self.param = QgsProcessingParameterNumber(name, description, QgsProcessingParameterNumber.Double,
-                                                          self.defaultTextBox.text())
+                vmin = self.minTextBox.text().strip()
+                if not vmin == '':
+                    self.param.setMinimum(float(vmin))
+                vmax = self.maxTextBox.text().strip()
+                if not vmax == '':
+                    self.param.setMaximum(float(vmax))
+            except:
+                QMessageBox.warning(self, self.tr('Unable to define parameter'),
+                                    self.tr('Wrong or missing parameter values'))
+                return
+
+            if self.parentCombo.currentIndex() < 0:
+                QMessageBox.warning(self, self.tr('Unable to define parameter'),
+                                    self.tr('Wrong or missing parameter values'))
+                return
+            parent = self.parentCombo.currentData()
+            if parent:
+                self.param.setParentParameterName(parent)
+        elif (self.paramType == parameters.PARAMETER_SCALE or
+              isinstance(self.param, QgsProcessingParameterScale)):
+            self.param = QgsProcessingParameterScale(name, description,
+                                                     self.defaultTextBox.text())
+        elif (self.paramType == parameters.PARAMETER_NUMBER or
+              isinstance(self.param, QgsProcessingParameterNumber)):
+
+            type = self.type_combo.currentData()
+            self.param = QgsProcessingParameterNumber(name, description, type,
+                                                      self.defaultTextBox.text())
+            try:
                 vmin = self.minTextBox.text().strip()
                 if not vmin == '':
                     self.param.setMinimum(float(vmin))

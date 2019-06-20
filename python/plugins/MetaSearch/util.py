@@ -24,11 +24,6 @@
 #
 ###############################################################################
 
-# avoid PendingDeprecationWarning from PyQt4.uic
-import warnings
-warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 from gettext import gettext, ngettext
 import logging
 import os
@@ -142,10 +137,10 @@ def get_help_url():
     else:
         version = '.'.join([major, minor])
 
-    path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
+    path = '%s/%s/docs/user_manual/plugins/core_plugins/plugins_metasearch.html' % \
            (version, locale_name)
 
-    return '/'.join(['http://docs.qgis.org', path])
+    return '/'.join(['https://docs.qgis.org', path])
 
 
 def open_url(url):

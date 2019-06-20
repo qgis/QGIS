@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (
@@ -116,7 +114,7 @@ class TestQgsProcessingCheckValidity(unittest.TestCase):
         self.assertEqual(invalid_layer.featureCount(), 1)
         f = next(invalid_layer.getFeatures())
         self.assertEqual(f.attributes(), [
-                         1, 'segments 0 and 2 of line 0 intersect at 1, 1\nGeometry has 1 errors.'])
+                         1, 'segments 0 and 2 of line 0 intersect at 1, 1'])
 
         # GEOS method
         parameters['METHOD'] = 2

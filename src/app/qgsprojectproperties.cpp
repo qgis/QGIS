@@ -62,6 +62,7 @@
 #include "qgsmetadatawidget.h"
 #include "qgsmessagelog.h"
 #include "qgslayercapabilitiesmodel.h"
+#include "qgsexpressioncontextutils.h"
 
 //qt includes
 #include <QInputDialog>
@@ -69,6 +70,7 @@
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QAbstractListModel>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -173,7 +175,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
   mDatumTransformTableWidget->setTransformContext( context );
 
-  bool show = settings.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+  bool show = settings.value( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), false, QgsSettings::App ).toBool();
   mShowDatumTransformDialogCheckBox->setChecked( show );
 
   QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
@@ -205,7 +207,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
 
-  Q_FOREACH ( QgsVectorLayer *layer, QgsProject::instance()->layers<QgsVectorLayer *>() )
+  const auto layers { QgsProject::instance()->layers<QgsVectorLayer *>() };
+  for ( QgsVectorLayer *layer : layers )
   {
     if ( layer->isEditable() )
     {
@@ -293,6 +296,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     int index = 0;
     for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
+      // TODO - use parameters instead of acronym
       if ( mEllipsoidList[ i ].acronym == QgsProject::instance()->crs().ellipsoidAcronym() )
       {
         index = i;
@@ -350,7 +354,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QStringList myScales = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
   if ( !myScales.isEmpty() )
   {
-    Q_FOREACH ( const QString &scale, myScales )
+    const auto constMyScales = myScales;
+    for ( const QString &scale : constMyScales )
     {
       addScaleToScaleList( scale );
     }
@@ -370,8 +375,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mLayerCapabilitiesTree->selectionModel(), &QItemSelectionModel::selectionChanged, this,
            [ = ]( const QItemSelection & selected, const QItemSelection & deselected )
   {
-    Q_UNUSED( selected );
-    Q_UNUSED( deselected );
+    Q_UNUSED( selected )
+    Q_UNUSED( deselected )
     bool hasSelection = !mLayerCapabilitiesTree->selectionModel()->selectedIndexes().isEmpty();
     mLayerCapabilitiesToggleSelectionButton->setEnabled( hasSelection );
   } );
@@ -387,7 +392,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( mLayerCapabilitiesToggleSelectionButton, &QToolButton::clicked, this, [ = ]( bool clicked )
   {
-    Q_UNUSED( clicked );
+    Q_UNUSED( clicked )
     const QModelIndexList indexes = mLayerCapabilitiesTree->selectionModel()->selectedIndexes();
     mLayerCapabilitiesModel->toggleSelectedItems( indexes );
     mLayerCapabilitiesTree->repaint();
@@ -581,7 +586,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      Q_FOREACH ( const QString &value, values )
+      const auto constValues = values;
+      for ( const QString &value : constValues )
       {
         list << QStringLiteral( "EPSG:%1" ).arg( value );
       }
@@ -611,9 +617,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ) );
   mAddWktGeometryCheckBox->setChecked( addWktGeometry );
 
-  bool requestDefinedSources = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSRequestDefinedDataSources" ), QStringLiteral( "/" ), false );
-  mAllowRequestDefinedDataSourcesBox->setChecked( requestDefinedSources );
-
   bool segmentizeFeatureInfoGeometry = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ) );
   mSegmentizeFeatureInfoGeometryCheckBox->setChecked( segmentizeFeatureInfoGeometry );
 
@@ -642,6 +645,25 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
 
   mWMSMaxAtlasFeaturesSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 ) );
+
+  QString defaultValueToolTip = tr( "In case of no other information to evaluate the map unit sized symbols, it uses default scale (on projected CRS) or default map units per mm (on geographic CRS)." );
+  mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
+  mWMSDefaultMapUnitsPerMm->setDecimals( 4 );
+  mWMSDefaultMapUnitsPerMm->setSingleStep( 0.001 );
+  mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
+  mWMSDefaultMapUnitsPerMm->setToolTip( defaultValueToolTip );
+  mWMSDefaultMapUnitScale = new QgsScaleWidget();
+  mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters ) );
+  mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
+  if ( QgsProject::instance()->crs().isGeographic() )
+  {
+    mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitsPerMm );
+  }
+  else
+  {
+    mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitScale );
+    mWMSDefaultMapUnitsPerMmLabel->setText( tr( "Default scale for legend" ) );
+  }
 
   mWMTSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), QString() ) );
   mWMTSMinScaleLineEdit->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), 5000 ) );
@@ -686,6 +708,40 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
   connect( twWmtsLayers, &QTreeWidget::itemChanged, this, &QgsProjectProperties::twWmtsItemChanged );
 
+  for ( int i = 0; i < mWMSList->count(); i++ )
+  {
+    QString crsStr = mWMSList->item( i )->text();
+    addWmtsGrid( crsStr );
+  }
+  connect( mWMSList->model(), &QAbstractListModel::rowsInserted, this, &QgsProjectProperties::lwWmsRowsInserted );
+  connect( mWMSList->model(), &QAbstractListModel::rowsRemoved, this, &QgsProjectProperties::lwWmsRowsRemoved );
+  connect( twWmtsGrids, &QTreeWidget::itemDoubleClicked, this, &QgsProjectProperties::twWmtsGridItemDoubleClicked );
+  connect( twWmtsGrids, &QTreeWidget::itemChanged, this, &QgsProjectProperties::twWmtsGridItemChanged );
+  const QStringList wmtsGridList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "CRS" ) );
+  if ( !wmtsGridList.isEmpty() )
+  {
+    const QStringList wmtsGridConfigList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "Config" ) );
+    QMap<QString, QStringList> wmtsGridConfigs;
+    for ( const QString &c : wmtsGridConfigList )
+    {
+      QStringList config = c.split( ',' );
+      wmtsGridConfigs[config[0]] = config;
+    }
+    for ( QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+    {
+      QString crsStr = item->data( 0, Qt::UserRole ).toString();
+      if ( !wmtsGridList.contains( crsStr ) )
+        continue;
+
+      item->setCheckState( 1, Qt::Checked );
+      QStringList config = wmtsGridConfigs[crsStr];
+      item->setData( 2, Qt::DisplayRole, QVariant( config[1] ).toDouble() );
+      item->setData( 3, Qt::DisplayRole, QVariant( config[2] ).toDouble() );
+      item->setData( 4, Qt::DisplayRole, QVariant( config[3] ).toDouble() );
+      item->setData( 5, Qt::DisplayRole, QVariant( config[4] ).toInt() );
+    }
+  }
+
   mWFSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), QString() ) );
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WFSLayers" ), QStringLiteral( "/" ) );
   QStringList wfstUpdateLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Update" ) );
@@ -707,7 +763,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
-    if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+    if ( currentLayer->type() == QgsMapLayerType::VectorLayer )
     {
 
       QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
@@ -771,7 +827,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
-    if ( currentLayer->type() == QgsMapLayer::RasterLayer )
+    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
     {
 
       QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
@@ -831,9 +887,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mTabRelations->layout()->addWidget( mRelationManagerDlg );
 
   QList<QgsVectorLayer *> vectorLayers;
-  Q_FOREACH ( QgsMapLayer *mapLayer, mapLayers )
+  const auto constMapLayers = mapLayers;
+  for ( QgsMapLayer *mapLayer : constMapLayers )
   {
-    if ( QgsMapLayer::VectorLayer == mapLayer->type() )
+    if ( QgsMapLayerType::VectorLayer == mapLayer->type() )
     {
       vectorLayers.append( qobject_cast<QgsVectorLayer *>( mapLayer ) );
     }
@@ -910,6 +967,10 @@ void QgsProjectProperties::apply()
 {
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
 
+  // important - set the transform context first, as changing the project CRS may otherwise change this and
+  // cause loss of user changes
+  QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
+  QgsProject::instance()->setTransformContext( transformContext );
   if ( projectionSelector->hasValidSelection() )
   {
     QgsCoordinateReferenceSystem srs = projectionSelector->crs();
@@ -929,14 +990,13 @@ void QgsProjectProperties::apply()
     projectionSelector->pushProjectionToFront();
   }
 
-  QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
-  QgsProject::instance()->setTransformContext( transformContext );
-
   mMetadataWidget->acceptMetadata();
 
   // Set the project title
   QgsProject::instance()->setTitle( title() );
   QgsProject::instance()->setPresetHomePath( QDir::fromNativeSeparators( mProjectHomeLineEdit->text() ) );
+
+  // DB-related options
   QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
@@ -1010,7 +1070,8 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), canvasColor.green() );
   QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), canvasColor.blue() );
 
-  Q_FOREACH ( QgsMapCanvas *canvas, QgisApp::instance()->mapCanvases() )
+  const auto constMapCanvases = QgisApp::instance()->mapCanvases();
+  for ( QgsMapCanvas *canvas : constMapCanvases )
   {
     canvas->setCanvasColor( canvasColor );
     canvas->setSelectionColor( selectionColor );
@@ -1080,10 +1141,7 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSServiceCapabilities" ), QStringLiteral( "/" ), grpOWSServiceCapabilities->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSServiceTitle" ), QStringLiteral( "/" ), mWMSTitle->text() );
-
-  if ( !mWMSName->text().isEmpty() )
-    QgsProject::instance()->writeEntry( QStringLiteral( "WMSRootName" ), QStringLiteral( "/" ), mWMSName->text() );
-
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSRootName" ), QStringLiteral( "/" ), mWMSName->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSContactOrganization" ), QStringLiteral( "/" ), mWMSContactOrganization->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSContactPerson" ), QStringLiteral( "/" ), mWMSContactPerson->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSContactMail" ), QStringLiteral( "/" ), mWMSContactMail->text() );
@@ -1232,7 +1290,6 @@ void QgsProjectProperties::apply()
   }
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), mAddWktGeometryCheckBox->isChecked() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "WMSRequestDefinedDataSources" ), QStringLiteral( "/" ), mAllowRequestDefinedDataSourcesBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), mSegmentizeFeatureInfoGeometryCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ), mWmsUseLayerIDs->isChecked() );
 
@@ -1268,6 +1325,18 @@ void QgsProjectProperties::apply()
 
   int maxAtlasFeatures = mWMSMaxAtlasFeaturesSpinBox->value();
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), maxAtlasFeatures );
+
+  double defaultMapUnitsPerMm;
+  if ( QgsProject::instance()->crs().isGeographic() )
+  {
+    defaultMapUnitsPerMm = mWMSDefaultMapUnitsPerMm->value();
+  }
+  else
+  {
+    defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters );
+  }
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), mWMTSUrlLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), mWMTSMinScaleLineEdit->value() );
@@ -1320,6 +1389,18 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ), wmtsLayerList );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ), wmtsPngLayerList );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ), wmtsJpegLayerList );
+
+  QStringList wmtsGridList;
+  QStringList wmtsGridConfigList;
+  for ( const QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  {
+    if ( !item->checkState( 1 ) )
+      continue;
+    wmtsGridList << item->data( 0, Qt::UserRole ).toString();
+    wmtsGridConfigList << QStringLiteral( "%1,%2,%3,%4,%5" ).arg( item->data( 0, Qt::UserRole ).toString(), item->data( 2, Qt::DisplayRole ).toString(), item->data( 3, Qt::DisplayRole ).toString(), item->data( 4, Qt::DisplayRole ).toString(), item->data( 5, Qt::DisplayRole ).toString() );
+  }
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "CRS" ), wmtsGridList );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "Config" ), wmtsGridConfigList );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), mWFSUrlLineEdit->text() );
   QStringList wfsLayerList;
@@ -1401,7 +1482,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
 
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
-  Q_FOREACH ( QgsMapCanvas *canvas, QgisApp::instance()->mapCanvases() )
+  for ( QgsMapCanvas *canvas : constMapCanvases )
   {
     canvas->refresh();
   }
@@ -1412,6 +1493,71 @@ void QgsProjectProperties::apply()
 void QgsProjectProperties::showProjectionsTab()
 {
   mOptionsListWidget->setCurrentRow( 2 );
+}
+
+void QgsProjectProperties::lwWmsRowsInserted( const QModelIndex &parent, int first, int last )
+{
+  Q_UNUSED( parent )
+  for ( int i = first; i <= last; i++ )
+  {
+    QString crsStr = mWMSList->item( i )->text();
+    addWmtsGrid( crsStr );
+  }
+  twWmtsGrids->header()->resizeSections( QHeaderView::ResizeToContents );
+}
+
+void QgsProjectProperties::lwWmsRowsRemoved( const QModelIndex &parent, int first, int last )
+{
+  Q_UNUSED( parent )
+  Q_UNUSED( first )
+  Q_UNUSED( last )
+  QStringList crslist;
+  for ( int i = 0; i < mWMSList->count(); i++ )
+  {
+    crslist << mWMSList->item( i )->text();
+  }
+  for ( const QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  {
+    QString crsStr = item->data( 0, Qt::UserRole ).toString();
+    if ( crslist.contains( crsStr ) )
+      continue;
+    delete item;
+  }
+}
+
+void QgsProjectProperties::twWmtsGridItemDoubleClicked( QTreeWidgetItem *item, int column )
+{
+  Qt::ItemFlags flags = item->flags();
+  if ( column == 0 || column == 6 )
+  {
+    item->setFlags( flags & ( ~Qt::ItemIsEditable ) );
+  }
+  else
+  {
+    QString crsStr = item->text( 0 );
+    if ( crsStr == QStringLiteral( "EPSG:3857" ) && column != 5 )
+    {
+      item->setFlags( flags & ( ~Qt::ItemIsEditable ) );
+    }
+    else if ( crsStr == QStringLiteral( "EPSG:4326" ) && column != 5 )
+    {
+      item->setFlags( flags & ( ~Qt::ItemIsEditable ) );
+    }
+    else
+    {
+      item->setFlags( flags | Qt::ItemIsEditable );
+    }
+  }
+}
+
+void QgsProjectProperties::twWmtsGridItemChanged( QTreeWidgetItem *item, int column )
+{
+  if ( column == 4 || column == 5 )
+  {
+    double maxScale = item->data( 4, Qt::DisplayRole ).toFloat();
+    int lastLevel = item->data( 5, Qt::DisplayRole ).toInt();
+    item->setData( 6, Qt::DisplayRole, ( maxScale / std::pow( 2, lastLevel ) ) );
+  }
 }
 
 void QgsProjectProperties::twWmtsItemChanged( QTreeWidgetItem *item, int column )
@@ -1544,6 +1690,7 @@ void QgsProjectProperties::srIdUpdated()
     int index = 0;
     for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
+      // TODO - use parameters instead of acronym
       if ( mEllipsoidList[ i ].acronym == mCrs.ellipsoidAcronym() )
       {
         index = i;
@@ -1604,7 +1751,8 @@ void QgsProjectProperties::pbnWMSAddSRS_clicked()
 
 void QgsProjectProperties::pbnWMSRemoveSRS_clicked()
 {
-  Q_FOREACH ( QListWidgetItem *item, mWMSList->selectedItems() )
+  const auto constSelectedItems = mWMSList->selectedItems();
+  for ( QListWidgetItem *item : constSelectedItems )
   {
     delete item;
   }
@@ -1762,7 +1910,8 @@ void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 
   QStringList duplicateNames, regExpMessages;
   QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  Q_FOREACH ( const QString &name, owsNames )
+  const auto constOwsNames = owsNames;
+  for ( const QString &name : constOwsNames )
   {
     if ( !snRegExp.exactMatch( name ) )
       regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
@@ -1847,7 +1996,8 @@ void QgsProjectProperties::pbnImportScales_clicked()
     QgsDebugMsg( msg );
   }
 
-  Q_FOREACH ( const QString &scale, myScales )
+  const auto constMyScales = myScales;
+  for ( const QString &scale : constMyScales )
   {
     addScaleToScaleList( scale );
   }
@@ -2079,6 +2229,93 @@ void QgsProjectProperties::populateWmtsTree( const QgsLayerTreeGroup *treeGroup,
   }
 }
 
+void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
+{
+  QgsTreeWidgetItem *gridItem = new QgsTreeWidgetItem( QStringList() << crsStr );
+  gridItem->setFlags( gridItem->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+  gridItem->setCheckState( 1, Qt::Unchecked );
+  gridItem->setData( 0, Qt::UserRole, crsStr );
+
+  // Define or calculate top, left, max. scale
+  int lastLevel = 18;
+  double scaleDenominator = 0.0;
+  if ( crsStr == QStringLiteral( "EPSG:3857" ) )
+  {
+    gridItem->setData( 2, Qt::DisplayRole, 20037508.3427892480 );
+    gridItem->setData( 3, Qt::DisplayRole, -20037508.3427892480 );
+    scaleDenominator = 559082264.0287179;
+  }
+  else if ( crsStr == QStringLiteral( "EPSG:4326" ) )
+  {
+    gridItem->setData( 2, Qt::DisplayRole, 90.0 );
+    gridItem->setData( 3, Qt::DisplayRole, -180.0 );
+    scaleDenominator = 279541132.0143588675418869;
+  }
+  else
+  {
+    // calculate top, left and scale based on CRS bounds
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
+    QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ), crs, QgsProject::instance() );
+    try
+    {
+      // firstly transform CRS bounds expressed in WGS84 to CRS
+      QgsRectangle extent = crsTransform.transformBoundingBox( crs.bounds() );
+      // Constant
+      int tileSize = 256;
+      double POINTS_TO_M = 2.83464567 / 10000;
+      // Calculate scale denominator
+      int colRes = ( extent.xMaximum() - extent.xMinimum() ) / tileSize;
+      int rowRes = ( extent.yMaximum() - extent.yMinimum() ) / tileSize;
+      if ( colRes > rowRes )
+      {
+        scaleDenominator = std::ceil( colRes * QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters ) / POINTS_TO_M );
+      }
+      else
+      {
+        scaleDenominator = std::ceil( rowRes * QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters ) / POINTS_TO_M );
+      }
+      // Calculate resolution based on scale denominator
+      double res = POINTS_TO_M * scaleDenominator / QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+      // Get numbers of column and row for the resolution
+      int col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * res ) );
+      int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * res ) );
+      // Update resolution and scale denominator to get 1 tile at this scale
+      if ( col > 1 || row > 1 )
+      {
+        // Update scale
+        if ( col > row )
+        {
+          res = col * res;
+          scaleDenominator = col * scaleDenominator;
+        }
+        else
+        {
+          res = row * res;
+          scaleDenominator = row * scaleDenominator;
+        }
+        // set col and row to 1 for the square
+        col = 1;
+        row = 1;
+      }
+      double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileSize * res );
+      double left = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) - ( col / 2.0 ) * ( tileSize * res );
+
+      gridItem->setData( 2, Qt::DisplayRole, top );
+      gridItem->setData( 3, Qt::DisplayRole, left );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse )
+    }
+  }
+  gridItem->setData( 4, Qt::DisplayRole, scaleDenominator );
+  gridItem->setData( 5, Qt::DisplayRole, lastLevel );
+  gridItem->setData( 6, Qt::DisplayRole, ( scaleDenominator / std::pow( 2, lastLevel ) ) );
+  twWmtsGrids->blockSignals( true );
+  twWmtsGrids->addTopLevelItem( gridItem );
+  twWmtsGrids->blockSignals( false );
+}
+
 void QgsProjectProperties::checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )
 {
   QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
@@ -2106,7 +2343,7 @@ void QgsProjectProperties::checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &
           owsNames << l->name();
         else
           owsNames << shortName;
-        if ( l->type() == QgsMapLayer::VectorLayer )
+        if ( l->type() == QgsMapLayerType::VectorLayer )
         {
           QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
           if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )
@@ -2136,7 +2373,8 @@ void QgsProjectProperties::populateEllipsoidList()
   myItem.semiMinor = 6370997.0;
   mEllipsoidList.append( myItem );
 
-  Q_FOREACH ( const QgsEllipsoidUtils::EllipsoidDefinition &def, QgsEllipsoidUtils::definitions() )
+  const auto definitions {QgsEllipsoidUtils::definitions()};
+  for ( const QgsEllipsoidUtils::EllipsoidDefinition &def : definitions )
   {
     myItem.acronym = def.acronym;
     myItem.description = def.description;
@@ -2149,7 +2387,8 @@ void QgsProjectProperties::populateEllipsoidList()
   }
   // Add all items to selector
 
-  Q_FOREACH ( const EllipsoidDefs &i, mEllipsoidList )
+  const auto constMEllipsoidList = mEllipsoidList;
+  for ( const EllipsoidDefs &i : constMEllipsoidList )
   {
     cmbEllipsoid->addItem( i.description );
   }

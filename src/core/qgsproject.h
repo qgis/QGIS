@@ -23,7 +23,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <memory>
 #include <QHash>
 #include <QList>
@@ -135,7 +134,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString title() const;
 
     /**
-     * Returns true if the project has been modified since the last write()
+     * Returns TRUE if the project has been modified since the last write()
      */
     bool isDirty() const;
 
@@ -170,7 +169,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns pointer to project storage implementation that handles read/write of the project file.
-     * If the project file is stored in the local file system, returns null pointer.
+     * If the project file is stored in the local file system, returns NULLPTR.
      * The project storage object is inferred from fileName() of the project.
      * \since QGIS 3.2
      */
@@ -267,13 +266,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Reads given project file from the given file.
      * \param filename name of project file to read
-     * \returns true if project file has been read successfully
+     * \returns TRUE if project file has been read successfully
      */
     bool read( const QString &filename );
 
     /**
      * Reads the project from its currently associated file (see fileName() ).
-     * \returns true if project file has been read successfully
+     * \returns TRUE if project file has been read successfully
      */
     bool read();
 
@@ -291,17 +290,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Writes the project to a file.
      * \param filename destination file
-     * \returns true if project was written successfully
+     * \returns TRUE if project was written successfully
      * \note calling this implicitly sets the project's filename (see setFileName() )
-     * \note isDirty() will be set to false if project is successfully written
+     * \note isDirty() will be set to FALSE if project is successfully written
      * \since QGIS 3.0
      */
     bool write( const QString &filename );
 
     /**
      * Writes the project to its current associated file (see fileName() ).
-     * \returns true if project was written successfully
-     * \note isDirty() will be set to false if project is successfully written
+     * \returns TRUE if project was written successfully
+     * \note isDirty() will be set to FALSE if project is successfully written
      */
     bool write();
 
@@ -604,7 +603,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the matching transaction group from a provider key and connection string.
      *
-     * Returns nullptr if a matching transaction group is not available.
+     * Returns NULLPTR if a matching transaction group is not available.
      *
      * \since QGIS 3.2
      */
@@ -697,7 +696,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Retrieve a pointer to a registered layer by layer ID.
      * \param layerId ID of layer to retrieve
-     * \returns matching layer, or nullptr if no matching layer found
+     * \returns matching layer, or NULLPTR if no matching layer found
      * \see mapLayersByName()
      * \see mapLayers()
      */
@@ -708,7 +707,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Retrieve a pointer to a registered layer by \p layerId converted
      * to type T. This is a convenience template.
-     * A nullptr will be returned if the layer is not found or
+     * A NULLPTR will be returned if the layer is not found or
      * if it cannot be cast to type T.
      *
      * \code{cpp}
@@ -747,7 +746,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 
     /**
-     * Returns true if the project comes from a zip archive, false otherwise.
+     * Returns TRUE if the project comes from a zip archive, FALSE otherwise.
      */
     bool isZipped() const;
 
@@ -776,14 +775,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Add a list of layers to the map of loaded layers.
      *
      * The layersAdded() and layerWasAdded() signals will always be emitted.
-     * The legendLayersAdded() signal is emitted only if addToLegend is true.
+     * The legendLayersAdded() signal is emitted only if addToLegend is TRUE.
      *
      * \param mapLayers  A list of layer which should be added to the registry
-     * \param addToLegend   If true (by default), the layers will be added to the
+     * \param addToLegend   If TRUE (by default), the layers will be added to the
      *                      legend and to the main canvas. If you have a private
-     *                      layer you can set this parameter to false to hide it.
+     *                      layer you can set this parameter to FALSE to hide it.
      * \param takeOwnership Ownership will be transferred to the layer registry.
-     *                      If you specify false here you have take care of deleting
+     *                      If you specify FALSE here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
@@ -805,19 +804,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Add a layer to the map of loaded layers.
      *
      * The layersAdded() and layerWasAdded() signals will always be emitted.
-     * The legendLayersAdded() signal is emitted only if addToLegend is true.
+     * The legendLayersAdded() signal is emitted only if addToLegend is TRUE.
      * If you are adding multiple layers at once, you should use
      * addMapLayers() instead.
      *
      * \param mapLayer A layer to add to the registry
-     * \param addToLegend If true (by default), the layer will be added to the
+     * \param addToLegend If TRUE (by default), the layer will be added to the
      *                    legend and to the main canvas. If you have a private
-     *                    layer you can set this parameter to false to hide it.
+     *                    layer you can set this parameter to FALSE to hide it.
      * \param takeOwnership Ownership will be transferred to the layer registry.
-     *                      If you specify false here you have take care of deleting
+     *                      If you specify FALSE here you have take care of deleting
      *                      the layer yourself. Not available in Python.
      *
-     * \returns nullptr if unable to add layer, otherwise pointer to newly added layer
+     * \returns NULLPTR if unable to add layer, otherwise pointer to newly added layer
      *
      * \see addMapLayers
      *
@@ -847,6 +846,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void removeMapLayers( const QStringList &layerIds );
 
+    //TODO QGIS 4.0 - add PyName alias to avoid list type conversion error
+
     /**
      * \brief
      * Remove a set of layers from the registry.
@@ -854,13 +855,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * \param layers A list of layers to remove. Null pointers are ignored.
+     * \param layers A list of layers to remove. NULLPTR values are ignored.
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * \see removeMapLayer()
      * \see removeAllMapLayers()
      */
-    //TODO QGIS 3.0 - add PyName alias to avoid list type conversion error
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 
     /**
@@ -885,7 +885,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * \param layer The layer to remove. Null pointers are ignored.
+     * \param layer The layer to remove. NULLPTR values are ignored.
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * \see removeMapLayers()
@@ -934,14 +934,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * activated, primary key unicity is not checked for views and
      * materialized views with Postgres provider.
      *
-     * \param trust True to trust the project, false otherwise
+     * \param trust TRUE to trust the project, FALSE otherwise
      *
      * \since QGIS 3.0
      */
     void setTrustLayerMetadata( bool trust );
 
     /**
-     * Returns true if the trust option is activated, false otherwise. This
+     * Returns TRUE if the trust option is activated, FALSE otherwise. This
      * option allows indicateing if the extent has to be read from the XML
      * document when data source has no metadata or if the data provider has
      * to determine it. Moreover, when this option is activated, primary key
@@ -1280,13 +1280,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void layerRemoved( const QString &layerId );
 
+    //TODO QGIS 4.0 - rename to past tense
+
     /**
      * Emitted when all layers are removed, before layersWillBeRemoved() and
      * layerWillBeRemoved() signals are emitted. The layersWillBeRemoved() and
      * layerWillBeRemoved() signals will still be emitted following this signal.
      * You can use this signal to do easy (and fast) cleanup.
      */
-    //TODO QGIS 3.0 - rename to past tense
     void removeAll();
 
     /**
@@ -1322,7 +1323,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when the project dirty status changes.
      *
-     * \param dirty True if the project is in a dirty state and has pending unsaved changes.
+     * \param dirty TRUE if the project is in a dirty state and has pending unsaved changes.
      *
      * \since QGIS 3.2
      */
@@ -1401,7 +1402,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param doc DOM document to parse
      * \param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
      * because the layers were removed or re-located after the project was last saved
-     * \returns true if function worked; else is false
+     * \returns TRUE if function worked; else is FALSE
     */
     bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes );
 
@@ -1505,6 +1506,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mIsBeingDeleted = false;
 
     friend class QgsProjectDirtyBlocker;
+
+    // Required to avoid creating a new project in it's destructor
+    friend class QgsProviderRegistry;
 
     // Required by QGIS Server for switching the current project instance
     friend class QgsConfigCache;

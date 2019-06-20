@@ -43,7 +43,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsGPXProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsGPXProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
     ~QgsGPXProvider() override;
 
     /* Functions inherited from QgsVectorDataProvider */

@@ -21,19 +21,18 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication, QgsProcessingModelAlgorithm
+from qgis.core import QgsApplication, QgsProcessingModelAlgorithm, QgsMessageLog
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerDialog import ModelerDialog
+from qgis.core import Qgis
+from qgis.utils import iface
 
 
 class EditModelAction(ContextAction):
 
     def __init__(self):
+        super().__init__()
         self.name = QCoreApplication.translate('EditModelAction', 'Edit Model…')
 
     def isEnabled(self):
@@ -41,9 +40,13 @@ class EditModelAction(ContextAction):
 
     def execute(self):
         alg = self.itemData
-        dlg = ModelerDialog(alg)
-        dlg.update_model.connect(self.updateModel)
-        dlg.show()
+        ok, msg = alg.canExecute()
+        if not ok:
+            iface.messageBar().pushMessage(QCoreApplication.translate('EditModelAction', 'Cannot edit model: {}').format(msg), level=Qgis.Warning)
+        else:
+            dlg = ModelerDialog(alg)
+            dlg.update_model.connect(self.updateModel)
+            dlg.show()
 
     def updateModel(self):
         QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()

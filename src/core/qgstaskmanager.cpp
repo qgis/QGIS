@@ -35,7 +35,8 @@ QgsTask::~QgsTask()
 {
   Q_ASSERT_X( mStatus != Running, "delete", QStringLiteral( "status was %1" ).arg( mStatus ).toLatin1() );
   mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
-  Q_FOREACH ( const SubTask &subTask, mSubTasks )
+  const auto constMSubTasks = mSubTasks;
+  for ( const SubTask &subTask : constMSubTasks )
   {
     delete subTask.task;
   }
@@ -93,7 +94,8 @@ void QgsTask::cancel()
     processSubTasksForTermination();
   }
 
-  Q_FOREACH ( const SubTask &subTask, mSubTasks )
+  const auto constMSubTasks = mSubTasks;
+  for ( const SubTask &subTask : constMSubTasks )
   {
     subTask.task->cancel();
   }
@@ -107,7 +109,8 @@ void QgsTask::hold()
     processSubTasksForHold();
   }
 
-  Q_FOREACH ( const SubTask &subTask, mSubTasks )
+  const auto constMSubTasks = mSubTasks;
+  for ( const SubTask &subTask : constMSubTasks )
   {
     subTask.task->hold();
   }
@@ -122,7 +125,8 @@ void QgsTask::unhold()
     emit statusChanged( Queued );
   }
 
-  Q_FOREACH ( const SubTask &subTask, mSubTasks )
+  const auto constMSubTasks = mSubTasks;
+  for ( const SubTask &subTask : constMSubTasks )
   {
     subTask.task->unhold();
   }
@@ -210,7 +214,8 @@ void QgsTask::setProgress( double progress )
     // calculate total progress including subtasks
 
     double totalProgress = 0.0;
-    Q_FOREACH ( const SubTask &subTask, mSubTasks )
+    const auto constMSubTasks = mSubTasks;
+    for ( const SubTask &subTask : constMSubTasks )
     {
       if ( subTask.task->status() == QgsTask::Complete )
       {
@@ -242,7 +247,8 @@ void QgsTask::completed()
 void QgsTask::processSubTasksForCompletion()
 {
   bool subTasksCompleted = true;
-  Q_FOREACH ( const SubTask &subTask, mSubTasks )
+  const auto constMSubTasks = mSubTasks;
+  for ( const SubTask &subTask : constMSubTasks )
   {
     if ( subTask.task->status() != Complete )
     {
@@ -271,7 +277,8 @@ void QgsTask::processSubTasksForCompletion()
 void QgsTask::processSubTasksForTermination()
 {
   bool subTasksTerminated = true;
-  Q_FOREACH ( const SubTask &subTask, mSubTasks )
+  const auto constMSubTasks = mSubTasks;
+  for ( const SubTask &subTask : constMSubTasks )
   {
     if ( subTask.task->status() != Terminated && subTask.task->status() != Complete )
     {
@@ -299,7 +306,8 @@ void QgsTask::processSubTasksForTermination()
 void QgsTask::processSubTasksForHold()
 {
   bool subTasksRunning = false;
-  Q_FOREACH ( const SubTask &subTask, mSubTasks )
+  const auto constMSubTasks = mSubTasks;
+  for ( const SubTask &subTask : constMSubTasks )
   {
     if ( subTask.task->status() == Running )
     {
@@ -428,7 +436,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
   }
 
   // add all subtasks, must be done before dependency resolution
-  Q_FOREACH ( const QgsTask::SubTask &subTask, task->mSubTasks )
+  for ( const QgsTask::SubTask &subTask : qgis::as_const( task->mSubTasks ) )
   {
     switch ( subTask.dependency )
     {
@@ -508,7 +516,8 @@ void QgsTaskManager::cancelAll()
   parents.detach();
   mTaskMutex->unlock();
 
-  Q_FOREACH ( QgsTask *task, parents )
+  const auto constParents = parents;
+  for ( QgsTask *task : constParents )
   {
     task->cancel();
   }
@@ -524,7 +533,8 @@ bool QgsTaskManager::dependenciesSatisfied( long taskId ) const
   if ( !dependencies.contains( taskId ) )
     return true;
 
-  Q_FOREACH ( QgsTask *task, dependencies.value( taskId ) )
+  const auto constValue = dependencies.value( taskId );
+  for ( QgsTask *task : constValue )
   {
     if ( task->status() != QgsTask::Complete )
       return false;
@@ -552,7 +562,8 @@ bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, 
   if ( !dependencies.contains( currentTaskId ) )
     return true;
 
-  Q_FOREACH ( QgsTask *task, dependencies.value( currentTaskId ) )
+  const auto constValue = dependencies.value( currentTaskId );
+  for ( QgsTask *task : constValue )
   {
     long dependentTaskId = taskId( task );
     if ( dependentTaskId >= 0 )
@@ -701,7 +712,8 @@ void QgsTaskManager::layersWillBeRemoved( const QList< QgsMapLayer * > &layers )
   layerDependencies.detach();
   mTaskMutex->unlock();
 
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
     // scan through tasks with layer dependencies
     for ( QMap< long, QgsWeakMapLayerPointerList >::const_iterator it = layerDependencies.constBegin();

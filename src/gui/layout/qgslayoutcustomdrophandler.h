@@ -40,7 +40,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
     QgsLayoutCustomDropHandler( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Called when the specified \a file has been dropped onto a QGIS layout. If true
+     * Called when the specified \a file has been dropped onto a QGIS layout. If TRUE
      * is returned, then the handler has accepted this file and it should not
      * be further processed (e.g. by other QgsLayoutCustomDropHandler).
      *

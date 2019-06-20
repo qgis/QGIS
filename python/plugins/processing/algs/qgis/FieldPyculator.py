@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya & NextGIS'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya & NextGIS'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import sys
 
 from qgis.PyQt.QtCore import QVariant
@@ -74,7 +70,7 @@ class FieldsPyculator(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
                                                      self.tr('Field type'), options=self.type_names))
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_LENGTH,
-                                                       self.tr('Field length'), minValue=1, maxValue=255,
+                                                       self.tr('Field length'), minValue=0,
                                                        defaultValue=10))
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_PRECISION,
                                                        self.tr('Field precision'), minValue=0, maxValue=15,

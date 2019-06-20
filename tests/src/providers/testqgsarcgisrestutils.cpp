@@ -26,6 +26,8 @@
 #include "qgsrulebasedlabeling.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "geometry/qgsmultisurface.h"
+
 #include <QObject>
 
 class TestQgsArcGisRestUtils : public QObject
@@ -40,6 +42,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testMapEsriFieldType();
     void testParseSpatialReference();
     void testMapEsriGeometryType();
+    void testParseEsriGeometryPolygon();
     void testParseEsriFillStyle();
     void testParseEsriLineStyle();
     void testParseEsriColorJson();
@@ -103,7 +106,12 @@ void TestQgsArcGisRestUtils::testParseSpatialReference()
 
   QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( map );
   QVERIFY( crs.isValid() );
+
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"Unknown_based_on_WGS84_ellipsoid\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",49.225],PARAMETER[\"central_meridian\",-2.135],PARAMETER[\"scale_factor\",0.9999999],PARAMETER[\"false_easting\",40000],PARAMETER[\"false_northing\",70000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
+#else
   QCOMPARE( crs.toWkt(), QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"WGS 84\",DATUM[\"unknown\",SPHEROID[\"WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",49.225],PARAMETER[\"central_meridian\",-2.135],PARAMETER[\"scale_factor\",0.9999999],PARAMETER[\"false_easting\",40000],PARAMETER[\"false_northing\",70000],UNIT[\"Meter\",1]]" ) );
+#endif
 }
 
 void TestQgsArcGisRestUtils::testMapEsriGeometryType()
@@ -113,10 +121,25 @@ void TestQgsArcGisRestUtils::testMapEsriGeometryType()
   QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryMultipoint" ) ), QgsWkbTypes::MultiPoint );
   //unsure why this maps to multicurve and not multilinestring
   //QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral("esriGeometryPolyline") ),QgsWkbTypes::MultiCurve );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryPolygon" ) ), QgsWkbTypes::Polygon );
+  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryPolygon" ) ), QgsWkbTypes::MultiPolygon );
   QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryEnvelope" ) ), QgsWkbTypes::Polygon );
 
   QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "xxx" ) ), QgsWkbTypes::Unknown );
+}
+
+void TestQgsArcGisRestUtils::testParseEsriGeometryPolygon()
+{
+  QVariantMap map = jsonStringToMap( "{"
+                                     "\"rings\": ["
+                                     "[[12,0],[13,0],[13,10],[12,10],[12,0]],"
+                                     "[[3,3],[9,3],[6,9],[3,3]],"
+                                     "[[0,0],[10,0],[10,10],[0,10],[0,0]]"
+                                     "]"
+                                     "}" );
+  QCOMPARE( map[QStringLiteral( "rings" )].isValid(), true );
+  std::unique_ptr<QgsMultiSurface> geometry = QgsArcGisRestUtils::parseEsriGeometryPolygon( map, QgsWkbTypes::Point );
+  QVERIFY( geometry.get() );
+  QCOMPARE( geometry->asWkt(), QStringLiteral( "MultiSurface (CurvePolygon (CompoundCurve ((0 0, 10 0, 10 10, 0 10, 0 0)),CompoundCurve ((3 3, 9 3, 6 9, 3 3))),CurvePolygon (CompoundCurve ((12 0, 13 0, 13 10, 12 10, 12 0))))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParseEsriFillStyle()

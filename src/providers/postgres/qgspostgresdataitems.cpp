@@ -74,7 +74,8 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  Q_FOREACH ( const QgsPostgresSchemaProperty &schema, schemas )
+  const auto constSchemas = schemas;
+  for ( const QgsPostgresSchemaProperty &schema : constSchemas )
   {
     QgsPGSchemaItem *schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + '/' + schema.name );
     if ( !schema.description.isEmpty() )
@@ -198,7 +199,8 @@ void QgsPGConnectionItem::createSchema()
 
 void QgsPGConnectionItem::refreshSchema( const QString &schema )
 {
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     if ( child->name() == schema || schema.isEmpty() )
     {
@@ -224,7 +226,8 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     // open the source layer
     bool owner;
@@ -338,7 +341,9 @@ QList<QAction *> QgsPGLayerItem::actions( QWidget *parent )
 
 bool QgsPGLayerItem::deleteLayer()
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
+  QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
+
+  if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),
                               QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return true;
@@ -347,11 +352,11 @@ bool QgsPGLayerItem::deleteLayer()
   bool res = ::deleteLayer( mUri, errCause );
   if ( !res )
   {
-    QMessageBox::warning( nullptr, tr( "Delete Table" ), errCause );
+    QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errCause );
   }
   else
   {
-    QMessageBox::information( nullptr, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
+    QMessageBox::information( nullptr, tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ) );
     if ( mParent )
       mParent->refresh();
   }
@@ -516,7 +521,7 @@ QString QgsPGLayerItem::createUri()
 
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, cols.join( ',' ) );
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
-  if ( uri.wkbType() != QgsWkbTypes::NoGeometry )
+  if ( uri.wkbType() != QgsWkbTypes::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
   QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
@@ -558,7 +563,8 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
-  Q_FOREACH ( QgsPostgresLayerProperty layerProperty, layerProperties )
+  const auto constLayerProperties = layerProperties;
+  for ( QgsPostgresLayerProperty layerProperty : constLayerProperties )
   {
     if ( layerProperty.schemaName != mName )
       continue;
@@ -750,7 +756,12 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
     tip = tr( "Table" );
   }
   QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
-  tip += tr( "\n%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
+  tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) );
+  if ( layerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
+    tip += tr( " (srid %1)" ).arg( layerProperty.srids.at( 0 ) );
+  else
+    tip += tr( " (unknown srid)" );
+
   if ( !layerProperty.tableComment.isEmpty() )
   {
     tip = layerProperty.tableComment + '\n' + tip;

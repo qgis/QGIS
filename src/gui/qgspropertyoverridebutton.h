@@ -29,6 +29,7 @@
 
 class QgsVectorLayer;
 class QgsMapCanvas;
+class QgsSymbol;
 
 /**
  * \ingroup gui
@@ -54,13 +55,6 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
   public:
 
-    //! Flags controlling button behavior
-    enum Flag
-    {
-      FlagDisableCheckedWidgetOnlyWhenProjectColorSet = 1 << 1, //!< Indicates that registered widgets will only be disabled when the property is set to follow a project color
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
     /**
      * Constructor for QgsPropertyOverrideButton.
      * \param parent parent widget
@@ -70,28 +64,12 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
                                const QgsVectorLayer *layer = nullptr );
 
     /**
-     * Returns the button's flags, which control the button behavior.
-     *
-     * \see setFlags()
-     * \since QGIS 3.6
-     */
-    Flags flags() const;
-
-    /**
-     * Sets the button's \a flags, which control the button behavior.
-     *
-     * \see flags()
-     * \since QGIS 3.6
-     */
-    void setFlags( QgsPropertyOverrideButton::Flags flags );
-
-    /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
      * \param propertyKey key for corresponding property
      * \param property initial value of associated property to show in widget
      * \param definitions properties definitions for corresponding collection
      * \param layer associated vector layer
-     * \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
+     * \param auxiliaryStorageEnabled If TRUE, activate the button to store data defined in auxiliary storage
      */
     void init( int propertyKey,
                const QgsProperty &property,
@@ -105,7 +83,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * \param property initial value of associated property to show in widget
      * \param definition properties definition for button
      * \param layer associated vector layer
-     * \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
+     * \param auxiliaryStorageEnabled If TRUE, activate the button to store data defined in auxiliary storage
      */
     void init( int propertyKey,
                const QgsProperty &property,
@@ -119,7 +97,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * \param collection associated property collection
      * \param definitions properties definitions for collection
      * \param layer associated vector layer
-     * \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
+     * \param auxiliaryStorageEnabled If TRUE, activate the button to store data defined in auxiliary storage
      */
     void init( int propertyKey,
                const QgsAbstractPropertyCollection &collection,
@@ -145,7 +123,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     int propertyKey() const { return mPropertyKey; }
 
     /**
-     * Returns true if the button has an active property.
+     * Returns TRUE if the button has an active property.
      */
     bool isActive() const { return mProperty && mProperty.isActive(); }
 
@@ -190,21 +168,21 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     /**
      * Register a sibling \a widget that gets checked when the property is active.
-     * if \a natural is false, widget gets unchecked when the property is active.
+     * if \a natural is FALSE, widget gets unchecked when the property is active.
      * \note this should be called after calling init() to be correctly initialized.
      */
     void registerCheckedWidget( QWidget *widget, bool natural = true );
 
     /**
      * Register a sibling \a widget that gets enabled when the property is active, and disabled when the property is inactive.
-     * if \a natural is false, widget gets disabled when the property is active, and enabled when the property is inactive.
+     * if \a natural is FALSE, widget gets disabled when the property is active, and enabled when the property is inactive.
      * \note this should be called after calling init() to be correctly initialized.
      */
     void registerEnabledWidget( QWidget *widget, bool natural = true );
 
     /**
      * Register a sibling \a widget that gets visible when the property is active, and hidden when the property is inactive.
-     * if \a natural is false, widget gets hidden when the property is active, and visible when the property is inactive.
+     * if \a natural is FALSE, widget gets hidden when the property is active, and visible when the property is inactive.
      * \note this should be called after calling init() to be correctly initialized.
      */
     void registerVisibleWidget( QWidget *widget, bool natural = true );
@@ -220,6 +198,17 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * an expression context for the button when required.
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    /**
+     * Registers a \a widget which is linked to this button. The meaning of linked widgets
+     * depends on the property type, and the type of linked widget.
+     *
+     * For color properties, linking a QgsColorButton allows the color button to correctly
+     * reflect the status of the property when it's set to follow a project color.
+     *
+     * \since QGIS 3.6
+     */
+    void registerLinkedWidget( QWidget *widget );
 
     /**
      * Updates list of fields.
@@ -323,6 +312,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
       SiblingEnableState,
       SiblingVisibility,
       SiblingExpressionText,
+      SiblingLinkedWidget,
     };
     struct SiblingWidget
     {
@@ -344,14 +334,10 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     std::shared_ptr< QgsSymbol > mSymbol;
 
-    Flags mFlags = nullptr;
-
   private slots:
 
     void showHelp();
     void updateSiblingWidgets( bool state );
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsPropertyOverrideButton::Flags )
 
 #endif // QGSPROPERTYOVERRIDEBUTTON_H

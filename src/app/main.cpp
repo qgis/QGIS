@@ -38,6 +38,10 @@
 #include <cstdlib>
 #include <cstdarg>
 
+#if !defined(Q_OS_WIN)
+#include "sigwatch.h"
+#endif
+
 #ifdef WIN32
 // Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
@@ -110,6 +114,15 @@ typedef SInt32 SRefCon;
 #endif
 
 /**
+ * Print QGIS version
+ */
+void version( )
+{
+  const QString msg = QStringLiteral( "QGIS %1 '%2' (%3)\n" ).arg( VERSION ).arg( RELEASE_NAME ).arg( QGSVERSION );
+  std::cout << msg.toStdString();
+}
+
+/**
  * Print usage text
  */
 void usage( const QString &appName )
@@ -117,11 +130,10 @@ void usage( const QString &appName )
   QStringList msg;
 
   msg
-      << QStringLiteral( "QGIS - " ) << VERSION << QStringLiteral( " '" ) << RELEASE_NAME << QStringLiteral( "' (" )
-      << QGSVERSION << QStringLiteral( ")\n" )
       << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
       << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
       << QStringLiteral( "  OPTION:\n" )
+      << QStringLiteral( "\t[--version]\tdisplay version information and exit\n" )
       << QStringLiteral( "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n" )
       << QStringLiteral( "\t[--width width]\twidth of snapshot to emit\n" )
       << QStringLiteral( "\t[--height height]\theight of snapshot to emit\n" )
@@ -169,7 +181,7 @@ void usage( const QString &appName )
               "QGIS command line options",
               MB_OK );
 #else
-  std::cerr << msg.join( QString() ).toLocal8Bit().constData();
+  std::cout << msg.join( QString() ).toLocal8Bit().constData();
 #endif
 
 } // usage()
@@ -289,7 +301,7 @@ static void dumpBacktrace( unsigned int depth )
 #elif defined(Q_OS_WIN)
   // TODO Replace with incoming QgsStackTrace
 #else
-  Q_UNUSED( depth );
+  Q_UNUSED( depth )
 #endif
 }
 
@@ -465,7 +477,7 @@ int main( int argc, char *argv[] )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
-    Q_UNUSED( oldSoft ); //avoid warnings
+    Q_UNUSED( oldSoft ) //avoid warnings
     QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
                  .arg( oldSoft ).arg( oldHard ) );
   }
@@ -599,7 +611,12 @@ int main( int argc, char *argv[] )
         if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-?" ) )
         {
           usage( args[0] );
-          return 2;
+          return EXIT_SUCCESS;
+        }
+        else if ( arg == QLatin1String( "--version" ) || arg == QLatin1String( "-v" ) )
+        {
+          version();
+          return EXIT_SUCCESS;
         }
         else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
         {
@@ -996,6 +1013,10 @@ int main( int argc, char *argv[] )
       if ( !settingsMigrationForce && showWelcome )
       {
         QgsFirstRunDialog dlg;
+        if ( ! QFile::exists( QSettings( "QGIS", "QGIS2" ).fileName() ) )
+        {
+          dlg.hideMigration();
+        }
         dlg.exec();
         runMigration = dlg.migrateSettings();
         migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
@@ -1032,7 +1053,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif
-#ifdef Q_OS_MAC
+#if defined(Q_OS_UNIX)
   // Resulting libraryPaths has critical QGIS plugin paths first, then any Qt plugin paths, then
   // any dev-defined paths (in app's qt.conf) and/or user-defined paths (QT_PLUGIN_PATH env var).
   //
@@ -1040,7 +1061,7 @@ int main( int argc, char *argv[] )
   //       built against a different Qt/QGIS, while still allowing custom C++ plugins to load.
   QStringList libPaths( QCoreApplication::libraryPaths() );
 
-  QgsDebugMsgLevel( QStringLiteral( "Initial macOS QCoreApplication::libraryPaths: %1" )
+  QgsDebugMsgLevel( QStringLiteral( "Initial macOS/UNIX QCoreApplication::libraryPaths: %1" )
                     .arg( libPaths.join( " " ) ), 4 );
 
   // Strip all critical paths that should always be prepended
@@ -1152,7 +1173,8 @@ int main( int argc, char *argv[] )
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
                << appResources.append( "/share/gdal" )
                << appResources.append( "/gdal" );
-    Q_FOREACH ( const QString &gdalShare, gdalShares )
+    const auto constGdalShares = gdalShares;
+    for ( const QString &gdalShare : constGdalShares )
     {
       if ( QFile::exists( gdalShare ) )
       {
@@ -1171,7 +1193,8 @@ int main( int argc, char *argv[] )
     QStringList customVarsList = settings.value( QStringLiteral( "qgis/customEnvVars" ), "" ).toStringList();
     if ( !customVarsList.isEmpty() )
     {
-      Q_FOREACH ( const QString &varStr, customVarsList )
+      const auto constCustomVarsList = customVarsList;
+      for ( const QString &varStr : constCustomVarsList )
       {
         int pos = varStr.indexOf( QLatin1Char( '|' ) );
         if ( pos == -1 )
@@ -1386,7 +1409,7 @@ int main( int argc, char *argv[] )
     //replace backslashes with forward slashes
     pythonfile.replace( '\\', '/' );
 #endif
-    QgsPythonRunner::run( QStringLiteral( "exec(open('%1').read())" ).arg( pythonfile ) );
+    QgsPythonRunner::run( QStringLiteral( "with open('%1','r') as f: exec(f.read())" ).arg( pythonfile ) );
   }
 
   /////////////////////////////////`////////////////////////////////////
@@ -1427,7 +1450,8 @@ int main( int argc, char *argv[] )
     QList< QgsDxfExport::DxfLayer > layers;
     if ( !dxfMapTheme.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
+      const auto constMapThemeVisibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme );
+      for ( QgsMapLayer *layer : constMapThemeVisibleLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
@@ -1438,7 +1462,8 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      Q_FOREACH ( QgsMapLayer *ml, QgsProject::instance()->mapLayers() )
+      const auto constMapLayers = QgsProject::instance()->mapLayers();
+      for ( QgsMapLayer *ml : constMapLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )
@@ -1519,6 +1544,24 @@ int main( int argc, char *argv[] )
   // fix for Qt Ministro hiding app's menubar in favor of native Android menus
   qgis->menuBar()->setNativeMenuBar( false );
   qgis->menuBar()->setVisible( true );
+#endif
+
+#if !defined(Q_OS_WIN)
+  UnixSignalWatcher sigwatch;
+  sigwatch.watchForSignal( SIGINT );
+
+  QObject::connect( &sigwatch, &UnixSignalWatcher::unixSignal, &myApp, [&myApp ]( int signal )
+  {
+    switch ( signal )
+    {
+      case SIGINT:
+        myApp.exit( 1 );
+        break;
+
+      default:
+        break;
+    }
+  } );
 #endif
 
   int retval = myApp.exec();

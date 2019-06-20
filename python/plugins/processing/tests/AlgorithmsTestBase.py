@@ -21,10 +21,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthias Kuhn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
 
 import qgis  # NOQA switch sip api
 
@@ -72,7 +68,7 @@ class AlgorithmsTest(object):
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
         """
         with open(os.path.join(processingTestDataPath(), self.test_definition_file()), 'r') as stream:
-            algorithm_tests = yaml.load(stream)
+            algorithm_tests = yaml.load(stream, Loader=yaml.SafeLoader)
 
         if 'tests' in algorithm_tests and algorithm_tests['tests'] is not None:
             for idx, algtest in enumerate(algorithm_tests['tests']):
@@ -86,7 +82,12 @@ class AlgorithmsTest(object):
         :param defs: A python dict containing a test algorithm definition
         """
         self.vector_layer_params = {}
-        QgsProject.instance().removeAllMapLayers()
+        QgsProject.instance().clear()
+
+        if 'project' in defs:
+            full_project_path = os.path.join(processingTestDataPath(), defs['project'])
+            project_read_success = QgsProject.instance().read(full_project_path)
+            self.assertTrue(project_read_success, 'Failed to load project file: ' + defs['project'])
 
         if 'project_crs' in defs:
             QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(defs['project_crs']))
@@ -212,6 +213,9 @@ class AlgorithmsTest(object):
                 basename = 'raster.tif'
             filepath = os.path.join(outdir, basename)
             return filepath
+        elif param['type'] == 'directory':
+            outdir = tempfile.mkdtemp()
+            return outdir
 
         raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
 
@@ -350,6 +354,11 @@ class AlgorithmsTest(object):
                 result_filepath = results[id]
 
                 self.assertFilesEqual(expected_filepath, result_filepath)
+            elif 'directory' == expected_result['type']:
+                expected_dirpath = self.filepath_from_param(expected_result)
+                result_dirpath = results[id]
+
+                self.assertDirectoriesEqual(expected_dirpath, result_dirpath)
             elif 'regex' == expected_result['type']:
                 with open(results[id], 'r') as file:
                     data = file.read()

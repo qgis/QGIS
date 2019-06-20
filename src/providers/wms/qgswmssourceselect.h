@@ -137,7 +137,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     /**
      * \brief Populate the layer list - private for now.
      *
-     * \retval false if the layers could not be retrieved or parsed -
+     * \returns FALSE if the layers could not be retrieved or parsed -
      *         see mWmsProvider->errorString() for more info
      */
     bool populateLayerList( const QgsWmsCapabilities &capabilities );

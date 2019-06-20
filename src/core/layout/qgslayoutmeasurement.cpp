@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmeasurement.h"
-
+#include "qgis.h"
 #include <QStringList>
 
 QgsLayoutMeasurement::QgsLayoutMeasurement( const double length, const QgsUnitTypes::LayoutUnit units )

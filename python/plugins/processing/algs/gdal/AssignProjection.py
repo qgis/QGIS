@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -92,9 +88,13 @@ class AssignProjection(GdalAlgorithm):
 
         arguments.append(fileName)
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         self.setOutputValue(self.OUTPUT, fileName)
+
         return commands

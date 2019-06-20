@@ -19,8 +19,11 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgsgeometryutils.h"
 #include <QPen>
 #include <QPainter>
+
+Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 QgsAnnotation::QgsAnnotation( QObject *parent )
   : QObject( parent )
@@ -75,13 +78,36 @@ void QgsAnnotation::setRelativePosition( QPointF position )
 
 void QgsAnnotation::setFrameOffsetFromReferencePoint( QPointF offset )
 {
+  // convert from offset in pixels at 96 dpi to mm
+  setFrameOffsetFromReferencePointMm( offset / 3.7795275 );
+}
+
+QPointF QgsAnnotation::frameOffsetFromReferencePoint() const
+{
+  return mOffsetFromReferencePoint / 3.7795275;
+}
+
+void QgsAnnotation::setFrameOffsetFromReferencePointMm( QPointF offset )
+{
   mOffsetFromReferencePoint = offset;
+
   updateBalloon();
   emit moved();
   emit appearanceChanged();
 }
 
 void QgsAnnotation::setFrameSize( QSizeF size )
+{
+  // convert from size in pixels at 96 dpi to mm
+  setFrameSizeMm( size / 3.7795275 );
+}
+
+QSizeF QgsAnnotation::frameSize() const
+{
+  return mFrameSize / 3.7795275;
+}
+
+void QgsAnnotation::setFrameSizeMm( QSizeF size )
 {
   QSizeF frameSize = minimumFrameSize().expandedTo( size ); //don't allow frame sizes below minimum
   mFrameSize = frameSize;
@@ -118,16 +144,20 @@ void QgsAnnotation::render( QgsRenderContext &context ) const
   }
   if ( mHasFixedMapPosition )
   {
-    painter->translate( mOffsetFromReferencePoint.x() + context.convertToPainterUnits( mContentsMargins.left(), QgsUnitTypes::RenderMillimeters ),
-                        mOffsetFromReferencePoint.y() + context.convertToPainterUnits( mContentsMargins.top(), QgsUnitTypes::RenderMillimeters ) );
+    painter->translate( context.convertToPainterUnits( mOffsetFromReferencePoint.x(), QgsUnitTypes::RenderMillimeters ) + context.convertToPainterUnits( mContentsMargins.left(), QgsUnitTypes::RenderMillimeters ),
+                        context.convertToPainterUnits( mOffsetFromReferencePoint.y(), QgsUnitTypes::RenderMillimeters ) + context.convertToPainterUnits( mContentsMargins.top(), QgsUnitTypes::RenderMillimeters ) );
   }
   else
   {
     painter->translate( context.convertToPainterUnits( mContentsMargins.left(), QgsUnitTypes::RenderMillimeters ),
                         context.convertToPainterUnits( mContentsMargins.top(), QgsUnitTypes::RenderMillimeters ) );
   }
-  QSizeF size( mFrameSize.width() - context.convertToPainterUnits( mContentsMargins.left() + mContentsMargins.right(), QgsUnitTypes::RenderMillimeters ),
-               mFrameSize.height() - context.convertToPainterUnits( mContentsMargins.top() + mContentsMargins.bottom(), QgsUnitTypes::RenderMillimeters ) );
+  QSizeF size( context.convertToPainterUnits( mFrameSize.width(), QgsUnitTypes::RenderMillimeters ) - context.convertToPainterUnits( mContentsMargins.left() + mContentsMargins.right(), QgsUnitTypes::RenderMillimeters ),
+               context.convertToPainterUnits( mFrameSize.height(), QgsUnitTypes::RenderMillimeters ) - context.convertToPainterUnits( mContentsMargins.top() + mContentsMargins.bottom(), QgsUnitTypes::RenderMillimeters ) );
+
+  // scale back from painter dpi to 96 dpi --
+// double dotsPerMM = context.painter()->device()->logicalDpiX() / ( 25.4 * 3.78 );
+// context.painter()->scale( dotsPerMM, dotsPerMM );
 
   renderAnnotation( context, size );
   painter->restore();
@@ -168,10 +198,10 @@ void QgsAnnotation::updateBalloon()
 
   //edge list
   QList<QLineF> segmentList;
-  segmentList << segment( 0 );
-  segmentList << segment( 1 );
-  segmentList << segment( 2 );
-  segmentList << segment( 3 );
+  segmentList << segment( 0, nullptr );
+  segmentList << segment( 1, nullptr );
+  segmentList << segment( 2, nullptr );
+  segmentList << segment( 3, nullptr );
 
   //find  closest edge / closest edge point
   double minEdgeDist = std::numeric_limits<double>::max();
@@ -185,7 +215,24 @@ void QgsAnnotation::updateBalloon()
     QLineF currentSegment = segmentList.at( i );
     QgsPointXY currentMinDistPoint;
     double currentMinDist = origin.sqrDistToSegment( currentSegment.x1(), currentSegment.y1(), currentSegment.x2(), currentSegment.y2(), currentMinDistPoint );
-    if ( currentMinDist < minEdgeDist )
+    bool isPreferredSegment = false;
+    if ( qgsDoubleNear( currentMinDist, minEdgeDist ) )
+    {
+      // two segments are close - work out which looks nicer
+      const double angle = fmod( origin.azimuth( currentMinDistPoint ) + 360.0, 360.0 );
+      if ( angle < 45 || angle > 315 )
+        isPreferredSegment = i == 0;
+      else if ( angle < 135 )
+        isPreferredSegment = i == 3;
+      else if ( angle < 225 )
+        isPreferredSegment = i == 2;
+      else
+        isPreferredSegment = i == 1;
+    }
+    else if ( currentMinDist < minEdgeDist )
+      isPreferredSegment = true;
+
+    if ( isPreferredSegment )
     {
       minEdgeIndex = i;
       minEdgePoint = currentMinDistPoint;
@@ -199,38 +246,56 @@ void QgsAnnotation::updateBalloon()
     return;
   }
 
-  //make that configurable for the item
-  double segmentPointWidth = 10;
-
   mBalloonSegment = minEdgeIndex;
   QPointF minEdgeEnd = minEdge.p2();
   mBalloonSegmentPoint1 = QPointF( minEdgePoint.x(), minEdgePoint.y() );
-  if ( std::sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < segmentPointWidth )
+  if ( std::sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < mSegmentPointWidthMm )
   {
-    mBalloonSegmentPoint1 = pointOnLineWithDistance( minEdge.p2(), minEdge.p1(), segmentPointWidth );
+    double x = 0;
+    double y = 0;
+    QgsGeometryUtils::pointOnLineWithDistance( minEdge.p2().x(), minEdge.p2().y(), minEdge.p1().x(), minEdge.p1().y(), mSegmentPointWidthMm, x, y );
+    mBalloonSegmentPoint1 = QPointF( x, y );
   }
 
-  mBalloonSegmentPoint2 = pointOnLineWithDistance( mBalloonSegmentPoint1, minEdge.p2(), 10 );
+  {
+    double x = 0;
+    double y = 0;
+    QgsGeometryUtils::pointOnLineWithDistance( mBalloonSegmentPoint1.x(), mBalloonSegmentPoint1.y(), minEdge.p2().x(), minEdge.p2().y(), mSegmentPointWidthMm, x, y );
+    mBalloonSegmentPoint2 = QPointF( x, y );
+  }
+
 }
 
-QLineF QgsAnnotation::segment( int index ) const
+QLineF QgsAnnotation::segment( int index, QgsRenderContext *context ) const
 {
+  auto scaleSize = [context]( double size )->double
+  {
+    return context ? context->convertToPainterUnits( size, QgsUnitTypes::RenderMillimeters ) : size;
+  };
   if ( mHasFixedMapPosition )
   {
     switch ( index )
     {
       case 0:
-        return QLineF( mOffsetFromReferencePoint.x(), mOffsetFromReferencePoint.y(), mOffsetFromReferencePoint.x()
-                       + mFrameSize.width(), mOffsetFromReferencePoint.y() );
+        return QLineF( scaleSize( mOffsetFromReferencePoint.x() ),
+                       scaleSize( mOffsetFromReferencePoint.y() ),
+                       scaleSize( mOffsetFromReferencePoint.x() ) + scaleSize( mFrameSize.width() ),
+                       scaleSize( mOffsetFromReferencePoint.y() ) );
       case 1:
-        return QLineF( mOffsetFromReferencePoint.x() + mFrameSize.width(), mOffsetFromReferencePoint.y(),
-                       mOffsetFromReferencePoint.x() + mFrameSize.width(), mOffsetFromReferencePoint.y() + mFrameSize.height() );
+        return QLineF( scaleSize( mOffsetFromReferencePoint.x() ) + scaleSize( mFrameSize.width() ),
+                       scaleSize( mOffsetFromReferencePoint.y() ),
+                       scaleSize( mOffsetFromReferencePoint.x() ) + scaleSize( mFrameSize.width() ),
+                       scaleSize( mOffsetFromReferencePoint.y() ) + scaleSize( mFrameSize.height() ) );
       case 2:
-        return QLineF( mOffsetFromReferencePoint.x() + mFrameSize.width(), mOffsetFromReferencePoint.y() + mFrameSize.height(),
-                       mOffsetFromReferencePoint.x(), mOffsetFromReferencePoint.y() + mFrameSize.height() );
+        return QLineF( scaleSize( mOffsetFromReferencePoint.x() ) + scaleSize( mFrameSize.width() ),
+                       scaleSize( mOffsetFromReferencePoint.y() ) + scaleSize( mFrameSize.height() ),
+                       scaleSize( mOffsetFromReferencePoint.x() ),
+                       scaleSize( mOffsetFromReferencePoint.y() ) + scaleSize( mFrameSize.height() ) );
       case 3:
-        return QLineF( mOffsetFromReferencePoint.x(), mOffsetFromReferencePoint.y() + mFrameSize.height(),
-                       mOffsetFromReferencePoint.x(), mOffsetFromReferencePoint.y() );
+        return QLineF( scaleSize( mOffsetFromReferencePoint.x() ),
+                       scaleSize( mOffsetFromReferencePoint.y() ) + scaleSize( mFrameSize.height() ),
+                       scaleSize( mOffsetFromReferencePoint.x() ),
+                       scaleSize( mOffsetFromReferencePoint.y() ) );
       default:
         return QLineF();
     }
@@ -240,30 +305,20 @@ QLineF QgsAnnotation::segment( int index ) const
     switch ( index )
     {
       case 0:
-        return QLineF( 0, 0, mFrameSize.width(), 0 );
+        return QLineF( 0, 0, scaleSize( mFrameSize.width() ), 0 );
       case 1:
-        return QLineF( mFrameSize.width(), 0,
-                       mFrameSize.width(), mFrameSize.height() );
+        return QLineF( scaleSize( mFrameSize.width() ), 0,
+                       scaleSize( mFrameSize.width() ), scaleSize( mFrameSize.height() ) );
       case 2:
-        return QLineF( mFrameSize.width(), mFrameSize.height(),
-                       0, mFrameSize.height() );
+        return QLineF( scaleSize( mFrameSize.width() ), scaleSize( mFrameSize.height() ),
+                       0, scaleSize( mFrameSize.height() ) );
       case 3:
-        return QLineF( 0, mFrameSize.height(),
+        return QLineF( 0, scaleSize( mFrameSize.height() ),
                        0, 0 );
       default:
         return QLineF();
     }
   }
-}
-
-
-QPointF QgsAnnotation::pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const
-{
-  double dx = directionPoint.x() - startPoint.x();
-  double dy = directionPoint.y() - startPoint.y();
-  double length = std::sqrt( dx * dx + dy * dy );
-  double scaleFactor = distance / length;
-  return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
 
 void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
@@ -274,18 +329,22 @@ void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
   context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
 
   QPolygonF poly;
+  poly.reserve( 9 + ( mHasFixedMapPosition ? 3 : 0 ) );
   QList<QPolygonF> rings; //empty list
   for ( int i = 0; i < 4; ++i )
   {
-    QLineF currentSegment = segment( i );
-    poly << currentSegment.p1();
+    QLineF currentSegment = segment( i, &context );
+    poly << QPointF( currentSegment.p1().x(),
+                     currentSegment.p1().y() );
     if ( i == mBalloonSegment && mHasFixedMapPosition )
     {
-      poly << mBalloonSegmentPoint1;
+      poly << QPointF( context.convertToPainterUnits( mBalloonSegmentPoint1.x(), QgsUnitTypes::RenderMillimeters ),
+                       context.convertToPainterUnits( mBalloonSegmentPoint1.y(), QgsUnitTypes::RenderMillimeters ) );
       poly << QPointF( 0, 0 );
-      poly << mBalloonSegmentPoint2;
+      poly << QPointF( context.convertToPainterUnits( mBalloonSegmentPoint2.x(), QgsUnitTypes::RenderMillimeters ),
+                       context.convertToPainterUnits( mBalloonSegmentPoint2.y(), QgsUnitTypes::RenderMillimeters ) );
     }
-    poly << currentSegment.p2();
+    poly << QPointF( currentSegment.p2().x(), currentSegment.p2().y() );
   }
   if ( poly.at( 0 ) != poly.at( poly.count() - 1 ) )
     poly << poly.at( 0 );
@@ -322,10 +381,10 @@ void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc, const Q
   annotationElem.setAttribute( QStringLiteral( "mapPosY" ), qgsDoubleToString( mMapPosition.y() ) );
   if ( mMapPositionCrs.isValid() )
     mMapPositionCrs.writeXml( annotationElem, doc );
-  annotationElem.setAttribute( QStringLiteral( "offsetX" ), qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
-  annotationElem.setAttribute( QStringLiteral( "offsetY" ), qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
-  annotationElem.setAttribute( QStringLiteral( "frameWidth" ), qgsDoubleToString( mFrameSize.width() ) );
-  annotationElem.setAttribute( QStringLiteral( "frameHeight" ), qgsDoubleToString( mFrameSize.height() ) );
+  annotationElem.setAttribute( QStringLiteral( "offsetXMM" ), qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
+  annotationElem.setAttribute( QStringLiteral( "offsetYMM" ), qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
+  annotationElem.setAttribute( QStringLiteral( "frameWidthMM" ), qgsDoubleToString( mFrameSize.width() ) );
+  annotationElem.setAttribute( QStringLiteral( "frameHeightMM" ), qgsDoubleToString( mFrameSize.height() ) );
   annotationElem.setAttribute( QStringLiteral( "canvasPosX" ), qgsDoubleToString( mRelativePosition.x() ) );
   annotationElem.setAttribute( QStringLiteral( "canvasPosY" ), qgsDoubleToString( mRelativePosition.y() ) );
   annotationElem.setAttribute( QStringLiteral( "contentsMargin" ), mContentsMargins.toString() );
@@ -379,10 +438,25 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
   }
 
   mContentsMargins = QgsMargins::fromString( annotationElem.attribute( QStringLiteral( "contentsMargin" ) ) );
-  mFrameSize.setWidth( annotationElem.attribute( QStringLiteral( "frameWidth" ), QStringLiteral( "50" ) ).toDouble() );
-  mFrameSize.setHeight( annotationElem.attribute( QStringLiteral( "frameHeight" ), QStringLiteral( "50" ) ).toDouble() );
-  mOffsetFromReferencePoint.setX( annotationElem.attribute( QStringLiteral( "offsetX" ), QStringLiteral( "0" ) ).toDouble() );
-  mOffsetFromReferencePoint.setY( annotationElem.attribute( QStringLiteral( "offsetY" ), QStringLiteral( "0" ) ).toDouble() );
+  const double dpiScale = 25.4 / qt_defaultDpiX();
+  if ( annotationElem.hasAttribute( QStringLiteral( "frameWidthMM" ) ) )
+    mFrameSize.setWidth( annotationElem.attribute( QStringLiteral( "frameWidthMM" ), QStringLiteral( "5" ) ).toDouble() );
+  else
+    mFrameSize.setWidth( dpiScale * annotationElem.attribute( QStringLiteral( "frameWidth" ), QStringLiteral( "50" ) ).toDouble() );
+  if ( annotationElem.hasAttribute( QStringLiteral( "frameHeightMM" ) ) )
+    mFrameSize.setHeight( annotationElem.attribute( QStringLiteral( "frameHeightMM" ), QStringLiteral( "3" ) ).toDouble() );
+  else
+    mFrameSize.setHeight( dpiScale * annotationElem.attribute( QStringLiteral( "frameHeight" ), QStringLiteral( "50" ) ).toDouble() );
+
+  if ( annotationElem.hasAttribute( QStringLiteral( "offsetXMM" ) ) )
+    mOffsetFromReferencePoint.setX( annotationElem.attribute( QStringLiteral( "offsetXMM" ), QStringLiteral( "0" ) ).toDouble() );
+  else
+    mOffsetFromReferencePoint.setX( dpiScale * annotationElem.attribute( QStringLiteral( "offsetX" ), QStringLiteral( "0" ) ).toDouble() );
+  if ( annotationElem.hasAttribute( QStringLiteral( "offsetYMM" ) ) )
+    mOffsetFromReferencePoint.setY( annotationElem.attribute( QStringLiteral( "offsetYMM" ), QStringLiteral( "0" ) ).toDouble() );
+  else
+    mOffsetFromReferencePoint.setY( dpiScale * annotationElem.attribute( QStringLiteral( "offsetY" ), QStringLiteral( "0" ) ).toDouble() );
+
   mHasFixedMapPosition = annotationElem.attribute( QStringLiteral( "mapPositionFixed" ), QStringLiteral( "1" ) ).toInt();
   mVisible = annotationElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
   if ( annotationElem.hasAttribute( QStringLiteral( "mapLayer" ) ) )
@@ -455,6 +529,7 @@ void QgsAnnotation::copyCommonProperties( QgsAnnotation *target ) const
   target->mBalloonSegment = mBalloonSegment;
   target->mBalloonSegmentPoint1 = mBalloonSegmentPoint1;
   target->mBalloonSegmentPoint2 = mBalloonSegmentPoint2;
+  target->mSegmentPointWidthMm = mSegmentPointWidthMm;
   target->mMapLayer = mMapLayer;
   target->mFeature = mFeature;
 }

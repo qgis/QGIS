@@ -186,7 +186,7 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
   {
     // specified image size is wrong aspect ratio for paper rect - so ignore it and just use dpi
     // this can happen e.g. as a result of data defined page sizes
-    // see https://issues.qgis.org/issues/18534
+    // see https://github.com/qgis/QGIS/issues/26422
     imageSize = QSize();
   }
 
@@ -345,8 +345,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
   PageExportDetails pageDetails;
   pageDetails.directory = fi.path();
-  pageDetails.baseName = fi.baseName();
-  pageDetails.extension = fi.completeSuffix();
+  pageDetails.baseName = fi.completeBaseName();
+  pageDetails.extension = fi.suffix();
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
   ( void )restorer;
@@ -492,6 +492,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  mLayout->renderContext().setFlags( settings.flags );
+
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
@@ -562,6 +564,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
     ( void )contextRestorer;
     iterator->layout()->renderContext().setDpi( settings.dpi );
+
+    iterator->layout()->renderContext().setFlags( settings.flags );
 
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
@@ -673,6 +677,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  mLayout->renderContext().setFlags( settings.flags );
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
@@ -732,6 +737,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
     ( void )contextRestorer;
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
+    iterator->layout()->renderContext().setFlags( settings.flags );
+
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
     // in items missing from the output
@@ -786,6 +793,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   ( void )contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
+  mLayout->renderContext().setFlags( settings.flags );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
 
@@ -1347,7 +1355,7 @@ std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayou
 void QgsLayoutExporter::writeWorldFile( const QString &worldFileName, double a, double b, double c, double d, double e, double f ) const
 {
   QFile worldFile( worldFileName );
-  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return;
   }

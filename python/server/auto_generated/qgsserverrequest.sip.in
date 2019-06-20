@@ -56,14 +56,13 @@ Constructor
 
     virtual ~QgsServerRequest();
 
-    virtual QUrl url() const;
+    QUrl url() const;
 %Docstring
 
-:return: the request url
+:return: the request url as seen by QGIS server
 
-Subclasses may override in case the original URL (not rewritten, e.g.from
-a web server rewrite module) needs to be returned instead of the URL
-seen by QGIS server.
+.. seealso:: :py:func:`originalUrl`
+server, by default the two are equal
 %End
 
     QgsServerRequest::Method method() const;
@@ -141,10 +140,32 @@ is available.
 Set the request url
 %End
 
+    QUrl originalUrl() const;
+%Docstring
+Returns the request url as seen by the web server,
+by default this is equal to the url seen by QGIS server
+
+.. seealso:: :py:func:`url`
+
+.. versionadded:: 3.6
+%End
+
     void setMethod( QgsServerRequest::Method method );
 %Docstring
 Set the request method
 %End
+
+  protected:
+
+    void setOriginalUrl( const QUrl &url );
+%Docstring
+Set the request original ``url`` (the request url as seen by the web server)
+
+.. seealso:: :py:func:`setUrl`
+
+.. versionadded:: 3.6
+%End
+
 
 };
 

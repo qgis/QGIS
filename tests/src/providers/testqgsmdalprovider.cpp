@@ -27,6 +27,7 @@
 #include <qgis.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
+#include <qgsmeshdataprovider.h>
 
 /**
  * \ingroup UnitTests
@@ -42,6 +43,7 @@ class TestQgsMdalProvider : public QObject
     void init() {}// will be called before each testfunction is executed.
     void cleanup() {}// will be called after every testfunction.
 
+    void load();
     void filters();
 
   private:
@@ -81,6 +83,37 @@ void TestQgsMdalProvider::filters()
 
   QString datasetFilters = QgsProviderRegistry::instance()->fileMeshDatasetFilters();
   QVERIFY( datasetFilters.contains( "*.dat" ) );
+}
+
+
+void TestQgsMdalProvider::load()
+{
+  {
+    QString file = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_flower.2dm";
+    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
+                                  QStringLiteral( "mdal" ),
+                                  file,
+                                  QgsDataProvider::ProviderOptions()
+                                );
+
+    QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
+    QVERIFY( mp );
+    QVERIFY( mp->isValid() );
+    delete provider;
+  }
+  {
+    QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/goodluckwiththisfilename.2dm" );
+    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
+                                  QStringLiteral( "mdal" ),
+                                  file,
+                                  QgsDataProvider::ProviderOptions()
+                                );
+
+    QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
+    QVERIFY( mp );
+    QVERIFY( !mp->isValid() );
+    delete provider;
+  }
 }
 
 QGSTEST_MAIN( TestQgsMdalProvider )

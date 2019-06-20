@@ -256,7 +256,8 @@ QString createProtocolURI( const QString &type, const QString &url,  const QStri
     uri = url;
     uri.prepend( QStringLiteral( "/vsiswift/" ) );
   }
-  else if ( type == QLatin1String( "GeoJSON" ) )
+  // catching both GeoJSON and GeoJSONSeq
+  else if ( type.startsWith( QLatin1String( "GeoJSON" ) ) )
   {
     uri = url;
   }
@@ -267,6 +268,11 @@ QString createProtocolURI( const QString &type, const QString &url,  const QStri
   else if ( type == QLatin1String( "DODS/OPeNDAP" ) )
   {
     uri = QStringLiteral( "DODS:%1" ).arg( url );
+  }
+  // Check beginning because of "experimental"
+  else if ( type.startsWith( QLatin1String( "WFS3" ) ) )
+  {
+    uri = QStringLiteral( "WFS3:%1" ).arg( url );
   }
   QgsDebugMsg( "Connection type is=" + type + " and uri=" + uri );
   // Update URI with authentication information

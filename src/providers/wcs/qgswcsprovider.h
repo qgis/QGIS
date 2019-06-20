@@ -116,8 +116,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *                otherwise we contact the host directly.
      * \param options generic data provider options
      */
-    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
+    //! copy constructor
+    explicit QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsWcsProvider() override;
 
@@ -144,9 +146,9 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     // TODO: Document this better.
 
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    void readBlock( int bandNo, int xBlock, int yBlock, void *block ) override;
+    bool readBlock( int bandNo, int xBlock, int yBlock, void *block ) override;
 
     //! Download cache
     void getCache( int bandNo, QgsRectangle  const &viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback *feedback = nullptr ) const;
@@ -204,7 +206,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn
      *
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
     bool calculateExtent() const;
@@ -222,7 +224,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * \brief Prepare the URI so that we can later simply append param=value
      * \param uri uri to prepare
-     * \retval prepared uri
+     * \returns prepared uri
      */
     QString prepareUri( QString uri ) const;
 

@@ -17,7 +17,7 @@
 #define QGSSCALEVISIBILITYDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QGroupBox>
 #include "qgis_gui.h"
 
@@ -46,7 +46,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     explicit QgsScaleVisibilityDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), QgsMapCanvas *mapCanvas = nullptr );
 
     /**
-     * Returns true if scale based visibilty is enabled.
+     * Returns TRUE if scale based visibilty is enabled.
      */
     bool hasScaleVisibility() const;
 

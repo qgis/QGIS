@@ -118,6 +118,11 @@ QgsProcessingFeatureSource::Flag QgsMultiRingConstantBufferAlgorithm::sourceFlag
   return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
 }
 
+QgsFeatureSink::SinkFlags QgsMultiRingConstantBufferAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
+}
+
 QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   double currentDistance = 0;

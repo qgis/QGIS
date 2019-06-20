@@ -25,8 +25,6 @@ namespace MDAL
       bool canRead( const std::string &uri ) override;
       std::unique_ptr< Mesh > load( const std::string &resultsFile, MDAL_Status *status ) override;
 
-      static bool isFlo2DFile( const std::string &fileName );
-
     private:
       struct CellCenter
       {
@@ -47,7 +45,7 @@ namespace MDAL
       void parseTIMDEPFile( const std::string &datFileName, const std::vector<double> &elevations );
       void parseFPLAINFile( std::vector<double> &elevations, const std::string &datFileName, std::vector<CellCenter> &cells );
       void parseCADPTSFile( const std::string &datFileName, std::vector<CellCenter> &cells );
-      void addStaticDataset( bool isOnVertices, std::vector<double> &vals, const std::string &groupName, const std::string &datFileName );
+      void addStaticDataset( std::vector<double> &vals, const std::string &groupName, const std::string &datFileName );
       static MDAL::Vertex createVertex( size_t position, double half_cell_size, const CellCenter &cell );
       static double calcCellSize( const std::vector<CellCenter> &cells );
   };

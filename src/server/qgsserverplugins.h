@@ -43,7 +43,7 @@ class SERVER_EXPORT QgsServerPlugins
     /**
      * Initializes the Python plugins
      * \param interface QgsServerInterface
-     * \returns bool true on success
+     * \returns bool TRUE on success
      */
     static bool initPlugins( QgsServerInterface *interface );
     //! List of available server plugin names

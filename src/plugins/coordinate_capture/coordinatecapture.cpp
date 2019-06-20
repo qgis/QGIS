@@ -264,7 +264,7 @@ void CoordinateCapture::unload()
 // Set icons to the current theme
 void CoordinateCapture::setCurrentTheme( const QString &themeName )
 {
-  Q_UNUSED( themeName );
+  Q_UNUSED( themeName )
   if ( mQActionPointer )
     mQActionPointer->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
   if ( mpDockWidget )

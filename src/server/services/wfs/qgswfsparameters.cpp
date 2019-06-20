@@ -76,18 +76,23 @@ namespace QgsWfs
     if ( val.isEmpty() )
       return theList;
 
-    QRegExp rx( exp );
-    if ( rx.indexIn( val, 0 ) == -1 )
-    {
+    if ( exp.isEmpty() )
       theList << val;
-    }
     else
     {
-      int pos = 0;
-      while ( ( pos = rx.indexIn( val, pos ) ) != -1 )
+      QRegExp rx( exp );
+      if ( rx.indexIn( val, 0 ) == -1 )
       {
-        theList << rx.cap( 1 );
-        pos += rx.matchedLength();
+        theList << val;
+      }
+      else
+      {
+        int pos = 0;
+        while ( ( pos = rx.indexIn( val, pos ) ) != -1 )
+        {
+          theList << rx.cap( 1 );
+          pos += rx.matchedLength();
+        }
       }
     }
 
@@ -332,7 +337,7 @@ namespace QgsWfs
 
   QStringList QgsWfsParameters::expFilters() const
   {
-    return mWfsParameters[ QgsWfsParameter::EXP_FILTER ].toStringListWithExp();
+    return mWfsParameters[ QgsWfsParameter::EXP_FILTER ].toStringListWithExp( QString( ) );
   }
 
   QString QgsWfsParameters::geometryNameAsString() const

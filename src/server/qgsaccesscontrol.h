@@ -90,28 +90,28 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     /**
      * Returns the layer read right
      * \param layer the layer to control
-     * \returns true if it can be read
+     * \returns TRUE if it can be read
      */
     bool layerReadPermission( const QgsMapLayer *layer ) const;
 
     /**
      * Returns the layer insert right
      * \param layer the layer to control
-     * \returns true if we can insert on it
+     * \returns TRUE if we can insert on it
      */
     bool layerInsertPermission( const QgsVectorLayer *layer ) const;
 
     /**
      * Returns the layer update right
      * \param layer the layer to control
-     * \returns true if we can do an update
+     * \returns TRUE if we can do an update
      */
     bool layerUpdatePermission( const QgsVectorLayer *layer ) const;
 
     /**
      * Returns the layer delete right
      * \param layer the layer to control
-     * \returns true if we can do a delete
+     * \returns TRUE if we can do a delete
      */
     bool layerDeletePermission( const QgsVectorLayer *layer ) const;
 
@@ -127,14 +127,14 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
      * Are we authorized to modify the following geometry
      * \param layer the layer to control
      * \param feature the concerned feature
-     * \returns true if we are allowed to edit the feature
+     * \returns TRUE if we are allowed to edit the feature
      */
     bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 
     /**
      * Fill the capabilities caching key
      * \param cacheKey the list to fill with a cache variant
-     * \returns false if we can't create a cache
+     * \returns FALSE if we can't create a cache
      */
     bool fillCacheKey( QStringList &cacheKey ) const;
 

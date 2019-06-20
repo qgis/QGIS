@@ -32,8 +32,16 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingStringWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingNumericWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingDistanceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingScaleWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRangeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingAuthConfigWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMatrixWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFileWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingExpressionWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingEnumWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingLayoutWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingLayoutItemWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingPointWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
@@ -63,7 +71,10 @@ QgsProcessingAlgorithmConfigurationWidget *QgsProcessingGuiRegistry::algorithmCo
   {
     if ( factory->canCreateFor( algorithm ) )
     {
-      return factory->create( algorithm );
+      std::unique_ptr< QgsProcessingAlgorithmConfigurationWidget > widget( factory->create( algorithm ) );
+      if ( widget )
+        widget->setAlgorithm( algorithm );
+      return widget.release();
     }
   }
 

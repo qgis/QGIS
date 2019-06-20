@@ -78,7 +78,8 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 {
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
 
-  Q_FOREACH ( const QString &key, providersList )
+  const auto constProvidersList = providersList;
+  for ( const QString &key : constProvidersList )
   {
     std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
     if ( !library )

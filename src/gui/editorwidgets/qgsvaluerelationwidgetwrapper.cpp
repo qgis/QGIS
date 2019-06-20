@@ -25,6 +25,7 @@
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsattributeform.h"
 #include "qgsattributes.h"
+#include "qgsjsonutils.h"
 
 #include <QHeaderView>
 #include <QComboBox>
@@ -32,6 +33,10 @@
 #include <QTableWidget>
 #include <QStringListModel>
 #include <QCompleter>
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -70,21 +75,26 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
-    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
+    QVariantList vl;
+    //store as QVariantList because it's json
+    for ( const QString &s : qgis::as_const( selection ) )
     {
-      QVariantList vl;
-      //store as QVariantList because it's json
-      for ( const QString &s : qgis::as_const( selection ) )
+      // Convert to proper type
+      const QVariant::Type type { fkType() };
+      switch ( type )
       {
-        vl << s;
+        case QVariant::Type::Int:
+          vl.push_back( s.toInt() );
+          break;
+        case QVariant::Type::LongLong:
+          vl.push_back( s.toLongLong() );
+          break;
+        default:
+          vl.push_back( s );
+          break;
       }
-      v = vl;
     }
-    else
-    {
-      //store as hstore string
-      v = selection.join( ',' ).prepend( '{' ).append( '}' );
-    }
+    v = vl;
   }
 
   if ( mLineEdit )
@@ -193,6 +203,8 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
         if ( item )
         {
           item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
+          //re-set enabled state because it's lost after reloading items
+          item->setFlags( mEnabled ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
           lastChangedItem = item;
         }
       }
@@ -205,7 +217,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
   else if ( mComboBox )
   {
     // findData fails to tell a 0 from a NULL
-    // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+    // See: "Value relation, value 0 = NULL" - https://github.com/qgis/QGIS/issues/27803
     int idx = -1; // default to not found
     for ( int i = 0; i < mComboBox->count(); i++ )
     {
@@ -285,6 +297,22 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 int QgsValueRelationWidgetWrapper::columnCount() const
 {
   return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
+}
+
+
+QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
+{
+  const QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config(), QgsProject::instance() );
+  if ( layer )
+  {
+    QgsFields fields = layer->fields();
+    int idx { fields.lookupField( config().value( QStringLiteral( "Key" ) ).toString() )  };
+    if ( idx >= 0 )
+    {
+      return fields.at( idx ).type();
+    }
+  }
+  return QVariant::Type::Invalid;
 }
 
 void QgsValueRelationWidgetWrapper::populate( )
@@ -399,10 +427,7 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
         QTableWidgetItem *item = mTableWidget->item( j, i );
         if ( item )
         {
-          if ( enabled )
-            item->setFlags( item->flags() | Qt::ItemIsEnabled );
-          else
-            item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          item->setFlags( enabled ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
         }
       }
     }

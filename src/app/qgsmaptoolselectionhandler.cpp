@@ -259,7 +259,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
     const QList<QgsMapLayer *> layers = mCanvas->layers();
     for ( auto layer : layers )
     {
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      if ( layer->type() == QgsMapLayerType::VectorLayer )
       {
         auto vectorLayer = static_cast<QgsVectorLayer *>( layer );
         if ( vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry )

@@ -41,7 +41,7 @@ QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( Q
 
   GDALTranslateOptionsSetProgress( psOptions, [ ]( double dfComplete, const char *pszMessage,  void *pProgressData ) -> int
   {
-    Q_UNUSED( pszMessage );
+    Q_UNUSED( pszMessage )
     QgsFeedback *feedback = static_cast< QgsFeedback * >( pProgressData );
     feedback->setProgress( dfComplete * 100 );
     return ! feedback->isCanceled();

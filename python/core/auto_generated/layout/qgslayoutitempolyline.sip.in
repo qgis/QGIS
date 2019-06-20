@@ -53,6 +53,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QString displayName() const;
 
+    virtual QPainterPath shape() const;
+
 
     QgsLineSymbol *symbol();
 %Docstring

@@ -31,6 +31,7 @@
 #include "qgscubicrasterresampler.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
+#include "qgsapplication.h"
 
 
 #include "qgsmessagelog.h"
@@ -199,7 +200,8 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   cboRenderers->blockSignals( true );
   cboRenderers->clear();
   QgsRasterRendererRegistryEntry entry;
-  Q_FOREACH ( const QString &name, QgsApplication::rasterRendererRegistry()->renderersList() )
+  const auto constRenderersList = QgsApplication::rasterRendererRegistry()->renderersList();
+  for ( const QString &name : constRenderersList )
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {

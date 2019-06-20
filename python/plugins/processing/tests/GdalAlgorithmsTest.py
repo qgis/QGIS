@@ -21,10 +21,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthias Kuhn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
 import AlgorithmsTestBase
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -63,6 +59,7 @@ from processing.algs.gdal.gdaladdo import gdaladdo
 from processing.algs.gdal.sieve import sieve
 from processing.algs.gdal.gdal2xyz import gdal2xyz
 from processing.algs.gdal.polygonize import polygonize
+from processing.algs.gdal.pansharp import pansharp
 
 from processing.tools.system import isWindows
 
@@ -257,6 +254,12 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertEqual(res.featureCount(), 1)
 
         QgsProject.instance().removeMapLayer(layer)
+
+    def testOgrOutputLayerName(self):
+        self.assertEqual(GdalUtils.ogrOutputLayerName('/home/me/out.shp'), 'out')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/test_out.shp'), 'test_out')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/TEST_OUT.shp'), 'TEST_OUT')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/test_out.gpkg'), 'test_out')
 
     def testOgrLayerNameExtraction(self):
         with tempfile.TemporaryDirectory() as outdir:
@@ -693,7 +696,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry FROM \'polys2\'" ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry FROM \'polys2\'" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -703,7 +706,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -713,7 +716,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  '"' + source_with_space + '" ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'filename_with_spaces\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'filename_with_spaces\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -724,7 +727,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -735,7 +738,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -745,7 +748,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry FROM \'polys2\'" ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry FROM \'polys2\'" ' +
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -756,7 +759,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
                  'GROUP BY my_field" -explodecollections -f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -767,7 +770,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, COUNT(geometry) AS count FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, COUNT(geometry) AS count FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -779,7 +782,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field, COUNT(the_geom) AS count FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field, COUNT(the_geom) AS count FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -790,7 +793,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, SUM(ST_Area(geometry)) AS area, ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, SUM(ST_Area(geometry)) AS area, ' +
                  'ST_Perimeter(ST_Union(geometry)) AS perimeter FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
@@ -803,7 +806,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field, SUM(ST_Area(the_geom)) AS area, ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field, SUM(ST_Area(the_geom)) AS area, ' +
                  'ST_Perimeter(ST_Union(the_geom)) AS perimeter FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
@@ -816,7 +819,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, ' +
                  'SUM(my_val) AS sum, MIN(my_val) AS min, MAX(my_val) AS max, AVG(my_val) AS avg FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
@@ -829,7 +832,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -839,7 +842,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
                  'GROUP BY my_field" -f "ESRI Shapefile"'])
 
             self.assertEqual(
@@ -850,7 +853,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
-                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 '-nlt PROMOTE_TO_MULTI -dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
                  'GROUP BY my_field" "my opts" -f "ESRI Shapefile"'])
 
     def testGdal2Tiles(self):
@@ -1104,6 +1107,51 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertIn('-input_file_list', commands[1])
             self.assertIn(outdir + '/test.vrt', commands[1])
 
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '-9999',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertIn('-srcnodata "-9999"', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '-9999 9999',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertIn('-srcnodata "-9999 9999"', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertNotIn('-srcnodata', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
     def testGdalInfo(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -1174,55 +1222,52 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with input srs
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': 'EPSG:3111',
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': 'EPSG:3111',
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with target using proj string
             custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': custom_crs,
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:20936 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': custom_crs,
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs EPSG:20936 -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with target using custom projection
             custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': custom_crs,
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': custom_crs,
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with non-EPSG crs code
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': 'POSTGIS:3111',
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': 'POSTGIS:3111',
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn(
+                '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' + outdir + '/test.shp',
+                commands[1])
+            self.assertIn('--optfile ', commands[1])
 
     def testGridAverage(self):
         context = QgsProcessingContext()
@@ -2012,6 +2057,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-l polys2 -a id -ts 0.0 0.0 -a_nodata 9999.0 -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+            # with "0" INIT value
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'INIT': 0,
+                                        'FIELD': 'id',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id -ts 0.0 0.0 -init 0.0 -ot Float32 -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
             # with "0" NODATA value
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -2090,7 +2145,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
+                 '-s_srs EPSG:3111 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with None NODATA value
@@ -2100,7 +2155,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
+                 '-s_srs EPSG:3111 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with NODATA value
@@ -2110,7 +2165,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -dstnodata 9999.0 -r near -of JPEG ' +
+                 '-s_srs EPSG:3111 -dstnodata 9999.0 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value
@@ -2120,7 +2175,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -dstnodata 0.0 -r near -of JPEG ' +
+                 '-s_srs EPSG:3111 -dstnodata 0.0 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value and custom data type
@@ -2131,7 +2186,18 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'SOURCE_CRS': 'EPSG:3111',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -dstnodata 0.0 -r near -ot Float32 -of JPEG ' +
+                 '-s_srs EPSG:3111 -dstnodata 0.0 -r near -ot Float32 -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            # with target using EPSG
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'SOURCE_CRS': 'EPSG:3111',
+                                        'TARGET_CRS': 'EPSG:4326',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2177,7 +2243,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'TARGET_RESOLUTION': None,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
+                 '-s_srs EPSG:3111 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2188,7 +2254,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'TARGET_RESOLUTION': 10.0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -tr 10.0 10.0 -r near -of JPEG ' +
+                 '-s_srs EPSG:3111 -tr 10.0 10.0 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2199,7 +2265,44 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'TARGET_RESOLUTION': 0.0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
+                 '-s_srs EPSG:3111 -r near -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            # with additional command-line parameter
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-r near -of JPEG -dstalpha ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha -srcnodata -9999',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-r near -of JPEG -dstalpha -srcnodata -9999 ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha -srcnodata "-9999 -8888"',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-r near -of JPEG -dstalpha -srcnodata "-9999 -8888" ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2568,7 +2671,19 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-b 1 -f "ESRI Shapefile" DN'
+                 '-b 1 -f "ESRI Shapefile" check DN'
+                 ])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'VAL',
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-b 1 -f "ESRI Shapefile" check VAL'
                  ])
 
             # 8 connectedness
@@ -2581,7 +2696,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-8 -b 1 -f "ESRI Shapefile" DN'
+                 '-8 -b 1 -f "ESRI Shapefile" check DN'
                  ])
 
             # custom output format
@@ -2595,7 +2710,46 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-b 1 -f "GPKG" DN'
+                 '-b 1 -f "GPKG" check DN'
+                 ])
+
+    def testGdalPansharpen(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        panchrom = os.path.join(testDataPath, 'dem.tif')
+        spectral = os.path.join(testDataPath, 'raster.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/out.tif'
+            alg = pansharp()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'SPECTRAL': spectral,
+                                        'PANCHROMATIC': panchrom,
+                                        'RESAMPLING': 2,
+                                        'OPTIONS': '',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_pansharpen.py',
+                 panchrom + ' ' +
+                 spectral + ' ' +
+                 outsource + ' ' +
+                 '-r cubic -of GTiff'
+                 ])
+
+            # custom resampling
+            self.assertEqual(
+                alg.getConsoleCommands({'SPECTRAL': spectral,
+                                        'PANCHROMATIC': panchrom,
+                                        'RESAMPLING': 4,
+                                        'OPTIONS': '',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_pansharpen.py',
+                 panchrom + ' ' +
+                 spectral + ' ' +
+                 outsource + ' ' +
+                 '-r lanczos -of GTiff'
                  ])
 
 
@@ -2611,7 +2765,7 @@ class TestGdalOgrToPostGis(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
-    # See https://issues.qgis.org/issues/15706
+    # See https://github.com/qgis/QGIS/issues/23629
     def test_getConnectionString(self):
         obj = OgrToPostGis()
         obj.initAlgorithm({})

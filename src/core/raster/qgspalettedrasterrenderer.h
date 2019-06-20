@@ -19,7 +19,7 @@
 #define QGSPALETTEDRASTERRENDERER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QVector>
 
 #include "qgsrasterrenderer.h"
@@ -102,6 +102,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     QList<int> usesBands() const override;
+
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
 
     /**
      * Set the source color \a ramp. Ownership is transferred to the renderer.

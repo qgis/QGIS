@@ -1,0 +1,10 @@
+usr/lib/python*/*-packages/qgis/3d/__init__.py
+usr/lib/python*/*-packages/qgis/_3d.so
+usr/lib/python*/*-packages/qgis/_analysis.so
+usr/lib/python*/*-packages/qgis/_core.so
+usr/lib/python*/*-packages/qgis/_gui.so
+usr/lib/python*/*-packages/qgis/_server.so
+usr/lib/python*/*-packages/qgis/analysis/__init__.py
+usr/lib/python*/*-packages/qgis/core/__init__.py
+usr/lib/python*/*-packages/qgis/gui/__init__.py
+usr/lib/python*/*-packages/qgis/server/__init__.py

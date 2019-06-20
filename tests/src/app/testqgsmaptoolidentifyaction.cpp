@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsmeshlayer.h"
 #include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgssettings.h"
@@ -54,6 +55,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void areaCalculation(); //test calculation of derived area attribute
     void identifyRasterFloat32(); // test pixel identification and decimal precision
     void identifyRasterFloat64(); // test pixel identification and decimal precision
+    void identifyMesh(); // test identification for mesh layer
     void identifyInvalidPolygons(); // test selecting invalid polygons
     void clickxy(); // test if clicked_x and clicked_y variables are propagated
     void closestPoint();
@@ -67,6 +69,7 @@ class TestQgsMapToolIdentifyAction : public QObject
 
     QString testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
+    QList<QgsMapToolIdentify::IdentifyResult> testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref );
 
     // Release return with delete []
     unsigned char *
@@ -89,7 +92,6 @@ class TestQgsMapToolIdentifyAction : public QObject
       geom.fromWkb( wkb, wkbsize );
       return geom;
     }
-
 };
 
 void TestQgsMapToolIdentifyAction::initTestCase()
@@ -503,6 +505,15 @@ QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer,
 }
 
 // private
+QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref )
+{
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
+  return result;
+}
+
+// private
 QList<QgsMapToolIdentify::IdentifyResult>
 TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
@@ -569,6 +580,74 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
   QCOMPARE( testIdentifyRaster( tempLayer.get(), 5.5, 0.5 ), QString( "-999.9876" ) );
 
   QCOMPARE( testIdentifyRaster( tempLayer.get(), 6.5, 0.5 ), QString( "1.2345678901234" ) );
+}
+
+void TestQgsMapToolIdentifyAction::identifyMesh()
+{
+  //create a temporary layer
+  const QString mesh = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle.2dm";
+  QgsMeshLayer *tempLayer = new QgsMeshLayer( mesh, "testlayer", "mdal" );
+  QVERIFY( tempLayer->isValid() );
+  const QString vectorDs = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle_vertex_vector.dat";
+  tempLayer->dataProvider()->addDataset( vectorDs );
+
+  // we need to setup renderer otherwise triangular mesh
+  // will not be populated and identify will not work
+  QgsMapSettings mapSettings;
+  mapSettings.setExtent( tempLayer->extent() );
+  mapSettings.setDestinationCrs( tempLayer->crs() );
+  mapSettings.setOutputDpi( 96 );
+
+  // here we check that datasets automatically get our default color ramp applied ("Plasma")
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  tempLayer->createMapRenderer( context );
+
+  // only scalar dataset
+  QgsMeshRendererSettings settings = tempLayer->rendererSettings();
+  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+  tempLayer->setRendererSettings( settings );
+  QList<QgsMapToolIdentify::IdentifyResult> results;
+
+  results = testIdentifyMesh( tempLayer, 500, 500 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "no data" ) );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
+
+  // scalar + vector same
+  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 1, 0 ) );
+  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
+  tempLayer->setRendererSettings( settings );
+  results = testIdentifyMesh( tempLayer, 500, 500 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Value" )], QStringLiteral( "no data" ) );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+
+  // scalar + vector different
+  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
+  tempLayer->setRendererSettings( settings );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 2 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
+  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
+  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+
+  // only vector
+  settings.setActiveScalarDataset( QgsMeshDatasetIndex() );
+  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
+  tempLayer->setRendererSettings( settings );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyInvalidPolygons()

@@ -236,7 +236,7 @@ Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
 retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
-:return: true if ellipsoid was successfully set
+:return: ``True`` if ellipsoid was successfully set
 
 .. seealso:: :py:func:`ellipsoid`
 

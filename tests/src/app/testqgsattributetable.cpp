@@ -260,7 +260,7 @@ void TestQgsAttributeTable::testSortByDisplayExpression()
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
 
-  dlg->mMainView->mFeatureList->setDisplayExpression( "pk" );
+  dlg->mMainView->mFeatureListView->setDisplayExpression( "pk" );
   QgsFeatureListModel *listModel = dlg->mMainView->mFeatureListModel;
   QCOMPARE( listModel->rowCount(), 3 );
 
@@ -268,7 +268,7 @@ void TestQgsAttributeTable::testSortByDisplayExpression()
   QCOMPARE( listModel->index( 1, 0 ).data( Qt::DisplayRole ), QVariant( 2 ) );
   QCOMPARE( listModel->index( 2, 0 ).data( Qt::DisplayRole ), QVariant( 3 ) );
 
-  dlg->mMainView->mFeatureList->setDisplayExpression( "col1" );
+  dlg->mMainView->mFeatureListView->setDisplayExpression( "col1" );
   QCOMPARE( listModel->index( 0, 0 ).data( Qt::DisplayRole ), QVariant( 1.8 ) );
   QCOMPARE( listModel->index( 1, 0 ).data( Qt::DisplayRole ), QVariant( 3.2 ) );
   QCOMPARE( listModel->index( 2, 0 ).data( Qt::DisplayRole ), QVariant( 5.0 ) );
@@ -320,7 +320,7 @@ void TestQgsAttributeTable::testOrderColumn()
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
 
-  // Issue https://issues.qgis.org/issues/20673
+  // Issue https://github.com/qgis/QGIS/issues/28493
   // When we reorder column (last column becomes first column), and we select an entire row
   // the currentIndex is no longer the first column, and consequently it breaks edition
 

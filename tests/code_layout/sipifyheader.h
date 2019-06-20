@@ -217,7 +217,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void LongDocStringMethodWithBrief();
 
     /**
-     * I return a pointer. If something bad happens, I return nullptr.
+     * I return a pointer. If something bad happens, I return NULLPTR.
     * \returns pointer to something cool
      */
     MyPointer *pointerReturnValue();

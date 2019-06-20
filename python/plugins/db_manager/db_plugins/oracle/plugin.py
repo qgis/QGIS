@@ -80,7 +80,7 @@ class OracleDBPlugin(DBPlugin):
         conn_name = self.connectionName()
         settings = QgsSettings()
         settings.beginGroup(u"/{0}/{1}".format(
-                            self.connectionSettingsKey(), conn_name))
+            self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("database"):  # non-existent entry?
             raise InvalidDataException(
@@ -91,7 +91,8 @@ class OracleDBPlugin(DBPlugin):
         uri = QgsDataSourceUri()
 
         settingsList = ["host", "port", "database", "username", "password"]
-        host, port, database, username, password = [settings.value(x, "", type=str) for x in settingsList]
+        host, port, database, username, password = [
+            settings.value(x, "", type=str) for x in settingsList]
 
         # get all of the connexion options
 
@@ -202,7 +203,8 @@ class ORDatabase(Database):
         uri = self.uri()
         con = self.database().connector
 
-        uri.setDataSource(u"", u"({}\n)".format(sql), geomCol, filter, uniqueCol.strip(u'"'))
+        uri.setDataSource(u"", u"({}\n)".format(
+            sql), geomCol, filter, uniqueCol.strip(u'"'))
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
@@ -260,6 +262,9 @@ class ORDatabase(Database):
             "DBManagerPlugin", "&Empty Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.emptyTableActionSlot)
+
+    def supportsComment(self):
+        return False
 
 
 class ORSchema(Schema):
@@ -403,18 +408,12 @@ class ORTable(Table):
             for idx in indexes:
                 if idx.isUnique and len(idx.columns) == 1:
                     fld = idx.fields()[idx.columns[0]]
-                    if (fld.dataType == u"NUMBER" and
-                            not fld.modifier and
-                            fld.notNull and
-                            fld not in ret):
+                    if (fld.dataType == u"NUMBER" and not fld.modifier and fld.notNull and fld not in ret):
                         ret.append(fld)
 
         # and finally append the other suitable fields
         for fld in self.fields():
-            if (fld.dataType == u"NUMBER" and
-                    not fld.modifier and
-                    fld.notNull and
-                    fld not in ret):
+            if (fld.dataType == u"NUMBER" and not fld.modifier and fld.notNull and fld not in ret):
                 ret.append(fld)
 
         if onlyOne:
@@ -514,15 +513,12 @@ class ORTableField(TableField):
 
         # find out whether fields are part of primary key
         for con in self.table().constraints():
-            if (con.type == ORTableConstraint.TypePrimaryKey and
-                    self.name == con.column):
+            if con.type == ORTableConstraint.TypePrimaryKey and self.name == con.column:
                 self.primaryKey = True
                 break
 
     def type2String(self):
-        if (u"TIMESTAMP" in self.dataType or
-            self.dataType in [u"DATE", u"SDO_GEOMETRY",
-                              u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
+        if (u"TIMESTAMP" in self.dataType or self.dataType in [u"DATE", u"SDO_GEOMETRY", u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
             return u"{}".format(self.dataType)
         if self.charMaxLen in [None, -1]:
             return u"{}".format(self.dataType)
@@ -559,7 +555,6 @@ class ORTableField(TableField):
 
 
 class ORTableConstraint(TableConstraint):
-
     TypeCheck, TypeForeignKey, TypePrimaryKey, \
         TypeUnique, TypeUnknown = list(range(5))
 

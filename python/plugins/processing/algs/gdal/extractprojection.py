@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -88,9 +84,9 @@ class ExtractProjection(GdalAlgorithm):
         return [self.commandName()]
 
     def processAlgorithm(self, parameters, context, feedback):
-        createPrj = self.parameterAsBool(parameters,
-                                         self.PRJ_FILE_CREATE,
-                                         context)
+        createPrj = self.parameterAsBoolean(parameters,
+                                            self.PRJ_FILE_CREATE,
+                                            context)
         raster = self.parameterAsRasterLayer(parameters, self.INPUT,
                                              context)
         if not raster.dataProvider().name() == 'gdal':

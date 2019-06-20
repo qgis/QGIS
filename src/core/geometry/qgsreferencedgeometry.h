@@ -18,7 +18,6 @@
 #ifndef QGSREFERENCEDGEOMETRY_H
 #define QGSREFERENCEDGEOMETRY_H
 
-#include "qgis.h"
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"

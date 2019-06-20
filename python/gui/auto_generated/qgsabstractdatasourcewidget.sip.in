@@ -134,7 +134,7 @@ Returns the widget mode
 
     const QgsMapCanvas *mapCanvas() const;
 %Docstring
-Returns the map canvas (can be null)
+Returns the map canvas (can be ``None``)
 %End
 
     void setupButtons( QDialogButtonBox *buttonBox );

@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -34,12 +30,11 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterCrs,
                        QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterExtent,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -52,28 +47,38 @@ class ClipRasterByMask(GdalAlgorithm):
 
     INPUT = 'INPUT'
     MASK = 'MASK'
+    SOURCE_CRS = 'SOURCE_CRS'
+    TARGET_CRS = 'TARGET_CRS'
     NODATA = 'NODATA'
     ALPHA_BAND = 'ALPHA_BAND'
     CROP_TO_CUTLINE = 'CROP_TO_CUTLINE'
     KEEP_RESOLUTION = 'KEEP_RESOLUTION'
+    SET_RESOLUTION = 'SET_RESOLUTION'
+    X_RESOLUTION = 'X_RESOLUTION'
+    Y_RESOLUTION = 'Y_RESOLUTION'
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
-    TARGET_EXTENT = 'TARGET_EXTENT'
-    TARGET_EXTENT_CRS = 'TARGET_EXTENT_CRS'
     MULTITHREADING = 'MULTITHREADING'
     OUTPUT = 'OUTPUT'
-
-    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+
+        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.MASK,
                                                               self.tr('Mask layer'),
                                                               [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterCrs(self.SOURCE_CRS,
+                                                    self.tr('Source CRS'),
+                                                    optional=True))
+        self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
+                                                    self.tr('Target CRS'),
+                                                    optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -86,27 +91,26 @@ class ClipRasterByMask(GdalAlgorithm):
                                                         self.tr('Match the extent of the clipped raster to the extent of the mask layer'),
                                                         defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.KEEP_RESOLUTION,
-                                                        self.tr('Keep resolution of output raster'),
+                                                        self.tr('Keep resolution of input raster'),
                                                         defaultValue=False))
-
-        target_extent_param = QgsProcessingParameterExtent(self.TARGET_EXTENT,
-                                                           self.tr('Georeferenced extents of output file to be created'),
-                                                           optional=True)
-        target_extent_param.setFlags(target_extent_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(target_extent_param)
-
-        target_extent_crs_param = QgsProcessingParameterCrs(self.TARGET_EXTENT_CRS,
-                                                            self.tr('CRS of the target raster extent'),
-                                                            optional=True)
-        target_extent_crs_param.setFlags(target_extent_crs_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(target_extent_crs_param)
-
+        self.addParameter(QgsProcessingParameterBoolean(self.SET_RESOLUTION,
+                                                        self.tr('Set output file resolution'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterNumber(self.X_RESOLUTION,
+                                                       self.tr('X Resolution to output bands'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=None,
+                                                       optional=True))
+        self.addParameter(QgsProcessingParameterNumber(self.Y_RESOLUTION,
+                                                       self.tr('Y Resolution to output bands'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=None,
+                                                       optional=True))
         multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
                                                              self.tr('Use multithreaded warping implementation'),
                                                              defaultValue=False)
         multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(multithreading_param)
-
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
@@ -153,14 +157,26 @@ class ClipRasterByMask(GdalAlgorithm):
 
         maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
 
+        sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
+        targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
+
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
             nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         else:
             nodata = None
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
+
+        if sourceCrs.isValid():
+            arguments.append('-s_srs')
+            arguments.append(GdalUtils.gdal_crs_string(sourceCrs))
+
+        if targetCrs.isValid():
+            arguments.append('-t_srs')
+            arguments.append(GdalUtils.gdal_crs_string(targetCrs))
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
         if data_type:
@@ -169,38 +185,39 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
-        if self.parameterAsBool(parameters, self.KEEP_RESOLUTION, context):
+        if self.parameterAsBoolean(parameters, self.KEEP_RESOLUTION, context):
             arguments.append('-tr')
             arguments.append(str(inLayer.rasterUnitsPerPixelX()))
             arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
             arguments.append('-tap')
 
+        if self.parameterAsBoolean(parameters, self.SET_RESOLUTION, context):
+            arguments.append('-tr')
+            if self.X_RESOLUTION in parameters and parameters[self.X_RESOLUTION] is not None:
+                xres = self.parameterAsDouble(parameters, self.X_RESOLUTION, context)
+                arguments.append('{}'.format(xres))
+            else:
+                arguments.append(str(inLayer.rasterUnitsPerPixelX()))
+            if self.Y_RESOLUTION in parameters and parameters[self.Y_RESOLUTION] is not None:
+                yres = self.parameterAsDouble(parameters, self.Y_RESOLUTION, context)
+                arguments.append('{}'.format(yres))
+            else:
+                arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
+            arguments.append('-tap')
+
         arguments.append('-cutline')
         arguments.append(maskLayer)
 
-        if self.parameterAsBool(parameters, self.CROP_TO_CUTLINE, context):
+        if self.parameterAsBoolean(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append('-crop_to_cutline')
 
-        if self.parameterAsBool(parameters, self.ALPHA_BAND, context):
+        if self.parameterAsBoolean(parameters, self.ALPHA_BAND, context):
             arguments.append('-dstalpha')
 
         if nodata is not None:
             arguments.append('-dstnodata {}'.format(nodata))
 
-        extent = self.parameterAsExtent(parameters, self.TARGET_EXTENT, context)
-        if not extent.isNull():
-            arguments.append('-te')
-            arguments.append(extent.xMinimum())
-            arguments.append(extent.yMinimum())
-            arguments.append(extent.xMaximum())
-            arguments.append(extent.yMaximum())
-
-            extentCrs = self.parameterAsCrs(parameters, self.TARGET_EXTENT_CRS, context)
-            if extentCrs:
-                arguments.append('-te_srs')
-                arguments.append(extentCrs.authid())
-
-        if self.parameterAsBool(parameters, self.MULTITHREADING, context):
+        if self.parameterAsBoolean(parameters, self.MULTITHREADING, context):
             arguments.append('-multi')
 
         if options:

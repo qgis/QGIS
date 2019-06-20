@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmaprenderercustompainterjob.h"
+#include "qgsapplication.h"
 
 namespace QgsWms
 {
@@ -34,7 +35,7 @@ namespace QgsWms
     , mFeatureFilterProvider( featureFilterProvider )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
-    Q_UNUSED( mFeatureFilterProvider );
+    Q_UNUSED( mFeatureFilterProvider )
 #endif
     if ( mParallelRendering )
     {
@@ -58,7 +59,7 @@ namespace QgsWms
       renderJob.start();
 
       // Allows the main thread to manage blocking call coming from rendering
-      // threads (see discussion in https://issues.qgis.org/issues/18988).
+      // threads (see discussion in https://github.com/qgis/QGIS/issues/26819).
       QEventLoop loop;
       QObject::connect( &renderJob, &QgsMapRendererParallelJob::finished, &loop, &QEventLoop::quit );
       loop.exec();
@@ -66,6 +67,8 @@ namespace QgsWms
       renderJob.waitForFinished();
       *image = renderJob.renderedImage();
       mPainter.reset( new QPainter( image ) );
+
+      mErrors = renderJob.errors();
     }
     else
     {
@@ -75,6 +78,7 @@ namespace QgsWms
       renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
       renderJob.renderSynchronously();
+      mErrors = renderJob.errors();
     }
   }
 
@@ -82,5 +86,4 @@ namespace QgsWms
   {
     return mPainter.release();
   }
-
 } // namespace qgsws

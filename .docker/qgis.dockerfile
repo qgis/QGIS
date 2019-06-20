@@ -9,14 +9,15 @@ MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
 
-ENV CC=/usr/lib/ccache/clang
-ENV CXX=/usr/lib/ccache/clang++
-ENV QT_SELECT=5
+ARG CC=/usr/lib/ccache/clang
+ARG CXX=/usr/lib/ccache/clang++
 ENV LANG=C.UTF-8
 
 COPY . /usr/src/QGIS
 
-ENV CCACHE_DIR=/usr/src/QGIS/.ccache
+# If this directory is changed, also adapt script.sh which copies the directory
+RUN mkdir -p /usr/src/.ccache_image_build
+ENV CCACHE_DIR=/usr/src/.ccache_image_build
 RUN ccache -M 1G
 RUN ccache -s
 
@@ -57,15 +58,14 @@ COPY .docker/qgis_resources/test_runner/qgis_* /usr/bin/
 RUN chmod +x /usr/bin/qgis_*
 
 # Add supervisor service configuration script
-COPY .docker/qgis_resources/supervisor/supervisord.conf /etc/supervisor/
-COPY .docker/qgis_resources/supervisor/supervisor.xvfb.conf /etc/supervisor/supervisor.d/
+COPY .docker/qgis_resources/supervisor/ /etc/supervisor
 
 # Python paths are for
 # - kartoza images (compiled)
 # - deb installed
 # - built from git
 # needed to find PyQt wrapper provided by QGIS
-ENV PYTHONPATH=/usr/share/qgis/python/:/usr/lib/python3/dist-packages/qgis:/usr/share/qgis/python/qgis
+ENV PYTHONPATH=/usr/share/qgis/python/:/usr/share/qgis/python/plugins:/usr/lib/python3/dist-packages/qgis:/usr/share/qgis/python/qgis
 
 
 WORKDIR /

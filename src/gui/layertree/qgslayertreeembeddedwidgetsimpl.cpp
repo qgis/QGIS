@@ -48,16 +48,27 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   connect( mSlider, &QAbstractSlider::valueChanged, this, &QgsLayerTreeOpacityWidget::sliderValueChanged );
 
   // init from layer
-  if ( mLayer->type() == QgsMapLayer::VectorLayer )
+  switch ( mLayer->type() )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
-    mSlider->setValue( vl->opacity() * 1000.0 );
-    connect( vl, &QgsVectorLayer::opacityChanged, this, &QgsLayerTreeOpacityWidget::layerTrChanged );
-  }
-  else if ( mLayer->type() == QgsMapLayer::RasterLayer )
-  {
-    mSlider->setValue( 1000 - qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 1000 );
-    // TODO: there is no signal for raster layers
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
+      mSlider->setValue( vl->opacity() * 1000.0 );
+      connect( vl, &QgsVectorLayer::opacityChanged, this, &QgsLayerTreeOpacityWidget::layerTrChanged );
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    {
+      mSlider->setValue( 1000 - qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 1000 );
+      // TODO: there is no signal for raster layers
+      break;
+    }
+
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+      break;
+
   }
 }
 
@@ -69,7 +80,7 @@ QSize QgsLayerTreeOpacityWidget::sizeHint() const
 
 void QgsLayerTreeOpacityWidget::sliderValueChanged( int value )
 {
-  Q_UNUSED( value );
+  Q_UNUSED( value )
 
   if ( mTimer->isActive() )
     return;
@@ -80,13 +91,22 @@ void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
 {
   int value = mSlider->value();
 
-  if ( mLayer->type() == QgsMapLayer::VectorLayer )
+  switch ( mLayer->type() )
   {
-    qobject_cast<QgsVectorLayer *>( mLayer )->setOpacity( value / 1000.0 );
-  }
-  else if ( mLayer->type() == QgsMapLayer::RasterLayer )
-  {
-    qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( 1 - value / 1000.0 );
+    case QgsMapLayerType::VectorLayer:
+    {
+      qobject_cast<QgsVectorLayer *>( mLayer )->setOpacity( value / 1000.0 );
+      break;
+    }
+    case QgsMapLayerType::RasterLayer:
+    {
+      qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( 1 - value / 1000.0 );
+      break;
+    }
+
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+      break;
   }
 
   mLayer->triggerRepaint();
@@ -113,13 +133,23 @@ QString QgsLayerTreeOpacityWidget::Provider::name() const
 
 QgsLayerTreeOpacityWidget *QgsLayerTreeOpacityWidget::Provider::createWidget( QgsMapLayer *layer, int widgetIndex )
 {
-  Q_UNUSED( widgetIndex );
+  Q_UNUSED( widgetIndex )
   return new QgsLayerTreeOpacityWidget( layer );
 }
 
 bool QgsLayerTreeOpacityWidget::Provider::supportsLayer( QgsMapLayer *layer )
 {
-  return layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer;
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    case QgsMapLayerType::RasterLayer:
+      return true;
+
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PluginLayer:
+      return false;
+  }
+  return false;
 }
 
 ///@endcond

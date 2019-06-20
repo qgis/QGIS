@@ -20,10 +20,12 @@ SET (wms_SRCS
   qgswmsrenderer.cpp
   qgswmsparameters.cpp
   qgslayerrestorer.cpp
+  qgswmsrendercontext.cpp
 )
 
 SET (wms_MOC_HDRS
   qgswmsparameters.h
+  qgswmsserviceexception.h
 )
 
 ########################################################
@@ -64,6 +66,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/external
 )
 
 

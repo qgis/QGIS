@@ -91,6 +91,8 @@ class QgsWcsCapabilities : public QObject
      *
      */
     explicit QgsWcsCapabilities( QgsDataSourceUri const &uri );
+    //! copy constructor
+    explicit QgsWcsCapabilities( const QgsWcsCapabilities &other );
     QgsWcsCapabilities() = default;
 
     void setUri( QgsDataSourceUri const &uri );
@@ -102,7 +104,7 @@ class QgsWcsCapabilities : public QObject
      *
      * \param[out] layers   The list of layers will be placed here.
      *
-     * \retval false if the layers could not be retrieved or parsed -
+     * \returns false if the layers could not be retrieved or parsed -
      *         see lastError() for more info
      */
     bool supportedCoverages( QVector<QgsWcsCoverageSummary> &coverageSummary );
@@ -121,7 +123,7 @@ class QgsWcsCapabilities : public QObject
     /**
      * \brief Prepare the URI so that we can later simply append param=value
      * \param uri uri to prepare
-     * \retval prepared uri
+     * \returns prepared uri
      */
     static QString prepareUri( QString uri );
 
@@ -247,7 +249,7 @@ class QgsWcsCapabilities : public QObject
      *
      * \param preferredVersion - optional version, e.g. 1.0.0, 1.1.0
      *
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      *
      * When this returns, "layers" will make sense.

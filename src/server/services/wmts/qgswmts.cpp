@@ -56,7 +56,7 @@ namespace QgsWmts
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {
-        Q_UNUSED( project );
+        Q_UNUSED( project )
 
         const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
@@ -72,7 +72,7 @@ namespace QgsWmts
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Please check the value of the REQUEST parameter" ) );
+                                     QStringLiteral( "Please check the value of the REQUEST parameter" ), 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
@@ -91,7 +91,7 @@ namespace QgsWmts
         {
           // Operation not supported
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Request %1 is not supported" ).arg( req ) );
+                                     QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
         }
       }
 

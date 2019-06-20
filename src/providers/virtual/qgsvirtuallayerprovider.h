@@ -35,7 +35,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      * \param uri uniform resource locator (URI) for a dataset
      * \param options generic data provider options
      */
-    explicit QgsVirtualLayerProvider( QString const &uri, const ProviderOptions &options );
+    explicit QgsVirtualLayerProvider( QString const &uri, const ProviderOptions &coordinateTransformContext );
 
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override;
@@ -111,11 +111,13 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool openIt();
     bool createIt();
     bool loadSourceLayers();
+    void createVirtualTable( QgsVectorLayer *vlayer, const QString &name );
 
     friend class QgsVirtualLayerFeatureSource;
 
   private slots:
     void invalidateStatistics();
+
 };
 
 // clazy:excludeall=qstring-allocations

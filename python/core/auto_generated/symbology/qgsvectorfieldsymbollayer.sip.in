@@ -74,6 +74,8 @@ A symbol layer class for displaying displacement arrows based on point layer att
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+    virtual bool hasDataDefinedProperties() const;
+
 
     void setXAttribute( const QString &attribute );
     QString xAttribute() const;

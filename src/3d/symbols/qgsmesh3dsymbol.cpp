@@ -24,7 +24,7 @@ QgsAbstract3DSymbol *QgsMesh3DSymbol::clone() const
 
 void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   QDomDocument doc = elem.ownerDocument();
 
@@ -45,7 +45,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
 
 void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );

@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import shutil
 import os
 import sys
@@ -36,7 +32,7 @@ from qgis.core import (QgsApplication,
                        QgsDataItemProvider,
                        QgsDataProvider,
                        QgsDataItem,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsMimeDataUtils)
 from qgis.gui import (QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)
@@ -163,6 +159,20 @@ class ProcessingPlugin:
 
     def __init__(self, iface):
         self.iface = iface
+        self.options_factory = None
+        self.drop_handler = None
+        self.item_provider = None
+        self.locator_filter = None
+        self.edit_features_locator_filter = None
+        self.initialized = False
+        self.initProcessing()
+
+    def initProcessing(self):
+        if not self.initialized:
+            self.initialized = True
+            Processing.initialize()
+
+    def initGui(self):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr('Processing'))
         iface.registerOptionsWidgetFactory(self.options_factory)
@@ -176,9 +186,7 @@ class ProcessingPlugin:
         iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
         self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.edit_features_locator_filter)
-        Processing.initialize()
 
-    def initGui(self):
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
@@ -277,7 +285,7 @@ class ProcessingPlugin:
 
         old_enabled_state = self.editInPlaceAction.isEnabled()
 
-        new_enabled_state = layer is not None and layer.type() == QgsMapLayer.VectorLayer
+        new_enabled_state = layer is not None and layer.type() == QgsMapLayerType.VectorLayer
         self.editInPlaceAction.setEnabled(new_enabled_state)
 
         if new_enabled_state != old_enabled_state:

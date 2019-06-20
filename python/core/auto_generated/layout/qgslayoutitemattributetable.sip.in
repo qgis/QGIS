@@ -128,7 +128,7 @@ Resets the attribute table's columns to match the vector layer's fields.
 %Docstring
 Sets a layout ``map`` to use to limit the extent of features shown in the
 attribute table. This setting only has an effect if setDisplayOnlyVisibleFeatures is
-set to true. Changing the map forces the table to refetch features from its
+set to ``True``. Changing the map forces the table to refetch features from its
 vector layer, and may result in the table changing size to accommodate the new displayed
 feature attributes.
 
@@ -140,7 +140,7 @@ feature attributes.
     QgsLayoutItemMap *map() const;
 %Docstring
 Returns the layout map whose extents are controlling the features shown in the
-table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
+table. The extents of the map are only used if displayOnlyVisibleFeatures() is ``True``.
 
 .. seealso:: :py:func:`setMap`
 
@@ -167,7 +167,7 @@ Returns the maximum number of features to be shown by the table.
 %Docstring
 Sets attribute table to only show unique rows.
 
-Set ``uniqueOnly`` to true to show only unique rows. Duplicate rows
+Set ``uniqueOnly`` to ``True`` to show only unique rows. Duplicate rows
 will be stripped from the table.
 
 .. seealso:: :py:func:`uniqueRowsOnly`
@@ -175,7 +175,7 @@ will be stripped from the table.
 
     bool uniqueRowsOnly() const;
 %Docstring
-Returns true if the table is set to show only unique rows.
+Returns ``True`` if the table is set to show only unique rows.
 
 .. seealso:: :py:func:`setUniqueRowsOnly`
 %End
@@ -193,7 +193,7 @@ the table changing size to accommodate the new displayed feature attributes.
 
     bool displayOnlyVisibleFeatures() const;
 %Docstring
-Returns true if the table is set to show only features visible on a corresponding
+Returns ``True`` if the table is set to show only features visible on a corresponding
 map item.
 
 .. seealso:: :py:func:`map`
@@ -211,7 +211,7 @@ feature.
 
     bool filterToAtlasFeature() const;
 %Docstring
-Returns true if the table is set to only show features which intersect the current atlas
+Returns ``True`` if the table is set to only show features which intersect the current atlas
 feature.
 
 .. seealso:: :py:func:`setFilterToAtlasFeature`
@@ -219,7 +219,7 @@ feature.
 
     bool filterFeatures() const;
 %Docstring
-Returns true if a feature filter is active on the attribute table.
+Returns ``True`` if a feature filter is active on the attribute table.
 
 .. seealso:: :py:func:`setFilterFeatures`
 
@@ -240,7 +240,7 @@ the table changing size to accommodate the new displayed feature attributes.
     QString featureFilter() const;
 %Docstring
 Returns the current expression used to filter features for the table. The filter is only
-active if filterFeatures() is true.
+active if filterFeatures() is ``True``.
 
 .. seealso:: :py:func:`setFeatureFilter`
 
@@ -250,7 +250,7 @@ active if filterFeatures() is true.
     void setFeatureFilter( const QString &expression );
 %Docstring
 Sets the ``expression`` used for filtering features in the table. The filter is only
-active if filterFeatures() is set to true. Changing this setting forces the table
+active if filterFeatures() is set to ``True``. Changing this setting forces the table
 to refetch features from its vector layer, and may result in
 the table changing size to accommodate the new displayed feature attributes.
 
@@ -265,7 +265,7 @@ Sets the attributes to display in the table.
 
 :param fields: list of fields names from the vector layer to show.
                Set to an empty list to show all feature attributes.
-:param refresh: set to true to force the table to refetch features from its vector layer
+:param refresh: set to ``True`` to force the table to refetch features from its vector layer
                 and immediately update the display of the table. This may result in the table changing size
                 to accommodate the new displayed feature attributes.
 %End

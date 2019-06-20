@@ -16,7 +16,7 @@
 #include <QSet>
 #include <QStringList>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     bool showBoundsMap() const;
 
     /**
-     * Returns true if the current selection in the widget is a valid choice. Valid
+     * Returns TRUE if the current selection in the widget is a valid choice. Valid
      * selections include any projection and also the "no/invalid projection" option
      * (if setShowNoProjection() was called). Invalid selections are the group
      * headers (such as "Geographic Coordinate Systems"

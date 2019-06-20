@@ -19,7 +19,7 @@
 #define QGSSINGLEBANDGRAYRENDERER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
 #include <memory>
 
@@ -66,6 +66,8 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     QList<int> usesBands() const override;
+
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
 
   private:
 #ifdef SIP_RUN

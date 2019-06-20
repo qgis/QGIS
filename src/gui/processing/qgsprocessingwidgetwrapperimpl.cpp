@@ -19,16 +19,37 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprojectionselectionwidget.h"
+#include "qgsprocessingmatrixparameterdialog.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
 #include "qgsprocessingcontext.h"
 #include "qgsauthconfigselect.h"
+#include "qgsapplication.h"
+#include "qgsfilewidget.h"
+#include "qgssettings.h"
+#include "qgsexpressionlineedit.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgslayoutmanager.h"
+#include "qgsproject.h"
+#include "qgslayoutcombobox.h"
+#include "qgslayoutitemcombobox.h"
+#include "qgsprintlayout.h"
+#include "qgsscalewidget.h"
+#include "qgssnapindicator.h"
+#include "qgsmapmouseevent.h"
+#include "qgsfilterlineedit.h"
+#include "qgsmapcanvas.h"
+#include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPlainTextEdit>
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QMenu>
 
 ///@cond PRIVATE
 
@@ -132,6 +153,7 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterScale::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
          << QgsProcessingParameterFeatureSource::typeName()
@@ -149,7 +171,8 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
          << QgsProcessingOutputFile::typeName()
          << QgsProcessingOutputRasterLayer::typeName()
          << QgsProcessingOutputVectorLayer::typeName()
-         << QgsProcessingOutputString::typeName();
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputBoolean::typeName();
 }
 
 QList<int> QgsProcessingBooleanWidgetWrapper::compatibleDataTypes() const
@@ -382,6 +405,7 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterAuthConfig::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterScale::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
          << QgsProcessingParameterExpression::typeName();
@@ -678,7 +702,8 @@ QStringList QgsProcessingNumericWidgetWrapper::compatibleParameterTypes() const
   return QStringList()
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingParameterDistance::typeName();
+         << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterScale::typeName();
 }
 
 QStringList QgsProcessingNumericWidgetWrapper::compatibleOutputTypes() const
@@ -881,6 +906,81 @@ QVariant QgsProcessingDistanceWidgetWrapper::widgetValue() const
   }
 }
 
+//
+// QgsProcessingScaleWidgetWrapper
+//
+
+QgsProcessingScaleWidgetWrapper::QgsProcessingScaleWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingNumericWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingScaleWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterScale::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingScaleWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingScaleWidgetWrapper( parameter, type );
+}
+
+QWidget *QgsProcessingScaleWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterScale *scaleDef = static_cast< const QgsProcessingParameterScale * >( parameterDefinition() );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      mScaleWidget = new QgsScaleWidget( nullptr );
+      if ( scaleDef->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mScaleWidget->setAllowNull( true );
+
+      mScaleWidget->setMapCanvas( widgetContext().mapCanvas() );
+      mScaleWidget->setShowCurrentScaleButton( true );
+
+      mScaleWidget->setToolTip( parameterDefinition()->toolTip() );
+      connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, [ = ]( double )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mScaleWidget;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingScaleWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  if ( mScaleWidget )
+    mScaleWidget->setMapCanvas( context.mapCanvas() );
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+}
+
+
+QVariant QgsProcessingScaleWidgetWrapper::widgetValue() const
+{
+  return mScaleWidget && !mScaleWidget->isNull() ? QVariant( mScaleWidget->scale() ) : QVariant();
+}
+
+void QgsProcessingScaleWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mScaleWidget )
+  {
+    if ( mScaleWidget->allowNull() && !value.isValid() )
+      mScaleWidget->setNull();
+    else
+    {
+      const double v = QgsProcessingParameters::parameterAsDouble( parameterDefinition(), value, context );
+      mScaleWidget->setScale( v );
+    }
+  }
+}
+
 
 //
 // QgsProcessingRangeWidgetWrapper
@@ -1023,5 +1123,1271 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRangeWidgetWrapper::cr
 }
 
 
-///@endcond PRIVATE
 
+//
+// QgsProcessingMatrixWidgetWrapper
+//
+
+QgsProcessingMatrixWidgetWrapper::QgsProcessingMatrixWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingMatrixWidgetWrapper::createWidget()
+{
+  mMatrixWidget = new QgsProcessingMatrixParameterPanel( nullptr, dynamic_cast< const QgsProcessingParameterMatrix *>( parameterDefinition() ) );
+  mMatrixWidget->setToolTip( parameterDefinition()->toolTip() );
+
+  connect( mMatrixWidget, &QgsProcessingMatrixParameterPanel::changed, this, [ = ]
+  {
+    emit widgetValueHasChanged( this );
+  } );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      return mMatrixWidget;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingMatrixWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QVariantList v = QgsProcessingParameters::parameterAsMatrix( parameterDefinition(), value, context );
+  if ( mMatrixWidget )
+    mMatrixWidget->setValue( v );
+}
+
+QVariant QgsProcessingMatrixWidgetWrapper::widgetValue() const
+{
+  if ( mMatrixWidget )
+    return mMatrixWidget->value().isEmpty() ? QVariant() : mMatrixWidget->value();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingMatrixWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterMatrix::typeName();
+}
+
+QStringList QgsProcessingMatrixWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList();
+}
+
+QList<int> QgsProcessingMatrixWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingMatrixWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "comma delimited string of values, or an array of values" );
+}
+
+QString QgsProcessingMatrixWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterMatrix::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMatrixWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingMatrixWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingFileWidgetWrapper
+//
+
+QgsProcessingFileWidgetWrapper::QgsProcessingFileWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingFileWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterFile *fileParam = dynamic_cast< const QgsProcessingParameterFile *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      mFileWidget = new QgsFileWidget();
+      mFileWidget->setToolTip( parameterDefinition()->toolTip() );
+      mFileWidget->setDialogTitle( parameterDefinition()->description() );
+
+      mFileWidget->setDefaultRoot( QgsSettings().value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString() );
+
+      switch ( fileParam->behavior() )
+      {
+        case QgsProcessingParameterFile::File:
+          mFileWidget->setStorageMode( QgsFileWidget::GetFile );
+          if ( !fileParam->extension().isEmpty() )
+            mFileWidget->setFilter( tr( "%1 files" ).arg( fileParam->extension().toUpper() ) + QStringLiteral( " (*." ) + fileParam->extension().toLower() + ')' );
+          break;
+
+        case QgsProcessingParameterFile::Folder:
+          mFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
+          break;
+      }
+
+      connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+      {
+        QgsSettings().setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( path ).canonicalPath() );
+        emit widgetValueHasChanged( this );
+      } );
+      return mFileWidget;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingFileWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  if ( mFileWidget )
+    mFileWidget->setFilePath( v );
+}
+
+QVariant QgsProcessingFileWidgetWrapper::widgetValue() const
+{
+  if ( mFileWidget )
+    return mFileWidget->filePath();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingFileWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterFile::typeName();
+}
+
+QStringList QgsProcessingFileWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputMapLayer::typeName();
+}
+
+QList<int> QgsProcessingFileWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingFileWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representing a path to a file or folder" );
+}
+
+QString QgsProcessingFileWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterFile::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFileWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingFileWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingExpressionWidgetWrapper
+//
+
+QgsProcessingExpressionWidgetWrapper::QgsProcessingExpressionWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterExpression *expParam = dynamic_cast< const QgsProcessingParameterExpression *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      if ( expParam->parentLayerParameterName().isEmpty() )
+      {
+        mExpLineEdit = new QgsExpressionLineEdit();
+        mExpLineEdit->setToolTip( parameterDefinition()->toolTip() );
+        mExpLineEdit->setExpressionDialogTitle( parameterDefinition()->description() );
+        mExpLineEdit->registerExpressionContextGenerator( this );
+        connect( mExpLineEdit, &QgsExpressionLineEdit::expressionChanged, this, [ = ]( const QString & )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mExpLineEdit;
+      }
+      else
+      {
+        mFieldExpWidget = new QgsFieldExpressionWidget();
+        mFieldExpWidget->setToolTip( parameterDefinition()->toolTip() );
+        mFieldExpWidget->setExpressionDialogTitle( parameterDefinition()->description() );
+        mFieldExpWidget->registerExpressionContextGenerator( this );
+        connect( mFieldExpWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mFieldExpWidget;
+      }
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingExpressionWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterExpression * >( parameterDefinition() )->parentLayerParameterName() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setParentLayerWrapperValue( wrapper );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), parentWrapper->parameterValue(), *context );
+  if ( !layer )
+  {
+    if ( mFieldExpWidget )
+      mFieldExpWidget->setLayer( nullptr );
+    else if ( mExpLineEdit )
+      mExpLineEdit->setLayer( nullptr );
+    return;
+  }
+
+  // need to grab ownership of layer if required - otherwise layer may be deleted when context
+  // goes out of scope
+  std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  {
+    mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
+    layer = mParentLayer.get();
+  }
+  else
+  {
+    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+  }
+
+  if ( mFieldExpWidget )
+    mFieldExpWidget->setLayer( layer );
+  else if ( mExpLineEdit )
+    mExpLineEdit->setLayer( layer );
+}
+
+void QgsProcessingExpressionWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  if ( mFieldExpWidget )
+    mFieldExpWidget->setExpression( v );
+  else if ( mExpLineEdit )
+    mExpLineEdit->setExpression( v );
+}
+
+QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
+{
+  if ( mFieldExpWidget )
+    return mFieldExpWidget->expression();
+  else if ( mExpLineEdit )
+    return mExpLineEdit->expression();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingExpressionWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterExpression::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterNumber::typeName()
+         << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterScale::typeName();
+}
+
+QStringList QgsProcessingExpressionWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputNumber::typeName();
+}
+
+QList<int> QgsProcessingExpressionWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingExpressionWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representation of an expression" );
+}
+
+const QgsVectorLayer *QgsProcessingExpressionWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mFieldExpWidget && mFieldExpWidget->layer() )
+    return mFieldExpWidget->layer();
+
+  return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
+}
+
+QString QgsProcessingExpressionWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterExpression::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingExpressionWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingExpressionWidgetWrapper( parameter, type );
+}
+
+
+
+//
+// QgsProcessingEnumPanelWidget
+//
+
+QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, const QgsProcessingParameterEnum *param )
+  : QWidget( parent )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( tr( "…" ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  if ( mParam )
+  {
+    mLineEdit->setText( tr( "%1 options selected" ).arg( 0 ) );
+  }
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingEnumPanelWidget::showDialog );
+}
+
+void QgsProcessingEnumPanelWidget::setValue( const QVariant &value )
+{
+  if ( value.isValid() )
+    mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+  else
+    mValue.clear();
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingEnumPanelWidget::showDialog()
+{
+  QVariantList availableOptions;
+  if ( mParam )
+  {
+    availableOptions.reserve( mParam->options().size() );
+    for ( int i = 0; i < mParam->options().count(); ++i )
+      availableOptions << i;
+  }
+
+  QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+  const QStringList options = mParam ? mParam->options() : QStringList();
+  dlg.setValueFormatter( [options]( const QVariant & v ) -> QString
+  {
+    const int i = v.toInt();
+    return options.size() > i ? options.at( i ) : QString();
+  } );
+  if ( dlg.exec() )
+  {
+    setValue( dlg.selectedOptions() );
+  }
+}
+
+void QgsProcessingEnumPanelWidget::updateSummaryText()
+{
+  if ( mParam )
+    mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+}
+
+
+//
+// QgsProcessingEnumCheckboxPanelWidget
+//
+QgsProcessingEnumCheckboxPanelWidget::QgsProcessingEnumCheckboxPanelWidget( QWidget *parent, const QgsProcessingParameterEnum *param, int columns )
+  : QWidget( parent )
+  , mParam( param )
+  , mButtonGroup( new QButtonGroup( this ) )
+  , mColumns( columns )
+{
+  mButtonGroup->setExclusive( !mParam->allowMultiple() );
+
+  QGridLayout *l = new QGridLayout();
+  l->setContentsMargins( 0, 0, 0, 0 );
+  l->setMargin( 0 );
+
+  int rows = static_cast< int >( std::ceil( mParam->options().count() / static_cast< double >( mColumns ) ) );
+  for ( int i = 0; i < mParam->options().count(); ++i )
+  {
+    QAbstractButton *button = nullptr;
+    if ( mParam->allowMultiple() )
+      button = new QCheckBox( mParam->options().at( i ) );
+    else
+      button = new QRadioButton( mParam->options().at( i ) );
+
+    connect( button, &QAbstractButton::toggled, this, [ = ]
+    {
+      if ( !mBlockChangedSignal )
+        emit changed();
+    } );
+
+    mButtons.insert( i, button );
+    mButtonGroup->addButton( button, i );
+    l->addWidget( button, i % rows, i / rows );
+  }
+  l->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum ), 0, mColumns );
+  setLayout( l );
+
+  if ( mParam->allowMultiple() )
+  {
+    setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( this, &QWidget::customContextMenuRequested, this, &QgsProcessingEnumCheckboxPanelWidget::showPopupMenu );
+  }
+}
+
+QVariant QgsProcessingEnumCheckboxPanelWidget::value() const
+{
+  if ( mParam->allowMultiple() )
+  {
+    QVariantList value;
+    for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
+    {
+      if ( it.value()->isChecked() )
+        value.append( it.key() );
+    }
+    return value;
+  }
+  else
+  {
+    return mButtonGroup->checkedId() >= 0 ? mButtonGroup->checkedId() : QVariant();
+  }
+}
+
+void QgsProcessingEnumCheckboxPanelWidget::setValue( const QVariant &value )
+{
+  mBlockChangedSignal = true;
+  if ( mParam->allowMultiple() )
+  {
+    QVariantList selected;
+    if ( value.isValid() )
+      selected = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+    for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
+    {
+      it.value()->setChecked( selected.contains( it.key() ) );
+    }
+  }
+  else
+  {
+    QVariant v = value;
+    if ( v.type() == QVariant::List )
+      v = v.toList().value( 0 );
+    if ( mButtons.contains( v ) )
+      mButtons.value( v )->setChecked( true );
+  }
+  mBlockChangedSignal = false;
+  emit changed();
+}
+
+void QgsProcessingEnumCheckboxPanelWidget::showPopupMenu()
+{
+  QMenu popupMenu;
+  QAction *selectAllAction = new QAction( tr( "Select All" ), &popupMenu );
+  connect( selectAllAction, &QAction::triggered, this, &QgsProcessingEnumCheckboxPanelWidget::selectAll );
+  QAction *clearAllAction = new QAction( tr( "Clear Selection" ), &popupMenu );
+  connect( clearAllAction, &QAction::triggered, this, &QgsProcessingEnumCheckboxPanelWidget::deselectAll );
+  popupMenu.addAction( selectAllAction );
+  popupMenu.addAction( clearAllAction );
+  popupMenu.exec( QCursor::pos() );
+}
+
+void QgsProcessingEnumCheckboxPanelWidget::selectAll()
+{
+  mBlockChangedSignal = true;
+  for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
+    it.value()->setChecked( true );
+  mBlockChangedSignal = false;
+  emit changed();
+}
+
+void QgsProcessingEnumCheckboxPanelWidget::deselectAll()
+{
+  mBlockChangedSignal = true;
+  for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
+    it.value()->setChecked( false );
+  mBlockChangedSignal = false;
+  emit changed();
+}
+
+
+//
+// QgsProcessingEnumWidgetWrapper
+//
+
+QgsProcessingEnumWidgetWrapper::QgsProcessingEnumWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterEnum *expParam = dynamic_cast< const QgsProcessingParameterEnum *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    {
+      // checkbox panel only for use outside in standard gui!
+      if ( expParam->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "useCheckBoxes" ), false ).toBool() )
+      {
+        const int columns = expParam->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "columns" ), 2 ).toInt();
+        mCheckboxPanel = new QgsProcessingEnumCheckboxPanelWidget( nullptr, expParam, columns );
+        mCheckboxPanel->setToolTip( parameterDefinition()->toolTip() );
+        connect( mCheckboxPanel, &QgsProcessingEnumCheckboxPanelWidget::changed, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mCheckboxPanel;
+      }
+    }
+    FALLTHROUGH
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      if ( expParam->allowMultiple() )
+      {
+        mPanel = new QgsProcessingEnumPanelWidget( nullptr, expParam );
+        mPanel->setToolTip( parameterDefinition()->toolTip() );
+        connect( mPanel, &QgsProcessingEnumPanelWidget::changed, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mPanel;
+      }
+      else
+      {
+        mComboBox = new QComboBox();
+
+        if ( expParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+          mComboBox->addItem( tr( "[Not selected]" ), QVariant() );
+        const QStringList options = expParam->options();
+        for ( int i = 0; i < options.count(); ++i )
+          mComboBox->addItem( options.at( i ), i );
+
+        mComboBox->setToolTip( parameterDefinition()->toolTip() );
+        connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mComboBox;
+      }
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setCurrentIndex( mComboBox->findData( QVariant() ) );
+    else
+    {
+      const int v = QgsProcessingParameters::parameterAsEnum( parameterDefinition(), value, context );
+      mComboBox->setCurrentIndex( mComboBox->findData( v ) );
+    }
+  }
+  else if ( mPanel || mCheckboxPanel )
+  {
+    QVariantList opts;
+    if ( value.isValid() )
+    {
+      const QList< int > v = QgsProcessingParameters::parameterAsEnums( parameterDefinition(), value, context );
+      opts.reserve( v.size() );
+      for ( int i : v )
+        opts << i;
+    }
+    if ( mPanel )
+      mPanel->setValue( opts );
+    else if ( mCheckboxPanel )
+      mCheckboxPanel->setValue( opts );
+  }
+}
+
+QVariant QgsProcessingEnumWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+    return mComboBox->currentData();
+  else if ( mPanel )
+    return mPanel->value();
+  else if ( mCheckboxPanel )
+    return mCheckboxPanel->value();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingEnumWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterEnum::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterNumber::typeName();
+}
+
+QStringList QgsProcessingEnumWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputNumber::typeName();
+}
+
+QList<int> QgsProcessingEnumWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingEnumWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "selected option index (starting from 0), array of indices, or comma separated string of options (e.g. '1,3')" );
+}
+
+QString QgsProcessingEnumWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterEnum::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingEnumWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingEnumWidgetWrapper( parameter, type );
+}
+
+
+
+//
+// QgsProcessingLayoutWidgetWrapper
+//
+
+QgsProcessingLayoutWidgetWrapper::QgsProcessingLayoutWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingLayoutWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterLayout *layoutParam = dynamic_cast< const QgsProcessingParameterLayout *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      // combobox only for use outside modeler!
+      mComboBox = new QgsLayoutComboBox( nullptr, widgetContext().project() ? widgetContext().project()->layoutManager() : nullptr );
+      if ( layoutParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mComboBox->setAllowEmptyLayout( true );
+      mComboBox->setFilters( QgsLayoutManagerProxyModel::FilterPrintLayouts );
+
+      mComboBox->setToolTip( parameterDefinition()->toolTip() );
+      connect( mComboBox, &QgsLayoutComboBox::layoutChanged, this, [ = ]( QgsMasterLayoutInterface * )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mComboBox;
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( tr( "Name of an existing print layout" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingLayoutWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setCurrentLayout( nullptr );
+    else
+    {
+      if ( QgsPrintLayout *l = QgsProcessingParameters::parameterAsLayout( parameterDefinition(), value, context ) )
+        mComboBox->setCurrentLayout( l );
+      else
+        mComboBox->setCurrentLayout( nullptr );
+    }
+  }
+  else if ( mLineEdit )
+  {
+    const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+    mLineEdit->setText( v );
+  }
+}
+
+QVariant QgsProcessingLayoutWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+  {
+    const QgsMasterLayoutInterface *l = mComboBox->currentLayout();
+    return l ? l->name() : QVariant();
+  }
+  else if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingLayoutWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterLayout::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingLayoutWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingLayoutWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingLayoutWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representing the name of an existing print layout" );
+}
+
+QString QgsProcessingLayoutWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterLayout::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingLayoutWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingLayoutItemWidgetWrapper
+//
+
+QgsProcessingLayoutItemWidgetWrapper::QgsProcessingLayoutItemWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingLayoutItemWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterLayoutItem *layoutParam = dynamic_cast< const QgsProcessingParameterLayoutItem *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      // combobox only for use outside modeler!
+      mComboBox = new QgsLayoutItemComboBox( nullptr, nullptr );
+      if ( layoutParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mComboBox->setAllowEmptyItem( true );
+      if ( layoutParam->itemType() >= 0 )
+        mComboBox->setItemType( static_cast< QgsLayoutItemRegistry::ItemType >( layoutParam->itemType() ) );
+
+      mComboBox->setToolTip( parameterDefinition()->toolTip() );
+      connect( mComboBox, &QgsLayoutItemComboBox::itemChanged, this, [ = ]( QgsLayoutItem * )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mComboBox;
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( tr( "UUID or ID of an existing print layout item" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingLayoutItemWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterLayoutItem * >( parameterDefinition() )->parentLayoutParameterName() )
+        {
+          setLayoutParameterValue( wrapper->parameterValue() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setLayoutParameterValue( wrapper->parameterValue() );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingLayoutItemWidgetWrapper::setLayoutParameterValue( const QVariant &value )
+{
+  QgsPrintLayout *layout = nullptr;
+
+  // evaluate value to layout
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  layout = QgsProcessingParameters::parameterAsLayout( parameterDefinition(), value, *context );
+  setLayout( layout );
+}
+
+void QgsProcessingLayoutItemWidgetWrapper::setLayout( QgsPrintLayout *layout )
+{
+  if ( mComboBox )
+    mComboBox->setCurrentLayout( layout );
+}
+
+void QgsProcessingLayoutItemWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setItem( nullptr );
+    else
+    {
+      QgsLayoutItem *item = QgsProcessingParameters::parameterAsLayoutItem( parameterDefinition(), value, context, qobject_cast< QgsPrintLayout * >( mComboBox->currentLayout() ) );
+      mComboBox->setItem( item );
+    }
+  }
+  else if ( mLineEdit )
+  {
+    const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+    mLineEdit->setText( v );
+  }
+}
+
+QVariant QgsProcessingLayoutItemWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+  {
+    const QgsLayoutItem *i = mComboBox->currentItem();
+    return i ? i->uuid() : QVariant();
+  }
+  else if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingLayoutItemWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterLayoutItem::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingLayoutItemWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingLayoutItemWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingLayoutItemWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representing the UUID or ID of an existing print layout item" );
+}
+
+QString QgsProcessingLayoutItemWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterLayoutItem::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingLayoutItemWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingLayoutItemWidgetWrapper( parameter, type );
+}
+
+//
+// QgsProcessingPointMapTool
+//
+
+QgsProcessingPointMapTool::QgsProcessingPointMapTool( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+{
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+}
+
+QgsProcessingPointMapTool::~QgsProcessingPointMapTool() = default;
+
+void QgsProcessingPointMapTool::deactivate()
+{
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  QgsMapTool::deactivate();
+}
+
+void QgsProcessingPointMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
+{
+  e->snapPoint();
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+}
+
+void QgsProcessingPointMapTool::canvasPressEvent( QgsMapMouseEvent *e )
+{
+  if ( e->button() == Qt::LeftButton )
+  {
+    QgsPointXY point = e->snapPoint();
+    emit clicked( point );
+    emit complete();
+  }
+}
+
+void QgsProcessingPointMapTool::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Escape )
+  {
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+    emit complete();
+  }
+}
+
+
+
+//
+// QgsProcessingPointPanel
+//
+
+QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
+  : QWidget( parent )
+{
+  QHBoxLayout *l = new QHBoxLayout();
+  l->setContentsMargins( 0, 0, 0, 0 );
+  l->setMargin( 0 );
+  mLineEdit = new QgsFilterLineEdit( );
+  mLineEdit->setShowClearButton( false );
+  l->addWidget( mLineEdit, 1 );
+  mButton = new QToolButton();
+  mButton->setText( QStringLiteral( "…" ) );
+  l->addWidget( mButton );
+  setLayout( l );
+
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsProcessingPointPanel::changed );
+  connect( mButton, &QToolButton::clicked, this, &QgsProcessingPointPanel::selectOnCanvas );
+  mButton->setVisible( false );
+}
+
+void QgsProcessingPointPanel::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mCanvas = canvas;
+  mButton->setVisible( true );
+
+  mCrs = canvas->mapSettings().destinationCrs();
+  mTool = qgis::make_unique< QgsProcessingPointMapTool >( mCanvas );
+  connect( mTool.get(), &QgsProcessingPointMapTool::clicked, this, &QgsProcessingPointPanel::updatePoint );
+  connect( mTool.get(), &QgsProcessingPointMapTool::complete, this, &QgsProcessingPointPanel::pointPicked );
+}
+
+void QgsProcessingPointPanel::setAllowNull( bool allowNull )
+{
+  mLineEdit->setShowClearButton( allowNull );
+}
+
+QVariant QgsProcessingPointPanel::value() const
+{
+  return mLineEdit->showClearButton() && mLineEdit->text().trimmed().isEmpty() ? QVariant() : QVariant( mLineEdit->text() );
+}
+
+void QgsProcessingPointPanel::clear()
+{
+  mLineEdit->clear();
+}
+
+void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
+{
+  QString newText = QStringLiteral( "%1,%2" )
+                    .arg( QString::number( point.x(), 'f' ) )
+                    .arg( QString::number( point.y(), 'f' ) );
+
+  mCrs = crs;
+  if ( mCrs.isValid() )
+  {
+    newText += QStringLiteral( " [%1]" ).arg( mCrs.authid() );
+  }
+  mLineEdit->setText( newText );
+}
+
+void QgsProcessingPointPanel::selectOnCanvas()
+{
+  if ( !mCanvas )
+    return;
+
+  mPrevTool = mCanvas->mapTool();
+  mCanvas->setMapTool( mTool.get() );
+
+  emit toggleDialogVisibility( false );
+}
+
+void QgsProcessingPointPanel::updatePoint( const QgsPointXY &point )
+{
+  setValue( point, mCanvas->mapSettings().destinationCrs() );
+}
+
+void QgsProcessingPointPanel::pointPicked()
+{
+  if ( !mCanvas )
+    return;
+
+  mCanvas->setMapTool( mPrevTool );
+
+  emit toggleDialogVisibility( true );
+}
+
+
+
+
+//
+// QgsProcessingPointWidgetWrapper
+//
+
+QgsProcessingPointWidgetWrapper::QgsProcessingPointWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingPointWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterPoint *pointParam = dynamic_cast< const QgsProcessingParameterPoint *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      mPanel = new QgsProcessingPointPanel( nullptr );
+      if ( widgetContext().mapCanvas() )
+        mPanel->setMapCanvas( widgetContext().mapCanvas() );
+
+      if ( pointParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mPanel->setAllowNull( true );
+
+      mPanel->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mPanel, &QgsProcessingPointPanel::changed, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      if ( mDialog )
+        setDialog( mDialog ); // setup connections to panel - dialog was previously set before the widget was created
+      return mPanel;
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( tr( "Point as 'x,y'" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & )
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingPointWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mPanel && context.mapCanvas() )
+    mPanel->setMapCanvas( context.mapCanvas() );
+}
+
+void QgsProcessingPointWidgetWrapper::setDialog( QDialog *dialog )
+{
+  mDialog = dialog;
+  if ( mPanel )
+  {
+    connect( mPanel, &QgsProcessingPointPanel::toggleDialogVisibility, mDialog, [ = ]( bool visible )
+    {
+      if ( !visible )
+        mDialog->showMinimized();
+      else
+      {
+        mDialog->showNormal();
+        mDialog->raise();
+        mDialog->activateWindow();
+      }
+    } );
+  }
+  QgsAbstractProcessingParameterWidgetWrapper::setDialog( dialog );
+}
+
+void QgsProcessingPointWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mPanel )
+  {
+    if ( !value.isValid() || ( value.type() == QVariant::String && value.toString().isEmpty() ) )
+      mPanel->clear();
+    else
+    {
+      QgsPointXY p = QgsProcessingParameters::parameterAsPoint( parameterDefinition(), value, context );
+      QgsCoordinateReferenceSystem crs = QgsProcessingParameters::parameterAsPointCrs( parameterDefinition(), value, context );
+      mPanel->setValue( p, crs );
+    }
+  }
+  else if ( mLineEdit )
+  {
+    const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+    mLineEdit->setText( v );
+  }
+}
+
+QVariant QgsProcessingPointWidgetWrapper::widgetValue() const
+{
+  if ( mPanel )
+  {
+    return mPanel->value();
+  }
+  else if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingPointWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterPoint::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingPointWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingPointWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingPointWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string of the format 'x,y' or a geometry value (centroid is used)" );
+}
+
+QString QgsProcessingPointWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterPoint::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingPointWidgetWrapper( parameter, type );
+}
+
+///@endcond PRIVATE

@@ -24,6 +24,7 @@
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -70,7 +71,8 @@ void QgsRendererWidget::changeSymbolColor()
   }
 
   QgsSymbol *firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbol *symbol, symbolList )
+  const auto constSymbolList = symbolList;
+  for ( QgsSymbol *symbol : constSymbolList )
   {
     if ( symbol )
     {
@@ -84,7 +86,8 @@ void QgsRendererWidget::changeSymbolColor()
   QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
   if ( color.isValid() )
   {
-    Q_FOREACH ( QgsSymbol *symbol, symbolList )
+    const auto constSymbolList = symbolList;
+    for ( QgsSymbol *symbol : constSymbolList )
     {
       if ( symbol )
         symbol->setColor( color );
@@ -102,7 +105,8 @@ void QgsRendererWidget::changeSymbolOpacity()
   }
 
   QgsSymbol *firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbol *symbol, symbolList )
+  const auto constSymbolList = symbolList;
+  for ( QgsSymbol *symbol : constSymbolList )
   {
     if ( symbol )
     {
@@ -118,7 +122,8 @@ void QgsRendererWidget::changeSymbolOpacity()
   double opacity = QInputDialog::getDouble( this, tr( "Opacity" ), tr( "Change symbol opacity [%]" ), oldOpacity, 0.0, 100.0, 1, &ok );
   if ( ok )
   {
-    Q_FOREACH ( QgsSymbol *symbol, symbolList )
+    const auto constSymbolList = symbolList;
+    for ( QgsSymbol *symbol : constSymbolList )
     {
       if ( symbol )
         symbol->setOpacity( opacity / 100.0 );
@@ -136,7 +141,8 @@ void QgsRendererWidget::changeSymbolUnit()
   }
 
   QgsSymbol *firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbol *symbol, symbolList )
+  const auto constSymbolList = symbolList;
+  for ( QgsSymbol *symbol : constSymbolList )
   {
     if ( symbol )
     {
@@ -154,7 +160,8 @@ void QgsRendererWidget::changeSymbolUnit()
   {
     QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
 
-    Q_FOREACH ( QgsSymbol *symbol, symbolList )
+    const auto constSymbolList = symbolList;
+    for ( QgsSymbol *symbol : constSymbolList )
     {
       if ( symbol )
         symbol->setOutputUnit( unit );
@@ -179,7 +186,8 @@ void QgsRendererWidget::changeSymbolWidth()
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbol *symbol, symbolList )
+      const auto constSymbolList = symbolList;
+      for ( QgsSymbol *symbol : constSymbolList )
       {
         if ( !symbol )
           continue;
@@ -207,7 +215,8 @@ void QgsRendererWidget::changeSymbolSize()
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbol *symbol, symbolList )
+      const auto constSymbolList = symbolList;
+      for ( QgsSymbol *symbol : constSymbolList )
       {
         if ( !symbol )
           continue;
@@ -235,7 +244,8 @@ void QgsRendererWidget::changeSymbolAngle()
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbol *symbol, symbolList )
+      const auto constSymbolList = symbolList;
+      for ( QgsSymbol *symbol : constSymbolList )
       {
         if ( !symbol )
           continue;
@@ -342,7 +352,8 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -358,7 +369,8 @@ void QgsDataDefinedValueDialog::init( int propertyKey )
   mDDBtn->registerExpressionContextGenerator( this );
 
   QgsSymbol *initialSymbol = nullptr;
-  Q_FOREACH ( QgsSymbol *symbol, mSymbolList )
+  const auto constMSymbolList = mSymbolList;
+  for ( QgsSymbol *symbol : constMSymbolList )
   {
     if ( symbol )
     {
@@ -376,7 +388,8 @@ QgsProperty QgsDataDefinedValueDialog::symbolDataDefined() const
 
   // check that all symbols share the same size expression
   QgsProperty dd = symbolDataDefined( mSymbolList.back() );
-  Q_FOREACH ( QgsSymbol *it, mSymbolList )
+  const auto constMSymbolList = mSymbolList;
+  for ( QgsSymbol *it : constMSymbolList )
   {
     QgsProperty symbolDD( symbolDataDefined( it ) );
     if ( !it || !dd || !symbolDD || symbolDD != dd )
@@ -397,7 +410,8 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
     // shall we set the "en masse" expression for properties ?
     || dd.isActive() )
   {
-    Q_FOREACH ( QgsSymbol *it, mSymbolList )
+    const auto constMSymbolList = mSymbolList;
+    for ( QgsSymbol *it : constMSymbolList )
       setDataDefined( it, dd );
   }
 }

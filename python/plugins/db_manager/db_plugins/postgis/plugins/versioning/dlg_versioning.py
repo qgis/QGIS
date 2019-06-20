@@ -183,20 +183,21 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
             self.schematable, self.origPkeyName, self.colPkey)
 
     def sql_currentView(self):
-        cols = ",".join(self.columns)
+        cols = self.colPkey + "," + ",".join(self.columns)
 
         return u"CREATE VIEW %(view)s AS SELECT %(cols)s FROM %(schematable)s WHERE %(end)s IS NULL;" % \
                {'view': self.view, 'cols': cols, 'schematable': self.schematable, 'end': self.colEnd}
 
     def sql_functions(self):
         cols = ",".join(self.columns)
+        all_cols = self.colPkey + "," + ",".join(self.columns)
         old_cols = ",".join([u"OLD." + x for x in self.columns])
 
         sql = u"""
 CREATE OR REPLACE FUNCTION %(func_at_time)s(timestamp)
 RETURNS SETOF %(view)s AS
 $$
-SELECT %(cols)s FROM %(schematable)s WHERE
+SELECT %(all_cols)s FROM %(schematable)s WHERE
   ( SELECT CASE WHEN %(end)s IS NULL THEN (%(start)s <= $1) ELSE (%(start)s <= $1 AND %(end)s > $1) END );
 $$
 LANGUAGE 'sql';
@@ -232,7 +233,7 @@ END;
 $$
 LANGUAGE 'plpgsql';""" % {'view': self.view, 'schematable': self.schematable, 'cols': cols, 'oldcols': old_cols,
                           'start': self.colStart, 'end': self.colEnd, 'user': self.colUser, 'func_at_time': self.func_at_time,
-                          'func_update': self.func_update, 'func_insert': self.func_insert}
+                          'all_cols': all_cols, 'func_update': self.func_update, 'func_insert': self.func_insert}
         return sql
 
     def sql_triggers(self):
@@ -251,6 +252,7 @@ FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
 
     def sql_updatesView(self):
         cols = ",".join(self.columns)
+        return_cols = self.colPkey + "," + ",".join(self.columns)
         new_cols = ",".join([u"NEW." + x for x in self.columns])
         assign_cols = ",".join([u"%s = NEW.%s" % (x, x) for x in self.columns])
 
@@ -258,11 +260,12 @@ FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
 CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO %(view)s DO INSTEAD
   DELETE FROM %(schematable)s WHERE %(origpkey)s = old.%(origpkey)s;
 CREATE OR REPLACE RULE "_INSERT" AS ON INSERT TO %(view)s DO INSTEAD
-  INSERT INTO %(schematable)s (%(cols)s) VALUES (%(newcols)s) RETURNING %(cols)s;
+  INSERT INTO %(schematable)s (%(cols)s) VALUES (%(newcols)s) RETURNING %(return_cols)s;
 CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
   UPDATE %(schematable)s SET %(assign)s WHERE %(origpkey)s = NEW.%(origpkey)s;""" % {'view': self.view,
                                                                                      'schematable': self.schematable,
                                                                                      'cols': cols, 'newcols': new_cols,
+                                                                                     'return_cols': return_cols,
                                                                                      'assign': assign_cols,
                                                                                      'origpkey': self.colOrigPkey}
 

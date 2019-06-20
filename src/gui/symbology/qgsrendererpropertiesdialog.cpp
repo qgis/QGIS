@@ -100,7 +100,8 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
   QgsRendererRegistry *reg = QgsApplication::rendererRegistry();
   QStringList renderers = reg->renderersList( mLayer );
-  Q_FOREACH ( const QString &name, renderers )
+  const auto constRenderers = renderers;
+  for ( const QString &name : constRenderers )
   {
     QgsRendererAbstractMetadata *m = reg->rendererMetadata( name );
     cboRenderers->addItem( m->icon(), m->visibleName(), name );
@@ -131,7 +132,8 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
 void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &widgets, const char *slot )
 {
-  Q_FOREACH ( QWidget *widget, widgets )
+  const auto constWidgets = widgets;
+  for ( QWidget *widget : constWidgets )
   {
     if ( QgsPropertyOverrideButton *w = qobject_cast<QgsPropertyOverrideButton *>( widget ) )
     {

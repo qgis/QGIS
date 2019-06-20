@@ -20,6 +20,7 @@
 #include "qgslayoutundostack.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QButtonGroup>
 
@@ -97,7 +98,7 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
   QgsLayoutObject::DataDefinedProperty key = static_cast< QgsLayoutObject::DataDefinedProperty >( button->propertyKey() );
   whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( key ) );
 
-  // In case the button was initialized to a different config object, we need to reconnect to it here (see https://issues.qgis.org/issues/18694 )
+  // In case the button was initialized to a different config object, we need to reconnect to it here (see https://github.com/qgis/QGIS/issues/26582 )
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayoutConfigObject::updateDataDefinedProperty, Qt::UniqueConnection );
   button->registerExpressionContextGenerator( mLayoutObject );
 }
@@ -252,10 +253,8 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   mSizeLockAspectRatio->setWidthSpinBox( mWidthSpin );
   mSizeLockAspectRatio->setHeightSpinBox( mHeightSpin );
 
-  mItemFrameColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mItemFrameColorDDBtn->registerEnabledWidget( mFrameColorButton, false );
-  mItemBackgroundColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mItemBackgroundColorDDBtn->registerEnabledWidget( mBackgroundColorButton, false );
+  mItemFrameColorDDBtn->registerLinkedWidget( mFrameColorButton );
+  mItemBackgroundColorDDBtn->registerLinkedWidget( mBackgroundColorButton );
 
   connect( mFrameColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutItemPropertiesWidget::mFrameColorButton_colorChanged );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutItemPropertiesWidget::mBackgroundColorButton_colorChanged );
@@ -480,7 +479,7 @@ void QgsLayoutItemPropertiesWidget::strokeUnitChanged( QgsUnitTypes::LayoutUnit 
 
 void QgsLayoutItemPropertiesWidget::mFrameJoinStyleCombo_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mItem )
   {
     return;
@@ -712,7 +711,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
 
 void QgsLayoutItemPropertiesWidget::mBlendModeCombo_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Blend Mode" ) );

@@ -18,40 +18,28 @@
 static HdfFile openHdfFile( const std::string &fileName )
 {
   HdfFile file( fileName );
-  if ( !file.isValid() )
-  {
-    throw MDAL_Status::Err_UnknownFormat;
-  }
+  if ( !file.isValid() ) throw MDAL_Status::Err_UnknownFormat;
   return file;
 }
 
 static HdfGroup openHdfGroup( const HdfFile &hdfFile, const std::string &name )
 {
   HdfGroup grp = hdfFile.group( name );
-  if ( !grp.isValid() )
-  {
-    throw MDAL_Status::Err_UnknownFormat;
-  }
+  if ( !grp.isValid() ) throw MDAL_Status::Err_UnknownFormat;
   return grp;
 }
 
 static HdfGroup openHdfGroup( const HdfGroup &hdfGroup, const std::string &name )
 {
   HdfGroup grp = hdfGroup.group( name );
-  if ( !grp.isValid() )
-  {
-    throw MDAL_Status::Err_UnknownFormat;
-  }
+  if ( !grp.isValid() ) throw MDAL_Status::Err_UnknownFormat;
   return grp;
 }
 
 static HdfDataset openHdfDataset( const HdfGroup &hdfGroup, const std::string &name )
 {
   HdfDataset dsFileType = hdfGroup.dataset( name );
-  if ( !dsFileType.isValid() )
-  {
-    throw MDAL_Status::Err_UnknownFormat;
-  }
+  if ( !dsFileType.isValid() ) throw MDAL_Status::Err_UnknownFormat;
   return dsFileType;
 }
 
@@ -59,10 +47,7 @@ static HdfDataset openHdfDataset( const HdfGroup &hdfGroup, const std::string &n
 static std::string openHdfAttribute( const HdfFile &hdfFile, const std::string &name )
 {
   HdfAttribute attr = hdfFile.attribute( name );
-  if ( !attr.isValid() )
-  {
-    throw MDAL_Status::Err_UnknownFormat;
-  }
+  if ( !attr.isValid() ) throw MDAL_Status::Err_UnknownFormat;
   return attr.readString();
 }
 
@@ -164,7 +149,7 @@ void MDAL::DriverHec2D::readFaceOutput( const HdfFile &hdfFile,
         {
           for ( size_t c = 0; c < 2; ++c )
           {
-            size_t cell_idx = face2Cells[2 * i + c] + areaElemStartIndex[nArea];
+            size_t cell_idx = static_cast<size_t>( face2Cells[2 * i + c] ) + areaElemStartIndex[nArea];
             // Take just maximum
             if ( std::isnan( values[cell_idx] ) || values[cell_idx] < val )
             {
@@ -356,14 +341,87 @@ void MDAL::DriverHec2D::readElemResults(
   );
 }
 
-std::vector<std::string> read2DFlowAreasNames( HdfGroup gGeom2DFlowAreas )
+std::vector<std::string> MDAL::DriverHec2D::read2DFlowAreasNamesOld( HdfGroup gGeom2DFlowAreas ) const
 {
   HdfDataset dsNames = openHdfDataset( gGeom2DFlowAreas, "Names" );
   std::vector<std::string> names = dsNames.readArrayString();
-  if ( names.empty() )
-  {
-    throw MDAL_Status::Err_InvalidData;
+  if ( names.empty() ) throw MDAL_Status::Err_InvalidData;
+  return names;
+}
+
+/**
+  For 5.0.5+ format
+
+  DATATYPE  H5T_COMPOUND {
+               H5T_STRING {
+                  STRSIZE 16;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               } "Name";
+               H5T_IEEE_F32LE "Mann";
+               H5T_IEEE_F32LE "Cell Vol Tol";
+               H5T_IEEE_F32LE "Cell Min Area Fraction";
+               H5T_IEEE_F32LE "Face Profile Tol";
+               H5T_IEEE_F32LE "Face Area Tol";
+               H5T_IEEE_F32LE "Face Conv Ratio";
+               H5T_IEEE_F32LE "Laminar Depth";
+               H5T_IEEE_F32LE "Spacing dx";
+               H5T_IEEE_F32LE "Spacing dy";
+               H5T_IEEE_F32LE "Shift dx";
+               H5T_IEEE_F32LE "Shift dy";
+               H5T_STD_I32LE "Cell Count";
   }
+*/
+typedef struct FlowAreasAttribute505
+{
+  char name[HDF_MAX_NAME];
+  float mann;
+  float cellVolTol;
+  float cellMinAreaFraction;
+  float faceProfileTol;
+  float faceAreaTol;
+  float faceConvRatio;
+  float laminarDepth;
+  float spacingDx;
+  float spacingDy;
+  float shifyDx;
+  float shifyDy;
+  int cellCount;
+} FlowAreasAttribute505;
+
+
+std::vector<std::string> MDAL::DriverHec2D::read2DFlowAreasNames505( HdfGroup gGeom2DFlowAreas ) const
+{
+  HdfDataset dsAttributes = openHdfDataset( gGeom2DFlowAreas, "Attributes" );
+  hid_t attributeHID = H5Tcreate( H5T_COMPOUND, sizeof( FlowAreasAttribute505 ) );
+  hid_t stringHID = H5Tcopy( H5T_C_S1 );
+  H5Tset_size( stringHID, HDF_MAX_NAME );
+  H5Tinsert( attributeHID, "Name", HOFFSET( FlowAreasAttribute505, name ), stringHID );
+  H5Tinsert( attributeHID, "Mann", HOFFSET( FlowAreasAttribute505, mann ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Cell Vol Tol", HOFFSET( FlowAreasAttribute505, cellVolTol ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Cell Min Area Fraction", HOFFSET( FlowAreasAttribute505, cellMinAreaFraction ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Face Profile Tol", HOFFSET( FlowAreasAttribute505, faceProfileTol ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Face Area Tol", HOFFSET( FlowAreasAttribute505, faceAreaTol ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Face Conv Ratio", HOFFSET( FlowAreasAttribute505, faceConvRatio ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Laminar Depth", HOFFSET( FlowAreasAttribute505, laminarDepth ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Spacing dx", HOFFSET( FlowAreasAttribute505, spacingDx ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Spacing dy", HOFFSET( FlowAreasAttribute505, spacingDy ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Shift dx", HOFFSET( FlowAreasAttribute505, shifyDx ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Shift dy", HOFFSET( FlowAreasAttribute505, shifyDy ), H5T_NATIVE_FLOAT );
+  H5Tinsert( attributeHID, "Cell Count", HOFFSET( FlowAreasAttribute505, cellCount ), H5T_NATIVE_INT );
+  std::vector<FlowAreasAttribute505> attributes = dsAttributes.readArray<FlowAreasAttribute505>( attributeHID );
+  H5Tclose( attributeHID );
+  H5Tclose( stringHID );
+  std::vector<std::string> names;
+  if ( attributes.empty() ) throw MDAL_Status::Err_InvalidData;
+
+  for ( const auto &attr : attributes )
+  {
+    std::string dat = std::string( attr.name );
+    names.push_back( MDAL::trim( dat ) );
+  }
+
   return names;
 }
 
@@ -474,16 +532,22 @@ bool MDAL::DriverHec2D::canRead( const std::string &uri )
   {
     HdfFile hdfFile = openHdfFile( uri );
     std::string fileType = openHdfAttribute( hdfFile, "File Type" );
-    if ( fileType != "HEC-RAS Results" )
-    {
-      return false;
-    }
+    return canReadOldFormat( fileType ) || canReadFormat505( fileType );
   }
   catch ( MDAL_Status )
   {
     return false;
   }
-  return true;
+}
+
+bool MDAL::DriverHec2D::canReadOldFormat( const std::string &fileType ) const
+{
+  return fileType == "HEC-RAS Results";
+}
+
+bool MDAL::DriverHec2D::canReadFormat505( const std::string &fileType ) const
+{
+  return fileType == "HEC-RAS Geometry";
 }
 
 std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsFile, MDAL_Status *status )
@@ -498,15 +562,17 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsF
 
     // Verify it is correct file
     std::string fileType = openHdfAttribute( hdfFile, "File Type" );
-    if ( fileType != "HEC-RAS Results" )
-    {
-      throw MDAL_Status::Err_UnknownFormat;
-    }
+    bool oldFormat = canReadOldFormat( fileType );
 
     HdfGroup gGeom = openHdfGroup( hdfFile, "Geometry" );
     HdfGroup gGeom2DFlowAreas = openHdfGroup( gGeom, "2D Flow Areas" );
 
-    std::vector<std::string> flowAreaNames = read2DFlowAreasNames( gGeom2DFlowAreas );
+    std::vector<std::string> flowAreaNames;
+    if ( oldFormat )
+      flowAreaNames = read2DFlowAreasNamesOld( gGeom2DFlowAreas );
+    else
+      flowAreaNames = read2DFlowAreasNames505( gGeom2DFlowAreas );
+
     std::vector<size_t> areaElemStartIndex( flowAreaNames.size() + 1 );
 
     parseMesh( gGeom2DFlowAreas, areaElemStartIndex, flowAreaNames );
@@ -520,6 +586,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsF
 
     // Face centered Values
     readFaceResults( hdfFile, areaElemStartIndex, flowAreaNames );
+
   }
   catch ( MDAL_Status error )
   {

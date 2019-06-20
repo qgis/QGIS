@@ -31,6 +31,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QObject>
 #include <QPainter>
@@ -1420,6 +1421,7 @@ void TestQgsLayoutItem::itemVariablesFunction()
   map->setId( QStringLiteral( "Map_id" ) );
 
   c = l.createExpressionContext();
+  e.prepare( &c );
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 184764103, 100 );
 

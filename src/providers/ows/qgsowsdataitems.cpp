@@ -91,7 +91,8 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
     if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
     {
       // Add layers directly to OWS connection
-      Q_FOREACH ( QgsDataItem *subItem, item->children() )
+      const auto constChildren = item->children();
+      for ( QgsDataItem *subItem : constChildren )
       {
         item->removeChildItem( subItem );
         subItem->setParent( this );
@@ -114,7 +115,8 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
 void QgsOWSConnectionItem::replacePath( QgsDataItem *item, QString before, QString after )
 {
   item->setPath( item->path().replace( before, after ) );
-  Q_FOREACH ( QgsDataItem *subItem, item->children() )
+  const auto constChildren = item->children();
+  for ( QgsDataItem *subItem : constChildren )
   {
     replacePath( subItem, before, after );
   }
@@ -196,7 +198,8 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
       }
     }
   }
-  Q_FOREACH ( const QString &connName, connNames )
+  const auto constConnNames = connNames;
+  for ( const QString &connName : constConnNames )
   {
     QgsDataItem *conn = new QgsOWSConnectionItem( this, connName, "ows:/" + connName );
     connections.append( conn );
@@ -207,7 +210,7 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsOWSRootItem::actions( QWidget *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   QList<QAction *> lst;
 
 #if 0
@@ -270,9 +273,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 //QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
 QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( fl );
-  Q_UNUSED( widgetMode );
+  Q_UNUSED( parent )
+  Q_UNUSED( fl )
+  Q_UNUSED( widgetMode )
   //return new QgsOWSSourceSelect( parent, fl, widgetMode );
   return nullptr;
 }

@@ -21,10 +21,6 @@ __author__ = 'Hugo Mercier'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Hugo Mercier'
 
-# This will get replaced with a git SHA1 when you do a git archive323
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsVirtualLayerDefinition,
                        QgsVectorLayer,
                        QgsWkbTypes,

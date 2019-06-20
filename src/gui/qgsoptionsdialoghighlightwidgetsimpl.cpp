@@ -62,7 +62,7 @@ bool QgsOptionsDialogHighlightLabel::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -103,7 +103,7 @@ bool QgsOptionsDialogHighlightCheckBox::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -144,7 +144,7 @@ bool QgsOptionsDialogHighlightButton::highlightText( const QString &text )
 {
   if ( !mWidget )
     return false;
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
   return true;
 }
@@ -182,7 +182,7 @@ bool QgsOptionsDialogHighlightGroupBox::searchText( const QString &text )
 
 bool QgsOptionsDialogHighlightGroupBox::highlightText( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   if ( !mWidget )
     return false;
 
@@ -209,7 +209,7 @@ QgsOptionsDialogHighlightTree::QgsOptionsDialogHighlightTree( QTreeView *treeVie
 
 bool QgsOptionsDialogHighlightTree::searchText( const QString &text )
 {
-  if ( !mTreeView )
+  if ( !mTreeView || !mTreeView->model() )
     return false;
   QModelIndexList hits = mTreeView->model()->match( mTreeView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
   return !hits.isEmpty();

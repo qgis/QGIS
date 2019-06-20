@@ -56,10 +56,21 @@ void QgsReadWriteContext::leaveCategory()
     mCategories.pop_back();
 }
 
+QgsCoordinateTransformContext QgsReadWriteContext::transformContext() const
+{
+  return mCoordinateTransformContext;
+}
+
+void QgsReadWriteContext::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  mCoordinateTransformContext = transformContext;
+}
+
 void QgsReadWriteContext::setProjectTranslator( QgsProjectTranslator *projectTranslator )
 {
   mProjectTranslator = projectTranslator;
 }
+
 
 QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages()
 {
@@ -70,8 +81,8 @@ QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages(
 
 QString QgsReadWriteContext::DefaultTranslator::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( disambiguation );
-  Q_UNUSED( n );
+  Q_UNUSED( context )
+  Q_UNUSED( disambiguation )
+  Q_UNUSED( n )
   return sourceText;
 }

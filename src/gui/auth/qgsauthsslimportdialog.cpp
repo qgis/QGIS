@@ -269,7 +269,7 @@ void QgsAuthSslImportDialog::socketEncrypted()
 
 void QgsAuthSslImportDialog::socketError( QAbstractSocket::SocketError err )
 {
-  Q_UNUSED( err );
+  Q_UNUSED( err )
   if ( mSocket )
   {
     appendString( QStringLiteral( "%1: %2" ).arg( tr( "Socket ERROR" ), mSocket->errorString() ) );
@@ -307,7 +307,8 @@ void QgsAuthSslImportDialog::sslErrors( const QList<QSslError> &errors )
   QDialog errorDialog( this );
   Ui_SslErrors ui;
   ui.setupUi( &errorDialog );
-  Q_FOREACH ( const QSslError &error, errors )
+  const auto constErrors = errors;
+  for ( const QSslError &error : constErrors )
   {
     ui.sslErrorList->addItem( error.errorString() );
   }

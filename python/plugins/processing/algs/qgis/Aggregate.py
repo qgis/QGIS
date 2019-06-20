@@ -21,10 +21,6 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'February 2017'
 __copyright__ = '(C) 2017, Arnaud Morvan'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (
     QgsDistanceArea,
     QgsExpression,
@@ -159,7 +155,7 @@ class Aggregate(QgisAlgorithm):
             aggregate = field_def['aggregate']
             if aggregate == 'first_value':
                 expression = field_def['input']
-            elif aggregate == 'concatenate':
+            elif aggregate == 'concatenate' or aggregate == 'concatenate_unique':
                 expression = ('{}({}, {}, {}, \'{}\')'
                               .format(field_def['aggregate'],
                                       field_def['input'],

@@ -17,7 +17,7 @@
 #define QGSRULEBASEDRENDERERWIDGET_H
 
 #include "qgsrendererwidget.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgsrulebasedrenderer.h"
 class QMenu;
@@ -230,7 +230,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 
     /**
      * Set the widget in dock mode.
-     * \param dockMode True for dock mode.
+     * \param dockMode TRUE for dock mode.
      */
     void setDockMode( bool dockMode ) override;
 

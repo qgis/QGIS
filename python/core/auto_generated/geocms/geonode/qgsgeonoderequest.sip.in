@@ -55,7 +55,7 @@ server instance, for instance requesting all available layers or layer styles.
 %Docstring
 Constructor for QgsGeoNodeRequest.
 
-If ``forceRefresh`` is false, then cached copies of the request may be reused.
+If ``forceRefresh`` is ``False``, then cached copies of the request may be reused.
 %End
 
     ~QgsGeoNodeRequest();

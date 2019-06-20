@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsExifTools
     /**
      * Returns the geotagged coordinate stored in the image at \a imagePath.
      *
-     * If a geotag was found, \a ok will be set to true.
+     * If a geotag was found, \a ok will be set to TRUE.
      *
      * If the image contains an elevation tag then the returned point will contain
      * the elevation as a z value.
@@ -74,7 +74,7 @@ class ANALYSIS_EXPORT QgsExifTools
      *
      * If desired, extended GPS tags (such as elevation) can be specified via the \a details argument.
      *
-     * Returns true if writing was successful.
+     * Returns TRUE if writing was successful.
      *
      * \see getGeoTag()
      */

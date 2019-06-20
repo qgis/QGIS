@@ -25,6 +25,7 @@
 #include "qgswkbtypes.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometryoptions.h"
 
 #include <limits>
 
@@ -351,9 +352,10 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
       mLayer->changeGeometry( feat.id(), featureGeom );
 
       //insert new features
-      for ( int i = 0; i < newGeometries.size(); ++i )
+      QgsAttributeMap attributeMap = feat.attributes().toMap();
+      for ( const QgsGeometry &geom : qgis::as_const( newGeometries ) )
       {
-        QgsFeature f = QgsVectorLayerUtils::createFeature( mLayer, newGeometries.at( i ), feat.attributes().toMap() );
+        QgsFeature f = QgsVectorLayerUtils::createFeature( mLayer, geom, attributeMap );
         mLayer->addFeature( f );
       }
 
@@ -614,14 +616,20 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
   double segmentSearchEpsilon = mLayer->crs().isGeographic() ? 1e-12 : 1e-8;
 
   //work with a tolerance because coordinate projection may introduce some rounding
-  double threshold = 0.0000001;
-  if ( mLayer->crs().mapUnits() == QgsUnitTypes::DistanceMeters )
+  double threshold = mLayer->geometryOptions()->geometryPrecision();
+
+  if ( qgsDoubleNear( threshold, 0.0 ) )
   {
-    threshold = 0.001;
-  }
-  else if ( mLayer->crs().mapUnits() == QgsUnitTypes::DistanceFeet )
-  {
-    threshold = 0.0001;
+    threshold = 0.0000001;
+
+    if ( mLayer->crs().mapUnits() == QgsUnitTypes::DistanceMeters )
+    {
+      threshold = 0.001;
+    }
+    else if ( mLayer->crs().mapUnits() == QgsUnitTypes::DistanceFeet )
+    {
+      threshold = 0.0001;
+    }
   }
 
   QgsRectangle searchRect( p.x() - threshold, p.y() - threshold,

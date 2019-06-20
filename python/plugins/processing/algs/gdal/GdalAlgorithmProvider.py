@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -70,6 +66,7 @@ from .translate import translate
 from .tpi import tpi
 from .tri import tri
 from .warp import warp
+from .pansharp import pansharp
 
 from .extractprojection import ExtractProjection
 # from .rasterize_over import rasterize_over
@@ -174,6 +171,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             tpi(),
             tri(),
             warp(),
+            pansharp(),
             # rasterize(),
             ExtractProjection(),
             # rasterize_over(),

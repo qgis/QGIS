@@ -16,7 +16,6 @@
 #define QGSFEATURESELECTIONMODEL_H
 
 #include <QItemSelectionModel>
-#include "qgis.h"
 #include "qgsfeatureid.h"
 
 #include "qgis_gui.h"
@@ -88,14 +87,14 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      *
      * \see selectFeatures( const QItemSelection&, SelectionFlags )
      */
-    void select( const QModelIndex &index, QItemSelectionModel::SelectionFlags command ) override { Q_UNUSED( index ); Q_UNUSED( command ); }
+    void select( const QModelIndex &index, QItemSelectionModel::SelectionFlags command ) override { Q_UNUSED( index ) Q_UNUSED( command ); }
 
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *
      * \see selectFeatures( const QItemSelection&, SelectionFlags )
      */
-    void select( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command ) override { Q_UNUSED( selection ); Q_UNUSED( command ); }
+    void select( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command ) override { Q_UNUSED( selection ) Q_UNUSED( command ); }
 
     /**
      * Select features on this table. Is to be used in favor of the stock select methods.
@@ -132,7 +131,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 
     /**
      * If sync is disabled
-     * Is set to true, if a clear and select operation should be performed before syncing
+     * Is set to TRUE, if a clear and select operation should be performed before syncing
      */
     bool mClearAndSelectBuffer;
 };

@@ -46,11 +46,11 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     QMenu *createContextMenu() override;
 
     void addLegendLayerAction( QAction *action, const QString &menu,
-                               QgsMapLayer::LayerType type, bool allLayers );
+                               QgsMapLayerType type, bool allLayers );
     bool removeLegendLayerAction( QAction *action );
     void addLegendLayerActionForLayer( QAction *action, QgsMapLayer *layer );
     void removeLegendLayerActionsForLayer( QgsMapLayer *layer );
-    QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
+    QList< LegendLayerAction > legendLayerActions( QgsMapLayerType type ) const;
 
   protected:
 
@@ -59,7 +59,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     QgsLayerTreeView *mView = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
-    QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
+    QMap< QgsMapLayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
 
   private slots:
 

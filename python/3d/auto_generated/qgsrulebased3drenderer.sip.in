@@ -1,0 +1,280 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsrulebased3drenderer.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsRuleBased3DRendererMetadata : Qgs3DRendererAbstractMetadata
+{
+%Docstring
+Metadata for rule-based 3D renderer to allow creation of its instances from XML
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsrulebased3drenderer.h"
+%End
+  public:
+    QgsRuleBased3DRendererMetadata();
+
+    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
+
+%Docstring
+Creates an instance of a 3D renderer based on a DOM element with renderer configuration
+%End
+};
+
+
+class QgsRuleBased3DRenderer : QgsAbstract3DRenderer
+{
+%Docstring
+Rule-based 3D renderer.
+
+Similar to rule-based 2D renderer and rule-based labeling, it allows specification of rules for 3D symbols.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsrulebased3drenderer.h"
+%End
+  public:
+
+    typedef QList<QgsRuleBased3DRenderer::Rule *> RuleList;
+    typedef QHash<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
+
+    class Rule
+{
+%Docstring
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsrulebased3drenderer.h"
+%End
+      public:
+        Rule( QgsAbstract3DSymbol *symbol /Transfer/, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
+%Docstring
+takes ownership of symbol, symbol may be ``None``
+%End
+        ~Rule();
+
+
+        enum RegisterResult
+        {
+          Filtered,
+          Inactive,
+          Registered
+        };
+
+        QgsAbstract3DSymbol *symbol() const;
+%Docstring
+Returns the labeling settings. May return ``None``.
+%End
+
+        QString filterExpression() const;
+%Docstring
+A filter that will check if this rule applies
+
+:return: An expression
+%End
+
+        QString description() const;
+%Docstring
+A human readable description for this rule
+
+:return: Description
+%End
+
+        bool active() const;
+%Docstring
+Returns if this rule is active
+
+:return: ``True`` if the rule is active
+%End
+
+        bool isElse() const;
+%Docstring
+Check if this rule is an ELSE rule
+
+:return: ``True`` if this rule is an else rule
+%End
+
+        QString ruleKey() const;
+%Docstring
+Unique rule identifier (for identification of rule within labeling, used as provider ID)
+%End
+
+        void setSymbol( QgsAbstract3DSymbol *symbol /Transfer/ );
+%Docstring
+Sets new symbol (or ``None``). Deletes old symbol if any.
+%End
+
+        void setFilterExpression( const QString &filterExp );
+%Docstring
+Set the expression used to check if a given feature shall be rendered with this rule
+
+:param filterExp: An expression
+%End
+
+        void setDescription( const QString &description );
+%Docstring
+Set a human readable description for this rule
+
+:param description: Description
+%End
+
+        void setActive( bool state );
+%Docstring
+Sets if this rule is active
+
+:param state: Determines if the rule should be activated or deactivated
+%End
+
+        void setIsElse( bool iselse );
+%Docstring
+Sets if this rule is an ELSE rule
+
+:param iselse: If ``True``, this rule is an ELSE rule
+%End
+
+        void setRuleKey( const QString &key );
+%Docstring
+Override the assigned rule key (should be used just internally by rule-based renderer)
+%End
+
+
+        const QgsRuleBased3DRenderer::RuleList &children() const;
+%Docstring
+Returns all children rules of this rule
+
+:return: A list of rules
+%End
+
+
+        QgsRuleBased3DRenderer::RuleList descendants() const;
+%Docstring
+Returns all children, grand-children, grand-grand-children, grand-gra... you get it
+
+:return: A list of descendant rules
+%End
+
+
+        QgsRuleBased3DRenderer::Rule *parent();
+%Docstring
+The parent rule
+
+:return: Parent rule
+%End
+
+        void appendChild( QgsRuleBased3DRenderer::Rule *rule /Transfer/ );
+%Docstring
+add child rule, take ownership, sets this as parent
+%End
+
+        void insertChild( int i, QgsRuleBased3DRenderer::Rule *rule /Transfer/ );
+%Docstring
+add child rule, take ownership, sets this as parent
+%End
+
+        void removeChildAt( int i );
+%Docstring
+delete child rule
+%End
+
+        const QgsRuleBased3DRenderer::Rule *findRuleByKey( const QString &key ) const;
+%Docstring
+Try to find a rule given its unique key
+%End
+
+
+        QgsRuleBased3DRenderer::Rule *clone() const /Factory/;
+%Docstring
+clone this rule, return new instance
+%End
+
+
+        static QgsRuleBased3DRenderer::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Create a rule from an XML definition
+
+:param ruleElem: The XML rule element
+:param context: reading context
+
+:return: A new rule
+%End
+
+        QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+store labeling info to XML element
+%End
+
+
+
+
+
+      private:
+        Rule( const QgsRuleBased3DRenderer::Rule &rh );
+    };
+
+
+    QgsRuleBased3DRenderer( QgsRuleBased3DRenderer::Rule *root /Transfer/ );
+%Docstring
+Construct renderer with the given root rule (takes ownership)
+%End
+    ~QgsRuleBased3DRenderer();
+
+    void setLayer( QgsVectorLayer *layer );
+%Docstring
+Sets vector layer associated with the renderer
+%End
+    QgsVectorLayer *layer() const;
+%Docstring
+Returns vector layer associated with the renderer
+%End
+
+    QgsRuleBased3DRenderer::Rule *rootRule();
+%Docstring
+Returns pointer to the root rule
+%End
+
+    virtual QString type() const;
+    virtual QgsRuleBased3DRenderer *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void resolveReferences( const QgsProject &project );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsrulebased3drenderer.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

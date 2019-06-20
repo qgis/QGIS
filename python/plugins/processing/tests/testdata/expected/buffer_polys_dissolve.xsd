@@ -15,7 +15,7 @@
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
-        <xs:element name="geometryProperty" type="gml:PolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="geometryProperty" type="gml:MultiPolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
         <xs:element name="name" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">

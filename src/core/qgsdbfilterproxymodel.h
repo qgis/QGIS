@@ -19,7 +19,7 @@
 #define QGSDBFILTERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgis_core.h"
 

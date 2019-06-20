@@ -58,7 +58,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
   public:
 
     /**
-     * Construct a style manager associated with a map layer (must not be null).
+     * Construct a style manager associated with a map layer (must not be NULLPTR).
      * The style manager will be parented to \a layer.
      */
     QgsMapLayerStyleManager( QgsMapLayer *layer SIP_TRANSFERTHIS );
@@ -89,25 +89,25 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 
     /**
      * Add a style with given name and data
-     * \returns true on success (name is unique and style is valid)
+     * \returns TRUE on success (name is unique and style is valid)
      */
     bool addStyle( const QString &name, const QgsMapLayerStyle &style );
 
     /**
      * Add style by cloning the current one
-     * \returns true on success
+     * \returns TRUE on success
      */
     bool addStyleFromLayer( const QString &name );
 
     /**
      * Remove a stored style
-     * \returns true on success (style exists and it is not the last one)
+     * \returns TRUE on success (style exists and it is not the last one)
      */
     bool removeStyle( const QString &name );
 
     /**
      * Rename a stored style to a different name
-     * \returns true on success (style exists and new name is unique)
+     * \returns TRUE on success (style exists and new name is unique)
      */
     bool renameStyle( const QString &name, const QString &newName );
 
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 
     /**
      * Set a different style as the current style - will apply it to the layer
-     * \returns true on success
+     * \returns TRUE on success
      */
     bool setCurrentStyle( const QString &name );
 
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     bool restoreOverrideStyle();
 
     /**
-     * Returns true if this is the default style
+     * Returns TRUE if this is the default style
      *
      * \since QGIS 3.0
      */

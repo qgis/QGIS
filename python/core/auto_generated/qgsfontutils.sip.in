@@ -69,7 +69,7 @@ Updates font with named style and retain all font properties
 :param fontstyle: The style to try and switch the font to
 :param fallback: If no matching fontstyle found for font, assign most similar or first style found to font
 
-:return: Whether the font was updated (also returns true if the requested style matches font's current style)
+:return: Whether the font was updated (also returns ``True`` if the requested style matches font's current style)
 
 .. note::
 
@@ -133,7 +133,7 @@ this will overwrite the current properties of the font.
 :param font: font to update
 :param element: DOM element
 
-:return: true if properties were successfully read from element
+:return: ``True`` if properties were successfully read from element
 
 .. seealso:: :py:func:`toXmlElement`
 
@@ -151,7 +151,7 @@ this will overwrite the current properties of the font.
 :param element: DOM element
 :param childNode: name of child node
 
-:return: true if child node exists and properties were successfully read from node
+:return: ``True`` if child node exists and properties were successfully read from node
 
 .. seealso:: :py:func:`setFromXmlElement`
 
@@ -173,7 +173,7 @@ Caller takes responsibility for deleting the returned object.
     static QFont fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
 %Docstring
 Attempts to parse the provided mime ``data`` as a QFont.
-If data can be parsed as a QFont, ``ok`` will be set to true.
+If data can be parsed as a QFont, ``ok`` will be set to ``True``.
 
 .. seealso:: :py:func:`toMimeData`
 

@@ -19,6 +19,7 @@ email                : morb at ozemail dot com dot au
 #include <functional>
 
 #include <QDomDocument>
+#include <QJsonObject>
 #include <QSet>
 #include <QString>
 #include <QVector>
@@ -28,13 +29,17 @@ email                : morb at ozemail dot com dot au
 #include <memory>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgsabstractgeometry.h"
 #include "qgspointxy.h"
 #include "qgspoint.h"
 #include "qgsfeatureid.h"
 
+#ifndef SIP_RUN
+#include <nlohmann/json_fwd.hpp>
+using json = nlohmann::json;
+#endif
 
 class QgsGeometryEngine;
 class QgsVectorLayer;
@@ -107,6 +112,7 @@ class CORE_EXPORT QgsGeometry
 {
     Q_GADGET
     Q_PROPERTY( bool isNull READ isNull )
+    Q_PROPERTY( QgsWkbTypes::GeometryType type READ type )
 
   public:
 
@@ -162,7 +168,7 @@ class CORE_EXPORT QgsGeometry
      */
     explicit QgsGeometry( std::unique_ptr< QgsAbstractGeometry > geom ) SIP_SKIP;
 
-    ~QgsGeometry();
+    virtual ~QgsGeometry();
 
     /**
      * Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
@@ -195,15 +201,18 @@ class CORE_EXPORT QgsGeometry
      * Sets the underlying geometry store. Ownership of geometry is transferred.
      *
      * \note In QGIS 2.x this method was named setGeometry().
+     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+     *       Using this method will confuse Python's memory management and type information system.
+     *       Better create a new QgsGeometry object instead.
      *
      * \see get()
      * \see constGet()
      * \since QGIS 3.0
      */
-    void set( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    void set( QgsAbstractGeometry *geometry SIP_TRANSFER ) SIP_DEPRECATED;
 
     /**
-     * Returns true if the geometry is null (ie, contains no underlying geometry
+     * Returns TRUE if the geometry is null (ie, contains no underlying geometry
      * accessible via geometry() ).
      * \see get
      * \see isEmpty()
@@ -297,14 +306,14 @@ class CORE_EXPORT QgsGeometry
     QgsWkbTypes::GeometryType type() const;
 
     /**
-     * Returns true if the geometry is empty (eg a linestring with no vertices,
+     * Returns TRUE if the geometry is empty (eg a linestring with no vertices,
      * or a collection with no geometries). A null geometry will always
-     * return true for isEmpty().
+     * return TRUE for isEmpty().
      * \see isNull()
      */
     bool isEmpty() const;
 
-    //! Returns true if WKB of the geometry is of WKBMulti* type
+    //! Returns TRUE if WKB of the geometry is of WKBMulti* type
     bool isMultipart() const;
 
     /**
@@ -316,7 +325,7 @@ class CORE_EXPORT QgsGeometry
      * Calling this method is dramatically faster than the topological
      * equality test performed by isGeosEqual().
      *
-     * \note Comparing two null geometries will return false.
+     * \note Comparing two null geometries will return FALSE.
      *
      * \see isGeosEqual()
      * \since QGIS 1.5
@@ -334,18 +343,28 @@ class CORE_EXPORT QgsGeometry
      * Consider using the much faster, stricter equality test performed
      * by equals() instead.
      *
-     * \note Comparing two null geometries will return false.
+     * \note Comparing two null geometries will return FALSE.
      *
      * \see equals()
      * \since QGIS 1.5
      */
     bool isGeosEqual( const QgsGeometry & ) const;
 
+    //! Validity check flags
+    enum ValidityFlag
+    {
+      FlagAllowSelfTouchingHoles = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
+    };
+    Q_DECLARE_FLAGS( ValidityFlags, ValidityFlag )
+
     /**
-     * Checks validity of the geometry using GEOS
+     * Checks validity of the geometry using GEOS.
+     *
+     * The \a flags parameter indicates optional flags which control the type of validity checking performed.
+     *
      * \since QGIS 1.5
      */
-    bool isGeosValid() const;
+    bool isGeosValid( QgsGeometry::ValidityFlags flags = nullptr ) const;
 
     /**
      * Determines whether the geometry is simple (according to OGC definition),
@@ -572,6 +591,8 @@ class CORE_EXPORT QgsGeometry
      */
     double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
 
+    //TODO QGIS 4.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
+
     /**
      * Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
      * and the indices of the vertices before and after the closest vertex.
@@ -584,7 +605,6 @@ class CORE_EXPORT QgsGeometry
      * \param sqrDist will be set to the square distance between the closest vertex and the specified point
      * \returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
      */
-    //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex SIP_OUT, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT, double &sqrDist SIP_OUT ) const;
 
     /**
@@ -624,7 +644,7 @@ class CORE_EXPORT QgsGeometry
      *  If the requested vertex number (beforeVertex.back()) is greater
      *  than the last actual vertex on the requested ring and item,
      *  it is assumed that the vertex is to be appended instead of inserted.
-     *  Returns false if atVertex does not correspond to a valid vertex
+     *  Returns FALSE if atVertex does not correspond to a valid vertex
      *  on this geometry (including if this geometry is a Point).
      *  It is up to the caller to distinguish between
      *  these error conditions.  (Or maybe we add another method to this
@@ -638,7 +658,7 @@ class CORE_EXPORT QgsGeometry
      *  If the requested vertex number (beforeVertex.back()) is greater
      *  than the last actual vertex on the requested ring and item,
      *  it is assumed that the vertex is to be appended instead of inserted.
-     *  Returns false if atVertex does not correspond to a valid vertex
+     *  Returns FALSE if atVertex does not correspond to a valid vertex
      *  on this geometry (including if this geometry is a Point).
      *  It is up to the caller to distinguish between
      *  these error conditions.  (Or maybe we add another method to this
@@ -650,7 +670,7 @@ class CORE_EXPORT QgsGeometry
      * Moves the vertex at the given position number
      * and item (first number is index 0)
      * to the given coordinates.
-     * Returns false if atVertex does not correspond to a valid vertex
+     * Returns FALSE if atVertex does not correspond to a valid vertex
      * on this geometry
      */
     bool moveVertex( double x, double y, int atVertex );
@@ -659,7 +679,7 @@ class CORE_EXPORT QgsGeometry
      * Moves the vertex at the given position number
      * and item (first number is index 0)
      * to the given coordinates.
-     * Returns false if atVertex does not correspond to a valid vertex
+     * Returns FALSE if atVertex does not correspond to a valid vertex
      * on this geometry
      */
     bool moveVertex( const QgsPoint &p, int atVertex );
@@ -667,7 +687,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Deletes the vertex at the given position number and item
      * (first number is index 0)
-     * \returns false if atVertex does not correspond to a valid vertex
+     * \returns FALSE if atVertex does not correspond to a valid vertex
      * on this geometry (including if this geometry is a Point),
      * or if the number of remaining vertices in the linestring
      * would be less than two.
@@ -793,7 +813,7 @@ class CORE_EXPORT QgsGeometry
      *
      * By default, z-coordinates are not transformed, even if the coordinate transform
      * includes a vertical datum transformation. To transform z-coordinates, set
-     * \a transformZ to true. This requires that the z coordinates in the geometry represent
+     * \a transformZ to TRUE. This requires that the z coordinates in the geometry represent
      * height relative to the vertical datum of the source CRS (generally ellipsoidal heights)
      * and are expressed in its vertical units (generally meters).
      *
@@ -823,7 +843,7 @@ class CORE_EXPORT QgsGeometry
      * Splits this geometry according to a given line.
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the split
-     * \param topological true if topological editing is enabled
+     * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \returns OperationResult a result code: success or reason of failure
      */
@@ -923,13 +943,13 @@ class CORE_EXPORT QgsGeometry
      *
      * By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
      * with the same x and y coordinate but different z values will still be considered
-     * duplicate and one will be removed. If \a useZValues is true, then the z values are
+     * duplicate and one will be removed. If \a useZValues is TRUE, then the z values are
      * also tested and nodes with the same x and y but different z will be maintained.
      *
      * Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
      * a multipoint geometry with overlapping points will not be changed by this method.
      *
-     * The function will return true if nodes were removed, or false if no duplicate nodes
+     * The function will return TRUE if nodes were removed, or FALSE if no duplicate nodes
      * were found.
      *
      * \since QGIS 3.0
@@ -937,7 +957,7 @@ class CORE_EXPORT QgsGeometry
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false );
 
     /**
-     * Returns true if this geometry exactly intersects with a \a rectangle. This test is exact
+     * Returns TRUE if this geometry exactly intersects with a \a rectangle. This test is exact
      * and can be slow for complex geometries.
      *
      * The GEOS library is used to perform the intersection test. Geometries which are not
@@ -948,7 +968,7 @@ class CORE_EXPORT QgsGeometry
     bool intersects( const QgsRectangle &rectangle ) const;
 
     /**
-     * Returns true if this geometry exactly intersects with another \a geometry. This test is exact
+     * Returns TRUE if this geometry exactly intersects with another \a geometry. This test is exact
      * and can be slow for complex geometries.
      *
      * The GEOS library is used to perform the intersection test. Geometries which are not
@@ -959,7 +979,7 @@ class CORE_EXPORT QgsGeometry
     bool intersects( const QgsGeometry &geometry ) const;
 
     /**
-     * Returns true if the bounding box of this geometry intersects with a \a rectangle. Since this
+     * Returns TRUE if the bounding box of this geometry intersects with a \a rectangle. Since this
      * test only considers the bounding box of the geometry, is is very fast to calculate and handles invalid
      * geometries.
      *
@@ -970,7 +990,7 @@ class CORE_EXPORT QgsGeometry
     bool boundingBoxIntersects( const QgsRectangle &rectangle ) const;
 
     /**
-     * Returns true if the bounding box of this geometry intersects with the bounding box of another \a geometry. Since this
+     * Returns TRUE if the bounding box of this geometry intersects with the bounding box of another \a geometry. Since this
      * test only considers the bounding box of the geometries, is is very fast to calculate and handles invalid
      * geometries.
      *
@@ -1234,7 +1254,7 @@ class CORE_EXPORT QgsGeometry
      * OR the envelope surrounding all input nodes.
      * The \a tolerance parameter specifies an optional snapping tolerance which can
      * be used to improve the robustness of the diagram calculation.
-     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
      * \since QGIS 3.0
@@ -1245,7 +1265,7 @@ class CORE_EXPORT QgsGeometry
      * Returns the Delaunay triangulation for the vertices of the geometry.
      * The \a tolerance parameter specifies an optional snapping tolerance which can
      * be used to improve the robustness of the triangulation.
-     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
      * \since QGIS 3.0
@@ -1387,7 +1407,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Exports the geometry to WKT
-     * \returns true in case of success and false else
+     * \returns TRUE in case of success and FALSE else
      * \note precision parameter added in QGIS 2.4
      */
     QString asWkt( int precision = 17 ) const;
@@ -1415,10 +1435,17 @@ class CORE_EXPORT QgsGeometry
     QString asJson( int precision = 17 ) const;
 
     /**
+     * Exports the geometry to a json object.
+     * \note not available in Python bindings
+     * \since QGIS 3.8
+     */
+    virtual json asJsonObject( int precision = 17 ) const SIP_SKIP;
+
+    /**
      * Try to convert the geometry to the requested type
      * \param destType the geometry type to be converted to
      * \param destMultipart determines if the output geometry will be multipart or not
-     * \returns the converted geometry or nullptr if the conversion fails.
+     * \returns the converted geometry or NULLPTR if the conversion fails.
      * \since QGIS 2.2
      */
     QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const SIP_FACTORY;
@@ -1708,14 +1735,14 @@ class CORE_EXPORT QgsGeometry
     /**
      * Deletes a ring in polygon or multipolygon.
      * Ring 0 is outer ring and can't be deleted.
-     * \returns true on success
+     * \returns TRUE on success
      * \since QGIS 1.2
      */
     bool deleteRing( int ringNum, int partNum = 0 );
 
     /**
      * Deletes part identified by the part number
-     * \returns true on success
+     * \returns TRUE on success
      * \since QGIS 1.2
      */
     bool deletePart( int partNum );
@@ -1723,10 +1750,10 @@ class CORE_EXPORT QgsGeometry
     /**
      * Converts single type geometry into multitype geometry
      * e.g. a polygon into a multipolygon geometry with one polygon
-     * If it is already a multipart geometry, it will return true and
+     * If it is already a multipart geometry, it will return TRUE and
      * not change the geometry.
      *
-     * \returns true in case of success and false else
+     * \returns TRUE in case of success and FALSE else
      */
     bool convertToMultiType();
 
@@ -1734,10 +1761,10 @@ class CORE_EXPORT QgsGeometry
      * Converts multi type geometry into single type geometry
      * e.g. a multipolygon into a polygon geometry. Only the first part of the
      * multi geometry will be retained.
-     * If it is already a single part geometry, it will return true and
+     * If it is already a single part geometry, it will return TRUE and
      * not change the geometry.
      *
-     * \returns true in case of success and false else
+     * \returns TRUE in case of success and FALSE else
      */
     bool convertToSingleType();
 
@@ -1747,7 +1774,7 @@ class CORE_EXPORT QgsGeometry
      * Does nothing the geometry is not a geometry collection. May leave the geometry
      * empty if none of the child geometries match the desired type.
      *
-     * \returns true in case of success and false else
+     * \returns TRUE in case of success and FALSE else
      * \since QGIS 3.2
      */
     bool convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType geomType );
@@ -1824,7 +1851,7 @@ class CORE_EXPORT QgsGeometry
         QgsPointXY where() const;
 
         /**
-         * True if the location available from \see where is valid.
+         * TRUE if the location available from \see where is valid.
          */
         bool hasWhere() const;
 
@@ -1835,6 +1862,11 @@ class CORE_EXPORT QgsGeometry
         sipRes = PyUnicode_FromString( str.toUtf8().data() );
         % End
 #endif
+
+        bool operator==( const QgsGeometry::Error &other ) const
+        {
+          return other.mMessage == mMessage && other.mHasLocation == mHasLocation && other.mLocation == mLocation;
+        }
 
       private:
         QString mMessage;
@@ -1855,10 +1887,12 @@ class CORE_EXPORT QgsGeometry
     /**
      * Validates geometry and produces a list of geometry errors.
      * The \a method argument dictates which validator to utilize.
-     * \note Available in Python bindings since QGIS 1.6
+     *
+     * The \a flags parameter indicates optional flags which control the type of validity checking performed.
+     *
      * \since QGIS 1.5
      */
-    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = nullptr ) const;
 
     /**
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
@@ -1887,7 +1921,7 @@ class CORE_EXPORT QgsGeometry
     void convertToStraightSegment( double tolerance = M_PI / 180., QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle );
 
     /**
-     * Returns true if the geometry is a curved geometry type which requires conversion to
+     * Returns TRUE if the geometry is a curved geometry type which requires conversion to
      * display as straight line segments.
      * \see convertToStraightSegment
      * \since QGIS 2.10
@@ -1913,7 +1947,7 @@ class CORE_EXPORT QgsGeometry
      *
      * If a matching vertex was found, it will be stored in \a id.
      *
-     * Returns true if vertex was found.
+     * Returns TRUE if vertex was found.
      *
      * \see vertexNrFromVertexId()
      * \since QGIS 2.10
@@ -1943,7 +1977,7 @@ class CORE_EXPORT QgsGeometry
     QString lastError() const;
 
     /**
-     * Filters the vertices from the geometry in place, removing any which do not return true for the \a filter function
+     * Filters the vertices from the geometry in place, removing any which do not return TRUE for the \a filter function
      * check. Has no effect when called on a single point geometry.
      *
      * Depending on the \a filter used, this may result in an invalid geometry.
@@ -2008,7 +2042,7 @@ class CORE_EXPORT QgsGeometry
      * \param p1 first polyline
      * \param p2 second polyline
      * \param epsilon maximum difference for coordinates between the polylines
-     * \returns true if polylines have the same number of points and all
+     * \returns TRUE if polylines have the same number of points and all
      * points are equal within the specified tolerance
      * \since QGIS 2.9
      */
@@ -2020,7 +2054,7 @@ class CORE_EXPORT QgsGeometry
      * \param p1 first polygon
      * \param p2 second polygon
      * \param epsilon maximum difference for coordinates between the polygons
-     * \returns true if polygons have the same number of rings, and each ring has the same
+     * \returns TRUE if polygons have the same number of rings, and each ring has the same
      * number of points and all points are equal within the specified tolerance
      * \since QGIS 2.9
      */
@@ -2032,7 +2066,7 @@ class CORE_EXPORT QgsGeometry
      * \param p1 first multipolygon
      * \param p2 second multipolygon
      * \param epsilon maximum difference for coordinates between the multipolygons
-     * \returns true if multipolygons have the same number of polygons, the polygons have the same number
+     * \returns TRUE if multipolygons have the same number of polygons, the polygons have the same number
      * of rings, and each ring has the same number of points and all points are equal within the specified
      * tolerance
      * \since QGIS 2.9
@@ -2048,7 +2082,7 @@ class CORE_EXPORT QgsGeometry
      * \param p1 first geometry object
      * \param p2 second geometry object
      * \param epsilon maximum difference for coordinates between the objects
-     * \returns true if objects are
+     * \returns TRUE if objects are
      *   - polylines and have the same number of points and all
      *     points are equal within the specified tolerance
      *   - polygons and have the same number of points and all
@@ -2265,6 +2299,7 @@ class CORE_EXPORT QgsGeometry
 }; // class QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsGeometry::ValidityFlags )
 
 //! Writes the geometry to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry );

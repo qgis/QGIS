@@ -72,7 +72,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
 
     /**
@@ -81,7 +81,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * \param options generic data provider options
      */
     explicit QgsOgrProvider( QString const &uri,
-                             const QgsDataProvider::ProviderOptions &options );
+                             const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsOgrProvider() override;
 
@@ -100,6 +100,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
     QStringList subLayers() const override;
+    QgsLayerMetadata layerMetadata() const override;
     QStringList subLayersWithoutFeatureCount() const;
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
@@ -129,6 +130,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
     bool isSaveAndLoadStyleToDatabaseSupported() const override;
+    bool isDeleteStyleFromDatabaseSupported() const override;
     QString fileVectorFilters() const override;
     //! Returns a string containing the available database drivers
     QString databaseDrivers() const;
@@ -150,7 +152,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool doesStrictFeatureTypeCheck() const override;
 
     //! Returns OGR geometry type
-    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
+    static OGRwkbGeometryType getOgrGeomType( const QString &driverName, OGRLayerH ogrLayer );
 
     //! Gets single flatten geometry type
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
@@ -246,6 +248,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! Original layer (not a SQL result layer)
     QgsOgrLayerUniquePtr mOgrOrigLayer;
+
+    QgsLayerMetadata mLayerMetadata;
 
     //! path to filename
     QString mFilePath;

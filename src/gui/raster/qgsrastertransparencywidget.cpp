@@ -123,7 +123,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
 
 void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   QgsDebugMsg( QStringLiteral( "text = %1" ).arg( text ) );
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( !renderer )
@@ -133,7 +133,7 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
   int nBands = renderer->usesBands().size();
   if ( nBands == 1 )
   {
-    QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+    QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
     if ( !lineEdit ) return;
     int row = -1;
     int column = -1;

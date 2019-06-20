@@ -31,6 +31,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
+#include "qgsapplication.h"
 
 #include <QAction>
 #include <QEventLoop>
@@ -321,8 +322,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
         createErrors.append( errMsg );
         continue;
       }
-
-      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ) );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ), options );
       if ( selectedOnly )
       {
         QgsFeature feature;

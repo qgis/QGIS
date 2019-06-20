@@ -5,13 +5,14 @@
 
 #include <vector>
 #include <string>
+#include <netcdf.h>
+#include "math.h"
+#include <stdlib.h>
+#include <assert.h>
 
 #include "mdal_data_model.hpp"
 #include "mdal_cf.hpp"
 #include "mdal_utils.hpp"
-
-#include "math.h"
-#include <stdlib.h>
 
 #define CF_THROW_ERR throw MDAL_Status::Err_UnknownFormat
 
@@ -78,7 +79,6 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
         continue;
 
       size_t arr_size = mDimensions.size( mDimensions.type( dimid ) ) * nTimesteps;
-      std::string suffix = nameSuffix( mDimensions.type( dimid ) );
 
       // Get name, if it is vector and if it is x or y
       std::string name;
@@ -86,8 +86,6 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
       bool is_x = false;
 
       parseNetCDFVariableMetadata( varid, variable_name, name, &is_vector, &is_x );
-      if ( !suffix.empty() )
-        name = name + " (" + suffix + ")";
 
       // Add it to the map
       auto it = dsinfo_map.find( name );
@@ -124,10 +122,7 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
   }
   while ( true );
 
-  if ( dsinfo_map.size() == 0 )
-  {
-    throw MDAL_Status::Err_InvalidData;
-  }
+  if ( dsinfo_map.size() == 0 ) throw MDAL_Status::Err_InvalidData;
 
   return dsinfo_map;
 }
@@ -138,12 +133,12 @@ static void populate_vals( bool is_vector, double *vals, size_t i,
 {
   if ( is_vector )
   {
-    vals[2 * i] =   MDAL::safeValue( vals_x[idx], fill_val_x );
-    vals[2 * i + 1] =   MDAL::safeValue( vals_y[idx], fill_val_y );
+    vals[2 * i] = MDAL::safeValue( vals_x[idx], fill_val_x );
+    vals[2 * i + 1] = MDAL::safeValue( vals_y[idx], fill_val_y );
   }
   else
   {
-    vals[i] =   MDAL::safeValue( vals_x[idx], fill_val_x );
+    vals[i] = MDAL::safeValue( vals_x[idx], fill_val_x );
   }
 }
 
@@ -192,7 +187,7 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
 
     // read X data
     double fill_val_x = mNcFile.getFillValue( dsi.ncid_x );
-    std::vector<double> vals_x( dsi.arr_size );
+    std::vector<double> vals_x( dsi.arr_size, std::numeric_limits<double>::quiet_NaN() );
     if ( nc_get_var_double( mNcFile.handle(), dsi.ncid_x, vals_x.data() ) ) CF_THROW_ERR;
 
     // read Y data if vector
@@ -201,7 +196,7 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
     if ( dsi.is_vector )
     {
       fill_val_y = mNcFile.getFillValue( dsi.ncid_y );
-      vals_y.resize( dsi.arr_size );
+      vals_y.resize( dsi.arr_size, std::numeric_limits<double>::quiet_NaN() );
       if ( nc_get_var_double( mNcFile.handle(), dsi.ncid_y, vals_y.data() ) ) CF_THROW_ERR;
     }
 
@@ -256,7 +251,8 @@ bool MDAL::DriverCF::canRead( const std::string &uri )
   {
     NetCDFFile ncFile;
     ncFile.openFile( uri );
-    populateDimensions( ncFile );
+    mNcFile = ncFile;
+    populateDimensions( );
   }
   catch ( MDAL_Status )
   {
@@ -320,7 +316,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
     mNcFile.openFile( mFileName );
 
     // Parse dimensions
-    mDimensions = populateDimensions( mNcFile );
+    mDimensions = populateDimensions( );
 
     // Create mMesh
     Faces faces;
@@ -385,16 +381,6 @@ void MDAL::CFDimensions::setDimension( MDAL::CFDimensions::Type type,
 {
   mNcId[ncid] = type;
   mCount[type] = count;
-}
-
-size_t MDAL::CFDimensions::faceCount() const
-{
-  return size( Face2D ) + size( Line1D );
-}
-
-size_t MDAL::CFDimensions::vertexCount() const
-{
-  return size( Vertex1D ) + size( Vertex2D );
 }
 
 bool MDAL::CFDimensions::isDatasetType( MDAL::CFDimensions::Type type ) const

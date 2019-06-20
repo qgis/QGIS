@@ -64,6 +64,7 @@ class TestQgsGML : public QObject
     void testLineStringGML3_LineStringSegment();
     void testPolygonGML3();
     void testPolygonGML3_srsDimension_on_Polygon();
+    void testPolygonGML3_srsDimension_on_posList();
     void testMultiLineStringGML3();
     void testMultiPolygonGML3();
     void testPointGML3_2();
@@ -83,11 +84,13 @@ class TestQgsGML : public QObject
 
 const QString data1( "<myns:FeatureCollection "
                      "xmlns:myns='http://myns' "
+                     "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
                      "xmlns:gml='http://www.opengis.net/gml'>"
                      "<gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>"
                      "<gml:featureMember>"
                      "<myns:mytypename fid='mytypename.1'>"
                      "<myns:intfield>1</myns:intfield>"
+                     "<myns:nillablefield xsi:nil='true'/>"
                      "<myns:longfield>1234567890123</myns:longfield>"
                      "<myns:doublefield>1.23</myns:doublefield>"
                      "<myns:strfield>foo</myns:strfield>"
@@ -105,6 +108,7 @@ void TestQgsGML::testFromURL()
 {
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "nillablefield" ), QVariant::Int, QStringLiteral( "nillablefield" ) ) );
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QgsWkbTypes::Type wkbType;
   QTemporaryFile tmpFile;
@@ -117,6 +121,8 @@ void TestQgsGML::testFromURL()
   QCOMPARE( featureMaps.size(), 1 );
   QCOMPARE( gmlParser.idsMap().size(), 1 );
   QCOMPARE( gmlParser.crs().authid(), QString( "EPSG:27700" ) );
+  QCOMPARE( featureMaps[0]->attribute( QStringLiteral( "intfield" ) ).toInt(), 1 );
+  QVERIFY( featureMaps[0]->attribute( QStringLiteral( "nillablefield" ) ).isNull( ) );
   delete featureMaps[ 0 ];
 }
 
@@ -124,16 +130,19 @@ void TestQgsGML::testFromByteArray()
 {
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "nillablefield" ), QVariant::Int, QStringLiteral( "nillablefield" ) ) );
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QgsWkbTypes::Type wkbType;
   QCOMPARE( gmlParser.getFeatures( data1.toAscii(), &wkbType ), 0 );
   QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
   QCOMPARE( featureMaps.size(), 1 );
   QVERIFY( featureMaps.constFind( 0 ) != featureMaps.constEnd() );
-  QCOMPARE( featureMaps[ 0 ]->attributes().size(), 1 );
+  QCOMPARE( featureMaps[ 0 ]->attributes().size(), 2 );
   QMap<QgsFeatureId, QString > idsMap = gmlParser.idsMap();
   QVERIFY( idsMap.constFind( 0 ) != idsMap.constEnd() );
   QCOMPARE( idsMap[ 0 ], QString( "mytypename.1" ) );
+  QCOMPARE( featureMaps[0]->attribute( QStringLiteral( "intfield" ) ).toInt(), 1 );
+  QVERIFY( featureMaps[0]->attribute( QStringLiteral( "nillablefield" ) ).isNull( ) );
   delete featureMaps[ 0 ];
 }
 
@@ -141,6 +150,7 @@ void TestQgsGML::testStreamingParser()
 {
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "nillablefield" ), QVariant::Int, QStringLiteral( "nillablefield" ) ) );
   fields.append( QgsField( QStringLiteral( "longfield" ), QVariant::LongLong, QStringLiteral( "longlong" ) ) );
   fields.append( QgsField( QStringLiteral( "doublefield" ), QVariant::Double, QStringLiteral( "double" ) ) );
   fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
@@ -152,12 +162,13 @@ void TestQgsGML::testStreamingParser()
   QCOMPARE( gmlParser.isException(), false );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
-  QCOMPARE( features[0].first->attributes().size(), 5 );
+  QCOMPARE( features[0].first->attributes().size(), 6 );
   QCOMPARE( features[0].first->attributes().at( 0 ), QVariant( 1 ) );
-  QCOMPARE( features[0].first->attributes().at( 1 ), QVariant( Q_INT64_C( 1234567890123 ) ) );
-  QCOMPARE( features[0].first->attributes().at( 2 ), QVariant( 1.23 ) );
-  QCOMPARE( features[0].first->attributes().at( 3 ), QVariant( "foo" ) );
-  QCOMPARE( features[0].first->attributes().at( 4 ), QVariant( QDateTime( QDate( 2016, 4, 10 ), QTime( 12, 34, 56, 789 ), Qt::UTC ) ) );
+  QCOMPARE( features[0].first->attributes().at( 1 ), QVariant( ) );
+  QCOMPARE( features[0].first->attributes().at( 2 ), QVariant( Q_INT64_C( 1234567890123 ) ) );
+  QCOMPARE( features[0].first->attributes().at( 3 ), QVariant( 1.23 ) );
+  QCOMPARE( features[0].first->attributes().at( 4 ), QVariant( "foo" ) );
+  QCOMPARE( features[0].first->attributes().at( 5 ), QVariant( QDateTime( QDate( 2016, 4, 10 ), QTime( 12, 34, 56, 789 ), Qt::UTC ) ) );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
   QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
@@ -632,6 +643,38 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
                                    "<gml:exterior>"
                                    "<gml:LinearRing>"
                                    "<gml:posList>0 0 -100 0 10 -100 10 10 -100 10 0 -100 0 0 -100</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</myns:mygeom>"
+                                   "</myns:mytypename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QgsWkbTypes::Polygon );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
+  QCOMPARE( poly.size(), 1 );
+  QCOMPARE( poly[0].size(), 5 );
+  delete features[0].first;
+}
+
+void TestQgsGML::testPolygonGML3_srsDimension_on_posList()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename fid='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList srsDimension='3'>0 0 -100 0 10 -100 10 10 -100 10 0 -100 0 0 -100</gml:posList>"
                                    "</gml:LinearRing>"
                                    "</gml:exterior>"
                                    "</gml:Polygon>"

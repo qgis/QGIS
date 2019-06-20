@@ -201,7 +201,8 @@ void QgsRasterMinMaxWidget::doComputations()
   mLastMinMaxOrigin = newMinMaxOrigin;
   mBandsChanged = false;
 
-  Q_FOREACH ( int myBand, mBands )
+  const auto constMBands = mBands;
+  for ( int myBand : constMBands )
   {
     QgsDebugMsg( QStringLiteral( "myBand = %1" ).arg( myBand ) );
     if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() )

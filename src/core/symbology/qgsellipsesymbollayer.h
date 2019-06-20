@@ -50,10 +50,12 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setSymbolName( const QString &name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }
 
-    void setSymbolWidth( double w ) { mSymbolWidth = w; }
+    void setSize( double size ) override;
+
+    void setSymbolWidth( double w );
     double symbolWidth() const { return mSymbolWidth; }
 
-    void setSymbolHeight( double h ) { mSymbolHeight = h; }
+    void setSymbolHeight( double h );
     double symbolHeight() const { return mSymbolHeight; }
 
     Qt::PenStyle strokeStyle() const { return mStrokeStyle; }

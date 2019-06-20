@@ -73,11 +73,13 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     //convert input raster values to double, also convert input no data to result no data
 
     int outRow = 0;
+    bool isNoData = false;
     for ( int dataRow = startRow; dataRow < endRow ; ++dataRow, ++outRow )
     {
       for ( int dataCol = 0; dataCol < nCols; ++dataCol )
       {
-        data[ dataCol + nCols * outRow] = ( *it )->isNoData( dataRow, dataCol ) ? result.nodataValue() : ( *it )->value( dataRow, dataCol );
+        const double value = ( *it )->valueAndNoData( dataRow, dataCol, isNoData );
+        data[ dataCol + nCols * outRow] = isNoData ? result.nodataValue() : value;
       }
     }
     result.setData( nCols, nRows, data, result.nodataValue() );
@@ -208,22 +210,17 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
   if ( mRight )
     right = mRight->toString( cStyle );
 
-  auto floatCast = [ ]( const QString s ) -> QString
-  {
-    return QStringLiteral( "(float) ( %1 )" ).arg( s );
-  };
-
   switch ( mType )
   {
     case tOperator:
       switch ( mOperator )
       {
         case opPLUS:
-          result = QStringLiteral( "%1 + %2" ).arg( left ).arg( right );
+          result = QStringLiteral( "( %1 + %2 )" ).arg( left ).arg( right );
           break;
         case opMINUS:
         case opSIGN:
-          result = QStringLiteral( "%1 - %2" ).arg( left ).arg( right );
+          result = QStringLiteral( "( %1 - %2 )" ).arg( left ).arg( right );
           break;
         case opMUL:
           result = QStringLiteral( "%1 * %2" ).arg( left ).arg( right );
@@ -233,7 +230,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
           break;
         case opPOW:
           if ( cStyle )
-            result = QStringLiteral( "pow( %1, %2 )" ).arg( floatCast( left ) ).arg( floatCast( right ) );
+            result = QStringLiteral( "pow( %1, %2 )" ).arg( left ).arg( right );
           else
             result = QStringLiteral( "%1^%2" ).arg( left ).arg( right );
           break;
@@ -271,58 +268,31 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
             result = QStringLiteral( "%1 OR %2" ).arg( left ).arg( right );
           break;
         case opSQRT:
-          if ( cStyle )
-            result = QStringLiteral( "sqrt( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "sqrt( %1 )" ).arg( left );
+          result = QStringLiteral( "sqrt( %1 )" ).arg( left );
           break;
         case opSIN:
-          if ( cStyle )
-            result = QStringLiteral( "sin( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "sin( %1 )" ).arg( left );
+          result = QStringLiteral( "sin( %1 )" ).arg( left );
           break;
         case opCOS:
-          if ( cStyle )
-            result = QStringLiteral( "cos( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "cos( %1 )" ).arg( left );
+          result = QStringLiteral( "cos( %1 )" ).arg( left );
           break;
         case opTAN:
-          if ( cStyle )
-            result = QStringLiteral( "tan( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "tan( %1 )" ).arg( left );
+          result = QStringLiteral( "tan( %1 )" ).arg( left );
           break;
         case opASIN:
-          if ( cStyle )
-            result = QStringLiteral( "asin( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "asin( %1 )" ).arg( left );
+          result = QStringLiteral( "asin( %1 )" ).arg( left );
           break;
         case opACOS:
-          if ( cStyle )
-            result = QStringLiteral( "acos( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "acos( %1 )" ).arg( left );
+          result = QStringLiteral( "acos( %1 )" ).arg( left );
           break;
         case opATAN:
-          if ( cStyle )
-            result = QStringLiteral( "atan( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "atan( %1 )" ).arg( left );
+          result = QStringLiteral( "atan( %1 )" ).arg( left );
           break;
         case opLOG:
-          if ( cStyle )
-            result = QStringLiteral( "log( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "log( %1 )" ).arg( left );
+          result = QStringLiteral( "log( %1 )" ).arg( left );
           break;
         case opLOG10:
-          if ( cStyle )
-            result = QStringLiteral( "log10( %1 )" ).arg( floatCast( left ) );
-          else
-            result = QStringLiteral( "log10( %1 )" ).arg( left );
+          result = QStringLiteral( "log10( %1 )" ).arg( left );
           break;
         case opNONE:
           break;
@@ -333,6 +303,10 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       break;
     case tNumber:
       result = QString::number( mNumber );
+      if ( cStyle )
+      {
+        result = QStringLiteral( "(float) ( %1 )" ).arg( result );
+      }
       break;
     case tMatrix:
       break;

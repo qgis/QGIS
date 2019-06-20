@@ -120,6 +120,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsexternalresourcewidgetfactory.cpp
   editorwidgets/qgshiddenwidgetwrapper.cpp
   editorwidgets/qgshiddenwidgetfactory.cpp
+  editorwidgets/qgshtmlwidgetwrapper.cpp
   editorwidgets/qgskeyvaluewidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
   editorwidgets/qgslistwidgetfactory.cpp
@@ -165,6 +166,7 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewindicator.cpp
   layertree/qgslayertreeviewitemdelegate.cpp
 
+  layout/qgslayoutcombobox.cpp
   layout/qgslayoutcustomdrophandler.cpp
   layout/qgslayoutitemguiregistry.cpp
   layout/qgslayoutitemcombobox.cpp
@@ -199,7 +201,10 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingguiregistry.cpp
+  processing/qgsprocessingmaplayercombobox.cpp
+  processing/qgsprocessingmatrixparameterdialog.cpp
   processing/qgsprocessingmodelerparameterwidget.cpp
+  processing/qgsprocessingmultipleselectiondialog.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
@@ -210,6 +215,7 @@ SET(QGIS_GUI_SRCS
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
+  qgsadvanceddigitizingfloater.cpp
   qgsaggregatetoolbutton.cpp
   qgsattributedialog.cpp
   qgsattributeform.cpp
@@ -273,6 +279,7 @@ SET(QGIS_GUI_SRCS
   qgsfilecontentsourcelineedit.cpp
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
+  qgsfindfilesbypatternwidget.cpp
   qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
   qgsfontbutton.cpp
@@ -396,6 +403,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgisinterface.h
   qgsactionmenu.h
   qgsadvanceddigitizingdockwidget.h
+  qgsadvanceddigitizingfloater.h
   qgsaggregatetoolbutton.h
   qgsattributedialog.h
   qgsattributeform.h
@@ -448,6 +456,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
+  qgsfindfilesbypatternwidget.h
   qgsfeaturelistcombobox.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
@@ -461,6 +470,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
+  qgsgui.h
   qgshistogramwidget.h
   qgshighlight.h
   qgsidentifymenu.h
@@ -678,6 +688,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsexternalresourceconfigdlg.h
   editorwidgets/qgsexternalresourcewidgetwrapper.h
   editorwidgets/qgshiddenwidgetwrapper.h
+  editorwidgets/qgshtmlwidgetwrapper.h
   editorwidgets/qgskeyvaluewidgetwrapper.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
@@ -713,6 +724,7 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreeviewindicator.h
   layertree/qgslayertreeviewitemdelegate.h
 
+  layout/qgslayoutcombobox.h
   layout/qgslayoutcustomdrophandler.h
   layout/qgslayoutdesignerinterface.h
   layout/qgslayoutitemcombobox.h
@@ -741,7 +753,10 @@ SET(QGIS_GUI_MOC_HDRS
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingmaplayercombobox.h
+  processing/qgsprocessingmatrixparameterdialog.h
   processing/qgsprocessingmodelerparameterwidget.h
+  processing/qgsprocessingmultipleselectiondialog.h
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
@@ -779,7 +794,6 @@ SET(QGIS_GUI_HDRS
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsgeometryrubberband.h
-  qgsgui.h
   qgsguiutils.h
   qgshelp.h
   qgshighlight.h
@@ -947,6 +961,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
@@ -956,6 +971,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/native
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -1055,6 +1071,8 @@ TARGET_LINK_LIBRARIES(qgis_gui
 IF(ENABLE_MODELTEST)
   TARGET_LINK_LIBRARIES(qgis_gui ${Qt5Test_LIBRARIES})
 ENDIF(ENABLE_MODELTEST)
+
+TARGET_COMPILE_DEFINITIONS(qgis_gui PRIVATE "-DQT_NO_FOREACH")
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)

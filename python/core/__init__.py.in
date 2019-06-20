@@ -20,14 +20,13 @@
 __author__ = 'Nathan Woodrow'
 __date__ = 'May 2014'
 __copyright__ = '(C) 2014, Nathan Woodrow'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import NULL
 from qgis._core import *
 
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import fromFunction
+from .additions.markerlinesymbollayer import *
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
 from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker

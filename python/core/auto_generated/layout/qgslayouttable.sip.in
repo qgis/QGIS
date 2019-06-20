@@ -179,7 +179,7 @@ set to ShowMessage.
 %Docstring
 Sets whether empty rows should be drawn. Tables default to hiding empty rows.
 
-:param showEmpty: set to true to show empty rows in the table
+:param showEmpty: set to ``True`` to show empty rows in the table
 
 .. seealso:: :py:func:`showEmptyRows`
 %End
@@ -305,7 +305,7 @@ Returns the color used to draw text in table body cells.
 %Docstring
 Sets whether grid lines should be drawn in the table
 
-:param showGrid: set to true to show grid lines
+:param showGrid: set to ``True`` to show grid lines
 
 .. seealso:: :py:func:`showGrid`
 
@@ -373,7 +373,7 @@ Returns the color used for grid lines in the table.
 %Docstring
 Sets whether the grid's horizontal lines should be drawn in the table
 
-:param horizontalGrid: set to true to draw grid's horizontal lines
+:param horizontalGrid: set to ``True`` to draw grid's horizontal lines
 
 .. seealso:: :py:func:`setShowGrid`
 
@@ -401,7 +401,7 @@ Returns whether the grid's horizontal lines are drawn in the table.
 %Docstring
 Sets whether the grid's vertical lines should be drawn in the table
 
-:param verticalGrid: set to true to draw grid's vertical lines
+:param verticalGrid: set to ``True`` to draw grid's vertical lines
 
 .. seealso:: :py:func:`setShowGrid`
 
@@ -494,7 +494,7 @@ Returns the cell style for a cell ``group``.
 %Docstring
 Fetches the contents used for the cells in the table.
 
-:return: true if table contents were successfully retrieved.
+:return: ``True`` if table contents were successfully retrieved.
 
 :param contents: QgsLayoutTableContents to store retrieved row data in
 %End
@@ -578,10 +578,10 @@ height.
 
 :param frameHeight: height of frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
-:param includeHeader: set to true if frame would include a header row
-:param includeEmptyRows: set to true to also include rows which would be empty in the returned count. For instance,
+:param includeHeader: set to ``True`` if frame would include a header row
+:param includeEmptyRows: set to ``True`` to also include rows which would be empty in the returned count. For instance,
                          if the frame would include all table content rows and have space left for extra rows then setting this parameter
-                         to true would also include a count of these extra blank rows.
+                         to ``True`` would also include a count of these extra blank rows.
 
 :return: number of visible content rows (excluding header row)
 %End
@@ -592,9 +592,9 @@ Calculates how many content rows are visible within a given frame.
 
 :param frameIndex: index number for frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
-:param includeEmptyRows: set to true to also include rows which would be empty in the returned count. For instance,
+:param includeEmptyRows: set to ``True`` to also include rows which would be empty in the returned count. For instance,
                          if the frame would include all table content rows and have space left for extra rows then setting this parameter
-                         to true would also include a count of these extra blank rows.
+                         to ``True`` would also include a count of these extra blank rows.
 
 :return: number of visible content rows (excludes header rows)
 %End
@@ -616,7 +616,7 @@ Draws the horizontal grid lines for the table.
 :param firstRow: index corresponding to first row shown in frame
 :param lastRow: index corresponding to last row shown in frame. If greater than the number of content rows in the
                 table, then the default row height will be used for the remaining rows.
-:param drawHeaderLines: set to true to include for the table header
+:param drawHeaderLines: set to ``True`` to include for the table header
 
 .. seealso:: :py:func:`drawVerticalGridLines`
 %End
@@ -634,7 +634,7 @@ Checks whether a table contents contains a given row
 :param contents: table contents to check
 :param row: row to check for
 
-:return: true if contents contains rows
+:return: ``True`` if contents contains rows
 %End
 
 };

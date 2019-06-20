@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Hugo Mercier'
 __date__ = '26/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import os
@@ -974,6 +972,40 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         req = QgsFeatureRequest().setFilterFids([5, 6, 8])
         a = [(f.id(), f['a']) for f in vl.getFeatures(req)]
         self.assertEqual(a, [(5, 5), (6, 6), (8, 8)])
+
+        QgsProject.instance().removeMapLayer(ml)
+
+    def testUpdatedFields(self):
+        """Test when referenced layer update its fields
+        https://github.com/qgis/QGIS/issues/28712
+        """
+
+        ml = QgsVectorLayer("Point?srid=EPSG:4326&field=a:int", "mem", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        f1 = QgsFeature(ml.fields())
+        f1.setGeometry(QgsGeometry.fromWkt('POINT(2 3)'))
+        ml.addFeatures([f1])
+        ml.commitChanges()
+
+        vl = QgsVectorLayer("?query=select a, geometry from mem", "vl", "virtual")
+        self.assertEqual(vl.isValid(), True)
+
+        # add one more field
+        ml.dataProvider().addAttributes([QgsField('newfield', QVariant.Int)])
+        ml.updateFields()
+
+        self.assertEqual(ml.featureCount(), vl.featureCount())
+        self.assertEqual(vl.fields().count(), 1)
+
+        geometry = next(vl.getFeatures()).geometry()
+        self.assertTrue(geometry)
+
+        point = geometry.asPoint()
+        self.assertEqual(point.x(), 2)
+        self.assertEqual(point.y(), 3)
 
         QgsProject.instance().removeMapLayer(ml)
 

@@ -33,6 +33,8 @@ class TestQgsZipUtils: public QObject
 
     void unzipWithSubdirs();
     void unzipWithSubdirs2();
+    void specialChars();
+    void testZip();
 
   private:
     void genericTest( QString zipName, int expectedEntries, bool includeFolders, const QStringList &testFileNames );
@@ -83,6 +85,38 @@ void TestQgsZipUtils::unzipWithSubdirs2()
   genericTest( QString( "diff_structured" ), 3, false, QStringList() << "/subfolder/3.txt" );
 }
 
+void TestQgsZipUtils::specialChars()
+{
+  genericTest( "Chars èêæýì", 1, false, QStringList() << "/èêæýì.txt" );
+}
+
+void TestQgsZipUtils::testZip()
+{
+  QString txtFile = QString( TEST_DATA_DIR ) + "/zip/aæýì.txt";
+
+  QString zipDirPath = QDir::tempPath() + "/test_special_chars æì";
+  QStringList files;
+
+  // Create a root folder otherwise nothing is unzipped
+  QDir dir( zipDirPath );
+  if ( dir.exists( zipDirPath ) )
+  {
+    dir.remove( zipDirPath );
+    QFile::remove( zipDirPath + "/special_zip æì.zip" );
+    QFile::remove( zipDirPath + "/aæýì.txt" );
+  }
+  else
+  {
+    dir.mkdir( zipDirPath );
+  }
+
+  QVERIFY( QgsZipUtils::zip( zipDirPath + "/special_zip æì.zip", QStringList() << txtFile ) );
+  QVERIFY( QgsZipUtils::unzip( zipDirPath + "/special_zip æì.zip", zipDirPath, files ) );
+  QCOMPARE( files.count(), 1 );
+  QCOMPARE( files.at( 0 ), zipDirPath + "/aæýì.txt" );
+  QVERIFY( QFile::exists( zipDirPath + "/aæýì.txt" ) );
+}
+
 /**
  * \brief TestQgsZipUtils::genericTest
  * \param zipName File to unzip
@@ -92,11 +126,11 @@ void TestQgsZipUtils::unzipWithSubdirs2()
  */
 void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool includeFolders, const QStringList &testFileNames )
 {
-  QFile zipFile( QString( TEST_DATA_DIR ) + QString( "/zip/%1.zip" ).arg( zipName ) );
+  QFile zipFile( QString( TEST_DATA_DIR ) + QStringLiteral( "/zip/%1.zip" ).arg( zipName ) );
   QVERIFY( zipFile.exists() );
 
   QFileInfo fileInfo( zipFile );
-  QString unzipDirPath = QDir::tempPath() + zipName;
+  QString unzipDirPath = QDir::tempPath() + '/' + zipName;
   QStringList files;
 
   // Create a root folder otherwise nothing is unzipped

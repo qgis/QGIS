@@ -402,7 +402,8 @@ void QgsDelimitedTextFile::setDiscardEmptyFields( bool discardEmptyFields )
 void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
 {
   mFieldNames.clear();
-  Q_FOREACH ( QString name, names )
+  const auto constNames = names;
+  for ( QString name : constNames )
   {
     bool nameOk = true;
     int fieldNo = mFieldNames.size() + 1;

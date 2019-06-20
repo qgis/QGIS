@@ -17,6 +17,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsexpression.h"
 
 #include <QVBoxLayout>
 #include <QTreeWidget>
@@ -140,7 +141,8 @@ QVariantMap QgsVariableEditorWidget::variablesInActiveScope() const
   }
 
   QgsExpressionContextScope *scope = mContext->scope( mEditableScopeIndex );
-  Q_FOREACH ( const QString &variable, scope->variableNames() )
+  const auto constVariableNames = scope->variableNames();
+  for ( const QString &variable : constVariableNames )
   {
     if ( scope->isReadOnly( variable ) )
       continue;
@@ -184,7 +186,8 @@ void QgsVariableEditorWidget::mRemoveButton_clicked()
   QgsExpressionContextScope *editableScope = mContext->scope( mEditableScopeIndex );
   QList<QTreeWidgetItem *> selectedItems = mTreeWidget->selectedItems();
 
-  Q_FOREACH ( QTreeWidgetItem *item, selectedItems )
+  const auto constSelectedItems = selectedItems;
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
       continue;
@@ -215,7 +218,8 @@ void QgsVariableEditorWidget::selectionChanged()
   QList<QTreeWidgetItem *> selectedItems = mTreeWidget->selectedItems();
 
   bool removeEnabled = true;
-  Q_FOREACH ( QTreeWidgetItem *item, selectedItems )
+  const auto constSelectedItems = selectedItems;
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
     {
@@ -324,7 +328,8 @@ void QgsVariableEditorTree::refreshTree()
 
   //add all scopes from the context
   int scopeIndex = 0;
-  Q_FOREACH ( QgsExpressionContextScope *scope, mContext->scopes() )
+  const auto constScopes = mContext->scopes();
+  for ( QgsExpressionContextScope *scope : constScopes )
   {
     refreshScopeItems( scope, scopeIndex );
     scopeIndex++;
@@ -710,7 +715,7 @@ QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem &option,
 void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *model,
     const QModelIndex &index ) const
 {
-  Q_UNUSED( model );
+  Q_UNUSED( model )
 
   if ( !mParentTree )
     return;

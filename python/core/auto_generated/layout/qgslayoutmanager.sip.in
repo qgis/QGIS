@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLayoutManager : QObject
 {
 %Docstring
@@ -42,7 +41,7 @@ manager.
     bool addLayout( QgsMasterLayoutInterface *layout /Transfer/ );
 %Docstring
 Adds a ``layout`` to the manager. Ownership of the layout is transferred to the manager.
-Returns true if the addition was successful, or false if the layout could not be added (eg
+Returns ``True`` if the addition was successful, or ``False`` if the layout could not be added (eg
 as a result of a duplicate layout name).
 
 .. seealso:: :py:func:`removeLayout`
@@ -53,7 +52,7 @@ as a result of a duplicate layout name).
     bool removeLayout( QgsMasterLayoutInterface *layout );
 %Docstring
 Removes a ``layout`` from the manager. The layout is deleted.
-Returns true if the removal was successful, or false if the removal failed (eg as a result
+Returns ``True`` if the removal was successful, or ``False`` if the removal failed (eg as a result
 of removing a layout which is not contained in the manager).
 
 .. seealso:: :py:func:`addLayout`
@@ -84,7 +83,7 @@ Returns a list of all print layouts contained in the manager.
 
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 %Docstring
-Returns the layout with a matching name, or None if no matching layouts
+Returns the layout with a matching name, or ``None`` if no matching layouts
 were found.
 %End
 
@@ -144,6 +143,122 @@ Emitted when a layout is renamed
 %End
 
 };
+
+
+class QgsLayoutManagerModel : QAbstractListModel
+{
+%Docstring
+
+List model representing the print layouts and reports available in a
+layout manager.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgslayoutmanager.h"
+%End
+  public:
+
+    enum Role
+    {
+      LayoutRole,
+    };
+
+    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutManagerModel, showing the layouts from the specified ``manager``.
+%End
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+    QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the layout at the corresponding ``index``.
+
+.. seealso:: :py:func:`indexFromLayout`
+%End
+
+    QModelIndex indexFromLayout( QgsMasterLayoutInterface *layout ) const;
+%Docstring
+Returns the model index corresponding to a ``layout``.
+
+.. seealso:: :py:func:`layoutFromIndex`
+%End
+
+    void setAllowEmptyLayout( bool allowEmpty );
+%Docstring
+Sets whether an optional empty layout ("not set") option is present in the model.
+
+.. seealso:: :py:func:`allowEmptyLayout`
+%End
+
+    bool allowEmptyLayout() const;
+%Docstring
+Returns ``True`` if the model allows the empty layout ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyLayout`
+%End
+
+};
+
+
+class QgsLayoutManagerProxyModel : QSortFilterProxyModel
+{
+%Docstring
+
+QSortFilterProxyModel subclass for QgsLayoutManagerModel
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgslayoutmanager.h"
+%End
+  public:
+
+    enum Filter
+    {
+      FilterPrintLayouts,
+      FilterReports,
+    };
+    typedef QFlags<QgsLayoutManagerProxyModel::Filter> Filters;
+
+
+    explicit QgsLayoutManagerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutManagerProxyModel.
+%End
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+    QgsLayoutManagerProxyModel::Filters filters() const;
+%Docstring
+Returns the current filters used for filtering available layouts.
+
+.. seealso:: :py:func:`setFilters`
+%End
+
+    void setFilters( QgsLayoutManagerProxyModel::Filters filters );
+%Docstring
+Sets the current ``filters`` used for filtering available layouts.
+
+.. seealso:: :py:func:`filters`
+%End
+
+};
+
+QFlags<QgsLayoutManagerProxyModel::Filter> operator|(QgsLayoutManagerProxyModel::Filter f1, QFlags<QgsLayoutManagerProxyModel::Filter> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

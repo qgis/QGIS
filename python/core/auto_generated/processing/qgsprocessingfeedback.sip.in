@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProcessingFeedback : QgsFeedback
 {
 %Docstring
@@ -39,7 +40,7 @@ setProgress() to provide detailed progress reports, such as "Transformed
 %Docstring
 Reports that the algorithm encountered an ``error`` while executing.
 
-If ``fatalError`` is true then the error prevented the algorithm from executing.
+If ``fatalError`` is ``True`` then the error prevented the algorithm from executing.
 %End
 
     virtual void pushInfo( const QString &info );
@@ -90,6 +91,13 @@ report the output from executing an external command or subprocess.
 .. seealso:: :py:func:`pushDebugInfo`
 
 .. seealso:: :py:func:`pushCommandInfo`
+%End
+
+    void pushVersionInfo( const QgsProcessingProvider *provider = 0 );
+%Docstring
+Pushes a summary of the QGIS (and underlying library) version information to the log.
+
+.. versionadded:: 3.4.7
 %End
 
 };

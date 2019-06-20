@@ -15,6 +15,7 @@
 
 #include "qgslayoutunitscombobox.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgis.h"
 
 QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -29,7 +30,8 @@ QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
         << QgsUnitTypes::LayoutPicas
         << QgsUnitTypes::LayoutPixels;
 
-  Q_FOREACH ( QgsUnitTypes::LayoutUnit u, units )
+  const auto constUnits = units;
+  for ( QgsUnitTypes::LayoutUnit u : constUnits )
   {
     addItem( QgsUnitTypes::toAbbreviatedString( u ), u );
     setItemData( count() - 1, QgsUnitTypes::toString( u ), Qt::ToolTipRole );
@@ -57,7 +59,8 @@ void QgsLayoutUnitsComboBox::indexChanged( int )
   QgsUnitTypes::LayoutUnit newUnit = unit();
   if ( mConverter )
   {
-    Q_FOREACH ( const QPointer< QDoubleSpinBox > &widget, mLinkedSpinBoxes )
+    const auto constMLinkedSpinBoxes = mLinkedSpinBoxes;
+    for ( const QPointer< QDoubleSpinBox > &widget : constMLinkedSpinBoxes )
     {
       if ( widget )
         whileBlocking( widget.data() )->setValue( mConverter->convert( QgsLayoutMeasurement( widget->value(), mOldUnit ), newUnit ).length() );

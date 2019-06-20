@@ -32,7 +32,7 @@ QgsLayoutItemMapItem::QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMa
 
 bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
 {
-  Q_UNUSED( document );
+  Q_UNUSED( document )
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
   element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "show" ), mEnabled );
@@ -51,7 +51,7 @@ bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &documen
 
 bool QgsLayoutItemMapItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext & )
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   mUuid = itemElem.attribute( QStringLiteral( "uuid" ) );
   mName = itemElem.attribute( QStringLiteral( "name" ) );
   mEnabled = ( itemElem.attribute( QStringLiteral( "show" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );

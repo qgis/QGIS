@@ -25,6 +25,8 @@
 #include "qgssvgcache.h"
 #include <QSvgRenderer>
 #include <limits>
+#include <QGraphicsPathItem>
+#include <QVector2D>
 
 QgsLayoutItemPolyline::QgsLayoutItemPolyline( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )
@@ -163,7 +165,13 @@ void QgsLayoutItemPolyline::drawEndMarker( QPainter *painter )
       // calculate angle at end of line
       QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
       double angle = endLine.angle();
-      drawArrow( painter, endLine.p2(), angle );
+
+      //move end point depending on arrow width
+      QVector2D dir = QVector2D( endLine.dx(), endLine.dy() ).normalized();
+      QPointF endPoint = endLine.p2();
+      endPoint += ( dir * 0.5 * mArrowHeadWidth ).toPointF();
+
+      drawArrow( painter, endPoint, angle );
       break;
     }
     case MarkerMode::SvgMarker:
@@ -188,6 +196,7 @@ void QgsLayoutItemPolyline::drawArrow( QPainter *painter, QPointF center, double
   QBrush b;
   b.setColor( mArrowHeadFillColor );
   painter->setBrush( b );
+
   drawArrowHead( painter, center.x(), center.y(), angle, mArrowHeadWidth );
 }
 
@@ -204,6 +213,7 @@ void QgsLayoutItemPolyline::drawArrowHead( QPainter *p, const double x, const do
 
   double angleRad = angle / 180.0 * M_PI;
   QPointF middlePoint( x, y );
+
   //rotate both arrow points
   QPointF p1 = QPointF( -arrowHeadWidth / 2.0, arrowHeadWidth );
   QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
@@ -310,6 +320,19 @@ void QgsLayoutItemPolyline::setArrowHeadWidth( double width )
   mArrowHeadWidth = width;
   updateMarkerSvgSizes();
   update();
+}
+
+QPainterPath QgsLayoutItemPolyline::shape() const
+{
+  QPainterPath path;
+  path.addPolygon( mPolygon );
+
+  QPainterPathStroker ps;
+
+  ps.setWidth( 2 * mMaxSymbolBleed );
+  QPainterPath strokedOutline = ps.createStroke( path );
+
+  return strokedOutline;
 }
 
 void QgsLayoutItemPolyline::setStartSvgMarkerPath( const QString &path )
@@ -419,6 +442,10 @@ void QgsLayoutItemPolyline::updateBoundingRect()
   QRectF br = rect();
 
   double margin = std::max( mMaxSymbolBleed, computeMarkerMargin() );
+  if ( mEndMarker == ArrowHead )
+  {
+    margin += 0.5 * mArrowHeadWidth;
+  }
   br.adjust( -margin, -margin, margin, margin );
   mCurrentRectangle = br;
 

@@ -58,7 +58,8 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 
     mFieldsList->clear();
 
-    Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
+    const auto constColumns = mConfig.columns();
+    for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
     {
       QListWidgetItem *item = nullptr;
       if ( columnConfig.type == QgsAttributeTableConfig::Action )

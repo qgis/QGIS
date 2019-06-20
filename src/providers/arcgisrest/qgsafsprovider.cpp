@@ -21,20 +21,13 @@
 #include "qgsdatasourceuri.h"
 #include "qgsafsdataitems.h"
 #include "qgslogger.h"
-#include "geometry/qgsgeometry.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsdataitemprovider.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsafssourceselect.h"
 #include "qgssourceselectprovider.h"
 #endif
-
-#include <QEventLoop>
-#include <QMessageBox>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
@@ -53,8 +46,13 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   // Get layer info
   QString errorTitle, errorMessage;
+
+  const QString referer = mSharedData->mDataSource.param( QStringLiteral( "referer" ) );
+  if ( !referer.isEmpty() )
+    mRequestHeaders[ QStringLiteral( "Referer" )] = referer;
+
   const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ),
-                                authcfg, errorTitle, errorMessage );
+                                authcfg, errorTitle, errorMessage, mRequestHeaders );
   if ( layerData.isEmpty() )
   {
     pushError( errorTitle + ": " + errorMessage );
@@ -119,9 +117,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   if ( mSharedData->mExtent.isEmpty() )
   {
     mSharedData->mExtent = originalExtent;
-    Q_NOWARN_DEPRECATED_PUSH
-    mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS ).transformBoundingBox( mSharedData->mExtent );
-    Q_NOWARN_DEPRECATED_POP
+    mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS, options.transformContext ).transformBoundingBox( mSharedData->mExtent );
   }
 
   QString objectIdFieldName;
@@ -149,6 +145,24 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );
+
+    if ( fieldDataMap.contains( QStringLiteral( "domain" ) ) && fieldDataMap.value( QStringLiteral( "domain" ) ).toMap().value( QStringLiteral( "type" ) ).toString() == QStringLiteral( "codedValue" ) )
+    {
+      const QVariantList values = fieldDataMap.value( QStringLiteral( "domain" ) ).toMap().value( QStringLiteral( "codedValues" ) ).toList();
+      QVariantList valueConfig;
+      valueConfig.reserve( values.count() );
+      for ( const QVariant &v : values )
+      {
+        const QVariantMap value = v.toMap();
+        QVariantMap config;
+        config[ value.value( QStringLiteral( "name" ) ).toString() ] = value.value( QStringLiteral( "code" ) );
+        valueConfig.append( config );
+      }
+      QVariantMap editorConfig;
+      editorConfig.insert( QStringLiteral( "map" ), valueConfig );
+      field.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), editorConfig ) );
+    }
+
     mSharedData->mFields.append( field );
   }
   if ( objectIdFieldName.isEmpty() )
@@ -160,8 +174,16 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   mSharedData->mGeometryType = QgsArcGisRestUtils::mapEsriGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
   if ( mSharedData->mGeometryType == QgsWkbTypes::Unknown )
   {
-    appendError( QgsErrorMessage( tr( "Failed to determine geometry type" ), QStringLiteral( "AFSProvider" ) ) );
-    return;
+    if ( layerData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
+    {
+      // it's possible to connect to ImageServers as a feature service, to view tile boundaries
+      mSharedData->mGeometryType = QgsWkbTypes::Polygon;
+    }
+    else
+    {
+      appendError( QgsErrorMessage( tr( "Failed to determine geometry type" ), QStringLiteral( "AFSProvider" ) ) );
+      return;
+    }
   }
   mSharedData->mGeometryType = QgsWkbTypes::zmType( mSharedData->mGeometryType, hasZ, hasM );
 
@@ -169,7 +191,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   // and we need to store these to iterate through the features. This query
   // also returns the name of the ObjectID field.
   QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), authcfg,
-                             objectIdFieldName, errorTitle,  errorMessage, limitBbox ? mSharedData->mExtent : QgsRectangle() );
+                             errorTitle,  errorMessage, mRequestHeaders, limitBbox ? mSharedData->mExtent : QgsRectangle() );
   if ( objectIdData.isEmpty() )
   {
     appendError( QgsErrorMessage( tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, errorMessage ), QStringLiteral( "AFSProvider" ) ) );
@@ -315,6 +337,13 @@ QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
 QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMap & ) const
 {
   return QgsArcGisRestUtils::parseEsriLabeling( mLabelingDataList );
+}
+
+bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
+{
+  // these servers can be sloooooooow, and unpredictable. The previous preview job may have been fast to render,
+  // but the next may take minutes or worse to download...
+  return false;
 }
 
 #ifdef HAVE_GUI

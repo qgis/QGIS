@@ -141,7 +141,7 @@ class QgsAuthOAuth2Config : public QObject
     //! API key
     QString apiKey() const { return mApiKey; }
 
-    //! Returns true if the token is persistent
+    //! Returns TRUE if the token is persistent
     bool persistToken() const { return mPersistToken; }
 
     //! Access method
@@ -179,7 +179,7 @@ class QgsAuthOAuth2Config : public QObject
      * \param variant map where configuration is stored
      * \param format output format
      * \param pretty indentation in output
-     * \param ok is set to false in case something goes wrong, true otherwise
+     * \param ok is set to FALSE in case something goes wrong, TRUE otherwise
      * \return serialized config
      */
     static QByteArray serializeFromVariant( const QVariantMap &variant,
@@ -191,7 +191,7 @@ class QgsAuthOAuth2Config : public QObject
      * Unserialize the configuration in \a serial according to \a format
      * \param serial serialized configuration
      * \param format output format
-     * \param ok is set to false in case something goes wrong, true otherwise
+     * \param ok is set to FALSE in case something goes wrong, TRUE otherwise
      * \return config map
      */
     static QVariantMap variantFromSerialized( const QByteArray &serial,
@@ -258,9 +258,9 @@ class QgsAuthOAuth2Config : public QObject
     //! Set version to \a value
     void setVersion( int value );
     //! Set config type to \a value
-    void setConfigType( ConfigType value );
+    void setConfigType( QgsAuthOAuth2Config::ConfigType value );
     //! Set grant flow to \a value
-    void setGrantFlow( GrantFlow value );
+    void setGrantFlow( QgsAuthOAuth2Config::GrantFlow value );
     //! Set name to \a value
     void setName( const QString &value );
     //! Set description to \a value
@@ -291,7 +291,7 @@ class QgsAuthOAuth2Config : public QObject
     //! Set persistent token flag to \a persist
     void setPersistToken( bool persist );
     //! Set access method to \a value
-    void setAccessMethod( AccessMethod value );
+    void setAccessMethod( QgsAuthOAuth2Config::AccessMethod value );
     //! Set request timeout to \a value
     void setRequestTimeout( int value );
     //! Set query pairs to \a pairs
@@ -309,9 +309,9 @@ class QgsAuthOAuth2Config : public QObject
     //! Emitted when configuration version has changed
     void versionChanged( int );
     //! Emitted when configuration type has changed
-    void configTypeChanged( ConfigType );
+    void configTypeChanged( QgsAuthOAuth2Config::ConfigType );
     //! Emitted when configuration grant flow has changed
-    void grantFlowChanged( GrantFlow );
+    void grantFlowChanged( QgsAuthOAuth2Config::GrantFlow );
     //! Emitted when configuration grant flow has changed
     void nameChanged( const QString & );
     //! Emitted when configuration name has changed
@@ -343,7 +343,7 @@ class QgsAuthOAuth2Config : public QObject
     //! Emitted when configuration persist token flag has changed
     void persistTokenChanged( bool );
     //! Emitted when configuration access method has changed
-    void accessMethodChanged( AccessMethod );
+    void accessMethodChanged( QgsAuthOAuth2Config::AccessMethod );
     //! Emitted when configuration request timeout has changed
     void requestTimeoutChanged( int );
     //! Emitted when configuration query pair has changed

@@ -250,6 +250,12 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     singleGeometryChecks.append( dynamic_cast<QgsSingleGeometryCheck *>( check ) );
   }
 
+  if ( singleGeometryChecks.empty() )
+  {
+    mLayerChecks[layer].singleFeatureCheckErrors.clear();
+    emit singleGeometryCheckCleared( layer );
+  }
+
   checkInformation.singleFeatureChecks = singleGeometryChecks;
 
   // Topology checks
@@ -387,11 +393,12 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     affectedFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
   }
 
-  QgsFeaturePool *featurePool = mFeaturePools.value( layer->id() );
+  const QString layerId = layer->id();
+  QgsFeaturePool *featurePool = mFeaturePools.value( layerId );
   if ( !featurePool )
   {
     featurePool = new QgsVectorLayerFeaturePool( layer );
-    mFeaturePools.insert( layer->id(), featurePool );
+    mFeaturePools.insert( layerId, featurePool );
   }
 
   QList<std::shared_ptr<QgsGeometryCheckError>> &allErrors = mLayerChecks[layer].topologyCheckErrors;
@@ -410,18 +417,18 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   QgsFeatureRequest areaRequest = QgsFeatureRequest().setFilterRect( area );
   QgsFeatureIds checkFeatureIds = featurePool->getFeatures( areaRequest );
 
-  layerIds.insert( layer->id(), checkFeatureIds );
+  layerIds.insert( layerId, checkFeatureIds );
   QgsGeometryCheck::LayerFeatureIds layerFeatureIds( layerIds );
 
   const QList<QgsGeometryCheck *> checks = mLayerChecks[layer].topologyChecks;
 
-  QMap<const QgsGeometryCheck *, QgsFeedback *> feedbacks;
+  QHash<const QgsGeometryCheck *, QgsFeedback *> feedbacks;
   for ( QgsGeometryCheck *check : checks )
     feedbacks.insert( check, new QgsFeedback() );
 
   mLayerChecks[layer].topologyCheckFeedbacks = feedbacks.values();
 
-  QFuture<void> future = QtConcurrent::map( checks, [&allErrors, layerFeatureIds, layer, feedbacks, this]( const QgsGeometryCheck * check )
+  QFuture<void> future = QtConcurrent::map( checks, [&allErrors, layerFeatureIds, layer, layerId, feedbacks, affectedFeatureIds, this]( const QgsGeometryCheck * check )
   {
     // Watch out with the layer pointer in here. We are running in a thread, so we do not want to actually use it
     // except for using its address to report the error.
@@ -433,9 +440,30 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Write );
 
     QList<std::shared_ptr<QgsGeometryCheckError> > sharedErrors;
-    for ( QgsGeometryCheckError *error : errors )
+    for ( QgsGeometryCheckError *err : errors )
     {
-      sharedErrors.append( std::shared_ptr<QgsGeometryCheckError>( error ) );
+      std::shared_ptr<QgsGeometryCheckError> error( err );
+      // Check if the error happened in one of the edited / checked features
+      // Errors which are happen to be in the same area "by chance" are ignored.
+      const auto involvedFeatures = error->involvedFeatures();
+
+      bool errorAffectsEditedFeature = true;
+      if ( !involvedFeatures.isEmpty() )
+      {
+        errorAffectsEditedFeature = false;
+        const auto involvedFids = involvedFeatures.value( layerId );
+        for ( const QgsFeatureId id : involvedFids )
+        {
+          if ( affectedFeatureIds.contains( id ) )
+          {
+            errorAffectsEditedFeature = true;
+            break;
+          }
+        }
+      }
+
+      if ( errorAffectsEditedFeature )
+        sharedErrors.append( error );
     }
 
     allErrors.append( sharedErrors );
@@ -453,7 +481,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
     layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
     errorLocker.unlock();
-    qDeleteAll( feedbacks.values() );
+    qDeleteAll( feedbacks );
     futureWatcher->deleteLater();
     if ( mLayerChecks[layer].topologyCheckFutureWatcher == futureWatcher )
       mLayerChecks[layer].topologyCheckFutureWatcher = nullptr;

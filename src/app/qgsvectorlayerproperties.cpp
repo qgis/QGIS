@@ -69,6 +69,7 @@
 #include "qgsgeometrycheck.h"
 #include "qgsanalysis.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -232,7 +233,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   if ( mLayer->dataProvider() )//enable spatial index button group if supported by provider
   {
-    int capabilities = mLayer->dataProvider()->capabilities();
+    QgsVectorDataProvider::Capabilities capabilities = mLayer->dataProvider()->capabilities();
     if ( !( capabilities & QgsVectorDataProvider::CreateSpatialIndex ) )
     {
       pbnIndex->setEnabled( false );
@@ -361,11 +362,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLayersDependenciesTreeGroup->setItemVisibilityChecked( false );
 
   QSet<QString> dependencySources;
-  Q_FOREACH ( const QgsMapLayerDependency &dep, mLayer->dependencies() )
+  const auto constDependencies = mLayer->dependencies();
+  for ( const QgsMapLayerDependency &dep : constDependencies )
   {
     dependencySources << dep.layerId();
   }
-  Q_FOREACH ( QgsLayerTreeLayer *layer, mLayersDependenciesTreeGroup->findLayers() )
+  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
+  for ( QgsLayerTreeLayer *layer : constFindLayers )
   {
     layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
   }
@@ -469,6 +472,26 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setEnabled( false );
     mGeometryAutoFixesGroupBox->setEnabled( false );
   }
+
+  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#information-properties" ) );
+  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-properties" ) );
+  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#symbology-properties" ) );
+  mOptsPage_Labels->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#labels-properties" ) );
+  mOptsPage_Diagrams->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
+  mOptsPage_SourceFields->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-fields-properties" ) );
+  mOptsPage_AttributesForm->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#attributes-form-properties" ) );
+  mOptsPage_Joins->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
+  mOptsPage_AuxiliaryStorage->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#auxiliary-storage-properties" ) );
+  mOptsPage_Actions->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#actions-properties" ) );
+  mOptsPage_Display->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#display-properties" ) );
+  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#rendering-properties" ) );
+  mOptsPage_Variables->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#variables-properties" ) );
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#metadata-properties" ) );
+  mOptsPage_DataDependencies->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#dependencies-properties" ) ) ;
+  mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#legend-properties" ) );
+  mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#qgis-server-properties" ) );
+  mOptsPage_Digitizing->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#digitizing-properties" ) );
+
 
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
 }
@@ -661,7 +684,8 @@ void QgsVectorLayerProperties::apply()
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();
-  Q_FOREACH ( const QgsAction &action, mActionDialog->actions() )
+  const auto constActions = mActionDialog->actions();
+  for ( const QgsAction &action : constActions )
   {
     mLayer->actions()->addAction( action );
   }
@@ -697,7 +721,8 @@ void QgsVectorLayerProperties::apply()
   diagramPropertiesDialog->apply();
 
   // apply all plugin dialogs
-  Q_FOREACH ( QgsMapLayerConfigWidget *page, mLayerPropertiesPages )
+  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
+  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
   {
     page->apply();
   }
@@ -789,7 +814,8 @@ void QgsVectorLayerProperties::apply()
 
   // save dependencies
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsLayerTreeLayer *layer, mLayersDependenciesTreeGroup->findLayers() )
+  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
+  for ( const QgsLayerTreeLayer *layer : constFindLayers )
   {
     if ( layer->isVisible() )
       deps << QgsMapLayerDependency( layer->layerId() );
@@ -831,10 +857,12 @@ void QgsVectorLayerProperties::onCancel()
     // need to undo changes in vector layer joins - they are applied directly to the layer (not in apply())
     // so other parts of the properties dialog can use the fields from the joined layers
 
-    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mLayer->vectorJoins() )
+    const auto constVectorJoins = mLayer->vectorJoins();
+    for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
       mLayer->removeJoin( info.joinLayerId() );
 
-    Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mOldJoins )
+    const auto constMOldJoins = mOldJoins;
+    for ( const QgsVectorLayerJoinInfo &info : constMOldJoins )
       mLayer->addJoin( info );
   }
 
@@ -1218,9 +1246,7 @@ void QgsVectorLayerProperties::aboutToShowStyleMenu()
 
 void QgsVectorLayerProperties::loadStyle()
 {
-
   QgsSettings settings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString errorMsg;
   QStringList ids, names, descriptions;
@@ -1367,6 +1393,7 @@ void QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked( QTreeWidgetIte
   }
 
   QgsJoinDialog d( mLayer, joinedLayers );
+  d.setWindowTitle( tr( "Edit Vector Join" ) );
   d.setJoinInfo( joins[j] );
 
   if ( d.exec() == QDialog::Accepted )
@@ -1621,9 +1648,11 @@ void QgsVectorLayerProperties::updateVariableEditor()
 
 void QgsVectorLayerProperties::showHelp()
 {
-  if ( mOptionsListWidget->currentIndex().data().toString() == "Form" )
+  const QVariant helpPage = mOptionsStackedWidget->currentWidget()->property( "helpPage" );
+
+  if ( helpPage.isValid() )
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
+    QgsHelp::openHelp( helpPage.toString() );
   }
   else
   {
@@ -1645,7 +1674,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
     mAuxiliaryStorageKeyLineEdit->setText( alayer->joinInfo().targetFieldName() );
 
     // update feature count
-    int features = alayer->featureCount();
+    long features = alayer->featureCount();
     mAuxiliaryStorageFeaturesLineEdit->setText( QString::number( features ) );
 
     // update actions

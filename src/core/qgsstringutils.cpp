@@ -19,6 +19,7 @@
 #include <QStringList>
 #include <QTextBoundaryFinder>
 #include <QRegularExpression>
+#include <cstdlib> // for std::abs
 
 QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capitalization capitalization )
 {
@@ -96,6 +97,11 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       }
       return result;
     }
+
+    case UpperCamelCase:
+      QString result = QgsStringUtils::capitalize( string.toLower(), QgsStringUtils::ForceFirstLetterToCapital ).simplified();
+      result.remove( ' ' );
+      return result;
   }
   // no warnings
   return string;
@@ -408,7 +414,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available, but we need one which works within the limitation of QRegExp
   static QRegExp urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
-  static QRegExp protoRegEx( "^(?:f|ht)tps?://" );
+  static QRegExp protoRegEx( "^(?:f|ht)tps?://|file://" );
   static QRegExp emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
 
   int offset = 0;
@@ -557,7 +563,8 @@ QgsStringReplacement QgsStringReplacement::fromProperties( const QgsStringMap &p
 QString QgsStringReplacementCollection::process( const QString &input ) const
 {
   QString result = input;
-  Q_FOREACH ( const QgsStringReplacement &r, mReplacements )
+  const auto constMReplacements = mReplacements;
+  for ( const QgsStringReplacement &r : constMReplacements )
   {
     result = r.process( result );
   }
@@ -566,7 +573,8 @@ QString QgsStringReplacementCollection::process( const QString &input ) const
 
 void QgsStringReplacementCollection::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
-  Q_FOREACH ( const QgsStringReplacement &r, mReplacements )
+  const auto constMReplacements = mReplacements;
+  for ( const QgsStringReplacement &r : constMReplacements )
   {
     QgsStringMap props = r.properties();
     QDomElement propEl = doc.createElement( QStringLiteral( "replacement" ) );

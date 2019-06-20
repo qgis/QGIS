@@ -207,7 +207,7 @@ void QgsCollapsibleGroupBoxBasic::clearModifiers()
 
 void QgsCollapsibleGroupBoxBasic::checkToggled( bool chkd )
 {
-  Q_UNUSED( chkd );
+  Q_UNUSED( chkd )
   mCollapseButton->setEnabled( true ); // always keep enabled
 }
 
@@ -261,7 +261,8 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
       QgsDebugMsg( "found sync parent: " + mSyncParent->objectName() );
 
       bool thisCollapsed = mCollapsed; // get state of current box before its changed
-      Q_FOREACH ( QgsCollapsibleGroupBoxBasic *grpbox, mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic *>() )
+      const auto groupBoxes {mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic *>()};
+      for ( QgsCollapsibleGroupBoxBasic *grpbox : groupBoxes )
       {
         if ( grpbox->syncGroup() == syncGroup() && grpbox->isEnabled() )
         {
@@ -452,7 +453,8 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
       setStyleSheet( ss );
     }
 
-    Q_FOREACH ( QObject *child, children() )
+    const auto constChildren = children();
+    for ( QObject *child : constChildren )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
       if ( w && w != mCollapseButton )
@@ -470,7 +472,8 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
       setStyleSheet( ss );
     }
 
-    Q_FOREACH ( QObject *child, children() )
+    const auto constChildren = children();
+    for ( QObject *child : constChildren )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
       if ( w && w != mCollapseButton )

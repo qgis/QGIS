@@ -155,14 +155,14 @@ class CORE_EXPORT QgsQuadrilateral
 
     /**
      * Sets the point \a newPoint at the \a index.
-     * Returns false if the QgsQuadrilateral is not valid.
+     * Returns FALSE if the QgsQuadrilateral is not valid.
      * \see Point
      */
     bool setPoint( const QgsPoint &newPoint, Point index );
 
     /**
      * Set all points
-     * Returns false if the QgsQuadrilateral is not valid:
+     * Returns FALSE if the QgsQuadrilateral is not valid:
      * - The points do not have the same type
      * - The quadrilateral would have auto intersections
      * - The quadrilateral has double points

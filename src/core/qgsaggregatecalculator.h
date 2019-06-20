@@ -22,7 +22,9 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
+#include "qgsfeaturerequest.h"
 #include <QVariant>
+#include "qgsfeatureid.h"
 
 
 class QgsFeatureIterator;
@@ -79,9 +81,10 @@ class CORE_EXPORT QgsAggregateCalculator
       InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
       StringMinimumLength, //!< Minimum length of string (string fields only)
       StringMaximumLength, //!< Maximum length of string (string fields only)
-      StringConcatenate, //! Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
-      GeometryCollect, //! Create a multipart geometry from aggregated geometries
-      ArrayAggregate //! Create an array of values
+      StringConcatenate, //!< Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+      GeometryCollect, //!< Create a multipart geometry from aggregated geometries
+      ArrayAggregate, //!< Create an array of values
+      StringConcatenateUnique //!< Concatenate unique values with a joining string (string fields only). Specify the delimiter using setDelimiter().
     };
 
     //! A bundle of parameters controlling aggregate calculation
@@ -102,6 +105,12 @@ class CORE_EXPORT QgsAggregateCalculator
        * \see QgsAggregateCalculator::delimiter()
        */
       QString delimiter;
+
+      /**
+       * Optional order by clauses.
+       * \since QGIS 3.8
+       */
+      QgsFeatureRequest::OrderBy orderBy;
     };
 
     /**
@@ -129,6 +138,14 @@ class CORE_EXPORT QgsAggregateCalculator
     void setFilter( const QString &filterExpression ) { mFilterExpression = filterExpression; }
 
     /**
+     * Sets a filter to limit the features used during the aggregate calculation.
+     * If an expression filter is set, it will override this filter.
+     * \param  fids feature ids for feature filtering, and empty list will return no features.
+     * \see filter()
+     */
+    void setFidsFilter( const QgsFeatureIds &fids );
+
+    /**
      * Returns the filter which limits the features used during the aggregate calculation.
      * \see setFilter()
      */
@@ -153,7 +170,7 @@ class CORE_EXPORT QgsAggregateCalculator
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
-     * \param ok if specified, will be set to true if aggregate calculation was successful
+     * \param ok if specified, will be set to TRUE if aggregate calculation was successful
      * \returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
@@ -162,7 +179,7 @@ class CORE_EXPORT QgsAggregateCalculator
     /**
      * Converts a string to a aggregate type.
      * \param string string to convert
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns aggregate type
      */
     static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );
@@ -182,8 +199,17 @@ class CORE_EXPORT QgsAggregateCalculator
     //! Filter expression, or empty for no filter
     QString mFilterExpression;
 
+    //! Order by clause
+    QgsFeatureRequest::OrderBy mOrderBy;
+
     //! Delimiter to use for concatenate aggregate
     QString mDelimiter;
+
+    //!list of fids to filter
+    QgsFeatureIds mFidsFilter;
+
+    //trigger variable
+    bool mFidsSet = false;
 
     static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
     static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
@@ -207,10 +233,9 @@ class CORE_EXPORT QgsAggregateCalculator
                                const QString &delimiter,
                                QgsExpressionContext *context, bool *ok = nullptr );
     static QVariant concatenateStrings( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
-                                        QgsExpressionContext *context, const QString &delimiter );
+                                        QgsExpressionContext *context, const QString &delimiter, bool unique = false );
 
     QVariant defaultValue( Aggregate aggregate ) const;
 };
 
 #endif //QGSAGGREGATECALCULATOR_H
-

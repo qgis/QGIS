@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTVIEWTOOLTEMPORARYMOUSEPAN_H
 #define QGSLAYOUTVIEWTOOLTEMPORARYMOUSEPAN_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
 

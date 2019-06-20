@@ -91,7 +91,7 @@ The caller takes ownership of the returned renderer.
 %Docstring
 Creates a new single symbol renderer from an existing ``renderer``.
 
-:return: a new renderer if the conversion was possible, otherwise None.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End
@@ -103,7 +103,7 @@ This allows configuring which values (symbol sizes) should be shown in the legen
 different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
 
 When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
-Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+Takes ownership of the passed settings objects. ``None`` is a valid input that disables data-defined
 size legend.
 
 .. versionadded:: 3.0
@@ -112,7 +112,7 @@ size legend.
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
 Returns configuration of appearance of legend when using data-defined size for marker symbols.
-Will return null if the functionality is disabled.
+Will return ``None`` if the functionality is disabled.
 
 .. versionadded:: 3.0
 %End

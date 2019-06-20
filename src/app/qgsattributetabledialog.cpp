@@ -22,7 +22,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
-
+#include "qgsexpressioncontextutils.h"
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -148,12 +148,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   // Initialize the window geometry
   restoreGeometry( settings.value( QStringLiteral( "Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
 
-  myDa = new QgsDistanceArea();
+  QgsDistanceArea da;
+  da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mEditorContext.setDistanceArea( da );
 
-  myDa->setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa->setEllipsoid( QgsProject::instance()->ellipsoid() );
-
-  mEditorContext.setDistanceArea( *myDa );
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
   mEditorContext.setMapCanvas( QgisApp::instance()->mapCanvas() );
 
@@ -362,11 +361,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   }
 }
 
-QgsAttributeTableDialog::~QgsAttributeTableDialog()
-{
-  delete myDa;
-}
-
 void QgsAttributeTableDialog::updateTitle()
 {
   if ( ! mLayer )
@@ -398,7 +392,7 @@ void QgsAttributeTableDialog::updateTitle()
 
 void QgsAttributeTableDialog::updateButtonStatus( const QString &fieldName, bool isValid )
 {
-  Q_UNUSED( fieldName );
+  Q_UNUSED( fieldName )
   mRunFieldCalc->setEnabled( isValid );
 }
 
@@ -428,7 +422,8 @@ bool QgsAttributeTableDialog::eventFilter( QObject *object, QEvent *ev )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  Q_FOREACH ( QAction *a, mFilterColumnsMenu->actions() )
+  const auto constActions = mFilterColumnsMenu->actions();
+  for ( QAction *a : constActions )
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
@@ -448,7 +443,8 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   const QList<QgsField> fields = mLayer->fields().toList();
 
-  Q_FOREACH ( const QgsField &field, fields )
+  const auto constFields = fields;
+  for ( const QgsField &field : constFields )
   {
     int idx = mLayer->fields().lookupField( field.name() );
     if ( idx < 0 )
@@ -511,7 +507,10 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   QString error;
 
   QgsExpression exp( expression );
-  exp.setGeomCalculator( myDa );
+  QgsDistanceArea da;
+  da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  exp.setGeomCalculator( &da );
   exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
   exp.setAreaUnits( QgsProject::instance()->areaUnits() );
   bool useGeometry = exp.needsGeometry();
@@ -584,7 +583,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     mLayer->endEditCommand();
 
     // refresh table with updated values
-    // fixes https://issues.qgis.org/issues/17312
+    // fixes https://github.com/qgis/QGIS/issues/25210
     QgsAttributeTableModel *masterModel = mMainView->masterModel();
     int modelColumn = masterModel->fieldCol( fieldindex );
     masterModel->reload( masterModel->index( 0, modelColumn ), masterModel->index( masterModel->rowCount() - 1, modelColumn ) );
@@ -770,6 +769,7 @@ void QgsAttributeTableDialog::mActionAddFeature_triggered()
 void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
 {
   QgsExpressionSelectionDialog *dlg = new QgsExpressionSelectionDialog( mLayer );
+  dlg->setMessageBar( QgisApp::instance()->messageBar() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 }
@@ -931,7 +931,8 @@ void QgsAttributeTableDialog::editingToggled()
   else
   {
     QMenu *actionMenu = new QMenu();
-    Q_FOREACH ( const QgsAction &action, actions )
+    const auto constActions = actions;
+    for ( const QgsAction &action : constActions )
     {
       if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
@@ -1192,6 +1193,18 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
     updateTitle();
+
+    // To prevent "QAction::event: Ambiguous shortcut overload"
+    QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
+    mActionCopySelectedRows->setShortcut( QKeySequence() );
+    mActionPasteFeatures->setShortcut( QKeySequence() );
+    mActionCutSelectedRows->setShortcut( QKeySequence() );
+    mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
+    mActionRemoveSelection->setShortcut( QKeySequence() );
+    mActionSelectAll->setShortcut( QKeySequence() );
+    // duplicated on Main Window, with different semantics
+    mActionPanMapToSelectedRows->setShortcut( QKeySequence() );
+    mActionSearchForm->setShortcut( QKeySequence() );
   }
   else
   {
@@ -1220,6 +1233,19 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     updateTitle();
     mDialog->restoreGeometry( QgsSettings().value( QStringLiteral( "Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
     mDialog->show();
+
+    // restore attribute table shortcuts in window mode
+    QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
+    // duplicated on Main Window
+    mActionCopySelectedRows->setShortcut( QKeySequence( QKeySequence::Copy ) );
+    mActionPasteFeatures->setShortcut( QKeySequence( QKeySequence::Paste ) );
+    mActionCutSelectedRows->setShortcut( QKeySequence( QKeySequence::Cut ) );
+    mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
+    mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
+    mActionSelectAll->setShortcut( QStringLiteral( "Ctrl+A" ) );
+    // duplicated on Main Window, with different semantics
+    mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
+    mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
   }
 }
 
@@ -1235,6 +1261,6 @@ QgsAttributeTableDock::QgsAttributeTableDock( const QString &title, QWidget *par
 
 void QgsAttributeTableDock::closeEvent( QCloseEvent *ev )
 {
-  Q_UNUSED( ev );
+  Q_UNUSED( ev )
   deleteLater();
 }

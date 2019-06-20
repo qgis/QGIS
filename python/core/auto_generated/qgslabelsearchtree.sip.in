@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLabelSearchTree
 {
 %Docstring
@@ -36,6 +37,13 @@ Removes and deletes all the entries
 
 
 
+
+    void setMapSettings( const QgsMapSettings &settings );
+%Docstring
+Sets the map ``settings`` associated with the labeling run.
+
+.. versionadded:: 3.4.8
+%End
 
   private:
     //! QgsLabelSearchTree cannot be copied.

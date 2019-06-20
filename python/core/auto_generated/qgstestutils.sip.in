@@ -22,7 +22,7 @@ namespace QgsTestUtils
 Runs a thready safety test on iterators from a vector data ``provider``, by concurrently
 requesting features from the provider.
 
-This method returns true... or it segfaults.
+This method returns ``True``... or it segfaults.
 %End
 
 };

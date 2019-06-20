@@ -195,7 +195,7 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRenderer::create( const QDomElement &
 
 QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput || !mShader || !mShader->rasterShaderFunction() )
@@ -238,14 +238,16 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   const QgsRasterShaderFunction *fcn = mShader->rasterShaderFunction();
 
   qgssize count = ( qgssize )width * height;
+  bool isNoData = false;
   for ( qgssize i = 0; i < count; i++ )
   {
-    if ( inputBlock->isNoData( i ) )
+    double val = inputBlock->valueAndNoData( i, isNoData );
+    if ( isNoData )
     {
       outputBlockData[i] = myDefaultColor;
       continue;
     }
-    double val = inputBlock->value( i );
+
     int red, green, blue, alpha;
     if ( !fcn->shade( val, &red, &green, &blue, &alpha ) )
     {
@@ -325,4 +327,78 @@ QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const
     bandList << mBand;
   }
   return bandList;
+}
+
+void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+{
+  // create base structure
+  QgsRasterRenderer::toSld( doc, element, props );
+
+  // look for RasterSymbolizer tag
+  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+  if ( elements.size() == 0 )
+    return;
+
+  // there SHOULD be only one
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
+
+  // add Channel Selection tags
+  QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
+  rasterSymbolizerElem.appendChild( channelSelectionElem );
+
+  // for the mapped band
+  QDomElement channelElem = doc.createElement( QStringLiteral( "sld:GrayChannel" ) );
+  channelSelectionElem.appendChild( channelElem );
+
+  // set band
+  QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
+  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( band() ) ) );
+  channelElem.appendChild( sourceChannelNameElem );
+
+  // add ColorMap tag
+  QDomElement colorMapElem = doc.createElement( QStringLiteral( "sld:ColorMap" ) );
+
+  // set type of ColorMap ramp [ramp, intervals, values]
+  // basing on interpolation algorithm of the raster shader
+  QString rampType = QStringLiteral( "ramp" );
+  const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
+  if ( rampShader )
+  {
+    switch ( rampShader->colorRampType() )
+    {
+      case ( QgsColorRampShader::Exact ):
+        rampType = QStringLiteral( "values" );
+        break;
+      case ( QgsColorRampShader::Discrete ):
+        rampType = QStringLiteral( "intervals" );
+        break;
+      case ( QgsColorRampShader::Interpolated ):
+        rampType = QStringLiteral( "ramp" );
+        break;
+    }
+  }
+
+  colorMapElem.setAttribute( QStringLiteral( "type" ), rampType );
+  if ( rampShader->colorRampItemList().size() >= 255 )
+    colorMapElem.setAttribute( QStringLiteral( "extended" ), QStringLiteral( "true" ) );
+  rasterSymbolizerElem.appendChild( colorMapElem );
+
+  // for each color set a ColorMapEntry tag nested into "sld:ColorMap" tag
+  // e.g. <ColorMapEntry color="#EEBE2F" quantity="-300" label="label" opacity="0"/>
+  QList<QgsColorRampShader::ColorRampItem> classes = rampShader->colorRampItemList();
+  QList<QgsColorRampShader::ColorRampItem>::const_iterator classDataIt = classes.constBegin();
+  for ( ; classDataIt != classes.constEnd();  ++classDataIt )
+  {
+    QDomElement colorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );
+    colorMapElem.appendChild( colorMapEntryElem );
+
+    // set colorMapEntryElem attributes
+    colorMapEntryElem.setAttribute( QStringLiteral( "color" ), classDataIt->color.name() );
+    colorMapEntryElem.setAttribute( QStringLiteral( "quantity" ), classDataIt->value );
+    colorMapEntryElem.setAttribute( QStringLiteral( "label" ), classDataIt->label );
+    if ( classDataIt->color.alphaF() != 1.0 )
+    {
+      colorMapEntryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( classDataIt->color.alphaF() ) );
+    }
+  }
 }

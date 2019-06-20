@@ -20,8 +20,6 @@
 __author__ = 'Nathan Woodrow'
 __date__ = 'November 2018'
 __copyright__ = '(C) 2018, Nathan Woodrow'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from collections import OrderedDict
 from functools import partial
@@ -53,6 +51,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterRange,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterMeshLayer,
                        QgsProcessingOutputString,
@@ -176,7 +175,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
             if parentname == name:
                 raise ProcessingAlgFactoryException("{} can't depend on itself. "
                                                     "We know QGIS is smart but it's not that smart".format(name))
-            if parentname not in self._inputs or parentname not in self._outputs:
+            if parentname not in self._inputs and parentname not in self._outputs:
                 raise ProcessingAlgFactoryException("Can't find parent named {}".format(parentname))
 
         kwargs['description'] = kwargs.pop("label", "")
@@ -211,7 +210,8 @@ class AlgWrapper(QgsProcessingAlgorithm):
         """
         True if this alg wrapper has outputs defined.
         """
-        return bool(self._outputs)
+        dests = [p for p in self._inputs.values() if p.isDestination()]
+        return bool(self._outputs) or bool(dests)
 
     @property
     def has_inputs(self):
@@ -424,6 +424,7 @@ class ProcessingAlgFactory():
             alg.SOURCE: QgsProcessingParameterFeatureSource
             alg.FILE_DEST: QgsProcessingParameterFileDestination
             alg.FOLDER_DEST: QgsProcessingParameterFolderDestination
+            alg.RASTER_LAYER: QgsProcessingParameterRasterLayer
             alg.RASTER_LAYER_DEST: QgsProcessingParameterRasterDestination
             alg.VECTOR_LAYER_DEST: QgsProcessingParameterVectorDestination
             alg.BAND: QgsProcessingParameterBand
@@ -471,6 +472,7 @@ input_type_mapping = {
     ProcessingAlgFactory.SOURCE: QgsProcessingParameterFeatureSource,
     ProcessingAlgFactory.FILE_DEST: QgsProcessingParameterFileDestination,
     ProcessingAlgFactory.FOLDER_DEST: QgsProcessingParameterFolderDestination,
+    ProcessingAlgFactory.RASTER_LAYER: QgsProcessingParameterRasterLayer,
     ProcessingAlgFactory.RASTER_LAYER_DEST: QgsProcessingParameterRasterDestination,
     ProcessingAlgFactory.VECTOR_LAYER_DEST: QgsProcessingParameterVectorDestination,
     ProcessingAlgFactory.BAND: QgsProcessingParameterBand,

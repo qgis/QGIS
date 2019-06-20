@@ -66,7 +66,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * Factory for label provider implementation
      * \note not available in Python bindings
      */
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ); return nullptr; }
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ) return nullptr; }
 
     //! Returns labeling configuration as XML element
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) = 0;
 
     /**
-     * Returns true if drawing labels requires advanced effects like composition
+     * Returns TRUE if drawing labels requires advanced effects like composition
      * modes, which could prevent it being used as an isolated cached image
      * or exported to a vector format.
      * \since QGIS 3.0

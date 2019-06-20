@@ -135,31 +135,31 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     virtual void reset();
 
     /**
-     * Called just before rendering the section's header. Should return true if the header
-     * is to be included for this section, or false to skip the header for the current
+     * Called just before rendering the section's header. Should return TRUE if the header
+     * is to be included for this section, or FALSE to skip the header for the current
      * section.
      * \see prepareFooter()
      */
     virtual bool prepareHeader();
 
     /**
-     * Called just before rendering the section's footer. Should return true if the footer
-     * is to be included for this section, or false to skip the footerfor the current
+     * Called just before rendering the section's footer. Should return TRUE if the footer
+     * is to be included for this section, or FALSE to skip the footerfor the current
      * section.
      * \see prepareHeader()
      */
     virtual bool prepareFooter();
 
     /**
-     * Returns the next body layout to export, or a nullptr if
+     * Returns the next body layout to export, or NULLPTR if
      * no body layout is required this iteration.
      *
-     * \a ok will be set to false if no bodies remain for this section.
+     * \a ok will be set to FALSE if no bodies remain for this section.
      */
     virtual QgsLayout *nextBody( bool &ok SIP_OUT ) { ok = false; return nullptr; }
 
     /**
-     * Returns true if the header for the section is enabled.
+     * Returns TRUE if the header for the section is enabled.
      * \see setHeaderEnabled()
      * \see header()
      * \see setHeader()
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
     /**
      * Returns the header for the section. Note that the header is only
-     * included if headerEnabled() is true.
+     * included if headerEnabled() is TRUE.
      * \see setHeaderEnabled()
      * \see headerEnabled()
      * \see setHeader()
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
     /**
      * Sets the \a header for the section. Note that the header is only
-     * included if headerEnabled() is true. Ownership of \a header
+     * included if headerEnabled() is TRUE. Ownership of \a header
      * is transferred to the report section.
      * \see setHeaderEnabled()
      * \see headerEnabled()
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     void setHeader( QgsLayout *header SIP_TRANSFER );
 
     /**
-     * Returns true if the footer for the section is enabled.
+     * Returns TRUE if the footer for the section is enabled.
      * \see setFooterEnabled()
      * \see footer()
      * \see setFooter()
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
     /**
      * Returns the footer for the section. Note that the footer is only
-     * included if footerEnabled() is true.
+     * included if footerEnabled() is TRUE.
      * \see setFooterEnabled()
      * \see footerEnabled()
      * \see setFooter()
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
     /**
      * Sets the \a footer for the section. Note that the footer is only
-     * included if footerEnabled() is true. Ownership of \a footer
+     * included if footerEnabled() is TRUE. Ownership of \a footer
      * is transferred to the report section.
      * \see setFooterEnabled()
      * \see footerEnabled()

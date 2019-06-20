@@ -7,15 +7,143 @@
     <x>0</x>
     <y>0</y>
     <width>620</width>
-    <height>490</height>
+    <height>508</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Select Datum Transformations</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,3,1,0,0">
+   <item row="2" column="0">
+    <widget class="QLabel" name="mLabelSrcDescription">
+     <property name="text">
+      <string notr="true">Description</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QStackedWidget" name="mCrsStackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Source CRS</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QgsProjectionSelectionWidget" name="mSourceProjectionSelectionWidget" native="true"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Destination CRS</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QgsProjectionSelectionWidget" name="mDestinationProjectionSelectionWidget" native="true"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,1">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Source CRS</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Destination CRS</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="mDestCrsLabel">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="mSourceCrsLabel">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="mMakeDefaultCheckBox">
+       <property name="toolTip">
+        <string>If checked, the selected transformation will become the default choice in all new projects</string>
+       </property>
+       <property name="text">
+        <string>Make default</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -32,13 +160,13 @@
      <item>
       <widget class="QCheckBox" name="mHideDeprecatedCheckBox">
        <property name="text">
-        <string>Hide deprecated</string>
+        <string>Hide deprecated transformations</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="1" column="0" colspan="2">
     <widget class="QTableWidget" name="mDatumTransformTableWidget">
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
@@ -48,7 +176,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="2" column="1">
     <widget class="QLabel" name="mLabelDstDescription">
      <property name="text">
       <string notr="true">Description</string>
@@ -60,65 +188,6 @@
       <bool>true</bool>
      </property>
     </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mLabelSrcDescription">
-     <property name="text">
-      <string notr="true">Description</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Source CRS</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QgsProjectionSelectionWidget" name="mSourceProjectionSelectionWidget" native="true"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Destination CRS</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsProjectionSelectionWidget" name="mDestinationProjectionSelectionWidget" native="true"/>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
@@ -132,8 +201,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>mDatumTransformTableWidget</tabstop>
+  <tabstop>mMakeDefaultCheckBox</tabstop>
   <tabstop>mHideDeprecatedCheckBox</tabstop>
-  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

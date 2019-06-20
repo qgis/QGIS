@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '3/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
@@ -52,6 +50,7 @@ class TestQgsLayoutAligner(unittest.TestCase):
         item2.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
+        # NOTE: item3 has measurement units specified in Centimeters, see below!
         item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
@@ -118,12 +117,14 @@ class TestQgsLayoutAligner(unittest.TestCase):
         item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
+        # NOTE: item3 has measurement units specified in Centimeters, see below!
         item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
 
         QgsLayoutAligner.distributeItems(l, [item1, item2, item3], QgsLayoutAligner.DistributeLeft)
+        self.assertAlmostEqual(item1.positionWithUnits().x(), 4.0, 3)
         self.assertEqual(item1.positionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         self.assertAlmostEqual(item2.positionWithUnits().x(), 6.0, 3)
@@ -188,6 +189,28 @@ class TestQgsLayoutAligner(unittest.TestCase):
         self.assertEqual(item3.positionWithUnits().units(), QgsUnitTypes.LayoutCentimeters)
         self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
 
+        QgsLayoutAligner.distributeItems(l, [item1, item2, item3], QgsLayoutAligner.DistributeHSpace)
+        self.assertAlmostEqual(item1.positionWithUnits().x(), 3.0, 3)
+        self.assertEqual(item1.positionWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertAlmostEqual(item2.positionWithUnits().x(), 9.5, 3)
+        self.assertEqual(item2.positionWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertAlmostEqual(item3.positionWithUnits().x(), 0.8, 3)
+        self.assertEqual(item3.positionWithUnits().units(), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
+        QgsLayoutAligner.distributeItems(l, [item1, item2, item3], QgsLayoutAligner.DistributeVSpace)
+        self.assertAlmostEqual(item1.positionWithUnits().y(), 8.0, 3)
+        self.assertEqual(item1.positionWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertAlmostEqual(item2.positionWithUnits().y(), 19.0, 3)
+        self.assertEqual(item2.positionWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertAlmostEqual(item3.positionWithUnits().y(), 1.15, 3)
+        self.assertEqual(item3.positionWithUnits().units(), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
     def testResize(self):
         p = QgsProject()
         l = QgsLayout(p)
@@ -201,6 +224,7 @@ class TestQgsLayoutAligner(unittest.TestCase):
         item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
+        # NOTE: item3 has measurement units specified in Centimeters, see below!
         item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))

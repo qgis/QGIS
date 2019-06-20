@@ -31,6 +31,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QColor>
 #include <QFont>
@@ -645,12 +646,12 @@ QPainter::CompositionMode QgsSymbolLayerUtils::decodeBlendMode( const QString &s
   return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 
-QIcon QgsSymbolLayerUtils::symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding )
+QIcon QgsSymbolLayerUtils::symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding )
 {
   return QIcon( symbolPreviewPixmap( symbol, size, padding ) );
 }
 
-QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext )
+QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext )
 {
   Q_ASSERT( symbol );
   QPixmap pixmap( size );
@@ -694,7 +695,8 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol *symbol, QSize size,
   }
   else
   {
-    symbol->drawPreviewIcon( &painter, size, customContext );
+    std::unique_ptr<QgsSymbol> symbolClone( symbol->clone( ) );
+    symbolClone->drawPreviewIcon( &painter, size, customContext );
   }
 
   painter.end();
@@ -714,7 +716,7 @@ double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbol *symbol, const Qgs
   return maxBleed;
 }
 
-QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale )
+QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale )
 {
   QPicture picture;
   QPainter painter;
@@ -723,12 +725,13 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( QgsSymbolLayer *layer, 
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setForceVectorOutput( true );
   QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, nullptr, nullptr, QgsFields(), scale );
-  layer->drawPreviewIcon( symbolContext, size );
+  std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
+  layerClone->drawPreviewIcon( symbolContext, size );
   painter.end();
   return picture;
 }
 
-QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale )
+QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -736,8 +739,14 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUni
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
+  // build a minimal expression context
+  QgsExpressionContext expContext;
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+  renderContext.setExpressionContext( expContext );
+
   QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, nullptr, nullptr, QgsFields(), scale );
-  layer->drawPreviewIcon( symbolContext, size );
+  std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
+  layerClone->drawPreviewIcon( symbolContext, size );
   painter.end();
   return QIcon( pixmap );
 }
@@ -787,6 +796,27 @@ void QgsSymbolLayerUtils::drawStippledBackground( QPainter *painter, QRect rect 
   QBrush brush;
   brush.setTexture( pix );
   painter->fillRect( rect, brush );
+}
+
+void QgsSymbolLayerUtils::drawVertexMarker( double x, double y, QPainter &p, QgsSymbolLayerUtils::VertexMarkerType type, int markerSize )
+{
+  qreal s = ( markerSize - 1 ) / 2.0;
+
+  switch ( type )
+  {
+    case QgsSymbolLayerUtils::SemiTransparentCircle:
+      p.setPen( QColor( 50, 100, 120, 200 ) );
+      p.setBrush( QColor( 200, 200, 210, 120 ) );
+      p.drawEllipse( x - s, y - s, s * 2, s * 2 );
+      break;
+    case QgsSymbolLayerUtils::Cross:
+      p.setPen( QColor( 255, 0, 0 ) );
+      p.drawLine( x - s, y + s, x + s, y - s );
+      p.drawLine( x - s, y - s, x + s, y + s );
+      break;
+    case QgsSymbolLayerUtils::NoMarker:
+      break;
+  }
 }
 
 #include <QPolygonF>
@@ -1469,7 +1499,7 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
 
 bool QgsSymbolLayerUtils::needPointPatternFill( QDomElement &element )
 {
-  Q_UNUSED( element );
+  Q_UNUSED( element )
   return false;
 }
 
@@ -2073,7 +2103,7 @@ void QgsSymbolLayerUtils::externalGraphicToSld( QDomDocument &doc, QDomElement &
   createOnlineResourceElement( doc, externalGraphicElem, path, mime );
 
   //TODO: missing a way to handle svg color. Should use <se:ColorReplacement>
-  Q_UNUSED( color );
+  Q_UNUSED( color )
 
   if ( size >= 0 )
   {
@@ -2151,7 +2181,7 @@ bool QgsSymbolLayerUtils::externalGraphicFromSld( QDomElement &element,
     QColor &color, double &size )
 {
   QgsDebugMsg( QStringLiteral( "Entered." ) );
-  Q_UNUSED( color );
+  Q_UNUSED( color )
 
   QDomElement externalGraphicElem = element.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
   if ( externalGraphicElem.isNull() )
@@ -3684,12 +3714,14 @@ QStringList QgsSymbolLayerUtils::listSvgFiles()
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    Q_FOREACH ( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    const auto svgSubPaths = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+    for ( const QString &item : svgSubPaths )
     {
       svgPaths.insert( i + 1, dir.path() + '/' + item );
     }
 
-    Q_FOREACH ( const QString &item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    const auto svgFiles = dir.entryList( QStringList( "*.svg" ), QDir::Files );
+    for ( const QString &item : svgFiles )
     {
       // TODO test if it is correct SVG
       list.append( dir.path() + '/' + item );
@@ -3710,12 +3742,14 @@ QStringList QgsSymbolLayerUtils::listSvgFilesAt( const QString &directory )
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    Q_FOREACH ( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    const auto svgSubPaths = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+    for ( const QString &item : svgSubPaths )
     {
       svgPaths.insert( i + 1, dir.path() + '/' + item );
     }
 
-    Q_FOREACH ( const QString &item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    const auto svgFiles = dir.entryList( QStringList( "*.svg" ), QDir::Files );
+    for ( const QString &item : svgFiles )
     {
       list.append( dir.path() + '/' + item );
     }

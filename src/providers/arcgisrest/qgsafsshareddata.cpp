@@ -35,17 +35,6 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
   }
 
-  // When fetching from server, fetch all attributes and geometry by default so that we can cache them
-  QStringList fetchAttribNames;
-  QList<int> fetchAttribIdx;
-  fetchAttribIdx.reserve( mFields.size() );
-  fetchAttribNames.reserve( mFields.size() );
-  for ( int idx = 0, n = mFields.size(); idx < n; ++idx )
-  {
-    fetchAttribNames.append( mFields.at( idx ).name() );
-    fetchAttribIdx.append( idx );
-  }
-
   // Fetch 100 features at the time
   int startId = ( id / 100 ) * 100;
   int stopId = std::min( startId + 100, mObjectIds.length() );
@@ -70,10 +59,15 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   QString errorTitle, errorMessage;
 
   const QString authcfg = mDataSource.authConfigId();
+  QgsStringMap headers;
+  const QString referer = mDataSource.param( QStringLiteral( "referer" ) );
+  if ( !referer.isEmpty() )
+    headers[ QStringLiteral( "Referer" )] = referer;
+
   const QVariantMap queryData = QgsArcGisRestUtils::getObjects(
                                   mDataSource.param( QStringLiteral( "url" ) ), authcfg, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
-                                  fetchAttribNames, QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
-                                  filterRect, errorTitle, errorMessage, feedback );
+                                  QStringList(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
+                                  filterRect, errorTitle, errorMessage, headers, feedback );
 
   if ( queryData.isEmpty() )
   {
@@ -97,36 +91,33 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     int featureId = startId + i;
 
     // Set attributes
-    if ( !fetchAttribIdx.isEmpty() )
+    const QVariantMap attributesData = featureData[QStringLiteral( "attributes" )].toMap();
+    feature.setFields( mFields );
+    QgsAttributes attributes( mFields.size() );
+    for ( int idx = 0; idx < mFields.size(); ++idx )
     {
-      const QVariantMap attributesData = featureData[QStringLiteral( "attributes" )].toMap();
-      feature.setFields( mFields );
-      QgsAttributes attributes( mFields.size() );
-      for ( int idx : qgis::as_const( fetchAttribIdx ) )
+      QVariant attribute = attributesData[mFields.at( idx ).name()];
+      if ( attribute.isNull() )
       {
-        QVariant attribute = attributesData[mFields.at( idx ).name()];
-        if ( attribute.isNull() )
-        {
-          // ensure that null values are mapped correctly for PyQGIS
-          attribute = QVariant( QVariant::Int );
-        }
-
-        // date/datetime fields must be converted
-        if ( mFields.at( idx ).type() == QVariant::DateTime || mFields.at( idx ).type() == QVariant::Date )
-          attribute = QgsArcGisRestUtils::parseDateTime( attribute );
-
-        if ( !mFields.at( idx ).convertCompatible( attribute ) )
-        {
-          QgsDebugMsg( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
-        }
-        attributes[idx] = attribute;
-        if ( mFields.at( idx ).name() == mObjectIdFieldName )
-        {
-          featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
-        }
+        // ensure that null values are mapped correctly for PyQGIS
+        attribute = QVariant( QVariant::Int );
       }
-      feature.setAttributes( attributes );
+
+      // date/datetime fields must be converted
+      if ( mFields.at( idx ).type() == QVariant::DateTime || mFields.at( idx ).type() == QVariant::Date )
+        attribute = QgsArcGisRestUtils::parseDateTime( attribute );
+
+      if ( !mFields.at( idx ).convertCompatible( attribute ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
+      }
+      attributes[idx] = attribute;
+      if ( mFields.at( idx ).name() == mObjectIdFieldName )
+      {
+        featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
+      }
     }
+    feature.setAttributes( attributes );
 
     // Set FID
     feature.setId( featureId );
@@ -159,9 +150,12 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   QString errorText;
 
   const QString authcfg = mDataSource.authConfigId();
+  QgsStringMap headers;
+  const QString referer = mDataSource.param( QStringLiteral( "referer" ) );
+  if ( !referer.isEmpty() )
+    headers[ QStringLiteral( "Referer" )] = referer;
   const QList<quint32> featuresInRect = QgsArcGisRestUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
-                                        mObjectIdFieldName,
-                                        extent, errorTitle, errorText, authcfg, feedback );
+                                        extent, errorTitle, errorText, authcfg, headers, feedback );
 
   QgsFeatureIds ids;
   for ( quint32 id : featuresInRect )

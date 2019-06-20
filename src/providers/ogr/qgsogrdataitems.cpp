@@ -25,6 +25,7 @@
 #include "qgsgeopackagedataitems.h"
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
+#include "qgssqliteutils.h"
 #include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
@@ -33,6 +34,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QRegularExpression>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
@@ -53,69 +55,8 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   mIsSubLayer = isSubLayer;
   mToolTip = uri;
   setState( Populated ); // children are not expected
-
-  if ( mPath.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
-  {
-    if ( OGRGetDriverCount() == 0 )
-    {
-      OGRRegisterAll();
-    }
-    gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
-    if ( hDataSource )
-    {
-      mCapabilities |= SetCrs;
-    }
-
-    // It it is impossible to assign a crs to an existing layer
-    // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
-  }
 }
 
-
-bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
-{
-  if ( !( mCapabilities & SetCrs ) )
-    return false;
-
-  QString layerName = mPath.left( mPath.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
-  QString wkt = crs.toWkt();
-
-  // save ordinary .prj file
-  OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
-  OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
-  char *pszOutWkt = nullptr;
-  OSRExportToWkt( hSRS, &pszOutWkt );
-  QFile prjFile( layerName + ".prj" );
-  if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    QTextStream prjStream( &prjFile );
-    prjStream << pszOutWkt << endl;
-    prjFile.close();
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( layerName ), tr( "OGR" ) );
-    return false;
-  }
-  OSRDestroySpatialReference( hSRS );
-  CPLFree( pszOutWkt );
-
-  // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
-  QFile qpjFile( layerName + ".qpj" );
-  if ( qpjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    QTextStream qpjStream( &qpjFile );
-    qpjStream << wkt.toLocal8Bit().data() << endl;
-    qpjFile.close();
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( layerName ), tr( "OGR" ) );
-    return false;
-  }
-
-  return true;
-}
 
 QgsLayerItem::LayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometryType )
 {
@@ -164,7 +105,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   QList<QgsOgrDbLayerInfo *> children;
 
   // Vector layers
-  QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ) );
+  const QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
+  QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ), layerOptions );
   if ( ! layer.isValid( ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Layer is not a valid %1 Vector layer %2" ).arg( path ), 3 );
@@ -338,7 +280,8 @@ void QgsOgrLayerItem::deleteLayer( const bool isSubLayer, const QString &uri, co
   QString title = isSubLayer ? QObject::tr( "Delete Layer" ) : QObject::tr( "Delete File" );
   // Check if the layer is in the registry
   const QgsMapLayer *projectLayer = nullptr;
-  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  const auto constMapLayers = QgsProject::instance()->mapLayers();
+  for ( const QgsMapLayer *layer : constMapLayers )
   {
     if ( layer->publicSource() == uri )
     {
@@ -393,7 +336,9 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-  OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource );
+  QString driverName = QString::fromUtf8( GDALGetDriverShortName( hDriver ) );
+  OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( driverName, hLayer );
   QgsWkbTypes::Type wkbType = QgsOgrProviderUtils::qgisTypeFromOgrType( ogrType );
   switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
@@ -449,14 +394,27 @@ QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem *parent, const Q
 QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
+  QStringList skippedLayerNames;
 
-  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  char **papszOptions = nullptr;
+  papszOptions = CSLSetNameValue( papszOptions, "@LIST_ALL_TABLES", "YES" );
+  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, papszOptions, nullptr ) );
+  CSLDestroy( papszOptions );
+
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource.get() );
+  QString driverName = QString::fromUtf8( GDALGetDriverShortName( hDriver ) );
+  if ( driverName == QStringLiteral( "SQLite" ) )
+  {
+    skippedLayerNames = QgsSqliteUtils::systemTables();
+  }
+
   if ( !hDataSource )
     return children;
   int numLayers = GDALDatasetGetLayerCount( hDataSource.get() );
 
   // Check if layer names are unique, so we can use |layername= in URI
   QMap< QString, int > mapLayerNameToCount;
+  QList< int > skippedLayers;
   bool uniqueNames = true;
   for ( int i = 0; i < numLayers; ++i )
   {
@@ -469,13 +427,21 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
       uniqueNames = false;
       break;
     }
+    if ( ( driverName == QStringLiteral( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geometry($|_.*)" ) ) ) )
+         || skippedLayerNames.contains( layerName ) )
+    {
+      skippedLayers << i;
+    }
   }
 
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource.get(), i, true, uniqueNames );
-    children.append( item );
+    if ( !skippedLayers.contains( i ) )
+    {
+      QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource.get(), i, true, uniqueNames );
+      children.append( item );
+    }
   }
 
   return children;
@@ -678,7 +644,8 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   if ( myExtensions.indexOf( suffix ) < 0 && !dirExtensions.contains( suffix ) )
   {
     bool matches = false;
-    Q_FOREACH ( const QString &wildcard, wildcards() )
+    const auto constWildcards = wildcards();
+    for ( const QString &wildcard : constWildcards )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )
@@ -733,12 +700,20 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ) };
 
+  // these extensions are trivial to read, so there's no need to rely on
+  // the extension only scan here -- avoiding it always gives us the correct data type
+  // and sublayer visiblity
+  static QStringList sSkipFastTrackExtensions { QStringLiteral( "xlsx" ),
+      QStringLiteral( "ods" ),
+      QStringLiteral( "csv" ),
+      QStringLiteral( "nc" ) };
+
   // Fast track: return item without testing if:
   // scanExtSetting or zipfile and scan zip == "Basic scan"
   // netCDF files can be both raster or vector, so fallback to opening
   if ( ( scanExtSetting ||
          ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) ) &&
-       suffix != QLatin1String( "nc" ) )
+       !sSkipFastTrackExtensions.contains( suffix ) )
   {
     // if this is a VRT file make sure it is vector VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )

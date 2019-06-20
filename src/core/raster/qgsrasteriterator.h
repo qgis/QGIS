@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
+#include "qgis_sip.h"
 #include <QMap>
 
 class QgsMapToPixel;
@@ -40,14 +41,35 @@ class CORE_EXPORT QgsRasterIterator
     QgsRasterIterator( QgsRasterInterface *input );
 
     /**
-     * Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
+     * Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns FALSE.
      * \param bandNumber number of raster band to read
      * \param nCols number of columns
      * \param nRows number of rows
      * \param extent area to read
-     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr );
+
+    /**
+     * Fetches details of the next part of the raster data. This method does NOT actually fetch the raster
+     * data itself, rather it calculates and iterates over the details of the raster alone.
+     *
+     * It's useful for iterating over several layers using a target "reference" layer. E.g. summing
+     * the pixels in n rasters whilst aligning the result to a reference layer which is not being summed.
+     *
+     * Note that calling this method also advances the iterator, just like calling readNextRasterPart().
+     *
+     * \param bandNumber band to read
+     * \param columns number of columns on output device
+     * \param rows number of rows on output device
+     * \param topLeftColumn top left column
+     * \param topLeftRow top left row
+     * \param blockExtent exact extent of returned raster block
+     * \returns FALSE if the last part was already returned
+     *
+     * \since QGIS 3.6
+    */
+    bool next( int bandNumber, int &columns SIP_OUT, int &rows SIP_OUT, int &topLeftColumn SIP_OUT, int &topLeftRow SIP_OUT, QgsRectangle &blockExtent SIP_OUT );
 
     /**
      * Fetches next part of raster data, caller takes ownership of the block and
@@ -58,7 +80,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param block address of block pointer
      * \param topLeftCol top left column
      * \param topLeftRow top left row
-     * \returns false if the last part was already returned
+     * \returns FALSE if the last part was already returned
     */
     bool readNextRasterPart( int bandNumber,
                              int &nCols, int &nRows,
@@ -74,7 +96,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param topLeftCol top left column
      * \param topLeftRow top left row
      * \param blockExtent optional storage for exact extent of returned raster block
-     * \returns false if the last part was already returned
+     * \returns FALSE if the last part was already returned
      * \note Not available in Python bindings
      * \since QGIS 3.2
     */
@@ -148,6 +170,7 @@ class CORE_EXPORT QgsRasterIterator
 
     //! Remove part into and release memory
     void removePartInfo( int bandNumber );
+    bool readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent );
 };
 
 #endif // QGSRASTERITERATOR_H

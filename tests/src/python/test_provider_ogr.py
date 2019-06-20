@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-04-11'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import shutil
@@ -329,7 +327,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
     def testEditGeoJsonRemoveField(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (deleting an existing field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (deleting an existing field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonRemoveField.json')
         with open(datasource, 'wt') as f:
@@ -352,7 +350,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(f['w'], 4)
 
     def testEditGeoJsonAddField(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (adding a new field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
         with open(datasource, 'wt') as f:
@@ -379,7 +377,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(vl.fields()), 1)
 
     def testEditGeoJsonAddFieldAndThenAddFeatures(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (adding a new field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
         with open(datasource, 'wt') as f:
@@ -507,6 +505,40 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(hashlib.md5(features[1]['DATA'].data()).hexdigest(), 'ef3dbc530cc39a545832a6c82aac57b6')
         self.assertIsInstance(features[2]['DATA'], QByteArray)
         self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
+
+    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0))
+    def testStringListField(self):
+        source = os.path.join(TEST_DATA_DIR, 'stringlist.gml')
+        vl = QgsVectorLayer(source)
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        descriptive_group_field = fields[fields.lookupField('descriptiveGroup')]
+        self.assertEqual(descriptive_group_field.type(), QVariant.List)
+        self.assertEqual(descriptive_group_field.typeName(), 'StringList')
+        self.assertEqual(descriptive_group_field.subType(), QVariant.String)
+
+        feature = vl.getFeature(1000002717654)
+        self.assertEqual(feature['descriptiveGroup'], ['Building'])
+        self.assertEqual(feature['reasonForChange'], ['Reclassified', 'Attributes'])
+
+        tmpfile = os.path.join(self.basetestpath, 'newstringlistfield.gml')
+        ds = ogr.GetDriverByName('GML').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('strlistfield', ogr.OFTStringList))
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        fields = dp.fields()
+        list_field = fields[fields.lookupField('strlistfield')]
+        self.assertEqual(list_field.type(), QVariant.List)
+        self.assertEqual(list_field.typeName(), 'StringList')
+        self.assertEqual(list_field.subType(), QVariant.String)
 
     def testBlobCreation(self):
         """

@@ -64,21 +64,21 @@ Use this method if you have children widgets that need to show a panel to the us
 Set the widget in dock mode which tells the widget to emit panel
 widgets and not open dialogs
 
-:param dockMode: True to enable dock mode.
+:param dockMode: ``True`` to enable dock mode.
 %End
 
     bool dockMode();
 %Docstring
 Returns the dock mode state.
 
-:return: True if in dock mode.  If in dock mode the widget
+:return: ``True`` if in dock mode.  If in dock mode the widget
          will emit the showPanel signal to handle panel opening
-         If false it will open dialogs when openPanel is called.
+         If ``False`` it will open dialogs when openPanel is called.
 %End
 
     void setAutoDelete( bool autoDelete );
 %Docstring
-The the auto delete property on the widget. True by default.
+The the auto delete property on the widget. ``True`` by default.
 When auto delete is enabled when a panel is removed from the stack
 it will be deleted.
 
@@ -87,7 +87,7 @@ it will be deleted.
 
     bool autoDelete();
 %Docstring
-The the auto delete property on the widget. True by default.
+The the auto delete property on the widget. ``True`` by default.
 When auto delete is enabled when a panel is removed from the stack
 it will be deleted.
 
@@ -101,7 +101,7 @@ widget.
 
 :param widget: widget which may be contained within a panel widget
 
-:return: parent panel widget if found, otherwise None
+:return: parent panel widget if found, otherwise ``None``
 
 .. versionadded:: 3.0
 %End
@@ -151,10 +151,10 @@ to give the user feedback when something changes.
     void openPanel( QgsPanelWidget *panel );
 %Docstring
 Open a panel or dialog depending on dock mode setting
-If dock mode is true this method will emit the showPanel signal
+If dock mode is ``True`` this method will emit the showPanel signal
 for connected slots to handle the open event.
 
-If dock mode is false this method will open a dialog
+If dock mode is ``False`` this method will open a dialog
 and block the user.
 
 :param panel: The panel widget to open.
@@ -209,7 +209,7 @@ the inheritance tree changed, e.g dialogs.
 %Docstring
 Returns the internal widget that is wrapped in this panel.
 
-:return: The internal widget. Can be None.
+:return: The internal widget. Can be ``None``.
 %End
 
 };

@@ -86,12 +86,12 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::MultiPolygon, source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // fixed parameters
-  bool dissolve = parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
+  bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
   int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
   QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
   QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
@@ -144,7 +144,10 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
       if ( dissolve )
         bufferedGeometriesForDissolve << outputGeometry;
       else
+      {
+        outputGeometry.convertToMultiType();
         out.setGeometry( outputGeometry );
+      }
     }
 
     if ( !dissolve )
@@ -157,6 +160,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   if ( dissolve )
   {
     QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve );
+    finalGeometry.convertToMultiType();
     QgsFeature f;
     f.setGeometry( finalGeometry );
     f.setAttributes( dissolveAttrs );

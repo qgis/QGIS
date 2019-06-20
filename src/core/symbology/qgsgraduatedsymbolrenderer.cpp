@@ -33,6 +33,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -175,7 +176,7 @@ const int QgsRendererRangeLabelFormat::MAX_PRECISION = 15;
 const int QgsRendererRangeLabelFormat::MIN_PRECISION = -6;
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
-  : mFormat( QStringLiteral( " %1 - %2 " ) )
+  : mFormat( QStringLiteral( "%1 - %2" ) )
   , mReTrailingZeroes( "[.,]?0*$" )
   , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
 {
@@ -284,7 +285,8 @@ QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName,
   //important - we need a deep copy of the ranges list, not a shared copy. This is required because
   //QgsRendererRange::symbol() is marked const, and so retrieving the symbol via this method does not
   //trigger a detachment and copy of mRanges BUT that same method CAN be used to modify a symbol in place
-  Q_FOREACH ( const QgsRendererRange &range, ranges )
+  const auto constRanges = ranges;
+  for ( const QgsRendererRange &range : constRanges )
   {
     mRanges << range;
   }
@@ -297,7 +299,8 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
 
 QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
 {
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  const auto constMRanges = mRanges;
+  for ( const QgsRendererRange &range : constMRanges )
   {
     if ( range.lowerValue() <= value && range.upperValue() >= value )
     {
@@ -314,7 +317,8 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
 QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
 {
   int i = 0;
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  const auto constMRanges = mRanges;
+  for ( const QgsRendererRange &range : constMRanges )
   {
     if ( range.lowerValue() <= value && range.upperValue() >= value )
     {
@@ -377,7 +381,8 @@ void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext &context, const Q
     mExpression->prepare( &context.expressionContext() );
   }
 
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  const auto constMRanges = mRanges;
+  for ( const QgsRendererRange &range : constMRanges )
   {
     if ( !range.symbol() )
       continue;
@@ -390,7 +395,8 @@ void QgsGraduatedSymbolRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
 
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  const auto constMRanges = mRanges;
+  for ( const QgsRendererRange &range : constMRanges )
   {
     if ( !range.symbol() )
       continue;
@@ -532,10 +538,11 @@ void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element,
 
 QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QgsSymbolList lst;
   lst.reserve( mRanges.count() );
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  const auto constMRanges = mRanges;
+  for ( const QgsRendererRange &range : constMRanges )
   {
     lst.append( range.symbol() );
   }
@@ -1114,7 +1121,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    Q_FOREACH ( const QgsRendererRange &range, r->mRanges )
+    for ( const QgsRendererRange &range : qgis::as_const( r->mRanges ) )
     {
       convertSymbolRotation( range.symbol(), rotationElem.attribute( QStringLiteral( "field" ) ) );
     }
@@ -1126,7 +1133,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QDomElement sizeScaleElem = element.firstChildElement( QStringLiteral( "sizescale" ) );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    Q_FOREACH ( const QgsRendererRange &range, r->mRanges )
+    for ( const QgsRendererRange &range : qgis:: as_const( r->mRanges ) )
     {
       convertSymbolSizeScale( range.symbol(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
@@ -1293,7 +1300,8 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::baseLegendSymbolItems() const
 {
   QgsLegendSymbolList lst;
   int i = 0;
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  const auto constMRanges = mRanges;
+  for ( const QgsRendererRange &range : constMRanges )
   {
     lst << QgsLegendSymbolItem( range.symbol(), range.label(), QString::number( i++ ), true );
   }
@@ -1306,7 +1314,8 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
-    Q_FOREACH ( const QgsRendererRange &range, mRanges )
+    const auto constMRanges = mRanges;
+    for ( const QgsRendererRange &range : constMRanges )
     {
       const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( range.symbol() );
       if ( ddSize )
@@ -1434,7 +1443,8 @@ void QgsGraduatedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp )
 
   if ( mSourceColorRamp )
   {
-    Q_FOREACH ( const QgsRendererRange &range, mRanges )
+    const auto constMRanges = mRanges;
+    for ( const QgsRendererRange &range : constMRanges )
     {
       QgsSymbol *symbol = range.symbol() ? range.symbol()->clone() : nullptr;
       if ( symbol )
@@ -1456,7 +1466,8 @@ void QgsGraduatedSymbolRenderer::updateSymbols( QgsSymbol *sym )
     return;
 
   int i = 0;
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  const auto constMRanges = mRanges;
+  for ( const QgsRendererRange &range : constMRanges )
   {
     std::unique_ptr<QgsSymbol> symbol( sym->clone() );
     if ( mGraduatedMethod == GraduatedColor )
@@ -1596,7 +1607,8 @@ void QgsGraduatedSymbolRenderer::calculateLabelPrecision( bool updateRanges )
 {
   // Find the minimum size of a class
   double minClassRange = 0.0;
-  Q_FOREACH ( const QgsRendererRange &rendererRange, mRanges )
+  const auto constMRanges = mRanges;
+  for ( const QgsRendererRange &rendererRange : constMRanges )
   {
     double range = rendererRange.upperValue() - rendererRange.lowerValue();
     if ( range <= 0.0 )

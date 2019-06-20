@@ -59,7 +59,7 @@ Sets whether custom expressions are accepted and displayed in the model.
 
     bool allowExpression();
 %Docstring
-Returns true if the model allows custom expressions to be created and displayed.
+Returns ``True`` if the model allows custom expressions to be created and displayed.
 
 .. seealso:: :py:func:`setAllowExpression`
 %End
@@ -75,7 +75,7 @@ Sets whether an optional empty field ("not set") option is present in the model.
 
     bool allowEmptyFieldName() const;
 %Docstring
-Returns true if the model allows the empty field ("not set") choice.
+Returns ``True`` if the model allows the empty field ("not set") choice.
 
 .. seealso:: :py:func:`setAllowEmptyFieldName`
 
@@ -84,7 +84,7 @@ Returns true if the model allows the empty field ("not set") choice.
 
     bool isField( const QString &expression ) const;
 %Docstring
-Returns true if a string represents a field reference, or false if it is an
+Returns ``True`` if a string represents a field reference, or ``False`` if it is an
 expression consisting of more than direct field reference.
 %End
 

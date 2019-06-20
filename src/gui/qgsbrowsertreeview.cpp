@@ -41,7 +41,7 @@ void QgsBrowserTreeView::setBrowserModel( QgsBrowserModel *model )
 
 void QgsBrowserTreeView::showEvent( QShowEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   if ( model() )
     restoreState();
   QTreeView::showEvent( e );
@@ -50,7 +50,7 @@ void QgsBrowserTreeView::showEvent( QShowEvent *e )
 // closeEvent is not called when application is closed
 void QgsBrowserTreeView::hideEvent( QHideEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   // hideEvent() may be called (Mac) before showEvent
   if ( model() )
     saveState();
@@ -74,7 +74,8 @@ void QgsBrowserTreeView::restoreState()
   if ( !mExpandPaths.isEmpty() )
   {
     QSet<QModelIndex> expandIndexSet;
-    Q_FOREACH ( const QString &path, mExpandPaths )
+    const auto constMExpandPaths = mExpandPaths;
+    for ( const QString &path : constMExpandPaths )
     {
       QModelIndex expandIndex = QgsBrowserModel::findPath( model(), path, Qt::MatchStartsWith );
       if ( expandIndex.isValid() )
@@ -102,7 +103,8 @@ void QgsBrowserTreeView::restoreState()
         QgsDebugMsgLevel( "index for path " + path + " not found", 4 );
       }
     }
-    Q_FOREACH ( const QModelIndex &expandIndex, expandIndexSet )
+    const auto constExpandIndexSet = expandIndexSet;
+    for ( const QModelIndex &expandIndex : constExpandIndexSet )
     {
       expandTree( expandIndex );
     }
@@ -178,7 +180,8 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
   // Remove the subtree from mExpandPaths if user collapsed the item in the meantime
   if ( !treeExpanded( parentIndex ) )
   {
-    Q_FOREACH ( const QString &path, mExpandPaths )
+    const auto constMExpandPaths = mExpandPaths;
+    for ( const QString &path : constMExpandPaths )
     {
       if ( path.startsWith( parentPath + '/' ) )
         mExpandPaths.removeOne( path );

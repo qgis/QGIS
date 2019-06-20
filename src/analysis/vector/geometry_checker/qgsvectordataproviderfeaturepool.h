@@ -33,7 +33,7 @@ class ANALYSIS_EXPORT QgsVectorDataProviderFeaturePool : public QgsFeaturePool
 
     /**
      * Creates a new feature pool for the data provider of \a layer.
-     * If \a selectedOnly is set to true, only selected features will be managed by the pool.
+     * If \a selectedOnly is set to TRUE, only selected features will be managed by the pool.
      */
     QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, bool selectedOnly = false );
 

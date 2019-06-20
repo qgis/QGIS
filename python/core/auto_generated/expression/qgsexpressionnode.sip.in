@@ -112,7 +112,7 @@ Returns the number of nodes in the list.
 
         bool hasNamedNodes() const;
 %Docstring
-Returns true if list contains any named nodes
+Returns ``True`` if list contains any named nodes
 
 .. versionadded:: 2.16
 %End
@@ -211,15 +211,15 @@ this expression.
 
 This needs to call `needsGeometry()` recursively on any child nodes.
 
-:return: true if a geometry is required to evaluate this expression
+:return: ``True`` if a geometry is required to evaluate this expression
 %End
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const = 0;
 %Docstring
-Returns true if this node can be evaluated for a static value. This is used during
-the prepare() step and in case it returns true, the value of this node will already
+Returns ``True`` if this node can be evaluated for a static value. This is used during
+the prepare() step and in case it returns ``True``, the value of this node will already
 be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
-to eval()). In case this returns true, prepareNode() will never be called.
+to eval()). In case this returns ``True``, prepareNode() will never be called.
 
 .. versionadded:: 3.0
 %End

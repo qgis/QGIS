@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-10-17'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -139,6 +137,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
 
         connection.remove()
 
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test flaky') # see https://travis-ci.org/qgis/QGIS/jobs/502556996
     def testCreateRenameDeleteTable(self):
         connection_name = 'testCreateRenameDeleteTable'
         plugin = createDbPlugin('gpkg')

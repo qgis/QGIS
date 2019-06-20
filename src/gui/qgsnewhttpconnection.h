@@ -57,6 +57,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     {
       FlagShowTestConnection = 1 << 1, //!< Display the 'test connection' button
       FlagHideAuthenticationGroup = 1 << 2, //!< Hide the Authentication group
+      FlagShowHttpSettings = 1 << 3, //!< Display the 'http' group
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -103,7 +104,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
   protected:
 
     /**
-     * Returns true if dialog settings are valid, or false if current
+     * Returns TRUE if dialog settings are valid, or FALSE if current
      * settings are not valid and the dialog should not be acceptable.
      * \since QGIS 3.0
      */
@@ -114,6 +115,12 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * \since QGIS 3.0
      */
     QPushButton *testConnectButton();
+
+    /**
+     * Returns the current authentication settings widget.
+     * \since QGIS 3.8
+     */
+    QgsAuthSettingsWidget *authSettingsWidget() SIP_SKIP;
 
     /**
      * Returns the "WFS version detect" button.

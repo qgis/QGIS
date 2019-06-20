@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Style Manager</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QVBoxLayout" name="mVerticalLayout">
    <property name="leftMargin">
     <number>6</number>
    </property>
@@ -26,7 +26,7 @@
    <property name="bottomMargin">
     <number>6</number>
    </property>
-   <item row="3" column="0">
+   <item>
     <widget class="QSplitter" name="mSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -445,7 +445,7 @@
      </widget>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

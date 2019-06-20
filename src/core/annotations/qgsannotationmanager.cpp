@@ -17,6 +17,7 @@
 #include "qgsproject.h"
 #include "qgsannotation.h"
 #include "qgsannotationregistry.h"
+#include "qgsapplication.h"
 
 QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )

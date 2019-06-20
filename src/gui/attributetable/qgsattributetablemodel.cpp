@@ -39,6 +39,7 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsfieldmodel.h"
 #include "qgstexteditwidgetfactory.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QVariant>
 
@@ -104,7 +105,8 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
 {
   QList<int> rows;
 
-  Q_FOREACH ( QgsFeatureId fid, fids )
+  const auto constFids = fids;
+  for ( QgsFeatureId fid : constFids )
   {
     QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1, size: %3" ).arg( fid ).arg( mFeatureRequest.filterType() ).arg( mIdRowMap.size() ), 4 );
 
@@ -121,7 +123,8 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
   int removedRows = 0;
   bool reset = false;
 
-  Q_FOREACH ( int row, rows )
+  const auto constRows = rows;
+  for ( int row : constRows )
   {
 #if 0
     qDebug() << "Row: " << row << ", begin " << beginRow << ", last " << lastRow << ", current " << currentRowCount << ", removed " << removedRows;
@@ -260,7 +263,7 @@ void QgsAttributeTableModel::updatedFields()
 void QgsAttributeTableModel::editCommandEnded()
 {
   // do not do reload(...) due would trigger (dataChanged) row sort
-  // giving issue: https://issues.qgis.org/issues/15976
+  // giving issue: https://github.com/qgis/QGIS/issues/23892
   bulkEditCommandEnded( );
 }
 
@@ -573,13 +576,13 @@ int QgsAttributeTableModel::fieldCol( int idx ) const
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mRowIdMap.size();
 }
 
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return std::max( 1, mFieldCount + mExtraColumns );  // if there are zero columns all model indices will be considered invalid
 }
 

@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QDir>
 #include <QSettings>
@@ -191,7 +192,7 @@ void QgsO2::link()
     parameters.append( qMakePair( O2_OAUTH2_STATE, state_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_API_KEY ), apiKey_ ) );
 
-    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( qMakePair( iter.key(), iter.value().toString() ) );
     }
@@ -220,7 +221,7 @@ void QgsO2::link()
     parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
 
 
-    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( O0RequestParameter( iter.key().toUtf8(), iter.value().toString().toUtf8() ) );
     }
@@ -230,8 +231,9 @@ void QgsO2::link()
 
     QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
+    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/x-www-form-urlencoded" ) );
-    QNetworkReply *tokenReply = manager_->post( tokenRequest, payload );
+    QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
 
     connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );
     connect( tokenReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onTokenReplyError( QNetworkReply::NetworkError ) ), Qt::QueuedConnection );
@@ -291,6 +293,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     if ( !apiKey_.isEmpty() )
       query = QStringLiteral( "?=%1" ).arg( QString( O2_OAUTH2_API_KEY ), apiKey_ );
     QNetworkRequest tokenRequest( QUrl( tokenUrl_.toString() + query ) );
+    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
     QMap<QString, QString> parameters;
     parameters.insert( O2_OAUTH2_GRANT_TYPE_CODE, code() );
@@ -299,7 +302,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     parameters.insert( O2_OAUTH2_REDIRECT_URI, redirectUri_ );
     parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE );
     QByteArray data = buildRequestBody( parameters );
-    QNetworkReply *tokenReply = manager_->post( tokenRequest, data );
+    QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
     connect( tokenReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
@@ -335,4 +338,9 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     setToken( response.value( O2_OAUTH2_ACCESS_TOKEN ) );
     setRefreshToken( response.value( O2_OAUTH2_REFRESH_TOKEN ) );
   }
+}
+
+QNetworkAccessManager *QgsO2::getManager()
+{
+  return QgsNetworkAccessManager::instance();
 }

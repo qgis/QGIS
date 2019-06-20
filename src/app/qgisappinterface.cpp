@@ -83,7 +83,7 @@ QgsLayerTreeView *QgisAppInterface::layerTreeView()
 }
 
 void QgisAppInterface::addCustomActionForLayerType( QAction *action,
-    QString menu, QgsMapLayer::LayerType type, bool allLayers )
+    QString menu, QgsMapLayerType type, bool allLayers )
 {
   QgsAppLayerTreeViewMenuProvider *menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
   if ( !menuProvider )
@@ -611,6 +611,7 @@ QAction *QgisAppInterface::actionSimplifyFeature() { return qgis->actionSimplify
 QAction *QgisAppInterface::actionDeleteRing() { return qgis->actionDeleteRing(); }
 QAction *QgisAppInterface::actionDeletePart() { return qgis->actionDeletePart(); }
 QAction *QgisAppInterface::actionVertexTool() { return qgis->actionVertexTool(); }
+QAction *QgisAppInterface::actionVertexToolActiveLayer() { return qgis->actionVertexToolActiveLayer(); }
 
 QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
 QAction *QgisAppInterface::actionPanToSelected() { return qgis->actionPanToSelected(); }
@@ -685,7 +686,7 @@ QAction *QgisAppInterface::actionAbout() { return qgis->actionAbout(); }
 
 bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly, bool showModal )
 {
-  Q_UNUSED( updateFeatureOnly );
+  Q_UNUSED( updateFeatureOnly )
   if ( !vlayer )
     return false;
 

@@ -101,7 +101,7 @@ The base class method has no effect.
 
     virtual bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context );
 %Docstring
-Called when a user double clicks on an ``item``. Providers should return true
+Called when a user double clicks on an ``item``. Providers should return ``True``
 if the double-click was handled and do not want other providers to handle the
 double-click, and to prevent the default double-click behavior for items.
 %End

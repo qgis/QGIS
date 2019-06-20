@@ -475,16 +475,16 @@ class OracleDBConnector(DBConnector):
 
     def singleGeomTypes(self, geomtypes, srids):
         """Intelligent wkbtype grouping (multi with non multi)"""
-        if (QgsWkbTypes.Polygon in geomtypes and
-                QgsWkbTypes.MultiPolygon in geomtypes):
+        if (QgsWkbTypes.Polygon in geomtypes
+                and QgsWkbTypes.MultiPolygon in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Polygon))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Polygon))
-        if (QgsWkbTypes.Point in geomtypes and
-                QgsWkbTypes.MultiPoint in geomtypes):
+        if (QgsWkbTypes.Point in geomtypes
+                and QgsWkbTypes.MultiPoint in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Point))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Point))
-        if (QgsWkbTypes.LineString in geomtypes and
-                QgsWkbTypes.MultiLineString in geomtypes):
+        if (QgsWkbTypes.LineString in geomtypes
+                and QgsWkbTypes.MultiLineString in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.LineString))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.LineString))
         if QgsWkbTypes.Unknown in geomtypes and len(geomtypes) > 1:
@@ -1336,7 +1336,7 @@ class OracleDBConnector(DBConnector):
 
     def updateTableColumn(self, table, column, new_name=None,
                           data_type=None, not_null=None,
-                          default=None):
+                          default=None, comment=None):
         """Update properties of a column in a table."""
 
         schema, tablename = self.getSchemaTableName(table)

@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -98,10 +94,11 @@ class polygonize(GdalAlgorithm):
         arguments.append(inLayer.source())
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
         arguments.append(output)
 
-        if self.parameterAsBool(parameters, self.EIGHT_CONNECTEDNESS, context):
+        if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):
             arguments.append('-8')
 
         arguments.append('-b')
@@ -110,13 +107,16 @@ class polygonize(GdalAlgorithm):
         if outFormat:
             arguments.append('-f {}'.format(outFormat))
 
-        layerName = GdalUtils.ogrLayerName(output)
+        layerName = GdalUtils.ogrOutputLayerName(output)
         if layerName:
             arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

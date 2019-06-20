@@ -25,6 +25,7 @@
 #include "qgsunittypes.h"
 #include "qgsmenuheader.h"
 #include "qgsfontutils.h"
+#include "qgsapplication.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
@@ -236,7 +237,8 @@ void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
       drag->setMimeData( QgsFontUtils::toMimeData( mFont ) );
       break;
   }
-  drag->setPixmap( createDragIcon() );
+  const int iconSize = QgsGuiUtils::scaleIconSize( 50 );
+  drag->setPixmap( createDragIcon( QSize( iconSize, iconSize ) ) );
   drag->exec( Qt::CopyAction );
   setDown( false );
 }
@@ -286,7 +288,7 @@ void QgsFontButton::dragEnterEvent( QDragEnterEvent *e )
 
 void QgsFontButton::dragLeaveEvent( QDragLeaveEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //reset button color
   updatePreview();
 }
@@ -378,7 +380,8 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
 QPixmap QgsFontButton::createColorIcon( const QColor &color ) const
 {
   //create an icon pixmap
-  QPixmap pixmap( 16, 16 );
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  QPixmap pixmap( iconSize, iconSize );
   pixmap.fill( Qt::transparent );
 
   QPainter p;
@@ -389,7 +392,7 @@ QPixmap QgsFontButton::createColorIcon( const QColor &color ) const
 
   //draw border
   p.setPen( QColor( 197, 197, 197 ) );
-  p.drawRect( 0, 0, 15, 15 );
+  p.drawRect( 0, 0, iconSize - 1, iconSize - 1 );
   p.end();
   return pixmap;
 }
@@ -541,7 +544,8 @@ void QgsFontButton::prepareMenu()
   mMenu->addAction( sizeAction );
 
   QMenu *recentFontMenu = new QMenu( tr( "Recent Fonts" ), mMenu );
-  Q_FOREACH ( const QString &family, QgsFontUtils::recentFontFamilies() )
+  const auto recentFontFamilies { QgsFontUtils::recentFontFamilies() };
+  for ( const QString &family : recentFontFamilies )
   {
     QAction *fontAction = new QAction( family, recentFontMenu );
     QFont f = fontAction->font();
@@ -595,16 +599,17 @@ void QgsFontButton::prepareMenu()
   //action, even if it's disabled, to give hint to the user that pasting colors is possible
   QgsTextFormat tempFormat;
   QFont tempFont;
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
   if ( mMode == ModeTextRenderer && formatFromMimeData( QApplication::clipboard()->mimeData(), tempFormat ) )
   {
     tempFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
     tempFormat.setSize( 14 );
-    pasteFormatAction->setIcon( createDragIcon( QSize( 16, 16 ), &tempFormat ) );
+    pasteFormatAction->setIcon( createDragIcon( QSize( iconSize, iconSize ), &tempFormat ) );
   }
   else if ( mMode == ModeQFont && fontFromMimeData( QApplication::clipboard()->mimeData(), tempFont ) )
   {
     tempFont.setPointSize( 8 );
-    pasteFormatAction->setIcon( createDragIcon( QSize( 16, 16 ), nullptr, &tempFont ) );
+    pasteFormatAction->setIcon( createDragIcon( QSize( iconSize, iconSize ), nullptr, &tempFont ) );
   }
   else
   {

@@ -138,7 +138,7 @@ properties().
 :param doc: destination DOM document
 :param element: destination DOM element
 
-:return: true if save was successful
+:return: ``True`` if save was successful
 
 .. seealso:: :py:func:`readProperties`
 %End
@@ -149,7 +149,7 @@ Restores the effect to the state described by a DOM element.
 
 :param element: DOM element describing an effect's state
 
-:return: true if read was successful
+:return: ``True`` if read was successful
 
 .. seealso:: :py:func:`saveProperties`
 %End
@@ -191,7 +191,7 @@ to the render context after being modified by the effect.
 %Docstring
 Returns whether the effect is enabled
 
-:return: true if effect is enabled
+:return: ``True`` if effect is enabled
 
 .. seealso:: :py:func:`setEnabled`
 %End
@@ -200,7 +200,7 @@ Returns whether the effect is enabled
 %Docstring
 Sets whether the effect is enabled
 
-:param enabled: set to false to disable the effect
+:param enabled: set to ``False`` to disable the effect
 
 .. seealso:: :py:func:`enabled`
 %End

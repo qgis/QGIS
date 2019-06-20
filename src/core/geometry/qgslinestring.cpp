@@ -24,11 +24,13 @@
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
 
+#include <nlohmann/json.hpp>
 #include <cmath>
 #include <memory>
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
+#include <QJsonObject>
 
 
 /***************************************************************************
@@ -410,12 +412,15 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   return elemLineString;
 }
 
-QString QgsLineString::asJson( int precision ) const
+json QgsLineString::asJsonObject( int precision ) const
 {
   QgsPointSequence pts;
   points( pts );
-
-  return "{\"type\": \"LineString\", \"coordinates\": " + QgsGeometryUtils::pointsToJSON( pts, precision ) + '}';
+  return
+  {
+    {  "type",  "LineString" },
+    {  "coordinates",  QgsGeometryUtils::pointsToJson( pts, precision ) }
+  };
 }
 
 /***************************************************************************
@@ -464,8 +469,8 @@ QgsPoint QgsLineString::endPoint() const
 
 QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  Q_UNUSED( tolerance );
-  Q_UNUSED( toleranceType );
+  Q_UNUSED( tolerance )
+  Q_UNUSED( toleranceType )
   return clone();
 }
 

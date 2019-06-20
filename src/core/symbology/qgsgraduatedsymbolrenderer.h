@@ -69,7 +69,7 @@ class CORE_EXPORT QgsRendererRange
      * \param doc DOM document
      * \param element destination DOM element
      * \param props graduated renderer properties
-     * \param firstRange set to true if the range is the first range, where the lower value uses a <= test
+     * \param firstRange set to TRUE if the range is the first range, where the lower value uses a <= test
      * rather than a < test.
      */
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * Add a breakpoint by splitting existing classes so that the specified
      * value becomes a break between two classes.
      * \param breakValue position to insert break
-     * \param updateSymbols set to true to reapply ramp colors to the new
+     * \param updateSymbols set to TRUE to reapply ramp colors to the new
      * symbol ranges
      * \since QGIS 2.9
      */
@@ -195,14 +195,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Tests whether classes assigned to the renderer have ranges which overlap.
-     * \returns true if ranges overlap
+     * \returns TRUE if ranges overlap
      * \since QGIS 2.10
      */
     bool rangesOverlap() const;
 
     /**
      * Tests whether classes assigned to the renderer have gaps between the ranges.
-     * \returns true if ranges have gaps
+     * \returns TRUE if ranges have gaps
      * \since QGIS 2.10
      */
     bool rangesHaveGaps() const;
@@ -315,14 +315,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     /**
      * Set the label format used to generate default classification labels
      * \param labelFormat The string appended to classification labels
-     * \param updateRanges If true then ranges ending with the old unit string are updated to the new.
+     * \param updateRanges If TRUE then ranges ending with the old unit string are updated to the new.
      * \since QGIS 2.6
      */
     void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false );
 
     /**
      * Reset the label decimal places to a numberbased on the minimum class interval
-     * \param updateRanges if true then ranges currently using the default label will be updated
+     * \param updateRanges if TRUE then ranges currently using the default label will be updated
      * \since QGIS 2.6
      */
     void calculateLabelPrecision( bool updateRanges = true );
@@ -462,7 +462,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
      *
      * When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
-     * Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+     * Takes ownership of the passed settings objects. NULLPTR is a valid input that disables data-defined
      * size legend.
      * \since QGIS 3.0
      */
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Returns configuration of appearance of legend when using data-defined size for marker symbols.
-     * Will return null if the functionality is disabled.
+     * Will return NULLPTR if the functionality is disabled.
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;

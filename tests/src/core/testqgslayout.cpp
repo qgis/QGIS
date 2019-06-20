@@ -33,6 +33,7 @@
 #include "qgslayertree.h"
 #include "qgslayoutitemattributetable.h"
 #include "qgsrasterlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 class TestQgsLayout: public QObject
 {

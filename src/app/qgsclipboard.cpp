@@ -39,6 +39,7 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 QgsClipboard::QgsClipboard()
 {
@@ -92,7 +93,8 @@ QString QgsClipboard::generateClipboardText() const
         textFields += QStringLiteral( "wkt_geom" );
       }
 
-      Q_FOREACH ( const QgsField &field, mFeatureFields )
+      const auto constMFeatureFields = mFeatureFields;
+      for ( const QgsField &field : constMFeatureFields )
       {
         textFields += field.name();
       }
@@ -203,13 +205,14 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
 
   QgsFields sourceFields = retrieveFields();
 
-  Q_FOREACH ( const QString &row, values )
+  const auto constValues = values;
+  for ( const QString &row : constValues )
   {
     // Assume that it's just WKT for now. because GeoJSON is managed by
     // previous QgsOgrUtils::stringToFeatureList call
     // Get the first value of a \t separated list. WKT clipboard pasted
     // feature has first element the WKT geom.
-    // This split is to fix the following issue: https://issues.qgis.org/issues/16870
+    // This split is to fix the following issue: https://github.com/qgis/QGIS/issues/24769
     // Value separators are set in generateClipboardText
     QStringList fieldValues = row.split( '\t' );
     if ( fieldValues.isEmpty() )

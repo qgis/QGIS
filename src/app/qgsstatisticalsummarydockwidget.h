@@ -24,6 +24,7 @@
 #include "qgsdockwidget.h"
 #include "qgsfeatureiterator.h"
 #include "qgstaskmanager.h"
+#include "qgsexpressioncontextgenerator.h"
 
 #include "qgis_app.h"
 

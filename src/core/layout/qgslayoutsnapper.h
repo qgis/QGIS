@@ -59,7 +59,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
     int snapTolerance() const { return mTolerance; }
 
     /**
-     * Returns true if snapping to grid is enabled.
+     * Returns TRUE if snapping to grid is enabled.
      * \see setSnapToGrid()
      */
     bool snapToGrid() const { return mSnapToGrid; }
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
     void setSnapToGrid( bool enabled );
 
     /**
-     * Returns true if snapping to guides is enabled.
+     * Returns TRUE if snapping to guides is enabled.
      * \see setSnapToGuides()
      */
     bool snapToGuides() const { return mSnapToGuides; }
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
     void setSnapToGuides( bool enabled );
 
     /**
-     * Returns true if snapping to items is enabled.
+     * Returns TRUE if snapping to items is enabled.
      * \see setSnapToItems()
      */
     bool snapToItems() const { return mSnapToItems; }
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
     void setSnapToItems( bool enabled );
 
     /**
-     * Snaps a layout coordinate \a point. If \a point was snapped, \a snapped will be set to true.
+     * Snaps a layout coordinate \a point. If \a point was snapped, \a snapped will be set to TRUE.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
                        const QList< QgsLayoutItem * > *ignoreItems = nullptr ) const;
 
     /**
-     * Snaps a layout coordinate \a rect. If \a rect was snapped, \a snapped will be set to true.
+     * Snaps a layout coordinate \a rect. If \a rect was snapped, \a snapped will be set to TRUE.
      *
      * Snapping occurs by moving the rectangle alone. The rectangle will not be resized
      * as a result of the snap operation.
@@ -139,8 +139,8 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 
     /**
      * Snaps a layout coordinate \a point to the grid. If \a point
-     * was snapped horizontally, \a snappedX will be set to true. If \a point
-     * was snapped vertically, \a snappedY will be set to true.
+     * was snapped horizontally, \a snappedX will be set to TRUE. If \a point
+     * was snapped vertically, \a snappedY will be set to TRUE.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 
     /**
      * Snaps a set of \a points to the grid. If the points
-     * were snapped, \a snapped will be set to true.
+     * were snapped, \a snapped will be set to TRUE.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 
     /**
      * Snaps an \a original layout coordinate to the guides. If the point
-     * was snapped, \a snapped will be set to true.
+     * was snapped, \a snapped will be set to TRUE.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 
     /**
      * Snaps a set of \a points to the guides. If the points
-     * were snapped, \a snapped will be set to true.
+     * were snapped, \a snapped will be set to TRUE.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 
     /**
      * Snaps an \a original layout coordinate to the item bounds. If the point
-     * was snapped, \a snapped will be set to true.
+     * was snapped, \a snapped will be set to TRUE.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 
     /**
      * Snaps a set of \a points to the item bounds. If the points
-     * were snapped, \a snapped will be set to true.
+     * were snapped, \a snapped will be set to TRUE.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the

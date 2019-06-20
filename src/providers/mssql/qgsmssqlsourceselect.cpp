@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmssqlconnection.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -42,7 +43,7 @@
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( index.column() == QgsMssqlTableModel::DbtmSql )
   {
     QLineEdit *le = new QLineEdit( parent );
@@ -383,7 +384,7 @@ void QgsMssqlSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStr
 
 void QgsMssqlSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -676,8 +677,8 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   const QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsMssqlTableModel::DbtmTable ) )->text();
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
-
-  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer>( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ) );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer>( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
 
   if ( !vlayer->isValid() )
   {
@@ -738,7 +739,7 @@ void QgsMssqlSourceSelect::setConnectionListPosition()
 
 void QgsMssqlSourceSelect::setSearchExpression( const QString &regexp )
 {
-  Q_UNUSED( regexp );
+  Q_UNUSED( regexp )
 }
 
 void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )

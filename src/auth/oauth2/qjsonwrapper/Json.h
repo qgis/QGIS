@@ -50,7 +50,7 @@ namespace QJsonWrapper
    * Parse the JSON string and return the result as a QVariant.
    *
    * @param jsonData The string containing the data as JSON.
-   * @param ok Set to true if the conversion was successful, otherwise false.
+   * @param ok Set to TRUE if the conversion was successful, otherwise FALSE.
    * @param errorString Any error string produced during parsing
    * @return After a successful conversion the parsed data either as QVariantMap or QVariantList.
    */
@@ -66,7 +66,7 @@ namespace QJsonWrapper
    * QVariantMap in your code than passing them here.
    *
    * @param variant The data to be serialised.
-   * @param ok Set to true if the conversion was successful, otherwise false.
+   * @param ok Set to TRUE if the conversion was successful, otherwise FALSE.
    * @param errorString Any error string produced during conversion
    * @param indented Whether to indent resultant JSON code
    * @return After a successful serialisation the data of the QVariant represented as JSON.

@@ -216,6 +216,11 @@ QgsFields QgsArrayTranslatedFeaturesAlgorithm::outputFields( const QgsFields &in
   return output;
 }
 
+QgsFeatureSink::SinkFlags QgsArrayTranslatedFeaturesAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
+}
+
 ///@endcond
 
 

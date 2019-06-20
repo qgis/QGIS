@@ -18,7 +18,9 @@
 #include "qgsvaliditycheckcontext.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitempicture.h"
 #include "qgslayout.h"
+#include "qgssettings.h"
 
 //
 // QgsLayoutScaleBarValidityCheck
@@ -73,6 +75,64 @@ QList<QgsValidityCheckResult> QgsLayoutScaleBarValidityCheck::runCheck( const Qg
 
 
 //
+// QgsLayoutNorthArrowValidityCheck
+//
+
+QgsLayoutNorthArrowValidityCheck *QgsLayoutNorthArrowValidityCheck::create() const
+{
+  return new QgsLayoutNorthArrowValidityCheck();
+}
+
+QString QgsLayoutNorthArrowValidityCheck::id() const
+{
+  return QStringLiteral( "layout_northarrow_check" );
+}
+
+int QgsLayoutNorthArrowValidityCheck::checkType() const
+{
+  return QgsAbstractValidityCheck::TypeLayoutCheck;
+}
+
+bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
+{
+  if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
+    return false;
+
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  if ( !layoutContext )
+    return false;
+
+  QgsSettings settings;
+  const QString defaultPath = settings.value( QStringLiteral( "LayoutDesigner/defaultNorthArrow" ), QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ), QgsSettings::Gui ).toString();
+
+  QList< QgsLayoutItemPicture * > pictureItems;
+  layoutContext->layout->layoutItems( pictureItems );
+  for ( QgsLayoutItemPicture *picture : qgis::as_const( pictureItems ) )
+  {
+    // look for pictures which use the default north arrow svg, but aren't actually linked to maps.
+    // alternatively identify them by looking for the default "North Arrow" string in their id
+    if ( !picture->linkedMap() && ( picture->picturePath() == defaultPath || picture->id().contains( QObject::tr( "North Arrow" ), Qt::CaseInsensitive ) ) )
+    {
+      QgsValidityCheckResult res;
+      res.type = QgsValidityCheckResult::Warning;
+      res.title = QObject::tr( "North arrow is not linked to a map" );
+      const QString name = picture->displayName().toHtmlEscaped();
+      res.detailedDescription = QObject::tr( "The north arrow “%1” is not linked to a map item. The arrow orientation may be misleading." ).arg( name );
+      mResults.append( res );
+    }
+  }
+
+  return true;
+}
+
+QList<QgsValidityCheckResult> QgsLayoutNorthArrowValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
+{
+  return mResults;
+}
+
+
+
+//
 // QgsLayoutOverviewValidityCheck
 //
 
@@ -123,6 +183,64 @@ bool QgsLayoutOverviewValidityCheck::prepareCheck( const QgsValidityCheckContext
 }
 
 QList<QgsValidityCheckResult> QgsLayoutOverviewValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
+{
+  return mResults;
+}
+
+
+
+//
+// QgsLayoutPictureSourceValidityCheck
+//
+
+QgsLayoutPictureSourceValidityCheck *QgsLayoutPictureSourceValidityCheck::create() const
+{
+  return new QgsLayoutPictureSourceValidityCheck();
+}
+
+QString QgsLayoutPictureSourceValidityCheck::id() const
+{
+  return QStringLiteral( "layout_picture_source_check" );
+}
+
+int QgsLayoutPictureSourceValidityCheck::checkType() const
+{
+  return QgsAbstractValidityCheck::TypeLayoutCheck;
+}
+
+bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
+{
+  if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
+    return false;
+
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  if ( !layoutContext )
+    return false;
+
+  QList< QgsLayoutItemPicture * > pictureItems;
+  layoutContext->layout->layoutItems( pictureItems );
+  for ( QgsLayoutItemPicture *picture : qgis::as_const( pictureItems ) )
+  {
+    if ( picture->isMissingImage() )
+    {
+      QgsValidityCheckResult res;
+      res.type = QgsValidityCheckResult::Warning;
+      res.title = QObject::tr( "Picture source is missing or corrupt" );
+      const QString name = picture->displayName().toHtmlEscaped();
+
+      const QUrl picUrl = QUrl::fromUserInput( picture->evaluatedPath() );
+      const bool isLocalFile = picUrl.isLocalFile();
+
+      res.detailedDescription = QObject::tr( "The source for picture “%1” could not be loaded or is corrupt:<p>%2" ).arg( name,
+                                isLocalFile ? QDir::toNativeSeparators( picture->evaluatedPath() ) : picture->evaluatedPath() );
+      mResults.append( res );
+    }
+  }
+
+  return true;
+}
+
+QList<QgsValidityCheckResult> QgsLayoutPictureSourceValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
 {
   return mResults;
 }

@@ -20,8 +20,6 @@
 __author__ = 'Stéphane Brunner'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Stéphane Brunner'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 # -*- coding: utf-8 -*-
 """
@@ -30,8 +28,6 @@ The list of acceptable documentation missing
 __author__ = 'Stéphane Brunner'
 __date__ = '18/03/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 ACCEPTABLE_MISSING_DOCS = {
     "CharacterWidget": ['updateFontMerging(bool enable)'],
@@ -213,7 +209,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsInterpolator": ['QgsInterpolator(const QList< QgsInterpolator::LayerData > &layerData)'],
     "QgsLUDialog": ['QgsLUDialog(QWidget *parent=nullptr, Qt::WindowFlags fl=QgsGuiUtils::ModalDialogFlags)', 'lowerValue() const', 'setLowerValue(const QString &val)', 'setUpperValue(const QString &val)', 'upperValue() const'],
     "QgsLabelCandidate": ['QgsLabelCandidate(const QRectF &r, double c)'],
-    "QgsLabelPosition": ['QgsLabelPosition(int id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram=false, bool pinned=false, const QString &providerId=QString())'],
+    "QgsLabelPosition": ['QgsLabelPosition(QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram=false, bool pinned=false, const QString &providerId=QString())'],
     "QgsLabelSorter": ['QgsLabelSorter(const QgsMapSettings &mapSettings)', 'operator()(pal::LabelPosition *lp1, pal::LabelPosition *lp2) const'],
     "QgsLabelingEngine": ['processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)'],
     "QgsLayerItem": ['LayerType', 'QgsLayerItem(QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey)', 'iconDefault()', 'iconLine()', 'iconPoint()', 'iconPolygon()', 'iconRaster()', 'iconTable()'],

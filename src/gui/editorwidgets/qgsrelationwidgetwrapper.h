@@ -17,7 +17,7 @@
 #define QGSRELATIONWIDGETWRAPPER_H
 
 #include "qgswidgetwrapper.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QgsRelationEditorWidget;
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Sets the visibility of the wrapper's widget.
-     * \param visible set to true to show widget, false to hide widget
+     * \param visible set to TRUE to show widget, FALSE to hide widget
      * \since QGIS 2.16
      */
     void setVisible( bool visible );

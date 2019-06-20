@@ -27,8 +27,9 @@
 #include <QDomDocument>
 #include <QStringList>
 
-QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
-  : QgsWfsRequest( QgsWFSDataSourceURI( uri ) )
+QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+  : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ),
+    mOptions( options )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -85,6 +86,32 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
   if ( setAmbiguousUnprefixedTypename.contains( name ) )
     return QString();
   return mapUnprefixedTypenameToPrefixedTypename[name];
+}
+
+QString QgsWfsCapabilities::Capabilities::getNamespaceForTypename( const QString &name ) const
+{
+  Q_FOREACH ( const QgsWfsCapabilities::FeatureType &f, featureTypes )
+  {
+    if ( f.name == name )
+    {
+      return f.nameSpace;
+    }
+  }
+  return "";
+}
+
+QString QgsWfsCapabilities::Capabilities::getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const
+{
+  QString namespaces = getNamespaceForTypename( typeName );
+  bool tryNameSpacing = ( !namespaces.isEmpty() && typeName.contains( ':' ) );
+  if ( tryNameSpacing )
+  {
+    QString prefixOfTypename = typeName.section( ':', 0, 0 );
+    return "xmlns(" + prefixOfTypename +
+           ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) ? "," : "=" ) +
+           namespaces + ")";
+  }
+  return QString();
 }
 
 class CPLXMLTreeUniquePointer
@@ -404,6 +431,14 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( psFeatureTypeIter )
         {
           featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+          if ( featureType.nameSpace.isEmpty() )
+          {
+            //Try to look for namespace in Name tag (Seen in GO Publisher)
+            //<wfs:FeatureType>
+            // <wfs:Name xmlns:dagi="http://data.gov.dk/schemas/dagi/2/gml3sfp">dagi:Menighedsraadsafstemningsomraade</wfs:Name>
+            // <wfs:Title>Menighedsraadsafstemningsomraade</wfs:Title>
+            featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "wfs:Name.xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+          }
         }
       }
     }
@@ -484,9 +519,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
 
-          Q_NOWARN_DEPRECATED_PUSH
-          QgsCoordinateTransform ct( crsWGS84, crs );
-          Q_NOWARN_DEPRECATED_POP
+          QgsCoordinateTransform ct( crsWGS84, crs, mOptions.transformContext );
 
           QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
           QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
@@ -810,3 +843,4 @@ QString QgsWfsCapabilities::errorMessageWithReason( const QString &reason )
 {
   return tr( "Download of capabilities failed: %1" ).arg( reason );
 }
+

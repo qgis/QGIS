@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     QString name() const;
 
     /**
-     * Controls whether the item will be drawn. Set \a enabled to true to enable drawing of the item.
+     * Controls whether the item will be drawn. Set \a enabled to TRUE to enable drawing of the item.
      * \see enabled()
      */
     void setEnabled( bool enabled );
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     bool enabled() const;
 
     /**
-     * Returns true if the item is drawn using advanced effects, such as blend modes.
+     * Returns TRUE if the item is drawn using advanced effects, such as blend modes.
      */
     virtual bool usesAdvancedEffects() const;
 
@@ -226,14 +226,14 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
 
     /**
      * Stores the state of the item stack in a DOM node, where \a element is the DOM element corresponding to a 'LayoutMap' tag.
-     * Returns true if write was successful.
+     * Returns TRUE if write was successful.
      * \see readXml()
      */
     virtual bool writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the item stack's state from a DOM document, where \a element is a DOM node corresponding to a 'LayoutMap' tag.
-     * Returns true if read was successful.
+     * Returns TRUE if read was successful.
      * \see writeXml()
      */
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
@@ -251,8 +251,8 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
     /**
      * Draws the items from the stack on a specified \a painter.
      *
-     * If \a ignoreStacking is true, then all items will be drawn, regardless
-     * of their actual stacking position settings. If it is false, only items
+     * If \a ignoreStacking is TRUE, then all items will be drawn, regardless
+     * of their actual stacking position settings. If it is FALSE, only items
      * which are set to stack above the map item will be drawn.
      */
     void drawItems( QPainter *painter, bool ignoreStacking = true );

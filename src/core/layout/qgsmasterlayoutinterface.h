@@ -100,7 +100,7 @@ class CORE_EXPORT QgsMasterLayoutInterface
 
     /**
      * The project associated with the layout. Used to get access to layers, map themes,
-     * relations and various other bits. It is never null.
+     * relations and various other bits. It is never NULLPTR.
      */
     virtual QgsProject *layoutProject() const = 0;
 

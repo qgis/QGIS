@@ -46,6 +46,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagForceVectorOutput = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
       FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
       FlagDrawSelection = 1 << 7, //!< Draw selection
+      FlagDisableTiledRasterLayerRenders = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -132,14 +133,14 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QgsLayoutMeasurementConverter &measurementConverter() { return mMeasurementConverter; }
 
     /**
-     * Returns true if the render current being conducted is a preview render,
+     * Returns TRUE if the render current being conducted is a preview render,
      * i.e. it is being rendered inside a QGraphicsView widget as opposed to a destination
      * device (such as an image).
      */
     bool isPreviewRender() const { return mIsPreviewRender; }
 
     /**
-     * Returns true if the page grid should be drawn.
+     * Returns TRUE if the page grid should be drawn.
      * \see setGridVisible()
      */
     bool gridVisible() const;
@@ -151,7 +152,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     void setGridVisible( bool visible );
 
     /**
-     * Returns true if the item bounding boxes should be drawn.
+     * Returns TRUE if the item bounding boxes should be drawn.
      * \see setBoundingBoxesVisible()
      */
     bool boundingBoxesVisible() const;

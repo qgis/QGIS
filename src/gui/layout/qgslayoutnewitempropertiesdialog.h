@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTNEWITEMPROPERTIESDIALOG_H
 #define QGSLAYOUTNEWITEMPROPERTIESDIALOG_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "ui_qgslayoutnewitemproperties.h"
 

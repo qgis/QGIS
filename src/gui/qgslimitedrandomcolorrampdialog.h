@@ -17,7 +17,7 @@
 #define QGsLIMITEDRANDOMCOLORRAMPDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgslimitedrandomcolorrampwidgetbase.h"

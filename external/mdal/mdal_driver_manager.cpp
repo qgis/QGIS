@@ -8,6 +8,7 @@
 #include "frmts/mdal_2dm.hpp"
 #include "frmts/mdal_ascii_dat.hpp"
 #include "frmts/mdal_binary_dat.hpp"
+#include "frmts/mdal_selafin.hpp"
 #include "mdal_utils.hpp"
 
 #ifdef HAVE_HDF5
@@ -21,12 +22,17 @@
 #endif
 
 #ifdef HAVE_NETCDF
+#include "frmts/mdal_ugrid.hpp"
 #include "frmts/mdal_3di.hpp"
 #include "frmts/mdal_sww.hpp"
 #endif
 
 #if defined HAVE_GDAL && defined HAVE_NETCDF
 #include "frmts/mdal_gdal_netcdf.hpp"
+#endif
+
+#if defined HAVE_HDF5 && defined HAVE_XML
+#include "frmts/mdal_xdmf.hpp"
 #endif
 
 std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFile, MDAL_Status *status ) const
@@ -117,6 +123,7 @@ MDAL::DriverManager::DriverManager()
 {
   // MESH DRIVERS
   mDrivers.push_back( std::make_shared<MDAL::Driver2dm>() );
+  mDrivers.push_back( std::make_shared<MDAL::DriverSelafin>() );
 
 #ifdef HAVE_HDF5
   mDrivers.push_back( std::make_shared<MDAL::DriverFlo2D>() );
@@ -126,17 +133,25 @@ MDAL::DriverManager::DriverManager()
 #ifdef HAVE_NETCDF
   mDrivers.push_back( std::make_shared<MDAL::Driver3Di>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSWW>() );
-  mDrivers.push_back( std::make_shared<MDAL::DriverGdalNetCDF>() );
+  mDrivers.push_back( std::make_shared<MDAL::DriverUgrid>() );
 #endif
 
 #if defined HAVE_GDAL && defined HAVE_NETCDF
+  mDrivers.push_back( std::make_shared<MDAL::DriverGdalNetCDF>() );
+#endif
+
+#ifdef HAVE_GDAL
   mDrivers.push_back( std::make_shared<MDAL::DriverGdalGrib>() );
-#endif // HAVE_GDAL && HAVE_NETCDF
+#endif
 
   // DATASET DRIVERS
   mDrivers.push_back( std::make_shared<MDAL::DriverAsciiDat>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverBinaryDat>() );
 #ifdef HAVE_HDF5
   mDrivers.push_back( std::make_shared<MDAL::DriverXmdf>() );
+#endif
+
+#if defined HAVE_HDF5 && defined HAVE_XML
+  mDrivers.push_back( std::make_shared<MDAL::DriverXdmf>() );
 #endif
 }

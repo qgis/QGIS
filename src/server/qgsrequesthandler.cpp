@@ -259,6 +259,13 @@ void QgsRequestHandler::setParameter( const QString &key, const QString &value )
 {
   if ( !( key.isEmpty() || value.isEmpty() ) )
   {
+    // Warn for potential breaking change if plugin set the MAP parameter
+    // expecting changing the config file path, see PR #9773
+    if ( key.compare( QLatin1String( "MAP" ), Qt::CaseInsensitive ) == 0 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Changing the 'MAP' parameter will have no effect on config path: use QgsSerververInterface::setConfigFilePath instead" ),
+                                 "Server", Qgis::Warning );
+    }
     mRequest.setParameter( key, value );
   }
 }

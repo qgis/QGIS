@@ -39,7 +39,7 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /**
-     * Returns the labeling gui widget or a nullptr if none.
+     * Returns the labeling gui widget or NULLPTR if none.
      *
      * \since QGIS 3.0
      */

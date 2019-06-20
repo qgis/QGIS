@@ -101,7 +101,7 @@ QString QgsHistogramDiagram::diagramName() const
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
   QSizeF size;
 
   if ( attributes.isEmpty() )

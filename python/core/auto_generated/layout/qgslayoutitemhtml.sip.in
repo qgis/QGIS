@@ -157,7 +157,7 @@ in the html. This distance is the maximum amount of empty space allowed
 at the bottom of a frame after calculating the optimum break location. Setting
 a larger value will result in better choice of page break location, but more
 wasted space at the bottom of frames. This setting is only effective if
-useSmartBreaks is true.
+useSmartBreaks is ``True``.
 
 .. seealso:: :py:func:`maxBreakDistance`
 
@@ -169,7 +169,7 @@ useSmartBreaks is true.
 Returns the maximum distance allowed when calculating where to place page breaks
 in the html. This distance is the maximum amount of empty space allowed
 at the bottom of a frame after calculating the optimum break location. This setting
-is only effective if useSmartBreaks is true.
+is only effective if useSmartBreaks is ``True``.
 
 .. seealso:: :py:func:`setMaxBreakDistance`
 
@@ -234,7 +234,7 @@ Returns whether user stylesheets are enabled for the HTML content.
 %Docstring
 Reloads the html source from the url and redraws the item.
 
-:param useCache: set to true to use a cached copy of remote html
+:param useCache: set to ``True`` to use a cached copy of remote html
                  content
 :param context: expression context for evaluating data defined urls and expressions in html
 

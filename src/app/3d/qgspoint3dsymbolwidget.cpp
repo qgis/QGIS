@@ -51,7 +51,8 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   QList<QDoubleSpinBox *> spinWidgets;
   spinWidgets << spinRadius << spinTopRadius << spinBottomRadius << spinMinorRadius << spinSize << spinLength;
   spinWidgets << spinTX << spinTY << spinTZ << spinSX << spinSY << spinSZ << spinRX << spinRY << spinRZ;
-  Q_FOREACH ( QDoubleSpinBox *spinBox, spinWidgets )
+  const auto constSpinWidgets = spinWidgets;
+  for ( QDoubleSpinBox *spinBox : constSpinWidgets )
     connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( lineEditModel, static_cast<void ( QLineEdit::* )( const QString & )>( &QLineEdit::textChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( btnModel, static_cast<void ( QToolButton::* )( bool )>( &QToolButton::clicked ), this, &QgsPoint3DSymbolWidget::onChooseModelClicked );
@@ -254,7 +255,8 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       break;
   }
 
-  Q_FOREACH ( QWidget *w, allWidgets )
+  const auto constAllWidgets = allWidgets;
+  for ( QWidget *w : constAllWidgets )
   {
     w->setVisible( activeWidgets.contains( w ) );
   }

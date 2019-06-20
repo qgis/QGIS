@@ -17,6 +17,8 @@
 
 #include "qgsprojectproperty.h"
 #include "qgslogger.h"
+#include "qgis.h"
+#include "qgsmessagelog.h"
 
 #include <QDomDocument>
 #include <QStringList>
@@ -27,7 +29,7 @@ QgsProjectProperty::QgsProjectProperty() //NOLINT
 
 void QgsProjectPropertyValue::dump( int tabs ) const
 {
-  Q_UNUSED( tabs );
+  Q_UNUSED( tabs )
 #ifdef QGISDEBUG
 
   QString tabString;
@@ -407,14 +409,13 @@ bool QgsProjectPropertyKey::writeXml( QString const &nodeName, QDomElement &elem
 
   if ( ! mProperties.isEmpty() )
   {
-    QHashIterator < QString, QgsProjectProperty * > i( mProperties );
-    while ( i.hasNext() )
+    auto keys = mProperties.keys();
+    std::sort( keys.begin(), keys.end() );
+
+    for ( const auto &key : qgis::as_const( keys ) )
     {
-      i.next();
-      if ( !i.value()->writeXml( i.key(), keyElement, document ) )
-      {
-        return false;
-      }
+      if ( !mProperties.value( key )->writeXml( key, keyElement, document ) )
+        QgsMessageLog::logMessage( tr( "Failed to save project property %1" ).arg( key ) );
     }
   }
 

@@ -127,6 +127,6 @@ void QgsCoordDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
 
 void QgsCoordDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   editor->setGeometry( option.rect );
 }

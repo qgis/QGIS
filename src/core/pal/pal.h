@@ -62,7 +62,7 @@ namespace pal
     POPMUSIC_TABU_CHAIN = 1, //!< Is the best but slowest
     POPMUSIC_TABU = 2, //!< Is a little bit better than CHAIN but slower
     POPMUSIC_CHAIN = 3, //!< Is slower and best than TABU, worse and faster than TABU_CHAIN
-    FALP = 4 //! only initial solution
+    FALP = 4 //!< Only initial solution
   };
 
   //! Enumeration line arrangement flags. Flags can be combined.
@@ -112,8 +112,8 @@ namespace pal
        * \param arrangement Howto place candidates
        * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * \param active is the layer is active (currently displayed)
-       * \param toLabel the layer will be labeled only if toLablel is true
-       * \param displayAll if true, all features will be labelled even though overlaps occur
+       * \param toLabel the layer will be labeled only if toLablel is TRUE
+       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
        *
        * \throws PalException::LayerExists
        */
@@ -129,7 +129,7 @@ namespace pal
       typedef bool ( *FnIsCanceled )( void *ctx );
 
       //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
-      void registerCancelationCallback( FnIsCanceled fnCanceled, void *context );
+      void registerCancellationCallback( FnIsCanceled fnCanceled, void *context );
 
       //! Check whether the job has been canceled
       inline bool isCanceled() { return fnIsCanceled ? fnIsCanceled( fnIsCanceledContext ) : false; }
@@ -253,7 +253,7 @@ namespace pal
 
       //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
       FnIsCanceled fnIsCanceled;
-      //! Application-specific context for the cancelation check function
+      //! Application-specific context for the cancellation check function
       void *fnIsCanceledContext = nullptr;
 
       /**

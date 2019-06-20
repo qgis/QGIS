@@ -17,7 +17,7 @@
 #define QGSRELATIONREFERENCEWIDGET_H
 
 #include "qgsattributeeditorcontext.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsfeature.h"
 
 #include <QComboBox>
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool readOnlySelector() { return mReadOnlySelector; }
     void setReadOnlySelector( bool readOnly );
 
-    //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
+    //! determines if the widget offers the possibility to select the related feature on the map (using a dedicated map tool)
     bool allowMapIdentification() { return mAllowMapIdentification; }
     void setAllowMapIdentification( bool allowMapIdentification );
 
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     /**
      * Determines if the filters are chained
      *
-     * \returns True if filters are chained
+     * \returns TRUE if filters are chained
      */
     bool chainFilters() const { return mChainFilters; }
 

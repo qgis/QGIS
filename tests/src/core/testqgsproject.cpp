@@ -41,6 +41,8 @@ class TestQgsProject : public QObject
     void testProjectUnits();
     void variablesChanged();
     void testLayerFlags();
+    void testLocalFiles();
+    void testLocalUrlFiles();
 };
 
 void TestQgsProject::init()
@@ -163,7 +165,7 @@ static QString _getLayerSvgMarkerPath( const QgsProject &prj, const QString &lay
 {
   QList<QgsMapLayer *> layers = prj.mapLayersByName( layerName );
   Q_ASSERT( layers.count() == 1 );
-  Q_ASSERT( layers[0]->type() == QgsMapLayer::VectorLayer );
+  Q_ASSERT( layers[0]->type() == QgsMapLayerType::VectorLayer );
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layers[0] );
   Q_ASSERT( layer->renderer() );
   Q_ASSERT( layer->renderer()->type() == "singleSymbol" );
@@ -384,6 +386,45 @@ void TestQgsProject::testLayerFlags()
   QgsMapLayer *layer = prj.mapLayer( layer2id );
   QVERIFY( layer );
   QVERIFY( !layer->flags().testFlag( QgsMapLayer::Removable ) );
+}
+
+void TestQgsProject::testLocalFiles()
+{
+  QTemporaryFile f;
+  QVERIFY( f.open() );
+  f.close();
+  QgsProject prj;
+  QFileInfo info( f.fileName() );
+  prj.setFileName( f.fileName() );
+  prj.write();
+  QString shpPath = info.dir().path() + '/' + info.baseName() + ".shp";
+  QString layerPath = "file://" + shpPath;
+  QFile f2( shpPath );
+  QVERIFY( f2.open( QFile::ReadWrite ) );
+  f2.close();
+  QgsPathResolver resolver( f.fileName( ) );
+  QCOMPARE( resolver.writePath( layerPath ), QString( "./" + info.baseName() + ".shp" ) ) ;
+
+}
+
+void TestQgsProject::testLocalUrlFiles()
+{
+  QTemporaryFile f;
+  QVERIFY( f.open() );
+  f.close();
+  QgsProject prj;
+  QFileInfo info( f.fileName() );
+  prj.setFileName( f.fileName() );
+  prj.write();
+  QString shpPath = info.dir().path() + '/' + info.baseName() + ".shp";
+  QString extraStuff {"?someVar=someValue&someOtherVar=someOtherValue" };
+  QString layerPath = "file://" + shpPath + extraStuff;
+  QFile f2( shpPath );
+  QVERIFY( f2.open( QFile::ReadWrite ) );
+  f2.close();
+  QgsPathResolver resolver( f.fileName( ) );
+  QCOMPARE( resolver.writePath( layerPath ), QString( "./" + info.baseName() + ".shp" + extraStuff ) ) ;
+
 }
 
 

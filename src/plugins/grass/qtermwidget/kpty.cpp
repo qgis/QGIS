@@ -494,7 +494,7 @@ void KPty::login(const char * user, const char * remotehost)
     Q_D(KPty);
 
     addToUtmp(d->ttyName, remotehost, d->masterFd);
-    Q_UNUSED(user);
+    Q_UNUSED(user)
 #else
 # ifdef HAVE_UTMPX
     struct utmpx l_struct;

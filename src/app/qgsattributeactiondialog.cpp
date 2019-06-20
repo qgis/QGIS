@@ -67,7 +67,8 @@ void QgsAttributeActionDialog::init( const QgsActionManager &actions, const QgsA
 
   int i = 0;
   // Populate with our actions.
-  Q_FOREACH ( const QgsAction &action, actions.actions() )
+  const auto constActions = actions.actions();
+  for ( const QgsAction &action : constActions )
   {
     insertRow( i++, action );
   }

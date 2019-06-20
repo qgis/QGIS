@@ -69,6 +69,24 @@ bool QgsFields::append( const QgsField &field, FieldOrigin origin, int originInd
   return true;
 }
 
+bool QgsFields::rename( int fieldIdx, const QString &name )
+{
+  if ( !exists( fieldIdx ) )
+    return false;
+
+  if ( name.isEmpty() )
+    return false;
+
+  if ( d->nameToIndex.contains( name ) )
+    return false;
+
+  const QString oldName = d->fields[ fieldIdx ].field.name();
+  d->fields[ fieldIdx ].field.setName( name );
+  d->nameToIndex.remove( oldName );
+  d->nameToIndex.insert( name, fieldIdx );
+  return true;
+}
+
 bool QgsFields::appendExpressionField( const QgsField &field, int originIndex )
 {
   if ( d->nameToIndex.contains( field.name() ) )

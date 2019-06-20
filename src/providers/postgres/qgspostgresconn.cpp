@@ -27,11 +27,14 @@
 #include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"
 #include "qgssettings.h"
+#include "qgsjsonutils.h"
 
 #include <QApplication>
 #include <QThread>
 
 #include <climits>
+
+#include <nlohmann/json.hpp>
 
 // for htonl
 #ifdef Q_OS_WIN
@@ -107,7 +110,7 @@ QString QgsPostgresResult::PQfname( int col )
   return QString::fromUtf8( ::PQfname( mRes, col ) );
 }
 
-int QgsPostgresResult::PQftable( int col )
+Oid QgsPostgresResult::PQftable( int col )
 {
   Q_ASSERT( mRes );
   return ::PQftable( mRes, col );
@@ -119,7 +122,7 @@ int QgsPostgresResult::PQftablecol( int col )
   return ::PQftablecol( mRes, col );
 }
 
-int QgsPostgresResult::PQftype( int col )
+Oid QgsPostgresResult::PQftype( int col )
 {
   Q_ASSERT( mRes );
   return ::PQftype( mRes, col );
@@ -157,7 +160,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   if ( shared )
   {
     // sharing connection between threads is not safe
-    // See https://issues.qgis.org/issues/13141
+    // See https://github.com/qgis/QGIS/issues/21205
     Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
 
     if ( connections.contains( conninfo ) )
@@ -186,7 +189,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 
 static void noticeProcessor( void *arg, const char *message )
 {
-  Q_UNUSED( arg );
+  Q_UNUSED( arg )
   QString msg( QString::fromUtf8( message ) );
   msg.chop( 1 );
   QgsMessageLog::logMessage( QObject::tr( "NOTICE: %1" ).arg( msg ), QObject::tr( "PostGIS" ) );
@@ -237,7 +240,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   QgsDataSourceUri expandedUri( expandedConnectionInfo );
   QStringList parameters;
   parameters << QStringLiteral( "sslcert" ) << QStringLiteral( "sslkey" ) << QStringLiteral( "sslrootcert" );
-  Q_FOREACH ( const QString &param, parameters )
+  const auto constParameters = parameters;
+  for ( const QString &param : constParameters )
   {
     if ( expandedUri.hasParam( param ) )
     {
@@ -767,7 +771,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       //check if we've already added this layer in some form
       bool alreadyFound = false;
-      Q_FOREACH ( const QgsPostgresLayerProperty &foundLayer, mLayersSupported )
+      const auto constMLayersSupported = mLayersSupported;
+      for ( const QgsPostgresLayerProperty &foundLayer : constMLayersSupported )
       {
         if ( foundLayer.schemaName == schema && foundLayer.tableName == table )
         {
@@ -990,7 +995,6 @@ static QString doubleQuotedMapValue( const QString &v )
 
 static QString quotedMap( const QVariantMap &map )
 {
-  //to store properly it should be decided if it's a hstore or a json/jsonb field here...
   QString ret;
   for ( QVariantMap::const_iterator i = map.constBegin(); i != map.constEnd(); ++i )
   {
@@ -1013,7 +1017,16 @@ static QString quotedList( const QVariantList &list )
     {
       ret += QLatin1String( "," );
     }
-    ret.append( doubleQuotedMapValue( i->toString() ) );
+
+    QString inner = i->toString();
+    if ( inner.startsWith( '{' ) )
+    {
+      ret.append( inner );
+    }
+    else
+    {
+      ret.append( doubleQuotedMapValue( i->toString() ) );
+    }
   }
   return "E'{" + ret + "}'";
 }
@@ -1046,8 +1059,42 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
   }
 }
 
-PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
+QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
 {
+  if ( value.isNull() || !value.isValid() )
+    return QStringLiteral( "null" );
+  const auto j { QgsJsonUtils::jsonFromVariant( value ) };
+  return quotedString( QString::fromStdString( j.dump() ) );
+}
+
+PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool retry ) const
+{
+  QMutexLocker locker( &mLock );
+
+  QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
+
+  PGresult *res = ::PQexec( mConn, query.toUtf8() );
+
+  // libpq may return a non null ptr with conn status not OK so we need to check for it to allow a retry below
+  if ( res && PQstatus() == CONNECTION_OK )
+  {
+    int errorStatus = PQresultStatus( res );
+    if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
+    {
+      if ( logError )
+      {
+        QgsMessageLog::logMessage( tr( "Erroneous query: %1 returned %2 [%3]" )
+                                   .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
+                                   tr( "PostGIS" ) );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
+                     .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
+      }
+    }
+    return res;
+  }
   if ( PQstatus() != CONNECTION_OK )
   {
     if ( logError )
@@ -1061,35 +1108,10 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
       QgsDebugMsg( QStringLiteral( "Connection error: %1 returned %2 [%3]" )
                    .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) );
     }
-
-    return nullptr;
   }
-
-  QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
-  PGresult *res = nullptr;
+  else
   {
-    QMutexLocker locker( &mLock );
-    res = ::PQexec( mConn, query.toUtf8() );
-
-    if ( res )
-    {
-      int errorStatus = PQresultStatus( res );
-      if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
-      {
-        if ( logError )
-        {
-          QgsMessageLog::logMessage( tr( "Erroneous query: %1 returned %2 [%3]" )
-                                     .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
-                                     tr( "PostGIS" ) );
-        }
-        else
-        {
-          QgsDebugMsg( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
-                       .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
-        }
-      }
-    }
-    else if ( logError )
+    if ( logError )
     {
       QgsMessageLog::logMessage( tr( "Query failed: %1\nError: no result buffer" ).arg( query ), tr( "PostGIS" ) );
     }
@@ -1099,7 +1121,35 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
     }
   }
 
-  return res;
+  if ( retry )
+  {
+    QgsMessageLog::logMessage( tr( "resetting bad connection." ), tr( "PostGIS" ) );
+    ::PQreset( mConn );
+    res = PQexec( query, logError, false );
+    if ( PQstatus() == CONNECTION_OK )
+    {
+      if ( res )
+      {
+        QgsMessageLog::logMessage( tr( "retry after reset succeeded." ), tr( "PostGIS" ) );
+        return res;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "retry after reset failed again." ), tr( "PostGIS" ) );
+        return nullptr;
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "connection still bad after reset." ), tr( "PostGIS" ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "bad connection, not retrying." ), tr( "PostGIS" ) );
+  }
+  return nullptr;
+
 }
 
 bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
@@ -1141,7 +1191,7 @@ QString QgsPostgresConn::uniqueCursorName()
   return QStringLiteral( "qgis_%1" ).arg( ++mNextCursorId );
 }
 
-bool QgsPostgresConn::PQexecNR( const QString &query, bool retry )
+bool QgsPostgresConn::PQexecNR( const QString &query )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
 
@@ -1168,32 +1218,6 @@ bool QgsPostgresConn::PQexecNR( const QString &query, bool retry )
   if ( PQstatus() == CONNECTION_OK )
   {
     PQexecNR( QStringLiteral( "ROLLBACK" ) );
-  }
-  else if ( retry )
-  {
-    QgsMessageLog::logMessage( tr( "resetting bad connection." ), tr( "PostGIS" ) );
-    ::PQreset( mConn );
-    if ( PQstatus() == CONNECTION_OK )
-    {
-      if ( PQexecNR( query, false ) )
-      {
-        QgsMessageLog::logMessage( tr( "retry after reset succeeded." ), tr( "PostGIS" ) );
-        return true;
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "retry after reset failed again." ), tr( "PostGIS" ) );
-        return false;
-      }
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "connection still bad after reset." ), tr( "PostGIS" ) );
-    }
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "bad connection, not retrying." ), tr( "PostGIS" ) );
   }
 
   return false;
@@ -1330,7 +1354,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       if ( mSwapEndian )
         oid = ntohs( oid );
       /* cast to signed 16bit
-       * See https://issues.qgis.org/issues/14262 */
+       * See https://github.com/qgis/QGIS/issues/22258 */
       oid = ( qint16 )oid;
       break;
 
@@ -1380,7 +1404,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       if ( mSwapEndian )
         oid = ntohl( oid );
       /* cast to signed 32bit
-       * See https://issues.qgis.org/issues/14262 */
+       * See https://github.com/qgis/QGIS/issues/22258 */
       oid = ( qint32 )oid;
       break;
   }

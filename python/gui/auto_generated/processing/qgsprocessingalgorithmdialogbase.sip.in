@@ -77,7 +77,7 @@ Switches the dialog to the log page.
 
     bool wasExecuted() const;
 %Docstring
-Returns true if an algorithm was executed in the dialog.
+Returns ``True`` if an algorithm was executed in the dialog.
 
 .. seealso:: :py:func:`results`
 
@@ -120,7 +120,7 @@ the given ``format``.
 %Docstring
 Reports an ``error`` string to the dialog's log.
 
-If ``fatalError`` is true, the error prevented the algorithm from executing.
+If ``fatalError`` is ``True``, the error prevented the algorithm from executing.
 %End
 
     void pushInfo( const QString &info );

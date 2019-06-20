@@ -56,7 +56,7 @@ QModelIndex QgsLayoutAttributeTableColumnModel::index( int row, int column, cons
 
 QModelIndex QgsLayoutAttributeTableColumnModel::parent( const QModelIndex &child ) const
 {
-  Q_UNUSED( child );
+  Q_UNUSED( child )
   return QModelIndex();
 }
 
@@ -70,7 +70,7 @@ int QgsLayoutAttributeTableColumnModel::rowCount( const QModelIndex &parent ) co
 
 int QgsLayoutAttributeTableColumnModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 4;
 }
 
@@ -275,7 +275,7 @@ Qt::ItemFlags QgsLayoutAttributeTableColumnModel::flags( const QModelIndex &inde
 
 bool QgsLayoutAttributeTableColumnModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
 
   int maxRow = std::min( row + count - 1, mTable->columns().length() - 1 );
   beginRemoveRows( QModelIndex(), row, maxRow );
@@ -291,7 +291,7 @@ bool QgsLayoutAttributeTableColumnModel::removeRows( int row, int count, const Q
 
 bool QgsLayoutAttributeTableColumnModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   beginInsertRows( QModelIndex(), row, row + count - 1 );
   //create new QgsComposerTableColumns for each inserted row
   for ( int i = row; i < row + count; ++i )
@@ -514,7 +514,7 @@ bool QgsLayoutTableSortColumnsProxyModel::lessThan( const QModelIndex &left, con
 
 int QgsLayoutTableSortColumnsProxyModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -652,8 +652,8 @@ QgsLayoutColumnAlignmentDelegate::QgsLayoutColumnAlignmentDelegate( QObject *par
 
 QWidget *QgsLayoutColumnAlignmentDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
-  Q_UNUSED( index );
+  Q_UNUSED( option )
+  Q_UNUSED( index )
 
   //create a combo box showing alignment options
   QComboBox *comboBox = new QComboBox( parent );
@@ -692,7 +692,7 @@ void QgsLayoutColumnAlignmentDelegate::setModelData( QWidget *editor, QAbstractI
 
 void QgsLayoutColumnAlignmentDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   editor->setGeometry( option.rect );
 }
 
@@ -722,8 +722,8 @@ QgsExpressionContext QgsLayoutColumnSourceDelegate::createExpressionContext() co
 
 QWidget *QgsLayoutColumnSourceDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
-  Q_UNUSED( index );
+  Q_UNUSED( option )
+  Q_UNUSED( index )
 
   QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget( parent );
   fieldExpression->setLayer( mVectorLayer );
@@ -753,7 +753,7 @@ void QgsLayoutColumnSourceDelegate::setModelData( QWidget *editor, QAbstractItem
 
 void QgsLayoutColumnSourceDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   editor->setGeometry( option.rect );
 }
 
@@ -773,8 +773,8 @@ QgsLayoutColumnSortOrderDelegate::QgsLayoutColumnSortOrderDelegate( QObject *par
 
 QWidget *QgsLayoutColumnSortOrderDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
-  Q_UNUSED( index );
+  Q_UNUSED( option )
+  Q_UNUSED( index )
 
   QComboBox *comboBox = new QComboBox( parent );
   QStringList sortOrders;
@@ -822,7 +822,7 @@ void QgsLayoutColumnSortOrderDelegate::setModelData( QWidget *editor, QAbstractI
 
 void QgsLayoutColumnSortOrderDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   editor->setGeometry( option.rect );
 }
 
@@ -839,8 +839,8 @@ QgsLayoutColumnWidthDelegate::QgsLayoutColumnWidthDelegate( QObject *parent )
 
 QWidget *QgsLayoutColumnWidthDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
-  Q_UNUSED( option );
+  Q_UNUSED( index )
+  Q_UNUSED( option )
   QgsDoubleSpinBox *editor = new QgsDoubleSpinBox( parent );
   editor->setMinimum( 0 );
   editor->setMaximum( 1000 );
@@ -870,7 +870,7 @@ void QgsLayoutColumnWidthDelegate::setModelData( QWidget *editor, QAbstractItemM
 
 void QgsLayoutColumnWidthDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   editor->setGeometry( option.rect );
 }
 

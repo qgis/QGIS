@@ -123,7 +123,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param capabilities Optionally existing parsed capabilities for the given URI
      *
      */
-    QgsWmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, const QgsWmsCapabilities *capabilities = nullptr );
+    QgsWmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, const QgsWmsCapabilities *capabilities = nullptr );
 
 
     ~QgsWmsProvider() override;
@@ -146,7 +146,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     void setConnectionName( QString const &connName );
 
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
     QgsRectangle extent() const override;
@@ -210,6 +210,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString description() const override;
     void reloadData() override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
+    QList< double > nativeResolutions() const override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
@@ -225,7 +226,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * \brief Prepare the URI so that we can later simply append param=value
      * \param uri uri to prepare
-     * \retval prepared uri
+     * \returns prepared uri
      */
     static QString prepareUri( QString uri );
 
@@ -294,7 +295,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \param forceRefresh  if true, ignores any previous response cached in memory
      *                      and always contact the server for a new copy.
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      *
      * When this returns, "layers" will make sense.
@@ -311,7 +312,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn
      *
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
     bool calculateExtent() const;
@@ -335,9 +336,10 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-      TileImage( const QRectF &r, const QImage &i ): rect( r ), img( i ) {}
+      TileImage( const QRectF &r, const QImage &i, bool smooth ): rect( r ), img( i ), smooth( smooth ) {}
       QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
       QImage img;  //!< Cached tile to be drawn
+      bool smooth; //!< Whether to use antialiasing/smooth transforms when rendering tile
     } TileImage;
     //! Gets tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
@@ -461,6 +463,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
+
+    QList< double > mNativeResolutions;
 
     friend class TestQgsWmsProvider;
 

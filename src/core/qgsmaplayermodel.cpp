@@ -83,7 +83,8 @@ void QgsMapLayerModel::setShowCrs( bool showCrs )
 QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState )
 {
   QList<QgsMapLayer *> layers;
-  Q_FOREACH ( QgsMapLayer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsMapLayer *layer : constMLayers )
   {
     if ( mLayersChecked[layer->id()] == checkState )
     {
@@ -137,7 +138,8 @@ void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
   if ( mAllowEmpty )
     offset++;
 
-  Q_FOREACH ( const QString &layerId, layerIds )
+  const auto constLayerIds = layerIds;
+  for ( const QString &layerId : constLayerIds )
   {
     QModelIndex startIndex = index( 0, 0 );
     QModelIndexList list = match( startIndex, LayerIdRole, layerId, 1 );
@@ -161,7 +163,8 @@ void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *> &layers )
       offset++;
 
     beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
-    Q_FOREACH ( QgsMapLayer *layer, layers )
+    const auto constLayers = layers;
+    for ( QgsMapLayer *layer : constLayers )
     {
       mLayers.append( layer );
       mLayersChecked.insert( layer->id(), Qt::Unchecked );
@@ -191,7 +194,7 @@ QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &par
 
 QModelIndex QgsMapLayerModel::parent( const QModelIndex &child ) const
 {
-  Q_UNUSED( child );
+  Q_UNUSED( child )
   return QModelIndex();
 }
 
@@ -206,7 +209,7 @@ int QgsMapLayerModel::rowCount( const QModelIndex &parent ) const
 
 int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 
@@ -354,19 +357,19 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case QgsMapLayer::RasterLayer:
+    case QgsMapLayerType::RasterLayer:
     {
       return QgsLayerItem::iconRaster();
     }
 
-    case QgsMapLayer::MeshLayer:
+    case QgsMapLayerType::MeshLayer:
     {
       return QgsLayerItem::iconMesh();
     }
 
-    case QgsMapLayer::VectorLayer:
+    case QgsMapLayerType::VectorLayer:
     {
-      QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vl )
       {
         return QIcon();

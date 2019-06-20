@@ -108,7 +108,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     /**
      * Returns a string representation of the expression
-     * \param cStyle if true operators will follow C syntax
+     * \param cStyle if TRUE operators will follow C syntax
      * \since QGIS 3.6
      */
     QString toString( bool cStyle = false ) const;

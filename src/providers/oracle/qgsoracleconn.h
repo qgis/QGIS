@@ -81,14 +81,16 @@ struct QgsOracleLayerProperty
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( QgsWkbTypes::Type type, types )
+    const auto constTypes = types;
+    for ( QgsWkbTypes::Type type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += "|";
       typeString += QString::number( type );
     }
     QString sridString;
-    Q_FOREACH ( int srid, srids )
+    const auto constSrids = srids;
+    for ( int srid : constSrids )
     {
       if ( !sridString.isEmpty() )
         sridString += "|";

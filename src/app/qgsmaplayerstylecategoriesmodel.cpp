@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstylecategoriesmodel.h"
+#include "qgsapplication.h"
 
 QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QObject *parent )
   : QAbstractListModel( parent )

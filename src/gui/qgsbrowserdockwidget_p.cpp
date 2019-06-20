@@ -44,6 +44,7 @@
 #include "qgsvectorlayercache.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
+#include "qgsapplication.h"
 #include <QDesktopServices>
 
 #include <QDragEnterEvent>
@@ -172,7 +173,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
   mNoticeLabel->clear();
 
-  QgsMapLayer::LayerType type = layerItem->mapLayerType();
+  QgsMapLayerType type = layerItem->mapLayerType();
   QString layerMetadata = tr( "Error" );
   QgsCoordinateReferenceSystem layerCrs;
 
@@ -188,26 +189,37 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   // we need to create a temporary layer to get metadata
   // we could use a provider but the metadata is not as complete and "pretty"  and this is easier
   QgsDebugMsg( QStringLiteral( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
-  if ( type == QgsMapLayer::RasterLayer )
+  switch ( type )
   {
-    QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
-    // should copy code from addLayer() to split uri ?
-    mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
-  }
-  else if ( type == QgsMapLayer::MeshLayer )
-  {
-    QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
-    mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
-  }
-  else if ( type == QgsMapLayer::VectorLayer )
-  {
-    QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
-    mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
-  }
-  else if ( type == QgsMapLayer::PluginLayer )
-  {
-    // TODO: support display of properties for plugin layers
-    return;
+    case QgsMapLayerType::RasterLayer:
+    {
+      QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
+      // should copy code from addLayer() to split uri ?
+      mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+      break;
+    }
+
+    case QgsMapLayerType::MeshLayer:
+    {
+      QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
+      const QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      break;
+    }
+
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      break;
+    }
+
+    case QgsMapLayerType::PluginLayer:
+    {
+      // TODO: support display of properties for plugin layers
+      return;
+    }
   }
 
   mAttributeTable->setModel( nullptr );
@@ -228,7 +240,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     mMapCanvas->setLayers( QList< QgsMapLayer * >() << mLayer.get() );
     mMapCanvas->zoomToFullExtent();
 
-    if ( mAttributesTab && mLayer->type() != QgsMapLayer::VectorLayer )
+    if ( mAttributesTab && mLayer->type() != QgsMapLayerType::VectorLayer )
     {
       mTabWidget->removeTab( mTabWidget->indexOf( mAttributesTab ) );
       mAttributesTab = nullptr;
@@ -270,7 +282,7 @@ void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 
 void QgsBrowserLayerProperties::loadAttributeTable()
 {
-  if ( !mLayer || !mLayer->isValid() || mLayer->type() != QgsMapLayer::VectorLayer )
+  if ( !mLayer || !mLayer->isValid() || mLayer->type() != QgsMapLayerType::VectorLayer )
     return;
 
   // Initialize the cache

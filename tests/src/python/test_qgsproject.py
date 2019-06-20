@@ -11,14 +11,13 @@ from builtins import range
 __author__ = 'Sebastian Dietrich'
 __date__ = '19/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
+                       QgsCoordinateTransformContext,
                        QgsProjectDirtyBlocker,
                        QgsApplication,
                        QgsUnitTypes,
@@ -196,15 +195,14 @@ class TestQgsProject(unittest.TestCase):
         prj.read(prj_path)
 
         layer_tree_group = prj.layerTreeRoot()
-        layers_ids = layer_tree_group.findLayerIds()
-
-        layers_names = []
-        for layer_id in layers_ids:
+        self.assertEqual(len(layer_tree_group.findLayerIds()), 2)
+        for layer_id in layer_tree_group.findLayerIds():
             name = prj.mapLayer(layer_id).name()
-            layers_names.append(name)
-
-        expected = ['polys', 'lines']
-        self.assertEqual(sorted(layers_names), sorted(expected))
+            self.assertTrue(name in ['polys', 'lines'])
+            if name == 'polys':
+                self.assertTrue(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
+            elif name == 'lines':
+                self.assertFalse(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
 
     def testInstance(self):
         """ test retrieving global instance """
@@ -1189,6 +1187,16 @@ class TestQgsProject(unittest.TestCase):
         p.deleteLater()
         del p
         self.assertEqual(len(spy), 0)
+
+    def testTransformContextSignalIsEmitted(self):
+        """Test that when a project transform context changes a transformContextChanged signal is emitted"""
+
+        p = QgsProject()
+        spy = QSignalSpy(p.transformContextChanged)
+        ctx = QgsCoordinateTransformContext()
+        ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        p.setTransformContext(ctx)
+        self.assertEqual(len(spy), 1)
 
 
 if __name__ == '__main__':

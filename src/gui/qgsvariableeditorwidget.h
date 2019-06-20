@@ -16,7 +16,7 @@
 #ifndef QGSVARIABLEEDITORWIDGET_H
 #define QGSVARIABLEEDITORWIDGET_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QWidget>
 #include <QTreeWidget>
 #include <QItemDelegate>
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
     /**
      * Returns the current editable scope for the widget.
-     * \returns editable scope, or 0 if no editable scope is set
+     * \returns editable scope, or NULLPTR if no editable scope is set
      * \see setEditableScopeIndex()
      */
     QgsExpressionContextScope *editableScope() const;

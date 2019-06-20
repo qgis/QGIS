@@ -30,6 +30,8 @@
 
 ///@cond PRIVATE
 
+class QgsMeshTimeSettings;
+
 /**
  * \ingroup core
  * Misc utility functions used for mesh layer support
@@ -101,6 +103,11 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \returns bounding box of the triangle
      */
     static QgsRectangle triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 );
+
+    /**
+     * Formats hours in human readable string based on settings
+     */
+    static QString formatTime( double hours, const QgsMeshTimeSettings &settings );
 };
 
 ///@endcond

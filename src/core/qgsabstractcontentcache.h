@@ -22,6 +22,9 @@
 #include "qgis_sip.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
+#include "qgsnetworkaccessmanager.h"
+
 #include <QObject>
 #include <QMutex>
 #include <QCache>
@@ -154,8 +157,8 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      */
     virtual bool checkReply( QNetworkReply *reply, const QString &path ) const
     {
-      Q_UNUSED( reply );
-      Q_UNUSED( path );
+      Q_UNUSED( reply )
+      Q_UNUSED( path )
       return true;
     }
 
@@ -164,7 +167,7 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
     /**
      * Triggered after remote content (i.e. HTTP linked content at the given \a url) has been fetched.
      *
-     * The \a success argument will be true if the content was successfully fetched, or false if
+     * The \a success argument will be TRUE if the content was successfully fetched, or FALSE if
      * it was not fetched successfully.
      */
     virtual void onRemoteContentFetched( const QString &url, bool success );
@@ -320,6 +323,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       mPendingRemoteUrls.insert( path );
       //fire up task to fetch content in background
       QNetworkRequest request( url );
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsAbstractContentCache<%1>" ).arg( mTypeString ) );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 

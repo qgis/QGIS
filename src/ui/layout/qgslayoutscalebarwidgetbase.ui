@@ -173,7 +173,7 @@
           <item row="2" column="1">
            <widget class="QLineEdit" name="mUnitLabelLineEdit">
             <property name="toolTip">
-             <string>Text used for labeling the scalebar units, e.g., &quot;m&quot; or &quot;km&quot;. This should be matched to reflect the multiplier above. </string>
+             <string>Text used for labeling the scalebar units, e.g., &quot;m&quot; or &quot;km&quot;. This should be matched to reflect the multiplier above.</string>
             </property>
            </widget>
           </item>

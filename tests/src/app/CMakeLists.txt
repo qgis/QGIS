@@ -28,6 +28,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/core
@@ -104,7 +105,8 @@ ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
 ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
 ADD_QGIS_TEST(applocatorfilters testqgsapplocatorfilters.cpp)
 ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)
-ADD_QGIS_TEST(maptooladdfeature testqgsmaptooladdfeature.cpp)
+ADD_QGIS_TEST(maptooladdfeatureline testqgsmaptooladdfeatureline.cpp)
+ADD_QGIS_TEST(maptooladdfeaturepoint testqgsmaptooladdfeaturepoint.cpp)
 ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
 ADD_QGIS_TEST(maptoolselect testqgsmaptoolselect.cpp)
 ADD_QGIS_TEST(maptoolreshape testqgsmaptoolreshape.cpp)

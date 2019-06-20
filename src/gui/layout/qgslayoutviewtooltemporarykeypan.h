@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTVIEWTOOLTEMPORARYKEYPAN_H
 #define QGSLAYOUTVIEWTOOLTEMPORARYKEYPAN_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
 

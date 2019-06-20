@@ -72,6 +72,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
     //setters and getters
     void setXAttribute( const QString &attribute ) { mXAttribute = attribute; }

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsFindFilesByPatternWidgetBase</class>
+ <widget class="QWidget" name="QgsFindFilesByPatternWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>542</width>
+    <height>286</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="2" column="2">
+    <widget class="QPushButton" name="mFindButton">
+     <property name="text">
+      <string>Find Files</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>File pattern</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="mPatternLineEdit">
+     <property name="placeholderText">
+      <string>Pattern to match, e.g. *.shp</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Look in</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QCheckBox" name="mRecursiveCheckBox">
+     <property name="text">
+      <string>Search recursively</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="3">
+    <widget class="QTableWidget" name="mResultsTable"/>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QgsFileWidget" name="mFolderWidget"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mPatternLineEdit</tabstop>
+  <tabstop>mFolderWidget</tabstop>
+  <tabstop>mRecursiveCheckBox</tabstop>
+  <tabstop>mFindButton</tabstop>
+  <tabstop>mResultsTable</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

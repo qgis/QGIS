@@ -30,6 +30,12 @@ QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
   reset();
 }
 
+void QgsStatisticalSummary::setStatistics( QgsStatisticalSummary::Statistics stats )
+{
+  mStatistics = stats;
+  reset();
+}
+
 void QgsStatisticalSummary::reset()
 {
   mFirst = std::numeric_limits<double>::quiet_NaN();
@@ -49,6 +55,12 @@ void QgsStatisticalSummary::reset()
   mThirdQuartile = 0;
   mValueCount.clear();
   mValues.clear();
+
+  mRequiresHisto = mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety;
+
+  mRequiresAllValueStorage = mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample ||
+                             mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||
+                             mStatistics & QgsStatisticalSummary::ThirdQuartile || mStatistics & QgsStatisticalSummary::InterQuartileRange;
 }
 
 /***************************************************************************
@@ -79,12 +91,10 @@ void QgsStatisticalSummary::addValue( double value )
   mMax = std::max( mMax, value );
   mLast = value;
 
-  if ( mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety )
+  if ( mRequiresHisto )
     mValueCount.insert( value, mValueCount.value( value, 0 ) + 1 );
 
-  if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample ||
-       mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||
-       mStatistics & QgsStatisticalSummary::ThirdQuartile || mStatistics & QgsStatisticalSummary::InterQuartileRange )
+  if ( mRequiresAllValueStorage )
     mValues << value;
 }
 
@@ -127,7 +137,8 @@ void QgsStatisticalSummary::finalize()
   if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample )
   {
     double sumSquared = 0;
-    Q_FOREACH ( double value, mValues )
+    const auto constMValues = mValues;
+    for ( double value : constMValues )
     {
       double diff = value - mMean;
       sumSquared += diff * diff;

@@ -18,7 +18,7 @@
 
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsmapsettings.h"
 #include "qgstolerance.h"
 #include "qgspointlocator.h"
@@ -191,9 +191,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
-    virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ); }
+    virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ) }
     //! Called when finished indexing a layer. When index == count the indexing is complete
-    virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
+    virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ) }
 
     //! Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
     void clearAllLocators();
@@ -252,7 +252,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
     bool mIsIndexing = false;
 
-    //! Disable or not the snapping on all features. By default is always true except for non visible features on map canvas.
+    //! Disable or not the snapping on all features. By default is always TRUE except for non visible features on map canvas.
     bool mEnableSnappingForInvisibleFeature = true;
 
 };

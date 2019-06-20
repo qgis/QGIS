@@ -22,12 +22,13 @@
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 
-
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsRasterProjector::QgsRasterProjector()
   : QgsRasterInterface( nullptr )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 }
+Q_NOWARN_DEPRECATED_POP
 
 
 QgsRasterProjector *QgsRasterProjector::clone() const
@@ -36,8 +37,13 @@ QgsRasterProjector *QgsRasterProjector::clone() const
   QgsRasterProjector *projector = new QgsRasterProjector;
   projector->mSrcCRS = mSrcCRS;
   projector->mDestCRS = mDestCRS;
+  projector->mTransformContext = mTransformContext;
+
+  Q_NOWARN_DEPRECATED_PUSH
   projector->mSrcDatumTransform = mSrcDatumTransform;
   projector->mDestDatumTransform = mDestDatumTransform;
+  Q_NOWARN_DEPRECATED_POP
+
   projector->mPrecision = mPrecision;
   return projector;
 }
@@ -59,13 +65,28 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 
 /// @cond PRIVATE
 
-
-void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, int srcDatumTransform, int destDatumTransform )
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS,
+                                 const QgsCoordinateReferenceSystem &destCRS,
+                                 int srcDatumTransform,
+                                 int destDatumTransform )
 {
   mSrcCRS = srcCRS;
   mDestCRS = destCRS;
+  Q_NOWARN_DEPRECATED_PUSH
   mSrcDatumTransform = srcDatumTransform;
   mDestDatumTransform = destDatumTransform;
+  Q_NOWARN_DEPRECATED_POP
+}
+
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, QgsCoordinateTransformContext transformContext )
+{
+  mSrcCRS = srcCRS;
+  mDestCRS = destCRS;
+  mTransformContext = transformContext;
+  Q_NOWARN_DEPRECATED_PUSH
+  mSrcDatumTransform = -1;
+  mDestDatumTransform = -1;
+  Q_NOWARN_DEPRECATED_POP
 }
 
 
@@ -180,8 +201,8 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
     }
   }
   QgsDebugMsgLevel( QStringLiteral( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ), 4 );
-  mDestRowsPerMatrixRow = static_cast< float >( mDestRows ) / ( mCPRows - 1 );
-  mDestColsPerMatrixCol = static_cast< float >( mDestCols ) / ( mCPCols - 1 );
+  mDestRowsPerMatrixRow = static_cast< double >( mDestRows ) / ( mCPRows - 1 );
+  mDestColsPerMatrixCol = static_cast< double >( mDestCols ) / ( mCPCols - 1 );
 
   QgsDebugMsgLevel( QStringLiteral( "CPMatrix:" ), 5 );
   QgsDebugMsgLevel( cpToString(), 5 );
@@ -601,7 +622,7 @@ void ProjectorData::calcCP( int row, int col, const QgsCoordinateTransform &ct )
   }
   catch ( QgsCsException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     // Caught an error in transform
     mCPLegalMatrix[row][col] = false;
   }
@@ -665,7 +686,7 @@ bool ProjectorData::checkCols( const QgsCoordinateTransform &ct )
       }
       catch ( QgsCsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // Caught an error in transform
         return false;
       }
@@ -710,7 +731,7 @@ bool ProjectorData::checkRows( const QgsCoordinateTransform &ct )
       }
       catch ( QgsCsException &e )
       {
-        Q_UNUSED( e );
+        Q_UNUSED( e )
         // Caught an error in transform
         return false;
       }
@@ -753,7 +774,10 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
-  QgsCoordinateTransform inverseCt( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform );
+  Q_NOWARN_DEPRECATED_PUSH
+  const QgsCoordinateTransform inverseCt = mSrcDatumTransform != -1 || mDestDatumTransform != -1 ?
+      QgsCoordinateTransform( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform ) : QgsCoordinateTransform( mDestCRS, mSrcCRS, mTransformContext ) ;
+  Q_NOWARN_DEPRECATED_POP
 
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 
@@ -774,7 +798,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return new QgsRasterBlock();
   }
 
-  qgssize pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
+  qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( inputBlock->dataType(), width, height ) );
   if ( inputBlock->hasNoDataValue() )
@@ -814,7 +838,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
       if ( !inside ) continue; // we have everything set to no data
 
-      qgssize srcIndex = static_cast< qgssize >( srcRow ) * pd.srcCols() + srcCol;
+      qgssize srcIndex = static_cast< qgssize >( srcRow * pd.srcCols() + srcCol );
 
       // isNoData() may be slow so we check doNoData first
       if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
@@ -823,7 +847,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
         continue;
       }
 
-      qgssize destIndex = static_cast< qgssize >( i ) * width + j;
+      qgssize destIndex = static_cast< qgssize >( i * width + j );
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
@@ -851,7 +875,11 @@ bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcX
   {
     return false;
   }
-  QgsCoordinateTransform ct( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  const QgsCoordinateTransform ct = mSrcDatumTransform != -1 || mDestDatumTransform != -1 ?
+                                    QgsCoordinateTransform( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform ) : QgsCoordinateTransform( mSrcCRS, mDestCRS, mTransformContext ) ;
+  Q_NOWARN_DEPRECATED_POP
 
   return extentSize( ct, srcExtent, srcXSize, srcYSize, destExtent, destXSize, destYSize );
 }

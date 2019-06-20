@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -52,6 +53,8 @@ IF (WITH_GUI)
     qgis_gui
   )
 ENDIF ()
+
+TARGET_COMPILE_DEFINITIONS(delimitedtextprovider PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

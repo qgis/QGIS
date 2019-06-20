@@ -66,7 +66,8 @@ QgsGrassVectorMap::~QgsGrassVectorMap()
 int QgsGrassVectorMap::userCount() const
 {
   int count = 0;
-  Q_FOREACH ( QgsGrassVectorMapLayer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorMapLayer *layer : constMLayers )
   {
     count += layer->userCount();
   }
@@ -237,7 +238,7 @@ bool QgsGrassVectorMap::startEdit()
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( e.what() ) );
   }
 
@@ -255,7 +256,7 @@ bool QgsGrassVectorMap::startEdit()
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
     }
 
@@ -288,7 +289,7 @@ bool QgsGrassVectorMap::startEdit()
 
 bool QgsGrassVectorMap::closeEdit( bool newMap )
 {
-  Q_UNUSED( newMap );
+  Q_UNUSED( newMap )
   QgsDebugMsg( toString() );
   if ( !mValid || !mIsEdited )
   {
@@ -350,7 +351,8 @@ void QgsGrassVectorMap::clearUndoCommands()
 {
   for ( auto it = mUndoCommands.constBegin(); it != mUndoCommands.constEnd(); ++it )
   {
-    Q_FOREACH ( QgsGrassUndoCommand *command, it.value() )
+    const auto constValue = it.value();
+    for ( QgsGrassUndoCommand *command : constValue )
     {
       delete command;
     }
@@ -370,7 +372,8 @@ QgsGrassVectorMapLayer *QgsGrassVectorMap::openLayer( int field )
   lockOpenClose();
   QgsGrassVectorMapLayer *layer = nullptr;
   // Check if this layer is already open
-  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorMapLayer *l : constMLayers )
   {
     if ( l->field() == field )
     {
@@ -398,7 +401,8 @@ QgsGrassVectorMapLayer *QgsGrassVectorMap::openLayer( int field )
 
 void QgsGrassVectorMap::reloadLayers()
 {
-  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorMapLayer *l : constMLayers )
   {
     l->load();
   }
@@ -733,7 +737,8 @@ QgsGrassVectorMap *QgsGrassVectorMapStore::openMap( const QgsGrassObject &grassO
   QgsGrassVectorMap *map = nullptr;
 
   // Check if this map is already open
-  Q_FOREACH ( QgsGrassVectorMap *m, mMaps )
+  const auto constMMaps = mMaps;
+  for ( QgsGrassVectorMap *m : constMMaps )
   {
     if ( m->grassObject() == grassObject )
     {

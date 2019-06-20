@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -40,6 +36,7 @@ from processing.script import ScriptUtils
 class DeleteScriptAction(ContextAction):
 
     def __init__(self):
+        super().__init__()
         self.name = QCoreApplication.translate("DeleteScriptAction", "Delete Script…")
 
     def isEnabled(self):

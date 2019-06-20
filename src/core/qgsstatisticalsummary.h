@@ -90,7 +90,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \param stats flags for statistics to calculate
      * \see statistics
      */
-    void setStatistics( QgsStatisticalSummary::Statistics stats ) { mStatistics = stats; }
+    void setStatistics( QgsStatisticalSummary::Statistics stats );
 
     /**
      * Resets the calculated values
@@ -319,6 +319,8 @@ class CORE_EXPORT QgsStatisticalSummary
     double mLast;
     QMap< double, int > mValueCount;
     QList< double > mValues;
+    bool mRequiresAllValueStorage = false;
+    bool mRequiresHisto = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsStatisticalSummary::Statistics )

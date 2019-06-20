@@ -98,7 +98,7 @@ bool QgsAlgorithmRemoveDuplicateVertices::prepareAlgorithm( const QVariantMap &p
   if ( mDynamicTolerance )
     mToleranceProperty = parameters.value( QStringLiteral( "TOLERANCE" ) ).value< QgsProperty >();
 
-  mUseZValues = parameterAsBool( parameters, QStringLiteral( "USE_Z_VALUE" ), context );
+  mUseZValues = parameterAsBoolean( parameters, QStringLiteral( "USE_Z_VALUE" ), context );
   mDynamicUseZ = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "USE_Z_VALUE" ) );
   if ( mDynamicUseZ )
     mUseZProperty = parameters.value( QStringLiteral( "USE_Z_VALUE" ) ).value< QgsProperty >();

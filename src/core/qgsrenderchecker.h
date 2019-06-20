@@ -17,7 +17,7 @@
 #define QGSRENDERCHECKER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QDir>
 #include <QString>
 #include <QRegExp>
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsRenderChecker
 
     /**
      * Gets access to buffered dash messages.
-     * Only will return something if you call enableDashBuffering( true ); before.
+     * Only will return something if you call enableDashBuffering( TRUE ); before.
      *
      * \returns buffered dash messages
      */

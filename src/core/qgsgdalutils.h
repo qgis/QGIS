@@ -21,6 +21,8 @@
 #include "qgis_core.h"
 #include <gdal.h>
 
+#include "qgsogrutils.h"
+
 /**
  * \ingroup core
  * \class QgsGdalUtils
@@ -36,9 +38,28 @@ class CORE_EXPORT QgsGdalUtils
     /**
      * Reads whether a driver supports GDALCreate() for raster purposes.
      * \param driver GDAL driver
-     * \returns true if a driver supports GDALCreate() for raster purposes.
+     * \returns TRUE if a driver supports GDALCreate() for raster purposes.
      */
     static bool supportsRasterCreate( GDALDriverH driver );
+
+    /**
+     * Creates a new single band memory dataset with given parameters
+     * \since QGIS 3.8
+     */
+    static gdal::dataset_unique_ptr createSingleBandMemoryDataset( GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Creates a new single band TIFF dataset with given parameters
+     * \since QGIS 3.8
+     */
+    static gdal::dataset_unique_ptr createSingleBandTiffDataset( QString filename, GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
+     * Ideally the source dataset should cover the whole area or the destination dataset.
+     * \since QGIS 3.8
+     */
+    static void resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
 };
 
 #endif // QGSGDALUTILS_H

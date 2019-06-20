@@ -50,7 +50,8 @@ void QgsStringStatisticalSummary::calculate( const QStringList &values )
 {
   reset();
 
-  Q_FOREACH ( const QString &string, values )
+  const auto constValues = values;
+  for ( const QString &string : constValues )
   {
     testString( string );
   }
@@ -80,7 +81,8 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
 {
   reset();
 
-  Q_FOREACH ( const QVariant &variant, values )
+  const auto constValues = values;
+  for ( const QVariant &variant : constValues )
   {
     if ( variant.type() == QVariant::String )
     {

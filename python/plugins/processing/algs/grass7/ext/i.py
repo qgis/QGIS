@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'April 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from processing.tools.system import (isWindows, getTempFilename)
 from processing.algs.grass7.Grass7Utils import Grass7Utils
@@ -182,7 +178,7 @@ def verifyRasterNum(alg, parameters, context, rasters, mini, maxi=None):
 #     alg.removeOutputFromName(output)
 
 #     # Create output parameter
-#     param = getParameterFromString("ParameterString|{}|output file|None|False|False".format(output))
+#     param = getParameterFromString("ParameterString|{}|output file|None|False|False".format(output), 'GrassAlgorithm')
 #     param.value = outputFile.value
 #     alg.addParameter(param)
 

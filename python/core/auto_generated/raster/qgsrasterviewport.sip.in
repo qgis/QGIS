@@ -29,8 +29,7 @@ struct QgsRasterViewPort
 
   QgsCoordinateReferenceSystem mDestCRS;
 
-  int mSrcDatumTransform;
-  int mDestDatumTransform;
+  QgsCoordinateTransformContext mTransformContext;
 };
 
 /************************************************************************

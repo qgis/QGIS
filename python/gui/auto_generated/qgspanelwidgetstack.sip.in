@@ -79,7 +79,7 @@ caller.
 
     void clear();
 %Docstring
-Clear the stack of all widgets. Unless the panels autoDelete is set to false
+Clear the stack of all widgets. Unless the panels autoDelete is set to ``False``
 the widget will be deleted.
 %End
 

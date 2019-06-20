@@ -22,6 +22,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgswkbptr.h"
 #include "qgsogrutils.h"
+#include "qgsapplication.h"
 #include <QBuffer>
 #include <QList>
 #include <QNetworkRequest>
@@ -60,6 +61,8 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
   mExtent.setMinimal();
 
   QNetworkRequest request( uri );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGml" ) );
+
   if ( !authcfg.isEmpty() )
   {
     if ( !QgsApplication::authManager()->updateNetworkRequest( request, authcfg ) )
@@ -191,7 +194,8 @@ int QgsGml::getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, Qgs
 void QgsGml::fillMapsFromParser()
 {
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = mParser.getAndStealReadyFeatures();
-  Q_FOREACH ( const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair, features )
+  const auto constFeatures = features;
+  for ( const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair : constFeatures )
   {
     QgsFeature *feat = featPair.first;
     const QString &gmlId = featPair.second;
@@ -420,7 +424,8 @@ QgsGmlStreamingParser::~QgsGmlStreamingParser()
   XML_ParserFree( mParser );
 
   // Normally a sane user of this class should have consumed everything...
-  Q_FOREACH ( QgsGmlFeaturePtrGmlIdPair featPair, mFeatureList )
+  const auto constMFeatureList = mFeatureList;
+  for ( QgsGmlFeaturePtrGmlIdPair featPair : constMFeatureList )
   {
     delete featPair.first;
   }
@@ -812,11 +817,14 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     }
   }
 
-  if ( elDimension != 0 )
+  if ( elDimension != 0 || mDimensionStack.isEmpty() )
   {
-    mDimension = elDimension;
+    mDimensionStack.push( elDimension );
   }
-  mDimensionStack.push( mDimension );
+  else
+  {
+    mDimensionStack.push( mDimensionStack.back() );
+  }
 
   if ( mEpsg == 0 && isGeom )
   {
@@ -844,7 +852,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
-  mDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
+  int lastDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
@@ -855,6 +863,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   else if ( parseMode == PosList && isGMLNS &&
             ( LOCALNAME_EQUALS( "pos" ) || LOCALNAME_EQUALS( "posList" ) ) )
   {
+    mDimension = lastDimension;
     mParseModeStack.pop();
   }
   else if ( parseMode == AttributeTuple &&
@@ -1166,19 +1175,20 @@ void QgsGmlStreamingParser::setAttribute( const QString &name, const QString &va
 {
   //find index with attribute name
   QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constFind( name );
+  bool conversionOk = true;
   if ( att_it != mThematicAttributes.constEnd() )
   {
     QVariant var;
     switch ( att_it.value().second.type() )
     {
       case QVariant::Double:
-        var = QVariant( value.toDouble() );
+        var = QVariant( value.toDouble( &conversionOk ) );
         break;
       case QVariant::Int:
-        var = QVariant( value.toInt() );
+        var = QVariant( value.toInt( &conversionOk ) );
         break;
       case QVariant::LongLong:
-        var = QVariant( value.toLongLong() );
+        var = QVariant( value.toLongLong( &conversionOk ) );
         break;
       case QVariant::DateTime:
         var = QVariant( QDateTime::fromString( value, Qt::ISODate ) );
@@ -1186,6 +1196,10 @@ void QgsGmlStreamingParser::setAttribute( const QString &name, const QString &va
       default: //string type is default
         var = QVariant( value );
         break;
+    }
+    if ( ! conversionOk )  // Assume is NULL
+    {
+      var = QVariant();
     }
     Q_ASSERT( mCurrentFeature );
     mCurrentFeature->setAttribute( att_it.value().first, var );
@@ -1498,9 +1512,11 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
 int QgsGmlStreamingParser::totalWKBFragmentSize() const
 {
   int result = 0;
-  Q_FOREACH ( const QList<QgsWkbPtr> &list, mCurrentWKBFragments )
+  const auto constMCurrentWKBFragments = mCurrentWKBFragments;
+  for ( const QList<QgsWkbPtr> &list : constMCurrentWKBFragments )
   {
-    Q_FOREACH ( const QgsWkbPtr &i, list )
+    const auto constList = list;
+    for ( const QgsWkbPtr &i : constList )
     {
       result += i.size();
     }

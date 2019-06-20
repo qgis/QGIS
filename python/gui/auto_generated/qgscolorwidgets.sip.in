@@ -90,7 +90,7 @@ Create an icon for dragging colors
 Sets the color for the widget
 
 :param color: widget color
-:param emitSignals: set to true to emit the colorChanged signal after setting color
+:param emitSignals: set to ``True`` to emit the colorChanged signal after setting color
 
 .. seealso:: :py:func:`color`
 %End
@@ -243,8 +243,8 @@ Returns the color widget contained in the widget action.
 Sets whether the parent menu should be dismissed and closed when a color is selected
 from the action's color widget.
 
-:param dismiss: set to true (default) to immediately close the menu when a color is selected
-                from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+:param dismiss: set to ``True`` (default) to immediately close the menu when a color is selected
+                from the widget. If set to ``False``, the colorChanged signal will be emitted but the menu will
                 stay open.
 
 .. seealso:: :py:func:`dismissOnColorSelection`
@@ -448,7 +448,7 @@ Fetches the margin between the edge of the widget and the ramp
 %Docstring
 Sets whether the ramp should be drawn within a frame
 
-:param showFrame: set to true to draw a frame around the ramp
+:param showFrame: set to ``True`` to draw a frame around the ramp
 
 .. seealso:: :py:func:`showFrame`
 %End
@@ -457,7 +457,7 @@ Sets whether the ramp should be drawn within a frame
 %Docstring
 Fetches whether the ramp is drawn within a frame
 
-:return: true if a frame is drawn around the ramp
+:return: ``True`` if a frame is drawn around the ramp
 
 .. seealso:: :py:func:`setShowFrame`
 %End

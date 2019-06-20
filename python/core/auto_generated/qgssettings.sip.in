@@ -236,7 +236,7 @@ An optional Section argument can be used to get a value from a specific Section.
 
     bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;
 %Docstring
-Returns true if there exists a setting called key; returns false otherwise.
+Returns ``True`` if there exists a setting called key; returns ``False`` otherwise.
 If a group is set using beginGroup(), key is taken to be relative to that group.
 %End
     QString fileName() const;

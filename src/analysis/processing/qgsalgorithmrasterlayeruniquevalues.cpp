@@ -136,6 +136,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
+  bool isNoData = false;
   std::unique_ptr< QgsRasterBlock > rasterBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
@@ -146,13 +147,13 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
         break;
       for ( int column = 0; column < iterCols; column++ )
       {
-        if ( mHasNoDataValue && rasterBlock->isNoData( row, column ) )
+        double value = rasterBlock->valueAndNoData( row, column, isNoData );
+        if ( mHasNoDataValue && isNoData )
         {
-          noDataCount += 1;
+          noDataCount++;
         }
         else
         {
-          double value = rasterBlock->value( row, column );
           uniqueValues[ value ]++;
         }
       }

@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
@@ -58,9 +54,8 @@ class ProcessingConfig:
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
     SHOW_CRS_DEF = 'SHOW_CRS_DEF'
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
-    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
-    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
+    SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
 
     settings = {}
     settingIcons = {}
@@ -96,6 +91,10 @@ class ProcessingConfig:
             ProcessingConfig.tr("Warn before executing if parameter CRS's do not match"), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
+            ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES,
+            ProcessingConfig.tr("Show algorithms with known issues"), False))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
             ProcessingConfig.RASTER_STYLE,
             ProcessingConfig.tr('Style for raster layers'), '',
             valuetype=Setting.FILE))
@@ -126,7 +125,7 @@ class ProcessingConfig:
             valuetype=Setting.FILE))
 
         invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance)'),
-                                  ProcessingConfig.tr('Ignore features with invalid geometries'),
+                                  ProcessingConfig.tr('Skip (ignore) features with invalid geometries'),
                                   ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -135,24 +134,6 @@ class ProcessingConfig:
             invalidFeaturesOptions[2],
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
-
-        extensions = QgsVectorFileWriter.supportedFormatExtensions()
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
-            ProcessingConfig.tr('Default output vector layer extension'),
-            extensions[0],
-            valuetype=Setting.SELECTION,
-            options=extensions))
-
-        extensions = QgsRasterFileWriter.supportedFormatExtensions()
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
-            ProcessingConfig.tr('Default output raster layer extension'),
-            extensions[0],
-            valuetype=Setting.SELECTION,
-            options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):

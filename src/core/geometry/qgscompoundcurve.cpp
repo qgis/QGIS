@@ -21,9 +21,12 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+
+#include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
+#include <nlohmann/json.hpp>
 
 QgsCompoundCurve::QgsCompoundCurve()
 {
@@ -245,7 +248,7 @@ QByteArray QgsCompoundCurve::asWkb() const
 
 QString QgsCompoundCurve::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
+  QString wkt = wktTypeStr() + QLatin1String( " (" );
   for ( const QgsCurve *curve : mCurves )
   {
     QString childWkt = curve->asWkt( precision );
@@ -290,12 +293,11 @@ QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QS
   return compoundCurveElem;
 }
 
-QString QgsCompoundCurve::asJson( int precision ) const
+json QgsCompoundCurve::asJsonObject( int precision ) const
 {
   // GeoJSON does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QString json = line->asJson( precision );
-  return json;
+  return line->asJsonObject( precision );
 }
 
 double QgsCompoundCurve::length() const

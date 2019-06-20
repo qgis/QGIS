@@ -116,6 +116,11 @@ int QgsServerProjectUtils::wmsMaxAtlasFeatures( const QgsProject &project )
   return project.readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 );
 }
 
+double QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( const QgsProject &project )
+{
+  return project.readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 );
+}
+
 bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
 {
   QString sia2045 = project.readEntry( QStringLiteral( "WMSInfoFormatSIA2045" ), QStringLiteral( "/" ), "" );
@@ -340,5 +345,5 @@ QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
 
 QString QgsServerProjectUtils::wmtsServiceUrl( const QgsProject &project )
 {
-  return project.readEntry( QStringLiteral( "WMTSSUrl" ), QStringLiteral( "/" ), "" );
+  return project.readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), "" );
 }

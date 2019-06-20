@@ -87,7 +87,7 @@ class CORE_EXPORT QgsDistanceArea
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
      * retrieved using QgsEllipsoidUtils::acronyms().
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
-     * \returns true if ellipsoid was successfully set
+     * \returns TRUE if ellipsoid was successfully set
      * \see ellipsoid()
      * \see willUseEllipsoid()
      */
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
      * a valid ellipsoid been set.
-     * \returns true if ellipsoid was successfully set
+     * \returns TRUE if ellipsoid was successfully set
      * \see ellipsoid()
      * \see willUseEllipsoid()
      */
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param distance distance to format
      * \param decimals number of decimal places to show
      * \param unit unit of distance
-     * \param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
+     * \param keepBaseUnit set to FALSE to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
      * \returns formatted distance string
      * \see formatArea()
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param area area to format
      * \param decimals number of decimal places to show
      * \param unit unit of area
-     * \param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+     * \param keepBaseUnit set to FALSE to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
      * \returns formatted area string
      * \see formatDistance()
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsDistanceArea
      * This argument is always specified in meters. A shorter distance results in a denser line,
      * at the cost of extra computing time.
      *
-     * If the geodesic line crosses the antimeridian (+/- 180 degrees longitude) and \a breakLine is true, then
+     * If the geodesic line crosses the antimeridian (+/- 180 degrees longitude) and \a breakLine is TRUE, then
      * the line will be split into two parts, broken at the antimeridian. In this case the function
      * will return two lines, corresponding to the portions at either side of the antimeridian.
      *
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsDistanceArea
      * Points \a p1 and \a p2 are expected to be in degrees and in currently used ellipsoid
      *
      * \returns distance in meters
-     * \note if course1 is not NULL, bearing (in radians) from first point is calculated
+     * \note if course1 is not NULLPTR, bearing (in radians) from first point is calculated
      * (the same for course2)
      */
     double computeDistanceBearing( const QgsPointXY &p1, const QgsPointXY &p2,

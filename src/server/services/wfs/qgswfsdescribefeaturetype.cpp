@@ -34,17 +34,14 @@ namespace QgsWfs
   void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                                  const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QgsAccessControl *accessControl = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
     QDomDocument doc;
     const QDomDocument *describeDocument = nullptr;
 
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    cacheManager = serverIface->cacheManager();
-#endif
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       describeDocument = &doc;
@@ -59,7 +56,9 @@ namespace QgsWfs
       }
       describeDocument = &doc;
     }
-
+#else
+    doc = createDescribeFeatureTypeDocument( serverIface, project, version, request );
+#endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( describeDocument->toByteArray() );
   }
@@ -68,7 +67,7 @@ namespace QgsWfs
   QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -79,9 +78,13 @@ namespace QgsWfs
     // test oFormat
     if ( oFormat == QgsWfsParameters::Format::NONE )
       throw QgsBadRequestException( QStringLiteral( "Invalid WFS Parameter" ),
-                                    "OUTPUTFORMAT " + wfsParameters.outputFormatAsString() + "is not supported" );
+                                    QStringLiteral( "OUTPUTFORMAT %1 is not supported" ).arg( wfsParameters.outputFormatAsString() ) );
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
+#endif
 
     //xsd:schema
     QDomElement schemaElement = doc.createElement( QStringLiteral( "schema" )/*xsd:schema*/ );
@@ -130,19 +133,7 @@ namespace QgsWfs
     }
     else
     {
-      QString typeNames = request.parameter( QStringLiteral( "TYPENAME" ) );
-      if ( !typeNames.isEmpty() )
-      {
-        QStringList typeNameSplit = typeNames.split( ',' );
-        for ( int i = 0; i < typeNameSplit.size(); ++i )
-        {
-          QString typeName = typeNameSplit.at( i ).trimmed();
-          if ( typeName.contains( ':' ) )
-            typeNameList << typeName.section( ':', 1, 1 );
-          else
-            typeNameList << typeName;
-        }
-      }
+      typeNameList = wfsParameters.typeNames();
     }
 
     QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
@@ -153,7 +144,7 @@ namespace QgsWfs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+      if ( layer->type() != QgsMapLayerType::VectorLayer )
       {
         continue;
       }
@@ -164,7 +155,7 @@ namespace QgsWfs
       {
         continue;
       }
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerReadPermission( layer ) )
       {
         if ( !typeNameList.isEmpty() )
@@ -176,7 +167,7 @@ namespace QgsWfs
           continue;
         }
       }
-
+#endif
       QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsVectorDataProvider *provider = vLayer->dataProvider();
       if ( !provider )
@@ -300,7 +291,7 @@ namespace QgsWfs
         }
         else if ( attributeType == QVariant::Double )
         {
-          if ( field.length() != 0 && field.precision() == 0 )
+          if ( field.length() > 0 && field.precision() == 0 )
             attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
           else
             attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
@@ -356,6 +347,11 @@ namespace QgsWfs
                 attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
             }
           }
+        }
+
+        if ( !( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+        {
+          attElem.setAttribute( QStringLiteral( "nillable" ), QStringLiteral( "true" ) );
         }
 
         sequenceElem.appendChild( attElem );

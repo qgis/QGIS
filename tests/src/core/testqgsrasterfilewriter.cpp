@@ -159,7 +159,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 
   // Reprojection not really done
   QgsRasterProjector *projector = new QgsRasterProjector;
-  projector->setCrs( provider->crs(), provider->crs() );
+  projector->setCrs( provider->crs(), provider->crs(), provider->transformContext() );
   if ( !pipe->insert( 2, projector ) )
   {
     logError( QStringLiteral( "Cannot set pipe projector" ) );
@@ -168,7 +168,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
   }
   qDebug() << "projector set";
 
-  fileWriter.writeRaster( pipe, provider->xSize(), provider->ySize(), provider->extent(), provider->crs() );
+  fileWriter.writeRaster( pipe, provider->xSize(), provider->ySize(), provider->extent(), provider->crs(), provider->transformContext() );
 
   delete pipe;
 
@@ -302,7 +302,7 @@ void TestQgsRasterFileWriter::testVrtCreation()
   QgsRasterPipe pipe;
   pipe.set( srcRasterLayer->dataProvider()->clone() );
   // Let's do it !
-  QgsRasterFileWriter::WriterError res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs );
+  QgsRasterFileWriter::WriterError res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs,  srcRasterLayer->transformContext() );
   QCOMPARE( res, QgsRasterFileWriter::NoError );
 
   // Now let's compare the georef of the original raster with the georef of the generated vrt file

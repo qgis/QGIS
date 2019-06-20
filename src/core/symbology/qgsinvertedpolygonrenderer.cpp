@@ -111,7 +111,6 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const Q
   // We compute coordinates of the extent which will serve as exterior ring
   // for the final polygon
   // It must be computed in the destination CRS if reprojection is enabled.
-  const QgsMapToPixel &mtp( context.mapToPixel() );
 
   if ( !context.painter() )
   {
@@ -119,15 +118,16 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const Q
   }
 
   // convert viewport to dest CRS
-  QRect e( context.painter()->viewport() );
   // add some space to hide borders and tend to infinity
-  e.adjust( -e.width() * 5, -e.height() * 5, e.width() * 5, e.height() * 5 );
+  const double buffer = std::max( context.mapExtent().width(), context.mapExtent().height() ) * 0.1;
+  const QRectF outer = context.mapExtent().buffered( buffer ).toRectF();
   QgsPolylineXY exteriorRing;
-  exteriorRing << mtp.toMapCoordinates( e.topLeft() );
-  exteriorRing << mtp.toMapCoordinates( e.topRight() );
-  exteriorRing << mtp.toMapCoordinates( e.bottomRight() );
-  exteriorRing << mtp.toMapCoordinates( e.bottomLeft() );
-  exteriorRing << mtp.toMapCoordinates( e.topLeft() );
+  exteriorRing.reserve( 5 );
+  exteriorRing << outer.topLeft();
+  exteriorRing << outer.topRight();
+  exteriorRing << outer.bottomRight();
+  exteriorRing << outer.bottomLeft();
+  exteriorRing << outer.topLeft();
 
   // copy the rendering context
   mContext = context;
@@ -142,8 +142,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const Q
     // disable projection
     mContext.setCoordinateTransform( QgsCoordinateTransform() );
     // recompute extent so that polygon clipping is correct
-    QRect v( context.painter()->viewport() );
-    mContext.setExtent( QgsRectangle( mtp.toMapCoordinates( v.topLeft() ), mtp.toMapCoordinates( v.bottomRight() ) ) );
+    mContext.setExtent( context.mapExtent() );
     // do we have to recompute the MapToPixel ?
   }
 
@@ -182,7 +181,8 @@ bool QgsInvertedPolygonRenderer::renderFeature( const QgsFeature &feature, QgsRe
   if ( capabilities() & MoreSymbolsPerFeature )
   {
     QgsSymbolList syms( mSubRenderer->symbolsForFeature( feature, context ) );
-    Q_FOREACH ( QgsSymbol *sym, syms )
+    const auto constSyms = syms;
+    for ( QgsSymbol *sym : constSyms )
     {
       // append the memory address
       catId.append( reinterpret_cast<const char *>( &sym ), sizeof( sym ) );
@@ -246,6 +246,11 @@ bool QgsInvertedPolygonRenderer::renderFeature( const QgsFeature &feature, QgsRe
 void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
+  if ( context.renderingStopped() )
+  {
+    mSubRenderer->stopRender( mContext );
+    return;
+  }
 
   if ( !mSubRenderer )
   {
@@ -259,7 +264,8 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
   QgsMultiPolygonXY finalMulti; //avoid expensive allocation for list for every feature
   QgsPolygonXY newPoly;
 
-  Q_FOREACH ( const CombinedFeature &cit, mFeaturesCategories )
+  const auto constMFeaturesCategories = mFeaturesCategories;
+  for ( const CombinedFeature &cit : constMFeaturesCategories )
   {
     finalMulti.resize( 0 ); //preserve capacity - don't use clear!
     QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
@@ -286,7 +292,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
       // operations do not need geometries to be valid
 
       finalMulti.append( mExtentPolygon );
-      Q_FOREACH ( const QgsGeometry &geom, cit.geometries )
+      for ( const QgsGeometry &geom : qgis::as_const( cit.geometries ) )
       {
         QgsMultiPolygonXY multi;
         QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
@@ -341,7 +347,8 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
   }
 
   // draw feature decorations
-  Q_FOREACH ( FeatureDecoration deco, mFeatureDecorations )
+  const auto constMFeatureDecorations = mFeatureDecorations;
+  for ( FeatureDecoration deco : constMFeatureDecorations )
   {
     mSubRenderer->renderFeature( deco.feature, mContext, deco.layer, deco.selected, deco.drawMarkers );
   }

@@ -69,22 +69,29 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     void setToolboxProxyModel( QgsProcessingToolboxProxyModel *model SIP_TRANSFER );
 
     /**
-     * Returns the algorithm at the specified tree view \a index, or a nullptr
+     * Returns the algorithm at the specified tree view \a index, or NULLPTR
      * if the index does not correspond to an algorithm.
      */
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index );
 
     /**
-     * Returns the currently selected algorithm in the tree view, or a nullptr
+     * Returns the currently selected algorithm in the tree view, or NULLPTR
      * if no algorithm is currently selected.
      */
     const QgsProcessingAlgorithm *selectedAlgorithm();
 
     /**
      * Sets \a filters controlling the view's contents.
+     * \see filters()
      */
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 
+    /**
+     * Returns the current filters controlling the view's contents.
+     * \see setFilters()
+     * \since QGIS 3.8
+     */
+    QgsProcessingToolboxProxyModel::Filters filters() const;
 
     /**
      * Sets the vector \a layer for the in-place algorithms

@@ -94,6 +94,7 @@ class QgsLexerExpression : public QsciLexerSQL
 
 class QgsSciApisExpression : public QsciAPIs
 {
+    Q_OBJECT
   public:
     QgsSciApisExpression( QsciLexer *lexer );
 

@@ -15,6 +15,7 @@
 
 #include "qgsaggregatetoolbutton.h"
 #include "qgsaggregatecalculator.h"
+#include "qgis.h"
 
 #include <QMenu>
 

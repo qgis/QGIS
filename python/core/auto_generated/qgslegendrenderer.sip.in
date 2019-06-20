@@ -34,7 +34,7 @@ Constructor for QgsLegendRenderer. The ownership of the legend model is not chan
 and the model must exist for the lifetime of this renderer.
 %End
 
-    QSizeF minimumSize();
+    QSizeF minimumSize( QgsRenderContext *renderContext = 0 );
 %Docstring
 Runs the layout algorithm and returns the minimum size required for the legend.
 
@@ -76,6 +76,13 @@ The ``painter`` should be scaled beforehand so that units correspond to millimet
 Draws the legend using a given render ``context``. The legend will occupy the area reported in legendSize().
 
 .. versionadded:: 3.6
+%End
+
+    void exportLegendToJson( const QgsRenderContext &context, QJsonObject &json );
+%Docstring
+Renders the legend in a ``json`` object.
+
+.. versionadded:: 3.8
 %End
 
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );

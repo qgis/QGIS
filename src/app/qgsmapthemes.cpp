@@ -87,7 +87,8 @@ QList<QgsMapLayer *> QgsMapThemes::orderedPresetVisibleLayers( const QString &na
 
   // also make sure to order the layers according to map canvas order
   QList<QgsMapLayer *> lst;
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->layerTreeRoot()->layerOrder() )
+  const auto constLayerOrder = QgsProject::instance()->layerTreeRoot()->layerOrder();
+  for ( QgsMapLayer *layer : constLayerOrder )
   {
     if ( visibleIds.contains( layer->id() ) )
     {
@@ -181,7 +182,8 @@ void QgsMapThemes::menuAboutToShow()
   QgsMapThemeCollection::MapThemeRecord rec = currentState();
   bool hasCurrent = false;
 
-  Q_FOREACH ( const QString &grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &grpName : constMapThemes )
   {
     QAction *a = new QAction( grpName, mMenu );
     a->setCheckable( true );

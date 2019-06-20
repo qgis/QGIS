@@ -21,13 +21,11 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsMessageLog,
+                       QgsApplication,
                        QgsProcessingProvider)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -42,6 +40,7 @@ from processing.script.DeleteScriptAction import DeleteScriptAction
 from processing.script.EditScriptAction import EditScriptAction
 from processing.script.OpenScriptFromFileAction import OpenScriptFromFileAction
 from processing.script import ScriptUtils
+from processing.tools.system import userFolder
 
 
 class ScriptAlgorithmProvider(QgsProcessingProvider):
@@ -102,7 +101,16 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
     def loadAlgorithms(self):
         self.algs = []
         folders = ScriptUtils.scriptsFolders()
+        # always add default script folder to the list
+        defaultScriptFolder = ScriptUtils.defaultScriptsFolder()
+        if defaultScriptFolder not in folders:
+            folders.append(defaultScriptFolder)
+        # load all scripts
         for folder in folders:
+            folder = ScriptUtils.resetScriptFolder(folder)
+            if not folder:
+                continue
+
             items = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
             for entry in items:
                 if entry.lower().endswith(".py"):

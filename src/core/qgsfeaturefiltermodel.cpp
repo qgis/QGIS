@@ -18,6 +18,8 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
 
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QAbstractItemModel( parent )
@@ -114,7 +116,7 @@ QModelIndex QgsFeatureFilterModel::parent( const QModelIndex &child ) const
 
 int QgsFeatureFilterModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
 
   return mEntries.size();
 }
@@ -352,7 +354,7 @@ void QgsFeatureFilterModel::scheduledReload()
   request.setSubsetOfAttributes( attributes, mSourceLayer->fields() );
   request.setFlags( QgsFeatureRequest::NoGeometry );
 
-  request.setLimit( 100 );
+  request.setLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
 
   mGatherer = new QgsFieldExpressionValuesGatherer( mSourceLayer, mDisplayExpression, mIdentifierField, request );
   mGatherer->setData( mShouldReloadCurrentFeature );
@@ -380,7 +382,8 @@ QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
   if ( mDisplayExpression.isField() )
   {
     QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
-    Q_FOREACH ( const QgsConditionalStyle &style, mSourceLayer->conditionalStyles()->fieldStyles( fieldName ) )
+    const auto constFieldStyles = mSourceLayer->conditionalStyles()->fieldStyles( fieldName );
+    for ( const QgsConditionalStyle &style : constFieldStyles )
     {
       QgsExpression exp( style.rule() );
       requestedAttrs += exp.referencedColumns();

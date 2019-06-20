@@ -52,25 +52,16 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
     {
       other.mLock.lockForRead();
       mSourceDestDatumTransforms = other.mSourceDestDatumTransforms;
-#if 0
-      mSourceDatumTransforms = other.mSourceDatumTransforms;
-      mDestDatumTransforms = other.mDestDatumTransforms;
-#endif
       other.mLock.unlock();
     }
 
     /**
-     * Mapping for datum transforms to use for source/destination CRS pairs.
-     * Matching records from this map will take precedence over other transform maps.
+     * Mapping for coordinate operation Proj string to use for source/destination CRS pairs.
      */
+#if PROJ_VERSION_MAJOR>=6
+    QMap< QPair< QString, QString >, QString > mSourceDestDatumTransforms;
+#else
     QMap< QPair< QString, QString >, QgsDatumTransform::TransformPair > mSourceDestDatumTransforms;
-
-#if 0
-    //! Mapping for datum transforms to use for source CRS
-    QMap< QString, int > mSourceDatumTransforms;
-
-    //! Mapping for datum transforms to use for destination CRS
-    QMap< QString, int > mDestDatumTransforms;
 #endif
 
     //! Mutex for making QgsCoordinateTransformContextPrivate thread safe

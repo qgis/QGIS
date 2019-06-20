@@ -905,7 +905,7 @@ void QgsLayoutMapGridWidget::mMapGridUnitComboBox_currentIndexChanged( const QSt
 
 void QgsLayoutMapGridWidget::mGridBlendComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( mMapGrid )
   {
     mMap->beginCommand( tr( "Change Grid Blend Mode" ) );

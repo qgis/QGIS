@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nathan Woodrow'
 __date__ = '10.12.2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import sys
 import os
@@ -34,6 +32,19 @@ def define_new_no_inputs(newid=1):
     def testalg(instance, parameters, context, feedback, inputs):
         """
         Test doc string text
+        """
+
+
+def define_new_no_outputs_but_sink_instead(newid=1):
+    @alg(name=ARGNAME.format(newid), label=alg.tr("Test func"), group="unittest",
+         group_label=alg.tr("Test label"))
+    @alg.help(HELPSTRING.format(newid))
+    @alg.input(type=alg.SOURCE, name="INPUT", label="Input layer")
+    @alg.input(type=alg.DISTANCE, name="DISTANCE", label="Distance", default=30)
+    @alg.input(type=alg.SINK, name="SINK", label="Output layer")
+    def testalg(instance, parameters, context, feedback, inputs):
+        """
+        Given a distance will split a line layer into segments of the distance
         """
 
 
@@ -73,6 +84,15 @@ class AlgNoInputs(unittest.TestCase):
 
     def test_can_have_no_inputs(self):
         define_new_no_inputs()
+
+
+class AlgNoOutputsButSinkInstead(unittest.TestCase):
+
+    def setUp(self):
+        cleanup()
+
+    def test_can_have_no_outputs_if_there_is_destination(self):
+        define_new_no_outputs_but_sink_instead()
 
 
 class AlgInstanceTests(unittest.TestCase):

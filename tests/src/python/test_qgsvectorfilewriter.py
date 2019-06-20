@@ -12,8 +12,6 @@ from builtins import str
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -1043,6 +1041,46 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue(created_layer.isValid())
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f.geometry().asWkt(), 'Point (10 10)')
+
+    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0))
+    def testWriteWithStringListField(self):
+        """
+        Test writing with a string list field
+        :return:
+        """
+        tmpfile = os.path.join(self.basetestpath, 'newstringlistfield.gml')
+        ds = ogr.GetDriverByName('GML').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('strlistfield', ogr.OFTStringList))
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        # write a gml dataset with a string list field
+        filename = os.path.join(str(QDir.tempPath()), 'with_stringlist_field.gml')
+        rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(vl,
+                                                             filename,
+                                                             'utf-8',
+                                                             vl.crs(),
+                                                             'GML')
+
+        self.assertEqual(rc, QgsVectorFileWriter.NoError)
+
+        # open the resulting gml
+        vl = QgsVectorLayer(filename, '', 'ogr')
+        self.assertTrue(vl.isValid())
+        fields = vl.fields()
+
+        # test type of converted field
+        idx = fields.indexFromName('strlistfield')
+        self.assertEqual(fields.at(idx).type(), QVariant.List)
+        self.assertEqual(fields.at(idx).subType(), QVariant.String)
+
+        del vl
+        os.unlink(filename)
 
     def testWriteWithBinaryField(self):
         """

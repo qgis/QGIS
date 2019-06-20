@@ -56,7 +56,8 @@ class GUI_EXPORT QgsSnapIndicator
 
     QgsMapCanvas *mCanvas;
     QgsPointLocator::Match mMatch;
-    std::unique_ptr<QgsVertexMarker> mSnappingMarker;
+    QgsVertexMarker *mSnappingMarker = nullptr;
+    QMetaObject::Connection mCanvasDestroyedConnection;
 };
 
 #endif // QGSSNAPINDICATOR_H

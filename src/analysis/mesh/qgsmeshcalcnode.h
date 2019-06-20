@@ -132,7 +132,7 @@ class ANALYSIS_EXPORT QgsMeshCalcNode
      * Calculates result of mesh calculation
      * \param dsu utils with initial conditions for calculation (times, dataset groups)
      * \param result destination dataset group for calculation results
-     * \returns true on success, false on failure
+     * \returns TRUE on success, FALSE on failure
      */
     bool calculate( const QgsMeshCalcUtils &dsu, QgsMeshMemoryDatasetGroup &result ) const;
 

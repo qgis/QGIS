@@ -68,7 +68,7 @@ class SERVER_EXPORT QgsServerCacheFilter
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
      * \param key the key provided by the access control to identify different documents for the same request
-     * \returns true if the document has been cached
+     * \returns TRUE if the document has been cached
      */
     virtual bool setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
 
@@ -77,14 +77,14 @@ class SERVER_EXPORT QgsServerCacheFilter
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
      * \param key the key provided by the access control to identify different documents for the same request
-     * \returns true if the document has been deleted
+     * \returns TRUE if the document has been deleted
      */
     virtual bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
 
     /**
      * Deletes all cached documents for a QGIS project
      * \param project the project used to generate the documents to provide path
-     * \returns true if the documents have been deleted
+     * \returns TRUE if the documents have been deleted
      */
     virtual bool deleteCachedDocuments( const QgsProject *project ) const;
 
@@ -103,7 +103,7 @@ class SERVER_EXPORT QgsServerCacheFilter
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
      * \param key the key provided by the access control to identify different images for the same request
-     * \returns true if the image has been cached
+     * \returns TRUE if the image has been cached
      */
     virtual bool setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
 
@@ -112,14 +112,14 @@ class SERVER_EXPORT QgsServerCacheFilter
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
      * \param key the key provided by the access control to identify different images for the same request
-     * \returns true if the image has been deleted
+     * \returns TRUE if the image has been deleted
      */
     virtual bool deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
 
     /**
      * Deletes all cached images for a QGIS project
      * \param project the project used to generate the images to provide path
-     * \returns true if the images have been deleted
+     * \returns TRUE if the images have been deleted
      */
     virtual bool deleteCachedImages( const QgsProject *project ) const;
 

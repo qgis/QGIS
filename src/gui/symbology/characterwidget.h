@@ -47,13 +47,15 @@
 #ifndef CHARACTERWIDGET_H
 #define CHARACTERWIDGET_H
 
+#include "qgis_sip.h"
+#include "qgis_gui.h"
+
 #include <QFont>
 #include <QPoint>
 #include <QSize>
 #include <QString>
 #include <QWidget>
-#include "qgis.h"
-#include "qgis_gui.h"
+
 
 class QMouseEvent;
 class QPaintEvent;
@@ -140,6 +142,13 @@ class GUI_EXPORT CharacterWidget : public QWidget
      */
     void setCharacter( QChar character );
 
+    /**
+     * Clears the currently selected character in the widget.
+     * \see character()
+     * \see setCharacter()
+     */
+    void clearCharacter();
+
   signals:
 
     /**
@@ -148,13 +157,15 @@ class GUI_EXPORT CharacterWidget : public QWidget
     void characterSelected( QChar character );
 
   protected:
+    void keyPressEvent( QKeyEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
     void paintEvent( QPaintEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
   private:
     QFont mDisplayFont;
-    int mColumns = 16;
+    int mColumns = 13;
     int mLastKey = -1;
     int mSquareSize = 24;
 };

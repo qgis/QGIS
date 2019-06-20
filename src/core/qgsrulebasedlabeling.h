@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     class CORE_EXPORT Rule
     {
       public:
-        //! takes ownership of settings, settings may be nullptr
+        //! takes ownership of settings, settings may be NULLPTR
         Rule( QgsPalLayerSettings *settings SIP_TRANSFER, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
@@ -70,14 +70,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         };
 
         /**
-         * Gets the labeling settings. May return a null pointer.
+         * Returns the labeling settings. May return NULLPTR.
          */
         QgsPalLayerSettings *settings() const { return mSettings.get(); }
 
         /**
          * Determines if scale based labeling is active
          *
-         * \returns True if scale based labeling is active
+         * \returns TRUE if scale based labeling is active
          */
         bool dependsOnScale() const { return !qgsDoubleNear( mMinimumScale, 0.0 ) || !qgsDoubleNear( mMaximumScale, 0 ); }
 
@@ -117,21 +117,21 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Returns if this rule is active
          *
-         * \returns True if the rule is active
+         * \returns TRUE if the rule is active
          */
         bool active() const { return mIsActive; }
 
         /**
          * Check if this rule is an ELSE rule
          *
-         * \returns True if this rule is an else rule
+         * \returns TRUE if this rule is an else rule
          */
         bool isElse() const { return mElseRule; }
 
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
         QString ruleKey() const { return mRuleKey; }
 
-        //! Sets new settings (or NULL). Deletes old settings if any.
+        //! Sets new settings (or NULLPTR). Deletes old settings if any.
         void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER );
 
         /**
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Sets if this rule is an ELSE rule
          *
-         * \param iselse If true, this rule is an ELSE rule
+         * \param iselse If TRUE, this rule is an ELSE rule
          */
         void setIsElse( bool iselse ) { mElseRule = iselse; }
 
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \param key The key of the rule to find
          *
-         * \returns The rule or a nullptr if not found
+         * \returns The rule or NULLPTR if not found
          *
          * \since QGIS 3.0
          */
@@ -282,10 +282,10 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * register individual features
          * \note not available in Python bindings
          */
-        RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry() ) SIP_SKIP;
+        RegisterResult registerFeature( const QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry() ) SIP_SKIP;
 
         /**
-         * Returns true if this rule or any of its children requires advanced composition effects
+         * Returns TRUE if this rule or any of its children requires advanced composition effects
          * to render.
          */
         bool requiresAdvancedEffects() const;
@@ -300,14 +300,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \param f         The feature to test
          * \param context   The context in which the rendering happens
-         * \returns          True if the feature shall be rendered
+         * \returns          TRUE if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature &f, QgsRenderContext &context ) const;
+        bool isFilterOK( const QgsFeature &f, QgsRenderContext &context ) const;
 
         /**
          * Check if this rule applies for a given \a scale.
          * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-         * If set to 0, it will always return true.
+         * If set to 0, it will always return TRUE.
          *
          * \returns If the rule will be evaluated at this scale
          */
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void updateElseRules();
 
       private:
-        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
+        Rule *mParent = nullptr; // parent rule (nullptr only for root rule)
         std::unique_ptr<QgsPalLayerSettings> mSettings;
         double mMaximumScale = 0;
         double mMinimumScale = 0;
@@ -346,8 +346,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root SIP_TRANSFER );
     ~QgsRuleBasedLabeling() override;
 
-    QgsRuleBasedLabeling::Rule *rootRule() { return mRootRule; }
-    const Rule *rootRule() const SIP_SKIP { return mRootRule; }
+    QgsRuleBasedLabeling::Rule *rootRule();
+    const Rule *rootRule() const SIP_SKIP;
 
     //! Create the instance from a DOM element with saved configuration
     static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 
   protected:
-    Rule *mRootRule = nullptr;
+    std::unique_ptr<Rule> mRootRule;
 };
 
 #ifndef SIP_RUN
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames ) override;
 
-    void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
+    void registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
 
     //! create a label provider
     virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );

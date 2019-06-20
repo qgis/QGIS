@@ -104,6 +104,16 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     bool notNull() const;
 
     /**
+     * Returns whether the not null constraint is set by the provider
+     */
+    bool notNullFromProvider() const;
+
+    /**
+     * Returns whether the unique constraint is set by the provider
+     */
+    bool uniqueFromProvider() const;
+
+    /**
      * Sets whether the not null constraint is enforced.
      */
     void setNotNullEnforced( bool enforced );

@@ -18,7 +18,6 @@
 
 #include <QListView>
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <qdebug.h>
 #include "qgsactionmenu.h"
 
@@ -132,14 +131,21 @@ class GUI_EXPORT QgsFeatureListView : public QListView
   signals:
 
     /**
-     * Is emitted, whenever the current edit selection has been changed.
-     *
+     * Emitted whenever the current edit selection has been changed.
      * \param feat the feature, which will be edited.
      */
     void currentEditSelectionChanged( QgsFeature &feat );
 
     /**
-     * Is emitted, whenever the display expression is successfully changed
+     * Emitted whenever the current edit selection has been changed.
+     * \param progress the position of the feature in the list
+     * \param count the number of features in the list
+     * \since QGIS 3.8
+     */
+    void currentEditSelectionProgressChanged( int progress, int count );
+
+    /**
+     * Emitted whenever the display expression is successfully changed
      * \param expression The expression that was applied
      */
     void displayExpressionChanged( const QString &expression );
@@ -148,7 +154,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void aboutToChangeEditSelection( bool &ok ) SIP_SKIP;
 
     /**
-     * Is emitted, when the context menu is created to add the specific actions to it
+     * Emitted when the context menu is created to add the specific actions to it
      * \param menu is the already created context menu
      * \param atIndex is the position of the current feature in the model
      */
@@ -179,12 +185,38 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
 
+    /**
+     * editFirstFeature will try to edit the first feature of the list
+     * \since QGIS 3.8
+     */
+    void editFirstFeature() {editOtherFeature( First );}
+
+    /**
+     * editNextFeature will try to edit next feature of the list
+     * \since QGIS 3.8
+     */
+    void editNextFeature() {editOtherFeature( Next );}
+
+    /**
+     * editPreviousFeature will try to edit previous feature of the list
+     * \since QGIS 3.8
+     */
+    void editPreviousFeature() {editOtherFeature( Previous );}
+
+    /**
+     * editLastFeature will try to edit the last feature of the list
+     * \since QGIS 3.8
+     */
+    void editLastFeature() {editOtherFeature( Last );}
+
+
+
   private slots:
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
 
     /**
      * Make sure, there is an edit selection. If there is none, choose the first item.
-     * If \a inSelection is set to true, the edit selection is done in selected entries if
+     * If \a inSelection is set to TRUE, the edit selection is done in selected entries if
      * there is a selected entry visible.
      *
      */
@@ -192,6 +224,16 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
   private:
     void selectRow( const QModelIndex &index, bool anchor );
+
+    enum PositionInList
+    {
+      First,
+      Next,
+      Previous,
+      Last
+    };
+
+    void editOtherFeature( PositionInList positionInList );
 
 
     QgsFeatureListModel *mModel = nullptr;
@@ -204,6 +246,8 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 
     QTimer mUpdateEditSelectionTimer;
+
+    friend class QgsDualView;
 };
 
 #endif

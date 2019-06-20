@@ -21,11 +21,8 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+from math import floor, ceil
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
@@ -39,6 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterMapLayer,
+                       QgsProcessingParameterDistance,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsFields)
 
@@ -51,6 +50,7 @@ class ExtentFromLayer(QgisAlgorithm):
 
     INPUT = 'INPUT'
     BY_FEATURE = 'BY_FEATURE'
+    ROUND_TO = 'ROUND_TO'
 
     OUTPUT = 'OUTPUT'
 
@@ -61,7 +61,7 @@ class ExtentFromLayer(QgisAlgorithm):
         return QgsApplication.iconPath("/algorithms/mAlgorithmExtractLayerExtent.svg")
 
     def tags(self):
-        return self.tr('polygon,from,vector,raster,extent,envelope,bounds,bounding,boundary,layer').split(',')
+        return self.tr('polygon,vector,raster,extent,envelope,bounds,bounding,boundary,layer,round,rounded').split(',')
 
     def group(self):
         return self.tr('Layer tools')
@@ -74,6 +74,15 @@ class ExtentFromLayer(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMapLayer(self.INPUT, self.tr('Input layer')))
+
+        round_to_parameter = QgsProcessingParameterDistance(self.ROUND_TO,
+                                                            self.tr('Round values to'),
+                                                            parentParameterName=self.INPUT,
+                                                            minValue=0,
+                                                            defaultValue=0)
+        round_to_parameter.setFlags(round_to_parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(round_to_parameter)
+
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
@@ -84,6 +93,8 @@ class ExtentFromLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsLayer(parameters, self.INPUT, context)
+
+        round_to = self.parameterAsDouble(parameters, self.ROUND_TO, context)
 
         fields = QgsFields()
         fields.append(QgsField('MINX', QVariant.Double))
@@ -109,7 +120,15 @@ class ExtentFromLayer(QgisAlgorithm):
             pass
 
         rect = layer.extent()
+
+        if round_to > 0:
+            rect.setXMinimum(floor(rect.xMinimum() / round_to) * round_to)
+            rect.setYMinimum(floor(rect.yMinimum() / round_to) * round_to)
+            rect.setXMaximum(ceil(rect.xMaximum() / round_to) * round_to)
+            rect.setYMaximum(ceil(rect.yMaximum() / round_to) * round_to)
+
         geometry = QgsGeometry.fromRect(rect)
+
         minx = rect.xMinimum()
         miny = rect.yMinimum()
         maxx = rect.xMaximum()

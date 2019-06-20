@@ -59,7 +59,7 @@ class CORE_EXPORT QgsVirtualLayerTask : public QgsTask
 
     /**
      * Reloads the data.
-     * \returns True if the virtual layer is valid, false otherwise.
+     * \returns TRUE if the virtual layer is valid, FALSE otherwise.
      */
     bool run() override;
 

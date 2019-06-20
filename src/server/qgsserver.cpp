@@ -35,6 +35,7 @@
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
 #include "qgsserverparameters.h"
+#include "qgsapplication.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -155,6 +156,26 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
   return cfPath;
 }
 
+void QgsServer::initLocale()
+{
+  // System locale override
+  if ( ! sSettings.overrideSystemLocale().isEmpty() )
+  {
+    QLocale::setDefault( QLocale( sSettings.overrideSystemLocale() ) );
+  }
+  // Number group separator settings
+  QLocale currentLocale;
+  if ( sSettings.showGroupSeparator() )
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  }
+  else
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+  }
+  QLocale::setDefault( currentLocale );
+}
+
 bool QgsServer::init()
 {
   if ( sInitialized )
@@ -190,6 +211,9 @@ bool QgsServer::init()
     QgsServerLogger::instance()->setLogStderr();
   }
 
+  // Configure locale
+  initLocale();
+
   // log settings currently used
   sSettings.logSummary();
 
@@ -203,7 +227,7 @@ bool QgsServer::init()
   QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), Qgis::Info );
   QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
   QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::separator() ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::listSeparator() ), QStringLiteral( "Server" ), Qgis::Info );
 
   QgsApplication::createDatabase(); //init qgis.db (e.g. necessary for user crs)
 
@@ -295,6 +319,20 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   // Set the request handler into the interface for plugins to manipulate it
   sServerInterface->setRequestHandler( &requestHandler );
 
+  // Initialize configfilepath so that is is available
+  // before calling plugin methods
+  // Note that plugins may still change that value using
+  // setConfigFilePath() interface method
+  if ( ! project )
+  {
+    QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
+    sServerInterface->setConfigFilePath( configFilePath );
+  }
+  else
+  {
+    sServerInterface->setConfigFilePath( project->fileName() );
+  }
+
   // Call  requestReady() method (if enabled)
   responseDecorator.start();
 
@@ -309,20 +347,12 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       //Config file path
       if ( ! project )
       {
-        QString configFilePath = configPath( *sConfigFilePath, params.map() );
-
         // load the project if needed and not empty
-        project = mConfigCache->project( configFilePath );
+        project = mConfigCache->project( sServerInterface->configFilePath() );
         if ( ! project )
         {
           throw QgsServerException( QStringLiteral( "Project file error" ) );
         }
-
-        sServerInterface->setConfigFilePath( configFilePath );
-      }
-      else
-      {
-        sServerInterface->setConfigFilePath( project->fileName() );
       }
 
       if ( ! params.fileName().isEmpty() )
@@ -346,11 +376,14 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     catch ( QgsServerException &ex )
     {
       responseDecorator.write( ex );
+      QString format;
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Info );
     }
     catch ( QgsException &ex )
     {
       // Internal server error
-      response.sendError( 500, ex.what() );
+      response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+      QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
   // Terminate the response

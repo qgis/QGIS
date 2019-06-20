@@ -10,8 +10,6 @@ from builtins import str
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -46,7 +44,12 @@ from qgis.core import (QgsRaster,
                        QgsSingleBandGrayRenderer,
                        QgsSingleBandPseudoColorRenderer,
                        QgsLimitedRandomColorRamp,
-                       QgsGradientColorRamp)
+                       QgsGradientColorRamp,
+                       QgsHueSaturationFilter,
+                       QgsCoordinateTransformContext,
+                       QgsCoordinateReferenceSystem,
+                       QgsRasterHistogram,
+                       )
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
@@ -400,6 +403,47 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         self.assertTrue(checker.runTest("expected_paletted_renderer"), "Paletted rendering test failed")
 
+    def testPalettedBand(self):
+        """ test paletted raster render band"""
+        path = os.path.join(unitTestDataPath(),
+                            'landsat_4326.tif')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
+
+        renderer = QgsPalettedRasterRenderer(layer.dataProvider(), 2,
+                                             [QgsPalettedRasterRenderer.Class(137, QColor(0, 255, 0), 'class 2'),
+                                              QgsPalettedRasterRenderer.Class(138, QColor(255, 0, 0), 'class 1'),
+                                              QgsPalettedRasterRenderer.Class(139, QColor(0, 0, 255), 'class 1')])
+
+        layer.setRenderer(renderer)
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_paletted_renderer_band2")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_paletted_renderer_band2"), "Paletted rendering test failed")
+
+        renderer = QgsPalettedRasterRenderer(layer.dataProvider(), 3,
+                                             [QgsPalettedRasterRenderer.Class(120, QColor(0, 255, 0), 'class 2'),
+                                              QgsPalettedRasterRenderer.Class(123, QColor(255, 0, 0), 'class 1'),
+                                              QgsPalettedRasterRenderer.Class(124, QColor(0, 0, 255), 'class 1')])
+
+        layer.setRenderer(renderer)
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_paletted_renderer_band3")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_paletted_renderer_band3"), "Paletted rendering test failed")
+
     def testPalettedColorTableToClassData(self):
         entries = [QgsColorRampShader.ColorRampItem(5, QColor(255, 0, 0), 'item1'),
                    QgsColorRampShader.ColorRampItem(3, QColor(0, 255, 0), 'item2'),
@@ -740,6 +784,324 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual.png'), "PNG"))
 
         self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
+
+    def testWriteSld(self):
+        """Test SLD generation for the XMLS fields geneerated at RasterLayer level and not to the deeper renderer level."""
+
+        myPath = os.path.join(unitTestDataPath(), 'landsat.tif')
+        myFileInfo = QFileInfo(myPath)
+        myBaseName = myFileInfo.baseName()
+        myRasterLayer = QgsRasterLayer(myPath, myBaseName)
+        myMessage = 'Raster not loaded: %s' % myPath
+        assert myRasterLayer.isValid(), myMessage
+
+        # do generic export with default layer values
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = root.elementsByTagName('sld:LayerFeatureConstraints')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+
+        elements = element.elementsByTagName('sld:FeatureTypeConstraint')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+
+        elements = root.elementsByTagName('sld:UserStyle')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+
+        name = element.firstChildElement('sld:Name')
+        self.assertFalse(name.isNull())
+        self.assertEqual(name.text(), 'landsat')
+
+        abstract = element.firstChildElement('sld:Abstract')
+        self.assertTrue(abstract.isNull())
+
+        title = element.firstChildElement('sld:Title')
+        self.assertTrue(title.isNull())
+
+        featureTypeStyle = element.firstChildElement('sld:FeatureTypeStyle')
+        self.assertFalse(featureTypeStyle.isNull())
+
+        rule = featureTypeStyle.firstChildElement('sld:Rule')
+        self.assertFalse(rule.isNull())
+
+        temp = rule.firstChildElement('sld:MinScaleDenominator')
+        self.assertTrue(temp.isNull())
+
+        temp = rule.firstChildElement('sld:MaxScaleDenominator')
+        self.assertTrue(temp.isNull())
+
+        rasterSymbolizer = rule.firstChildElement('sld:RasterSymbolizer')
+        self.assertFalse(rule.isNull())
+
+        vendorOptions = rasterSymbolizer.elementsByTagName('sld:VendorOption')
+        self.assertTrue(vendorOptions.size() == 0)
+
+        # set no default values and check exported sld
+        myRasterLayer.setName('')
+        myRasterLayer.setAbstract('fake')
+        myRasterLayer.setTitle('fake')
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = root.elementsByTagName('sld:LayerFeatureConstraints')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+
+        elements = element.elementsByTagName('sld:FeatureTypeConstraint')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+
+        elements = root.elementsByTagName('sld:UserStyle')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+
+        # no generated if empty
+        name = element.firstChildElement('sld:Name')
+        self.assertTrue(name.isNull())
+
+        # generated if not empty
+        abstract = element.firstChildElement('sld:Abstract')
+        self.assertFalse(abstract.isNull())
+        self.assertEqual(abstract.text(), 'fake')
+
+        title = element.firstChildElement('sld:Title')
+        self.assertFalse(title.isNull())
+        self.assertEqual(title.text(), 'fake')
+
+        # if setScaleBasedVisibility is true print scales
+        myRasterLayer.setScaleBasedVisibility(True)
+        myRasterLayer.setMaximumScale(0.0001)
+        myRasterLayer.setMinimumScale(0.01)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:Rule')
+        self.assertEqual(len(elements), 1)
+        rule = elements.at(0).toElement()
+        self.assertFalse(rule.isNull())
+
+        temp = rule.firstChildElement('sld:MinScaleDenominator')
+        self.assertFalse(temp.isNull())
+        self.assertEqual(temp.text(), '0.0001')
+
+        temp = rule.firstChildElement('sld:MaxScaleDenominator')
+        self.assertFalse(temp.isNull())
+        self.assertEqual(temp.text(), '0.01')
+
+        # check non default hueSaturationFilter values
+        hue = myRasterLayer.hueSaturationFilter()
+        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleLightness)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'grayScale', 'lightness')
+
+        hue = myRasterLayer.hueSaturationFilter()
+        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleLuminosity)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'grayScale', 'luminosity')
+
+        hue = myRasterLayer.hueSaturationFilter()
+        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleAverage)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'grayScale', 'average')
+
+        hue = myRasterLayer.hueSaturationFilter()
+        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleOff)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'grayScale', None)
+
+        # manage colorize vendorOption tags
+        hue = myRasterLayer.hueSaturationFilter()
+        hue.setColorizeOn(True)
+        hue.setColorizeStrength(50)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'colorizeOn', '1')
+        self.assertVendorOption(element, 'colorizeRed', '255')
+        self.assertVendorOption(element, 'colorizeGreen', '128')
+        self.assertVendorOption(element, 'colorizeBlue', '128')
+        self.assertVendorOption(element, 'colorizeStrength', '0.5')
+        self.assertVendorOption(element, 'saturation', '0.498039')
+
+        # other hue non default values, no colorize and saturation = 0
+        hue = myRasterLayer.hueSaturationFilter()
+        hue.setColorizeOn(False)
+        hue.setSaturation(0)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'colorizeOn', None)
+        self.assertVendorOption(element, 'colorizeRed', None)
+        self.assertVendorOption(element, 'colorizeGreen', None)
+        self.assertVendorOption(element, 'colorizeBlue', None)
+        self.assertVendorOption(element, 'colorizeStrength', None)
+        self.assertVendorOption(element, 'saturation', None)
+        self.assertVendorOption(element, 'brightness', None)
+        self.assertVendorOption(element, 'contrast', None)
+
+        # other hue non default values, no colorize and saturation = 100
+        hue = myRasterLayer.hueSaturationFilter()
+        hue.setColorizeOn(False)
+        hue.setSaturation(100)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'colorizeOn', None)
+        self.assertVendorOption(element, 'colorizeRed', None)
+        self.assertVendorOption(element, 'colorizeGreen', None)
+        self.assertVendorOption(element, 'colorizeBlue', None)
+        self.assertVendorOption(element, 'colorizeStrength', None)
+        self.assertVendorOption(element, 'saturation', '1')
+        hue.setSaturation(-100)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        self.assertVendorOption(root, 'saturation', '0')
+
+        # brightness filter default values
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertTrue(myRasterLayer.brightnessFilter().brightness() == 0)
+        self.assertTrue(myRasterLayer.brightnessFilter().contrast() == 0)
+        self.assertVendorOption(element, 'brightness', None)
+        self.assertVendorOption(element, 'contrast', None)
+
+        # brightness filter no default values
+        bf = myRasterLayer.brightnessFilter()
+        bf.setBrightness(-255)
+        bf.setContrast(-100)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'brightness', '0')
+        self.assertVendorOption(element, 'contrast', '0')
+
+        bf.setBrightness(255)
+        bf.setContrast(100)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
+        elements = dom.elementsByTagName('sld:RasterSymbolizer')
+        self.assertEqual(len(elements), 1)
+        element = elements.at(0).toElement()
+        self.assertFalse(element.isNull())
+        self.assertVendorOption(element, 'brightness', '1')
+        self.assertVendorOption(element, 'contrast', '1')
+
+    def assertVendorOption(self, root, name, expectedValue):
+        """Set expectedValue=None to check that the vendor option is not present."""
+        vendorOptions = root.elementsByTagName('sld:VendorOption')
+        found = False
+        for vendorOptionIndex in range(vendorOptions.count()):
+            vendorOption = vendorOptions.at(vendorOptionIndex)
+            self.assertEqual('sld:VendorOption', vendorOption.nodeName())
+            if (vendorOption.attributes().namedItem('name').nodeValue() == name):
+                found = True
+                self.assertEqual(vendorOption.firstChild().nodeValue(), expectedValue)
+        if (expectedValue is None) and found:
+            self.fail("found VendorOption: {} where supposed not present".format(name))
+        if expectedValue and not found:
+            self.fail("Not found VendorOption: {}".format(name))
+
+    def layerToSld(self, layer, properties={}):
+        dom = QDomDocument()
+        root = dom.createElement("FakeRoot")
+        dom.appendChild(root)
+        errorMessage = ''
+        layer.writeSld(root, dom, errorMessage, properties)
+        return dom, root, errorMessage
+
+    def testHistogram(self):
+        """Test histogram bindings regression GH #29700"""
+
+        l = QgsRasterLayer(unitTestDataPath('raster/landcover.img'), 'landcover')
+        self.assertTrue(l.isValid())
+        p = l.dataProvider()
+        # Note that this is not a correct use of the API: there is no
+        # need to call initHistogram(): it is called internally
+        # from p.histogram()
+        p.initHistogram(QgsRasterHistogram(), 1, 100)
+        h = p.histogram(1)
+        self.assertTrue(len(h.histogramVector), 100)
+        # Check it twice because it crashed in some circumstances with the old implementation
+        self.assertTrue(len(h.histogramVector), 100)
+
+
+class TestQgsRasterLayerTransformContext(unittest.TestCase):
+
+    def setUp(self):
+        """Prepare tc"""
+        super(TestQgsRasterLayerTransformContext, self).setUp()
+        self.ctx = QgsCoordinateTransformContext()
+        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        self.rpath = os.path.join(unitTestDataPath(), 'landsat.tif')
+
+    def testTransformContextIsSetInCtor(self):
+        """Test transform context can be set from ctor"""
+
+        rl = QgsRasterLayer(self.rpath, 'raster')
+        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        options = QgsRasterLayer.LayerOptions(transformContext=self.ctx)
+        rl = QgsRasterLayer(self.rpath, 'raster', 'gdal', options)
+        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+    def testTransformContextInheritsFromProject(self):
+        """Test that when a layer is added to a project it inherits its context"""
+
+        rl = QgsRasterLayer(self.rpath, 'raster')
+        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p = QgsProject()
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p.addMapLayers([rl])
+        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+    def testTransformContextIsSyncedFromProject(self):
+        """Test that when a layer is synced when project context changes"""
+
+        rl = QgsRasterLayer(self.rpath, 'raster')
+        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p = QgsProject()
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        p.addMapLayers([rl])
+        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+
+        # Now change the project context
+        tc2 = QgsCoordinateTransformContext()
+        p.setTransformContext(tc2)
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        p.setTransformContext(self.ctx)
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
 
 if __name__ == '__main__':

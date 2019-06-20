@@ -96,7 +96,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
      *    );
      * \endcode
      */
-    QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     bool isValid() const override;
     QString name() const override;
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     //! Returns the memory provider description
     static QString providerDescription();
     //! Provider factory
-    static QgsMeshMemoryDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    static QgsMeshMemoryDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
   private:
     void calculateMinMaxForDatasetGroup( QgsMeshMemoryDatasetGroup &grp ) const;

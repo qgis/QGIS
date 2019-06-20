@@ -60,7 +60,7 @@ Sets the symbol for rendering clustered groups.
 %Docstring
 Creates a QgsPointClusterRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise None.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 %End
 
   private:

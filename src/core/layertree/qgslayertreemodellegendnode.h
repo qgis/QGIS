@@ -24,7 +24,7 @@
 
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
 
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     //! Returns data associated with the item. Must be implemented in derived class.
     virtual QVariant data( int role ) const = 0;
 
-    //! Sets some data associated with the item. Default implementation does nothing and returns false.
+    //! Sets some data associated with the item. Default implementation does nothing and returns FALSE.
     virtual bool setData( const QVariant &value, int role );
 
     virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QString userLabel() const { return mUserLabel; }
     virtual void setUserLabel( const QString &userLabel ) { mUserLabel = userLabel; }
 
-    virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ); return true; }
+    virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ) return true; }
 
     /**
      * Notification from model that information from associated map view has changed.
@@ -106,27 +106,54 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * Entry point called from QgsLegendRenderer to do the rendering.
      *  Default implementation calls drawSymbol() and drawSymbolText() methods.
      *
-     *  If ctx is null, this is just first stage when preparing layout - without actual rendering.
+     *  If ctx is NULLPTR, this is just first stage when preparing layout - without actual rendering.
      */
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 
     /**
+     * Entry point called from QgsLegendRenderer to do the rendering in a
+     * JSON object.
+     * \param settings Legend layout configuration
+     * \param context Rendering context
+     * \param json The json object to update
+     * \since QGIS 3.8
+     */
+    void exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json );
+
+    /**
      * Draws symbol on the left side of the item
      * \param settings Legend layout configuration
-     * \param ctx Context for rendering - may be null if only doing layout without actual rendering
+     * \param ctx Context for rendering - may be NULLPTR if only doing layout without actual rendering
      * \param itemHeight Minimal height of the legend item - used for correct positioning when rendering
      * \returns Real size of the symbol (may be bigger than "normal" symbol size from settings)
      */
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
     /**
+     * Adds a symbol in base64 string within a JSON object with the key "icon".
+     * \param settings Legend layout configuration
+     * \param context Rendering context
+     * \param json The json object to update
+     * \since QGIS 3.8
+     */
+    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
+
+    /**
      * Draws label on the right side of the item
      * \param settings Legend layout configuration
-     * \param ctx Context for rendering - may be null if only doing layout without actual rendering
+     * \param ctx Context for rendering - may be NULLPTR if only doing layout without actual rendering
      * \param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
      * \returns Size of the label (may span multiple lines)
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
+
+    /**
+     * Adds a label in a JSON object with the key "title".
+     * \param settings Legend layout configuration
+     * \param json The json object to update
+     * \since QGIS 3.8
+     */
+    void exportSymbolTextToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
 
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
@@ -136,7 +163,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     //! Construct the node with pointer to its parent layer node
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Returns a temporary context or null if legendMapViewData are not valid
+    //! Returns a temporary context or NULLPTR if legendMapViewData are not valid
     QgsRenderContext *createTemporaryRenderContext() const SIP_FACTORY;
 
   protected:
@@ -174,6 +201,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     bool setData( const QVariant &value, int role ) override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
 
     void setEmbeddedInParent( bool embedded ) override;
 
@@ -354,6 +383,8 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
+    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+
   private:
     QImage mImage;
 };
@@ -382,6 +413,8 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QVariant data( int role ) const override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
 
   private:
     QColor mColor;
@@ -412,6 +445,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
     QVariant data( int role ) const override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
 
     void invalidateMapBasedData() override;
 

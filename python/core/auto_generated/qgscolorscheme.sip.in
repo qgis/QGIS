@@ -93,7 +93,7 @@ be generated using the supplied context and base color.
 %Docstring
 Returns whether the color scheme is editable
 
-:return: true if scheme is editable
+:return: ``True`` if scheme is editable
 
 .. seealso:: :py:func:`setColors`
 %End
@@ -106,7 +106,7 @@ Sets the colors for the scheme. This method is only valid for editable color sch
 :param context: to set colors for
 :param baseColor: base color to set colors for
 
-:return: true if colors were set successfully
+:return: ``True`` if colors were set successfully
 
 .. seealso:: :py:func:`isEditable`
 %End
@@ -200,14 +200,14 @@ Sets the name for the scheme
 %Docstring
 Erases the associated gpl palette file from the users "palettes" folder
 
-:return: true if erase was successful
+:return: ``True`` if erase was successful
 %End
 
     void setShowSchemeInMenu( bool show );
 %Docstring
 Sets whether a this scheme should be shown in color button menus.
 
-:param show: set to true to show in color button menus, or false to hide from menus
+:param show: set to ``True`` to show in color button menus, or ``False`` to hide from menus
 
 .. versionadded:: 3.0
 %End

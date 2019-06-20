@@ -63,7 +63,7 @@ Returns the current collapsed state of this group box
 %Docstring
 Collapse or uncollapse this groupbox
 
-:param collapse: Will collapse on true and uncollapse on false
+:param collapse: Will collapse on ``True`` and uncollapse on ``False``
 %End
 
     QString syncGroup() const;
@@ -78,12 +78,12 @@ Named group which synchronizes collapsing action when triangle is clicked while 
 
     void setScrollOnExpand( bool scroll );
 %Docstring
-Sets this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+Sets this to ``False`` to not automatically scroll parent QScrollArea to this widget's contents when expanded
 %End
 
     bool scrollOnExpand();
 %Docstring
-If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
+If this is set to ``False`` the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
 %End
 
   signals:
@@ -134,7 +134,7 @@ Holding Shift modifier key when attempting to toggle collapsed state will expand
 
 .. note::
 
-   To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
+   To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the properties palette:
    bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
 %End
 
@@ -150,17 +150,17 @@ Holding Shift modifier key when attempting to toggle collapsed state will expand
 
     void setSaveCollapsedState( bool save );
 %Docstring
-Sets this to false to not save/restore collapsed state
+Sets this to ``False`` to not save/restore collapsed state
 %End
 
     void setSaveCheckedState( bool save );
 %Docstring
-Set this to true to save/restore checked state
+Set this to ``True`` to save/restore checked state
 
 .. note::
 
    only turn on mSaveCheckedState for groupboxes NOT used
-   in multiple places or used as options for different parent objects *
+   in multiple places or used as options for different parent objects
 %End
     bool saveCollapsedState();
     bool saveCheckedState();

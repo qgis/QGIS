@@ -24,6 +24,9 @@ bool MDAL::fileExists( const std::string &filename )
 
 bool MDAL::startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
+  if ( str.size() < substr.size() )
+    return false;
+
   if ( behaviour == ContainsBehaviour::CaseSensitive )
     return str.rfind( substr, 0 ) == 0;
   else
@@ -32,33 +35,60 @@ bool MDAL::startsWith( const std::string &str, const std::string &substr, Contai
 
 bool MDAL::endsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
+  if ( str.size() < substr.size() )
+    return false;
+
   if ( behaviour == ContainsBehaviour::CaseSensitive )
     return str.rfind( substr ) == ( str.size() - substr.size() );
   else
     return endsWith( toLower( str ), toLower( substr ), ContainsBehaviour::CaseSensitive );
 }
 
-std::vector<std::string> MDAL::split( const std::string &str, const std::string &delimiter, SplitBehaviour behaviour )
+std::vector<std::string> MDAL::split( const std::string &str,
+                                      const char delimiter
+                                    )
 {
-  std::string remaining( str );
   std::vector<std::string> list;
-  size_t pos = 0;
+  std::string::const_iterator start = str.begin();
+  std::string::const_iterator end = str.end();
+  std::string::const_iterator next;
   std::string token;
-  while ( ( pos = remaining.find( delimiter ) ) != std::string::npos )
+  do
   {
-    token = remaining.substr( 0, pos );
-
-    if ( behaviour == SplitBehaviour::SkipEmptyParts )
-    {
-      if ( !token.empty() )
-        list.push_back( token );
-    }
-    else
+    next = std::find( start, end, delimiter );
+    token = std::string( start, next );
+    if ( !token.empty() )
       list.push_back( token );
 
-    remaining.erase( 0, pos + delimiter.length() );
+    if ( next == end )
+      break;
+    else
+      start = next + 1;
   }
-  list.push_back( remaining );
+  while ( true );
+  return list;
+}
+
+
+std::vector<std::string> MDAL::split( const std::string &str,
+                                      const std::string &delimiter )
+{
+  std::vector<std::string> list;
+  std::string::size_type start = 0;
+  std::string::size_type next;
+  std::string token;
+  do
+  {
+    next = str.find( delimiter, start );
+    if ( next == std::string::npos )
+      token = str.substr( start ); // rest of the string
+    else
+      token = str.substr( start, next - start ); // part of the string
+    if ( !token.empty() )
+      list.push_back( token );
+    start = next + delimiter.size();
+  }
+  while ( next != std::string::npos );
   return list;
 }
 
@@ -70,15 +100,17 @@ size_t MDAL::toSizeT( const std::string &str )
   return static_cast< size_t >( i );
 }
 
+size_t MDAL::toSizeT( const char &str )
+{
+  int i = atoi( &str );
+  if ( i < 0 ) // consistent with atoi return
+    i = 0;
+  return static_cast< size_t >( i );
+}
+
 double MDAL::toDouble( const std::string &str )
 {
   return atof( str.c_str() );
-}
-
-bool MDAL::isNumber( const std::string &str )
-{
-  // https://stackoverflow.com/a/16465826/2838364
-  return ( strspn( str.c_str(), "-.0123456789" ) == str.size() );
 }
 
 int MDAL::toInt( const std::string &str )
@@ -237,6 +269,24 @@ std::string MDAL::replace( const std::string &str, const std::string &substr, co
   return res;
 }
 
+// http://www.cplusplus.com/faq/sequences/strings/trim/
+std::string MDAL::trim( const std::string &s, const std::string &delimiters )
+{
+  return ltrim( rtrim( s, delimiters ), delimiters );
+}
+
+// http://www.cplusplus.com/faq/sequences/strings/trim/
+std::string MDAL::ltrim( const std::string &s, const std::string &delimiters )
+{
+  return s.substr( s.find_first_not_of( delimiters ) );
+}
+
+// http://www.cplusplus.com/faq/sequences/strings/trim/
+std::string MDAL::rtrim( const std::string &s, const std::string &delimiters )
+{
+  return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
+}
+
 MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
 {
   BBox b;
@@ -267,14 +317,16 @@ bool MDAL::equals( double val1, double val2, double eps )
 
 double MDAL::safeValue( double val, double nodata, double eps )
 {
-  if ( equals( val, nodata, eps ) )
-  {
-    return std::numeric_limits<double>::quiet_NaN();
-  }
-  else
-  {
+  if ( std::isnan( val ) )
     return val;
-  }
+
+  if ( std::isnan( nodata ) )
+    return val;
+
+  if ( equals( val, nodata, eps ) )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  return val;
 }
 
 double MDAL::parseTimeUnits( const std::string &units )
@@ -284,7 +336,7 @@ double MDAL::parseTimeUnits( const std::string &units )
   // "seconds since 2001-05-05 00:00:00"
   // "hours since 1900-01-01 00:00:0.0"
   // "days since 1961-01-01 00:00:00"
-  const std::vector<std::string> units_list = MDAL::split( units, " since ", SkipEmptyParts );
+  const std::vector<std::string> units_list = MDAL::split( units, " since " );
   if ( units_list.size() == 2 )
   {
     // Give me hours
@@ -397,6 +449,9 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
     {
       valsRead = dataset->scalarData( i, bufLen, buffer.data() );
     }
+    if ( valsRead == 0 )
+      return ret;
+
     MDAL::Statistics dsStats = _calculateStatistics( buffer, valsRead, isVector );
     combineStatistics( ret, dsStats );
     i += valsRead;
@@ -448,4 +503,86 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
   group->datasets.push_back( dataset );
   group->setStatistics( MDAL::calculateStatistics( group ) );
   mesh->datasetGroups.push_back( group );
+}
+
+void MDAL::addFaceScalarDatasetGroup( MDAL::Mesh *mesh,
+                                      const std::vector<double> &values,
+                                      const std::string &name )
+{
+  if ( !mesh )
+    return;
+
+  if ( values.empty() )
+    return;
+
+  if ( mesh->facesCount() == 0 )
+    return;
+
+  assert( values.size() ==  mesh->facesCount() );
+
+  std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          mesh->driverName(),
+                                          mesh,
+                                          mesh->uri(),
+                                          name
+                                        );
+  group->setIsOnVertices( false );
+  group->setIsScalar( true );
+
+  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  dataset->setTime( 0.0 );
+  memcpy( dataset->values(), values.data(), sizeof( double )*values.size() );
+  dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
+  group->datasets.push_back( dataset );
+  group->setStatistics( MDAL::calculateStatistics( group ) );
+  mesh->datasetGroups.push_back( group );
+}
+
+void MDAL::activateFaces( MDAL::MemoryMesh *mesh, std::shared_ptr<MemoryDataset> dataset )
+{
+  // only for data on vertices
+  if ( !dataset->group()->isOnVertices() )
+    return;
+
+  bool isScalar = dataset->group()->isScalar();
+
+  // Activate only Faces that do all Vertex's outputs with some data
+  int *active = dataset->active();
+  const double *values = dataset->constValues();
+  const size_t nFaces = mesh->facesCount();
+
+  for ( unsigned int idx = 0; idx < nFaces; ++idx )
+  {
+    Face elem = mesh->faces.at( idx );
+    for ( size_t i = 0; i < elem.size(); ++i )
+    {
+      const size_t vertexIndex = elem[i];
+      if ( isScalar )
+      {
+        double val = values[vertexIndex];
+        if ( std::isnan( val ) )
+        {
+          active[idx] = 0; //NOT ACTIVE
+          break;
+        }
+      }
+      else
+      {
+        double x = values[2 * vertexIndex];
+        double y = values[2 * vertexIndex + 1];
+        if ( std::isnan( x ) || std::isnan( y ) )
+        {
+          active[idx] = 0; //NOT ACTIVE
+          break;
+        }
+      }
+    }
+  }
+}
+
+bool MDAL::isNativeLittleEndian()
+{
+  // https://stackoverflow.com/a/4181991/2838364
+  int n = 1;
+  return ( *( char * )&n == 1 );
 }

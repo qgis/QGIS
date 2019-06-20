@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
@@ -43,6 +39,10 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
+
+    # Subclasses of `Grass7AlgorithmProvider` should override `descriptionFolder`
+    # and set its value to their own description folder.
+    descriptionFolder = Grass7Utils.grassDescriptionPath()
 
     def __init__(self):
         super().__init__()
@@ -99,7 +99,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
 
     def createAlgsList(self):
         algs = []
-        folder = Grass7Utils.grassDescriptionPath()
+        folder = self.descriptionFolder
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 try:
@@ -138,7 +138,13 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return QgsApplication.iconPath("/providerGrass.svg")
 
     def defaultVectorFileExtension(self, hasGeometry=True):
-        return 'gpkg'
+        # By default,'gpkg', but if OGR has not been compiled with sqlite3, then
+        # we take "SHP"
+        if 'GPKG' in [o.driverName for o in
+                      QgsVectorFileWriter.ogrDriverList()]:
+            return 'gpkg'
+        else:
+            return 'shp' if hasGeometry else 'dbf'
 
     def supportsNonFileBasedOutput(self):
         """

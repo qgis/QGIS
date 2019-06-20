@@ -25,6 +25,7 @@ class QRectF;
 
 #include "qgslegendstyle.h"
 
+class QgsExpressionContext;
 
 /**
  * \ingroup core
@@ -87,6 +88,24 @@ class CORE_EXPORT QgsLegendSettings
     QColor fontColor() const {return mFontColor;}
     void setFontColor( const QColor &c ) {mFontColor = c;}
 
+    /**
+     * Returns layer font color, defaults to fontColor()
+     * \see setLayerFontColor()
+     * \see fontColor()
+     * \since QGIS 3.4.7
+     */
+    QColor layerFontColor() const {return mLayerFontColor.isValid() ? mLayerFontColor : fontColor() ;}
+
+    /**
+     * Sets layer font color to \a fontColor
+     * Overrides fontColor()
+     * \see layerFontColor()
+     * \see fontColor()
+     * \since QGIS 3.4.7
+     */
+    void setLayerFontColor( const QColor &fontColor ) {mLayerFontColor = fontColor;}
+
+
     QSizeF symbolSize() const {return mSymbolSize;}
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
@@ -101,7 +120,7 @@ class CORE_EXPORT QgsLegendSettings
 
     /**
      * Sets whether a stroke will be drawn around raster symbol items.
-     * \param enabled set to true to draw borders
+     * \param enabled set to TRUE to draw borders
      * \see drawRasterStroke()
      * \see setRasterStrokeColor()
      * \see setRasterStrokeWidth()
@@ -111,7 +130,7 @@ class CORE_EXPORT QgsLegendSettings
 
     /**
      * Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see setRasterStrokeColor()
      * \see drawRasterStroke()
      * \see rasterStrokeWidth()
@@ -121,7 +140,7 @@ class CORE_EXPORT QgsLegendSettings
 
     /**
      * Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \param color stroke color
      * \see rasterStrokeColor()
      * \see setDrawRasterStroke()
@@ -132,7 +151,7 @@ class CORE_EXPORT QgsLegendSettings
 
     /**
      * Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see setRasterStrokeWidth()
      * \see drawRasterStroke()
      * \see rasterStrokeColor()
@@ -142,7 +161,7 @@ class CORE_EXPORT QgsLegendSettings
 
     /**
      * Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \param width stroke width in millimeters
      * \see rasterStrokeWidth()
      * \see setDrawRasterStroke()
@@ -177,10 +196,39 @@ class CORE_EXPORT QgsLegendSettings
      */
     void setMapScale( double scale ) { mMapScale = scale; }
 
+    /**
+     * Returns the factor of map units per pixel for symbols with size given in map units calculated by dpi and mmPerMapUnit
+     * \see setMapUnitsPerPixel()
+     * \since QGIS 3.8
+     */
+    double mapUnitsPerPixel() const;
+
+    /**
+     * Sets the mmPerMapUnit calculated by \a mapUnitsPerPixel mostly taken from the map settings.
+     * \see mapUnitsPerPixel()
+     * \since QGIS 3.8
+     */
+    void setMapUnitsPerPixel( double mapUnitsPerPixel );
+
     int dpi() const { return mDpi; }
     void setDpi( int dpi ) { mDpi = dpi; }
 
     // utility functions
+
+    /**
+     * Splits a string using the wrap char taking into account handling empty
+     * wrap char which means no wrapping
+     */
+
+    /**
+     * Returns the actual text to render for a legend item, split into separate lines.
+     *
+     * The expression \a context argument is used to correctly evaluated expressions contained
+     * within legend item text.
+     *
+     * \since QGIS 3.6
+     */
+    QStringList evaluateItemText( const QString &text, const QgsExpressionContext &context ) const;
 
     /**
      * Splits a string using the wrap char taking into account handling empty
@@ -276,6 +324,9 @@ class CORE_EXPORT QgsLegendSettings
 
     //! DPI to be used when rendering legend
     int mDpi = 96;
+
+    //! Font color for layers, overrides font color
+    QColor mLayerFontColor;
 };
 
 

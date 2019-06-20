@@ -40,6 +40,9 @@
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistcombobox.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeaturefiltermodel.h"
+#include "qgsidentifymenu.h"
 
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
@@ -489,7 +492,8 @@ void QgsRelationReferenceWidget::init()
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
         std::sort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
-        Q_FOREACH ( const QVariant &v, uniqueValues )
+        const auto constUniqueValues = uniqueValues;
+        for ( const QVariant &v : constUniqueValues )
         {
           cb->addItem( v.toString(), v );
         }
@@ -634,17 +638,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   // highlight
   deleteHighlight();
   mHighlight = new QgsHighlight( mCanvas, f, mReferencedLayer );
-  QgsSettings settings;
-  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-  double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-  double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
-
-  mHighlight->setColor( color ); // sets also fill with default alpha
-  color.setAlpha( alpha );
-  mHighlight->setFillColor( color ); // sets fill with alpha
-  mHighlight->setBuffer( buffer );
-  mHighlight->setMinWidth( minWidth );
+  QgsIdentifyMenu::styleHighlight( mHighlight );
   mHighlight->show();
 
   QTimer *timer = new QTimer( this );
@@ -744,7 +738,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
   }
   else
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( feature.id(), QgsAttributeTableModel::FeatureIdRole ) );
+    mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mReferencedFieldIdx ), QgsFeatureFilterModel::Role::IdentifierValueRole ) );
     mFeature = feature;
   }
 
@@ -801,7 +795,8 @@ void QgsRelationReferenceWidget::filterChanged()
     disableChainedComboBoxes( scb );
 
   // build filters
-  Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+  const auto constMFilterComboBoxes = mFilterComboBoxes;
+  for ( QComboBox *cb : constMFilterComboBoxes )
   {
     if ( cb->currentIndex() != 0 )
     {
@@ -822,7 +817,8 @@ void QgsRelationReferenceWidget::filterChanged()
   if ( mChainFilters )
   {
     QComboBox *ccb = nullptr;
-    Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+    const auto constMFilterComboBoxes = mFilterComboBoxes;
+    for ( QComboBox *cb : constMFilterComboBoxes )
     {
       if ( !ccb )
       {
@@ -843,7 +839,8 @@ void QgsRelationReferenceWidget::filterChanged()
         // ccb = scb
         // cb = scb + 1
         QStringList texts;
-        Q_FOREACH ( const QString &txt, mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] )
+        const auto txts { mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] };
+        for ( const QString &txt : txts )
         {
           QMap<QString, QString> filtersAttrs = filters;
           filtersAttrs[fieldName] = QgsExpression::createFieldEqualityExpression( fieldName, txt );
@@ -914,7 +911,8 @@ void QgsRelationReferenceWidget::updateAddEntryButton()
 void QgsRelationReferenceWidget::disableChainedComboBoxes( const QComboBox *scb )
 {
   QComboBox *ccb = nullptr;
-  Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+  const auto constMFilterComboBoxes = mFilterComboBoxes;
+  for ( QComboBox *cb : constMFilterComboBoxes )
   {
     if ( !ccb )
     {

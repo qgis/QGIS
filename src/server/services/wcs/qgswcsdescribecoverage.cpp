@@ -33,17 +33,14 @@ namespace QgsWcs
   void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                               const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QgsAccessControl *accessControl = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
     QDomDocument doc;
     const QDomDocument *describeDocument = nullptr;
 
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    cacheManager = serverIface->cacheManager();
-#endif
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       describeDocument = &doc;
@@ -58,7 +55,9 @@ namespace QgsWcs
       }
       describeDocument = &doc;
     }
-
+#else
+    doc = createDescribeCoverageDocument( serverIface, project, version, request );
+#endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( describeDocument->toByteArray() );
   }
@@ -67,7 +66,7 @@ namespace QgsWcs
   QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -75,6 +74,8 @@ namespace QgsWcs
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
 #endif
 
     //wcs:WCS_Capabilities element
@@ -123,7 +124,7 @@ namespace QgsWcs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayer::LayerType::RasterLayer )
+      if ( layer->type() != QgsMapLayerType::RasterLayer )
       {
         continue;
       }

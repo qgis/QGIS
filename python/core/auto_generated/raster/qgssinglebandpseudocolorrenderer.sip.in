@@ -82,6 +82,9 @@ Creates a color ramp shader
     virtual QList<int> usesBands() const;
 
 
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+
     int band() const;
 %Docstring
 Returns the band used by the renderer

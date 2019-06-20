@@ -90,7 +90,8 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 
   //QgsDebugMsg( QStringLiteral( "%1 elemets read" ).arg( elementElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &elementElement, elementElements )
+  const auto constElementElements = elementElements;
+  for ( const QDomElement &elementElement : constElementElements )
   {
     QString name = elementElement.attribute( QStringLiteral( "name" ) );
     QString type = elementElement.attribute( QStringLiteral( "type" ) );
@@ -144,7 +145,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
 
   // Supported geometry types
   QStringList geometryPropertyTypes;
-  Q_FOREACH ( const QString &geom, mGeometryTypes )
+  const auto constMGeometryTypes = mGeometryTypes;
+  for ( const QString &geom : constMGeometryTypes )
   {
     geometryPropertyTypes << geom + "PropertyType";
   }
@@ -157,7 +159,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
 
   // Add attributes from current comple type
   QList<QDomElement> sequenceElements = domElements( extrest, QStringLiteral( "sequence.element" ) );
-  Q_FOREACH ( const QDomElement &sequenceElement, sequenceElements )
+  const auto constSequenceElements = sequenceElements;
+  for ( const QDomElement &sequenceElement : constSequenceElements )
   {
     QString fieldName = sequenceElement.attribute( QStringLiteral( "name" ) );
     QString fieldTypeName = stripNS( sequenceElement.attribute( QStringLiteral( "type" ) ) );
@@ -300,7 +303,8 @@ QDomElement QgsGmlSchema::domElement( const QDomElement &element, const QString 
 QList<QDomElement> QgsGmlSchema::domElements( QList<QDomElement> &elements, const QString &attr, const QString &attrVal )
 {
   QList<QDomElement> list;
-  Q_FOREACH ( const QDomElement &el, elements )
+  const auto constElements = elements;
+  for ( const QDomElement &el : constElements )
   {
     if ( el.attribute( attr ) == attrVal )
     {
@@ -340,7 +344,7 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
 
 void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
 {
-  Q_UNUSED( attr );
+  Q_UNUSED( attr )
   mLevel++;
 
   QString elementName = QString::fromUtf8( el );

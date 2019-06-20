@@ -24,6 +24,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsguiutils.h"
+#include "qgsapplication.h"
 
 QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -207,7 +208,8 @@ QgsExpressionContext QgsPointClusterRendererWidget::createExpressionContext() co
   scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
   QList< QgsExpressionContextScope > scopes = mContext.additionalExpressionContextScopes();
   scopes << scope;
-  Q_FOREACH ( const QgsExpressionContextScope &s, scopes )
+  const auto constScopes = scopes;
+  for ( const QgsExpressionContextScope &s : constScopes )
   {
     context << new QgsExpressionContextScope( s );
   }

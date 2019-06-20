@@ -22,6 +22,7 @@
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgsvectorlayer.h"
 
@@ -55,7 +56,7 @@ void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *r
 {
   if ( mRenderer )
   {
-    if ( mRenderer->ranges().size() )
+    if ( !mRenderer->ranges().isEmpty() )
     {
       beginRemoveRows( QModelIndex(), 0, mRenderer->ranges().size() - 1 );
       mRenderer = nullptr;
@@ -68,7 +69,7 @@ void QgsGraduatedSymbolRendererModel::setRenderer( QgsGraduatedSymbolRenderer *r
   }
   if ( renderer )
   {
-    if ( renderer->ranges().size() )
+    if ( !renderer->ranges().isEmpty() )
     {
       beginInsertRows( QModelIndex(), 0, renderer->ranges().size() - 1 );
       mRenderer = renderer;
@@ -162,7 +163,8 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && range.symbol() )
   {
-    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( 16, 16 ) );
+    const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( iconSize, iconSize ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
@@ -235,7 +237,7 @@ int QgsGraduatedSymbolRendererModel::rowCount( const QModelIndex &parent ) const
 
 int QgsGraduatedSymbolRendererModel::columnCount( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return 3;
 }
 
@@ -250,7 +252,7 @@ QModelIndex QgsGraduatedSymbolRendererModel::index( int row, int column, const Q
 
 QModelIndex QgsGraduatedSymbolRendererModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return QModelIndex();
 }
 
@@ -269,7 +271,8 @@ QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &ind
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -282,8 +285,8 @@ QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &ind
 
 bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
+  Q_UNUSED( row )
+  Q_UNUSED( column )
   if ( action != Qt::MoveAction ) return true;
 
   if ( !data->hasFormat( mMimeFormat ) ) return false;
@@ -425,7 +428,8 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -845,7 +849,8 @@ void QgsGraduatedSymbolRendererWidget::applyChangeToSymbol()
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
   if ( m && !selectedIndexes.isEmpty() )
   {
-    Q_FOREACH ( const QModelIndex &idx, selectedIndexes )
+    const auto constSelectedIndexes = selectedIndexes;
+    for ( const QModelIndex &idx : constSelectedIndexes )
     {
       if ( idx.isValid() )
       {
@@ -1071,7 +1076,8 @@ QList<int> QgsGraduatedSymbolRendererWidget::selectedClasses()
   QList<int> rows;
   QModelIndexList selectedRows = viewGraduated->selectionModel()->selectedRows();
 
-  Q_FOREACH ( const QModelIndex &r, selectedRows )
+  const auto constSelectedRows = selectedRows;
+  for ( const QModelIndex &r : constSelectedRows )
   {
     if ( r.isValid() )
     {

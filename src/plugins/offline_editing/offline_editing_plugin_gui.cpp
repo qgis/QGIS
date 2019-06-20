@@ -26,6 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -238,7 +239,7 @@ void QgsOfflineEditingPluginGui::buttonBox_rejected()
 
 void QgsOfflineEditingPluginGui::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_offline_editing.html" ) );
+  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_offline_editing.html" ) );
 }
 
 void QgsOfflineEditingPluginGui::restoreState()

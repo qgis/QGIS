@@ -56,7 +56,7 @@ bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
                                      QPointF newPoint,
                                      const double radius )
 {
-  Q_UNUSED( radius );
+  Q_UNUSED( radius )
   mPolygon.insert( indexPoint + 1, newPoint );
   return true;
 }

@@ -17,6 +17,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
+#include "qgsapplication.h"
 
 #include <QCompleter>
 #include <QSettings>
@@ -62,7 +63,8 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
 
   QSet< QVariant> values = layer()->uniqueValues( fieldIdx() );
 
-  Q_FOREACH ( const QVariant &v, values )
+  const auto constValues = values;
+  for ( const QVariant &v : constValues )
   {
     if ( mComboBox )
     {

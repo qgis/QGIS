@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 def processInputs(alg, parameters, context, feedback):
     if 'input' in alg.exportedLayers:
@@ -34,4 +30,4 @@ def processInputs(alg, parameters, context, feedback):
     # and we can use r.external for the raster
     alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
     alg.loadRasterLayerFromParameter('raster', parameters, context, True)
-    alg.postInputs()
+    alg.postInputs(context)

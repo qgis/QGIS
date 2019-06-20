@@ -47,7 +47,7 @@ class QgsOwsProvider : public QgsDataProvider
      * \param options generic data provider options
      *
      */
-    explicit QgsOwsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsOwsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     /* Pure virtuals */
 

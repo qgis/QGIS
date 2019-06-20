@@ -19,7 +19,7 @@
 #define QGSCURVEPOLYGON_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgssurface.h"
 #include <memory>
 
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    QString asJson( int precision = 17 ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
 
     //surface interface
     double area() const override;
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     /**
      * Removes an interior ring from the polygon. The first interior ring has index 0.
      * The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
-     * the function will return true.  It is not possible to remove the exterior ring using this method.
+     * the function will return TRUE.  It is not possible to remove the exterior ring using this method.
      * \see removeInteriorRings()
      */
     bool removeInteriorRing( int ringIndex );

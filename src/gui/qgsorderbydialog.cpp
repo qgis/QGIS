@@ -43,7 +43,8 @@ void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
   mOrderByTableWidget->setRowCount( orderBy.length() + 1 );
 
   int i = 0;
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderByClause, orderBy )
+  const auto constOrderBy = orderBy;
+  for ( const QgsFeatureRequest::OrderByClause &orderByClause : constOrderBy )
   {
     setRow( i, orderByClause );
 

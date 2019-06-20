@@ -231,5 +231,14 @@ class DBConnector(object):
         except ImportError:
             return []
 
+    def getComment(self, tablename, field):
+        """Returns the comment for a field"""
+        return ''
+
+    def commentTable(self, schema, tablename, comment=None):
+        """Comment the table"""
+        pass
+
     def getQueryBuilderDictionary(self):
+
         return {}

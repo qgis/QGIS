@@ -47,6 +47,7 @@ class TestQgsDataItem : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void testValid();
+    void testDirItem();
     void testDirItemChildren();
     void testLayerItemType();
     void testProjectItemCreation();
@@ -108,6 +109,19 @@ void TestQgsDataItem::testValid()
     QgsDebugMsg( QStringLiteral( "dirItem has %1 children" ).arg( mDirItem->rowCount() ) );
   }
   QVERIFY( isValidDirItem( mDirItem ) );
+}
+
+void TestQgsDataItem::testDirItem()
+{
+  std::unique_ptr< QgsDirectoryItem > dirItem = qgis::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+  QCOMPARE( dirItem->dirPath(), QStringLiteral( TEST_DATA_DIR ) );
+  QCOMPARE( dirItem->name(), QStringLiteral( "Test" ) );
+
+  QVERIFY( dirItem->hasDragEnabled() );
+  QgsMimeDataUtils::Uri mime = dirItem->mimeUri();
+  QVERIFY( mime.isValid() );
+  QCOMPARE( mime.uri, QStringLiteral( TEST_DATA_DIR ) );
+  QCOMPARE( mime.layerType, QStringLiteral( "directory" ) );
 }
 
 void TestQgsDataItem::testDirItemChildren()

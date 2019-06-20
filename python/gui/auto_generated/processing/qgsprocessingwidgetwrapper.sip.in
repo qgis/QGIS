@@ -71,6 +71,23 @@ Returns the map canvas associated with the widget.
 .. seealso:: :py:func:`setMapCanvas`
 %End
 
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` associated with the widget. This allows the widget to retrieve the map layers
+and other properties from the correct project.
+
+.. seealso:: :py:func:`project`
+
+.. versionadded:: 3.8
+%End
+
+    QgsProject *project() const;
+%Docstring
+Returns the project associated with the widget.
+
+.. seealso:: :py:func:`setProject`
+%End
+
     QgsProcessingModelAlgorithm *model() const;
 %Docstring
 Returns the model which the parameter widget is associated with.
@@ -108,6 +125,7 @@ Sets the child algorithm ``id`` within the model which the parameter widget is a
 %End
 
 };
+
 
 class QgsAbstractProcessingParameterWidgetWrapper : QObject, QgsExpressionContextGenerator
 {
@@ -183,7 +201,7 @@ The supplied ``context`` is used while initializing the widget to the parameter'
 Creates and returns a new label to accompany widgets created by the wrapper.
 
 The caller takes ownership of the returned label. Some parameter type and dialog type
-combinations will return None for this method. If None is returned, then no
+combinations will return ``None`` for this method. If ``None`` is returned, then no
 label should be shown for the parameter's widget (i.e. the label is embedded inside the
 widget itself).
 
@@ -245,6 +263,13 @@ allowing the wrapper to connect to the wrappers of other, related parameters.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    virtual void setDialog( QDialog *dialog );
+%Docstring
+Sets the parent ``dialog`` in which the wrapper is shown.
+
+.. versionadded:: 3.8
+%End
+
   signals:
 
 
@@ -269,7 +294,7 @@ The caller takes ownership of the returned widget.
 Creates a new label to accompany widgets created by the wrapper.
 
 The caller takes ownership of the returned label. Some parameter type and dialog type
-combinations will return None for this method. If None is returned, then no
+combinations will return ``None`` for this method. If ``None`` is returned, then no
 label should be shown for the parameter's widget (i.e. the label is embedded inside the
 widget itself).
 
@@ -291,6 +316,17 @@ current value is associated with.
 Returns the current value of the parameter.
 
 .. seealso:: :py:func:`setWidgetValue`
+%End
+
+    virtual const QgsVectorLayer *linkedVectorLayer() const;
+%Docstring
+Returns the optional vector layer associated with this widget wrapper, or ``None`` if no vector
+layer is applicable.
+
+This is used to correctly generate expression contexts within the GUI, e.g. to allow expression
+buttons and property override buttons to correctly show the appropriate vector layer fields.
+
+.. versionadded:: 3.6
 %End
 
   protected:

@@ -10,6 +10,9 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+// uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
+// #define DWGDEBUG 1
+
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -19,11 +22,20 @@
 #include "dwgreader.h"
 #include "drw_textcodec.h"
 
-#undef QGISDEBUG
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
 #include <QStringList>
+
+#ifndef DWGDEBUG
+#undef QGISDEBUG
+#undef QgsDebugCall
+#undef QgsDebugMsg
+#undef QgsDebugMsgLevel
+#define QgsDebugCall
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
+#endif
 
 
 dwgReader::~dwgReader()
@@ -149,7 +161,8 @@ bool dwgReader::checkSentinel( dwgBuffer *buf, enum secEnum::DWGSection, bool st
 
 /*********** objects map ************************/
 
-/** Note: object map are split in sections with max size 2035?
+/**
+ * Note: object map are split in sections with max size 2035?
  *  each section are 2 bytes size + data bytes + 2 bytes crc
  *  size value are data bytes + 2 and to calculate crc are used
  *  2 bytes size + data bytes
@@ -220,7 +233,7 @@ bool dwgReader::readDwgHandles( dwgBuffer *dbuf, duint32 offset, duint32 size )
  */
 bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( "Entering.", 4 );
 
   bool ret = true;
   bool ret2 = true;
@@ -740,7 +753,7 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
     }
   }
 
-#ifdef QGISDEBUG
+#if 0
   //RLZ: parse remaining object controls, TODO: implement all
   mit = ObjectMap.find( hdr.viewCtrl );
   if ( mit == ObjectMap.end() )
@@ -862,12 +875,12 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
         ret2 = vpEntHeader.parseDwg( version, &buff, bs );
         if ( ret )
           ret = ret2;
-#endif
+#endif // 0
       }
       delete[]tmpByteStr;
     }
   }
-#endif
+#endif // 0
 
   return ret;
 }
@@ -915,6 +928,10 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
     dwgBuffer buff( tmpByteStr, size, &decoder );
     DRW_Block bk;
     ret2 = bk.parseDwg( version, &buff, bs );
+    if ( !ret2 )
+    {
+      QgsDebugMsg( "parseDwg failed" );
+    }
     delete[]tmpByteStr;
     ret = ret && ret2;
     parseAttribs( &bk );
@@ -953,6 +970,10 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
             oc = mit->second;
             ObjectMap.erase( mit );
             ret2 = readDwgEntity( dbuf, oc, intfa );
+            if ( !ret2 )
+            {
+              QgsDebugMsg( "readDwgEntity failed" );
+            }
             ret = ret && ret2;
           }
           if ( nextH == bkr->lastEH )
@@ -973,13 +994,17 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
             ret = false;
             continue;
           }
-          else  //foud entity reads it
+          else  //found entity, read it
           {
             oc = mit->second;
             ObjectMap.erase( mit );
             QgsDebugMsgLevel( QString( "Blocks, parsing entity: 0x%1 loc=%2" ).arg( oc.handle, 0, 16 ).arg( oc.loc ), 5 );
 
             ret2 = readDwgEntity( dbuf, oc, intfa );
+            if ( !ret2 )
+            {
+              QgsDebugMsg( "readDwgEntity failed" );
+            }
             ret = ret && ret2;
           }
         }
@@ -1010,6 +1035,10 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
     DRW_Block end;
     end.isEnd = true;
     ret2 = end.parseDwg( version, &buff1, bs );
+    if ( !ret2 )
+    {
+      QgsDebugMsg( QString( "parseDwg failed" ) );
+    }
     delete[]tmpByteStr;
     ret = ret && ret2;
     if ( bk.parentHandle == DRW::NoHandle ) bk.parentHandle = bkr->handle;

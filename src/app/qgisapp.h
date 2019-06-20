@@ -103,9 +103,11 @@ class QgsStatusBar;
 class QgsGeometryValidationService;
 class QgsGeometryValidationDock;
 class QgsGeometryValidationModel;
+class QgsUserProfileManager;
 class QgsUserProfileManagerWidgetFactory;
 class Qgs3DMapCanvasDockWidget;
 class QgsHandleBadLayersHandler;
+class QgsNetworkAccessManager;
 
 class QDomDocument;
 class QNetworkReply;
@@ -133,6 +135,7 @@ class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
 class QgsLayoutQptDropHandler;
 class QgsProxyProgressTask;
+class QgsNetworkRequestParameters;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -174,6 +177,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
+
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true,
              bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),
@@ -449,6 +453,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDeleteRing() { return mActionDeleteRing; }
     QAction *actionDeletePart() { return mActionDeletePart; }
     QAction *actionVertexTool() { return mActionVertexTool; }
+    QAction *actionVertexToolActiveLayer() { return mActionVertexToolActiveLayer; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
     QAction *actionPan() { return mActionPan; }
@@ -861,7 +866,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore &featureStore );
-    void loadGDALSublayers( const QString &uri, const QStringList &list );
+    QList<QgsMapLayer *> loadGDALSublayers( const QString &uri, const QStringList &list );
 
     //! Deletes the selected attributes for the currently selected vector layer
     void deleteSelected( QgsMapLayer *layer = nullptr, QWidget *parent = nullptr, bool checkFeaturesVisible = false );
@@ -876,12 +881,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setAppStyleSheet( const QString &stylesheet );
 
     //! request credentials for network manager
-    void namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth );
     void namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth );
-#ifndef QT_NO_SSL
-    void namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
-#endif
-    void namRequestTimedOut( QNetworkReply *reply );
+    void namRequestTimedOut( const QgsNetworkRequestParameters &request );
 
     //! Schedule and erase of the authentication database upon confirmation
     void eraseAuthenticationDatabase();
@@ -1245,6 +1246,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add an icon to the Database toolbar
     int addDatabaseToolBarIcon( QAction *qAction );
 
+    void onVirtualLayerAdded( const QString &uri, const QString &layerName );
+
     /**
      * Add a widget to the database toolbar.
      * To remove this widget again, call removeDatabaseToolBarIcon()
@@ -1465,7 +1468,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void selectByForm();
 
     //! refresh map canvas
-    void refreshMapCanvas();
+    void refreshMapCanvas( bool redrawAllLayers = false );
 
     //! start "busy" progress bar
     void canvasRefreshStarted();
@@ -1721,14 +1724,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void currentThemeChanged( const QString & );
 
     /**
-     * This signal is emitted when a new layout \a designer has been opened.
+     * Emitted when a new layout \a designer has been opened.
      * \see layoutDesignerWillBeClosed()
      * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
     /**
-     * This signal is emitted before a layout \a designer is going to be closed
+     * Emitted before a layout \a designer is going to be closed
      * and deleted.
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
@@ -1737,20 +1740,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
     /**
-     * This signal is emitted after a layout designer window is closed.
+     * Emitted after a layout designer window is closed.
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
      * \since QGIS 3.0
      */
     void layoutDesignerClosed();
 
-    //! This signal is emitted when QGIS' initialization is complete
+    //! Emitted when QGIS' initialization is complete
     void initializationCompleted();
 
     void customCrsValidation( QgsCoordinateReferenceSystem &crs );
 
     /**
-     * This signal is emitted when a layer has been saved using save as
+     * Emitted when a layer has been saved using save as
        \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
@@ -1774,9 +1777,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool askUserForZipItemLayers( const QString &path );
 
     /**
-     * This method will open a dialog so the user can select GDAL sublayers to load
+     * This method will open a dialog so the user can select GDAL sublayers to load,
+     * and then returns a list of these layers.
      */
-    void askUserForGDALSublayers( QgsRasterLayer *layer );
+    QList< QgsMapLayer * > askUserForGDALSublayers( QgsRasterLayer *layer );
 
     /**
      * This method will verify if a GDAL layer contains sublayers
@@ -1784,9 +1788,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
 
     /**
-     * This method will open a dialog so the user can select OGR sublayers to load
+     * This method will open a dialog so the user can select OGR sublayers to load,
+     * and then returns a list of these layers.
      */
-    void askUserForOGRSublayers( QgsVectorLayer *layer );
+    QList< QgsMapLayer * > askUserForOGRSublayers( QgsVectorLayer *layer );
 
     /**
      * Add a raster layer to the map (passed in as a ptr).
@@ -1798,6 +1803,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsRasterLayer *addRasterLayerPrivate( const QString &uri, const QString &baseName,
                                            const QString &providerKey, bool guiWarning,
                                            bool guiUpdate );
+
+    //! Open a mesh layer - this is the generic function which takes all parameters
+    QgsMeshLayer *addMeshLayerPrivate( const QString &uri, const QString &baseName,
+                                       const QString &providerKey, bool guiWarning = true );
+
+    bool addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
+    QgsVectorLayer *addVectorLayerPrivate( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey, bool guiWarning = true );
+
 
     /**
      * Add the current project to the recently opened/saved projects list
@@ -1878,7 +1891,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Paste features from clipboard into a new memory layer.
      * If no features are in clipboard an empty layer is returned.
-     * Returns a new memory layer or a nullptr if the operation failed.
+     * Returns a new memory layer or NULLPTR if the operation failed.
      */
     std::unique_ptr< QgsVectorLayer > pasteToNewMemoryVector();
 
@@ -1967,16 +1980,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Attempts to choose a reasonable default icon size based on the window's screen DPI
     int chooseReasonableDefaultIconSize() const;
 
-    /**
-     * Returns the size of docked toolbars for a given standard (non-docked) toolbar icon size.
-     */
-    int dockedToolbarIconSize( int standardToolbarIconSize ) const;
-
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
 
     //! Create the option dialog
     QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
+
+    //! Returns the message bar of the datasource manager dialog if it is visible, the canvas's message bar otherwise.
+    QgsMessageBar *visibleMessageBar();
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 

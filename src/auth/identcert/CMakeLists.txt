@@ -43,6 +43,7 @@ TARGET_LINK_LIBRARIES (identcertauthmethod
   qgis_core
   qgis_gui
 )
+TARGET_COMPILE_DEFINITIONS(identcertauthmethod PRIVATE "-DQT_NO_FOREACH")
 
 INSTALL(TARGETS identcertauthmethod
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

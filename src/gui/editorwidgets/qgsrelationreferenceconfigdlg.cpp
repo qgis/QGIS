@@ -34,7 +34,8 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
 
   connect( mComboRelation, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceConfigDlg::relationChanged );
 
-  Q_FOREACH ( const QgsRelation &relation, vl->referencingRelations( fieldIdx ) )
+  const auto constReferencingRelations = vl->referencingRelations( fieldIdx );
+  for ( const QgsRelation &relation : constReferencingRelations )
   {
     if ( relation.name().isEmpty() )
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
@@ -80,7 +81,8 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
   if ( config.contains( QStringLiteral( "FilterFields" ) ) )
   {
     mFilterGroupBox->setChecked( true );
-    Q_FOREACH ( const QString &fld, config.value( "FilterFields" ).toStringList() )
+    const auto constToStringList = config.value( "FilterFields" ).toStringList();
+    for ( const QString &fld : constToStringList )
     {
       addFilterField( fld );
     }
@@ -107,7 +109,8 @@ void QgsRelationReferenceConfigDlg::relationChanged( int idx )
 
 void QgsRelationReferenceConfigDlg::mAddFilterButton_clicked()
 {
-  Q_FOREACH ( QListWidgetItem *item, mAvailableFieldsList->selectedItems() )
+  const auto constSelectedItems = mAvailableFieldsList->selectedItems();
+  for ( QListWidgetItem *item : constSelectedItems )
   {
     addFilterField( item );
   }
@@ -115,7 +118,8 @@ void QgsRelationReferenceConfigDlg::mAddFilterButton_clicked()
 
 void QgsRelationReferenceConfigDlg::mRemoveFilterButton_clicked()
 {
-  Q_FOREACH ( QListWidgetItem *item, mFilterFieldsList->selectedItems() )
+  const auto constSelectedItems = mFilterFieldsList->selectedItems();
+  for ( QListWidgetItem *item : constSelectedItems )
   {
     mFilterFieldsList->takeItem( indexFromListWidgetItem( item ) );
     mAvailableFieldsList->addItem( item );

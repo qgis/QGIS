@@ -215,7 +215,7 @@ namespace pal
 
 
       /**
-       * if true, special value -1 is prohibited
+       * if TRUE, special value -1 is prohibited
        */
       bool displayAll = false;
 

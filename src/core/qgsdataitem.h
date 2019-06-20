@@ -17,7 +17,7 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include <QFileSystemWatcher>
 #include <QFutureWatcher>
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
      * \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
-     * \param refresh - set to true to refresh populated item, emitting relevant signals to the model
+     * \param refresh - set to TRUE to refresh populated item, emitting relevant signals to the model
      * \see deleteChildItem()
      */
     virtual void addChildItem( QgsDataItem *child SIP_TRANSFER, bool refresh = false );
@@ -135,12 +135,12 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
      * \param child child to remove
-     * \returns pointer to the removed item or null if no such item was found
+     * \returns pointer to the removed item or NULLPTR if no such item was found
      */
     virtual QgsDataItem *removeChildItem( QgsDataItem *child ) SIP_TRANSFERBACK;
 
     /**
-     * Returns true if this item is equal to another item (by testing item type and path).
+     * Returns TRUE if this item is equal to another item (by testing item type and path).
      */
     virtual bool equal( const QgsDataItem *other );
 
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
     /**
-     * Called when a user double clicks on the item. Subclasses should return true
+     * Called when a user double clicks on the item. Subclasses should return TRUE
      * if they have implemented a double-click handler and do not want the default
      * double-click behavior for items.
      * \since QGIS 3.0
@@ -188,8 +188,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual bool handleDoubleClick();
 
     /**
-     * Returns true if the item may be dragged.
-     * Default implementation returns false.
+     * Returns TRUE if the item may be dragged.
+     * Default implementation returns FALSE.
      * A draggable item has to implement mimeUri() that will be used to pass data.
      * \see mimeUri()
      * \since QGIS 3.0
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     enum Capability
     {
       NoCapabilities    = 0,
-      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers
+      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated in QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
       Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse          = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -219,11 +219,17 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
+     *
+     * \deprecated since QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
      */
-    virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) { Q_UNUSED( crs ); return false; }
+    Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED
+    {
+      Q_UNUSED( crs )
+      return false;
+    }
 
     /**
-     * Sets a new \a name for the item, and returns true if the item was successfully renamed.
+     * Sets a new \a name for the item, and returns TRUE if the item was successfully renamed.
      *
      * Items which implement this method should return the QgsDataItem::Rename capability.
      *
@@ -335,9 +341,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
-     * the deferredDelete() returns true and item will be deleted once Populating finished.
+     * the deferredDelete() returns TRUE and item will be deleted once Populating finished.
      * Items with slow reateChildren() (for example network or database based) may
-     * check during createChildren() if deferredDelete() returns true and return from
+     * check during createChildren() if deferredDelete() returns TRUE and return from
      * createChildren() immediately because result will be useless. */
     bool deferredDelete() { return mDeferredDelete; }
 
@@ -461,8 +467,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- New virtual methods for layer item derived classes ---
 
-    //! Returns QgsMapLayer::LayerType
-    QgsMapLayer::LayerType mapLayerType() const;
+    //! Returns QgsMapLayerType
+    QgsMapLayerType mapLayerType() const;
 
     /**
      * Returns the layer item type corresponding to a QgsMapLayer \a layer.
@@ -550,8 +556,17 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
 
-    static QIcon iconDir(); // shared icon: open/closed directory
-    static QIcon iconDataCollection(); // default icon for data collection
+    /**
+     * Returns the standard browser directory icon.
+     * \see iconDataCollection()
+     */
+    static QIcon iconDir();
+
+    /**
+     * Returns the standard browser data collection icon.
+     * \see iconDir()
+     */
+    static QIcon iconDataCollection();
 
   protected:
 
@@ -576,16 +591,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    enum Column
-    {
-      Name,
-      Size,
-      Date,
-      Permissions,
-      Owner,
-      Group,
-      Type
-    };
 
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
 
@@ -601,10 +606,16 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    /**
+     * Returns the full path to the directory the item represents.
+     */
     QString dirPath() const { return mDirPath; }
+
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
     QWidget *paramWidget() override SIP_FACTORY;
+    bool hasDragEnabled() const override { return true; }
+    QgsMimeDataUtils::Uri mimeUri() const override;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );

@@ -52,7 +52,8 @@ QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
 
 QgsRasterPipe::~QgsRasterPipe()
 {
-  Q_FOREACH ( QgsRasterInterface *interface, mInterfaces )
+  const auto constMInterfaces = mInterfaces;
+  for ( QgsRasterInterface *interface : constMInterfaces )
   {
     delete interface;
   }

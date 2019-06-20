@@ -22,12 +22,7 @@ __author__ = 'Nyall Dawson'
 __date__ = 'December 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-import os
-import importlib
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsProcessingParameterRasterDestination
 from processing.core.parameters import getParameterFromString
 
@@ -70,6 +65,8 @@ class Parameters:
                 params[3] = True if params[3].lower() == 'true' else False
             if len(params) > 4:
                 params[4] = True if params[4].lower() == 'true' else False
-            return SagaImageOutputParam(*params)
+            param = SagaImageOutputParam(*params)
+            param.setDescription(QCoreApplication.translate("SAGAAlgorithm", param.description()))
+            return param
         else:
-            return getParameterFromString(line)
+            return getParameterFromString(line, "SAGAAlgorithm")

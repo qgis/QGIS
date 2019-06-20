@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTPAGEPROPERTIESWIDGET_H
 #define QGSLAYOUTPAGEPROPERTIESWIDGET_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "ui_qgslayoutpagepropertieswidget.h"
 
 #include "qgslayoutsize.h"
@@ -44,7 +44,7 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
 
   signals:
 
-    //! Is emitted when page orientation changes
+    //! Emitted when page orientation changes
     void pageOrientationChanged();
 
   private slots:

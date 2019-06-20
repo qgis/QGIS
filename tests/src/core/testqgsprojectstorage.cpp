@@ -21,6 +21,7 @@
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 
 class TestQgsProjectStorage : public QObject

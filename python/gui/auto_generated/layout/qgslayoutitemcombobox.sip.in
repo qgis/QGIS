@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutItemComboBox : QComboBox
 {
 %Docstring
@@ -33,6 +34,15 @@ until setCurrentLayout() is called
     void setCurrentLayout( QgsLayout *layout );
 %Docstring
 Sets the ``layout`` containing the items to list in the combo box.
+
+.. seealso:: :py:func:`currentLayout`
+%End
+
+    QgsLayout *currentLayout();
+%Docstring
+Returns the current layout containing the items shown in the combo box.
+
+.. seealso:: :py:func:`setCurrentLayout`
 %End
 
     void setItemType( QgsLayoutItemRegistry::ItemType itemType );
@@ -64,6 +74,24 @@ Sets a list of specific items to exclude from the combo box.
 Returns the list of specific items excluded from the combo box.
 
 .. seealso:: :py:func:`setExceptedItemList`
+%End
+
+    void setAllowEmptyItem( bool allowEmpty );
+%Docstring
+Sets whether an optional empty layout item is present in the combobox.
+
+.. seealso:: :py:func:`allowEmptyItem`
+
+.. versionadded:: 3.8
+%End
+
+    bool allowEmptyItem() const;
+%Docstring
+Returns ``True`` if the model includes the empty item choice.
+
+.. seealso:: :py:func:`setAllowEmptyItem`
+
+.. versionadded:: 3.8
 %End
 
     QgsLayoutItem *item( int index ) const;

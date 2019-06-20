@@ -173,7 +173,7 @@ QgsSymbol *Qgs25DRenderer::symbolForFeature( const QgsFeature &feature, QgsRende
 
 QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   QgsSymbolList lst;
   lst.append( mSymbol.get() );
   return lst;

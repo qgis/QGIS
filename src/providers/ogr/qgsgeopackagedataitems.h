@@ -95,6 +95,7 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
 /**
  * \brief The QgsGeoPackageCollectionItem class is the base class for
  *        GeoPackage container
+ *
  */
 class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
 {

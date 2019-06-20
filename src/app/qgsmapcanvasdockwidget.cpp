@@ -29,6 +29,7 @@
 #include "qgsvertexmarker.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -73,6 +74,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mMenu = new QMenu();
   connect( mMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::menuAboutToShow );
 
+  mToolbar->addSeparator();
+
   QToolButton *btnMapThemes = new QToolButton;
   btnMapThemes->setAutoRaise( true );
   btnMapThemes->setToolTip( tr( "Set View Theme" ) );
@@ -87,7 +90,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   settingsButton->setToolTip( tr( "View Settings" ) );
   settingsButton->setMenu( settingsMenu );
   settingsButton->setPopupMode( QToolButton::InstantPopup );
-  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapSettings.svg" ) ) );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
   mToolbar->addWidget( settingsButton );
 
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
@@ -419,7 +422,8 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
   } );
   mMenuPresetActions.append( actionFollowMain );
 
-  Q_FOREACH ( const QString &grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &grpName : constMapThemes )
   {
     QAction *a = new QAction( grpName, mMenu );
     a->setCheckable( true );

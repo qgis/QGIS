@@ -39,17 +39,14 @@ namespace QgsWfs
     void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                                const QgsServerRequest &request, QgsServerResponse &response )
     {
-      QgsAccessControl *accessControl = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      accessControl = serverIface->accessControls();
+      QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
       QDomDocument doc;
       const QDomDocument *capabilitiesDocument = nullptr;
 
-      QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      cacheManager = serverIface->cacheManager();
-#endif
+      QgsServerCacheManager *cacheManager = serverIface->cacheManager();
       if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
       {
         capabilitiesDocument = &doc;
@@ -64,7 +61,9 @@ namespace QgsWfs
         }
         capabilitiesDocument = &doc;
       }
-
+#else
+      doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+#endif
       response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
       response.write( capabilitiesDocument->toByteArray() );
     }
@@ -73,7 +72,7 @@ namespace QgsWfs
     QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
         const QgsServerRequest &request )
     {
-      Q_UNUSED( version );
+      Q_UNUSED( version )
 
       QDomDocument doc;
 
@@ -268,7 +267,11 @@ namespace QgsWfs
 
     QDomElement getFeatureTypeListElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project )
     {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+      ( void )serverIface;
+#endif
 
       //wfs:FeatureTypeList element
       QDomElement featureTypeListElement = doc.createElement( QStringLiteral( "FeatureTypeList" )/*wfs:FeatureTypeList*/ );
@@ -290,15 +293,16 @@ namespace QgsWfs
         {
           continue;
         }
-        if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+        if ( layer->type() != QgsMapLayerType::VectorLayer )
         {
           continue;
         }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerReadPermission( layer ) )
         {
           continue;
         }
-
+#endif
         QDomElement layerElem = doc.createElement( QStringLiteral( "FeatureType" ) );
 
         //create Name

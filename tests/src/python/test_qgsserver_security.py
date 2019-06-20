@@ -10,8 +10,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Paul Blottiere'
 __date__ = '31/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.utils import spatialite_connect
 import os

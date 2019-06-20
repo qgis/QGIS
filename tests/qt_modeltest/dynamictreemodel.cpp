@@ -255,7 +255,7 @@ void ModelMoveCommand::doCommand()
 
   for ( int column = 0; column < m_numCols; ++column )
   {
-    QList<qint64> l = m_model->m_childItems.value( srcParent.internalId() )[column].mid( m_startRow, m_endRow - m_startRow + 1 );
+    const QList<qint64> l = m_model->m_childItems.value( srcParent.internalId() )[column].mid( m_startRow, m_endRow - m_startRow + 1 );
 
     for ( int i = m_startRow; i <= m_endRow ; i++ )
     {
@@ -272,7 +272,7 @@ void ModelMoveCommand::doCommand()
         d = m_destRow - ( m_endRow - m_startRow ) + 1;
     }
 
-    Q_FOREACH ( const qint64 id, l )
+    for ( const qint64 id : l )
     {
       m_model->m_childItems[destParent.internalId()][column].insert( d++, id );
     }

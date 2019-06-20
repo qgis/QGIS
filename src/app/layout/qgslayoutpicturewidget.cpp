@@ -61,10 +61,8 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
 
-  mFillColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mFillColorDDBtn->registerEnabledWidget( mFillColorButton, false );
-  mStrokeColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mStrokeColorDDBtn->registerEnabledWidget( mStrokeColorButton, false );
+  mFillColorDDBtn->registerLinkedWidget( mFillColorButton );
+  mStrokeColorDDBtn->registerLinkedWidget( mStrokeColorButton );
 
   mNorthTypeComboBox->blockSignals( true );
   mNorthTypeComboBox->addItem( tr( "Grid north" ), QgsLayoutItemPicture::GridNorth );
@@ -179,7 +177,7 @@ void QgsLayoutPictureWidget::mPictureRotationSpinBox_valueChanged( double d )
 
 void QgsLayoutPictureWidget::mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   if ( !mPicture || !current )
   {
     return;
@@ -734,7 +732,7 @@ void QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged( int index )
 
 void QgsLayoutPictureWidget::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );
 }
 

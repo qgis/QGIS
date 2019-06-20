@@ -16,7 +16,7 @@
 #define QGSEDITORWIDGETAUTOCONF_H
 
 #include <QList>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include <memory>
 
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConf SIP_SKIP
     void registerPlugin( QgsEditorWidgetAutoConfPlugin *plugin );
 
   private:
-    QList<std::shared_ptr<QgsEditorWidgetAutoConfPlugin> > plugins;
+    QList<std::shared_ptr<QgsEditorWidgetAutoConfPlugin> > mPlugins;
 };
 ///@endcond
 

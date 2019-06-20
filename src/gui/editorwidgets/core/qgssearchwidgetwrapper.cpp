@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfields.h"
+#include "qgsapplication.h"
 
 #include <QWidget>
 

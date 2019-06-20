@@ -155,6 +155,14 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT int wmsMaxAtlasFeatures( const QgsProject &project );
 
   /**
+   * Returns the default number of map units per millimeters in case of the scale is not given
+   * \param project the QGIS project
+   * \returns the default number of map units per millimeter
+   * \since QGIS 3.4
+   */
+  SERVER_EXPORT double wmsDefaultMapUnitsPerMm( const QgsProject &project );
+
+  /**
    * Returns if layer ids are used as name in WMS.
    * \param project the QGIS project
    * \returns if layer ids are used as name.

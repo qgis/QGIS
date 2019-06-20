@@ -16,7 +16,7 @@
 #define QGSNULLSYMBOLRENDERERWIDGET_H
 
 #include "qgsrendererwidget.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QgsNullSymbolRenderer;

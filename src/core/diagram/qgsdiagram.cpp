@@ -14,15 +14,12 @@
  ***************************************************************************/
 #include "qgsdiagram.h"
 #include "qgsdiagramrenderer.h"
-#include "qgsrendercontext.h"
-#include "qgsexpression.h"
-#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 
 QgsDiagram::QgsDiagram( const QgsDiagram &other )
 {
-  Q_UNUSED( other );
+  Q_UNUSED( other )
   // do not copy the cached expression map - the expressions need to be created and prepared with getExpression(...) call
 }
 

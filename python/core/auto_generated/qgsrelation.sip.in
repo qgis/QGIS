@@ -275,7 +275,7 @@ Returns a list of attributes used to form the referencing fields
 Returns the validity of this relation. Don't use the information if it's not valid.
 A relation is considered valid if both referenced and referencig layers are valid.
 
-:return: true if the relation is valid
+:return: ``True`` if the relation is valid
 %End
 
     bool hasEqualDefinition( const QgsRelation &other ) const;
@@ -284,7 +284,7 @@ Compares the two QgsRelation, ignoring the name and the ID.
 
 :param other: The other relation
 
-:return: true if they are similar
+:return: ``True`` if they are similar
 
 .. versionadded:: 3.0
 %End

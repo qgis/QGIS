@@ -144,6 +144,11 @@ QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature 
   }
 }
 
+QgsProcessingFeatureSource::Flag QgsSplitLinesByLengthAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 
 ///@endcond
 

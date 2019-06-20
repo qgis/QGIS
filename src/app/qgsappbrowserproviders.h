@@ -200,6 +200,7 @@ class QgsStyleXmlDropHandler : public QgsCustomDropHandler
  */
 class APP_EXPORT QgsProjectRootDataItem : public QgsProjectItem
 {
+    Q_OBJECT
   public:
 
     /**
@@ -215,6 +216,7 @@ class APP_EXPORT QgsProjectRootDataItem : public QgsProjectItem
  */
 class APP_EXPORT QgsProjectLayerTreeGroupItem : public QgsDataCollectionItem
 {
+    Q_OBJECT
   public:
 
     /**

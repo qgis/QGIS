@@ -57,7 +57,7 @@ Enable or disable the caching of geometries
 
     bool cacheGeometry() const;
 %Docstring
-Returns true if the cache will fetch and cache feature geometries.
+Returns ``True`` if the cache will fetch and cache feature geometries.
 
 .. seealso:: :py:func:`setCacheGeometry`
 
@@ -87,19 +87,19 @@ be increased to offer space for all features.
 When enabled, all features will be read into cache. As this feature will most likely
 be used for slow data sources, be aware, that the call to this method might take a long time.
 
-:param fullCache: True: enable full caching, False: disable full caching
+:param fullCache: ``True``: enable full caching, ``False``: disable full caching
 
 .. note::
 
    when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
-   is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
+   is reset. A full cache rebuild must be performed by calling setFullCache( ``True`` ) again.
 
 .. seealso:: :py:func:`hasFullCache`
 %End
 
     bool hasFullCache() const;
 %Docstring
-Returns true if the cache is complete, ie it contains all features. This may happen as
+Returns ``True`` if the cache is complete, ie it contains all features. This may happen as
 a result of a call to setFullCache() or by through a feature request which resulted in
 all available features being cached.
 
@@ -157,7 +157,7 @@ Check if a certain feature id is cached.
 
 :param fid: The feature id to look for
 
-:return: True if this id is in the cache
+:return: ``True`` if this id is in the cache
 
 .. seealso:: :py:func:`cachedFeatureIds`
 %End
@@ -179,7 +179,7 @@ Gets the feature at the given feature id. Considers the changed, added, deleted 
 :param feature: The result of the operation will be written to this feature
 :param skipCache: Will query the layer regardless if the feature is in the cache already
 
-:return: true in case of success
+:return: ``True`` in case of success
 %End
 
     bool removeCachedFeature( QgsFeatureId fid );
@@ -188,7 +188,7 @@ Removes the feature identified by fid from the cache if present.
 
 :param fid: The id of the feature to delete
 
-:return: true if the feature was removed, false if the feature id was not found in the cache
+:return: ``True`` if the feature was removed, ``False`` if the feature id was not found in the cache
 %End
 
     QgsVectorLayer *layer();
@@ -221,7 +221,7 @@ if the feature count is unknown.
     sipRes = sipCpp->featureCount();
 %End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
     int __bool__() const;
 %MethodCode
     sipRes = true;
@@ -260,7 +260,7 @@ Please note, that this does not check, if the requested features are cached.
 
 :param featureRequest: The QgsFeatureRequest to be answered
 
-:return: True if the information is being cached, false if not
+:return: ``True`` if the information is being cached, ``False`` if not
 %End
 
 
@@ -275,19 +275,19 @@ When filling the cache, this signal gets emitted once the cache is fully initial
     void cachedLayerDeleted();
 %Docstring
 Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
-signal is being emitted, but before the local reference to it has been set to NULL. So call to
+signal is being emitted, but before the local reference to it has been set to ``None``. So call to
 layer() will still return a valid pointer for cleanup purpose.
 %End
 
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 %Docstring
-Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
+Emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
 You should connect to this signal, to be sure, to not get a cached value if querying the cache.
 %End
 
     void featureAdded( QgsFeatureId fid );
 %Docstring
-Is emitted, when a new feature has been added to the layer and this cache.
+Emitted when a new feature has been added to the layer and this cache.
 You should connect to this signal instead of the layers', if you want to be sure
 that this cache has updated information for the new feature
 
@@ -297,7 +297,7 @@ that this cache has updated information for the new feature
     void invalidated();
 %Docstring
 The cache has been invalidated and cleared. Note that when a cache is invalidated
-the fullCache() setting will be cleared, and a full cache rebuild via setFullCache( true )
+the fullCache() setting will be cleared, and a full cache rebuild via setFullCache( ``True`` )
 will need to be performed.
 %End
 

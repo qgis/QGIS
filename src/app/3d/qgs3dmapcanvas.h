@@ -48,7 +48,7 @@ class Qgs3DMapCanvas : public QWidget
     //! Returns access to the 3D scene (root 3D entity)
     Qgs3DMapScene *scene() { return mScene; }
 
-    //! Returns access to the view's camera controller. Returns null pointer if the scene has not been initialized yet with setMap()
+    //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMap()
     QgsCameraController *cameraController();
 
     //! Resets camera position to the default: looking down at the origin of world coordinates
@@ -62,13 +62,13 @@ class Qgs3DMapCanvas : public QWidget
 
     /**
      * Sets the active map tool that will receive events from the 3D canvas. Does not transfer ownership.
-     * If the tool is null, events will be used for camera manipulation.
+     * If the tool is NULLPTR, events will be used for camera manipulation.
      */
     void setMapTool( Qgs3DMapTool *tool );
 
     /**
      * Returns the active map tool that will receive events from the 3D canvas.
-     * If the tool is null, events will be used for camera manipulation.
+     * If the tool is NULLPTR, events will be used for camera manipulation.
      */
     Qgs3DMapTool *mapTool() const { return mMapTool; }
 
@@ -93,7 +93,7 @@ class Qgs3DMapCanvas : public QWidget
     //! Root entity of the 3D scene
     Qgs3DMapScene *mScene = nullptr;
 
-    //! Active map tool that receives events (if null then mouse/keyboard events are used for camera manipulation)
+    //! Active map tool that receives events (if NULLPTR then mouse/keyboard events are used for camera manipulation)
     Qgs3DMapTool *mMapTool = nullptr;
 };
 

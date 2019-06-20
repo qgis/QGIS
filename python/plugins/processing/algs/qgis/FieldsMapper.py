@@ -21,10 +21,6 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Arnaud Morvan'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (
     QgsDistanceArea,
     QgsExpression,
@@ -36,7 +32,7 @@ from qgis.core import (
     QgsProcessingParameterType,
     NULL)
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -166,6 +162,12 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
 
         def id(self):
             return 'fields_mapping'
+
+        def pythonImportString(self):
+            return 'from processing.algs.qgis.FieldsMapper import FieldsMapper'
+
+        def className(self):
+            return 'FieldsMapper.ParameterFieldsMapping'
 
         def description(self):
             return QCoreApplication.translate('Processing', 'A mapping of field names to field type definitions and expressions. Used for the refactor fields algorithm.')

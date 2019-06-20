@@ -40,17 +40,14 @@ namespace QgsWmts
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                              const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QgsAccessControl *accessControl = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
     QDomDocument doc;
     const QDomDocument *capabilitiesDocument = nullptr;
 
-    QgsServerCacheManager *cacheManager = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    cacheManager = serverIface->cacheManager();
-#endif
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       capabilitiesDocument = &doc;
@@ -65,7 +62,9 @@ namespace QgsWmts
       }
       capabilitiesDocument = &doc;
     }
-
+#else
+    doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+#endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( capabilitiesDocument->toByteArray() );
   }
@@ -74,7 +73,7 @@ namespace QgsWmts
   QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -272,8 +271,12 @@ namespace QgsWmts
     QDomElement httpElement = doc.createElement( QStringLiteral( "ows:HTTP" )/*ows:HTTP*/ );
     dcpElement.appendChild( httpElement );
 
-    //Prepare url
-    QString hrefString = serviceUrl( request, project );
+    // Get service URL
+    const QUrl href = serviceUrl( request, project );
+
+    //href needs to be a prefix
+    QString hrefString = href.toString();
+    hrefString.append( href.hasQuery() ? '&' : '?' );
 
     //ows:Get
     QDomElement getElement = doc.createElement( QStringLiteral( "ows:Get" )/*ows:Get*/ );
@@ -530,8 +533,16 @@ namespace QgsWmts
           tmElement.appendChild( tmScaleDenomElem );
 
           QDomElement tmTopLeftCornerElem = doc.createElement( QStringLiteral( "TopLeftCorner" ) );
-          QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( tm.left, 6 ) + ' ' + qgsDoubleToString( tm.top, 6 ) );
-          tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
+          if ( tms.hasAxisInverted )
+          {
+            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( tm.top, 6 ) + ' ' + qgsDoubleToString( tm.left, 6 ) );
+            tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
+          }
+          else
+          {
+            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( tm.left, 6 ) + ' ' + qgsDoubleToString( tm.top, 6 ) );
+            tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
+          }
           tmElement.appendChild( tmTopLeftCornerElem );
 
           QDomElement tmTileWidthElem = doc.createElement( QStringLiteral( "TileWidth" ) );

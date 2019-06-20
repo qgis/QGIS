@@ -20,6 +20,7 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <cmath>
 
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   : mCumulativeCutLower( CUMULATIVE_CUT_LOWER )

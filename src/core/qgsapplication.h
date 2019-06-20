@@ -20,7 +20,7 @@
 #include <QEvent>
 #include <QStringList>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsconfig.h"
 #include "qgstranslationcontext.h"
 
@@ -459,23 +459,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     static endian_t endian();
 
     /**
-     * Swap the endianness of the specified value.
-     * \note not available in Python bindings
-     */
-#ifndef SIP_RUN
-    template<typename T>
-    static void endian_swap( T &value )
-    {
-      char *data = reinterpret_cast<char *>( &value );
-      std::size_t n = sizeof( value );
-      for ( std::size_t i = 0, m = n / 2; i < m; ++i )
-      {
-        std::swap( data[i], data[n - 1 - i] );
-      }
-    }
-#endif
-
-    /**
      * Returns a standard css style sheet for reports.
      *
      * Typically you will use this method by doing:
@@ -566,19 +549,19 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's color scheme registry, used for managing color schemes.
      * \since QGIS 3.0
      */
-    static QgsColorSchemeRegistry *colorSchemeRegistry();
+    static QgsColorSchemeRegistry *colorSchemeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's paint effect registry, used for managing paint effects.
      * \since QGIS 3.0
      */
-    static QgsPaintEffectRegistry *paintEffectRegistry();
+    static QgsPaintEffectRegistry *paintEffectRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's renderer registry, used for managing vector layer renderers.
      * \since QGIS 3.0
      */
-    static QgsRendererRegistry *rendererRegistry();
+    static QgsRendererRegistry *rendererRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
@@ -592,7 +575,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * providers that may add items to the browser tree.
      * \since QGIS 3.0
      */
-    static QgsDataItemProviderRegistry *dataItemProviderRegistry();
+    static QgsDataItemProviderRegistry *dataItemProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
@@ -615,13 +598,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's network content registry used for fetching temporary files during QGIS session
      * \since QGIS 3.2
      */
-    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's validity check registry, used for managing validity checks.
      * \since QGIS 3.6
      */
-    static QgsValidityCheckRegistry *validityCheckRegistry();
+    static QgsValidityCheckRegistry *validityCheckRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
@@ -655,7 +638,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's authentication manager instance
-     * \note this can be a null pointer if called before initQgis
+     * \note this can be NULLPTR if called before initQgis
      * \see initQgis
      * \since QGIS 3.0
      */
@@ -686,7 +669,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \since QGIS 3.0
      */
-    static QgsActionScopeRegistry *actionScopeRegistry();
+    static QgsActionScopeRegistry *actionScopeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application runtime profiler.
@@ -697,19 +680,19 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Gets the registry of available field formatters.
      */
-    static QgsFieldFormatterRegistry *fieldFormatterRegistry();
+    static QgsFieldFormatterRegistry *fieldFormatterRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns registry of available 3D renderers.
      * \since QGIS 3.0
      */
-    static Qgs3DRendererRegistry *renderer3DRegistry();
+    static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns registry of available project storage implementations.
      * \since QGIS 3.2
      */
-    static QgsProjectStorageRegistry *projectStorageRegistry();
+    static QgsProjectStorageRegistry *projectStorageRegistry() SIP_KEEPREFERENCE;
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.
@@ -901,6 +884,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     ApplicationMembers *mApplicationMembers = nullptr;
     // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static members
     static ApplicationMembers *sApplicationMembers;
+
+    static QgsAuthManager *sAuthManager;
 
     static ApplicationMembers *members();
 };

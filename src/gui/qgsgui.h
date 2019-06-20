@@ -42,9 +42,21 @@ class QgsDataItemGuiProviderRegistry;
  * related to GUI classes.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsGui
+class GUI_EXPORT QgsGui : public QObject
 {
+    Q_OBJECT
+
   public:
+
+    /**
+     * Defines the behavior to use when setting the CRS for a newly created project.
+     */
+    enum ProjectCrsBehavior
+    {
+      UseCrsOfFirstLayerAdded = 1, //!< Set the project CRS to the CRS of the first layer added to a new project
+      UsePresetCrs = 2, //!< Always set new projects to use a preset default CRS
+    };
+    Q_ENUM( ProjectCrsBehavior )
 
     //! QgsGui cannot be copied
     QgsGui( const QgsGui &other ) = delete;
@@ -67,12 +79,12 @@ class GUI_EXPORT QgsGui
     /**
      * Returns the global editor widget registry, used for managing all known edit widget factories.
      */
-    static QgsEditorWidgetRegistry *editorWidgetRegistry();
+    static QgsEditorWidgetRegistry *editorWidgetRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global source select provider registry, used for managing all known source select widget factories.
      */
-    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry();
+    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
@@ -82,23 +94,23 @@ class GUI_EXPORT QgsGui
     /**
      * Returns the global layer tree embedded widget registry, used for registering widgets that may be embedded into layer tree view.
      */
-    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry();
+    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global map layer action registry, used for registering map layer actions.
      */
-    static QgsMapLayerActionRegistry *mapLayerActionRegistry();
+    static QgsMapLayerActionRegistry *mapLayerActionRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
      */
-    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
+    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
      * \since QGIS 3.2
      */
-    static QgsProcessingGuiRegistry *processingGuiRegistry();
+    static QgsProcessingGuiRegistry *processingGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
@@ -111,7 +123,7 @@ class GUI_EXPORT QgsGui
      * GUI.
      * \since QGIS 3.6
      */
-    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry();
+    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.

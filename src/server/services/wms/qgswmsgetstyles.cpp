@@ -51,7 +51,7 @@ namespace QgsWms
   QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                           const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -59,15 +59,15 @@ namespace QgsWms
 
     if ( layersName.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
-                                    QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
+                                    QgsWmsParameter::LAYERS );
     }
 
     QStringList layerList = layersName.split( ',', QString::SkipEmptyParts );
     if ( layerList.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
-                                    QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
+                                    QgsWmsParameter::LAYERS );
     }
 
     return getStyledLayerDescriptorDocument( serverIface, project, layerList );
@@ -85,7 +85,7 @@ namespace QgsWms
   QDomDocument getStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                          const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -96,14 +96,14 @@ namespace QgsWms
 
     if ( styleName.isEmpty() )
     {
-      throw QgsServiceException( QStringLiteral( "StyleNotSpecified" ),
-                                 QStringLiteral( "Style is mandatory for GetStyle operation" ), 400 );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
+                                    QgsWmsParameter::STYLE );
     }
 
     if ( layerName.isEmpty() )
     {
-      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ),
-                                 QStringLiteral( "Layer is mandatory for GetStyle operation" ), 400 );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
+                                    QgsWmsParameter::LAYERS );
     }
 
     QStringList layerList;
@@ -132,7 +132,11 @@ namespace QgsWms
       myDocument.appendChild( root );
 
       // access control
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+      ( void )serverIface;
+#endif
       // Use layer ids
       bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
       // WMS restricted layers
@@ -156,12 +160,12 @@ namespace QgsWms
         {
           throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
         }
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerReadPermission( layer ) )
         {
           throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
         }
-
+#endif
         // Create the NamedLayer element
         QDomElement namedLayerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
         root.appendChild( namedLayerNode );
@@ -171,7 +175,7 @@ namespace QgsWms
         nameNode.appendChild( myDocument.createTextNode( name ) );
         namedLayerNode.appendChild( nameNode );
 
-        if ( layer->type() == QgsMapLayer::VectorLayer )
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
           if ( vlayer->isSpatial() )

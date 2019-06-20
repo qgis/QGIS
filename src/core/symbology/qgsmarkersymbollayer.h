@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
@@ -77,9 +76,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     static QList< QgsSimpleMarkerSymbolLayerBase::Shape > availableShapes();
 
     /**
-     * Returns true if a symbol shape has a fill.
+     * Returns TRUE if a symbol shape has a fill.
      * \param shape shape to test
-     * \returns true if shape uses a fill, or false if shape uses lines only
+     * \returns TRUE if shape uses a fill, or FALSE if shape uses lines only
      */
     static bool shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 
@@ -112,7 +111,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * Attempts to decode a string representation of a shape name to the corresponding
      * shape.
      * \param name encoded shape name
-     * \param ok if specified, will be set to true if shape was successfully decoded
+     * \param ok if specified, will be set to TRUE if shape was successfully decoded
      * \returns decoded name
      * \see encodeShape()
      */
@@ -147,14 +146,14 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * Creates a polygon representing the specified shape.
      * \param shape shape to create
      * \param polygon destination polygon for shape
-     * \returns true if shape was successfully stored in polygon
+     * \returns TRUE if shape was successfully stored in polygon
      */
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 
     /**
      * Calculates the desired size of the marker, considering data defined size overrides.
      * \param context symbol render context
-     * \param hasDataDefinedSize will be set to true if marker uses data defined sizes
+     * \param hasDataDefinedSize will be set to TRUE if marker uses data defined sizes
      * \returns marker size, in original size units
      */
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
@@ -163,7 +162,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * Calculates the marker offset and rotation.
      * \param context symbol render context
      * \param scaledSize size of symbol to render
-     * \param hasDataDefinedRotation will be set to true if marker has data defined rotation
+     * \param hasDataDefinedRotation will be set to TRUE if marker has data defined rotation
      * \param offset will be set to calculated marker offset (in painter units)
      * \param angle will be set to calculated marker angle
      */
@@ -374,7 +373,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     /**
      * Prepares cache image
-     * \returns true in case of success, false if cache image size too large
+     * \returns TRUE in case of success, FALSE if cache image size too large
     */
     bool prepareCache( QgsSymbolRenderContext &context );
 
@@ -405,7 +404,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QImage mSelCache;
 
     /**
-     * True if using cached images of markers for drawing. This is faster, but cannot
+     * TRUE if using cached images of markers for drawing. This is faster, but cannot
      * be used when data defined properties are present
      */
     bool mUsingCache = false;
@@ -456,6 +455,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
     void setColor( const QColor &c ) override;
     QColor color() const override;
 
@@ -543,7 +543,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double updateDefaultAspectRatio();
 
     /**
-     * Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+     * Returns the preserved aspect ratio value, TRUE if fixed aspect ratio has been lower or equal to 0.
      * \see setPreservedAspectRatio()
      */
     bool preservedAspectRatio() const { return mFixedAspectRatio <= 0.0; }
@@ -551,7 +551,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Set preserved the marker aspect ratio between width and height.
      * \param par Preserved Aspect Ratio
-     * \returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+     * \returns the preserved aspect ratio value, TRUE if fixed aspect ratio has been lower or equal to 0
      * \see preservedAspectRatio()
      */
     bool setPreservedAspectRatio( bool par );
@@ -612,7 +612,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Calculates the marker aspect ratio between width and height.
      * \param context symbol render context
      * \param scaledSize size of symbol to render
-     * \param hasDataDefinedAspectRatio will be set to true if marker has data defined aspectRatio
+     * \param hasDataDefinedAspectRatio will be set to TRUE if marker has data defined aspectRatio
      */
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 
@@ -685,7 +685,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Calculates the marker aspect ratio between width and height.
      * \param context symbol render context
      * \param scaledSize size of symbol to render
-     * \param hasDataDefinedAspectRatio will be set to true if marker has data defined aspectRatio
+     * \param hasDataDefinedAspectRatio will be set to TRUE if marker has data defined aspectRatio
      */
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 
@@ -730,7 +730,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double updateDefaultAspectRatio();
 
     /**
-     * Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+     * Returns the preserved aspect ratio value, TRUE if fixed aspect ratio has been lower or equal to 0.
      * \see setPreservedAspectRatio()
      */
     bool preservedAspectRatio() const { return mFixedAspectRatio <= 0.0; }
@@ -738,7 +738,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Set preserved the marker aspect ratio between width and height.
      * \param par Preserved Aspect Ratio
-     * \returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+     * \returns the preserved aspect ratio value, TRUE if fixed aspect ratio has been lower or equal to 0
      * \see preservedAspectRatio()
      */
     bool setPreservedAspectRatio( bool par );
@@ -800,8 +800,10 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
+
+    //! Constructs a font marker symbol layer.
     QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
-                              QChar chr = DEFAULT_FONTMARKER_CHR,
+                              QString chr = DEFAULT_FONTMARKER_CHR,
                               double pointSize = DEFAULT_FONTMARKER_SIZE,
                               const QColor &color = DEFAULT_FONTMARKER_COLOR,
                               double angle = DEFAULT_FONTMARKER_ANGLE );
@@ -853,18 +855,18 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setFontFamily( const QString &family ) { mFontFamily = family; }
 
     /**
-     * Returns the character used when rendering points.
+     * Returns the character(s) used when rendering points.
      *
      * \see setCharacter()
      */
-    QChar character() const { return mChr; }
+    QString character() const { return mString; }
 
     /**
-     * Sets the character used when rendering points.
+     * Sets the character(s) used when rendering points.
      *
      * \see character()
      */
-    void setCharacter( QChar ch ) { mChr = ch; }
+    void setCharacter( QString chr ) { mString = chr; }
 
     QColor strokeColor() const override { return mStrokeColor; }
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
@@ -958,7 +960,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QString mFontFamily;
     QFontMetrics *mFontMetrics = nullptr;
-    QChar mChr;
+    QString mString;
 
     double mChrWidth = 0;
     QPointF mChrOffset;

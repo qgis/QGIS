@@ -135,6 +135,15 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
       if ( !geometriesB.isEmpty() )
       {
         QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB );
+        if ( !geomB.lastError().isEmpty() )
+        {
+          // This may happen if input geometries from a layer do not line up well (for example polygons
+          // that are nearly touching each other, but there is a very tiny overlap or gap at one of the edges).
+          // It is possible to get rid of this issue in two steps:
+          // 1. snap geometries with a small tolerance (e.g. 1cm) using QgsGeometrySnapperSingleSource
+          // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
+          throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
+        }
         geom = geom.difference( geomB );
       }
 

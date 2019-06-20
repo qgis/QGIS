@@ -21,9 +21,11 @@
 #include "qgsexpressionlineedit.h"
 #include "qgsprocessingguiregistry.h"
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgsexpressioncontext.h"
+#include "qgsapplication.h"
 #include <QHBoxLayout>
 #include <QToolButton>
 #include <QStackedWidget>
@@ -178,6 +180,12 @@ QgsProcessingModelChildParameterSource QgsProcessingModelerParameterWidget::valu
   return QgsProcessingModelChildParameterSource();
 }
 
+void QgsProcessingModelerParameterWidget::setDialog( QDialog *dialog )
+{
+  if ( mStaticWidgetWrapper )
+    mStaticWidgetWrapper->setDialog( dialog );
+}
+
 QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContext() const
 {
   QgsExpressionContext c = mContext.expressionContext();
@@ -188,12 +196,15 @@ QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContex
       alg = mModel->childAlgorithm( mChildId ).algorithm();
     QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), mContext );
     c << algorithmScope;
+    QgsExpressionContextScope *modelScope = QgsExpressionContextUtils::processingModelAlgorithmScope( mModel, QVariantMap(), mContext );
+    c << modelScope;
     QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() );
     c << childScope;
 
     QStringList highlightedVariables = childScope->variableNames();
     QStringList highlightedFunctions = childScope->functionNames();
     highlightedVariables += algorithmScope->variableNames();
+    highlightedVariables += mModel->variables().keys();
     highlightedFunctions += algorithmScope->functionNames();
     c.setHighlightedVariables( highlightedVariables );
     c.setHighlightedFunctions( highlightedFunctions );

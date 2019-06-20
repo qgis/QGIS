@@ -25,16 +25,19 @@ QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::Win
   setupUi( this );
   mCharWidget = new CharacterWidget( this );
   mCharSelectScrollArea->setWidget( mCharWidget );
+  mCharSelectScrollArea->setVerticalOnly( true );
   connect( mCharWidget, &CharacterWidget::characterSelected, this, &QgsCharacterSelectorDialog::setCharacter );
 }
 
-const QChar &QgsCharacterSelectorDialog::selectCharacter( bool *gotChar, const QFont &font, const QString &style )
+QChar QgsCharacterSelectorDialog::selectCharacter( bool *gotChar, const QFont &font, const QString &style, QChar initialSelection )
 {
   mCharSelectLabelFont->setText( QStringLiteral( "%1 %2" ).arg( font.family(), style ) );
   mCharWidget->setFont( font );
   mCharWidget->setFontStyle( style );
   mCharWidget->setFontSize( 22.0 );
   mCharSelectScrollArea->viewport()->update();
+
+  mCharWidget->setCharacter( initialSelection );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
   int res = exec();

@@ -156,7 +156,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
-      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+      const auto constOrderBy = request.orderBy();
+      for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
       {
         QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
         QgsExpression expression = clause.expression();
@@ -196,9 +197,10 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
     {
       QSet<int> attributeIndexes;
-      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+      for ( int attrIdx : usedAttributeIndices )
       {
-        attributeIndexes << mSource->mFields.lookupField( attr );
+        attributeIndexes << attrIdx;
       }
       attributeIndexes += mRequest.subsetOfAttributes().toSet();
       mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
@@ -355,7 +357,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
 
-    // qDebug() << sql;
+    QgsDebugMsgLevel( sql, 4 );
 
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
@@ -389,7 +391,8 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseFids()
     return QString();
 
   QString expr = QStringLiteral( "%1 IN (" ).arg( quotedPrimaryKey() ), delim;
-  Q_FOREACH ( const QgsFeatureId featureId, mRequest.filterFids() )
+  const auto constFilterFids = mRequest.filterFids();
+  for ( const QgsFeatureId featureId : constFilterFids )
   {
     expr += delim + QString::number( featureId );
     delim = ',';
@@ -515,6 +518,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
       }
       else
       {
+        QgsDebugMsgLevel( QStringLiteral( "Primary key is not an integer field: setting autoincrement fid" ), 3 );
         // autoincrement a row number
         mRowNumber++;
         feature.setId( mRowNumber );
@@ -577,7 +581,10 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
     {
       // assume arrays are stored as JSON
       QVariant result = QVariant( QgsJsonUtils::parseArray( txt, subType ) );
-      result.convert( type );
+      if ( ! result.convert( static_cast<int>( type ) ) )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Could not convert JSON value to requested QVariant type" ).arg( txt ), 3 );
+      }
       return result;
     }
     return txt;

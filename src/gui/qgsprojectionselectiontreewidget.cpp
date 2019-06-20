@@ -209,7 +209,8 @@ QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<Q
 
   // iterate through all incoming CRSs
 
-  Q_FOREACH ( const QString &auth_id, *crsFilter )
+  const auto authIds { *crsFilter };
+  for ( const QString &auth_id : authIds )
   {
     QStringList parts = auth_id.split( ':' );
 
@@ -393,8 +394,6 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
   sqlite3_finalize( stmt );
   // close the database
   sqlite3_close( database );
-
-  Q_ASSERT( !projString.isEmpty() );
 
   return projString;
 }
@@ -699,6 +698,9 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
         // This is a projected srs
         QTreeWidgetItem *node = nullptr;
         QString srsType = QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 4 ) );
+        if ( srsType.isEmpty() )
+          srsType = tr( "Other" );
+
         // Find the node for this type and add the projection to it
         // If the node doesn't exist, create it
         if ( srsType == previousSrsType )
@@ -797,7 +799,7 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
 
 void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
@@ -832,7 +834,7 @@ void QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged( QTreeWidget
 
 void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
 
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 

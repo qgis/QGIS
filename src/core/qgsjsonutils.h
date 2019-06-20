@@ -22,7 +22,13 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfields.h"
 
+#ifndef SIP_RUN
+#include <nlohmann/json_fwd.hpp>
+using json = nlohmann::json;
+#endif
+
 #include <QPointer>
+#include <QJsonObject>
 
 class QTextCodec;
 
@@ -64,7 +70,7 @@ class CORE_EXPORT QgsJsonExporter
 
     /**
      * Sets whether to include geometry in the JSON exports.
-     * \param includeGeometry set to false to prevent geometry inclusion
+     * \param includeGeometry set to FALSE to prevent geometry inclusion
      * \see includeGeometry()
      */
     void setIncludeGeometry( bool includeGeometry ) { mIncludeGeometry = includeGeometry; }
@@ -77,7 +83,7 @@ class CORE_EXPORT QgsJsonExporter
 
     /**
      * Sets whether to include attributes in the JSON exports.
-     * \param includeAttributes set to false to prevent attribute inclusion
+     * \param includeAttributes set to FALSE to prevent attribute inclusion
      * \see includeAttributes()
      */
     void setIncludeAttributes( bool includeAttributes ) { mIncludeAttributes = includeAttributes; }
@@ -90,7 +96,7 @@ class CORE_EXPORT QgsJsonExporter
 
     /**
      * Sets whether to include attributes of features linked via references in the JSON exports.
-     * \param includeRelated set to true to include attributes for any related child features
+     * \param includeRelated set to TRUE to include attributes for any related child features
      * within the exported properties element.
      * \note associated vector layer must be set with setVectorLayer()
      * \see includeRelated()
@@ -102,6 +108,20 @@ class CORE_EXPORT QgsJsonExporter
      * \see setIncludeRelated()
      */
     bool includeRelated() const { return mIncludeRelatedAttributes; }
+
+    /**
+     * Sets whether to print original names of attributes or aliases if
+     * defined.
+     * \since QGIS 3.6
+     */
+    void setAttributeDisplayName( bool displayName ) { mAttributeDisplayName = displayName; }
+
+    /**
+     * Returns whether original names of attributes or aliases are printed.
+     * \since QGIS 3.6
+     */
+
+    bool attributeDisplayName() const { return mAttributeDisplayName; }
 
     /**
      * Sets the associated vector layer (required for related attribute export). This will automatically
@@ -177,21 +197,38 @@ class CORE_EXPORT QgsJsonExporter
      * \param extraProperties map of extra attributes to include in feature's properties
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
+     * \param indent number of indentation spaces for generated JSON (defaults to none)
      * \returns GeoJSON string
      * \see exportFeatures()
+     * \see exportFeatureToJsonObject()
      */
     QString exportFeature( const QgsFeature &feature,
                            const QVariantMap &extraProperties = QVariantMap(),
-                           const QVariant &id = QVariant() ) const;
+                           const QVariant &id = QVariant(),
+                           int indent = -1 ) const;
+
+    /**
+     * Returns a QJsonObject representation of a feature.
+     * \param feature feature to convert
+     * \param extraProperties map of extra attributes to include in feature's properties
+     * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
+     * ID is used.
+     * \returns QJsonObject
+     * \see exportFeatures()
+     */
+    json exportFeatureToJsonObject( const QgsFeature &feature,
+                                    const QVariantMap &extraProperties = QVariantMap(),
+                                    const QVariant &id = QVariant() ) const SIP_SKIP;
 
 
     /**
      * Returns a GeoJSON string representation of a list of features (feature collection).
      * \param features features to convert
+     * \param indent number of indentation spaces for generated JSON (defaults to none)
      * \returns GeoJSON string
      * \see exportFeature()
      */
-    QString exportFeatures( const QgsFeatureList &features ) const;
+    QString exportFeatures( const QgsFeatureList &features, int indent = -1 ) const;
 
   private:
 
@@ -223,6 +260,7 @@ class CORE_EXPORT QgsJsonExporter
 
     QgsCoordinateTransform mTransform;
 
+    bool mAttributeDisplayName = false;
 };
 
 /**
@@ -277,12 +315,50 @@ class CORE_EXPORT QgsJsonUtils
                                      const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 
     /**
-     * Parse a simple array (depth=1).
+     * Exports all attributes from a QgsFeature as a json object.
+     * \param feature feature to export
+     * \param layer optional associated vector layer. If specified, this allows
+     * richer export utilising settings like the layer's fields widget configuration.
+     * \param attributeWidgetCaches optional widget configuration cache. Can be used
+     * to speed up exporting the attributes for multiple features from the same layer.
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
+        const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() ) SIP_SKIP;
+
+    /**
+     * Parse a simple array (depth=1)
      * \param json the JSON to parse
-     * \param type the type of the elements
+     * \param type optional variant type of the elements, if specified (and not Invalid),
+     *        the array items will be converted to the type, and discarded if
+     *        the conversion is not possible.
      * \since QGIS 3.0
      */
-    static QVariantList parseArray( const QString &json, QVariant::Type type );
+    static QVariantList parseArray( const QString &json, QVariant::Type type = QVariant::Invalid );
+
+
+    /**
+     * Converts a QVariant \a v to a json object
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static json jsonFromVariant( const QVariant &v ) SIP_SKIP;
+
+    /**
+     * Converts JSON \a jsonString to a QVariant, in case of parsing error an invalid QVariant is returned.
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static QVariant parseJson( const std::string &jsonString ) SIP_SKIP;
+
+    /**
+     * Converts JSON \a jsonString to a QVariant, in case of parsing error an invalid QVariant is returned.
+     * \note Not available in Python bindings
+     * \since QGIS 3.8
+     */
+    static QVariant parseJson( const QString &jsonString ) SIP_SKIP;
+
 };
 
 #endif // QGSJSONUTILS_H

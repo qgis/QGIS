@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '16/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -21,7 +19,8 @@ from qgis.core import (QgsRenderContext,
                        QgsCoordinateReferenceSystem,
                        QgsMapUnitScale,
                        QgsUnitTypes,
-                       QgsProject)
+                       QgsProject,
+                       QgsRectangle)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
@@ -45,6 +44,9 @@ class TestQgsRenderContext(unittest.TestCase):
         c.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         self.assertEqual(c.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
 
+        c.setMapExtent(QgsRectangle(1, 2, 3, 4))
+        self.assertEqual(c.mapExtent(), QgsRectangle(1, 2, 3, 4))
+
     def testCopyConstructor(self):
         """
         Test the copy constructor
@@ -52,9 +54,11 @@ class TestQgsRenderContext(unittest.TestCase):
         c1 = QgsRenderContext()
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
+        c1.setMapExtent(QgsRectangle(1, 2, 3, 4))
 
         c2 = QgsRenderContext(c1)
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
+        self.assertEqual(c2.mapExtent(), QgsRectangle(1, 2, 3, 4))
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         c2 = QgsRenderContext(c1)
@@ -73,6 +77,7 @@ class TestQgsRenderContext(unittest.TestCase):
         p = QPainter()
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
+        self.assertEqual(c.testFlag(QgsRenderContext.Antialiasing), False)
         self.assertAlmostEqual(c.scaleFactor(), 88 / 25.4, 3)
 
         im = QImage(1000, 600, QImage.Format_RGB32)
@@ -80,8 +85,10 @@ class TestQgsRenderContext(unittest.TestCase):
         im.setDotsPerMeterX(dots_per_m)
         im.setDotsPerMeterY(dots_per_m)
         p = QPainter(im)
+        p.setRenderHint(QPainter.Antialiasing)
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
+        self.assertEqual(c.testFlag(QgsRenderContext.Antialiasing), True)
         self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
 
     def testFromMapSettings(self):
@@ -89,6 +96,9 @@ class TestQgsRenderContext(unittest.TestCase):
         test QgsRenderContext.fromMapSettings()
         """
         ms = QgsMapSettings()
+        ms.setOutputSize(QSize(1000, 1000))
+        ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        ms.setExtent(QgsRectangle(10000, 20000, 30000, 40000))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
@@ -97,6 +107,8 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
+
+        self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
 
     def testRenderMetersInMapUnits(self):
 

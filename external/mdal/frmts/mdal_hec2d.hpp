@@ -16,6 +16,17 @@
 
 namespace MDAL
 {
+  /**
+   * HEC-RAS 2D format.
+   *
+   * This is a HDF5-based format to store mesh and datasets
+   * in a single file. The format supports meshes is multiple
+   * (disconnected) areas.
+   *
+   * There is a small change in the format in HEC-RAS 5.0.5+, where
+   *    - Header File Type is different (HEC-RAS Results vs HEC-RAS Geometry)
+   *    - Names or areas are stored in different place (names array vs attributes array)
+   */
   class DriverHec2D: public Driver
   {
     public:
@@ -30,6 +41,15 @@ namespace MDAL
       std::unique_ptr< MDAL::MemoryMesh > mMesh;
       std::string mFileName;
 
+      // Pre 5.0.5 format
+      bool canReadOldFormat( const std::string &fileType ) const;
+      std::vector<std::string> read2DFlowAreasNamesOld( HdfGroup gGeom2DFlowAreas ) const;
+
+      // 5.0.5 + format
+      bool canReadFormat505( const std::string &fileType ) const;
+      std::vector<std::string> read2DFlowAreasNames505( HdfGroup gGeom2DFlowAreas ) const;
+
+      // Common functions
       void readFaceOutput( const HdfFile &hdfFile,
                            const HdfGroup &rootGroup,
                            const std::vector<size_t> &areaElemStartIndex,
@@ -37,9 +57,11 @@ namespace MDAL
                            const std::string rawDatasetName,
                            const std::string datasetName,
                            const std::vector<float> &times );
+
       void readFaceResults( const HdfFile &hdfFile,
                             const std::vector<size_t> &areaElemStartIndex,
                             const std::vector<std::string> &flowAreaNames );
+
       std::shared_ptr<MDAL::MemoryDataset> readElemOutput(
         const HdfGroup &rootGroup,
         const std::vector<size_t> &areaElemStartIndex,
@@ -48,14 +70,18 @@ namespace MDAL
         const std::string datasetName,
         const std::vector<float> &times,
         std::shared_ptr<MDAL::MemoryDataset> bed_elevation );
+
       std::shared_ptr<MDAL::MemoryDataset> readBedElevation(
         const HdfGroup &gGeom2DFlowAreas,
         const std::vector<size_t> &areaElemStartIndex,
         const std::vector<std::string> &flowAreaNames );
+
       void setProjection( HdfFile hdfFile );
+
       void parseMesh( HdfGroup gGeom2DFlowAreas,
                       std::vector<size_t> &areaElemStartIndex,
                       const std::vector<std::string> &flowAreaNames );
+
       void readElemResults(
         const HdfFile &hdfFile,
         std::shared_ptr<MDAL::MemoryDataset> bed_elevation,

@@ -136,9 +136,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
   {
     QSet<int> attributeIndexes;
-    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIdx : usedAttributeIndices )
     {
-      attributeIndexes << mSource->mFields.lookupField( attr );
+      attributeIndexes << attrIdx;
     }
     attributeIndexes += attrs.toSet();
     attrs = attributeIndexes.toList();

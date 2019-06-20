@@ -91,7 +91,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     /**
      * Constructor for QgsGeoNodeRequest.
      *
-     * If \a forceRefresh is false, then cached copies of the request may be reused.
+     * If \a forceRefresh is FALSE, then cached copies of the request may be reused.
      */
     QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = nullptr );
 

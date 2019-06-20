@@ -21,9 +21,12 @@
 #include "qgsserver.h"
 #include "qgsfcgiserverresponse.h"
 #include "qgsfcgiserverrequest.h"
+#include "qgsapplication.h"
 
 #include <fcgi_stdio.h>
 #include <cstdlib>
+
+#include <QString>
 
 int fcgi_accept()
 {

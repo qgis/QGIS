@@ -19,7 +19,7 @@
 #define QGSPOINT_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    QString asJson( int precision = 17 ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
@@ -444,6 +444,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     int nCoordinates() const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
 
     //low-level editing
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;

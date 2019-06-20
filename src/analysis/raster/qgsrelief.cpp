@@ -639,6 +639,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
 
   //set colors according to optimised class breaks
   QVector<QColor> colorList;
+  colorList.reserve( 9 );
   colorList.push_back( QColor( 7, 165, 144 ) );
   colorList.push_back( QColor( 12, 221, 162 ) );
   colorList.push_back( QColor( 33, 252, 183 ) );
@@ -670,6 +671,7 @@ void QgsRelief::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
   {
     //get all the values between the class breaks into input
     QList< QPair < int, double > > regressionInput;
+    regressionInput.reserve( breaks.at( i + 1 ) - breaks.at( i ) );
     for ( int j = breaks.at( i ); j < breaks.at( i + 1 ); ++j )
     {
       regressionInput.push_back( qMakePair( j, frequencies[j] ) );

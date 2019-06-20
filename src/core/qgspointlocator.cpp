@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsrenderer.h"
-
+#include "qgsexpressioncontextutils.h"
+#include "qgslinestring.h"
 #include <spatialindex/SpatialIndex.h>
 
 #include <QLinkedListIterator>
@@ -98,8 +99,8 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -147,8 +148,8 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -197,8 +198,8 @@ class QgsPointLocator_VisitorArea : public IVisitor
       , mGeomPt( QgsGeometry::fromPointXY( origPt ) )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
@@ -331,196 +332,48 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   // we need iterator for segments...
 
   QgsPointLocator::MatchList lst;
-  QByteArray wkb( geom->asWkb() );
-  if ( wkb.isEmpty() )
+
+  // geom is converted to a MultiCurve
+  QgsGeometry straightGeom = geom->convertToType( QgsWkbTypes::LineGeometry, true );
+  // and convert to straight segemnt / converts curve to linestring
+  straightGeom.convertToStraightSegment();
+
+  // so, you must have multilinestring
+  //
+  // Special case: Intersections cannot be done on an empty linestring like
+  // QgsGeometry(QgsLineString()) or QgsGeometry::fromWkt("LINESTRING EMPTY")
+  if ( straightGeom.isEmpty() || ( ( straightGeom.type() != QgsWkbTypes::LineGeometry ) && ( !straightGeom.isMultipart() ) ) )
     return lst;
 
   _CohenSutherland cs( rect );
 
-  QgsConstWkbPtr wkbPtr( wkb );
-  wkbPtr.readHeader();
-
-  QgsWkbTypes::Type wkbType = geom->wkbType();
-
-  bool hasZValue = false;
-  switch ( wkbType )
+  int pointIndex = 0;
+  for ( auto part = straightGeom.const_parts_begin(); part != straightGeom.const_parts_end(); ++part )
   {
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::MultiPoint25D:
-    case QgsWkbTypes::MultiPoint:
-    {
-      // Points have no lines
-      return lst;
-    }
+    // Checking for invalid linestrings
+    // A linestring should/(must?) have at least two points
+    if ( qgsgeometry_cast<QgsLineString *>( *part )->numPoints() < 2 )
+      continue;
 
-    case QgsWkbTypes::LineString25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH
-    case QgsWkbTypes::LineString:
+    QgsAbstractGeometry::vertex_iterator it = ( *part )->vertices_begin();
+    QgsPointXY prevPoint( *it );
+    it++;
+    while ( it != ( *part )->vertices_end() )
     {
-      int nPoints;
-      wkbPtr >> nPoints;
-
-      double prevx = 0.0, prevy = 0.0;
-      for ( int index = 0; index < nPoints; ++index )
+      QgsPointXY thisPoint( *it );
+      if ( cs.isSegmentInRect( prevPoint.x(), prevPoint.y(), thisPoint.x(), thisPoint.y() ) )
       {
-        double thisx = 0.0, thisy = 0.0;
-        wkbPtr >> thisx >> thisy;
-        if ( hasZValue )
-          wkbPtr += sizeof( double );
-
-        if ( index > 0 )
-        {
-          if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
-          {
-            QgsPointXY edgePoints[2];
-            edgePoints[0].set( prevx, prevy );
-            edgePoints[1].set( thisx, thisy );
-            lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), index - 1, edgePoints );
-          }
-        }
-
-        prevx = thisx;
-        prevy = thisy;
+        QgsPointXY edgePoints[2];
+        edgePoints[0] = prevPoint;
+        edgePoints[1] = thisPoint;
+        lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
       }
-      break;
+      prevPoint = QgsPointXY( *it );
+      it++;
+      pointIndex += 1;
+
     }
-
-    case QgsWkbTypes::MultiLineString25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH
-    case QgsWkbTypes::MultiLineString:
-    {
-      int nLines;
-      wkbPtr >> nLines;
-      for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
-      {
-        wkbPtr.readHeader();
-        int nPoints;
-        wkbPtr >> nPoints;
-
-        double prevx = 0.0, prevy = 0.0;
-        for ( int pointnr = 0; pointnr < nPoints; ++pointnr )
-        {
-          double thisx = 0.0, thisy = 0.0;
-          wkbPtr >> thisx >> thisy;
-          if ( hasZValue )
-            wkbPtr += sizeof( double );
-
-          if ( pointnr > 0 )
-          {
-            if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
-            {
-              QgsPointXY edgePoints[2];
-              edgePoints[0].set( prevx, prevy );
-              edgePoints[1].set( thisx, thisy );
-              lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
-            }
-          }
-
-          prevx = thisx;
-          prevy = thisy;
-          ++pointIndex;
-        }
-      }
-      break;
-    }
-
-    case QgsWkbTypes::Polygon25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH
-    case QgsWkbTypes::Polygon:
-    {
-      int nRings;
-      wkbPtr >> nRings;
-
-      for ( int ringnr = 0, pointIndex = 0; ringnr < nRings; ++ringnr )//loop over rings
-      {
-        int nPoints;
-        wkbPtr >> nPoints;
-
-        double prevx = 0.0, prevy = 0.0;
-        for ( int pointnr = 0; pointnr < nPoints; ++pointnr )//loop over points in a ring
-        {
-          double thisx = 0.0, thisy = 0.0;
-          wkbPtr >> thisx >> thisy;
-          if ( hasZValue )
-            wkbPtr += sizeof( double );
-
-          if ( pointnr > 0 )
-          {
-            if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
-            {
-              QgsPointXY edgePoints[2];
-              edgePoints[0].set( prevx, prevy );
-              edgePoints[1].set( thisx, thisy );
-              lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
-            }
-          }
-
-          prevx = thisx;
-          prevy = thisy;
-          ++pointIndex;
-        }
-      }
-      break;
-    }
-
-    case QgsWkbTypes::MultiPolygon25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH
-    case QgsWkbTypes::MultiPolygon:
-    {
-      int nPolygons;
-      wkbPtr >> nPolygons;
-      for ( int polynr = 0, pointIndex = 0; polynr < nPolygons; ++polynr )
-      {
-        wkbPtr.readHeader();
-        int nRings;
-        wkbPtr >> nRings;
-        for ( int ringnr = 0; ringnr < nRings; ++ringnr )
-        {
-          int nPoints;
-          wkbPtr >> nPoints;
-
-          double prevx = 0.0, prevy = 0.0;
-          for ( int pointnr = 0; pointnr < nPoints; ++pointnr )
-          {
-            double thisx = 0.0, thisy = 0.0;
-            wkbPtr >> thisx >> thisy;
-            if ( hasZValue )
-              wkbPtr += sizeof( double );
-
-            if ( pointnr > 0 )
-            {
-              if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
-              {
-                QgsPointXY edgePoints[2];
-                edgePoints[0].set( prevx, prevy );
-                edgePoints[1].set( thisx, thisy );
-                lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
-              }
-            }
-
-            prevx = thisx;
-            prevy = thisy;
-            ++pointIndex;
-          }
-        }
-      }
-      break;
-    }
-
-    case QgsWkbTypes::Unknown:
-    default:
-      return lst;
-  } // switch (wkbType)
-
+  }
   return lst;
 }
 
@@ -539,15 +392,16 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
       , mFilter( filter )
     {}
 
-    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
     void visitData( const IData &d ) override
     {
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
 
-      Q_FOREACH ( const QgsPointLocator::Match &m, _geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id ) )
+      const auto segmentsInRect {_geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id )};
+      for ( const QgsPointLocator::Match &m : segmentsInRect )
       {
         // in range queries the filter may reject some matches
         if ( mFilter && !mFilter->acceptMatch( m ) )
@@ -564,6 +418,54 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
+////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for vertices - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.6
+*/
+class QgsPointLocator_VisitorVerticesInRect : public IVisitor
+{
+  public:
+    //! Constructs the visitor
+    QgsPointLocator_VisitorVerticesInRect( QgsPointLocator *pl, QgsPointLocator::MatchList &lst, const QgsRectangle &srcRect, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mList( lst )
+      , mSrcRect( srcRect )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      const QgsGeometry *geom = mLocator->mGeoms.value( id );
+
+      for ( QgsAbstractGeometry::vertex_iterator it = geom->vertices_begin(); it != geom->vertices_end(); ++it )
+      {
+        if ( mSrcRect.contains( *it ) )
+        {
+          QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, 0, *it, geom->vertexNrFromVertexId( it.vertexId() ) );
+
+          // in range queries the filter may reject some matches
+          if ( mFilter && !mFilter->acceptMatch( m ) )
+            continue;
+
+          mList << m;
+        }
+      }
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::MatchList &mList;
+    QgsRectangle mSrcRect;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -708,8 +610,8 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
-        // See https://issues.qgis.org/issues/12634
+        Q_UNUSED( e )
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
     }
@@ -759,20 +661,24 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
-        // See https://issues.qgis.org/issues/12634
+        Q_UNUSED( e )
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         continue;
       }
     }
 
-    SpatialIndex::Region r( rect2region( f.geometry().boundingBox() ) );
-    dataList << new RTree::Data( 0, nullptr, r, f.id() );
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
+    {
+      SpatialIndex::Region r( rect2region( bbox ) );
+      dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
-    if ( mGeoms.contains( f.id() ) )
-      delete mGeoms.take( f.id() );
-    mGeoms[f.id()] = new QgsGeometry( f.geometry() );
-    ++indexedCount;
+      if ( mGeoms.contains( f.id() ) )
+        delete mGeoms.take( f.id() );
+      mGeoms[f.id()] = new QgsGeometry( f.geometry() );
+      ++indexedCount;
+    }
 
     if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
     {
@@ -868,15 +774,15 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       }
       catch ( const QgsException &e )
       {
-        Q_UNUSED( e );
-        // See https://issues.qgis.org/issues/12634
+        Q_UNUSED( e )
+        // See https://github.com/qgis/QGIS/issues/20749
         QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         return;
       }
     }
 
-    QgsRectangle bbox = f.geometry().boundingBox();
-    if ( !bbox.isNull() )
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    if ( bbox.isFinite() )
     {
       SpatialIndex::Region r( rect2region( bbox ) );
       mRTree->insertData( 0, nullptr, r, f.id() );
@@ -903,15 +809,15 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  Q_UNUSED( geom );
+  Q_UNUSED( geom )
   onFeatureDeleted( fid );
   onFeatureAdded( fid );
 }
 
 void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  Q_UNUSED( idx );
-  Q_UNUSED( value );
+  Q_UNUSED( idx )
+  Q_UNUSED( value )
   if ( mContext )
   {
     onFeatureDeleted( fid );
@@ -970,7 +876,7 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   }
 
   MatchList mlist = pointInPolygon( point );
-  if ( mlist.count() && mlist.at( 0 ).isValid() )
+  if ( !mlist.isEmpty() && mlist.at( 0 ).isValid() )
   {
     return mlist.at( 0 );
   }
@@ -1018,6 +924,28 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point
 {
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   return edgesInRect( rect, filter );
+}
+
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
+{
+  if ( !mRTree )
+  {
+    init();
+    if ( !mRTree ) // still invalid?
+      return MatchList();
+  }
+
+  MatchList lst;
+  QgsPointLocator_VisitorVerticesInRect visitor( this, lst, rect, filter );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+
+  return lst;
+}
+
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter )
+{
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  return verticesInRect( rect, filter );
 }
 
 

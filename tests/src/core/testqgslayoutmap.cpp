@@ -618,24 +618,44 @@ void TestQgsLayoutMap::expressionContext()
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
 
+  QgsExpression e5( QStringLiteral( "@map_crs_description" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "WGS 84" ) );
+
+  QgsExpression e6( QStringLiteral( "@map_crs_acronym" ) );
+  r = e6.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "longlat" ) );
+
+  QgsExpression e7( QStringLiteral( "@map_crs_proj4" ) );
+  r = e7.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e8( QStringLiteral( "@map_crs_wkt" ) );
+  r = e8.evaluate( &c );
+  QVERIFY( r.toString().length() >= 15 );
+
+  QgsExpression e9( QStringLiteral( "@map_crs_ellipsoid" ) );
+  r = e9.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "WGS84" ) );
+
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   map->setLayers( QList<QgsMapLayer *>() << layer << layer2 );
   QgsProject::instance()->addMapLayers( map->layers() );
   c = map->createExpressionContext();
-  QgsExpression e5( QStringLiteral( "@map_layer_ids" ) );
-  r = e5.evaluate( &c );
+  QgsExpression e10( QStringLiteral( "@map_layer_ids" ) );
+  r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
-  e5 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) );
-  r = e5.evaluate( &c );
+  e10 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) );
+  r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "A,B" ) );
 
-  QgsExpression e6( QStringLiteral( "is_layer_visible( '%1' )" ).arg( layer->id() ) );
-  r = e6.evaluate( &c );
+  QgsExpression e11( QStringLiteral( "is_layer_visible( '%1' )" ).arg( layer->id() ) );
+  r = e11.evaluate( &c );
   QCOMPARE( r.toBool(), true );
 
-  QgsExpression e7( QStringLiteral( "is_layer_visible( 'aaaaaa' )" ) );
-  r = e7.evaluate( &c );
+  QgsExpression e12( QStringLiteral( "is_layer_visible( 'aaaaaa' )" ) );
+  r = e12.evaluate( &c );
   QCOMPARE( r.toBool(), false );
 }
 

@@ -109,12 +109,9 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mStrokeColorButton->setNoColorString( tr( "Transparent Line" ) );
   mStrokeColorButton->setShowNoColor( true );
 
-  mFillColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mFillColorDDBtn->registerEnabledWidget( mFillColorButton, false );
-  mFillColor2DDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mFillColor2DDBtn->registerEnabledWidget( mFillColor2Button, false );
-  mLineColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mLineColorDDBtn->registerEnabledWidget( mStrokeColorButton, false );
+  mFillColorDDBtn->registerLinkedWidget( mFillColorButton );
+  mFillColor2DDBtn->registerLinkedWidget( mFillColor2Button );
+  mLineColorDDBtn->registerLinkedWidget( mStrokeColorButton );
 
   if ( mScalebar )
   {
@@ -600,7 +597,7 @@ void QgsLayoutScaleBarWidget::disconnectUpdateSignal()
 
 void QgsLayoutScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mScalebar )
   {
     return;
@@ -613,7 +610,7 @@ void QgsLayoutScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged( int index
 
 void QgsLayoutScaleBarWidget::mLineCapStyleCombo_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   if ( !mScalebar )
   {
     return;

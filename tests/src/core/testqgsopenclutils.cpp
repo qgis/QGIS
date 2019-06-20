@@ -29,9 +29,6 @@
 class TestQgsOpenClUtils: public QObject
 {
     Q_OBJECT
-  public:
-
-    //void testRunMakeProgram();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

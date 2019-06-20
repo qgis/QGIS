@@ -44,7 +44,7 @@ Gets list of available providers.
 %Docstring
 Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
 and the provider's parent will be set to the registry.
-Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
+Returns ``False`` if the provider could not be added (eg if a provider with a duplicate ID already exists
 in the registry).
 Adding a provider to the registry automatically triggers the providers :py:func:`QgsProcessingProvider.load()`
 method to populate the provider with algorithms.
@@ -55,7 +55,7 @@ method to populate the provider with algorithms.
     bool removeProvider( QgsProcessingProvider *provider );
 %Docstring
 Removes a provider implementation from the registry (the provider object is deleted).
-Returns false if the provider could not be removed (eg provider does not exist in the registry).
+Returns ``False`` if the provider could not be removed (eg provider does not exist in the registry).
 
 .. seealso:: :py:func:`addProvider`
 %End
@@ -63,7 +63,7 @@ Returns false if the provider could not be removed (eg provider does not exist i
     bool removeProvider( const QString &providerId );
 %Docstring
 Removes a provider implementation from the registry (the provider object is deleted).
-Returns false if the provider could not be removed (eg provider does not exist in the registry).
+Returns ``False`` if the provider could not be removed (eg provider does not exist in the registry).
 
 .. seealso:: :py:func:`addProvider`
 %End
@@ -82,7 +82,7 @@ Returns a list of all available algorithms from registered providers.
 
     const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
 %Docstring
-Finds an algorithm by its ID. If no matching algorithm is found, a None
+Finds an algorithm by its ID. If no matching algorithm is found, ``None``
 is returned.
 
 .. seealso:: :py:func:`algorithms`
@@ -93,7 +93,7 @@ is returned.
 
     QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const /TransferBack/;
 %Docstring
-Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a None
+Creates a new instance of an algorithm by its ID. If no matching algorithm is found, ``None``
 is returned. Callers take responsibility for deleting the returned object.
 
 The ``configuration`` argument allows passing of a map of configuration settings

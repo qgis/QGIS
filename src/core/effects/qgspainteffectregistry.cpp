@@ -20,6 +20,7 @@
 #include "qgsgloweffect.h"
 #include "qgstransformeffect.h"
 #include "qgscoloreffect.h"
+#include "qgsapplication.h"
 
 QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString &name, const QString &visibleName )
   : mName( name )

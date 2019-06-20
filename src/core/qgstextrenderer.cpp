@@ -1960,7 +1960,8 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   }
 
   double maxWidth = 0;
-  Q_FOREACH ( const QString &line, textLines )
+  const auto constTextLines = textLines;
+  for ( const QString &line : constTextLines )
   {
     maxWidth = std::max( maxWidth, fontMetrics->width( line ) );
   }
@@ -2521,7 +2522,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   {
     case Label:
     case Point:
-      Q_FOREACH ( const QString &line, textLines )
+      for ( const QString &line : textLines )
       {
         double labelWidth = fontMetrics->width( line );
         if ( labelWidth > labelWidest )
@@ -2546,7 +2547,8 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
 
   bool adjustForAlignment = alignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
 
-  Q_FOREACH ( const QString &line, textLines )
+  const auto constTextLines = textLines;
+  for ( const QString &line : constTextLines )
   {
     context.painter()->save();
     if ( context.flags() & QgsRenderContext::Antialiasing )

@@ -80,8 +80,8 @@ class CORE_EXPORT QgsOpenClUtils
      */
     enum ExceptionBehavior
     {
-      Catch,  //! Write errors in the message log and silently fail
-      Throw   //! Write errors in the message log and re-throw exceptions
+      Catch,  //!< Write errors in the message log and silently fail
+      Throw   //!< Write errors in the message log and re-throw exceptions
     };
 
     /**
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsOpenClUtils
      */
     static bool available();
 
-    //! Returns true if OpenCL is enabled in the user settings
+    //! Returns TRUE if OpenCL is enabled in the user settings
     static bool enabled();
 
     //! Returns a list of OpenCL devices found on this sysytem
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsOpenClUtils
      *
      * Called once by init() when OpenCL is used for the first time in a QGIS working session.
      *
-     * \return true if the device could be found and activated. Return false if the device was already
+     * \return TRUE if the device could be found and activated. Return FALSE if the device was already
      * the active one or if a device could not be activated.
      *
      * \see init()

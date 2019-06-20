@@ -246,7 +246,8 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
   if ( mSource->mEditing )
   {
     QgsDebugMsgLevel( "newLids:", 3 );
-    Q_FOREACH ( int oldLid, mSource->mLayer->map()->newLids().keys() )
+    const auto constKeys = mSource->mLayer->map()->newLids().keys();
+    for ( int oldLid : constKeys )
     {
       QgsDebugMsgLevel( QString( "%1 -> %2" ).arg( oldLid ).arg( mSource->mLayer->map()->newLids().value( oldLid ) ), 3 );
     }

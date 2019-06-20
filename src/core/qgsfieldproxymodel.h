@@ -20,7 +20,7 @@
 
 #include "qgis_core.h"
 
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsFieldModel;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     Filters mFilters;
     QgsFieldModel *mModel = nullptr;
 
-    //! Returns true if the specified index represents a read only field
+    //! Returns TRUE if the specified index represents a read only field
     bool isReadOnly( const QModelIndex &index ) const;
 
     // QSortFilterProxyModel interface

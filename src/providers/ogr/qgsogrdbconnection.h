@@ -53,6 +53,8 @@ class QgsOgrDbConnection : public QObject
     void setPath( const QString &path );
     //! Store the connection data in the settings
     void save();
+    //! Returns true if the DB supports QGIS project storage
+    bool allowProjectsInDatabase();
 
   private:
     static QString fullKey( const QString &settingsKey );

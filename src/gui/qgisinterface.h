@@ -18,7 +18,17 @@
 #ifndef QGISINTERFACE_H
 #define QGISINTERFACE_H
 
+#include <QObject>
+#include <map>
+
+#include "qgis.h"
+#include "qgis_sip.h"
+#include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
+
 class QAction;
+class QDialog;
+class QFont;
 class QMenu;
 class QToolBar;
 class QDockWidget;
@@ -37,11 +47,11 @@ class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
+enum class QgsMapLayerType;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMessageBar;
 class QgsPluginManagerInterface;
 class QgsRasterLayer;
-class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsOptionsWidgetFactory;
@@ -49,15 +59,6 @@ class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
 class QgsBrowserModel;
-
-#include <QObject>
-#include <QFont>
-#include <QPair>
-#include <map>
-
-#include "qgis.h"
-#include "qgsmaplayer.h"
-#include "qgis_gui.h"
 
 
 /**
@@ -89,7 +90,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add action to context menu for layers in the layer tree.
-     * If allLayers is true, then the action will be available for all layers of given type,
+     * If allLayers is TRUE, then the action will be available for all layers of given type,
      * otherwise the action will be available only for specific layers added with addCustomActionForLayer()
      * after this call.
      *
@@ -100,7 +101,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see addCustomActionForLayer()
      */
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        QgsMapLayer::LayerType type, bool allLayers ) = 0;
+        QgsMapLayerType type, bool allLayers ) = 0;
 
     /**
      * Add action to context menu for a specific layer in the layer tree.
@@ -137,7 +138,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void closeMapCanvas( const QString &name ) = 0;
 
     /**
-     * Returns the toolbar icon size. If \a dockedToolbar is true, the icon size
+     * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size
      * for toolbars contained within docks is returned.
      */
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
@@ -145,7 +146,8 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns vector layers in edit mode
      * \param modified whether to return only layers that have been modified
-     * \returns list of layers in legend order, or empty list */
+     * \returns list of layers in legend order, or empty list
+    */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 
     //! Returns a pointer to the active layer (layer selected in the legend)
@@ -395,8 +397,19 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionDeleteRing() = 0;
     //! Returns the native Delete Part action.
     virtual QAction *actionDeletePart() = 0;
-    //! Returns the native Vertex Tool action.
+
+    /**
+     * Returns the native "Vertex Tool for All Layers" action.
+     * \see actionVertexToolActiveLayer()
+    */
     virtual QAction *actionVertexTool() = 0;
+
+    /**
+     * Returns the native "Vertex Tool for Active Layer" action.
+     * \see actionVertexTool()
+     * \since QGIS 3.6
+    */
+    virtual QAction *actionVertexToolActiveLayer() = 0;
 
     // View menu actions
     //! Returns the native pan action. Call trigger() on it to set the default pan map tool.
@@ -531,11 +544,12 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Take screenshots for user documentation
-     * @param saveDirectory path where the screenshots will be saved
-     * @param categories an int as a flag value of QgsAppScreenShots::Categories
+     *
+     * \param saveDirectory path where the screenshots will be saved
+     * \param categories an int as a flag value of QgsAppScreenShots::Categories
      * \since QGIS 3.4
      */
-    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ); Q_UNUSED( categories );}
+    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ) Q_UNUSED( categories );}
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -597,7 +611,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Set the active layer (layer gets selected in the legend)
-     * returns true if the layer exists, false otherwise
+     * returns TRUE if the layer exists, FALSE otherwise
      */
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 
@@ -798,12 +812,14 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add window to Window menu. The action title is the window title
-     * and the action should raise, unminimize and activate the window. */
+     * and the action should raise, unminimize and activate the window.
+    */
     virtual void addWindow( QAction *action ) = 0;
 
     /**
      * Remove window from Window menu. Calling this is necessary only for
-     * windows which are hidden rather than deleted when closed. */
+     * windows which are hidden rather than deleted when closed.
+    */
     virtual void removeWindow( QAction *action ) = 0;
 
     //! Register action to the shortcuts manager so its shortcut can be changed in GUI
@@ -889,9 +905,9 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
-     * QGIS documentation, set useQgisDocDirectory to false.
+     * QGIS documentation, set useQgisDocDirectory to FALSE.
      * \param url URL to open
-     * \param useQgisDocDirectory If true, the URL will be formed by concatenating
+     * \param useQgisDocDirectory If TRUE, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
      * \deprecated Use QDesktopServices instead
      */
@@ -902,11 +918,11 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Opens a new feature form.
-     * Returns true if dialog was accepted (if shown modal, true otherwise).
+     * Returns true if dialog was accepted (if shown modal, TRUE otherwise).
      * \param l vector layer
      * \param f feature to show/modify
      * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
-     * \param showModal if true, will wait for the dialog to be executed (only shown otherwise)
+     * \param showModal if TRUE, will wait for the dialog to be executed (only shown otherwise)
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 
@@ -968,7 +984,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
       * Checks available datum transforms and ask user if several are available and none
       * is chosen. Dialog is shown only if global option is set accordingly.
-      * \returns true if a datum transform has been specifically chosen by user or only one is available.
+      * \returns TRUE if a datum transform has been specifically chosen by user or only one is available.
       * \since 3.0
       */
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
@@ -984,26 +1000,26 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Emitted whenever current (selected) layer changes.
-     *  The pointer to layer can be null if no layer is selected.
+     *  The pointer to layer can be NULLPTR if no layer is selected.
      */
     void currentLayerChanged( QgsMapLayer *layer );
 
     /**
-     * Signal emitted when the current \a theme is changed so plugins
+     * Emitted when the current \a theme is changed so plugins
      * can change their tool button icons.
      * \since QGIS 3.0
     */
     void currentThemeChanged( const QString &theme );
 
     /**
-     * This signal is emitted when a new layout \a designer has been opened.
+     * Emitted when a new layout \a designer has been opened.
      * \see layoutDesignerWillBeClosed()
      * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
     /**
-     * This signal is emitted before a layout \a designer is going to be closed
+     * Emitted before a layout \a designer is going to be closed
      * and deleted.
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
@@ -1012,7 +1028,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
     /**
-     * This signal is emitted after a layout designer window is closed.
+     * Emitted after a layout designer window is closed.
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
      * \since QGIS 3.0
@@ -1020,7 +1036,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void layoutDesignerClosed();
 
     /**
-     * This signal is emitted when the initialization is complete.
+     * Emitted when the initialization is complete.
      */
     void initializationCompleted();
 
@@ -1043,7 +1059,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void newProjectCreated();
 
     /**
-     * This signal is emitted when a layer has been saved using save as.
+     * Emitted when a layer has been saved using save as.
      * \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );

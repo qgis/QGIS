@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import re
@@ -21,7 +19,7 @@ import osgeo.gdal
 import osgeo.ogr
 import sys
 
-from qgis.core import QgsSettings, QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
+from qgis.core import QgsSettings, QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsWkbTypes
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -203,6 +201,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                     'name = \'apple\'',
                     'name LIKE \'Apple\'',
                     'name LIKE \'aPple\'',
+                    'name LIKE \'Ap_le\'',
+                    'name LIKE \'Ap\\_le\'',
                     '"name"="name2"'])
 
     def testRepack(self):
@@ -482,6 +482,34 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         vl = None
 
+    def testDontRepackOnReload(self):
+        ''' Test fix for #18421 '''
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        feature_count = vl.featureCount()
+        # Start an iterator that will open a new connection
+        iterator = vl.getFeatures()
+        next(iterator)
+
+        # Delete another feature while in update mode
+        vl.dataProvider().enterUpdateMode()
+        vl.dataProvider().reloadData()
+        vl.dataProvider().deleteFeatures([0])
+
+        # Test that repacking has not been done (since in update mode)
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count)
+        ds = None
+
+        vl = None
+
     def testRepackUnderFileLocks(self):
         ''' Test fix for #15570 and #15393 '''
 
@@ -672,6 +700,18 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # This was failing in bug 17863
         self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+    def testMultipatch(self):
+        """Check that we can deal with multipatch shapefiles, returned natively by OGR as GeometryCollection of TIN"""
+
+        testPath = TEST_DATA_DIR + '/' + 'multipatch.shp'
+        vl = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiPolygonZ)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.MultiPolygonZ)
+        self.assertEqual(f.geometry().constGet().asWkt(),
+                         'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 -1 0, 1 -1 0, 0 0 0)),((0 0 0, 1 -1 0, 1 0 0, 0 0 0)))')
 
 
 if __name__ == '__main__':

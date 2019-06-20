@@ -322,7 +322,7 @@ void QgsGrassPlugin::onLayerWasAdded( QgsMapLayer *mapLayer )
 
 void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   resetEditActions();
 }
 
@@ -431,7 +431,7 @@ void QgsGrassPlugin::onFieldsChanged()
   QgsDebugMsg( "uri = " + uri );
   Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
-    if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
+    if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
     {
       continue;
     }
@@ -538,7 +538,7 @@ void QgsGrassPlugin::mapsetChanged()
     }
     catch ( QgsGrass::Exception &e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( "Cannot read GRASS CRS : " + QString( e.what() ) );
       mCrs = QgsCoordinateReferenceSystem();
     }
@@ -626,7 +626,7 @@ void QgsGrassPlugin::onNewLayer( QString uri, QString name )
 
 void QgsGrassPlugin::postRender( QPainter *painter )
 {
-  Q_UNUSED( painter );
+  Q_UNUSED( painter )
   // We have to redraw rectangle, because canvas->mapRenderer()->destinationCrs is set after GRASS plugin constructor! This way it is redrawn also if canvas CRS has changed.
   displayRegion();
 }
@@ -800,7 +800,7 @@ void QgsGrassPlugin::unload()
 
   Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
-    if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
+    if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
     {
       continue;
     }
@@ -850,7 +850,7 @@ void QgsGrassPlugin::unload()
 // Set icons to the current theme
 void QgsGrassPlugin::setCurrentTheme( QString themeName )
 {
-  Q_UNUSED( themeName );
+  Q_UNUSED( themeName )
   if ( mToolBarPointer )
   {
     mOpenMapsetAction->setIcon( getThemeIcon( QStringLiteral( "grass_open_mapset.png" ) ) );

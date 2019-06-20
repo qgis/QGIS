@@ -22,7 +22,7 @@
 #include <QPolygonF>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgscurve.h"
 #include "qgscompoundcurve.h"
 
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * If the \a z vector is filled, then the geometry type will either
      * be a LineStringZ(M) or LineString25D depending on the \a is25DType
-     * argument. If \a is25DType is true (and the \a m vector is unfilled) then
+     * argument. If \a is25DType is TRUE (and the \a m vector is unfilled) then
      * the created Linestring will be a LineString25D type. Otherwise, the
      * LineString will be LineStringZ (or LineStringZM) type.
      *
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
 
     /**
-     * Returns a const pointer to the z vertex data, or a nullptr if the linestring does
+     * Returns a const pointer to the z vertex data, or NULLPTR if the linestring does
      * not have z values.
      * \note Not available in Python bindings
      * \see xData()
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
 
     /**
-     * Returns a const pointer to the m vertex data, or a nullptr if the linestring does
+     * Returns a const pointer to the m vertex data, or NULLPTR if the linestring does
      * not have m values.
      * \note Not available in Python bindings
      * \see xData()
@@ -560,7 +560,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    QString asJson( int precision = 17 ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
 
     //curve interface
     double length() const override;

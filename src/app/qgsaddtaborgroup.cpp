@@ -40,7 +40,8 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
   if ( !mTabs.isEmpty() )
   {
     int i = 0;
-    Q_FOREACH ( const TabPair &tab, mTabs )
+    const auto constMTabs = mTabs;
+    for ( const TabPair &tab : constMTabs )
     {
       mTabList->addItem( tab.first, i );
       ++i;
@@ -115,5 +116,5 @@ void QgsAddTabOrGroup::mTabButton_toggled( bool checked )
 
 void QgsAddTabOrGroup::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#customize-a-form-for-your-data" ) );
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#the-drag-and-drop-designer" ) );
 }

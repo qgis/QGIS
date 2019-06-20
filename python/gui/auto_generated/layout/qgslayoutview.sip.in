@@ -98,14 +98,14 @@ You don't have to call it manually, QgsLayoutViewTool takes care of it.
 %Docstring
 Sets whether a preview effect should be used to alter the view's appearance.
 
-:param enabled: Set to true to enable the preview effect on the view.
+:param enabled: Set to ``True`` to enable the preview effect on the view.
 
 .. seealso:: :py:func:`setPreviewMode`
 %End
 
     bool previewModeEnabled() const;
 %Docstring
-Returns true if a preview effect is being used to alter the view's appearance.
+Returns ``True`` if a preview effect is being used to alter the view's appearance.
 
 .. seealso:: :py:func:`setPreviewModeEnabled`
 %End
@@ -113,7 +113,7 @@ Returns true if a preview effect is being used to alter the view's appearance.
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 %Docstring
 Sets the preview ``mode`` which should be used to modify the view's appearance. Preview modes are only used
-if previewModeEnabled() is true.
+if previewModeEnabled() is ``True``.
 
 .. seealso:: :py:func:`setPreviewModeEnabled`
 
@@ -123,7 +123,7 @@ if previewModeEnabled() is true.
     QgsPreviewEffect::PreviewMode previewMode() const;
 %Docstring
 Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
-if previewModeEnabled() is true.
+if previewModeEnabled() is ``True``.
 
 .. seealso:: :py:func:`setPreviewMode`
 
@@ -164,7 +164,7 @@ Sets a ``provider`` for context menus. Ownership of the provider is transferred 
 
     QgsLayoutViewMenuProvider *menuProvider() const;
 %Docstring
-Returns the provider for context menus. Returned value may be None if no provider is set.
+Returns the provider for context menus. Returned value may be ``None`` if no provider is set.
 
 .. seealso:: :py:func:`setMenuProvider`
 %End
@@ -262,7 +262,7 @@ A list of pasted items is returned.
 
     bool hasItemsInClipboard() const;
 %Docstring
-Returns true if the current clipboard contains layout items.
+Returns ``True`` if the current clipboard contains layout items.
 
 .. seealso:: :py:func:`pasteItems`
 %End
@@ -517,12 +517,12 @@ Emitted when the current ``tool`` is changed.
 
     void zoomLevelChanged();
 %Docstring
-Is emitted whenever the zoom level of the view is changed.
+Emitted whenever the zoom level of the view is changed.
 %End
 
     void cursorPosChanged( QPointF layoutPoint );
 %Docstring
-Is emitted when the mouse cursor coordinates change within the view.
+Emitted when the mouse cursor coordinates change within the view.
 The ``layoutPoint`` argument indicates the cursor position within
 the layout coordinate system.
 %End
@@ -605,7 +605,7 @@ instances to provide custom context menus (opened upon right-click).
 
     virtual QMenu *createContextMenu( QWidget *parent /Transfer/, QgsLayout *layout, QPointF layoutPoint ) const = 0 /Factory/;
 %Docstring
-Returns a newly created menu instance (or null pointer on error)
+Returns a newly created menu instance (or ``None`` on error)
 %End
 };
 

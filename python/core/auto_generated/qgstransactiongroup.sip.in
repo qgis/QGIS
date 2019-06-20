@@ -25,7 +25,7 @@ Constructor for QgsTransactionGroup
 %Docstring
 Add a layer to this transaction group.
 
-Will return true if it is compatible and has been added.
+Will return ``True`` if it is compatible and has been added.
 %End
 
     QSet<QgsVectorLayer *> layers() const;
@@ -37,7 +37,7 @@ Gets the set of layers currently managed by this transaction group.
 
     bool modified() const;
 %Docstring
-Returns true if any of the layers in this group reports a modification.
+Returns ``True`` if any of the layers in this group reports a modification.
 %End
 
     QString connString() const;
@@ -54,7 +54,7 @@ Layers need be compatible when added.
 
     bool isEmpty() const;
 %Docstring
-Returns true if there are no layers in this transaction group.
+Returns ``True`` if there are no layers in this transaction group.
 %End
 
   signals:

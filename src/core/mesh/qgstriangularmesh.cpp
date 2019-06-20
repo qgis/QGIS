@@ -22,47 +22,10 @@
 #include "qgstriangularmesh.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
-#include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
-#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
-
-///@cond PRIVATE
-
-QgsMeshFeatureIterator::QgsMeshFeatureIterator( QgsMesh *mesh )
-  : QgsAbstractFeatureIterator( QgsFeatureRequest() )
-  , mMesh( mesh )
-{}
-
-QgsMeshFeatureIterator::~QgsMeshFeatureIterator() = default;
-
-bool QgsMeshFeatureIterator::rewind()
-{
-  it = 0;
-  return true;
-}
-bool QgsMeshFeatureIterator::close()
-{
-  mMesh = nullptr;
-  return true;
-}
-
-bool QgsMeshFeatureIterator::fetchFeature( QgsFeature &f )
-{
-  if ( !mMesh || mMesh->faces.size() <= it )
-    return false;
-
-  const QgsMeshFace &face = mMesh->faces.at( it ) ;
-  QgsGeometry geom = QgsMeshUtils::toGeometry( face, mMesh->vertices );
-  f.setGeometry( geom );
-  f.setId( it );
-  ++it;
-  return true;
-}
-
-
-///@endcond
+#include "qgsmeshspatialindex.h"
 
 static void ENP_centroid_step( const QPolygonF &pX, double &cx, double &cy, double &signedArea, int i, int i1 )
 {
@@ -108,6 +71,30 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
   cy /= ( 6.0 * signedArea );
 }
 
+
+void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
+{
+  int vertexCount = face.size();
+  if ( vertexCount < 3 )
+    return;
+
+  while ( vertexCount > 3 )
+  {
+    // clip one ear from last 2 and first vertex
+    const QgsMeshFace ear = { face[vertexCount - 2], face[vertexCount - 1], face[0] };
+    mTriangularMesh.faces.push_back( ear );
+    mTrianglesToNativeFaces.push_back( nativeIndex );
+    --vertexCount;
+  }
+
+  const QgsMeshFace triangle = { face[1], face[2], face[0] };
+  mTriangularMesh.faces.push_back( triangle );
+  mTrianglesToNativeFaces.push_back( nativeIndex );
+}
+
+QgsTriangularMesh::~QgsTriangularMesh() = default;
+QgsTriangularMesh::QgsTriangularMesh() = default;
+
 void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 {
   Q_ASSERT( nativeMesh );
@@ -144,7 +131,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
       }
       catch ( QgsCsException &cse )
       {
-        Q_UNUSED( cse );
+        Q_UNUSED( cse )
         QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
         mTriangularMesh.vertices[i] = vertex;
       }
@@ -159,31 +146,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   for ( int i = 0; i < nativeMesh->faces.size(); ++i )
   {
     const QgsMeshFace &face = nativeMesh->faces.at( i ) ;
-    if ( face.size() == 3 )
-    {
-      // triangle
-      mTriangularMesh.faces.push_back( face );
-      mTrianglesToNativeFaces.push_back( i );
-    }
-    else if ( face.size() == 4 )
-    {
-      // quad
-      QgsMeshFace face1;
-      face1.push_back( face[0] );
-      face1.push_back( face[1] );
-      face1.push_back( face[2] );
-
-      mTriangularMesh.faces.push_back( face1 );
-      mTrianglesToNativeFaces.push_back( i );
-
-      QgsMeshFace face2;
-      face2.push_back( face[0] );
-      face2.push_back( face[2] );
-      face2.push_back( face[3] );
-
-      mTriangularMesh.faces.push_back( face2 );
-      mTrianglesToNativeFaces.push_back( i );
-    }
+    triangulate( face, i );
   }
 
   // CALCULATE CENTROIDS
@@ -206,7 +169,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   }
 
   // CALCULATE SPATIAL INDEX
-  mSpatialIndex = QgsSpatialIndex( new QgsMeshFeatureIterator( &mTriangularMesh ) );
+  mSpatialIndex = QgsMeshSpatialIndex( mTriangularMesh );
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
@@ -231,10 +194,9 @@ const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
 
 int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
 {
-  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
-  for ( const QgsFeatureId fid : faceIndexes )
+  const QList<int> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
+  for ( const int faceIndex : faceIndexes )
   {
-    int faceIndex = static_cast<int>( fid );
     const QgsMeshFace &face = mTriangularMesh.faces.at( faceIndex );
     const QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
     if ( geom.contains( &point ) )
@@ -245,14 +207,7 @@ int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
 
 QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &rectangle ) const
 {
-  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( rectangle );
-  QList<int> indexes;
-  for ( const QgsFeatureId fid : faceIndexes )
-  {
-    int faceIndex = static_cast<int>( fid );
-    indexes.append( faceIndex );
-  }
-  return indexes;
+  return mSpatialIndex.intersects( rectangle );
 }
 
 std::unique_ptr< QgsPolygon > QgsMeshUtils::toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )

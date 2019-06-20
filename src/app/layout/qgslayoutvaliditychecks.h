@@ -31,6 +31,20 @@ class APP_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityChec
     QList<QgsValidityCheckResult> mResults;
 };
 
+class APP_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCheck
+{
+  public:
+
+    QgsLayoutNorthArrowValidityCheck *create() const override;
+    QString id() const override;
+    int checkType() const override;
+    bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+
+  private:
+    QList<QgsValidityCheckResult> mResults;
+};
+
 class APP_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityCheck
 {
   public:
@@ -44,3 +58,18 @@ class APP_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityChec
   private:
     QList<QgsValidityCheckResult> mResults;
 };
+
+class APP_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidityCheck
+{
+  public:
+
+    QgsLayoutPictureSourceValidityCheck *create() const override;
+    QString id() const override;
+    int checkType() const override;
+    bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+
+  private:
+    QList<QgsValidityCheckResult> mResults;
+};
+

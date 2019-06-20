@@ -118,7 +118,7 @@ void QgsGpsPlugin::run()
   for ( iter = layers.constBegin();
         iter != layers.constEnd(); ++iter )
   {
-    if ( iter.value()->type() == QgsMapLayer::VectorLayer )
+    if ( iter.value()->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( iter.value() );
       if ( vLayer->providerType() == QLatin1String( "gpx" ) )
@@ -662,7 +662,7 @@ void QgsGpsPlugin::setupBabel()
 //! Sets icons to the current theme
 void QgsGpsPlugin::setCurrentTheme( const QString &themeName )
 {
-  Q_UNUSED( themeName );
+  Q_UNUSED( themeName )
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer/";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/gps_importer/";
   QString myQrcPath = QStringLiteral( ":/" );

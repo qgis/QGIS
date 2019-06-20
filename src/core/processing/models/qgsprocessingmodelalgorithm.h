@@ -57,6 +57,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
     QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const override;
+    QgsExpressionContext createExpressionContext( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source = nullptr ) const override;
 
     /**
      * Sets the model \a name.
@@ -120,7 +121,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     /**
      * Attempts to remove the child algorithm with matching \a id.
-     * Returns true if the algorithm could be removed, or false
+     * Returns TRUE if the algorithm could be removed, or FALSE
      * if the algorithm could not be removed (e.g. due to other
      * child algorithms depending on it).
      * \see deactivateChildAlgorithm()
@@ -139,7 +140,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Attempts to activate the child algorithm with matching \a id.
      * If any child algorithms on which the child depends are not active,
-     * then the child will not be activated and false will be returned.
+     * then the child will not be activated and FALSE will be returned.
      * \see deactivateChildAlgorithm()
      */
     bool activateChildAlgorithm( const QString &id );
@@ -183,14 +184,14 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void removeModelParameter( const QString &name );
 
     /**
-     * Returns true if any child algorithms depend on the model parameter
+     * Returns TRUE if any child algorithms depend on the model parameter
      * with the specified \a name.
      * \see otherParametersDependOnParameter()
      */
     bool childAlgorithmsDependOnParameter( const QString &name ) const;
 
     /**
-     * Returns true if any other model parameters depend on the parameter
+     * Returns TRUE if any other model parameters depend on the parameter
      * with the specified \a name (e.g. field parameters where \a name
      * is the parent layer parameter).
      * \see childAlgorithmsDependOnParameter()
@@ -304,9 +305,13 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void setSourceFilePath( const QString &path );
 
     /**
-     * Attempts to convert the model to executable Python code.
+     * Attempts to convert the model to executable Python code, and returns the generated lines of code.
+     *
+     * The \a outputType argument dictates the desired script type.
+     *
+     * The \a indentSize arguments specifies the size of indented lines.
      */
-    QString asPythonCode() const;
+    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, int indentSize ) const;
 
     /**
      * Returns a list of possible sources which can be used for the parameters for a child
@@ -371,6 +376,28 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
         const QVariantMap &results = QVariantMap() ) const SIP_FACTORY;
 
+    /**
+     * Returns the map of custom expression context variables defined for this model.
+     *
+     * These variables are added to the model's expression context scope, allowing for preset
+     * "constant" expression variables to be utilized within the model.
+     *
+     * \see setVariables()
+     * \since QGIS 3.8
+     */
+    QVariantMap variables() const;
+
+    /**
+     * Sets the map of custom expression context \a variables for this model.
+     *
+     * These variables are added to the model's expression context scope, allowing for preset
+     * "constant" expression variables to be utilized within the model.
+     *
+     * \see variables()
+     * \since QGIS 3.8
+     */
+    void setVariables( const QVariantMap &variables );
+
   protected:
 
     QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
@@ -395,13 +422,15 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     QVariantMap mResults;
 
+    QVariantMap mVariables;
+
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
 
     QVariantMap parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const;
 
     /**
-     * Returns true if an output from a child algorithm is required elsewhere in
+     * Returns TRUE if an output from a child algorithm is required elsewhere in
      * the model.
      */
     bool childOutputIsRequired( const QString &childId, const QString &outputName ) const;
@@ -409,11 +438,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Checks whether the output vector type given by \a outputType is compatible
      * with the list of acceptable data types specified by \a acceptableDataTypes.
-     * Returns true if vector output is compatible.
+     * Returns TRUE if vector output is compatible.
      *
      * \note This method is intended to be "permissive" rather than "restrictive".
      * I.e. we only reject outputs which we know can NEVER be acceptable, but
-     * if there's doubt then we default to returning true.
+     * if there's doubt then we default to returning TRUE.
      */
     static bool vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType );
 

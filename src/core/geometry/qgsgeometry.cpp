@@ -17,6 +17,7 @@ email                : morb at ozemail dot com dot au
 #include <cstdarg>
 #include <cstdio>
 #include <cmath>
+#include <nlohmann/json.hpp>
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -253,7 +254,17 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
     }
     else
     {
-      collected.addPart( g );
+      if ( g.isMultipart() )
+      {
+        for ( auto p = g.const_parts_begin(); p != g.const_parts_end(); ++p )
+        {
+          collected.addPart( ( *p )->clone() );
+        }
+      }
+      else
+      {
+        collected.addPart( g );
+      }
     }
   }
   return collected;
@@ -1261,11 +1272,17 @@ QString QgsGeometry::asWkt( int precision ) const
 
 QString QgsGeometry::asJson( int precision ) const
 {
+  return QString::fromStdString( asJsonObject( precision ).dump() );
+}
+
+json QgsGeometry::asJsonObject( int precision ) const
+{
   if ( !d->geometry )
   {
-    return QStringLiteral( "null" );
+    return nullptr;
   }
-  return d->geometry->asJson( precision );
+  return d->geometry->asJsonObject( precision );
+
 }
 
 QgsGeometry QgsGeometry::convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart ) const
@@ -2457,27 +2474,54 @@ QgsGeometry QgsGeometry::forceRHR() const
 }
 
 
-void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, ValidationMethod method ) const
+void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const ValidationMethod method, const QgsGeometry::ValidityFlags flags ) const
 {
-  QgsGeometryValidator::validateGeometry( *this, errors, method );
+  errors.clear();
+  if ( !d->geometry )
+    return;
+
+  // avoid expensive calcs for trivial point geometries
+  if ( QgsWkbTypes::geometryType( d->geometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return;
+  }
+
+  switch ( method )
+  {
+    case ValidatorQgisInternal:
+      QgsGeometryValidator::validateGeometry( *this, errors, method );
+      return;
+
+    case ValidatorGeos:
+    {
+      QgsGeos geos( d->geometry.get() );
+      QString error;
+      QgsGeometry errorLoc;
+      if ( !geos.isValid( &error, flags & FlagAllowSelfTouchingHoles, &errorLoc ) )
+      {
+        if ( errorLoc.isNull() )
+        {
+          errors.append( QgsGeometry::Error( error ) );
+        }
+        else
+        {
+          const QgsPointXY point = errorLoc.asPoint();
+          errors.append( QgsGeometry::Error( error, point ) );
+        }
+        return;
+      }
+    }
+  }
 }
 
-bool QgsGeometry::isGeosValid() const
+bool QgsGeometry::isGeosValid( const QgsGeometry::ValidityFlags flags ) const
 {
   if ( !d->geometry )
   {
     return false;
   }
 
-  // avoid calling geos for trivial point geometries
-  if ( QgsWkbTypes::geometryType( d->geometry->wkbType() ) == QgsWkbTypes::PointGeometry )
-  {
-    return true;
-  }
-
-  QgsGeos geos( d->geometry.get() );
-  mLastError.clear();
-  return geos.isValid( &mLastError );
+  return d->geometry->isValid( mLastError, static_cast< int >( flags ) );
 }
 
 bool QgsGeometry::isSimple() const

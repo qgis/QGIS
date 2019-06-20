@@ -184,9 +184,30 @@ than the actual visible portion of that layer.
    should never be used to determine the actual visible extent of a map render.
 
 .. seealso:: :py:func:`setExtent`
+
+.. seealso:: :py:func:`mapExtent`
+%End
+
+    QgsRectangle mapExtent() const;
+%Docstring
+Returns the original extent of the map being rendered.
+
+Unlike extent(), this extent is always in the final destination CRS for the map
+render and represents the exact bounds of the map being rendered.
+
+.. seealso:: :py:func:`extent`
+
+.. seealso:: :py:func:`setMapExtent`
+
+.. versionadded:: 3.4.8
 %End
 
     const QgsMapToPixel &mapToPixel() const;
+%Docstring
+Returns the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+
+.. seealso:: :py:func:`setMapToPixel`
+%End
 
     double scaleFactor() const;
 %Docstring
@@ -198,12 +219,24 @@ per millimeter.
 %End
 
     bool renderingStopped() const;
+%Docstring
+Returns ``True`` if the rendering operation has been stopped and any ongoing
+rendering should be canceled immediately.
+
+.. seealso:: :py:func:`setRenderingStopped`
+%End
 
     bool forceVectorOutput() const;
+%Docstring
+Returns ``True`` if rendering operations should use vector operations instead
+of any faster raster shortcuts.
+
+.. seealso:: :py:func:`setForceVectorOutput`
+%End
 
     bool useAdvancedEffects() const;
 %Docstring
-Returns true if advanced effects such as blend modes such be used
+Returns ``True`` if advanced effects such as blend modes such be used
 %End
 
     void setUseAdvancedEffects( bool enabled );
@@ -212,6 +245,11 @@ Used to enable or disable advanced effects such as blend modes
 %End
 
     bool drawEditingInformation() const;
+%Docstring
+Returns ``True`` if edit markers should be drawn during the render operation.
+
+.. seealso:: :py:func:`setDrawEditingInformation`
+%End
 
     double rendererScale() const;
 %Docstring
@@ -223,12 +261,17 @@ for the rendered map, eg 1000.0 for a 1:1000 map render.
 
 
     QColor selectionColor() const;
+%Docstring
+Returns the color to use when rendering selected features.
+
+.. seealso:: :py:func:`setSelectionColor`
+%End
 
     bool showSelection() const;
 %Docstring
-Returns true if vector selections should be shown in the rendered map
+Returns ``True`` if vector selections should be shown in the rendered map
 
-:return: true if selections should be shown
+:return: ``True`` if selections should be shown
 
 .. seealso:: :py:func:`setShowSelection`
 
@@ -251,6 +294,11 @@ Set to an invalid QgsCoordinateTransform to indicate that no transformation is r
 %End
 
     void setMapToPixel( const QgsMapToPixel &mtp );
+%Docstring
+Sets the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+
+.. seealso:: :py:func:`mapToPixel`
+%End
 
     void setExtent( const QgsRectangle &extent );
 %Docstring
@@ -263,11 +311,38 @@ to the map. It may be larger than the actual visible area, but MUST contain at l
 entire visible area.
 
 .. seealso:: :py:func:`setExtent`
+
+.. seealso:: :py:func:`setMapExtent`
+%End
+
+    void setMapExtent( const QgsRectangle &extent );
+%Docstring
+Sets the original ``extent`` of the map being rendered.
+
+Unlike setExtent(), this extent is always in the final destination CRS for the map
+render and represents the exact bounds of the map being rendered.
+
+.. seealso:: :py:func:`mapExtent`
+
+.. seealso:: :py:func:`setExtent`
+
+.. versionadded:: 3.4.8
 %End
 
     void setDrawEditingInformation( bool b );
+%Docstring
+Sets whether edit markers should be drawn during the render operation.
+
+.. seealso:: :py:func:`drawEditingInformation`
+%End
 
     void setRenderingStopped( bool stopped );
+%Docstring
+Sets whether the rendering operation has been ``stopped`` and any ongoing
+rendering should be canceled immediately.
+
+.. seealso:: :py:func:`renderingStopped`
+%End
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
@@ -304,14 +379,26 @@ of any rendering operations.
 %End
 
     void setForceVectorOutput( bool force );
+%Docstring
+Sets whether rendering operations should use vector operations instead
+of any faster raster shortcuts.
+
+.. seealso:: :py:func:`forceVectorOutput`
+%End
+
 
     void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use when rendering selected features.
+
+.. seealso:: :py:func:`selectionColor`
+%End
 
     void setShowSelection( bool showSelection );
 %Docstring
 Sets whether vector selections should be shown in the rendered map
 
-:param showSelection: set to true if selections should be shown
+:param showSelection: set to ``True`` if selections should be shown
 
 .. seealso:: :py:func:`showSelection`
 
@@ -322,7 +409,7 @@ Sets whether vector selections should be shown in the rendered map
 
     bool useRenderingOptimization() const;
 %Docstring
-Returns true if the rendering optimization (geometry simplification) can be executed
+Returns ``True`` if the rendering optimization (geometry simplification) can be executed
 %End
 
     void setUseRenderingOptimization( bool enabled );

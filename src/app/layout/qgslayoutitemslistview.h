@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTITEMSLISTVIEW_H
 #define QGSLAYOUTITEMSLISTVIEW_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QTreeView>
 #include <QSortFilterProxyModel>
 
@@ -38,6 +38,10 @@ class QgsLayoutItemsListViewModel : public QSortFilterProxyModel
 
   public slots:
     void setSelected( const QModelIndex &index );
+
+  protected:
+
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
 

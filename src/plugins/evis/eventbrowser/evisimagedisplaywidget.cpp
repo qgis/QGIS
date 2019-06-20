@@ -185,7 +185,7 @@ void eVisImageDisplayWidget::displayImage()
 */
 void eVisImageDisplayWidget::displayUrlImage( const QString &url )
 {
-  Q_UNUSED( url );
+  Q_UNUSED( url )
 }
 
 /**

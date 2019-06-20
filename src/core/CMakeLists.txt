@@ -3,7 +3,6 @@
 
 SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
-
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -101,6 +100,7 @@ SET(QGIS_CORE_SRCS
   annotations/qgstextannotation.cpp
 
   expression/qgsexpression.cpp
+  expression/qgsexpressioncontextutils.cpp
   expression/qgsexpressionnode.cpp
   expression/qgsexpressionnodeimpl.cpp
   expression/qgsexpressionfunction.cpp
@@ -111,6 +111,7 @@ SET(QGIS_CORE_SRCS
   locator/qgslocatormodel.cpp
   locator/qgslocatormodelbridge.cpp
 
+  processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingcontext.cpp
@@ -152,6 +153,7 @@ SET(QGIS_CORE_SRCS
   qgsattributeeditorelement.cpp
   qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
+  qgsblockingnetworkrequest.cpp
   qgsbrowsermodel.cpp
   qgsbrowserproxymodel.cpp
   qgscachedfeatureiterator.cpp
@@ -257,6 +259,7 @@ SET(QGIS_CORE_SRCS
   qgsnetworkcontentfetcher.cpp
   qgsnetworkcontentfetcherregistry.cpp
   qgsnetworkcontentfetchertask.cpp
+  qgsnetworkreply.cpp
   qgsnetworkreplyparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
@@ -280,6 +283,7 @@ SET(QGIS_CORE_SRCS
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
   qgsprojectversion.cpp
+  qgsprojutils.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
   qgspropertytransformer.cpp
@@ -314,6 +318,7 @@ SET(QGIS_CORE_SRCS
   qgstessellator.cpp
   qgstextlabelfeature.cpp
   qgstextrenderer.cpp
+  qgstilecache.cpp
   qgstolerance.cpp
   qgstracer.cpp
   qgstranslationcontext.cpp
@@ -472,13 +477,15 @@ SET(QGIS_CORE_SRCS
 
   mesh/qgsmeshdataprovider.cpp
   mesh/qgsmeshlayer.cpp
+  mesh/qgsmeshlayerinterpolator.cpp
   mesh/qgsmeshlayerrenderer.cpp
   mesh/qgsmeshlayerutils.cpp
   mesh/qgsmeshmemorydataprovider.cpp
-  mesh/qgstriangularmesh.cpp
-  mesh/qgsmeshlayerinterpolator.cpp
-  mesh/qgsmeshvectorrenderer.cpp
   mesh/qgsmeshrenderersettings.cpp
+  mesh/qgsmeshspatialindex.cpp
+  mesh/qgsmeshvectorrenderer.cpp
+  mesh/qgstriangularmesh.cpp
+  mesh/qgsmeshtimesettings.cpp
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
@@ -599,6 +606,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsactionscoperegistry.h
   qgsanimatedicon.h
   qgsauxiliarystorage.h
+  qgsblockingnetworkrequest.h
   qgsbrowsermodel.h
   qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
@@ -608,6 +616,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataprovider.h
   qgsdatasourceuri.h
   qgsdbfilterproxymodel.h
+  qgsdefaultvalue.h
   qgsfeature.h
   qgsfeedback.h
   qgsfield.h
@@ -823,6 +832,7 @@ SET(QGIS_CORE_HDRS
   ../plugins/qgisplugin.h
 
   expression/qgsexpression.h
+  expression/qgsexpressioncontextutils.h
   expression/qgsexpressionnode.h
   expression/qgsexpressionnodeimpl.h
   expression/qgsexpressionfunction.h
@@ -859,7 +869,6 @@ SET(QGIS_CORE_HDRS
   qgsdatetimestatisticalsummary.h
   qgsdatumtransform.h
   qgsdbfilterproxymodel.h
-  qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditformconfig.h
@@ -913,6 +922,7 @@ SET(QGIS_CORE_HDRS
   qgsmargins.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
+  qgsnetworkreply.h
   qgsobjectcustomproperties.h
   qgsogcutils.h
   qgsoptional.h
@@ -931,6 +941,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectstorageregistry.h
   qgsprojecttranslator.h
   qgsprojectversion.h
+  qgsprojutils.h
   qgsproperty.h
   qgsproperty_p.h
   qgspropertycollection.h
@@ -965,8 +976,10 @@ SET(QGIS_CORE_HDRS
   qgstextrenderer.h
   qgstextrenderer_p.h
   qgsthreadingutils.h
+  qgstilecache.h
   qgstracer.h
   qgstranslationcontext.h
+  qobjectuniqueptr.h 
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h
@@ -1102,12 +1115,14 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandpseudocolorrenderer.h
   raster/qgshillshaderenderer.h
 
-  mesh/qgstriangularmesh.h
-  mesh/qgsmeshlayerrenderer.h
   mesh/qgsmeshlayerinterpolator.h
+  mesh/qgsmeshlayerrenderer.h
   mesh/qgsmeshlayerutils.h
-  mesh/qgsmeshvectorrenderer.h
   mesh/qgsmeshrenderersettings.h
+  mesh/qgsmeshspatialindex.h
+  mesh/qgsmeshvectorrenderer.h
+  mesh/qgstriangularmesh.h
+  mesh/qgsmeshtimesettings.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h
@@ -1208,7 +1223,6 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${LIBZIP_INCLUDE_DIR}
   3d
   annotations
   auth
@@ -1235,17 +1249,18 @@ INCLUDE_DIRECTORIES(
   metadata
   mesh
   validity
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
+  ${PROJ_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
@@ -1308,6 +1323,7 @@ ENDIF(HAVE_OPENCL)
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+  INSTALL(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
 ELSE(NOT APPLE)
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
@@ -1393,6 +1409,8 @@ IF (Qt5Positioning_FOUND)
     Qt5::Positioning
   )
 ENDIF (Qt5Positioning_FOUND)
+
+TARGET_COMPILE_DEFINITIONS(qgis_core PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

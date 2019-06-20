@@ -23,7 +23,7 @@
 
 #include "qgspallabeling.h"
 #include "qgslabelingenginesettings.h"
-
+#include "pal.h"
 
 class QgsLabelingEngine;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Returns ID of associated layer, or empty string if no layer is associated with the provider.
     QString layerId() const { return mLayerId; }
 
-    //! Returns the associated layer, or nullptr if no layer is associated with the provider.
+    //! Returns the associated layer, or NULLPTR if no layer is associated with the provider.
     QgsMapLayer *layer() const { return mLayer.data(); }
 
     /**
@@ -92,9 +92,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
     //! What placement strategy to use for the labels
     QgsPalLayerSettings::Placement placement() const { return mPlacement; }
-
-    //! For layers with linestring geometries - extra placement flags (or-ed combination of QgsPalLayerSettings::LinePlacementFlags)
-    unsigned int linePlacementFlags() const { return mLinePlacementFlags; }
 
     //! Default priority of labels (may be overridden by individual labels)
     double priority() const { return mPriority; }
@@ -121,8 +118,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
     Flags mFlags;
     //! Placement strategy
     QgsPalLayerSettings::Placement mPlacement;
-    //! Extra placement flags for linestring geometries
-    unsigned int mLinePlacementFlags;
     //! Default priority of labels
     double mPriority;
     //! Type of the obstacle of feature geometries
@@ -181,7 +176,7 @@ class CORE_EXPORT QgsLabelingEngine
     QgsLabelingEngine &operator=( const QgsLabelingEngine &rh ) = delete;
 
     //! Associate map settings instance
-    void setMapSettings( const QgsMapSettings &mapSettings ) { mMapSettings = mapSettings; }
+    void setMapSettings( const QgsMapSettings &mapSettings );
     //! Gets associated map settings
     const QgsMapSettings &mapSettings() const { return mMapSettings; }
 
@@ -254,6 +249,18 @@ class CORE_EXPORT QgsLabelingUtils
      * \see encodePredefinedPositionOrder()
      */
     static QVector< QgsPalLayerSettings::PredefinedPointPosition > decodePredefinedPositionOrder( const QString &positionString );
+
+    /**
+     * Encodes line placement \a flags to a string.
+     * \see decodeLinePlacementFlags()
+     */
+    static QString encodeLinePlacementFlags( pal::LineArrangementFlags flags );
+
+    /**
+     * Decodes a \a string to set of line placement flags.
+     * \see encodeLinePlacementFlags()
+     */
+    static pal::LineArrangementFlags decodeLinePlacementFlags( const QString &string );
 
 };
 

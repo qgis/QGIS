@@ -48,7 +48,8 @@ void QgsDateTimeStatisticalSummary::calculate( const QVariantList &values )
 {
   reset();
 
-  Q_FOREACH ( const QVariant &variant, values )
+  const auto constValues = values;
+  for ( const QVariant &variant : constValues )
   {
     addValue( variant );
   }

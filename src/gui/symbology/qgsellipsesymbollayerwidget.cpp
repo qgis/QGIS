@@ -57,10 +57,8 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   btnChangeColorStroke->setShowNoColor( true );
   btnChangeColorStroke->setNoColorString( tr( "Transparent Stroke" ) );
 
-  mFillColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mFillColorDDBtn->registerEnabledWidget( btnChangeColorFill, false );
-  mStrokeColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mStrokeColorDDBtn->registerEnabledWidget( btnChangeColorStroke, false );
+  mFillColorDDBtn->registerLinkedWidget( btnChangeColorFill );
+  mStrokeColorDDBtn->registerLinkedWidget( btnChangeColorStroke );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
@@ -75,7 +73,8 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   mShapeListWidget->setIconSize( QSize( size, size ) );
 
   double markerSize = size * 0.8;
-  Q_FOREACH ( const QString &name, names )
+  const auto constNames = names;
+  for ( const QString &name : constNames )
   {
     QgsEllipseSymbolLayer *lyr = new QgsEllipseSymbolLayer();
     lyr->setSymbolWidthUnit( QgsUnitTypes::RenderPixels );
@@ -201,7 +200,7 @@ void QgsEllipseSymbolLayerWidget::mRotationSpinBox_valueChanged( double d )
 
 void QgsEllipseSymbolLayerWidget::mStrokeStyleComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   if ( mLayer )
   {

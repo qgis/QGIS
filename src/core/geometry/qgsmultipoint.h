@@ -17,7 +17,7 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSMULTIPOINT_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
 
 /**
@@ -38,13 +38,14 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     void clear() override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    QString asJson( int precision = 17 ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     int nCoordinates() const override;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;

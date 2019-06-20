@@ -47,7 +47,7 @@ Initialize layer record with a map layer - it will be stored as a weak pointer
 
         QgsMapLayer *layer() const;
 %Docstring
-Returns map layer or null if the layer does not exist anymore
+Returns map layer or ``None`` if the layer does not exist anymore
 %End
 
         void setLayer( QgsMapLayer *layer );
@@ -120,7 +120,7 @@ Sets whether the map theme contains valid expanded/collapsed state of nodes
         QSet<QString> expandedGroupNodes() const;
 %Docstring
 Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
-The returned value is valid only when hasExpandedStateInfo() returns true.
+The returned value is valid only when hasExpandedStateInfo() returns ``True``.
 Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
 and a forward slash, e.g. "level1/level2"
 

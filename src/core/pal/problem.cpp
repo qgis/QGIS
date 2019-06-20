@@ -1365,7 +1365,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
       }
       catch ( int i )
       {
-        Q_UNUSED( i );
+        Q_UNUSED( i )
         conflicts->clear();
       }
     } // end foreach labelposition
@@ -1645,7 +1645,7 @@ inline Chain *Problem::chain( int seed )
       }
       catch ( int i )
       {
-        Q_UNUSED( i );
+        Q_UNUSED( i )
         conflicts->clear();
       }
     } // end foreach labelposition
@@ -2138,10 +2138,7 @@ void Problem::chain_search()
 
   featWrap = nullptr;
 
-  for ( i = 0; i < nbft; i++ )
-  {
-    ok[i] = false;
-  }
+  std::fill( ok, ok + nbft, false );
 
   //initialization();
   init_sol_falp();

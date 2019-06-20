@@ -69,7 +69,7 @@ Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify() = default;
 
 void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   identifyTool2D->clearResults();
@@ -77,16 +77,20 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolIdentify::activate()
 {
-  Qt3DRender::QObjectPicker *picker = mCanvas->scene()->terrainEntity()->terrainPicker();
-  connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
+  {
+    connect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  }
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
 }
 
 void Qgs3DMapToolIdentify::deactivate()
 {
-  Qt3DRender::QObjectPicker *picker = mCanvas->scene()->terrainEntity()->terrainPicker();
-  disconnect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
+  {
+    disconnect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  }
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
 }
@@ -126,7 +130,7 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
   }
   catch ( QgsException &e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
   }
 
@@ -137,6 +141,8 @@ void Qgs3DMapToolIdentify::onTerrainEntityChanged()
 {
   // no need to disconnect from the previous entity: it has been destroyed
   // start listening to the new terrain entity
-  Qt3DRender::QObjectPicker *picker = mCanvas->scene()->terrainEntity()->terrainPicker();
-  connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
+  {
+    connect( terrainEntity->terrainPicker(), &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+  }
 }

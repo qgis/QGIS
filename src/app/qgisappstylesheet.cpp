@@ -122,7 +122,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   ss += QLatin1String( "QGroupBox{ font-weight: 600; }" );
 
   QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
-  if ( themeName == QStringLiteral( "default" ) )
+  if ( themeName == QStringLiteral( "default" ) || !QgsApplication::uiThemes().contains( themeName ) )
   {
     //sidebar style
     QString style = "QListWidget#mOptionsListWidget {"
@@ -152,19 +152,23 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
         style += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );
       }
     }
-
     ss += style;
+
+    // Fix selection color on losing focus (Windows)
+    const QPalette palette = qApp->palette();
+
+    ss += QString( "QTableView {"
+                   "selection-background-color: %1;"
+                   "selection-color: %2;"
+                   "}" )
+          .arg( palette.highlight().color().name(),
+                palette.highlightedText().color().name() );
+
+    ss += QStringLiteral( "QgsPropertyOverrideButton { background: none; border: 1px solid rgba(0, 0, 0, 0%); } QgsPropertyOverrideButton:focus { border: 1px solid palette(highlight); }" );
+#ifdef Q_OS_MACX
+    ss += QStringLiteral( "QgsPropertyOverrideButton::menu-indicator { width: 5px; }" );
+#endif
   }
-
-  // Fix selection color on losing focus (Windows)
-  const QPalette palette = qApp->palette();
-
-  ss += QString( "QTableView {"
-                 "selection-background-color: %1;"
-                 "selection-color: %2;"
-                 "}" )
-        .arg( palette.highlight().color().name(),
-              palette.highlightedText().color().name() );
 
   QgsDebugMsg( QStringLiteral( "Stylesheet built: %1" ).arg( ss ) );
 

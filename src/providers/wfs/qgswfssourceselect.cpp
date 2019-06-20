@@ -470,7 +470,8 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
 
   QList< QgsSQLComposerDialog::PairNameType> fieldList;
   QString fieldNamePrefix( QgsSQLStatement::quotedIdentifierIfNeeded( typeName ) + "." );
-  Q_FOREACH ( const QgsField &field, p.fields().toList() )
+  const auto constToList = p.fields().toList();
+  for ( const QgsField &field : constToList )
   {
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( field.name() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, field.typeName() );
@@ -599,7 +600,8 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
   {
     fieldNamePrefix = QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) + ".";
   }
-  Q_FOREACH ( const QgsField &field, p.fields().toList() )
+  const auto constToList = p.fields().toList();
+  for ( const QgsField &field : constToList )
   {
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( field.name() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, field.typeName() );
@@ -700,7 +702,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
 
 void QgsWFSSourceSelect::cmbConnections_activated( int index )
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   QgsWfsConnection::setSelectedConnection( cmbConnections->currentText() );
 
   QgsWfsConnection connection( cmbConnections->currentText() );

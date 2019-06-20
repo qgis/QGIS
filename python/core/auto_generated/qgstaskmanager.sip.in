@@ -24,7 +24,7 @@ within the run() method. This method will be called when the
 task commences (ie via calling run() ).
 
 Long running tasks should periodically check the isCanceled() flag to detect if the task
-has been canceled via some external event. If this flag is true then the task should
+has been canceled via some external event. If this flag is ``True`` then the task should
 clean up and terminate at the earliest possible convenience.
 
 .. versionadded:: 3.0
@@ -69,12 +69,12 @@ Returns the flags associated with the task.
 
     bool canCancel() const;
 %Docstring
-Returns true if the task can be canceled.
+Returns ``True`` if the task can be canceled.
 %End
 
     bool isActive() const;
 %Docstring
-Returns true if the task is active, ie it is not complete and has
+Returns ``True`` if the task is active, ie it is not complete and has
 not been canceled.
 %End
 
@@ -184,9 +184,9 @@ Blocks the current thread until the task finishes or a maximum of ``timeout`` mi
 If ``timeout`` is ``0`` the thread will be blocked forever.
 In case of a timeout, the task will still be running.
 In case the task already is finished, the method will return immediately while
-returning ``true``.
+returning ````True````.
 
-The result will be false if the wait timed out and true in any other case.
+The result will be ``False`` if the wait timed out and ``True`` in any other case.
 %End
 
   signals:
@@ -273,7 +273,7 @@ lengthy operations here.
 
     bool isCanceled() const;
 %Docstring
-Will return true if task should terminate ASAP. If the task reports the CanCancel
+Will return ``True`` if task should terminate ASAP. If the task reports the CanCancel
 flag, then derived classes' run() methods should periodically check this and
 terminate in a safe manner.
 %End
@@ -360,7 +360,7 @@ Returns the task with matching ID.
 
 :param id: task ID
 
-:return: task if found, or None
+:return: task if found, or ``None``
 %End
 
     QList<QgsTask *> tasks() const;
@@ -391,14 +391,14 @@ but will instead signal the tasks to cancel and then return immediately.
 
     bool dependenciesSatisfied( long taskId ) const;
 %Docstring
-Returns true if all dependencies for the specified task are satisfied
+Returns ``True`` if all dependencies for the specified task are satisfied
 %End
 
 
     QList< QgsMapLayer * > dependentLayers( long taskId ) const;
 %Docstring
 Returns a list of layers on which as task is dependent. The task will automatically
-be canceled if any of these layers are above to be removed.
+be canceled if any of these layers are about to be removed.
 
 :param taskId: task ID
 

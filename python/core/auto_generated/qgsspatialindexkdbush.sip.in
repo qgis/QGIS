@@ -40,7 +40,7 @@ QgsSpatialIndexKDBush objects are implicitly shared and can be inexpensively cop
 %Docstring
 Constructor - creates KDBush index and bulk loads it with features from the iterator.
 
-The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+The optional ``feedback`` object can be used to allow cancellation of bulk feature loading. Ownership
 of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
 that of the spatial index construction.
 
@@ -51,7 +51,7 @@ Any non-single point features encountered during iteration will be ignored and n
 %Docstring
 Constructor - creates KDBush index and bulk loads it with features from the source.
 
-The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+The optional ``feedback`` object can be used to allow cancellation of bulk feature loading. Ownership
 of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
 that of the spatial index construction.
 

@@ -18,8 +18,6 @@
 #ifndef QGSSQLITEUTILS_H
 #define QGSSQLITEUTILS_H
 
-#define SIP_NO_FILE
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -29,6 +27,8 @@
 struct sqlite3;
 struct sqlite3_stmt;
 class QVariant;
+
+#ifndef SIP_RUN
 
 /**
  * \ingroup core
@@ -151,8 +151,16 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
 };
 
 /**
+ * Wraps sqlite3_mprintf() by automatically freeing the memory.
+ * \note not available in Python bindings.
+ * \since QGIS 3.2
+ */
+QString CORE_EXPORT QgsSqlite3Mprintf( const char *format, ... );
+
+#endif
+
+/**
  * Contains utilities for working with Sqlite data sources.
- * \note not available in Python bindings
  * \ingroup core
  * \since QGIS 3.4
  */
@@ -180,14 +188,13 @@ class CORE_EXPORT QgsSqliteUtils
      * \since QGIS 3.6
      */
     static QString quotedValue( const QVariant &value );
+
+    /**
+     * Returns a string list of SQLite (and spatialite) system tables
+     *
+     * \since QGIS 3.8
+     */
+    static QStringList systemTables();
 };
-
-/**
- * Wraps sqlite3_mprintf() by automatically freeing the memory.
- * \note not available in Python bindings.
- * \since QGIS 3.2
- */
-QString CORE_EXPORT QgsSqlite3Mprintf( const char *format, ... );
-
 
 #endif // QGSSQLITEUTILS_H

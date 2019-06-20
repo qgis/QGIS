@@ -17,7 +17,7 @@
 #define QGSVECTORLAYERUNDOCOMMAND_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QUndoCommand>
 
 #include <QVariant>
@@ -253,6 +253,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandRenameAttribute : public QgsVectorLay
 
   private:
     int mFieldIndex;
+    bool mProviderField;
+    int mOriginIndex;
     QString mOldName;
     QString mNewName;
 };

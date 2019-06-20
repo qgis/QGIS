@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-06-01'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -432,6 +430,28 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
         f5 = next(dp.getFeatures())
         self.assertEqual(f5.attributes(), [1, 'str', 200, QByteArray(bin_4), QByteArray(bin_3)])
+
+    def testUniqueValuesOnFidColumn(self):
+        """Test regression #21311 OGR provider returns an empty set for sqlite uniqueValues"""
+
+        tmpfile = os.path.join(self.basetestpath, 'testSQLiteUniqueValuesOnFidColumn.db')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 2,2 2,2 0,0 0))'))
+        f.SetField('str_field', 'two')
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+        vl1 = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl1.isValid())
+        self.assertEqual(vl1.uniqueValues(0), {1, 2})
+        self.assertEqual(vl1.uniqueValues(1), {'one', 'two'})
 
 
 if __name__ == '__main__':

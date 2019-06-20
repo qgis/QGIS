@@ -50,6 +50,18 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QgsStringMap &properties )
   {
     layer->setSymbolName( properties[ QStringLiteral( "symbol_name" )] );
   }
+  if ( properties.contains( QStringLiteral( "size" ) ) )
+  {
+    layer->setSize( properties[QStringLiteral( "size" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "size_unit" ) ) )
+  {
+    layer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "size_unit" )] ) );
+  }
+  if ( properties.contains( QStringLiteral( "size_map_unit_scale" ) ) )
+  {
+    layer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "size_map_unit_scale" )] ) );
+  }
   if ( properties.contains( QStringLiteral( "symbol_width" ) ) )
   {
     layer->setSymbolWidth( properties[QStringLiteral( "symbol_width" )].toDouble() );
@@ -126,18 +138,6 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QgsStringMap &properties )
   else if ( properties.contains( QStringLiteral( "line_color" ) ) )
   {
     layer->setStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "line_color" )] ) );
-  }
-  if ( properties.contains( QStringLiteral( "size" ) ) )
-  {
-    layer->setSize( properties[QStringLiteral( "size" )].toDouble() );
-  }
-  if ( properties.contains( QStringLiteral( "size_unit" ) ) )
-  {
-    layer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "size_unit" )] ) );
-  }
-  if ( properties.contains( QStringLiteral( "size_map_unit_scale" ) ) )
-  {
-    layer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "size_map_unit_scale" )] ) );
   }
   if ( properties.contains( QStringLiteral( "offset" ) ) )
   {
@@ -591,6 +591,33 @@ void QgsEllipseSymbolLayer::preparePath( const QString &symbolName, QgsSymbolRen
     mPainterPath.lineTo( 0, -size.height() / 2.0 );
     mPainterPath.lineTo( -size.width() / 2.0, size.height() / 2.0 );
   }
+}
+
+void QgsEllipseSymbolLayer::setSize( double size )
+{
+  if ( mSymbolWidth >= mSymbolHeight )
+  {
+    mSymbolHeight = mSymbolHeight * size / mSymbolWidth;
+    mSymbolWidth = size;
+  }
+  else
+  {
+    mSymbolWidth = mSymbolWidth * size / mSymbolHeight;
+    mSymbolHeight = size;
+  }
+  QgsMarkerSymbolLayer::setSize( size );
+}
+
+void QgsEllipseSymbolLayer::setSymbolWidth( double w )
+{
+  mSymbolWidth = w;
+  QgsMarkerSymbolLayer::setSize( mSymbolWidth >= mSymbolHeight ? mSymbolWidth : mSymbolHeight );
+}
+
+void QgsEllipseSymbolLayer::setSymbolHeight( double h )
+{
+  mSymbolHeight = h;
+  QgsMarkerSymbolLayer::setSize( mSymbolWidth >= mSymbolHeight ? mSymbolWidth : mSymbolHeight );
 }
 
 void QgsEllipseSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )

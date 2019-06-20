@@ -319,7 +319,8 @@ QDataStream &operator>>( QDataStream &in, QgsFeature &feature )
 uint qHash( const QgsFeature &key, uint seed )
 {
   uint hash = seed;
-  Q_FOREACH ( const QVariant &attr, key.attributes() )
+  const auto constAttributes = key.attributes();
+  for ( const QVariant &attr : constAttributes )
   {
     hash ^= qHash( attr.toString() );
   }

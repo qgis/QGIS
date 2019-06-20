@@ -26,6 +26,7 @@
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
 #include "qgslogger.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -37,6 +38,7 @@
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgsguiutils.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -194,7 +196,8 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
     {
       if ( index.column() == 0 && category.symbol() )
       {
-        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( 16, 16 ) );
+        const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ) );
       }
       break;
     }
@@ -332,7 +335,7 @@ int QgsCategorizedSymbolRendererModel::rowCount( const QModelIndex &parent ) con
 
 int QgsCategorizedSymbolRendererModel::columnCount( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return 3;
 }
 
@@ -347,7 +350,7 @@ QModelIndex QgsCategorizedSymbolRendererModel::index( int row, int column, const
 
 QModelIndex QgsCategorizedSymbolRendererModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return QModelIndex();
 }
 
@@ -366,7 +369,8 @@ QMimeData *QgsCategorizedSymbolRendererModel::mimeData( const QModelIndexList &i
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -379,8 +383,8 @@ QMimeData *QgsCategorizedSymbolRendererModel::mimeData( const QModelIndexList &i
 
 bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row );
-  Q_UNUSED( column );
+  Q_UNUSED( row )
+  Q_UNUSED( column )
   if ( action != Qt::MoveAction ) return true;
 
   if ( !data->hasFormat( mMimeFormat ) ) return false;
@@ -634,7 +638,8 @@ void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
       return;
     }
 
-    Q_FOREACH ( int idx, selectedCats )
+    const auto constSelectedCats = selectedCats;
+    for ( int idx : constSelectedCats )
     {
       QgsRendererCategory category = mRenderer->categories().value( idx );
 
@@ -909,7 +914,8 @@ QList<int> QgsCategorizedSymbolRendererWidget::selectedCategories()
   QList<int> rows;
   QModelIndexList selectedRows = viewCategories->selectionModel()->selectedRows();
 
-  Q_FOREACH ( const QModelIndex &r, selectedRows )
+  const auto constSelectedRows = selectedRows;
+  for ( const QModelIndex &r : constSelectedRows )
   {
     if ( r.isValid() )
     {
@@ -1096,7 +1102,8 @@ void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
 
     if ( !selectedCats.isEmpty() )
     {
-      Q_FOREACH ( int idx, selectedCats )
+      const auto constSelectedCats = selectedCats;
+      for ( int idx : constSelectedCats )
       {
         QgsSymbol *newCatSymbol = mCategorizedSymbol->clone();
         if ( selectedCats.count() > 1 )
@@ -1160,7 +1167,8 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }

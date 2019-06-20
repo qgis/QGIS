@@ -134,7 +134,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Shows the configuration widget for the specified layout \a item.
      *
-     * If \a bringPanelToFront is true, then the item properties panel will be automatically
+     * If \a bringPanelToFront is TRUE, then the item properties panel will be automatically
      * shown and raised to the top of the interface.
      *
      * \since QGIS 3.4

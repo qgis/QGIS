@@ -134,7 +134,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     void showLog();
 
     /**
-     * Returns true if an algorithm was executed in the dialog.
+     * Returns TRUE if an algorithm was executed in the dialog.
      * \see results()
      * \see setExecuted()
      */
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     /**
      * Reports an \a error string to the dialog's log.
      *
-     * If \a fatalError is true, the error prevented the algorithm from executing.
+     * If \a fatalError is TRUE, the error prevented the algorithm from executing.
      */
     void reportError( const QString &error, bool fatalError );
 

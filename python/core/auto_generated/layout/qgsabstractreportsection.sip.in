@@ -125,8 +125,8 @@ Resets the section, ready for a new iteration.
 
     virtual bool prepareHeader();
 %Docstring
-Called just before rendering the section's header. Should return true if the header
-is to be included for this section, or false to skip the header for the current
+Called just before rendering the section's header. Should return ``True`` if the header
+is to be included for this section, or ``False`` to skip the header for the current
 section.
 
 .. seealso:: :py:func:`prepareFooter`
@@ -134,8 +134,8 @@ section.
 
     virtual bool prepareFooter();
 %Docstring
-Called just before rendering the section's footer. Should return true if the footer
-is to be included for this section, or false to skip the footerfor the current
+Called just before rendering the section's footer. Should return ``True`` if the footer
+is to be included for this section, or ``False`` to skip the footerfor the current
 section.
 
 .. seealso:: :py:func:`prepareHeader`
@@ -143,15 +143,15 @@ section.
 
     virtual QgsLayout *nextBody( bool &ok /Out/ );
 %Docstring
-Returns the next body layout to export, or a None if
+Returns the next body layout to export, or ``None`` if
 no body layout is required this iteration.
 
-``ok`` will be set to false if no bodies remain for this section.
+``ok`` will be set to ``False`` if no bodies remain for this section.
 %End
 
     bool headerEnabled() const;
 %Docstring
-Returns true if the header for the section is enabled.
+Returns ``True`` if the header for the section is enabled.
 
 .. seealso:: :py:func:`setHeaderEnabled`
 
@@ -174,7 +174,7 @@ Sets whether the header for the section is ``enabled``.
     QgsLayout *header();
 %Docstring
 Returns the header for the section. Note that the header is only
-included if headerEnabled() is true.
+included if headerEnabled() is ``True``.
 
 .. seealso:: :py:func:`setHeaderEnabled`
 
@@ -186,7 +186,7 @@ included if headerEnabled() is true.
     void setHeader( QgsLayout *header /Transfer/ );
 %Docstring
 Sets the ``header`` for the section. Note that the header is only
-included if headerEnabled() is true. Ownership of ``header``
+included if headerEnabled() is ``True``. Ownership of ``header``
 is transferred to the report section.
 
 .. seealso:: :py:func:`setHeaderEnabled`
@@ -198,7 +198,7 @@ is transferred to the report section.
 
     bool footerEnabled() const;
 %Docstring
-Returns true if the footer for the section is enabled.
+Returns ``True`` if the footer for the section is enabled.
 
 .. seealso:: :py:func:`setFooterEnabled`
 
@@ -221,7 +221,7 @@ Sets whether the footer for the section is ``enabled``.
     QgsLayout *footer();
 %Docstring
 Returns the footer for the section. Note that the footer is only
-included if footerEnabled() is true.
+included if footerEnabled() is ``True``.
 
 .. seealso:: :py:func:`setFooterEnabled`
 
@@ -233,7 +233,7 @@ included if footerEnabled() is true.
     void setFooter( QgsLayout *footer /Transfer/ );
 %Docstring
 Sets the ``footer`` for the section. Note that the footer is only
-included if footerEnabled() is true. Ownership of ``footer``
+included if footerEnabled() is ``True``. Ownership of ``footer``
 is transferred to the report section.
 
 .. seealso:: :py:func:`setFooterEnabled`

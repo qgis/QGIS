@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '11/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -40,8 +38,9 @@ from qgis.core import QgsProject
 
 
 class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
-
     """QGIS Server WMS Tests for GetFeatureInfo request"""
+
+    #regenerate_reference = True
 
     def testGetFeatureInfo(self):
         # Test getfeatureinfo response xml
@@ -213,6 +212,15 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo-values0-text-xml',
                                  'test_project_values.qgz')
 
+        # Test GetFeatureInfo on raster layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=landsat&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=500&height=500&srs=EPSG%3A3857&' +
+                                 'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
+                                 'query_layers=landsat&X=250&Y=250',
+                                 'wms_getfeatureinfo-raster-text-xml')
+
     def testGetFeatureInfoValueRelation(self):
         """Test GetFeatureInfo resolves "value relation" widget values. regression 18518"""
         mypath = self.testdata_path + "test_project_values.qgz"
@@ -338,6 +346,16 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  urllib.parse.quote(':"NAME" = \'two\''),
                                  'wms_getfeatureinfo_filter_no_width')
 
+        # Test a filter without CRS parameter
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' +
+                                 urllib.parse.quote(':"NAME" = \'two\''),
+                                 'wms_getfeatureinfo_filter_no_crs')
+
     def testGetFeatureInfoTolerance(self):
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=layer3&styles=&' +
@@ -423,6 +441,79 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo_polygon_tolerance_20_text_xml',
                                  'test_project_values.qgz')
 
+    def testGetFeatureInfoJSON(self):
+        # simple test without geometry and info_format=application/json
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo_json',
+                                 normalizeJson=True)
+
+        # simple test without geometry and info_format=application/geo+json
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fgeo%2Bjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo_geojson',
+                                 normalizeJson=True)
+
+        # test with several features and several layers
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9,fields_alias,exclude_attribute&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9,fields_alias,exclude_attribute&' +
+                                 'X=190&Y=320&FEATURE_COUNT=2&FI_POINT_TOLERANCE=200',
+                                 'wms_getfeatureinfo_multiple_json',
+                                 normalizeJson=True)
+
+        # simple test with geometry
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'with_geometry=true',
+                                 'wms_getfeatureinfo_geometry_json',
+                                 normalizeJson=True)
+
+        # test with alias
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=fields_alias&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=fields_alias&X=190&Y=320',
+                                 'wms_getfeatureinfo_alias_json',
+                                 normalizeJson=True)
+
+        # test with excluded attributes
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=exclude_attribute&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=exclude_attribute&X=190&Y=320',
+                                 'wms_getfeatureinfo_exclude_attribute_json',
+                                 normalizeJson=True)
+
+        # test with raster layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=landsat&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=500&height=500&srs=EPSG%3A3857&' +
+                                 'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
+                                 'query_layers=landsat&X=250&Y=250',
+                                 'wms_getfeatureinfo_raster_json',
+                                 normalizeJson=True)
+
     def testGetFeatureInfoPostgresTypes(self):
         # compare json list output with file
         self.wms_request_compare('GetFeatureInfo',
@@ -433,7 +524,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FILTER=json' +
                                  urllib.parse.quote(':"pk" = 1'),
                                  'get_postgres_types_json_list',
-                                 'test_project_postgres_types.qgs')
+                                 'test_project_postgres_types.qgs',
+                                 normalizeJson=True)
 
         # compare dict output with file
         self.wms_request_compare('GetFeatureInfo',
@@ -444,7 +536,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FILTER=json' +
                                  urllib.parse.quote(':"pk" = 2'),
                                  'get_postgres_types_json_dict',
-                                 'test_project_postgres_types.qgs')
+                                 'test_project_postgres_types.qgs',
+                                 normalizeJson=True)
 
         # compare decoded json field list
         response_header, response_body, query_string = self.wms_request('GetFeatureInfo',
@@ -505,6 +598,126 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                     json.loads(
                         attribute.get('value')), {
                         'c': 4.0, 'd': 5.0})
+
+    def testGetFeatureInfoGroupedLayers(self):
+        """Test that we can get feature info from the top and group layers"""
+
+        # areas+and+symbols (not nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=areas+and+symbols' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_areas',
+                                 'test_project_wms_grouped_layers.qgs',
+                                 normalizeJson=True)
+
+        # areas+and+symbols (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=areas+and+symbols' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_areas',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
+
+        # as-areas-short-name
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=as-areas-short-name' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_areas',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
+
+        # Top level:  QGIS Server - Grouped Layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=QGIS+Server+-+Grouped Nested Layer' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_top',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
+
+        # Multiple matches from 2 layer groups
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=areas+and+symbols,city+and+district+boundaries' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_name_areas_cities',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
+
+        # no_query group (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=no_query' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_no_query',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
+
+        # query_child group (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=query_child' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_query_child',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
+
+        # child_ok group (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=child_ok' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_query_child',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
+
+        # as_areas_query_copy == as-areas-short-name-query-copy (nested)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=52.44095517977704901,10.71171069440170776,52.440955186258563,10.71171070552261817' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=2&HEIGHT=2' +
+                                 '&QUERY_LAYERS=as-areas-short-name-query-copy' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=0&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_group_query_child',
+                                 'test_project_wms_grouped_nested_layers.qgs',
+                                 normalizeJson=True)
 
 
 if __name__ == '__main__':

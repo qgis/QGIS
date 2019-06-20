@@ -19,6 +19,7 @@ ENDIF ()
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/external/mdal/cmake ${CMAKE_MODULE_PATH})
 FIND_PACKAGE(HDF5)
 FIND_PACKAGE(NetCDF)
+FIND_PACKAGE(LibXml2)
 
 ########################################################
 # Compile internal MDAL
@@ -41,6 +42,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.cpp
   )
 
   SET(MDAL_LIB_HDRS
@@ -53,6 +55,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.hpp
   )
 
   IF(HDF5_FOUND)
@@ -88,13 +91,16 @@ IF (WITH_INTERNAL_MDAL)
     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.cpp
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.hpp
     )
     SET (HAVE_NETCDF TRUE)
   ENDIF(NETCDF_FOUND)
@@ -107,6 +113,19 @@ IF (WITH_INTERNAL_MDAL)
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_netcdf.hpp
     )
   ENDIF(GDAL_FOUND AND NETCDF_FOUND)
+
+  IF(HDF5_FOUND AND LIBXML2_FOUND)
+    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xml.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xdmf.cpp
+    )
+    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xml.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xdmf.hpp
+    )
+    SET (HAVE_XML TRUE)
+  ENDIF(HDF5_FOUND AND LIBXML2_FOUND)
+
 
   # create mdal_config.h
   CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/external/mdal/cmake_templates/mdal_config.hpp.in ${CMAKE_BINARY_DIR}/mdal_config.hpp)
@@ -133,6 +152,7 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -168,6 +188,12 @@ IF (NETCDF_FOUND)
   TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${NETCDF_INCLUDE_DIR})
   TARGET_LINK_LIBRARIES(mdalprovider ${NETCDF_LIBRARY} )
 ENDIF (NETCDF_FOUND)
+
+IF (LIBXML2_FOUND)
+  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${LIBXML2_INCLUDE_DIR})
+  TARGET_LINK_LIBRARIES(mdalprovider ${LIBXML2_LIBRARIES} )
+  TARGET_COMPILE_DEFINITIONS(mdalprovider PRIVATE ${LIBXML2_DEFINITIONS})
+ENDIF (LIBXML2_FOUND)
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

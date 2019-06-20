@@ -93,6 +93,9 @@ Returns the raster band used for rendering the raster.
     virtual QList<int> usesBands() const;
 
 
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
 Set the source color ``ramp``. Ownership is transferred to the renderer.

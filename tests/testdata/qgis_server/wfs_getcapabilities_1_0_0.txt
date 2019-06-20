@@ -13,12 +13,12 @@ Content-Type: text/xml; charset=utf-8
    <GetCapabilities>
     <DCPType>
      <HTTP>
-      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+      <Get onlineResource="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
-      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+      <Post onlineResource="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
      </HTTP>
     </DCPType>
    </GetCapabilities>
@@ -28,12 +28,12 @@ Content-Type: text/xml; charset=utf-8
     </SchemaDescriptionLanguage>
     <DCPType>
      <HTTP>
-      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+      <Get onlineResource="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
-      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+      <Post onlineResource="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
      </HTTP>
     </DCPType>
    </DescribeFeatureType>
@@ -45,19 +45,19 @@ Content-Type: text/xml; charset=utf-8
     </ResultFormat>
     <DCPType>
      <HTTP>
-      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+      <Get onlineResource="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
-      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+      <Post onlineResource="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
      </HTTP>
     </DCPType>
    </GetFeature>
    <Transaction>
     <DCPType>
      <HTTP>
-      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+      <Post onlineResource="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
      </HTTP>
     </DCPType>
    </Transaction>

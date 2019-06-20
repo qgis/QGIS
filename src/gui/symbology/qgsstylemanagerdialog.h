@@ -28,6 +28,7 @@
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;
+class QgsMessageBar;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -297,7 +298,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QString currentItemName();
 
     //! add a new symbol to style
-    bool addSymbol();
+    bool addSymbol( int symbolType = -1 );
     //! add a new color ramp to style
     bool addColorRamp();
 
@@ -334,7 +335,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     int selectedItemType();
 
     /**
-     * Returns true if the "All" tab is selected.
+     * Returns TRUE if the "All" tab is selected.
      */
     bool allTypesSelected() const;
 
@@ -354,6 +355,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
                           QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
                           bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
 
+    QgsMessageBar *mMessageBar = nullptr;
 
     QgsStyle *mStyle = nullptr;
 
@@ -380,6 +382,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     //! Menu for the "Add item" toolbutton when in colorramp mode
     QMenu *mMenuBtnAddItemColorRamp = nullptr;
+
+    //! Menu for the "Add item" toolbutton when in all symbols mode
+    QMenu *mMenuBtnAddItemAll = nullptr;
 
     QAction *mActionCopyToDefault = nullptr;
 

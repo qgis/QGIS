@@ -21,6 +21,7 @@
 
 #include "qgsmodule.h"
 #include "qgsdxfwriter.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgswmsgetmap.h"
 #include "qgswmsgetstyles.h"
@@ -89,8 +90,8 @@ namespace QgsWms
         const QString req = parameters.request();
         if ( req.isEmpty() )
         {
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Please check the value of the REQUEST parameter" ) );
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
+                                     QStringLiteral( "Please check the value of the REQUEST parameter" ), 501 );
         }
 
         if ( ( mVersion.compare( QLatin1String( "1.1.1" ) ) == 0 \
@@ -152,8 +153,8 @@ namespace QgsWms
         else
         {
           // Operation not supported
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QString( "Request %1 is not supported" ).arg( req ) );
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
+                                     QString( "Request %1 is not supported" ).arg( req ), 501 );
         }
       }
 

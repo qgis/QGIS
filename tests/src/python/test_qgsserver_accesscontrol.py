@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -202,8 +200,13 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
-        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputJpg=False):
+
+        extFile = 'png'
+        if outputJpg:
+            extFile = 'jpg'
+
+        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
 
         with open(temp_image, "wb") as f:
             f.write(image)

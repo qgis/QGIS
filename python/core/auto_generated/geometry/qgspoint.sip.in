@@ -355,8 +355,6 @@ M value is preserved.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual QString asJson( int precision = 17 ) const;
-
     virtual void draw( QPainter &p ) const;
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
@@ -370,6 +368,8 @@ M value is preserved.
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );

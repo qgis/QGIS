@@ -115,7 +115,7 @@ Returns whether the atlas preview mode is enabled in the designer.
 %Docstring
 Shows the configuration widget for the specified layout ``item``.
 
-If ``bringPanelToFront`` is true, then the item properties panel will be automatically
+If ``bringPanelToFront`` is ``True``, then the item properties panel will be automatically
 shown and raised to the top of the interface.
 
 .. versionadded:: 3.4

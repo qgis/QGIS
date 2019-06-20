@@ -57,7 +57,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     /**
      * Constructor - creates KDBush index and bulk loads it with features from the iterator.
      *
-     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * The optional \a feedback object can be used to allow cancellation of bulk feature loading. Ownership
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      *
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     /**
      * Constructor - creates KDBush index and bulk loads it with features from the source.
      *
-     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * The optional \a feedback object can be used to allow cancellation of bulk feature loading. Ownership
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      *

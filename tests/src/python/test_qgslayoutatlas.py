@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '19/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
@@ -368,7 +366,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
             self.assertEqual(self.atlas.currentFilename(), expected)
         self.atlas.endRender()
 
-        # using feature attribute (refs https://issues.qgis.org/issues/19552)
+        # using feature attribute (refs https://github.com/qgis/QGIS/issues/27379)
 
         self.atlas.setFilenameExpression("'output_' || attribute(@atlas_feature,'NAME_1')")
         expected = ['output_Basse-Normandie',

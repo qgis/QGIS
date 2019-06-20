@@ -131,7 +131,8 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
 
 void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefinitionList &list )
 {
-  Q_FOREACH ( const LayerDefinition &item, list )
+  const auto constList = list;
+  for ( const LayerDefinition &item : constList )
   {
     QStringList elements;
     elements << QString::number( item.layerId ) << item.layerName;

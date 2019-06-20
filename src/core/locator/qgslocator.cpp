@@ -179,7 +179,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     connect( clone.get(), &QgsLocatorFilter::resultFetched, clone.get(), [this, filter]( QgsLocatorResult result )
     {
       result.filter = filter;
-      emit filterSentResult( result );
+      filterSentResult( result );
     } );
     clone->prepare( searchString, context );
 

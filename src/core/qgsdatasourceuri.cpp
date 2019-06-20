@@ -31,8 +31,9 @@ QgsDataSourceUri::QgsDataSourceUri()
   // do nothing
 }
 
-QgsDataSourceUri::QgsDataSourceUri( QString uri )
+QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 {
+  QString uri = u;
   int i = 0;
   while ( i < uri.length() )
   {
@@ -588,8 +589,9 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
   mParams.clear();
   QUrl url;
   url.setEncodedQuery( uri );
-  QPair<QString, QString> item;
-  Q_FOREACH ( item, url.queryItems() )
+
+  const auto constQueryItems = url.queryItems();
+  for ( const QPair<QString, QString> &item : constQueryItems )
   {
     mParams.insertMulti( item.first, item.second );
   }
@@ -726,7 +728,8 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
 
 void QgsDataSourceUri::setParam( const QString &key, const QStringList &value )
 {
-  Q_FOREACH ( const QString &val, value )
+  const auto constValue = value;
+  for ( const QString &val : constValue )
   {
     mParams.insertMulti( key, val );
   }

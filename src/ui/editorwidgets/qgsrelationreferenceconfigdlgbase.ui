@@ -76,7 +76,10 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Display expression</string>
+      <string>Display expression Ⓘ</string>
+     </property>
+     <property name="toolTip">
+      <string>This setting is not saved in the style. It is changing the display name on the referenced layer.</string>
      </property>
     </widget>
    </item>

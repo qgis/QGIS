@@ -108,7 +108,7 @@ class CORE_EXPORT QgsRendererCategory
     void setLabel( const QString &label );
 
     /**
-     * Returns true if the category is currently enabled and should be rendered.
+     * Returns TRUE if the category is currently enabled and should be rendered.
      * \see setRenderState()
      * \since QGIS 2.5
      */
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
      *
      * When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
-     * Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+     * Takes ownership of the passed settings objects. NULLPTR is a valid input that disables data-defined
      * size legend.
      * \since QGIS 3.0
      */
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Returns configuration of appearance of legend when using data-defined size for marker symbols.
-     * Will return null if the functionality is disabled.
+     * Will return NULLPTR if the functionality is disabled.
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
@@ -395,8 +395,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * The \a unmatchedSymbols list will be filled with all symbol names from \a style which were not matched
      * to an existing category.
      *
-     * If \a caseSensitive is false, then a case-insensitive match will be performed. If \a useTolerantMatch
-     * is true, then non-alphanumeric characters in style and category names will be ignored during the match.
+     * If \a caseSensitive is FALSE, then a case-insensitive match will be performed. If \a useTolerantMatch
+     * is TRUE, then non-alphanumeric characters in style and category names will be ignored during the match.
      *
      * Returns the count of symbols matched.
      *
@@ -452,12 +452,12 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     /**
      * Returns the matching symbol corresponding to an attribute \a value.
      *
-     * Will return nullptr if no matching symbol was found for \a value, or
+     * Will return NULLPTR if no matching symbol was found for \a value, or
      * if the category corresponding to \a value is currently disabled (see QgsRendererCategory::renderState()).
      *
-     * If \a foundMatchingSymbol is specified then it will be set to true if
+     * If \a foundMatchingSymbol is specified then it will be set to TRUE if
      * a matching category was found. This can be used to differentiate between
-     * a nullptr returned as a result of no matching category vs a nullptr as a result
+     * NULLPTR returned as a result of no matching category vs NULLPTR as a result
      * of disabled categories.
      *
      * \note available in Python bindings as symbolForValue2

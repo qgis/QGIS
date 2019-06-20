@@ -46,12 +46,6 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
   setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
-  QString ss;
-  ss += QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%); } QToolButton:focus { border: 1px solid palette(highlight); }" );
-#ifdef Q_OS_MACX
-  ss += QStringLiteral( "QToolButton::menu-indicator{ width: 5px; }" );
-#endif
-  setStyleSheet( ss );
 
   setIconSize( QSize( iconSize, iconSize ) );
   setPopupMode( QToolButton::InstantPopup );
@@ -146,6 +140,7 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &proper
 
   updateFieldLists();
   updateGui();
+  updateSiblingWidgets( isActive() );
 }
 
 void QgsPropertyOverrideButton::init( int propertyKey, const QgsAbstractPropertyCollection &collection, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer, bool auxiliaryStorageEnabled )
@@ -224,7 +219,8 @@ void QgsPropertyOverrideButton::setVectorLayer( const QgsVectorLayer *layer )
 
 void QgsPropertyOverrideButton::registerCheckedWidget( QWidget *widget, bool natural )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingCheckState )
       return;
@@ -235,7 +231,8 @@ void QgsPropertyOverrideButton::registerCheckedWidget( QWidget *widget, bool nat
 
 void QgsPropertyOverrideButton::registerEnabledWidget( QWidget *widget, bool natural )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingEnableState )
       return;
@@ -246,7 +243,8 @@ void QgsPropertyOverrideButton::registerEnabledWidget( QWidget *widget, bool nat
 
 void QgsPropertyOverrideButton::registerVisibleWidget( QWidget *widget, bool natural )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingVisibility )
       return;
@@ -257,7 +255,8 @@ void QgsPropertyOverrideButton::registerVisibleWidget( QWidget *widget, bool nat
 
 void QgsPropertyOverrideButton::registerExpressionWidget( QWidget *widget )
 {
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingExpressionText )
       return;
@@ -474,7 +473,8 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   {
     QgsExpressionContext context = mExpressionContextGenerator->createExpressionContext();
     QStringList variables = context.variableNames();
-    Q_FOREACH ( const QString &variable, variables )
+    const auto constVariables = variables;
+    for ( const QString &variable : constVariables )
     {
       if ( context.isReadOnly( variable ) ) //only want to show user-set variables
         continue;
@@ -665,7 +665,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
 {
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
-  // build sensible initial expression text - see https://issues.qgis.org/issues/18638
+  // build sensible initial expression text - see https://github.com/qgis/QGIS/issues/26526
   QString currentExpression = ( mProperty.propertyType() == QgsProperty::StaticProperty && !mProperty.staticValue().isValid() ) ? QString()
                               : mProperty.asExpression();
 
@@ -843,24 +843,10 @@ void QgsPropertyOverrideButton::setActivePrivate( bool active )
   }
 }
 
-QgsPropertyOverrideButton::Flags QgsPropertyOverrideButton::flags() const
-{
-  return mFlags;
-}
-
-void QgsPropertyOverrideButton::setFlags( Flags flags )
-{
-  mFlags = flags;
-}
-
 void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
 {
-  if ( state && mFlags & FlagDisableCheckedWidgetOnlyWhenProjectColorSet )
-  {
-    state = mProperty.isProjectColor();
-  }
-
-  Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
+  const auto constMSiblingWidgets = mSiblingWidgets;
+  for ( const SiblingWidget &sw : constMSiblingWidgets )
   {
     switch ( sw.mSiblingType )
     {
@@ -921,11 +907,27 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
         break;
       }
 
-      default:
+      case SiblingLinkedWidget:
+      {
+        if ( QgsColorButton *cb = qobject_cast< QgsColorButton * >( sw.mWidgetPointer.data() ) )
+        {
+          if ( state && mProperty.isProjectColor() )
+          {
+            QRegularExpression rx( QStringLiteral( "^project_color\\('(.*)'\\)$" ) );
+            QRegularExpressionMatch match = rx.match( mExpressionString );
+            if ( match.hasMatch() )
+            {
+              cb->linkToProjectColor( match.captured( 1 ) );
+            }
+          }
+          else
+          {
+            cb->linkToProjectColor( QString() );
+          }
+        }
         break;
+      }
     }
-
-
   }
 }
 
@@ -944,6 +946,27 @@ void QgsPropertyOverrideButton::setActive( bool active )
 void QgsPropertyOverrideButton::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
   mExpressionContextGenerator = generator;
+}
+
+void QgsPropertyOverrideButton::registerLinkedWidget( QWidget *widget )
+{
+  for ( const SiblingWidget &sw : qgis::as_const( mSiblingWidgets ) )
+  {
+    if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingLinkedWidget )
+      return;
+  }
+  mSiblingWidgets.append( SiblingWidget( QPointer<QWidget>( widget ), SiblingLinkedWidget ) );
+
+  if ( QgsColorButton *cb = qobject_cast< QgsColorButton * >( widget ) )
+  {
+    connect( cb, &QgsColorButton::unlinked, this, [ = ]
+    {
+      setActive( false );
+      updateGui();
+    } );
+  }
+
+  updateSiblingWidgets( isActive() );
 }
 
 void QgsPropertyOverrideButton::showHelp()

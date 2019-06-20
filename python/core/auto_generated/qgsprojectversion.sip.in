@@ -37,7 +37,7 @@ Creates a new NULL version
 
     bool isNull() const;
 %Docstring
-Returns true if this is a NULL project version.
+Returns ``True`` if this is a NULL project version.
 %End
 
     bool operator==( const QgsProjectVersion &other ) const;

@@ -181,7 +181,7 @@ TestLayoutItem::TestLayoutItem( QgsLayout *layout )
 
 void TestLayoutItem::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
 {
-  Q_UNUSED( itemStyle );
+  Q_UNUSED( itemStyle )
 
   QgsEffectStack stack;
   stack.appendEffect( new QgsDrawSourceEffect() );

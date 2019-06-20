@@ -43,12 +43,24 @@ QScrollArea itself or its child viewport().
 
     bool hasScrolled() const;
 %Docstring
-Returns true if a scroll recently occurred within
+Returns ``True`` if a scroll recently occurred within
 the QScrollArea or its child viewport()
+%End
+
+    void setVerticalOnly( bool verticalOnly );
+%Docstring
+Sets whether the scroll area only applies vertical.
+
+If set to ``True``, then scroll area children will resize horizontally to match the width of
+the scroll area widget.
+
+.. versionadded:: 3.8
 %End
 
   protected:
     virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void resizeEvent( QResizeEvent *event );
 
 
 };

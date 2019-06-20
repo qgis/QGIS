@@ -48,7 +48,7 @@ class CORE_EXPORT QgsLayoutUtils
 
     /**
      * Ensures that an \a angle (in degrees) is in the range 0 <= angle < 360.
-     * If \a allowNegative is true then angles between (-360, 360) are allowed. If false,
+     * If \a allowNegative is TRUE then angles between (-360, 360) are allowed. If FALSE,
      * angles are converted to positive angles in the range [0, 360).
      */
     static double normalizedAngle( double angle, bool allowNegative = false );
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsLayoutUtils
     /**
      * Decodes a \a string representing a paper orientation and returns the
      * decoded orientation.
-     * If the string was correctly decoded, \a ok will be set to true.
+     * If the string was correctly decoded, \a ok will be set to TRUE.
      */
     static QgsLayoutItemPage::Orientation decodePaperOrientation( const QString &string, bool &ok );
 

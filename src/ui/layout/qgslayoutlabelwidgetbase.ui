@@ -86,6 +86,12 @@
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
            <widget class="QPlainTextEdit" name="mTextEdit">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
+            </property>
             <property name="tabStopWidth">
              <number>10</number>
             </property>

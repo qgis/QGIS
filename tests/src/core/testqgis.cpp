@@ -20,7 +20,8 @@
 #include <memory>
 
 //qgis includes...
-#include <qgis.h>
+#include "qgis.h"
+#include "qgsmaplayermodel.h"
 
 /**
  * \ingroup UnitTests
@@ -46,6 +47,8 @@ class TestQgis : public QObject
     void testQgsAsConst();
     void testQgsRound();
     void testQgsVariantEqual();
+    void testQgsEnumValueToKey();
+    void testQgsEnumKeyToValue();
 
   private:
     QString mReport;
@@ -339,6 +342,8 @@ void TestQgis::testQgsAsConst()
 
 void TestQgis::testQgsRound()
 {
+  QGSCOMPARENEAR( qgsRound( 1234.567, 2 ), 1234.57, 0.01 );
+  QGSCOMPARENEAR( qgsRound( -1234.567, 2 ), -1234.57, 0.01 );
   QGSCOMPARENEAR( qgsRound( 98765432198, 8 ), 98765432198, 1.0 );
   QGSCOMPARENEAR( qgsRound( 98765432198, 9 ), 98765432198, 1.0 );
   QGSCOMPARENEAR( qgsRound( 98765432198, 10 ), 98765432198, 1.0 );
@@ -354,9 +359,9 @@ void TestQgis::testQgsRound()
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 5 ), 9.87654, 0.000001 );
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 6 ), 9.876543, 0.0000001 );
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 7 ), 9.8765432, 0.00000001 );
-  QGSCOMPARENEAR( qgsRound( -9.8765432198765, 7 ), -9.876543, 0.000001 );
+  QGSCOMPARENEAR( qgsRound( -9.8765432198765, 7 ), -9.8765432, 0.0000001 );
   QGSCOMPARENEAR( qgsRound( 9876543.2198765, 5 ), 9876543.219880, 0.000001 );
-  QGSCOMPARENEAR( qgsRound( -9876543.2198765, 5 ), -9876543.219870, 0.000001 );
+  QGSCOMPARENEAR( qgsRound( -9876543.2198765, 5 ), -9876543.219880, 0.000001 );
   QGSCOMPARENEAR( qgsRound( 9.87654321987654321, 13 ), 9.87654321987654, 0.0000000000001 );
   QGSCOMPARENEAR( qgsRound( 9.87654321987654321, 14 ), 9.876543219876543, 0.00000000000001 );
   QGSCOMPARENEAR( qgsRound( 9998.87654321987654321, 14 ), 9998.876543219876543, 0.00000000000001 );
@@ -388,9 +393,18 @@ void TestQgis::testQgsVariantEqual()
   // NULL identities
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Double ), QVariant( QVariant::Double ) ) );
-
-
 }
+
+void TestQgis::testQgsEnumValueToKey()
+{
+  QCOMPARE( qgsEnumValueToKey<QgsMapLayerModel::ItemDataRole>( QgsMapLayerModel::LayerRole ), QStringLiteral( "LayerRole" ) );
+}
+void TestQgis::testQgsEnumKeyToValue()
+{
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "LayerRole" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerRole );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "UnknownKey" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
+}
+
 
 
 QGSTEST_MAIN( TestQgis )

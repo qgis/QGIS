@@ -83,7 +83,6 @@ struct QgsPostgresLayerProperty
   bool                          isMaterializedView = false;
   QString                       tableComment;
 
-
   // TODO: rename this !
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
@@ -121,14 +120,16 @@ struct QgsPostgresLayerProperty
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( QgsWkbTypes::Type type, types )
+    const auto constTypes = types;
+    for ( QgsWkbTypes::Type type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += '|';
       typeString += QString::number( type );
     }
     QString sridString;
-    Q_FOREACH ( int srid, srids )
+    const auto constSrids = srids;
+    for ( int srid : constSrids )
     {
       if ( !sridString.isEmpty() )
         sridString += '|';
@@ -168,8 +169,8 @@ class QgsPostgresResult
 
     int PQnfields();
     QString PQfname( int col );
-    int PQftable( int col );
-    int PQftype( int col );
+    Oid PQftable( int col );
+    Oid PQftype( int col );
     int PQfmod( int col );
     int PQftablecol( int col );
     Oid PQoidValue();
@@ -228,7 +229,7 @@ class QgsPostgresConn : public QObject
     int pgVersion() { return mPostgresqlVersion; }
 
     //! run a query and free result buffer
-    bool PQexecNR( const QString &query, bool retry = true );
+    bool PQexecNR( const QString &query );
 
     //! cursor handling
     bool openCursor( const QString &cursorName, const QString &declare );
@@ -245,7 +246,7 @@ class QgsPostgresConn : public QObject
     //
 
     // run a query and check for errors, thread-safe
-    PGresult *PQexec( const QString &query, bool logError = true ) const;
+    PGresult *PQexec( const QString &query, bool logError = true, bool retry = true ) const;
     void PQfinish();
     QString PQerrorMessage() const;
     int PQstatus() const;
@@ -281,6 +282,12 @@ class QgsPostgresConn : public QObject
      * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value );
+
+    /**
+     * Quote a json(b) value for placement in a SQL string.
+     * \note a null value will be represented as a NULL and not as a json null.
+     */
+    static QString quotedJsonValue( const QVariant &value );
 
     /**
      * Gets the list of supported layers
@@ -431,7 +438,7 @@ class QgsPostgresConn : public QObject
 
     int mNextCursorId;
 
-    bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
+    bool mShared; //!< Whether the connection is shared by more providers (must not be if going to be used in worker threads)
 
     bool mTransaction;
 

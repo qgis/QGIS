@@ -210,6 +210,24 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( lst3.count(), 2 );
     }
 
+    void testVerticesInTolerance()
+    {
+      QgsPointLocator loc( mVL );
+      QgsPointLocator::MatchList lst = loc.verticesInRect( QgsPointXY( 0, 2 ), 0.5 );
+      QCOMPARE( lst.count(), 0 );
+
+      QgsPointLocator::MatchList lst2 = loc.verticesInRect( QgsPointXY( 0, 1.5 ), 0.5 );
+      QCOMPARE( lst2.count(), 2 );  // one matching point, but it is the first point in ring, so it is duplicated
+      QCOMPARE( lst2[0].vertexIndex(), 0 );
+      QCOMPARE( lst2[1].vertexIndex(), 3 );
+
+      QgsPointLocator::MatchList lst3 = loc.verticesInRect( QgsPointXY( 0, 1.5 ), 1 );
+      QCOMPARE( lst3.count(), 3 );
+      QCOMPARE( lst3[0].vertexIndex(), 0 );
+      QCOMPARE( lst3[1].vertexIndex(), 2 );
+      QCOMPARE( lst3[2].vertexIndex(), 3 );
+    }
+
 
     void testLayerUpdates()
     {

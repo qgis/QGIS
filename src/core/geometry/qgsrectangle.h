@@ -19,6 +19,7 @@
 #define QGSRECTANGLE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <iosfwd>
 #include <QDomDocument>
 #include <QRectF>
@@ -322,7 +323,7 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
-     * Returns true when rectangle intersects with other rectangle.
+     * Returns TRUE when rectangle intersects with other rectangle.
      */
     bool intersects( const QgsRectangle &rect ) const
     {
@@ -336,7 +337,7 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
-     * Returns true when rectangle contains other rectangle.
+     * Returns TRUE when rectangle contains other rectangle.
      */
     bool contains( const QgsRectangle &rect ) const
     {
@@ -344,7 +345,7 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
-     * Returns true when rectangle contains a point.
+     * Returns TRUE when rectangle contains a point.
      */
     bool contains( const QgsPointXY &p ) const
     {
@@ -419,7 +420,7 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle &operator+=( QgsVector v );
 
     /**
-     * Returns true if the rectangle is empty.
+     * Returns TRUE if the rectangle is empty.
      * An empty rectangle may still be non-null if it contains valid information (e.g. bounding box of a point).
      */
     bool isEmpty() const
@@ -472,7 +473,7 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Comparison operator
-     * \returns True if rectangles are equal
+     * \returns TRUE if rectangles are equal
      */
     bool operator==( const QgsRectangle &r1 ) const
     {
@@ -484,7 +485,7 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Comparison operator
-     * \returns False if rectangles are equal
+     * \returns FALSE if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const
     {
@@ -509,8 +510,8 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
-     * Returns true if the rectangle has finite boundaries. Will
-     * return false if any of the rectangle boundaries are NaN or Inf.
+     * Returns TRUE if the rectangle has finite boundaries. Will
+     * return FALSE if any of the rectangle boundaries are NaN or Inf.
      */
     bool isFinite() const
     {

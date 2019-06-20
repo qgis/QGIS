@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 from qgis.core import (
@@ -275,6 +273,21 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(myMemoryLayer.fields().field('size').length(), 12)
         self.assertEqual(myMemoryLayer.fields().field('size').precision(), 9)
 
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=size:double(-1,-1)&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('size').length(), -1)
+        self.assertEqual(myMemoryLayer.fields().field('size').precision(), -1)
+
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=size:string(-1)&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('size').length(), -1)
+
     def testFromUriWithEncodedField(self):
         """Test we can construct the mem provider from a uri when a field name is encoded"""
         layer = QgsVectorLayer(
@@ -419,6 +432,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         for i in range(len(fields)):
             self.assertEqual(layer.fields()[i].name(), fields[i].name())
             self.assertEqual(layer.fields()[i].type(), fields[i].type())
+            self.assertEqual(layer.fields()[i].length(), fields[i].length())
+            self.assertEqual(layer.fields()[i].precision(), fields[i].precision(), fields[i].name())
 
         # unsupported field type
         fields = QgsFields()
@@ -428,6 +443,22 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(layer.fields().isEmpty())
         self.assertEqual(layer.fields()[0].name(), 'rect')
         self.assertEqual(layer.fields()[0].type(), QVariant.String) # should be mapped to string
+
+        # field precision
+        fields = QgsFields()
+        fields.append(QgsField("string", QVariant.String, len=10))
+        fields.append(QgsField("long", QVariant.LongLong, len=6))
+        fields.append(QgsField("double", QVariant.Double, len=10, prec=7))
+        fields.append(QgsField("double2", QVariant.Double, len=-1, prec=-1))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.fields().isEmpty())
+        self.assertEqual(len(layer.fields()), len(fields))
+        for i in range(len(fields)):
+            self.assertEqual(layer.fields()[i].name(), fields[i].name())
+            self.assertEqual(layer.fields()[i].type(), fields[i].type())
+            self.assertEqual(layer.fields()[i].length(), fields[i].length())
+            self.assertEqual(layer.fields()[i].precision(), fields[i].precision())
 
     def testThreadSafetyWithIndex(self):
         layer = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',

@@ -21,10 +21,6 @@ __author__ = 'Pedro Venancio'
 __date__ = 'February 2015'
 __copyright__ = '(C) 2015, Pedro Venancio'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -128,23 +124,17 @@ class gdaltindex(GdalAlgorithm):
         target_crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
-
-        layers = []
-        for layer in input_layers:
-            if layer.type() != QgsMapLayer.RasterLayer:
-                raise QgsProcessingException(
-                    self.tr('All layers must be raster layers!'))
-            layers.append(layer.source())
 
         arguments = []
         arguments.append('-tileindex')
         arguments.append(self.parameterAsString(parameters, self.PATH_FIELD_NAME, context))
 
-        if self.parameterAsBool(parameters, self.ABSOLUTE_PATH, context):
+        if self.parameterAsBoolean(parameters, self.ABSOLUTE_PATH, context):
             arguments.append('-write_absolute_path')
 
-        if self.parameterAsBool(parameters, self.PROJ_DIFFERENCE, context):
+        if self.parameterAsBoolean(parameters, self.PROJ_DIFFERENCE, context):
             arguments.append('-skip_different_projection')
 
         if crs_field:
@@ -161,6 +151,11 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-f {}'.format(outFormat))
 
         arguments.append(output)
-        arguments.append(' '.join(layers))
+
+        # Always write input files to a text file in case there are many of them and the
+        # length of the command will be longer then allowed in command prompt
+        list_file = GdalUtils.writeLayerParameterToTextFile(filename='tile_index_files.txt', alg=self, parameters=parameters, parameter_name=self.LAYERS, context=context, quote=True, executing=executing)
+        arguments.append('--optfile')
+        arguments.append(list_file)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

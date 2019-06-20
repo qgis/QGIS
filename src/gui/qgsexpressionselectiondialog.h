@@ -17,7 +17,7 @@
 #define QGSEXPRESSIONSELECTIONDIALOG_H
 
 #include "ui_qgsexpressionselectiondialogbase.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgshelp.h"
 
 #include <QDialog>

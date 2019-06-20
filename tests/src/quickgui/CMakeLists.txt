@@ -27,10 +27,12 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/native
     ${CMAKE_SOURCE_DIR}/src/quickgui
     ${CMAKE_SOURCE_DIR}/src/test
+    ${CMAKE_SOURCE_DIR}/external
 
     ${CMAKE_BINARY_DIR}/src/core
     ${CMAKE_BINARY_DIR}/src/native
     ${CMAKE_BINARY_DIR}/src/quickgui
+
 )
 
 INCLUDE_DIRECTORIES(SYSTEM

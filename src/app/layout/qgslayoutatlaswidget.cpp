@@ -63,7 +63,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   {
     mAtlasFileFormat->addItem( QString( formats.at( i ) ) );
   }
-  connect( mAtlasFileFormat, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { changeFileFormat(); } );
+  connect( mAtlasFileFormat, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { changeFileFormat(); } );
 
   updateGuiElements();
 }

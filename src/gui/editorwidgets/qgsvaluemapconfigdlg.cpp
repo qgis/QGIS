@@ -112,7 +112,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 
 void QgsValueMapConfigDlg::vCellChanged( int row, int column )
 {
-  Q_UNUSED( column );
+  Q_UNUSED( column )
   if ( row == tableWidget->rowCount() - 1 )
   {
     tableWidget->insertRow( row + 1 );

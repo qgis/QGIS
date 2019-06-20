@@ -98,7 +98,7 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
     //! Creates a single dataset with custom number
     void number( QgsMeshMemoryDatasetGroup &group1, double val ) const;
 
-    //! If condition is true (for given time&point), takes val from trueGroup else from falseGroup
+    //! If condition is TRUE (for given time&point), takes val from trueGroup else from falseGroup
     void addIf( QgsMeshMemoryDatasetGroup &trueGroup,
                 const QgsMeshMemoryDatasetGroup &falseGroup,
                 const QgsMeshMemoryDatasetGroup &condition ) const;
@@ -202,7 +202,7 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
 
     /**
      * Find dataset group in provider with the name and copy all values to
-     * memory dataset group. Returns nullptr if no such dataset group
+     * memory dataset group. Returns NULLPTR if no such dataset group
      * exists
      */
     std::shared_ptr<QgsMeshMemoryDatasetGroup> create( const QString &datasetGroupName ) const;

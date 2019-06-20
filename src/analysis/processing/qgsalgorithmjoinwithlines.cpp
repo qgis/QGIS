@@ -130,7 +130,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   if ( fieldHubIndex < 0 || fieldSpokeIndex < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid ID field" ) );
 
-  const bool geodesic = parameterAsBool( parameters, QStringLiteral( "GEODESIC" ), context );
+  const bool geodesic = parameterAsBoolean( parameters, QStringLiteral( "GEODESIC" ), context );
   const double geodesicDistance = parameterAsDouble( parameters, QStringLiteral( "GEODESIC_DISTANCE" ), context ) * 1000;
   bool dynamicGeodesicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "GEODESIC_DISTANCE" ) );
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, hubSource.get() );
@@ -140,7 +140,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
     geodesicDistanceProperty = parameters.value( QStringLiteral( "GEODESIC_DISTANCE" ) ).value< QgsProperty >();
   }
 
-  const bool splitAntimeridian = parameterAsBool( parameters, QStringLiteral( "ANTIMERIDIAN_SPLIT" ), context );
+  const bool splitAntimeridian = parameterAsBoolean( parameters, QStringLiteral( "ANTIMERIDIAN_SPLIT" ), context );
   QgsDistanceArea da;
   da.setSourceCrs( hubSource->sourceCrs(), context.transformContext() );
   da.setEllipsoid( context.project()->ellipsoid() );
@@ -219,7 +219,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
-                                          outType, hubSource->sourceCrs() ) );
+                                          outType, hubSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 

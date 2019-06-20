@@ -17,7 +17,7 @@
 #define QGSSEARCHWIDGETTOOLBUTTON_H
 
 #include "editorwidgets/core/qgssearchwidgetwrapper.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QToolButton>
 #include "qgis_gui.h"
 
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     QgsSearchWidgetWrapper::FilterFlags activeFlags() const { return mFilterFlags; }
 
     /**
-     * Returns true if the widget is set to be included in the search.
+     * Returns TRUE if the widget is set to be included in the search.
      * \see setInactive()
      * \see setActive()
      */

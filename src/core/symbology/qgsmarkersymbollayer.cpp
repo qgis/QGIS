@@ -168,7 +168,7 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
 
 void QgsSimpleMarkerSymbolLayerBase::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRenderContext &context )
@@ -1101,8 +1101,8 @@ void QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
 
 QString QgsSimpleMarkerSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
 {
-  Q_UNUSED( mmScaleFactor );
-  Q_UNUSED( mapUnitScaleFactor );
+  Q_UNUSED( mmScaleFactor )
+  Q_UNUSED( mapUnitScaleFactor )
 #if 0
   QString ogrType = "3"; //default is circle
   if ( mName == "square" )
@@ -1210,7 +1210,7 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
 
 void QgsSimpleMarkerSymbolLayer::drawMarker( QPainter *p, QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( mPolygon.count() != 0 )
   {
@@ -1224,7 +1224,7 @@ void QgsSimpleMarkerSymbolLayer::drawMarker( QPainter *p, QgsSymbolRenderContext
 
 bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
-  Q_UNUSED( mmMapUnitScaleFactor );
+  Q_UNUSED( mmMapUnitScaleFactor )
 
   //data defined size?
   double size = mSize;
@@ -1645,6 +1645,15 @@ QSet<QString> QgsFilledMarkerSymbolLayer::usedAttributes( const QgsRenderContext
   return attr;
 }
 
+bool QgsFilledMarkerSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mFill && mFill->hasDataDefinedProperties() )
+    return true;
+  return false;
+}
+
 void QgsFilledMarkerSymbolLayer::setColor( const QColor &c )
 {
   mColor = c;
@@ -1941,12 +1950,12 @@ QString QgsSvgMarkerSymbolLayer::layerType() const
 void QgsSvgMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QgsMarkerSymbolLayer::startRender( context ); // get anchor point expressions
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsSvgMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
@@ -2073,7 +2082,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
 
   if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
   {
-    // workaround issue with nested QPictures forgetting antialiasing flag - see https://issues.qgis.org/issues/14960
+    // workaround issue with nested QPictures forgetting antialiasing flag - see https://github.com/qgis/QGIS/issues/22909
     p->setRenderHint( QPainter::Antialiasing );
   }
 
@@ -2347,9 +2356,6 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
 
 bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
-  Q_UNUSED( layerName );
-  Q_UNUSED( shift ); //todo...
-
   //size
   double size = mSize;
 
@@ -2379,8 +2385,6 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     size *= mmMapUnitScaleFactor;
   }
 
-  double halfSize = size / 2.0;
-
   //offset, angle
   QPointF offset = mOffset;
 
@@ -2402,7 +2406,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     context.setOriginalValueVariable( mAngle );
     angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle ) + mLineAngle;
   }
-  //angle = -angle; //rotation in Qt is counterclockwise
+
   if ( angle )
     outputOffset = _rotatedOffset( outputOffset, angle );
 
@@ -2441,17 +2445,15 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, strokeColor, strokeWidth,
                                  context.renderContext().scaleFactor(), mFixedAspectRatio );
 
-  //if current entry image is 0: cache image for entry
-  // checks to see if image will fit into cache
-  //update stats for memory usage
   QSvgRenderer r( svgContent );
   if ( !r.isValid() )
-  {
     return false;
-  }
 
   QgsDxfPaintDevice pd( &e );
   pd.setDrawingSize( QSizeF( r.defaultSize() ) );
+
+  QSizeF outSize( r.defaultSize() );
+  outSize.scale( size, size, Qt::KeepAspectRatio );
 
   QPainter p;
   p.begin( &pd );
@@ -2462,7 +2464,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     p.translate( -r.defaultSize().width() / 2.0, -r.defaultSize().height() / 2.0 );
   }
   pd.setShift( shift + QPointF( outputOffset.x(), -outputOffset.y() ) );
-  pd.setOutputSize( QRectF( -halfSize, -halfSize, size, size ) );
+  pd.setOutputSize( QRectF( -outSize.width() / 2.0, -outSize.height() / 2.0, outSize.width(), outSize.height() ) );
   pd.setLayer( layerName );
   r.render( &p );
   p.end();
@@ -2921,10 +2923,10 @@ QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
 
 //////////
 
-QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, QChar chr, double pointSize, const QColor &color, double angle )
+QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, QString chr, double pointSize, const QColor &color, double angle )
 {
   mFontFamily = fontFamily;
-  mChr = chr;
+  mString = chr;
   mColor = color;
   mAngle = angle;
   mSize = pointSize;
@@ -2946,7 +2948,7 @@ QgsFontMarkerSymbolLayer::~QgsFontMarkerSymbolLayer()
 QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QgsStringMap &props )
 {
   QString fontFamily = DEFAULT_FONTMARKER_FONT;
-  QChar chr = DEFAULT_FONTMARKER_CHR;
+  QString string = DEFAULT_FONTMARKER_CHR;
   double pointSize = DEFAULT_FONTMARKER_SIZE;
   QColor color = DEFAULT_FONTMARKER_COLOR;
   double angle = DEFAULT_FONTMARKER_ANGLE;
@@ -2954,7 +2956,7 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QgsStringMap &props )
   if ( props.contains( QStringLiteral( "font" ) ) )
     fontFamily = props[QStringLiteral( "font" )];
   if ( props.contains( QStringLiteral( "chr" ) ) && props[QStringLiteral( "chr" )].length() > 0 )
-    chr = props[QStringLiteral( "chr" )].at( 0 );
+    string = props[QStringLiteral( "chr" )];
   if ( props.contains( QStringLiteral( "size" ) ) )
     pointSize = props[QStringLiteral( "size" )].toDouble();
   if ( props.contains( QStringLiteral( "color" ) ) )
@@ -2962,7 +2964,7 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QgsStringMap &props )
   if ( props.contains( QStringLiteral( "angle" ) ) )
     angle = props[QStringLiteral( "angle" )].toDouble();
 
-  QgsFontMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, chr, pointSize, color, angle );
+  QgsFontMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, string, pointSize, color, angle );
 
   if ( props.contains( QStringLiteral( "outline_color" ) ) )
     m->setStrokeColor( QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "outline_color" )] ) );
@@ -3016,31 +3018,31 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mFont.setPixelSize( context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale ) );
   delete mFontMetrics;
   mFontMetrics = new QFontMetrics( mFont );
-  mChrWidth = mFontMetrics->width( mChr );
+  mChrWidth = mFontMetrics->width( mString );
   mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
   mOrigSize = mSize; // save in case the size would be data defined
 }
 
 void QgsFontMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 }
 
 QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &context, QPointF &charOffset, double &charWidth )
 {
   charOffset = mChrOffset;
-  QString charToRender = mChr;
+  QString stringToRender = mString;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCharacter ) )
   {
-    context.setOriginalValueVariable( mChr );
-    charToRender = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCharacter, context.renderContext().expressionContext(), mChr );
-    if ( charToRender != mChr )
+    context.setOriginalValueVariable( mString );
+    stringToRender = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCharacter, context.renderContext().expressionContext(), mString );
+    if ( stringToRender != mString )
     {
-      charWidth = mFontMetrics->width( charToRender );
+      charWidth = mFontMetrics->width( stringToRender );
       charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
     }
   }
-  return charToRender;
+  return stringToRender;
 }
 
 void QgsFontMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &context,
@@ -3208,7 +3210,7 @@ QgsStringMap QgsFontMarkerSymbolLayer::properties() const
 {
   QgsStringMap props;
   props[QStringLiteral( "font" )] = mFontFamily;
-  props[QStringLiteral( "chr" )] = mChr;
+  props[QStringLiteral( "chr" )] = mString;
   props[QStringLiteral( "size" )] = QString::number( mSize );
   props[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
   props[QStringLiteral( "size_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
@@ -3229,7 +3231,7 @@ QgsStringMap QgsFontMarkerSymbolLayer::properties() const
 
 QgsFontMarkerSymbolLayer *QgsFontMarkerSymbolLayer::clone() const
 {
-  QgsFontMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( mFontFamily, mChr, mSize, mColor, mAngle );
+  QgsFontMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( mFontFamily, mString, mSize, mColor, mAngle );
   m->setStrokeColor( mStrokeColor );
   m->setStrokeWidth( mStrokeWidth );
   m->setStrokeWidthUnit( mStrokeWidthUnit );
@@ -3254,7 +3256,7 @@ void QgsFontMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &e
   element.appendChild( graphicElem );
 
   QString fontPath = QStringLiteral( "ttf://%1" ).arg( mFontFamily );
-  int markIndex = mChr.unicode();
+  int markIndex = !mString.isEmpty() ? mString.at( 0 ).unicode() : 0;
   double size = QgsSymbolLayerUtils::rescaleUom( mSize, mSizeUnit, props );
   QgsSymbolLayerUtils::externalMarkerToSld( doc, graphicElem, fontPath, QStringLiteral( "ttf" ), &markIndex, mColor, size );
 
@@ -3353,7 +3355,7 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
   offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
 
-  QgsMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, chr, size, color );
+  QgsMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, QChar( chr ), size, color );
   m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   m->setAngle( angle );
   m->setOffset( offset );

@@ -157,7 +157,7 @@ Renders a portion of the multiframe's content into a render ``context``.
 %Docstring
 Adds a ``frame`` to the multiframe.
 
-If ``recalcFrameSizes`` is set to true, then a recalculation of all existing frame sizes will be forced.
+If ``recalcFrameSizes`` is set to ``True``, then a recalculation of all existing frame sizes will be forced.
 
 .. seealso:: :py:func:`removeFrame`
 %End
@@ -177,7 +177,7 @@ Finds the optimal position to break a frame at.
 Removes a frame by ``index`` from the multiframe. This method automatically removes the frame from the
 layout too.
 
-If ``removeEmptyPages`` is set to true, then pages which are empty after the frame is removed will
+If ``removeEmptyPages`` is set to ``True``, then pages which are empty after the frame is removed will
 also be removed from the layout.
 
 .. seealso:: :py:func:`addFrame`
@@ -213,7 +213,7 @@ Stores the multiframe state in a DOM element.
 :param parentElement: parent DOM element (e.g. 'Layout' element)
 :param document: DOM document
 :param context: read write context
-:param includeFrames: set to true to write state information about child frames into DOM
+:param includeFrames: set to ``True`` to write state information about child frames into DOM
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -225,7 +225,7 @@ Sets the item state from a DOM element.
 :param itemElement: is the DOM node corresponding to item (e.g. 'LayoutItem' element)
 :param document: DOM document
 :param context: read write context
-:param includeFrames: set to true to read state information about child frames from DOM
+:param includeFrames: set to ``True`` to read state information about child frames from DOM
 
 .. seealso:: :py:func:`writeXml`
 %End

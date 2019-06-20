@@ -117,7 +117,7 @@ Returns the active filter flags shown in the widget.
 
     bool isActive() const;
 %Docstring
-Returns true if the widget is set to be included in the search.
+Returns ``True`` if the widget is set to be included in the search.
 
 .. seealso:: :py:func:`setInactive`
 

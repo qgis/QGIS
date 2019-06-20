@@ -15,6 +15,7 @@
 #include "qgsheatmaprendererwidget.h"
 #include "qgsheatmaprenderer.h"
 #include "qgsrendererregistry.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgssymbol.h"
 
@@ -54,7 +55,8 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }

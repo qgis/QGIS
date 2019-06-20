@@ -37,6 +37,9 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnHeightDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnExtrusionDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( groupEdges, &QGroupBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( btnEdgeColor, &QgsColorButton::colorChanged, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( spinEdgeWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
 }
 
 void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol, QgsVectorLayer *layer )
@@ -52,6 +55,10 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol, QgsV
 
   btnHeightDD->init( QgsAbstract3DSymbol::PropertyHeight, symbol.dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
   btnExtrusionDD->init( QgsAbstract3DSymbol::PropertyExtrusionHeight, symbol.dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+
+  groupEdges->setChecked( symbol.edgesEnabled() );
+  spinEdgeWidth->setValue( symbol.edgeWidth() );
+  btnEdgeColor->setColor( symbol.edgeColor() );
 }
 
 QgsPolygon3DSymbol QgsPolygon3DSymbolWidget::symbol() const
@@ -70,6 +77,10 @@ QgsPolygon3DSymbol QgsPolygon3DSymbolWidget::symbol() const
   ddp.setProperty( QgsAbstract3DSymbol::PropertyHeight, btnHeightDD->toProperty() );
   ddp.setProperty( QgsAbstract3DSymbol::PropertyExtrusionHeight, btnExtrusionDD->toProperty() );
   sym.setDataDefinedProperties( ddp );
+
+  sym.setEdgesEnabled( groupEdges->isChecked() );
+  sym.setEdgeWidth( spinEdgeWidth->value() );
+  sym.setEdgeColor( btnEdgeColor->color() );
 
   return sym;
 }

@@ -33,8 +33,11 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
@@ -252,10 +255,12 @@ void QgsStyleExportImportDialog::clearSelection()
 
 void QgsStyleExportImportDialog::selectSymbols( const QStringList &symbolNames )
 {
-  Q_FOREACH ( const QString &symbolName, symbolNames )
+  const auto constSymbolNames = symbolNames;
+  for ( const QString &symbolName : constSymbolNames )
   {
     QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, QgsStyleModel::Name ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
-    Q_FOREACH ( const QModelIndex &index, indexes )
+    const auto constIndexes = indexes;
+    for ( const QModelIndex &index : constIndexes )
     {
       listItems->selectionModel()->select( index, QItemSelectionModel::Select );
     }
@@ -264,10 +269,12 @@ void QgsStyleExportImportDialog::selectSymbols( const QStringList &symbolNames )
 
 void QgsStyleExportImportDialog::deselectSymbols( const QStringList &symbolNames )
 {
-  Q_FOREACH ( const QString &symbolName, symbolNames )
+  const auto constSymbolNames = symbolNames;
+  for ( const QString &symbolName : constSymbolNames )
   {
     QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, QgsStyleModel::Name ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
-    Q_FOREACH ( const QModelIndex &index, indexes )
+    const auto constIndexes = indexes;
+    for ( const QModelIndex &index : constIndexes )
     {
       QItemSelection deselection( index, index );
       listItems->selectionModel()->select( deselection, QItemSelectionModel::Deselect );
@@ -451,8 +458,8 @@ void QgsStyleExportImportDialog::downloadCanceled()
 
 void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( nothingSelected );
 }

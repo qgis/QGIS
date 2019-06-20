@@ -56,6 +56,7 @@ class TestQgsGdalProvider : public QObject
     void bandNameNoDescription(); // test band name for when no description or tags available (#16047)
     void bandNameWithDescription(); // test band name for when description available (#16047)
     void interactionBetweenRasterChangeAndCache(); // test that updading a raster invalidates the GDAL dataset cache (#20104)
+    void scale0(); //test when data has scale 0 (#20493)
 
   private:
     QString mTestDataDir;
@@ -343,6 +344,17 @@ void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
   delete rpClone;
 
   provider->remove();
+  delete provider;
+}
+
+void TestQgsGdalProvider::scale0()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/scale0ingdal23.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  QCOMPARE( rp->bandScale( 1 ), 1.0 );
+  QCOMPARE( rp->bandOffset( 1 ), 0.0 );
   delete provider;
 }
 

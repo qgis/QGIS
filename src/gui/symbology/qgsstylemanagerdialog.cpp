@@ -16,7 +16,6 @@
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 
-#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -31,6 +30,7 @@
 #include "qgssmartgroupeditordialog.h"
 #include "qgssettings.h"
 #include "qgsstylemodel.h"
+#include "qgsmessagebar.h"
 
 #include <QAction>
 #include <QFile>
@@ -154,6 +154,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
+
+  mMessageBar = new QgsMessageBar();
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  mVerticalLayout->insertWidget( 0,  mMessageBar );
 
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
@@ -296,9 +300,28 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     QStringList rampTypes;
     rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
     rampTypes << tr( "Catalog: ColorBrewer" );
+
+    mMenuBtnAddItemAll = new QMenu( this );
     mMenuBtnAddItemColorRamp = new QMenu( this );
+
+    QAction *item = new QAction( tr( "Marker" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    item = new QAction( tr( "Line" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Line ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    item = new QAction( tr( "Fill" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemAll->addSeparator();
     for ( const QString &rampType : qgis::as_const( rampTypes ) )
+    {
+      item = new QAction( rampType, this );
+      connect( item, &QAction::triggered, this, [ = ]( bool ) { addColorRamp( item ); } );
+      mMenuBtnAddItemAll->addAction( item );
       mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
+    }
+
     connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
              this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
   }
@@ -417,7 +440,20 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   const bool isSymbol = currentItemType() != 3;
   searchBox->setPlaceholderText( isSymbol ? tr( "Filter symbols…" ) : tr( "Filter color ramps…" ) );
-  btnAddItem->setMenu( isSymbol || mReadOnly ? nullptr : mMenuBtnAddItemColorRamp );
+
+  if ( !mReadOnly && !isSymbol ) // color ramp tab
+  {
+    btnAddItem->setMenu( mMenuBtnAddItemColorRamp );
+  }
+  else if ( !mReadOnly && tabItemType->currentIndex() == 0 ) // all symbols tab
+  {
+    btnAddItem->setMenu( mMenuBtnAddItemAll );
+  }
+  else
+  {
+    btnAddItem->setMenu( nullptr );
+  }
+
   actnExportAsPNG->setVisible( isSymbol );
   actnExportAsSVG->setVisible( isSymbol );
 
@@ -453,9 +489,7 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     cursorOverride.reset();
     if ( count > 0 )
     {
-      QMessageBox::information( this, tr( "Import Items" ),
-                                count > 1 ? tr( "Successfully imported %1 items." ).arg( count )
-                                : tr( "Successfully imported item." ) );
+      mMessageBar->pushSuccess( tr( "Import Items" ), count > 1 ? tr( "Successfully imported %1 items." ).arg( count ) : tr( "Successfully imported item." ) );
     }
   }
 }
@@ -701,12 +735,12 @@ void QgsStyleManagerDialog::addItem()
   }
 }
 
-bool QgsStyleManagerDialog::addSymbol()
+bool QgsStyleManagerDialog::addSymbol( int symbolType )
 {
   // create new symbol with current type
   QgsSymbol *symbol = nullptr;
   QString name = tr( "new symbol" );
-  switch ( currentItemType() )
+  switch ( symbolType == -1 ? currentItemType() : symbolType )
   {
     case QgsSymbol::Marker:
       symbol = new QgsMarkerSymbol();
@@ -1393,8 +1427,7 @@ int QgsStyleManagerDialog::addTag()
   int check = mStyle->tagId( itemName );
   if ( check > 0 )
   {
-    QMessageBox::critical( this, tr( "Add Tag" ),
-                           tr( "Tag name already exists in your symbol database." ) );
+    mMessageBar->pushCritical( tr( "Add Tag" ), tr( "The tag “%1” already exists." ).arg( itemName ) );
     return 0;
   }
 
@@ -1406,9 +1439,7 @@ int QgsStyleManagerDialog::addTag()
 
   if ( !id )
   {
-    QMessageBox::critical( this, tr( "Add Tag" ),
-                           tr( "New tag could not be created.\n"
-                               "There was a problem with your symbol database." ) );
+    mMessageBar->pushCritical( tr( "Add Tag" ),  tr( "New tag could not be created — There was a problem with the symbol database." ) );
     return 0;
   }
 
@@ -1467,6 +1498,7 @@ void QgsStyleManagerDialog::removeGroup()
   QString data = index.data( Qt::UserRole + 1 ).toString();
   if ( data == QLatin1String( "all" ) || data == QLatin1String( "favorite" ) || data == QLatin1String( "tags" ) || index.data() == "smartgroups" )
   {
+    // should never appear -- blocked by GUI
     int err = QMessageBox::critical( this, tr( "Remove Group" ),
                                      tr( "Invalid selection. Cannot delete system defined categories.\n"
                                          "Kindly select a group or smart group you might want to delete." ) );
@@ -1592,8 +1624,8 @@ void QgsStyleManagerDialog::symbolSelected( const QModelIndex &index )
 
 void QgsStyleManagerDialog::selectedSymbolsChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( selected );
-  Q_UNUSED( deselected );
+  Q_UNUSED( selected )
+  Q_UNUSED( deselected )
   bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
   actnRemoveItem->setDisabled( nothingSelected || mReadOnly );
   actnAddFavorite->setDisabled( nothingSelected || mReadOnly );
@@ -1770,6 +1802,7 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   QModelIndex present = groupTree->currentIndex();
   if ( present.parent().data( Qt::UserRole + 1 ) != "smartgroups" )
   {
+    // should never appear - blocked by GUI logic
     QMessageBox::critical( this, tr( "Edit Smart Group" ),
                            tr( "You have not selected a Smart Group. Kindly select a Smart Group to edit." ) );
     return;
@@ -1791,8 +1824,7 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   mBlockGroupUpdates--;
   if ( !id )
   {
-    QMessageBox::critical( this, tr( "Edit Smart Group" ),
-                           tr( "There was some error while editing the smart group." ) );
+    mMessageBar->pushCritical( tr( "Edit Smart Group" ), tr( "There was an error while editing the smart group." ) );
     return;
   }
   item->setText( dlg.smartgroupName() );

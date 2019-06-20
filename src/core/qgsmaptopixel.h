@@ -23,6 +23,7 @@
 #include <vector>
 #include "qgsunittypes.h"
 #include <cassert>
+#include <memory>
 
 class QgsPointXY;
 class QPoint;

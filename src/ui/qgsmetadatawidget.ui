@@ -121,7 +121,7 @@
              <item>
               <widget class="QPushButton" name="btnAutoSource">
                <property name="text">
-                <string>Set from layer</string>
+                <string>Set from Layer</string>
                </property>
               </widget>
              </item>
@@ -356,7 +356,7 @@
                    <item>
                     <widget class="QPushButton" name="btnAutoEncoding">
                      <property name="text">
-                      <string>Set from layer</string>
+                      <string>Set from Layer</string>
                      </property>
                     </widget>
                    </item>
@@ -930,7 +930,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Set CRS from layer</string>
+               <string>Set CRS from Layer</string>
               </property>
              </widget>
             </item>
@@ -943,7 +943,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Set CRS from provider</string>
+               <string>Set CRS from Provider</string>
               </property>
              </widget>
             </item>

@@ -250,7 +250,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
 %Docstring
 Constructor for QgsLayoutItem, with the specified parent ``layout``.
 
-If ``manageZValue`` is true, the z-Value of this item will be managed by the layout.
+If ``manageZValue`` is ``True``, the z-Value of this item will be managed by the layout.
 Generally this is the desired behavior.
 %End
 
@@ -353,7 +353,7 @@ Sets whether the item is ``locked``, preventing mouse interactions with the item
 
     bool isLocked() const;
 %Docstring
-Returns true if the item is locked, and cannot be interacted with using the mouse.
+Returns ``True`` if the item is locked, and cannot be interacted with using the mouse.
 
 .. seealso:: :py:func:`setLocked`
 
@@ -362,7 +362,7 @@ Returns true if the item is locked, and cannot be interacted with using the mous
 
     bool isGroupMember() const;
 %Docstring
-Returns true if the item is part of a QgsLayoutItemGroup group.
+Returns ``True`` if the item is part of a QgsLayoutItemGroup group.
 
 .. seealso:: :py:func:`parentGroup`
 
@@ -450,7 +450,7 @@ item may not match the specified target size, as items with a fixed or minimum
 size will place restrictions on the allowed item size. Data defined item size overrides
 will also override the specified target size.
 
-If ``includesFrame`` is true, then the size specified by ``size`` includes the
+If ``includesFrame`` is ``True``, then the size specified by ``size`` includes the
 item's frame.
 
 .. seealso:: :py:func:`minimumSize`
@@ -466,14 +466,14 @@ item's frame.
 %Docstring
 Attempts to move the item to a specified ``point``.
 
-If ``useReferencePoint`` is true, this method will respect the item's
+If ``useReferencePoint`` is ``True``, this method will respect the item's
 reference point, in that the item will be moved so that its current reference
 point is placed at the specified target point.
 
-If ``useReferencePoint`` is false, the item will be moved so that ``point``
+If ``useReferencePoint`` is ``False``, the item will be moved so that ``point``
 falls at the top-left corner of the item.
 
-If ``includesFrame`` is true, then the position specified by ``point`` represents the
+If ``includesFrame`` is ``True``, then the position specified by ``point`` represents the
 point at which to place the outside of the item's frame.
 
 If ``page`` is not left at the default -1 value, then the position specified by ``point``
@@ -497,7 +497,7 @@ as data defined item position may override the specified value.
 Attempts to update the item's position and size to match the passed ``rect`` in layout
 coordinates.
 
-If ``includesFrame`` is true, then the position and size specified by ``rect`` represents the
+If ``includesFrame`` is ``True``, then the position and size specified by ``rect`` represents the
 position and size at for the outside of the item's frame.
 
 Note that the final position and size of the item may not match the specified target rect,
@@ -634,7 +634,7 @@ map item after restoration from XML.
 
     bool frameEnabled() const;
 %Docstring
-Returns true if the item includes a frame.
+Returns ``True`` if the item includes a frame.
 
 .. seealso:: :py:func:`setFrameEnabled`
 
@@ -673,7 +673,7 @@ Sets the frame stroke ``color``.
 
     QColor frameStrokeColor() const;
 %Docstring
-Returns the frame's stroke color. This is only used if frameEnabled() returns true.
+Returns the frame's stroke color. This is only used if frameEnabled() returns ``True``.
 
 .. seealso:: :py:func:`frameEnabled`
 
@@ -699,7 +699,7 @@ Sets the frame stroke ``width``.
 
     QgsLayoutMeasurement frameStrokeWidth() const;
 %Docstring
-Returns the frame's stroke width. This is only used if frameEnabled() returns true.
+Returns the frame's stroke width. This is only used if frameEnabled() returns ``True``.
 
 .. seealso:: :py:func:`frameEnabled`
 
@@ -738,7 +738,7 @@ Sets the join ``style`` used when drawing the item's frame.
 
     bool hasBackground() const;
 %Docstring
-Returns true if the item has a background.
+Returns ``True`` if the item has a background.
 
 .. seealso:: :py:func:`setBackgroundEnabled`
 
@@ -757,7 +757,7 @@ Sets whether this item has a background drawn under it or not.
     QColor backgroundColor() const;
 %Docstring
 Returns the background color for this item. This is only used if hasBackground()
-returns true.
+returns ``True``.
 
 .. seealso:: :py:func:`setBackgroundColor`
 
@@ -825,7 +825,7 @@ Sets whether the item should be excluded from layout exports and prints.
 
     virtual bool containsAdvancedEffects() const;
 %Docstring
-Returns true if the item contains contents with blend modes or transparency
+Returns ``True`` if the item contains contents with blend modes or transparency
 effects which can only be reproduced by rastering the item.
 
 Subclasses should ensure that implemented overrides of this method
@@ -836,7 +836,7 @@ also check the base class result.
 
     virtual bool requiresRasterization() const;
 %Docstring
-Returns true if the item is drawn in such a way that forces the whole layout
+Returns ``True`` if the item is drawn in such a way that forces the whole layout
 to be rasterized when exporting to vector formats.
 
 .. seealso:: :py:func:`containsAdvancedEffects`
@@ -963,8 +963,8 @@ refreshed.
 %Docstring
 Sets the layout item's ``rotation``, in degrees clockwise.
 
-If ``adjustPosition`` is true, then this rotation occurs around the center of the item.
-If ``adjustPosition`` is false, rotation occurs around the item origin.
+If ``adjustPosition`` is ``True``, then this rotation occurs around the center of the item.
+If ``adjustPosition`` is ``False``, rotation occurs around the item origin.
 
 .. seealso:: :py:func:`itemRotation`
 
@@ -1102,21 +1102,21 @@ around which the rotation should be applied.
     void refreshOpacity( bool updateItem = true );
 %Docstring
 Refresh item's opacity, considering data defined opacity.
-If ``updateItem`` is set to false the item will not be automatically
+If ``updateItem`` is set to ``False`` the item will not be automatically
 updated after the opacity is set and a later call to update() must be made.
 %End
 
     void refreshFrame( bool updateItem = true );
 %Docstring
 Refresh item's frame, considering data defined colors and frame size.
-If ``updateItem`` is set to false, the item will not be automatically updated
+If ``updateItem`` is set to ``False``, the item will not be automatically updated
 after the frame is set and a later call to update() must be made.
 %End
 
     void refreshBackgroundColor( bool updateItem = true );
 %Docstring
 Refresh item's background color, considering data defined colors.
-If ``updateItem`` is set to false, the item will not be automatically updated
+If ``updateItem`` is set to ``False``, the item will not be automatically updated
 after the frame color is set and a later call to update() must be made.
 %End
 

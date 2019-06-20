@@ -52,7 +52,7 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
   }
 }
 
-const QgsFeature &QgsGeometryCheckerUtils::LayerFeature::feature() const
+QgsFeature QgsGeometryCheckerUtils::LayerFeature::feature() const
 {
   return mFeature;
 }
@@ -67,24 +67,24 @@ QString QgsGeometryCheckerUtils::LayerFeature::layerId() const
   return mFeaturePool->layerId();
 }
 
-const QgsGeometry &QgsGeometryCheckerUtils::LayerFeature::geometry() const
+QgsGeometry QgsGeometryCheckerUtils::LayerFeature::geometry() const
 {
   return mGeometry;
 }
 
 QString QgsGeometryCheckerUtils::LayerFeature::id() const
 {
-  return QStringLiteral( "%1:%2" ).arg( layer()->name() ).arg( mFeature.id() );
+  return QStringLiteral( "%1:%2" ).arg( mFeaturePool->layerName() ).arg( mFeature.id() );
 }
 
 bool QgsGeometryCheckerUtils::LayerFeature::operator==( const LayerFeature &other ) const
 {
-  return layer()->id() == other.layer()->id() && feature().id() == other.feature().id();
+  return layerId() == other.layerId() && mFeature.id() == other.mFeature.id();
 }
 
 bool QgsGeometryCheckerUtils::LayerFeature::operator!=( const LayerFeature &other ) const
 {
-  return layer()->id() != other.layer()->id() || feature().id() != other.feature().id();
+  return layerId() != other.layerId() || mFeature.id() != other.mFeature.id();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -197,7 +197,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
     QgsFeature feature;
     if ( featurePool->getFeature( *mFeatureIt, feature ) && !feature.geometry().isNull() )
     {
-      mCurrentFeature.reset( new LayerFeature( mParent->mFeaturePools[*mLayerIt], feature, mParent->mContext, mParent->mUseMapCrs ) );
+      mCurrentFeature = qgis::make_unique<LayerFeature>( featurePool, feature, mParent->mContext, mParent->mUseMapCrs );
       return true;
     }
     ++mFeatureIt;

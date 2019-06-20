@@ -210,7 +210,8 @@ void QgsColorRampButton::mousePressEvent( QMouseEvent *e )
 QPixmap QgsColorRampButton::createMenuIcon( QgsColorRamp *colorramp )
 {
   //create an icon pixmap
-  QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( colorramp, QSize( 16, 16 ) );
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( colorramp, QSize( iconSize, iconSize ) );
   return pixmap;
 }
 
@@ -273,13 +274,14 @@ void QgsColorRampButton::prepareMenu()
 
   QStringList rampNames = mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity );
   rampNames.sort();
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
   for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
     std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
 
     if ( !mShowGradientOnly || ( ramp->type() == QLatin1String( "gradient" ) || ramp->type() == QLatin1String( "cpt-city" ) ) )
     {
-      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( 16, 16 ) );
+      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( iconSize, iconSize ) );
       QAction *ra = new QAction( *it, this );
       ra->setIcon( icon );
       connect( ra, &QAction::triggered, this, &QgsColorRampButton::loadColorRamp );
@@ -299,7 +301,7 @@ void QgsColorRampButton::prepareMenu()
 
     if ( !mShowGradientOnly || ( ramp->type() == QLatin1String( "gradient" ) || ramp->type() == QLatin1String( "cpt-city" ) ) )
     {
-      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( 16, 16 ) );
+      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( iconSize, iconSize ) );
       QAction *ra = new QAction( *it, this );
       ra->setIcon( icon );
       connect( ra, &QAction::triggered, this, &QgsColorRampButton::loadColorRamp );

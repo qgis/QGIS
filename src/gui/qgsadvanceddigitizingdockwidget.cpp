@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include <QMenu>
+#include <QEvent>
+#include <QCoreApplication>
 
 #include <cmath>
 
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
 #include "qgsapplication.h"
 #include "qgscadutils.h"
@@ -33,11 +36,13 @@
 #include "qgssnappingutils.h"
 #include "qgsproject.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmessagelog.h"
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
   , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toDouble() )
 {
   setupUi( this );
@@ -48,7 +53,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
   mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
   mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
-  mAdditionalConstraint = NoConstraint;
+  mAdditionalConstraint = AdditionalConstraint::NoConstraint;
 
   mMapCanvas->installEventFilter( this );
   mAngleLineEdit->installEventFilter( this );
@@ -56,19 +61,11 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mXLineEdit->installEventFilter( this );
   mYLineEdit->installEventFilter( this );
 
-  // this action is also used in the advanced digitizing tool bar
-  mEnableAction = new QAction( this );
-  mEnableAction->setText( tr( "Enable advanced digitizing tools" ) );
-  mEnableAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/cadtools/cad.svg" ) ) );
-  mEnableAction->setCheckable( true );
-  mEnabledButton->addAction( mEnableAction );
-  mEnabledButton->setDefaultAction( mEnableAction );
-
   // Connect the UI to the event filter to update constraints
   connect( mEnableAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::activateCad );
-  connect( mConstructionModeButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstructionMode );
-  connect( mParallelButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::additionalConstraintClicked );
-  connect( mPerpendicularButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::additionalConstraintClicked );
+  connect( mConstructionModeAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::setConstructionMode );
+  connect( mParallelAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::additionalConstraintClicked );
+  connect( mPerpendicularAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::additionalConstraintClicked );
   connect( mLockAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockDistanceButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
@@ -124,11 +121,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     mCommonAngleActions.insert( action, it->first );
   }
 
-  mSettingsButton->setMenu( menu );
-  connect( mSettingsButton, SIGNAL( triggered( QAction * ) ), this, SLOT( settingsButtonTriggered( QAction * ) ) );
+  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
+  mSettingsAction->setMenu( menu );
+  connect( menu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
 
   // set tooltips
-  mConstructionModeButton->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );
+  mConstructionModeAction->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );
   mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
   mLockDistanceButton->setToolTip( "<b>" + tr( "Lock distance" ) + "</b><br>(" + tr( "press Ctrl + d for quick access" ) + ")" );
   mRepeatingLockDistanceButton->setToolTip( "<b>" + tr( "Continuously lock distance" ) + "</b>" );
@@ -148,6 +146,16 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mLockYButton->setToolTip( "<b>" + tr( "Lock y coordinate" ) + "</b><br>(" + tr( "press Ctrl + y for quick access" ) + ")" );
   mRepeatingLockYButton->setToolTip( "<b>" + tr( "Continuously lock y coordinate" ) + "</b>" );
 
+  // Create the slots/signals
+  connect( mXLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueXChanged );
+  connect( mYLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueYChanged );
+  connect( mDistanceLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueDistanceChanged );
+  connect( mAngleLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueAngleChanged );
+
+  // Create the floater
+  mFloater = new QgsAdvancedDigitizingFloater( canvas, this );
+  connect( mToggleFloaterAction, &QAction::triggered, mFloater, &QgsAdvancedDigitizingFloater::setActive );
+  mToggleFloaterAction->setChecked( mFloater->active() );
 
   updateCapacity( true );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [ = ] { updateCapacity( true ); } );
@@ -155,22 +163,91 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   disable();
 }
 
-void QgsAdvancedDigitizingDockWidget::hideEvent( QHideEvent * )
+void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode mode )
 {
-  // disable CAD but do not unset map event filter
-  // so it will be reactivated whenever the map tool is show again
-  setCadEnabled( false );
+  mXLineEdit->setText( value );
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
+    mXLineEdit->returnPressed();
+  }
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mXLineEdit, e );
+  }
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mXLineEdit->textEdited( value );
+  }
 }
+void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode mode )
+{
+  mYLineEdit->setText( value );
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
+    mYLineEdit->returnPressed();
+  }
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mYLineEdit, e );
+  }
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mYLineEdit->textEdited( value );
+  }
+}
+void QgsAdvancedDigitizingDockWidget::setAngle( const QString &value, WidgetSetMode mode )
+{
+  mAngleLineEdit->setText( value );
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
+    mAngleLineEdit->returnPressed();
+  }
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mAngleLineEdit, e );
+  }
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mAngleLineEdit->textEdited( value );
+  }
+}
+void QgsAdvancedDigitizingDockWidget::setDistance( const QString &value, WidgetSetMode mode )
+{
+  mDistanceLineEdit->setText( value );
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
+    mDistanceLineEdit->returnPressed();
+  }
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mDistanceLineEdit, e );
+  }
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mDistanceLineEdit->textEdited( value );
+  }
+}
+
 
 void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 {
   mCadEnabled = enabled;
   mEnableAction->setChecked( enabled );
-  mCadButtons->setEnabled( enabled );
+  mConstructionModeAction->setEnabled( enabled );
+  mParallelAction->setEnabled( enabled );
+  mPerpendicularAction->setEnabled( enabled );
+  mSettingsAction->setEnabled( enabled );
   mInputWidgets->setEnabled( enabled );
+  mToggleFloaterAction->setEnabled( enabled );
 
   clear();
   setConstructionMode( false );
+
+  emit cadEnabledChanged( enabled );
 }
 
 void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
@@ -191,15 +268,15 @@ void QgsAdvancedDigitizingDockWidget::additionalConstraintClicked( bool activate
 {
   if ( !activated )
   {
-    lockAdditionalConstraint( NoConstraint );
+    lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
   }
-  if ( sender() == mParallelButton )
+  if ( sender() == mParallelAction )
   {
-    lockAdditionalConstraint( Parallel );
+    lockAdditionalConstraint( AdditionalConstraint::Parallel );
   }
-  else if ( sender() == mPerpendicularButton )
+  else if ( sender() == mPerpendicularAction )
   {
-    lockAdditionalConstraint( Perpendicular );
+    lockAdditionalConstraint( AdditionalConstraint::Perpendicular );
   }
 }
 
@@ -208,14 +285,17 @@ void QgsAdvancedDigitizingDockWidget::setConstraintRelative( bool activate )
   if ( sender() == mRelativeAngleButton )
   {
     mAngleConstraint->setRelative( activate );
+    emit relativeAngleChanged( activate );
   }
   else if ( sender() == mRelativeXButton )
   {
     mXConstraint->setRelative( activate );
+    emit relativeXChanged( activate );
   }
   else if ( sender() == mRelativeYButton )
   {
     mYConstraint->setRelative( activate );
+    emit relativeYChanged( activate );
   }
 }
 
@@ -242,7 +322,7 @@ void QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock( bool activate 
 void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 {
   mConstructionMode = enabled;
-  mConstructionModeButton->setChecked( enabled );
+  mConstructionModeAction->setChecked( enabled );
 }
 
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
@@ -262,16 +342,28 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
 {
   // release all locks except construction mode
 
-  lockAdditionalConstraint( NoConstraint );
+  lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
 
   if ( releaseRepeatingLocks || !mAngleConstraint->isRepeatingLock() )
+  {
     mAngleConstraint->setLockMode( CadConstraint::NoLock );
+    emit lockAngleChanged( false );
+  }
   if ( releaseRepeatingLocks || !mDistanceConstraint->isRepeatingLock() )
+  {
     mDistanceConstraint->setLockMode( CadConstraint::NoLock );
+    emit lockDistanceChanged( false );
+  }
   if ( releaseRepeatingLocks || !mXConstraint->isRepeatingLock() )
+  {
     mXConstraint->setLockMode( CadConstraint::NoLock );
+    emit lockXChanged( false );
+  }
   if ( releaseRepeatingLocks || !mYConstraint->isRepeatingLock() )
+  {
     mYConstraint->setLockMode( CadConstraint::NoLock );
+    emit lockYChanged( false );
+  }
 }
 
 #if 0
@@ -379,12 +471,29 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
   }
   constraint->setLockMode( activate ? CadConstraint::HardLock : CadConstraint::NoLock );
 
+  if ( constraint == mXConstraint.get() )
+  {
+    emit lockXChanged( activate );
+  }
+  else if ( constraint == mYConstraint.get() )
+  {
+    emit lockYChanged( activate );
+  }
+  else if ( constraint == mDistanceConstraint.get() )
+  {
+    emit lockDistanceChanged( activate );
+  }
+  else if ( constraint == mAngleConstraint.get() )
+  {
+    emit lockAngleChanged( activate );
+  }
+
   if ( activate )
   {
     // deactivate perpendicular/parallel if angle has been activated
     if ( constraint == mAngleConstraint.get() )
     {
-      lockAdditionalConstraint( NoConstraint );
+      lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
     }
 
     // run a fake map mouse event to update the paint item
@@ -421,8 +530,8 @@ void QgsAdvancedDigitizingDockWidget::constraintFocusOut()
 void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstraint constraint )
 {
   mAdditionalConstraint = constraint;
-  mPerpendicularButton->setChecked( constraint == Perpendicular );
-  mParallelButton->setChecked( constraint == Parallel );
+  mPerpendicularAction->setChecked( constraint == AdditionalConstraint::Perpendicular );
+  mParallelAction->setChecked( constraint == AdditionalConstraint::Parallel );
 }
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
@@ -451,31 +560,32 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
   bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
 
-  mPerpendicularButton->setEnabled( absoluteAngle && snappingEnabled );
-  mParallelButton->setEnabled( absoluteAngle && snappingEnabled );
+  mPerpendicularAction->setEnabled( absoluteAngle && snappingEnabled );
+  mParallelAction->setEnabled( absoluteAngle && snappingEnabled );
 
   //update tooltips on buttons
   if ( !snappingEnabled )
   {
-    mPerpendicularButton->setToolTip( tr( "Snapping must be enabled to utilize perpendicular mode" ) );
-    mParallelButton->setToolTip( tr( "Snapping must be enabled to utilize parallel mode" ) );
+    mPerpendicularAction->setToolTip( tr( "Snapping must be enabled to utilize perpendicular mode" ) );
+    mParallelAction->setToolTip( tr( "Snapping must be enabled to utilize parallel mode" ) );
   }
   else
   {
-    mPerpendicularButton->setToolTip( "<b>" + tr( "Perpendicular" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
-    mParallelButton->setToolTip( "<b>" + tr( "Parallel" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
+    mPerpendicularAction->setToolTip( "<b>" + tr( "Perpendicular" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
+    mParallelAction->setToolTip( "<b>" + tr( "Parallel" ) + "</b><br>(" + tr( "press p to switch between perpendicular, parallel and normal mode" ) + ")" );
   }
 
 
   if ( !absoluteAngle )
   {
-    lockAdditionalConstraint( NoConstraint );
+    lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
   }
 
   // absolute angle = azimuth, relative = from previous line
   mLockAngleButton->setEnabled( absoluteAngle );
   mRelativeAngleButton->setEnabled( relativeAngle );
   mAngleLineEdit->setEnabled( absoluteAngle );
+  emit enabledChangedAngle( absoluteAngle );
   if ( !absoluteAngle )
   {
     mAngleConstraint->setLockMode( CadConstraint::NoLock );
@@ -483,16 +593,19 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   if ( !relativeAngle )
   {
     mAngleConstraint->setRelative( false );
+    emit relativeAngleChanged( false );
   }
   else if ( relativeAngle && !mCapacities.testFlag( RelativeAngle ) )
   {
     // set angle mode to relative if can do and wasn't available before
     mAngleConstraint->setRelative( true );
+    emit relativeAngleChanged( true );
   }
 
   // distance is always relative
   mLockDistanceButton->setEnabled( relativeCoordinates );
   mDistanceLineEdit->setEnabled( relativeCoordinates );
+  emit enabledChangedDistance( relativeCoordinates );
   if ( !relativeCoordinates )
   {
     mDistanceConstraint->setLockMode( CadConstraint::NoLock );
@@ -559,6 +672,27 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 
   mSnapMatch = context.snappingUtils->snapToMap( point );
 
+  if ( mSnapMatch.isValid() )
+  {
+    mSnapIndicator->setMatch( mSnapMatch );
+    mSnapIndicator->setVisible( true );
+  }
+  else
+  {
+    mSnapIndicator->setVisible( false );
+  }
+
+  /*
+   * Constraints are applied in 2D, they are always called when using the tool
+   * but they do not take into account if when you snap on a vertex it has
+   * a Z value.
+   * To get the value we use the snapPoint method. However, we only apply it
+   * when the snapped point corresponds to the constrained point.
+   */
+  if ( mSnapMatch.hasVertex() && ( point == mSnapMatch.point() ) )
+  {
+    e->snapPoint();
+  }
   // update the point list
   updateCurrentPoint( point );
 
@@ -667,7 +801,7 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
 
 bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )
 {
-  if ( mAdditionalConstraint == NoConstraint )
+  if ( mAdditionalConstraint == AdditionalConstraint::NoConstraint )
   {
     return false;
   }
@@ -689,7 +823,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
     angle -= std::atan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() );
   }
 
-  if ( mAdditionalConstraint == Perpendicular )
+  if ( mAdditionalConstraint == AdditionalConstraint::Perpendicular )
   {
     angle += M_PI_2;
   }
@@ -700,7 +834,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   mAngleConstraint->setLockMode( lockMode );
   if ( lockMode == CadConstraint::HardLock )
   {
-    mAdditionalConstraint = NoConstraint;
+    mAdditionalConstraint = AdditionalConstraint::NoConstraint;
   }
 
   return true;
@@ -775,7 +909,8 @@ void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
 void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points )
 {
   clearPoints();
-  Q_FOREACH ( const QgsPointXY &pt, points )
+  const auto constPoints = points;
+  for ( const QgsPointXY &pt : constPoints )
   {
     addPoint( pt );
   }
@@ -818,6 +953,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mXConstraint->toggleLocked();
+        emit lockXChanged( mXConstraint->isLocked() );
         emit pointChanged( mCadPointList.value( 0 ) );
         e->accept();
       }
@@ -826,6 +962,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mXConstraint->toggleRelative();
+          emit relativeXChanged( mXConstraint->relative() );
           emit pointChanged( mCadPointList.value( 0 ) );
           e->accept();
         }
@@ -835,6 +972,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mXLineEdit->setFocus();
         mXLineEdit->selectAll();
+        emit focusOnXRequested();
         e->accept();
       }
       break;
@@ -845,6 +983,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mYConstraint->toggleLocked();
+        emit lockYChanged( mYConstraint->isLocked() );
         emit pointChanged( mCadPointList.value( 0 ) );
         e->accept();
       }
@@ -853,6 +992,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mYConstraint->toggleRelative();
+          emit relativeYChanged( mYConstraint->relative() );
           emit pointChanged( mCadPointList.value( 0 ) );
           e->accept();
         }
@@ -862,6 +1002,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mYLineEdit->setFocus();
         mYLineEdit->selectAll();
+        emit focusOnYRequested();
         e->accept();
       }
       break;
@@ -874,6 +1015,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         if ( mCapacities.testFlag( AbsoluteAngle ) )
         {
           mAngleConstraint->toggleLocked();
+          emit lockAngleChanged( mAngleConstraint->isLocked() );
           emit pointChanged( mCadPointList.value( 0 ) );
           e->accept();
         }
@@ -883,6 +1025,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         if ( mCapacities.testFlag( RelativeAngle ) )
         {
           mAngleConstraint->toggleRelative();
+          emit relativeAngleChanged( mAngleConstraint->relative() );
           emit pointChanged( mCadPointList.value( 0 ) );
           e->accept();
         }
@@ -892,6 +1035,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mAngleLineEdit->setFocus();
         mAngleLineEdit->selectAll();
+        emit focusOnAngleRequested();
         e->accept();
       }
       break;
@@ -904,6 +1048,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mDistanceConstraint->toggleLocked();
+          emit lockDistanceChanged( mDistanceConstraint->isLocked() );
           emit pointChanged( mCadPointList.value( 0 ) );
           e->accept();
         }
@@ -913,6 +1058,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mDistanceLineEdit->setFocus();
         mDistanceLineEdit->selectAll();
+        emit focusOnDistanceRequested();
         e->accept();
       }
       break;
@@ -930,20 +1076,20 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     {
       if ( type == QEvent::KeyPress )
       {
-        bool parallel = mParallelButton->isChecked();
-        bool perpendicular = mPerpendicularButton->isChecked();
+        bool parallel = mParallelAction->isChecked();
+        bool perpendicular = mPerpendicularAction->isChecked();
 
         if ( !parallel && !perpendicular )
         {
-          lockAdditionalConstraint( Perpendicular );
+          lockAdditionalConstraint( AdditionalConstraint::Perpendicular );
         }
         else if ( perpendicular )
         {
-          lockAdditionalConstraint( Parallel );
+          lockAdditionalConstraint( AdditionalConstraint::Parallel );
         }
         else
         {
-          lockAdditionalConstraint( NoConstraint );
+          lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
         }
         e->accept();
       }
@@ -972,7 +1118,6 @@ void QgsAdvancedDigitizingDockWidget::enable()
     mEnableAction->setEnabled( true );
     mErrorLabel->hide();
     mCadWidget->show();
-    setMaximumHeight( 220 );
 
     mCurrentMapToolSupportsCad = true;
 
@@ -992,7 +1137,6 @@ void QgsAdvancedDigitizingDockWidget::disable()
   mErrorLabel->setText( tr( "CAD tools are not enabled for the current map tool" ) );
   mErrorLabel->show();
   mCadWidget->hide();
-  setMaximumHeight( 80 );
 
   mCurrentMapToolSupportsCad = false;
 
@@ -1016,6 +1160,7 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
   }
 
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::removePreviousPoint()
@@ -1026,15 +1171,16 @@ void QgsAdvancedDigitizingDockWidget::removePreviousPoint()
   int i = pointsCount() > 1 ? 1 : 0;
   mCadPointList.removeAt( i );
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::clearPoints()
 {
   mCadPointList.clear();
   mSnappedSegment.clear();
-  mSnappedToVertex = false;
 
   updateCapacity();
+  updateCadPaintItem();
 }
 
 void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &point )
@@ -1048,6 +1194,7 @@ void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &poin
   {
     mCadPointList[0] = point;
   }
+  updateCadPaintItem();
 }
 
 
@@ -1072,6 +1219,7 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setLockMode( LockMode mode 
   {
     mLineEdit->clear();
   }
+
 }
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setRepeatingLock( bool repeating )

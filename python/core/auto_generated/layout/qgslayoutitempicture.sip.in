@@ -79,6 +79,8 @@ this value. The path can either be a local path or a remote (http) path.
 :return: path for the source image
 
 .. seealso:: :py:func:`setPicturePath`
+
+.. seealso:: :py:func:`evaluatedPath`
 %End
 
     double pictureRotation() const;
@@ -106,7 +108,7 @@ syncing north arrows with a map item.
 
     QgsLayoutItemMap *linkedMap() const;
 %Docstring
-Returns the linked rotation map, if set. An None means map rotation is
+Returns the linked rotation map, if set. An ``None`` means map rotation is
 disabled.  If this is set then the picture is rotated by the same amount
 as the specified map object.
 
@@ -252,6 +254,24 @@ Returns the current picture mode (image format).
     virtual void finalizeRestoreFromXml();
 
 
+    bool isMissingImage() const;
+%Docstring
+Returns ``True`` if the source image is missing and the picture
+cannot be rendered.
+
+.. versionadded:: 3.6
+%End
+
+    QString evaluatedPath() const;
+%Docstring
+Returns the current evaluated picture path, which includes
+the result of data defined path overrides.
+
+.. seealso:: :py:func:`picturePath`
+
+.. versionadded:: 3.6
+%End
+
   public slots:
 
     void setPictureRotation( double rotation );
@@ -290,7 +310,7 @@ Forces a recalculation of the picture's frame size
   signals:
     void pictureRotationChanged( double newRotation );
 %Docstring
-Is emitted on picture rotation change
+Emitted on picture rotation change
 %End
 
   protected:

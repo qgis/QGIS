@@ -19,7 +19,7 @@
 
 #include "ui_qgsnewmemorylayerdialogbase.h"
 #include "qgsguiutils.h"
-#include "qgis.h"
+#include "qgswkbtypes.h"
 #include "qgshelp.h"
 #include "qgis_gui.h"
 
@@ -43,6 +43,9 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
      */
     static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
 
+    /**
+     * New dialog constructor.
+     */
     QgsNewMemoryLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog() override;
 

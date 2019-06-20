@@ -51,7 +51,7 @@ Sets tool tip text
   signals:
     void clicked( const QModelIndex &index );
 %Docstring
-Signal that is emitted when user clicks on the indicator
+Emitted when user clicks on the indicator
 %End
 
 };

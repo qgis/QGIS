@@ -98,7 +98,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     QgsWmsCapabilitiesProperty capabilitiesProperty = caps.capabilitiesProperty();
     const QgsWmsCapabilityProperty &capabilityProperty = capabilitiesProperty.capability;
 
-    Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers )
+    for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( capabilityProperty.layers ) )
     {
       // Attention, the name may be empty
       QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
@@ -115,7 +115,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
   {
     QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets = caps.supportedTileMatrixSets();
 
-    Q_FOREACH ( const QgsWmtsTileLayer &l, tileLayers )
+    const auto constTileLayers = tileLayers;
+    for ( const QgsWmtsTileLayer &l : constTileLayers )
     {
       QString title = l.title.isEmpty() ? l.identifier : l.title;
       QgsDataItem *layerItem = l.styles.size() == 1 ? this : new QgsDataCollectionItem( this, title, mPath + '/' + l.identifier );
@@ -127,7 +128,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
         children << layerItem;
       }
 
-      Q_FOREACH ( const QgsWmtsStyle &style, l.styles )
+      for ( const QgsWmtsStyle &style : qgis::as_const( l.styles ) )
       {
         QString styleName = style.title.isEmpty() ? style.identifier : style.title;
         if ( layerItem == this )
@@ -145,7 +146,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
             layerItem->addChildItem( styleItem );
         }
 
-        Q_FOREACH ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
+        for ( const QgsWmtsTileMatrixSetLink &setLink : qgis::as_const( l.setLinks ) )
         {
           QString linkName = setLink.tileMatrixSet;
           if ( styleItem == layerItem )
@@ -163,7 +164,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
               styleItem->addChildItem( linkItem );
           }
 
-          Q_FOREACH ( const QString &format, l.formats )
+          for ( const QString &format : qgis::as_const( l.formats ) )
           {
             QString name = format;
             if ( linkItem == styleItem )
@@ -251,7 +252,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
   mUri = createUri();
 
   // Populate everything, it costs nothing, all info about layers is collected
-  Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, mLayerProperty.layer )
+  for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperty.layer ) )
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
@@ -279,7 +280,8 @@ QString QgsWMSLayerItem::createUri()
   QString format;
   // get first supported by qt and server
   QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );
-  Q_FOREACH ( const QgsWmsSupportedFormat &f, formats )
+  const auto constFormats = formats;
+  for ( const QgsWmsSupportedFormat &f : constFormats )
   {
     if ( mCapabilitiesProperty.capability.request.getMap.format.indexOf( f.format ) >= 0 )
     {
@@ -292,7 +294,7 @@ QString QgsWMSLayerItem::createUri()
   QString crs;
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
-  Q_FOREACH ( const QString &c, mLayerProperty.crs )
+  for ( const QString &c : qgis::as_const( mLayerProperty.crs ) )
   {
     testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
     if ( testCrs.isValid() )
@@ -362,7 +364,8 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsWMSConnection::connectionList() )
+  const auto connectionList = QgsWMSConnection::connectionList();
+  for ( const QString &connName : connectionList )
   {
     QgsWMSConnection connection( connName );
     QgsDataItem *conn = new QgsWMSConnectionItem( this, connName, mPath + '/' + connName, connection.uri().encodedUri() );
@@ -464,7 +467,8 @@ QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QStri
 QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  Q_FOREACH ( const QString &connName, QgsXyzConnectionUtils::connectionList() )
+  const auto connectionList = QgsXyzConnectionUtils::connectionList();
+  for ( const QString &connName : connectionList )
   {
     QgsXyzConnection connection( QgsXyzConnectionUtils::connection( connName ) );
     QgsDataItem *conn = new QgsXyzLayerItem( this, connName, mPath + '/' + connName, connection.encodedUri() );

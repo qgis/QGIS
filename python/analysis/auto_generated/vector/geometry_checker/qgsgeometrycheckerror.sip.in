@@ -152,7 +152,7 @@ of base information is done in parent class.
     virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
 %Docstring
 Check if this error is almost equal to ``other``.
-If this returns true, it can be used to update existing errors after re-checking.
+If this returns ``True``, it can be used to update existing errors after re-checking.
 %End
 
     virtual void update( const QgsGeometryCheckError *other );
@@ -162,6 +162,13 @@ Will be used to update existing errors whenever they are re-checked.
 %End
 
 
+
+    virtual QIcon icon() const;
+%Docstring
+Returns an icon that should be shown for this kind of error.
+
+.. versionadded:: 3.8
+%End
   protected:
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,

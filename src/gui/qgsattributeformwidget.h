@@ -15,7 +15,7 @@
 #ifndef QGSATTRIBUTEFORMWIDGET_H
 #define QGSATTRIBUTEFORMWIDGET_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgssearchwidgetwrapper.h"

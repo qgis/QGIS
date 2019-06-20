@@ -21,12 +21,14 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
+#include "qgsstringutils.h"
 #include "qgsfileutils.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
 #include <QDesktopServices>
+#include <QTextBrowser>
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
@@ -67,7 +69,15 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   layout->addWidget( recentProjectsContainer );
 
-  mVersionInformation = new QLabel;
+  mVersionInformation = new QTextBrowser;
+  mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+  mVersionInformation->setReadOnly( true );
+  mVersionInformation->setOpenExternalLinks( true );
+  mVersionInformation->setStyleSheet( "QTextEdit { background-color: #dff0d8; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+                                      "QScrollBar { background-color: rgba(0,0,0,0); } "
+                                      "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
+                                      "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
+
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
 
@@ -105,13 +115,9 @@ void QgsWelcomePage::versionInfoReceived()
   if ( versionInfo->newVersionAvailable() )
   {
     mVersionInformation->setVisible( true );
-    mVersionInformation->setText( QStringLiteral( "<b>%1</b>: %2" )
-                                  .arg( tr( "There is a new QGIS version available" ),
-                                        versionInfo->downloadInfo() ) );
-    mVersionInformation->setStyleSheet( "QLabel{"
-                                        "  background-color: #dddd00;"
-                                        "  padding: 5px;"
-                                        "}" );
+    mVersionInformation->setText( QStringLiteral( "<style> a, a:visited, a:hover { color:#268300; } </style><b>%1</b>: %2" )
+                                  .arg( tr( "New QGIS version available" ),
+                                        QgsStringUtils::insertLinks( versionInfo->downloadInfo() ) ) );
   }
 }
 

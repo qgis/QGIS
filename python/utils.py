@@ -20,15 +20,13 @@
 __author__ = 'Martin Dobias'
 __date__ = 'November 2009'
 __copyright__ = '(C) 2009, Martin Dobias'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 """
 QGIS utilities module
 
 """
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread, qDebug
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
 from qgis.core import Qgis, QgsMessageLog, qgsfunction, QgsMessageOutput
 from qgis.gui import QgsMessageBar
@@ -265,6 +263,11 @@ def findPlugins(path):
         yield (pluginName, cp)
 
 
+def metadataParser():
+    """Used by other modules to access the local parser object"""
+    return plugins_metadata_parser
+
+
 def updateAvailablePlugins():
     """ Go through the plugin_paths list and find out what plugins are available. """
     # merge the lists
@@ -314,8 +317,8 @@ def loadPlugin(packageName):
         return False
 
 
-def startPlugin(packageName):
-    """ initialize the plugin """
+def _startPlugin(packageName):
+    """ initializes a plugin, but does not load GUI """
     global plugins, active_plugins, iface, plugin_times
 
     if packageName in active_plugins:
@@ -326,17 +329,29 @@ def startPlugin(packageName):
 
     package = sys.modules[packageName]
 
-    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
-
-    start = time.process_time()
-
     # create an instance of the plugin
     try:
         plugins[packageName] = package.classFactory(iface)
     except:
         _unloadPluginModules(packageName)
+        errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         msg = QCoreApplication.translate("Python", "{0} due to an error when calling its classFactory() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
+    return True
+
+
+def _addToActivePlugins(packageName, duration):
+    """ Adds a plugin to the list of active plugins """
+    active_plugins.append(packageName)
+    plugin_times[packageName] = "{0:02f}s".format(duration)
+
+
+def startPlugin(packageName):
+    """ initialize the plugin """
+    global plugins, active_plugins, iface, plugin_times
+    start = time.process_time()
+    if not _startPlugin(packageName):
         return False
 
     # initGui
@@ -345,14 +360,43 @@ def startPlugin(packageName):
     except:
         del plugins[packageName]
         _unloadPluginModules(packageName)
+        errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initGui() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
-    # add to active plugins
-    active_plugins.append(packageName)
     end = time.process_time()
-    plugin_times[packageName] = "{0:02f}s".format(end - start)
+    _addToActivePlugins(packageName, end - start)
+    return True
+
+
+def startProcessingPlugin(packageName):
+    """ initialize only the Processing components of a plugin """
+    global plugins, active_plugins, iface, plugin_times
+    start = time.process_time()
+    if not _startPlugin(packageName):
+        return False
+
+    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
+    if not hasattr(plugins[packageName], 'initProcessing'):
+        del plugins[packageName]
+        _unloadPluginModules(packageName)
+        msg = QCoreApplication.translate("Python", "{0} - plugin has no initProcessing() method").format(errMsg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
+
+    # initProcessing
+    try:
+        plugins[packageName].initProcessing()
+    except:
+        del plugins[packageName]
+        _unloadPluginModules(packageName)
+        msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initProcessing() method").format(errMsg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
+
+    end = time.process_time()
+    _addToActivePlugins(packageName, end - start)
 
     return True
 
@@ -404,6 +448,9 @@ def _unloadPluginModules(packageName):
     mods = _plugin_modules[packageName]
 
     for mod in mods:
+        if not mod in sys.modules:
+            continue
+
         # if it looks like a Qt resource file, try to do a cleanup
         # otherwise we might experience a segfault next time the plugin is loaded
         # because Qt will try to access invalid plugin resource data
@@ -411,12 +458,23 @@ def _unloadPluginModules(packageName):
             if hasattr(sys.modules[mod], 'qCleanupResources'):
                 sys.modules[mod].qCleanupResources()
         except:
-            pass
+            # Print stack trace for debug
+            qDebug("qCleanupResources error:\n%s" % traceback.format_exc())
+
+        # try removing path
+        if hasattr(sys.modules[mod], '__path__'):
+            for path in sys.modules[mod].__path__:
+                try:
+                    sys.path.remove(path)
+                except ValueError:
+                    # Discard if path is not there
+                    pass
+
         # try to remove the module from python
         try:
             del sys.modules[mod]
         except:
-            pass
+            qDebug("Error when removing module:\n%s" % traceback.format_exc())
     # remove the plugin entry
     del _plugin_modules[packageName]
 
@@ -591,6 +649,12 @@ def spatialite_connect(*args, **kwargs):
     """returns a dbapi2.Connection to a SpatiaLite db
 using the "mod_spatialite" extension (python3)"""
     import sqlite3
+    import re
+
+    def fcnRegexp(pattern, string):
+        result = re.search(pattern, string)
+        return True if result else False
+
     con = sqlite3.dbapi2.connect(*args, **kwargs)
     con.enable_load_extension(True)
     cur = con.cursor()
@@ -615,6 +679,7 @@ using the "mod_spatialite" extension (python3)"""
         raise RuntimeError("Cannot find any suitable spatialite module")
     cur.close()
     con.enable_load_extension(False)
+    con.create_function("regexp", 2, fcnRegexp)
     return con
 
 

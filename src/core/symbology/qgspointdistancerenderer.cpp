@@ -47,9 +47,9 @@ void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, c
 
 bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
-  Q_UNUSED( drawVertexMarker );
-  Q_UNUSED( context );
-  Q_UNUSED( layer );
+  Q_UNUSED( drawVertexMarker )
+  Q_UNUSED( context )
+  Q_UNUSED( layer )
 
   /*
    * IMPORTANT: This algorithm is ported to Python in the processing "Points Displacement" algorithm.
@@ -140,7 +140,8 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRender
 {
   //calculate centroid of all points, this will be center of group
   QgsMultiPoint *groupMultiPoint = new QgsMultiPoint();
-  Q_FOREACH ( const GroupedFeature &f, group )
+  const auto constGroup = group;
+  for ( const GroupedFeature &f : constGroup )
   {
     groupMultiPoint->addGeometry( f.feature.geometry().constGet()->clone() );
   }
@@ -326,9 +327,13 @@ void QgsPointDistanceRenderer::stopRender( QgsRenderContext &context )
 
   //printInfoDisplacementGroups(); //just for debugging
 
-  Q_FOREACH ( const ClusteredGroup &group, mClusteredGroups )
+  if ( !context.renderingStopped() )
   {
-    drawGroup( group, context );
+    const auto constMClusteredGroups = mClusteredGroups;
+    for ( const ClusteredGroup &group : constMClusteredGroups )
+    {
+      drawGroup( group, context );
+    }
   }
 
   mClusteredGroups.clear();
@@ -362,7 +367,8 @@ void QgsPointDistanceRenderer::printGroupInfo() const
   for ( int i = 0; i < nGroups; ++i )
   {
     QgsDebugMsg( "***************displacement group " + QString::number( i ) );
-    Q_FOREACH ( const GroupedFeature &feature, mClusteredGroups.at( i ) )
+    const auto constAt = mClusteredGroups.at( i );
+    for ( const GroupedFeature &feature : constAt )
     {
       QgsDebugMsg( FID_TO_STRING( feature.feature.id() ) );
     }
@@ -394,7 +400,9 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
 
   //scale font (for printing)
   QFont pixelSizeFont = mLabelFont;
-  pixelSizeFont.setPixelSize( context.outputLineWidth( mLabelFont.pointSizeF() * 0.3527 ) );
+
+  const double fontSizeInPixels = context.renderContext().convertToPainterUnits( mLabelFont.pointSizeF(), QgsUnitTypes::RenderPoints );
+  pixelSizeFont.setPixelSize( static_cast< int >( std::round( fontSizeInPixels ) ) );
   QFont scaledFont = pixelSizeFont;
   scaledFont.setPixelSize( pixelSizeFont.pixelSize() );
   p->setFont( scaledFont );

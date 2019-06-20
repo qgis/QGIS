@@ -28,6 +28,8 @@
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
 #include "qgsmssqlconnection.h"
+#include "qgsapplication.h"
+#include "qgsproject.h"
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
@@ -104,7 +106,8 @@ void QgsMssqlConnectionItem::refresh()
   QVector<QgsDataItem *> items = createChildren();
 
   // Add new items
-  Q_FOREACH ( QgsDataItem *item, items )
+  const auto constItems = items;
+  for ( QgsDataItem *item : constItems )
   {
     // Is it present in children?
     int index = findItem( mChildren, item );
@@ -180,11 +183,13 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
 
       // skip layers which are added already
       bool skip = false;
-      Q_FOREACH ( QgsDataItem *child, mChildren )
+      const auto constMChildren = mChildren;
+      for ( QgsDataItem *child : constMChildren )
       {
         if ( child->name() == layer.schemaName )
         {
-          Q_FOREACH ( QgsDataItem *child2, child->children() )
+          const auto constChildren = child->children();
+          for ( QgsDataItem *child2 : constChildren )
           {
             QgsMssqlLayerItem *layerItem = qobject_cast< QgsMssqlLayerItem *>( child2 );
             if ( child2->name() == layer.tableName && layerItem && layerItem->disableInvalidGeometryHandling() == disableInvalidGeometryHandling )
@@ -204,7 +209,8 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       QString srid = layer.srid;
 
       QgsMssqlSchemaItem *schemaItem = nullptr;
-      Q_FOREACH ( QgsDataItem *child, children )
+      const auto constChildren = children;
+      for ( QgsDataItem *child : constChildren )
       {
         if ( child->name() == layer.schemaName )
         {
@@ -246,9 +252,11 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     }
 
     // Remove no more present items
-    Q_FOREACH ( QgsDataItem *child, mChildren )
+    const auto constMChildren = mChildren;
+    for ( QgsDataItem *child : constMChildren )
     {
-      Q_FOREACH ( QgsDataItem *child2, child->children() )
+      const auto constChildren = child->children();
+      for ( QgsDataItem *child2 : constChildren )
       {
         if ( findItem( newLayers, child2 ) < 0 )
           child->deleteChildItem( child2 );
@@ -298,7 +306,8 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
 
 void QgsMssqlConnectionItem::setAsPopulated()
 {
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     child->setState( Populated );
   }
@@ -309,7 +318,8 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 {
   QgsMssqlSchemaItem *schemaItem = nullptr;
 
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
     if ( child->name() == layerProperty.schemaName )
     {
@@ -324,7 +334,8 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
     return;
   }
 
-  Q_FOREACH ( QgsDataItem *layerItem, schemaItem->children() )
+  const auto constChildren = schemaItem->children();
+  for ( QgsDataItem *layerItem : constChildren )
   {
     if ( layerItem->name() == layerProperty.tableName )
       return; // already added
@@ -478,7 +489,8 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
     if ( u.layerType != QLatin1String( "vector" ) )
     {
@@ -488,7 +500,8 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
     }
 
     // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey, options );
 
     if ( srcLayer->isValid() )
     {
@@ -692,7 +705,8 @@ QList<QAction *> QgsMssqlSchemaItem::actions( QWidget *parent )
 void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
 {
   // Add new items
-  Q_FOREACH ( QgsDataItem *child, newLayers->children() )
+  const auto constChildren = newLayers->children();
+  for ( QgsDataItem *child : constChildren )
   {
     // Is it present in children?
     if ( findItem( mChildren, child ) >= 0 )
@@ -774,7 +788,8 @@ QVector<QgsDataItem *> QgsMssqlRootItem::createChildren()
   QVector<QgsDataItem *> connections;
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
-  Q_FOREACH ( const QString &connName, settings.childGroups() )
+  const auto constChildGroups = settings.childGroups();
+  for ( const QString &connName : constChildGroups )
   {
     connections << new QgsMssqlConnectionItem( this, connName, mPath + '/' + connName );
   }

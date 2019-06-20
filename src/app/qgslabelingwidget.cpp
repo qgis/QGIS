@@ -58,7 +58,7 @@ void QgsLabelingWidget::resetSettings()
 
 void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
 {
-  if ( !mapLayer || mapLayer->type() != QgsMapLayer::VectorLayer )
+  if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
   {
     setEnabled( false );
     return;
@@ -185,6 +185,9 @@ void QgsLabelingWidget::labelModeChanged( int index )
 
     if ( !mSimpleSettings )
       mSimpleSettings.reset( new QgsPalLayerSettings() );
+
+    if ( mSimpleSettings->fieldName.isEmpty() )
+      mSimpleSettings->fieldName = mLayer->displayField();
 
     QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
     simpleWidget->setDockMode( dockMode() );

@@ -34,8 +34,8 @@ QgsLayoutItem::Flags QgsResidualPlotItem::itemFlags() const
 
 void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
-  Q_UNUSED( itemStyle );
-  Q_UNUSED( pWidget );
+  Q_UNUSED( itemStyle )
+  Q_UNUSED( pWidget )
   if ( mGCPList.size() < 1 || !painter )
   {
     return;

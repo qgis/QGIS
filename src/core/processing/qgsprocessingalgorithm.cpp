@@ -28,6 +28,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsmeshlayer.h"
+#include "qgsexpressioncontextutils.h"
+
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -38,6 +40,8 @@ QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 QgsProcessingAlgorithm *QgsProcessingAlgorithm::create( const QVariantMap &configuration ) const
 {
   std::unique_ptr< QgsProcessingAlgorithm > creation( createInstance() );
+  if ( ! creation )
+    throw QgsProcessingException( QObject::tr( "Error creating algorithm from createInstance()" ) );
   creation->setProvider( provider() );
   creation->initAlgorithm( configuration );
   return creation.release();
@@ -220,7 +224,8 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
     else if ( def->type() == QgsProcessingParameterMultipleLayers::typeName() )
     {
       QList< QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( def, parameters, context );
-      Q_FOREACH ( QgsMapLayer *layer, layers )
+      const auto constLayers = layers;
+      for ( QgsMapLayer *layer : constLayers )
       {
         if ( !layer )
           continue;
@@ -587,6 +592,11 @@ bool QgsProcessingAlgorithm::parameterAsBool( const QVariantMap &parameters, con
   return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
 }
 
+bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
+}
+
 QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags ) const
 {
   return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags );
@@ -687,6 +697,16 @@ QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parame
   return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
 }
 
+QgsPrintLayout *QgsProcessingAlgorithm::parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsLayout( parameterDefinition( name ), parameters, context );
+}
+
+QgsLayoutItem *QgsProcessingAlgorithm::parameterAsLayoutItem( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsPrintLayout *layout )
+{
+  return QgsProcessingParameters::parameterAsLayoutItem( parameterDefinition( name ), parameters, context, layout );
+}
+
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
 {
   if ( !parameters.contains( name ) )
@@ -770,7 +790,7 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
 
 bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 

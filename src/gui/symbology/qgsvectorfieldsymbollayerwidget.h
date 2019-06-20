@@ -16,7 +16,7 @@
 #define QGSVECTORFIELDSYMBOLLAYERWIDGET_H
 
 #include "qgssymbollayerwidget.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "ui_widget_vectorfield.h"
 #include "qgis_gui.h"
 
