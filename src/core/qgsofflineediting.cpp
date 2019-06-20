@@ -835,6 +835,15 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     // copy style
     copySymbology( layer, newLayer );
 
+    //remove constrainst of fields that use defaultValueClauses from provider on original
+    for ( const QgsField &field : layer->fields() )
+    {
+      if ( !layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( layer->fields().indexOf( field.name() ) ) ).isEmpty() )
+      {
+        newLayer->removeFieldConstraint( newLayer->fields().indexOf( field.name() ), QgsFieldConstraints::ConstraintNotNull );
+      }
+    }
+
     QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
     // Find the parent group of the original layer
     QgsLayerTreeLayer *layerTreeLayer = layerTreeRoot->findLayer( layer->id() );
