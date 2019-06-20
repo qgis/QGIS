@@ -37,6 +37,7 @@ class QgsProviderGuiRegistry;
 class GUI_EXPORT QgsDataItemGuiProviderRegistry
 {
   public:
+    //! Initializes the registry. Do not create new instances in client code - use QgsGui::dataItemGuiProviderRegistry() instead
     QgsDataItemGuiProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
     ~QgsDataItemGuiProviderRegistry();
 

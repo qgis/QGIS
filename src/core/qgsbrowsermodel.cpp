@@ -596,6 +596,20 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
   return QgsMimeDataUtils::encodeUriList( lst );
 }
 
+bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex &parent )
+{
+  QgsDataItem *destItem = dataItem( parent );
+  if ( !destItem )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "DROP PROBLEM!" ), 4 );
+    return false;
+  }
+
+  Q_NOWARN_DEPRECATED_PUSH
+  return destItem->handleDrop( data, action );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
 {
   void *v = idx.internalPointer();

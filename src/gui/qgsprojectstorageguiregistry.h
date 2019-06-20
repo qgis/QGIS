@@ -44,6 +44,7 @@ class QgsProviderGuiRegistry;
 class GUI_EXPORT QgsProjectStorageGuiRegistry
 {
   public:
+    //! Initializes the registry. Do not create new instances in client code - use QgsGui::projectStorageGuiRegistry() instead
     QgsProjectStorageGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
     ~QgsProjectStorageGuiRegistry();
 

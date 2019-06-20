@@ -30,6 +30,9 @@ QgsProjectStorageGuiRegistry is not usually directly created, but rather accesse
 %End
   public:
     QgsProjectStorageGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+%Docstring
+Initializes the registry. Do not create new instances in client code - use QgsGui.projectStorageGuiRegistry() instead
+%End
     ~QgsProjectStorageGuiRegistry();
 
 

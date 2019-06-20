@@ -31,6 +31,8 @@ class QgsMessageBar;
  *
  * QgsBrowserGuiModel is the foundation for the QGIS browser panel, and includes
  * items for the different data providers and folders accessible to users.
+ *
+ * \since QGIS 3.10
  */
 class GUI_EXPORT QgsBrowserGuiModel : public QgsBrowserModel
 {
@@ -51,6 +53,7 @@ class GUI_EXPORT QgsBrowserGuiModel : public QgsBrowserModel
     bool dropMimeData( const QMimeData *data, Qt::DropAction action,
                        int row, int column, const QModelIndex &parent ) override;
 
+    //! Sets message bar that will be passed in QgsDataItemGuiContext to data items
     void setMessageBar( QgsMessageBar *bar );
 
   private:

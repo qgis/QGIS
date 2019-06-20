@@ -33,9 +33,7 @@ Constructor for provider gui metadata
 
     virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders();
 %Docstring
-Data GUI item
-
-.. seealso:: :py:func:`QgsProviderBrowserMetadata.dataItemProviders`
+Returns data item gui providers
 %End
 
     virtual void registerGui( QMainWindow *widget );

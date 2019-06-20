@@ -26,6 +26,9 @@ QgsGui.instance()->dataItemGuiProviderRegistry().
 %End
   public:
     QgsDataItemGuiProviderRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
+%Docstring
+Initializes the registry. Do not create new instances in client code - use QgsGui.dataItemGuiProviderRegistry() instead
+%End
     ~QgsDataItemGuiProviderRegistry();
 
 

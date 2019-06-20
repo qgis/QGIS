@@ -45,10 +45,7 @@ class GUI_EXPORT QgsProviderGuiMetadata
 
     virtual ~QgsProviderGuiMetadata();
 
-    /**
-     * Data GUI item
-     * \see QgsProviderBrowserMetadata::dataItemProviders()
-     */
+    //! Returns data item gui providers
     virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders();
 
     //! Assigns parent to widget
