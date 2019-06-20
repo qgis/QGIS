@@ -538,7 +538,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QStringList tagsOfSymbol( StyleEntity type, const QString &symbol );
 
     /**
-     * Returns TRUE if the symbol with matching \a type and \name is
+     * Returns TRUE if the symbol with matching \a type and \a name is
      * marked as a favorite.
      *
      * \since QGIS 3.10

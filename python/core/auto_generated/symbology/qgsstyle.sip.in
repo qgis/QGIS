@@ -529,7 +529,7 @@ Returns the tags associated with the symbol
 
     bool isFavorite( StyleEntity type, const QString &name );
 %Docstring
-Returns ``True`` if the symbol with matching ``type`` and \name is
+Returns ``True`` if the symbol with matching ``type`` and ``name`` is
 marked as a favorite.
 
 .. versionadded:: 3.10
