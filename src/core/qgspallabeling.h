@@ -878,13 +878,13 @@ class CORE_EXPORT QgsPalLayerSettings
      * Read settings from a DOM element
      * \since QGIS 2.12
      */
-    void readXml( QDomElement &elem, const QgsReadWriteContext &context );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /**
      * Write settings into a DOM element
      * \since QGIS 2.12
      */
-    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Returns a reference to the label's property collection, used for data defined overrides.

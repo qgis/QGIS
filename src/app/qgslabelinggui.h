@@ -85,6 +85,7 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
     QgsFeature mPreviewFeature;
+    QgsMapCanvas *mCanvas = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 

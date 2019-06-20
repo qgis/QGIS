@@ -462,14 +462,14 @@ Register a feature for labeling.
                      in Python bindings.
 %End
 
-    void readXml( QDomElement &elem, const QgsReadWriteContext &context );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
 Read settings from a DOM element
 
 .. versionadded:: 2.12
 %End
 
-    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Write settings into a DOM element
 

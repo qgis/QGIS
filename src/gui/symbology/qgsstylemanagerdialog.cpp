@@ -304,6 +304,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
     mMenuBtnAddItemAll = new QMenu( this );
     mMenuBtnAddItemColorRamp = new QMenu( this );
+    mMenuBtnAddItemLabelSettings = new QMenu( this );
 
     QAction *item = new QAction( tr( "Marker" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
@@ -326,6 +327,19 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     item = new QAction( tr( "Text Format" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addTextFormat(); } );
     mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemAll->addSeparator();
+    item = new QAction( tr( "Point Label Settings" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addLabelSettings( QgsWkbTypes::PointGeometry ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemLabelSettings->addAction( item );
+    item = new QAction( tr( "Line Label Settings" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLabelSettings( QgsWkbTypes::LineGeometry ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemLabelSettings->addAction( item );
+    item = new QAction( tr( "Polygon Label Settings" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLabelSettings( QgsWkbTypes::PolygonGeometry ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemLabelSettings->addAction( item );
 
     connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
              this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
@@ -443,16 +457,22 @@ void QgsStyleManagerDialog::populateTypes()
 void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
-  const bool isSymbol = currentItemType() != 3 && currentItemType() != 4;
+  const bool isSymbol = currentItemType() != 3 && currentItemType() != 4 && currentItemType() != 5;
   const bool isColorRamp = currentItemType() == 3;
+  const bool isTextFormat = currentItemType() == 4;
   searchBox->setPlaceholderText( isSymbol ? tr( "Filter symbols…" ) :
-                                 isColorRamp ? tr( "Filter color ramps…" ) : tr( "Filter text symbols…" ) );
+                                 isColorRamp ? tr( "Filter color ramps…" ) :
+                                 isTextFormat ? tr( "Filter text symbols…" ) : tr( "Filter label settings…" ) );
 
   if ( !mReadOnly && isColorRamp ) // color ramp tab
   {
     btnAddItem->setMenu( mMenuBtnAddItemColorRamp );
   }
-  if ( !mReadOnly && !isSymbol && !isColorRamp ) // text format tab
+  if ( !mReadOnly && !isSymbol && !isColorRamp && !isTextFormat ) // label settings tab
+  {
+    btnAddItem->setMenu( mMenuBtnAddItemLabelSettings );
+  }
+  else if ( !mReadOnly && !isSymbol && !isColorRamp ) // text format tab
   {
     btnAddItem->setMenu( nullptr );
   }
@@ -468,7 +488,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   actnExportAsPNG->setVisible( isSymbol );
   actnExportAsSVG->setVisible( isSymbol );
 
-  mModel->setEntityFilter( isSymbol ? QgsStyle::SymbolEntity : ( isColorRamp ? QgsStyle::ColorrampEntity : QgsStyle::TextFormatEntity ) );
+  mModel->setEntityFilter( isSymbol ? QgsStyle::SymbolEntity : ( isColorRamp ? QgsStyle::ColorrampEntity : isTextFormat ? QgsStyle::TextFormatEntity : QgsStyle::LabelSettingsEntity ) );
   mModel->setEntityFilterEnabled( !allTypesSelected() );
   mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
   if ( isSymbol && !allTypesSelected() )
@@ -514,9 +534,10 @@ int QgsStyleManagerDialog::selectedItemType()
   const QgsStyle::StyleEntity entity = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
   if ( entity == QgsStyle::ColorrampEntity )
     return 3;
-
-  if ( entity == QgsStyle::TextFormatEntity )
+  else if ( entity == QgsStyle::TextFormatEntity )
     return 4;
+  else if ( entity == QgsStyle::LabelSettingsEntity )
+    return 5;
 
   return  mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt();
 }
@@ -556,6 +577,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
   const QStringList favoriteSymbols = src->symbolsOfFavorite( QgsStyle::SymbolEntity );
   const QStringList favoriteColorramps = src->symbolsOfFavorite( QgsStyle::ColorrampEntity );
   const QStringList favoriteTextFormats = src->symbolsOfFavorite( QgsStyle::TextFormatEntity );
+  const QStringList favoriteLabelSettings = src->symbolsOfFavorite( QgsStyle::LabelSettingsEntity );
 
   for ( auto &details : items )
   {
@@ -730,6 +752,56 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
         break;
       }
 
+      case QgsStyle::LabelSettingsEntity:
+      {
+        const QgsPalLayerSettings settings( src->labelSettings( details.name ) );
+
+        const bool hasDuplicateName = dst->labelSettingsNames().contains( details.name );
+        bool overwriteThis = false;
+        if ( isImport )
+          addItemToFavorites = favoriteLabelSettings.contains( details.name );
+
+        if ( hasDuplicateName && prompt )
+        {
+          cursorOverride.reset();
+          int res = QMessageBox::warning( parentWidget, isImport ? tr( "Import Label Settings" ) : tr( "Export Label Settings" ),
+                                          tr( "Label settings with the name “%1” already exist.\nOverwrite?" )
+                                          .arg( details.name ),
+                                          QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          switch ( res )
+          {
+            case QMessageBox::Cancel:
+              return count;
+
+            case QMessageBox::No:
+              continue;
+
+            case QMessageBox::Yes:
+              overwriteThis = true;
+              break;
+
+            case QMessageBox::YesToAll:
+              prompt = false;
+              overwriteAll = true;
+              break;
+
+            case QMessageBox::NoToAll:
+              prompt = false;
+              overwriteAll = false;
+              break;
+          }
+        }
+
+        if ( !hasDuplicateName || overwriteAll || overwriteThis )
+        {
+          dst->addLabelSettings( details.name, settings );
+          dst->saveLabelSettings( details.name, settings, addItemToFavorites, symbolTags );
+          count++;
+        }
+        break;
+      }
+
       case QgsStyle::TagEntity:
       case QgsStyle::SmartgroupEntity:
         break;
@@ -829,6 +901,8 @@ int QgsStyleManagerDialog::currentItemType()
       return 3;
     case 5:
       return 4;
+    case 6:
+      return 5;
     default:
       return 0;
   }
@@ -857,6 +931,10 @@ void QgsStyleManagerDialog::addItem()
   else if ( currentItemType() == 4 )
   {
     changed = addTextFormat();
+  }
+  else if ( currentItemType() == 5 )
+  {
+    // changed = addLabelSettings();
   }
   else
   {
@@ -1165,6 +1243,10 @@ void QgsStyleManagerDialog::editItem()
   {
     editTextFormat();
   }
+  else if ( selectedItemType() == 5 )
+  {
+    editLabelSettings();
+  }
   else
   {
     Q_ASSERT( false && "not implemented" );
@@ -1286,6 +1368,17 @@ bool QgsStyleManagerDialog::editTextFormat()
   return true;
 }
 
+bool QgsStyleManagerDialog::addLabelSettings( QgsWkbTypes::GeometryType type )
+{
+
+  return true;
+}
+
+bool QgsStyleManagerDialog::editLabelSettings()
+{
+  return true;
+}
+
 
 void QgsStyleManagerDialog::removeItem()
 {
@@ -1338,6 +1431,10 @@ void QgsStyleManagerDialog::removeItem()
 
       case QgsStyle::TextFormatEntity:
         mStyle->removeTextFormat( details.name );
+        break;
+
+      case QgsStyle::LabelSettingsEntity:
+        mStyle->removeLabelSettings( details.name );
         break;
 
       case QgsStyle::TagEntity:

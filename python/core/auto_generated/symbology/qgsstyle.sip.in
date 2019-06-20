@@ -17,6 +17,8 @@ typedef QMap<int, QString> QgsSymbolGroupMap;
 
 typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
 
+typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
+
 
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
@@ -57,6 +59,14 @@ enum TextFormatTable
   TextFormatFavoriteId,
 };
 
+enum LabelSettingsTable
+{
+  LabelSettingsId,
+  LabelSettingsName,
+  LabelSettingsXML,
+  LabelSettingsFavoriteId,
+};
+
 enum SmartgroupTable
 {
   SmartgroupId,
@@ -85,6 +95,7 @@ Constructor for QgsStyle.
       ColorrampEntity,
       SmartgroupEntity,
       TextFormatEntity,
+      LabelSettingsEntity,
     };
 
     bool addSymbol( const QString &name, QgsSymbol *symbol /Transfer/, bool update = false );
@@ -128,6 +139,21 @@ Returns ``True`` if the operation was successful.
 .. note::
 
    Adding a text format with the name of existing one replaces it.
+
+.. versionadded:: 3.10
+%End
+
+    bool addLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool update = false );
+%Docstring
+Adds label ``settings`` with the specified ``name`` to the style.
+
+If ``update`` is set to ``True``, the style DB will be automatically updated with the new text format.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding label settings with the name of existing ones replaces them.
 
 .. versionadded:: 3.10
 %End
@@ -223,6 +249,35 @@ Returns a list of names of text formats in the style.
 %Docstring
 Returns the ID in the style database for the given text format by ``name``.
 Returns 0 if the text format was not found.
+
+.. versionadded:: 3.10
+%End
+
+    QgsPalLayerSettings labelSettings( const QString &name ) const;
+%Docstring
+Returns the label settings with the specified ``name``.
+
+.. versionadded:: 3.10
+%End
+
+    int labelSettingsCount() const;
+%Docstring
+Returns count of label settings in the style.
+
+.. versionadded:: 3.10
+%End
+
+    QStringList labelSettingsNames() const;
+%Docstring
+Returns a list of names of label settings in the style.
+
+.. versionadded:: 3.10
+%End
+
+    int labelSettingsId( const QString &name );
+%Docstring
+Returns the ID in the style database for the given label settings by ``name``.
+Returns 0 if the label settings were not found.
 
 .. versionadded:: 3.10
 %End
@@ -436,6 +491,32 @@ Removes a text format from the style.
     bool renameTextFormat( const QString &oldName, const QString &newName );
 %Docstring
 Changes a text format's name.
+
+.. versionadded:: 3.10
+%End
+
+    bool saveLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool favorite, const QStringList &tags );
+%Docstring
+Adds label ``settings`` to the database.
+
+:param name: is the name of the label settings
+:param settings: label settings to save
+:param favorite: is a boolean value to specify whether the label settings should be added to favorites
+:param tags: is a list of tags that are associated with the label settings
+
+:return: returns the success state of the save operation
+%End
+
+    bool removeLabelSettings( const QString &name );
+%Docstring
+Removes label settings from the style.
+
+.. versionadded:: 3.10
+%End
+
+    bool renameLabelSettings( const QString &oldName, const QString &newName );
+%Docstring
+Changes a label setting's name.
 
 .. versionadded:: 3.10
 %End
@@ -745,6 +826,49 @@ Emitted whenever a text format's definition is changed. This does not include
 name or tag changes.
 
 .. seealso:: :py:func:`textFormatAdded`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsRenamed( const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever label settings have been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`symbolRenamed`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsAdded( const QString &name );
+%Docstring
+Emitted whenever label settings have been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`labelSettingsRemoved`
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsRemoved( const QString &name );
+%Docstring
+Emitted whenever label settings have been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`labelSettingsAdded`
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.10
+%End
+
+    void labelSettingsChanged( const QString &name );
+%Docstring
+Emitted whenever a label setting's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`labelSettingsAdded`
 
 .. versionadded:: 3.10
 %End

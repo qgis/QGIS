@@ -171,6 +171,13 @@ void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
         groupsCombo->setItemText( allGroup, tr( "All Text Formats" ) );
       break;
 
+    case QgsStyle::LabelSettingsEntity:
+      btnSaveSymbol->setText( tr( "Save Label Settings…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save label settings to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Label Settings" ) );
+      break;
+
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;
@@ -261,6 +268,10 @@ void QgsStyleItemsListWidget::populateGroups()
 
       case QgsStyle::TextFormatEntity:
         allText = tr( "All Text Formats" );
+        break;
+
+      case QgsStyle::LabelSettingsEntity:
+        allText = tr( "All Label Settings" );
         break;
 
       case QgsStyle::TagEntity:

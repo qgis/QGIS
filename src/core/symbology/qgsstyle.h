@@ -27,6 +27,7 @@
 #include "qgssqliteutils.h"
 #include "qgssymbollayerutils.h" // QgsStringMap
 #include "qgstextrenderer.h"
+#include "qgspallabeling.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -43,6 +44,12 @@ typedef QMap<int, QString> QgsSymbolGroupMap;
  * \since QGIS 3.10
  */
 typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
+
+/**
+ * Map of name to label settings.
+ * \since QGIS 3.10
+ */
+typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 
 /*
  * Constants used to describe copy-paste MIME types
@@ -123,6 +130,17 @@ enum TextFormatTable
 };
 
 /**
+ * Columns available in the label settings table.
+ */
+enum LabelSettingsTable
+{
+  LabelSettingsId, //!< Label settings ID
+  LabelSettingsName, //!< Label settings name
+  LabelSettingsXML, //!< Label settings definition (as XML)
+  LabelSettingsFavoriteId, //!< Label settings is favorite flag
+};
+
+/**
  * Columns available in the smart group table.
  */
 enum SmartgroupTable
@@ -162,6 +180,7 @@ class CORE_EXPORT QgsStyle : public QObject
       ColorrampEntity, //!< Color ramps
       SmartgroupEntity, //!< Smart groups
       TextFormatEntity, //!< Text formats
+      LabelSettingsEntity, //!< Label settings
     };
 
     /**
@@ -196,6 +215,18 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.10
      */
     bool addTextFormat( const QString &name, const QgsTextFormat &format, bool update = false );
+
+    /**
+     * Adds label \a settings with the specified \a name to the style.
+     *
+     * If \a update is set to TRUE, the style DB will be automatically updated with the new text format.
+     *
+     * Returns TRUE if the operation was successful.
+     *
+     * \note Adding label settings with the name of existing ones replaces them.
+     * \since QGIS 3.10
+     */
+    bool addLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool update = false );
 
     /**
      * Adds a new tag and returns the tag's id
@@ -289,6 +320,33 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.10
      */
     int textFormatId( const QString &name );
+
+    /**
+     * Returns the label settings with the specified \a name.
+     *
+     * \since QGIS 3.10
+     */
+    QgsPalLayerSettings labelSettings( const QString &name ) const;
+
+    /**
+     * Returns count of label settings in the style.
+     * \since QGIS 3.10
+     */
+    int labelSettingsCount() const;
+
+    /**
+     * Returns a list of names of label settings in the style.
+     * \since QGIS 3.10
+     */
+    QStringList labelSettingsNames() const;
+
+    /**
+     * Returns the ID in the style database for the given label settings by \a name.
+     * Returns 0 if the label settings were not found.
+     *
+     * \since QGIS 3.10
+     */
+    int labelSettingsId( const QString &name );
 
     //! Returns default application-wide style
     static QgsStyle *defaultStyle();
@@ -469,6 +527,30 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.10
      */
     bool renameTextFormat( const QString &oldName, const QString &newName );
+
+    /**
+     * Adds label \a settings to the database.
+     *
+     *  \param name is the name of the label settings
+     *  \param settings label settings to save
+     *  \param favorite is a boolean value to specify whether the label settings should be added to favorites
+     *  \param tags is a list of tags that are associated with the label settings
+     *  \returns returns the success state of the save operation
+     */
+    bool saveLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool favorite, const QStringList &tags );
+
+    /**
+     * Removes label settings from the style.
+     * \since QGIS 3.10
+     */
+    bool removeLabelSettings( const QString &name );
+
+    /**
+     * Changes a label setting's name.
+     *
+     * \since QGIS 3.10
+     */
+    bool renameLabelSettings( const QString &oldName, const QString &newName );
 
     /**
      * Creates an on-disk database
@@ -718,19 +800,57 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     void textFormatChanged( const QString &name );
 
+    /**
+     * Emitted whenever label settings have been renamed from \a oldName to \a newName
+     * \see symbolRenamed()
+     * \since QGIS 3.10
+     */
+    void labelSettingsRenamed( const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever label settings have been added to the style and the database
+     * has been updated as a result.
+     * \see labelSettingsRemoved()
+     * \see symbolSaved()
+     * \since QGIS 3.10
+     */
+    void labelSettingsAdded( const QString &name );
+
+    /**
+     * Emitted whenever label settings have been removed from the style and the database
+     * has been updated as a result.
+     * \see labelSettingsAdded()
+     * \see symbolRemoved()
+     * \since QGIS 3.10
+     */
+    void labelSettingsRemoved( const QString &name );
+
+    /**
+     * Emitted whenever a label setting's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \see labelSettingsAdded()
+     *
+     * \since QGIS 3.10
+     */
+    void labelSettingsChanged( const QString &name );
+
   private:
 
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;
     QgsTextFormatMap mTextFormats;
+    QgsLabelSettingsMap mLabelSettings;
 
     QHash< QString, QStringList > mCachedSymbolTags;
     QHash< QString, QStringList > mCachedColorRampTags;
     QHash< QString, QStringList > mCachedTextFormatTags;
+    QHash< QString, QStringList > mCachedLabelSettingsTags;
 
     QHash< QString, bool > mCachedSymbolFavorites;
     QHash< QString, bool > mCachedColorRampFavorites;
     QHash< QString, bool > mCachedTextFormatFavorites;
+    QHash< QString, bool > mCachedLabelSettingsFavorites;
 
     QString mErrorString;
     QString mFileName;

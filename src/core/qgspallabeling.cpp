@@ -859,7 +859,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   }
 }
 
-void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext &context )
+void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   // text style
   QDomElement textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
@@ -1082,7 +1082,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
 
 
 
-QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context )
+QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement textStyleElem = mFormat.writeXml( doc, context );
 

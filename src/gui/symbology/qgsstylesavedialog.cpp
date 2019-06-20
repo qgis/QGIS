@@ -45,6 +45,10 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
       this->setWindowTitle( tr( "Save New Text Format" ) );
       break;
 
+    case QgsStyle::LabelSettingsEntity:
+      this->setWindowTitle( tr( "Save New Label Settings" ) );
+      break;
+
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;

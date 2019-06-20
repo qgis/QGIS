@@ -85,10 +85,12 @@ void QgsStyle::clear()
   mCachedColorRampTags.clear();
   mCachedSymbolTags.clear();
   mCachedTextFormatTags.clear();
+  mCachedLabelSettingsTags.clear();
 
   mCachedSymbolFavorites.clear();
   mCachedColorRampFavorites.clear();
   mCachedTextFormatFavorites.clear();
+  mCachedLabelSettingsFavorites.clear();
 }
 
 bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
@@ -248,6 +250,27 @@ bool QgsStyle::addTextFormat( const QString &name, const QgsTextFormat &format, 
   return true;
 }
 
+bool QgsStyle::addLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool update )
+{
+  // delete previous label settings (if any)
+  if ( mLabelSettings.contains( name ) )
+  {
+    // TODO remove groups and tags?
+    mLabelSettings.remove( name );
+    mLabelSettings.insert( name, settings );
+    if ( update )
+      updateSymbol( LabelSettingsEntity, name );
+  }
+  else
+  {
+    mLabelSettings.insert( name, settings );
+    if ( update )
+      saveLabelSettings( name, settings, false, QStringList() );
+  }
+
+  return true;
+}
+
 bool QgsStyle::saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags )
 {
   // insert it into the database
@@ -382,6 +405,11 @@ void QgsStyle::createTables()
                                   "name TEXT UNIQUE,"\
                                   "xml TEXT,"\
                                   "favorite INTEGER);"\
+                                  "CREATE TABLE labelsettings("\
+                                  "id INTEGER PRIMARY KEY,"\
+                                  "name TEXT UNIQUE,"\
+                                  "xml TEXT,"\
+                                  "favorite INTEGER);"\
                                   "CREATE TABLE tag("\
                                   "id INTEGER PRIMARY KEY,"\
                                   "name TEXT);"\
@@ -394,6 +422,9 @@ void QgsStyle::createTables()
                                   "CREATE TABLE tftagmap("\
                                   "tag_id INTEGER NOT NULL,"\
                                   "textformat_id INTEGER);"\
+                                  "CREATE TABLE lstagmap("\
+                                  "tag_id INTEGER NOT NULL,"\
+                                  "labelsettings_id INTEGER);"\
                                   "CREATE TABLE smartgroup("\
                                   "id INTEGER PRIMARY KEY,"\
                                   "name TEXT,"\
@@ -430,11 +461,27 @@ bool QgsStyle::load( const QString &filename )
                                "textformat_id INTEGER);" );
     runEmptyQuery( query );
   }
+  // make sure label settings table exists
+  query = QgsSqlite3Mprintf( "SELECT name FROM sqlite_master WHERE name='labelsettings'" );
+  statement = mCurrentDB.prepare( query, rc );
+  if ( rc != SQLITE_OK || sqlite3_step( statement.get() ) != SQLITE_ROW )
+  {
+    query = QgsSqlite3Mprintf( "CREATE TABLE labelsettings("\
+                               "id INTEGER PRIMARY KEY,"\
+                               "name TEXT UNIQUE,"\
+                               "xml TEXT,"\
+                               "favorite INTEGER);"\
+                               "CREATE TABLE lstagmap("\
+                               "tag_id INTEGER NOT NULL,"\
+                               "labelsettings_id INTEGER);" );
+    runEmptyQuery( query );
+  }
 
   // Make sure there are no Null fields in parenting symbols and groups
   query = QgsSqlite3Mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
                              "UPDATE colorramp SET favorite=0 WHERE favorite IS NULL;"
                              "UPDATE textformat SET favorite=0 WHERE favorite IS NULL;"
+                             "UPDATE labelsettings SET favorite=0 WHERE favorite IS NULL;"
                            );
   runEmptyQuery( query );
 
@@ -493,6 +540,24 @@ bool QgsStyle::load( const QString &filename )
     QgsTextFormat format;
     format.readXml( formatElement, QgsReadWriteContext() );
     mTextFormats.insert( formatName, format );
+  }
+
+  query = QgsSqlite3Mprintf( "SELECT * FROM labelsettings" );
+  statement = mCurrentDB.prepare( query, rc );
+  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+  {
+    QDomDocument doc;
+    const QString settingsName = statement.columnAsText( LabelSettingsName );
+    const QString xmlstring = statement.columnAsText( LabelSettingsXML );
+    if ( !doc.setContent( xmlstring ) )
+    {
+      QgsDebugMsg( "Cannot open label settings " + settingsName );
+      continue;
+    }
+    QDomElement settingsElement = doc.documentElement();
+    QgsPalLayerSettings settings;
+    settings.readXml( settingsElement, QgsReadWriteContext() );
+    mLabelSettings.insert( settingsName, settings );
   }
 
   mFileName = filename;
@@ -704,6 +769,93 @@ bool QgsStyle::renameTextFormat( const QString &oldName, const QString &newName 
   return result;
 }
 
+bool QgsStyle::saveLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool favorite, const QStringList &tags )
+{
+  // insert it into the database
+  QDomDocument doc( QStringLiteral( "dummy" ) );
+  QDomElement settingsElem = settings.writeXml( doc, QgsReadWriteContext() );
+
+  if ( settingsElem.isNull() )
+  {
+    QgsDebugMsg( QStringLiteral( "Couldn't convert label settings to valid XML!" ) );
+    return false;
+  }
+
+  QByteArray xmlArray;
+  QTextStream stream( &xmlArray );
+  stream.setCodec( "UTF-8" );
+  settingsElem.save( stream, 4 );
+  auto query = QgsSqlite3Mprintf( "INSERT INTO labelsettings VALUES (NULL, '%q', '%q', %d);",
+                                  name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Couldn't insert label settings into the database!" ) );
+    return false;
+  }
+
+  mCachedLabelSettingsFavorites[ name ] = favorite;
+
+  tagSymbol( LabelSettingsEntity, name, tags );
+
+  emit labelSettingsAdded( name );
+
+  return true;
+}
+
+bool QgsStyle::removeLabelSettings( const QString &name )
+{
+  if ( !mLabelSettings.contains( name ) )
+    return false;
+
+  mLabelSettings.remove( name );
+
+  auto query = QgsSqlite3Mprintf( "DELETE FROM labelsettings WHERE name='%q'", name.toUtf8().constData() );
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Couldn't remove label settings from the database." ) );
+    return false;
+  }
+
+  mCachedLabelSettingsTags.remove( name );
+  mCachedLabelSettingsFavorites.remove( name );
+
+  emit labelSettingsRemoved( name );
+
+  return true;
+}
+
+bool QgsStyle::renameLabelSettings( const QString &oldName, const QString &newName )
+{
+  if ( mLabelSettings.contains( newName ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Label settings of new name already exists." ) );
+    return false;
+  }
+
+  if ( !mLabelSettings.contains( oldName ) )
+    return false;
+  QgsPalLayerSettings settings = mLabelSettings.take( oldName );
+
+  mLabelSettings.insert( newName, settings );
+  mCachedLabelSettingsTags.remove( oldName );
+  mCachedLabelSettingsFavorites.remove( oldName );
+
+  int labelSettingsId = 0;
+  sqlite3_statement_unique_ptr statement;
+  auto query = QgsSqlite3Mprintf( "SELECT id FROM labelsettings WHERE name='%q'", oldName.toUtf8().constData() );
+  int nErr;
+  statement = mCurrentDB.prepare( query, nErr );
+  if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+  {
+    labelSettingsId = sqlite3_column_int( statement.get(), 0 );
+  }
+  const bool result = rename( LabelSettingsEntity, labelSettingsId, newName );
+  if ( result )
+    emit labelSettingsRenamed( oldName, newName );
+
+  return result;
+}
+
 QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
 {
   if ( !mCurrentDB )
@@ -725,6 +877,10 @@ QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
 
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "SELECT name FROM textformat WHERE favorite=1" );
+      break;
+
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "SELECT name FROM labelsettings WHERE favorite=1" );
       break;
 
     case TagEntity:
@@ -769,6 +925,10 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid ) const
       subquery = QgsSqlite3Mprintf( "SELECT textformat_id FROM tftagmap WHERE tag_id=%d", tagid );
       break;
 
+    case LabelSettingsEntity:
+      subquery = QgsSqlite3Mprintf( "SELECT labelsettings_id FROM lstagmap WHERE tag_id=%d", tagid );
+      break;
+
     case TagEntity:
     case SmartgroupEntity:
       QgsDebugMsg( QStringLiteral( "Unknown Entity" ) );
@@ -798,6 +958,10 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid ) const
 
       case TextFormatEntity:
         query = QgsSqlite3Mprintf( "SELECT name FROM textformat WHERE id=%d", id );
+        break;
+
+      case LabelSettingsEntity:
+        query = QgsSqlite3Mprintf( "SELECT name FROM labelsettings WHERE id=%d", id );
         break;
 
       case TagEntity:
@@ -871,6 +1035,9 @@ bool QgsStyle::rename( StyleEntity type, int id, const QString &newName )
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "UPDATE textformat SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
       break;
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "UPDATE labelsettings SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
+      break;
     case TagEntity:
       query = QgsSqlite3Mprintf( "UPDATE tag SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
       break;
@@ -888,9 +1055,11 @@ bool QgsStyle::rename( StyleEntity type, int id, const QString &newName )
     mCachedColorRampTags.clear();
     mCachedSymbolTags.clear();
     mCachedTextFormatTags.clear();
+    mCachedLabelSettingsTags.clear();
     mCachedSymbolFavorites.clear();
     mCachedColorRampFavorites.clear();
     mCachedTextFormatFavorites.clear();
+    mCachedLabelSettingsFavorites.clear();
 
     switch ( type )
     {
@@ -909,6 +1078,7 @@ bool QgsStyle::rename( StyleEntity type, int id, const QString &newName )
       case ColorrampEntity:
       case SymbolEntity:
       case TextFormatEntity:
+      case LabelSettingsEntity:
         break;
     }
   }
@@ -930,6 +1100,9 @@ bool QgsStyle::remove( StyleEntity type, int id )
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "DELETE FROM textformat WHERE id=%d", id );
       break;
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "DELETE FROM labelsettings WHERE id=%d", id );
+      break;
     case TagEntity:
       query = QgsSqlite3Mprintf( "DELETE FROM tag WHERE id=%d; DELETE FROM tagmap WHERE tag_id=%d", id, id );
       groupRemoved = true;
@@ -950,9 +1123,11 @@ bool QgsStyle::remove( StyleEntity type, int id )
     mCachedColorRampTags.clear();
     mCachedSymbolTags.clear();
     mCachedTextFormatTags.clear();
+    mCachedLabelSettingsTags.clear();
     mCachedSymbolFavorites.clear();
     mCachedColorRampFavorites.clear();
     mCachedTextFormatFavorites.clear();
+    mCachedLabelSettingsFavorites.clear();
 
     if ( groupRemoved )
     {
@@ -998,6 +1173,9 @@ bool QgsStyle::addFavorite( StyleEntity type, const QString &name )
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "UPDATE textformat SET favorite=1 WHERE name='%q'", name.toUtf8().constData() );
       break;
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "UPDATE labelsettings SET favorite=1 WHERE name='%q'", name.toUtf8().constData() );
+      break;
 
     case TagEntity:
     case SmartgroupEntity:
@@ -1018,6 +1196,9 @@ bool QgsStyle::addFavorite( StyleEntity type, const QString &name )
         break;
       case TextFormatEntity:
         mCachedTextFormatFavorites[ name ] = true;
+        break;
+      case LabelSettingsEntity:
+        mCachedLabelSettingsFavorites[ name ] = true;
         break;
       case TagEntity:
       case SmartgroupEntity:
@@ -1044,6 +1225,9 @@ bool QgsStyle::removeFavorite( StyleEntity type, const QString &name )
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "UPDATE textformat SET favorite=0 WHERE name='%q'", name.toUtf8().constData() );
       break;
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "UPDATE labelsettings SET favorite=0 WHERE name='%q'", name.toUtf8().constData() );
+      break;
 
     case TagEntity:
     case SmartgroupEntity:
@@ -1064,6 +1248,9 @@ bool QgsStyle::removeFavorite( StyleEntity type, const QString &name )
         break;
       case TextFormatEntity:
         mCachedTextFormatFavorites[ name ] = false;
+        break;
+      case LabelSettingsEntity:
+        mCachedLabelSettingsFavorites[ name ] = false;
         break;
       case TagEntity:
       case SmartgroupEntity:
@@ -1097,6 +1284,10 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
 
     case TextFormatEntity:
       item = QStringLiteral( "textformat" );
+      break;
+
+    case LabelSettingsEntity:
+      item = QStringLiteral( "labelsettings" );
       break;
 
     case TagEntity:
@@ -1142,6 +1333,11 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
 
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "SELECT textformat_id FROM tftagmap WHERE tag_id IN (%q)",
+                                 dummy.toUtf8().constData() );
+      break;
+
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "SELECT labelsettings_id FROM lstagmap WHERE tag_id IN (%q)",
                                  dummy.toUtf8().constData() );
       break;
 
@@ -1193,6 +1389,10 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
       symbolid = textFormatId( symbol );
       break;
 
+    case LabelSettingsEntity:
+      symbolid = labelSettingsId( symbol );
+      break;
+
     case TagEntity:
     case SmartgroupEntity:
       return false;
@@ -1235,6 +1435,10 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
 
           case TextFormatEntity:
             query = QgsSqlite3Mprintf( "INSERT INTO tftagmap VALUES (%d,%d)", tagid, symbolid );
+            break;
+
+          case LabelSettingsEntity:
+            query = QgsSqlite3Mprintf( "INSERT INTO lstagmap VALUES (%d,%d)", tagid, symbolid );
             break;
 
           case TagEntity:
@@ -1281,6 +1485,10 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStri
 
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "SELECT id FROM textformat WHERE name='%q'", symbol.toUtf8().constData() );
+      break;
+
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "SELECT id FROM labelsettings WHERE name='%q'", symbol.toUtf8().constData() );
       break;
 
     case TagEntity:
@@ -1332,6 +1540,10 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStri
           query = QgsSqlite3Mprintf( "DELETE FROM tftagmap WHERE tag_id=%d AND textformat_id=%d", tagid, symbolid );
           break;
 
+        case LabelSettingsEntity:
+          query = QgsSqlite3Mprintf( "DELETE FROM lstagmap WHERE tag_id=%d AND labelsettings_id=%d", tagid, symbolid );
+          break;
+
         case TagEntity:
         case SmartgroupEntity:
           continue;
@@ -1373,6 +1585,10 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
       query = QgsSqlite3Mprintf( "SELECT id FROM textformat WHERE name='%q'", symbol.toUtf8().constData() );
       break;
 
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "SELECT id FROM labelsettings WHERE name='%q'", symbol.toUtf8().constData() );
+      break;
+
     case TagEntity:
     case SmartgroupEntity:
       return false;
@@ -1405,6 +1621,10 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
 
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "DELETE FROM tftagmap WHERE textformat_id=%d", symbolid );
+      break;
+
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "DELETE FROM lstagmap WHERE labelsettings_id=%d", symbolid );
       break;
 
     case TagEntity:
@@ -1442,6 +1662,11 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
         return mCachedTextFormatTags.value( symbol );
       break;
 
+    case LabelSettingsEntity:
+      if ( mCachedLabelSettingsTags.contains( symbol ) )
+        return mCachedLabelSettingsTags.value( symbol );
+      break;
+
     case TagEntity:
     case SmartgroupEntity:
       break;
@@ -1468,6 +1693,10 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
       symbolid = textFormatId( symbol );
       break;
 
+    case LabelSettingsEntity:
+      symbolid = labelSettingsId( symbol );
+      break;
+
     case TagEntity:
     case SmartgroupEntity:
       break;
@@ -1491,6 +1720,10 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
 
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "SELECT tag_id FROM tftagmap WHERE textformat_id=%d", symbolid );
+      break;
+
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "SELECT tag_id FROM lstagmap WHERE labelsettings_id=%d", symbolid );
       break;
 
     case TagEntity:
@@ -1530,6 +1763,10 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
       mCachedTextFormatTags[ symbol ] = tagList;
       break;
 
+    case LabelSettingsEntity:
+      mCachedLabelSettingsTags[ symbol ] = tagList;
+      break;
+
     case TagEntity:
     case SmartgroupEntity:
       break;
@@ -1561,6 +1798,11 @@ bool QgsStyle::isFavorite( QgsStyle::StyleEntity type, const QString &name )
     case TextFormatEntity:
       if ( mCachedTextFormatFavorites.contains( name ) )
         return mCachedTextFormatFavorites.value( name );
+      break;
+
+    case LabelSettingsEntity:
+      if ( mCachedLabelSettingsFavorites.contains( name ) )
+        return mCachedLabelSettingsFavorites.value( name );
       break;
 
     case TagEntity:
@@ -1595,6 +1837,10 @@ bool QgsStyle::isFavorite( QgsStyle::StyleEntity type, const QString &name )
         mCachedTextFormatFavorites[ n ] = isFav;
         break;
 
+      case LabelSettingsEntity:
+        mCachedLabelSettingsFavorites[ n ] = isFav;
+        break;
+
       case TagEntity:
       case SmartgroupEntity:
         return false;
@@ -1624,6 +1870,10 @@ bool QgsStyle::symbolHasTag( StyleEntity type, const QString &symbol, const QStr
 
     case TextFormatEntity:
       symbolid = textFormatId( symbol );
+      break;
+
+    case LabelSettingsEntity:
+      symbolid = labelSettingsId( symbol );
       break;
 
     case TagEntity:
@@ -1656,6 +1906,10 @@ bool QgsStyle::symbolHasTag( StyleEntity type, const QString &symbol, const QStr
 
     case TextFormatEntity:
       query = QgsSqlite3Mprintf( "SELECT tag_id FROM tftagmap WHERE tag_id=%d AND textformat_id=%d", tagid, symbolid );
+      break;
+
+    case LabelSettingsEntity:
+      query = QgsSqlite3Mprintf( "SELECT tag_id FROM lstagmap WHERE tag_id=%d AND labelsettings_id=%d", tagid, symbolid );
       break;
 
     case TagEntity:
@@ -1763,6 +2017,26 @@ int QgsStyle::textFormatId( const QString &name )
   return getId( QStringLiteral( "textformat" ), name );
 }
 
+QgsPalLayerSettings QgsStyle::labelSettings( const QString &name ) const
+{
+  return mLabelSettings.value( name );
+}
+
+int QgsStyle::labelSettingsCount() const
+{
+  return mLabelSettings.count();
+}
+
+QStringList QgsStyle::labelSettingsNames() const
+{
+  return mLabelSettings.keys();
+}
+
+int QgsStyle::labelSettingsId( const QString &name )
+{
+  return getId( QStringLiteral( "labelsettings" ), name );
+}
+
 int QgsStyle::tagId( const QString &name )
 {
   return getId( QStringLiteral( "tag" ), name );
@@ -1785,6 +2059,9 @@ QStringList QgsStyle::allNames( QgsStyle::StyleEntity type ) const
 
     case TextFormatEntity:
       return textFormatNames();
+
+    case LabelSettingsEntity:
+      return labelSettingsNames();
 
     case TagEntity:
       return tags();
@@ -1935,46 +2212,11 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       }
       else if ( constraint == QLatin1String( "name" ) )
       {
-        switch ( type )
-        {
-          case SymbolEntity:
-            resultNames = symbolNames().filter( param, Qt::CaseInsensitive );
-            break;
-
-          case ColorrampEntity:
-            resultNames = colorRampNames().filter( param, Qt::CaseInsensitive );
-            break;
-
-          case TextFormatEntity:
-            resultNames = textFormatNames().filter( param, Qt::CaseInsensitive );
-            break;
-
-          case TagEntity:
-          case SmartgroupEntity:
-            break;
-        }
+        resultNames = allNames( type ).filter( param, Qt::CaseInsensitive );
       }
       else if ( constraint == QLatin1String( "!tag" ) )
       {
-        switch ( type )
-        {
-          case SymbolEntity:
-            resultNames = symbolNames();
-            break;
-
-          case ColorrampEntity:
-            resultNames = colorRampNames();
-            break;
-
-          case TextFormatEntity:
-            resultNames = textFormatNames();
-            break;
-
-          case TagEntity:
-          case SmartgroupEntity:
-            break;
-        }
-
+        resultNames = allNames( type );
         const QStringList unwanted = symbolsWithTag( type, tagId( param ) );
         for ( const QString &name : unwanted )
         {
@@ -1983,26 +2225,8 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       }
       else if ( constraint == QLatin1String( "!name" ) )
       {
-        QStringList all;
-        switch ( type )
-        {
-          case SymbolEntity:
-            all = symbolNames();
-            break;
-
-          case ColorrampEntity:
-            all = colorRampNames();
-            break;
-
-          case TextFormatEntity:
-            all = textFormatNames();
-            break;
-
-          case TagEntity:
-          case SmartgroupEntity:
-            break;
-        }
-        for ( const QString &str : qgis::as_const( all ) )
+        const QStringList all = allNames( type );
+        for ( const QString &str : all )
         {
           if ( !str.contains( param, Qt::CaseInsensitive ) )
             resultNames << str;
@@ -2184,9 +2408,30 @@ bool QgsStyle::exportXml( const QString &filename )
     textFormatsElem.appendChild( textFormatEl );
   }
 
+  // save label settings
+  QDomElement labelSettingsElem = doc.createElement( QStringLiteral( "labelsettings" ) );
+  for ( auto it = mLabelSettings.constBegin(); it != mLabelSettings.constEnd(); ++it )
+  {
+    QDomElement labelSettingsEl = doc.createElement( QStringLiteral( "labelsetting" ) );
+    labelSettingsEl.setAttribute( QStringLiteral( "name" ), it.key() );
+    QDomElement defEl = it.value().writeXml( doc, QgsReadWriteContext() );
+    labelSettingsEl.appendChild( defEl );
+    QStringList tags = tagsOfSymbol( LabelSettingsEntity, it.key() );
+    if ( tags.count() > 0 )
+    {
+      labelSettingsEl.setAttribute( QStringLiteral( "tags" ), tags.join( ',' ) );
+    }
+    if ( favoriteTextFormats.contains( it.key() ) )
+    {
+      labelSettingsEl.setAttribute( QStringLiteral( "favorite" ), QStringLiteral( "1" ) );
+    }
+    labelSettingsElem.appendChild( labelSettingsEl );
+  }
+
   root.appendChild( symbolsElem );
   root.appendChild( rampsElem );
   root.appendChild( textFormatsElem );
+  root.appendChild( labelSettingsElem );
 
   // save
   QFile f( filename );
@@ -2371,6 +2616,45 @@ bool QgsStyle::importXml( const QString &filename )
     }
   }
 
+  // load label settings
+  if ( version == STYLE_CURRENT_VERSION )
+  {
+    const QDomElement labelSettingsElement = docEl.firstChildElement( QStringLiteral( "labelsettings" ) );
+    e = labelSettingsElement.firstChildElement();
+    while ( !e.isNull() )
+    {
+      if ( e.tagName() == QLatin1String( "labelsetting" ) )
+      {
+        QString name = e.attribute( QStringLiteral( "name" ) );
+        QStringList tags;
+        if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+        {
+          tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
+        }
+        bool favorite = false;
+        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QStringLiteral( "1" ) )
+        {
+          favorite = true;
+        }
+
+        QgsPalLayerSettings settings;
+        const QDomElement styleElem = e.firstChildElement();
+        settings.readXml( styleElem, QgsReadWriteContext() );
+        addLabelSettings( name, settings );
+        if ( mCurrentDB )
+        {
+          saveLabelSettings( name, settings, favorite, tags );
+        }
+      }
+      else
+      {
+        QgsDebugMsg( "unknown tag: " + e.tagName() );
+      }
+      e = e.nextSiblingElement();
+    }
+  }
+
+
   query = QgsSqlite3Mprintf( "COMMIT TRANSACTION;" );
   runEmptyQuery( query );
 
@@ -2473,6 +2757,27 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
       break;
     }
 
+    case LabelSettingsEntity:
+    {
+      if ( !labelSettingsNames().contains( name ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Update requested for unavailable label settings." ) );
+        return false;
+      }
+
+      QgsPalLayerSettings settings( labelSettings( name ) );
+      symEl = settings.writeXml( doc, QgsReadWriteContext() );
+      if ( symEl.isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "Couldn't convert label settings to valid XML!" ) );
+        return false;
+      }
+      symEl.save( stream, 4 );
+      query = QgsSqlite3Mprintf( "UPDATE labelsettings SET xml='%q' WHERE name='%q';",
+                                 xmlArray.constData(), name.toUtf8().constData() );
+      break;
+    }
+
     case TagEntity:
     case SmartgroupEntity:
     {
@@ -2503,6 +2808,10 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
         emit textFormatChanged( name );
         break;
 
+      case LabelSettingsEntity:
+        emit labelSettingsChanged( name );
+        break;
+
       case TagEntity:
       case SmartgroupEntity:
         break;
@@ -2525,6 +2834,10 @@ void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name 
 
     case TextFormatEntity:
       mCachedTextFormatTags.remove( name );
+      break;
+
+    case LabelSettingsEntity:
+      mCachedLabelSettingsTags.remove( name );
       break;
 
     case TagEntity:

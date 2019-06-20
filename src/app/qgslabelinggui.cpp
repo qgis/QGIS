@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslabelinggui.h"
-#include "qgisapp.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayerlabeling.h"
@@ -33,8 +32,9 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr )
-             << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
+             << QgsExpressionContextUtils::atlasScope( nullptr );
+  if ( mCanvas )
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -70,6 +70,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   , mLayer( layer )
   , mSettings( layerSettings )
   , mMode( NoLabels )
+  , mCanvas( mapCanvas )
 {
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -88,9 +89,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
-  mMinScaleWidget->setMapCanvas( mapCanvas );
+  mMinScaleWidget->setMapCanvas( mCanvas );
   mMinScaleWidget->setShowCurrentScaleButton( true );
-  mMaxScaleWidget->setMapCanvas( mapCanvas );
+  mMaxScaleWidget->setMapCanvas( mCanvas );
   mMaxScaleWidget->setShowCurrentScaleButton( true );
 
   mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );
@@ -126,7 +127,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea da;
-  da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
+  if ( mLayer )
+    da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
 
@@ -617,6 +619,9 @@ void QgsLabelingGui::updateUi()
 
 void QgsLabelingGui::createAuxiliaryField()
 {
+  if ( !mLayer )
+    return;
+
   // try to create an auxiliary layer if not yet created
   if ( !mLayer->auxiliaryLayer() )
   {
