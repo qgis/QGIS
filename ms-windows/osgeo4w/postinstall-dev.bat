@@ -17,12 +17,12 @@ for %%g in (@grassversions@) do (
 	textreplace -std -map @grassmajor@ !v! -t bin\@package@-g!v!.bat
 	call "%OSGEO4W_ROOT%\bin\@package@-g!v!.bat" --postinstall
 
-	if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe" "%OSGEO4W_STARTMENU%" "QGIS Desktop @version@ with GRASS !gv! (Nightly)"
-	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe" "%OSGEO4W_DESKTOP%" "QGIS Desktop @version@ with GRASS !gv! (Nightly)"
+	if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe" "%OSGEO4W_STARTMENU%" "QGIS Desktop @version@ with GRASS !gv! (Nightly)" "" "" "" "" "~$folder.mydocuments$"
+	if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\@package@-bin-g!v!.exe" "%OSGEO4W_DESKTOP%" "QGIS Desktop @version@ with GRASS !gv! (Nightly)" "" "" "" "" "~$folder.mydocuments$"
 )
 
-if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_STARTMENU%" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico"
-if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_DESKTOP%" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico"
+if not %OSGEO4W_MENU_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_STARTMENU%" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico" "" "" "~$folder.mydocuments$"
+if not %OSGEO4W_DESKTOP_LINKS%==0 nircmd shortcut "%OSGEO4W_ROOT%\bin\nircmd.exe" "%OSGEO4W_DESKTOP%" "Qt Designer with QGIS @version@ custom widgets (Nightly)" "exec hide """%OSGEO4W_ROOT%\bin\@package@-designer.bat"" "%OSGEO4W_ROOT%\apps\@package@\icons\QGIS.ico" "" "" "~$folder.mydocuments$"
 
 set O4W_ROOT=%OSGEO4W_ROOT%
 set OSGEO4W_ROOT=%OSGEO4W_ROOT:\=\\%
