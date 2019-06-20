@@ -31,6 +31,9 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! update UI
     void updateUi();
 
+    //! Populating unit combo box
+    void repopulateComboBoxUnits();
+
   public slots:
     void reject() override;
 
@@ -48,6 +51,10 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Number of decimal places we want.
     int mDecimalPlaces = 3;
+
+    //! Indicates whether the user chose "Map units" instead of directly selecting a unit
+    bool mUseMapUnits = true;
+
 };
 
 #endif // QGS3DMEASUREDIALOG_H
