@@ -297,6 +297,7 @@ class QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::QgsLayoutAt
     void mRemoveSortColumnPushButton_clicked();
     void mSortColumnUpPushButton_clicked();
     void mSortColumnDownPushButton_clicked();
+    void showHelp();
 
   private:
     QgsLayoutItemAttributeTable *mTable = nullptr;
