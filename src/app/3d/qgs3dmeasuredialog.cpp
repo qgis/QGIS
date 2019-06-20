@@ -18,6 +18,13 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   buttonBox->addButton( newButton, QDialogButtonBox::ActionRole );
   connect( newButton, &QAbstractButton::clicked, this, &Qgs3DMeasureDialog::restart );
 
+  // Only support for cartesian
+  mCartesian->setChecked( true );
+
+  // Hide ellipsoidal and cartesian radio button
+  mCartesian->hide();
+  mEllipsoidal->hide();
+
   // Initialize unit combo box
   repopulateComboBoxUnits();
 
