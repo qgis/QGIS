@@ -535,6 +535,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mCentroidDDBtn, QgsPalLayerSettings::CentroidWhole );
   registerDataDefinedButton( mPointQuadOffsetDDBtn, QgsPalLayerSettings::OffsetQuad );
   registerDataDefinedButton( mPointPositionOrderDDBtn, QgsPalLayerSettings::PredefinedPositionOrder );
+  registerDataDefinedButton( mLinePlacementFlagsDDBtn, QgsPalLayerSettings::LinePlacementOptions );
   registerDataDefinedButton( mPointOffsetDDBtn, QgsPalLayerSettings::OffsetXY );
   registerDataDefinedButton( mPointOffsetUnitsDDBtn, QgsPalLayerSettings::OffsetUnits );
   registerDataDefinedButton( mLineDistanceDDBtn, QgsPalLayerSettings::LabelDistance );

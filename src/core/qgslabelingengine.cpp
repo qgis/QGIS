@@ -133,9 +133,6 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
                               flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
                               flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
 
-  // extra flags for placement of labels for linestrings
-  l->setArrangementFlags( static_cast< pal::LineArrangementFlags >( provider->linePlacementFlags() ) );
-
   // set label mode (label per feature is the default)
   l->setLabelMode( flags.testFlag( QgsAbstractLabelProvider::LabelPerFeaturePart ) ? pal::Layer::LabelPerFeaturePart : pal::Layer::LabelPerFeature );
 
@@ -395,7 +392,6 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   , mProviderId( providerId )
   , mFlags( DrawLabels )
   , mPlacement( QgsPalLayerSettings::AroundPoint )
-  , mLinePlacementFlags( 0 )
   , mPriority( 0.5 )
   , mObstacleType( QgsPalLayerSettings::PolygonInterior )
   , mUpsidedownLabels( QgsPalLayerSettings::Upright )
@@ -453,15 +449,15 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLay
         break;
     }
   }
-  return predefinedOrderString.join( QStringLiteral( "," ) );
+  return predefinedOrderString.join( ',' );
 }
 
 QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString &positionString )
 {
   QVector<QgsPalLayerSettings::PredefinedPointPosition> result;
-  QStringList predefinedOrderList = positionString.split( ',' );
-  const auto constPredefinedOrderList = predefinedOrderList;
-  for ( const QString &position : constPredefinedOrderList )
+  const QStringList predefinedOrderList = positionString.split( ',' );
+  result.reserve( predefinedOrderList.size() );
+  for ( const QString &position : predefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
     if ( cleaned == QLatin1String( "TL" ) )
@@ -490,4 +486,40 @@ QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePr
       result << QgsPalLayerSettings::BottomRight;
   }
   return result;
+}
+
+QString QgsLabelingUtils::encodeLinePlacementFlags( pal::LineArrangementFlags flags )
+{
+  QStringList parts;
+  if ( flags & pal::FLAG_ON_LINE )
+    parts << QStringLiteral( "OL" );
+  if ( flags & pal::FLAG_ABOVE_LINE )
+    parts << QStringLiteral( "AL" );
+  if ( flags & pal::FLAG_BELOW_LINE )
+    parts << QStringLiteral( "BL" );
+  if ( !( flags & pal::FLAG_MAP_ORIENTATION ) )
+    parts << QStringLiteral( "LO" );
+  return parts.join( ',' );
+}
+
+pal::LineArrangementFlags QgsLabelingUtils::decodeLinePlacementFlags( const QString &string )
+{
+  pal::LineArrangementFlags flags = nullptr;
+  const QStringList flagList = string.split( ',' );
+  bool foundLineOrientationFlag = false;
+  for ( const QString &flag : flagList )
+  {
+    QString cleaned = flag.trimmed().toUpper();
+    if ( cleaned == QLatin1String( "OL" ) )
+      flags |= pal::FLAG_ON_LINE;
+    else if ( cleaned == QLatin1String( "AL" ) )
+      flags |= pal::FLAG_ABOVE_LINE;
+    else if ( cleaned == QLatin1String( "BL" ) )
+      flags |= pal::FLAG_BELOW_LINE;
+    else if ( cleaned == QLatin1String( "LO" ) )
+      foundLineOrientationFlag = true;
+  }
+  if ( !foundLineOrientationFlag )
+    flags |= pal::FLAG_MAP_ORIENTATION;
+  return flags;
 }

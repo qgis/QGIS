@@ -519,7 +519,8 @@ void QgsTextFormatWidget::initWidget()
           << mCheckBoxSubstituteText
           << mGeometryGeneratorGroupBox
           << mGeometryGenerator
-          << mGeometryGeneratorType;
+          << mGeometryGeneratorType
+          << mLinePlacementFlagsDDBtn;
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
   connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );

@@ -56,7 +56,6 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
 void QgsVectorLayerLabelProvider::init()
 {
   mPlacement = mSettings.placement;
-  mLinePlacementFlags = mSettings.placementFlags;
   mFlags = Flags();
   if ( mSettings.drawLabels )
     mFlags |= DrawLabels;
