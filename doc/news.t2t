@@ -38,6 +38,36 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 3.8 'Zanzibar'? =
+
+This release has following new features:
+
+- Expressions: Add order by support to expression aggregate and concatenation functions
+- Expressions: File Information
+- User Interface: Save to Template Button
+- Symbology: Allow strings for font markers
+- Symbology: Offset setting for point pattern fill symbol layer
+- Symbology: Average line angles for marker and hashed line
+- Digitising: Floating widget for advanced input next to cursor
+- Digitising: Chanied add vertex at endpoint
+- Forms and Widgets: Allow browsing feature list
+- Analysis Tools: New aggregate method: concatenate_unique
+- Processing: Add "Save layer styles into GeoPackage" option for Package Layers algorithm
+- Processing: Overlap Analysis
+- Processing: Allow rounding values in ExtentFromLayer
+- Processing: New options to autofill batch processing dialog
+- Processing: Generate raster XYZ tiles
+- Processing: Join attributes by nearest
+- QGIS Server: Allow configuring size for GetLegendGraphics
+- Programmability: Add REGEXP SQL syntax support to spatialite provider and python connections
+- Notable Fixes: Support for curves in DXF export
+- 3D Features: Wide lines and polygon edge highlighting
+- 3D Features: Export all frames from QGIS 3d animations as images
+- 3D Features: Terrain generation from online source
+- 3D Features: Configuration of field of view angle of camera
+-
+
+
 = What's new in Version 3.6.0 'Noosa'? =
 
 This release has following new features:
