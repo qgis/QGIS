@@ -19,13 +19,13 @@
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/LayoutLegendLayers/geometry" ) ).toByteArray() );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mFilterLineEdit->setShowClearButton( true );
   mFilterLineEdit->setShowSearchIcon( true );
@@ -39,12 +39,6 @@ QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
 
   connect( mFilterLineEdit, &QLineEdit::textChanged, mModel, &QgsMapLayerProxyModel::setFilterString );
   connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsLayoutLegendLayersDialog::filterVisible );
-}
-
-QgsLayoutLegendLayersDialog::~QgsLayoutLegendLayersDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/LayoutLegendLayers/geometry" ), saveGeometry() );
 }
 
 void QgsLayoutLegendLayersDialog::setVisibleLayers( const QList<QgsMapLayer *> &layers )
