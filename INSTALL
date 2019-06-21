@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Tuesday May 07, 2019
+Friday June 21, 2019
 
 
-Last Updated: Tuesday May 07, 2019
-Last Change : Tuesday May 07, 2019
+Last Updated: Friday June 21, 2019
+Last Change : Friday May 31, 2019
 
 
   1. Introduction
@@ -461,7 +461,7 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select Advanced Installation):
 
-- qgis-dev-deps
+- qgis-rel-deps
 
 This will also select packages the above packages depend on.
 
@@ -1100,6 +1100,9 @@ is required.
 
   5. Building on MacOS X
   ======================
+
+This document is outdated and there is currently no up to date documentation for building on mac.
+You might want to consider to read an approach using Homebrew although not up to date either: https://github.com/qgis/QGIS/mac/development.md
 
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
