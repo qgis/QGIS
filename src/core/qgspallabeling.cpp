@@ -1260,6 +1260,16 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
 
   QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
 
+  if ( size.width() > 30 )
+  {
+    // draw a label icon
+    const double iconWidth = QFontMetricsF( QFont() ).width( 'X' ) * Qgis::UI_SCALE_FACTOR;
+
+    QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ).paint( &painter, QRect(
+          rect.width() - iconWidth * 3, rect.height() - iconWidth * 3,
+          iconWidth * 2, iconWidth * 2 ), Qt::AlignRight | Qt::AlignBottom );
+  }
+
   // draw border on top of text
   painter.setBrush( Qt::NoBrush );
   painter.setPen( QPen( tempFormat.previewBackgroundColor().darker( 150 ), 0 ) );
@@ -1272,6 +1282,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
     // don't use rounded rect for small previews
     painter.drawRect( rect );
   }
+
   painter.end();
   return pixmap;
 }
