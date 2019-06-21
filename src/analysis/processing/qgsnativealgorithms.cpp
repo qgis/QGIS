@@ -74,6 +74,7 @@
 #include "qgsalgorithmpackage.h"
 #include "qgsalgorithmarrayoffsetlines.h"
 #include "qgsalgorithmpointonsurface.h"
+#include "qgsalgorithmpointtolayer.h"
 #include "qgsalgorithmpointsalonggeometry.h"
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
@@ -215,6 +216,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsCreateArrayOffsetLinesAlgorithm() );
   addAlgorithm( new QgsPointOnSurfaceAlgorithm() );
+  addAlgorithm( new QgsPointToLayerAlgorithm() );
   addAlgorithm( new QgsPointsAlongGeometryAlgorithm() );
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
