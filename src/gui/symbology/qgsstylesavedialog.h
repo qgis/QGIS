@@ -49,6 +49,13 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
     QString name() const;
 
     /**
+     * Sets the default \a tags for the newly created item.
+     *
+     * \since QGIS 3.10
+     */
+    void setDefaultTags( const QString &tags );
+
+    /**
      * Returns any tags entered for the new symbol (as a comma seperated value list).
      */
     QString tags() const;

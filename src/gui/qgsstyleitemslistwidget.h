@@ -95,6 +95,11 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
      */
     void setLayerType( QgsWkbTypes::GeometryType type );
 
+    /**
+     * Returns the current tag filter set for the widget, if any is set.
+     */
+    QString currentTagFilter() const;
+
 #ifndef SIP_RUN
 
     /**

@@ -61,6 +61,11 @@ layer type filter is desired.
 This setting only applies to label settings style entities.
 %End
 
+    QString currentTagFilter() const;
+%Docstring
+Returns the current tag filter set for the widget, if any is set.
+%End
+
 
     QString currentItemName() const;
 %Docstring

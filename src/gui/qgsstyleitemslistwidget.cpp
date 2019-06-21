@@ -211,6 +211,11 @@ void QgsStyleItemsListWidget::setLayerType( QgsWkbTypes::GeometryType type )
   mModel->setLayerType( type );
 }
 
+QString QgsStyleItemsListWidget::currentTagFilter() const
+{
+  return groupsCombo->currentData().toString() == QLatin1String( "tag" ) ? groupsCombo->currentText() : QString();
+}
+
 QMenu *QgsStyleItemsListWidget::advancedMenu()
 {
   return btnAdvanced->menu();

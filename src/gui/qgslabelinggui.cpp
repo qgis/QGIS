@@ -705,6 +705,7 @@ void QgsLabelingGui::saveFormat()
     return;
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::LabelSettingsEntity );
+  saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
     return;
 

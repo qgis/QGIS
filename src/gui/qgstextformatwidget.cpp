@@ -1415,6 +1415,7 @@ void QgsTextFormatWidget::saveFormat()
     return;
 
   QgsStyleSaveDialog saveDlg( this );
+  saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
     return;
 

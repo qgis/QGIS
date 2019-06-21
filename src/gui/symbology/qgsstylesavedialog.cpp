@@ -102,6 +102,11 @@ QString QgsStyleSaveDialog::name() const
   return mName->text();
 }
 
+void QgsStyleSaveDialog::setDefaultTags( const QString &tags )
+{
+  mTags->setText( tags );
+}
+
 QString QgsStyleSaveDialog::tags() const
 {
   return mTags->text();

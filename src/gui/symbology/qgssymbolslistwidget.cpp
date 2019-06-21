@@ -194,6 +194,7 @@ void QgsSymbolsListWidget::saveSymbol()
     return;
 
   QgsStyleSaveDialog saveDlg( this );
+  saveDlg.setDefaultTags( mStyleItemsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
     return;
 
