@@ -162,6 +162,7 @@ QgsGui::~QgsGui()
   delete mNative;
   delete mWidgetStateHelper;
   delete mProjectStorageGuiRegistry;
+  delete mProviderGuiRegistry;
 }
 
 QgsGui::QgsGui()

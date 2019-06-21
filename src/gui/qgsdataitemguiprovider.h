@@ -131,9 +131,10 @@ class GUI_EXPORT QgsDataItemGuiProvider
     virtual bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context );
 
     /**
-     * Sets a new \a name for the item, and returns TRUE if the item was successfully renamed.
+     * Tries to permanently delete map layer representing the given item.
+     * Returns true if the layer was successfully deleted.
      *
-     * Items which implement this method should return the QgsDataItem::Rename capability.
+     * Items which implement this method should return the QgsDataItem::Delete capability.
      *
      * The default implementation does nothing.
      *
@@ -149,7 +150,8 @@ class GUI_EXPORT QgsDataItemGuiProvider
     virtual bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context );
 
     /**
-     * Providers should return TRUE if the drops are handled
+     * Providers should return TRUE if the drops are allowed (handleDrop() should be
+     * implemented in that case as well).
      * \since QGIS 3.10
      */
     virtual bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context );

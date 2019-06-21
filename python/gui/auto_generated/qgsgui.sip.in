@@ -92,14 +92,14 @@ GUI.
 
     static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() /KeepReference/;
 %Docstring
-Returns the global data item GUI project storage registry
+Returns the global GUI-related project storage registry
 
 .. versionadded:: 3.10
 %End
 
     static QgsProviderGuiRegistry *providerGuiRegistry() /KeepReference/;
 %Docstring
-Returns the global data item GUI project storage registry
+Returns the registry of GUI-related components of data providers
 
 .. versionadded:: 3.10
 %End

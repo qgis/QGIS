@@ -128,13 +128,13 @@ class GUI_EXPORT QgsGui : public QObject
     static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
-     * Returns the global data item GUI project storage registry
+     * Returns the global GUI-related project storage registry
      * \since QGIS 3.10
      */
     static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
-     * Returns the global data item GUI project storage registry
+     * Returns the registry of GUI-related components of data providers
      * \since QGIS 3.10
      */
     static QgsProviderGuiRegistry *providerGuiRegistry() SIP_KEEPREFERENCE;

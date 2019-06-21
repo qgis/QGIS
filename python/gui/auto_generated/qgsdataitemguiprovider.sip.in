@@ -113,9 +113,10 @@ The default implementation does nothing.
 
     virtual bool deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context );
 %Docstring
-Sets a new ``name`` for the item, and returns ``True`` if the item was successfully renamed.
+Tries to permanently delete map layer representing the given item.
+Returns true if the layer was successfully deleted.
 
-Items which implement this method should return the QgsDataItem.Rename capability.
+Items which implement this method should return the QgsDataItem.Delete capability.
 
 The default implementation does nothing.
 
@@ -131,7 +132,8 @@ double-click, and to prevent the default double-click behavior for items.
 
     virtual bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context );
 %Docstring
-Providers should return ``True`` if the drops are handled
+Providers should return ``True`` if the drops are allowed (handleDrop() should be
+implemented in that case as well).
 
 .. versionadded:: 3.10
 %End

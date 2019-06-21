@@ -54,7 +54,7 @@ bool QgsDataItemGuiProvider::handleDoubleClick( QgsDataItem *, QgsDataItemGuiCon
 
 bool QgsDataItemGuiProvider::acceptDrop( QgsDataItem *, QgsDataItemGuiContext )
 {
-  return true;
+  return false;
 }
 
 bool QgsDataItemGuiProvider::handleDrop( QgsDataItem *, QgsDataItemGuiContext, const QMimeData *, Qt::DropAction )
