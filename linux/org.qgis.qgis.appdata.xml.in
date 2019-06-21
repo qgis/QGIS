@@ -18,6 +18,7 @@
 
   <project_group>QGIS</project_group>
   <releases>
+    <release version="3.4.9" date="2019-06-21" />
     <release version="3.4.8" date="2019-05-17" />
     <release version="3.4.7" date="2019-04-19" />
     <release version="3.4.6" date="2019-03-22" />
