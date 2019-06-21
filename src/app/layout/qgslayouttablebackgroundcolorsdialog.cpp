@@ -19,6 +19,7 @@
 #include "qgslayouttable.h"
 #include "qgslayout.h"
 #include "qgssettings.h"
+#include "qgshelp.h"
 #include "qgsgui.h"
 
 #include <QCheckBox>
@@ -33,6 +34,7 @@ QgsLayoutTableBackgroundColorsDialog::QgsLayoutTableBackgroundColorsDialog( QgsL
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLayoutTableBackgroundColorsDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsLayoutTableBackgroundColorsDialog::buttonBox_rejected );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutTableBackgroundColorsDialog::showHelp );
 
   mCheckBoxMap.insert( QgsLayoutTable::OddColumns, mOddColumnsCheckBox );
   mCheckBoxMap.insert( QgsLayoutTable::EvenColumns, mEvenColumnsCheckBox );
@@ -89,6 +91,11 @@ void QgsLayoutTableBackgroundColorsDialog::buttonBox_accepted()
 void QgsLayoutTableBackgroundColorsDialog::buttonBox_rejected()
 {
   reject();
+}
+
+void QgsLayoutTableBackgroundColorsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_attribute_table.html#appearance" ) );
 }
 
 void QgsLayoutTableBackgroundColorsDialog::setGuiElementValues()

@@ -48,6 +48,7 @@ class QgsLayoutTableBackgroundColorsDialog: public QDialog, private Ui::QgsLayou
 
     void buttonBox_accepted();
     void buttonBox_rejected();
+    void showHelp();
 
   private:
 
