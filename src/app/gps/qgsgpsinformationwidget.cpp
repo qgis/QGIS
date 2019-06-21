@@ -1342,6 +1342,7 @@ QVariant QgsGpsInformationWidget::timestamp( QgsVectorLayer *vlayer, int idx )
     }
     // Desired format
     Qt::TimeSpec timeSpec { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) };
+    time = time.toTimeSpec( timeSpec );
     if ( timeSpec == Qt::TimeSpec::TimeZone )
     {
       // Get timezone from the combo
