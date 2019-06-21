@@ -5036,7 +5036,7 @@ class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsPostgresProviderGuiMetadata():
-      QgsProviderGuiMetadata( POSTGRES_KEY, POSTGRES_DESCRIPTION )
+      QgsProviderGuiMetadata( POSTGRES_KEY )
     {
     }
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override

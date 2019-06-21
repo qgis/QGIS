@@ -41,7 +41,7 @@ class GUI_EXPORT QgsProviderGuiMetadata
     /**
      * Constructor for provider gui metadata
      */
-    QgsProviderGuiMetadata( const QString &key, const QString &description );
+    explicit QgsProviderGuiMetadata( const QString &key );
 
     virtual ~QgsProviderGuiMetadata();
 
@@ -60,15 +60,9 @@ class GUI_EXPORT QgsProviderGuiMetadata
     //! Returns unique provider key
     QString key() const;
 
-    //! Returns provider description
-    QString description() const;
-
   private:
-    /// unique key for data provider
+    //! unique key for data provider
     QString mKey;
-
-    /// associated terse description
-    QString mDescription;
 };
 
 #endif //QGSPROVIDERGUIMETADATA_H

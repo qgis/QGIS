@@ -24,7 +24,7 @@ Holds data for GUI part of the data providers
 %End
   public:
 
-    QgsProviderGuiMetadata( const QString &key, const QString &description );
+    explicit QgsProviderGuiMetadata( const QString &key );
 %Docstring
 Constructor for provider gui metadata
 %End
@@ -54,11 +54,6 @@ Returns source select providers
     QString key() const;
 %Docstring
 Returns unique provider key
-%End
-
-    QString description() const;
-%Docstring
-Returns provider description
 %End
 
 };

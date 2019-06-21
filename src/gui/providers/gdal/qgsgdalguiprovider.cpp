@@ -34,7 +34,6 @@
 #include "qgsgdaldataitems.h"
 
 static QString PROVIDER_KEY = QStringLiteral( "gdal" );
-static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL provider" );
 
 QgsGdalItemGuiProvider::QgsGdalItemGuiProvider() = default;
 
@@ -129,7 +128,7 @@ class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
 
 
 QgsGdalGuiProviderMetadata::QgsGdalGuiProviderMetadata():
-  QgsProviderGuiMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+  QgsProviderGuiMetadata( PROVIDER_KEY )
 {
 }
 

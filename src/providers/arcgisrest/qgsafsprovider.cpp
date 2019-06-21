@@ -395,7 +395,7 @@ class QgsAfsSourceSelectProvider : public QgsSourceSelectProvider
 
 
 QgsAfsProviderGuiMetadata::QgsAfsProviderGuiMetadata()
-  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
 {
 }
 

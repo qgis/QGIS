@@ -4248,7 +4248,7 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
 class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
-    QgsWmsProviderGuiMetadata(): QgsProviderGuiMetadata( WMS_KEY, WMS_DESCRIPTION ) {}
+    QgsWmsProviderGuiMetadata(): QgsProviderGuiMetadata( WMS_KEY ) {}
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override
     {
       QList<QgsSourceSelectProvider *> providers;

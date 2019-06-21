@@ -571,7 +571,7 @@ class QgsMdalMeshSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsMdalProviderGuiMetadata::QgsMdalProviderGuiMetadata()
-  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
 {
 }
 

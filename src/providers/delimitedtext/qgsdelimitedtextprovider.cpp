@@ -1168,7 +1168,7 @@ class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsDelimitedTextProviderGuiMetadata::QgsDelimitedTextProviderGuiMetadata()
-  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
 {
 }
 

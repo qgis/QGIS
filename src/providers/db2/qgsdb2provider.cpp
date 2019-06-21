@@ -1782,7 +1782,7 @@ class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsDb2ProviderGuiMetadata::QgsDb2ProviderGuiMetadata()
-  : QgsProviderGuiMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+  : QgsProviderGuiMetadata( PROVIDER_KEY )
 {
 }
 

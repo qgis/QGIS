@@ -671,7 +671,7 @@ class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 
 
 QgsVirtualLayerProviderGuiMetadata::QgsVirtualLayerProviderGuiMetadata()
-  : QgsProviderGuiMetadata( VIRTUAL_LAYER_KEY, VIRTUAL_LAYER_DESCRIPTION )
+  : QgsProviderGuiMetadata( VIRTUAL_LAYER_KEY )
 {
 }
 

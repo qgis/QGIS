@@ -48,7 +48,7 @@ QList<QgsDataItemProvider *> QgsGeoNodeProviderMetadata::dataItemProviders() con
 class QgsGeonodeProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
-    QgsGeonodeProviderGuiMetadata(): QgsProviderGuiMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+    QgsGeonodeProviderGuiMetadata(): QgsProviderGuiMetadata( PROVIDER_KEY ) {}
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override
     {
       QList<QgsSourceSelectProvider *> providers;

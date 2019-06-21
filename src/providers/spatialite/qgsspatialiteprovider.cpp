@@ -6065,7 +6065,7 @@ class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsSpatiaLiteProviderGuiMetadata::QgsSpatiaLiteProviderGuiMetadata():
-  QgsProviderGuiMetadata( SPATIALITE_KEY, SPATIALITE_DESCRIPTION )
+  QgsProviderGuiMetadata( SPATIALITE_KEY )
 {
 }
 

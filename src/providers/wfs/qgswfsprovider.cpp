@@ -1919,7 +1919,7 @@ class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsWfsProviderGuiMetadata::QgsWfsProviderGuiMetadata():
-  QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
 {
 }
 

@@ -1975,7 +1975,7 @@ class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 
 
 QgsWcsProviderGuiMetadata::QgsWcsProviderGuiMetadata()
-  : QgsProviderGuiMetadata( WCS_KEY, WCS_DESCRIPTION )
+  : QgsProviderGuiMetadata( WCS_KEY )
 {
 }
 

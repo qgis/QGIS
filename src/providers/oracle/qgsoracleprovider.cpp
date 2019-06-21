@@ -3493,7 +3493,7 @@ class QgsOracleSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
-  : QgsProviderGuiMetadata( ORACLE_KEY, ORACLE_DESCRIPTION )
+  : QgsProviderGuiMetadata( ORACLE_KEY )
 {
 
 }

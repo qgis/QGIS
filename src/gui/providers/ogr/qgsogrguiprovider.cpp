@@ -32,7 +32,6 @@
 #include "qgsprojectstorageguiprovider.h"
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "ogr" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "OGR data provider" );
 
 //! Provider for OGR vector source select
 class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
@@ -91,7 +90,7 @@ QgsAbstractDataSourceWidget *QgsOgrVectorSourceSelectProvider::createDataSourceW
 }
 
 QgsOgrGuiProviderMetadata::QgsOgrGuiProviderMetadata()
-  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
+  : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY )
 {
 }
 

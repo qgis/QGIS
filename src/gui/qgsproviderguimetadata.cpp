@@ -20,8 +20,8 @@
 #include "qgsprojectstorageguiprovider.h"
 #include "qgssourceselectprovider.h"
 
-QgsProviderGuiMetadata::QgsProviderGuiMetadata( const QString &key, const QString &description )
-  : mKey( key ), mDescription( description )
+QgsProviderGuiMetadata::QgsProviderGuiMetadata( const QString &key )
+  : mKey( key )
 {
 }
 
@@ -45,11 +45,6 @@ QList<QgsSourceSelectProvider *> QgsProviderGuiMetadata::sourceSelectProviders()
 QString QgsProviderGuiMetadata::key() const
 {
   return mKey;
-}
-
-QString QgsProviderGuiMetadata::description() const
-{
-  return mDescription;
 }
 
 void QgsProviderGuiMetadata::registerGui( QMainWindow * )
