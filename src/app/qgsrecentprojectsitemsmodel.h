@@ -20,34 +20,13 @@
 #include <QStringList>
 #include <QStyledItemDelegate>
 
-class QgsWelcomePageItemDelegate : public QStyledItemDelegate
+class QgsMapCanvas;
+
+class QgsRecentProjectItemsModel : public QAbstractListModel
 {
     Q_OBJECT
 
   public:
-    explicit QgsWelcomePageItemDelegate( QObject *parent = nullptr );
-    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-
-  private:
-
-    int mRoundedRectSizePixels = 5;
-};
-
-class QgsWelcomePageItemsModel : public QAbstractListModel
-{
-    Q_OBJECT
-
-  public:
-    enum Role
-    {
-      TitleRole = Qt::UserRole + 1,
-      PathRole = Qt::UserRole + 2,
-      NativePathRole = Qt::UserRole + 3,
-      CrsRole = Qt::UserRole + 4,
-      PinRole = Qt::UserRole + 5
-    };
-
     struct RecentProjectData
     {
       bool operator==( const RecentProjectData &other ) const { return other.path == this->path; }
@@ -60,11 +39,11 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
       mutable bool exists = false;
     };
 
-    explicit QgsWelcomePageItemsModel( QObject *parent = nullptr );
+    explicit QgsRecentProjectItemsModel( QObject *parent = nullptr );
 
     void setRecentProjects( const QList<RecentProjectData> &recentProjects );
 
-    int rowCount( const QModelIndex &parent ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
@@ -77,4 +56,4 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     QList<RecentProjectData> mRecentProjects;
 };
 
-#endif // QGSWELCOMEPAGEITEMSMODEL_H
+#endif // QGSRECENTPROJECTITEMSMODEL_H
