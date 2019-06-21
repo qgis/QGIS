@@ -18,73 +18,17 @@
 
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
-
-#include "qgssymbol.h"
-#include "qgsstyle.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsmapcanvas.h"
-#include "qgsapplication.h"
+#include "qgsstyleitemslistwidget.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
-#include "qgsstylemodel.h"
-#include "qgsgui.h"
-#include "qgswindowmanagerinterface.h"
-
-#include <QAction>
-#include <QString>
-#include <QStringList>
-#include <QPainter>
-#include <QIcon>
-#include <QStandardItemModel>
-#include <QColorDialog>
-#include <QInputDialog>
 #include <QMessageBox>
-#include <QMenu>
-#include <QPushButton>
-
-
-//
-// QgsReadOnlyStyleModel
-//
-
-///@cond PRIVATE
-QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
-  : QgsStyleProxyModel( style, parent )
-{
-
-}
-
-Qt::ItemFlags QgsReadOnlyStyleModel::flags( const QModelIndex &index ) const
-{
-  return QgsStyleProxyModel::flags( index ) & ~Qt::ItemIsEditable;
-}
-
-QVariant QgsReadOnlyStyleModel::data( const QModelIndex &index, int role ) const
-{
-  if ( role == Qt::FontRole )
-  {
-    // drop font size to get reasonable amount of item name shown
-    QFont f = QgsStyleProxyModel::data( index, role ).value< QFont >();
-    f.setPointSize( 9 );
-    return f;
-  }
-  return QgsStyleProxyModel::data( index, role );
-}
-
-///@endcond
-
-
-//
-// QgsSymbolsListWidget
-//
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
   , mSymbol( symbol )
   , mStyle( style )
+  , mAdvancedMenu( menu )
   , mLayer( layer )
 {
   setupUi( this );
@@ -94,96 +38,18 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  mModel = new QgsReadOnlyStyleModel( mStyle, this );
-  mModel->setEntityFilterEnabled( true );
-  mModel->setEntityFilter( QgsStyle::SymbolEntity );
+  mStyleItemsListWidget->setStyle( mStyle );
+  mStyleItemsListWidget->setEntityType( QgsStyle::SymbolEntity );
   if ( mSymbol )
-  {
-    mModel->setSymbolTypeFilterEnabled( true );
-    mModel->setSymbolType( mSymbol->type() );
-  }
+    mStyleItemsListWidget->setSymbolType( mSymbol->type() );
+  mStyleItemsListWidget->setAdvancedMenu( menu );
 
-  btnAdvanced->hide(); // advanced button is hidden by default
-  if ( menu ) // show it if there is a menu pointer
-  {
-    mAdvancedMenu = menu;
-    btnAdvanced->show();
-    btnAdvanced->setMenu( mAdvancedMenu );
-  }
-  else
-  {
-    btnAdvanced->setMenu( new QMenu( this ) );
-  }
   mClipFeaturesAction = new QAction( tr( "Clip Features to Canvas Extent" ), this );
   mClipFeaturesAction->setCheckable( true );
   connect( mClipFeaturesAction, &QAction::toggled, this, &QgsSymbolsListWidget::clipFeaturesToggled );
   mStandardizeRingsAction = new QAction( tr( "Force Right-Hand-Rule Orientation" ), this );
   mStandardizeRingsAction->setCheckable( true );
   connect( mStandardizeRingsAction, &QAction::toggled, this, &QgsSymbolsListWidget::forceRHRToggled );
-
-  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
-  viewSymbols->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
-  double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 2;
-  mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
-
-  mModel->addDesiredIconSize( viewSymbols->iconSize() );
-  mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
-  viewSymbols->setModel( mModel );
-  mSymbolTreeView->setModel( mModel );
-
-  viewSymbols->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mSymbolTreeView->setSelectionModel( viewSymbols->selectionModel() );
-  mSymbolTreeView->setSelectionMode( viewSymbols->selectionMode() );
-
-  connect( viewSymbols->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolsListWidget::setSymbolFromStyle );
-
-  connect( mStyle, &QgsStyle::groupsModified, this, &QgsSymbolsListWidget::populateGroups );
-
-  connect( openStyleManagerButton, &QToolButton::clicked, this, &QgsSymbolsListWidget::openStyleManager );
-
-  lblSymbolName->clear();
-
-  connect( mButtonIconView, &QToolButton::toggled, this, [ = ]( bool active )
-  {
-    if ( active )
-    {
-      mSymbolViewStackedWidget->setCurrentIndex( 0 );
-      // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
-      QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui );
-    }
-  } );
-  connect( mButtonListView, &QToolButton::toggled, this, [ = ]( bool active )
-  {
-    if ( active )
-    {
-      QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 1, QgsSettings::Gui );
-      mSymbolViewStackedWidget->setCurrentIndex( 1 );
-    }
-  } );
-
-  // restore previous view
-  QgsSettings settings;
-  const int currentView = settings.value( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui ).toInt();
-  if ( currentView == 0 )
-    mButtonIconView->setChecked( true );
-  else
-    mButtonListView->setChecked( true );
-
-  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
-  connect( mSymbolTreeView->header(), &QHeaderView::sectionResized, this, [this]
-  {
-    // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
-    QgsSettings().setValue( QStringLiteral( "UI/symbolsList/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
-  } );
-
-  QgsFilterLineEdit *groupEdit = new QgsFilterLineEdit();
-  groupEdit->setShowSearchIcon( true );
-  groupEdit->setShowClearButton( true );
-  groupEdit->setPlaceholderText( tr( "Filter symbols…" ) );
-  groupsCombo->setLineEdit( groupEdit );
-  populateGroups();
-  connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSymbolsListWidget::groupsCombo_currentIndexChanged );
-  connect( groupsCombo, &QComboBox::currentTextChanged, this, &QgsSymbolsListWidget::updateModelFilters );
 
   if ( mSymbol )
   {
@@ -211,17 +77,19 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   btnColor->setAllowOpacity( true );
   btnColor->setColorDialogTitle( tr( "Select Color" ) );
   btnColor->setContext( QStringLiteral( "symbology" ) );
-  connect( btnSaveSymbol, &QPushButton::clicked, this, &QgsSymbolsListWidget::saveSymbol );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
+
+  connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsSymbolsListWidget::setSymbolFromStyle );
+  connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbolsListWidget::saveSymbol );
 }
 
 QgsSymbolsListWidget::~QgsSymbolsListWidget()
 {
   // This action was added to the menu by this widget, clean it up
   // The menu can be passed in the constructor, so may live longer than this widget
-  btnAdvanced->menu()->removeAction( mClipFeaturesAction );
-  btnAdvanced->menu()->removeAction( mStandardizeRingsAction );
+  mStyleItemsListWidget->advancedMenu()->removeAction( mClipFeaturesAction );
+  mStyleItemsListWidget->advancedMenu()->removeAction( mStandardizeRingsAction );
 }
 
 void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
@@ -311,96 +179,6 @@ QgsSymbolWidgetContext QgsSymbolsListWidget::context() const
   return mContext;
 }
 
-void QgsSymbolsListWidget::populateGroups()
-{
-  mUpdatingGroups = true;
-  groupsCombo->blockSignals( true );
-  groupsCombo->clear();
-
-  groupsCombo->addItem( tr( "Favorites" ), QVariant( "favorite" ) );
-  groupsCombo->addItem( tr( "All Symbols" ), QVariant( "all" ) );
-
-  int index = 2;
-  QStringList tags = mStyle->tags();
-  if ( tags.count() > 0 )
-  {
-    tags.sort();
-    groupsCombo->insertSeparator( index );
-    const auto constTags = tags;
-    for ( const QString &tag : constTags )
-    {
-      groupsCombo->addItem( tag, QVariant( "tag" ) );
-      index++;
-    }
-  }
-
-  QStringList groups = mStyle->smartgroupNames();
-  if ( groups.count() > 0 )
-  {
-    groups.sort();
-    groupsCombo->insertSeparator( index + 1 );
-    const auto constGroups = groups;
-    for ( const QString &group : constGroups )
-    {
-      groupsCombo->addItem( group, QVariant( "smartgroup" ) );
-    }
-  }
-  groupsCombo->blockSignals( false );
-
-  QgsSettings settings;
-  index = settings.value( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 ).toInt();
-  groupsCombo->setCurrentIndex( index );
-
-  mUpdatingGroups = false;
-
-  updateModelFilters();
-}
-
-void QgsSymbolsListWidget::updateModelFilters()
-{
-  if ( mUpdatingGroups )
-    return;
-
-  const QString text = groupsCombo->currentText();
-  const bool isFreeText = text != groupsCombo->itemText( groupsCombo->currentIndex() );
-
-  if ( isFreeText )
-  {
-    mModel->setFavoritesOnly( false );
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFilterString( groupsCombo->currentText() );
-  }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "favorite" ) )
-  {
-    mModel->setFavoritesOnly( true );
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFilterString( QString() );
-  }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "all" ) )
-  {
-    mModel->setFavoritesOnly( false );
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFilterString( QString() );
-  }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "smartgroup" ) )
-  {
-    mModel->setFavoritesOnly( false );
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( mStyle->smartgroupId( text ) );
-    mModel->setFilterString( QString() );
-  }
-  else
-  {
-    mModel->setFavoritesOnly( false );
-    mModel->setTagId( mStyle->tagId( text ) );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFilterString( QString() );
-  }
-}
-
 void QgsSymbolsListWidget::forceRHRToggled( bool checked )
 {
   if ( !mSymbol )
@@ -410,24 +188,40 @@ void QgsSymbolsListWidget::forceRHRToggled( bool checked )
   emit changed();
 }
 
-void QgsSymbolsListWidget::openStyleManager()
+void QgsSymbolsListWidget::saveSymbol()
 {
-  // prefer to use global window manager to open the style manager, if possible!
-  // this allows reuse of an existing non-modal window instead of opening a new modal window.
-  // Note that we only use the non-modal dialog if we're open in the panel -- if we're already
-  // open as part of a modal dialog, then we MUST use another modal dialog or the result will
-  // not be focusable!
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  if ( !panel || !panel->dockMode()
-       || !QgsGui::windowManager()
-       || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
-  {
-    // fallback to modal dialog
-    QgsStyleManagerDialog dlg( mStyle, this );
-    dlg.exec();
+  if ( !mStyle )
+    return;
 
-    updateModelFilters(); // probably not needed -- the model should automatically update if any changes were made
+  QgsStyleSaveDialog saveDlg( this );
+  saveDlg.setDefaultTags( mStyleItemsListWidget->currentTagFilter() );
+  if ( !saveDlg.exec() )
+    return;
+
+  if ( saveDlg.name().isEmpty() )
+    return;
+
+  // check if there is no symbol with same name
+  if ( mStyle->symbolNames().contains( saveDlg.name() ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
+                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                    .arg( saveDlg.name() ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+    mStyle->removeSymbol( saveDlg.name() );
   }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  // add new symbol to style and re-populate the list
+  mStyle->addSymbol( saveDlg.name(), mSymbol->clone() );
+
+  // make sure the symbol is stored
+  mStyle->saveSymbol( saveDlg.name(), mSymbol->clone(), saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsSymbolsListWidget::clipFeaturesToggled( bool checked )
@@ -539,66 +333,6 @@ void QgsSymbolsListWidget::updateAssistantSymbol()
     mWidthDDBtn->setSymbol( mAssistantSymbol );
 }
 
-void QgsSymbolsListWidget::addSymbolToStyle()
-{
-  bool ok;
-  QString name = QInputDialog::getText( this, tr( "Save Symbol" ),
-                                        tr( "Please enter name for the symbol:" ), QLineEdit::Normal, tr( "New symbol" ), &ok );
-  if ( !ok || name.isEmpty() )
-    return;
-
-  // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( name ) )
-  {
-    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
-                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
-                                    .arg( name ),
-                                    QMessageBox::Yes | QMessageBox::No );
-    if ( res != QMessageBox::Yes )
-    {
-      return;
-    }
-  }
-
-  // add new symbol to style and re-populate the list
-  mStyle->addSymbol( name, mSymbol->clone() );
-
-  // make sure the symbol is stored
-  mStyle->saveSymbol( name, mSymbol->clone(), false, QStringList() );
-}
-
-void QgsSymbolsListWidget::saveSymbol()
-{
-  QgsStyleSaveDialog saveDlg( this );
-  if ( !saveDlg.exec() )
-    return;
-
-  if ( saveDlg.name().isEmpty() )
-    return;
-
-  // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( saveDlg.name() ) )
-  {
-    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
-                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
-                                    .arg( saveDlg.name() ),
-                                    QMessageBox::Yes | QMessageBox::No );
-    if ( res != QMessageBox::Yes )
-    {
-      return;
-    }
-    mStyle->removeSymbol( saveDlg.name() );
-  }
-
-  QStringList symbolTags = saveDlg.tags().split( ',' );
-
-  // add new symbol to style and re-populate the list
-  mStyle->addSymbol( saveDlg.name(), mSymbol->clone() );
-
-  // make sure the symbol is stored
-  mStyle->saveSymbol( saveDlg.name(), mSymbol->clone(), saveDlg.isFavorite(), symbolTags );
-}
-
 void QgsSymbolsListWidget::mSymbolUnitWidget_changed()
 {
   if ( mSymbol )
@@ -706,41 +440,39 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   mOpacityWidget->setOpacity( mSymbol->opacity() );
 
   // Clean up previous advanced symbol actions
-  const QList<QAction *> actionList( btnAdvanced->menu()->actions() );
+  const QList<QAction *> actionList( mStyleItemsListWidget->advancedMenu()->actions() );
   for ( const auto &action : actionList )
   {
     if ( mClipFeaturesAction->text() == action->text() )
     {
-      btnAdvanced->menu()->removeAction( action );
+      mStyleItemsListWidget->advancedMenu()->removeAction( action );
     }
     else if ( mStandardizeRingsAction->text() == action->text() )
     {
-      btnAdvanced->menu()->removeAction( action );
+      mStyleItemsListWidget->advancedMenu()->removeAction( action );
     }
   }
 
   if ( mSymbol->type() == QgsSymbol::Line || mSymbol->type() == QgsSymbol::Fill )
   {
     //add clip features option for line or fill symbols
-    btnAdvanced->menu()->addAction( mClipFeaturesAction );
+    mStyleItemsListWidget->advancedMenu()->addAction( mClipFeaturesAction );
   }
   if ( mSymbol->type() == QgsSymbol::Fill )
   {
-    btnAdvanced->menu()->addAction( mStandardizeRingsAction );
+    mStyleItemsListWidget->advancedMenu()->addAction( mStandardizeRingsAction );
   }
 
-  btnAdvanced->setVisible( mAdvancedMenu || !btnAdvanced->menu()->isEmpty() );
+  mStyleItemsListWidget->showAdvancedButton( mAdvancedMenu || !mStyleItemsListWidget->advancedMenu()->isEmpty() );
 
   whileBlocking( mClipFeaturesAction )->setChecked( mSymbol->clipFeaturesToExtent() );
   whileBlocking( mStandardizeRingsAction )->setChecked( mSymbol->forceRHR() );
 }
 
-void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
+void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity )
 {
-  QString symbolName = mModel->data( mModel->index( index.row(), QgsStyleModel::Name ) ).toString();
-  lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
-  std::unique_ptr< QgsSymbol > s( mStyle->symbol( symbolName ) );
+  std::unique_ptr< QgsSymbol > s( mStyle->symbol( name ) );
   if ( !s )
     return;
 
@@ -757,10 +489,4 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
 
   updateSymbolInfo();
   emit changed();
-}
-
-void QgsSymbolsListWidget::groupsCombo_currentIndexChanged( int index )
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), index );
 }

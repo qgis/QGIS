@@ -52,7 +52,6 @@ SET(QGIS_APP_SRCS
   qgsfeatureaction.cpp
   qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
-  qgslabelinggui.cpp
   qgslabelingwidget.cpp
   qgslayercapabilitiesmodel.cpp
   qgslayertreeviewindicatorprovider.cpp
@@ -293,7 +292,6 @@ SET (QGIS_APP_MOC_HDRS
   qgshtmlannotationdialog.h
   qgsidentifyresultsdialog.h
   qgslabelengineconfigdialog.h
-  qgslabelinggui.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgslayercapabilitiesmodel.h

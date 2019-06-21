@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslabelinggui.h"
-#include "qgisapp.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayerlabeling.h"
@@ -25,16 +24,21 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsstylesavedialog.h"
 
 #include <QButtonGroup>
+#include <QMessageBox>
+
+///@cond PRIVATE
 
 QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr )
-             << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
+             << QgsExpressionContextUtils::atlasScope( nullptr );
+  if ( mCanvas )
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -65,11 +69,13 @@ void QgsLabelingGui::updateProperty()
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, QgsWkbTypes::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling )
   , mLayer( layer )
+  , mGeomType( geomType )
   , mSettings( layerSettings )
   , mMode( NoLabels )
+  , mCanvas( mapCanvas )
 {
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -88,9 +94,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
-  mMinScaleWidget->setMapCanvas( mapCanvas );
+  mMinScaleWidget->setMapCanvas( mCanvas );
   mMinScaleWidget->setShowCurrentScaleButton( true );
-  mMaxScaleWidget->setMapCanvas( mapCanvas );
+  mMaxScaleWidget->setMapCanvas( mCanvas );
   mMaxScaleWidget->setShowCurrentScaleButton( true );
 
   mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );
@@ -108,7 +114,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 {
   mPreviewFeature = QgsFeature();
 
-  if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+  if ( ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer ) && mGeomType == QgsWkbTypes::UnknownGeometry )
   {
     setEnabled( false );
     return;
@@ -119,53 +125,54 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   QgsVectorLayer *layer = static_cast<QgsVectorLayer *>( mapLayer );
   mLayer = layer;
 
-  // load labeling settings from layer
-  const QgsPalLayerSettings &lyr = mSettings;
+  mTextFormatsListWidget->setLayerType( mLayer ? mLayer->geometryType() : mGeomType );
 
+  // load labeling settings from layer
   updateGeometryTypeBasedWidgets();
 
   mFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea da;
-  da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
+  if ( mLayer )
+    da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
 
-  mFieldExpressionWidget->setEnabled( mMode == Labels );
-  mLabelingFrame->setEnabled( mMode == Labels );
+  mFieldExpressionWidget->setEnabled( mMode == Labels || !mLayer );
+  mLabelingFrame->setEnabled( mMode == Labels || !mLayer );
 
   blockInitSignals( true );
 
-  mGeometryGenerator->setText( lyr.geometryGenerator );
-  mGeometryGeneratorGroupBox->setChecked( lyr.geometryGeneratorEnabled );
-  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( lyr.geometryGeneratorType ) );
+  mGeometryGenerator->setText( mSettings.geometryGenerator );
+  mGeometryGeneratorGroupBox->setChecked( mSettings.geometryGeneratorEnabled );
+  mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( mSettings.geometryGeneratorType ) );
 
-  updateWidgetForFormat( lyr.format() );
+  updateWidgetForFormat( mSettings.format() );
 
   mFieldExpressionWidget->setRow( -1 );
-  mFieldExpressionWidget->setField( lyr.fieldName );
-  mCheckBoxSubstituteText->setChecked( lyr.useSubstitutions );
-  mSubstitutions = lyr.substitutions;
+  mFieldExpressionWidget->setField( mSettings.fieldName );
+  mCheckBoxSubstituteText->setChecked( mSettings.useSubstitutions );
+  mSubstitutions = mSettings.substitutions;
 
   // populate placement options
-  mCentroidRadioWhole->setChecked( lyr.centroidWhole );
-  mCentroidInsideCheckBox->setChecked( lyr.centroidInside );
-  mFitInsidePolygonCheckBox->setChecked( lyr.fitInPolygonOnly );
-  mLineDistanceSpnBx->setValue( lyr.dist );
-  mLineDistanceUnitWidget->setUnit( lyr.distUnits );
-  mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
-  mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( lyr.offsetType ) );
-  mQuadrantBtnGrp->button( static_cast<int>( lyr.quadOffset ) )->setChecked( true );
-  mPointOffsetXSpinBox->setValue( lyr.xOffset );
-  mPointOffsetYSpinBox->setValue( lyr.yOffset );
-  mPointOffsetUnitWidget->setUnit( lyr.offsetUnits );
-  mPointOffsetUnitWidget->setMapUnitScale( lyr.labelOffsetMapUnitScale );
-  mPointAngleSpinBox->setValue( lyr.angleOffset );
-  chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
-  chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
-  chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-  chkLineOrientationDependent->setChecked( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) );
+  mCentroidRadioWhole->setChecked( mSettings.centroidWhole );
+  mCentroidInsideCheckBox->setChecked( mSettings.centroidInside );
+  mFitInsidePolygonCheckBox->setChecked( mSettings.fitInPolygonOnly );
+  mLineDistanceSpnBx->setValue( mSettings.dist );
+  mLineDistanceUnitWidget->setUnit( mSettings.distUnits );
+  mLineDistanceUnitWidget->setMapUnitScale( mSettings.distMapUnitScale );
+  mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( mSettings.offsetType ) );
+  mQuadrantBtnGrp->button( static_cast<int>( mSettings.quadOffset ) )->setChecked( true );
+  mPointOffsetXSpinBox->setValue( mSettings.xOffset );
+  mPointOffsetYSpinBox->setValue( mSettings.yOffset );
+  mPointOffsetUnitWidget->setUnit( mSettings.offsetUnits );
+  mPointOffsetUnitWidget->setMapUnitScale( mSettings.labelOffsetMapUnitScale );
+  mPointAngleSpinBox->setValue( mSettings.angleOffset );
+  chkLineAbove->setChecked( mSettings.placementFlags & QgsPalLayerSettings::AboveLine );
+  chkLineBelow->setChecked( mSettings.placementFlags & QgsPalLayerSettings::BelowLine );
+  chkLineOn->setChecked( mSettings.placementFlags & QgsPalLayerSettings::OnLine );
+  chkLineOrientationDependent->setChecked( !( mSettings.placementFlags & QgsPalLayerSettings::MapOrientation ) );
 
-  switch ( lyr.placement )
+  switch ( mSettings.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
       radAroundPoint->setChecked( true );
@@ -199,44 +206,44 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   }
 
   // Label repeat distance
-  mRepeatDistanceSpinBox->setValue( lyr.repeatDistance );
-  mRepeatDistanceUnitWidget->setUnit( lyr.repeatDistanceUnit );
-  mRepeatDistanceUnitWidget->setMapUnitScale( lyr.repeatDistanceMapUnitScale );
+  mRepeatDistanceSpinBox->setValue( mSettings.repeatDistance );
+  mRepeatDistanceUnitWidget->setUnit( mSettings.repeatDistanceUnit );
+  mRepeatDistanceUnitWidget->setMapUnitScale( mSettings.repeatDistanceMapUnitScale );
 
-  mPrioritySlider->setValue( lyr.priority );
-  mChkNoObstacle->setChecked( lyr.obstacle );
-  mObstacleFactorSlider->setValue( lyr.obstacleFactor * 50 );
-  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( lyr.obstacleType ) );
-  mPolygonObstacleTypeFrame->setEnabled( lyr.obstacle );
-  mObstaclePriorityFrame->setEnabled( lyr.obstacle );
-  chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
-  mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
-  chkMergeLines->setChecked( lyr.mergeLines );
-  mMinSizeSpinBox->setValue( lyr.minFeatureSize );
-  mLimitLabelChkBox->setChecked( lyr.limitNumLabels );
-  mLimitLabelSpinBox->setValue( lyr.maxNumLabels );
+  mPrioritySlider->setValue( mSettings.priority );
+  mChkNoObstacle->setChecked( mSettings.obstacle );
+  mObstacleFactorSlider->setValue( mSettings.obstacleFactor * 50 );
+  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( mSettings.obstacleType ) );
+  mPolygonObstacleTypeFrame->setEnabled( mSettings.obstacle );
+  mObstaclePriorityFrame->setEnabled( mSettings.obstacle );
+  chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
+  mPalShowAllLabelsForLayerChkBx->setChecked( mSettings.displayAll );
+  chkMergeLines->setChecked( mSettings.mergeLines );
+  mMinSizeSpinBox->setValue( mSettings.minFeatureSize );
+  mLimitLabelChkBox->setChecked( mSettings.limitNumLabels );
+  mLimitLabelSpinBox->setValue( mSettings.maxNumLabels );
 
   // direction symbol(s)
-  mDirectSymbChkBx->setChecked( lyr.addDirectionSymbol );
-  mDirectSymbLeftLineEdit->setText( lyr.leftDirectionSymbol );
-  mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
-  mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
+  mDirectSymbChkBx->setChecked( mSettings.addDirectionSymbol );
+  mDirectSymbLeftLineEdit->setText( mSettings.leftDirectionSymbol );
+  mDirectSymbRightLineEdit->setText( mSettings.rightDirectionSymbol );
+  mDirectSymbRevChkBx->setChecked( mSettings.reverseDirectionSymbol );
 
-  mDirectSymbBtnGrp->button( static_cast<int>( lyr.placeDirectionSymbol ) )->setChecked( true );
-  mUpsidedownBtnGrp->button( static_cast<int>( lyr.upsidedownLabels ) )->setChecked( true );
+  mDirectSymbBtnGrp->button( static_cast<int>( mSettings.placeDirectionSymbol ) )->setChecked( true );
+  mUpsidedownBtnGrp->button( static_cast<int>( mSettings.upsidedownLabels ) )->setChecked( true );
 
   // curved label max character angles
-  mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );
+  mMaxCharAngleInDSpinBox->setValue( mSettings.maxCurvedCharAngleIn );
   // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
-  mMaxCharAngleOutDSpinBox->setValue( std::fabs( lyr.maxCurvedCharAngleOut ) );
+  mMaxCharAngleOutDSpinBox->setValue( std::fabs( mSettings.maxCurvedCharAngleOut ) );
 
-  wrapCharacterEdit->setText( lyr.wrapChar );
-  mAutoWrapLengthSpinBox->setValue( lyr.autoWrapLength );
-  mAutoWrapTypeComboBox->setCurrentIndex( lyr.useMaxLineLengthForAutoWrap ? 0 : 1 );
+  wrapCharacterEdit->setText( mSettings.wrapChar );
+  mAutoWrapLengthSpinBox->setValue( mSettings.autoWrapLength );
+  mAutoWrapTypeComboBox->setCurrentIndex( mSettings.useMaxLineLengthForAutoWrap ? 0 : 1 );
 
-  if ( ( int ) lyr.multilineAlign < mFontMultiLineAlignComboBox->count() )
+  if ( ( int ) mSettings.multilineAlign < mFontMultiLineAlignComboBox->count() )
   {
-    mFontMultiLineAlignComboBox->setCurrentIndex( lyr.multilineAlign );
+    mFontMultiLineAlignComboBox->setCurrentIndex( mSettings.multilineAlign );
   }
   else
   {
@@ -245,30 +252,26 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
     mFontMultiLineAlignComboBox->setCurrentIndex( 0 );
   }
 
-  chkPreserveRotation->setChecked( lyr.preserveRotation );
+  chkPreserveRotation->setChecked( mSettings.preserveRotation );
 
-  mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
-  mPreviewBackgroundBtn->setDefaultColor( lyr.previewBkgrdColor );
-  setPreviewBackground( lyr.previewBkgrdColor );
+  mScaleBasedVisibilityChkBx->setChecked( mSettings.scaleVisibility );
+  mMinScaleWidget->setScale( mSettings.minimumScale );
+  mMaxScaleWidget->setScale( mSettings.maximumScale );
 
-  mScaleBasedVisibilityChkBx->setChecked( lyr.scaleVisibility );
-  mMinScaleWidget->setScale( lyr.minimumScale );
-  mMaxScaleWidget->setScale( lyr.maximumScale );
-
-  mFormatNumChkBx->setChecked( lyr.formatNumbers );
-  mFormatNumDecimalsSpnBx->setValue( lyr.decimals );
-  mFormatNumPlusSignChkBx->setChecked( lyr.plusSign );
+  mFormatNumChkBx->setChecked( mSettings.formatNumbers );
+  mFormatNumDecimalsSpnBx->setValue( mSettings.decimals );
+  mFormatNumPlusSignChkBx->setChecked( mSettings.plusSign );
 
   // set pixel size limiting checked state before unit choice so limiting can be
   // turned on as a default for map units, if minimum trigger value of 0 is used
-  mFontLimitPixelChkBox->setChecked( lyr.fontLimitPixelSize );
-  mMinPixelLimit = lyr.fontMinPixelSize; // ignored after first settings save
-  mFontMinPixelSpinBox->setValue( lyr.fontMinPixelSize == 0 ? 3 : lyr.fontMinPixelSize );
-  mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
+  mFontLimitPixelChkBox->setChecked( mSettings.fontLimitPixelSize );
+  mMinPixelLimit = mSettings.fontMinPixelSize; // ignored after first settings save
+  mFontMinPixelSpinBox->setValue( mSettings.fontMinPixelSize == 0 ? 3 : mSettings.fontMinPixelSize );
+  mFontMaxPixelSpinBox->setValue( mSettings.fontMaxPixelSize );
 
-  mZIndexSpinBox->setValue( lyr.zIndex );
+  mZIndexSpinBox->setValue( mSettings.zIndex );
 
-  mDataDefinedProperties = lyr.dataDefinedProperties();
+  mDataDefinedProperties = mSettings.dataDefinedProperties();
 
   updatePlacementWidgets();
   updateLinePlacementOptions();
@@ -282,6 +285,12 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   enableDataDefinedAlignment( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() );
   updateUi(); // should come after data defined button setup
+}
+
+void QgsLabelingGui::setSettings( const QgsPalLayerSettings &settings )
+{
+  mSettings = settings;
+  setLayer( mLayer );
 }
 
 void QgsLabelingGui::blockInitSignals( bool block )
@@ -304,7 +313,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
-  lyr.drawLabels = ( mMode == Labels );
+  lyr.drawLabels = ( mMode == Labels ) || !mLayer;
 
   bool isExpression;
   lyr.fieldName = mFieldExpressionWidget->currentField( &isExpression );
@@ -383,8 +392,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit();
   lyr.repeatDistanceMapUnitScale = mRepeatDistanceUnitWidget->getMapUnitScale();
 
-  lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
-
   lyr.priority = mPrioritySlider->value();
   lyr.obstacle = mChkNoObstacle->isChecked() || mMode == ObstaclesOnly;
   lyr.obstacleFactor = mObstacleFactorSlider->value() / 50.0;
@@ -439,6 +446,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.geometryGenerator = mGeometryGenerator->text();
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
+
+  lyr.layerType = mLayer ? mLayer->geometryType() : mGeomType;
 
   lyr.zIndex = mZIndexSpinBox->value();
 
@@ -623,6 +632,9 @@ void QgsLabelingGui::updateUi()
 
 void QgsLabelingGui::createAuxiliaryField()
 {
+  if ( !mLayer )
+    return;
+
   // try to create an auxiliary layer if not yet created
   if ( !mLayer->auxiliaryLayer() )
   {
@@ -653,6 +665,109 @@ void QgsLabelingGui::createAuxiliaryField()
   emit auxiliaryFieldCreated();
 }
 
+void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
+{
+  switch ( type )
+  {
+    case QgsStyle::SymbolEntity:
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+    case QgsStyle::TextFormatEntity:
+    {
+      QgsTextFormatWidget::setFormatFromStyle( name, type );
+      return;
+    }
+
+    case QgsStyle::LabelSettingsEntity:
+    {
+      if ( !QgsStyle::defaultStyle()->labelSettingsNames().contains( name ) )
+        return;
+
+      QgsPalLayerSettings settings = QgsStyle::defaultStyle()->labelSettings( name );
+      if ( settings.fieldName.isEmpty() )
+      {
+        // if saved settings doesn't have a field name stored, retain the current one
+        bool isExpression;
+        settings.fieldName = mFieldExpressionWidget->currentField( &isExpression );
+        settings.isExpression = isExpression;
+      }
+      setSettings( settings );
+      break;
+    }
+  }
+}
+
+void QgsLabelingGui::saveFormat()
+{
+  QgsStyle *style = QgsStyle::defaultStyle();
+  if ( !style )
+    return;
+
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::LabelSettingsEntity );
+  saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
+  if ( !saveDlg.exec() )
+    return;
+
+  if ( saveDlg.name().isEmpty() )
+    return;
+
+  switch ( saveDlg.selectedType() )
+  {
+    case QgsStyle::TextFormatEntity:
+    {
+      // check if there is no format with same name
+      if ( style->textFormatNames().contains( saveDlg.name() ) )
+      {
+        int res = QMessageBox::warning( this, tr( "Save Text Format" ),
+                                        tr( "Format with name '%1' already exists. Overwrite?" )
+                                        .arg( saveDlg.name() ),
+                                        QMessageBox::Yes | QMessageBox::No );
+        if ( res != QMessageBox::Yes )
+        {
+          return;
+        }
+        style->removeTextFormat( saveDlg.name() );
+      }
+      QStringList symbolTags = saveDlg.tags().split( ',' );
+
+      QgsTextFormat newFormat = format();
+      style->addTextFormat( saveDlg.name(), newFormat );
+      style->saveTextFormat( saveDlg.name(), newFormat, saveDlg.isFavorite(), symbolTags );
+      break;
+    }
+
+    case QgsStyle::LabelSettingsEntity:
+    {
+      // check if there is no settings with same name
+      if ( style->labelSettingsNames().contains( saveDlg.name() ) )
+      {
+        int res = QMessageBox::warning( this, tr( "Save Label Settings" ),
+                                        tr( "Label settings with the name '%1' already exist. Overwrite?" )
+                                        .arg( saveDlg.name() ),
+                                        QMessageBox::Yes | QMessageBox::No );
+        if ( res != QMessageBox::Yes )
+        {
+          return;
+        }
+        style->removeLabelSettings( saveDlg.name() );
+      }
+      QStringList symbolTags = saveDlg.tags().split( ',' );
+
+      QgsPalLayerSettings newSettings = layerSettings();
+      style->addLabelSettings( saveDlg.name(), newSettings );
+      style->saveLabelSettings( saveDlg.name(), newSettings, saveDlg.isFavorite(), symbolTags );
+      break;
+    }
+
+    case QgsStyle::SymbolEntity:
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+      break;
+  }
+}
+
 void QgsLabelingGui::deactivateField( QgsPalLayerSettings::Property key )
 {
   if ( mButtons.contains( key ) )
@@ -669,11 +784,11 @@ void QgsLabelingGui::deactivateField( QgsPalLayerSettings::Property key )
 
 void QgsLabelingGui::updateGeometryTypeBasedWidgets()
 {
-  QgsWkbTypes::GeometryType geometryType;
+  QgsWkbTypes::GeometryType geometryType = mGeomType;
 
   if ( mGeometryGeneratorGroupBox->isChecked() )
     geometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
-  else
+  else if ( mLayer )
     geometryType = mLayer->geometryType();
 
   // show/hide options based upon geometry type
@@ -797,3 +912,27 @@ void QgsLabelingGui::determineGeometryGeneratorType()
 
   mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( geometry.type() ) );
 }
+
+
+//
+// QgsLabelSettingsDialog
+//
+
+QgsLabelSettingsDialog::QgsLabelSettingsDialog( const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent,
+    QgsWkbTypes::GeometryType geomType )
+  : QDialog( parent )
+{
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  mWidget = new QgsLabelingGui( layer, mapCanvas, settings, nullptr, geomType );
+  vLayout->addWidget( mWidget );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
+  setWindowTitle( tr( "Label Settings" ) );
+}
+
+
+
+///@endcond

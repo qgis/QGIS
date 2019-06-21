@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
+    <width>867</width>
     <height>410</height>
    </rect>
   </property>
@@ -355,6 +355,24 @@
              <string>Color Ramp</string>
             </attribute>
            </widget>
+           <widget class="QWidget" name="tabTextFormat">
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mIconFieldText.svg</normaloff>:/images/themes/default/mIconFieldText.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>Text Format</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="tabLabelSettings">
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/labelingSingle.svg</normaloff>:/images/themes/default/labelingSingle.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>Label Settings</string>
+            </attribute>
+           </widget>
           </widget>
          </item>
          <item>
@@ -641,38 +659,6 @@
   <tabstop>searchBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

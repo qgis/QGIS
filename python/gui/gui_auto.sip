@@ -204,6 +204,7 @@
 %Include auto_generated/qgsslider.sip
 %Include auto_generated/qgssnaptogridcanvasitem.sip
 %Include auto_generated/qgsstatusbar.sip
+%Include auto_generated/qgsstyleitemslistwidget.sip
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip
 %Include auto_generated/qgssymbolbutton.sip
