@@ -1212,31 +1212,12 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   connect( reply, &QNetworkReply::finished, this, &QgsAmsTiledImageDownloadHandler::tileReplyFinished );
 }
 
-#ifdef HAVE_GUI
 
-//! Provider for AMS layers source select
-class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
+
+QgsAmsProviderMetadata::QgsAmsProviderMetadata()
+  : QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
 {
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
-    QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsAmsSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-QList<QgsSourceSelectProvider *> QgsAmsProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsAmsSourceSelectProvider;
-  return providers;
 }
-#endif
-
 
 QList<QgsDataItemProvider *> QgsAmsProviderMetadata::dataItemProviders() const
 {
@@ -1260,10 +1241,24 @@ QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
 }
 
 #ifdef HAVE_GUI
+//! Provider for AMS layers source select
+class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
+    QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsAmsSourceSelect( parent, fl, widgetMode );
+    }
+};
+
 QgsAmsProviderGuiMetadata::QgsAmsProviderGuiMetadata()
   : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
 {
-
 }
 
 QList<QgsDataItemGuiProvider *> QgsAmsProviderGuiMetadata::dataItemGuiProviders()
@@ -1272,12 +1267,15 @@ QList<QgsDataItemGuiProvider *> QgsAmsProviderGuiMetadata::dataItemGuiProviders(
   providers << new QgsAmsItemGuiProvider();
   return providers;
 }
+
+QList<QgsSourceSelectProvider *> QgsAmsProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsAmsSourceSelectProvider;
+  return providers;
+}
 #endif
 
-QgsAmsProviderMetadata::QgsAmsProviderMetadata()
-  : QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
-{
-}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

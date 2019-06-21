@@ -346,27 +346,10 @@ bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
   return false;
 }
 
-#ifdef HAVE_GUI
-//! Provider for AFS layers source select
-class QgsAfsSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
 
-    QString providerKey() const override { return TEXT_PROVIDER_KEY; }
-    QString text() const override { return QObject::tr( "ArcGIS Feature Server" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsAfsSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-QList<QgsSourceSelectProvider *> QgsAfsProviderGuiMetadata::sourceSelectProviders()
+QgsAfsProviderMetadata::QgsAfsProviderMetadata():
+  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
 {
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsAfsSourceSelectProvider;
-  return providers;
 }
 
 QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
@@ -393,9 +376,34 @@ QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString *uri, cons
   return new QgsAfsProvider( *uri, options );
 }
 
+
+#ifdef HAVE_GUI
+//! Provider for AFS layers source select
+class QgsAfsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    QString providerKey() const override { return TEXT_PROVIDER_KEY; }
+    QString text() const override { return QObject::tr( "ArcGIS Feature Server" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsAfsSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
 QgsAfsProviderGuiMetadata::QgsAfsProviderGuiMetadata()
   : QgsProviderGuiMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
 {
+}
+
+QList<QgsSourceSelectProvider *> QgsAfsProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsAfsSourceSelectProvider;
+  return providers;
 }
 
 QList<QgsDataItemGuiProvider *> QgsAfsProviderGuiMetadata::dataItemGuiProviders()
@@ -406,10 +414,6 @@ QList<QgsDataItemGuiProvider *> QgsAfsProviderGuiMetadata::dataItemGuiProviders(
 }
 #endif
 
-QgsAfsProviderMetadata::QgsAfsProviderMetadata():
-  QgsProviderMetadata( TEXT_PROVIDER_KEY, TEXT_PROVIDER_DESCRIPTION )
-{
-}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

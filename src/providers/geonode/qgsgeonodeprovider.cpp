@@ -19,28 +19,30 @@
 
 #include "qgis.h"
 #include "qgsprovidermetadata.h"
+#include "qgsgeonodedataitems.h"
 #ifdef HAVE_GUI
 #include "qgsproviderguimetadata.h"
-#include "qgsgeonodedataitems.h"
 #include "qgsgeonodesourceselect.h"
 #endif
 
 static const QString PROVIDER_KEY = QStringLiteral( "geonode" );
 static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GeoNode provider" );
 
-class QgsGeonodeProviderMetadata: public QgsProviderMetadata
+class QgsGeoNodeProviderMetadata: public QgsProviderMetadata
 {
   public:
-    QgsGeonodeProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
-#ifdef HAVE_GUI
-    QList<QgsDataItemProvider *> dataItemProviders() const override
-    {
-      QList<QgsDataItemProvider *> providers;
-      providers << new QgsGeoNodeDataItemProvider();
-      return providers;
-    }
-#endif
+    QgsGeoNodeProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
+
+QList<QgsDataItemProvider *> QgsGeoNodeProviderMetadata::dataItemProviders() const
+{
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsGeoNodeDataItemProvider();
+  return providers;
+}
+
 
 #ifdef HAVE_GUI
 class QgsGeonodeProviderGuiMetadata: public QgsProviderGuiMetadata
@@ -58,7 +60,7 @@ class QgsGeonodeProviderGuiMetadata: public QgsProviderGuiMetadata
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  return new QgsGeonodeProviderMetadata();
+  return new QgsGeoNodeProviderMetadata();
 }
 
 #ifdef HAVE_GUI
@@ -67,4 +69,3 @@ QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
   return new QgsGeonodeProviderGuiMetadata();
 }
 #endif
-

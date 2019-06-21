@@ -3522,13 +3522,13 @@ QgsOracleProviderMetadata::QgsOracleProviderMetadata():
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? new QgsOracleProviderMetadata() : nullptr;
+  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? new QgsOracleProviderMetadata() : nullptr;
 }
 
 #ifdef HAVE_GUI
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
-  QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? new QgsOracleProviderGuiMetadata() : nullptr;
+  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? new QgsOracleProviderGuiMetadata() : nullptr;
 }
 #endif
 

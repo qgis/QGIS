@@ -85,7 +85,7 @@ class QgsWCSRootItem : public QgsDataCollectionItem
 #endif
 };
 
-//! Provider for GDAL root data item
+//! Provider for WCS root data item
 class QgsWcsDataItemProvider : public QgsDataItemProvider
 {
   public:
