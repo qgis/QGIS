@@ -5045,6 +5045,12 @@ class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
       providers << new QgsPostgresSourceSelectProvider;  //#spellok
       return providers;
     }
+    QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override
+    {
+      QList<QgsProjectStorageGuiProvider *> providers;
+      providers << new QgsPostgresProjectStorageGuiProvider;
+      return providers;
+    }
     void registerGui( QMainWindow *mainWindow ) override
     {
       QgsPGRootItem::sMainWindow = mainWindow;
