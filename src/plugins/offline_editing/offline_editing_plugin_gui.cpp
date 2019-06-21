@@ -27,6 +27,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -99,6 +100,8 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   : QDialog( parent, fl )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( mBrowseButton, &QPushButton::clicked, this, &QgsOfflineEditingPluginGui::mBrowseButton_clicked );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOfflineEditingPluginGui::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOfflineEditingPluginGui::buttonBox_rejected );
@@ -122,7 +125,6 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "OfflineEditing/geometry" ), saveGeometry(), QgsSettings::Section::Plugins );
   settings.setValue( QStringLiteral( "OfflineEditing/offline_data_path" ), mOfflineDataPath, QgsSettings::Section::Plugins );
 }
 
@@ -246,7 +248,6 @@ void QgsOfflineEditingPluginGui::restoreState()
 {
   QgsSettings settings;
   mOfflineDataPath = settings.value( QStringLiteral( "OfflineEditing/offline_data_path" ), QDir::homePath(), QgsSettings::Section::Plugins ).toString();
-  restoreGeometry( settings.value( QStringLiteral( "OfflineEditing/geometry" ), QgsSettings::Section::Plugins ).toByteArray() );
 }
 
 void QgsOfflineEditingPluginGui::selectAll()

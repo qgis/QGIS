@@ -18,6 +18,8 @@
  ***************************************************************************/
 
 #include "qgssubstitutionlistwidget.h"
+#include "qgsgui.h"
+
 #include <QDialogButtonBox>
 #include <QCheckBox>
 #include <QFileDialog>
@@ -28,6 +30,8 @@ QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( mButtonAdd, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonAdd_clicked );
   connect( mButtonRemove, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonRemove_clicked );
   connect( mButtonExport, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonExport_clicked );
