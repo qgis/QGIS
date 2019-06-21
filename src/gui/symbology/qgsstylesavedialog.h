@@ -43,16 +43,30 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
      */
     QgsStyleSaveDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 
-    //! returns the text value of the name element
+    /**
+     * Returns the entered name for the new symbol.
+     */
     QString name() const;
 
-    //! returns the text value of the tags element
+    /**
+     * Returns any tags entered for the new symbol (as a comma seperated value list).
+     */
     QString tags() const;
 
-    //! returns whether the favorite element is checked
+    /**
+     * Returns TRUE if the favorite is checked for the symbol.
+     */
     bool isFavorite() const;
 
+    /**
+     * Returns the type of style entity to save.
+     * \since QGIS 3.10
+     */
+    QgsStyle::StyleEntity selectedType() const;
 
+  private:
+
+    QgsStyle::StyleEntity mType = QgsStyle::SymbolEntity;
 
 };
 

@@ -131,6 +131,11 @@ Sets the current text settings from a style entry.
 .. versionadded:: 3.10
 %End
 
+    virtual void saveFormat();
+%Docstring
+Saves the current text settings to a style entry.
+%End
+
 };
 
 

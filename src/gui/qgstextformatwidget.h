@@ -153,6 +153,11 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      */
     virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
 
+    /**
+     * Saves the current text settings to a style entry.
+     */
+    virtual void saveFormat();
+
   private:
     Mode mWidgetMode = Text;
     QgsMapCanvas *mMapCanvas = nullptr;
@@ -218,7 +223,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
 
-    void saveFormat();
 };
 
 

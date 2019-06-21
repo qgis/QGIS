@@ -24,8 +24,10 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsstylesavedialog.h"
 
 #include <QButtonGroup>
+#include <QMessageBox>
 
 ///@cond PRIVATE
 
@@ -445,6 +447,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
 
+  lyr.layerType = mLayer ? mLayer->geometryType() : mGeomType;
+
   lyr.zIndex = mZIndexSpinBox->value();
 
   lyr.setDataDefinedProperties( mDataDefinedProperties );
@@ -691,6 +695,75 @@ void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEnt
       setSettings( settings );
       break;
     }
+  }
+}
+
+void QgsLabelingGui::saveFormat()
+{
+  QgsStyle *style = QgsStyle::defaultStyle();
+  if ( !style )
+    return;
+
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::LabelSettingsEntity );
+  if ( !saveDlg.exec() )
+    return;
+
+  if ( saveDlg.name().isEmpty() )
+    return;
+
+  switch ( saveDlg.selectedType() )
+  {
+    case QgsStyle::TextFormatEntity:
+    {
+      // check if there is no format with same name
+      if ( style->textFormatNames().contains( saveDlg.name() ) )
+      {
+        int res = QMessageBox::warning( this, tr( "Save Text Format" ),
+                                        tr( "Format with name '%1' already exists. Overwrite?" )
+                                        .arg( saveDlg.name() ),
+                                        QMessageBox::Yes | QMessageBox::No );
+        if ( res != QMessageBox::Yes )
+        {
+          return;
+        }
+        style->removeTextFormat( saveDlg.name() );
+      }
+      QStringList symbolTags = saveDlg.tags().split( ',' );
+
+      QgsTextFormat newFormat = format();
+      style->addTextFormat( saveDlg.name(), newFormat );
+      style->saveTextFormat( saveDlg.name(), newFormat, saveDlg.isFavorite(), symbolTags );
+      break;
+    }
+
+    case QgsStyle::LabelSettingsEntity:
+    {
+      // check if there is no settings with same name
+      if ( style->labelSettingsNames().contains( saveDlg.name() ) )
+      {
+        int res = QMessageBox::warning( this, tr( "Save Label Settings" ),
+                                        tr( "Label settings with the name '%1' already exist. Overwrite?" )
+                                        .arg( saveDlg.name() ),
+                                        QMessageBox::Yes | QMessageBox::No );
+        if ( res != QMessageBox::Yes )
+        {
+          return;
+        }
+        style->removeLabelSettings( saveDlg.name() );
+      }
+      QStringList symbolTags = saveDlg.tags().split( ',' );
+
+      QgsPalLayerSettings newSettings = layerSettings();
+      style->addLabelSettings( saveDlg.name(), newSettings );
+      style->saveLabelSettings( saveDlg.name(), newSettings, saveDlg.isFavorite(), symbolTags );
+      break;
+    }
+
+    case QgsStyle::SymbolEntity:
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+      break;
   }
 }
 

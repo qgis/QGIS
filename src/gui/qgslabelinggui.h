@@ -72,6 +72,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
   protected slots:
     void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type ) override;
+    void saveFormat() override;
 
   protected:
     void blockInitSignals( bool block );
