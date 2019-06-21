@@ -56,7 +56,7 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
     void setDefaultTags( const QString &tags );
 
     /**
-     * Returns any tags entered for the new symbol (as a comma seperated value list).
+     * Returns any tags entered for the new symbol (as a comma separated value list).
      */
     QString tags() const;
 
