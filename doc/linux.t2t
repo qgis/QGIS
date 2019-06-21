@@ -32,7 +32,7 @@ of Ubuntu. This is not activated by default, so you need to activate it:
 + Uncomment all the lines starting with "deb"
 +
 
-Also you will need to be running Ubuntu 'precise' or higher in order for
+Also you will need to be running Ubuntu 'xenial' or higher in order for
 all dependencies to be met.
 
 Now update your local sources database:
@@ -52,8 +52,8 @@ sudo apt-get update
 
 (extracted from the control.in file in ``debian/``)
 
-See http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu for
-currently supported distributions (plain xenial's GDAL for instance is to old
+See https://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu for
+currently supported distributions (plain xenial's GDAL for instance is too old
 and we build with GDAL2 from ubuntugis).
 
 
