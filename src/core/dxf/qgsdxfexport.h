@@ -338,7 +338,7 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Draw dxf primitives (LWPOLYLINE)
-     * \param geom polyline (including curved)
+     * \param curve polyline (including curved)
      * \param layer layer name to use
      * \param lineStyleName line type to use
      * \param color color to use
