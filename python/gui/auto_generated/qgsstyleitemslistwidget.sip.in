@@ -53,6 +53,14 @@ Sets the ``type`` of symbols to show in the widget.
 .. seealso:: :py:func:`setEntityType`
 %End
 
+    void setLayerType( QgsWkbTypes::GeometryType type );
+%Docstring
+Sets the layer ``type`` to show in the widget. Set ``type`` to QgsWkbTypes.UnknownGeometry if no
+layer type filter is desired.
+
+This setting only applies to label settings style entities.
+%End
+
 
     QString currentItemName() const;
 %Docstring

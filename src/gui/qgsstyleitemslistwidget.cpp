@@ -233,6 +233,11 @@ void QgsStyleItemsListWidget::setSymbolType( QgsSymbol::SymbolType type )
   mModel->setSymbolType( type );
 }
 
+void QgsStyleItemsListWidget::setLayerType( QgsWkbTypes::GeometryType type )
+{
+  mModel->setLayerType( type );
+}
+
 QMenu *QgsStyleItemsListWidget::advancedMenu()
 {
   return btnAdvanced->menu();

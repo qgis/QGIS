@@ -260,6 +260,15 @@ Returns the label settings with the specified ``name``.
 .. versionadded:: 3.10
 %End
 
+    QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
+%Docstring
+Returns the layer geometry type corresponding to the label settings
+with the specified ``name``, or QgsWkbTypes.UnknownGeometry
+if matching label settings are not present.
+
+.. versionadded:: 3.10
+%End
+
     int labelSettingsCount() const;
 %Docstring
 Returns count of label settings in the style.

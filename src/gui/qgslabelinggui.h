@@ -48,6 +48,8 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
     void setLayer( QgsMapLayer *layer );
 
+    void setSettings( const QgsPalLayerSettings &settings );
+
     /**
      * Deactivate a field from data defined properties and update the
      * corresponding button.
@@ -68,6 +70,9 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
     void createAuxiliaryField();
 
+  protected slots:
+    void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type ) override;
+
   protected:
     void blockInitSignals( bool block );
     void syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f );
@@ -87,7 +92,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
   private:
     QgsVectorLayer *mLayer = nullptr;
     QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
-    const QgsPalLayerSettings &mSettings;
+    QgsPalLayerSettings mSettings;
     QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
     QgsFeature mPreviewFeature;

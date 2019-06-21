@@ -58,6 +58,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
       TagRole, //!< String list of tags
       SymbolTypeRole, //!< Symbol type (for symbol entities)
       IsFavoriteRole, //!< Whether entity is flagged as a favorite
+      LayerTypeRole, //!< Layer type (for label settings entities)
     };
 
     /**
@@ -245,6 +246,24 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void setSymbolTypeFilterEnabled( bool enabled );
 
     /**
+     * Returns the layer type filter, or QgsWkbTypes::UnknownGeometry if no
+     * layer type filter is present.
+     *
+     * This setting has no effect on non-label settings entities (i.e. color ramps).
+     *
+     * \see setLayerType()
+     */
+    QgsWkbTypes::GeometryType layerType() const;
+
+    /**
+     * Sets the layer \a type filter. Set \a type to QgsWkbTypes::UnknownGeometry if no
+     * layer type filter is desired.
+     *
+     * \see layerType()
+     */
+    void setLayerType( QgsWkbTypes::GeometryType type );
+
+    /**
      * Sets a tag \a id to filter style entities by. Only entities with the given
      * tag will be shown in the model.
      *
@@ -336,6 +355,8 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
 
     bool mSymbolTypeFilterEnabled = false;
     QgsSymbol::SymbolType mSymbolType = QgsSymbol::Marker;
+
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::UnknownGeometry;
 
 };
 

@@ -147,6 +147,12 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     //! Updates label placement options to reflect current state of widget
     void updatePlacementWidgets();
 
+    /**
+     * Sets the current text settings from a style entry.
+     * \since QGIS 3.10
+     */
+    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+
   private:
     Mode mWidgetMode = Text;
     QgsMapCanvas *mMapCanvas = nullptr;
@@ -212,7 +218,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void scrollPreview();
     void updateSvgWidgets( const QString &svgPath );
 
-    void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
     void saveFormat();
 };
 

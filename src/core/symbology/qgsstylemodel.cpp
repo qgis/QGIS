@@ -304,6 +304,14 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       return symbol ? symbol->type() : QVariant();
     }
 
+    case LayerTypeRole:
+    {
+      if ( entityType != QgsStyle::LabelSettingsEntity )
+        return QVariant();
+
+      return mStyle->labelSettingsLayerType( name );
+    }
+
     default:
       return QVariant();
   }
@@ -845,6 +853,10 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 
+  if ( styleEntityType == QgsStyle::LabelSettingsEntity && mLayerType != QgsWkbTypes::UnknownGeometry &
+       mLayerType != static_cast< QgsWkbTypes::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
+    return false;
+
   if ( mTagId >= 0 && !mTaggedSymbolNames.contains( name ) )
     return false;
 
@@ -915,6 +927,17 @@ bool QgsStyleProxyModel::symbolTypeFilterEnabled() const
 void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool symbolTypeFilterEnabled )
 {
   mSymbolTypeFilterEnabled = symbolTypeFilterEnabled;
+  invalidateFilter();
+}
+
+QgsWkbTypes::GeometryType QgsStyleProxyModel::layerType() const
+{
+  return mLayerType;
+}
+
+void QgsStyleProxyModel::setLayerType( QgsWkbTypes::GeometryType type )
+{
+  mLayerType = type;
   invalidateFilter();
 }
 

@@ -1376,13 +1376,36 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
   mShapeSVGUnitsLabel->setEnabled( validSVG && strokeWidthParam );
 }
 
-void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity )
+void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
 {
-  if ( !QgsStyle::defaultStyle()->textFormatNames().contains( name ) )
-    return;
+  switch ( type )
+  {
+    case QgsStyle::SymbolEntity:
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::SmartgroupEntity:
+      return;
 
-  QgsTextFormat newFormat = QgsStyle::defaultStyle()->textFormat( name );
-  setFormat( newFormat );
+    case QgsStyle::TextFormatEntity:
+    {
+      if ( !QgsStyle::defaultStyle()->textFormatNames().contains( name ) )
+        return;
+
+      QgsTextFormat newFormat = QgsStyle::defaultStyle()->textFormat( name );
+      setFormat( newFormat );
+      break;
+    }
+
+    case QgsStyle::LabelSettingsEntity:
+    {
+      if ( !QgsStyle::defaultStyle()->labelSettingsNames().contains( name ) )
+        return;
+
+      QgsTextFormat newFormat = QgsStyle::defaultStyle()->labelSettings( name ).format();
+      setFormat( newFormat );
+      break;
+    }
+  }
 }
 
 void QgsTextFormatWidget::saveFormat()

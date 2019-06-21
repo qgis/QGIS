@@ -2022,6 +2022,14 @@ QgsPalLayerSettings QgsStyle::labelSettings( const QString &name ) const
   return mLabelSettings.value( name );
 }
 
+QgsWkbTypes::GeometryType QgsStyle::labelSettingsLayerType( const QString &name ) const
+{
+  if ( !mLabelSettings.contains( name ) )
+    return QgsWkbTypes::UnknownGeometry;
+
+  return mLabelSettings.value( name ).layerType;
+}
+
 int QgsStyle::labelSettingsCount() const
 {
   return mLabelSettings.count();

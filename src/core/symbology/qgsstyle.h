@@ -329,6 +329,15 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsPalLayerSettings labelSettings( const QString &name ) const;
 
     /**
+     * Returns the layer geometry type corresponding to the label settings
+     * with the specified \a name, or QgsWkbTypes::UnknownGeometry
+     * if matching label settings are not present.
+     *
+     * \since QGIS 3.10
+     */
+    QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
+
+    /**
      * Returns count of label settings in the style.
      * \since QGIS 3.10
      */
