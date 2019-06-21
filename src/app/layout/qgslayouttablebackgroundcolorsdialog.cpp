@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
+#include "qgsgui.h"
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -29,6 +30,8 @@ QgsLayoutTableBackgroundColorsDialog::QgsLayoutTableBackgroundColorsDialog( QgsL
   , mTable( table )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLayoutTableBackgroundColorsDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsLayoutTableBackgroundColorsDialog::buttonBox_rejected );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutTableBackgroundColorsDialog::showHelp );
@@ -55,16 +58,7 @@ QgsLayoutTableBackgroundColorsDialog::QgsLayoutTableBackgroundColorsDialog( QgsL
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsLayoutTableBackgroundColorsDialog::apply );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
-
   setGuiElementValues();
-}
-
-QgsLayoutTableBackgroundColorsDialog::~QgsLayoutTableBackgroundColorsDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsLayoutTableBackgroundColorsDialog::apply()

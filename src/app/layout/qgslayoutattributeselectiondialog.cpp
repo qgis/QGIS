@@ -21,6 +21,7 @@
 #include "qgsfieldexpressionwidget.h"
 #include "qgsdoublespinbox.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 #include "qgslayouttablecolumn.h"
 #include "qgshelp.h"
 
@@ -886,6 +887,8 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( mRemoveColumnPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mRemoveColumnPushButton_clicked );
   connect( mAddColumnPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mAddColumnPushButton_clicked );
   connect( mColumnUpPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mColumnUpPushButton_clicked );
@@ -897,9 +900,6 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
   connect( mSortColumnUpPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mSortColumnUpPushButton_clicked );
   connect( mSortColumnDownPushButton, &QPushButton::clicked, this, &QgsLayoutAttributeSelectionDialog::mSortColumnDownPushButton_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutAttributeSelectionDialog::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/AttributeSelectionDialog/geometry" ) ).toByteArray() );
 
   if ( mTable )
   {
@@ -933,12 +933,6 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
 
   mOrderComboBox->insertItem( 0, tr( "Ascending" ) );
   mOrderComboBox->insertItem( 1, tr( "Descending" ) );
-}
-
-QgsLayoutAttributeSelectionDialog::~QgsLayoutAttributeSelectionDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/AttributeSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsLayoutAttributeSelectionDialog::mRemoveColumnPushButton_clicked()

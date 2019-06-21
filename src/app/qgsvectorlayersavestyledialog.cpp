@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
+#include "qgsgui.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
 
 QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *layer, QWidget *parent )
@@ -27,6 +28,8 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   , mLayer( layer )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   QgsSettings settings;
 
   QString providerName = mLayer->providerType();
@@ -81,7 +84,6 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );
 
-  restoreGeometry( settings.value( QStringLiteral( "Windows/vectorLayerSaveStyle/geometry" ) ).toByteArray() );
   mStyleCategoriesListView->adjustSize();
 }
 
@@ -96,12 +98,6 @@ void QgsVectorLayerSaveStyleDialog::updateSaveButtonState()
   QgsVectorLayerProperties::StyleType type = currentStyleType();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( ( type == QgsVectorLayerProperties::DB && !mDbStyleNameEdit->text().isEmpty() ) ||
       ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
-}
-
-QgsVectorLayerSaveStyleDialog::~QgsVectorLayerSaveStyleDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/vectorLayerSaveStyle/geometry" ), saveGeometry() );
 }
 
 QgsVectorLayerSaveStyleDialog::SaveToDbSettings QgsVectorLayerSaveStyleDialog::saveToDbSettings() const
