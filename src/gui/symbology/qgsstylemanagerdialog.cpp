@@ -1479,10 +1479,26 @@ void QgsStyleManagerDialog::removeItem()
            QMessageBox::No ) )
         return;
     }
-    else
+    else if ( currentItemType() == 3 )
     {
       if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Color Ramp" ),
            QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, items.count() ) ),
+           QMessageBox::Yes,
+           QMessageBox::No ) )
+        return;
+    }
+    else if ( currentItemType() == 4 )
+    {
+      if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Text Formats" ),
+           QString( tr( "Do you really want to remove %n text format(s)?", nullptr, items.count() ) ),
+           QMessageBox::Yes,
+           QMessageBox::No ) )
+        return;
+    }
+    else if ( currentItemType() == 5 )
+    {
+      if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Label Settings" ),
+           QString( tr( "Do you really want to remove %n label settings?", nullptr, items.count() ) ),
            QMessageBox::Yes,
            QMessageBox::No ) )
         return;
