@@ -1553,5 +1553,6 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(3, 0), Qt.DisplayRole), 'settings new name')
         self.assertEqual(style.labelSettingsNames(), ['settings new name'])
 
+
 if __name__ == '__main__':
     unittest.main()
