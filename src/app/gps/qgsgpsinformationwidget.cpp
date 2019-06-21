@@ -709,7 +709,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   {
     mTxtLatitude->setText( QString::number( info.latitude, 'f', 8 ) );
     mTxtLongitude->setText( QString::number( info.longitude, 'f', 8 ) );
-    mTxtAltitude->setText( tr( "%1 m" ).arg( info.elevation, 0, 'f', 1 ) ); // don't know of any GPS receivers that output better than 0.1 m precision
+    mTxtAltitude->setText( tr( "%1 m" ).arg( info.elevation, 0, 'f', 3 ) ); // don't know of any GPS receivers that output better than 0.1 m precision
     if ( mDateTimeFormat.isEmpty() )
     {
       mTxtDateTime->setText( info.utcDateTime.toString( Qt::TextDate ) );  // default format
@@ -731,7 +731,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.direction ) )
     {
       mTxtDirection->setEnabled( true );
-      mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
+      mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "deg" ) );
     }
     else
     {
@@ -744,7 +744,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.hacc ) )
     {
       mTxtHacc->setEnabled( true );
-      mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
+      mTxtHacc->setText( QString::number( info.hacc, 'f', 3 ) + "m" );
     }
     else
     {
@@ -754,7 +754,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.vacc ) )
     {
       mTxtVacc->setEnabled( true );
-      mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
+      mTxtVacc->setText( QString::number( info.vacc, 'f', 3 ) + "m" );
     }
     else
     {
@@ -763,7 +763,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     }
     mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QString() ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
-    mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : QString() ); // allowing for anything else
+    mTxtQuality->setText( info.quality == 8 ? tr( "Simulated" ) : info.quality == 7 ? tr( "Manual" ) : info.quality == 6 ? tr( "Estimated" ) : info.quality == 5 ? tr( "Float" ) : info.quality == 4 ? tr( "Fixed" ) : info.quality == 3 ? tr( "PPS" ) : info.quality == 2 ? tr( "DGPS" ) : info.quality == 1 ? tr( "SPS" ) : info.quality == 0 ? tr( "Invalid" ) : info.quality > 8 ? QString::number( info.quality ) : QString() ); // allowing for anything else
     mTxtSatellitesUsed->setText( QString::number( info.satellitesUsed ) );
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QString() );
   } //position
