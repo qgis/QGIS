@@ -299,20 +299,20 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   {
     // Menu for the "Add item" toolbutton when in colorramp mode
     QStringList rampTypes;
-    rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
-    rampTypes << tr( "Catalog: ColorBrewer" );
+    rampTypes << tr( "Gradient…" ) << tr( "Color presets…" ) << tr( "Random…" ) << tr( "Catalog: cpt-city…" );
+    rampTypes << tr( "Catalog: ColorBrewer…" );
 
     mMenuBtnAddItemAll = new QMenu( this );
     mMenuBtnAddItemColorRamp = new QMenu( this );
     mMenuBtnAddItemLabelSettings = new QMenu( this );
 
-    QAction *item = new QAction( tr( "Marker" ), this );
+    QAction *item = new QAction( tr( "Marker…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
     mMenuBtnAddItemAll->addAction( item );
-    item = new QAction( tr( "Line" ), this );
+    item = new QAction( tr( "Line…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Line ); } );
     mMenuBtnAddItemAll->addAction( item );
-    item = new QAction( tr( "Fill" ), this );
+    item = new QAction( tr( "Fill…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemAll->addSeparator();
@@ -324,19 +324,19 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
       mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
     }
     mMenuBtnAddItemAll->addSeparator();
-    item = new QAction( tr( "Text Format" ), this );
+    item = new QAction( tr( "Text Format…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addTextFormat(); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemAll->addSeparator();
-    item = new QAction( tr( "Point Label Settings" ), this );
+    item = new QAction( tr( "Point Label Settings…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addLabelSettings( QgsWkbTypes::PointGeometry ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLabelSettings->addAction( item );
-    item = new QAction( tr( "Line Label Settings" ), this );
+    item = new QAction( tr( "Line Label Settings…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLabelSettings( QgsWkbTypes::LineGeometry ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLabelSettings->addAction( item );
-    item = new QAction( tr( "Polygon Label Settings" ), this );
+    item = new QAction( tr( "Polygon Label Settings…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLabelSettings( QgsWkbTypes::PolygonGeometry ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLabelSettings->addAction( item );
