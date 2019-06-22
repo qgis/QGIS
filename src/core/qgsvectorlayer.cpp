@@ -3920,12 +3920,15 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   bool hasFids = false;
   QgsFeatureIds ids;
   if ( fids )
-     ids = *fids;
-     hasFids = true;
+  {
+    ids = *fids;
+    hasFids = true;
+  }
   else if ( context )
+  {
     ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
     hasFids = true;
-  
+  }
 
   // test if we are calculating based on a field
   int attrIndex = mFields.lookupField( fieldOrExpression );
