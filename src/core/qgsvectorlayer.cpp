@@ -3924,6 +3924,14 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     ids = *fids;
     hasFids = true;
   }
+  else if ( context->indexOfScope( "Symbol scope" ) != -1 && mSymbolFeatureCounted )
+  {
+    if ( mFeatureCounter )
+    {
+      ids = mFeatureCounter.featureIds( context->variable( "symbol_id" ).toString() );
+      hasFids = true;
+    }
+  }
   else if ( context->indexOfScope( "Symbol scope" ) != -1 )
   {
     ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
