@@ -81,7 +81,7 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
       else
       {
         v = n->eval( parent, context );
-        ENSURE_NO_EVAL_ERROR;
+        ENSURE_NO_EVAL_ERROR
         bool defaultParamIsNull = mParameterList.count() > arg && mParameterList.at( arg ).optional() && !mParameterList.at( arg ).defaultValue().isValid();
         if ( QgsExpressionUtils::isNull( v ) && !defaultParamIsNull && !handlesNull() )
           return QVariant(); // all "normal" functions return NULL, when any QgsExpressionFunction::Parameter is NULL (so coalesce is abnormal)
@@ -501,9 +501,9 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
 
   //first node is layer id or name
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   QVariant value = node->eval( parent, context );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( value, parent );
   if ( !vl )
   {
@@ -513,9 +513,9 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
 
   // second node is aggregate type
   node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   value = node->eval( parent, context );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   bool ok = false;
   QgsAggregateCalculator::Aggregate aggregate = QgsAggregateCalculator::stringToAggregate( QgsExpressionUtils::getStringValue( value, parent ), &ok );
   if ( !ok )
@@ -526,7 +526,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
 
   // third node is subexpression (or field name)
   node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   QString subExpression = node->dump();
 
   QgsAggregateCalculator::AggregateParameters parameters;
@@ -534,7 +534,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   if ( values.count() > 3 )
   {
     node = QgsExpressionUtils::getNode( values.at( 3 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
     if ( !nl || nl->value().isValid() )
       parameters.filter = node->dump();
@@ -544,9 +544,9 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   if ( values.count() > 4 )
   {
     node = QgsExpressionUtils::getNode( values.at( 4 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     value = node->eval( parent, context );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     parameters.delimiter = value.toString();
   }
 
@@ -555,7 +555,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   if ( values.count() > 5 )
   {
     node = QgsExpressionUtils::getNode( values.at( 5 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
     if ( !nl || nl->value().isValid() )
     {
@@ -627,9 +627,9 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
   //first node is relation name
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   QVariant value = node->eval( parent, context );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   QString relationId = value.toString();
   // check relation exists
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId );
@@ -652,9 +652,9 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
   // second node is aggregate type
   node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   value = node->eval( parent, context );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   bool ok = false;
   QgsAggregateCalculator::Aggregate aggregate = QgsAggregateCalculator::stringToAggregate( QgsExpressionUtils::getStringValue( value, parent ), &ok );
   if ( !ok )
@@ -665,7 +665,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
   //third node is subexpression (or field name)
   node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   QString subExpression = node->dump();
 
   //optional fourth node is concatenator
@@ -673,9 +673,9 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   if ( values.count() > 3 )
   {
     node = QgsExpressionUtils::getNode( values.at( 3 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     value = node->eval( parent, context );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     parameters.delimiter = value.toString();
   }
 
@@ -684,7 +684,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   if ( values.count() > 4 )
   {
     node = QgsExpressionUtils::getNode( values.at( 4 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
     if ( !nl || nl->value().isValid() )
     {
@@ -745,7 +745,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
 
   //first node is subexpression (or field name)
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   QString subExpression = node->dump();
 
   //optional second node is group by
@@ -753,7 +753,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   if ( values.count() > 1 )
   {
     node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
     if ( !nl || nl->value().isValid() )
       groupBy = node->dump();
@@ -763,7 +763,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   if ( values.count() > 2 )
   {
     node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
     if ( !nl || nl->value().isValid() )
       parameters.filter = node->dump();
@@ -774,7 +774,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   if ( orderByPos >= 0 && values.count() > orderByPos )
   {
     node = QgsExpressionUtils::getNode( values.at( orderByPos ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     QgsExpressionNodeLiteral *nl = dynamic_cast< QgsExpressionNodeLiteral * >( node );
     if ( !nl || nl->value().isValid() )
     {
@@ -924,9 +924,9 @@ static QVariant fcnAggregateStringConcat( const QVariantList &values, const QgsE
   if ( values.count() > 3 )
   {
     QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 3 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     QVariant value = node->eval( parent, context );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     parameters.delimiter = value.toString();
   }
 
@@ -941,9 +941,9 @@ static QVariant fcnAggregateStringConcatUnique( const QVariantList &values, cons
   if ( values.count() > 3 )
   {
     QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 3 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     QVariant value = node->eval( parent, context );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     parameters.delimiter = value.toString();
   }
 
@@ -3796,9 +3796,9 @@ static QVariant fcnTry( const QVariantList &values, const QgsExpressionContext *
   {
     parent->setEvalErrorString( QString() );
     node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     value = node->eval( parent, context );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
   }
   return value;
 }
@@ -3806,22 +3806,22 @@ static QVariant fcnTry( const QVariantList &values, const QgsExpressionContext *
 static QVariant fcnIf( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   QVariant value = node->eval( parent, context );
-  ENSURE_NO_EVAL_ERROR;
+  ENSURE_NO_EVAL_ERROR
   if ( value.toBool() )
   {
     node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     value = node->eval( parent, context );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
   }
   else
   {
     node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
     value = node->eval( parent, context );
-    ENSURE_NO_EVAL_ERROR;
+    ENSURE_NO_EVAL_ERROR
   }
   return value;
 }
