@@ -3917,13 +3917,14 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   {
     return QVariant();
   }
-  
+  bool hasFids = false;
+  QgsFeatureIds ids;
   if ( fids )
-    const QgsFeatureIds ids = *fids;
+     ids = *fids;
+     hasFids = true;
   else if ( context )
-    const QgsFeatureIds ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
-  else
-    const QgsFeatureIds ids = QgsFeatureIds();
+    ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
+    hasFids = true;
   
 
   // test if we are calculating based on a field
@@ -3949,7 +3950,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
 
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
-  if ( ids )
+  if ( hasFids )
     c.setFidsFilter( ids );
   c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
