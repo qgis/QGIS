@@ -829,8 +829,11 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 {
   QgsExpressionContext context = QgsLayoutItem::createExpressionContext();
 
+  // We only want the last scope from the map's expression context, as this contains
+  // the map specific variables. We don't want the rest of the map's context, because that
+  // will contain duplicate global, project, layout, etc scopes.
   if ( mMap )
-    context.appendScopes( mMap->createExpressionContext().takeScopes() );
+    context.appendScope( mMap->createExpressionContext().popScope() );
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
 

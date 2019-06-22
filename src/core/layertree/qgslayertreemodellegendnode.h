@@ -296,12 +296,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QString symbolLabel() const;
 
     /**
-     * Create an expressionContextScope containing symbol related variables
-     * \since QGIS 3.10
-     */
-    QgsExpressionContextScope *createSymbolScope() const;
-
-    /**
      * Evaluates  and returns the text label of the current node
      * \param context extra QgsExpressionContext to use for evaluating the expression
      * \param label text to evaluate instead of the layer layertree string
@@ -350,6 +344,12 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     // ident the symbol icon to make it look like a tree structure
     static const int INDENT_SIZE = 20;
+
+    /**
+     * Create an expressionContextScope containing symbol related variables
+     * \since QGIS 3.10
+     */
+    QgsExpressionContextScope *createSymbolScope() const;
 
     /**
      * Sets all items belonging to the same layer as this node to the same check state.

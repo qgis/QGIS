@@ -48,7 +48,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     //! Construct the model based on the given layer tree
     QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr, QgsLayoutItemLegend *layout = nullptr );
 
-    //! Constructor used in QgsLayoutItemLegend, allows access to host class
+    //! Alternative constructor.
     QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
 
     QVariant data( const QModelIndex &index, int role ) const override;

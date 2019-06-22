@@ -312,13 +312,6 @@ Label of the symbol, user defined label will be used, otherwise will default to 
 .. versionadded:: 3.10
 %End
 
-    QgsExpressionContextScope *createSymbolScope() const;
-%Docstring
-Create an expressionContextScope containing symbol related variables
-
-.. versionadded:: 3.10
-%End
-
     QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
 %Docstring
 Evaluates  and returns the text label of the current node

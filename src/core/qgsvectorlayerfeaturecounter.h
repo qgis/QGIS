@@ -74,7 +74,6 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
 
     /**
      * Returns the feature Ids for a particular \a legendKey.
-     * If run() has not yet been executed, run() will be called.
      * If the key has not been found an empty QSet will be returned.
      *
      * \since QGIS 3.10
