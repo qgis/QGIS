@@ -3917,14 +3917,14 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   {
     return QVariant();
   }
-
-  if ( context && !fids )
-  {
-    if ( context->indexOfScope( "Symbol scope" ) != -1 )
-    {
-      fids = &mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
-    }
-  }
+  
+  if ( fids )
+    const QgsFeatureIds ids = *fids;
+  else if ( context )
+    const QgsFeatureIds ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
+  else
+    const QgsFeatureIds ids = QgsFeatureIds();
+  
 
   // test if we are calculating based on a field
   int attrIndex = mFields.lookupField( fieldOrExpression );
@@ -3949,8 +3949,8 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
 
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
-  if ( fids )
-    c.setFidsFilter( *fids );
+  if ( ids )
+    c.setFidsFilter( ids );
   c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
