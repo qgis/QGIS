@@ -3921,25 +3921,28 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   QgsFeatureIds ids;
   if ( fids )
   {
-    qInfo()<<'fids';
+    qDebug()<<'fids';
     ids = *fids;
     hasFids = true;
   }
-  else if ( context->indexOfScope( "Symbol scope" ) != -1 && mSymbolFeatureCounted )
+  else if ( context )
   {
-    qInfo() << "counted";
-    if ( mFeatureCounter )
+    if ( context->indexOfScope( "Symbol scope" ) != -1 && mSymbolFeatureCounted )
     {
-      qInfo() << "counter";
-      ids = mFeatureCounter->featureIds( context->variable( "symbol_id" ).toString() );
+      qDebug() << "counted";
+      if ( mFeatureCounter )
+      {
+        qDebug() << "counter";
+        ids = mFeatureCounter->featureIds( context->variable( "symbol_id" ).toString() );
+        hasFids = true;
+      }
+    }
+    else if ( context->indexOfScope( "Symbol scope" ) != -1 )
+    {
+      qDebug() << "not counted";
+      ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
       hasFids = true;
     }
-  }
-  else if ( context->indexOfScope( "Symbol scope" ) != -1 )
-  {
-    qInfo() << "not counted";
-    ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
-    hasFids = true;
   }
 
 
@@ -3967,7 +3970,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
   if ( hasFids )
-    qInfo() << "set filter";
+    qDebug() << "set filter";
     c.setFidsFilter( ids );
   c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
