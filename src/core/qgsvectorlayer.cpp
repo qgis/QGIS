@@ -3921,19 +3921,23 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   QgsFeatureIds ids;
   if ( fids )
   {
+    qInfo()<<'fids';
     ids = *fids;
     hasFids = true;
   }
   else if ( context->indexOfScope( "Symbol scope" ) != -1 && mSymbolFeatureCounted )
   {
+    qInfo()<<'counted';
     if ( mFeatureCounter )
     {
+      qInfo()<<'counter';
       ids = mFeatureCounter->featureIds( context->variable( "symbol_id" ).toString() );
       hasFids = true;
     }
   }
   else if ( context->indexOfScope( "Symbol scope" ) != -1 )
   {
+    qInfo()<<'not counted';
     ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
     hasFids = true;
   }
@@ -3963,6 +3967,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   // fallback to using aggregate calculator to determine aggregate
   QgsAggregateCalculator c( this );
   if ( hasFids )
+    qInfo()<<'set filter';
     c.setFidsFilter( ids );
   c.setParameters( parameters );
   return c.calculate( aggregate, fieldOrExpression, context, ok );
