@@ -460,6 +460,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   cboGraduatedMode->addItem( tr( "Standard Deviation" ), QgsGraduatedSymbolRenderer::StdDev );
   cboGraduatedMode->addItem( tr( "Pretty Breaks" ), QgsGraduatedSymbolRenderer::Pretty );
 
+  cboGraduatedMode->setCurrentIndex( cboGraduatedMode->findData( QgsGraduatedSymbolRenderer::Jenks ) );
+
   connect( methodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
