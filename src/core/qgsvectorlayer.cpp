@@ -3918,12 +3918,11 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     return QVariant();
   }
 
-  if ( context )
+  if ( context && !fids )
   {
     if ( context->indexOfScope( "Symbol scope" ) != -1 )
     {
-      const QgsFeatureIds ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
-      Q_UNUSED( ids );
+      fids = &mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
     }
   }
 
