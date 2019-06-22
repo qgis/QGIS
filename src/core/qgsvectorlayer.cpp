@@ -3924,15 +3924,12 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     ids = *fids;
     hasFids = true;
   }
-  else
+  else if ( context->indexOfScope( "Symbol scope" ) != -1 )
   {
-    QString symbolid = context->variable( "symbol_id" ).toString();
-    if ( !symbolid.isEmpty() )
-    {
-    ids = mSymbolIdMap.value( symbolid, QgsFeatureIds() );
+    ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
     hasFids = true;
-    }
   }
+
 
   // test if we are calculating based on a field
   int attrIndex = mFields.lookupField( fieldOrExpression );
