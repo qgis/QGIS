@@ -67,7 +67,8 @@ Q_GLOBAL_STATIC( ExpressionFunctionList, sOwnedFunctions )
 Q_GLOBAL_STATIC( QStringList, sBuiltinFunctions )
 Q_GLOBAL_STATIC( ExpressionFunctionList, sFunctions )
 
-Q_DECLARE_METATYPE( QgsSpatialIndex * )
+Q_DECLARE_METATYPE( QgsSpatialIndex )
+Q_DECLARE_METATYPE( std::shared_ptr<QgsVectorLayer> )
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -5650,30 +5651,34 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
   return QVariant( decoded );
 }
 
-static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
+static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString targetLayerId = values.at( 0 ).toString();
-
   FEAT_FROM_CONTEXT( context, feat )
   QgsGeometry geom = feat.geometry();
-  QgsVectorLayer *targetLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( targetLayerId );
-  QgsSpatialIndex *targetLayerIndex;
+  QVariant layerValue = values.at( 0 );
 
-  if ( !context->hasCachedValue( targetLayerId ) )
+  QgsSpatialIndex spatialIndex;
+  std::shared_ptr<QgsVectorLayer> cachedTarget;
+
+  // TODO proper cache key
+  if ( !context->hasCachedValue( "targetLayerFeatures" ) )
   {
-    targetLayerIndex = new QgsSpatialIndex( targetLayer->getFeatures() );
-    context->setCachedValue( targetLayerId, QVariant::fromValue( targetLayerIndex ) );
+    QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( layerValue, parent );
+
+    QgsFeatureRequest request; // TODO only required attributes
+    cachedTarget.reset( layer->materialize( request ) );
+    spatialIndex = QgsSpatialIndex( cachedTarget->getFeatures() );
+    // context->setCachedValue( "targetLayerIndex", QVariant::fromValue( spatialIndex ) );
+    // context->setCachedValue( "targetLayerFeatures", QVariant::fromValue( cachedTarget ) );
   }
 
-  targetLayerIndex = qvariant_cast<QgsSpatialIndex *>( context->cachedValue( targetLayerId ) );
-
-  const QList<QgsFeatureId> targetFeatureIds = targetLayerIndex->intersects( geom.boundingBox() );
+  const QList<QgsFeatureId> targetFeatureIds = spatialIndex.intersects( geom.boundingBox() );
   bool found = false;
   if ( !targetFeatureIds.empty() )
   {
-    for ( const QgsFeatureId &id : targetFeatureIds )
+    for ( QgsFeatureId id : targetFeatureIds )
     {
-      QgsFeature feat = targetLayer->getFeature( id );
+      QgsFeature feat = cachedTarget->getFeature( id );
       if ( feat.geometry().intersects( geom ) )
       {
         found = true;
@@ -6053,8 +6058,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "is_valid" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ), fcnGeomIsValid, QStringLiteral( "GeometryGroup" ) )
 
-    QgsStaticExpressionFunction *fcnGeomOverlayIntersectsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_intersects" ), 1, fcnGeomOverlayIntersects, QStringLiteral( "GeometryGroup" ), QString(), true );
-    fcnGeomOverlayIntersectsFunc->setIsStatic( false );
+    QgsStaticExpressionFunction *fcnGeomOverlayIntersectsFunc = new QgsStaticExpressionFunction( QStringLiteral( "geometry_overlay_intersects" ), QgsExpressionFunction::ParameterList()
+        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
+        fcnGeomOverlayIntersects, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     functions << fcnGeomOverlayIntersectsFunc;
 
 
