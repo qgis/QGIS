@@ -3924,10 +3924,14 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
     ids = *fids;
     hasFids = true;
   }
-  else if ( context )
+  else
   {
-    ids = mSymbolIdMap.value( context->variable( "symbol_id" ).toString(), QgsFeatureIds() );
+    QString symbolid = context->variable( "symbol_id" ).toString();
+    if ( !symbolid.isEmpty() )
+    {
+    ids = mSymbolIdMap.value( symbolid, QgsFeatureIds() );
     hasFids = true;
+    }
   }
 
   // test if we are calculating based on a field
