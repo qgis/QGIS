@@ -3928,7 +3928,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   {
     if ( mFeatureCounter )
     {
-      ids = mFeatureCounter.featureIds( context->variable( "symbol_id" ).toString() );
+      ids = mFeatureCounter->featureIds( context->variable( "symbol_id" ).toString() );
       hasFids = true;
     }
   }
