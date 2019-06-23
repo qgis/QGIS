@@ -216,6 +216,7 @@ SET(QGIS_GUI_SRCS
 
   providers/ogr/qgsogrguiprovider.cpp
   providers/ogr/qgsogrdbsourceselect.cpp
+  providers/ogr/qgsogrdbtablemodel.cpp
   providers/ogr/qgsogrsourceselect.cpp
   providers/ogr/qgsgeopackageprojectstoragedialog.cpp
   providers/ogr/qgsgeopackageitemguiprovider.cpp
@@ -785,6 +786,7 @@ SET(QGIS_GUI_MOC_HDRS
   providers/ogr/qgsogrguiprovider.h
   providers/ogr/qgsogrsourceselect.h
   providers/ogr/qgsogrdbsourceselect.h
+  providers/ogr/qgsogrdbtablemodel.h
   providers/ogr/qgsgeopackageprojectstoragedialog.h
   providers/ogr/qgsgeopackageitemguiprovider.h
   providers/ogr/qgsogritemguiprovider.h

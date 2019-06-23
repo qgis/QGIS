@@ -38,6 +38,8 @@
 // - mAttributeFields
 // - mEncoding
 
+///@cond PRIVATE
+
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )

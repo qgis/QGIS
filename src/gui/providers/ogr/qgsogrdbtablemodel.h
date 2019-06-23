@@ -27,7 +27,7 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-class CORE_EXPORT QgsOgrDbTableModel : public QStandardItemModel
+class QgsOgrDbTableModel : public QStandardItemModel
 {
     Q_OBJECT
 
