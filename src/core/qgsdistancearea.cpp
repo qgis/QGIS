@@ -362,7 +362,7 @@ double QgsDistanceArea::measureLine3D( const QVector<QgsPoint> &points ) const
     for ( QVector<QgsPoint>::const_iterator i = points.constBegin(); i != points.constEnd(); ++i )
     {
       p2 = *i;
-      total += measureLine( p1, p2 );
+      total += measureLine3D( p1, p2 );
 
       p1 = p2;
     }
@@ -378,7 +378,6 @@ double QgsDistanceArea::measureLine3D( const QVector<QgsPoint> &points ) const
 
 }
 
-
 double QgsDistanceArea::measureLine3D( const QgsPoint &p1, const QgsPoint &p2 ) const
 {
   double result;
@@ -390,7 +389,7 @@ double QgsDistanceArea::measureLine3D( const QgsPoint &p1, const QgsPoint &p2 ) 
     QgsDebugMsgLevel( QStringLiteral( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
 
     QgsDebugMsgLevel( QStringLiteral( "Cartesian calculation on canvas coordinates" ), 4 );
-    result = p2.distance( p1 );
+    result = p2.distance3D( p1 );
   }
   catch ( QgsCsException &cse )
   {
